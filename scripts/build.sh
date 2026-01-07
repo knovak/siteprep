@@ -74,4 +74,8 @@ cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
 </html>
 EOF_HTML
 
+if [ -x "$ROOT_DIR/scripts/build_tests.sh" ]; then
+  "$ROOT_DIR/scripts/build_tests.sh" "$OUTPUT_DIR" "$ROOT_DIR"
+fi
+
 printf 'Build complete. Output stored in %s\n' "$OUTPUT_DIR"
