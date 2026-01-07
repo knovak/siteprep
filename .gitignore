@@ -1,0 +1,10 @@
+# Build outputs
+/gh-pages/
+/dist/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
