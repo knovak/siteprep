@@ -11,7 +11,9 @@ mkdir -p "$OUTPUT_DIR"
 cp -r "$ROOT_DIR/decks" "$OUTPUT_DIR/decks"
 cp "$ROOT_DIR/manifest.webmanifest" "$OUTPUT_DIR/manifest.webmanifest"
 cp "$ROOT_DIR/sw.js" "$OUTPUT_DIR/sw.js"
-cp -r "$ROOT_DIR/pwa" "$OUTPUT_DIR/pwa"
+if [ -d "$ROOT_DIR/pwa" ]; then
+  cp -r "$ROOT_DIR/pwa" "$OUTPUT_DIR/pwa"
+fi
 
 # Generate a simple root index linking all decks
 mapfile -t DECKS < <(find "$ROOT_DIR/decks" -maxdepth 1 -mindepth 1 -type d -print | sort | while read -r path; do basename "$path"; done)
