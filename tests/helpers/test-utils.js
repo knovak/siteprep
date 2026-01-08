@@ -75,19 +75,36 @@ async function navigateToCard(page, deckName, sectionName) {
 async function checkForBrokenLinks(page) {
   const links = await page.locator('a[href]').all();
   const brokenLinks = [];
+  const currentUrl = new URL(page.url());
 
   for (const link of links) {
     const href = await link.getAttribute('href');
 
     // Skip external links and fragments
-    if (href.startsWith('http') || href.startsWith('#')) {
+    if (!href || href.startsWith('#')) {
       continue;
     }
 
-    // Check internal links
-    const response = await page.context().request.get(href, { failOnStatusCode: false });
-    if (response.status() === 404) {
+    // Skip external links
+    if (href.startsWith('http://') || href.startsWith('https://')) {
+      continue;
+    }
+
+    // Resolve relative URLs based on current page URL
+    let absoluteUrl;
+    try {
+      absoluteUrl = new URL(href, currentUrl.href);
+    } catch (e) {
       brokenLinks.push(href);
+      continue;
+    }
+
+    // Check internal links (only check same-origin links)
+    if (absoluteUrl.origin === currentUrl.origin) {
+      const response = await page.context().request.get(absoluteUrl.href, { failOnStatusCode: false });
+      if (response.status() === 404) {
+        brokenLinks.push(href);
+      }
     }
   }
 
