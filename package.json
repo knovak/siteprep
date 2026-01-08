@@ -1,0 +1,24 @@
+{
+  "name": "siteprep",
+  "version": "1.0.0",
+  "description": "Interactive Web Deck System - Static Site Generator",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:pwa": "playwright test tests/pwa",
+    "test:nav": "playwright test tests/e2e/navigation.spec.js",
+    "test:interactive": "playwright test tests/e2e/interactive.spec.js",
+    "test:build": "bash scripts/build_tests.sh",
+    "test:all": "npm run test:build && npm test",
+    "build": "bash scripts/build.sh"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.8.3",
+    "@playwright/test": "^1.41.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

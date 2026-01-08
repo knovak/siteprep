@@ -8,3 +8,8 @@ __pycache__/
 
 # Node
 node_modules/
+
+# Test artifacts
+/playwright-report/
+/test-results/
+/playwright/.cache/
