@@ -22,6 +22,21 @@ async function waitForServiceWorker(page) {
     }
 
     const registration = await navigator.serviceWorker.ready;
+
+    // Wait for the service worker to be fully activated
+    if (registration.active && registration.active.state !== 'activated') {
+      await new Promise((resolve) => {
+        registration.active.addEventListener('statechange', function onStateChange(e) {
+          if (e.target.state === 'activated') {
+            registration.active.removeEventListener('statechange', onStateChange);
+            resolve();
+          }
+        });
+        // Fallback timeout
+        setTimeout(resolve, 3000);
+      });
+    }
+
     if (!registration.active) {
       throw new Error('Service Worker not active');
     }

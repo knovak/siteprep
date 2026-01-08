@@ -42,12 +42,9 @@ test.describe('PWA Functionality Tests', () => {
     await context.grantPermissions(['notifications']);
     await page.goto('/');
 
-    const isActivated = await page.evaluate(async () => {
-      const registration = await navigator.serviceWorker.ready;
-      return registration.active !== null && registration.active.state === 'activated';
-    });
-
-    expect(isActivated).toBe(true);
+    // Wait for service worker to fully activate
+    const swState = await waitForServiceWorker(page);
+    expect(swState).toBe('activated');
   });
 
   test('PWA-05: Cache created', async ({ page, context }) => {
@@ -141,9 +138,14 @@ test.describe('PWA Functionality Tests', () => {
     const indexResponse = await page.request.get('/');
     const htmlContent = await indexResponse.text();
 
-    // Should contain service worker registration code
-    expect(htmlContent).toContain('serviceWorker');
-    expect(htmlContent).toContain('navigator.serviceWorker.register');
+    // Should include scripts.js which contains service worker registration
+    expect(htmlContent).toContain('scripts.js');
+
+    // Verify scripts.js actually contains service worker code
+    const scriptsResponse = await page.request.get('/decks/india1/assets/scripts.js');
+    const scriptsContent = await scriptsResponse.text();
+    expect(scriptsContent).toContain('serviceWorker');
+    expect(scriptsContent).toContain('navigator.serviceWorker.register');
   });
 });
 

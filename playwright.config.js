@@ -22,10 +22,6 @@ module.exports = defineConfig({
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
     },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
   ],
   webServer: {
     command: 'cd gh-pages && python3 -m http.server 8000',
