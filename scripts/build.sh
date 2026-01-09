@@ -10,7 +10,10 @@ mkdir -p "$OUTPUT_DIR"
 # Copy source assets and decks
 cp -r "$ROOT_DIR/decks" "$OUTPUT_DIR/decks"
 cp "$ROOT_DIR/manifest.webmanifest" "$OUTPUT_DIR/manifest.webmanifest"
-cp "$ROOT_DIR/sw.js" "$OUTPUT_DIR/sw.js"
+
+# Generate cache version and inject into service worker
+CACHE_VERSION="v$(date +%s)"
+sed "s/__CACHE_VERSION__/$CACHE_VERSION/g" "$ROOT_DIR/sw.js" > "$OUTPUT_DIR/sw.js"
 if [ -d "$ROOT_DIR/pwa" ]; then
   cp -r "$ROOT_DIR/pwa" "$OUTPUT_DIR/pwa"
 fi
