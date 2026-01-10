@@ -78,89 +78,55 @@ jobs:
           path: gh-pages/
           retention-days: 1
 
-  deploy:
+  deploy-main:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout
+      - name: Checkout gh-pages
         uses: actions/checkout@v4
         with:
+          ref: gh-pages
           fetch-depth: 0
-
-      - name: Setup gh-pages branch
-        run: |
-          # Check if gh-pages branch exists on remote
-          if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
-            echo "gh-pages branch exists, checking it out"
-            git checkout gh-pages
-          else
-            echo "gh-pages branch doesn't exist, creating orphan branch"
-            git checkout --orphan gh-pages
-            git rm -rf .
-            git clean -fxd
-            echo "# GitHub Pages" > README.md
-            git add README.md
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git commit -m "Initialize gh-pages branch"
-            git push -u origin gh-pages
-          fi
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        continue-on-error: true
+        id: checkout_existing
 
       - name: Set version info
         id: version
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
-            echo "deploy_dir=pr-${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "is_pr=true" >> $GITHUB_OUTPUT
-          else
-            echo "pr_number=" >> $GITHUB_OUTPUT
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-            echo "deploy_dir=." >> $GITHUB_OUTPUT
-            echo "is_pr=false" >> $GITHUB_OUTPUT
-          fi
+          echo "deploy_dir=." >> $GITHUB_OUTPUT
+          echo "is_pr=false" >> $GITHUB_OUTPUT
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: site-build-${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || 'main' }}
+          name: site-build-main
           path: /tmp/build
 
-      - name: Deploy to gh-pages
+      - name: Prepare deployment
         run: |
-          DEPLOY_DIR="${{ steps.version.outputs.deploy_dir }}"
-
-          # For main branch, clear everything except PR directories
-          if [ "${{ steps.version.outputs.is_pr }}" == "false" ]; then
-            # Remove all files except pr-* directories
-            find . -maxdepth 1 ! -name 'pr-*' ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+          # If gh-pages doesn't exist yet, create empty directory
+          if [ "${{ steps.checkout_existing.outcome }}" == "failure" ]; then
+            echo "gh-pages branch doesn't exist, will create it"
+            mkdir -p /tmp/gh-pages-content
+            cd /tmp/gh-pages-content
           else
-            # For PRs, just ensure the directory exists
-            mkdir -p "$DEPLOY_DIR"
+            echo "gh-pages branch exists"
+            # Save PR directories
+            mkdir -p /tmp/pr-backups
+            find . -maxdepth 1 -type d -name 'pr-*' -exec cp -r {} /tmp/pr-backups/ \; 2>/dev/null || true
+            # Clear everything
+            rm -rf * .??* 2>/dev/null || true
+            # Restore PR directories
+            if [ -d /tmp/pr-backups ]; then
+              cp -r /tmp/pr-backups/pr-* . 2>/dev/null || true
+            fi
           fi
 
-          # Copy new build to deployment directory
-          if [ "$DEPLOY_DIR" == "." ]; then
-            cp -r /tmp/build/* .
-          else
-            rm -rf "$DEPLOY_DIR"
-            cp -r /tmp/build "$DEPLOY_DIR"
-          fi
+          # Copy new main build
+          cp -r /tmp/build/* .
 
-      - name: Cleanup old PR previews
-        if: steps.version.outputs.is_pr == 'false'
-        run: |
-          # Keep only the last 6 PR directories
+          # Cleanup old PR previews (keep last 6)
           PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%T@ %p\n' | sort -rn | awk 'NR>6 {print $2}')
           if [ -n "$PR_DIRS" ]; then
             echo "Removing old PR previews:"
@@ -168,10 +134,8 @@ jobs:
             echo "$PR_DIRS" | xargs rm -rf
           fi
 
-      - name: Generate versions index
-        run: |
-          # Create index-versions.html
-          cat > index-versions.html <<'EOF'
+          # Generate index-versions.html
+          cat > index-versions.html <<'VERSIONS_EOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -204,12 +168,11 @@ jobs:
                 </ul>
               </div>
             </main>
-          EOF
+          VERSIONS_EOF
 
-          # Add PR previews section if any exist
           PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
           if [ -n "$PR_DIRS" ]; then
-            cat >> index-versions.html <<'EOF'
+            cat >> index-versions.html <<'VERSIONS_EOF'
             <main class="card">
               <div class="card-header">
                 <h2>PR Previews</h2>
@@ -217,57 +180,157 @@ jobs:
               </div>
               <div class="card-content">
                 <ul class="toc-grid">
-          EOF
+          VERSIONS_EOF
 
             for dir in $PR_DIRS; do
               PR_NUM="${dir#pr-}"
-              cat >> index-versions.html <<EOF
+              cat >> index-versions.html <<VERSIONS_EOF
                   <li class="toc-item">
                     <h3>PR #${PR_NUM}</h3>
                     <p>Preview from pull request #${PR_NUM}</p>
                     <a href="./${dir}/index.html">View PR #${PR_NUM}</a>
                   </li>
-          EOF
+          VERSIONS_EOF
             done
 
-            cat >> index-versions.html <<'EOF'
+            cat >> index-versions.html <<'VERSIONS_EOF'
                 </ul>
               </div>
             </main>
-          EOF
+          VERSIONS_EOF
           fi
 
-          cat >> index-versions.html <<'EOF'
+          cat >> index-versions.html <<'VERSIONS_EOF'
           </body>
           </html>
-          EOF
+          VERSIONS_EOF
 
-      - name: Commit and push
-        run: |
-          git add -A
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            if [ "${{ steps.version.outputs.is_pr }}" == "true" ]; then
-              git commit -m "Deploy PR #${{ steps.version.outputs.pr_number }} preview"
-            else
-              git commit -m "Deploy main version"
-            fi
-            git push
-          fi
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          force_orphan: false
+          keep_files: false
+          commit_message: "Deploy main version"
 
       - name: Output deployment info
-        id: deployment
         run: |
-          if [ "${{ steps.version.outputs.is_pr }}" == "true" ]; then
-            echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.version.outputs.pr_number }}/" >> $GITHUB_OUTPUT
-            echo "### PR Preview Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Preview URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.version.outputs.pr_number }}/" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_OUTPUT
-            echo "### Main Version Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Main URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
-            echo "All Versions: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index-versions.html" >> $GITHUB_STEP_SUMMARY
+          echo "### Main Version Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Main URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
+          echo "All Versions: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index-versions.html" >> $GITHUB_STEP_SUMMARY
+
+  deploy-pr:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+        continue-on-error: true
+        id: checkout_existing
+
+      - name: Set version info
+        id: version
+        run: |
+          echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          echo "deploy_dir=pr-${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build-PR #${{ github.event.pull_request.number }}
+          path: /tmp/build
+
+      - name: Prepare deployment
+        run: |
+          DEPLOY_DIR="pr-${{ github.event.pull_request.number }}"
+
+          # If gh-pages doesn't exist yet, create empty directory
+          if [ "${{ steps.checkout_existing.outcome }}" == "failure" ]; then
+            echo "gh-pages branch doesn't exist, creating initial structure"
+            mkdir -p "$DEPLOY_DIR"
           fi
+
+          # Deploy PR to subdirectory
+          rm -rf "$DEPLOY_DIR"
+          mkdir -p "$DEPLOY_DIR"
+          cp -r /tmp/build/* "$DEPLOY_DIR"/
+
+          # Update index-versions.html if it exists, or create it
+          if [ ! -f "index-versions.html" ]; then
+            cat > index-versions.html <<'VERSIONS_EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>SitePrep - All Versions</title>
+            <link rel="stylesheet" href="./decks/india1/assets/styles.css">
+          </head>
+          <body>
+            <header class="card">
+              <div class="card-header">
+                <p class="tag">Version Browser</p>
+                <h1>SitePrep - All Versions</h1>
+              </div>
+              <div class="card-content">
+                <p>Browse different versions of the site, including the main version and PR previews.</p>
+              </div>
+            </header>
+            <main class="card">
+              <div class="card-header">
+                <h2>Main Version</h2>
+              </div>
+              <div class="card-content">
+                <ul class="toc-grid">
+                  <li class="toc-item">
+                    <h3>main</h3>
+                    <p>Latest production version from main branch</p>
+                    <a href="./index.html">View main version</a>
+                  </li>
+                </ul>
+              </div>
+            </main>
+          VERSIONS_EOF
+          fi
+
+          # Regenerate PR previews section
+          PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
+          if [ -n "$PR_DIRS" ]; then
+            # Remove old PR section if exists
+            sed -i '/<h2>PR Previews<\/h2>/,/<\/main>/d' index-versions.html 2>/dev/null || true
+
+            # Add new PR section before closing body tag
+            sed -i 's|</body>|<main class="card"><div class="card-header"><h2>PR Previews</h2><p class="meta">Preview builds from pull requests</p></div><div class="card-content"><ul class="toc-grid">|' index-versions.html
+
+            for dir in $PR_DIRS; do
+              PR_NUM="${dir#pr-}"
+              sed -i "s|</body>|<li class=\"toc-item\"><h3>PR #${PR_NUM}</h3><p>Preview from pull request #${PR_NUM}</p><a href=\"./${dir}/index.html\">View PR #${PR_NUM}</a></li>|" index-versions.html
+            done
+
+            sed -i 's|</body>|</ul></div></main></body>|' index-versions.html
+          fi
+
+          # Close HTML if needed
+          grep -q '</html>' index-versions.html || echo '</html>' >> index-versions.html
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          force_orphan: false
+          keep_files: true
+          commit_message: "Deploy PR #${{ github.event.pull_request.number }} preview"
+
+      - name: Output deployment info
+        run: |
+          echo "### PR Preview Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Preview URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.pull_request.number }}/" >> $GITHUB_STEP_SUMMARY
+          echo "All Versions: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index-versions.html" >> $GITHUB_STEP_SUMMARY
