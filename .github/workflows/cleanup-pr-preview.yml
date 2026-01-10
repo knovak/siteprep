@@ -1,0 +1,116 @@
+name: Cleanup PR Preview
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Remove PR preview directory
+        run: |
+          PR_DIR="pr-${{ github.event.pull_request.number }}"
+
+          if [ -d "$PR_DIR" ]; then
+            echo "Removing PR preview directory: $PR_DIR"
+            rm -rf "$PR_DIR"
+
+            # Regenerate index-versions.html
+            cat > index-versions.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>SitePrep - All Versions</title>
+            <link rel="stylesheet" href="./decks/india1/assets/styles.css">
+          </head>
+          <body>
+            <header class="card">
+              <div class="card-header">
+                <p class="tag">Version Browser</p>
+                <h1>SitePrep - All Versions</h1>
+              </div>
+              <div class="card-content">
+                <p>Browse different versions of the site, including the main version and PR previews.</p>
+              </div>
+            </header>
+            <main class="card">
+              <div class="card-header">
+                <h2>Main Version</h2>
+              </div>
+              <div class="card-content">
+                <ul class="toc-grid">
+                  <li class="toc-item">
+                    <h3>main</h3>
+                    <p>Latest production version from main branch</p>
+                    <a href="./index.html">View main version</a>
+                  </li>
+                </ul>
+              </div>
+            </main>
+          EOF
+
+            # Add PR previews section if any remain
+            PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
+            if [ -n "$PR_DIRS" ]; then
+              cat >> index-versions.html <<'EOF'
+            <main class="card">
+              <div class="card-header">
+                <h2>PR Previews</h2>
+                <p class="meta">Preview builds from pull requests</p>
+              </div>
+              <div class="card-content">
+                <ul class="toc-grid">
+          EOF
+
+              for dir in $PR_DIRS; do
+                PR_NUM="${dir#pr-}"
+                cat >> index-versions.html <<EOF
+                  <li class="toc-item">
+                    <h3>PR #${PR_NUM}</h3>
+                    <p>Preview from pull request #${PR_NUM}</p>
+                    <a href="./${dir}/index.html">View PR #${PR_NUM}</a>
+                  </li>
+          EOF
+              done
+
+              cat >> index-versions.html <<'EOF'
+                </ul>
+              </div>
+            </main>
+          EOF
+            fi
+
+            cat >> index-versions.html <<'EOF'
+          </body>
+          </html>
+          EOF
+
+            # Commit and push
+            git add -A
+            if ! git diff --staged --quiet; then
+              git commit -m "Remove PR #${{ github.event.pull_request.number }} preview"
+              git push
+              echo "PR preview removed successfully"
+            else
+              echo "No changes to commit"
+            fi
+          else
+            echo "PR preview directory not found: $PR_DIR"
+          fi

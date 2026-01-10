@@ -7,12 +7,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+  pull-requests: read
 
 concurrency:
-  group: "pages"
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: true
 
 jobs:
@@ -34,10 +35,26 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      - name: Set version info
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "version=PR #${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "is_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "pr_number=" >> $GITHUB_OUTPUT
+            echo "version=main" >> $GITHUB_OUTPUT
+            echo "is_pr=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build deck outputs
+        env:
+          BRANCH_NAME: ${{ steps.version.outputs.branch }}
+          PR_NUMBER: ${{ steps.version.outputs.pr_number }}
+          VERSION_NAME: ${{ steps.version.outputs.version }}
         run: scripts/build.sh
 
       - name: Run build tests
@@ -50,23 +67,189 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ steps.version.outputs.version }}
           path: playwright-report/
           retention-days: 30
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: gh-pages
+          name: site-build-${{ steps.version.outputs.version }}
+          path: gh-pages/
+          retention-days: 1
 
   deploy:
     needs: build
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Set version info
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+            echo "deploy_dir=pr-${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "is_pr=true" >> $GITHUB_OUTPUT
+          else
+            echo "pr_number=" >> $GITHUB_OUTPUT
+            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "deploy_dir=." >> $GITHUB_OUTPUT
+            echo "is_pr=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-build-${{ github.event_name == 'pull_request' && format('PR #{0}', github.event.pull_request.number) || 'main' }}
+          path: /tmp/build
+
+      - name: Deploy to gh-pages
+        run: |
+          DEPLOY_DIR="${{ steps.version.outputs.deploy_dir }}"
+
+          # For main branch, clear everything except PR directories
+          if [ "${{ steps.version.outputs.is_pr }}" == "false" ]; then
+            # Remove all files except pr-* directories
+            find . -maxdepth 1 ! -name 'pr-*' ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+          else
+            # For PRs, just ensure the directory exists
+            mkdir -p "$DEPLOY_DIR"
+          fi
+
+          # Copy new build to deployment directory
+          if [ "$DEPLOY_DIR" == "." ]; then
+            cp -r /tmp/build/* .
+          else
+            rm -rf "$DEPLOY_DIR"
+            cp -r /tmp/build "$DEPLOY_DIR"
+          fi
+
+      - name: Cleanup old PR previews
+        if: steps.version.outputs.is_pr == 'false'
+        run: |
+          # Keep only the last 6 PR directories
+          PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%T@ %p\n' | sort -rn | awk 'NR>6 {print $2}')
+          if [ -n "$PR_DIRS" ]; then
+            echo "Removing old PR previews:"
+            echo "$PR_DIRS"
+            echo "$PR_DIRS" | xargs rm -rf
+          fi
+
+      - name: Generate versions index
+        run: |
+          # Create index-versions.html
+          cat > index-versions.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>SitePrep - All Versions</title>
+            <link rel="stylesheet" href="./decks/india1/assets/styles.css">
+          </head>
+          <body>
+            <header class="card">
+              <div class="card-header">
+                <p class="tag">Version Browser</p>
+                <h1>SitePrep - All Versions</h1>
+              </div>
+              <div class="card-content">
+                <p>Browse different versions of the site, including the main version and PR previews.</p>
+              </div>
+            </header>
+            <main class="card">
+              <div class="card-header">
+                <h2>Main Version</h2>
+              </div>
+              <div class="card-content">
+                <ul class="toc-grid">
+                  <li class="toc-item">
+                    <h3>main</h3>
+                    <p>Latest production version from main branch</p>
+                    <a href="./index.html">View main version</a>
+                  </li>
+                </ul>
+              </div>
+            </main>
+          EOF
+
+          # Add PR previews section if any exist
+          PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
+          if [ -n "$PR_DIRS" ]; then
+            cat >> index-versions.html <<'EOF'
+            <main class="card">
+              <div class="card-header">
+                <h2>PR Previews</h2>
+                <p class="meta">Preview builds from pull requests</p>
+              </div>
+              <div class="card-content">
+                <ul class="toc-grid">
+          EOF
+
+            for dir in $PR_DIRS; do
+              PR_NUM="${dir#pr-}"
+              cat >> index-versions.html <<EOF
+                  <li class="toc-item">
+                    <h3>PR #${PR_NUM}</h3>
+                    <p>Preview from pull request #${PR_NUM}</p>
+                    <a href="./${dir}/index.html">View PR #${PR_NUM}</a>
+                  </li>
+          EOF
+            done
+
+            cat >> index-versions.html <<'EOF'
+                </ul>
+              </div>
+            </main>
+          EOF
+          fi
+
+          cat >> index-versions.html <<'EOF'
+          </body>
+          </html>
+          EOF
+
+      - name: Commit and push
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            if [ "${{ steps.version.outputs.is_pr }}" == "true" ]; then
+              git commit -m "Deploy PR #${{ steps.version.outputs.pr_number }} preview"
+            else
+              git commit -m "Deploy main version"
+            fi
+            git push
+          fi
+
+      - name: Output deployment info
         id: deployment
-        uses: actions/deploy-pages@v4
+        run: |
+          if [ "${{ steps.version.outputs.is_pr }}" == "true" ]; then
+            echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.version.outputs.pr_number }}/" >> $GITHUB_OUTPUT
+            echo "### PR Preview Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Preview URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.version.outputs.pr_number }}/" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_OUTPUT
+            echo "### Main Version Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Main URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
+            echo "All Versions: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index-versions.html" >> $GITHUB_STEP_SUMMARY
+          fi
