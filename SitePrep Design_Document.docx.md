@@ -166,18 +166,42 @@ The build.sh script performs the following steps for each deck:
 
 ## **6.2 GitHub Actions Workflow**
 
-The CI/CD pipeline consists of two jobs:
+The CI/CD pipeline supports main deployments, PR previews, and cleanup workflows.
 
-**Build Job:**
+**Build Job (main + PRs):**
 
 * Checkout repository  
 * Cache/install build tools  
-* Execute build script  
+* Execute build script with version metadata injection  
 * Upload dist/ as Pages artifact
 
 **Deploy Job (main branch only):**
 
-* Deploy artifact to GitHub Pages
+* Deploy artifact to GitHub Pages root  
+* Preserve recent PR preview directories  
+* Regenerate index-versions.html
+
+**Deploy PR Preview Job (PR events):**
+
+* Deploy artifact to pr-{number}/ on gh-pages  
+* Preserve existing main and PR preview content  
+* Update index-versions.html  
+* Emit preview URL in Actions summary
+
+**Cleanup Job (PR closed):**
+
+* Remove pr-{number}/ directory from gh-pages  
+* Regenerate index-versions.html
+
+## **6.3 Multi-Version GitHub Pages Layout**
+
+The gh-pages branch stores multiple versions of the site:
+
+* Root directory contains the production site (main).  
+* PR previews live in pr-{number}/ subdirectories.  
+* index-versions.html lists all available versions and links to each.  
+* A version footer is injected into every HTML page with version name, branch, and a link to the version index.  
+* Retention keeps the most recent six PR previews during main deployments.
 
 # **7\. PWA Configuration**
 
