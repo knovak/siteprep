@@ -11,18 +11,34 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout gh-pages branch
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: gh-pages
           fetch-depth: 0
 
+      - name: Check if gh-pages branch exists
+        id: check_branch
+        run: |
+          if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "gh-pages branch does not exist yet, skipping cleanup"
+          fi
+
+      - name: Checkout gh-pages branch
+        if: steps.check_branch.outputs.exists == 'true'
+        run: |
+          git checkout gh-pages
+
       - name: Configure Git
+        if: steps.check_branch.outputs.exists == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Remove PR preview directory
+        if: steps.check_branch.outputs.exists == 'true'
         run: |
           PR_DIR="pr-${{ github.event.pull_request.number }}"
 
