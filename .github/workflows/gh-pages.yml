@@ -89,8 +89,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: gh-pages
           fetch-depth: 0
+
+      - name: Setup gh-pages branch
+        run: |
+          # Check if gh-pages branch exists on remote
+          if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
+            echo "gh-pages branch exists, checking it out"
+            git checkout gh-pages
+          else
+            echo "gh-pages branch doesn't exist, creating orphan branch"
+            git checkout --orphan gh-pages
+            git rm -rf .
+            git clean -fxd
+            echo "# GitHub Pages" > README.md
+            git add README.md
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "Initialize gh-pages branch"
+            git push -u origin gh-pages
+          fi
 
       - name: Configure Git
         run: |
