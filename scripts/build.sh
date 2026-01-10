@@ -113,8 +113,13 @@ EOF_VERSIONS
 inject_version_footer() {
   local html_file="$1"
 
-  # Determine the base path for the site
-  local repo_name=$(basename "$(git rev-parse --show-toplevel 2>/dev/null || echo 'siteprep')")
+  # Calculate relative path from this HTML file to the root
+  local rel_path=$(realpath --relative-to="$(dirname "$html_file")" "$OUTPUT_DIR")
+  if [ "$rel_path" = "." ]; then
+    rel_path=""
+  else
+    rel_path="$rel_path/"
+  fi
 
   # Create footer HTML
   local footer_html="  <footer style=\"text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.9rem;\">"
@@ -123,7 +128,7 @@ inject_version_footer() {
     footer_html="$footer_html (Branch: $BRANCH_NAME)"
   fi
   footer_html="$footer_html</p>"
-  footer_html="$footer_html<p><a href=\"/$repo_name/index-versions.html\" style=\"color: #0066cc;\">View all versions</a></p>"
+  footer_html="$footer_html<p><a href=\"${rel_path}index-versions.html\" style=\"color: #0066cc;\">View all versions</a></p>"
   footer_html="$footer_html</footer>"
 
   # Insert footer before closing body tag
