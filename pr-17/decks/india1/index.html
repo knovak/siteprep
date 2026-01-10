@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>India1 Deck | Overview</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Deck</p>
+      <h1>India1</h1>
+    </div>
+    <div class="card-content">
+      <p>A compact deck covering key stops for travel between Dubai and major destinations across India, with quick-reference overviews for each city and the Art of Living Ashram.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Total sections:</strong> 9</div>
+        <div class="meta-box"><strong>Style:</strong> Mobile-first cards with quick navigation</div>
+        <div class="meta-box"><strong>Last updated:</strong> <time datetime="2024-01-01">January 2024</time></div>
+      </div>
+      <div id="deck-nav"></div>
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <h3>India National Park History</h3>
+          <p>Overview of India's national parks, conservation policy, and the evolution from protection to tourism.</p>
+          <a href="./sections/background/national-park-history.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Transit in Dubai</h3>
+          <p>How to navigate a layover or stopover through Dubai.</p>
+          <a href="./sections/transit-in-dubai/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Art of Living Ashram</h3>
+          <p>History and essentials of the international center near Bengaluru.</p>
+          <a href="./sections/art-of-living-ashram/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Bangalore</h3>
+          <p>Fast facts about Bengaluru, Karnataka.</p>
+          <a href="./sections/bangalore/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Udaipur</h3>
+          <p>Lake-city highlights and climate basics.</p>
+          <a href="./sections/udaipur/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Jodhpur</h3>
+          <p>Key info for the Blue City of Rajasthan.</p>
+          <a href="./sections/jodhpur/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Jaipur</h3>
+          <p>Quick reference for the Pink City.</p>
+          <a href="./sections/jaipur/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Delhi</h3>
+          <p>Capital-region snapshot with winter weather.</p>
+          <a href="./sections/delhi/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Kochi</h3>
+          <p>Coastal Kerala overview and seasonal notes.</p>
+          <a href="./sections/kochi/overview.html">Open overview</a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'India1 Home' }
+    ]);
+  </script>
+  <footer style="text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.9rem;"><p>Version: <strong>HEAD</strong></p><p><a href="../../index-versions.html" style="color: #0066cc;">View all versions</a></p></footer>
+</body>
+</html>
