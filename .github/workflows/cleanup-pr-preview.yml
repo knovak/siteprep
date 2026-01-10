@@ -16,13 +16,11 @@ jobs:
         with:
           ref: gh-pages
           fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        continue-on-error: true
+        id: checkout_ghpages
 
       - name: Remove PR preview directory
+        if: steps.checkout_ghpages.outcome == 'success'
         run: |
           PR_DIR="pr-${{ github.event.pull_request.number }}"
 
@@ -31,7 +29,7 @@ jobs:
             rm -rf "$PR_DIR"
 
             # Regenerate index-versions.html
-            cat > index-versions.html <<'EOF'
+            cat > index-versions.html <<'VERSIONS_EOF'
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -64,12 +62,12 @@ jobs:
                 </ul>
               </div>
             </main>
-          EOF
+          VERSIONS_EOF
 
             # Add PR previews section if any remain
             PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
             if [ -n "$PR_DIRS" ]; then
-              cat >> index-versions.html <<'EOF'
+              cat >> index-versions.html <<'VERSIONS_EOF'
             <main class="card">
               <div class="card-header">
                 <h2>PR Previews</h2>
@@ -77,40 +75,47 @@ jobs:
               </div>
               <div class="card-content">
                 <ul class="toc-grid">
-          EOF
+          VERSIONS_EOF
 
               for dir in $PR_DIRS; do
                 PR_NUM="${dir#pr-}"
-                cat >> index-versions.html <<EOF
+                cat >> index-versions.html <<VERSIONS_EOF
                   <li class="toc-item">
                     <h3>PR #${PR_NUM}</h3>
                     <p>Preview from pull request #${PR_NUM}</p>
                     <a href="./${dir}/index.html">View PR #${PR_NUM}</a>
                   </li>
-          EOF
+          VERSIONS_EOF
               done
 
-              cat >> index-versions.html <<'EOF'
+              cat >> index-versions.html <<'VERSIONS_EOF'
                 </ul>
               </div>
             </main>
-          EOF
+          VERSIONS_EOF
             fi
 
-            cat >> index-versions.html <<'EOF'
+            cat >> index-versions.html <<'VERSIONS_EOF'
           </body>
           </html>
-          EOF
+          VERSIONS_EOF
 
-            # Commit and push
-            git add -A
-            if ! git diff --staged --quiet; then
-              git commit -m "Remove PR #${{ github.event.pull_request.number }} preview"
-              git push
-              echo "PR preview removed successfully"
-            else
-              echo "No changes to commit"
-            fi
+            echo "PR preview removed, index updated"
           else
             echo "PR preview directory not found: $PR_DIR"
           fi
+
+      - name: Deploy updated gh-pages
+        if: steps.checkout_ghpages.outcome == 'success'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          force_orphan: false
+          keep_files: true
+          commit_message: "Remove PR #${{ github.event.pull_request.number }} preview"
+
+      - name: Skip cleanup
+        if: steps.checkout_ghpages.outcome != 'success'
+        run: |
+          echo "gh-pages branch doesn't exist yet, nothing to clean up"
