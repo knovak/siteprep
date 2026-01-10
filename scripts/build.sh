@@ -123,8 +123,9 @@ inject_version_footer() {
     footer_html="$footer_html (Branch: $BRANCH_NAME)"
   fi
   footer_html="$footer_html</p>"
-  footer_html="$footer_html<p><a href=\"/$repo_name/index-versions.html\" style=\"color: #0066cc;\">View all versions</a></p>"
+  footer_html="$footer_html<p><a class=\"version-index-link\" href=\"/$repo_name/index-versions.html\" style=\"color: #0066cc;\">View all versions</a></p>"
   footer_html="$footer_html</footer>"
+  footer_html="$footer_html<script>(function(){const link=document.querySelector('.version-index-link');if(!link){return;}const repoName='$repo_name';const path=window.location.pathname;const base=path.startsWith('/'+repoName+'/')?'/'+repoName+'/':'/';link.setAttribute('href',base+'index-versions.html');})();</script>"
 
   # Insert footer before closing body tag
   if grep -q "</body>" "$html_file"; then
