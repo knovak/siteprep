@@ -83,6 +83,32 @@ cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
 </html>
 EOF_HTML
 
+# Create a placeholder index-versions.html (will be replaced during deployment)
+cat > "$OUTPUT_DIR/index-versions.html" <<EOF_VERSIONS
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SitePrep - All Versions</title>
+  <link rel="stylesheet" href="$DEFAULT_STYLE">
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Version Browser</p>
+      <h1>SitePrep - All Versions</h1>
+    </div>
+    <div class="card-content">
+      <p>This page lists all available versions including PR previews.</p>
+      <p>The full versions index is generated during deployment to GitHub Pages.</p>
+      <p><a href="./index.html">Return to main index</a></p>
+    </div>
+  </header>
+</body>
+</html>
+EOF_VERSIONS
+
 # Function to inject version footer into HTML files
 inject_version_footer() {
   local html_file="$1"
