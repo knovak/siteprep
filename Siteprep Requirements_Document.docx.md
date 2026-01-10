@@ -146,37 +146,50 @@ The system encompasses the following functional areas:
 63. Build outputs SHALL NOT be committed to the main branch.  
 64. The system SHALL support collaborative editing via branches and PRs.
 
+# **4.5 Multi-Version GitHub Pages Deployment**
+
+65. The system SHALL deploy the main branch site to the root of the gh-pages branch.  
+66. The system SHALL deploy pull request previews to pr-{number}/ directories on gh-pages.  
+67. The system SHALL generate an index-versions.html page listing main and all PR previews.  
+68. The system SHALL inject a version footer into every HTML page with version name and a link to the version index.  
+69. Pull request previews SHALL be built and deployed on PR creation or update events.  
+70. PR preview deployments SHALL preserve the main site and other PR preview directories.  
+71. PR preview cleanup SHALL remove closed PR directories and refresh the version index.  
+72. Main deployments SHALL preserve the most recent six PR previews and remove older ones.  
+73. Deployment workflows SHALL surface the PR preview URL in the GitHub Actions summary.  
+74. The gh-pages branch SHALL be created automatically if missing.
+
 # **5\. Styling Requirements**
 
 ## **5.1 Visual Design**
 
-65. Cards SHALL have a clean, professional appearance.  
-66. Headers SHALL be clearly distinguished with appropriate typography and color.  
-67. Section headers (e.g., Attractions, Hotels) SHALL have visual separators.  
-68. Highlight boxes SHALL use distinct background colors for visibility.  
-69. Navigation buttons SHALL be visually prominent and consistent.
+75. Cards SHALL have a clean, professional appearance.  
+76. Headers SHALL be clearly distinguished with appropriate typography and color.  
+77. Section headers (e.g., Attractions, Hotels) SHALL have visual separators.  
+78. Highlight boxes SHALL use distinct background colors for visibility.  
+79. Navigation buttons SHALL be visually prominent and consistent.
 
 ## **5.2 Spacing and Layout**
 
-70. Vertical whitespace SHALL be minimized while maintaining readability.  
-71. Card content SHALL be appropriately padded from card edges.  
-72. Line height SHALL be optimized for readability (1.4-1.6).  
-73. Cards SHALL be centered horizontally on all screen sizes.
+80. Vertical whitespace SHALL be minimized while maintaining readability.  
+81. Card content SHALL be appropriately padded from card edges.  
+82. Line height SHALL be optimized for readability (1.4-1.6).  
+83. Cards SHALL be centered horizontally on all screen sizes.
 
 ## **5.3 UI Elements to Hide/Suppress**
 
-74. The default generator sidebar (save/restart) SHALL be hidden via CSS.  
-75. Unnecessary generator UI elements SHALL be suppressed.  
-76. The output SHALL appear as a clean, custom web application.
+84. The default generator sidebar (save/restart) SHALL be hidden via CSS.  
+85. Unnecessary generator UI elements SHALL be suppressed.  
+86. The output SHALL appear as a clean, custom web application.
 
 # **6\. Asset Management Requirements**
 
-77. Deck-specific assets SHALL be stored in an assets/ folder within each deck.  
-78. Images SHALL be referenced using relative paths.  
-79. Assets SHALL be copied to output directory during build.  
-80. External image URLs (e.g., Wikimedia Commons) MAY be used but limit offline functionality.  
-81. CSS files SHALL be stored in assets/styles.css and additional assets/\*.css per deck.  
-82. JavaScript files SHALL be stored in assets/scripts.js per deck.
+87. Deck-specific assets SHALL be stored in an assets/ folder within each deck.  
+88. Images SHALL be referenced using relative paths.  
+89. Assets SHALL be copied to output directory during build.  
+90. External image URLs (e.g., Wikimedia Commons) MAY be used but limit offline functionality.  
+91. CSS files SHALL be stored in assets/styles.css and additional assets/\*.css per deck.  
+92. JavaScript files SHALL be stored in assets/scripts.js per deck.
 
 # **7\. Constraints and Assumptions**
 
