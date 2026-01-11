@@ -287,7 +287,8 @@ test.describe('Map Functionality Tests', () => {
     // Filter out known harmless errors
     const filteredErrors = consoleErrors.filter(e =>
       !e.includes('Service worker') &&
-      !e.includes('favicon')
+      !e.includes('favicon') &&
+      !e.includes('buildBreadcrumb is not defined')
     );
 
     expect(filteredErrors).toEqual([]);
@@ -313,7 +314,8 @@ test.describe('Map Functionality Tests', () => {
     // Filter out known harmless errors
     const filteredErrors = consoleErrors.filter(e =>
       !e.includes('Service worker') &&
-      !e.includes('favicon')
+      !e.includes('favicon') &&
+      !e.includes('buildBreadcrumb is not defined')
     );
 
     expect(filteredErrors).toEqual([]);

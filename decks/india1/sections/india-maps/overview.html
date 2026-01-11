@@ -227,10 +227,21 @@
     createControls('controls1', map1, markers1);
     createControls('controls2', map2, markers2);
 
-    buildBreadcrumb('page-nav', [
-      { href: '../../../index.html', label: 'India1 Home' },
-      { href: '../../../../index.html', label: 'All decks' }
-    ]);
+    // Ensure buildBreadcrumb is available before calling
+    if (typeof buildBreadcrumb === 'function') {
+      buildBreadcrumb('page-nav', [
+        { href: '../../../index.html', label: 'India1 Home' },
+        { href: '../../../../index.html', label: 'All decks' }
+      ]);
+    } else {
+      // Wait for script to load
+      document.addEventListener('DOMContentLoaded', () => {
+        buildBreadcrumb('page-nav', [
+          { href: '../../../index.html', label: 'India1 Home' },
+          { href: '../../../../index.html', label: 'All decks' }
+        ]);
+      });
+    }
   </script>
 </body>
 </html>
