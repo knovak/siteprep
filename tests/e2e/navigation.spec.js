@@ -49,6 +49,9 @@ test.describe('Navigation Tests', () => {
       await cardLink.click();
       await page.waitForLoadState('networkidle');
 
+      // Wait for deferred navigation script to render breadcrumb
+      await page.waitForSelector('.nav a', { timeout: 5000 }).catch(() => {});
+
       // Look for TOC/back link
       const tocLink = page.locator('a[href*="index.html"], a:has-text("Table of Contents"), a:has-text("TOC"), a:has-text("Back")').first();
 

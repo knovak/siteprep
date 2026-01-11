@@ -93,7 +93,7 @@ cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
 <body>
   <header class="card">
     <div class="card-header">
-      <a href="index.html" class="tag">Root Index</a>
+      <p class="tag">Root Index</p>
       <h1>SitePrep Decks</h1>
     </div>
     <div class="card-content">
