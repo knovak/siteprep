@@ -9,6 +9,31 @@ BRANCH_NAME="${BRANCH_NAME:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || ech
 PR_NUMBER="${PR_NUMBER:-}"
 VERSION_NAME="${VERSION_NAME:-$BRANCH_NAME}"
 
+# Function to read deck metadata from deck.json
+get_deck_metadata() {
+  local deck_dir="$1"
+  local deck_name="$2"
+  local field="$3"
+
+  local json_file="$deck_dir/deck.json"
+
+  # If deck.json doesn't exist, return deck name as default
+  if [ ! -f "$json_file" ]; then
+    echo "$deck_name"
+    return
+  fi
+
+  # Try to extract field from JSON using grep/sed (avoiding jq dependency)
+  local value=$(grep -o "\"$field\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" "$json_file" 2>/dev/null | sed 's/.*:.*"\(.*\)".*/\1/')
+
+  # If field not found or empty, return deck name as default
+  if [ -z "$value" ]; then
+    echo "$deck_name"
+  else
+    echo "$value"
+  fi
+}
+
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
@@ -23,16 +48,36 @@ if [ -d "$ROOT_DIR/pwa" ]; then
   cp -r "$ROOT_DIR/pwa" "$OUTPUT_DIR/pwa"
 fi
 
-# Generate a simple root index linking all decks
-mapfile -t DECKS < <(find "$ROOT_DIR/decks" -maxdepth 1 -mindepth 1 -type d -print | sort | while read -r path; do basename "$path"; done)
+# Discover decks and build metadata arrays
+declare -A DECK_TITLES
+declare -A DECK_SORT_ORDERS
+declare -A DECK_DESCRIPTIONS
 
-if [ "${#DECKS[@]}" -eq 0 ]; then
+mapfile -t DECK_NAMES < <(find "$ROOT_DIR/decks" -maxdepth 1 -mindepth 1 -type d -print | while read -r path; do basename "$path"; done)
+
+if [ "${#DECK_NAMES[@]}" -eq 0 ]; then
   echo "No decks found in $ROOT_DIR/decks"
   exit 1
 fi
 
-DEFAULT_STYLE="./decks/${DECKS[0]}/assets/styles.css"
-DEFAULT_SCRIPT="./decks/${DECKS[0]}/assets/scripts.js"
+# Read metadata for each deck
+for deck_name in "${DECK_NAMES[@]}"; do
+  deck_dir="$ROOT_DIR/decks/$deck_name"
+  DECK_TITLES[$deck_name]=$(get_deck_metadata "$deck_dir" "$deck_name" "title")
+  DECK_SORT_ORDERS[$deck_name]=$(get_deck_metadata "$deck_dir" "$deck_name" "sort_order")
+  DECK_DESCRIPTIONS[$deck_name]=$(get_deck_metadata "$deck_dir" "$deck_name" "description")
+done
+
+# Sort decks by sort_order
+mapfile -t SORTED_DECKS < <(
+  for deck_name in "${DECK_NAMES[@]}"; do
+    echo "${DECK_SORT_ORDERS[$deck_name]}|$deck_name"
+  done | sort | cut -d'|' -f2
+)
+
+# Use first sorted deck for default styles
+DEFAULT_STYLE="./decks/${SORTED_DECKS[0]}/assets/styles.css"
+DEFAULT_SCRIPT="./decks/${SORTED_DECKS[0]}/assets/scripts.js"
 
 cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
 <!DOCTYPE html>
@@ -65,11 +110,14 @@ cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
       <ul class="toc-grid">
 EOF_HTML
 
-for deck in "${DECKS[@]}"; do
+for deck in "${SORTED_DECKS[@]}"; do
+  title="${DECK_TITLES[$deck]}"
+  description="${DECK_DESCRIPTIONS[$deck]}"
+
   cat >> "$OUTPUT_DIR/index.html" <<EOF_HTML
         <li class="toc-item">
-          <h3>${deck}</h3>
-          <p>Generated from source in decks/${deck}/</p>
+          <h3>${title}</h3>
+          <p>${description}</p>
           <a href="./decks/${deck}/index.html">Open deck</a>
         </li>
 EOF_HTML
