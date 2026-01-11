@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delhi and Excursions Deck | Overview</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Deck</p>
+      <h1>Delhi and Excursions</h1>
+    </div>
+    <div class="card-content">
+      <p>Delhi essentials, tiger excursion planning, and Amritsar highlights with February climate notes.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Total sections:</strong> 3</div>
+        <div class="meta-box"><strong>Style:</strong> Mobile-first cards with quick navigation</div>
+        <div class="meta-box"><strong>Last updated:</strong> <time datetime="2024-01-01">January 2024</time></div>
+      </div>
+      <div id="deck-nav"></div>
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <h3>Delhi</h3>
+          <p>Capital-region snapshot with winter weather.</p>
+          <a href="./sections/delhi/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Tiger excursions</h3>
+          <p>Wildlife comparisons and February travel conditions for top parks.</p>
+          <a href="./sections/tiger-excursions/overview.html">Open overview</a>
+        </li>
+        <li class="toc-item">
+          <h3>Amritsar</h3>
+          <p>City highlights, Golden Temple details, and February climate.</p>
+          <a href="./sections/amritsar/overview.html">Open overview</a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'Delhi & Excursions Home' }
+    ]);
+  </script>
+  <footer style="text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.9rem;"><p>Version: <strong>HEAD</strong></p><p><a href="../../index-versions.html" style="color: #0066cc;">View all versions</a></p></footer>
+</body>
+</html>
