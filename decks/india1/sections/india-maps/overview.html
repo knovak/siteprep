@@ -95,6 +95,16 @@
   </div>
 
   <article class="card">
+    <div class="card-header">
+      <h2>Google Maps links</h2>
+    </div>
+    <div class="card-content">
+      <p>Use these links to open each marked location directly in Google Maps.</p>
+      <ul id="maps-links"></ul>
+    </div>
+  </article>
+
+  <article class="card">
     <div class="card-content">
       <div id="page-nav"></div>
     </div>
@@ -226,6 +236,16 @@
 
     createControls('controls1', map1, markers1);
     createControls('controls2', map2, markers2);
+
+    const mapsLinks = document.getElementById('maps-links');
+    locations.forEach((loc) => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name)}`;
+      link.textContent = loc.name;
+      li.appendChild(link);
+      mapsLinks.appendChild(li);
+    });
 
     // Ensure buildBreadcrumb is available before calling
     if (typeof buildBreadcrumb === 'function') {
