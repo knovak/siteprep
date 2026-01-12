@@ -127,7 +127,12 @@ Styles are applied in the following order (later overrides earlier):
 | .nav-link | Styled navigation button/link |
 | \#ui-bar | Generator sidebar (hidden via CSS) |
 
-## **4.3 Responsive Design Breakpoints**
+## **4.3 Navigation Patterns**
+
+* Footer navigation appears at the bottom of each page, showing links in the following order: **Version: main | Deck | Section | Google Drive | View all versions**. The Deck and Section links appear only when the page belongs to a deck or section, and separators are visual pipes between links.  
+* Section links in deck tables of contents are a single clickable card: wrap the heading and description inside the anchor (`.toc-link`) so the entire rectangle is clickable, and avoid standalone "Open overview" link text.  
+
+## **4.4 Responsive Design Breakpoints**
 
 * Mobile: max-width: 600px \- Single column, reduced padding, stacked navigation  
 * Tablet: max-width: 900px \- Adjusted grid columns, moderate padding  
