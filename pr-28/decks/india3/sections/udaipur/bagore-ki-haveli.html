@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bagore-ki-Haveli | Udaipur | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Bagore-ki-Haveli</h1>
+      <p class="subtitle"><a href="./overview.html">Udaipur</a></p>
+    </div>
+    <div class="card-content">
+      <p>Bagore-ki-Haveli is an 18th-century mansion on Gangaur Ghat that now houses a museum and hosts nightly folk dance performances.</p>
+      <h2>History & context</h2>
+      <p>Built for a Mewar noble, the haveli showcases period rooms, costumes, and household artifacts, preserving the architectural character of Udaipur's lakefront havelis.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Museum typically 10:00 AM–5:30 PM; evening Dharohar folk show usually around 7:00 PM.</li>
+        <li><strong>Address:</strong> Gangaur Ghat Marg, near Lake Pichola, Udaipur, Rajasthan 313001.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Gangaur%20Ghat%20Marg%2C%20near%20Lake%20Pichola%2C%20Udaipur%2C%20Rajasthan%20313001">Google Map</a></li>
+        <li><strong>Distance from Udaipur city center:</strong> Around 1 km from the old city core and City Palace.</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>Compact museum with authentic rooms and artifacts.</li>
+        <li>Evening dance show highlights multiple folk styles.</li>
+        <li>Great lakefront location for photos.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Photography fees can be high.</li>
+        <li>Show tickets sell out in peak season.</li>
+        <li>Narrow staircases inside the haveli.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Udaipur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: HEAD' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>

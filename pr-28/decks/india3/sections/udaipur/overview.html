@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Udaipur | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Udaipur</h1>
+    </div>
+    <div class="card-content">
+      <p>Known as the City of Lakes, Udaipur is framed by the Aravalli hills and dotted with ornate palaces and havelis along Lake Pichola. It is a quieter Rajasthan escape with strong craft traditions.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Population:</strong> ~0.6 million (city)</div>
+        <div class="meta-box"><strong>Typical January weather:</strong> 8–23°C, crisp mornings</div>
+        <div class="meta-box"><strong>Typical February weather:</strong> 11–26°C, clear skies and comfortable afternoons</div>
+      </div>
+      <h2>Fast facts</h2>
+      <ul>
+        <li><strong>Highlights:</strong> City Palace, Jag Mandir boat rides, Bagore Ki Haveli, and monsoon views from Sajjangarh Fort.</li>
+        <li><strong>Markets:</strong> Handicrafts, miniature paintings, and silverwork around Hathi Pol and Bada Bazaar.</li>
+        <li><strong>Transit:</strong> Maharana Pratap Airport (UDR) is ~22 km east; taxis and autos cover most local trips.</li>
+        <li><strong>Best times:</strong> Winter months for lake views and rooftop dining without heat haze.</li>
+      </ul>
+      <h2>Attraction pages</h2>
+      <h3>Udaipur highlights</h3>
+      <ul>
+        <li><a href="./city-palace-museum.html">City Palace & City Palace Museum</a></li>
+        <li><a href="./lake-pichola.html">Lake Pichola</a></li>
+        <li><a href="./lake-pichola-boat-ride.html">Lake Pichola boat ride</a></li>
+        <li><a href="./jag-mandir.html">Jag Mandir (island palace)</a></li>
+        <li><a href="./jagdish-temple.html">Jagdish Temple</a></li>
+        <li><a href="./saheliyon-ki-bari.html">Saheliyon Ki Bari (Garden of the Maidens)</a></li>
+        <li><a href="./sajjangarh-monsoon-palace.html">Sajjangarh / Monsoon Palace</a></li>
+        <li><a href="./jal-sanjhi.html">Jal Sanjhi (Radha Vallabh Temple ritual)</a></li>
+        <li><a href="./bagore-ki-haveli.html">Bagore-ki-Haveli (folk dance venue)</a></li>
+        <li><a href="./folk-dance-show.html">Rajasthani folk dance show (general)</a></li>
+      </ul>
+      <h3>Hikes</h3>
+      <ul>
+        <li><a href="https://www.alltrails.com/trail/india/rajasthan/shri-manshapurna-karni-mata-temple-trail">Shri Manshapurna Karni Mata Temple Trail</a></li>
+        <li><a href="https://www.alltrails.com/trail/india/rajasthan/fateh-sagar-lake-cycling">Fateh Sagar Lake Cycling / Walk</a></li>
+        <li><a href="https://www.alltrails.com/trail/india/rajasthan/sajjangarh-monsoon-palace-trail">Sajjangarh – Monsoon Palace Trail</a></li>
+        <li><a href="https://www.alltrails.com/trail/india/rajasthan/neemach-temple-trail">Neemach Temple Trail</a></li>
+        <li><a href="https://www.alltrails.com/india/rajasthan/udaipur/walking">Udaipur City Walks (general list)</a></li>
+      </ul>
+      <h3>Excursions & nearby regions</h3>
+      <ul>
+        <li><a href="./kumbhalgarh-fort.html">Kumbhalgarh Fort (UNESCO hill fort)</a></li>
+        <li><a href="./chittorgarh-fort.html">Chittorgarh Fort (UNESCO)</a></li>
+        <li><a href="./jawai-leopard-safari.html">Jawai leopard safari / wildlife viewing</a></li>
+        <li><a href="./gogunda-fort-palace.html">Gogunda Fort Palace (heritage experience)</a></li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: HEAD' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
