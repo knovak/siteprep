@@ -52,8 +52,8 @@ test.describe('Navigation Tests', () => {
       // Wait for deferred navigation script to render breadcrumb
       await page.waitForSelector('.nav a', { timeout: 5000 }).catch(() => {});
 
-      // Look for TOC/back link
-      const tocLink = page.locator('a[href*="index.html"], a:has-text("Table of Contents"), a:has-text("TOC"), a:has-text("Back")').first();
+      // Look for TOC/back link within the breadcrumb navigation (not footer)
+      const tocLink = page.locator('.nav a[href*="index.html"]').first();
 
       if (await tocLink.count() > 0) {
         await tocLink.click();
