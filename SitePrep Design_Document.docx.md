@@ -125,6 +125,14 @@ Styles are applied in the following order (later overrides earlier):
 | .location-section | Collapsible location details container |
 | .navigation | Footer navigation links section |
 | .nav-link | Styled navigation button/link |
+| .photo-gallery | Grid container for gallery items displaying attraction photos |
+| .gallery-item | Individual photo item with image and caption |
+| .gallery-caption | Text caption overlay on gallery images |
+| .lightbox | Full-screen modal overlay for expanded photo viewing |
+| .lightbox-image | Large image displayed in lightbox view |
+| .lightbox-caption | Caption text shown below lightbox image |
+| .lightbox-nav | Navigation buttons (prev/next) in lightbox |
+| .lightbox-close | Close button for exiting lightbox view |
 | \#ui-bar | Generator sidebar (hidden via CSS) |
 
 ## **4.3 Navigation Patterns**
@@ -146,8 +154,99 @@ Styles are applied in the following order (later overrides earlier):
 | :---- | :---- |
 | toggleLocation(id) | Expands/collapses location detail sections; updates toggle icon |
 | makeHamburger() | Generates the hamburger icon menu for the deck |
+| initPhotoGallery(galleryId) | Initializes a photo gallery with lightbox functionality; handles click events, keyboard navigation, and image carousel |
 
-## **5.2 Service Worker Strategy**
+## **5.2 Photo Gallery Component**
+
+The photo gallery component provides a reusable way to display collections of images with captions and lightbox viewing functionality. It is designed to be used across multiple pages and decks.
+
+### **5.2.1 Purpose**
+
+The photo gallery serves to:
+* Display visual previews of attractions, locations, or features mentioned in the content
+* Provide users with a quick visual overview of key highlights
+* Enable full-screen viewing of images through a lightbox interface
+* Support keyboard and touch navigation for accessibility
+* Maintain unique identifiers for each image to facilitate future editing
+
+### **5.2.2 HTML Structure**
+
+```html
+<div id="gallery-id" class="photo-gallery">
+  <div class="gallery-item">
+    <img src="[image-url]" alt="[description] ~[unique-number]">
+    <div class="gallery-caption">[description] ~[unique-number]</div>
+  </div>
+  <!-- Additional gallery items -->
+</div>
+
+<script>
+  initPhotoGallery('gallery-id');
+</script>
+```
+
+### **5.2.3 Image Source Guidelines**
+
+* Images should be sourced from Unsplash.com or other royalty-free image providers
+* Use Unsplash URLs in the format: `https://images.unsplash.com/photo-{ID}?w=800&q=80`
+* Images are displayed at 800px width with 80% quality for optimal performance
+* Each gallery item should include both an `alt` attribute and a visible caption with identical text
+
+### **5.2.4 Caption Format and Unique Identifiers**
+
+Each image caption must follow this format:
+* Descriptive text explaining what the image shows
+* Followed by a space and tilde (~)
+* Followed by a unique 4-digit number between 1000-9999
+
+Example: `"Sheikh Zayed Grand Mosque exterior view showcasing its magnificent white marble architecture and domes ~3847"`
+
+**Purpose of unique identifiers:**
+* Enables programmatic identification of specific images for future edits
+* Facilitates bulk updates or replacements without manual searching
+* Supports content management workflows and automation scripts
+* The number can be randomly generated or derived from a hash of the image URL
+
+### **5.2.5 Lightbox Features**
+
+The lightbox provides:
+* Full-screen image viewing with dark overlay background
+* Previous/Next navigation buttons for browsing through gallery
+* Close button in top-right corner
+* Keyboard shortcuts:
+  * `Escape` - Close lightbox
+  * `Arrow Left` - Previous image
+  * `Arrow Right` - Next image
+* Click outside image to close
+* Automatic body scroll-lock when lightbox is active
+
+### **5.2.6 Responsive Behavior**
+
+* Desktop: 3-column grid layout (auto-fit with 280px minimum)
+* Tablet: 2-column grid layout
+* Mobile: Single-column layout with reduced image height
+* Gallery items use hover effects on desktop with transform and shadow transitions
+* Touch-friendly click targets for mobile devices
+* Lightbox navigation buttons adjust size and position for mobile screens
+
+### **5.2.7 Accessibility**
+
+* Gallery items are keyboard navigable with `tabindex="0"`
+* Gallery items have `role="button"` for screen reader compatibility
+* Lightbox controls include `aria-label` attributes
+* Images include descriptive alt text
+* Keyboard navigation fully supported in lightbox view
+
+### **5.2.8 Reusability**
+
+The gallery component is fully reusable across different pages and decks:
+* CSS classes are globally available in deck stylesheets
+* JavaScript function is globally available in deck scripts
+* Multiple galleries can exist on the same page with unique IDs
+* No hardcoded dependencies on specific content or structure
+* Can be initialized with a single function call: `initPhotoGallery('gallery-id')`
+
+## **5.3 Service Worker Strategy**
 
 The service worker implements a cache-first strategy:
 

@@ -70,49 +70,88 @@ The system encompasses the following functional areas:
 
 ## **2.3 Interactive Elements**
 
-21. Collapsible sections SHALL toggle open/closed on user click/tap.  
-22. Collapsible sections SHALL display a visual indicator of their state (e.g., \+/- icon).  
-23. External map links SHALL open in a new browser tab.  
+21. Collapsible sections SHALL toggle open/closed on user click/tap.
+22. Collapsible sections SHALL display a visual indicator of their state (e.g., \+/- icon).
+23. External map links SHALL open in a new browser tab.
 24. Interactive elements SHALL provide visual feedback on hover/focus states.
 
-## **2.4 Shared Content**
+## **2.4 Photo Gallery**
 
-25. The system SHALL support shared passages that can be included in multiple cards.  
-26. The system SHALL support shared stylesheets across multiple decks.  
-27. The system SHALL support shared JavaScript functions/widgets across decks.  
-28. Deck-specific styles SHALL be able to override shared styles.
+### **2.4.1 Gallery Display**
+
+25. Cards MAY include a photo gallery section to display images of attractions, locations, or features.
+26. Photo galleries SHALL display images in a responsive grid layout.
+27. Gallery images SHALL include visible captions describing the image content.
+28. Gallery images SHALL be clickable to open a full-screen lightbox view.
+29. Gallery items SHALL provide hover effects on desktop devices (transform and shadow).
+
+### **2.4.2 Image Metadata**
+
+30. Each gallery image SHALL include an alt-text attribute for accessibility.
+31. Each image caption SHALL include a unique identifier in the format ~NNNN where NNNN is a number between 1000-9999.
+32. The unique identifier SHALL be present in both the alt-text and visible caption.
+33. The unique identifier SHALL be used to facilitate programmatic editing and content management.
+
+### **2.4.3 Lightbox Functionality**
+
+34. Clicking a gallery image SHALL open a full-screen lightbox overlay.
+35. The lightbox SHALL display the selected image at maximum viewable size.
+36. The lightbox SHALL display the image caption below the image.
+37. The lightbox SHALL include Previous and Next navigation buttons.
+38. The lightbox SHALL include a Close button in the top-right corner.
+39. Clicking outside the image in the lightbox SHALL close the lightbox.
+40. The lightbox SHALL support keyboard navigation:
+    * Escape key closes the lightbox
+    * Left arrow shows the previous image
+    * Right arrow shows the next image
+41. Opening the lightbox SHALL prevent body scrolling.
+42. Closing the lightbox SHALL restore body scrolling.
+
+### **2.4.4 Reusability**
+
+43. The photo gallery component SHALL be reusable across multiple pages and decks.
+44. Multiple galleries MAY exist on the same page with unique identifiers.
+45. The gallery SHALL be implemented using shared CSS classes and JavaScript functions.
+46. Gallery initialization SHALL require a single function call with the gallery container ID.
+
+## **2.5 Shared Content**
+
+47. The system SHALL support shared passages that can be included in multiple cards.
+48. The system SHALL support shared stylesheets across multiple decks.
+49. The system SHALL support shared JavaScript functions/widgets across decks.
+50. Deck-specific styles SHALL be able to override shared styles.
 
 # **3\. Non-Functional Requirements**
 
 ## **3.1 Mobile Responsiveness**
 
-29. The output website SHALL be fully functional on mobile devices (iOS Safari, Chrome).  
-30. Cards SHALL be centered and readable on all screen sizes.  
-31. Touch targets (buttons, links) SHALL be at least 44x44 pixels.  
-32. Text SHALL be readable without zooming (minimum 16px base font).  
-33. The layout SHALL adapt gracefully between portrait and landscape orientations.
+51. The output website SHALL be fully functional on mobile devices (iOS Safari, Chrome).
+52. Cards SHALL be centered and readable on all screen sizes.
+53. Touch targets (buttons, links) SHALL be at least 44x44 pixels.
+54. Text SHALL be readable without zooming (minimum 16px base font).
+55. The layout SHALL adapt gracefully between portrait and landscape orientations.
 
 ## **3.2 Offline Capability (PWA)**
 
-34. The system SHALL implement a service worker for offline caching.  
-35. After initial online visit, users SHALL be able to access the deck offline.  
-36. The system SHALL provide a web app manifest for home screen installation.  
-37. App icons SHALL be provided in required sizes (192x192, 512x512).  
-38. Cache versioning SHALL allow forced updates when content changes.
+56. The system SHALL implement a service worker for offline caching.
+57. After initial online visit, users SHALL be able to access the deck offline.
+58. The system SHALL provide a web app manifest for home screen installation.
+59. App icons SHALL be provided in required sizes (192x192, 512x512).
+60. Cache versioning SHALL allow forced updates when content changes.
 
 ## **3.3 Performance**
 
-39. Initial page load SHALL complete within 3 seconds on 3G network.  
-40. Navigation between cards SHALL be instantaneous (\<100ms).  
-41. Generated HTML files SHALL be optimized for size.  
-42. Images SHALL be appropriately sized and optimized.
+61. Initial page load SHALL complete within 3 seconds on 3G network.
+62. Navigation between cards SHALL be instantaneous (\<100ms).
+63. Generated HTML files SHALL be optimized for size.
+64. Images SHALL be appropriately sized and optimized.
 
 ## **3.4 Accessibility**
 
-43. The output SHALL use semantic HTML elements appropriately.  
-44. Color contrast SHALL meet WCAG AA standards.  
-45. Interactive elements SHALL be keyboard accessible.  
-46. Images SHALL have alt text attributes.
+65. The output SHALL use semantic HTML elements appropriately.
+66. Color contrast SHALL meet WCAG AA standards.
+67. Interactive elements SHALL be keyboard accessible.
+68. Images SHALL have alt text attributes.
 
 # **4\. GitHub Integration Requirements**
 
