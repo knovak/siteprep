@@ -116,9 +116,10 @@ for deck in "${SORTED_DECKS[@]}"; do
 
   cat >> "$OUTPUT_DIR/index.html" <<EOF_HTML
         <li class="toc-item">
-          <h3>${title}</h3>
-          <p>${description}</p>
-          <a href="./decks/${deck}/index.html">Open deck</a>
+          <a href="./decks/${deck}/index.html" class="toc-link">
+            <h3>${title}</h3>
+            <p>${description}</p>
+          </a>
         </li>
 EOF_HTML
 done
@@ -144,7 +145,7 @@ cat > "$OUTPUT_DIR/index-versions.html" <<EOF_VERSIONS
 <body>
   <header class="card">
     <div class="card-header">
-      <p class="tag">Version Browser</p>
+      <a href="index-versions.html" class="tag">Version Browser</a>
       <h1>SitePrep - All Versions</h1>
     </div>
     <div class="card-content">
@@ -169,15 +170,74 @@ inject_version_footer() {
     rel_path="$rel_path/"
   fi
 
-  # Create footer HTML
-  local footer_html="  <footer style=\"text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.9rem;\">"
-  footer_html="$footer_html<p>Version: <strong>$VERSION_NAME</strong>"
-  if [ -n "$PR_NUMBER" ]; then
-    footer_html="$footer_html (Branch: $BRANCH_NAME)"
+  # Determine page context (root, deck, or section)
+  local file_rel_path="${html_file#$OUTPUT_DIR/}"
+  local page_type="root"
+  local deck_path=""
+  local section_path=""
+
+  if [[ "$file_rel_path" =~ ^decks/([^/]+)/sections/([^/]+)/ ]]; then
+    page_type="section"
+    deck_path="../../index.html"
+    section_path="overview.html"
+  elif [[ "$file_rel_path" =~ ^decks/([^/]+)/index\.html$ ]]; then
+    page_type="deck"
+    deck_path="index.html"
   fi
-  footer_html="$footer_html</p>"
-  footer_html="$footer_html<p><a href=\"${rel_path}index-versions.html\" style=\"color: #0066cc;\">View all versions</a></p>"
-  footer_html="$footer_html</footer>"
+
+  # Create footer HTML with JavaScript for dynamic rendering
+  local footer_html="  <footer class=\"site-footer\">\n"
+  footer_html="${footer_html}    <script>\n"
+  footer_html="${footer_html}      (function() {\n"
+  footer_html="${footer_html}        var footer = document.currentScript.parentElement;\n"
+  footer_html="${footer_html}        var nav = document.createElement('div');\n"
+  footer_html="${footer_html}        nav.className = 'footer-nav';\n"
+  footer_html="${footer_html}        var links = [];\n"
+  footer_html="${footer_html}        \n"
+  footer_html="${footer_html}        // Version link to home\n"
+  footer_html="${footer_html}        links.push({ href: '${rel_path}index.html', text: 'Version: $VERSION_NAME' });\n"
+  footer_html="${footer_html}        \n"
+
+  # Add deck link if applicable
+  if [ "$page_type" = "deck" ] || [ "$page_type" = "section" ]; then
+    footer_html="${footer_html}        // Deck link\n"
+    footer_html="${footer_html}        links.push({ href: '${deck_path}', text: 'Deck' });\n"
+    footer_html="${footer_html}        \n"
+  fi
+
+  # Add section link if applicable
+  if [ "$page_type" = "section" ]; then
+    footer_html="${footer_html}        // Section link\n"
+    footer_html="${footer_html}        links.push({ href: '${section_path}', text: 'Section' });\n"
+    footer_html="${footer_html}        \n"
+  fi
+
+  # Add Google Drive and View all versions links
+  footer_html="${footer_html}        // Google Drive link\n"
+  footer_html="${footer_html}        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });\n"
+  footer_html="${footer_html}        \n"
+  footer_html="${footer_html}        // View all versions link\n"
+  footer_html="${footer_html}        links.push({ href: '${rel_path}index-versions.html', text: 'View all versions' });\n"
+  footer_html="${footer_html}        \n"
+  footer_html="${footer_html}        // Build the navigation\n"
+  footer_html="${footer_html}        links.forEach(function(link, index) {\n"
+  footer_html="${footer_html}          if (index > 0) {\n"
+  footer_html="${footer_html}            var sep = document.createElement('span');\n"
+  footer_html="${footer_html}            sep.className = 'footer-separator';\n"
+  footer_html="${footer_html}            sep.textContent = '|';\n"
+  footer_html="${footer_html}            nav.appendChild(sep);\n"
+  footer_html="${footer_html}          }\n"
+  footer_html="${footer_html}          var a = document.createElement('a');\n"
+  footer_html="${footer_html}          a.href = link.href;\n"
+  footer_html="${footer_html}          a.textContent = link.text;\n"
+  footer_html="${footer_html}          if (link.external) a.target = '_blank';\n"
+  footer_html="${footer_html}          nav.appendChild(a);\n"
+  footer_html="${footer_html}        });\n"
+  footer_html="${footer_html}        \n"
+  footer_html="${footer_html}        footer.appendChild(nav);\n"
+  footer_html="${footer_html}      })();\n"
+  footer_html="${footer_html}    </script>\n"
+  footer_html="${footer_html}  </footer>"
 
   # Insert footer before closing body tag
   if grep -q "</body>" "$html_file"; then
