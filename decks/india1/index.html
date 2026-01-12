@@ -11,7 +11,7 @@
 <body>
   <header class="card">
     <div class="card-header">
-      <p class="tag">Deck</p>
+      <a href="index.html" class="tag">Deck</a>
       <h1>Bangalore and General India</h1>
     </div>
     <div class="card-content">
@@ -33,19 +33,22 @@
     <div class="card-content">
       <ul class="toc-grid">
         <li class="toc-item">
-          <h3>India National Park History</h3>
-          <p>Overview of India's national parks, conservation policy, and the evolution from protection to tourism.</p>
-          <a href="./sections/background/national-park-history.html">Open overview</a>
+          <a href="./sections/background/national-park-history.html" class="toc-link">
+            <h3>India National Park History</h3>
+            <p>Overview of India's national parks, conservation policy, and the evolution from protection to tourism.</p>
+          </a>
         </li>
         <li class="toc-item">
-          <h3>Art of Living Ashram</h3>
-          <p>History and essentials of the international center near Bengaluru.</p>
-          <a href="./sections/art-of-living-ashram/overview.html">Open overview</a>
+          <a href="./sections/art-of-living-ashram/overview.html" class="toc-link">
+            <h3>Art of Living Ashram</h3>
+            <p>History and essentials of the international center near Bengaluru.</p>
+          </a>
         </li>
         <li class="toc-item">
-          <h3>Bangalore</h3>
-          <p>Fast facts about Bengaluru, Karnataka.</p>
-          <a href="./sections/bangalore/overview.html">Open overview</a>
+          <a href="./sections/bangalore/overview.html" class="toc-link">
+            <h3>Bangalore</h3>
+            <p>Fast facts about Bengaluru, Karnataka.</p>
+          </a>
         </li>
       </ul>
     </div>
@@ -57,6 +60,44 @@
       { href: './index.html', label: 'Bangalore & General India Home' }
     ]);
   </script>
-  <footer style="text-align: center; padding: 2rem 1rem; margin-top: 2rem; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.9rem;"><p>Version: <strong>main</strong></p><p><a href="../../index-versions.html" style="color: #0066cc;">View all versions</a></p></footer>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../index.html', text: 'Version: main' });
+        
+        // Deck link
+        links.push({ href: 'index.html', text: 'Deck' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
 </body>
 </html>
