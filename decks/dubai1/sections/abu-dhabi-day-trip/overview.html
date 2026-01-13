@@ -37,6 +37,18 @@
         <li><strong>Dates market:</strong> Tasting stop focused on souvenirs and local sweets.</li>
         <li><strong>Ferrari World & Yas Island:</strong> Photo stop near Yas Mall; theme park entry is separate.</li>
       </ul>
+      <h2>Photo Gallery</h2>
+      <p>Explore the key attractions you'll visit on your Abu Dhabi day trip:</p>
+      <div id="abu-dhabi-gallery" class="photo-gallery carousel">
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=800&q=80" alt="Sheikh Zayed Grand Mosque exterior view showcasing its magnificent white marble architecture and domes ~3847">
+          <div class="gallery-caption">Sheikh Zayed Grand Mosque exterior view showcasing its magnificent white marble architecture and domes ~3847</div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://i0.wp.com/archeyes.com/wp-content/uploads/2024/09/2.-Louvre-Abu-Dhabi-Exterior-view-%C2%A9-Photography-Roland-Halbe-Louvre-Abu-Dhabi-Architecte-Jean-Nouvel.jpg?resize=850%2C638&ssl=1" alt="Abu Dhabi Louvre ~5129">
+          <div class="gallery-caption">Abu Dhabi Louvre ~5129</div>
+        </div>
+      </div>
       <h2>Tour Options</h2>
       <p>These options prioritize the <strong>Sheikh Zayed Grand Mosque</strong> and the <strong>Louvre Abu Dhabi</strong> with minimal time spent on shopping or markets. Most include hotel pickup/drop-off, air-conditioned transport, and entrance tickets or guided visits to both major sites.</p>
       <ul>
@@ -80,10 +92,23 @@
     </div>
   </footer>
   <script>
-    buildBreadcrumb('page-nav', [
-      { href: '../../../index.html', label: 'Dubai Home' },
-      { href: '../../../../index.html', label: 'All decks' }
-    ]);
+    // Wait for deferred scripts to load
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing components...');
+
+      buildBreadcrumb('page-nav', [
+        { href: '../../../index.html', label: 'Dubai Home' },
+        { href: '../../../../index.html', label: 'All decks' }
+      ]);
+
+      // Initialize photo gallery
+      console.log('Checking for initPhotoGallery function...', typeof initPhotoGallery);
+      if (typeof initPhotoGallery === 'function') {
+        initPhotoGallery('abu-dhabi-gallery');
+      } else {
+        console.error('initPhotoGallery function not found!');
+      }
+    });
   </script>
   <footer class="site-footer">
     <script>
