@@ -45,11 +45,19 @@ function buildBreadcrumb(containerId, links) {
  */
 function initPhotoGallery(galleryId, options = {}) {
   const gallery = document.getElementById(galleryId);
-  if (!gallery) return;
+  if (!gallery) {
+    console.warn('Photo gallery not found:', galleryId);
+    return;
+  }
 
   const isCarousel = options.mode === 'carousel' || gallery.classList.contains('carousel');
   const galleryItems = Array.from(gallery.querySelectorAll('.gallery-item'));
-  if (galleryItems.length === 0) return;
+  if (galleryItems.length === 0) {
+    console.warn('No gallery items found in:', galleryId);
+    return;
+  }
+
+  console.log('Initializing gallery:', galleryId, 'Carousel mode:', isCarousel, 'Items:', galleryItems.length);
 
   // Initialize carousel mode if specified
   if (isCarousel) {
@@ -152,16 +160,19 @@ function initPhotoGallery(galleryId, options = {}) {
  * @param {Array} galleryItems - Array of gallery item elements
  */
 function initCarousel(gallery, galleryItems) {
+  console.log('Initializing carousel with', galleryItems.length, 'items');
   let currentSlide = 0;
 
   // Show only the first item initially
   galleryItems.forEach((item, index) => {
     item.classList.toggle('active', index === 0);
+    console.log('Item', index, 'active:', index === 0);
   });
 
   // Create controls container
   const controlsDiv = document.createElement('div');
   controlsDiv.className = 'carousel-controls';
+  console.log('Creating carousel controls');
 
   // Previous button
   const prevBtn = document.createElement('button');
