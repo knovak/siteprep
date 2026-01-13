@@ -104,16 +104,23 @@
     </div>
   </footer>
   <script>
-    // Initialize immediately since defer ensures DOM is ready
-    buildBreadcrumb('page-nav', [
-      { href: '../../../index.html', label: 'Dubai Home' },
-      { href: '../../../../index.html', label: 'All decks' }
-    ]);
+    // Wait for deferred scripts to load
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing components...');
 
-    // Initialize photo gallery
-    if (typeof initPhotoGallery === 'function') {
-      initPhotoGallery('abu-dhabi-gallery');
-    }
+      buildBreadcrumb('page-nav', [
+        { href: '../../../index.html', label: 'Dubai Home' },
+        { href: '../../../../index.html', label: 'All decks' }
+      ]);
+
+      // Initialize photo gallery
+      console.log('Checking for initPhotoGallery function...', typeof initPhotoGallery);
+      if (typeof initPhotoGallery === 'function') {
+        initPhotoGallery('abu-dhabi-gallery');
+      } else {
+        console.error('initPhotoGallery function not found!');
+      }
+    });
   </script>
   <footer class="site-footer">
     <script>
