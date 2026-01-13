@@ -13,3 +13,8 @@ node_modules/
 /playwright-report/
 /test-results/
 /playwright/.cache/
+
+# API keys and configuration
+config.js
+.env
+.env.local

@@ -6,7 +6,9 @@
   <title>Abu Dhabi Day Trip | Dubai Deck</title>
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script src="../../../../../config.js"></script>
   <script defer src="../../assets/scripts.js"></script>
+  <script defer src="../../assets/google-places.js"></script>
 </head>
 <body>
   <article class="card">
@@ -39,14 +41,13 @@
       </ul>
       <h2>Photo Gallery</h2>
       <p>Explore the key attractions you'll visit on your Abu Dhabi day trip:</p>
+      <p><small><em>Images powered by Google Places API. To configure your API key and enable high-quality location photos, see <code>GOOGLE_PLACES_SETUP.md</code> in the project root.</em></small></p>
       <div id="abu-dhabi-gallery" class="photo-gallery carousel">
+        <!-- Gallery will be populated by Google Places API -->
         <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=800&q=80" alt="Sheikh Zayed Grand Mosque exterior view showcasing its magnificent white marble architecture and domes ~3847">
-          <div class="gallery-caption">Sheikh Zayed Grand Mosque exterior view showcasing its magnificent white marble architecture and domes ~3847</div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://i0.wp.com/archeyes.com/wp-content/uploads/2024/09/2.-Louvre-Abu-Dhabi-Exterior-view-%C2%A9-Photography-Roland-Halbe-Louvre-Abu-Dhabi-Architecte-Jean-Nouvel.jpg?resize=850%2C638&ssl=1" alt="Abu Dhabi Louvre ~5129">
-          <div class="gallery-caption">Abu Dhabi Louvre ~5129</div>
+          <div style="padding: 2rem; background: #f0f0f0; text-align: center; border-radius: 8px;">
+            <p>Loading images...</p>
+          </div>
         </div>
       </div>
       <h2>Tour Options</h2>
@@ -101,12 +102,12 @@
         { href: '../../../../index.html', label: 'All decks' }
       ]);
 
-      // Initialize photo gallery
-      console.log('Checking for initPhotoGallery function...', typeof initPhotoGallery);
-      if (typeof initPhotoGallery === 'function') {
-        initPhotoGallery('abu-dhabi-gallery');
+      // Load images from Google Places API
+      if (typeof loadGooglePlacesImages === 'function') {
+        console.log('Loading Google Places images...');
+        loadGooglePlacesImages('abu-dhabi-gallery', window.abuDhabiPlaces || []);
       } else {
-        console.error('initPhotoGallery function not found!');
+        console.error('loadGooglePlacesImages function not found!');
       }
     });
   </script>

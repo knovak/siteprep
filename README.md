@@ -34,6 +34,19 @@ Create a `deck.json` file in your deck's root directory (e.g., `/decks/india1/de
 - Or use descriptive strings: `"main"`, `"secondary"`, `"archive"`
 - Without `deck.json`, decks default to alphabetical order by folder name
 
+## Google Places API Integration
+
+Some pages use the Google Places API to display location images. To enable this feature:
+
+1. Get a Google Places API key (free tier available)
+2. Copy `config.example.js` to `config.js`
+3. Add your API key to `config.js`
+4. Use the helper script to get photo references: `./scripts/get-photo-references.sh YOUR_API_KEY PLACE_ID`
+
+For detailed setup instructions, see [GOOGLE_PLACES_SETUP.md](GOOGLE_PLACES_SETUP.md).
+
+**Note:** `config.js` is gitignored to keep your API key secure. Never commit API keys to the repository.
+
 ## Build and preview
 
 ```bash
