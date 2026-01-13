@@ -41,13 +41,20 @@ function buildBreadcrumb(containerId, links) {
 /**
  * Initialize a photo gallery with lightbox functionality
  * @param {string} galleryId - The ID of the gallery container element
+ * @param {object} options - Configuration options (e.g., { mode: 'carousel' })
  */
-function initPhotoGallery(galleryId) {
+function initPhotoGallery(galleryId, options = {}) {
   const gallery = document.getElementById(galleryId);
   if (!gallery) return;
 
+  const isCarousel = options.mode === 'carousel' || gallery.classList.contains('carousel');
   const galleryItems = Array.from(gallery.querySelectorAll('.gallery-item'));
   if (galleryItems.length === 0) return;
+
+  // Initialize carousel mode if specified
+  if (isCarousel) {
+    initCarousel(gallery, galleryItems);
+  }
 
   // Create lightbox element
   const lightbox = document.createElement('div');
@@ -137,4 +144,77 @@ function initPhotoGallery(galleryId) {
         break;
     }
   });
+}
+
+/**
+ * Initialize carousel functionality for a photo gallery
+ * @param {HTMLElement} gallery - The gallery container element
+ * @param {Array} galleryItems - Array of gallery item elements
+ */
+function initCarousel(gallery, galleryItems) {
+  let currentSlide = 0;
+
+  // Show only the first item initially
+  galleryItems.forEach((item, index) => {
+    item.classList.toggle('active', index === 0);
+  });
+
+  // Create controls container
+  const controlsDiv = document.createElement('div');
+  controlsDiv.className = 'carousel-controls';
+
+  // Previous button
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'carousel-btn';
+  prevBtn.innerHTML = '&#8249;';
+  prevBtn.setAttribute('aria-label', 'Previous slide');
+
+  // Indicators container
+  const indicatorsDiv = document.createElement('div');
+  indicatorsDiv.className = 'carousel-indicators';
+
+  // Create indicator dots
+  galleryItems.forEach((_, index) => {
+    const indicator = document.createElement('button');
+    indicator.className = 'carousel-indicator';
+    indicator.classList.toggle('active', index === 0);
+    indicator.setAttribute('aria-label', `Go to slide ${index + 1}`);
+    indicator.addEventListener('click', () => goToSlide(index));
+    indicatorsDiv.appendChild(indicator);
+  });
+
+  // Next button
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'carousel-btn';
+  nextBtn.innerHTML = '&#8250;';
+  nextBtn.setAttribute('aria-label', 'Next slide');
+
+  controlsDiv.appendChild(prevBtn);
+  controlsDiv.appendChild(indicatorsDiv);
+  controlsDiv.appendChild(nextBtn);
+  gallery.appendChild(controlsDiv);
+
+  function goToSlide(index) {
+    galleryItems[currentSlide].classList.remove('active');
+    indicatorsDiv.children[currentSlide].classList.remove('active');
+
+    currentSlide = index;
+
+    galleryItems[currentSlide].classList.add('active');
+    indicatorsDiv.children[currentSlide].classList.add('active');
+  }
+
+  function nextSlide() {
+    goToSlide((currentSlide + 1) % galleryItems.length);
+  }
+
+  function prevSlide() {
+    goToSlide((currentSlide - 1 + galleryItems.length) % galleryItems.length);
+  }
+
+  prevBtn.addEventListener('click', prevSlide);
+  nextBtn.addEventListener('click', nextSlide);
+
+  // Auto-advance (optional, commented out by default)
+  // setInterval(nextSlide, 5000);
 }
