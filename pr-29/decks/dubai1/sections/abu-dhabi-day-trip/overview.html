@@ -104,13 +104,16 @@
     </div>
   </footer>
   <script>
+    // Initialize immediately since defer ensures DOM is ready
     buildBreadcrumb('page-nav', [
       { href: '../../../index.html', label: 'Dubai Home' },
       { href: '../../../../index.html', label: 'All decks' }
     ]);
 
     // Initialize photo gallery
-    initPhotoGallery('abu-dhabi-gallery');
+    if (typeof initPhotoGallery === 'function') {
+      initPhotoGallery('abu-dhabi-gallery');
+    }
   </script>
   <footer class="site-footer">
     <script>
