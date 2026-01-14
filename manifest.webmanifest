@@ -5,5 +5,11 @@
   "display": "standalone",
   "background_color": "#f7f9fc",
   "theme_color": "#1e3a8a",
-  "icons": []
+  "icons": [
+    {
+      "src": "/favicon-dorje.png",
+      "sizes": "18x32",
+      "type": "image/png"
+    }
+  ]
 }
