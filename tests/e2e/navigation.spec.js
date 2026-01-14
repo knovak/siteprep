@@ -10,7 +10,7 @@ test.describe('Navigation Tests', () => {
     await expect(deckLink).toBeVisible();
 
     await deckLink.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should navigate to deck TOC
     expect(page.url()).toContain('decks/india1');
@@ -28,7 +28,7 @@ test.describe('Navigation Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Should navigate to card
       expect(page.url()).toContain('sections/');
@@ -47,7 +47,7 @@ test.describe('Navigation Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Wait longer for deferred navigation script to render breadcrumb (especially on mobile)
       try {
@@ -66,7 +66,7 @@ test.describe('Navigation Tests', () => {
 
         // Click with explicit timeout
         await tocLink.click({ timeout: 10000 });
-        await page.waitForLoadState('networkidle', { timeout: 10000 });
+        await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
 
         // Should return to TOC
         expect(page.url()).toContain('index.html');
@@ -82,7 +82,7 @@ test.describe('Navigation Tests', () => {
 
     if (await firstCard.count() > 0) {
       await firstCard.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const firstUrl = page.url();
 
@@ -91,7 +91,7 @@ test.describe('Navigation Tests', () => {
 
       if (await relatedLink.count() > 0) {
         await relatedLink.click();
-        await page.waitForLoadState('networkidle');
+        await page.waitForLoadState('domcontentloaded');
 
         const secondUrl = page.url();
 
@@ -126,7 +126,7 @@ test.describe('Navigation Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Check external links
       const externalLinks = page.locator('a[href^="http"]');
@@ -159,14 +159,14 @@ test.describe('Navigation Tests', () => {
 
     // Navigate to deck
     await page.click('a[href*="decks/india1"]');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const deckUrl = page.url();
     expect(deckUrl).not.toBe(rootUrl);
 
     // Go back
     await page.goBack();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should be back at root
     expect(page.url()).toBe(rootUrl);
@@ -177,16 +177,16 @@ test.describe('Navigation Tests', () => {
 
     // Navigate forward
     await page.click('a[href*="decks/india1"]');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const deckUrl = page.url();
 
     // Go back
     await page.goBack();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Go forward
     await page.goForward();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should be back at deck
     expect(page.url()).toBe(deckUrl);
@@ -218,7 +218,7 @@ test.describe('Navigation Tests', () => {
     if (cardCount >= 2) {
       // Visit first card
       await cardLinks.nth(0).click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Wait for navigation to be rendered by deferred script
       await page.waitForSelector('.nav a', { timeout: 5000 }).catch(() => {});
@@ -229,7 +229,7 @@ test.describe('Navigation Tests', () => {
 
       // Visit second card
       await page.locator('a[href*="sections/"]').nth(1).click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Wait for navigation to be rendered by deferred script
       await page.waitForSelector('.nav a', { timeout: 5000 }).catch(() => {});
@@ -265,7 +265,7 @@ test.describe('Navigation Tests', () => {
 
     // Press Enter to navigate
     await page.keyboard.press('Enter');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should navigate (URL should change from root)
     const currentUrl = page.url();

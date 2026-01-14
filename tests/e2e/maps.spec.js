@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Map Functionality Tests', () => {
   test('MAP-01: India Maps page loads successfully', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check page title
     await expect(page).toHaveTitle(/India Maps/);
@@ -18,7 +18,7 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-02: UAE Maps page loads successfully', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check page title
     await expect(page).toHaveTitle(/UAE Maps/);
@@ -33,10 +33,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-03: Leaflet library loads correctly on India Maps', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for Leaflet to load
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
 
     // Check that Leaflet is defined
     const leafletDefined = await page.evaluate(() => typeof window.L !== 'undefined');
@@ -45,10 +45,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-04: Leaflet library loads correctly on UAE Maps', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for Leaflet to load
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
 
     // Check that Leaflet is defined
     const leafletDefined = await page.evaluate(() => typeof window.L !== 'undefined');
@@ -57,7 +57,7 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-05: Map containers have proper height on India Maps', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check that map containers have explicit height
     const map1Height = await page.locator('#map1').evaluate(el => {
@@ -82,7 +82,7 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-06: Map containers have proper height on UAE Maps', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check that map containers have explicit height
     const map1Height = await page.locator('#map1').evaluate(el => {
@@ -107,10 +107,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-07: India Maps has correct number of markers', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for maps to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     // Check that markers are created (15 locations)
     const markerCount = await page.evaluate(() => {
@@ -124,10 +124,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-08: UAE Maps has correct number of markers', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for maps to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     // Check that markers are created (9 locations)
     const markerCount = await page.evaluate(() => {
@@ -141,10 +141,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-09: Navigation buttons exist and work on India Maps', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for controls to be created
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
 
     // Check that controls exist
     const controlsDiv = page.locator('#controls1');
@@ -158,7 +158,7 @@ test.describe('Map Functionality Tests', () => {
     // Click on first button
     const firstButton = buttons.first();
     await firstButton.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Map should still be visible after clicking
     const map1 = page.locator('#map1');
@@ -167,10 +167,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-10: Navigation buttons exist and work on UAE Maps', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for controls to be created
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
 
     // Check that controls exist
     const controlsDiv = page.locator('#controls1');
@@ -184,7 +184,7 @@ test.describe('Map Functionality Tests', () => {
     // Click on first button
     const firstButton = buttons.first();
     await firstButton.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Map should still be visible after clicking
     const map1 = page.locator('#map1');
@@ -193,10 +193,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-11: "Show All Locations" button works on India Maps', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for controls to be created
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
 
     // Find "Show All Locations" button
     const showAllButton = page.locator('#controls1 button').last();
@@ -205,7 +205,7 @@ test.describe('Map Functionality Tests', () => {
 
     // Click on "Show All" button
     await showAllButton.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Map should still be visible
     const map1 = page.locator('#map1');
@@ -214,10 +214,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-12: "Show All Locations" button works on UAE Maps', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for controls to be created
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
 
     // Find "Show All Locations" button
     const showAllButton = page.locator('#controls1 button').last();
@@ -226,7 +226,7 @@ test.describe('Map Functionality Tests', () => {
 
     // Click on "Show All" button
     await showAllButton.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Map should still be visible
     const map1 = page.locator('#map1');
@@ -235,15 +235,15 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-13: Markers have popups on India Maps', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for maps to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     // Click on first marker
     const firstMarker = page.locator('#map1 .leaflet-marker-icon').first();
     await firstMarker.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Check that popup is visible
     const popup = page.locator('#map1 .leaflet-popup');
@@ -252,15 +252,15 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-14: Markers have popups on UAE Maps', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for maps to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     // Click on first marker
     const firstMarker = page.locator('#map1 .leaflet-marker-icon').first();
     await firstMarker.click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Check that popup is visible
     const popup = page.locator('#map1 .leaflet-popup');
@@ -281,8 +281,8 @@ test.describe('Map Functionality Tests', () => {
     });
 
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
 
     // Filter out known harmless errors
     const filteredErrors = consoleErrors.filter(e =>
@@ -308,8 +308,8 @@ test.describe('Map Functionality Tests', () => {
     });
 
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(500);
 
     // Filter out known harmless errors
     const filteredErrors = consoleErrors.filter(e =>
@@ -323,10 +323,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-17: Both maps exist on India Maps page', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for maps to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     // Check that both map tiles are loaded
     const map1Tiles = await page.locator('#map1 .leaflet-tile').count();
@@ -338,10 +338,10 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-18: Both maps exist on UAE Maps page', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Wait for maps to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
 
     // Check that both map tiles are loaded
     const map1Tiles = await page.locator('#map1 .leaflet-tile').count();
@@ -353,7 +353,7 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-19: Map sections are accessible from India1 deck index', async ({ page }) => {
     await page.goto('/decks/india1/index.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check that India Maps link exists
     const mapsLink = page.locator('a[href="./sections/india-maps/overview.html"]');
@@ -361,7 +361,7 @@ test.describe('Map Functionality Tests', () => {
 
     // Click on the link
     await mapsLink.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should navigate to India Maps page
     expect(page.url()).toContain('india-maps/overview.html');
@@ -369,7 +369,7 @@ test.describe('Map Functionality Tests', () => {
 
   test('MAP-20: Map sections are accessible from Dubai1 deck index', async ({ page }) => {
     await page.goto('/decks/dubai1/index.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check that UAE Maps link exists
     const mapsLink = page.locator('a[href="./sections/uae-maps/overview.html"]');
@@ -377,7 +377,7 @@ test.describe('Map Functionality Tests', () => {
 
     // Click on the link
     await mapsLink.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should navigate to UAE Maps page
     expect(page.url()).toContain('uae-maps/overview.html');
