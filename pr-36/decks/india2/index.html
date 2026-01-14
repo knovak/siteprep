@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kerala Deck | Overview</title>
+  <link rel="icon" type="image/png" href="/favicon-dorje.png">
+
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <a href="index.html" class="tag">Deck</a>
+      <h1>Kerala</h1>
+    </div>
+    <div class="card-content">
+      <p>Kochi essentials and Kerala coastal travel notes.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Total sections:</strong> 1</div>
+        <div class="meta-box"><strong>Style:</strong> Mobile-first cards with quick navigation</div>
+        <div class="meta-box"><strong>Last updated:</strong> <time datetime="2024-01-01">January 2024</time></div>
+      </div>
+      <div id="deck-nav"></div>
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <a href="./sections/kochi/overview.html" class="toc-link">
+            <h3>Kochi</h3>
+            <p>Coastal Kerala overview and seasonal notes.</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <section class="card" aria-labelledby="festivals-title">
+    <div class="card-header">
+      <h2 id="festivals-title">Late January–Early February 2026 festivals</h2>
+      <p class="meta">Highlights across Kerala from Jan 31 to Feb 6, 2026.</p>
+    </div>
+    <div class="card-content">
+      <ul class="summary-list">
+        <li><strong><a href="https://www.mbifl.com/" target="_blank" rel="noopener">Mathrubhumi International Festival of Letters</a> (Thiruvananthapuram):</strong> Literary talks, author sessions, and cultural programming at Kanakakkunnu Palace, Jan 29–Feb 1.</li>
+        <li><strong><a href="https://kscnew.kerala.gov.in/" target="_blank" rel="noopener">38th Kerala Science Congress</a> (Kochi):</strong> Public-facing science exhibits and lectures alongside the academic congress, Jan 30–Feb 2.</li>
+        <li><strong><a href="https://www.kochimuzirisbiennale.org/" target="_blank" rel="noopener">Kochi-Muziris Biennale</a> (Fort Kochi + venues):</strong> Ongoing contemporary art installations, performances, and talks running through Mar 31.</li>
+        <li><strong><a href="https://www.tripadvisor.com/Attraction_Review-g608471-d4089187-Reviews-Kanichukulangara_Devi_Temple-Alappuzha_Alappuzha_District_Kerala.html" target="_blank" rel="noopener">Kanichukulangara Devi Temple Festival</a> (Alappuzha):</strong> Multi-week temple rituals and cultural processions, with Chikkarakkottikkal Koottakalam on Feb 2.</li>
+        <li><strong><a href="https://www.keralatourism.org/event/thaipooyam-festival-haippad/46/" target="_blank" rel="noopener">Thaipooyam Mahotsavam</a> (Thrissur + Harippad):</strong> Feb 1 temple festivities featuring kavadi processions, ceremonial music, and devotional observances.</li>
+        <li><strong><a href="https://www.facebook.com/maLoveLegacyLiteratureFest/" target="_blank" rel="noopener">Ma Literature Festival</a> (Malappuram):</strong> Literature panels, poetry, music, and workshops, Jan 30–Feb 2.</li>
+      </ul>
+    </div>
+  </section>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'Kerala Home' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../index.html', text: 'Version: HEAD' });
+        
+        // Deck link
+        links.push({ href: 'index.html', text: 'Deck' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
