@@ -173,7 +173,7 @@ test.describe('PWA - Deck Pages', () => {
     const firstLink = page.locator('a[href*="sections/"]').first();
     if (await firstLink.count() > 0) {
       await firstLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(1000);
 
       // Go offline

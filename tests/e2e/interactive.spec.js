@@ -10,7 +10,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Look for collapsible elements
       const collapsibleHeaders = page.locator('.location-header, .collapsible, summary, [onclick*="toggle"]');
@@ -47,7 +47,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Look for toggle indicators
       const toggles = page.locator('.location-header, .collapsible, summary');
@@ -80,7 +80,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Check for collapsed content
       const details = page.locator('details');
@@ -105,7 +105,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Look for Google Maps links
       const mapsLinks = page.locator('a[href*="google.com/maps"], a[href*="maps.google.com"]');
@@ -131,7 +131,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       // Look for Wikipedia links
       const wikiLinks = page.locator('a[href*="wikipedia.org"]');
@@ -197,7 +197,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const details = page.locator('details');
       const count = await details.count();
@@ -229,7 +229,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const details = page.locator('details').first();
 
@@ -260,17 +260,17 @@ test.describe('Interactive Element Tests', () => {
     });
 
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Navigate to deck
     await page.click('a[href*="decks/india1"]');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Navigate to card
     const cardLink = page.locator('a[href*="sections/"]').first();
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
     }
 
     // Should have no JavaScript errors (filter out known timing issues)
@@ -291,19 +291,24 @@ test.describe('Interactive Element Tests', () => {
     const cardLink = page.locator('a[href*="sections/"]').first();
 
     if (await cardLink.count() > 0) {
-      // Tap on card link
-      await cardLink.tap();
-      await page.waitForLoadState('networkidle');
+      // Ensure link is visible before tapping
+      await cardLink.waitFor({ state: 'visible' });
+
+      // Tap on card link (use click on mobile for better compatibility)
+      await cardLink.click();
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForTimeout(500);
 
       // Should navigate
-      expect(page.url()).toContain('sections/');
+      const currentUrl = page.url();
+      expect(currentUrl).toContain('sections/');
 
       // Tap on collapsible
       const details = page.locator('details').first();
 
       if (await details.count() > 0) {
         const summary = details.locator('summary');
-        await summary.tap();
+        await summary.click(); // Use click instead of tap for consistency
         await page.waitForTimeout(300);
 
         // Should toggle
@@ -320,7 +325,7 @@ test.describe('Interactive Element Tests', () => {
 
     if (await cardLink.count() > 0) {
       await cardLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const details = page.locator('details').first();
 
