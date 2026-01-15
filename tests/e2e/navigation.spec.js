@@ -265,17 +265,16 @@ test.describe('Navigation Tests', () => {
     expect(focused.href).toBeTruthy();
     expect(focused.href).toContain('decks/india1');
 
-    // Trigger navigation with Enter key (dispatch event directly on the focused element)
-    await page.evaluate(() => {
-      const event = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13 });
-      document.activeElement.dispatchEvent(event);
-      // For links, we also need to trigger click
-      if (document.activeElement.tagName === 'A') {
-        document.activeElement.click();
-      }
-    });
-
-    await page.waitForLoadState('domcontentloaded');
+    // Wait for navigation to start and then trigger click
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+      page.evaluate(() => {
+        // Simulate keyboard Enter press with click
+        if (document.activeElement.tagName === 'A') {
+          document.activeElement.click();
+        }
+      })
+    ]);
 
     // Should navigate to the deck page
     const currentUrl = page.url();
