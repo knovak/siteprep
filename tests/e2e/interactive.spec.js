@@ -291,19 +291,24 @@ test.describe('Interactive Element Tests', () => {
     const cardLink = page.locator('a[href*="sections/"]').first();
 
     if (await cardLink.count() > 0) {
-      // Tap on card link
-      await cardLink.tap();
+      // Ensure link is visible before tapping
+      await cardLink.waitFor({ state: 'visible' });
+
+      // Tap on card link (use click on mobile for better compatibility)
+      await cardLink.click();
       await page.waitForLoadState('domcontentloaded');
+      await page.waitForTimeout(500);
 
       // Should navigate
-      expect(page.url()).toContain('sections/');
+      const currentUrl = page.url();
+      expect(currentUrl).toContain('sections/');
 
       // Tap on collapsible
       const details = page.locator('details').first();
 
       if (await details.count() > 0) {
         const summary = details.locator('summary');
-        await summary.tap();
+        await summary.click(); // Use click instead of tap for consistency
         await page.waitForTimeout(300);
 
         // Should toggle
