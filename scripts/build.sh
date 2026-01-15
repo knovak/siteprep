@@ -39,6 +39,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Copy source assets and decks
 cp -r "$ROOT_DIR/decks" "$OUTPUT_DIR/decks"
+cp -r "$ROOT_DIR/shared_assets" "$OUTPUT_DIR/shared_assets"
 cp "$ROOT_DIR/manifest.webmanifest" "$OUTPUT_DIR/manifest.webmanifest"
 
 # Generate cache version and inject into service worker
@@ -86,6 +87,7 @@ cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SitePrep Decks</title>
+  <link rel="icon" href="./shared_assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="$DEFAULT_STYLE">
   <link rel="manifest" href="./manifest.webmanifest">
   <script defer src="$DEFAULT_SCRIPT"></script>
