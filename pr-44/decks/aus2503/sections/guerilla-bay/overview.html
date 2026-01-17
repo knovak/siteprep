@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guerilla Bay | Aus2503 Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Guerilla Bay</h1>
+    </div>
+    <div class="card-content">
+      <p>Guerilla Bay is a quiet south coast enclave just north of Batemans Bay, known for its rock-fringed beaches, bushwalking tracks, and resident kangaroos grazing by the dunes.</p>
+      <p>The bay sits on Yuin Country, close to the Murramarang Aboriginal Area where cultural connections to the coast continue today. The name “Guerilla Bay” is commonly linked to early coastal charts referencing a 19th-century vessel called the <em>Guerilla</em>, reflecting the area’s maritime history.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Region:</strong> Eurobodalla, New South Wales south coast</div>
+        <div class="meta-box"><strong>Drive time:</strong> ~10 minutes north of Batemans Bay, ~2 hours east of Canberra</div>
+        <div class="meta-box"><strong>Typical March weather:</strong> 18–25°C, warm days, cooler evenings, occasional coastal showers</div>
+      </div>
+      <h2>Hiking opportunities</h2>
+      <ul>
+        <li><strong>Guerilla Bay headland walk:</strong> Short sandy and rocky paths link the main beach, smaller coves, and lookouts with sweeping ocean views.</li>
+        <li><strong>Depot Beach coastal track:</strong> Follow the Murramarang National Park shoreline for a longer stroll between bays and picnic spots.</li>
+        <li><strong>Pebbly Beach loop:</strong> Combine forest and beachfront paths to spot wildlife and take in the dramatic coastline.</li>
+      </ul>
+      <h2>Nearby highlights</h2>
+      <ul>
+        <li><strong>Murramarang National Park:</strong> Beach-to-bush trails with wallabies and ocean lookouts.</li>
+        <li><strong>Depot Beach:</strong> Sheltered bay with calm surf and picnic areas.</li>
+        <li><strong>Batemans Bay:</strong> Waterfront dining, oyster farms, and kayak hires on the Clyde River.</li>
+        <li><strong>Malua Bay:</strong> Family-friendly swimming and snorkelling spots.</li>
+      </ul>
+      <h2>March planning tips</h2>
+      <ul>
+        <li>Pack light layers for cooler nights and sea breezes after sunset.</li>
+        <li>Expect generally calm seas, but check local surf reports before swimming.</li>
+        <li>Bring reef-safe sunscreen and insect repellent for dusk walks.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Aus2503 Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: PR #44' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
