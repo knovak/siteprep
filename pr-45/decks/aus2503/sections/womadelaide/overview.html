@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOMADelaide | Aus2503 Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>WOMADelaide (2026)</h1>
+    </div>
+    <div class="card-content">
+      <p>WOMADelaide is Adelaide's signature world music and arts festival, staged in Botanic Park and combining international performances with food, workshops, and cultural showcases.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Location:</strong> Botanic Park / Tainmuntilla, Adelaide</div>
+        <div class="meta-box"><strong>2026 timing:</strong> Typically held over four days in early March (Thu–Sun), with day and evening sessions</div>
+        <div class="meta-box"><strong>Typical March weather:</strong> 15–29°C, warm afternoons, cooler nights, low humidity</div>
+      </div>
+      <h2>What to expect in 2026</h2>
+      <ul>
+        <li><strong>Program mix:</strong> Global music stages, contemporary dance, and visual arts installations.</li>
+        <li><strong>Family areas:</strong> KidZone activities, hands-on workshops, and shaded play spaces.</li>
+        <li><strong>Food village:</strong> Street-food stalls plus local South Australian producers.</li>
+        <li><strong>Festival logistics:</strong> Plan for reusable water bottles, picnic rugs, and a mix of sun and evening layers.</li>
+      </ul>
+      <h2>March planning tips</h2>
+      <ul>
+        <li>Bring a hat and sunscreen for daytime sets; switch to a light jacket after dark.</li>
+        <li>Adelaide evenings can cool quickly, especially in parklands.</li>
+        <li>Check the official 2026 schedule and ticket releases when announced.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Aus2503 Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: PR #45' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
