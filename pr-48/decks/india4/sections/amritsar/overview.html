@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amritsar | Delhi and Excursions Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Amritsar</h1>
+    </div>
+    <div class="card-content">
+      <p>Amritsar is Punjab's spiritual and cultural capital, famed for the shimmering Golden Temple complex and a lively Old City food scene. It pairs well with Delhi as a short flight or train excursion.</p>
+      <div class="meta-row">
+        <div class="meta-box"><strong>Population:</strong> ~1.4 million (metro)</div>
+        <div class="meta-box"><strong>Typical January weather:</strong> 5–20°C, cool mornings</div>
+        <div class="meta-box"><strong>Typical February weather:</strong> 8–23°C, sunny and dry</div>
+      </div>
+      <h2>Fast facts</h2>
+      <ul>
+        <li><strong>Highlights:</strong> Golden Temple (Harmandir Sahib), Akal Takht, Jallianwala Bagh, and the Partition Museum.</li>
+        <li><strong>Evening ceremony:</strong> The Wagah-Attari border retreat ceremony is a popular late-afternoon excursion.</li>
+        <li><strong>Food scene:</strong> Try Amritsari kulcha, lassi, and the Old City's street-food lanes near Hall Bazaar.</li>
+        <li><strong>Transit:</strong> Sri Guru Ram Dass Jee International Airport (ATQ) connects to Delhi and major Indian hubs; the rail station is a short drive from the Golden Temple area.</li>
+      </ul>
+      <h2>Planning notes</h2>
+      <ul>
+        <li><strong>Temple visits:</strong> Early mornings are calmer; modest dress and head coverings are required.</li>
+        <li><strong>Weather:</strong> February days are comfortable for walking tours; evenings can still be chilly.</li>
+        <li><strong>Day trips:</strong> Wagah border is ~30 km away; plan transport in advance for the ceremony crowd.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Delhi & Excursions Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: PR #48' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
