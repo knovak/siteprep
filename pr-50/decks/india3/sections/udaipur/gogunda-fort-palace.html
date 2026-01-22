@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gogunda Fort Palace (Heritage Experience) | Udaipur | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Gogunda Fort Palace (Heritage Experience)</h1>
+      <p class="subtitle"><a href="./overview.html">Udaipur</a></p>
+    </div>
+    <div class="card-content">
+      <p>Gogunda Fort Palace is a restored heritage fort-hotel offering a glimpse of Mewar-era architecture, often experienced as a lunch stop or overnight stay.</p>
+      <h2>History & context</h2>
+      <p>The fort dates back to the 16th century and once served as a temporary capital of Mewar during the reign of Maharana Pratap.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Day visits are typically by reservation; overnight stays allow broader access.</li>
+        <li><strong>Address:</strong> Gogunda Fort Palace, Gogunda, Rajasthan 313705.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Gogunda%20Fort%20Palace%2C%20Gogunda%2C%20Rajasthan%20313705">Gogunda Fort Palace, Gogunda, Rajasthan 313705</a></li>
+        <li><strong>Distance from Udaipur city center:</strong> About 36 km northwest of Udaipur (around 1 hour by road).</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>Heritage ambiance and restored courtyards.</li>
+        <li>Quiet countryside setting away from city crowds.</li>
+        <li>Good stop on a Kumbhalgarh route.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Limited access if you are not a guest.</li>
+        <li>Experiences can be expensive.</li>
+        <li>Fewer activities beyond the heritage stay.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Udaipur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: PR #50' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
