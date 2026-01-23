@@ -39,6 +39,9 @@ mkdir -p "$OUTPUT_DIR"
 
 # Copy source assets and decks
 cp -r "$ROOT_DIR/decks" "$OUTPUT_DIR/decks"
+if [ -d "$ROOT_DIR/shared" ]; then
+  cp -r "$ROOT_DIR/shared" "$OUTPUT_DIR/shared"
+fi
 cp "$ROOT_DIR/manifest.webmanifest" "$OUTPUT_DIR/manifest.webmanifest"
 
 # Generate cache version and inject into service worker
