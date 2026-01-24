@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jaswant Thada | Jodhpur | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Jaswant Thada</h1>
+      <p class="subtitle"><a href="./overview.html">Jodhpur</a></p>
+    </div>
+    <div class="card-content">
+      <p>Jaswant Thada is a serene marble cenotaph complex with landscaped gardens and lake views, often paired with a fort visit.</p>
+      <h2>History & context</h2>
+      <p>Built in 1899 in memory of Maharaja Jaswant Singh II, the memorial is known for its intricately carved marble and royal portraits.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Typically 9:00 AM–5:00 PM.</li>
+        <li><strong>Address:</strong> Fort Road, near Mehrangarh Fort, Jodhpur, Rajasthan 342006.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Fort%20Road%2C%20near%20Mehrangarh%20Fort%2C%20Jodhpur%2C%20Rajasthan%20342006">Fort Road, near Mehrangarh Fort, Jodhpur, Rajasthan 342006</a></li>
+        <li><strong>Distance from Jodhpur city center:</strong> About 2 km from the Clock Tower area.</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>Quiet setting and elegant marble craftsmanship.</li>
+        <li>Great photo stop with fort views.</li>
+        <li>Easy add-on to Mehrangarh.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Limited interpretive signage.</li>
+        <li>Short visit length for those wanting deeper history.</li>
+        <li>Midday sun can be intense in the open courtyards.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Jodhpur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: PR #54' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
