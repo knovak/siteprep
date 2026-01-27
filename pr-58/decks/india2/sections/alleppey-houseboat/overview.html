@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alleppey Houseboat | Kerala Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Alleppey houseboat</h1>
+    </div>
+    <div class="card-content">
+      <p>Alleppey (Alappuzha) is Kerala&apos;s best-known backwater base, with slow-moving canals, lagoon edges, and palm-lined rice fields that make houseboat stays the classic way to experience the region.</p>
+      <div class="highlight">
+        <h2>Lakes and Lagoons highlight</h2>
+        <p><strong>Address:</strong> Kumarakom, Kottayam, Kerala 686563. <a href="https://www.google.com/maps/search/?api=1&query=Kumarakom%2C%20Kottayam%2C%20Kerala%20686563" target="_blank" rel="noopener">Google Maps</a></p>
+        <p><strong>Hotel link:</strong> <a href="https://lakesandlagoons.com" target="_blank" rel="noopener">lakesandlagoons.com</a></p>
+        <p><strong>Description:</strong> A tranquil lakeside retreat on the edges of Vembanad Lake, Lakes and Lagoons is designed for quiet backwater immersion with villa-style rooms and lagoon views. The resort reflects the modern wave of Kumarakom hospitality that grew alongside backwater tourism, combining contemporary comforts with Kerala-inspired design motifs.</p>
+      </div>
+      <h2>Houseboat experience notes</h2>
+      <p>Tripadvisor travelers highlight the <a href="https://www.tripadvisor.in/Attraction_Review-g297631-d1169895-Reviews-Lakes_Lagoons_Tour_Company-Kerala.html" target="_blank" rel="noopener">Lakes &amp; Lagoons Tour Company</a> for private houseboat cruising on Kerala&apos;s backwaters, with flexible itineraries that can combine lagoon stretches, narrow canals, and village scenery.</p>
+      <ul>
+        <li><strong>Houseboat atmosphere:</strong> Reviews frequently mention peaceful, slow-paced cruising that emphasizes scenery, birdlife, and the calm rhythm of the waterways.</li>
+        <li><strong>Onboard hosting:</strong> Guests note attentive crew service and freshly cooked meals that lean into Kerala flavors, making the boat stay feel more like a floating homestay.</li>
+        <li><strong>Logistics:</strong> Travelers appreciate coordinated pickups/drop-offs and clear communication about routes, timing, and meal preferences ahead of departure.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Kerala Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: PR #58' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
