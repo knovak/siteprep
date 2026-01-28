@@ -30,3 +30,6 @@ A photo gallery may be requested with a list of URLs, each of which has an image
 
 ## Distance visualizations
 A distance visualization may be requested with a list of location pairs, each pair with a time, such as "Fort Kochi to Alleppey houseboat 1h50m". You should find the locations' latitude and longitude to supply to the distance visualizer.
+
+## minimize merge conflicts
+When adding content, do not modify README.me unless a new deck is added.
