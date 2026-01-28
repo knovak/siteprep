@@ -2,18 +2,15 @@ name: Build and Deploy GitHub Pages
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: write
   pages: write
   id-token: write
-  pull-requests: read
 
 concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'pages' }}
+  group: ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -56,22 +53,22 @@ jobs:
       - name: Set version info
         id: version
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "version=PR #${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "is_pr=true" >> $GITHUB_OUTPUT
-          else
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-            echo "pr_number=" >> $GITHUB_OUTPUT
+          BRANCH="${{ github.ref_name }}"
+          # Sanitize branch name (replace / with -)
+          SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "safe_branch=$SAFE_BRANCH" >> $GITHUB_OUTPUT
+          if [ "$BRANCH" == "main" ]; then
             echo "version=main" >> $GITHUB_OUTPUT
-            echo "is_pr=false" >> $GITHUB_OUTPUT
+            echo "is_main=true" >> $GITHUB_OUTPUT
+          else
+            echo "version=$BRANCH" >> $GITHUB_OUTPUT
+            echo "is_main=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Build deck outputs
         env:
           BRANCH_NAME: ${{ steps.version.outputs.branch }}
-          PR_NUMBER: ${{ steps.version.outputs.pr_number }}
           VERSION_NAME: ${{ steps.version.outputs.version }}
         run: scripts/build.sh
 
@@ -85,21 +82,20 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ github.event_name == 'pull_request' && format('PR-{0}', github.event.pull_request.number) || 'main' }}
+          name: playwright-report-${{ steps.version.outputs.safe_branch }}
           path: playwright-report/
           retention-days: 30
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-build-${{ github.event_name == 'pull_request' && format('PR-{0}', github.event.pull_request.number) || 'main' }}
+          name: site-build-${{ steps.version.outputs.safe_branch }}
           path: gh-pages/
           retention-days: 1
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -133,35 +129,36 @@ jobs:
       - name: Set version info
         id: version
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
-            echo "deploy_dir=pr-${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-            echo "is_pr=true" >> $GITHUB_OUTPUT
-          else
-            echo "pr_number=" >> $GITHUB_OUTPUT
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          BRANCH="${{ github.ref_name }}"
+          # Sanitize branch name for use as directory (replace / with -)
+          SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "safe_branch=$SAFE_BRANCH" >> $GITHUB_OUTPUT
+          if [ "$BRANCH" == "main" ]; then
             echo "deploy_dir=." >> $GITHUB_OUTPUT
-            echo "is_pr=false" >> $GITHUB_OUTPUT
+            echo "is_main=true" >> $GITHUB_OUTPUT
+          else
+            echo "deploy_dir=branch/$SAFE_BRANCH" >> $GITHUB_OUTPUT
+            echo "is_main=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: site-build-${{ github.event_name == 'pull_request' && format('PR-{0}', github.event.pull_request.number) || 'main' }}
+          name: site-build-${{ steps.version.outputs.safe_branch }}
           path: /tmp/build
 
       - name: Deploy to gh-pages
         run: |
           DEPLOY_DIR="${{ steps.version.outputs.deploy_dir }}"
 
-          # For main branch, clear everything except PR directories
-          if [ "${{ steps.version.outputs.is_pr }}" == "false" ]; then
-            # Remove all files except pr-* directories
-            find . -maxdepth 1 ! -name 'pr-*' ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+          # For main branch, clear everything except branch directories
+          if [ "${{ steps.version.outputs.is_main }}" == "true" ]; then
+            # Remove all files except branch/ directory and .git
+            find . -maxdepth 1 ! -name 'branch' ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
           else
-            # For PRs, just ensure the directory exists
-            mkdir -p "$DEPLOY_DIR"
+            # For feature branches, ensure the branch directory parent exists
+            mkdir -p "branch"
           fi
 
           # Copy new build to deployment directory
@@ -172,15 +169,17 @@ jobs:
             cp -r /tmp/build "$DEPLOY_DIR"
           fi
 
-      - name: Cleanup old PR previews
-        if: steps.version.outputs.is_pr == 'false'
+      - name: Cleanup old branch previews
+        if: steps.version.outputs.is_main == 'true'
         run: |
-          # Keep only the last 6 PR directories
-          PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%T@ %p\n' | sort -rn | awk 'NR>6 {print $2}')
-          if [ -n "$PR_DIRS" ]; then
-            echo "Removing old PR previews:"
-            echo "$PR_DIRS"
-            echo "$PR_DIRS" | xargs rm -rf
+          # Keep only the last 6 branch preview directories
+          if [ -d "branch" ]; then
+            BRANCH_DIRS=$(find branch -maxdepth 1 -type d ! -name 'branch' -printf '%T@ %p\n' | sort -rn | awk 'NR>6 {print $2}')
+            if [ -n "$BRANCH_DIRS" ]; then
+              echo "Removing old branch previews:"
+              echo "$BRANCH_DIRS"
+              echo "$BRANCH_DIRS" | xargs rm -rf
+            fi
           fi
 
       - name: Generate versions index
@@ -202,7 +201,7 @@ jobs:
                 <h1>SitePrep - All Versions</h1>
               </div>
               <div class="card-content">
-                <p>Browse different versions of the site, including the main version and PR previews.</p>
+                <p>Browse different versions of the site, including the main version and branch previews.</p>
               </div>
             </header>
             <main class="card">
@@ -221,35 +220,36 @@ jobs:
             </main>
           EOF
 
-          # Add PR previews section if any exist
-          PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
-          if [ -n "$PR_DIRS" ]; then
-            cat >> index-versions.html <<'EOF'
+          # Add branch previews section if any exist
+          if [ -d "branch" ]; then
+            BRANCH_DIRS=$(find branch -maxdepth 1 -type d ! -name 'branch' -printf '%f\n' | sort)
+            if [ -n "$BRANCH_DIRS" ]; then
+              cat >> index-versions.html <<'EOF'
             <main class="card">
               <div class="card-header">
-                <h2>PR Previews</h2>
-                <p class="meta">Preview builds from pull requests</p>
+                <h2>Branch Previews</h2>
+                <p class="meta">Preview builds from feature branches</p>
               </div>
               <div class="card-content">
                 <ul class="toc-grid">
           EOF
 
-            for dir in $PR_DIRS; do
-              PR_NUM="${dir#pr-}"
-              cat >> index-versions.html <<EOF
+              for dir in $BRANCH_DIRS; do
+                cat >> index-versions.html <<EOF
                   <li class="toc-item">
-                    <h3>PR #${PR_NUM}</h3>
-                    <p>Preview from pull request #${PR_NUM}</p>
-                    <a href="./${dir}/index.html">View PR #${PR_NUM}</a>
+                    <h3>${dir}</h3>
+                    <p>Preview from branch ${dir}</p>
+                    <a href="./branch/${dir}/index.html">View ${dir}</a>
                   </li>
           EOF
-            done
+              done
 
-            cat >> index-versions.html <<'EOF'
+              cat >> index-versions.html <<'EOF'
                 </ul>
               </div>
             </main>
           EOF
+            fi
           fi
 
           cat >> index-versions.html <<'EOF'
@@ -263,10 +263,10 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            if [ "${{ steps.version.outputs.is_pr }}" == "true" ]; then
-              git commit -m "Deploy PR #${{ steps.version.outputs.pr_number }} preview"
-            else
+            if [ "${{ steps.version.outputs.is_main }}" == "true" ]; then
               git commit -m "Deploy main version"
+            else
+              git commit -m "Deploy branch ${{ steps.version.outputs.branch }} preview"
             fi
             git push
           fi
@@ -274,15 +274,15 @@ jobs:
       - name: Output deployment info
         id: deployment
         run: |
-          if [ "${{ steps.version.outputs.is_pr }}" == "true" ]; then
-            echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.version.outputs.pr_number }}/" >> $GITHUB_OUTPUT
-            echo "### PR Preview Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Preview URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.version.outputs.pr_number }}/" >> $GITHUB_STEP_SUMMARY
-          else
+          if [ "${{ steps.version.outputs.is_main }}" == "true" ]; then
             echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_OUTPUT
-            echo "### Main Version Deployed! 🚀" >> $GITHUB_STEP_SUMMARY
+            echo "### Main Version Deployed!" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "Main URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
             echo "All Versions: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index-versions.html" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "page_url=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/branch/${{ steps.version.outputs.safe_branch }}/" >> $GITHUB_OUTPUT
+            echo "### Branch Preview Deployed!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Preview URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/branch/${{ steps.version.outputs.safe_branch }}/" >> $GITHUB_STEP_SUMMARY
           fi
