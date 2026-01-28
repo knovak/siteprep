@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bangalore and General India Deck | Overview</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <a href="index.html" class="tag">Deck</a>
+      <h1>Bangalore and General India</h1>
+    </div>
+    <div class="card-content">
+      <p>A compact deck covering Bengaluru essentials, Ayurveda, the Art of Living Ashram, and the evolution of India's national parks.</p>
+      <!-- Total sections: 6 | Style: Mobile-first cards with quick navigation | Last updated: January 2024 -->
+      <div class="highlight"><strong>Travel update:</strong> New e-arrival form is at <a href="https://indianvisaonline.gov.in/earrival/" target="_blank" rel="noopener">https://indianvisaonline.gov.in/earrival/</a>.</div>
+      <div id="deck-nav"></div>
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <a href="./sections/background/national-park-history.html" class="toc-link">
+            <h3>India National Park History</h3>
+            <p>Overview of India's national parks, conservation policy, and the evolution from protection to tourism.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/art-of-living-ashram/overview.html" class="toc-link">
+            <h3>Art of Living Ashram</h3>
+            <p>History and essentials of the international center near Bengaluru.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/ayurveda/overview.html" class="toc-link">
+            <h3>Ayurveda</h3>
+            <p>Definition, history, and where Ayurveda is most active across India.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/bangalore/overview.html" class="toc-link">
+            <h3>Bangalore</h3>
+            <p>Fast facts about Bengaluru, Karnataka.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/india-maps/overview.html" class="toc-link">
+            <h3>India Maps</h3>
+            <p>Interactive maps showing key locations across India including cities, national parks, forts, and wildlife reserves.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/visa/overview.html" class="toc-link">
+            <h3>Visa information</h3>
+            <p>Summary details for the current India e-Visa approvals.</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <section class="card" aria-labelledby="travel-essentials-title">
+    <div class="card-header">
+      <h2 id="travel-essentials-title">Travel essentials</h2>
+      <p class="meta">Payment and connectivity notes for India.</p>
+    </div>
+    <div class="card-content">
+      <h3>Payment cards</h3>
+      <p>UPI-linked wallets and tap-to-pay cards now cover most day-to-day transactions in India’s cities and retail hubs.</p>
+      <ul>
+        <li><a href="https://www.npci.org.in/what-we-do/upi-one-world/product-overview" target="_blank" rel="noopener">UPI ONE WORLD</a> prepaid wallets can be activated with passport + visa KYC at partner counters (airports, hotels, designated exchangers), then funded in INR via international card or cash for QR payments nationwide.</li>
+        <li><a href="https://www.npci.org.in/what-we-do/upi/product-overview" target="_blank" rel="noopener">UPI</a> is now a near-universal payment rail across urban India, from retail stores to restaurants and rides.</li>
+        <li><a href="https://www.visa.com/" target="_blank" rel="noopener">Visa</a> and <a href="https://en.wikipedia.org/wiki/Mastercard" target="_blank" rel="noopener">Mastercard</a> contactless cards are widely accepted, but expect FX fees and occasional dynamic currency conversion markups.</li>
+      </ul>
+      <h3>Travel eSIMs</h3>
+      <p>Most international travel eSIMs that work in India ride on the big local networks (Reliance Jio, Airtel, and Vodafone Idea/Vi), with Jio and Airtel usually offering the best 4G/5G reach.</p>
+      <ul>
+        <li><a href="https://play.google.com/store/apps/details?id=com.mobillium.airalo" target="_blank" rel="noopener">Airalo</a> and <a href="https://play.google.com/store/apps/details?id=com.lotusflare.nomad.mobile.android" target="_blank" rel="noopener">Nomad</a>: flexible data plans, easy QR activation, and solid value.</li>
+        <li><a href="https://play.google.com/store/apps/details?id=com.saily.android" target="_blank" rel="noopener">Saily</a>: often praised for balanced pricing and coverage across networks.</li>
+        <li><a href="https://play.google.com/store/apps/details?id=com.holafly.holafly" target="_blank" rel="noopener">Holafly</a>: best if you want unlimited data and no top-up worries.</li>
+      </ul>
+    </div>
+  </section>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'Bangalore & General India Home' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../index.html', text: 'Version: PR #59' });
+        
+        // Deck link
+        links.push({ href: 'index.html', text: 'Deck' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
