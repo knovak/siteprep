@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue City Walking Tour | Jodhpur | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Blue City Walking Tour</h1>
+      <p class="subtitle"><a href="./overview.html">Jodhpur</a></p>
+    </div>
+    <div class="card-content">
+      <p>A Blue City walking tour explores the maze of indigo-painted houses beneath Mehrangarh Fort, with stops at wells, temples, and local homes.</p>
+      <h2>History & context</h2>
+      <p>The blue-painted lanes historically marked Brahmin quarters and later became a signature identity of Jodhpur's old city.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Tours typically start early morning or late afternoon to avoid heat.</li>
+        <li><strong>Address:</strong> Common starting points include Clock Tower/Sardar Market or Navchokiya neighborhood.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Common%20starting%20points%20include%20Clock%20Tower/Sardar%20Market%20or%20Navchokiya%20neighborhood">Common starting points include Clock Tower/Sardar Market or Navchokiya neighborhood</a></li>
+        <li><strong>Distance from Jodhpur city center:</strong> The route is centered in the old city, within 0–1 km of the Clock Tower.</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>Photo-friendly lanes and rooftop viewpoints.</li>
+        <li>Insights into daily life and local crafts.</li>
+        <li>Cooler temperatures in shaded alleys.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Narrow lanes can feel congested.</li>
+        <li>Tour quality depends heavily on the guide.</li>
+        <li>Limited shade if walking at midday.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Jodhpur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-india-ai-impact-summit-2026-page' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>

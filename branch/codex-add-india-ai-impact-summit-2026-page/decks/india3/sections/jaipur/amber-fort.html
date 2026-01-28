@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amber (Amer) Fort | Jaipur | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Amber (Amer) Fort</h1>
+      <p class="subtitle"><a href="./overview.html">Jaipur</a></p>
+    </div>
+    <div class="card-content">
+      <p>Amber Fort is Jaipur's most iconic hilltop fortress, known for its ornate halls, mirrored interiors, and sweeping views over Maota Lake.</p>
+      <h2>History & context</h2>
+      <p>Built in the late 16th century by Raja Man Singh I and expanded by successive rulers, Amber served as the Kachwaha dynasty's capital before Jaipur was founded.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Typically 8:00 AM–5:30 PM; some night viewing options operate seasonally.</li>
+        <li><strong>Address:</strong> Devisinghpura, Amer, Jaipur, Rajasthan 302028.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Devisinghpura%2C%20Amer%2C%20Jaipur%2C%20Rajasthan%20302028">Devisinghpura, Amer, Jaipur, Rajasthan 302028</a></li>
+        <li><strong>Distance from Jaipur city center:</strong> About 11 km from central Jaipur (MI Road/Tripolia area).</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>Sheesh Mahal mirror work and royal courtyards.</li>
+        <li>Lake views and hilltop setting.</li>
+        <li>Excellent photography in early morning light.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Crowds and traffic near the entrance.</li>
+        <li>Steep paths and stairs inside the fort.</li>
+        <li>Extra fees for special zones and audio guides.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Jaipur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-india-ai-impact-summit-2026-page' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
