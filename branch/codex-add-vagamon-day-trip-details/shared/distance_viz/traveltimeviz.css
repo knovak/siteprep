@@ -1,0 +1,104 @@
+/**
+ * TravelTimeViz - Component Styles
+ * Version: 2.0.0
+ */
+
+/* Network Graph Styles */
+.traveltimeviz-network {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.traveltimeviz-node {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.traveltimeviz-node:hover {
+  filter: brightness(1.2);
+  stroke: #2c3e50;
+  stroke-width: 2px;
+}
+
+.traveltimeviz-node-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+.traveltimeviz-link {
+  transition: all 0.2s ease;
+}
+
+.traveltimeviz-link:hover {
+  stroke: #3498db !important;
+  stroke-width: 3 !important;
+  opacity: 1 !important;
+}
+
+.traveltimeviz-link-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Matrix Styles */
+.traveltimeviz-matrix {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.traveltimeviz-matrix-cell {
+  transition: all 0.2s ease;
+}
+
+.traveltimeviz-matrix-cell:hover {
+  stroke: #3498db !important;
+  stroke-width: 3 !important;
+}
+
+.traveltimeviz-matrix-label,
+.traveltimeviz-matrix-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  user-select: none;
+}
+
+.traveltimeviz-matrix-text {
+  pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .traveltimeviz-node-label {
+    font-size: 12px !important;
+  }
+
+  .traveltimeviz-link-label {
+    font-size: 10px !important;
+  }
+
+  .traveltimeviz-matrix-label {
+    font-size: 11px !important;
+  }
+
+  .traveltimeviz-matrix-text {
+    font-size: 10px !important;
+  }
+}
+
+/* Accessibility */
+.traveltimeviz-node:focus,
+.traveltimeviz-matrix-cell:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .traveltimeviz-node,
+  .traveltimeviz-matrix-cell {
+    cursor: default;
+  }
+}
