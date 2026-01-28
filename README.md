@@ -5,7 +5,8 @@ This repository holds experimental deck content and a simple static build pipeli
 ## Decks
 
 - **india1** – Dubai transit tips plus overviews for Bengaluru, Udaipur, Jodhpur, Jaipur, Delhi, Kochi, and the Art of Living Ashram.
-- **india2** – Kochi overview and Kerala coastal travel essentials, including waterway transport highlights.
+- **india2** – Kerala deck featuring Kochi, Kumarakom, Alleppey houseboat notes, and a Thaipooyam Festival card.
+main
 - **aus2503** – Guerilla Bay hiking, WOMADelaide 2026, and Brisbane cultural highlights.
 
 ### Deck Configuration
