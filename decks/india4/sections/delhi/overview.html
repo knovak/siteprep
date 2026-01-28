@@ -7,6 +7,26 @@
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="manifest" href="../../../../../manifest.webmanifest">
   <script defer src="../../assets/scripts.js"></script>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+  <style>
+    .map-section {
+      margin: 24px 0;
+    }
+    .map-container {
+      height: 420px;
+      border: 2px solid #dcdcdc;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+    .location-list li {
+      margin-bottom: 12px;
+    }
+  </style>
 </head>
 <body>
   <article class="card">
@@ -28,6 +48,33 @@
         <li><strong>Food:</strong> Street food in Chandni Chowk, kebabs in Nizamuddin, and a wide range of modern dining in Aerocity.</li>
         <li><strong>Seasonal note:</strong> Carry a light jacket for evenings; mornings can be misty in January.</li>
       </ul>
+      <h2>Key locations map</h2>
+      <p>Use this map for quick geographic context across central Delhi and nearby Gurugram.</p>
+      <div class="map-section">
+        <div id="delhi-map" class="map-container"></div>
+      </div>
+      <ul class="location-list">
+        <li>
+          <strong>Bharat Mandapam</strong> — The modern convention and exhibition center at Pragati Maidan.
+          <div><strong>Address:</strong> Bharat Mandapam, Pragati Maidan, New Delhi, Delhi 110001.</div>
+          <div><a href="https://maps.google.com/?q=Bharat+Mandapam+Pragati+Maidan+New+Delhi+Delhi+110001" target="_blank" rel="noopener">Google Maps link</a></div>
+        </li>
+        <li>
+          <strong>30, Jor Bagh Rd (Block M, Lodi Colony)</strong> — Address in the Lodhi Colony/Jor Bagh Road area near Lodhi Garden.
+          <div><strong>Address:</strong> 30, Jor Bagh Rd, Block M, Lodi Colony, New Delhi, Delhi 110003.</div>
+          <div><a href="https://maps.google.com/?q=30+Jor+Bagh+Rd+Block+M+Lodi+Colony+New+Delhi+Delhi+110003" target="_blank" rel="noopener">Google Maps link</a></div>
+        </li>
+        <li>
+          <strong>Gurgaon (Gurugram)</strong> — The nearby business and tech hub in Haryana, southwest of Delhi.
+          <div><strong>Address:</strong> Gurugram, Haryana 122001, India.</div>
+          <div><a href="https://maps.google.com/?q=Gurugram+Haryana+122001+India" target="_blank" rel="noopener">Google Maps link</a></div>
+        </li>
+        <li>
+          <strong>New Delhi Airport (Indira Gandhi International Airport)</strong> — Delhi’s main international airport with Terminal 3 for most international flights.
+          <div><strong>Address:</strong> Indira Gandhi International Airport, New Delhi, Delhi 110037.</div>
+          <div><a href="https://maps.google.com/?q=Indira+Gandhi+International+Airport+New+Delhi+Delhi+110037" target="_blank" rel="noopener">Google Maps link</a></div>
+        </li>
+      </ul>
       <div id="page-nav"></div>
     </div>
   </article>
@@ -36,6 +83,66 @@
       { href: '../../../index.html', label: 'Delhi & Excursions Home' },
       { href: '../../../../index.html', label: 'All decks' }
     ]);
+  </script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script>
+    const delhiLocations = [
+      {
+        name: 'Bharat Mandapam',
+        lat: 28.6196234,
+        lng: 77.2424337,
+        address: 'Bharat Mandapam, Pragati Maidan, New Delhi, Delhi 110001',
+        summary: 'Modern convention and exhibition center.'
+      },
+      {
+        name: '30, Jor Bagh Rd',
+        lat: 28.5864094,
+        lng: 77.2252878,
+        address: '30, Jor Bagh Rd, Block M, Lodi Colony, New Delhi, Delhi 110003',
+        summary: 'Lodhi Colony / Jor Bagh Road address.'
+      },
+      {
+        name: 'Gurgaon (Gurugram)',
+        lat: 28.4646148,
+        lng: 77.0299194,
+        address: 'Gurugram, Haryana 122001, India',
+        summary: 'Business and tech hub south of Delhi.'
+      },
+      {
+        name: 'New Delhi Airport (DEL)',
+        lat: 28.5553942,
+        lng: 77.0847985,
+        address: 'Indira Gandhi International Airport, New Delhi, Delhi 110037',
+        summary: 'Delhi’s main international airport.'
+      }
+    ];
+
+    const delhiMap = L.map('delhi-map').setView([28.5937, 77.1400], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }).addTo(delhiMap);
+
+    const bounds = L.latLngBounds([]);
+    delhiLocations.forEach((location) => {
+      const popupContent = `
+        <strong>${location.name}</strong><br>
+        ${location.summary}<br>
+        <em>${location.address}</em>
+      `;
+      L.marker([location.lat, location.lng])
+        .addTo(delhiMap)
+        .bindPopup(popupContent);
+      bounds.extend([location.lat, location.lng]);
+    });
+
+    if (delhiLocations.length > 1) {
+      delhiMap.fitBounds(bounds, { padding: [30, 30] });
+    }
   </script>
   <footer class="site-footer">
     <script>
