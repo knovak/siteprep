@@ -55,6 +55,7 @@ fi
 declare -A DECK_TITLES
 declare -A DECK_SORT_ORDERS
 declare -A DECK_DESCRIPTIONS
+declare -A DECK_GROUPS
 
 mapfile -t DECK_NAMES < <(find "$ROOT_DIR/decks" -maxdepth 1 -mindepth 1 -type d -print | while read -r path; do basename "$path"; done)
 
@@ -69,9 +70,30 @@ for deck_name in "${DECK_NAMES[@]}"; do
   DECK_TITLES[$deck_name]=$(get_deck_metadata "$deck_dir" "$deck_name" "title")
   DECK_SORT_ORDERS[$deck_name]=$(get_deck_metadata "$deck_dir" "$deck_name" "sort_order")
   DECK_DESCRIPTIONS[$deck_name]=$(get_deck_metadata "$deck_dir" "$deck_name" "description")
+  group=$(get_deck_metadata "$deck_dir" "$deck_name" "group")
+  # Default to "Current" if group is not set or equals deck_name (fallback case)
+  if [ "$group" = "$deck_name" ] || [ -z "$group" ]; then
+    group="Current"
+  fi
+  DECK_GROUPS[$deck_name]="$group"
 done
 
-# Sort decks by sort_order
+# Sort decks by sort_order within each group
+get_sorted_decks_for_group() {
+  local target_group="$1"
+  for deck_name in "${DECK_NAMES[@]}"; do
+    if [ "${DECK_GROUPS[$deck_name]}" = "$target_group" ]; then
+      echo "${DECK_SORT_ORDERS[$deck_name]}|$deck_name"
+    fi
+  done | sort | cut -d'|' -f2
+}
+
+# Get sorted decks for each group
+mapfile -t CURRENT_DECKS < <(get_sorted_decks_for_group "Current")
+mapfile -t FUTURE_DECKS < <(get_sorted_decks_for_group "Future")
+mapfile -t OBSOLETE_DECKS < <(get_sorted_decks_for_group "Obsolete")
+
+# All sorted decks (for backwards compatibility - used for default styles)
 mapfile -t SORTED_DECKS < <(
   for deck_name in "${DECK_NAMES[@]}"; do
     echo "${DECK_SORT_ORDERS[$deck_name]}|$deck_name"
@@ -81,6 +103,47 @@ mapfile -t SORTED_DECKS < <(
 # Use first sorted deck for default styles
 DEFAULT_STYLE="./decks/${SORTED_DECKS[0]}/assets/styles.css"
 DEFAULT_SCRIPT="./decks/${SORTED_DECKS[0]}/assets/scripts.js"
+
+# Function to render a deck group section
+render_deck_group() {
+  local group_name="$1"
+  shift
+  local decks=("$@")
+
+  # Only render if there are decks in this group
+  if [ "${#decks[@]}" -eq 0 ]; then
+    return
+  fi
+
+  cat >> "$OUTPUT_DIR/index.html" <<EOF_HTML
+  <main class="card" aria-labelledby="deck-list-${group_name,,}">
+    <div class="card-header">
+      <h2 id="deck-list-${group_name,,}">${group_name}</h2>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+EOF_HTML
+
+  for deck in "${decks[@]}"; do
+    title="${DECK_TITLES[$deck]}"
+    description="${DECK_DESCRIPTIONS[$deck]}"
+
+    cat >> "$OUTPUT_DIR/index.html" <<EOF_HTML
+        <li class="toc-item">
+          <a href="./decks/${deck}/index.html" class="toc-link">
+            <h3>${title}</h3>
+            <p>${description}</p>
+          </a>
+        </li>
+EOF_HTML
+  done
+
+  cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
+      </ul>
+    </div>
+  </main>
+EOF_HTML
+}
 
 cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
 <!DOCTYPE html>
@@ -104,33 +167,14 @@ cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
       <p style="margin-top: 1rem;"><a href="./index-versions.html">View all versions (including PR previews)</a></p>
     </div>
   </header>
-  <main class="card" aria-labelledby="deck-list-title">
-    <div class="card-header">
-      <h2 id="deck-list-title">Decks</h2>
-      <p class="meta">Current catalog of published decks.</p>
-    </div>
-    <div class="card-content">
-      <ul class="toc-grid">
 EOF_HTML
 
-for deck in "${SORTED_DECKS[@]}"; do
-  title="${DECK_TITLES[$deck]}"
-  description="${DECK_DESCRIPTIONS[$deck]}"
-
-  cat >> "$OUTPUT_DIR/index.html" <<EOF_HTML
-        <li class="toc-item">
-          <a href="./decks/${deck}/index.html" class="toc-link">
-            <h3>${title}</h3>
-            <p>${description}</p>
-          </a>
-        </li>
-EOF_HTML
-done
+# Render each group in order: Current, Future, Obsolete
+render_deck_group "Current" "${CURRENT_DECKS[@]}"
+render_deck_group "Future" "${FUTURE_DECKS[@]}"
+render_deck_group "Obsolete" "${OBSOLETE_DECKS[@]}"
 
 cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
-      </ul>
-    </div>
-  </main>
 </body>
 </html>
 EOF_HTML
