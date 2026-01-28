@@ -1,8 +1,7 @@
-name: Cleanup PR Preview
+name: Cleanup Branch Preview
 
 on:
-  pull_request:
-    types: [closed]
+  delete:
 
 permissions:
   contents: write
@@ -10,6 +9,8 @@ permissions:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    # Only run for branch deletions, not tag deletions
+    if: github.event.ref_type == 'branch'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,14 +38,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Remove PR preview directory
+      - name: Remove branch preview directory
         if: steps.check_branch.outputs.exists == 'true'
         run: |
-          PR_DIR="pr-${{ github.event.pull_request.number }}"
+          # Sanitize branch name (replace / with -)
+          BRANCH_NAME="${{ github.event.ref }}"
+          SAFE_BRANCH=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
+          BRANCH_DIR="branch/$SAFE_BRANCH"
 
-          if [ -d "$PR_DIR" ]; then
-            echo "Removing PR preview directory: $PR_DIR"
-            rm -rf "$PR_DIR"
+          if [ -d "$BRANCH_DIR" ]; then
+            echo "Removing branch preview directory: $BRANCH_DIR"
+            rm -rf "$BRANCH_DIR"
 
             # Regenerate index-versions.html
             cat > index-versions.html <<'EOF'
@@ -63,7 +67,7 @@ jobs:
                 <h1>SitePrep - All Versions</h1>
               </div>
               <div class="card-content">
-                <p>Browse different versions of the site, including the main version and PR previews.</p>
+                <p>Browse different versions of the site, including the main version and branch previews.</p>
               </div>
             </header>
             <main class="card">
@@ -82,35 +86,36 @@ jobs:
             </main>
           EOF
 
-            # Add PR previews section if any remain
-            PR_DIRS=$(find . -maxdepth 1 -type d -name 'pr-*' -printf '%f\n' | sort -rn)
-            if [ -n "$PR_DIRS" ]; then
-              cat >> index-versions.html <<'EOF'
+            # Add branch previews section if any remain
+            if [ -d "branch" ]; then
+              BRANCH_DIRS=$(find branch -maxdepth 1 -type d ! -name 'branch' -printf '%f\n' | sort)
+              if [ -n "$BRANCH_DIRS" ]; then
+                cat >> index-versions.html <<'EOF'
             <main class="card">
               <div class="card-header">
-                <h2>PR Previews</h2>
-                <p class="meta">Preview builds from pull requests</p>
+                <h2>Branch Previews</h2>
+                <p class="meta">Preview builds from feature branches</p>
               </div>
               <div class="card-content">
                 <ul class="toc-grid">
           EOF
 
-              for dir in $PR_DIRS; do
-                PR_NUM="${dir#pr-}"
-                cat >> index-versions.html <<EOF
+                for dir in $BRANCH_DIRS; do
+                  cat >> index-versions.html <<EOF
                   <li class="toc-item">
-                    <h3>PR #${PR_NUM}</h3>
-                    <p>Preview from pull request #${PR_NUM}</p>
-                    <a href="./${dir}/index.html">View PR #${PR_NUM}</a>
+                    <h3>${dir}</h3>
+                    <p>Preview from branch ${dir}</p>
+                    <a href="./branch/${dir}/index.html">View ${dir}</a>
                   </li>
           EOF
-              done
+                done
 
-              cat >> index-versions.html <<'EOF'
+                cat >> index-versions.html <<'EOF'
                 </ul>
               </div>
             </main>
           EOF
+              fi
             fi
 
             cat >> index-versions.html <<'EOF'
@@ -121,12 +126,12 @@ jobs:
             # Commit and push
             git add -A
             if ! git diff --staged --quiet; then
-              git commit -m "Remove PR #${{ github.event.pull_request.number }} preview"
+              git commit -m "Remove branch $BRANCH_NAME preview"
               git push
-              echo "PR preview removed successfully"
+              echo "Branch preview removed successfully"
             else
               echo "No changes to commit"
             fi
           else
-            echo "PR preview directory not found: $PR_DIR"
+            echo "Branch preview directory not found: $BRANCH_DIR"
           fi
