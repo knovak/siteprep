@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranthambore National Park | Ranthambore (Sawai Madhopur) | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Ranthambore National Park</h1>
+      <p class="subtitle"><a href="./overview.html">Ranthambore (Sawai Madhopur)</a></p>
+    </div>
+    <div class="card-content">
+      <p>Ranthambore National Park is one of India's premier tiger reserves, mixing dry deciduous forest with lakes and the dramatic Ranthambore Fort ruins.</p>
+      <h2>History & context</h2>
+      <p>Once the hunting ground of Jaipur's royal family, the area became a protected tiger reserve and national park, helping revive tiger populations.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Safari entry is in two daily windows (morning and afternoon); exact times vary by season.</li>
+        <li><strong>Address:</strong> Ranthambore National Park, Sawai Madhopur, Rajasthan 322001.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Ranthambore%20National%20Park%2C%20Sawai%20Madhopur%2C%20Rajasthan%20322001">Ranthambore National Park, Sawai Madhopur, Rajasthan 322001</a></li>
+        <li><strong>Distance from Sawai Madhopur town center:</strong> Park gates are about 6–10 km from Sawai Madhopur town center.</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>High-profile tiger sightings and diverse terrain.</li>
+        <li>Historic fort and lake scenery.</li>
+        <li>Good birdlife beyond big cats.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Strict entry limits and advance booking requirements.</li>
+        <li>Heat and dust in warmer months.</li>
+        <li>Sightings are never guaranteed.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Jaipur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-ilaveezhapoonchira-and-peermade-plateau-info' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
