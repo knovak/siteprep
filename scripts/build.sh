@@ -91,7 +91,7 @@ get_sorted_decks_for_group() {
 # Get sorted decks for each group
 mapfile -t CURRENT_DECKS < <(get_sorted_decks_for_group "Current")
 mapfile -t FUTURE_DECKS < <(get_sorted_decks_for_group "Future")
-mapfile -t OBSOLETE_DECKS < <(get_sorted_decks_for_group "Obsolete")
+mapfile -t PAST_DECKS < <(get_sorted_decks_for_group "Past")
 
 # All sorted decks (for backwards compatibility - used for default styles)
 mapfile -t SORTED_DECKS < <(
@@ -169,10 +169,10 @@ cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
   </header>
 EOF_HTML
 
-# Render each group in order: Current, Future, Obsolete
+# Render each group in order: Current, Future, Past
 render_deck_group "Current" "${CURRENT_DECKS[@]}"
 render_deck_group "Future" "${FUTURE_DECKS[@]}"
-render_deck_group "Obsolete" "${OBSOLETE_DECKS[@]}"
+render_deck_group "Past" "${PAST_DECKS[@]}"
 
 cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
 </body>

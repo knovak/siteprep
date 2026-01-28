@@ -96,7 +96,7 @@ Each deck directory contains a `deck.json` file that provides metadata used by t
   "title": "string",
   "sort_order": "string",
   "description": "string",
-  "group": "Current" | "Future" | "Obsolete"
+  "group": "Current" | "Future" | "Past"
 }
 ```
 
@@ -107,7 +107,7 @@ Each deck directory contains a `deck.json` file that provides metadata used by t
 | title | string | Yes | Display name shown on the home page |
 | sort_order | string | Yes | Alphanumeric string for ordering decks within a group |
 | description | string | Yes | Brief summary displayed below the title on the home page |
-| group | string | Yes | Categorization for home page grouping: "Current", "Future", or "Obsolete" |
+| group | string | Yes | Categorization for home page grouping: "Current", "Future", or "Past" |
 
 ### **2.3.3 Example**
 
@@ -124,7 +124,7 @@ Each deck directory contains a `deck.json` file that provides metadata used by t
 
 * **Current**: Active decks that are relevant for upcoming or ongoing trips
 * **Future**: Planned decks for trips not yet confirmed or scheduled
-* **Obsolete**: Archived decks from past trips, retained for reference
+* **Past**: Archived decks from past trips, retained for reference
 
 ### **2.3.5 Fallback Behavior**
 
@@ -319,14 +319,14 @@ The build script generates the root index.html with the following process:
 
 1. **Discover Decks**: Find all directories under `decks/`
 2. **Read Metadata**: Extract title, sort_order, description, and group from each deck's `deck.json`
-3. **Group Decks**: Categorize decks into Current, Future, and Obsolete groups
+3. **Group Decks**: Categorize decks into Current, Future, and Past groups
 4. **Sort Within Groups**: Sort decks alphabetically by sort_order within each group
 5. **Render HTML**: Generate grouped deck listings with section headers
 
 The home page displays decks in three sections:
 * **Current**: Active decks displayed first
 * **Future**: Planned decks displayed second
-* **Obsolete**: Archived decks displayed last
+* **Past**: Archived decks displayed last
 
 Each section only appears if it contains at least one deck. Within each section, decks are sorted by their sort_order field and displayed as clickable cards with title and description.
 

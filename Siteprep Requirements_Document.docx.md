@@ -51,7 +51,7 @@ The system encompasses the following functional areas:
 8. The deck.json file SHALL contain a "title" field with the display name for the deck.
 9. The deck.json file SHALL contain a "sort_order" field to control display ordering within groups.
 10. The deck.json file SHALL contain a "description" field with a brief summary of the deck content.
-11. The deck.json file SHALL contain a "group" field with one of the following values: "Current", "Future", or "Obsolete".
+11. The deck.json file SHALL contain a "group" field with one of the following values: "Current", "Future", or "Past".
 12. The "group" field SHALL be used to categorize decks on the home page.
 13. If deck.json is missing or a field is not specified, the system SHALL use the deck directory name as a fallback.
 14. If the "group" field is missing, the system SHALL default to "Current". 
@@ -195,7 +195,7 @@ The system encompasses the following functional areas:
 62. The root index page SHALL display decks grouped by their "group" attribute.
 63. Decks in the "Current" group SHALL be displayed first under a "Current" heading.
 64. Decks in the "Future" group SHALL be displayed second under a "Future" heading.
-65. Decks in the "Obsolete" group SHALL be displayed last under an "Obsolete" heading.
+65. Decks in the "Past" group SHALL be displayed last under a "Past" heading.
 66. Within each group, decks SHALL be sorted by their "sort_order" field.
 67. Each group section SHALL only be displayed if it contains at least one deck.
 
