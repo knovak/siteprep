@@ -80,10 +80,55 @@ repository-root/
 
 ## **2.2 File Naming Conventions**
 
-* Deck folders: lowercase, hyphen-separated (e.g., city-guide)  
-* Source files: kebab-case with descriptive names (e.g., main-station.htm)  
-* Meta file prefixed with 00\_ to sort first alphabetically  
+* Deck folders: lowercase, hyphen-separated (e.g., city-guide)
+* Source files: kebab-case with descriptive names (e.g., main-station.htm)
+* Meta file prefixed with 00\_ to sort first alphabetically
 * Section folder prefixed with 01\_ to sort after meta
+
+## **2.3 Deck Metadata (deck.json)**
+
+Each deck directory contains a `deck.json` file that provides metadata used by the build system to generate the home page and organize decks.
+
+### **2.3.1 Schema**
+
+```json
+{
+  "title": "string",
+  "sort_order": "string",
+  "description": "string",
+  "group": "Current" | "Future" | "Obsolete"
+}
+```
+
+### **2.3.2 Field Definitions**
+
+| Field | Type | Required | Description |
+| :---- | :---- | :---- | :---- |
+| title | string | Yes | Display name shown on the home page |
+| sort_order | string | Yes | Alphanumeric string for ordering decks within a group |
+| description | string | Yes | Brief summary displayed below the title on the home page |
+| group | string | Yes | Categorization for home page grouping: "Current", "Future", or "Obsolete" |
+
+### **2.3.3 Example**
+
+```json
+{
+  "title": "Kerala",
+  "sort_order": "202602A",
+  "description": "Kochi overview and Kerala coastal travel essentials.",
+  "group": "Current"
+}
+```
+
+### **2.3.4 Group Semantics**
+
+* **Current**: Active decks that are relevant for upcoming or ongoing trips
+* **Future**: Planned decks for trips not yet confirmed or scheduled
+* **Obsolete**: Archived decks from past trips, retained for reference
+
+### **2.3.5 Fallback Behavior**
+
+If `deck.json` is missing or a field is not present, the build system uses the deck directory name as a fallback for title, sort_order, and description. If the group field is missing, the deck defaults to the "Current" group.
 
 # **3\. Navigation**
 
@@ -261,12 +306,29 @@ The service worker implements a cache-first strategy:
 
 The build.sh script performs the following steps for each deck:
 
-* Create output directory (dist/deck-name/)  
-* Invoke generator with configuration file, shared macros, and source files  
-* Copy deck-specific assets to output  
-* Inject service worker registration into generated HTML  
-* Copy PWA assets (manifest, icons, service worker) to dist/  
+* Create output directory (dist/deck-name/)
+* Invoke generator with configuration file, shared macros, and source files
+* Copy deck-specific assets to output
+* Inject service worker registration into generated HTML
+* Copy PWA assets (manifest, icons, service worker) to dist/
 * Generate root index.html listing all decks
+
+### **6.1.1 Home Page Generation**
+
+The build script generates the root index.html with the following process:
+
+1. **Discover Decks**: Find all directories under `decks/`
+2. **Read Metadata**: Extract title, sort_order, description, and group from each deck's `deck.json`
+3. **Group Decks**: Categorize decks into Current, Future, and Obsolete groups
+4. **Sort Within Groups**: Sort decks alphabetically by sort_order within each group
+5. **Render HTML**: Generate grouped deck listings with section headers
+
+The home page displays decks in three sections:
+* **Current**: Active decks displayed first
+* **Future**: Planned decks displayed second
+* **Obsolete**: Archived decks displayed last
+
+Each section only appears if it contains at least one deck. Within each section, decks are sorted by their sort_order field and displayed as clickable cards with title and description.
 
 ## **6.2 GitHub Actions Workflow**
 

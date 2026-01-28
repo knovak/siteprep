@@ -38,28 +38,39 @@ The system encompasses the following functional areas:
 
 ### **2.1.1 Deck Organization**
 
-1. The system SHALL support multiple independent decks within a single repository.  
-2. Each deck SHALL be contained in its own directory under a designated decks/ folder.  
-3. Each deck SHALL have a unique identifier and metadata configuration.  
-4. Decks SHALL be independently buildable and deployable.  
-5. Each deck SHALL have its own' CSS style  
-6. Each deck SHALL be able to have choice of CSS styles that can be changed at viewing time 
+1. The system SHALL support multiple independent decks within a single repository.
+2. Each deck SHALL be contained in its own directory under a designated decks/ folder.
+3. Each deck SHALL have a unique identifier and metadata configuration.
+4. Decks SHALL be independently buildable and deployable.
+5. Each deck SHALL have its own' CSS style
+6. Each deck SHALL be able to have choice of CSS styles that can be changed at viewing time
 
-### **2.1.2 Card Structure**
+### **2.1.2 Deck Metadata Configuration**
 
-7. Each card SHALL support a header section with title in multiple languages.  
-8. Cards SHALL support embedded images with responsive sizing.  
-9. Cards SHALL support collapsible/expandable sections (e.g., location details).  
-10. Cards SHALL support highlight boxes for important information (e.g., hours, fees, tips).  
-11. Cards SHALL support external links to resources (e.g., Wikipedia, maps).  
-12. Cards SHALL support internal navigation links to other cards within the deck.
+7. Each deck SHALL have a deck.json file in its root directory containing metadata.
+8. The deck.json file SHALL contain a "title" field with the display name for the deck.
+9. The deck.json file SHALL contain a "sort_order" field to control display ordering within groups.
+10. The deck.json file SHALL contain a "description" field with a brief summary of the deck content.
+11. The deck.json file SHALL contain a "group" field with one of the following values: "Current", "Future", or "Obsolete".
+12. The "group" field SHALL be used to categorize decks on the home page.
+13. If deck.json is missing or a field is not specified, the system SHALL use the deck directory name as a fallback.
+14. If the "group" field is missing, the system SHALL default to "Current". 
 
-### **2.1.3 Table of Contents**
+### **2.1.3 Card Structure**
 
-13. Each deck SHALL have a Table of Contents card as the entry point.  
-14. The Table of Contents SHALL organize cards into logical categories (e.g., Attractions, Hotels, Transport).  
-15. Category sections SHALL display as a grid of clickable items.  
-16. Each item SHALL show a title and brief description.
+15. Each card SHALL support a header section with title in multiple languages.
+16. Cards SHALL support embedded images with responsive sizing.
+17. Cards SHALL support collapsible/expandable sections (e.g., location details).
+18. Cards SHALL support highlight boxes for important information (e.g., hours, fees, tips).
+19. Cards SHALL support external links to resources (e.g., Wikipedia, maps).
+20. Cards SHALL support internal navigation links to other cards within the deck.
+
+### **2.1.4 Table of Contents**
+
+21. Each deck SHALL have a Table of Contents card as the entry point.
+22. The Table of Contents SHALL organize cards into logical categories (e.g., Attractions, Hotels, Transport).
+23. Category sections SHALL display as a grid of clickable items.
+24. Each item SHALL show a title and brief description.
 
 ## **2.2 Navigation**
 
@@ -173,11 +184,20 @@ The system encompasses the following functional areas:
 
 ## **4.3 Deployment**
 
-57. Deployment to GitHub Pages SHALL be automated on merge to main.  
-58. Each deck SHALL be accessible at a unique URL path (e.g., /deck-name/).  
-59. A root index page SHALL list and link to all available decks.  
-60. PWA assets SHALL be deployed alongside deck content.  
+57. Deployment to GitHub Pages SHALL be automated on merge to main.
+58. Each deck SHALL be accessible at a unique URL path (e.g., /deck-name/).
+59. A root index page SHALL list and link to all available decks.
+60. PWA assets SHALL be deployed alongside deck content.
 61. Non-main branches MAY deploy to staging URLs for preview.
+
+### **4.3.1 Home Page Deck Listing**
+
+62. The root index page SHALL display decks grouped by their "group" attribute.
+63. Decks in the "Current" group SHALL be displayed first under a "Current" heading.
+64. Decks in the "Future" group SHALL be displayed second under a "Future" heading.
+65. Decks in the "Obsolete" group SHALL be displayed last under an "Obsolete" heading.
+66. Within each group, decks SHALL be sorted by their "sort_order" field.
+67. Each group section SHALL only be displayed if it contains at least one deck.
 
 ## **4.4 Version Control**
 
