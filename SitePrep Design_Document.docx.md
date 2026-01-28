@@ -164,8 +164,8 @@ Styles are applied in the following order (later overrides earlier):
 | .card | Main container for card content |
 | .card-header | Card title section with styling |
 | .card-content | Main body content area |
-| .toc-grid | Grid layout for Table of Contents items |
-| .toc-item | Individual item in Table of Contents |
+| .toc-grid | Grid layout for Table of Contents items and section-level card lists |
+| .toc-item | Individual item in Table of Contents or card list |
 | .highlight | Highlighted info box (hours, fees, tips) |
 | .location-section | Collapsible location details container |
 | .navigation | Footer navigation links section |
