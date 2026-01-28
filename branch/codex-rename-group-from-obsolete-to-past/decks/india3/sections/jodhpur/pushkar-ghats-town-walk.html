@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghats and Town Walk (Pushkar) | Pushkar | Rajasthan Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Attraction</p>
+      <h1>Ghats and Town Walk (Pushkar)</h1>
+      <p class="subtitle"><a href="./overview.html">Pushkar</a></p>
+    </div>
+    <div class="card-content">
+      <p>A ghats-and-town walk in Pushkar winds through the lakefront steps, colorful bazaars, and narrow lanes filled with cafés and shops.</p>
+      <h2>History & context</h2>
+      <p>Pushkar's ghats evolved as ritual bathing points, while the bazaar lanes grew to serve pilgrims and the famous camel fair trade.</p>
+      <h2>Visitor details</h2>
+      <ul>
+        <li><strong>Hours:</strong> Most enjoyable in early morning or early evening when temperatures are cooler.</li>
+        <li><strong>Address:</strong> Start near Varaha Ghat or the main bazaar by Pushkar Lake.</li>
+        <li><strong>Google Map:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Start%20near%20Varaha%20Ghat%20or%20the%20main%20bazaar%20by%20Pushkar%20Lake">Start near Varaha Ghat or the main bazaar by Pushkar Lake</a></li>
+        <li><strong>Distance from Pushkar town center:</strong> Central walk within 0–1 km of the lakefront.</li>
+      </ul>
+      <h2>What travelers like</h2>
+      <ul>
+        <li>Lively street scenes and small temples.</li>
+        <li>Good cafés and artisan shops.</li>
+        <li>Atmospheric during morning aarti.</li>
+      </ul>
+      <h2>What travelers dislike or note</h2>
+      <ul>
+        <li>Narrow lanes can feel crowded.</li>
+        <li>Motorbikes and carts share the lanes.</li>
+        <li>Touts for camel rides and shopping.</li>
+      </ul>
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: './overview.html', label: 'Jodhpur Overview' },
+      { href: '../../../index.html', label: 'Rajasthan Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/rename-group-from-obsolete-to-past' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
