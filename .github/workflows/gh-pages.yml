@@ -54,7 +54,10 @@ jobs:
         id: version
         run: |
           BRANCH="${{ github.ref_name }}"
+          # Sanitize branch name (replace / with -)
+          SAFE_BRANCH=$(echo "$BRANCH" | sed 's/\//-/g')
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "safe_branch=$SAFE_BRANCH" >> $GITHUB_OUTPUT
           if [ "$BRANCH" == "main" ]; then
             echo "version=main" >> $GITHUB_OUTPUT
             echo "is_main=true" >> $GITHUB_OUTPUT
@@ -79,14 +82,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ steps.version.outputs.branch }}
+          name: playwright-report-${{ steps.version.outputs.safe_branch }}
           path: playwright-report/
           retention-days: 30
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-build-${{ steps.version.outputs.branch }}
+          name: site-build-${{ steps.version.outputs.safe_branch }}
           path: gh-pages/
           retention-days: 1
 
@@ -142,7 +145,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: site-build-${{ github.ref_name }}
+          name: site-build-${{ steps.version.outputs.safe_branch }}
           path: /tmp/build
 
       - name: Deploy to gh-pages
