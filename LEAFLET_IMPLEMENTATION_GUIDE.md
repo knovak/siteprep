@@ -690,6 +690,59 @@ map.scrollWheelZoom.enable();
 
 ---
 
+## Single-Map Section Page Pattern
+
+Use this lightweight pattern for a single map embedded inside a deck section page:
+
+```html
+<!-- Leaflet CSS in the <head> -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""/>
+
+<style>
+  .map-container {
+    height: 420px;
+    border: 2px solid #dcdcdc;
+    border-radius: 12px;
+    margin: 16px 0;
+  }
+</style>
+
+<div id="section-map" class="map-container"></div>
+
+<!-- Leaflet JS before your map script -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script>
+  const sectionMap = L.map('section-map').setView([28.6, 77.2], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(sectionMap);
+
+  const locations = [
+    { name: 'Location A', lat: 28.62, lng: 77.24, address: 'Address line' },
+    { name: 'Location B', lat: 28.55, lng: 77.09, address: 'Address line' }
+  ];
+
+  const bounds = L.latLngBounds([]);
+  locations.forEach((loc) => {
+    L.marker([loc.lat, loc.lng])
+      .addTo(sectionMap)
+      .bindPopup(`<strong>${loc.name}</strong><br>${loc.address}`);
+    bounds.extend([loc.lat, loc.lng]);
+  });
+
+  if (locations.length > 1) {
+    sectionMap.fitBounds(bounds, { padding: [30, 30] });
+  }
+</script>
+```
+
+---
+
 ## Summary Checklist
 
 When implementing a Leaflet map, ensure:
