@@ -5,6 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Udaipur | Rajasthan Deck</title>
   <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="">
+  <style>
+    .map-section {
+      margin-top: 32px;
+    }
+
+    .map-container {
+      height: 420px;
+      border: 2px solid #dcdcdc;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .map-legend button {
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-legend button:hover {
+      border-color: #6c7a89;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  </style>
   <link rel="manifest" href="../../../../../manifest.webmanifest">
   <script defer src="../../assets/scripts.js"></script>
 </head>
@@ -47,20 +92,14 @@
       <h2>Bagore-ki-Haveli Dharohar folk dance</h2>
       <p>Each evening, <a href="https://udaipurtourism.co.in/bagore-ki-haveli-udaipur" target="_blank" rel="noopener">Dharohar Folk Dance</a> stages an hour-long cultural show in the courtyard of an 18th-century haveli on Lake Pichola. Traditional Rajasthani performances include Ghoomar, Terah Taali, and Bhavai balancing acts, plus puppet theatre and live music beneath glowing stone balconies.</p>
       <p>Showtime is typically around 7–8 PM daily, with tickets often sold starting near 6:15 PM on a first-come basis. Arrive 30–60 minutes early to secure better seating, and check <a href="https://www.rajasthanplaces.com/udaipur/bagore-ki-haveli-dance-show/" target="_blank" rel="noopener">Bagore-ki-Haveli dance show</a> updates for current timing and pricing.</p>
-      <h2>Attractions list</h2>
-      <ul>
-        <li>City Palace</li>
-        <li>Crystal Gallery located in Fateh Prakash Palace</li>
-        <li>Sahelion Ki Bari (Garden of the Maids of Honor) to stroll its extensive lawns</li>
-        <li>Sunset cruise on Lake Pichola</li>
-        <li>Drive outside of the city to Delwara and the temple complex of Eklingji and Nagda, to explore its more than 100 temples</li>
-      </ul>
       <h2>Attraction pages</h2>
       <h3>Udaipur highlights</h3>
       <ul>
         <li><a href="./city-palace-museum.html">City Palace & City Palace Museum</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Crystal_Gallery_(Udaipur)">Crystal Gallery (Fateh Prakash Palace)</a></li>
         <li><a href="./lake-pichola.html">Lake Pichola</a></li>
         <li><a href="./lake-pichola-boat-ride.html">Lake Pichola boat ride</a></li>
+        <li><a href="https://udaipurtourism.co.in/lake-pichola-udaipur">Sunset cruise on Lake Pichola</a></li>
         <li><a href="./jag-mandir.html">Jag Mandir (island palace)</a></li>
         <li><a href="./jagdish-temple.html">Jagdish Temple</a></li>
         <li><a href="./saheliyon-ki-bari.html">Saheliyon Ki Bari (Garden of the Maidens)</a></li>
@@ -68,6 +107,7 @@
         <li><a href="./jal-sanjhi.html">Jal Sanjhi (Radha Vallabh Temple ritual)</a></li>
         <li><a href="./bagore-ki-haveli.html">Bagore-ki-Haveli (folk dance venue)</a></li>
         <li><a href="./folk-dance-show.html">Rajasthani folk dance show (general)</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Eklingji">Eklingji Temple</a> &amp; <a href="https://en.wikipedia.org/wiki/Nagda">Nagda Temples</a> (Delwara day trip)</li>
       </ul>
       <h3>Heritage walks & lakefront logistics</h3>
       <ul>
@@ -95,9 +135,138 @@
         <li><a href="./chittorgarh-fort.html">Chittorgarh Fort (UNESCO)</a></li>
         <li><a href="./gogunda-fort-palace.html">Gogunda Fort Palace (heritage experience)</a></li>
       </ul>
+      <section class="map-section">
+        <h2>Udaipur map: highlights & nearby excursions</h2>
+        <p>Pinpoints the city’s key palaces, temples, markets, and lakefronts alongside the major day trips and safari zones mentioned above.</p>
+        <h3>OpenStreetMap</h3>
+        <div id="udaipur-map-osm" class="map-container"></div>
+        <div id="udaipur-map-osm-legend" class="map-legend"></div>
+        <h3>OpenTopoMap</h3>
+        <div id="udaipur-map-topo" class="map-container"></div>
+        <div id="udaipur-map-topo-legend" class="map-legend"></div>
+      </section>
       <div id="page-nav"></div>
     </div>
   </article>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script>
+    const udaipurLocations = [
+      { name: 'The Lalit Laxmi Vilas Palace', lat: 24.5937796, lng: 73.6824844, type: 'Stay', color: '#8e44ad', icon: '🏨' },
+      { name: 'Fateh Sagar Lake', lat: 24.6, lng: 73.67, type: 'Lakefront', color: '#1abc9c', icon: '🌊' },
+      { name: 'Jagdish Misthan Bhandar (Surajpole)', lat: 24.5792865, lng: 73.6918775, type: 'Food stop', color: '#e67e22', icon: '🍬' },
+      { name: 'City Palace & City Palace Museum', lat: 24.576, lng: 73.683, type: 'Palace', color: '#9b59b6', icon: '🏰' },
+      { name: 'Crystal Gallery (Fateh Prakash Palace)', lat: 24.5749935, lng: 73.6834426, type: 'Museum', color: '#9b59b6', icon: '💎' },
+      { name: 'Lake Pichola', lat: 24.572, lng: 73.679, type: 'Lakefront', color: '#1abc9c', icon: '🌅' },
+      { name: 'Lake Pichola boat rides (Lal Ghat)', lat: 24.5787787, lng: 73.68242755, type: 'Boat ride', color: '#3498db', icon: '⛵' },
+      { name: 'Jag Mandir', lat: 24.5672, lng: 73.6781, type: 'Island palace', color: '#9b59b6', icon: '🏝️' },
+      { name: 'Jagdish Temple', lat: 24.579834, lng: 73.68386083, type: 'Temple', color: '#f39c12', icon: '🛕' },
+      { name: 'Jagdish Chowk', lat: 24.578507, lng: 73.6841806, type: 'Old city square', color: '#e67e22', icon: '🏘️' },
+      { name: 'Bagore-ki-Haveli (Dharohar folk dance)', lat: 24.5796687, lng: 73.6800357, type: 'Cultural show', color: '#c0392b', icon: '💃' },
+      { name: 'Radha Vallabh Temple (Jal Sanjhi)', lat: 24.5799, lng: 73.6829, type: 'Temple', color: '#f39c12', icon: '🪔' },
+      { name: 'Saheliyon-ki-Bari', lat: 24.60277778, lng: 73.68527778, type: 'Garden', color: '#27ae60', icon: '🌿' },
+      { name: 'Sajjangarh / Monsoon Palace', lat: 24.5931998, lng: 73.6394531, type: 'Hilltop palace', color: '#9b59b6', icon: '🌄' },
+      { name: 'Shri Manshapurna Karni Mata Temple', lat: 24.5660422, lng: 73.6892482, type: 'Temple & ropeway', color: '#f39c12', icon: '🚠' },
+      { name: 'Neemach Mata Temple', lat: 24.6130499, lng: 73.6759369, type: 'Temple hike', color: '#f39c12', icon: '🥾' },
+      { name: 'Hathi Pol Bazaar', lat: 24.58675105, lng: 73.68758804, type: 'Market', color: '#e67e22', icon: '🛍️' },
+      { name: 'Bada Bazaar', lat: 24.5813659, lng: 73.6899643, type: 'Market', color: '#e67e22', icon: '🧵' },
+      { name: 'Bapu Bazaar', lat: 24.5779894, lng: 73.6971996, type: 'Market', color: '#e67e22', icon: '🧺' },
+      { name: 'Maharana Pratap Airport', lat: 24.61777778, lng: 73.89611111, type: 'Airport', color: '#2980b9', icon: '✈️' },
+      { name: 'Jawai Leopard Safari (Jawai Bandh)', lat: 25.114378, lng: 73.1474782, type: 'Wildlife safari', color: '#16a085', icon: '🐆' },
+      { name: 'Eklingji Temple', lat: 24.7459558, lng: 73.7222375, type: 'Temple complex', color: '#f39c12', icon: '🛕' },
+      { name: 'Nagda Temples (Sas-Bahu)', lat: 24.7350903, lng: 73.716282, type: 'Temple complex', color: '#f39c12', icon: '🏛️' },
+      { name: 'Kumbhalgarh Fort', lat: 25.14916667, lng: 73.58111111, type: 'Fort', color: '#7f8c8d', icon: '🧱' },
+      { name: 'Chittorgarh Fort', lat: 24.88722222, lng: 74.64694444, type: 'Fort', color: '#7f8c8d', icon: '🏯' },
+      { name: 'Gogunda Fort Palace', lat: 24.757712, lng: 73.5293497, type: 'Heritage fort', color: '#7f8c8d', icon: '🏰' }
+    ];
+
+    const mapBounds = L.latLngBounds(udaipurLocations.map((loc) => [loc.lat, loc.lng]));
+
+    const mapOsm = L.map('udaipur-map-osm').setView([24.5854, 73.7125], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }).addTo(mapOsm);
+
+    const mapTopo = L.map('udaipur-map-topo').setView([24.5854, 73.7125], 11);
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+      maxZoom: 17
+    }).addTo(mapTopo);
+
+    const osmMarkers = [];
+    const topoMarkers = [];
+
+    udaipurLocations.forEach((location, index) => {
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `
+          <div style="position: relative; text-align: center;">
+            <svg width="40" height="55" viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="shadow-${index}" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.4"/>
+                </filter>
+              </defs>
+              <path d="M20 0C9 0 0 9 0 20c0 13.4 20 35 20 35s20-21.6 20-35C40 9 31 0 20 0z"
+                    fill="${location.color}"
+                    stroke="white"
+                    stroke-width="2.5"
+                    filter="url(#shadow-${index})"/>
+              <circle cx="20" cy="20" r="8" fill="white" opacity="0.9"/>
+              <text x="20" y="25" text-anchor="middle" font-size="12">${location.icon}</text>
+            </svg>
+          </div>
+        `,
+        iconSize: [40, 55],
+        iconAnchor: [20, 55],
+        popupAnchor: [0, -55]
+      });
+
+      const popupContent = `<strong>${location.name}</strong><br>${location.type}`;
+
+      osmMarkers.push(L.marker([location.lat, location.lng], { icon }).addTo(mapOsm).bindPopup(popupContent));
+      topoMarkers.push(L.marker([location.lat, location.lng], { icon }).addTo(mapTopo).bindPopup(popupContent));
+    });
+
+    mapOsm.fitBounds(mapBounds, { padding: [40, 40] });
+    mapTopo.fitBounds(mapBounds, { padding: [40, 40] });
+
+    L.control.scale({ imperial: false, metric: true }).addTo(mapOsm);
+    L.control.scale({ imperial: false, metric: true }).addTo(mapTopo);
+
+    function buildLegend(containerId, mapInstance, markers) {
+      const legend = document.getElementById(containerId);
+      udaipurLocations.forEach((location, index) => {
+        const button = document.createElement('button');
+        const swatch = document.createElement('span');
+        swatch.className = 'legend-swatch';
+        swatch.style.backgroundColor = location.color;
+
+        const label = document.createElement('span');
+        label.textContent = `${location.icon} ${location.name}`;
+
+        button.appendChild(swatch);
+        button.appendChild(label);
+        button.addEventListener('click', () => {
+          mapInstance.setView([location.lat, location.lng], location.zoom || 14);
+          markers[index].openPopup();
+        });
+        legend.appendChild(button);
+      });
+
+      const showAll = document.createElement('button');
+      showAll.textContent = 'Show all';
+      showAll.addEventListener('click', () => {
+        mapInstance.fitBounds(mapBounds, { padding: [40, 40] });
+      });
+      legend.appendChild(showAll);
+    }
+
+    buildLegend('udaipur-map-osm-legend', mapOsm, osmMarkers);
+    buildLegend('udaipur-map-topo-legend', mapTopo, topoMarkers);
+  </script>
   <script>
     buildBreadcrumb('page-nav', [
       { href: '../../../index.html', label: 'Rajasthan Home' },
