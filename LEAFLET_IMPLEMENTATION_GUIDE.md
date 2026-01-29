@@ -120,6 +120,44 @@ L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
 
 ---
 
+## 3a. Standard Map Block for Deck Pages
+
+When a request asks for a “standard map” on a deck or section page, use the two-map pattern above (OpenStreetMap followed by OpenTopoMap) and add a clickable legend below each display so users can jump to any location.
+
+```html
+<h3>OpenStreetMap</h3>
+<div id="map-osm" class="map-container"></div>
+<div id="legend-osm" class="map-legend"></div>
+
+<h3>OpenTopoMap</h3>
+<div id="map-topo" class="map-container"></div>
+<div id="legend-topo" class="map-legend"></div>
+```
+
+```javascript
+function buildLegend(containerId, mapInstance, markers, locations) {
+  const legend = document.getElementById(containerId);
+  locations.forEach((loc, index) => {
+    const button = document.createElement('button');
+    button.textContent = `${loc.icon} ${loc.name}`;
+    button.onclick = () => {
+      mapInstance.setView([loc.lat, loc.lng], loc.zoom || 14);
+      markers[index].openPopup();
+    };
+    legend.appendChild(button);
+  });
+
+  const showAll = document.createElement('button');
+  showAll.textContent = 'Show all';
+  showAll.onclick = () => mapInstance.fitBounds(L.latLngBounds(locations.map((l) => [l.lat, l.lng])));
+  legend.appendChild(showAll);
+}
+```
+
+Make sure the legend appears **below** each map, uses the same location list as the markers, and stays clickable on mobile (flex-wrap buttons or use a scrollable legend).
+
+---
+
 ## 4. Adding Markers
 
 ### Basic Markers
