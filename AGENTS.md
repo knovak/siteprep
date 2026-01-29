@@ -38,4 +38,4 @@ A request for making a "standard map" or simply a "map" should use the recommend
 * provide a clickable legend at the bottom of each display
 
 ## minimize merge conflicts
-When adding content, do not modify README.me unless a new deck is added.
+When adding content, do not modify README.md unless a new deck is added.
