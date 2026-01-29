@@ -32,7 +32,10 @@ A photo gallery may be requested with a list of URLs, each of which has an image
 A distance visualization may be requested with a list of location pairs, each pair with a time, such as "Fort Kochi to Alleppey houseboat 1h50m". You should find the locations' latitude and longitude to supply to the distance visualizer.
 
 ## Map generation
-Use the recommendations in LEAFLET_IMPLEMENTATION_GUIDE.md, such as creating both OpenStreetMap and OpenTopoMap and Custom Colored Markers
+A request for making a "standard map" or simply a "map" should use the recommendations in LEAFLET_IMPLEMENTATION_GUIDE.md.  This includes
+* creating two displays, one OpenStreetMap followed by OpenTopoMap 
+* use Custom Colored Markers
+* provide a clickable legend at the bottom of each display
 
 ## minimize merge conflicts
 When adding content, do not modify README.me unless a new deck is added.
