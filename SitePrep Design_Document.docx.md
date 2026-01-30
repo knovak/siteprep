@@ -130,6 +130,10 @@ Each deck directory contains a `deck.json` file that provides metadata used by t
 
 If `deck.json` is missing or a field is not present, the build system uses the deck directory name as a fallback for title, sort_order, and description. If the group field is missing, the deck defaults to the "Current" group.
 
+## **2.4 Content Elements**
+
+Section pages organize content into topics that pair a heading with rich body elements. In addition to text and lists, topics can embed external displays (such as Google Maps iframes) directly inside the content area so routes and locations can be previewed without leaving the deck.
+
 # **3\. Navigation**
 
 A repository will generate a website, which consists of 
