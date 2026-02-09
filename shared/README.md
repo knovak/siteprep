@@ -192,6 +192,7 @@ The entire `shared/` directory and its contents are copied to `gh-pages/shared/`
 4. **Test with multiple decks:** Ensure your library works correctly from different path depths
 5. **Minimize file sizes:** Use minified versions for production when appropriate
 6. **Avoid duplicates:** Check if similar functionality already exists before adding new libraries
+7. **Standard maps:** For deck section pages that need a standard map, include two Leaflet displays (OpenStreetMap then OpenTopoMap) with clickable legends beneath each map, matching the pattern used in the Rajasthan deck overview pages.
 
 ## Support
 
