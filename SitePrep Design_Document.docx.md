@@ -132,7 +132,7 @@ If `deck.json` is missing or a field is not present, the build system uses the d
 
 ## **2.4 Content Elements**
 
-Section pages organize content into topics that pair a heading with rich body elements. In addition to text and lists, topics can embed external displays (such as Google Maps iframes) directly inside the content area so routes and locations can be previewed without leaving the deck.
+Section pages organize content into topics that pair a heading with rich body elements. In addition to text and lists, topics can embed external displays (such as Google Maps iframes) directly inside the content area so routes and locations can be previewed without leaving the deck. When adding festival or observance content, include the relevant source links alongside the list items so readers can verify timing and context.
 
 # **3\. Navigation**
 
