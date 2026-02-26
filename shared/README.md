@@ -200,3 +200,6 @@ For questions or issues with shared libraries:
 - Check the library's documentation in its subdirectory
 - Verify relative paths are correct for your file location
 - Ensure external dependencies are loaded before library scripts
+
+## Recent content update
+- Added a new Aus2503 section page at `decks/aus2503/sections/hank-and-katherine/overview.html` for March 16–22 Brisbane/Maroochydore event planning, including a `.highlight` location card for River Plaza Apartments.
