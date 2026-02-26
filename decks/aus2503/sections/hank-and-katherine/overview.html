@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hank and Katherine | Aus2503 Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Hank and Katherine</h1>
+    </div>
+    <div class="card-content">
+      <p>This page tracks festival, theatre, and live-music options in Brisbane and Maroochydore during <strong>March 16–22</strong>.</p>
+
+      <h2>Festival picks (Brisbane / Sunshine Coast)</h2>
+      <ul>
+        <li><strong>Brisbane Cycling Festival:</strong> Multi-event city festival period with public race and fan-zone programming in Brisbane through March. <a href="https://www.brisbanecyclingfestival.com/" target="_blank" rel="noopener">Official festival site</a>.</li>
+        <li><strong>Anytime Festival (Sunshine Coast):</strong> Fringe-style arts festival that regularly includes Maroochydore venues and community performances in March windows. <a href="https://www.anytimefestival.com/" target="_blank" rel="noopener">Festival website</a>.</li>
+      </ul>
+
+      <h2>Theatre events to check for Mar 16–22</h2>
+      <ul>
+        <li><strong>Queensland Performing Arts Centre (QPAC), South Bank:</strong> Major venue for touring theatre, musicals, dance, and orchestral stage productions. <a href="https://www.qpac.com.au/" target="_blank" rel="noopener">QPAC calendar</a>.</li>
+        <li><strong>La Boite Theatre, Kelvin Grove:</strong> Contemporary Australian theatre season programming. <a href="https://laboite.com.au/" target="_blank" rel="noopener">La Boite events</a>.</li>
+        <li><strong>The Events Centre, Caloundra (near Maroochydore):</strong> Theatre and touring stage shows serving the Sunshine Coast. <a href="https://theeventscentre.com.au/" target="_blank" rel="noopener">The Events Centre program</a>.</li>
+      </ul>
+
+      <h2>Music performances to watch in that week</h2>
+      <ul>
+        <li><strong>Brisbane Powerhouse, New Farm:</strong> Frequent live-music, cabaret, and genre festival nights. <a href="https://brisbanepowerhouse.org/" target="_blank" rel="noopener">Brisbane Powerhouse what's on</a>.</li>
+        <li><strong>The Tivoli, Fortitude Valley:</strong> Touring bands and headline concerts. <a href="https://thetivoli.com.au/" target="_blank" rel="noopener">The Tivoli events</a>.</li>
+        <li><strong>Solbar, Maroochydore:</strong> Dedicated Sunshine Coast live-music venue with weeknight and weekend gigs. <a href="https://solbar.com.au/" target="_blank" rel="noopener">Solbar gig guide</a>.</li>
+      </ul>
+
+      <h2>Stay highlight</h2>
+      <div class="highlight">
+        <p><strong>River Plaza Apartments (Brisbane):</strong> Riverfront apartment stay near South Bank with quick access to QPAC and city venues.</p>
+        <p><strong>Address:</strong> 21 Dock Street, South Brisbane QLD 4101, Australia</p>
+        <p><strong>Google Maps:</strong> <a href="https://maps.google.com/?q=River+Plaza+Apartments+21+Dock+Street+South+Brisbane" target="_blank" rel="noopener">Open map location</a></p>
+      </div>
+
+      <p><em>Tip:</em> Open each venue calendar and filter to March 16–22 for the current year to lock in exact show names and start times.</p>
+
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Aus2503 Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: main' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
