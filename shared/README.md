@@ -205,3 +205,4 @@ For questions or issues with shared libraries:
 - Added a new Aus2503 section page at `decks/aus2503/sections/hank-and-katherine/overview.html` for March 16–22 Brisbane/Maroochydore event planning, including a `.highlight` location card for River Plaza Apartments.
 - Expanded Aus2503 content with a Guerilla Bay airport-access highlight and a Hank and Katherine schedule plus Sunshine Coast attraction location data.
 - Expanded the Hank and Katherine page with Brisbane and Maroochydore daytime/evening activity entries, each with links and location details (including City Hall, MacArthur Museum, Howard Smith Wharves, Mapleton Falls, ecoTekk tours, and more).
+- Updated the Hank and Katherine page with revised Maroochydore evening picks (The Law Artisan Distillery, The Architect live music, and Market Wine Store tastings), added lunch at Secrets on the Lake, and expanded Chenrezig Institute venue hours.
