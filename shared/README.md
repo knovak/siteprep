@@ -204,6 +204,7 @@ For questions or issues with shared libraries:
 ## Recent content update
 - Added a new Aus2503 section page at `decks/aus2503/sections/hank-and-katherine/overview.html` for March 16–22 Brisbane/Maroochydore event planning, including a `.highlight` location card for River Plaza Apartments.
 - Expanded Aus2503 content with a Guerilla Bay airport-access highlight and a Hank and Katherine schedule plus Sunshine Coast attraction location data.
+- Expanded Aus2503 with a new Guerilla Bay transit subsection (including the Canberra–Narooma Murrays timetable link) and added a Canberra section featuring the National Folk Festival venue/address/map details.
 - Expanded the Hank and Katherine page with Brisbane and Maroochydore daytime/evening activity entries, each with links and location details (including City Hall, MacArthur Museum, Howard Smith Wharves, Mapleton Falls, ecoTekk tours, and more).
 - Updated the Hank and Katherine page with revised Maroochydore evening picks (The Law Artisan Distillery, The Architect live music, and Market Wine Store tastings), added lunch at Secrets on the Lake, and expanded Chenrezig Institute venue hours.
 - Added new Hank and Katherine options for Noosa Festival of Surfing (including the Surfrider fundraiser link), GOMA's Olafur Eliasson exhibition, a convict-history walking sequence, Queensland Maritime Museum hours, Tin Can Bay dolphin feeding, Swan Boat Hire, and KaHunaHub Massage Temple with addresses and map links.
