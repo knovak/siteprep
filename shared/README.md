@@ -202,6 +202,7 @@ For questions or issues with shared libraries:
 - Ensure external dependencies are loaded before library scripts
 
 ## Recent content update
+- Reworked `decks/aus2503/sections/canberra/overview.html` to add the requested April 2-5, 2026 Canberra event set with per-item verification status, venue links, addresses, map links, and concise hours notes.
 - Added a new Aus2503 section page at `decks/aus2503/sections/kangaloon/overview.html` with a **Wineries** topic covering nearby Southern Highlands cellar doors (Centennial Vineyards, Cherry Tree Hill Wines, Artemis Wines, and Tertini Wines), each with address, hours, and Google Maps links.
 - Added a new Aus2503 section page at `decks/aus2503/sections/hank-and-katherine/overview.html` for March 16–22 Brisbane/Maroochydore event planning, including a `.highlight` location card for River Plaza Apartments.
 - Expanded Aus2503 content with a Guerilla Bay airport-access highlight and a Hank and Katherine schedule plus Sunshine Coast attraction location data.
