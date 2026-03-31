@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vilnius | Baltic Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Vilnius</h1>
+    </div>
+    <div class="card-content">
+      <p>Vilnius has broad transport coverage, with both app-based rides and public transport making it easy to move between the airport and city neighborhoods.</p>
+
+      <h2>Taxis and ride-hailing</h2>
+      <ul>
+        <li><strong>Ride-hailing is widely available:</strong> Bolt is the most widely used app in Vilnius, Uber is also available, and local apps such as eTAKSI operate in the city.</li>
+        <li><strong>Airport pickups are supported:</strong> At Vilnius Airport, Bolt operates with dedicated pickup zones, and ride-hailing pickups are permitted.</li>
+        <li><strong>Traditional taxis still operate:</strong> You can use official taxi ranks and generally pay by card or cash.</li>
+        <li><strong>Why apps help:</strong> Booking through apps typically shows the fare upfront, which helps avoid price surprises.</li>
+      </ul>
+
+      <h2>Public transport</h2>
+      <ul>
+        <li><strong>City network:</strong> Buses and trolleybuses provide broad, efficient city coverage.</li>
+        <li><strong>Ticket card:</strong> The <em>Vilniečio kortelė</em> is a reloadable e-ticket card that you tap when boarding.</li>
+        <li><strong>Mobile ticketing and planning:</strong> Apps such as m.Ticket, Trafi, and Judu let you plan routes and buy digital tickets on the go.</li>
+        <li><strong>Metro status:</strong> Vilnius does not currently have a metro in service.</li>
+      </ul>
+
+      <h2>Vilnius hotel highlight</h2>
+      <div class="highlight">
+        <ul>
+          <li>
+            <strong>Artagonist Art Hotel</strong> — Boutique Old Town stay with individually themed art rooms near Pilies Street.
+            Address: Pilies g. 34, Vilnius 01123, Lithuania.
+            <a href="https://artagonist.backhotelite.com/en/" target="_blank" rel="noopener">Hotel website</a> |
+            <a href="https://maps.google.com/?q=Artagonist+Art+Hotel+Pilies+g.+34+Vilnius" target="_blank" rel="noopener">Google Maps</a>
+          </li>
+          <li>
+            <strong>NARUTIS Hotel</strong> — Historic luxury hotel in Vilnius Old Town with dining and spa services.
+            Address: Pilies g. 24, Vilnius 01123, Lithuania.
+            <a href="https://www.narutis.com/" target="_blank" rel="noopener">Hotel website</a> |
+            <a href="https://maps.google.com/?q=NARUTIS+Hotel+Pilies+g.+24+Vilnius" target="_blank" rel="noopener">Google Maps</a>
+          </li>
+        </ul>
+      </div>
+
+      <h2>Vilnius Airport arrival note</h2>
+      <p>After arrivals, follow signs to the official taxi rank outside the terminal. If you prefer app-based transport, ride-hail pickups are also allowed at the airport, including designated pickup points.</p>
+
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Baltic Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-sections-for-riga-and-tallinn' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
