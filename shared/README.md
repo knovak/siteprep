@@ -214,3 +214,11 @@ For questions or issues with shared libraries:
 - Added new Hank and Katherine options for Noosa Festival of Surfing (including the Surfrider fundraiser link), GOMA's Olafur Eliasson exhibition, a convict-history walking sequence, Queensland Maritime Museum hours, Tin Can Bay dolphin feeding, Swan Boat Hire, and KaHunaHub Massage Temple with addresses and map links.
 - Added new `decks/baltic/` deck metadata and structure with a **Future** group entry, plus a Baltic deck homepage with a Vilnius section card.
 - Added `decks/baltic/sections/vilnius/overview.html` summarizing Vilnius transport options, including airport taxi rank guidance, Bolt/Uber/eTAKSI coverage, and bus/trolleybus ticketing apps.
+
+## Content Update Note (April 2026)
+
+Recent content updates added validated location-rich travel entries in:
+- `decks/baltic/sections/vilnius/overview.html` (Vilnius dining, ballooning, and Trakai planning)
+- `decks/aus2503/sections/sydney/overview.html` (Sydney event additions)
+
+These entries follow the project convention of embedding source links and Google Maps links directly in each location block.
