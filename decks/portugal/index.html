@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portugal Deck | Overview</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <a href="index.html" class="tag">Deck</a>
+      <h1>Portugal</h1>
+    </div>
+    <div class="card-content">
+      <p>Future planning notes for relaxed base-style hiking on the Alentejo coast and Fisherman's Trail logistics.</p>
+      <!-- Total sections: 1 | Style: Mobile-first cards with quick navigation | Last updated: April 2026 -->
+      <div id="deck-nav"></div>
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <a href="./sections/fishermans-trail/overview.html" class="toc-link">
+            <h3>Fisherman's Trail</h3>
+            <p>Condensed route, day-hike strategy from Milfontes, transport, and safety links.</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'Portugal Home' }
+    ]);
+  </script>
+</body>
+</html>

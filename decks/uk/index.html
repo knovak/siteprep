@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>United Kingdom Deck | Overview</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <a href="index.html" class="tag">Deck</a>
+      <h1>United Kingdom</h1>
+    </div>
+    <div class="card-content">
+      <p>Future planning notes for Southwest England coastal walks and small-town stopovers.</p>
+      <!-- Total sections: 1 | Style: Mobile-first cards with quick navigation | Last updated: April 2026 -->
+      <div id="deck-nav"></div>
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <a href="./sections/selcombe/overview.html" class="toc-link">
+            <h3>Selcombe (Salcombe)</h3>
+            <p>Harbour-town orientation, access notes, and planning links for South Devon.</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'United Kingdom Home' }
+    ]);
+  </script>
+</body>
+</html>
