@@ -38,3 +38,13 @@ This update adds two new **Future** decks and one expansion to an existing Austr
 ## Implementation notes
 - New decks reuse the shared deck visual system by copying `assets/styles.css` and `assets/scripts.js` from an existing deck.
 - Root deck grouping behavior remains driven by each deck's `deck.json` `group` field.
+
+## UK deck content update: `selcombe` travel logistics
+- Added a new topic, **"Travel from Exeter"**, to `decks/uk/sections/selcombe/overview.html`.
+- Topic format mirrors the existing "Travel from London" structure and documents:
+  - airport-to-rail transfer via Stagecoach 4A
+  - Totnes interchange to Salcombe on Tally Ho! 164
+  - weekend/holiday service constraints
+  - taxi fallback and live journey-planner links for day-of-travel checks
+- Added a dedicated source-link block for Exeter transfer planning.
+
