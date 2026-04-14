@@ -48,3 +48,22 @@ This update adds two new **Future** decks and one expansion to an existing Austr
   - taxi fallback and live journey-planner links for day-of-travel checks
 - Added a dedicated source-link block for Exeter transfer planning.
 
+## April 2026 content/status update: `uk`, `baltic`, `aus2503`
+- Updated UK section title presentation:
+  - `decks/uk/sections/selcombe/overview.html` now renders page title as **"Salcombe"**.
+  - `decks/uk/index.html` Table of Contents entry now reads **"Salcombe"**.
+- Added a highlighted contact block to the Salcombe page using `.highlight`:
+  - exchange partner name
+  - phone, email, and full address details
+- Added a new Salcombe topic, **"Ferries around Salcombe"**, with summarized service guidance and preserved operator links:
+  - South Sands Ferry
+  - Kingsbridge Salcombe Ferry
+  - Dartmouth–Kingswear Ferry services
+- Updated deck grouping metadata:
+  - `decks/aus2503/deck.json`: `group` changed from `Current` to `Past`
+  - `decks/uk/deck.json`: `group` changed from `Future` to `Current` (present designation)
+  - `decks/baltic/deck.json`: `group` changed from `Future` to `Current` (present designation)
+- Updated Baltic deck naming presentation to **"Baltics"**:
+  - `decks/baltic/deck.json` title changed to `Baltics`
+  - `decks/baltic/index.html` heading/title and home breadcrumb label updated
+  - Baltic section overview page titles and breadcrumbs aligned to `Baltics`
