@@ -15,3 +15,11 @@ Added two traveler-information topics to `decks/uk/sections/selcombe/overview.ht
   - street address
   - Google Map link
   - concise access-hours statement
+
+## April 2026 content-link refinement
+- Updated `decks/uk/sections/selcombe/overview.html` so source URLs are embedded directly in the relevant topic bullets instead of being separated into standalone "Source links" lists.
+- Applied this to:
+  - **Ferries around Salcombe** (operator/schedule links moved into the matching ferry bullets)
+  - **Travel from London** (Totnes, Tally Ho 164, route-estimate, and day-ticket links moved inline)
+  - **Travel from Exeter** (airport, bus timetable, rail planner, Tally Ho 164, Traveline, and Apple Taxis links moved inline)
+- Removed the redundant source-list subsections after integrating links into body text.
