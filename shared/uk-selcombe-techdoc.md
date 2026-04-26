@@ -39,3 +39,11 @@ Added two traveler-information topics to `decks/uk/sections/selcombe/overview.ht
 ### Weather note design decision
 - Requested dates (June 8–10 and June 10–13) are beyond short-range deterministic forecast windows at editing time.
 - To avoid false precision, pages use **expected conditions** based on Met Office long-term June climatological averages for planning-level guidance.
+
+## April 2026 Edinburgh content expansion (food, districts, rail)
+- Updated `decks/uk/sections/edinburgh/overview.html` with new traveler-planning topics:
+  - **The Witchery by the Castle** location block (summary, address, Google Map link, opening-hours note, official URL).
+  - **Virgin Hotels Edinburgh** location block (brief location summary, address, Google Map link, and hours note).
+  - **Polish district guidance** clarifying there is no formal district name, with an informal community-area reference to **Leith Walk** plus map/address details.
+  - **Edinburgh ↔ London rail guidance** confirming direct LNER service and current availability of First Class options.
+- Expanded the Edinburgh page links list with source URLs for the newly added topics.
