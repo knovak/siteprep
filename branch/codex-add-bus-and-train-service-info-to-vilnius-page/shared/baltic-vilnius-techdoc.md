@@ -1,4 +1,4 @@
-# Baltic Deck Vilnius techdoc addendum (MO Museum + Cathedral access + Riga transit)
+# Baltic Deck Vilnius techdoc addendum (MO Museum + Cathedral access)
 
 ## Scope
 This addendum documents newly added Vilnius topics in `decks/baltic/sections/vilnius/overview.html`.
@@ -23,11 +23,13 @@ A new topic summarizes access constraints and planning guidance:
 - bell tower and combo-product availability notes
 - recommendation to monitor calendar and confirm policy details during booking
 
-### Vilnius → Riga by bus or train
-A new transit topic was added for intercity planning to Latvia:
-- includes direct coach-booking references for FlixBus, Lux Express, and Ecolines
-- includes train-planning links for LTG Link (Lithuania) and Vivi (Latvia)
-- adds booking strategy guidance to compare bus vs rail timing and book peak departures early
-
 ## Link-handling note
 All user-supplied source URLs were preserved in-page as clickable links within topic bullets.
+
+### Vilnius to Riga by bus or train
+A new topic was added for intercity transport planning between Vilnius and Riga:
+- includes direct links for FlixBus, Lux Express, Ecolines, and Autobusubilietai
+- clarifies that bus is generally the simplest direct option
+- notes train planning is transfer-based and links both LTG Link (Lithuania) and Vivi (Latvia)
+- keeps links integrated directly in the in-page text for immediate booking/planning access
+
