@@ -1,7 +1,7 @@
 # AGENTS Instructions
 
 ## Technical documentation (techdoc)
-You will find technical documentation ("techdoc") in the markdown files in this repo, in the root folder or under `shared`. Whenever you add code to the repo, be sure to update the techdoc, either by adding a markdown file or by expanding an existing markdown file.
+You will find technical documentation ("techdoc") in the markdown files in this repo, in the root folder or under `shared`. Whenever you add executable code to the repo as a javascript file or github action, be sure to update the techdoc, either by adding a markdown file or by expanding an existing markdown file.  (Do not add documentation for changes only to html files.)
 
 ## Content organization
 You will often be asked by the user to add content. Content is located in a deck or a section, as described in the techdoc.
