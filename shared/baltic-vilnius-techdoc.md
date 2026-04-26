@@ -25,3 +25,11 @@ A new topic summarizes access constraints and planning guidance:
 
 ## Link-handling note
 All user-supplied source URLs were preserved in-page as clickable links within topic bullets.
+
+### Vilnius to Riga by bus or train
+A new topic was added for intercity transport planning between Vilnius and Riga:
+- includes direct links for FlixBus, Lux Express, Ecolines, and Autobusubilietai
+- clarifies that bus is generally the simplest direct option
+- notes train planning is transfer-based and links both LTG Link (Lithuania) and Vivi (Latvia)
+- keeps links integrated directly in the in-page text for immediate booking/planning access
+
