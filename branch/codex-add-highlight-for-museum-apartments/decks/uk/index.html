@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>United Kingdom Deck | Overview</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <script defer src="./assets/scripts.js"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <a href="index.html" class="tag">Deck</a>
+      <h1>United Kingdom</h1>
+    </div>
+    <div class="card-content">
+      <p>Future planning notes for Southwest England coastal walks, Scottish city/regional stops, and small-town stopovers.</p>
+      <!-- Total sections: 3 | Style: Mobile-first cards with quick navigation | Last updated: April 2026 -->
+      <div id="deck-nav"></div>
+      <div class="highlight">
+        <h2>UK Overview Food Note</h2>
+        <ul>
+          <li><strong>Rick Stein's Seafood Restaurant (Padstow, England):</strong> Flagship Cornwall seafood dining on Padstow's waterfront.</li>
+          <li><strong>Street address:</strong> The Seafood Restaurant, Riverside, Padstow, Cornwall PL28 8BY, United Kingdom.</li>
+          <li><strong>Google Map:</strong> <a href="https://maps.google.com/?q=Rick+Stein+Seafood+Restaurant+Padstow+PL28+8BY" target="_blank" rel="noopener">Rick Stein's Seafood Restaurant on Google Maps</a>.</li>
+          <li><strong>Hours:</strong> Daily service hours vary by season/day; check the current booking calendar before travel.</li>
+          <li><strong>Link:</strong> <a href="https://rickstein.com/restaurants/the-seafood-restaurant/" target="_blank" rel="noopener">Official restaurant page</a>.</li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="card" aria-labelledby="toc-title">
+    <div class="card-header">
+      <h2 id="toc-title">Table of Contents</h2>
+      <p class="meta">Choose a section to open its overview card.</p>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <a href="./sections/selcombe/overview.html" class="toc-link">
+            <h3>Salcombe</h3>
+            <p>Harbour-town orientation, access notes, and planning links for South Devon.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/inverness-and-regional/overview.html" class="toc-link">
+            <h3>Inverness and Regional</h3>
+            <p>Inverness lodging details, location links, and weather planning notes for June 10–13.</p>
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="./sections/edinburgh/overview.html" class="toc-link">
+            <h3>Edinburgh</h3>
+            <p>Stay Central Hotel details and weather planning notes for June 8–10.</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </main>
+
+  <script>
+    buildBreadcrumb('deck-nav', [
+      { href: '../index.html', label: 'All decks' },
+      { href: './index.html', label: 'United Kingdom Home' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../index.html', text: 'Version: codex/add-highlight-for-museum-apartments' });
+        
+        // Deck link
+        links.push({ href: 'index.html', text: 'Deck' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
