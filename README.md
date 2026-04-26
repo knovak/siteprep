@@ -8,6 +8,7 @@ This repository holds experimental deck content and a simple static build pipeli
 - **india2** – Kerala-focused deck with Kumarakom excursions and nearby day trips.
 
 - **aus2503** – Guerilla Bay hiking, WOMADelaide 2026, and Brisbane cultural highlights.
+- **poland** – Current Warsaw planning notes with weather expectations, contact details, and milk bar recommendations.
 
 ### Deck Configuration
 
