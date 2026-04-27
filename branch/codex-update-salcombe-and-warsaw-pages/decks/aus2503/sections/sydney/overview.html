@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sydney | Aus2503 Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Sydney</h1>
+    </div>
+    <div class="card-content">
+      <p>Sydney has two strong add-ons for this trip window: a major citywide show and an intimate jazz series in one of the city's landmark venues.</p>
+
+      <h2>Major festival highlight</h2>
+      <div class="highlight">
+        <p>
+          <strong>Sydney Royal Easter Show</strong> — One of Australia's largest annual ticketed public events, with agricultural showcases, carnival rides, family attractions, food stalls, and entertainment.
+          <br><strong>Location:</strong> Sydney Showground, 1 Showground Rd, Sydney Olympic Park NSW 2127, Australia
+          <br><strong>Hours:</strong> Opening hours vary by day/program; check the official daily planner.
+          <br><strong>Dates for the current season:</strong> 2-13 April 2026
+          <br><strong>Links:</strong>
+          <a href="https://www.eastershow.com.au/" target="_blank" rel="noopener">Official event site</a> |
+          <a href="https://www.sydneyshowground.com.au/" target="_blank" rel="noopener">Sydney Showground</a> |
+          <a href="https://maps.google.com/?q=Sydney+Showground+1+Showground+Road+Sydney+Olympic+Park+NSW+2127" target="_blank" rel="noopener">Google Maps</a>
+        </p>
+      </div>
+
+      <h2>Live music add-on</h2>
+      <ul>
+        <li>
+          <strong>Jazz at The Lounge</strong> — Smaller-scale jazz concert series with scheduled evening performances in April.
+          <br><strong>Location:</strong> The Lounge, The Concourse, 409 Victoria Ave, Chatswood NSW 2067, Australia
+          <br><strong>Hours:</strong> Event-led (example listing: 7:30-9:30 pm sessions)
+          <br><strong>Links:</strong>
+          <a href="https://whatson.cityofsydney.nsw.gov.au/events/jazz-at-the-lounge-2026-season" target="_blank" rel="noopener">2026 Jazz at The Lounge listing</a> |
+          <a href="https://www.theconcourse.com.au/events/jazz-at-the-lounge/" target="_blank" rel="noopener">Venue event page</a> |
+          <a href="https://maps.google.com/?q=The+Concourse+409+Victoria+Avenue+Chatswood+NSW+2067" target="_blank" rel="noopener">Google Maps</a>
+        </li>
+      </ul>
+
+      <h2>Planning tips</h2>
+      <ul>
+        <li>For high-demand dates (school holidays, weekend nights), book tickets as soon as schedules open.</li>
+        <li>If visiting both in one trip segment, use rail to Sydney Olympic Park for the Show and rail/Metro to Chatswood for The Concourse.</li>
+      </ul>
+
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Aus2503 Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/update-salcombe-and-warsaw-pages' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
