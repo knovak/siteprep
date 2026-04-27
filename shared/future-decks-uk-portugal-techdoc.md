@@ -67,3 +67,22 @@ This update adds two new **Future** decks and one expansion to an existing Austr
   - `decks/baltic/deck.json` title changed to `Baltics`
   - `decks/baltic/index.html` heading/title and home breadcrumb label updated
   - Baltic section overview page titles and breadcrumbs aligned to `Baltics`
+
+## April 2026 update: `netherlands` deck and UK/Poland additions
+- Added new deck: `netherlands`
+  - `title`: Netherlands
+  - `sort_order`: `202607B`
+  - `group`: `Current`
+  - Section added: `amsterdam`
+  - Deck assets added under `decks/netherlands/assets/` using the standard shared deck CSS/JS pattern.
+- Added Amsterdam overview content blocks:
+  - population snapshot
+  - expected weather notes for May 31-June 2
+  - events topic with Royal Concertgebouw and Holland Festival entries
+- Expanded UK deck with a new section:
+  - `london` (population + June 13 weather + King's Birthday Parade event link)
+- Updated UK Salcombe overview:
+  - introduction now includes the Salcombe Information link
+  - Exeter/Totnes transit notes now include daytime-only 164 constraints and taxi-booking guidance
+- Updated Poland/Warsaw overview:
+  - added a new `Festivals` topic, with Orange Warsaw Festival as the first entry.
