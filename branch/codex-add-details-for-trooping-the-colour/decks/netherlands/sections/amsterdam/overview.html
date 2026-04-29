@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amsterdam | Netherlands Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Amsterdam</h1>
+    </div>
+    <div class="card-content">
+      <p>Amsterdam combines historic canal belts, major museums, bike-first mobility, and an active events calendar from late spring into summer.</p>
+
+      <h2>Population</h2>
+      <ul>
+        <li><strong>Municipality of Amsterdam:</strong> about 920,000–940,000 residents.</li>
+        <li><strong>Metropolitan region:</strong> roughly 2.4–2.5 million residents.</li>
+      </ul>
+
+      <h2>Expected weather for May 31–June 2</h2>
+      <p>For <strong>May 31 to June 2</strong>, plan for typical late-spring to early-summer Amsterdam conditions: mild days, cooler evenings, and intermittent rain risk.</p>
+      <ul>
+        <li><strong>Typical range:</strong> around 11–20°C.</li>
+        <li><strong>Pack plan:</strong> light layers, comfortable walking shoes, and a compact waterproof shell.</li>
+      </ul>
+
+      <h2>Events</h2>
+      <ul>
+        <li><strong>Sun 31 May — Lorenzo Viotti leads Rachmaninoff (14:15–16:35):</strong> In the Royal Concertgebouw’s Main Hall, Lorenzo Viotti returns with the Netherlands Philharmonic Orchestra for a program centered on Rachmaninoff’s <em>Symphonic Dances, Op. 45</em>, with additional works including Shostakovich’s Violin Concerto No. 2. Ticket prices vary.</li>
+        <li><strong>June 3–28 — Holland Festival:</strong> Amsterdam’s major international performing arts festival with theater, dance, music, and interdisciplinary productions. Program and booking: <a href="https://www.hollandfestival.nl/en" target="_blank" rel="noopener">hollandfestival.nl/en</a>.</li>
+      </ul>
+
+      <div id="page-nav"></div>
+    </div>
+  </article>
+
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../index.html', label: 'Netherlands Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-details-for-trooping-the-colour' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
