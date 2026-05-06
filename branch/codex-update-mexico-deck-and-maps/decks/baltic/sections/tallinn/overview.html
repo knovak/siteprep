@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tallinn | Baltics Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Tallinn</h1>
+    </div>
+    <div class="card-content">
+      <p>Tallinn's medieval Old Town is compact and easy to navigate, with quick links to port, rail, and airport transfers.</p>
+
+      <h2>City stay highlight</h2>
+      <div class="highlight">
+        <ul>
+          <li>
+            <strong>Hotel Regent Tallinn</strong> — Small luxury stay in the Old Town core, close to city walls and major squares.
+            Address: Pikk tn 69, 10133 Tallinn, Estonia.
+            <a href="https://www.regenttallinn.com/" target="_blank" rel="noopener">Hotel website</a> |
+            <a href="https://maps.google.com/?q=Hotel+Regent+Tallinn+Pikk+69+Tallinn" target="_blank" rel="noopener">Google Maps</a>
+          </li>
+        </ul>
+      </div>
+
+      <h2>Quick orientation</h2>
+      <ul>
+        <li><strong>Airport transfer:</strong> Trams, taxis, and app-based rides connect Lennart Meri Tallinn Airport and the city center.</li>
+        <li><strong>Walkability:</strong> Old Town and nearby cultural districts are easy to cover on foot.</li>
+      </ul>
+
+
+      <h2>Attractions</h2>
+      <ul>
+        <li><strong>Telliskivi Creative City:</strong> Major Tallinn creative quarter with design shops, galleries, food halls, and regular cultural programming in renovated industrial buildings. <strong>Location:</strong> Telliskivi tn 60a, 10412 Tallinn, Estonia. <a href="https://telliskivi.cc/en/" target="_blank" rel="noopener">Official site</a> | <a href="https://visitestonia.com/en/telliskivi-loomelinnak" target="_blank" rel="noopener">Visit Estonia guide</a> | <a href="https://maps.google.com/?q=Telliskivi+60a+Tallinn" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Fotografiska Tallinn:</strong> Contemporary photography museum with rotating international exhibitions, talks, and a rooftop-focused dining/bar experience in the Telliskivi complex. <strong>Location:</strong> Telliskivi tn 60a-8, 10412 Tallinn, Estonia. <a href="https://tallinn.fotografiska.com/en" target="_blank" rel="noopener">Official site</a> | <a href="https://maps.google.com/?q=Fotografiska+Tallinn+Telliskivi+60a-8" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Kumu Art Museum:</strong> Main building of the Art Museum of Estonia and a major Kadriorg cultural stop, with Estonian art from academic and modernist periods through Soviet Pop and contemporary art. <strong>Street address:</strong> A. Weizenbergi 34 / Valge 1, 10127 Tallinn, Estonia. <strong>Hours:</strong> Tu-W, F-Su 10:00-18:00, Th 10:00-20:00, M closed; ticket sales end 30 minutes before closing. <strong>Shows to note:</strong> <a href="https://kumu.ekm.ee/en/syndmus/triumph-of-galatea-art-in-the-age-of-artificial-intelligence/" target="_blank" rel="noopener"><em>Triumph of Galatea: Art in the Age of Artificial Intelligence</em></a> runs 13 February-9 August 2026 on the 5th floor Contemporary Art Gallery; <a href="https://kumu.ekm.ee/en/syndmus/the-future-is-in-one-hour-estonian-art-in-the-1990s/" target="_blank" rel="noopener"><em>The Future is in One Hour: Estonian Art in the 1990s</em></a> is a permanent exhibition on the 4th floor B-wing about post-Soviet transition-era Estonian art. <a href="https://kumu.ekm.ee/en/" target="_blank" rel="noopener">Museum site</a> | <a href="https://maps.google.com/?q=Kumu+Art+Museum+A.+Weizenbergi+34+Valge+1+Tallinn" target="_blank" rel="noopener">Google Maps</a>.</li>
+      </ul>
+
+      <div id="page-nav"></div>
+    </div>
+  </article>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Baltics Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/update-mexico-deck-and-maps' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
