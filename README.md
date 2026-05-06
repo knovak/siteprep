@@ -9,6 +9,12 @@ This repository holds experimental deck content and a simple static build pipeli
 
 - **aus2503** – Guerilla Bay hiking, WOMADelaide 2026, and Brisbane cultural highlights.
 - **poland** – Current Warsaw planning notes with weather expectations, contact details, and milk bar recommendations.
+- **mexico** – Mexico City and San Miguel de Allende overviews with population, history, and early-July climate notes.
+
+
+### Deck asset convention
+
+Published decks include an `assets/styles.css` stylesheet and an `assets/scripts.js` helper copied into the deck directory so the build tests can verify consistent styling, navigation helpers, and service worker registration across decks.
 
 ### Deck Configuration
 
