@@ -133,8 +133,8 @@ fi
 for deck in "${DECKS[@]}"; do
   deck_index="$OUTPUT_DIR/decks/${deck}/index.html"
 
-  # Check for CSS link
-  if ! grep -q "styles.css" "$deck_index"; then
+  # Check for CSS link (any .css file — decks may use their own theme stylesheet)
+  if ! grep -qE '\.css"' "$deck_index"; then
     fail "BUILD-11 CSS import missing in ${deck}"
   fi
 
