@@ -4,74 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kerala Deck | Overview</title>
-  <link rel="stylesheet" href="./assets/styles.css">
+  <link rel="stylesheet" href="./assets/cartograph.css">
   <link rel="manifest" href="../../manifest.webmanifest">
   <script defer src="./assets/scripts.js"></script>
+  <script defer src="./assets/cartograph.js"></script>
 </head>
 <body>
-  <header class="card">
-    <div class="card-header">
-      <a href="index.html" class="tag">Deck</a>
-      <h1>Kerala</h1>
-    </div>
-    <div class="card-content">
-      <p>Kochi essentials and Kerala coastal travel notes.</p>
-      <!-- Total sections: 3 | Style: Mobile-first cards with quick navigation | Last updated: January 2024 -->
-      <div id="deck-nav"></div>
-    </div>
-  </header>
 
-  <main class="card" aria-labelledby="toc-title">
-    <div class="card-header">
-      <h2 id="toc-title">Table of Contents</h2>
-      <p class="meta">Choose a section to open its overview card.</p>
-    </div>
-    <div class="card-content">
-      <ul class="toc-grid">
-        <li class="toc-item">
-          <a href="./sections/kochi/overview.html" class="toc-link">
-            <h3>Kochi</h3>
-            <p>Coastal Kerala overview and seasonal notes.</p>
-          </a>
-        </li>
-        <li class="toc-item">
-          <a href="./sections/excursions/overview.html" class="toc-link">
-            <h3>Kumarakom</h3>
-            <p>Responsible Tourism village experiences and nearby trips.</p>
-          </a>
-        </li>
-        <li class="toc-item">
-          <a href="./sections/alleppey-houseboat/overview.html" class="toc-link">
-            <h3>Alleppey houseboat</h3>
-            <p>Lakeside stay highlight and houseboat experience notes.</p>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </main>
+<button class="cg-theme-toggle" data-cg-theme-toggle aria-label="Toggle theme">
+  <span class="cg-theme-icon"></span><span data-cg-theme-label>Night</span>
+</button>
 
-  <section class="card" aria-labelledby="festivals-title">
-    <div class="card-header">
-      <h2 id="festivals-title">Late January–Early February 2026 festivals</h2>
-      <p class="meta">Highlights across Kerala from Jan 31 to Feb 6, 2026.</p>
-    </div>
-    <div class="card-content">
-      <ul class="summary-list">
-        <li><strong><a href="https://www.mbifl.com/" target="_blank" rel="noopener">Mathrubhumi International Festival of Letters</a> (Thiruvananthapuram):</strong> Literary talks, author sessions, and cultural programming at Kanakakkunnu Palace, Jan 29–Feb 1.</li>
-        <li><strong><a href="https://kscnew.kerala.gov.in/" target="_blank" rel="noopener">38th Kerala Science Congress</a> (Kochi):</strong> Public-facing science exhibits and lectures alongside the academic congress, Jan 30–Feb 2.</li>
-        <li><strong><a href="https://www.kochimuzirisbiennale.org/" target="_blank" rel="noopener">Kochi-Muziris Biennale</a> (Fort Kochi + venues):</strong> Ongoing contemporary art installations, performances, and talks running through Mar 31.</li>
-        <li><strong><a href="https://www.tripadvisor.com/Attraction_Review-g608471-d4089187-Reviews-Kanichukulangara_Devi_Temple-Alappuzha_Alappuzha_District_Kerala.html" target="_blank" rel="noopener">Kanichukulangara Devi Temple Festival</a> (Alappuzha):</strong> Multi-week temple rituals and cultural processions, with Chikkarakkottikkal Koottakalam on Feb 2.</li>
-        <li><strong><a href="https://www.keralatourism.org/event/thaipooyam-festival-haippad/46/" target="_blank" rel="noopener">Thaipooyam Mahotsavam</a> (Thrissur + Harippad):</strong> Feb 1 temple festivities featuring kavadi processions, ceremonial music, and devotional observances.</li>
-        <li><strong><a href="https://www.facebook.com/maLoveLegacyLiteratureFest/" target="_blank" rel="noopener">Ma Literature Festival</a> (Malappuram):</strong> Literature panels, poetry, music, and workshops, Jan 30–Feb 2.</li>
-      </ul>
-    </div>
-  </section>
+<main class="cg">
+  <p class="cg-eyebrow">SitePrep · India</p>
+  <h1>Kerala<span class="cg-dot">.</span></h1>
+  <p class="cg-subtitle">Coastal backwaters, Feb 2026</p>
+  <p class="cg-lede">Kochi essentials and Kerala coastal travel notes — covering the city, Alleppey houseboats, and Kumarakom excursions.</p>
 
-  <script>
-    buildBreadcrumb('deck-nav', [
-      { href: '../index.html', label: 'All decks' },
-      { href: './index.html', label: 'Kerala Home' }
-    ]);
-  </script>
+  <div class="cg-card" style="margin-top:24px;">
+    <div class="cg-map cg-world" data-cg-pins='[
+      {"id":"kochi","lon":76.27,"lat":9.93,"kind":"now","label":"Kochi, Kerala"}
+    ]'>
+      <div class="cg-equator"></div>
+      <div class="cg-meridian"></div>
+      <span class="cg-map-corner cg-tl">Kerala</span>
+      <span class="cg-map-corner cg-br">76°E · 10°N</span>
+    </div>
+    <div class="cg-legend">
+      <span><i class="cg-now"></i> Kochi</span>
+    </div>
+  </div>
+
+  <h2>Sections</h2>
+  <ul>
+    <li class="cg-now" data-cg-pin-id="kochi">
+      <a href="./sections/kochi/overview.html"><strong>Kochi</strong></a>
+      <span>Port city, Fort Kochi, Chinese fishing nets, heritage hotels</span>
+      <span class="cg-meta">Overview</span>
+    </li>
+    <li class="cg-next">
+      <a href="./sections/excursions/overview.html"><strong>Kumarakom</strong></a>
+      <span>Responsible Tourism village, backwater excursions, Vembanad Lake</span>
+      <span class="cg-meta">Overview + 4 sub-pages</span>
+    </li>
+    <li class="cg-next">
+      <a href="./sections/alleppey-houseboat/overview.html"><strong>Alleppey houseboat</strong></a>
+      <span>Backwater canals, Lakes &amp; Lagoons, floating homestay experience</span>
+      <span class="cg-meta">Overview</span>
+    </li>
+  </ul>
+
+  <h2>Late January–Early February 2026 <span class="cg-h2-italic">festivals</span></h2>
+  <div class="cg-card">
+    <ul>
+      <li class="cg-tag-art">
+        <a href="https://www.kochimuzirisbiennale.org/" target="_blank" rel="noopener"><strong>Kochi-Muziris Biennale</strong></a>
+        <span>Contemporary art installations, performances, and talks across Fort Kochi venues — ongoing through Mar 31</span>
+        <span class="cg-tag">Art</span>
+      </li>
+      <li class="cg-tag-music">
+        <a href="https://www.keralatourism.org/event/thaipooyam-festival-haippad/46/" target="_blank" rel="noopener"><strong>Thaipooyam Mahotsavam</strong></a>
+        <span>Kavadi processions, ceremonial chenda music, and devotional observances in Thrissur &amp; Harippad — Feb 1</span>
+        <span class="cg-tag">Festival</span>
+      </li>
+      <li>
+        <a href="https://www.mbifl.com/" target="_blank" rel="noopener"><strong>Mathrubhumi International Festival of Letters</strong></a>
+        <span>Literary talks, author sessions, and cultural programming at Kanakakkunnu Palace, Thiruvananthapuram — Jan 29–Feb 1</span>
+        <span class="cg-meta">Literary</span>
+      </li>
+      <li>
+        <a href="https://kscnew.kerala.gov.in/" target="_blank" rel="noopener"><strong>38th Kerala Science Congress</strong></a>
+        <span>Public-facing science exhibits and lectures alongside the academic congress, Kochi — Jan 30–Feb 2</span>
+        <span class="cg-meta">Science</span>
+      </li>
+      <li>
+        <a href="https://www.tripadvisor.com/Attraction_Review-g608471-d4089187-Reviews-Kanichukulangara_Devi_Temple-Alappuzha_Alappuzha_District_Kerala.html" target="_blank" rel="noopener"><strong>Kanichukulangara Devi Temple Festival</strong></a>
+        <span>Multi-week temple rituals and cultural processions in Alappuzha, with Chikkarakkottikkal Koottakalam — Feb 2</span>
+        <span class="cg-meta">Temple</span>
+      </li>
+      <li>
+        <a href="https://www.facebook.com/maLoveLegacyLiteratureFest/" target="_blank" rel="noopener"><strong>Ma Literature Festival</strong></a>
+        <span>Literature panels, poetry, music, and workshops in Malappuram — Jan 30–Feb 2</span>
+        <span class="cg-meta">Literary</span>
+      </li>
+    </ul>
+  </div>
+
+  <footer class="cg-footer">
+    <div id="deck-nav"></div>
+    <span>Kerala Deck · Feb 2026</span>
+  </footer>
+</main>
+
+<script>
+  buildBreadcrumb('deck-nav', [
+    { href: '../index.html', label: 'All decks' }
+  ]);
+</script>
 </body>
 </html>
