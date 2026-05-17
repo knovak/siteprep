@@ -17,7 +17,11 @@
 <body>
   <article class="card">
     <div class="card-header">
-      <a href="overview.html" class="tag">Overview</a>
+      <nav class="tag-nav" aria-label="Primary">
+        <a href="../../../../index.html" class="tag">🏠 Home</a>
+        <a href="../../index.html" class="tag">⬆️ Top of deck</a>
+        <a href="https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link" class="tag" target="_blank" rel="noopener">🔺 Documents</a>
+      </nav>
       <h1>Amsterdam</h1>
     </div>
     <div class="card-content">
@@ -69,6 +73,9 @@
       <h2>Attractions</h2>
       <ul>
         <li><strong>NDSM art & events district:</strong> Former shipyard waterfront turned into a creative zone with large-scale street art, festivals, exhibitions, food venues, and cultural programming across indoor and outdoor spaces. <strong>Location:</strong> NDSM-plein 90c, 1033 WB Amsterdam, Netherlands. <a href="https://www.ndsm.nl/kunst-evenementen" target="_blank" rel="noopener">Kunst & evenementen page</a> | <a href="https://maps.google.com/?q=NDSM-plein+90c+1033+WB+Amsterdam" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Club Scene:</strong> Use these listing pages for late-breaking electronic, club, and dance-night options: <a href="https://www.djguide.nl/events.p/?date=31-05-2026" target="_blank" rel="noopener">DJ Guide listings for May 31</a>, <a href="https://www.djguide.nl/events.p?date=01-06-2026" target="_blank" rel="noopener">DJ Guide listings for June 1</a>, and <a href="https://ra.co/events/nl/amsterdam" target="_blank" rel="noopener">Resident Advisor Amsterdam listings for both days</a>.</li>
+        <li><strong>Jazz Café Alto:</strong> Long-running, walk-in live-jazz café near Leidseplein with nightly music. <strong>Street address:</strong> Korte Leidsedwarsstraat 115, 1017 PX Amsterdam, Netherlands. <strong>Hours:</strong> Su-Th open 20:30, live music 21:30-01:30, doors close 02:00, closed 03:00; F-Sa open 20:30, live music 21:30-02:30, doors close 03:00, closed 04:00. <strong>May 31 / June 1 events:</strong> Blue Temple on Sunday, May 31, 2026, 21:30-01:30; Cool Sound + Special Guest on Monday, June 1, 2026, 21:30-01:30. <a href="https://www.jazz-cafe-alto.nl/" target="_blank" rel="noopener">Jazz Café Alto website</a> | <a href="https://maps.google.com/?q=Jazz+Caf%C3%A9+Alto+Korte+Leidsedwarsstraat+115+Amsterdam" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>BIMHUIS:</strong> Major Amsterdam venue for jazz and improvised music on the IJ waterfront. <strong>Street address:</strong> Piet Heinkade 3, 1019 BR Amsterdam, Netherlands. <strong>Hours:</strong> Event-based; check the agenda and café/visit pages for door, box-office, and café times. <strong>May 31 / June 1 events:</strong> the agenda currently lists <em>WhyNot x BIMHUIS</em> on Sunday, May 31, 2026, at 20:30; check closer to the trip for any June 1 additions or changes. <a href="https://www.bimhuis.nl/agenda" target="_blank" rel="noopener">BIMHUIS agenda</a> | <a href="https://www.bimhuis.nl/" target="_blank" rel="noopener">BIMHUIS website</a> | <a href="https://maps.google.com/?q=BIMHUIS+Piet+Heinkade+3+Amsterdam" target="_blank" rel="noopener">Google Maps</a>.</li>
       </ul>
 
 
@@ -89,10 +96,20 @@
       <div id="amsterdam-map-topo" class="map-container"></div>
       <div id="amsterdam-legend-topo" class="map-legend"></div>
 
-      <div id="page-nav"></div>
     </div>
   </article>
 
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="../../../../index.html">Version: main</a>
+      <span class="footer-separator">|</span>
+      <a href="../../index.html">Deck</a>
+      <span class="footer-separator">|</span>
+      <a href="https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link" target="_blank" rel="noopener">Google Drive</a>
+      <span class="footer-separator">|</span>
+      <a href="../../../../index-versions.html">View all versions</a>
+    </div>
+  </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
@@ -147,13 +164,6 @@
     addLocations(amsterdamMapTopo, 'amsterdam-legend-topo');
   </script>
 
-
-  <script>
-    buildBreadcrumb('page-nav', [
-      { href: '../../index.html', label: 'Netherlands Home' },
-      { href: '../../../../index.html', label: 'All decks' }
-    ]);
-  </script>
   <footer class="site-footer">
     <script>
       (function() {
