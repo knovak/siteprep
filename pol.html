@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🇵🇱 Polish Phrasebook</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #DC143C;
+      --white: #F8F8F8;
+      --dark: #1a1a2e;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #DC143C;
+      --light-bg: #f3f4f6;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--light-bg);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--red) 0%, #8B0000 100%);
+      color: white;
+      padding: 20px 16px 16px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      font-size: 0.8rem;
+      opacity: 0.85;
+      margin-top: 3px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: white;
+      border-bottom: 2px solid #e5e7eb;
+      position: sticky;
+      top: 72px;
+      z-index: 99;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 13px 8px;
+      border: none;
+      background: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--red);
+      border-bottom-color: var(--red);
+    }
+
+    /* Content */
+    .tab-content { display: none; padding: 12px; }
+    .tab-content.active { display: block; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+      padding: 8px 4px 6px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      border: 1px solid #e9ecef;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .card:active {
+      transform: scale(0.97);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .card.playing {
+      border-color: var(--red);
+      background: #fff5f5;
+    }
+
+    .play-btn {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 50%;
+      background: var(--red);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+
+    .card.playing .play-btn {
+      background: #8B0000;
+    }
+
+    .play-btn svg {
+      fill: white;
+      width: 20px;
+      height: 20px;
+      margin-left: 2px;
+    }
+
+    .card.playing .play-btn svg {
+      animation: pulse 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.15); }
+    }
+
+    .card-text { flex: 1; min-width: 0; }
+
+    .polish {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+
+    .english {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .pronunciation {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      font-style: italic;
+      margin-top: 1px;
+    }
+
+    /* Speed control */
+    .controls {
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid #e9ecef;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+
+    .controls label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .speed-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .speed-btn {
+      flex: 1;
+      padding: 8px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .speed-btn.active {
+      border-color: var(--red);
+      color: var(--red);
+      background: #fff5f5;
+    }
+
+    /* No TTS warning */
+    .warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 0.83rem;
+      color: #856404;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .flag { font-size: 1.1em; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><span class="flag">🇵🇱</span> Polish Phrasebook <span class="flag">🇬🇧</span></h1>
+  <p>Tap any card to hear the Polish pronunciation</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('words')">📝 Words</button>
+  <button class="tab-btn" onclick="showTab('phrases')">💬 Phrases</button>
+  <button class="tab-btn" onclick="showTab('tips')">ℹ️ Tips</button>
+</div>
+
+<!-- WORDS TAB -->
+<div id="tab-words" class="tab-content active">
+
+  <div style="padding: 12px 0 4px;">
+    <div class="controls">
+      <label>🐢 Speaking speed</label>
+      <div class="speed-btns">
+        <button class="speed-btn" onclick="setSpeed(0.6, this)">Slow</button>
+        <button class="speed-btn active" onclick="setSpeed(0.85, this)">Normal</button>
+        <button class="speed-btn" onclick="setSpeed(1.1, this)">Fast</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tts-warning" class="warning">
+    ⚠️ Polish voice not found. Try: Settings → General → Accessibility → Spoken Content → Voices → Polish. On Android: Settings → Text-to-speech → Install Polish.
+  </div>
+
+  <div class="section-label">🍺 Food & Drink</div>
+
+  <div class="card" onclick="speak('kawa', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Kawa</div>
+      <div class="english">Coffee</div>
+      <div class="pronunciation">kah-vah</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('piwo', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Piwo</div>
+      <div class="english">Beer</div>
+      <div class="pronunciation">pee-voh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('woda', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Woda</div>
+      <div class="english">Water</div>
+      <div class="pronunciation">voh-dah</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('chleb', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Chleb</div>
+      <div class="english">Bread</div>
+      <div class="pronunciation">kh-leb</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('jedzenie', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Jedzenie</div>
+      <div class="english">Food</div>
+      <div class="pronunciation">yed-zen-ye</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('herbata', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Herbata</div>
+      <div class="english">Tea</div>
+      <div class="pronunciation">her-bah-tah</div>
+    </div>
+  </div>
+
+  <div class="section-label">🏨 Places</div>
+
+  <div class="card" onclick="speak('hotel', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Hotel</div>
+      <div class="english">Hotel</div>
+      <div class="pronunciation">hoh-tel</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('restauracja', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Restauracja</div>
+      <div class="english">Restaurant</div>
+      <div class="pronunciation">res-tow-rah-tsya</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('lotnisko', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Lotnisko</div>
+      <div class="english">Airport</div>
+      <div class="pronunciation">lot-nees-ko</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('dworzec', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Dworzec</div>
+      <div class="english">Train station</div>
+      <div class="pronunciation">dvoh-zhets</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('apteka', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Apteka</div>
+      <div class="english">Pharmacy</div>
+      <div class="pronunciation">ap-teh-kah</div>
+    </div>
+  </div>
+
+  <div class="section-label">✅ Essentials</div>
+
+  <div class="card" onclick="speak('tak', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Tak</div>
+      <div class="english">Yes</div>
+      <div class="pronunciation">tahk</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('nie', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Nie</div>
+      <div class="english">No</div>
+      <div class="pronunciation">nyeh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('proszę', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Proszę</div>
+      <div class="english">Please / Here you go</div>
+      <div class="pronunciation">proh-sheh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('dziękuję', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Dziękuję</div>
+      <div class="english">Thank you</div>
+      <div class="pronunciation">jen-koo-yeh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('przepraszam', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Przepraszam</div>
+      <div class="english">Sorry / Excuse me</div>
+      <div class="pronunciation">psheh-prah-shahm</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('pomoc', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Pomoc</div>
+      <div class="english">Help</div>
+      <div class="pronunciation">poh-mots</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('taksówka', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Taksówka</div>
+      <div class="english">Taxi</div>
+      <div class="pronunciation">tak-soov-kah</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('pieniądze', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Pieniądze</div>
+      <div class="english">Money</div>
+      <div class="pronunciation">pyen-yond-zeh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('toaleta', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Toaleta</div>
+      <div class="english">Toilet / Bathroom</div>
+      <div class="pronunciation">toh-ah-leh-tah</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PHRASES TAB -->
+<div id="tab-phrases" class="tab-content">
+
+  <div style="padding: 12px 0 4px;">
+    <div class="controls">
+      <label>🐢 Speaking speed</label>
+      <div class="speed-btns">
+        <button class="speed-btn" onclick="setSpeed(0.6, this)">Slow</button>
+        <button class="speed-btn active" onclick="setSpeed(0.85, this)">Normal</button>
+        <button class="speed-btn" onclick="setSpeed(1.1, this)">Fast</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">🙋 Greetings</div>
+
+  <div class="card" onclick="speak('Dzień dobry', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Dzień dobry</div>
+      <div class="english">Good morning / Good day</div>
+      <div class="pronunciation">jen dob-rih</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('Dobranoc', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Dobranoc</div>
+      <div class="english">Good night</div>
+      <div class="pronunciation">dob-rah-nots</div>
+    </div>
+  </div>
+
+  <div class="section-label">🚽 Getting Around</div>
+
+  <div class="card" onclick="speak('Gdzie jest toaleta?', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Gdzie jest toaleta?</div>
+      <div class="english">Where is the toilet?</div>
+      <div class="pronunciation">gdje yest toh-ah-leh-tah</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('Gdzie jest dworzec?', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Gdzie jest dworzec?</div>
+      <div class="english">Where is the train station?</div>
+      <div class="pronunciation">gdje yest dvoh-zhets</div>
+    </div>
+  </div>
+
+  <div class="section-label">🍺 Ordering</div>
+
+  <div class="card" onclick="speak('Poproszę piwo', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Poproszę piwo</div>
+      <div class="english">A beer, please</div>
+      <div class="pronunciation">po-proh-sheh pee-voh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('Ile to kosztuje?', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Ile to kosztuje?</div>
+      <div class="english">How much does it cost?</div>
+      <div class="pronunciation">ee-leh to kosh-too-yeh</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('Rachunek, proszę', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Rachunek, proszę</div>
+      <div class="english">The bill, please</div>
+      <div class="pronunciation">rah-khoo-nek proh-sheh</div>
+    </div>
+  </div>
+
+  <div class="section-label">🗣️ Communication</div>
+
+  <div class="card" onclick="speak('Nie rozumiem', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Nie rozumiem</div>
+      <div class="english">I don't understand</div>
+      <div class="pronunciation">nyeh roh-zoo-myem</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('Czy mówisz po angielsku?', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Czy mówisz po angielsku?</div>
+      <div class="english">Do you speak English?</div>
+      <div class="pronunciation">chih moo-vish po an-gyel-skoo</div>
+    </div>
+  </div>
+
+  <div class="card" onclick="speak('Czy możesz mi pomóc?', this)">
+    <button class="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="card-text">
+      <div class="polish">Czy możesz mi pomóc?</div>
+      <div class="english">Can you help me?</div>
+      <div class="pronunciation">chih moh-zhesh mee poh-moots</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIPS TAB -->
+<div id="tab-tips" class="tab-content">
+
+  <div style="padding: 8px 0;">
+
+    <div class="controls" style="margin-bottom: 12px;">
+      <label style="font-size: 0.95rem; color: var(--dark); margin-bottom: 10px;">📱 Offline setup</label>
+      <p style="font-size: 0.85rem; color: #374151; line-height: 1.6;">This file works entirely offline. You're reading it from your phone — no internet needed. Audio uses your phone's built-in Polish voice.</p>
+    </div>
+
+    <div class="controls" style="margin-bottom: 12px;">
+      <label style="font-size: 0.95rem; color: var(--dark); margin-bottom: 10px;">🍎 iPhone users</label>
+      <p style="font-size: 0.85rem; color: #374151; line-height: 1.6;">Polish voice is built in. If audio doesn't play, go to: <strong>Settings → Accessibility → Spoken Content → Voices → Polish</strong> and download a voice.</p>
+    </div>
+
+    <div class="controls" style="margin-bottom: 12px;">
+      <label style="font-size: 0.95rem; color: var(--dark); margin-bottom: 10px;">🤖 Android users</label>
+      <p style="font-size: 0.85rem; color: #374151; line-height: 1.6;">Go to <strong>Settings → General Management → Language → Text-to-Speech</strong> and ensure Polish is installed under Google TTS engine.</p>
+    </div>
+
+    <div class="controls" style="margin-bottom: 12px;">
+      <label style="font-size: 0.95rem; color: var(--dark); margin-bottom: 10px;">🔤 Quick pronunciation guide</label>
+      <p style="font-size: 0.85rem; color: #374151; line-height: 1.7;">
+        <strong>cz</strong> = "ch" in cheese<br>
+        <strong>sz</strong> = "sh" in shoe<br>
+        <strong>ż / rz</strong> = "zh" like the s in measure<br>
+        <strong>ś / si</strong> = soft "sh"<br>
+        <strong>ń / ni</strong> = soft "ny"<br>
+        <strong>ą</strong> = nasal "on"<br>
+        <strong>ę</strong> = nasal "en"<br>
+        <strong>ó / u</strong> = "oo" as in food<br>
+        <strong>w</strong> = "v" sound<br>
+        <strong>j</strong> = "y" as in yes
+      </p>
+    </div>
+
+    <div class="controls">
+      <label style="font-size: 0.95rem; color: var(--dark); margin-bottom: 8px;">💡 Tip: Slow it down</label>
+      <p style="font-size: 0.85rem; color: #374151; line-height: 1.6;">Use the <strong>Slow</strong> speed setting when learning a new word. Switch to Normal before using it in conversation.</p>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>🇵🇱 Miłej podróży! (Have a great trip!) 🇵🇱</footer>
+
+<script>
+  let currentRate = 0.85;
+  let currentCard = null;
+  let synth = window.speechSynthesis;
+  let audioUnlocked = false;
+
+  // iOS requires a silent utterance to unlock audio on first user gesture
+  function unlockAudio() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    const unlock = new SpeechSynthesisUtterance('');
+    unlock.volume = 0;
+    synth.speak(unlock);
+  }
+
+  document.addEventListener('touchstart', unlockAudio, { once: true });
+
+  function getBestVoice() {
+    const voices = synth.getVoices();
+    // Prefer exact pl-PL, then any pl-*, then fall back to null (browser picks)
+    return voices.find(v => v.lang === 'pl-PL')
+        || voices.find(v => v.lang.startsWith('pl'))
+        || null;
+  }
+
+  function doSpeak(text, cardEl) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'pl-PL';
+    utter.rate = currentRate;
+    utter.pitch = 1.0;
+
+    const voice = getBestVoice();
+    if (voice) utter.voice = voice;
+
+    utter.onend = () => {
+      cardEl.classList.remove('playing');
+      if (currentCard === cardEl) currentCard = null;
+    };
+    utter.onerror = () => {
+      cardEl.classList.remove('playing');
+      if (currentCard === cardEl) currentCard = null;
+    };
+
+    synth.speak(utter);
+  }
+
+  function speak(text, cardEl) {
+    if (!synth) return;
+
+    synth.cancel();
+
+    if (currentCard && currentCard !== cardEl) {
+      currentCard.classList.remove('playing');
+    }
+    currentCard = cardEl;
+    cardEl.classList.add('playing');
+
+    // iOS needs a small gap after cancel() before speaking
+    setTimeout(() => doSpeak(text, cardEl), 100);
+  }
+
+  function setSpeed(rate, btn) {
+    currentRate = rate;
+    // Update button styles within the same controls block
+    const parent = btn.closest('.speed-btns');
+    parent.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    // Cancel speech when switching tabs
+    if (synth) synth.cancel();
+    if (currentCard) { currentCard.classList.remove('playing'); currentCard = null; }
+  }
+</script>
+
+</body>
+</html>
