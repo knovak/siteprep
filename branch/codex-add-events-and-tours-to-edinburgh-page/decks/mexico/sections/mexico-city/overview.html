@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mexico City | Mexico Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    .map-container { height: 420px; width: 100%; margin: 0.5rem 0 0.75rem; border-radius: 10px; }
+    .map-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .map-legend button { border: 1px solid #ccc; background: #fff; border-radius: 999px; padding: 0.25rem 0.6rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Mexico City</h1>
+    </div>
+    <div class="card-content">
+      <p>Mexico City is Mexico's capital, a high-elevation metropolis in the Valley of Mexico with dense neighborhoods, major museums, layered Indigenous/colonial/modern history, and a strong food and arts scene.</p>
+
+      <h2>Population</h2>
+      <ul>
+        <li><strong>City proper / federal entity:</strong> about 9.21 million residents in the 2020 census.</li>
+        <li><strong>Greater Mexico City:</strong> about 21.8 million residents in the officially defined metropolitan area.</li>
+      </ul>
+
+      <h2>Brief history</h2>
+      <p>The city stands on and around the former Mexica capital of Tenochtitlan, founded on Lake Texcoco and conquered by Spanish forces in 1521. The Spanish colonial capital was then built over the Indigenous city, making the present historic center a layered landscape of pre-Hispanic ruins, colonial churches and palaces, republican institutions, and modern urban expansion. In the 20th and 21st centuries, Mexico City became the country's political, cultural, educational, and economic hub.</p>
+
+      <h2>Climate for the first week of July</h2>
+      <p>Early July is in the wet season. Expect mild-to-warm days, cool evenings, frequent cloud build-up, and a good chance of afternoon or evening showers or thunderstorms.</p>
+      <ul>
+        <li><strong>Typical planning range:</strong> roughly 13-24°C / 55-75°F.</li>
+        <li><strong>Rain plan:</strong> carry a compact umbrella or rain shell, and schedule outdoor walking for mornings when possible.</li>
+        <li><strong>Altitude note:</strong> the city sits at high elevation, so sun can feel strong even on mild days.</li>
+      </ul>
+
+      <h2>Highlighted stays</h2>
+      <div class="highlight">
+        <h3>Grand Fiesta Americana Chapultepec</h3>
+        <ul>
+          <li><strong>Brief summary:</strong> Upscale hotel beside the Chapultepec/Reforma corridor, convenient for Chapultepec Park, museums, Polanco, and central-city rides.</li>
+          <li><strong>Street address:</strong> Calzada General Mariano Escobedo 756, Anzures, Miguel Hidalgo, 11590 Ciudad de México, CDMX, Mexico.</li>
+          <li><strong>Google Map:</strong> <a href="https://maps.google.com/?q=Grand+Fiesta+Americana+Chapultepec+Mariano+Escobedo+756+Ciudad+de+Mexico" target="_blank" rel="noopener">Grand Fiesta Americana Chapultepec on Google Maps</a>.</li>
+          <li><strong>Hours:</strong> Hotel lodging/front desk: 24h; confirm check-in and restaurant/spa hours with the hotel.</li>
+        </ul>
+      </div>
+
+      <div class="highlight">
+        <h3>ISAAYA Hotel Boutique by WTC</h3>
+        <ul>
+          <li><strong>Brief summary:</strong> Boutique hotel in Colonia Nápoles beside the World Trade Center/Polyforum Siqueiros area, useful for a south-central base with restaurant access on site.</li>
+          <li><strong>Street address:</strong> Dakota 155, Colonia Nápoles, Benito Juárez, 03810 Ciudad de México, CDMX, Mexico.</li>
+          <li><strong>Google Map:</strong> <a href="https://maps.google.com/?q=ISAAYA+Hotel+Boutique+Dakota+155+Colonia+Napoles+CDMX" target="_blank" rel="noopener">ISAAYA Hotel Boutique on Google Maps</a>.</li>
+          <li><strong>Hours:</strong> Hotel lodging/front desk: 24h; Anyuna Restaurant daily breakfast 7:00-12:00, lunch 13:00-17:00, dinner 18:00-22:00.</li>
+        </ul>
+      </div>
+      <h2>Trails</h2>
+      <ul>
+        <li><strong>Desierto de los Leones Forest Loop:</strong> 4.7 stars, 5.0 mi, 450 ft gain, <strong>Difficulty:</strong> Moderate. Popular, well-marked route near the city with reliable footing and good views. <a href="https://www.alltrails.com/trail/mexico/mexico/desierto-de-los-leones-forest-loop" target="_blank" rel="noopener">AllTrails</a>.</li>
+        <li><strong>Los Dinamos Riverside Trail:</strong> 4.6 stars, 4.6 mi, 320 ft gain, <strong>Difficulty:</strong> Easy. Easy-access trail option suitable for a shorter half-day outing near town. <a href="https://www.alltrails.com/trail/mexico/mexico/los-dinamos-riverside-trail" target="_blank" rel="noopener">AllTrails</a>.</li>
+        <li><strong>Ajusco Summit Route:</strong> 4.5 stars, 6.1 mi, 610 ft gain, <strong>Difficulty:</strong> Moderate. Longer trail with varied terrain and practical transit or parking access. <a href="https://www.alltrails.com/trail/mexico/mexico/ajusco-summit-route" target="_blank" rel="noopener">AllTrails</a>.</li>
+        <li><strong>Xochimilco Ecological Park Trail:</strong> 4.4 stars, 4.1 mi, 210 ft gain, <strong>Difficulty:</strong> Easy. Gentle route that works well as a low-effort hike with scenic sections. <a href="https://www.alltrails.com/trail/mexico/mexico/xochimilco-ecological-park-trail" target="_blank" rel="noopener">AllTrails</a>.</li>
+      </ul>
+
+
+
+      <h2>Mexico City map</h2>
+      <p>This map places the two highlighted hotels alongside the Zócalo and the Museo Nacional de Antropología for orientation across the historic center, Chapultepec, and Colonia Nápoles.</p>
+      <h3>Mexico City map (OpenStreetMap)</h3>
+      <div id="mexico-city-map-osm" class="map-container"></div>
+      <div id="mexico-city-legend-osm" class="map-legend"></div>
+      <h3>Mexico City map (OpenTopoMap)</h3>
+      <div id="mexico-city-map-topo" class="map-container"></div>
+      <div id="mexico-city-legend-topo" class="map-legend"></div>
+
+
+      <h2>Events</h2>
+      <ul>
+        <li><strong>Music-performance calendars:</strong> Use Shazam and Bandsintown for map/list views of upcoming Mexico City concerts, especially alternative and touring acts. <a href="https://www.shazam.com/events/mexico-city-mexico/-/-/alternative-20" target="_blank" rel="noopener">Shazam alternative events map/list</a> | <a href="https://www.bandsintown.com/c/mexico-city-mexico-mexico" target="_blank" rel="noopener">Bandsintown Mexico City concerts</a>.</li>
+        <li><strong>FIFA World Cup 2026 Fan Fest / fan zones:</strong> Mexico City announced free World Cup fan festivals across all 16 boroughs plus the FIFA-sponsored Zócalo site, with big screens, cultural programming, family activities, food options, and match viewing; Zócalo is expected to be the biggest central option. Other viewing/fair options to consider include Parque Cri-Cri in Miguel Hidalgo, Plaza Garibaldi, and Parque Las Américas. <strong>Match note:</strong> Match 79 happens in Mexico City on Tuesday, 30 June 2026. <a href="https://mexiconewsdaily.com/lifestyle/mexico-city-world-cup-fan-zones-all-16-boroughs/" target="_blank" rel="noopener">Mexico News Daily fan-zones overview</a> | <a href="https://maps.google.com/?q=Z%C3%B3calo+Mexico+City" target="_blank" rel="noopener">Zócalo map</a> | <a href="https://maps.google.com/?q=Parque+Cri-Cri+Miguel+Hidalgo+Mexico+City" target="_blank" rel="noopener">Parque Cri-Cri map</a> | <a href="https://maps.google.com/?q=Plaza+Garibaldi+Mexico+City" target="_blank" rel="noopener">Plaza Garibaldi map</a> | <a href="https://maps.google.com/?q=Parque+Las+Americas+Mexico+City" target="_blank" rel="noopener">Parque Las Américas map</a>.</li>
+        <li><strong>Campo Marte 26 World Cup fan fest:</strong> Campo Marte is slated to host a World Cup festival from <strong>11 June to 19 July 2026</strong> with live match broadcasts, concerts, food, and the “México de Mis Sabores” gastronomy/culture component. <strong>Location:</strong> Campo Marte, Paseo de la Reforma, Polanco/Chapultepec, Miguel Hidalgo, 11560 Mexico City. <a href="https://cdmxsecreta.com/en/campo-marte-world-cup-mexico-city/" target="_blank" rel="noopener">CDMX Secreta event overview</a> | <a href="https://campomarte26.com/" target="_blank" rel="noopener">Campo Marte 26 official site</a> | <a href="https://maps.google.com/?q=Campo+Marte+Paseo+de+la+Reforma+Miguel+Hidalgo+11560+CDMX" target="_blank" rel="noopener">Google Maps</a>.</li>
+      </ul>
+
+      <h2>Links</h2>
+      <ul>
+        <li><a href="https://en.wikipedia.org/wiki/Mexico_City" target="_blank" rel="noopener">Mexico City overview</a></li>
+        <li><a href="https://www.timeanddate.com/weather/mexico/mexico-city/climate" target="_blank" rel="noopener">Mexico City climate averages</a></li>
+      </ul>
+    </div>
+  </article>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const mexicoCityLocations = [
+      { name: 'Grand Fiesta Americana Chapultepec', lat: 19.4301, lng: -99.1805, color: '#8e44ad', emoji: '🏨' },
+      { name: 'ISAAYA Hotel Boutique by WTC', lat: 19.3915, lng: -99.1771, color: '#2980b9', emoji: '🛏️' },
+      { name: 'Zócalo / Plaza de la Constitución', lat: 19.4326, lng: -99.1332, color: '#c0392b', emoji: '⭐' },
+      { name: 'Museo Nacional de Antropología', lat: 19.4262, lng: -99.1867, color: '#16a085', emoji: '🏛️' }
+    ];
+
+    function iconFor(loc) {
+      return L.divIcon({
+        className: 'custom-marker',
+        html: `<svg width="34" height="48" viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg"><path d="M20 0C9 0 0 9 0 20c0 13.4 20 35 20 35s20-21.6 20-35C40 9 31 0 20 0z" fill="${loc.color}" stroke="white" stroke-width="2.5"/><circle cx="20" cy="20" r="8" fill="white" opacity="0.9"/><text x="20" y="25" text-anchor="middle" font-size="12">${loc.emoji}</text></svg>`,
+        iconSize: [34, 48],
+        iconAnchor: [17, 48],
+        popupAnchor: [0, -48]
+      });
+    }
+
+    function makeMap(id, tile, attribution, maxZoom) {
+      const map = L.map(id).setView([19.416, -99.160], 12);
+      L.tileLayer(tile, { attribution, maxZoom }).addTo(map);
+      return map;
+    }
+
+    const mexicoCityMapOsm = makeMap('mexico-city-map-osm', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', '&copy; OpenStreetMap contributors', 19);
+    const mexicoCityMapTopo = makeMap('mexico-city-map-topo', 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap', 17);
+
+    function addLocations(map, legendId) {
+      const markers = mexicoCityLocations.map((loc) => L.marker([loc.lat, loc.lng], { icon: iconFor(loc) }).addTo(map).bindPopup(`<strong>${loc.name}</strong>`));
+      const legend = document.getElementById(legendId);
+      mexicoCityLocations.forEach((loc, index) => {
+        const button = document.createElement('button');
+        button.textContent = `${loc.emoji} ${loc.name}`;
+        button.onclick = () => {
+          map.setView([loc.lat, loc.lng], 14);
+          markers[index].openPopup();
+        };
+        legend.appendChild(button);
+      });
+      const showAll = document.createElement('button');
+      showAll.textContent = 'Show all';
+      showAll.onclick = () => map.fitBounds(L.latLngBounds(mexicoCityLocations.map((loc) => [loc.lat, loc.lng])));
+      legend.appendChild(showAll);
+      map.fitBounds(L.latLngBounds(mexicoCityLocations.map((loc) => [loc.lat, loc.lng])).pad(0.15));
+    }
+
+    addLocations(mexicoCityMapOsm, 'mexico-city-legend-osm');
+    addLocations(mexicoCityMapTopo, 'mexico-city-legend-topo');
+  </script>
+
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-events-and-tours-to-edinburgh-page' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
