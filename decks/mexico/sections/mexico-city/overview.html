@@ -110,7 +110,7 @@
 
 
       <h2>Mexico City map</h2>
-      <p>This map places the highlighted hotels alongside the Zócalo and the Museo Nacional de Antropología for orientation across the historic center, Chapultepec, Reforma, and Colonia Nápoles.</p>
+      <p>This map places the highlighted hotels, all listed attractions and restaurants, plus central orientation points across the historic center, Chapultepec, Reforma, Roma, Condesa, Polanco, Coyoacán, and Colonia Nápoles.</p>
       <h3>Mexico City map (OpenStreetMap)</h3>
       <div id="mexico-city-map-osm" class="map-container"></div>
       <div id="mexico-city-legend-osm" class="map-legend"></div>
@@ -132,10 +132,25 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     const mexicoCityLocations = [
-      { name: 'Marquis Reforma Hotel & Spa', lat: 19.4237, lng: -99.1750, color: '#8e44ad', emoji: '🏨' },
-      { name: 'ISAAYA Hotel Boutique by WTC', lat: 19.3915, lng: -99.1771, color: '#2980b9', emoji: '🛏️' },
-      { name: 'Zócalo / Plaza de la Constitución', lat: 19.4326, lng: -99.1332, color: '#c0392b', emoji: '⭐' },
-      { name: 'Museo Nacional de Antropología', lat: 19.4262, lng: -99.1867, color: '#16a085', emoji: '🏛️' }
+      { name: 'Marquis Reforma Hotel & Spa', lat: 19.4237, lng: -99.1750, color: '#8e44ad', emoji: '🏨', category: 'Hotel' },
+      { name: 'ISAAYA Hotel Boutique by WTC', lat: 19.3915, lng: -99.1771, color: '#2980b9', emoji: '🛏️', category: 'Hotel' },
+      { name: 'Frida Kahlo Museum / Casa Azul', lat: 19.3552, lng: -99.1628, color: '#c0392b', emoji: '🎨', category: 'Attraction' },
+      { name: 'Chapultepec Castle', lat: 19.4204, lng: -99.1819, color: '#c0392b', emoji: '🏰', category: 'Attraction' },
+      { name: 'Mercado de Artesanías La Ciudadela', lat: 19.4286, lng: -99.1501, color: '#c0392b', emoji: '🧺', category: 'Attraction' },
+      { name: 'Contramar', lat: 19.4199, lng: -99.1676, color: '#d35400', emoji: '🍽️', category: 'Restaurant' },
+      { name: 'Masala y Maíz', lat: 19.4318, lng: -99.1507, color: '#d35400', emoji: '🍽️', category: 'Restaurant' },
+      { name: 'Taverna', lat: 19.4318, lng: -99.1565, color: '#d35400', emoji: '🍽️', category: 'Restaurant' },
+      { name: 'Blanco Colima', lat: 19.4207, lng: -99.1604, color: '#e67e22', emoji: '🍴', category: 'Restaurant' },
+      { name: 'Expendio de Maíz Sin Nombre', lat: 19.4167, lng: -99.1637, color: '#e67e22', emoji: '🌽', category: 'Restaurant' },
+      { name: 'Taquería Orinoco', lat: 19.4174, lng: -99.1618, color: '#e67e22', emoji: '🌮', category: 'Restaurant' },
+      { name: 'Lardo', lat: 19.4133, lng: -99.1757, color: '#e67e22', emoji: '🥐', category: 'Restaurant' },
+      { name: 'La Clandestina', lat: 19.4144, lng: -99.1717, color: '#e67e22', emoji: '🥃', category: 'Restaurant' },
+      { name: 'Filigrana', lat: 19.4204, lng: -99.1727, color: '#f39c12', emoji: '🍴', category: 'Restaurant' },
+      { name: 'Rosetta Restaurant', lat: 19.4208, lng: -99.1606, color: '#f39c12', emoji: '🍝', category: 'Restaurant' },
+      { name: 'Pujol', lat: 19.4325, lng: -99.1941, color: '#f39c12', emoji: '🍽️', category: 'Restaurant' },
+      { name: 'Quintonil', lat: 19.4319, lng: -99.1932, color: '#f39c12', emoji: '🍽️', category: 'Restaurant' },
+      { name: 'Zócalo / Plaza de la Constitución', lat: 19.4326, lng: -99.1332, color: '#16a085', emoji: '⭐', category: 'Orientation' },
+      { name: 'Museo Nacional de Antropología', lat: 19.4262, lng: -99.1867, color: '#16a085', emoji: '🏛️', category: 'Orientation' }
     ];
 
     function iconFor(loc) {
@@ -158,7 +173,7 @@
     const mexicoCityMapTopo = makeMap('mexico-city-map-topo', 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap', 17);
 
     function addLocations(map, legendId) {
-      const markers = mexicoCityLocations.map((loc) => L.marker([loc.lat, loc.lng], { icon: iconFor(loc) }).addTo(map).bindPopup(`<strong>${loc.name}</strong>`));
+      const markers = mexicoCityLocations.map((loc) => L.marker([loc.lat, loc.lng], { icon: iconFor(loc) }).addTo(map).bindPopup(`<strong>${loc.name}</strong><br>${loc.category}`));
       const legend = document.getElementById(legendId);
       mexicoCityLocations.forEach((loc, index) => {
         const button = document.createElement('button');
