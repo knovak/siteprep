@@ -13,6 +13,24 @@ Content is generally organized as a web page that contains a series of "topics".
 - a distance visualization, as described in techdoc
 - a photo gallery, as described in techdoc
 
+## New decks and sections
+When adding a deck or section, it will usually refer to an area, such as a country, region, or city. Make sure the new page has:
+- a Basic Info topic with:
+  - the population of the area; if the area is a city, include both central city and metro area population
+  - the altitude and a brief summary of the climate
+  - a very brief history, including the founding date, with a link to the Wikipedia page for more information
+- an Attractions topic with a few popular tourist attractions, including a modern art museum or national park if nearby; provide location info for each attraction
+- if the area is a city, a Neighborhoods topic listing the neighborhoods that are walkable or important for visitors
+
+When a deck or section is given a specific date range:
+- add the following to the Basic Info topic:
+  - the dates, including the day of the week
+  - the expected weather for that time of year
+  - any regular holidays for that area (national, regional, or religious) during those dates or during the previous or following one week
+- add an Events topic with a few events such as major festivals, street fairs, free concerts, etc.; provide location info for each event
+
+Every new deck or section should have a map with all the locations on the page included.
+
 ## Highlights
 Content may be requested to be "highlighted" or "placed in a highlight". This means you should use the `.highlight` in the CSS to make a highlight box as described in techdoc.
 
