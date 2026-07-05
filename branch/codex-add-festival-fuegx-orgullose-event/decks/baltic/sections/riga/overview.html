@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riga | Baltics Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem; }
+    th, td { border: 1px solid #d8dee9; padding: 0.5rem; vertical-align: top; text-align: left; }
+    th { background: #f3f6fb; }
+    .map-container { height: 460px; width: 100%; margin: 0.5rem 0 0.75rem; border-radius: 10px; }
+    .map-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .map-legend button { border: 1px solid #ccc; background: #fff; border-radius: 999px; padding: 0.25rem 0.6rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <a href="overview.html" class="tag">Overview</a>
+      <h1>Riga</h1>
+    </div>
+    <div class="card-content">
+      <p>Riga combines walkable Old Town streets with straightforward airport and city-center transport links. Visit Wednesday May 27 to Thursday May 28, sunrise 4:45am, sunset 9:56pm, waxing gibbous.</p>
+
+      <h2>City stay highlight</h2>
+      <div class="highlight">
+        <ul>
+          <li>
+            <strong>Wellton Riga Hotel &amp; SPA</strong> — Central Old Town hotel with spa facilities, convenient for rail, market, and riverfront walks.
+            Address: Vaļņu iela 49, Centra rajons, Rīga, LV-1050, Latvia.
+            <a href="https://wellton.com/en/hotels/wellton-riga-hotel-spa" target="_blank" rel="noopener">Hotel website</a> |
+            <a href="https://maps.google.com/?q=Wellton+Riga+Hotel+and+SPA+Valnu+iela+49+Riga" target="_blank" rel="noopener">Google Maps</a>
+          </li>
+        </ul>
+      </div>
+
+      <h2>Quick orientation</h2>
+      <ul>
+        <li><strong>Airport transfer:</strong> Taxi, Bolt, and airport bus services connect Riga International Airport and the center.</li>
+        <li><strong>Walkability:</strong> Most major Old Town sights are within a short walking radius.</li>
+      </ul>
+
+
+      <h2>Riga Art Week</h2>
+      <p>Riga Art Week runs 25-31 May 2026 as a city-wide contemporary art festival; use the <a href="https://www.rigaartweek.com/en/calendar" target="_blank" rel="noopener">Riga Art Week calendar</a> for the live programme.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Event name</th><th>URL</th><th>Date and time</th><th>Location</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Wandering the Streets: Urban Visions of Latvian Modernists</td><td><a href="https://www.rigaartweek.com/en-events/wandering-the-streets-urban-visions-of-latvian-modernists" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 10:00-18:00</td><td><a href="https://maps.google.com/?q=Latvian+National+Museum+of+Art%2C+Ja%C5%86a+Rozent%C4%81la+laukums+1%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Latvian National Museum of Art, Jaņa Rozentāla laukums 1</a></td></tr>
+            <tr><td>2</td><td>Dreams of Various Length: Manifestations of Surrealism in Latvian Printmaking in the 1970s-80s</td><td><a href="https://www.rigaartweek.com/en-events/dreams-of-various-length-manifestations-of-surrealism-in-latvian-printmaking-in-the-1970s-80s-exhibition-from-the-generation-cycle" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 10:00-18:00</td><td><a href="https://maps.google.com/?q=Latvian+National+Museum+of+Art%2C+Ja%C5%86a+Rozent%C4%81la+laukums+1%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Latvian National Museum of Art, Jaņa Rozentāla laukums 1</a></td></tr>
+            <tr><td>3</td><td>“MAMA Mother Nature” travelling exhibition</td><td><a href="https://www.rigaartweek.com/en-events/mama-mother-nature" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 11:00-19:00</td><td><a href="https://maps.google.com/?q=M%C4%81kslas+muzejs+Zuzeum%2C+L%C4%81%C4%8Dpl%C4%93%C5%A1a+iela+101%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Mākslas muzejs Zuzeum, Lāčplēša iela 101, Rīga</a></td></tr>
+            <tr><td>4</td><td>“Spectrum: Artist’s Signature” jewelry pop-up exhibition</td><td><a href="https://www.rigaartweek.com/en-events/spectrum-artists-signature-the-first-jewelry-pop-up-exhibition-in-the-series" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 11:00-19:00</td><td><a href="https://maps.google.com/?q=Museum+of+Decorative+Arts+and+Design%2C+Sk%C4%81r%C5%86u+iela+10%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Museum of Decorative Arts and Design, Skārņu iela 10</a></td></tr>
+            <tr><td>5</td><td>Exhibition “Under Pressure”</td><td><a href="https://www.rigaartweek.com/en-events/art-academy-of-latvia-printmaking-department-group-exhibition" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-17:00</td><td><a href="https://maps.google.com/?q=LOOK%21%2C+%C4%A2ertr%C5%ABdes+iela+62a%2C+Riga%2C+Latvia" target="_blank" rel="noopener">LOOK!, Ģertrūdes iela 62a</a></td></tr>
+            <tr><td>6</td><td>“Between Reflections and Recollections” Kaulača and Koivisto</td><td><a href="https://www.rigaartweek.com/en-events/between-reflections-and-recollections-vineta-kaulaca-and-kaisu-koivisto" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-18:00</td><td><a href="https://maps.google.com/?q=M%C4%80KSLA+XO+gallery%2C+Elizabetes+iela+14%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">MĀKSLA XO gallery, Elizabetes iela 14, Rīga</a></td></tr>
+            <tr><td>7</td><td>Rūta Kalmuka’s solo exhibition “DZEN”, RPB 2026</td><td><a href="https://www.rigaartweek.com/en-events/ruta-kalmukas-solo-exhibition-dzen" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-18:00</td><td><a href="https://maps.google.com/?q=ISSP+galerija%2C+Berga+Baz%C4%81rs%2C+Marijas+iela+13+k.3%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">ISSP galerija, Berga Bazārs, Marijas iela 13 k.3, Rīga</a></td></tr>
+            <tr><td>8</td><td>Group exhibition “Colour as Message. Colour Photography Before the Digital and AI Era”, RPB 2026</td><td><a href="https://www.rigaartweek.com/en-events/colour-as-message-colour-photography-before-the-digital-and-ai-era-group-exhibition" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-18:00</td><td><a href="https://maps.google.com/?q=Galerija+Istaba%2C+Kri%C5%A1j%C4%81%C5%86a+Barona+iela+31B%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Galerija “Istaba”, Krišjāņa Barona iela 31B, Rīga</a></td></tr>
+            <tr><td>9</td><td>“Safe Zones and Shifting Timelines” — Luīze Rukšāne, Rūdolfs Štamers</td><td><a href="https://www.rigaartweek.com/en-events/safe-zones-and-shifting-timelines" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-18:00</td><td><a href="https://maps.google.com/?q=Latvian+Centre+for+Contemporary+Art%2C+Alberta+iela+13%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Latvian Centre for Contemporary Art, Alberta iela 13, 7th floor</a></td></tr>
+            <tr><td>10</td><td>“Garden state” by “Latvania”</td><td><a href="https://www.rigaartweek.com/en-events/garden-state-by-latvania" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-18:00</td><td><a href="https://maps.google.com/?q=Art+Academy+of+Latvia+Experimental+Art+Space+PILOT%2C+Riharda+V%C4%81gnera+iela+3%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Art Academy of Latvia Experimental Art Space PILOT, Riharda Vāgnera iela 3, Rīga</a></td></tr>
+            <tr><td>11</td><td>Kaspars Grošev’s solo exhibition Live With/Think About</td><td><a href="https://www.rigaartweek.com/en-events/kaspars-grosevs-solo-exhibition-live-with-think-about" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-18:00</td><td><a href="https://maps.google.com/?q=Kim%3F+Contemporary+Art+Centre%2C+Sporta+iela+2%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Kim? Contemporary Art Centre, Sporta iela 2, Riga</a></td></tr>
+            <tr><td>12</td><td>Group exhibition “Zoom In: Ecology”, RFB 2026</td><td><a href="https://www.rigaartweek.com/en-events/central-event-of-the-riga-photography-biennial-2026---the-exhibition-zoom-in-ecology" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-19:00</td><td><a href="https://maps.google.com/?q=R%C4%ABgas+Laikmet%C4%ABg%C4%81s+m%C4%81kslas+telpa%2C+Kungu+iela+3%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Izstāžu zāle “Rīgas Laikmetīgās mākslas telpa”, Kungu iela 3, Rīga</a></td></tr>
+            <tr><td>13</td><td>Priyageetha Dia’s solo exhibition “everything you need to see is already in front of you”, RPB 2026</td><td><a href="https://www.rigaartweek.com/en-events/priyageetha-dias-solo-exhibition-everything-you-need-to-see-is-already-in-front-of-you" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-19:00</td><td><a href="https://maps.google.com/?q=R%C4%ABgas+Laikmet%C4%ABg%C4%81s+m%C4%81kslas+telpa%2C+Kungu+iela+3%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Izstāžu zāle “Rīgas Laikmetīgās mākslas telpa”, Kungu iela 3, Rīga</a></td></tr>
+            <tr><td>14</td><td>Māra Brašmane solo show “MY FRIENDS”, RPB 2026</td><td><a href="https://www.rigaartweek.com/en-events/my-friends-mara-brasmane-solo-show" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-20:00</td><td><a href="https://maps.google.com/?q=Galerija+Alma%2C+T%C4%93rbatas+iela+64%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Galerija Alma, Tērbatas iela 64, Riga</a></td></tr>
+            <tr><td>15</td><td>“Playing Hooky” by Polina Smirnova</td><td><a href="https://www.rigaartweek.com/en-events/playing-hooky-by-polina-smirnova" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 12:00-16:00</td><td><a href="https://maps.google.com/?q=CUT+ART+gallery%2C+Str%C4%93lnieku+iela+5%2C+Riga%2C+Latvia" target="_blank" rel="noopener">CUT ART gallery, Strēlnieku iela 5</a></td></tr>
+            <tr><td>16</td><td>“Have a Nice day,” artist collective <a href="http://vide" target="_blank" rel="noopener">http://vide</a></td><td><a href="https://www.rigaartweek.com/en-events/have-a-nice-day" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 16:00-19:00</td><td><a href="https://maps.google.com/?q=Smilga%2C+Smi%C4%BC%C4%A3a+iela+34A%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Smilga, Smiļģa ielā 34A, Rīga</a></td></tr>
+            <tr><td>17</td><td>Young art auction</td><td><a href="https://www.rigaartweek.com/en-events/young-art-auction-2" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 16:00-22:00</td><td><a href="https://maps.google.com/?q=Kimmel+kvart%C4%81ls%2C+Bru%C5%86inieku+iela+2%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Kimmel kvartāls, Bruņinieku iela 2</a></td></tr>
+            <tr><td>18</td><td>Meeting with the Jewellery Artists of the “Artist’s Signature” Exhibition</td><td><a href="https://www.rigaartweek.com/en-events/meeting-with-the-jewellery-artists-of-the-artists-signature-exhibition" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 18:00</td><td><a href="https://maps.google.com/?q=Museum+of+Decorative+Arts+and+Design%2C+Sk%C4%81r%C5%86u+iela+10%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Museum of Decorative Arts and Design, Skārņu iela 10</a></td></tr>
+            <tr><td>19</td><td>Exhibiton Opening “I want to Be Glue!” Shana de Villiers</td><td><a href="https://www.rigaartweek.com/en-events/i-want-to-be-glue-i-want-to-sing-for-you-shana-de-villiers-exhibiton-opening" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 18:00</td><td><a href="https://maps.google.com/?q=TUR%2C+Tallinas+iela+10%2C+Riga%2C+Latvia" target="_blank" rel="noopener">TUR, Tallinas iela 10</a></td></tr>
+            <tr><td>20</td><td>“Osculum. Basium. Suavium” Krista Vindberga - Auzniece</td><td><a href="https://www.rigaartweek.com/en-events/osculum-basium-suavium-krista-vindberga---auzniece" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 24/7</td><td><a href="https://maps.google.com/?q=%C4%8Cehova+te%C4%81tra+galerija%2C+Ka%C4%BC%C4%B7u+iela+16%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Čehova teātra galerija, Kaļķu iela 16</a></td></tr>
+            <tr><td>21</td><td>Riga Performance Festival STARPTELPA</td><td><a href="https://www.rigaartweek.com/en-events/riga-performance-festival-starptelpa" target="_blank" rel="noopener">Event page</a></td><td>May 27, 2026, 19:00-22:00 for the video performance programme</td><td><a href="https://maps.google.com/?q=Cinema+K.Suns%2C+Elizabetes+iela+83%2F85%2C+Riga%2C+Latvia" target="_blank" rel="noopener">Cinema k.suns</a>; RAW lists the broader festival as “multiple locations”</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>RAW-suggested food and drink</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Place</th><th>Location</th><th>Web page</th><th>Phrase describing it</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><a href="https://maps.google.com/?q=3+pav%C4%81ru+restor%C4%81ns%2C+Tor%C5%86a+iela+4%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">3 pavāru restorāns</a></td><td>Torņa iela 4, Rīga</td><td><a href="https://www.3pavari.lv/" target="_blank" rel="noopener">3pavari.lv</a></td><td>Modern seasonal restaurant in the Jēkaba Kazarmu / Jacob’s Barracks complex, focused on Latvian products and “taste journey” dining.</td></tr>
+            <tr><td><a href="https://maps.google.com/?q=Caf%C3%A8+Osiris%2C+Kri%C5%A1j%C4%81%C5%86a+Barona+iela+31%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Cafè Osiris</a></td><td>Barona 31, Rīga</td><td><a href="https://cafeosiris.lv/" target="_blank" rel="noopener">cafeosiris.lv</a></td><td>Long-running Riga café with a cultural/intellectual history, established in 1994 and known as a social meeting place.</td></tr>
+            <tr><td><a href="https://maps.google.com/?q=Casa+Nostra%2C+Elizabetes+iela+10B%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Casa Nostra</a></td><td>Elizabetes iela 10B, Rīga</td><td><a href="https://casanostrariga.com/" target="_blank" rel="noopener">casanostrariga.com</a></td><td>Italian restaurant in central Riga aiming to feel like “home,” with Italian wines, pasta, pizza, and market-fresh ingredients.</td></tr>
+            <tr><td><a href="https://maps.google.com/?q=Chef%27s+Corner+Restaurant+%26+Bar%2C+Jeruzalemes+iela+5%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Chef’s Corner Restaurant &amp; Bar</a></td><td>Jeruzalemes iela 5, Rīga</td><td><a href="https://chefscorner.lv/" target="_blank" rel="noopener">chefscorner.lv</a></td><td>Upscale European restaurant in Riga’s quiet centre, with high-class cuisine, steaks, seafood, and vegetarian options.</td></tr>
+            <tr><td><a href="https://maps.google.com/?q=Entresol%2C+Elizabetes+iela+22%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Entresol</a></td><td>Elizabetes iela 22, Rīga</td><td><a href="https://entresol.lv/en/" target="_blank" rel="noopener">entresol.lv</a></td><td>Elegant European / modern Latvian restaurant known for “knapas,” small tasting-style snacks, and French-influenced cuisine using local products.</td></tr>
+            <tr><td><a href="https://maps.google.com/?q=Italissimo%2C+Bazn%C4%ABcas+iela+27%2F29%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Italissimo</a></td><td>Baznīcas iela 27/29, Rīga</td><td><a href="https://www.instagram.com/restaurant_italissimo/" target="_blank" rel="noopener">Instagram</a></td><td>Family-run Italian restaurant with wood-fired artisan pizzas, charcoal-grilled meats and seafood, pasta, gelato, and desserts.</td></tr>
+            <tr><td><a href="https://maps.google.com/?q=Bar+XIII%2C+Str%C4%93lnieku+iela+1a%2C+R%C4%ABga%2C+Latvia" target="_blank" rel="noopener">Bar XIII</a></td><td>Strēlnieku iela 1a, Rīga</td><td><a href="https://xiii.lv/" target="_blank" rel="noopener">xiii.lv</a></td><td>Cocktail bar emphasizing “legendary” cocktails, sophisticated taste, and a carefully designed atmosphere.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h2>Trails</h2>
+      <ul>
+        <li><strong>Jugla Lake Forest Loop:</strong> 4.6 stars, 5.3 mi, 190 ft gain, <strong>Difficulty:</strong> Easy. Forest and lakeside route in the city’s northeast green belt with mostly level paths. <a href="https://www.alltrails.com/trail/latvia/riga/jugla-lake-forest-loop" target="_blank" rel="noopener">AllTrails</a>.</li>
+        <li><strong>Mežaparks Woodland Circuit:</strong> 4.5 stars, 4.7 mi, 108 ft gain, <strong>Difficulty:</strong> Easy. Classic Riga urban-forest walk through pine stands and park tracks. <a href="https://www.alltrails.com/trail/latvia/riga/jugla-lake-forest-loop/mezaparks" target="_blank" rel="noopener">AllTrails</a>.</li>
+        <li><strong>Lielupe Riverside Path:</strong> 4.4 stars, 6.0 mi, 72 ft gain, <strong>Difficulty:</strong> Easy. Broad riverside trail near Jūrmala with easy footing and frequent rest points. <a href="https://www.alltrails.com/trail/latvia/pieriga/lielupe-riverside-path" target="_blank" rel="noopener">AllTrails</a>.</li>
+        <li><strong>Baltezers Nature Loop:</strong> 4.4 stars, 5.6 mi, 141 ft gain, <strong>Difficulty:</strong> Moderate. Mixed gravel and woodland paths near the Baltezers lakes, good moderate-distance option. <a href="https://www.alltrails.com/trail/latvia/pieriga/baltezers-nature-loop" target="_blank" rel="noopener">AllTrails</a>.</li>
+      </ul>
+
+
+
+      <h2>Riga locations map</h2>
+      <p>The map combines the Riga stay, market item, Riga Art Week venues, selected additional event venues, and RAW-suggested food and drink locations on this page.</p>
+      <h3>Riga map (OpenStreetMap)</h3>
+      <div id="riga-map-osm" class="map-container"></div>
+      <div id="riga-legend-osm" class="map-legend"></div>
+      <h3>Riga map (OpenTopoMap)</h3>
+      <div id="riga-map-topo" class="map-container"></div>
+      <div id="riga-legend-topo" class="map-legend"></div>
+
+      <h2>Events</h2>
+      <ul>
+        <li><strong>Concerto Piccolo:</strong> Riga Cathedral's short midday organ-music concert, approximately 20 minutes, with video broadcasting from the cathedral organ. <strong>When:</strong> Wednesday, May 27, 2026, 12:00-12:20. <strong>Tickets:</strong> EUR 15.00. <strong>Location:</strong> Riga Cathedral / Riga Dome Cathedral, Herdera laukums 6, Rīga, LV-1050, Latvia. <a href="https://doms.lv/en/concerts" target="_blank" rel="noopener">Riga Cathedral concert schedule</a> | <a href="https://www.bilesuparadize.lv/en/event/166371" target="_blank" rel="noopener">Ticket page</a> | <a href="https://maps.google.com/?q=Riga+Cathedral+Herdera+laukums+6+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Kalnciema Quarter Market:</strong> Saturday farmer and artisan market with Latvian farm and home-producer goods, creative workshops for children, and an on-site wine shop and café where visitors can eat or drink in the apple orchard. <strong>When:</strong> Saturdays, 10:00-16:00. <strong>Location:</strong> Kalnciema Quarter, Kalnciema iela 35, Riga, Latvia. <a href="https://www.kalnciemaiela.lv/en/market/" target="_blank" rel="noopener">Market page</a> | <a href="https://www.kalnciemaiela.lv/en/wine-shop-and-cafe/" target="_blank" rel="noopener">Wine shop &amp; café</a> | <a href="https://maps.google.com/?q=Kalnciema+iela+35+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</li>
+      </ul>
+
+      <h2>Additional Riga events and exhibitions</h2>
+      <p>Selected LiveRiga listings to consider around the May 2026 stay, with locations and public hours where available.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Event</th><th>Summary</th><th>Dates / hours</th><th>Location</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://www.liveriga.com/en/visit/events/exhibitions/exposition-streaming-time" target="_blank" rel="noopener">Exposition “Streaming Time”</a></td>
+              <td>Latvian National Museum of History exhibition using more than 1,500 objects, digital content, and bilingual Latvian/English texts to trace Latvia's communities, identity, values, and belonging across time.</td>
+              <td>Mar 23, 2026-Jan 3, 2027. Hours: Tu-Th 10:00-18:00, Fr 10:00-20:00, Sa-Su 10:00-17:00, Mo closed.</td>
+              <td>Latvian National Museum of History, Riga Castle, Pils laukums 3 (entrance from Daugavas gāte), Riga, Latvia. <a href="https://maps.google.com/?q=Latvian+National+Museum+of+History+Pils+laukums+3+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.liveriga.com/en/visit/events/riga-art-month/riga-contemporary-surrealism-biennale" target="_blank" rel="noopener">Riga Contemporary Surrealism Biennale</a></td>
+              <td>International contemporary-surrealism exhibition featuring artists connected with automatism, biomorphism, Dadaism, metaphysical art, and surrealism, plus talks and related activities.</td>
+              <td>May 12-30, 2026. Hours: Tu-We 10:00-17:00, Th 10:00-20:00, Fr-Sa 10:00-17:00, Mo and Su closed.</td>
+              <td>Latvian Railway History Museum, Uzvaras bulvāris 2A, Riga, Latvia. <a href="https://maps.google.com/?q=Latvian+Railway+History+Museum+Uzvaras+bulvaris+2A+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.liveriga.com/en/visit/events/exhibitions/exhibition-birkerts-libraries-light" target="_blank" rel="noopener">The Exhibition. Birkerts. Libraries. Light.</a></td>
+              <td>Free National Library of Latvia exhibition for Gunārs Birkerts' centenary, focused on his library architecture, drawings, photos, models, and use of light.</td>
+              <td>Jan 18, 2025-Sep 26, 2026. Hours: Mo-Fr 10:00-20:00, Sa 11:00-18:00, Su closed; closed on public holidays and some national events.</td>
+              <td>National Library of Latvia, Mūkusalas iela 3, Riga, Latvia. <a href="https://maps.google.com/?q=National+Library+of+Latvia+M%C5%ABkusalas+iela+3+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.liveriga.com/en/visit/events/exhibitions/interlude-multimedia-light-and-sound-experience" target="_blank" rel="noopener">INTERLUDE multimedia light and sound experience</a></td>
+              <td>Thirty-minute immersive audiovisual experience in Riga Reformation Church, combining choral music, guitar, and large-scale projections around a contemporary interpretation of the Mass.</td>
+              <td>Jan 24-Dec 31, 2026. Shows daily every hour at 12:00, 13:00, 14:00, 15:00, 16:00, 17:00, 18:00, and 19:00.</td>
+              <td>Riga Reformation Church, Mārstaļu iela 10, Riga, Latvia. <a href="https://maps.google.com/?q=Riga+Reformation+Church+M%C4%81rsta%C4%BCu+iela+10+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.liveriga.com/en/visit/events/exhibitions/da-vinci-genius-a-multimedia-art-experience" target="_blank" rel="noopener">Da Vinci Genius — a multimedia art experience</a></td>
+              <td>Interactive, family-friendly multimedia exhibition using AI, digital projections, and 360° soundscapes to explore Leonardo da Vinci's art, science, engineering, and ideas.</td>
+              <td>Jan 2-May 31, 2026. Hours: daily 10:00-20:00, with shows starting hourly and lasting about 47 minutes.</td>
+              <td>Vidzeme Market, Brīvības iela 90A, Riga, Latvia. <a href="https://maps.google.com/?q=Vidzeme+Market+Br%C4%ABv%C4%ABbas+iela+90A+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.liveriga.com/en/visit/events/exhibitions/riga-photography-biennial-next-2023" target="_blank" rel="noopener">Riga Photography Biennial 2026</a></td>
+              <td>International contemporary-art programme about visual culture, image-making, technology, human nature, and the relationship between people and nature.</td>
+              <td>Apr 16-Jul 3, 2026; hours vary by venue and subevent.</td>
+              <td>Multiple venues in Riga; key subitems below.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Riga Photography Biennial 2026 subitems</h3>
+      <ul>
+        <li><strong>“Zoom In: Ecology”:</strong> Apr 17-Jun 14, 2026, central biennial exhibition at Riga Contemporary Art Space, Kungu iela 3, Riga, Latvia. Hours: Tu-Fr 12:00-19:00, Sa 11:00-19:00, Su 11:00-17:00, Mo closed. <a href="https://maps.google.com/?q=Riga+Contemporary+Art+Space+Kungu+iela+3+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Priyageetha Dia, “everything you need to see is already in front of you”:</strong> Apr 17-Jun 7, 2026, at Riga Contemporary Art Space, Kungu iela 3, Riga, Latvia. Hours: Tu-Fr 12:00-19:00, Sa 11:00-19:00, Su 11:00-17:00, Mo closed. <a href="https://maps.google.com/?q=Riga+Contemporary+Art+Space+Kungu+iela+3+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Māra Brašmane, “My Friends”:</strong> Apr 19-May 31, 2026, at Gallery ALMA, Tērbatas iela 64, Riga, Latvia. Hours: Tu-Fr 12:00-18:00; Sa-Su-Mo closed. <a href="https://maps.google.com/?q=Gallery+ALMA+T%C4%93rbatas+iela+64+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>“Colour as Message. Colour Photography Before the Digital and AI Era”:</strong> Apr 28-May 29, 2026, at Galerija Istaba, Krišjāņa Barona iela 31a, Riga, Latvia. Hours: Mo-Fr 12:00-18:00; Sa-Su closed. <a href="https://maps.google.com/?q=Galerija+Istaba+Kri%C5%A1j%C4%81%C5%86a+Barona+iela+31a+Riga+Latvia" target="_blank" rel="noopener">Google Maps</a>.</li>
+      </ul>
+
+      <div id="page-nav"></div>
+    </div>
+  </article>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const rigaLocations = [
+      { name: 'Wellton Riga Hotel & SPA', type: 'Stay', icon: '🏨', color: '#2f80ed', lat: 56.946236, lng: 24.113733 },
+      { name: 'Kalnciema Quarter Market', type: 'Market', icon: '🛍️', color: '#27ae60', lat: 56.943185, lng: 24.066845 },
+      { name: 'Riga Cathedral', type: 'Concert venue', icon: '🎶', color: '#eb5757', lat: 56.949017, lng: 24.104995 },
+      { name: 'Latvian National Museum of History', type: 'Exhibition venue', icon: '🏛️', color: '#eb5757', lat: 56.951736, lng: 24.100631 },
+      { name: 'Latvian Railway History Museum', type: 'Exhibition venue', icon: '🚆', color: '#eb5757', lat: 56.943213, lng: 24.094914 },
+      { name: 'National Library of Latvia', type: 'Exhibition venue', icon: '📚', color: '#eb5757', lat: 56.941017, lng: 24.096599 },
+      { name: 'Riga Reformation Church', type: 'Light and sound venue', icon: '✨', color: '#eb5757', lat: 56.946315, lng: 24.110826 },
+      { name: 'Vidzeme Market', type: 'Multimedia exhibition venue', icon: '🖼️', color: '#eb5757', lat: 56.958302, lng: 24.129854 },
+      { name: 'Latvian National Museum of Art', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.955806, lng: 24.113951 },
+      { name: 'Mākslas muzejs Zuzeum', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.947983, lng: 24.134618 },
+      { name: 'Museum of Decorative Arts and Design', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.948118, lng: 24.109262 },
+      { name: 'LOOK!', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.951210, lng: 24.133360 },
+      { name: 'MĀKSLA XO gallery', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.956974, lng: 24.112247 },
+      { name: 'ISSP galerija', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.950358, lng: 24.123075 },
+      { name: 'Galerija Istaba', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.954123, lng: 24.126700 },
+      { name: 'Latvian Centre for Contemporary Art', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.959212, lng: 24.107861 },
+      { name: 'PILOT', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.948922, lng: 24.110008 },
+      { name: 'Kim? Contemporary Art Centre', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.963586, lng: 24.118337 },
+      { name: 'Rīgas Laikmetīgās mākslas telpa', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.947611, lng: 24.107229 },
+      { name: 'Galerija Alma', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.957530, lng: 24.130460 },
+      { name: 'CUT ART gallery', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.959662, lng: 24.107047 },
+      { name: 'Smilga', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.938539, lng: 24.077683 },
+      { name: 'Kimmel kvartāls', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.960918, lng: 24.124146 },
+      { name: 'TUR', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.964156, lng: 24.134749 },
+      { name: 'Čehova teātra galerija', type: 'RAW venue', icon: '🎨', color: '#9b51e0', lat: 56.948979, lng: 24.109643 },
+      { name: 'Cinema k.suns', type: 'RAW venue', icon: '🎬', color: '#9b51e0', lat: 56.950512, lng: 24.122613 },
+      { name: '3 pavāru restorāns', type: 'Food & drink', icon: '🍽️', color: '#f2994a', lat: 56.951521, lng: 24.107543 },
+      { name: 'Cafè Osiris', type: 'Food & drink', icon: '☕', color: '#f2994a', lat: 56.953618, lng: 24.125478 },
+      { name: 'Casa Nostra', type: 'Food & drink', icon: '🍽️', color: '#f2994a', lat: 56.957434, lng: 24.111330 },
+      { name: 'Chef’s Corner Restaurant & Bar', type: 'Food & drink', icon: '🍽️', color: '#f2994a', lat: 56.957863, lng: 24.113873 },
+      { name: 'Entresol', type: 'Food & drink', icon: '🍽️', color: '#f2994a', lat: 56.949733, lng: 24.121920 },
+      { name: 'Italissimo', type: 'Food & drink', icon: '🍕', color: '#f2994a', lat: 56.957606, lng: 24.120300 },
+      { name: 'Bar XIII', type: 'Food & drink', icon: '🍸', color: '#f2994a', lat: 56.959008, lng: 24.106478 }
+    ];
+
+    function rigaIcon(loc) {
+      return L.divIcon({
+        className: 'custom-marker',
+        html: `<svg width="34" height="48" viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg"><path d="M20 0C9 0 0 9 0 20c0 13.4 20 35 20 35s20-21.6 20-35C40 9 31 0 20 0z" fill="${loc.color}" stroke="white" stroke-width="2.5"/><circle cx="20" cy="20" r="8" fill="white" opacity="0.9"/><text x="20" y="25" text-anchor="middle" font-size="12">${loc.icon}</text></svg>`,
+        iconSize: [34, 48],
+        iconAnchor: [17, 48],
+        popupAnchor: [0, -48]
+      });
+    }
+
+    function createRigaMap(id, tileUrl, attribution, maxZoom) {
+      const map = L.map(id).setView([56.953, 24.114], 13);
+      L.tileLayer(tileUrl, { attribution, maxZoom }).addTo(map);
+      return map;
+    }
+
+    function addRigaMarkers(map) {
+      const markers = rigaLocations.map((loc) => L.marker([loc.lat, loc.lng], { icon: rigaIcon(loc) })
+        .addTo(map)
+        .bindPopup(`<strong>${loc.name}</strong><br>${loc.type}`));
+      map.fitBounds(L.latLngBounds(rigaLocations.map((loc) => [loc.lat, loc.lng])), { padding: [24, 24] });
+      return markers;
+    }
+
+    function buildRigaLegend(containerId, map, markers) {
+      const legend = document.getElementById(containerId);
+      rigaLocations.forEach((loc, index) => {
+        const button = document.createElement('button');
+        button.textContent = `${loc.icon} ${loc.name}`;
+        button.onclick = () => {
+          map.setView([loc.lat, loc.lng], 15);
+          markers[index].openPopup();
+        };
+        legend.appendChild(button);
+      });
+
+      const showAll = document.createElement('button');
+      showAll.textContent = 'Show all';
+      showAll.onclick = () => map.fitBounds(L.latLngBounds(rigaLocations.map((loc) => [loc.lat, loc.lng])), { padding: [24, 24] });
+      legend.appendChild(showAll);
+    }
+
+    const rigaMapOsm = createRigaMap('riga-map-osm', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', 19);
+    const rigaMarkersOsm = addRigaMarkers(rigaMapOsm);
+    buildRigaLegend('riga-legend-osm', rigaMapOsm, rigaMarkersOsm);
+
+    const rigaMapTopo = createRigaMap('riga-map-topo', 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', 17);
+    const rigaMarkersTopo = addRigaMarkers(rigaMapTopo);
+    buildRigaLegend('riga-legend-topo', rigaMapTopo, rigaMarkersTopo);
+  </script>
+  <script>
+    buildBreadcrumb('page-nav', [
+      { href: '../../../index.html', label: 'Baltics Home' },
+      { href: '../../../../index.html', label: 'All decks' }
+    ]);
+  </script>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../../../../index.html', text: 'Version: codex/add-festival-fuegx-orgullose-event' });
+        
+        // Deck link
+        links.push({ href: '../../index.html', text: 'Deck' });
+        
+        // Section link
+        links.push({ href: 'overview.html', text: 'Section' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
