@@ -63,8 +63,9 @@ function getHeaderNavDefaults() {
   const home = `${rootPath}index.html`;
   const deck = deckName ? `${rootPath}decks/${deckName}/index.html` : home;
   const docs = 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link';
+  const demos = `${rootPath}demos/index.html`;
 
-  return { home, deck, docs };
+  return { home, deck, docs, demos };
 }
 
 function buildHeaderTags() {
@@ -80,6 +81,7 @@ function buildHeaderTags() {
   const homeHref = versionLink ? versionLink.getAttribute('href') : defaults.home;
   const deckHref = deckLink ? deckLink.getAttribute('href') : defaults.deck;
   const docsHref = docsLink ? docsLink.getAttribute('href') : defaults.docs;
+  const demosHref = defaults.demos;
 
   const nav = document.createElement('nav');
   nav.className = 'tag-nav';
@@ -88,7 +90,8 @@ function buildHeaderTags() {
   const linkSpecs = [
     { href: homeHref, label: 'Home', icon: '🏠' },
     { href: deckHref, label: 'Top of deck', icon: '⬆️' },
-    { href: docsHref, label: 'Documents', icon: '🔺' }
+    { href: docsHref, label: 'Documents', icon: '🔺' },
+    { href: demosHref, label: 'Demos', icon: '🧪' }
   ];
 
   linkSpecs.forEach(({ href, label, icon }) => {

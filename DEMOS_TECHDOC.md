@@ -25,6 +25,7 @@ and is available on GitHub Pages under `/siteprep/demos/migration_map/`.
 - a link to the demo's `index.html` directory URL when present, otherwise a readable file such as `README.md`
 - a display title from the demo's `index.html` `<title>`, falling back to a titleized directory name
 - a description from the first non-heading, non-empty line of the demo's `README.md`, falling back to a generic demo description
+- an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file
 
 ## Validation
 
