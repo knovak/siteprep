@@ -295,12 +295,18 @@ EOF_DEMOS
     description=$(get_demo_description "$demo_dir" "$demo" "$title")
     href=$(get_demo_href "$demo_dir" "$demo")
 
+    prompts_link=""
+    if [ -f "$demo_dir/prompts.txt" ]; then
+      prompts_link="          <p class=\"meta\"><a href=\"./${demo}/prompts.txt\">Prompt history</a></p>"
+    fi
+
     cat >> "$OUTPUT_DIR/demos/index.html" <<EOF_DEMO_ITEM
         <li class="toc-item">
           <a href="${href}" class="toc-link">
             <h3>${title}</h3>
             <p>${description}</p>
           </a>
+${prompts_link}
         </li>
 EOF_DEMO_ITEM
   done
