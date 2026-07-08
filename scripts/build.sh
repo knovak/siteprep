@@ -34,11 +34,79 @@ get_deck_metadata() {
   fi
 }
 
+# Convert a directory slug into title case for display.
+titleize_slug() {
+  local slug="$1"
+  echo "$slug" | tr '_-' '  ' | awk '{ for (i=1; i<=NF; i++) { $i=toupper(substr($i,1,1)) substr($i,2) } print }'
+}
+
+# Read the first HTML <title> value from a file, falling back to a titleized slug.
+get_html_title() {
+  local html_file="$1"
+  local fallback_slug="$2"
+
+  if [ -f "$html_file" ]; then
+    local title
+    title=$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$html_file" | head -n 1)
+    if [ -n "$title" ]; then
+      echo "$title"
+      return
+    fi
+  fi
+
+  titleize_slug "$fallback_slug"
+}
+
+# Build a concise description for a demo from README.md, the page title, or the slug.
+get_demo_description() {
+  local demo_dir="$1"
+  local demo_name="$2"
+  local demo_title="$3"
+
+  if [ -f "$demo_dir/README.md" ]; then
+    local readme_line
+    readme_line=$(awk 'NF && $0 !~ /^#/ { print; exit }' "$demo_dir/README.md")
+    if [ -n "$readme_line" ]; then
+      echo "$readme_line"
+      return
+    fi
+  fi
+
+  if [ -f "$demo_dir/index.html" ]; then
+    echo "Open the ${demo_title} demo."
+  else
+    echo "Browse files for the ${demo_title} demo."
+  fi
+}
+
+# Return the best entry point for a demo directory.
+get_demo_href() {
+  local demo_dir="$1"
+  local demo_name="$2"
+
+  if [ -f "$demo_dir/index.html" ]; then
+    echo "./${demo_name}/"
+  elif [ -f "$demo_dir/README.md" ]; then
+    echo "./${demo_name}/README.md"
+  else
+    local first_file
+    first_file=$(find "$demo_dir" -maxdepth 1 -type f -print | sort | head -n 1)
+    if [ -n "$first_file" ]; then
+      echo "./${demo_name}/$(basename "$first_file")"
+    else
+      echo "./${demo_name}/"
+    fi
+  fi
+}
+
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 # Copy source assets and decks
 cp -r "$ROOT_DIR/decks" "$OUTPUT_DIR/decks"
+if [ -d "$ROOT_DIR/demos" ]; then
+  cp -r "$ROOT_DIR/demos" "$OUTPUT_DIR/demos"
+fi
 if [ -d "$ROOT_DIR/shared" ]; then
   cp -r "$ROOT_DIR/shared" "$OUTPUT_DIR/shared"
 fi
@@ -175,9 +243,76 @@ render_deck_group "Future" "${FUTURE_DECKS[@]}"
 render_deck_group "Past" "${PAST_DECKS[@]}"
 
 cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
+  <main class="card" aria-labelledby="demo-list-title">
+    <div class="card-header">
+      <h2 id="demo-list-title">Demos</h2>
+      <p class="meta">Standalone demo sites are published in parallel with decks.</p>
+    </div>
+    <div class="card-content">
+      <p><a href="./demos/index.html">Browse all demos</a></p>
+    </div>
+  </main>
 </body>
 </html>
 EOF_HTML
+
+# Generate demos index without modifying copied demo files.
+if [ -d "$ROOT_DIR/demos" ]; then
+  mapfile -t DEMO_NAMES < <(find "$ROOT_DIR/demos" -maxdepth 1 -mindepth 1 -type d -print | sort | while read -r path; do basename "$path"; done)
+  mkdir -p "$OUTPUT_DIR/demos"
+
+  cat > "$OUTPUT_DIR/demos/index.html" <<EOF_DEMOS
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SitePrep Demos</title>
+  <link rel="stylesheet" href="../${DEFAULT_STYLE#./}">
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Demos Index</p>
+      <h1>SitePrep Demos</h1>
+    </div>
+    <div class="card-content">
+      <p>Browse standalone demo directories published alongside SitePrep decks.</p>
+      <p><a href="../index.html">Return to SitePrep home</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="demo-list">
+    <div class="card-header">
+      <h2 id="demo-list">Demos</h2>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+EOF_DEMOS
+
+  for demo in "${DEMO_NAMES[@]}"; do
+    demo_dir="$ROOT_DIR/demos/$demo"
+    title=$(get_html_title "$demo_dir/index.html" "$demo")
+    description=$(get_demo_description "$demo_dir" "$demo" "$title")
+    href=$(get_demo_href "$demo_dir" "$demo")
+
+    cat >> "$OUTPUT_DIR/demos/index.html" <<EOF_DEMO_ITEM
+        <li class="toc-item">
+          <a href="${href}" class="toc-link">
+            <h3>${title}</h3>
+            <p>${description}</p>
+          </a>
+        </li>
+EOF_DEMO_ITEM
+  done
+
+  cat >> "$OUTPUT_DIR/demos/index.html" <<'EOF_DEMOS'
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
+EOF_DEMOS
+fi
 
 # Create a placeholder index-versions.html (will be replaced during deployment)
 cat > "$OUTPUT_DIR/index-versions.html" <<EOF_VERSIONS
@@ -303,6 +438,10 @@ inject_version_footer() {
 # Inject version info into all HTML files
 echo "Injecting version info into HTML files..."
 while IFS= read -r -d '' html_file; do
+  file_rel_path="${html_file#$OUTPUT_DIR/}"
+  if [[ "$file_rel_path" == demos/* && "$file_rel_path" != "demos/index.html" ]]; then
+    continue
+  fi
   inject_version_footer "$html_file"
 done < <(find "$OUTPUT_DIR" -name "*.html" -type f -print0)
 
