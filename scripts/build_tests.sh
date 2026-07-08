@@ -76,6 +76,44 @@ if [ -d "$ROOT_DIR/pwa" ]; then
   pass "BUILD-07 PWA icons directory copied"
 fi
 
+
+if [ -d "$ROOT_DIR/demos" ]; then
+  if [ ! -d "$OUTPUT_DIR/demos" ]; then
+    fail "BUILD-13 demos output directory missing"
+  fi
+  pass "BUILD-13 demos directory copied"
+
+  if [ ! -f "$OUTPUT_DIR/demos/index.html" ]; then
+    fail "BUILD-13 demos index missing"
+  fi
+  pass "BUILD-13 demos index generated"
+
+  mapfile -t DEMOS < <(find "$ROOT_DIR/demos" -maxdepth 1 -mindepth 1 -type d -print | sort | while read -r path; do basename "$path"; done)
+  for demo in "${DEMOS[@]}"; do
+    if [ ! -d "$OUTPUT_DIR/demos/${demo}" ]; then
+      fail "BUILD-13 demo directory missing: ${demo}"
+    fi
+    pass "BUILD-13 demo directory copied for ${demo}"
+
+    while IFS= read -r -d '' source_file; do
+      rel_file="${source_file#$ROOT_DIR/demos/}"
+      output_file="$OUTPUT_DIR/demos/$rel_file"
+      if [ ! -f "$output_file" ]; then
+        fail "BUILD-13 demo file missing: ${rel_file}"
+      fi
+      if ! cmp -s "$source_file" "$output_file"; then
+        fail "BUILD-13 demo file was modified instead of copied: ${rel_file}"
+      fi
+    done < <(find "$ROOT_DIR/demos/${demo}" -type f -print0)
+    pass "BUILD-13 demo files copied without modification for ${demo}"
+
+    if ! grep -q "./${demo}/" "$OUTPUT_DIR/demos/index.html"; then
+      fail "BUILD-13 demos index missing link for ${demo}"
+    fi
+    pass "BUILD-13 demos index links ${demo}"
+  done
+fi
+
 # BUILD-08: Service worker registration code available
 # Check that scripts.js (which contains SW registration) is included
 for deck in "${DECKS[@]}"; do
