@@ -37,3 +37,20 @@ Please make the default color based on type rather than source
 Also, please modify the colors for source regions. Currently they seem random. Would there be some way to organize along a spectrum, keeping regions within continents together? Like deep blue for North America, sky, blue for South America, deep green for Europe, bright green for the Middle East, yellow for Eastern Europe, Brown for sub-Saharan Africa, etc.? Feel free to improvise.
 Finally, consider the possibility of choosing different renderings based on the users device. For example, on iOS, in portrait mode, it is currently pretty good. However, in landscape mode, it does not look good. Some consideration about the size of buttons might be made based on whether it is phone or a tablet or a PC being used.
 Write up your options for these display modifications,, and your rationale for choosing among them. Then implement whatever you consider to be the best option.
+
+——7 (to make the tutorial slideshow)
+
+Review the migration map documentation and the HTML page. Make a tutorial slide deck between 20 and 40 slides which describe the purpose and meaning of the map, and how to use its user interface features
+Introduce the important display elements, including the timeline slider And its background migration volume indicator, plus every playback control.
+
+Explain and demonstrate how colors, legends, and filters work.
+
+Use animated GIFs, or image zooms, or accent pointers to highlight how to touch the active areas of the user interface.
+
+Be clear and concise. Make it visually appealing.  Ask me any questions you need
+
+(it asked three multiple-choice questions. Here are my answers.)
+
+Q: What format should the deck be? A: PowerPoint (.pptx) with embedded GIFs
+Q: Who is the audience? A: General public / first-time viewers
+Q: Which layout should the screenshots show? A: Mobile/touch layout
