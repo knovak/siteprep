@@ -107,7 +107,9 @@ if [ -d "$ROOT_DIR/demos" ]; then
     done < <(find "$ROOT_DIR/demos/${demo}" -type f -print0)
     pass "BUILD-13 demo files copied without modification for ${demo}"
 
-    if ! grep -q "./${demo}/" "$OUTPUT_DIR/demos/index.html"; then
+    encoded_demo="${demo//%/%25}"
+    encoded_demo="${encoded_demo// /%20}"
+    if ! grep -q "./${encoded_demo}/" "$OUTPUT_DIR/demos/index.html"; then
       fail "BUILD-13 demos index missing link for ${demo}"
     fi
     pass "BUILD-13 demos index links ${demo}"

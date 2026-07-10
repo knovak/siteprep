@@ -40,6 +40,14 @@ titleize_slug() {
   echo "$slug" | tr '_-' '  ' | awk '{ for (i=1; i<=NF; i++) { $i=toupper(substr($i,1,1)) substr($i,2) } print }'
 }
 
+# Percent-encode the minimal characters needed for demo directory URLs.
+url_path_segment() {
+  local segment="$1"
+  segment="${segment//%/%25}"
+  segment="${segment// /%20}"
+  echo "$segment"
+}
+
 # Read the first HTML <title> value from a file, falling back to a titleized slug.
 get_html_title() {
   local html_file="$1"
@@ -68,6 +76,11 @@ get_demo_description() {
     return
   fi
 
+  if [ "$demo_name" = "SBDC Night Sky" ]; then
+    echo 'Open the SBDC Night-Sky Simulator demo for an interactive, physics-based view of space-based data centers in the night sky.'
+    return
+  fi
+
   if [ -f "$demo_dir/README.md" ]; then
     local readme_line
     readme_line=$(awk 'NF && $0 !~ /^#/ { print; exit }' "$demo_dir/README.md")
@@ -89,17 +102,22 @@ get_demo_href() {
   local demo_dir="$1"
   local demo_name="$2"
 
+  local encoded_demo_name
+  encoded_demo_name=$(url_path_segment "$demo_name")
+
   if [ -f "$demo_dir/index.html" ]; then
-    echo "./${demo_name}/"
+    echo "./${encoded_demo_name}/"
   elif [ -f "$demo_dir/README.md" ]; then
-    echo "./${demo_name}/README.md"
+    echo "./${encoded_demo_name}/README.md"
   else
     local first_file
     first_file=$(find "$demo_dir" -maxdepth 1 -type f -print | sort | head -n 1)
     if [ -n "$first_file" ]; then
-      echo "./${demo_name}/$(basename "$first_file")"
+      local encoded_file_name
+      encoded_file_name=$(url_path_segment "$(basename "$first_file")")
+      echo "./${encoded_demo_name}/${encoded_file_name}"
     else
-      echo "./${demo_name}/"
+      echo "./${encoded_demo_name}/"
     fi
   fi
 }
@@ -302,7 +320,8 @@ EOF_DEMOS
 
     prompts_link=""
     if [ -f "$demo_dir/prompts.txt" ]; then
-      prompts_link="          <p class=\"meta\"><a href=\"./${demo}/prompts.txt\">Prompt history</a></p>"
+      encoded_demo=$(url_path_segment "$demo")
+      prompts_link="          <p class=\"meta\"><a href=\"./${encoded_demo}/prompts.txt\">Prompt history</a></p>"
     fi
 
     cat >> "$OUTPUT_DIR/demos/index.html" <<EOF_DEMO_ITEM
