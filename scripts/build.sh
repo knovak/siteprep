@@ -72,7 +72,7 @@ get_demo_description() {
   local demo_title="$3"
 
   if [ "$demo_name" = "migration_map" ]; then
-    echo 'Open the World Migration Atlas demo. <a href="https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&amp;ouid=111064312747417346604&amp;rtpof=true&amp;sd=true">Tutorial Slideshow</a> · <a href="https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk">Tutorial as PDF</a>.'
+    echo 'Interactive, physics-based SBDC Night-Sky Simulator for exploring how space-based data centers would appear in the night sky. <a href="./migration_map/index.html">current version</a> · <a href="./migration_map/index-initial.html">initial version</a>.'
     return
   fi
 
