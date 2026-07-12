@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SitePrep Demos</title>
+  <link rel="stylesheet" href="../decks/dubai1/assets/styles.css">
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Demos Index</p>
+      <h1>SitePrep Demos</h1>
+    </div>
+    <div class="card-content">
+      <p>Browse standalone demo directories published alongside SitePrep decks.</p>
+      <p><a href="../index.html">Return to SitePrep home</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="demo-list">
+    <div class="card-header">
+      <h2 id="demo-list">Demos</h2>
+    </div>
+    <div class="card-content">
+      <ul class="toc-grid">
+        <li class="toc-item">
+          <a href="./SBDC%20Night%20Sky/" class="toc-link">
+            <h3>SBDC Night-Sky Simulator</h3>
+          </a>
+          <p>Interactive, physics-based SBDC Night-Sky Simulator for exploring how space-based data centers would appear in the night sky. <a href="./SBDC%20Night%20Sky/index.html">current version</a> · <a href="./SBDC%20Night%20Sky/index-initial.html">initial version</a> · <a href="https://drive.google.com/drive/folders/16PhbeOYaiJ0jW0xzjBQepQEtJHVmfPRc">documentation and code folder</a>.</p>
+
+        </li>
+        <li class="toc-item">
+          <a href="./migration_map/" class="toc-link">
+            <h3>World Migration Atlas — Ocean Blueprint</h3>
+          </a>
+          <p>Open the World Migration Atlas demo. <a href="https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&amp;ouid=111064312747417346604&amp;rtpof=true&amp;sd=true">Tutorial Slideshow</a> · <a href="https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk">Tutorial as PDF</a>.</p>
+          <p class="meta"><a href="./migration_map/prompts.txt">Prompt history</a></p>
+        </li>
+      </ul>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <script>
+      (function() {
+        var footer = document.currentScript.parentElement;
+        var nav = document.createElement('div');
+        nav.className = 'footer-nav';
+        var links = [];
+        
+        // Version link to home
+        links.push({ href: '../index.html', text: 'Version: codex/replace-index.html-with-new-file-and-add-link' });
+        
+        // Google Drive link
+        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
+        
+        // View all versions link
+        links.push({ href: '../index-versions.html', text: 'View all versions' });
+        
+        // Build the navigation
+        links.forEach(function(link, index) {
+          if (index > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'footer-separator';
+            sep.textContent = '|';
+            nav.appendChild(sep);
+          }
+          var a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.text;
+          if (link.external) a.target = '_blank';
+          nav.appendChild(a);
+        });
+        
+        footer.appendChild(nav);
+      })();
+    </script>
+  </footer>
+</body>
+</html>
