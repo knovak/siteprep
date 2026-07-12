@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Migration Atlas">
+<meta name="theme-color" content="#0e2f36">
+<title>World Migration Atlas — Ocean Blueprint</title>
+<style>
+  :root {
+    --page:#0e2f36; --ocean:#123a42; --edge:#2b5f66; --text:#eaf6f2;
+    --sub:#8fb8b4; --accent:#ffd166; --panel:rgba(11,38,44,.94);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--page);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); }
+  button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px; }
+  canvas#base, canvas#flows { position: absolute; top: 0; left: 0; }
+  canvas#flows { touch-action: none; cursor: grab; }
+  canvas#flows:active { cursor: grabbing; }
+
+  #hdr { position: absolute; top: 16px; left: 22px; pointer-events: none; }
+  #hdr h1 { font-size: 19px; letter-spacing: .06em; font-weight: 700; }
+  #hdr p  { font-size: 11.5px; color: var(--sub); margin-top: 3px; }
+  #focusChip { display: none; margin-top: 7px; pointer-events: auto;
+    background: var(--panel); border: 1px solid var(--accent); border-radius: 14px;
+    padding: 3px 10px; font-size: 11.5px; width: fit-content; }
+  #focusChip button { background: none; border: none; color: var(--accent);
+    cursor: pointer; font-size: 12px; padding: 0 0 0 6px; }
+
+  #toolbar { position: absolute; top: 84px; right: 24px; display: flex; gap: 6px; }
+  #toolbar button { background: var(--panel); color: var(--text); font-size: 11.5px;
+    border: 1px solid var(--edge); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+  #toolbar button:hover { border-color: var(--accent); }
+  #toolbar button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+  #yearBig { position: absolute; top: 8px; right: 24px; font-size: 46px;
+    font-weight: 700; cursor: pointer; user-select: none; }
+  #stats { position: absolute; top: 62px; right: 25px; font-size: 11px; color: var(--sub); }
+
+  #legend { position: absolute; left: 22px; bottom: 108px; font-size: 11px;
+    display: none; color: var(--sub); background: var(--panel); border: 1px solid var(--edge);
+    border-radius: 8px; padding: 10px 12px; max-width: 225px; }
+  #legend h2 { font-size: 9.5px; letter-spacing: .1em; font-weight: 600; margin: 7px 0 5px; }
+  #legend h2:first-child { margin-top: 0; }
+  .lgRow { display: flex; align-items: center; gap: 7px; margin: 3px 0; }
+  .sw { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+  .wbar { width: 30px; background: var(--sub); border-radius: 2px; flex: none; opacity:.85; }
+
+  /* tooltip */
+  #tip { position: absolute; display: none; pointer-events: none; z-index: 30;
+    background: var(--panel); border: 1px solid var(--edge); border-radius: 6px;
+    padding: 6px 10px; font-size: 12px; max-width: 260px; }
+  #tip .t1 { font-weight: 600; }
+  #tip .t2 { color: var(--sub); font-size: 11px; margin-top: 2px; }
+
+  /* right-side panels */
+  .sidePanel { position: absolute; top: 124px; right: 24px; width: 320px;
+    max-height: calc(100% - 248px); overflow-y: auto; z-index: 20;
+    background: var(--panel); border: 1px solid var(--edge); border-radius: 10px;
+    padding: 14px 16px; display: none; }
+  .sidePanel h2 { font-size: 15px; margin-bottom: 2px; padding-right: 26px; }
+  .sidePanel .meta { font-size: 11.5px; color: var(--sub); margin-bottom: 8px; }
+  .sidePanel .xBtn { position: absolute; top: 8px; right: 8px; background: none;
+    border: none; color: var(--sub); font-size: 16px; cursor: pointer; }
+  .badge { display: inline-block; border-radius: 9px; padding: 1px 8px;
+    font-size: 10px; font-weight: 600; color: #0e2f36; }
+  #dpBody p { font-size: 12.5px; line-height: 1.45; margin: 8px 0; }
+  #dpBody .num { font-size: 12px; margin: 4px 0; }
+  #dpBody .num b { color: var(--accent); font-weight: 600; }
+  #dpBody .dests { margin: 6px 0 8px; padding-left: 2px; }
+  #dpBody .dests div { font-size: 11.5px; margin: 3px 0; color: var(--text); }
+  #dpBody .dests span { color: var(--sub); }
+  #dpBody .refs { font-size: 10.5px; color: var(--sub); border-top: 1px solid var(--edge);
+    padding-top: 7px; margin-top: 9px; }
+  #dpFocus { margin-top: 10px; background: var(--ocean); color: var(--text);
+    border: 1px solid var(--edge); border-radius: 6px; padding: 6px 12px;
+    cursor: pointer; font-size: 12px; }
+  #dpFocus:hover { border-color: var(--accent); }
+
+  /* filters */
+  #filterPanel label { display: flex; align-items: center; gap: 7px;
+    font-size: 12px; margin: 3px 0; cursor: pointer; }
+  #filterPanel input[type=checkbox] { accent-color: var(--accent); }
+  #filterPanel h3 { font-size: 10px; letter-spacing: .09em; color: var(--sub);
+    margin: 10px 0 4px; }
+  #searchBox { width: 100%; background: var(--ocean); border: 1px solid var(--edge);
+    border-radius: 6px; color: var(--text); padding: 6px 9px; font-size: 12px; }
+  #minSlider { width: 100%; accent-color: var(--accent); }
+  #minLabel { font-size: 11px; color: var(--sub); }
+  .linkBtn { background: none; border: none; color: var(--accent); cursor: pointer;
+    font-size: 11px; padding: 0; text-decoration: underline; }
+
+  /* modals */
+  .modalWrap { position: fixed; inset: 0; background: rgba(5,20,24,.7);
+    display: none; align-items: center; justify-content: center; z-index: 40; }
+  .modal { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px;
+    width: min(860px, 92vw); max-height: 84vh; overflow-y: auto; padding: 20px 24px;
+    position: relative; }
+  .modal h2 { font-size: 17px; margin-bottom: 10px; }
+  .modal .xBtn { position: absolute; top: 10px; right: 12px; background: none;
+    border: none; color: var(--sub); font-size: 18px; cursor: pointer; }
+  .modal p { font-size: 13px; line-height: 1.5; color: var(--text); margin: 8px 0; }
+  .modal p.dim { color: var(--sub); font-size: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { text-align: left; padding: 6px 9px; border-bottom: 1px solid var(--edge); }
+  th { color: var(--sub); font-size: 10.5px; letter-spacing: .06em; position: sticky;
+    top: -20px; background: #0f333a; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover, tbody tr:focus { background: var(--ocean); }
+  td.r { text-align: right; font-variant-numeric: tabular-nums; }
+
+  #toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+    background: var(--panel); border: 1px solid var(--accent); color: var(--text);
+    border-radius: 8px; padding: 9px 16px; font-size: 12.5px; display: none;
+    z-index: 50; max-width: 70vw; }
+
+  #timebar { position: absolute; bottom: 0; left: 0; right: 0; height: 92px;
+    background: var(--page); border-top: 1px solid var(--edge);
+    display: flex; align-items: center; gap: 10px; padding: 0 16px; }
+  #timebar button, #timebar select {
+    background: var(--ocean); color: var(--text); border: 1px solid var(--edge);
+    border-radius: 6px; font-size: 13px; padding: 5px 9px; cursor: pointer; }
+  #timebar button:hover { border-color: var(--accent); }
+  #playBtn { font-size: 15px; width: 42px; height: 38px; }
+  #scrub { flex: 1; height: 64px; cursor: pointer; touch-action: none; }
+  .ctlLabel { font-size: 10px; color: var(--sub); text-align: center; }
+  .ctlGroup { display: flex; flex-direction: column; gap: 3px; align-items: center; }
+
+  /* ---------- E7: device-adaptive layout (capability & geometry based) ---------- */
+  #hdr { left: calc(22px + env(safe-area-inset-left)); }
+  #toolbar { right: calc(24px + env(safe-area-inset-right)); }
+  #yearBig { right: calc(24px + env(safe-area-inset-right)); }
+  #stats { right: calc(25px + env(safe-area-inset-right)); }
+  #legend { left: calc(22px + env(safe-area-inset-left));
+            max-height: calc(100vh - 240px); overflow-y: auto; }
+  #timebar { padding-left: calc(16px + env(safe-area-inset-left));
+             padding-right: calc(16px + env(safe-area-inset-right)); }
+
+  /* touch devices: HIG-sized targets */
+  @media (pointer: coarse) {
+    #timebar button, #timebar select { min-height: 40px; min-width: 40px; font-size: 14px; }
+    #playBtn { width: 48px; height: 44px; }
+    #toolbar button { min-height: 38px; padding: 6px 12px; }
+    #scrub { height: 56px; }
+  }
+
+  /* narrow screens (portrait phones): timebar wraps, scrubber gets its own row */
+  @media (max-width: 620px) {
+    #hdr h1 { font-size: 16px; }
+    #hdr p, .ctlLabel { display: none; }
+    #yearBig { font-size: 30px; top: 10px; }
+    #stats { top: 46px; font-size: 10px; }
+    #toolbar { top: 70px; left: 12px; flex-wrap: wrap; justify-content: flex-end; }
+    #toolbar button { font-size: 11px; padding: 5px 8px; }
+    #timebar { flex-wrap: wrap; height: auto; gap: 6px; row-gap: 4px;
+               justify-content: center; padding-top: 6px;
+               padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+    #scrub { flex: 1 1 100%; order: -1; height: 44px; min-width: 0; }
+    .sidePanel { width: calc(100vw - 24px); right: 12px; top: 152px;
+                 max-height: calc(100% - 330px); }
+    #legend { bottom: 148px; max-height: calc(100vh - 320px); }
+  }
+
+  /* short screens (landscape phones): slim single-row timebar, compact chrome */
+  @media (max-height: 520px) {
+    #hdr h1 { font-size: 14px; }
+    #hdr p, .ctlLabel { display: none; }
+    #yearBig { font-size: 24px; top: 8px; }
+    #stats { top: 38px; font-size: 10px; }
+    #toolbar { top: 58px; }
+    #toolbar button { font-size: 11px; padding: 4px 8px; min-height: 32px; }
+    #timebar { height: 64px; }
+    #timebar button, #timebar select { min-height: 36px; }
+    #playBtn { width: 44px; height: 40px; }
+    #scrub { height: 42px; }
+    .sidePanel { top: 96px; max-height: calc(100% - 172px); }
+    #legend { bottom: 76px; max-height: calc(100vh - 150px); }
+  }
+</style>
+</head>
+<body>
+<main>
+  <canvas id="base" aria-hidden="true"></canvas>
+  <canvas id="flows" role="img" aria-label="World migration map"></canvas>
+
+  <div id="hdr">
+    <h1>WORLD MIGRATION ATLAS</h1>
+    <p>Ocean Blueprint · migrations &amp; diasporas, 1000 AD – present · drag to pan · wheel or pinch to zoom · click a flow for details</p>
+    <div id="focusChip"><span id="focusName"></span><button id="focusClear" aria-label="Clear focus">✕</button></div>
+  </div>
+  <div id="yearBig" role="button" tabindex="0" aria-label="Current year, activate to enter a year">1000</div>
+  <div id="stats" aria-live="polite"></div>
+
+  <div id="toolbar">
+    <button id="legendBtn" aria-pressed="false">Legend</button>
+    <button id="filtersBtn" aria-pressed="false">Filters</button>
+    <button id="colorModeBtn" aria-pressed="true" title="Toggle arrow coloring">Color: type</button>
+    <button id="tableBtn">Data table</button>
+    <button id="aboutBtn">About the data</button>
+  </div>
+
+  <div id="legend" role="note" aria-label="Map legend">
+    <h2>FLOW WIDTH = PEOPLE MOVED</h2>
+    <div id="legendWidths"></div>
+    <h2 id="legendColorTitle">COLOR = SOURCE REGION</h2>
+    <div id="legendRegions"></div>
+    <h2>DASHED = ESTIMATE UNCERTAIN / ENDED</h2>
+  </div>
+
+  <div id="tip"></div>
+
+  <div class="sidePanel" id="detailPanel" role="dialog" aria-label="Migration details">
+    <button class="xBtn" id="dpClose" aria-label="Close details">✕</button>
+    <h2 id="dpTitle"></h2>
+    <div class="meta" id="dpMeta"></div>
+    <div id="dpBody"></div>
+    <button id="dpFocus">Focus on this migration</button>
+  </div>
+
+  <div class="sidePanel" id="filterPanel" role="dialog" aria-label="Filters">
+    <button class="xBtn" id="fpClose" aria-label="Close filters">✕</button>
+    <h2 style="font-size:14px">Filters</h2>
+    <h3>SEARCH</h3>
+    <input id="searchBox" type="search" placeholder="name or cause…" aria-label="Search migrations">
+    <h3>MINIMUM SIZE <span id="minLabel">(all)</span></h3>
+    <input id="minSlider" type="range" min="0" max="100" value="0" aria-label="Minimum migration size">
+    <h3>TYPE <button class="linkBtn" id="allTypes">all</button> · <button class="linkBtn" id="noTypes">none</button></h3>
+    <div id="typeChecks"></div>
+    <h3>SOURCE REGION <button class="linkBtn" id="allRegions">all</button> · <button class="linkBtn" id="noRegions">none</button></h3>
+    <div id="regionChecks"></div>
+  </div>
+
+  <div class="modalWrap" id="tableModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="All migrations data table">
+      <button class="xBtn" data-close aria-label="Close table">✕</button>
+      <h2>All migrations</h2>
+      <p class="dim">Click a row to open its detail panel. This table is the accessible, non-visual equivalent of the map.</p>
+      <table id="dataTable">
+        <thead><tr><th>Migration</th><th>Period</th><th>Type</th><th>Source region</th>
+        <th style="text-align:right">People moved</th><th>Confidence</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modalWrap" id="aboutModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="About the data">
+      <button class="xBtn" data-close aria-label="Close">✕</button>
+      <h2>About the data</h2>
+      <p>This atlas visualizes 48 major migrations and diasporas since 1000 AD. Every number here is an
+      estimate, and many are contested. Pre-1800 figures are order-of-magnitude scholarly estimates;
+      flows drawn with dashed edges carry <b>low confidence</b>. Where sources disagree, the dataset
+      records a range, shown in each migration's detail panel alongside its references.</p>
+      <p>Two different quantities appear: <b>people moved</b> (arrow width) counts migrants during the
+      period; <b>diaspora today</b> (circle area) is usually a descendant population, which can be far
+      larger — or absent where communities dispersed or assimilated. Some modern flows (Gulf labor,
+      Filipino overseas work) are circular rather than permanent; the notes say so.</p>
+      <p>This subject includes atrocities — enslavement, expulsion, genocide. The presentation aims to
+      be sober and precise; death tolls in transit are recorded in the detail panels where documented.</p>
+      <p class="dim"><b>Adding new research:</b> the atlas is driven entirely by one JSON file. Drag and
+      drop an updated <code>migrations.json</code> onto this window to load it instantly (it is
+      validated first, with the same rules as the project's test suite). To make a change permanent,
+      edit <code>data/migrations.json</code> in the repository and rebuild.</p>
+      <p class="dim"><b>Keyboard:</b> space = play/pause · ← → = step a year (shift for 10) ·
+      Home/End = ends of timeline · + − = zoom · Esc = close panels.</p>
+      <p class="dim">Basemap: Natural Earth. Projection: Equal Earth. Sources for each migration are
+      listed in its detail panel.</p>
+    </div>
+  </div>
+
+  <div id="toast" role="status"></div>
+
+  <div id="timebar">
+    <button id="playBtn" title="Play / pause (space)" aria-label="Play or pause">▶</button>
+    <div class="ctlGroup">
+      <div>
+        <button id="prevEvt" title="Previous migration start" aria-label="Jump to previous migration start">⏮</button>
+        <button id="stepBack" title="Step −1 year (←)" aria-label="Step back one year">−1</button>
+        <button id="stepFwd" title="Step +1 year (→)" aria-label="Step forward one year">+1</button>
+        <button id="nextEvt" title="Next migration start" aria-label="Jump to next migration start">⏭</button>
+      </div>
+      <div class="ctlLabel">step / jump</div>
+    </div>
+    <canvas id="scrub" aria-label="Timeline scrubber"></canvas>
+    <div class="ctlGroup">
+      <select id="speedSel" aria-label="Playback speed">
+        <option value="0.5">0.5×</option><option value="1">1×</option>
+        <option value="2" selected>2×</option><option value="4">4×</option>
+        <option value="8">8×</option>
+      </select>
+      <div class="ctlLabel">speed</div>
+    </div>
+    <div class="ctlGroup">
+      <select id="clockSel" aria-label="Clock mode">
+        <option value="piecewise" selected>adaptive</option>
+        <option value="linear">linear</option>
+      </select>
+      <div class="ctlLabel">clock</div>
+    </div>
+    <div class="ctlGroup">
+      <div><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomIn" aria-label="Zoom in">+</button></div>
+      <div class="ctlLabel">zoom</div>
+    </div>
+  </div>
+</main>
+
+<!--BUNDLE-->
+</body>
+</html>
