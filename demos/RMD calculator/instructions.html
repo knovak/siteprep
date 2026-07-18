@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RMD Calculator Instructions</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      margin: 0 auto;
+      max-width: 900px;
+      padding: 2rem;
+      color: #1f2937;
+      background: #f9fafb;
+    }
+    main {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 2rem;
+    }
+    h1, h2, h3 { line-height: 1.2; color: #111827; }
+    code { background: #f3f4f6; border-radius: 4px; padding: 0.1rem 0.25rem; }
+    a { color: #2563eb; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="./index.html">Return to the RMD calculator</a></p>
+  <h1>Retirement Fund &amp; RMD Model</h1>
+
+  <p><strong>A small, self-contained interactive tool that projects the year-by-year balance of a tax-deferred retirement account (Traditional IRA / 401(k)) under a fixed annual growth rate, IRS Required Minimum Distributions (RMDs), and an optional target spending level.</strong></p>
+
+  <p><strong>The whole model lives in a single HTML file (<code>retirement_rmd_model.html</code>) and runs entirely in the browser. There is no backend and no data is sent anywhere.</strong></p>
+
+  <h2>How to use</h2>
+
+  <ol>
+    <li><strong>Open <code>retirement_rmd_model.html</code> in any modern browser.</strong></li>
+    <li><strong>Move the five sliders:</strong>
+      <ul>
+        <li><strong>Years to model — length of the projection.</strong></li>
+        <li><strong>Starting balance — current account value.</strong></li>
+        <li><strong>Current age — used to determine when RMDs begin.</strong></li>
+        <li><strong>Asset growth rate — flat annual return applied to the balance.</strong></li>
+        <li><strong>Target annual total withdrawals — the spending level you want each year.</strong></li>
+      </ul>
+    </li>
+    <li><strong>Read the chart and the summary stats at the top.</strong></li>
+    <li><strong>Copy the tab-separated table at the bottom (or download it as a <code>.tsv</code>) to open in a spreadsheet.</strong></li>
+  </ol>
+
+  <p><strong>The chart shows end-of-year balance on the left axis and the three withdrawal series (RMD, additional withdrawal, total withdrawal) on the right axis.</strong></p>
+
+  <h2>How it works</h2>
+
+  <h3>Inputs and outputs</h3>
+
+  <p><strong>The simulation runs one row per year. Year 0 is a snapshot of the starting balance with no growth and no withdrawals. For each subsequent year <code>t</code> the model produces: beginning balance, growth, RMD, additional withdrawal, total withdrawal, and ending balance.</strong></p>
+
+  <h3>RMD start age</h3>
+
+  <p><strong>Under SECURE 2.0, the age at which RMDs must begin depends on the year of birth. The model infers birth year from the current age (assuming today is 2026) and applies these thresholds:</strong></p>
+
+  <ul>
+    <li><strong>born 1950 or earlier → RMDs start at age 72</strong></li>
+    <li><strong>born 1951–1959 → RMDs start at age 73</strong></li>
+    <li><strong>born 1960 or later → RMDs start at age 75</strong></li>
+  </ul>
+
+  <h3>RMD amount</h3>
+
+  <p><strong>When age is at or above the start age, the RMD for the year is</strong></p>
+
+  <p><strong>RMD = (prior year-end balance) / (Uniform Lifetime divisor at this age)</strong></p>
+
+  <p><strong>The divisors are the IRS Uniform Lifetime Table (effective 2022), covering ages 72 through 120+. This is the table used by most account holders whose sole beneficiary is not a spouse more than 10 years younger.</strong></p>
+
+  <h3>Annual mechanics</h3>
+
+  <p><strong>For each year <code>t</code> with prior year-end balance <code>B</code>, current age <code>A</code>, and growth rate <code>g</code>:</strong></p>
+
+  <ol>
+    <li><strong>Apply growth: <code>B' = B + B × g</code>.</strong></li>
+    <li><strong>Take the RMD (computed from <code>B</code>, the prior year-end balance), capped at the balance available: <code>B'' = B' − RMD</code>.</strong></li>
+    <li><strong>Take an additional withdrawal so the year's total withdrawal reaches the user-set target: <code>additional = max(0, target − RMD)</code>, capped at the remaining balance.</strong></li>
+    <li><strong>Ending balance = <code>B'' − additional</code>.</strong></li>
+  </ol>
+
+  <p><strong>The additional withdrawal can never be negative — if the RMD already meets or exceeds the target, no extra is taken (but the full RMD is still distributed, because that is required by law).</strong></p>
+
+  <h3>What the model does not do</h3>
+
+  <p><strong>The model is intentionally minimal. It does not include:</strong></p>
+
+  <ul>
+    <li><strong>Inflation or real (vs. nominal) returns</strong></li>
+    <li><strong>Variable or stochastic returns (each year uses the same flat rate)</strong></li>
+    <li><strong>Taxes on withdrawals</strong></li>
+    <li><strong>Roth accounts, taxable brokerage accounts, or Social Security</strong></li>
+    <li><strong>Contributions during the projection</strong></li>
+    <li><strong>Joint-life RMD tables (for spouses more than 10 years younger)</strong></li>
+    <li><strong>Qualified Charitable Distributions or other RMD offsets</strong></li>
+    <li><strong>Account-type-specific rules (e.g., still-working exception for 401(k)s)</strong></li>
+  </ul>
+
+  <p><strong>It is a planning sketchpad, not tax or financial advice.</strong></p>
+</main>
+</body>
+</html>
