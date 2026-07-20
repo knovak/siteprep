@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- SBDC Night-Sky Simulator — Developed by Ken Novak and David Sandalow, draft for review 2026-07-20 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -6,6 +7,7 @@
 <title>SBDC Night-Sky Simulator</title>
 <meta name="description" content="Interactive, physics-based simulation of how a large constellation of space-based data centers would appear in the night sky. Standalone — runs entirely offline.">
 <style>
+/* SBDC Night-Sky Simulator — Developed by Ken Novak and David Sandalow, draft for review 2026-07-20 */
 :root {
   --ink: #0d0f16;
   --panel: #131722;
@@ -166,6 +168,12 @@ input[type="range"] {
 #errbar span { flex: 1; overflow-wrap: anywhere; }
 #errbar button { background: none; border: none; color: #ffd9de; font-size: 16px; }
 
+#attribution {
+  position: absolute; right: 10px; bottom: 54px; z-index: 4;
+  font: 10px var(--mono); color: rgba(199, 205, 224, 0.55);
+  pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+}
+
 </style>
 </head>
 <body>
@@ -193,7 +201,7 @@ input[type="range"] {
         <div class="hint" id="sun-events">sunset —</div>
       </div>
       <div class="ctl">
-        <label for="time">Local solar time <output id="time-label">20:11</output></label>
+        <label for="time">Local time <output id="time-label">20:11</output></label>
         <input id="time" type="range" min="0" max="1439" step="1" value="1211">
       </div>
       <div class="row">
@@ -204,12 +212,11 @@ input[type="range"] {
         <button id="jump-dawn60">Dawn −60</button>
         <button id="jump-dawn30">Dawn −30</button>
       </div>
-      <div class="check"><input id="timelock" type="checkbox"><label for="timelock">Hold time relative to sunset/dawn</label></div>
+      <div class="check"><input id="timelock" type="checkbox"><label for="timelock">Hold time relative to sunset/dawn as latitude changes</label></div>
       <div class="row">
         <button id="play-rt">▶ Real time</button>
         <button id="play-ff">▶▶ Fast forward</button>
       </div>
-      <div class="check"><input id="shimmer" type="checkbox" checked><label for="shimmer">Satellites move in fast forward (shimmer)</label></div>
     </details>
 
     <details class="grp" open>
@@ -291,6 +298,7 @@ input[type="range"] {
       </div>
       <div class="check"><input id="tint" type="checkbox"><label for="tint">Tint by orbit family (analysis aid)</label></div>
       <div class="check"><input id="markpole" type="checkbox" checked><label for="markpole">Mark celestial pole (sky’s rotation center)</label></div>
+      <div class="check"><input id="shimmer" type="checkbox" checked><label for="shimmer">Satellites move in fast forward (shimmer)</label></div>
       <div class="ctl">
         <label for="cvar">Cluster membership variation <output id="cvar-label">0.35</output></label>
         <input id="cvar" type="range" min="0" max="100" step="5" value="35">
@@ -307,6 +315,7 @@ input[type="range"] {
     <div id="compass">facing 180°</div>
     <div id="busy">computing…</div>
     <div id="tooltip" role="status"></div>
+    <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
     <div id="readout-strip" aria-live="polite">
       <div id="readout">—</div>
       <div id="readout-sub">—</div>
@@ -331,6 +340,7 @@ input[type="range"] {
 </script>
 <script type="module">
 // ==== model.js (tested core) ====
+// SBDC Night-Sky Simulator — physics model. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
 /**
  * sbdc model core — pure functions, no DOM. Runs identically in the
  * browser and under Node (tests). All physical constants and assumption
@@ -1130,6 +1140,7 @@ function summarize(constellation, state, data, catalog = null) {
 const MODEL = { makeRng, dot, norm, normalize, daysSinceJ2000, solarEphemeris, sunHourAngleDeg, thetaSunDeg, sunVector, observerUnit, enuBasis, dirToAltAz, sunAltAz, sunCrossings, twilightTimes, ssoInclinationDeg, horizonCapDeg, generateConstellation, defaultConfig, isSunlit, lambertPhase, airmass, satMagnitude, brightnessOffset, zenithMu, muAt, limitingMag, starAltAz, evaluate, streakEndpoints, parseShellSpec, starVisibility, summarize };
 
 // ==== render.js ====
+// SBDC Night-Sky Simulator — renderer. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
 /**
  * sbdc renderer — Style A "twilight photographic" (naked-eye realism).
  *
@@ -1538,6 +1549,7 @@ class SkyRenderer {
 const RENDER = { wrap180, projHorizon, unprojHorizon, hillAltDeg, projFisheye, unprojFisheye, muToColor, magToFlux, DEFAULT_VIEW, SkyRenderer };
 
 // ==== ui.js ====
+// SBDC Night-Sky Simulator — UI layer. Developed by Ken Novak and David Sandalow, draft for review 2026-07-20
 /**
  * sbdc ui — controls, interaction, and readouts over the tested model
  * and renderer. Reads embedded JSON blocks (#sbdc-data, #bsc-catalog).
@@ -1584,11 +1596,12 @@ const TR = {
   grpConstellation: ["Constellation", "Constellation"],
   grpSky: ["Sky & display", "Ciel et affichage"],
   lat: ["Latitude", "Latitude"], date: ["Date", "Date"],
-  time: ["Local solar time", "Heure solaire locale"],
+  time: ["Local time", "Heure locale"],
   jumpSunset: ["Sunset", "Coucher"], jumpD30: ["+30 min", "+30 min"],
   jumpD60: ["+60 min", "+60 min"], jumpMid: ["Midnight", "Minuit"],
   jumpDawn: ["Dawn −30", "Aube −30"], jumpDawn60: ["Dawn −60", "Aube −60"],
-  timelock: ["Hold time relative to sunset/dawn", "Garder l\u2019heure relative au coucher/à l\u2019aube"],
+  timelock: ["Hold time relative to sunset/dawn as latitude changes",
+             "Garder l\u2019heure relative au coucher/à l\u2019aube quand la latitude change"],
   playRt: ["▶ Real time", "▶ Temps réel"], pauseRt: ["❚❚ Real time", "❚❚ Temps réel"],
   playFf: ["▶▶ Fast forward", "▶▶ Avance rapide"], pauseFf: ["❚❚ Fast forward", "❚❚ Avance rapide"],
   shimmer: ["Satellites move in fast forward (shimmer)", "Satellites en mouvement en avance rapide (scintillement)"],
@@ -1644,7 +1657,7 @@ const TR = {
   rSun: ["SUN", "SOLEIL"], rAbove: ["SBDCs above horizon", "SBDC au-dessus de l'horizon"],
   rSunlit: ["sunlit", "éclairés"], rVisible: ["naked-eye VISIBLE", "VISIBLES à l'œil nu"],
   rStars: ["visible stars", "étoiles visibles"], rBrightest: ["brightest mag", "mag la plus brillante"],
-  rTime: ["local solar time", "heure solaire locale"], rSeed: ["seed", "graine"],
+  rTime: ["local time", "heure locale"], rSeed: ["seed", "graine"],
   rDef: ["visible = sunlit + above horizon + brighter than the twilight naked-eye threshold",
          "visibles = éclairés + au-dessus de l'horizon + plus brillants que le seuil crépusculaire à l'œil nu"],
   rCam: ["camera mode: streaks = one 30 s exposure, stars to catalog limit",
@@ -1966,7 +1979,7 @@ function buildAssumptions() {
 
 function snapshot() {
   const src = App.renderer.canvas;
-  const CAP = 76;
+  const CAP = 96;
   const out = document.createElement("canvas");
   out.width = src.width; out.height = src.height + CAP;
   const g = out.getContext("2d");
@@ -1977,6 +1990,9 @@ function snapshot() {
   g.fillText($("readout").textContent, 14, src.height + 30);
   g.fillStyle = "#8b8fa3";
   g.fillText($("readout-sub").textContent, 14, src.height + 56);
+  g.fillStyle = "#6b6f83";
+  g.font = `${Math.max(10, out.width / 130)}px ui-monospace, monospace`;
+  g.fillText("Developed by Ken Novak and David Sandalow, draft for review 2026-07-20", 14, src.height + 82);
   out.toBlob((blob) => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
