@@ -77,7 +77,7 @@ get_demo_description() {
   fi
 
   if [ "$demo_name" = "SBDC Night Sky" ]; then
-    echo 'Interactive, physics-based SBDC Night-Sky Simulator for exploring how space-based data centers would appear in the night sky. <a href="./SBDC%20Night%20Sky/index.html">current version</a> · <a href="./SBDC%20Night%20Sky/index-initial.html">initial version</a> · <a href="https://drive.google.com/drive/folders/16PhbeOYaiJ0jW0xzjBQepQEtJHVmfPRc">documentation and code folder</a>.'
+    echo 'Interactive, physics-based SBDC Night-Sky Simulator for exploring how space-based data centers would appear in the night sky. <a href="./SBDC%20Night%20Sky/index.html">current version</a> · <a href="./SBDC%20Night%20Sky/index-initial.html">initial version</a> · <a href="https://docs.google.com/presentation/d/1s5RMg8Ek9pe_ytUlJmQ_ldRwIZpm_apK7Mjhm_pCsC8/edit?usp=sharing">slideshow tutorial</a> · <a href="https://drive.google.com/drive/folders/16PhbeOYaiJ0jW0xzjBQepQEtJHVmfPRc">documentation and code folder</a>.'
     return
   fi
 
