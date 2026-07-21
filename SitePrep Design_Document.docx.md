@@ -187,7 +187,7 @@ Styles are applied in the following order (later overrides earlier):
 ## **4.3 Navigation Patterns**
 
 * Footer navigation appears at the bottom of each page, showing links in the following order: **Version: main | Deck | Section | Google Drive | View all versions**. The Deck and Section links appear only when the page belongs to a deck or section, and separators are visual pipes between links.  
-* Header quick links are injected by each deck's `assets/scripts.js` helper next to the leading card tag. They provide quick access to **Home**, **Top of deck**, **Documents**, and **Demos**; the Demos link points to the generated demos index under `/demos/index.html`.
+* Header quick links are injected by each deck's `assets/scripts.js` helper next to the leading card tag. They provide quick access to **Home**, **Top of deck**, **Documents**, and **Demos**. The Home link comes from the injected version footer when available, and Top of deck plus Demos are resolved relative to that same version root so branch or PR previews stay within the current version.
 * Section links in deck tables of contents are a single clickable card: wrap the heading and description inside the anchor (`.toc-link`) so the entire rectangle is clickable, and avoid standalone "Open overview" link text.  
 
 ## **4.4 Responsive Design Breakpoints**
