@@ -68,20 +68,39 @@ function getHeaderNavDefaults() {
   return { home, deck, docs, demos };
 }
 
+function getVersionRootHref(homeHref, fallbackRoot) {
+  try {
+    const homeUrl = new URL(homeHref, window.location.href);
+    return new URL('.', homeUrl).href;
+  } catch (err) {
+    return fallbackRoot;
+  }
+}
+
+function getVersionRelativeHref(versionRootHref, path) {
+  try {
+    return new URL(path, versionRootHref).href;
+  } catch (err) {
+    return path;
+  }
+}
+
 function buildHeaderTags() {
   const target = document.querySelector('.card-header .tag');
   if (!target) return;
 
   const footerLinks = Array.from(document.querySelectorAll('.site-footer .footer-nav a'));
   const versionLink = footerLinks.find((link) => link.textContent.trim().startsWith('Version:'));
-  const deckLink = footerLinks.find((link) => link.textContent.trim() === 'Deck');
   const docsLink = footerLinks.find((link) => link.textContent.trim() === 'Google Drive');
   const defaults = getHeaderNavDefaults();
+  const { parts, decksIndex, rootPath } = getHeaderNavContext();
+  const deckName = decksIndex >= 0 ? parts[decksIndex + 1] : null;
 
   const homeHref = versionLink ? versionLink.getAttribute('href') : defaults.home;
-  const deckHref = deckLink ? deckLink.getAttribute('href') : defaults.deck;
+  const versionRootHref = getVersionRootHref(homeHref, rootPath);
+  const deckHref = deckName ? getVersionRelativeHref(versionRootHref, `decks/${deckName}/index.html`) : homeHref;
   const docsHref = docsLink ? docsLink.getAttribute('href') : defaults.docs;
-  const demosHref = defaults.demos;
+  const demosHref = getVersionRelativeHref(versionRootHref, 'demos/index.html');
 
   const nav = document.createElement('nav');
   nav.className = 'tag-nav';
@@ -110,7 +129,11 @@ function buildHeaderTags() {
   target.replaceWith(nav);
 }
 
-buildHeaderTags();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', buildHeaderTags);
+} else {
+  buildHeaderTags();
+}
 
 
 /**
