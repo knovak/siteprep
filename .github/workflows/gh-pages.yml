@@ -169,18 +169,25 @@ jobs:
             cp -r /tmp/build "$DEPLOY_DIR"
           fi
 
-      - name: Cleanup old branch previews
-        if: steps.version.outputs.is_main == 'true'
+      - name: Remove previews for deleted branches
         run: |
-          # Keep only the last 6 branch preview directories
-          if [ -d "branch" ]; then
-            BRANCH_DIRS=$(find branch -maxdepth 1 -type d ! -name 'branch' -printf '%T@ %p\n' | sort -rn | awk 'NR>6 {print $2}')
-            if [ -n "$BRANCH_DIRS" ]; then
-              echo "Removing old branch previews:"
-              echo "$BRANCH_DIRS"
-              echo "$BRANCH_DIRS" | xargs rm -rf
-            fi
-          fi
+          [ -d "branch" ] || exit 0
+
+          # Build the set of preview directory names from branches that still
+          # exist. gh-pages and main do not have branch preview directories.
+          git ls-remote --heads origin \
+            | sed 's#^.*refs/heads/##' \
+            | sed -e '/^gh-pages$/d' -e '/^main$/d' \
+            | sed 's#/#-#g' \
+            | sort -u > /tmp/active-preview-directories
+
+          find branch -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+            | while IFS= read -r preview; do
+                if ! grep -Fqx -- "$preview" /tmp/active-preview-directories; then
+                  echo "Removing preview for deleted branch: branch/$preview"
+                  rm -rf -- "branch/$preview"
+                fi
+              done
 
       - name: Generate versions index
         run: |
