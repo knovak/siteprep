@@ -10,6 +10,7 @@ This repository holds experimental deck content and a simple static build pipeli
 - **aus2503** – Guerilla Bay hiking, WOMADelaide 2026, and Brisbane cultural highlights.
 - **poland** – Current Warsaw planning notes with weather expectations, contact details, and milk bar recommendations.
 - **mexico** – Mexico City and San Miguel de Allende overviews with population, history, and early-July climate notes.
+- **australia-october-2026** – Minjerribah (North Stradbroke Island) planning for October 26–31, 2026.
 
 
 ### Deck asset convention
