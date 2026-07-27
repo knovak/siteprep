@@ -11,6 +11,8 @@ This repository holds experimental deck content and a simple static build pipeli
 - **poland** – Current Warsaw planning notes with weather expectations, contact details, and milk bar recommendations.
 - **mexico** – Mexico City and San Miguel de Allende overviews with population, history, and early-July climate notes.
 - **australia-october-2026** – Minjerribah (North Stradbroke Island) planning for October 26–31, 2026.
+- **british-columbia** – Option deck for Vancouver, October 1–15, 2026, with VIFF film and music planning.
+- **rockies** – Option deck for Jackson Hole stays in October and December 2026.
 
 
 ### Deck asset convention
@@ -19,7 +21,7 @@ Published decks include an `assets/styles.css` stylesheet and an `assets/scripts
 
 ### Deck Configuration
 
-Each deck can optionally include a `deck.json` file to customize its appearance on the homepage.
+Each deck can optionally include a `deck.json` file to customize its appearance on the homepage. The `group` field accepts `Current`, `Future`, `Option`, or `Past`; homepage groups appear in that order.
 
 #### deck.json Format
 
