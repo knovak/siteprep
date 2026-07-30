@@ -133,6 +133,9 @@ fi
 if [ -d "$ROOT_DIR/shared" ]; then
   cp -r "$ROOT_DIR/shared" "$OUTPUT_DIR/shared"
 fi
+if [ -d "$ROOT_DIR/shared_assets" ]; then
+  cp -r "$ROOT_DIR/shared_assets" "$OUTPUT_DIR/shared_assets"
+fi
 cp "$ROOT_DIR/manifest.webmanifest" "$OUTPUT_DIR/manifest.webmanifest"
 
 # Generate cache version and inject into service worker
@@ -246,6 +249,12 @@ cat > "$OUTPUT_DIR/index.html" <<EOF_HTML
   <title>SitePrep Decks</title>
   <link rel="stylesheet" href="$DEFAULT_STYLE">
   <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="./shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
   <script defer src="$DEFAULT_SCRIPT"></script>
 </head>
 <body>
