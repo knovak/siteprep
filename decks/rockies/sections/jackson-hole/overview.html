@@ -18,6 +18,7 @@ function iconFor(x){return L.divIcon({className:'custom-marker',html:`<svg width
 function makeMap(id,tile,attribution,maxZoom){const map=L.map(id);L.tileLayer(tile,{attribution,maxZoom}).addTo(map);return map}
 function addLocations(map,legendId){const markers=locations.map(x=>L.marker([x.lat,x.lng],{icon:iconFor(x)}).addTo(map).bindPopup(`<strong>${x.name}</strong>`));const legend=document.getElementById(legendId);locations.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.textContent=`${x.emoji} ${x.name}`;b.onclick=()=>{map.setView([x.lat,x.lng],15);markers[i].openPopup()};legend.appendChild(b)});const all=document.createElement('button');all.type='button';all.textContent='Show all';all.onclick=()=>map.fitBounds(L.latLngBounds(locations.map(x=>[x.lat,x.lng])).pad(.15));legend.appendChild(all);all.onclick()}
 const osm=makeMap('jh-map-osm','https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png','&copy; OpenStreetMap contributors',19);const topo=makeMap('jh-map-topo','https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png','Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap',17);addLocations(osm,'jh-legend-osm');addLocations(topo,'jh-legend-topo');
+</script>
   <footer class="site-footer">
     <script>
       (function() {
@@ -60,4 +61,4 @@ const osm=makeMap('jh-map-osm','https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.p
       })();
     </script>
   </footer>
-</script></body></html>
+</body></html>
