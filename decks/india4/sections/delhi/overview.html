@@ -17,16 +17,11 @@
     .map-section {
       margin: 24px 0;
     }
-    .map-container {
-      height: 420px;
-      border: 2px solid #dcdcdc;
-      border-radius: 12px;
-      margin: 16px 0;
-    }
     .location-list li {
       margin-bottom: 12px;
     }
   </style>
+  <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
 </head>
 <body>
   <article class="card">
@@ -89,60 +84,19 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
           crossorigin=""></script>
+  <script src="../../../../shared/standard_map/standard_map.js"></script>
   <script>
     const delhiLocations = [
-      {
-        name: 'Bharat Mandapam',
-        lat: 28.6196234,
-        lng: 77.2424337,
-        address: 'Bharat Mandapam, Pragati Maidan, New Delhi, Delhi 110001',
-        summary: 'Modern convention and exhibition center.'
-      },
-      {
-        name: '30, Jor Bagh Rd',
-        lat: 28.5864094,
-        lng: 77.2252878,
-        address: '30, Jor Bagh Rd, Block M, Lodi Colony, New Delhi, Delhi 110003',
-        summary: 'Lodhi Colony / Jor Bagh Road address.'
-      },
-      {
-        name: 'Gurgaon (Gurugram)',
-        lat: 28.4646148,
-        lng: 77.0299194,
-        address: 'Gurugram, Haryana 122001, India',
-        summary: 'Business and tech hub south of Delhi.'
-      },
-      {
-        name: 'New Delhi Airport (DEL)',
-        lat: 28.5553942,
-        lng: 77.0847985,
-        address: 'Indira Gandhi International Airport, New Delhi, Delhi 110037',
-        summary: 'Delhi’s main international airport.'
-      }
+      { name: 'Bharat Mandapam', lat: 28.6196234, lng: 77.2424337, type: 'Modern convention and exhibition center.' },
+      { name: '30, Jor Bagh Rd', lat: 28.5864094, lng: 77.2252878, type: 'Lodhi Colony / Jor Bagh Road address.' },
+      { name: 'Gurgaon (Gurugram)', lat: 28.4646148, lng: 77.0299194, type: 'Business and tech hub south of Delhi.' },
+      { name: 'New Delhi Airport (DEL)', lat: 28.5553942, lng: 77.0847985, type: 'Delhi’s main international airport.' }
     ];
 
-    const delhiMap = L.map('delhi-map').setView([28.5937, 77.1400], 11);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
-    }).addTo(delhiMap);
-
-    const bounds = L.latLngBounds([]);
-    delhiLocations.forEach((location) => {
-      const popupContent = `
-        <strong>${location.name}</strong><br>
-        ${location.summary}<br>
-        <em>${location.address}</em>
-      `;
-      L.marker([location.lat, location.lng])
-        .addTo(delhiMap)
-        .bindPopup(popupContent);
-      bounds.extend([location.lat, location.lng]);
+    StandardMap.render({
+      locations: delhiLocations,
+      osmMapId: 'delhi-map'
     });
-
-    if (delhiLocations.length > 1) {
-      delhiMap.fitBounds(bounds, { padding: [30, 30] });
-    }
   </script>
 </body>
 </html>
