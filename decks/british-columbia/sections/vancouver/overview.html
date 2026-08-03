@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Vancouver | British Columbia Deck</title><link rel="stylesheet" href="../../assets/styles.css"><link rel="manifest" href="../../../../manifest.webmanifest"><script src="../../assets/scripts.js"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css"></head>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Vancouver | British Columbia Deck</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css"><link rel="stylesheet" href="../../assets/styles.css"><link rel="manifest" href="../../../../manifest.webmanifest"><script src="../../assets/scripts.js"></script></head>
 <body><article class="card"><div class="card-header"><nav class="tag-nav" aria-label="Primary"><a href="../../../../index.html" class="tag">🏠 Home</a><a href="../../index.html" class="tag">⬆️ Top of deck</a></nav><h1>Vancouver</h1><p class="meta">Thursday, October 1–Thursday, October 15, 2026</p></div><div class="card-content"><h2>Basic Info</h2><ul>
 <li><strong>Dates:</strong> Thursday, October 1–Thursday, October 15, 2026.</li>
 <li><strong>Population:</strong> Vancouver had 662,248 residents in the 2021 census; the Vancouver census metropolitan area had 2,642,825.</li>
@@ -18,18 +18,20 @@
 <h2>Map</h2><p>All visitor locations listed above are marked below. Use either clickable legend to focus a location.</p><h3>OpenStreetMap</h3><div id="van-map-osm" class="map-container"></div><div id="van-legend-osm" class="map-legend"></div><h3>OpenTopoMap</h3><div id="van-map-topo" class="map-container"></div><div id="van-legend-topo" class="map-legend"></div></div></article>
 <footer class="site-footer"><div class="footer-nav"><a href="../../../../index.html">All decks</a><span class="footer-separator">|</span><a href="../../index.html">British Columbia</a></div></footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><script src="../../../../shared/standard_map/standard_map.js"></script><script>
-const locations=[
-      { name: 'Stanley Park', lat: 49.3043, lng: -123.1443, color: '#1e8449', icon: '🌲' },
-      { name: 'Vancouver Art Gallery', lat: 49.2829, lng: -123.1205, color: '#8e44ad', icon: '🎨' },
-      { name: 'Museum of Vancouver', lat: 49.2765, lng: -123.1445, color: '#d35400', icon: '🏛️' },
-      { name: 'Granville Island', lat: 49.2712, lng: -123.134, color: '#2980b9', icon: '🥕' },
-      { name: 'VIFF Centre', lat: 49.2758, lng: -123.1241, color: '#c0392b', icon: '🎬' },
+const vancouverLocations = [
+  { name: 'Stanley Park', type: 'Attraction', lat: 49.3043, lng: -123.1443, color: '#1e8449', icon: '🌲' },
+  { name: 'Vancouver Art Gallery', type: 'Attraction', lat: 49.2829, lng: -123.1205, color: '#8e44ad', icon: '🎨' },
+  { name: 'Museum of Vancouver', type: 'Attraction', lat: 49.2765, lng: -123.1445, color: '#d35400', icon: '🏛️' },
+  { name: 'Granville Island', type: 'Attraction', lat: 49.2712, lng: -123.134, color: '#2980b9', icon: '🥕' },
+  { name: 'VIFF Centre', type: 'Festival venue', lat: 49.2758, lng: -123.1241, color: '#c0392b', icon: '🎬' }
 ];
 StandardMap.render({
-  locations,
+  locations: vancouverLocations,
   osmMapId: 'van-map-osm',
   osmLegendId: 'van-legend-osm',
   topoMapId: 'van-map-topo',
   topoLegendId: 'van-legend-topo'
 });
-</script></body></html>
+</script>
+</body>
+</html>
