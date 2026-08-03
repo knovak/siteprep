@@ -8,11 +8,7 @@
   <link rel="manifest" href="../../../../manifest.webmanifest">
   <script src="../../assets/scripts.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <style>
-    .map-container { height: 420px; width: 100%; margin: 0.5rem 0 0.75rem; border-radius: 10px; }
-    .map-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
-    .map-legend button { border: 1px solid #ccc; background: #fff; border-radius: 999px; padding: 0.25rem 0.6rem; cursor: pointer; }
-  </style>
+  <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
 </head>
 <body>
   <article class="card">
@@ -73,53 +69,24 @@
   </article>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="../../../../shared/standard_map/standard_map.js"></script>
   <script>
     const straddieLocations = [
-      { name: 'Cocomo', lat: -27.42986, lng: 153.52911, color: '#8e44ad', emoji: '🏠' },
-      { name: 'North Gorge Walk', lat: -27.43518, lng: 153.54404, color: '#c0392b', emoji: '🥾' },
-      { name: 'Cylinder Beach', lat: -27.42539, lng: 153.53239, color: '#2980b9', emoji: '🏖️' },
-      { name: 'Bummiera (Brown Lake)', lat: -27.48972, lng: 153.43227, color: '#d35400', emoji: '💧' },
-      { name: 'Naree Budjong Djara National Park', lat: -27.52020, lng: 153.44720, color: '#1e8449', emoji: '🌿' },
-      { name: 'Historical Museum', lat: -27.49773, lng: 153.40402, color: '#f1c40f', emoji: '🏛️' }
+      { name: 'Cocomo', lat: -27.42986, lng: 153.52911, color: '#8e44ad', icon: '🏠' },
+      { name: 'North Gorge Walk', lat: -27.43518, lng: 153.54404, color: '#c0392b', icon: '🥾' },
+      { name: 'Cylinder Beach', lat: -27.42539, lng: 153.53239, color: '#2980b9', icon: '🏖️' },
+      { name: 'Bummiera (Brown Lake)', lat: -27.48972, lng: 153.43227, color: '#d35400', icon: '💧' },
+      { name: 'Naree Budjong Djara National Park', lat: -27.52020, lng: 153.44720, color: '#1e8449', icon: '🌿' },
+      { name: 'Historical Museum', lat: -27.49773, lng: 153.40402, color: '#f1c40f', icon: '🏛️' }
     ];
 
-    function iconFor(loc) {
-      return L.divIcon({
-        className: 'custom-marker',
-        html: `<svg width="34" height="48" viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg"><path d="M20 0C9 0 0 9 0 20c0 13.4 20 35 20 35s20-21.6 20-35C40 9 31 0 20 0z" fill="${loc.color}" stroke="white" stroke-width="2.5"/><circle cx="20" cy="20" r="8" fill="white" opacity="0.9"/><text x="20" y="25" text-anchor="middle" font-size="12">${loc.emoji}</text></svg>`,
-        iconSize: [34, 48], iconAnchor: [17, 48], popupAnchor: [0, -48]
-      });
-    }
-
-    function makeMap(id, tile, attribution, maxZoom) {
-      const map = L.map(id).setView([-27.47, 153.47], 11);
-      L.tileLayer(tile, { attribution, maxZoom }).addTo(map);
-      return map;
-    }
-
-    const osmMap = makeMap('straddie-map-osm', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', '&copy; OpenStreetMap contributors', 19);
-    const topoMap = makeMap('straddie-map-topo', 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap', 17);
-
-    function addLocations(map, legendId) {
-      const markers = straddieLocations.map((loc) => L.marker([loc.lat, loc.lng], { icon: iconFor(loc) }).addTo(map).bindPopup(`<strong>${loc.name}</strong>`));
-      const legend = document.getElementById(legendId);
-      straddieLocations.forEach((loc, index) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = `${loc.emoji} ${loc.name}`;
-        button.onclick = () => { map.setView([loc.lat, loc.lng], 15); markers[index].openPopup(); };
-        legend.appendChild(button);
-      });
-      const showAll = document.createElement('button');
-      showAll.type = 'button';
-      showAll.textContent = 'Show all';
-      showAll.onclick = () => map.fitBounds(L.latLngBounds(straddieLocations.map((loc) => [loc.lat, loc.lng])).pad(0.15));
-      legend.appendChild(showAll);
-      map.fitBounds(L.latLngBounds(straddieLocations.map((loc) => [loc.lat, loc.lng])).pad(0.15));
-    }
-
-    addLocations(osmMap, 'straddie-legend-osm');
-    addLocations(topoMap, 'straddie-legend-topo');
+    StandardMap.render({
+      locations: straddieLocations,
+      osmMapId: 'straddie-map-osm',
+      osmLegendId: 'straddie-legend-osm',
+      topoMapId: 'straddie-map-topo',
+      topoLegendId: 'straddie-legend-topo'
+    });
   </script>
   <footer class="site-footer">
     <script>
