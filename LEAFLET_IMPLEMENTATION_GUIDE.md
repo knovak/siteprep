@@ -3,6 +3,12 @@
 ## Overview
 This guide provides complete instructions for creating interactive web maps using Leaflet.js with OpenStreetMap (OSM) and OpenTopoMap tile providers. Follow these instructions precisely to generate working map implementations.
 
+## Use the shared library by default
+
+For the common "standard map" case (section 3a below - paired OSM/OpenTopoMap displays, colored markers, and a clickable legend), the recommended default is to call `StandardMap.render(...)` from `shared/standard_map/standard_map.js` instead of hand-writing this pattern again. See `shared/standard_map/standard_map.md` for the API.
+
+This guide remains the reference for what that library does under the hood, for patterns it doesn't cover (single maps, popups, zoom controls, performance tuning, etc.), and for building a fully custom map when a deck is deliberately experimenting with different map behavior instead of using the shared library.
+
 ## Core Requirements
 
 ### 1. Essential HTML Structure
@@ -122,7 +128,7 @@ L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
 
 ## 3a. Standard Map Block for Deck Pages
 
-When a request asks for a “standard map” on a deck or section page, use the two-map pattern above (OpenStreetMap followed by OpenTopoMap) and add a clickable legend below each display so users can jump to any location.
+When a request asks for a “standard map” on a deck or section page, use `StandardMap.render(...)` (see `shared/standard_map/standard_map.md`), which implements exactly the pattern below: the two-map layout (OpenStreetMap followed by OpenTopoMap) with a clickable legend under each display so users can jump to any location. The hand-written version below is kept as a reference for what the library does, and as a starting point for a deck that wants to fork the behavior.
 
 ```html
 <h3>OpenStreetMap</h3>
