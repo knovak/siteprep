@@ -488,5 +488,9 @@ done < <(find "$OUTPUT_DIR" -name "*.html" -type f -print0)
 
 "$ROOT_DIR/scripts/build_tests.sh"
 
+# Informational only - reports on shared-library adoption and page navigation
+# without ever failing the build (decks are free to diverge from both).
+"$ROOT_DIR/scripts/audit_shared_usage.sh"
+
 printf 'Build complete. Output stored in %s\n' "$OUTPUT_DIR"
 printf 'Version: %s (Branch: %s)\n' "$VERSION_NAME" "$BRANCH_NAME"

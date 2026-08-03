@@ -57,16 +57,18 @@ A content request may ask for items to be merged in a list. Always examine the c
 Requested content may request a location to be provided. For a location, look it up online. In the content, always supply the name of the location, a brief summary of it if available, a street address, and a link to a Google Map of the location. If the location is in a country that uses a non-Roman script like Kanji or Tamil, provide the street address in both English and the non-Roman script. If the location has operating hours (like a store or restaurant), provide the hours in a concise format like "M-F 10-5, Sa 12-4".
 
 ## Photo galleries
-A photo gallery may be requested with a list of URLs, each of which has an image file, or with a file prefix. A prefix indicates that you should find the photos in the deck's `assets/images` folder and add any files in that folder where the file name begins with the prefix, and add the URLs for those files to the gallery.
+A photo gallery may be requested with a list of URLs, each of which has an image file, or with a file prefix. A prefix indicates that you should find the photos in the deck's `assets/images` folder and add any files in that folder where the file name begins with the prefix, and add the URLs for those files to the gallery. Use the shared `PhotoGallery` library (`shared/photo_gallery/`, see `shared/photo_gallery/photo_gallery.md`) to render it, rather than writing new gallery/lightbox JS. A deck may still implement its own gallery if it's deliberately experimenting with different gallery behavior.
 
 ## Distance visualizations
 A distance visualization may be requested with a list of location pairs, each pair with a time, such as "Fort Kochi to Alleppey houseboat 1h50m". You should find the locations' latitude and longitude to supply to the distance visualizer.
 
 ## Map generation
-A request for making a "standard map" or simply a "map" should use the recommendations in LEAFLET_IMPLEMENTATION_GUIDE.md.  This includes
+A request for making a "standard map" or simply a "map" should use the `StandardMap` library (`shared/standard_map/`, see `shared/standard_map/standard_map.md`), which implements the recommendations in LEAFLET_IMPLEMENTATION_GUIDE.md:
 * creating two displays, one OpenStreetMap followed by OpenTopoMap 
 * use Custom Colored Markers
 * provide a clickable legend at the bottom of each display
+
+LEAFLET_IMPLEMENTATION_GUIDE.md remains the reference for this pattern and for building a custom map instead, when a deck is deliberately experimenting with different map behavior rather than using the shared library.
 
 ## minimize merge conflicts
 When adding content, do not modify README.md unless a new deck is added.

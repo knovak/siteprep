@@ -17,7 +17,7 @@ This repository holds experimental deck content and a simple static build pipeli
 
 ### Deck asset convention
 
-Published decks include an `assets/styles.css` stylesheet and an `assets/scripts.js` helper copied into the deck directory so the build tests can verify consistent styling, navigation helpers, and service worker registration across decks.
+Each deck owns an independent `assets/styles.css` and `assets/scripts.js`, seeded from a starting template, that a deck is free to customize or diverge from for its own formatting, rendering, and navigation experiments - decks are not required to stay in sync with each other. Common widgets that are easy to get wrong when reimplemented by hand - standard maps, photo galleries, distance visualizations - live in `shared/` as opt-in libraries instead; see `shared/README.md`.
 
 ### Deck Configuration
 
