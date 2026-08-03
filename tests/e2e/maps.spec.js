@@ -9,8 +9,8 @@ test.describe('Map Functionality Tests', () => {
     await expect(page).toHaveTitle(/India Maps/);
 
     // Check that map containers exist
-    const map1 = page.locator('#map1');
-    const map2 = page.locator('#map2');
+    const map1 = page.locator('#india-map-osm');
+    const map2 = page.locator('#india-map-topo');
 
     await expect(map1).toBeVisible();
     await expect(map2).toBeVisible();
@@ -24,8 +24,8 @@ test.describe('Map Functionality Tests', () => {
     await expect(page).toHaveTitle(/UAE Maps/);
 
     // Check that map containers exist
-    const map1 = page.locator('#map1');
-    const map2 = page.locator('#map2');
+    const map1 = page.locator('#uae-map-osm');
+    const map2 = page.locator('#uae-map-topo');
 
     await expect(map1).toBeVisible();
     await expect(map2).toBeVisible();
@@ -60,11 +60,11 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Check that map containers have explicit height
-    const map1Height = await page.locator('#map1').evaluate(el => {
+    const map1Height = await page.locator('#india-map-osm').evaluate(el => {
       return window.getComputedStyle(el).height;
     });
 
-    const map2Height = await page.locator('#map2').evaluate(el => {
+    const map2Height = await page.locator('#india-map-topo').evaluate(el => {
       return window.getComputedStyle(el).height;
     });
 
@@ -85,11 +85,11 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Check that map containers have explicit height
-    const map1Height = await page.locator('#map1').evaluate(el => {
+    const map1Height = await page.locator('#uae-map-osm').evaluate(el => {
       return window.getComputedStyle(el).height;
     });
 
-    const map2Height = await page.locator('#map2').evaluate(el => {
+    const map2Height = await page.locator('#uae-map-topo').evaluate(el => {
       return window.getComputedStyle(el).height;
     });
 
@@ -114,7 +114,7 @@ test.describe('Map Functionality Tests', () => {
 
     // Check that markers are created (15 locations)
     const markerCount = await page.evaluate(() => {
-      const map1Container = document.querySelector('#map1');
+      const map1Container = document.querySelector('#india-map-osm');
       const markers = map1Container.querySelectorAll('.leaflet-marker-icon');
       return markers.length;
     });
@@ -131,7 +131,7 @@ test.describe('Map Functionality Tests', () => {
 
     // Check that markers are created (9 locations)
     const markerCount = await page.evaluate(() => {
-      const map1Container = document.querySelector('#map1');
+      const map1Container = document.querySelector('#uae-map-osm');
       const markers = map1Container.querySelectorAll('.leaflet-marker-icon');
       return markers.length;
     });
@@ -147,11 +147,11 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(300);
 
     // Check that controls exist
-    const controlsDiv = page.locator('#controls1');
+    const controlsDiv = page.locator('#india-legend-osm');
     await expect(controlsDiv).toBeVisible();
 
-    // Check that there are navigation buttons (15 locations + 1 "Show All" button = 16 buttons)
-    const buttons = page.locator('#controls1 button');
+    // Check that there are navigation buttons (15 locations + 1 "Show all" button = 16 buttons)
+    const buttons = page.locator('#india-legend-osm button');
     const buttonCount = await buttons.count();
     expect(buttonCount).toBe(16);
 
@@ -161,7 +161,7 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(300);
 
     // Map should still be visible after clicking
-    const map1 = page.locator('#map1');
+    const map1 = page.locator('#india-map-osm');
     await expect(map1).toBeVisible();
   });
 
@@ -173,11 +173,11 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(300);
 
     // Check that controls exist
-    const controlsDiv = page.locator('#controls1');
+    const controlsDiv = page.locator('#uae-legend-osm');
     await expect(controlsDiv).toBeVisible();
 
-    // Check that there are navigation buttons (9 locations + 1 "Show All" button = 10 buttons)
-    const buttons = page.locator('#controls1 button');
+    // Check that there are navigation buttons (9 locations + 1 "Show all" button = 10 buttons)
+    const buttons = page.locator('#uae-legend-osm button');
     const buttonCount = await buttons.count();
     expect(buttonCount).toBe(10);
 
@@ -187,49 +187,49 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(300);
 
     // Map should still be visible after clicking
-    const map1 = page.locator('#map1');
+    const map1 = page.locator('#uae-map-osm');
     await expect(map1).toBeVisible();
   });
 
-  test('MAP-11: "Show All Locations" button works on India Maps', async ({ page }) => {
+  test('MAP-11: "Show all" button works on India Maps', async ({ page }) => {
     await page.goto('/decks/india1/sections/india-maps/overview.html');
     await page.waitForLoadState('domcontentloaded');
 
     // Wait for controls to be created
     await page.waitForTimeout(300);
 
-    // Find "Show All Locations" button
-    const showAllButton = page.locator('#controls1 button').last();
+    // Find "Show all" button
+    const showAllButton = page.locator('#india-legend-osm button').last();
     const buttonText = await showAllButton.textContent();
-    expect(buttonText).toContain('Show All');
+    expect(buttonText).toContain('Show all');
 
-    // Click on "Show All" button
+    // Click on "Show all" button
     await showAllButton.click();
     await page.waitForTimeout(300);
 
     // Map should still be visible
-    const map1 = page.locator('#map1');
+    const map1 = page.locator('#india-map-osm');
     await expect(map1).toBeVisible();
   });
 
-  test('MAP-12: "Show All Locations" button works on UAE Maps', async ({ page }) => {
+  test('MAP-12: "Show all" button works on UAE Maps', async ({ page }) => {
     await page.goto('/decks/dubai1/sections/uae-maps/overview.html');
     await page.waitForLoadState('domcontentloaded');
 
     // Wait for controls to be created
     await page.waitForTimeout(300);
 
-    // Find "Show All Locations" button
-    const showAllButton = page.locator('#controls1 button').last();
+    // Find "Show all" button
+    const showAllButton = page.locator('#uae-legend-osm button').last();
     const buttonText = await showAllButton.textContent();
-    expect(buttonText).toContain('Show All');
+    expect(buttonText).toContain('Show all');
 
-    // Click on "Show All" button
+    // Click on "Show all" button
     await showAllButton.click();
     await page.waitForTimeout(300);
 
     // Map should still be visible
-    const map1 = page.locator('#map1');
+    const map1 = page.locator('#uae-map-osm');
     await expect(map1).toBeVisible();
   });
 
@@ -241,12 +241,12 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(500);
 
     // Click on first marker
-    const firstMarker = page.locator('#map1 .leaflet-marker-icon').first();
+    const firstMarker = page.locator('#india-map-osm .leaflet-marker-icon').first();
     await firstMarker.click();
     await page.waitForTimeout(300);
 
     // Check that popup is visible
-    const popup = page.locator('#map1 .leaflet-popup');
+    const popup = page.locator('#india-map-osm .leaflet-popup');
     await expect(popup).toBeVisible();
   });
 
@@ -258,12 +258,12 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(500);
 
     // Click on first marker
-    const firstMarker = page.locator('#map1 .leaflet-marker-icon').first();
+    const firstMarker = page.locator('#uae-map-osm .leaflet-marker-icon').first();
     await firstMarker.click();
     await page.waitForTimeout(300);
 
     // Check that popup is visible
-    const popup = page.locator('#map1 .leaflet-popup');
+    const popup = page.locator('#uae-map-osm .leaflet-popup');
     await expect(popup).toBeVisible();
   });
 
@@ -329,8 +329,8 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(500);
 
     // Check that both map tiles are loaded
-    const map1Tiles = await page.locator('#map1 .leaflet-tile').count();
-    const map2Tiles = await page.locator('#map2 .leaflet-tile').count();
+    const map1Tiles = await page.locator('#india-map-osm .leaflet-tile').count();
+    const map2Tiles = await page.locator('#india-map-topo .leaflet-tile').count();
 
     expect(map1Tiles).toBeGreaterThan(0);
     expect(map2Tiles).toBeGreaterThan(0);
@@ -344,8 +344,8 @@ test.describe('Map Functionality Tests', () => {
     await page.waitForTimeout(500);
 
     // Check that both map tiles are loaded
-    const map1Tiles = await page.locator('#map1 .leaflet-tile').count();
-    const map2Tiles = await page.locator('#map2 .leaflet-tile').count();
+    const map1Tiles = await page.locator('#uae-map-osm .leaflet-tile').count();
+    const map2Tiles = await page.locator('#uae-map-topo .leaflet-tile').count();
 
     expect(map1Tiles).toBeGreaterThan(0);
     expect(map2Tiles).toBeGreaterThan(0);
