@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="../../assets/styles.css">
   <link rel="manifest" href="../../../../../manifest.webmanifest">
   <script defer src="../../assets/scripts.js"></script>
+  <link rel="stylesheet" href="../../../../shared/photo_gallery/photo_gallery.css">
+  <script defer src="../../../../shared/photo_gallery/photo_gallery.js"></script>
 </head>
 <body>
   <article class="card">
@@ -128,22 +130,13 @@
     </div>
   </footer>
   <script>
-    // Wait for deferred scripts to load
     window.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, initializing components...');
-
       buildBreadcrumb('page-nav', [
         { href: '../../../index.html', label: 'Dubai Home' },
         { href: '../../../../index.html', label: 'All decks' }
       ]);
 
-      // Initialize photo gallery
-      console.log('Checking for initPhotoGallery function...', typeof initPhotoGallery);
-      if (typeof initPhotoGallery === 'function') {
-        initPhotoGallery('abu-dhabi-gallery');
-      } else {
-        console.error('initPhotoGallery function not found!');
-      }
+      PhotoGallery.init('abu-dhabi-gallery');
     });
   </script>
 </body>

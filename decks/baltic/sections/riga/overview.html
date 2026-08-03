@@ -13,10 +13,8 @@
     table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem; }
     th, td { border: 1px solid #d8dee9; padding: 0.5rem; vertical-align: top; text-align: left; }
     th { background: #f3f6fb; }
-    .map-container { height: 460px; width: 100%; margin: 0.5rem 0 0.75rem; border-radius: 10px; }
-    .map-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
-    .map-legend button { border: 1px solid #ccc; background: #fff; border-radius: 999px; padding: 0.25rem 0.6rem; cursor: pointer; }
   </style>
+  <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
 </head>
 <body>
   <article class="card">
@@ -182,6 +180,7 @@
   </article>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="../../../../shared/standard_map/standard_map.js"></script>
   <script>
     const rigaLocations = [
       { name: 'Wellton Riga Hotel & SPA', type: 'Stay', icon: '🏨', color: '#2f80ed', lat: 56.946236, lng: 24.113733 },
@@ -219,55 +218,13 @@
       { name: 'Bar XIII', type: 'Food & drink', icon: '🍸', color: '#f2994a', lat: 56.959008, lng: 24.106478 }
     ];
 
-    function rigaIcon(loc) {
-      return L.divIcon({
-        className: 'custom-marker',
-        html: `<svg width="34" height="48" viewBox="0 0 40 55" xmlns="http://www.w3.org/2000/svg"><path d="M20 0C9 0 0 9 0 20c0 13.4 20 35 20 35s20-21.6 20-35C40 9 31 0 20 0z" fill="${loc.color}" stroke="white" stroke-width="2.5"/><circle cx="20" cy="20" r="8" fill="white" opacity="0.9"/><text x="20" y="25" text-anchor="middle" font-size="12">${loc.icon}</text></svg>`,
-        iconSize: [34, 48],
-        iconAnchor: [17, 48],
-        popupAnchor: [0, -48]
-      });
-    }
-
-    function createRigaMap(id, tileUrl, attribution, maxZoom) {
-      const map = L.map(id).setView([56.953, 24.114], 13);
-      L.tileLayer(tileUrl, { attribution, maxZoom }).addTo(map);
-      return map;
-    }
-
-    function addRigaMarkers(map) {
-      const markers = rigaLocations.map((loc) => L.marker([loc.lat, loc.lng], { icon: rigaIcon(loc) })
-        .addTo(map)
-        .bindPopup(`<strong>${loc.name}</strong><br>${loc.type}`));
-      map.fitBounds(L.latLngBounds(rigaLocations.map((loc) => [loc.lat, loc.lng])), { padding: [24, 24] });
-      return markers;
-    }
-
-    function buildRigaLegend(containerId, map, markers) {
-      const legend = document.getElementById(containerId);
-      rigaLocations.forEach((loc, index) => {
-        const button = document.createElement('button');
-        button.textContent = `${loc.icon} ${loc.name}`;
-        button.onclick = () => {
-          map.setView([loc.lat, loc.lng], 15);
-          markers[index].openPopup();
-        };
-        legend.appendChild(button);
-      });
-
-      const showAll = document.createElement('button');
-      showAll.textContent = 'Show all';
-      showAll.onclick = () => map.fitBounds(L.latLngBounds(rigaLocations.map((loc) => [loc.lat, loc.lng])), { padding: [24, 24] });
-      legend.appendChild(showAll);
-    }
-
-    const rigaMapOsm = createRigaMap('riga-map-osm', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', 19);
-    const rigaMarkersOsm = addRigaMarkers(rigaMapOsm);
-    buildRigaLegend('riga-legend-osm', rigaMapOsm, rigaMarkersOsm);
-
-    const rigaMapTopo = createRigaMap('riga-map-topo', 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)', 17);
-    const rigaMarkersTopo = addRigaMarkers(rigaMapTopo);
-    buildRigaLegend('riga-legend-topo', rigaMapTopo, rigaMarkersTopo);
+    StandardMap.render({
+      locations: rigaLocations,
+      osmMapId: 'riga-map-osm',
+      osmLegendId: 'riga-legend-osm',
+      topoMapId: 'riga-map-topo',
+      topoLegendId: 'riga-legend-topo'
+    });
   </script>
   <script>
     buildBreadcrumb('page-nav', [
