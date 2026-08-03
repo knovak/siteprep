@@ -2,17 +2,31 @@
 
 This directory contains shared libraries, scripts, styles, and images that can be used by any deck in the SitePrep project.
 
+## Design philosophy: optional, not mandatory
+
+Each deck owns an independent `assets/styles.css` and `assets/scripts.js`, seeded from a starting template, and is free to customize or diverge from it for experimentation - different layout, different navigation, a completely different look. That independence is intentional and `shared/` does not try to override it: nothing in the build requires a deck to use anything here, and nothing fails if a deck's markup or styling doesn't match another deck's.
+
+What belongs here instead is **widgets that are easy to get wrong when reimplemented by hand** - map tile/marker/legend wiring, gallery/carousel/lightbox state, distance-time calculations. Pulling that logic into one place means fixing a bug or improving it happens once, and new decks don't have to re-derive it from a prose guide. A deck can still ignore a shared library entirely and write its own version if it's deliberately experimenting with different behavior; forking a shared library's file into a deck's own `assets/` folder to modify it is a normal, sanctioned way to do that, not a mistake to avoid.
+
 ## Directory Structure
 
 ```
 shared/
-├── scripts/        # Shared JavaScript libraries
-├── styles/         # Shared CSS stylesheets
+├── scripts/        # Shared JavaScript libraries (single-file utilities)
+├── styles/         # Shared CSS stylesheets (single-file utilities)
 ├── images/         # Shared images and icons
-└── distance_viz/   # Distance visualization library
-    ├── distance_visualizer.md
-    ├── traveltimeviz.css
-    └── traveltimeviz.js
+├── distance_viz/   # Distance visualization library
+│   ├── distance_visualizer.md
+│   ├── traveltimeviz.css
+│   └── traveltimeviz.js
+├── standard_map/   # Standard OSM + OpenTopoMap map/legend library
+│   ├── standard_map.md
+│   ├── standard_map.css
+│   └── standard_map.js
+└── photo_gallery/  # Photo gallery + carousel + lightbox library
+    ├── photo_gallery.md
+    ├── photo_gallery.css
+    └── photo_gallery.js
 ```
 
 ## How to Use Shared Libraries in Your Decks
@@ -144,6 +158,73 @@ The `distance_viz/` folder contains a complete library for visualizing travel ti
 
 For complete documentation, see [`distance_viz/distance_visualizer.md`](./distance_viz/distance_visualizer.md).
 
+## Standard Map Library
+
+The `standard_map/` folder contains `StandardMap`, a helper for the paired OpenStreetMap + OpenTopoMap display with colored markers and a clickable legend used on deck/section pages (see `LEAFLET_IMPLEMENTATION_GUIDE.md` for the full pattern this implements). It's optional - a page can still write its own Leaflet code if it wants different map behavior.
+
+### Quick Example
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
+```
+
+```html
+<div id="city-map-osm" class="map-container"></div>
+<div id="city-legend-osm" class="map-legend"></div>
+<div id="city-map-topo" class="map-container"></div>
+<div id="city-legend-topo" class="map-legend"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="../../../../shared/standard_map/standard_map.js"></script>
+<script>
+  StandardMap.render({
+    locations: [
+      { name: 'Old Town Hotel', type: 'Stay', icon: '🏨', color: '#2f80ed', lat: 56.9462, lng: 24.1137 },
+      { name: 'Central Market', type: 'Market', icon: '🛍️', color: '#27ae60', lat: 56.9432, lng: 24.0668 }
+    ],
+    osmMapId: 'city-map-osm',
+    osmLegendId: 'city-legend-osm',
+    topoMapId: 'city-map-topo',
+    topoLegendId: 'city-legend-topo'
+  });
+</script>
+```
+
+For complete documentation, see [`standard_map/standard_map.md`](./standard_map/standard_map.md).
+
+## Photo Gallery Library
+
+The `photo_gallery/` folder contains `PhotoGallery`, a grid-or-carousel image gallery with a full-screen keyboard-navigable lightbox. It's optional - a page can write its own gallery markup/JS if it wants different behavior.
+
+### Quick Example
+
+```html
+<link rel="stylesheet" href="../../../../shared/photo_gallery/photo_gallery.css">
+<script defer src="../../../../shared/photo_gallery/photo_gallery.js"></script>
+```
+
+```html
+<div id="city-gallery" class="photo-gallery">
+  <div class="gallery-item">
+    <img src="https://example.com/photo1.jpg" alt="Description of photo 1">
+    <div class="gallery-caption">Caption for photo 1</div>
+  </div>
+  <div class="gallery-item">
+    <img src="https://example.com/photo2.jpg" alt="Description of photo 2">
+    <div class="gallery-caption">Caption for photo 2</div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => PhotoGallery.init('city-gallery'));
+</script>
+```
+
+Add the `carousel` class to the container (`class="photo-gallery carousel"`) for the compact one-at-a-time layout instead of a grid.
+
+For complete documentation, see [`photo_gallery/photo_gallery.md`](./photo_gallery/photo_gallery.md).
+
 ## Adding New Shared Libraries
 
 To add a new shared library:
@@ -192,7 +273,7 @@ The entire `shared/` directory and its contents are copied to `gh-pages/shared/`
 4. **Test with multiple decks:** Ensure your library works correctly from different path depths
 5. **Minimize file sizes:** Use minified versions for production when appropriate
 6. **Avoid duplicates:** Check if similar functionality already exists before adding new libraries
-7. **Standard maps:** For deck section pages that need a standard map, include two Leaflet displays (OpenStreetMap then OpenTopoMap) with clickable legends beneath each map, matching the pattern used in the Rajasthan deck overview pages.
+7. **Standard maps:** For deck section pages that need a standard map, use `StandardMap.render()` from `standard_map/` to get the two Leaflet displays (OpenStreetMap then OpenTopoMap) with clickable legends beneath each map. Write custom Leaflet code instead only if the page needs different map behavior.
 
 ## Support
 
