@@ -592,6 +592,14 @@ const marker = L.marker([lat2, lng2]).addTo(map);  // Overwrites first!
 
 // Missing attribution
 L.tileLayer(url).addTo(map);  // Attribution required by OSM license
+
+// Corrupted/mismatched integrity hash on the CSS or JS <link>/<script> tag
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9D/miZyoHS5obTRR9BMY=" crossorigin=""/>
+// One dropped/changed character and the browser's Subresource Integrity (SRI)
+// check silently blocks the stylesheet — no leaflet.css, no map layout, no
+// visible error beyond a console warning. This is a common copy/paste typo
+// when duplicating a section page to start a new one.
 ```
 
 ### ✅ Do This Instead:
@@ -618,7 +626,14 @@ markers.push(L.marker([lat1, lng1]).addTo(map));
 L.tileLayer(url, {
     attribution: '&copy; OSM contributors'
 }).addTo(map);
+
+// Copy the integrity hash verbatim from a known-working page (or leave it off
+// entirely if unsure) rather than retyping/editing it by hand
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 ```
+
+**Debugging a blank/unstyled map:** if the map container is visible but shows no tiles, markers, or Leaflet styling, open the browser console first. A `Failed to load resource` message pointing at `leaflet.css` alongside a `net::ERR_..._MISMATCHED_INTEGRITY` (or a silently missing stylesheet in `document.styleSheets`) means the `integrity` attribute doesn't match the file — compare it character-for-character against a page that renders correctly (e.g. `decks/rockies/sections/jackson-hole/overview.html`) rather than re-deriving the hash by hand.
 
 ---
 
@@ -792,6 +807,7 @@ Use this lightweight pattern for a single map embedded inside a deck section pag
 When implementing a Leaflet map, ensure:
 
 - ✅ Leaflet CSS loaded in `<head>`
+- ✅ `integrity` hash on the CSS/JS tags matches a known-working deck page exactly (a mismatch silently blocks the stylesheet)
 - ✅ Map container has explicit height in pixels
 - ✅ Leaflet JS loads before initialization code
 - ✅ Correct tile URL and attribution for provider
