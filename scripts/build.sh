@@ -462,13 +462,23 @@ inject_version_footer() {
   footer_html="${footer_html}    </script>\n"
   footer_html="${footer_html}  </footer>"
 
-  # Insert footer before closing body tag
+  # Insert footer immediately before the closing body tag.
+  # Split the line at </body> rather than printing the footer above the whole
+  # line: pages that close an inline <script> on the same line as </body> would
+  # otherwise get the footer markup injected inside that still-open script,
+  # which breaks the script with a syntax error.
   if grep -q "</body>" "$html_file"; then
     # Use a temporary file to avoid in-place editing issues
     local tmp_file="${html_file}.tmp"
     awk -v footer="$footer_html" '
-      /<\/body>/ {
+      !injected && index($0, "</body>") {
+        idx = index($0, "</body>")
+        before = substr($0, 1, idx - 1)
+        if (before != "") print before
         print footer
+        print substr($0, idx)
+        injected = 1
+        next
       }
       { print }
     ' "$html_file" > "$tmp_file"

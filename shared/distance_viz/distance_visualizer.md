@@ -16,7 +16,7 @@ The **TravelTimeViz** library is a JavaScript component for visualizing travel t
 - Customizable colors and styling
 - Event system for user interactions
 
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Dependencies:** D3.js v7+
 **License:** MIT
 
@@ -318,6 +318,9 @@ Sorts locations north to south by latitude. Respects `customOrder` config if pro
 #### `getLocationColor(location)`
 Returns the color for a location, using custom color if provided or default palette.
 
+#### `getContrastingText(fill)`
+Returns `'white'` or `'#2c3e50'` for text drawn on top of the given fill color, based on the fill's relative luminance.
+
 #### `createGeographicNodes(width, height)`
 Creates node objects with positions calculated from latitude and longitude.
 
@@ -460,6 +463,8 @@ The numeric value is used for:
 - Heat map color intensity
 - Link width in network graph
 
+Link width is a square-root scale over the range of the supplied routes, from 1px up to `config.network.maxLinkWidth`. Scaling to the data set rather than to an absolute minute count keeps a single very long route (for example a cross-country leg mixed in with regional drives) from drawing an unreadably thick line. Arrowheads are sized in user space (`markerUnits="userSpaceOnUse"`) so they stay a constant size instead of scaling with the link's stroke width, and their `refX` is derived from `config.network.nodeRadius` so the arrow tip lands just outside the target node.
+
 ### Force Simulation Parameters
 
 The default parameters are tuned for readability with 4-8 locations:
@@ -491,6 +496,8 @@ For different use cases:
 - Intensity based on travel time (longer = darker)
 - Diagonal cells are light gray (0 travel time)
 - Configurable via `config.matrix.colorScheme`
+- Cell text switches between white and dark slate based on the relative luminance of the cell fill, so short-trip cells at the pale end of the scheme stay readable
+- Column labels are rotated -45° so long location names do not collide when cells are narrow
 
 Available D3 color schemes:
 - `YlOrRd` - Yellow-Orange-Red (default)
@@ -613,6 +620,7 @@ const config = {
     enableDrag: true,               // Enable node dragging
     linkStrength: 0.15,            // Force simulation link strength (0-1)
     chargeStrength: -400,          // Node repulsion force (negative)
+    maxLinkWidth: 5,               // Stroke width in px of the longest route
     showArrows: true,              // Show directional arrows on links
     geographicPositioning: true    // Use lat/lng for positioning
   },
@@ -681,7 +689,13 @@ locationData.Location2.color = "#0000ff";  // Blue
 
 ## Version History
 
-**2.0.0** (Current)
+**2.1.0** (Current)
+- Link stroke width scaled to the data range via `config.network.maxLinkWidth`
+- Arrowheads sized in user space and offset from `config.network.nodeRadius`
+- Matrix column labels rotated -45° to prevent collisions
+- Matrix cell text color chosen for contrast against the cell fill
+
+**2.0.0**
 - Added geographic positioning based on latitude/longitude
 - Automatic bidirectional route creation
 - Improved force simulation parameters
