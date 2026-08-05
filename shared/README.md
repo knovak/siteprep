@@ -113,7 +113,7 @@ The `distance_viz/` folder contains a complete library for visualizing travel ti
   <title>Travel Times</title>
 
   <!-- D3.js dependency -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../../shared/vendor/d3.v7.min.js"></script>
 
   <!-- TravelTimeViz library -->
   <link rel="stylesheet" href="../../shared/distance_viz/traveltimeviz.css">

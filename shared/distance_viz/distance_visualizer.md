@@ -28,7 +28,7 @@ The **TravelTimeViz** library is a JavaScript component for visualizing travel t
 
 ```html
 <!-- Include D3.js -->
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../vendor/d3.v7.min.js"></script>
 
 <!-- Include TravelTimeViz -->
 <link rel="stylesheet" href="traveltimeviz.css">
