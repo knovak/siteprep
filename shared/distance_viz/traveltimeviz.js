@@ -1,6 +1,6 @@
 /**
  * TravelTimeViz - Geographic Travel Time Visualization Component
- * Version: 2.0.0
+ * Version: 2.1.0
  *
  * A JavaScript library for visualizing travel times between locations using:
  * - Interactive network graphs with geographic positioning
@@ -71,6 +71,7 @@ class TravelTimeViz {
         enableDrag: true,
         linkStrength: 0.15,
         chargeStrength: -400,
+        maxLinkWidth: 5,
         showArrows: true,
         geographicPositioning: true
       },
@@ -130,6 +131,17 @@ class TravelTimeViz {
   }
 
   /**
+   * Pick a legible label color for text drawn on top of a fill color. The
+   * lighter end of a sequential scheme cannot carry white text.
+   * @private
+   */
+  getContrastingText(fill) {
+    const { r, g, b } = d3.rgb(fill);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.6 ? '#2c3e50' : 'white';
+  }
+
+  /**
    * Render both network graph and distance matrix
    * @param {string} networkContainer - CSS selector for network container
    * @param {string} matrixContainer - CSS selector for matrix container
@@ -178,6 +190,14 @@ class TravelTimeViz {
       minutes: d.minutes
     }));
 
+    // Scale stroke width to the range of this data set so that a single very
+    // long route cannot swamp the graph with an unreadably thick line.
+    const linkExtent = d3.extent(links, d => d.minutes);
+    const linkWidth = d3.scaleSqrt()
+      .domain([0, linkExtent[1] || 1])
+      .range([1, this.config.network.maxLinkWidth])
+      .clamp(true);
+
     // Force simulation
     const simulation = d3.forceSimulation(nodes)
       .force('link', d3.forceLink(links).id(d => d.id)
@@ -206,7 +226,7 @@ class TravelTimeViz {
       .join('path')
       .attr('class', 'traveltimeviz-link')
       .attr('stroke', '#95a5a6')
-      .attr('stroke-width', d => Math.sqrt(d.minutes) / 2)
+      .attr('stroke-width', d => linkWidth(d.minutes))
       .attr('fill', 'none')
       .attr('opacity', 0.6)
       .attr('marker-end', this.config.network.showArrows ? 'url(#arrowhead)' : null)
@@ -220,7 +240,7 @@ class TravelTimeViz {
       .on('mouseout', (event, d) => {
         d3.select(event.currentTarget)
           .attr('stroke', '#95a5a6')
-          .attr('stroke-width', Math.sqrt(d.minutes) / 2)
+          .attr('stroke-width', linkWidth(d.minutes))
           .attr('opacity', 0.6);
       });
 
@@ -229,10 +249,13 @@ class TravelTimeViz {
       svg.append('defs').append('marker')
         .attr('id', 'arrowhead')
         .attr('viewBox', '0 -5 10 10')
-        .attr('refX', 25)
+        .attr('refX', this.config.network.nodeRadius + 8)
         .attr('refY', 0)
-        .attr('markerWidth', 6)
-        .attr('markerHeight', 6)
+        // Size the arrowhead in user space so it stays constant instead of
+        // scaling with (and being swamped by) the link's stroke width.
+        .attr('markerUnits', 'userSpaceOnUse')
+        .attr('markerWidth', 10)
+        .attr('markerHeight', 10)
         .attr('orient', 'auto')
         .append('path')
         .attr('d', 'M0,-5L10,0L0,5')
@@ -440,7 +463,7 @@ class TravelTimeViz {
       .attr('x', d => d.x * cellSize + cellSize / 2)
       .attr('y', d => d.y * cellSize + cellSize / 2 + 5)
       .attr('font-size', '12px')
-      .attr('fill', 'white')
+      .attr('fill', d => this.getContrastingText(this.colorScale(d.minutes)))
       .attr('text-anchor', 'middle')
       .attr('font-weight', '600')
       .attr('pointer-events', 'none')
@@ -459,17 +482,17 @@ class TravelTimeViz {
       .attr('text-anchor', 'end')
       .text(d => d);
 
-    // Column labels
+    // Column labels, rotated so that long location names cannot collide with
+    // their neighbours once the cells get narrow.
     g.selectAll('.col-label')
       .data(this.locations)
       .join('text')
       .attr('class', 'traveltimeviz-matrix-label')
-      .attr('x', (d, i) => i * cellSize + cellSize / 2)
-      .attr('y', -10)
       .attr('font-size', '13px')
       .attr('fill', '#2c3e50')
       .attr('font-weight', '600')
-      .attr('text-anchor', 'middle')
+      .attr('text-anchor', 'start')
+      .attr('transform', (d, i) => `translate(${i * cellSize + cellSize / 2},-10) rotate(-45)`)
       .text(d => d);
   }
 
