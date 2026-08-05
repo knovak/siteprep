@@ -109,6 +109,21 @@ This specification defines 100+ automated tests covering build processes, naviga
 | INT-11 | INT | Touch works | Touch events fire | Tap on mobile | Events handled |
 | INT-12 | INT | Scroll to view | Expanded content visible | Open collapsed section | Content in viewport |
 
+# **7a\. Collapsible Topic Tests (CT)**
+
+| ID | Category | Test Name | Description | Steps | Expected Result |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| CT-01 | CT | Topics enhanced | Each topic heading gets a toggle and a body | Load pages across several decks | Every topic heading has a caret controlling a .topic-body |
+| CT-02 | CT | Collapse and restore | Toggling hides then restores every topic | Collapse all topics, then expand all | Titles stay visible, page shortens, all content returns |
+| CT-03 | CT | Widgets untouched | TOC cards, legends and links keep plain headings | Inspect enhanced headings | No toggle inside .toc-grid, .map-legend or a link |
+| CT-04 | CT | Heading click | Clicking heading text toggles the topic | Click heading away from the caret | Topic collapses, then expands |
+| CT-05 | CT | Keyboard operable | Toggle works from the keyboard | Focus caret, press Enter twice | State changes both times; aria-label tracks state |
+| CT-06 | CT | Independent topics | Topics toggle independently | Collapse one topic | Neighboring topics keep their state |
+| CT-07 | CT | Card title collapse | A card title collapses its whole card | Toggle Table of Contents card title | Card content hides, title stays visible |
+| CT-08 | CT | Map re-measured | A map re-fits after collapse and expand | Collapse map topic, resize window, expand | Map tiles cover the full container width |
+| CT-09 | CT | Default state | data-collapsed drives the initial state | Load Warsaw page | Only the marked topics start collapsed |
+| CT-10 | CT | Lazy map render | A map in a collapsed topic renders on expand | Expand the OpenTopoMap topic | Map container has a real size and renders |
+
 # **8\. Accessibility Tests (A11Y)**
 
 | ID | Category | Test Name | Description | Steps | Expected Result |
@@ -187,10 +202,11 @@ This specification defines 100+ automated tests covering build processes, naviga
 | RESP \- Responsive | 12 | High \- Playwright with viewports |
 | PWA \- Progressive Web App | 12 | High \- Lighthouse CI \+ Puppeteer |
 | INT \- Interactive | 12 | High \- Playwright interactions |
+| CT \- Collapsible Topics | 10 | High \- Playwright, multi-page sweep |
 | A11Y \- Accessibility | 12 | High \- axe-core integration |
 | PERF \- Performance | 12 | High \- Lighthouse CI |
 | CICD \- Pipeline | 12 | Medium \- GH Actions workflow tests |
 | CONT \- Content Structure | 12 | Medium \- DOM structure checks |
-| **TOTAL** | **120** |  |
+| **TOTAL** | **130** |  |
 
 *— End of Test Specification —*
