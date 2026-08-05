@@ -23,10 +23,14 @@ shared/
 │   ├── standard_map.md
 │   ├── standard_map.css
 │   └── standard_map.js
-└── photo_gallery/  # Photo gallery + carousel + lightbox library
-    ├── photo_gallery.md
-    ├── photo_gallery.css
-    └── photo_gallery.js
+├── photo_gallery/  # Photo gallery + carousel + lightbox library
+│   ├── photo_gallery.md
+│   ├── photo_gallery.css
+│   └── photo_gallery.js
+└── collapsible_topics/  # Collapse/expand toggles for page topics
+    ├── collapsible_topics.md
+    ├── collapsible_topics.css
+    └── collapsible_topics.js
 ```
 
 ## How to Use Shared Libraries in Your Decks
@@ -224,6 +228,37 @@ The `photo_gallery/` folder contains `PhotoGallery`, a grid-or-carousel image ga
 Add the `carousel` class to the container (`class="photo-gallery carousel"`) for the compact one-at-a-time layout instead of a grid.
 
 For complete documentation, see [`photo_gallery/photo_gallery.md`](./photo_gallery/photo_gallery.md).
+
+## Collapsible Topics Library
+
+The `collapsible_topics/` folder contains `CollapsibleTopics`, which gives every topic on a page a collapse/expand toggle: collapsing a topic hides its body and leaves only the title, so a long page can be flattened to a scannable list. Maps get the same treatment, since a map heading is a topic like any other.
+
+Unlike the other libraries here, **it is loaded for every deck page automatically** - each deck's `assets/scripts.js` resolves this folder from its own URL, injects the stylesheet, loads the script, and calls `CollapsibleTopics.autoInit()`. A new deck inherits that by copying an existing deck's `assets/scripts.js`. There is nothing to add to a page.
+
+Topics come from ordinary markup: a heading inside `.card-content` or `.map-section` owns the content that follows it, and a heading in a `.card-header` collapses that whole card. Headings that belong to another widget (a TOC card, a legend, a link) are left alone.
+
+### Quick Example
+
+```html
+<h2>Attractions</h2>                                 <!-- expanded by default -->
+<ul>...</ul>
+
+<h2 data-collapsed="true">Ticketing strategy</h2>    <!-- starts collapsed -->
+<ul>...</ul>
+```
+
+A page outside a deck opts in explicitly:
+
+```html
+<script src="../../shared/collapsible_topics/collapsible_topics.js"></script>
+<script>CollapsibleTopics.autoInit();</script>
+```
+
+Opt a page out with `<body data-collapsible-topics="off">`.
+
+**Maps in collapsed topics:** Leaflet cannot size a map inside a hidden container. Expanding a topic dispatches a window `resize` event, so maps that were already rendered re-fit themselves; a map inside a topic that *starts* collapsed must be rendered lazily when its container first becomes visible.
+
+For complete documentation, see [`collapsible_topics/collapsible_topics.md`](./collapsible_topics/collapsible_topics.md).
 
 ## Adding New Shared Libraries
 

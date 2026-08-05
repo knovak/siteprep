@@ -81,3 +81,10 @@ Returns `{ osm?: { map, markers }, topo?: { map, markers } }` with the underlyin
 ## Styling
 
 `standard_map.css` defines `.map-container`, `.map-legend`, and `.standard-map-marker`. It loads before a deck's own `assets/styles.css`, so a deck can override the look (legend button colors, map height, etc.) by redefining those selectors in its own stylesheet - no need to fork this file just to reskin it. Forking `standard_map.js` itself is also fine if a page wants different marker or legend *behavior*, not just appearance.
+
+## Maps inside collapsible topics
+
+Deck pages make every topic collapsible (`shared/collapsible_topics/`), and a map heading is a topic like any other. Leaflet cannot size a map inside a hidden container, so:
+
+* A map whose topic starts expanded needs no special handling - expanding a topic dispatches a window `resize` event, and Leaflet re-fits the map.
+* A map whose topic starts collapsed (`data-collapsed="true"` on the heading) must call `StandardMap.render(...)` only once its container becomes visible. Render the two layers in separate calls in that case - passing just the `osm*` ids or just the `topo*` ids - so each map is created when its own topic is shown. See `decks/poland/sections/warsaw/overview.html`.

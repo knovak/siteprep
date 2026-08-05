@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Warsaw | Poland Deck</title>
   <link rel="stylesheet" href="../../assets/styles.css">
-  <link rel="stylesheet" href="../../assets/collapsible_topics.css">
   <link rel="manifest" href="../../../../../manifest.webmanifest">
   <script src="../../assets/scripts.js"></script>
-  <script src="../../assets/collapsible_topics.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
 </head>
@@ -147,34 +145,33 @@
       { name: 'Czapski Palace', lat: 52.2407, lng: 21.0140, color: '#27ae60', icon: '🎨' },
       { name: 'Home Exchange / Exchange Partner Contact', lat: 52.2261, lng: 21.0379, color: '#f39c12', icon: '🏠' }
     ];
-    // Each topic heading (and each map heading) gets a collapse/expand toggle.
-    // Defaults come from data-collapsed in the markup; everything else expands.
-    CollapsibleTopics.init({ container: '.card-content', headings: 'h2, h3' });
-
-    // Leaflet cannot size a map inside a hidden container, so render each map
-    // only once its topic is visible, and re-measure the others on every expand.
-    const rendered = [];
-
-    function renderIfVisible(mapId, config) {
-      const container = document.getElementById(mapId);
-      if (!container || container.offsetParent === null || container.dataset.rendered === 'true') return;
-      const result = StandardMap.render(Object.assign({ locations: palaceLocations }, config));
-      if (!result) return;
-      container.dataset.rendered = 'true';
-      Object.values(result).forEach((layer) => rendered.push(layer.map));
-    }
-
+    // The OpenTopoMap topic starts collapsed (data-collapsed in the markup), and
+    // Leaflet cannot size a map inside a hidden container - so each map is
+    // rendered only once its own topic is actually visible.
     const mapConfigs = {
       'map-osm': { osmMapId: 'map-osm', osmLegendId: 'legend-osm' },
       'map-topo': { topoMapId: 'map-topo', topoLegendId: 'legend-topo' }
     };
 
-    Object.entries(mapConfigs).forEach(([mapId, config]) => renderIfVisible(mapId, config));
+    function renderVisibleMaps() {
+      Object.entries(mapConfigs).forEach(([mapId, config]) => {
+        const container = document.getElementById(mapId);
+        if (!container || container.offsetParent === null || container.dataset.rendered === 'true') return;
+        if (StandardMap.render(Object.assign({ locations: palaceLocations }, config))) {
+          container.dataset.rendered = 'true';
+        }
+      });
+    }
 
-    document.addEventListener(CollapsibleTopics.TOGGLE_EVENT, (event) => {
-      if (!event.detail.expanded) return;
-      Object.entries(mapConfigs).forEach(([mapId, config]) => renderIfVisible(mapId, config));
-      rendered.forEach((map) => map.invalidateSize());
+    // Render once the collapsible topics have settled into their start state,
+    // and again on window load in case the shared library never loaded at all.
+    document.addEventListener('collapsible-topics:ready', renderVisibleMaps, { once: true });
+    window.addEventListener('load', renderVisibleMaps);
+
+    // Expanding the OpenTopoMap topic is what finally makes its map renderable.
+    // (Maps already on screen are re-measured by the library itself.)
+    document.addEventListener('collapsible-topics:toggle', (event) => {
+      if (event.detail.expanded) renderVisibleMaps();
     });
   </script>
   <footer class="site-footer">

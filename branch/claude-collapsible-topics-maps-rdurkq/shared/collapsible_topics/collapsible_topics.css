@@ -1,6 +1,9 @@
 /*
- * Styles for the CollapsibleTopics experiment (Poland deck).
- * Load alongside collapsible_topics.js on pages that opt in.
+ * CollapsibleTopics - styles for the topic collapse/expand toggles.
+ *
+ * collapsible_topics.js injects this stylesheet itself, so a page that loads
+ * the library never has to link it. Colors follow the deck's CSS variables
+ * where they exist, with fallbacks so the library also works standalone.
  */
 
 /* Kept as a normal block so inline markup inside a heading (links, <strong>,
@@ -21,7 +24,7 @@
   border: 1px solid #dbeafe;
   border-radius: 6px;
   background: #eef2ff;
-  color: var(--primary);
+  color: var(--primary, #1e3a8a);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
@@ -33,7 +36,7 @@
 }
 
 .topic-toggle:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent, #0ea5e9);
   outline-offset: 2px;
 }
 
@@ -52,7 +55,7 @@
 }
 
 .topic-heading.is-collapsed {
-  color: var(--muted);
+  color: var(--muted, #6b7280);
 }
 
 .topic-body[hidden] {
