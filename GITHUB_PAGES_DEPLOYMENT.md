@@ -10,3 +10,8 @@ when no corresponding branch exists. The separate `Cleanup Branch Preview`
 workflow also removes a preview immediately when GitHub emits a branch deletion
 event; deployment-time reconciliation covers deletions whose events were missed
 or which predate that workflow.
+
+The generated `index-versions.html` page presents each available version as a
+card with the version title linked directly to that version. The card
+description remains below the title; separate "View ..." links are omitted so
+there is only one version link per card.
