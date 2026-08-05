@@ -335,6 +335,10 @@ The home page displays decks in three sections:
 
 Each section only appears if it contains at least one deck. Within each section, decks are sorted by their sort_order field and displayed as clickable cards with title and description.
 
+### **6.1.2 Version Footer Injection**
+
+`inject_version_footer` inserts the version footer markup immediately before the first `</body>` in each generated page. The insertion splits the line at the `</body>` tag rather than emitting the footer above the whole line, because a page may close an inline `<script>` on the same line as `</body>`. Printing the footer above that line would place footer markup — including its own `<script>` element — inside the still-open script, which terminates the script early and breaks the whole block with a syntax error. Splitting at the tag keeps the footer outside every script regardless of how a page formats its closing tags.
+
 ## **6.2 GitHub Actions Workflow**
 
 The CI/CD pipeline supports main deployments, PR previews, and cleanup workflows.

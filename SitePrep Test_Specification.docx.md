@@ -22,6 +22,7 @@ This specification defines 100+ automated tests covering build processes, naviga
 | BUILD-10 | BUILD | Multi-deck build | All decks compile | Build 3+ test decks | All in dist/ |
 | BUILD-11 | BUILD | Shared resources | Shared CSS/JS included | Check for shared imports | Imports resolved |
 | BUILD-12 | BUILD | Clean build | Build works on empty dist | Delete dist/, rebuild | Success |
+| BUILD-14 | BUILD | Footer injection placement | Version footer is injected outside every inline script | Build, then check that nothing after the injected `</footer>` closes a script | No `</script>` follows the injected footer |
 
 # **3\. Navigation Tests (NAV)**
 
