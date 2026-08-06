@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: write
   pages: write
   id-token: write
@@ -101,6 +102,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Stage deployment scripts
+        run: |
+          # The steps below work inside the gh-pages checkout, where the
+          # scripts/ directory does not exist.
+          mkdir -p /tmp/deploy-scripts
+          cp scripts/push_gh_pages.sh scripts/wait_for_pages_deployment.sh /tmp/deploy-scripts/
+          chmod +x /tmp/deploy-scripts/*.sh
 
       - name: Setup gh-pages branch
         run: |
@@ -263,18 +272,28 @@ jobs:
           EOF
 
       - name: Commit and push
+        id: publish
         run: |
           git add -A
           if git diff --staged --quiet; then
             echo "No changes to commit"
+            echo "pushed=false" >> $GITHUB_OUTPUT
           else
             if [ "${{ steps.version.outputs.is_main }}" == "true" ]; then
               git commit -m "Deploy main version"
             else
               git commit -m "Deploy branch ${{ steps.version.outputs.branch }} preview"
             fi
-            git push
+            /tmp/deploy-scripts/push_gh_pages.sh
+            echo "pushed=true" >> $GITHUB_OUTPUT
+            echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           fi
+
+      - name: Verify GitHub Pages deployment
+        if: steps.publish.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: /tmp/deploy-scripts/wait_for_pages_deployment.sh "${{ steps.publish.outputs.sha }}"
 
       - name: Output deployment info
         id: deployment
