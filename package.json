@@ -12,11 +12,13 @@
     "test:interactive": "playwright test tests/e2e/interactive.spec.js",
     "test:build": "bash scripts/build_tests.sh",
     "test:all": "npm run test:build && npm test",
-    "build": "bash scripts/build.sh"
+    "build": "bash scripts/build.sh",
+    "setup:browsers": "playwright install --with-deps chromium",
+    "screenshot": "playwright screenshot"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.8.3",
-    "@playwright/test": "^1.41.0"
+    "@playwright/test": "1.57.0"
   },
   "engines": {
     "node": ">=18.0.0"
