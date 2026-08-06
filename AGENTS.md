@@ -44,6 +44,15 @@ When a deck or section is given a specific date range:
 
 Every new deck or section should have a map with all the locations on the page included.
 
+## Collapsible topics
+Every topic on a deck or section page is collapsible: the shared `CollapsibleTopics` library (`shared/collapsible_topics/`, see `shared/collapsible_topics/collapsible_topics.md`) turns each topic heading into a collapse/expand toggle, and it is loaded for every page by each deck's `assets/scripts.js`. Ordinary topic markup - a heading followed by its content - is all that is needed; do not add per-page tags or wrapper divs for this.
+
+Two things follow when adding content:
+- Keep topic content inside the page's `.card-content` (or a `.map-section` for a standalone map). A topic left outside the container gets no toggle.
+- Topics start expanded. If a request asks for a topic to start collapsed, add `data-collapsed="true"` to its heading; use `window.collapsibleTopicsOptions = { defaultCollapsed: true }` when a whole page should start collapsed.
+
+A map inside a topic that starts collapsed must be rendered lazily, when its container first becomes visible - see `decks/poland/sections/warsaw/overview.html`.
+
 ## Highlights
 Content may be requested to be "highlighted" or "placed in a highlight". This means you should use the `.highlight` in the CSS to make a highlight box as described in techdoc.
 

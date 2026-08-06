@@ -164,6 +164,13 @@ Make sure the legend appears **below** each map, uses the same location list as 
 
 ---
 
+## 3b. Maps Inside Collapsible Topics
+
+Deck pages give every topic - including each map heading - a collapse/expand toggle (`shared/collapsible_topics/`). Leaflet cannot measure a map whose container is hidden, so two rules apply:
+
+* **A map in a topic that starts expanded** (the normal case) needs nothing. When its topic is collapsed and later expanded, the library dispatches a window `resize` event and Leaflet re-fits the map itself.
+* **A map in a topic marked `data-collapsed="true"`** must not be created at load time - it would come out sized 0. Render it when its container first becomes visible, keyed off `collapsible-topics:ready` and `collapsible-topics:toggle`. `decks/poland/sections/warsaw/overview.html` is the worked example, and `shared/collapsible_topics/collapsible_topics.md` has the snippet.
+
 ## 4. Adding Markers
 
 ### Basic Markers

@@ -174,6 +174,9 @@ Styles are applied in the following order (later overrides earlier):
 | .location-section | Collapsible location details container |
 | .navigation | Footer navigation links section |
 | .nav-link | Styled navigation button/link |
+| .topic-heading | Topic title that carries a collapse/expand toggle |
+| .topic-toggle | Caret button injected into a topic heading |
+| .topic-body | Topic content that the toggle shows or hides |
 | .photo-gallery | Grid container for gallery items displaying attraction photos |
 | .gallery-item | Individual photo item with image and caption |
 | .gallery-caption | Text caption overlay on gallery images |
@@ -205,6 +208,7 @@ Styles are applied in the following order (later overrides earlier):
 | toggleLocation(id) | Expands/collapses location detail sections; updates toggle icon |
 | makeHamburger() | Generates the hamburger icon menu for the deck |
 | initPhotoGallery(galleryId) | Initializes a photo gallery with lightbox functionality; handles click events, keyboard navigation, and image carousel |
+| CollapsibleTopics.autoInit() | Turns every topic heading on the page into a collapse/expand toggle; loaded for all deck pages from the deck's assets/scripts.js |
 
 ## **5.2 Photo Gallery Component**
 
@@ -296,7 +300,47 @@ The gallery component is fully reusable across different pages and decks:
 * No hardcoded dependencies on specific content or structure
 * Can be initialized with a single function call: `initPhotoGallery('gallery-id')`
 
-## **5.3 Service Worker Strategy**
+## **5.3 Collapsible Topics Component**
+
+Every topic on a deck or section page can be collapsed to its title and expanded again. The component is the shared `CollapsibleTopics` library (`shared/collapsible_topics/`, documented in `shared/collapsible_topics/collapsible_topics.md`).
+
+### **5.3.1 Purpose**
+
+* Let a reader flatten a long page into a scannable list of topic titles
+* Hide the topics that are not relevant to the trip day being planned
+* Apply the same behavior to maps, which are the tallest blocks on most pages
+* Require no new markup, so existing and future pages get the behavior for free
+
+### **5.3.2 Loading**
+
+Each deck's `assets/scripts.js` resolves `shared/collapsible_topics/` from its own URL, injects the stylesheet and script, and calls `CollapsibleTopics.autoInit()`. Every page in every deck therefore has the behavior with no per-page tags; a new deck inherits it by copying an existing deck's assets. Pages outside a deck opt in with an explicit `<script>` tag.
+
+### **5.3.3 Topic Detection**
+
+| Pattern | Topic title | Topic body |
+| :---- | :---- | :---- |
+| A heading inside `.card-content` | that heading | content up to the next topic heading |
+| A heading inside `.map-section` | that heading | the map and its legend |
+| A heading inside `.card-header` | the card title | the card's own `.card-content` |
+
+Headings that belong to another widget - inside a link, button, `summary`, `nav`, table, `.toc-grid`, `.map-legend`, or `.photo-gallery` - are left alone, so a Table of Contents card keeps its plain heading.
+
+### **5.3.4 Initial State**
+
+Topics start expanded. A heading marked `data-collapsed="true"` starts collapsed, and a page can start everything collapsed with `window.collapsibleTopicsOptions = { defaultCollapsed: true }`. A page opts out entirely with `data-collapsible-topics="off"` on `<body>`.
+
+### **5.3.5 Accessibility**
+
+* The caret is a real `<button>`: keyboard focusable, toggled with Enter or Space
+* `aria-expanded`, `aria-controls`, and an "Expand …"/"Collapse …" `aria-label` track the state
+* Collapsed bodies use the `hidden` attribute, so they leave the accessibility tree and in-page find
+* Print styles hide the carets and force every topic visible
+
+### **5.3.6 Interaction With Maps**
+
+Leaflet cannot measure a map inside a hidden container. Expanding a topic dispatches a window `resize` event, which is what Leaflet listens for, so any map that was hidden while the window changed size re-fits itself. A map inside a topic that *starts* collapsed must be rendered lazily when its container first becomes visible - see the Warsaw page for the pattern.
+
+## **5.4 Service Worker Strategy**
 
 The service worker implements a cache-first strategy:
 
