@@ -102,7 +102,7 @@
       </ul>
 
       <h3>Warsaw map (OpenStreetMap)</h3><div id="map-osm" class="map-container"></div><div id="legend-osm" class="map-legend"></div>
-      <h3>Warsaw map (OpenTopoMap)</h3><div id="map-topo" class="map-container"></div><div id="legend-topo" class="map-legend"></div>
+      <h3 data-collapsed="true">Warsaw map (OpenTopoMap)</h3><div id="map-topo" class="map-container"></div><div id="legend-topo" class="map-legend"></div>
 
       <h2>Museums</h2>
       <ul>
@@ -112,7 +112,7 @@
         <li><strong>POLIN Museum of the History of Polish Jews</strong> — Contemporary museum facing the Monument to the Ghetto Heroes, with a core exhibition on 1,000 years of Jewish life in Poland and changing temporary exhibitions. <strong>Address:</strong> ul. Anielewicza 6, 00-157 Warszawa, Poland. <strong>Hours:</strong> M, Th-F 10:00–18:00; W, Sa-Su 10:00–20:00; Tu closed; core exhibition admission is free on Thursdays. <a href="https://polin.pl/en" target="_blank" rel="noopener">Official site</a> | <a href="https://maps.google.com/?q=POLIN+Museum+Anielewicza+6+Warsaw" target="_blank" rel="noopener">Google Maps</a>.</li>
       </ul>
 
-      <h2>POLIN Museum and Royal Castle ticketing strategy (example: Thursday, 21 May)</h2>
+      <h2 data-collapsed="true">POLIN Museum and Royal Castle ticketing strategy (example: Thursday, 21 May)</h2>
       <ul>
         <li><strong>POLIN free-admission pattern:</strong> On days like <strong>Thursday, 21 May</strong>, POLIN Museum of the History of Polish Jews can offer free admission for both the core and temporary exhibitions across the day.</li>
         <li><strong>Important cutoff times:</strong> Even on free days, plan around last-entry cutoffs of roughly <strong>16:00</strong> for the core exhibition and around <strong>17:30</strong> for temporary shows.</li>
@@ -122,9 +122,6 @@
         <li><strong>Best practice:</strong> Buy Royal Castle tickets online ahead of time whenever possible to reduce queue risk and avoid sold-out time slots.</li>
       </ul>
 
-    </div>
-  
-
       <h2>Trails</h2>
       <ul>
         <li><strong>Kabaty Forest Loop:</strong> 4.7 stars, 5.0 mi, 450 ft gain, <strong>Difficulty:</strong> Moderate. Popular, well-marked route near the city with reliable footing and good views. <a href="https://www.alltrails.com/trail/poland/masovian/kabaty-forest-loop" target="_blank" rel="noopener">AllTrails</a>.</li>
@@ -132,8 +129,8 @@
         <li><strong>Kampinos Forest Palmiry Loop:</strong> 4.5 stars, 6.1 mi, 610 ft gain, <strong>Difficulty:</strong> Moderate. Longer trail with varied terrain and practical transit or parking access. <a href="https://www.alltrails.com/trail/poland/masovian/kampinos-forest-palmiry-loop" target="_blank" rel="noopener">AllTrails</a>.</li>
         <li><strong>Morysin Nature Reserve Trail:</strong> 4.4 stars, 4.1 mi, 210 ft gain, <strong>Difficulty:</strong> Easy. Gentle route that works well as a low-effort hike with scenic sections. <a href="https://www.alltrails.com/trail/poland/masovian/morysin-nature-reserve-trail" target="_blank" rel="noopener">AllTrails</a>.</li>
       </ul>
-
-</article>
+    </div>
+  </article>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="../../../../shared/standard_map/standard_map.js"></script>
@@ -148,12 +145,33 @@
       { name: 'Czapski Palace', lat: 52.2407, lng: 21.0140, color: '#27ae60', icon: '🎨' },
       { name: 'Home Exchange / Exchange Partner Contact', lat: 52.2261, lng: 21.0379, color: '#f39c12', icon: '🏠' }
     ];
-    StandardMap.render({
-      locations: palaceLocations,
-      osmMapId: 'map-osm',
-      osmLegendId: 'legend-osm',
-      topoMapId: 'map-topo',
-      topoLegendId: 'legend-topo'
+    // The OpenTopoMap topic starts collapsed (data-collapsed in the markup), and
+    // Leaflet cannot size a map inside a hidden container - so each map is
+    // rendered only once its own topic is actually visible.
+    const mapConfigs = {
+      'map-osm': { osmMapId: 'map-osm', osmLegendId: 'legend-osm' },
+      'map-topo': { topoMapId: 'map-topo', topoLegendId: 'legend-topo' }
+    };
+
+    function renderVisibleMaps() {
+      Object.entries(mapConfigs).forEach(([mapId, config]) => {
+        const container = document.getElementById(mapId);
+        if (!container || container.offsetParent === null || container.dataset.rendered === 'true') return;
+        if (StandardMap.render(Object.assign({ locations: palaceLocations }, config))) {
+          container.dataset.rendered = 'true';
+        }
+      });
+    }
+
+    // Render once the collapsible topics have settled into their start state,
+    // and again on window load in case the shared library never loaded at all.
+    document.addEventListener('collapsible-topics:ready', renderVisibleMaps, { once: true });
+    window.addEventListener('load', renderVisibleMaps);
+
+    // Expanding the OpenTopoMap topic is what finally makes its map renderable.
+    // (Maps already on screen are re-measured by the library itself.)
+    document.addEventListener('collapsible-topics:toggle', (event) => {
+      if (event.detail.expanded) renderVisibleMaps();
     });
   </script>
   <footer class="site-footer">

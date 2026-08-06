@@ -135,3 +135,41 @@ if (document.readyState === 'loading') {
   buildHeaderTags();
 }
 
+
+/**
+ * Collapsible topics: load the shared CollapsibleTopics library for every page
+ * in this deck, so each topic heading gets a collapse/expand toggle. Paths are
+ * resolved from this script's own URL, so they work at any page depth and under
+ * any deployment prefix. See shared/collapsible_topics/collapsible_topics.md.
+ */
+(() => {
+  const thisScript = document.currentScript
+    || document.querySelector('script[src$="assets/scripts.js"]');
+  if (!thisScript || !thisScript.src) return;
+
+  const libraryBase = new URL('../../../shared/collapsible_topics/', thisScript.src);
+  const startCollapsibleTopics = () => {
+    if (window.CollapsibleTopics) window.CollapsibleTopics.autoInit();
+  };
+
+  if (!document.querySelector('link[data-collapsible-topics]')) {
+    const styles = document.createElement('link');
+    styles.rel = 'stylesheet';
+    styles.href = new URL('collapsible_topics.css', libraryBase).href;
+    styles.setAttribute('data-collapsible-topics', '');
+    document.head.appendChild(styles);
+  }
+
+  if (window.CollapsibleTopics) {
+    startCollapsibleTopics();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = new URL('collapsible_topics.js', libraryBase).href;
+  script.addEventListener('load', startCollapsibleTopics);
+  script.addEventListener('error', () => {
+    console.debug('Collapsible topics library failed to load', script.src);
+  });
+  document.head.appendChild(script);
+})();
