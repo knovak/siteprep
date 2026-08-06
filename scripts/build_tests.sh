@@ -113,6 +113,13 @@ if [ -d "$ROOT_DIR/demos" ]; then
       fail "BUILD-13 demos index missing link for ${demo}"
     fi
     pass "BUILD-13 demos index links ${demo}"
+
+    if [ -f "$ROOT_DIR/demos/${demo}/prompts.html" ]; then
+      if ! grep -q "href=\"./${encoded_demo}/prompts.html\">Prompt history</a> (<a href=\"./${encoded_demo}/prompts.txt\">text</a>)" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index missing formatted and text prompt history links for ${demo}"
+      fi
+      pass "BUILD-13 demos index links formatted and text prompt history for ${demo}"
+    fi
   done
 fi
 

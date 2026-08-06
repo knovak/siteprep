@@ -332,7 +332,11 @@ EOF_DEMOS
     prompts_link=""
     if [ -f "$demo_dir/prompts.txt" ]; then
       encoded_demo=$(url_path_segment "$demo")
-      prompts_link="          <p class=\"meta\"><a href=\"./${encoded_demo}/prompts.txt\">Prompt history</a></p>"
+      if [ -f "$demo_dir/prompts.html" ]; then
+        prompts_link="          <p class=\"meta\"><a href=\"./${encoded_demo}/prompts.html\">Prompt history</a> (<a href=\"./${encoded_demo}/prompts.txt\">text</a>)</p>"
+      else
+        prompts_link="          <p class=\"meta\"><a href=\"./${encoded_demo}/prompts.txt\">Prompt history</a></p>"
+      fi
     fi
 
     cat >> "$OUTPUT_DIR/demos/index.html" <<EOF_DEMO_ITEM
