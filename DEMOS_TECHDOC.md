@@ -38,3 +38,38 @@ and is available on GitHub Pages under `/siteprep/demos/migration_map/`.
 - every immediate source demo directory is copied
 - every source demo directory is linked from the demos index
 - copied demo source files are byte-for-byte unchanged in the output
+
+Run the complete build and its validation once, after the final source change:
+
+```sh
+npm ci
+npm run build
+```
+
+There is no need to run `scripts/build_tests.sh` separately because
+`scripts/build.sh` invokes it before reporting success.
+
+## Browser setup and screenshots
+
+The repository pins Playwright to the version in `package-lock.json` and exposes
+the project-local CLI through npm scripts. On a new development image, install
+Chromium and its system libraries once:
+
+```sh
+npm run setup:browsers
+```
+
+After the final source edit and `npm run build`, capture a generated page with:
+
+```sh
+npm run screenshot -- \
+  --device="Desktop Chrome" \
+  --full-page \
+  "file:///workspace/siteprep/gh-pages/demos/RMD%20calculator/prompts.html" \
+  /tmp/rmd-prompts.png
+```
+
+Replace the input URL and output filename as appropriate. Screenshots under
+`/tmp` are ephemeral; use a deliberate artifact directory when the image must
+survive an environment recycle. Display the saved image for inspection and
+report its exact path when summarizing the work.

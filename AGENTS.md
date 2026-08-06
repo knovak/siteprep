@@ -81,3 +81,17 @@ LEAFLET_IMPLEMENTATION_GUIDE.md remains the reference for this pattern and for b
 
 ## minimize merge conflicts
 When adding content, do not modify README.md unless a new deck is added.
+
+## Build and visual verification workflow
+
+- Install the lockfile-defined dependencies with `npm ci`. Use npm scripts or
+  binaries from the local installation; do not download ad hoc package versions
+  with commands such as `npx --yes package@version`.
+- Run `npm run build` once after the final source change. The build runs
+  `scripts/build_tests.sh` itself, so do not invoke that test script separately.
+- Provision Chromium only when the environment has not already done so, using
+  `npm run setup:browsers`.
+- When a visible web page changes, take the final screenshot only after that
+  last build. Use the documented `npm run screenshot` command, display the
+  resulting image in the conversation, and identify its path in the final
+  response.

@@ -48,7 +48,7 @@ jobs:
 
       - name: Install Playwright Browsers
         if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        run: npm run setup:browsers
 
       - name: Set version info
         id: version
@@ -70,10 +70,8 @@ jobs:
         env:
           BRANCH_NAME: ${{ steps.version.outputs.branch }}
           VERSION_NAME: ${{ steps.version.outputs.version }}
-        run: scripts/build.sh
-
-      - name: Run build tests
-        run: npm run test:build
+        # scripts/build.sh runs scripts/build_tests.sh before it succeeds.
+        run: npm run build
 
       - name: Run Playwright tests
         run: npm test
