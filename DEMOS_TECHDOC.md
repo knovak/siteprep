@@ -26,7 +26,7 @@ and is available on GitHub Pages under `/siteprep/demos/migration_map/`.
 - a display title from the demo's `index.html` `<title>`, falling back to a titleized directory name
 - a description from the first non-heading, non-empty line of the demo's `README.md`, falling back to a generic demo description
 - curated descriptions for special demos that need stable tutorial/version/code-folder links (`migration_map` and `SBDC Night Sky`)
-- an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file
+- an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file; when a formatted `prompts.html` is also present, the main link opens that page and a parenthetical "text" link opens the original text file
 
 
 ## Validation
