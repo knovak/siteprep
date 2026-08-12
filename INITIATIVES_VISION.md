@@ -343,6 +343,7 @@ behaviour is readable from the repo alone.
 | `max_items_per_initiative` | `1` | Cap per initiative, so one hot initiative can't eat the whole budget |
 | `max_effort` | `medium` | Largest item the job may attempt unsupervised; `large` items escalate to the digest |
 | `staleness_days` | `10` | Days without activity before an initiative is flagged; overridable per initiative (§6.1) |
+| `max_open_prs` | `4` | Ceiling on unmerged sweep PRs; at the cap the sweep does no new work (§7.5.1) |
 | `pr_strategy` | `one-per-initiative` | How completed items are packaged (§7.4) |
 | `protected_paths` | `shared/`, `scripts/`, `.github/` | Paths a sweep PR may never touch unattended (§7.4) |
 
@@ -388,6 +389,7 @@ is the whole point of paying for the isolation rule.
 
 - **Never exceeds the configured budget**, and never merges its own work.
 - **Never writes outside its write scope** (§7.4).
+- **Never opens a second PR for an item that already has one open** (§7.5.1).
 - **Never invents a wish.** It elaborates existing intent; it does not create new
   initiatives.
 - **No actionable work anywhere → it does nothing** and says so in the digest. A quiet
@@ -395,6 +397,33 @@ is the whole point of paying for the isolation rule.
 - **Human-class blockers are escalated, not guessed at** — as multiple choice wherever
   the options are enumerable.
 - Every run appends to each touched initiative's `log.md`.
+
+#### 7.5.1 In-flight work — the duplicate-PR hole
+
+An item stays in `todo[]` until its PR merges (§6.3). That is correct for state, but it
+means **`main` still shows the item as actionable while the PR is open** — so the next
+run, twelve hours later, ranks it top again and does it a second time. Left alone, an
+unmerged PR would be re-created every sweep until it merged.
+
+The fix is a check, not a field. State written inside the PR branch cannot help, because
+the sweep reads `main`; so before selecting anything, the sweep **lists its own open PRs
+and excludes every item already addressed by one**. Branch naming carries the mapping:
+
+```
+sweep/<initiative>/<item-id>
+```
+
+No trailer, no label, no second source of truth — the branch name *is* the record, which
+is the same standard §6.3 applies to merge-time automation.
+
+Two consequences worth stating:
+
+- **A stalled PR stalls only its own item.** The initiative's other actionable items
+  remain eligible, so an unreviewed PR slows one thread rather than the whole initiative.
+- **`max_open_prs` (default 4) caps the pileup.** At the ceiling the sweep does no new
+  work and says so in the digest. This is the real answer to "twice daily could mean
+  fourteen PRs a week": it cannot, because unmerged work blocks its own item and the cap
+  stops the rest.
 
 ### 7.6 Where it runs
 
@@ -635,25 +664,64 @@ conflicts and buy nothing.
 
 ## 9. Validation
 
-Extend `scripts/build_tests.sh`, in the spirit of the existing demos checks:
+Extend `scripts/build_tests.sh`, in the spirit of the existing demos checks — but split
+into two severities, which matters more here than it first appears.
 
-- every directory under `initiatives/` has an `initiative.json` that parses, and an
-  `index.html`
-- `stage` is a known value, and the documents required by that stage exist
-- every `outputs[].path` exists in the repo
-- **no two initiatives declare the same `outputs[].path`** — the exclusive-ownership
-  invariant that §7.4 depends on
-- every blocked item has a `blocked_by`, using a known prefix from §6.2
-- every `blocked_by: todo:<id>` resolves to a real item in the same initiative
-- every non-`dormant`, non-`archived` initiative has at least one actionable item
-- `initiatives/sweep.json` parses, and `max_items_per_initiative` ≤ `items_per_run`
-- the generated TOC lists every initiative
+`build_tests.sh` calls `exit 1` on failure and is invoked from `build.sh`, so **a failed
+check aborts the build and blocks the deploy of the entire site.** Treating an initiative's
+empty backlog as a build failure would stop an unrelated deck from publishing. Backlog
+health is dashboard information, not a deployment gate.
 
-Three of these do real work. **Exclusive output ownership** is what makes parallel PRs
-safe. **Every non-dormant initiative has an actionable item** converts "we quietly
-forgot about this" from an invisible condition into a build failure. And **`todo:`
-references must resolve** means a forgotten unblock breaks the build instead of leaving
-an item stranded in `blocked` forever.
+**Errors — fail the build.** These mean the data is malformed or unsafe, and anything
+generated from it would be wrong:
+
+- an `initiative.json` that does not parse, or a directory missing `initiative.json`
+- `stage` is not a known value
+- an `outputs[].path` that does not exist, or escapes the repo
+- **two initiatives declaring the same `outputs[].path`** — the exclusive-ownership
+  invariant §7.4 depends on
+- a blocked item with no `blocked_by`, or an unknown prefix
+- a `blocked_by: todo:<id>` that resolves to nothing
+- `sweep.json` malformed, or `max_items_per_initiative` > `items_per_run`
+
+**Warnings — report, never block.** These mean the backlog needs attention, which is a
+human matter and not a reason to hold a deploy:
+
+- a non-`dormant`, non-`archived` initiative with no actionable item
+- an initiative past its staleness threshold
+- a declared document missing for the current stage
+- an initiative with only human-class blockers
+
+Warnings surface where they are actionable: flagged on the dashboard (§8.1) and gathered
+in the digest (§7.1). Nothing is lost by demoting them — the sweep reads the same data
+twice a day and will not let them hide.
+
+Two error checks do the heavy lifting. **Exclusive output ownership** is what makes
+parallel PRs safe. **`todo:` references must resolve** means a forgotten unblock breaks
+the build instead of stranding an item in `blocked` forever.
+
+### 9.1 Parse the JSON with a parser
+
+`build.sh` currently reads `deck.json` with `grep -o` and `sed`, deliberately avoiding a
+`jq` dependency. That works for flat string fields. It will not survive `todo[]` and
+`outputs[]` — nested arrays of objects are not something to pattern-match out of a file
+with a regular expression, and a validator built that way would report confident
+nonsense.
+
+Node 22 is already installed, the repo already has `package.json` and npm scripts, and
+CI already runs `npm ci`. So the validator and the dashboard generator should be a small
+Node script, invoked from `build.sh` the way `build_tests.sh` already is. `JSON.parse` is
+the whole dependency.
+
+Two things follow for free, both of which bash would have made painful: **HTML escaping**
+of every title, summary, and todo string on its way into generated pages — these are
+hand-written fields flowing straight into HTML — and a real distinction between a missing
+field, an empty one, and a malformed one.
+
+A formal versioned JSON Schema is the natural next step but is not needed yet; a
+readable Node validator that checks the rules above is enough until there is more than
+one initiative to be consistent with. `deck.json` parsing is deliberately left alone —
+changing it is not this project's business.
 
 ## 10. `AGENTS.md` additions
 
