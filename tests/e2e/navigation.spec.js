@@ -128,14 +128,20 @@ test.describe('Navigation Tests', () => {
       await cardLink.click();
       await page.waitForLoadState('domcontentloaded');
 
-      // Check external links
-      const externalLinks = page.locator('a[href^="http"]');
+      // Off-site links only. `a[href^="http"]` is not the same thing: the nav
+      // bar's own links are absolute URLs to this site, and matching those made
+      // this test assert that internal navigation opens in a new tab.
+      const offSiteTargets = await page
+        .locator('a[href^="http"]')
+        .evaluateAll((els) =>
+          els
+            .filter((el) => el.host !== window.location.host)
+            .map((el) => ({ href: el.href, target: el.target }))
+        );
 
-      if (await externalLinks.count() > 0) {
-        const firstExternal = externalLinks.first();
-        const target = await firstExternal.getAttribute('target');
-
-        expect(target).toBe('_blank');
+      for (const link of offSiteTargets) {
+        expect(link.target, `off-site link should open in a new tab: ${link.href}`)
+          .toBe('_blank');
       }
     }
   });

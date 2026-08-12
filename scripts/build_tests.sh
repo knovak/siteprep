@@ -140,10 +140,53 @@ for deck in "${DECKS[@]}"; do
   fi
 done
 
-if ! grep -q "scripts.js" "$OUTPUT_DIR/index.html"; then
-  fail "BUILD-08 scripts.js not included in root index"
+# Site-level pages register the service worker through shared/site_base/, not
+# through a deck's scripts.js.
+if ! grep -q "site_base.js" "$OUTPUT_DIR/index.html"; then
+  fail "BUILD-08 site_base.js not included in root index"
+fi
+if ! grep -q "serviceWorker" "$OUTPUT_DIR/shared/site_base/site_base.js"; then
+  fail "BUILD-08 service worker code missing from shared/site_base/site_base.js"
 fi
 pass "BUILD-08 service worker registration code available"
+
+# BUILD-16: Shared nav bar reaches every page that should have one.
+for toc_page in "index.html" "demos/index.html"; do
+  toc_path="$OUTPUT_DIR/$toc_page"
+  [ -f "$toc_path" ] || continue
+  if ! grep -q "site_base.js" "$toc_path"; then
+    fail "BUILD-16 TOC page ${toc_page} does not load the shared nav bar"
+  fi
+  pass "BUILD-16 TOC page ${toc_page} loads the shared nav bar"
+done
+
+for shared_nav_file in nav_bar.js nav_bar.css nav_bar.md; do
+  if [ ! -f "$OUTPUT_DIR/shared/nav_bar/$shared_nav_file" ]; then
+    fail "BUILD-16 shared/nav_bar/${shared_nav_file} not published"
+  fi
+done
+pass "BUILD-16 shared nav bar library published"
+
+# BUILD-17: Every page declares where its deployment root is, so client-side
+# navigation does not have to guess - a guess that used to send every page
+# outside decks/ back to main from a branch preview.
+missing_root=0
+while IFS= read -r -d '' html_file; do
+  file_rel="${html_file#$OUTPUT_DIR/}"
+  # Demo content is copied byte-for-byte and is deliberately left untouched.
+  if [[ "$file_rel" == demos/* && "$file_rel" != "demos/index.html" ]]; then
+    continue
+  fi
+  if ! grep -q 'name="siteprep-version-root"' "$html_file"; then
+    echo "  missing version root: $file_rel" >&2
+    missing_root=$((missing_root + 1))
+  fi
+done < <(find "$OUTPUT_DIR" -name "*.html" -type f -print0)
+
+if [ "$missing_root" -gt 0 ]; then
+  fail "BUILD-17 ${missing_root} page(s) missing the version-root meta tag"
+fi
+pass "BUILD-17 every generated page declares its version root"
 
 # BUILD-09: Valid HTML - basic structure check
 for deck in "${DECKS[@]}"; do
