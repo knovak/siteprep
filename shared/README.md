@@ -27,10 +27,18 @@ shared/
 │   ├── photo_gallery.md
 │   ├── photo_gallery.css
 │   └── photo_gallery.js
-└── collapsible_topics/  # Collapse/expand toggles for page topics
-    ├── collapsible_topics.md
-    ├── collapsible_topics.css
-    └── collapsible_topics.js
+├── collapsible_topics/  # Collapse/expand toggles for page topics
+│   ├── collapsible_topics.md
+│   ├── collapsible_topics.css
+│   └── collapsible_topics.js
+├── nav_bar/        # Header navigation bar (SiteNav)
+│   ├── nav_bar.md
+│   ├── nav_bar.css
+│   └── nav_bar.js
+└── site_base/      # Assets for the generated site-level pages
+    ├── site_base.md
+    ├── site_base.css
+    └── site_base.js
 ```
 
 ## How to Use Shared Libraries in Your Decks
