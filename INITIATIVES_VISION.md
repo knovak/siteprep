@@ -945,7 +945,7 @@ because the evidence says the cleanup is unusually safe.
 | `buildHeaderTags()` is duplicated in **15 decks** | `decks/*/assets/scripts.js` — and all 15 copies are **byte-identical** |
 | The `.tag-nav` CSS is duplicated in **15 decks** | `decks/*/assets/styles.css` — also **byte-identical** |
 | The demos TOC has **no `<script>` tag at all** | Which is exactly why it has no nav bar — not a styling issue |
-| Both TOC pages borrow assets from **whichever deck sorts first** | `DEFAULT_STYLE`/`DEFAULT_SCRIPT` resolve to `decks/aus2503/assets/` |
+| Both TOC pages borrow assets from **whichever deck sorts first** | `DEFAULT_STYLE`/`DEFAULT_SCRIPT` resolve to `decks/${SORTED_DECKS[0]}/assets/` - currently `dubai1` |
 | The three TOC pages are three separate inline heredocs | Root and demos today; initiatives would be a third |
 | The version root is only derived correctly **for pages under `decks/`** | `getHeaderNavContext()` — see §11.1.1 |
 
@@ -982,10 +982,10 @@ That leaves the system correct by luck rather than by construction, in three way
   landing squarely on the broken path and depending entirely on the footer scrape.
 
 The last two are the ones that should worry us. The root TOC gets its nav bar **by
-accident** — it inherits the alphabetically-first deck's script. Rename a deck, add one
-sorting earlier, or let that deck diverge, and two TOC pages silently change appearance.
-Since decks are *explicitly encouraged* to diverge, this is a trap that will spring
-eventually.
+accident** — it inherits the first deck's script, where "first" means first by the
+`sort_order` in its `deck.json`, not by name. So *reordering* decks, not just renaming
+one, can silently change how two TOC pages look. Since decks are *explicitly encouraged*
+to diverge, this is a trap that will spring eventually.
 
 And thirty byte-identical copies of the same code are precisely what `shared/README.md`
 says the shared directory exists to prevent: *"widgets that are easy to get wrong when
@@ -1032,7 +1032,7 @@ Worth doing eventually; **not a prerequisite**, and deliberately out of scope fo
 P, which should stay a behaviour-preserving refactor.
 
 **C. Explicit TOC assets** — stop pointing `DEFAULT_STYLE`/`DEFAULT_SCRIPT` at
-`SORTED_DECKS[0]`. TOC pages get a designated stylesheet and load `shared/nav_bar/`
+`SORTED_DECKS[0]`, the first deck by `deck.json` `sort_order`. TOC pages get a designated stylesheet and load `shared/nav_bar/`
 directly, so they no longer depend on which deck happens to sort first.
 
 **E. One declared version root, replacing both the guess and the scrape.** `build.sh`
