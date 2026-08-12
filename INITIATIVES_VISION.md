@@ -756,6 +756,20 @@ pages stay in the same format by construction rather than by three heredocs bein
 maintained in parallel. This is the "structured cleanly" part, and it is what makes the
 initiatives TOC nearly free to add.
 
+**Shared page shell, per-collection entry content.** Each TOC keeps its own intro text
+and builds its own entries; only the surrounding page is unified. Unifying the entries
+too is blocked by something concrete: `get_demo_description()` currently **hardcodes
+full descriptions with links for `migration_map` and `SBDC Night Sky`** as literal HTML
+strings inside `build.sh`, because those demos need stable tutorial, version, and
+code-folder links that no generic rule can produce.
+
+The future path is to give demos what decks and initiatives already have — a
+`demo.json` alongside `deck.json` and `initiative.json`, carrying a description and a
+list of links. The special cases in `build.sh` then disappear, every collection
+describes its own entries in the same shape, and one entry renderer becomes possible.
+Worth doing eventually; **not a prerequisite**, and deliberately out of scope for Phase
+P, which should stay a behaviour-preserving refactor.
+
 **C. Explicit TOC assets** — stop pointing `DEFAULT_STYLE`/`DEFAULT_SCRIPT` at
 `SORTED_DECKS[0]`. TOC pages get a designated stylesheet and load `shared/nav_bar/`
 directly, so they no longer depend on which deck happens to sort first.
@@ -873,6 +887,8 @@ automation instructions land with the automation, in Phases 3–5.
 | Navigation and TOC cleanup happens first, as Phase P | §11 |
 | The nav bar reaches deck pages, via the shared library they already all call | §8.5 |
 | One declared version root replaces path-guessing and footer-scraping | §11.2 |
+| Decks **call** `SiteNav.render()`; the build does not inject it | §11.2 |
+| TOC pages share a page shell but keep their own descriptions for now | §11.2 |
 | A `new-initiative` skill, built before the first initiative | §7.8 |
 | The merge skill may override CI only when a PR is named individually | below |
 | The sweep skips an invalid initiative and reports it; it never repairs | below |
@@ -892,13 +908,18 @@ build failure, so it cannot go unnoticed. Given that you don't expect this to ha
 the cheap and boring handling is the right one — the cost of being wrong is one skipped
 sweep, not a corrupted state file.
 
+### Deferred, not blocking
+
+1. **`demo.json`, to finish the unification** (§11.2). Once each demo can declare its own
+   description and links the way decks and initiatives do, the hardcoded special cases
+   in `get_demo_description()` disappear and the three TOCs can share one entry
+   renderer, not just a page shell. Worth doing after Phase P, on its own.
+2. **Travel decks as initiatives** (§12) — revisit once a few initiatives exist.
+3. **PR packaging above a budget of 1** (§7.4) — all strategies are identical at 1, so
+   this settles itself the first time the budget rises.
+
 ### Still open
 
-1. **Does `SiteNav.render()` get called from each deck's `scripts.js`, or injected by
-   `build.sh`?** (§11.2) Calling it keeps decks in control and matches how they already
-   load `CollapsibleTopics`; injecting it guarantees consistency but overrides a deck's
-   right to decline. Leaning toward calling it, but the first implementation should
-   decide.
-2. **Does the demos TOC keep its own description text**, or move to the same
-   generated-intro pattern the initiatives TOC uses (§8.1)? A shared renderer makes the
-   consistent option nearly free, but demos may not need an explainer.
+Nothing blocking. Every question raised so far is either settled above or deferred by
+choice — which means the next useful step is Phase P, not another round of revisions to
+this document.
