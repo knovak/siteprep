@@ -203,10 +203,14 @@ Read every `initiative.json`, derive state, and produce a **digest**:
 - initiatives that are stale (no activity in N days) but not marked dormant
 - initiatives with zero actionable items that are not marked dormant — a defect
 
-### Phase 2 — Do one (each run)
+### Phase 2 — Do work (each run)
 
-Pick the **single highest-ranked actionable item across all initiatives**, do the work,
-and open **one PR**. Never more than one per run; never self-merged.
+Take the **top-ranked actionable items across all initiatives**, up to a configured
+budget, do the work, and open PRs. Never self-merged.
+
+**The budget is a parameter, not a constant.** It starts at `1` — one item per run,
+one PR, minimum review load. But nothing in the design depends on it being 1, and as
+trust in the job grows it can be raised to 2, 5, or more. See §7.1.
 
 Ranking, roughly:
 
@@ -219,9 +223,52 @@ score = value(initiative) × value(item) ÷ effort(item)
 The stage-gate and staleness bonuses exist to keep the job from grinding on one active
 initiative's easy wins while three others sit at `wish` forever.
 
+### 7.1 The work budget
+
+How much a sweep may do is configured **in the repo**, not baked into the job or passed
+at the call site — so changing the throughput is a reviewable commit, and the job's
+behaviour is readable from the repo alone.
+
+`initiatives/sweep.json`:
+
+```json
+{
+  "items_per_run": 1,
+  "max_items_per_initiative": 1,
+  "max_effort": "medium",
+  "pr_strategy": "one-per-initiative"
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `items_per_run` | `1` | Total actionable items a single sweep may complete |
+| `max_items_per_initiative` | `1` | Cap per initiative, so one hot initiative can't eat the whole budget |
+| `max_effort` | `medium` | Largest item the job may attempt unsupervised; `large` items are always escalated to the digest instead |
+| `pr_strategy` | `one-per-initiative` | How completed items are packaged — see below |
+
+`max_items_per_initiative` is the field that makes raising the budget safe. With
+`items_per_run: 5` and no per-initiative cap, five items from the same initiative would
+likely conflict with each other, since plan steps within one initiative tend to be
+sequential. The cap forces breadth instead: five items means up to five *initiatives*
+advance.
+
+**PR packaging.** My recommendation is `one-per-initiative`: items batch into a single
+PR when they belong to the same initiative, but a PR never spans two initiatives.
+Cross-initiative PRs are hard to review and hard to revert, since the changes have
+nothing to do with each other. The alternatives, if you'd rather:
+
+- `one-per-item` — maximum granularity, easiest revert, most review overhead
+- `one-per-run` — a single PR per sweep regardless of scope; fewest notifications,
+  but couples unrelated work into one merge decision
+
+At the default budget of 1, all three strategies behave identically — which is a good
+reason to start there and pick the strategy later, once real runs show what review
+actually feels like.
+
 ### Guardrails
 
-- **One PR per run.** Never merges its own work.
+- **Never exceeds the configured budget**, and never merges its own work.
 - **Never touches published outputs it does not own.** Only paths inside the initiative,
   plus that initiative's declared `outputs[]`.
 - **Never closes its own todo item.** An item is removed when the PR merges — so the
@@ -270,6 +317,7 @@ Extend `scripts/build_tests.sh`, in the spirit of the existing demos checks:
 - `stage` is a known value, and required documents for that stage exist
 - every `outputs[].path` actually exists in the repo
 - every `blocked_by: todo:<id>` resolves to a real item in the same initiative
+- `initiatives/sweep.json` parses, and `max_items_per_initiative` ≤ `items_per_run`
 - every blocked item has a `blocked_by`
 - every non-`dormant`, non-`archived` initiative has at least one actionable item
 - the generated dashboard lists every initiative
@@ -302,7 +350,8 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 | 1 | `initiatives/` exists; **one real initiative written by hand**, no automation | The schema survives contact with a real case |
 | 2 | Validation in `build_tests.sh` + dashboard in `build.sh` | Dashboard renders on Pages |
 | 3 | Sweep job, **survey phase only** — digest, no changes | Digests are useful for a week |
-| 4 | Enable Phase 2 "do one" with PR review | First agent PR merges |
+| 4 | Enable Phase 2 with `items_per_run: 1` and PR review | First agent PR merges |
+| 5 | Raise the budget as trust warrants — 2, then 5 | Review load, not ambition, sets the ceiling |
 
 Phase 1 is the important one. Writing a real initiative by hand will expose whichever
 part of §6 is wrong, at a point where changing it costs nothing.
@@ -324,3 +373,9 @@ part of §6 is wrong, at a point where changing it costs nothing.
    permanently, and that elaboration only ever happens in later documents. That preserves
    the initiative's *why* against months of drift.
 6. **Staleness threshold** — how many days of no activity before an initiative is flagged?
+7. **PR packaging at budgets above 1** (§7.1) — `one-per-initiative` (recommended),
+   `one-per-item`, or `one-per-run`? Deferrable: all three are identical at a budget of 1.
+8. **Should the budget vary by run?** A single daily number is simplest, but the two
+   runs differ in character — a morning sweep lands work you'll review during the day,
+   while an evening sweep piles up overnight. If that matters, `items_per_run` could
+   take a per-schedule value instead of one global number.
