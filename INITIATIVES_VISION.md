@@ -85,6 +85,36 @@ initiatives/night-sky/            decks/ , demos/                external
 
 Nothing about existing decks or demos changes, and no migration is required.
 
+### 3.1 A published output may not depend on initiative-internal code
+
+Point 3 above has a hazard hiding in it. If `demos/migration_map/` loads
+`initiatives/migration-atlas/lib/basemap/`, then a published demo depends on code that
+is still being actively developed — and an ordinary edit inside the initiative silently
+changes a published artifact, with no PR that appears to touch `demos/` at all.
+
+So the boundary is a rule, not a convention:
+
+> **Anything under `initiatives/` is mutable and private to its initiative. A published
+> output may not reference it at runtime.**
+
+When an output needs a capability, there are exactly two ways to ship it:
+
+| | What happens | When to use it |
+|---|---|---|
+| **Graduate** | The library moves to `shared/<lib>/` and the output loads it from there | The capability is stable, and especially if anything else might want it |
+| **Vendor** | A copy is committed inside the output, recording the source and the commit it came from | The capability is still moving, or is specific to this one output |
+
+Vendoring records its origin in the output, so the copy is traceable:
+
+```json
+{ "vendored_from": "initiatives/migration-atlas/lib/basemap", "commit": "a1b2c3d" }
+```
+
+The initiative keeps developing its copy freely — that is the whole point of capability
+staying behind (§3, point 3) — and the published output only changes when someone deliberately
+re-vendors or the shared library is deliberately updated. §9 enforces this: no file
+under a declared `outputs[]` path may reference a path under `initiatives/`.
+
 ## 4. Folder layout
 
 ```
@@ -116,13 +146,34 @@ told.
 
 ### 4.1 `wish.md` is verbatim and permanent
 
-`wish.md` holds the user's original words, unedited, forever. Elaboration happens in
-`objectives.md` and later documents — never by revising the wish. Months of drift are
-exactly when the original *why* becomes most valuable and least recoverable.
+`wish.md` holds the user's original words. Elaboration happens in `objectives.md` and
+later documents — never by revising the wish. Months of drift are exactly when the
+original *why* becomes most valuable and least recoverable.
 
-A revisit that produces version 2 **appends** a new dated wish to the same file rather
-than replacing the first one. The file becomes a chronological record of what was
-wanted and when.
+A revisit that produces version 2 **appends** a new dated wish rather than replacing the
+first one, so the file becomes a chronological record of what was wanted and when.
+
+**A wish may be corrected — but the original stays visible.** Requirements go wrong,
+and occasionally something needs removing. When a wish is changed, the newest version
+goes at the top and the previous text is kept below it, in the same file, plainly
+readable:
+
+```markdown
+# Wish
+
+## 2026-11-03
+Rebuild the atlas around migration *routes* rather than country totals.
+
+---
+### Superseded — 2026-08-12
+A map showing where people moved, by decade.
+```
+
+This is not a revision history; git already has that, in more detail and with more
+precision than any hand-maintained list. It is there for the reader. Seeing the earlier
+wish directly above the current one is how you notice scope creep and drift — that the
+thing you asked for in August is not quite the thing you are building in November. A
+`git log` will not tell you that, because nobody runs `git log` on a wish.
 
 ## 5. Lifecycle
 
@@ -163,6 +214,55 @@ Two rules make the lifecycle useful rather than decorative:
   Regression is normal and is not failure. The one exception is `archived`, which is
   terminal.
 
+### 5.1 The second time around
+
+"The absence of a document is the signal for the next step" (§4) works exactly once.
+By the time an initiative reaches `refining`, every document exists, so file presence
+says nothing about what to do next — and a revisit that regresses to `shaped` is
+ambiguous, because `spec.md` is sitting there describing version 1.
+
+The rule is simply that **file-absence signaling applies to the first pass only.**
+After that the todo list carries the work, which is what it is for. Concretely, on a
+revisit:
+
+- **Documents are amended, not replaced.** `spec.md` gains a section for the new
+  version; it does not get overwritten. The initiative accumulates, the way `wish.md`
+  does (§4.1).
+- **The regression is declared, not inferred.** Setting `stage` back to `shaped` is a
+  deliberate edit that says "the objectives are open again", and the validator stops
+  checking for missing files at that stage because they already exist.
+- **The todo list is the only reliable signal from here on.** An initiative in
+  `refining` with no actionable items is not finished — it is either dormant or
+  neglected, which is exactly the distinction §9 warns about.
+
+This is the weakest part of the lifecycle and the part most likely to need revision
+after the first real revisit. It is written down so the revision is deliberate.
+
+### 5.2 Mapping to the earlier Choice / Plan / Critique phases
+
+The older phrasing maps cleanly, and it names two activities this lifecycle left
+implicit:
+
+| Earlier phase | Where it lands here | How it is represented |
+|---|---|---|
+| **Choice** — suggest alternative solutions, evaluate, recommend a leader | The transition `shaped` → `specified` | An **Alternatives considered** section in `spec.md` — options, evaluation, and the recommended leader with its reasoning. A large decision can have its own `alternatives.md`. |
+| **Plan** — implementation plan, multiple phases, testing at each phase | The `planned` stage | `plan.md` broken into phases, with `test-plan.md` required at the same gate. "Testing at each phase" is why both documents advance the stage together rather than the test plan trailing. |
+| **Critique** — identify issues in the plan and improve it | A standard todo item at `planned`, before `building` | A **"critique the plan"** item created automatically when `plan.md` first appears, with `advances_stage: false`. |
+
+Two things the earlier phases get right that this document had left unsaid:
+
+- **Choice deserves to be written down.** A spec that records only the winning approach
+  loses the reasoning, and a revisit (§5.1) then re-litigates decisions that were
+  already settled — the exact failure initiatives exist to prevent. Alternatives
+  considered is now an expected part of `spec.md`.
+- **Critique is a step, not a mood.** Making it a real todo item means the sweep can
+  rank it, it appears on the dashboard, and a plan cannot slide into `building`
+  unexamined just because nobody remembered to look at it again.
+
+Neither becomes a new lifecycle stage. Both are activities *within* the existing
+transitions, which keeps the stage list short enough to hold in your head — the
+property that makes it useful at a glance on the TOC.
+
 ## 6. `initiative.json`
 
 Mirrors the existing `deck.json` convention — small, optional-where-possible, one file
@@ -174,7 +274,6 @@ per directory. Humans read the markdown; the job reads this.
   "summary": "Interactive map of historical human migration, as a demo and a reusable map library.",
   "stage": "refining",
   "value": "high",
-  "updated": "2026-08-12",
   "staleness_days": 21,
   "outputs": [
     { "kind": "demo",       "path": "demos/migration_map",     "status": "published" },
@@ -215,6 +314,11 @@ per directory. Humans read the markdown; the job reads this.
   initiatives.
 - `staleness_days` — optional per-initiative override of the global flag threshold
   (§7.3). A slow-burn initiative can set `90` and stop nagging; a hot one can set `3`.
+- **There is no `updated` field.** Last activity is derived from git:
+  `git log -1 --format=%cI -- initiatives/<name>/`. A hand-maintained timestamp is a
+  field that can be forgotten, lied to, or left behind by an edit that touched only
+  markdown — and git already records the answer exactly. Removing it removes a way for
+  the state to be wrong.
 - `todo[].state` — `actionable` or `blocked`. Completed items are removed and recorded
   in `log.md`, so the file stays short and always reads as "what's left".
 - `todo[].blocked_by` — **required when blocked**, and namespaced — see §6.2.
@@ -328,10 +432,11 @@ behaviour is readable from the repo alone.
 
 ```json
 {
-  "items_per_run": 1,
-  "max_items_per_initiative": 1,
-  "max_effort": "medium",
-  "staleness_days": 10,
+  "items_per_run": 4,
+  "max_items_per_initiative": 2,
+  "max_effort": "large",
+  "staleness_days": 14,
+  "max_open_prs": 8,
   "pr_strategy": "one-per-initiative",
   "protected_paths": ["shared/", "scripts/", ".github/"]
 }
@@ -339,18 +444,28 @@ behaviour is readable from the repo alone.
 
 | Field | Default | Meaning |
 |---|---|---|
-| `items_per_run` | `1` | Total actionable items a single sweep may complete |
-| `max_items_per_initiative` | `1` | Cap per initiative, so one hot initiative can't eat the whole budget |
-| `max_effort` | `medium` | Largest item the job may attempt unsupervised; `large` items escalate to the digest |
-| `staleness_days` | `10` | Days without activity before an initiative is flagged; overridable per initiative (§6.1) |
-| `max_open_prs` | `4` | Ceiling on unmerged sweep PRs; at the cap the sweep does no new work (§7.5.1) |
+| `items_per_run` | `4` | Total actionable items a single sweep may complete |
+| `max_items_per_initiative` | `2` | Cap per initiative, so one hot initiative can't eat the whole budget |
+| `max_effort` | `large` | Largest item the job may attempt unsupervised |
+| `staleness_days` | `14` | Days without activity before an initiative is flagged; overridable per initiative (§6.1) |
+| `max_open_prs` | `8` | Ceiling on unmerged sweep PRs; at the cap the sweep does no new work (§7.5.1) |
 | `pr_strategy` | `one-per-initiative` | How completed items are packaged (§7.4) |
 | `protected_paths` | `shared/`, `scripts/`, `.github/` | Paths a sweep PR may never touch unattended (§7.4) |
 
-`max_items_per_initiative` is the field that makes raising the budget safe. With
-`items_per_run: 5` and no per-initiative cap, five items from the same initiative would
-likely conflict, since plan steps within one initiative tend to be sequential. The cap
-forces breadth instead: five items means up to five *initiatives* advance.
+Three notes on these values:
+
+- **`max_effort: "large"`** — the effort scale is `small`/`medium`/`large`, deliberately
+  different words from `value`'s `high`/`medium`/`low` so that "high value, large
+  effort" cannot be misread. `large` here means no effort ceiling: the job may attempt
+  anything on the list.
+- **`max_open_prs` is set to 8, twice `items_per_run`.** With a budget of 4 and a cap of
+  4, a single run would hit the ceiling and the next would do nothing — the cap has to
+  leave room for at least one more run's worth of work, or it stops being a safety valve
+  and becomes the actual budget.
+- **`max_items_per_initiative: 2` is what makes a budget of 4 safe.** Without a
+  per-initiative cap, four items from one initiative would likely conflict, since plan
+  steps within an initiative tend to be sequential. At 2, a full run spreads across at
+  least two initiatives.
 
 ### 7.4 PR isolation — why one per initiative avoids conflicts
 
@@ -436,6 +551,82 @@ The one piece that is a natural fit for **GitHub Actions specifically** is the
 merge-related mechanical work noted in §6.3: rebasing stale sweep PRs, re-running the
 build after a merge, and closing PRs whose initiative was archived. That work is
 triggered by repo events rather than by a clock, and it needs no model at all.
+
+#### 7.6.1 The prompt, and how it is invoked
+
+**The prompt lives in the repo, at `initiatives/sweep-prompt.md`.** The scheduler does
+not hold a copy — it reads that file. This matters for exactly the reason you raised:
+a manual run during development and the twice-daily scheduled run must be *the same
+prompt*, or debugging the schedule means debugging a text you cannot see. It also makes
+changes to the job's behaviour reviewable, like `sweep.json` (§7.3).
+
+Manual invocation is then just:
+
+```bash
+claude -p "$(cat initiatives/sweep-prompt.md)"
+```
+
+or, in an interactive session, *"run the sweep prompt"*. A scheduled run is the same
+text on a cron. During development, add `--dry-run` semantics by appending one line:
+*"Stop after Phase 1 and print the digest; do not create branches or PRs."*
+
+The prompt itself:
+
+```markdown
+Run a sweep of the initiatives in this repository.
+
+## Phase 1 — Survey (always)
+
+1. Read `initiatives/sweep.json` for configuration. If it is missing or malformed,
+   stop and report that.
+2. For every immediate subdirectory of `initiatives/`, read `initiative.json`.
+   Skip and report any that is missing or does not parse — never repair one.
+   Compute last activity with:
+   `git log -1 --format=%cI -- initiatives/<name>/`
+3. Auto-clear blockers whose condition is now satisfied, setting the item to
+   `actionable`:
+   - `todo:<id>` where `<id>` no longer exists in that initiative
+   - `review:<pr>` where that PR is merged or closed
+   - `schedule:<date>` where the date has passed
+   - `initiative:<name>` where that initiative has reached the named stage
+4. Build the digest:
+   - per initiative: stage, days since last activity, top actionable item, blocked count
+   - one combined list of every human-class blocker (`human:`, `permission:`, `cost:`,
+     `legal:`), each naming the initiative and the decision needed
+   - initiatives past `staleness_days` and not dormant
+   - non-dormant initiatives with no actionable item
+   - any initiative skipped for malformed state
+
+## Phase 2 — Do work
+
+5. List open PRs whose branch matches `sweep/*`. Exclude every todo item already
+   addressed by one. If the count of open sweep PRs is at or above `max_open_prs`,
+   stop here and report the digest only.
+6. Rank the remaining actionable items across all initiatives:
+   `score = value(initiative) x value(item) / effort(item)`
+   plus a bonus if `advances_stage` is true, plus a bonus scaled by staleness.
+   Drop any item whose effort exceeds `max_effort`.
+7. Select the top items up to `items_per_run`, taking no more than
+   `max_items_per_initiative` from any one initiative.
+8. For each selected item, work on branch `sweep/<initiative>/<item-id>`:
+   - Do the work. Write only inside `initiatives/<name>/` and that initiative's
+     declared `outputs[]` paths. Never touch anything in `protected_paths`.
+   - Remove the completed item from `todo[]`.
+   - Flip any item blocked on `todo:<completed-id>` to `actionable`.
+   - Append a dated line to `initiatives/<name>/log.md` saying what was done.
+   - Open a pull request. Do not merge it.
+9. Report the digest, including what was done and the PR links.
+
+## Rules
+
+- Never merge your own pull request.
+- Never create a new initiative, and never invent or edit a wish.
+- Never repair a malformed `initiative.json` — skip that initiative and report it.
+- Never resolve a human-class blocker by guessing. Put the decision in the digest,
+  as multiple choice wherever the options can be enumerated.
+- If there is no actionable work anywhere, do nothing and say so. A quiet run is a
+  correct run.
+```
 
 ### 7.7 Merging the output — the merge skill
 
@@ -680,6 +871,8 @@ generated from it would be wrong:
 - an `outputs[].path` that does not exist, or escapes the repo
 - **two initiatives declaring the same `outputs[].path`** — the exclusive-ownership
   invariant §7.4 depends on
+- **a file under a declared `outputs[].path` referencing a path under `initiatives/`** —
+  the published-output rule from §3.1
 - a blocked item with no `blocked_by`, or an unknown prefix
 - a `blocked_by: todo:<id>` that resolves to nothing
 - `sweep.json` malformed, or `max_items_per_initiative` > `items_per_run`
@@ -894,11 +1087,22 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 | **P** | **Navigation and TOC cleanup (§11)** — `shared/nav_bar/`, one TOC renderer, explicit TOC assets | Deck output is unchanged, demos TOC has a nav bar |
 | 0 | This document, revised until it's right — **plus the instruction-file edits** | You're happy with it |
 | 1 | The `new-initiative` skill (§7.8) and the merge skill (§7.7) | Starting an initiative is one sentence |
-| 2 | `initiatives/` exists; **one real initiative**, created with the skill, no automation | The schema survives contact with a real case |
+| 2 | `initiatives/` exists; **two contrasting initiatives**, created with the skill, no automation | The schema survives contact with both kinds |
 | 3 | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; `markdown_view` | The TOC renders on Pages and in branch previews |
 | 4 | Sweep job, **survey phase only** — digest, no changes | Digests are useful for a week |
-| 5 | Enable sweep Phase 2 with `items_per_run: 1` and PR review | First agent PR merges |
-| 6 | Raise the budget as trust warrants — 2, then 5 | Review load, not ambition, sets the ceiling |
+| 5 | Enable sweep Phase 2, temporarily at `items_per_run: 1` | First agent PR merges |
+| 6 | Restore the configured budget (§7.3) | Review load, not ambition, sets the ceiling |
+
+**Phase 2 trials two initiatives, deliberately contrasting**: one that produces
+publishable content, and one whose output is pure capability (§2.1). They exercise
+opposite halves of the model — the first tests graduation, output ownership, and the
+§3.1 vendoring rule; the second tests the case where `outputs[]` stays internal and
+there is nothing to publish. A single trial initiative would leave whichever half it
+skipped to be discovered later, in Phase 5, when an agent is already writing to it.
+
+Phase 5 lowers `items_per_run` to 1 for the first week and then restores the configured
+default. That is a bring-up precaution, not a change of intent — the point is to see
+the first few PRs one at a time.
 
 Phase 2 is still the important one. Creating a real initiative will expose whichever
 part of §6 is wrong, at a point where changing it costs nothing.
@@ -957,6 +1161,13 @@ automation instructions land with the automation, in Phases 3–5.
 | One declared version root replaces path-guessing and footer-scraping | §11.2 |
 | Decks **call** `SiteNav.render()`; the build does not inject it | §11.2 |
 | TOC pages share a page shell but keep their own descriptions for now | §11.2 |
+| A published output may never reference code under `initiatives/` | §3.1 |
+| No `updated` field — last activity comes from git | §6.1 |
+| A corrected wish keeps the superseded text visible below it | §4.1 |
+| Choice, Plan, and Critique map onto existing stages, adding no new ones | §5.2 |
+| The sweep prompt lives in the repo and is the same text for manual and scheduled runs | §7.6.1 |
+| Backlog health warns; only malformed or unsafe data fails the build | §9 |
+| The validator and dashboard generator are Node, not shell | §9.1 |
 | A `new-initiative` skill, built before the first initiative | §7.8 |
 | The merge skill may override CI only when a PR is named individually | below |
 | The sweep skips an invalid initiative and reports it; it never repairs | below |
