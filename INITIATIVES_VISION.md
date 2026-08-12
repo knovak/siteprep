@@ -447,6 +447,30 @@ Auto-merging on CI green would make "review enacts closure" vacuous — items wo
 close because the build passed, which tests nothing about whether the work was any
 good. The merge skill keeps the human decision and removes only the clicking.
 
+### 7.8 Creating an initiative — the new-initiative skill
+
+The sweep never invents an initiative (§7.5), so creation is always deliberate. That
+makes the blank page the system's real bottleneck: if starting one means remembering
+three files and a JSON schema, half-formed ideas will keep going into chat instead —
+which is the exact problem §1 says initiatives exist to solve.
+
+`.claude/skills/new-initiative/SKILL.md`, invoked as *"use the new-initiative skill for
+an idea about …"*. It asks for the wish in your own words, proposes a slug, and
+scaffolds the minimum:
+
+- `initiative.json` — `stage: "wish"`, a title and summary, empty `outputs`, and **one
+  actionable todo: draft `objectives.md`** (`advances_stage: true`), so the initiative
+  is legal under §9 from the moment it exists
+- `wish.md` — your words, verbatim, dated (§4.1)
+- `index.html` — the generated overview shell
+
+Nothing else. No spec, no plan, no empty directories — those arrive when the lifecycle
+reaches them.
+
+**Build it before the first initiative is written**, as you suggested. The first
+initiative is then a test of the skill as well as of the schema, and Phase 1 stops
+being hand-work that has to be repeated correctly from memory every time afterwards.
+
 ## 8. Publishing
 
 The site gains a third TOC, parallel to decks and demos. This **extends the earlier
@@ -559,41 +583,28 @@ avoids it.
 
 ### 8.5 Navigation
 
-Today the site's cross-page navigation is a generated footer nav
-(`Version | Deck | Section | Google Drive | View all versions`) injected into every
-page by `build.sh`, plus a **Demos card on the root index** — worth noting that "the
-Demos button" is currently a card on one page, not a header control. So adding an
-Initiatives button means introducing a header nav that does not exist yet, which is
-worth doing anyway now that there are three peer collections.
+A header nav already exists — `🏠 Home · ⬆️ Top of deck · 🔺 Documents · 🧪 Demos`,
+built by a `buildHeaderTags()` function that replaces the `.card-header .tag` element.
+Initiatives needs a fifth button in that bar, which turns out to be a code-organization
+problem rather than a design one. It is covered as preliminary work in §11; this section
+records only the resulting nav model.
 
-**Proposal: a generated header nav on every index page.**
-
-```
-Decks · Demos · Initiatives
-```
-
-rendered from `build.sh` with the current collection marked, alongside the existing
-`.tag` label. On an initiative's own page it extends to a breadcrumb:
-
-```
-Decks · Demos · Initiatives › Migration Atlas
-```
-
-The full nav map:
-
-| Page | Header nav | Links up to |
+| Page | Header nav | Notes |
 |---|---|---|
-| `/index.html` (root) | Decks · Demos · Initiatives | — |
-| `/demos/index.html` | Decks · **Demos** · Initiatives | root |
-| `/initiatives/index.html` | Decks · Demos · **Initiatives** | root |
-| `/initiatives/<name>/index.html` | Decks · Demos · **Initiatives** › *Name* | Initiative TOC, root |
-| Deck and section pages | unchanged | existing footer nav |
+| `/index.html` (root TOC) | Home · Documents · Demos · **Initiatives** | No "Top of deck" — there is no deck |
+| `/demos/index.html` | Home · Documents · **Demos** · Initiatives | Currently has **no** nav bar at all (§11) |
+| `/initiatives/index.html` | Home · Documents · Demos · **Initiatives** | New |
+| `/initiatives/<name>/index.html` | Home · ⬆️ Top of initiatives · Documents · Demos · Initiatives | "Top of" resolves to the Initiative TOC |
+| Deck and section pages | Home · Top of deck · Documents · Demos · **Initiatives** | Gains the new button automatically |
 
-Deck and section pages are deliberately left alone. Each deck owns an independent
-`assets/styles.css` and `assets/scripts.js` and is explicitly free to diverge, so
-injecting a header into every deck page would fight that convention and touch every
-deck for a navigation change. The footer nav already reaches those pages and simply
-gains an **Initiatives** link. *(Open question — see §12.)*
+Two things follow from the current implementation:
+
+- **"Top of deck" generalizes to "top of collection."** On an initiative page the same
+  slot points at the Initiative TOC, so one function serves both without a special case.
+- **Deck pages get the Initiatives button for free.** All fifteen decks already call the
+  identical function, so making it shared adds the button everywhere at once — while a
+  deck that wants a different bar can still decline to call it, per the `shared/`
+  philosophy of optional-not-mandatory.
 
 The root index also gains an **Initiatives** card beside the existing Demos card, so
 both routes work.
@@ -660,29 +671,164 @@ A terminology block, parallel to the existing Demos one:
 Plus the mirror of the existing rule: do not call an initiative a "deck" or a "demo",
 and do not apply deck/section conventions to content under `work/` until it graduates.
 
-## 11. Adoption path
+## 11. Preliminary work — navigation and TOC cleanup
+
+**Yes, this should come first.** Not because initiatives need it aesthetically, but
+because the current structure would make adding one button a fifteen-file change, and
+because the evidence says the cleanup is unusually safe.
+
+### 11.1 What the code actually looks like now
+
+| Finding | Detail |
+|---|---|
+| `buildHeaderTags()` is duplicated in **15 decks** | `decks/*/assets/scripts.js` — and all 15 copies are **byte-identical** |
+| The `.tag-nav` CSS is duplicated in **15 decks** | `decks/*/assets/styles.css` — also **byte-identical** |
+| The demos TOC has **no `<script>` tag at all** | Which is exactly why it has no nav bar — not a styling issue |
+| Both TOC pages borrow assets from **whichever deck sorts first** | `DEFAULT_STYLE`/`DEFAULT_SCRIPT` resolve to `decks/aus2503/assets/` |
+| The three TOC pages are three separate inline heredocs | Root and demos today; initiatives would be a third |
+| The version root is only derived correctly **for pages under `decks/`** | `getHeaderNavContext()` — see §11.1.1 |
+
+#### 11.1.1 The branch-awareness bug
+
+You suspected the Demos button always points at main. It is narrower than that, and
+the real shape is worth knowing before the cleanup, because the same trap is waiting
+for initiatives.
+
+`getHeaderNavContext()` derives the site root by looking for `decks` in the path. When
+it is missing, it falls back to the **first path segment** — `/siteprep/` — which is
+main. Simulated across page types on a branch preview:
+
+| Page on a branch preview | Derived root | |
+|---|---|---|
+| `/siteprep/branch/X/decks/india1/index.html` | `/siteprep/branch/X/` | correct |
+| `/siteprep/branch/X/index.html` | `/siteprep/` | **main** |
+| `/siteprep/branch/X/demos/index.html` | `/siteprep/` | **main** |
+| `/siteprep/branch/X/initiatives/index.html` | `/siteprep/` | **main** |
+
+So the fallback is wrong for every page that is not under `decks/`. What rescues it
+today is that `buildHeaderTags()` prefers a different source: it **scrapes the footer**
+for a link whose text starts with `Version:` and resolves against that. The footer's
+href is genuinely branch-relative, so on pages that have a footer the buttons do point
+at the current branch.
+
+That leaves the system correct by luck rather than by construction, in three ways:
+
+- Nav correctness depends on **matching a footer link by its visible text**. Change
+  `Version:` to anything else and every button silently reverts to main.
+- A page without the footer gets the broken fallback. The demos TOC has a footer but
+  **no script at all**, so today it has no nav bar to be wrong.
+- **Initiative pages would be the first non-`decks/` pages with real navigation**,
+  landing squarely on the broken path and depending entirely on the footer scrape.
+
+The last two are the ones that should worry us. The root TOC gets its nav bar **by
+accident** — it inherits the alphabetically-first deck's script. Rename a deck, add one
+sorting earlier, or let that deck diverge, and two TOC pages silently change appearance.
+Since decks are *explicitly encouraged* to diverge, this is a trap that will spring
+eventually.
+
+And thirty byte-identical copies of the same code are precisely what `shared/README.md`
+says the shared directory exists to prevent: *"widgets that are easy to get wrong when
+reimplemented by hand."* Adding a fifth button today means editing 15 files and hoping
+they stay identical. They will not.
+
+### 11.2 The cleanup
+
+**A. `shared/nav_bar/`** — following the existing library convention exactly
+(`nav_bar.js`, `nav_bar.css`, `nav_bar.md`, matching `photo_gallery` and friends).
+
+Expose one call:
+
+```js
+SiteNav.render();                                   // infer everything from the URL
+SiteNav.render({ current: 'initiatives' });         // mark the active collection
+SiteNav.render({ buttons: ['home', 'documents'] }); // opt out of the defaults
+```
+
+It derives context from the path — deck, section, TOC, or initiative — and resolves
+hrefs against the version root, so branch previews keep working. Each deck's
+`scripts.js` calls it instead of defining its own copy; a deck that wants a different
+bar simply does not call it, or forks the file into its own `assets/`, which
+`shared/README.md` already sanctions.
+
+**B. One TOC renderer in `build.sh`** — a single `render_toc_page()` taking a title,
+tag, intro block, and entry list. Root, demos, and initiatives all call it, so the three
+pages stay in the same format by construction rather than by three heredocs being
+maintained in parallel. This is the "structured cleanly" part, and it is what makes the
+initiatives TOC nearly free to add.
+
+**C. Explicit TOC assets** — stop pointing `DEFAULT_STYLE`/`DEFAULT_SCRIPT` at
+`SORTED_DECKS[0]`. TOC pages get a designated stylesheet and load `shared/nav_bar/`
+directly, so they no longer depend on which deck happens to sort first.
+
+**E. One declared version root, replacing both the guess and the scrape.** `build.sh`
+already knows the answer at build time — it computes `rel_path` per page for the footer.
+It should state it once, in the page head:
+
+```html
+<meta name="siteprep-version-root" content="../../">
+```
+
+`SiteNav` reads that and resolves every button against it. No path-segment guessing, no
+scraping a footer link by its text, and it is correct for any collection at any depth on
+main or any branch — including collections that do not exist yet. The footer nav should
+read the same meta tag, so there is one source of truth for "where is the root of this
+version" instead of the current two-and-a-half.
+
+This is the fix for §11.1.1, and it is the reason the cleanup should precede initiatives
+rather than follow them: initiative pages are the first pages that would depend on the
+broken path.
+
+**D. Deck-level TOC sections stay exactly as they are.** The TOC blocks at the top of
+each deck may look like the top-level pages today, but decks own their presentation and
+are free to diverge. The cleanup unifies the three *site-level* TOC pages only, and
+touches no deck's TOC markup.
+
+### 11.3 Why this is low-risk
+
+The zero divergence across all 15 decks is the key fact: the extraction is mechanical,
+not a merge of variants. There is no behavioural question about whose version wins.
+
+Verification is straightforward — build before and after, and **diff the generated
+output**. Every deck page should be byte-identical apart from the new Initiatives
+button and the version-root meta tag, and the demos TOC should gain a nav bar it never
+had. The existing Playwright suite and `build_tests.sh` cover the rest.
+
+One check is worth adding permanently, since §11.1.1 was invisible for as long as it
+has existed: a test that loads a page from a **simulated branch path** and asserts every
+nav href stays within that branch. A button that quietly escapes to main is the kind of
+bug nobody notices from the main site, where every wrong answer happens to be right.
+
+This work is also **worth doing whether or not initiatives ever ship**, which is the
+best possible property for a prerequisite. It fixes a real latent bug, removes 30
+duplicated blocks, and gives the demos TOC the nav bar it should always have had.
+
+## 12. Adoption path
 
 Deliberately slow, because the schema should be proven by hand before it is automated.
 **Initiatives apply to new work only** — existing demos are not retrofitted.
 
 | Phase | What happens | Done when |
 |---|---|---|
+| **P** | **Navigation and TOC cleanup (§11)** — `shared/nav_bar/`, one TOC renderer, explicit TOC assets | Deck output is unchanged, demos TOC has a nav bar |
 | 0 | This document, revised until it's right — **plus the instruction-file edits** | You're happy with it |
-| 1 | `initiatives/` exists; **one real initiative written by hand**, no automation | The schema survives contact with a real case |
-| 2 | Validation in `build_tests.sh`; TOC, index pages, header nav in `build.sh`; `markdown_view` | The TOC renders on Pages and in branch previews |
-| 3 | The merge skill (§7.7) | A batch of PRs merges in one sentence |
+| 1 | The `new-initiative` skill (§7.8) and the merge skill (§7.7) | Starting an initiative is one sentence |
+| 2 | `initiatives/` exists; **one real initiative**, created with the skill, no automation | The schema survives contact with a real case |
+| 3 | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; `markdown_view` | The TOC renders on Pages and in branch previews |
 | 4 | Sweep job, **survey phase only** — digest, no changes | Digests are useful for a week |
 | 5 | Enable sweep Phase 2 with `items_per_run: 1` and PR review | First agent PR merges |
 | 6 | Raise the budget as trust warrants — 2, then 5 | Review load, not ambition, sets the ceiling |
 
-Phase 1 is the important one. Writing a real initiative by hand will expose whichever
+Phase 2 is still the important one. Creating a real initiative will expose whichever
 part of §6 is wrong, at a point where changing it costs nothing.
 
-The merge skill moves **before** the sweep job deliberately. It is useful immediately —
-this repo already produces PRs that need merging — and having it in hand before the job
-starts generating batches means the friction never builds up in the first place.
+Two orderings are deliberate. **Phase P comes first** because after it, the Initiatives
+button is a one-line change instead of a fifteen-file one — and because it is worth
+doing on its own merits. **Both skills come before the first initiative**: the
+`new-initiative` skill so Phase 2 tests the skill and the schema together rather than
+being hand-work repeated from memory, and the merge skill because this repo already
+produces PRs that need merging, so the friction never gets a chance to build up.
 
-### 11.1 Yes, Phase 0 includes the instruction files
+### 12.1 Yes, Phase 0 includes the instruction files
 
 You are right that Phase 0 is not documentation alone. The moment this document
 merges, agents working in this repo need to know the vocabulary, or the first
@@ -706,14 +852,14 @@ create one. So the Phase 0 block covers vocabulary and layout only, states plain
 initiatives are not yet automated, and says not to create one unless asked. The
 automation instructions land with the automation, in Phases 3–5.
 
-## 12. Decisions and open questions
+## 13. Decisions and open questions
 
 ### Settled
 
 | Decision | Where |
 |---|---|
-| Forward-only; existing demos are not retrofitted | §11 |
-| Travel decks do not get initiatives yet — revisit once a few exist | §11 |
+| Forward-only; existing demos are not retrofitted | §12 |
+| Travel decks do not get initiatives yet — revisit once a few exist | §12 |
 | Runs on Claude Code or Codex; merge mechanics in Actions | §7.6 |
 | `wish.md` is verbatim and permanent; revisits append | §4.1 |
 | Staleness is 10 days, overridable per initiative | §7.3 |
@@ -723,21 +869,36 @@ automation instructions land with the automation, in Phases 3–5.
 | Index pages are generated, with an optional hand-written `overview.md` | §8.2 |
 | No owner field — single-author repo | — |
 | Branch previews need no new machinery | §8.6 |
-| Phase 0 includes `AGENTS.md` and `README.md` edits | §11.1 |
+| Phase 0 includes `AGENTS.md` and `README.md` edits | §12.1 |
+| Navigation and TOC cleanup happens first, as Phase P | §11 |
+| The nav bar reaches deck pages, via the shared library they already all call | §8.5 |
+| One declared version root replaces path-guessing and footer-scraping | §11.2 |
+| A `new-initiative` skill, built before the first initiative | §7.8 |
+| The merge skill may override CI only when a PR is named individually | below |
+| The sweep skips an invalid initiative and reports it; it never repairs | below |
+
+Two of these you left to my judgement:
+
+**Unresolved review comments (§7.7).** The merge skill refuses by default. An override
+is allowed only when you name that PR by number — never through a bulk selector like
+`all green sweep PRs`. So the safeguard cannot erode silently through the path you will
+use most, and the escape hatch still exists for the case where you have read the comment
+and decided it does not block. Same rule for a red-CI override.
+
+**Invalid `initiative.json` (§7.5).** The sweep skips that initiative entirely, reports
+it in the digest, and never attempts a repair. Self-repair would have the job rewriting
+the state file it is otherwise only allowed to read, and a malformed file is already a
+build failure, so it cannot go unnoticed. Given that you don't expect this to happen,
+the cheap and boring handling is the right one — the cost of being wrong is one skipped
+sweep, not a corrupted state file.
 
 ### Still open
 
-1. **Does the header nav reach deck and section pages?** (§8.5) The proposal keeps it on
-   generated index pages only, because decks own their own assets and are free to
-   diverge — but that means the three-way nav is absent from the pages you spend the
-   most time on. The alternative touches every deck.
-2. **May the merge skill merge a PR with unresolved review comments** if you name it
-   explicitly? (§7.7) The default is no. An explicit override is convenient and is also
-   exactly how the safeguard erodes.
-3. **What does the sweep do with an initiative that fails validation?** A malformed
-   `initiative.json` is a build failure, but the sweep also has to decide whether to
-   skip that initiative or try to repair it. Repair is tempting and risks the job
-   rewriting state it was supposed to only read.
-4. **How does an initiative get created?** The sweep never invents one (§7.5), so
-   creation is manual — but a `new-initiative` skill scaffolding the required three
-   files would remove the main excuse not to start one.
+1. **Does `SiteNav.render()` get called from each deck's `scripts.js`, or injected by
+   `build.sh`?** (§11.2) Calling it keeps decks in control and matches how they already
+   load `CollapsibleTopics`; injecting it guarantees consistency but overrides a deck's
+   right to decline. Leaning toward calling it, but the first implementation should
+   decide.
+2. **Does the demos TOC keep its own description text**, or move to the same
+   generated-intro pattern the initiatives TOC uses (§8.1)? A shared renderer makes the
+   consistent option nearly free, but demos may not need an explainer.
