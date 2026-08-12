@@ -95,6 +95,7 @@ initiatives/
     initiative.json    # required — the machine-readable state
     index.html         # required — the initiative's overview page (§8.2)
     wish.md            # required — the original vague goal, in the user's words
+    overview.md        # optional — hand-written prose, appended to index.html (§8.2)
     objectives.md      # what "done" would mean, once it can be said
     spec.md            # what it is
     plan.md            # how it gets built, in steps
@@ -407,6 +408,45 @@ merge-related mechanical work noted in §6.3: rebasing stale sweep PRs, re-runni
 build after a merge, and closing PRs whose initiative was archived. That work is
 triggered by repo events rather than by a clock, and it needs no model at all.
 
+### 7.7 Merging the output — the merge skill
+
+A twice-daily job turning every half-day into PRs that must each be reviewed and merged
+by hand is the most likely way this system dies. The fix is a repo skill, so clearing a
+batch is one sentence rather than a browser session.
+
+`.claude/skills/merge-prs/SKILL.md`, invoked as *"use the merge skill to merge PRs 231,
+234, 236"* or `/merge-prs`. For each target it:
+
+1. **Resolves the target set** — explicit numbers, or a selector: `all green sweep PRs`,
+   `today's sweep`, `initiative:migration-atlas`.
+2. **Checks before touching anything** — open and not draft, CI concluded green,
+   `mergeable_state` clean, no unresolved review threads.
+3. **Classifies** each into ready / CI-red / conflicted / has-unresolved-comments /
+   already-merged.
+4. **Merges the ready ones** (squash, delete branch) and leaves the rest alone.
+5. **Reports one table** of what merged and why each skipped PR was skipped.
+
+Two rules keep it safe: it **never merges anything not green** without an explicit
+override, and it **never resolves a review thread** to make a PR mergeable — an
+unresolved comment means you were still talking, and that outranks throughput.
+
+The selector is where the friction actually goes away. `merge all green sweep PRs`
+clears a whole day's batch in one sentence, and because sweep PRs are path-disjoint by
+§7.4, they merge cleanly in any order.
+
+**A conflict between two sweep PRs is a bug report, not a nuisance.** The write scope
+in §7.4 is supposed to make conflicts structurally impossible. If the merge skill hits
+one, an initiative wrote outside its scope or two initiatives declared the same output
+path — so the skill should say that loudly rather than quietly rebasing past it. The
+merge tool doubles as the detector for the invariant that makes the whole parallel
+design work.
+
+**What not to do instead: GitHub auto-merge on green.** It looks like the obvious
+friction fix, but §6.3 makes the human merge the event that closes a todo item.
+Auto-merging on CI green would make "review enacts closure" vacuous — items would
+close because the build passed, which tests nothing about whether the work was any
+good. The merge skill keeps the human decision and removes only the clicking.
+
 ## 8. Publishing
 
 The site gains a third TOC, parallel to decks and demos. This **extends the earlier
@@ -416,9 +456,19 @@ too, though raw working documents remain repo-first (§8.3).
 ### 8.1 The Initiative TOC
 
 `scripts/build.sh` generates `gh-pages/initiatives/index.html` from every
-`initiative.json`, in the same spirit as the existing Demo TOC. One entry per
-initiative, each with a brief description, a brief status, and a link to
-`initiatives/<NAME>/index.html`:
+`initiative.json`, in the same spirit as the existing Demo TOC.
+
+The page opens with a **condensed statement of what initiatives are and why they
+exist** — a few sentences distilled from §1 and §2 of this document, not a link to it.
+Someone arriving at the TOC cold, including a future version of you, should not have to
+find a design document to understand what they are looking at. Concretely: initiatives
+are durable units of intent; they progress through a lifecycle from wish to refinement;
+they produce decks, demos, code that runs elsewhere, or reusable capability; and they
+carry a todo list that an agent sweeps twice daily. Roughly a short paragraph and the
+lifecycle sequence, in a collapsible topic so it stays out of the way once it's familiar.
+
+Then one entry per initiative, each with a brief description, a brief status, and a link
+to `initiatives/<NAME>/index.html`:
 
 | Initiative | Stage | Status | Outputs |
 |---|---|---|---|
@@ -443,11 +493,21 @@ Every initiative has one, and it is the front door to that initiative:
 Following the existing deck convention, the page is built from topics and gets
 collapsible sections for free.
 
-Open question: how much of this page is generated versus hand-written. Generating it
-from `initiative.json` keeps status honest and costs nothing per initiative; hand-writing
-allows a real narrative. **Recommendation: generated status blocks, hand-written purpose
-prose** — the same split as the rest of this design, where the machine owns state and the
-human owns intent.
+**All of the above is generated** from `initiative.json` and the files present, so
+status cannot drift from reality. On top of that, an initiative **may** have an
+`overview.md` — hand-written prose that is rendered and appended to the built page.
+
+`overview.md` is **allowed but never required**. Most initiatives will not have one;
+a wish and a generated status block are enough. It earns its place when an initiative
+needs a real narrative — the reasoning behind an approach, what was tried and rejected,
+context a newcomer needs. When absent, the page simply omits the section.
+
+A separate file rather than a long markdown string in `initiative.json`, for three
+reasons: JSON cannot hold readable multi-line prose, so it would arrive as one
+enormous escaped line; that line would produce a useless diff on every edit; and a
+`.md` file renders on GitHub for free, while a string buried in JSON renders nowhere.
+This also keeps the split clean — `initiative.json` is state the machine owns,
+`overview.md` is narrative the human owns, exactly as elsewhere in this design.
 
 ### 8.3 How markdown documents get displayed
 
@@ -497,6 +557,71 @@ notification always means "you specifically are now the bottleneck." Notificatio
 fatigue is the actual failure mode of a twice-daily job, and this is the design that
 avoids it.
 
+### 8.5 Navigation
+
+Today the site's cross-page navigation is a generated footer nav
+(`Version | Deck | Section | Google Drive | View all versions`) injected into every
+page by `build.sh`, plus a **Demos card on the root index** — worth noting that "the
+Demos button" is currently a card on one page, not a header control. So adding an
+Initiatives button means introducing a header nav that does not exist yet, which is
+worth doing anyway now that there are three peer collections.
+
+**Proposal: a generated header nav on every index page.**
+
+```
+Decks · Demos · Initiatives
+```
+
+rendered from `build.sh` with the current collection marked, alongside the existing
+`.tag` label. On an initiative's own page it extends to a breadcrumb:
+
+```
+Decks · Demos · Initiatives › Migration Atlas
+```
+
+The full nav map:
+
+| Page | Header nav | Links up to |
+|---|---|---|
+| `/index.html` (root) | Decks · Demos · Initiatives | — |
+| `/demos/index.html` | Decks · **Demos** · Initiatives | root |
+| `/initiatives/index.html` | Decks · Demos · **Initiatives** | root |
+| `/initiatives/<name>/index.html` | Decks · Demos · **Initiatives** › *Name* | Initiative TOC, root |
+| Deck and section pages | unchanged | existing footer nav |
+
+Deck and section pages are deliberately left alone. Each deck owns an independent
+`assets/styles.css` and `assets/scripts.js` and is explicitly free to diverge, so
+injecting a header into every deck page would fight that convention and touch every
+deck for a navigation change. The footer nav already reaches those pages and simply
+gains an **Initiatives** link. *(Open question — see §12.)*
+
+The root index also gains an **Initiatives** card beside the existing Demos card, so
+both routes work.
+
+### 8.6 Branch previews — already solved
+
+The `gh-pages` workflow triggers on `push:` with **no branch filter**, and any ref that
+is not `main` deploys to `branch/<sanitized-branch-name>/`, listed at
+`index-versions.html`. The whole site is rebuilt from that branch's source.
+
+**So initiatives get branch previews for free.** No workflow change is needed, because
+the mechanism is per-build, not per-content-type: the moment `build.sh` generates
+`initiatives/index.html`, a feature branch publishes it at
+
+```
+https://knovak.github.io/siteprep/branch/<branch>/initiatives/index.html
+```
+
+This matters more than it first appears, and it partly answers the friction concern
+behind §7.7. A sweep PR is not just a diff of JSON and markdown — **its rendered
+result is browsable before merge.** You can read the initiative's index page, see the
+new status, and check the TOC entry, then merge from the phone. Reviewing generated
+pages as source is what would make this tedious; reviewing them as pages is not.
+
+It also argues for keeping the generated pages **out of the repo** (§7.4): they are
+already visible per-branch without being committed, so committing them would add merge
+conflicts and buy nothing.
+
 ## 9. Validation
 
 Extend `scripts/build_tests.sh`, in the spirit of the existing demos checks:
@@ -542,34 +667,77 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 
 | Phase | What happens | Done when |
 |---|---|---|
-| 0 | This document, revised until it's right | You're happy with it |
+| 0 | This document, revised until it's right — **plus the instruction-file edits** | You're happy with it |
 | 1 | `initiatives/` exists; **one real initiative written by hand**, no automation | The schema survives contact with a real case |
-| 2 | Validation in `build_tests.sh`; TOC and index pages in `build.sh`; `markdown_view` | The TOC renders on Pages |
-| 3 | Sweep job, **survey phase only** — digest, no changes | Digests are useful for a week |
-| 4 | Enable Phase 2 with `items_per_run: 1` and PR review | First agent PR merges |
-| 5 | Raise the budget as trust warrants — 2, then 5 | Review load, not ambition, sets the ceiling |
+| 2 | Validation in `build_tests.sh`; TOC, index pages, header nav in `build.sh`; `markdown_view` | The TOC renders on Pages and in branch previews |
+| 3 | The merge skill (§7.7) | A batch of PRs merges in one sentence |
+| 4 | Sweep job, **survey phase only** — digest, no changes | Digests are useful for a week |
+| 5 | Enable sweep Phase 2 with `items_per_run: 1` and PR review | First agent PR merges |
+| 6 | Raise the budget as trust warrants — 2, then 5 | Review load, not ambition, sets the ceiling |
 
 Phase 1 is the important one. Writing a real initiative by hand will expose whichever
 part of §6 is wrong, at a point where changing it costs nothing.
 
-## 12. Open questions
+The merge skill moves **before** the sweep job deliberately. It is useful immediately —
+this repo already produces PRs that need merging — and having it in hand before the job
+starts generating batches means the friction never builds up in the first place.
 
-Resolved in this revision: initiatives are forward-only, not retrofitted (§11); the job
-runs on Claude Code or Codex with merge mechanics in Actions (§7.6); `wish.md` is
-verbatim and permanent (§4.1); staleness is 10 days, overridable per initiative (§7.3);
-the digest goes to the dashboard plus a change-triggered issue (§8.4).
+### 11.1 Yes, Phase 0 includes the instruction files
 
-Still open:
+You are right that Phase 0 is not documentation alone. The moment this document
+merges, agents working in this repo need to know the vocabulary, or the first
+hand-written initiative in Phase 1 gets built inconsistently — and this document is
+not loaded automatically, so it cannot do that job by itself.
 
-1. **Do travel decks eventually get initiatives?** Deferred — not yet, but the deck
-   lifecycle (wish → research → book → refine) fits well enough that it's worth
-   revisiting once a few initiatives exist.
-2. **PR packaging at budgets above 1** (§7.4) — `one-per-initiative` is now the
-   recommendation on conflict-isolation grounds, not just review taste. Still worth a
-   look once real runs exist, since all strategies are identical at a budget of 1.
-3. **Should the budget vary by run?** A morning sweep lands work you review during the
-   day; an evening sweep piles up overnight. One global number is simplest.
-4. **Generated vs hand-written initiative index pages** (§8.2) — recommendation is a
-   split, but the boundary needs a real page to settle.
-5. **Does an initiative need an owner field?** Irrelevant for a single-author repo, and
-   trivial to add later if that changes.
+Phase 0 therefore includes:
+
+- **`AGENTS.md`** — the terminology block from §10, the folder layout, and the
+  lifecycle stage names. This is the file that actually changes agent behaviour.
+- **`README.md`** — a short Initiatives section beside Decks. Note that `AGENTS.md`
+  currently says not to modify `README.md` except when adding a deck, specifically to
+  minimize merge conflicts; a new top-level concept is a fair exception, and that rule
+  should be widened to name initiatives too.
+- **This document**, as the reference the terminology block points at.
+
+**Scope the Phase 0 edit to what exists.** Instructions describing a sweep job, a
+budget, and a merge skill that are not built yet will produce agents that hallucinate
+the workflow — an agent that reads about `sweep.json` may well go looking for it or
+create one. So the Phase 0 block covers vocabulary and layout only, states plainly that
+initiatives are not yet automated, and says not to create one unless asked. The
+automation instructions land with the automation, in Phases 3–5.
+
+## 12. Decisions and open questions
+
+### Settled
+
+| Decision | Where |
+|---|---|
+| Forward-only; existing demos are not retrofitted | §11 |
+| Travel decks do not get initiatives yet — revisit once a few exist | §11 |
+| Runs on Claude Code or Codex; merge mechanics in Actions | §7.6 |
+| `wish.md` is verbatim and permanent; revisits append | §4.1 |
+| Staleness is 10 days, overridable per initiative | §7.3 |
+| Digest goes to the dashboard plus a change-triggered issue | §8.4 |
+| PR packaging is `one-per-initiative`, as a write scope | §7.4 |
+| One global budget number; no per-run variation | §7.3 |
+| Index pages are generated, with an optional hand-written `overview.md` | §8.2 |
+| No owner field — single-author repo | — |
+| Branch previews need no new machinery | §8.6 |
+| Phase 0 includes `AGENTS.md` and `README.md` edits | §11.1 |
+
+### Still open
+
+1. **Does the header nav reach deck and section pages?** (§8.5) The proposal keeps it on
+   generated index pages only, because decks own their own assets and are free to
+   diverge — but that means the three-way nav is absent from the pages you spend the
+   most time on. The alternative touches every deck.
+2. **May the merge skill merge a PR with unresolved review comments** if you name it
+   explicitly? (§7.7) The default is no. An explicit override is convenient and is also
+   exactly how the safeguard erodes.
+3. **What does the sweep do with an initiative that fails validation?** A malformed
+   `initiative.json` is a build failure, but the sweep also has to decide whether to
+   skip that initiative or try to repair it. Repair is tempting and risks the job
+   rewriting state it was supposed to only read.
+4. **How does an initiative get created?** The sweep never invents one (§7.5), so
+   creation is manual — but a `new-initiative` skill scaffolding the required three
+   files would remove the main excuse not to start one.
