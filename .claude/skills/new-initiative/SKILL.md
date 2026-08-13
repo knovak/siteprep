@@ -1,0 +1,100 @@
+---
+name: new-initiative
+description: Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list. Use when the user wants to start an initiative, or describes an idea they want captured as ongoing work rather than done immediately ("start an initiative for...", "I have an idea I want to track"). Scaffolds only the three files a wish-stage initiative needs.
+---
+
+# Starting an initiative
+
+An initiative is a durable unit of intent: the wish behind a piece of work, the
+documents that elaborate it, the capability it develops, and pointers to what it
+produced. See `INITIATIVES_VISION.md`.
+
+The blank page is what stops initiatives getting started, so this creates the
+minimum and nothing more. Everything else arrives when the lifecycle reaches it.
+
+## 1. Get the wish in the user's own words
+
+Ask for it if they have not already said it. **Do not improve it.** A vague
+sentence is a legitimate wish - `wish` is a real lifecycle stage, not a
+placeholder for a proper specification.
+
+If they have already described the idea in this conversation, use what they
+said, verbatim. Quote it back and confirm before writing.
+
+## 2. Propose a slug
+
+Lowercase, hyphenated, short: `migration-atlas`, `deck-auditor`. Derive it from
+the wish and confirm it - the slug becomes the directory name and appears in
+every future PR branch, so it is worth one question.
+
+Check `initiatives/<slug>/` does not already exist.
+
+## 3. Ask two questions, no more
+
+| Question | Field | Default if they shrug |
+|---|---|---|
+| Roughly how valuable is this, compared to your other work? | `value` | `medium` |
+| One line describing it, for the index page | `summary` | First sentence of the wish |
+
+Do not ask about stage (always `wish`), outputs (unknown yet), or effort on the
+first todo (always `small`).
+
+## 4. Write exactly three files
+
+### `initiatives/<slug>/initiative.json`
+
+```json
+{
+  "title": "Migration Atlas",
+  "summary": "Interactive map of historical human migration.",
+  "stage": "wish",
+  "value": "high",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "draft-objectives",
+      "title": "Draft objectives.md - what \"done\" would mean",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": true
+    }
+  ]
+}
+```
+
+The single todo item is not decoration. An initiative with no actionable item is
+a warning condition, and this is the item that makes a brand-new initiative
+legal and gives the sweep something to pick up.
+
+There is no `updated` field - last activity comes from git.
+
+### `initiatives/<slug>/wish.md`
+
+```markdown
+# Wish
+
+## 2026-08-12
+<the user's words, verbatim>
+```
+
+Dated, unedited. On a later revisit a new dated wish is added above this one and
+the old text stays visible - it is how drift becomes noticeable.
+
+### `initiatives/<slug>/index.html`
+
+The overview shell. Status blocks are generated from `initiative.json` at build
+time; the page only needs the structure. Follow whatever the current build
+generates for other initiatives - if none exists yet, copy the structure of a
+deck index page's header and a single card.
+
+## 5. Do not create anything else
+
+No `spec.md`, no `plan.md`, no empty `work/`, `lib/`, or `notes/` directories.
+The absence of those files is what tells the sweep the next step is to draft
+objectives. Creating them empty destroys that signal.
+
+## 6. Confirm
+
+Report the path, the stage, and the one actionable item. Mention that
+`overview.md` can be added later for narrative, but is not needed now.
