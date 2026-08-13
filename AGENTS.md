@@ -36,6 +36,14 @@ Do not call demo content a "deck" or "section" unless a user explicitly asks for
 
 **Initiatives are not yet automated.** The scheduled sweep job, `sweep.json`, and the generated Initiative TOC described in the vision document do not exist yet. Do not create them, and do not act as though they run. Do not create an initiative unless the user asks for one.
 
+Three skills cover the work the sweep would otherwise do, and are used by hand in the meantime:
+
+- **`new-initiative`** - scaffolds a new initiative at `wish` stage. Use it rather than creating the files by hand.
+- **`respond-to-review`** - answers review comments on a pull request: revise, reply, or escalate. Never resolves threads and never merges.
+- **`merge-prs`** - checks CI, mergeability, and unresolved threads, then merges what qualifies.
+
+Together they cover starting work, iterating on it under review, and finishing it.
+
 ### Terminology
 
 Use these names, mirroring the Demos vocabulary above:
