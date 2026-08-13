@@ -15,6 +15,27 @@ This repository holds experimental deck content and a simple static build pipeli
 - **rockies** – Option deck for Jackson Hole stays in October and December 2026.
 
 
+## Initiatives
+
+`initiatives/` is a third top-level content area alongside `decks/` and `demos/`. An
+**initiative** is a durable unit of intent - the wish behind a piece of work, the
+documents that elaborate it (objectives, spec, plan, test plan), the capability it
+develops, and pointers to whatever it produced. Unlike a project it does not end; it
+goes dormant and can be revisited to produce a later version using the tooling it built
+the first time.
+
+An initiative can produce a deck, a demo, code that runs somewhere else entirely, or
+nothing published at all - an initiative whose only output is a reusable script or
+skill is still an initiative.
+
+Each initiative moves through a lifecycle - `wish` → `shaped` → `specified` → `planned`
+→ `building` → `refining` → `dormant` - and carries a todo list of what is actionable
+and what is blocked.
+
+See `INITIATIVES_VISION.md` for the full design, and the Initiatives section of
+`AGENTS.md` for the working conventions. **The automation described in the vision
+document is not built yet**; initiatives are currently maintained by hand.
+
 ### Deck asset convention
 
 Each deck owns an independent `assets/styles.css` and `assets/scripts.js`, seeded from a starting template, that a deck is free to customize or diverge from for its own formatting, rendering, and navigation experiments - decks are not required to stay in sync with each other. Common widgets that are easy to get wrong when reimplemented by hand - standard maps, photo galleries, distance visualizations - live in `shared/` as opt-in libraries instead; see `shared/README.md`.

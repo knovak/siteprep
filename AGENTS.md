@@ -6,6 +6,8 @@ You will find technical documentation ("techdoc") in the markdown files in this 
 ## Content organization
 You will often be asked by the user to add content. Most content is located in a deck or a section, as described in the techdoc. Demo content is located under `demos/` and uses demo-specific terminology instead of "deck" and "section".
 
+Work-in-progress content and the documents describing a body of work live under `initiatives/`, which uses its own terminology - see the Initiatives section below.
+
 Content is generally organized as a web page that contains a series of "topics". Each topic has a title followed by a body. The body can combine any of the following elements:
 - a block of text or a bulleted list
 - an embedded display, such as a Google Maps embed
@@ -25,6 +27,75 @@ When adding or updating content under `demos/`, use these names for demo element
 `scripts/build.sh` creates `demos/index.html` in the published output from the immediate subdirectories of `demos/`. The Demo TOC should include one `.toc-link` entry for each demo directory. Each Demo TOC entry should include a short description and any links the user specifically asks to include for that demo.
 
 Do not call demo content a "deck" or "section" unless a user explicitly asks for a comparison with deck/section content.
+
+## Initiatives
+
+`initiatives/` is a third top-level content area alongside `decks/` and `demos/`. An initiative is a durable unit of intent: the wish behind a piece of work, the documents that elaborate it, the capability it develops, and pointers to whatever it produced. Unlike a project it does not end - it goes dormant and can be revisited to produce a later version using the tooling it built the first time.
+
+`INITIATIVES_VISION.md` is the full design. This section is the working vocabulary.
+
+**Initiatives are not yet automated.** The scheduled sweep job, `sweep.json`, and the generated Initiative TOC described in the vision document do not exist yet. Do not create them, and do not act as though they run. Do not create an initiative unless the user asks for one.
+
+### Terminology
+
+Use these names, mirroring the Demos vocabulary above:
+
+- **Initiative collection**: the `initiatives/` directory and its generated index.
+- **Initiative**: one immediate subdirectory of `initiatives/`.
+- **Initiative index page**: an initiative's own `index.html` overview.
+- **Initiative document**: a markdown file in an initiative - `wish.md`, `objectives.md`, `spec.md`, `plan.md`, `test-plan.md`, `overview.md`, `log.md`.
+- **Initiative capability**: a skill, script, or library an initiative develops, under its `lib/`, `skills/`, or `prompts/`.
+- **Initiative output**: a deck, demo, or external deployment an initiative produced.
+
+Do not call an initiative a "deck" or a "demo", and do not apply deck or section conventions to content under an initiative's `work/` directory until it graduates.
+
+### Layout
+
+```
+initiatives/<initiative-name>/
+  initiative.json    # required - stage, value, outputs, todo list
+  index.html         # required - overview page
+  wish.md            # required - the original goal, in the user's own words
+  objectives.md      # what "done" would mean
+  spec.md            # what it is, including alternatives considered
+  plan.md            # how it gets built, in phases
+  test-plan.md       # how we know it works
+  overview.md        # optional hand-written narrative
+  log.md             # append-only record of what happened
+  prompts/ notes/ work/ lib/ skills/
+```
+
+Only `initiative.json`, `index.html`, and `wish.md` exist when an initiative is created. **Every other document appears only when the lifecycle reaches it** - the absence of a document is the signal for the next step, so never create empty placeholder files or empty directories.
+
+### Lifecycle
+
+`wish` → `shaped` → `specified` → `planned` → `building` → `refining` → `dormant`, plus a terminal `archived`. The stage is declared in `initiative.json`.
+
+| Stage | What exists | Next step |
+|---|---|---|
+| `wish` | `wish.md` | Draft `objectives.md` |
+| `shaped` | + `objectives.md` | Draft `spec.md`, including alternatives considered |
+| `specified` | + `spec.md` | Draft `plan.md` and `test-plan.md` |
+| `planned` | + `plan.md` | Critique the plan, then build the first increment in `work/` |
+| `building` | `work/` has content | Next plan step, or graduate the output |
+| `refining` | output has graduated | Work the todo list |
+| `dormant` | nothing actionable, by choice | Nothing - this is a resting state |
+
+Stages may regress; `archived` may not.
+
+### Rules that matter when editing an initiative
+
+- **`wish.md` is the user's words, not yours.** Never rewrite a wish to be clearer. When a wish genuinely changes, put the new dated version at the top and keep the previous text below it, visible.
+- **Every non-dormant initiative needs at least one actionable todo item.** An initiative with nothing actionable and no `dormant` stage is a defect.
+- **A blocked todo item must say what blocks it**, using a namespaced prefix: `todo:`, `initiative:`, `review:`, `schedule:`, `human:`, `permission:`, `cost:`, `legal:`, `data:`, `external:`, `upstream:`.
+- **There is no `updated` field.** Last activity comes from git.
+- **A published output may never reference code under `initiatives/`.** Anything under an initiative is mutable and private to it, so a deck or demo that loaded it would change without any PR appearing to touch it. Either graduate the library to `shared/`, or vendor a copy into the output and record the source path and commit.
+
+### Work in progress and graduation
+
+Output under development lives in the initiative's `work/`. It is not published and is not subject to deck or demo conventions while it is there. When it is good enough it **graduates** - moves to `decks/<name>/` or `demos/<name>/` and follows the normal conventions from then on, with the initiative keeping a pointer in `outputs[]` rather than a copy.
+
+Capability does not graduate with it. `lib/`, `skills/`, and `prompts/` stay in the initiative, which is what makes revisiting cheap. A library that becomes useful to other initiatives or decks graduates a second time, into `shared/`.
 
 ## New decks and sections
 When adding a deck or section, it will usually refer to an area, such as a country, region, or city. Make sure the new page has:
@@ -80,4 +151,4 @@ A request for making a "standard map" or simply a "map" should use the `Standard
 LEAFLET_IMPLEMENTATION_GUIDE.md remains the reference for this pattern and for building a custom map instead, when a deck is deliberately experimenting with different map behavior rather than using the shared library.
 
 ## minimize merge conflicts
-When adding content, do not modify README.md unless a new deck is added.
+When adding content, do not modify README.md unless a new deck is added, or a new top-level content area such as `initiatives/` is introduced.
