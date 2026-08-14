@@ -407,6 +407,16 @@ something new.
 
 ### 7.1 Phase 1 — Survey (always)
 
+**The survey is code, not a prompt.** Everything below is *derived* from
+`initiative.json`, the files present, and git — none of it needs judgement — so it is
+computed by `node scripts/initiatives.mjs digest` rather than reasoned out. That makes
+it instant, free, unit-testable, and unable to hallucinate a blocker or miss a stale
+initiative. A model is only needed once the sweep starts doing work, which is why
+**Phase 4 of the adoption path requires no model at all**.
+
+The one exception is a `review:` blocker: clearing it means asking GitHub whether a
+pull request closed, so those are listed for a caller that can check.
+
 Read every `initiative.json`, derive state, and produce a **digest**:
 
 - every initiative, its stage, and days since last activity
@@ -510,6 +520,7 @@ behaviour is readable from the repo alone.
 
 ```json
 {
+  "phases": ["survey"],
   "items_per_run": 4,
   "max_items_per_initiative": 2,
   "max_effort": "large",
@@ -522,6 +533,7 @@ behaviour is readable from the repo alone.
 
 | Field | Default | Meaning |
 |---|---|---|
+| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `work`. Must include `survey` |
 | `items_per_run` | `4` | Total actionable items a single sweep may complete |
 | `max_items_per_initiative` | `2` | Cap per initiative, so one hot initiative can't eat the whole budget |
 | `max_effort` | `large` | Largest item the job may attempt unsupervised |
@@ -529,6 +541,10 @@ behaviour is readable from the repo alone.
 | `max_open_prs` | `8` | Ceiling on unmerged sweep PRs; at the cap the sweep does no new work (§7.6.1) |
 | `pr_strategy` | `one-per-initiative` | How completed items are packaged (§7.5) |
 | `protected_paths` | `shared/`, `scripts/`, `.github/` | Paths a sweep PR may never touch unattended (§7.5) |
+
+**`phases` is how the sweep is switched on, one capability at a time.** Enabling
+`respond` or `work` is a reviewable commit to a config file, not an edit to a prompt —
+the same reasoning that puts the budget here rather than at the call site.
 
 Three notes on these values:
 
@@ -1203,7 +1219,7 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 | 1 | The `new-initiative` (§7.9), `respond-to-review` (§7.2), and `merge-prs` (§7.8) skills | Starting, revising, and merging are each one sentence |
 | 2 | `initiatives/` exists; **two contrasting initiatives**, created with the skill, no automation | The schema survives contact with both kinds |
 | 3 | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; `markdown_view` | The TOC renders on Pages and in branch previews |
-| 4 | Sweep job, **survey phase only** — digest, no changes | Digests are useful for a week |
+| 4 | Sweep job, **survey phase only** — digest, no changes. Needs no model (§7.1) | Digests are useful for a week |
 | 5 | Enable sweep Phase 2, temporarily at `items_per_run: 1` | First agent PR merges |
 | 6 | Restore the configured budget (§7.4) | Review load, not ambition, sets the ceiling |
 
@@ -1280,6 +1296,9 @@ automation instructions land with the automation, in Phases 3–5.
 | A corrected wish keeps the superseded text visible below it | §4.1 |
 | Choice, Plan, and Critique map onto existing stages, adding no new ones | §5.2 |
 | The sweep prompt lives in the repo and is the same text for manual and scheduled runs | §7.7.1 |
+| The survey is derived and therefore code, so Phase 4 needs no model | §7.1 |
+| Which phases a run may execute is config in `sweep.json`, not prompt text | §7.4 |
+| The scheduled digest refreshes silently and comments only when decisions change | §8.4 |
 | The sweep responds to review on its own PRs, before starting new work | §7.2 |
 | Review responses come out of `items_per_run`, taken first | §7.4 |
 | The sweep never resolves a review thread, and never reads its own comments | §7.2 |

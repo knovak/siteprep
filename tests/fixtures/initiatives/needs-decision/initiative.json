@@ -1,0 +1,12 @@
+{
+  "title": "Needs Decision", "summary": "waiting on a person", "stage": "planned", "value": "high",
+  "outputs": [],
+  "todo": [
+    {"id":"pick","title":"Pick a storage backend","state":"blocked","blocked_by":"human:SQLite or Postgres?"},
+    {"id":"deploy","title":"Enable deploys","state":"blocked","blocked_by":"permission:AWS deploy role"},
+    {"id":"trial","title":"Start the trial","state":"blocked","blocked_by":"schedule:2020-01-01"},
+    {"id":"parser","title":"Land the parser","state":"blocked","blocked_by":"review:#204"},
+    {"id":"maps","title":"Use the map lib","state":"blocked","blocked_by":"initiative:idle-one"},
+    {"id":"spec","title":"Write the spec","state":"actionable","value":"high","effort":"small","advances_stage":true}
+  ]
+}
