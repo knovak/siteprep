@@ -904,6 +904,12 @@ kept as parallel HTML, or rendered by a JavaScript widget. Four options:
 | **C. JS markdown widget** | Single source of truth; zero build change; fits the existing `shared/` library idiom exactly | Needs `fetch()`, so `file://` browsing breaks; a brief render flash; no-JS readers see nothing |
 | **D. Render at build time** | Single source of truth; no JS; nothing generated is committed | Adds a markdown dependency to the build; docs are only readable after a build+deploy |
 
+> **What was built: D.** Validation made this part of the build Node anyway, which is
+> the condition named below for preferring D. Documents are rendered at build time by
+> `scripts/initiatives.mjs`; there is no `markdown_view` library. The `.md` files remain
+> the source of truth, so the choice stays reversible. The original recommendation is
+> kept below for the reasoning.
+
 **Recommendation: C, a `shared/markdown_view/` library**, matching the established
 pattern of `photo_gallery`, `standard_map`, and `collapsible_topics` — a widget that is
 easy to get wrong by hand, implemented once, opted into. `.md` stays the single source of
@@ -1221,16 +1227,37 @@ duplicated blocks, and gives the demos TOC the nav bar it should always have had
 Deliberately slow, because the schema should be proven by hand before it is automated.
 **Initiatives apply to new work only** — existing demos are not retrofitted.
 
-| Phase | What happens | Done when |
-|---|---|---|
-| **P** | **Navigation and TOC cleanup (§11)** — `shared/nav_bar/`, one TOC renderer, explicit TOC assets | Deck output is unchanged, demos TOC has a nav bar |
-| 0 | This document, revised until it's right — **plus the instruction-file edits** | You're happy with it |
-| 1 | The `new-initiative` (§7.9), `respond-to-review` (§7.2), and `merge-prs` (§7.8) skills | Starting, revising, and merging are each one sentence |
-| 2 | `initiatives/` exists; **two contrasting initiatives**, created with the skill, no automation | The schema survives contact with both kinds |
-| 3 | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; `markdown_view` | The TOC renders on Pages and in branch previews |
-| 4 | Sweep job, **survey phase only** — digest, no changes. Needs no model (§7.1) | Digests are useful for a week |
-| 5 | Enable sweep Phase 2, temporarily at `items_per_run: 1` | First agent PR merges |
-| 6 | Restore the configured budget (§7.4) | Review load, not ambition, sets the ceiling |
+| Phase | Status | What happens | Done when |
+|---|---|---|---|
+| **P** | **done** | **Navigation and TOC cleanup (§11)** — `shared/nav_bar/`, one TOC renderer, explicit TOC assets | Deck output is unchanged, demos TOC has a nav bar |
+| 0 | **done** | This document, revised until it's right — **plus the instruction-file edits** | You're happy with it |
+| 1 | **done** | The `new-initiative` (§7.9), `answer-decision` (§5.2), `respond-to-review` (§7.2), and `merge-prs` (§7.8) skills | Starting, deciding, revising, and merging are each one sentence |
+| 2 | **done**, with a gap | `initiatives/` exists; **two contrasting initiatives**, created with the skill, no automation | The schema survives contact with both kinds |
+| 3 | **done** | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; documents rendered at build time | The TOC renders on Pages and in branch previews |
+| 4 | **done** | Sweep job, **survey phase only** — digest, no changes. Needs no model (§7.1) | Digests are useful for a week |
+| 5 | next | Set `phases` to include `"work"` (§7.4), temporarily at `items_per_run: 1` | First agent PR merges |
+| 6 | later | Restore the configured budget (§7.4) | Review load, not ambition, sets the ceiling |
+
+**The gap in Phase 2.** The criterion was two *contrasting* initiatives — one
+producing publishable content, one whose only output is capability (§2.1), since
+they exercise opposite halves of the model. Two initiatives exist, but both are
+currently product-shaped, so **the capability-producing case is still untested**:
+nothing has yet had an `outputs[]` that stays internal, and neither graduation
+nor the §3.1 vendoring rule has run for real.
+
+`newsletter-story-harvester` may close this on its own — its wish leaves open
+whether it becomes a website or "codex skills", and the skills route would make
+it capability-producing. Until that is decided, treat this half as unproven.
+
+**Two notes for Phase 5**, both learned while building:
+
+- **Enable `"work"` before `"respond"`.** `respond-to-review` has never
+  executed — no sweep PR has ever received a comment — so turning both on at
+  once means two untested paths at once. Add `"respond"` once a real sweep PR
+  exists to comment on.
+- **Nothing has run end to end.** Every piece is tested in isolation and no
+  sweep has ever produced a pull request, which is the real reason
+  `items_per_run: 1` matters for the first week.
 
 **Phase 2 trials two initiatives, deliberately contrasting**: one that produces
 publishable content, and one whose output is pure capability (§2.1). They exercise
@@ -1241,7 +1268,8 @@ skipped to be discovered later, in Phase 5, when an agent is already writing to 
 
 Phase 5 lowers `items_per_run` to 1 for the first week and then restores the configured
 default. That is a bring-up precaution, not a change of intent — the point is to see
-the first few PRs one at a time.
+the first few PRs one at a time, and to find out whether a whole run works, which no
+test can tell us.
 
 Phase 2 is still the important one. Creating a real initiative will expose whichever
 part of §6 is wrong, at a point where changing it costs nothing.
