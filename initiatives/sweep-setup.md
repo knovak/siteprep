@@ -52,39 +52,50 @@ it is one action in the Routines list rather than a commit.
 ### First run
 
 Run it once by hand before trusting the schedule. In a Claude Code session on
-this repo, say *"run the sweep prompt"*. You should see it read `sweep.json`,
-run the digest, and stop — because `phases` is `["survey"]`.
+this repo, say *"run the sweep prompt"*. All four phases are enabled, so a run
+may open pull requests — it will never merge one. Read what it opens before
+letting the schedule run unattended.
 
-If it does anything more than report, stop and check `sweep.json` before letting
-the schedule run.
+To make a run harmless while you check something, set `phases` back to
+`["survey"]`: it then reads, reports, and changes nothing.
 
-## Switching the sweep on
+## What the sweep is allowed to do
 
-`phases` in `sweep.json` decides what a run may do:
+`phases` in `sweep.json` decides what a run may do, and is currently
+`["survey", "respond", "propose", "work"]` — everything:
 
-| `phases` | What happens |
+| Phase | What it does |
 |---|---|
-| `["survey"]` | Reads and reports. Changes nothing. The current setting |
-| `["survey", "respond"]` | Also answers review comments on its own open PRs |
-| `["survey", "respond", "work"]` | Also starts new work and opens pull requests |
+| `survey` | Reads and reports. Mandatory: the sweep always looks before acting |
+| `respond` | Answers review comments on its own open pull requests |
+| `propose` | Opens a pull request proposing an answer to a `human:` question |
+| `work` | Starts new work from the todo lists and opens pull requests |
 
-`survey` is mandatory — the sweep always looks before acting. Widening this is a
-commit to a config file, reviewed like anything else, which is the point:
-enabling autonomy should leave a trace.
+They run in that order, and share one budget of `items_per_run` taken in the
+same order — finishing what is in flight outranks starting more. Narrowing or
+widening this is a commit to a config file, reviewed like anything else, which
+is the point: changing how autonomous the job is should leave a trace.
 
-**Add `work` before `respond`,** even though the table lists them the other way
-round. `respond-to-review` has never executed — no sweep pull request has ever
-received a comment — so enabling both at once turns on two untested paths
-simultaneously. Enable `["survey", "work"]`, let it open a real pull request,
-then add `"respond"` once there is something to comment on.
+`select` and `propose` enforce it on their own — with a phase absent from
+`phases` they return nothing and say why, so a prompt cannot talk the sweep into
+doing more than the config allows.
 
-When first enabling `work`, set `items_per_run` to `1` for a week or so, then
-restore it. Seeing the first few pull requests one at a time is worth the
-slower start.
+**What `propose` may answer.** Only `human:` blockers, which are judgement
+calls. A `data:` blocker is a fact only you have, and `permission:`, `cost:` and
+`legal:` need your authority rather than reasoning, so a proposal for one of
+those would be a fabrication. `propose` lists them separately as things that can
+never become a pull request, and they stay in the digest issue.
 
-`select` enforces this on its own — with `work` absent from `phases` it returns
-nothing and says why, so a prompt cannot talk the sweep into doing more than the
-config allows.
+A proposal does not rewrite the blocker on `main`. The item stays blocked until
+the pull request merges — merging it *is* answering the question, and a
+proposal you close unmerged leaves nothing behind.
+
+**Turning it down.** The staged bring-up the plan described — `work` first at
+`items_per_run: 1`, then `respond`, then `propose` — was collapsed into one
+change deliberately (Phase 5a and 6, §12 of the vision). If a run turns out to
+be more than you want to review, the dial is `items_per_run` rather than the
+phase list: dropping it to `1` keeps every capability on and slows the flow to
+one pull request per run.
 
 ## What the runner actually does
 
@@ -93,14 +104,19 @@ Most of a run is commands, not reasoning:
 | Step | How |
 |---|---|
 | Survey | `node scripts/initiatives.mjs digest` |
-| Choose work | `node scripts/initiatives.mjs select --claimed <branches> --open-prs <n>` |
+| Choose questions to answer | `node scripts/initiatives.mjs propose --claimed <branches> --open-prs <n> --spent <n>` |
+| Choose work | `node scripts/initiatives.mjs select --claimed <branches> --open-prs <n> --spent <n>` |
 | Record an item done | `node scripts/initiatives.mjs complete <slug> <item-id> --note "..." [--stage <stage>]` |
 | Check a change stays in scope | `node scripts/initiatives.mjs check-scope <slug> --files-from changed.txt` |
 
+`--spent` is how the shared budget is kept: pass the number of items earlier
+phases of the same run already used, and each later phase takes only what is
+left.
+
 The agent supplies the open sweep branches (which needs GitHub), does the actual
-work on each selected item, and writes review replies. Ranking, state changes,
-and scope enforcement are computed, so they behave identically on every run and
-in every runner.
+work on each selected item, writes the reasoning in a proposal, and writes
+review replies. Ranking, budgeting, state changes, and scope enforcement are
+computed, so they behave identically on every run and in every runner.
 
 ## Moving to another scheduler
 

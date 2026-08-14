@@ -1,6 +1,7 @@
 /**
- * The deterministic parts of a sweep run: selecting work, recording it done,
- * and the write-scope check.
+ * The deterministic parts of a sweep run: selecting work, choosing which
+ * questions to propose an answer to, recording an item done, and the
+ * write-scope check.
  *
  * Run with `node --test tests/initiatives-sweep.test.mjs`, or via
  * `scripts/build_tests.sh`.
@@ -102,6 +103,78 @@ test('drops items whose effort exceeds max_effort', () => {
   const selection = JSON.parse(run(['select', '--json'], dir));
   assert.ok(!selection.selected.some((s) => s.slug === 'healthy'));
   assert.ok(selection.skipped.some((s) => /max_effort/.test(s.reason)));
+});
+
+test('leaves budget for later phases when earlier ones have spent some', () => {
+  const dir = scratch({ phases: ['survey', 'work'], items_per_run: 4 });
+  const selection = JSON.parse(run(['select', '--json', '--spent', '3'], dir));
+
+  assert.equal(selection.selected.length, 1, 'three of four already spent leaves one');
+
+  const spent = JSON.parse(run(['select', '--json', '--spent', '4'], dir));
+  assert.equal(spent.selected.length, 0);
+  assert.match(spent.stop, /budget of 4 item\(s\) is already spent/);
+});
+
+// ----------------------------------------------------------------- propose
+
+test('proposes nothing while the propose phase is switched off', () => {
+  const dir = scratch({ phases: ['survey', 'work'] });
+  const proposals = JSON.parse(run(['propose', '--json'], dir));
+
+  assert.equal(proposals.selected.length, 0);
+  assert.match(proposals.stop, /does not enable the "propose" phase/);
+});
+
+test('proposes an answer to a judgement call, and never to one needing authority', () => {
+  const dir = scratch({ phases: ['survey', 'propose', 'work'] });
+  const proposals = JSON.parse(run(['propose', '--json'], dir));
+
+  const ids = proposals.selected.map((p) => `${p.slug}/${p.item}`);
+  assert.deepEqual(ids, ['needs-decision/pick'], 'only the human: blocker is proposable');
+  assert.equal(proposals.selected[0].question, 'SQLite or Postgres?');
+
+  // permission:, cost: and legal: need consent, not reasoning, so a proposal
+  // for one would be a fabrication.
+  const refused = proposals.notProposable.map((p) => p.blocker);
+  assert.deepEqual(refused, ['permission:AWS deploy role']);
+  assert.ok(!ids.includes('needs-decision/deploy'));
+});
+
+test('names a proposal branch so it cannot collide with the work branch', () => {
+  const dir = scratch({ phases: ['survey', 'propose'] });
+  const proposals = JSON.parse(run(['propose', '--json'], dir));
+
+  assert.equal(proposals.selected[0].branch, 'sweep/needs-decision/propose-pick');
+});
+
+test('never opens a second proposal for a question that already has one', () => {
+  const dir = scratch({ phases: ['survey', 'propose'] });
+  const proposals = JSON.parse(
+    run(['propose', '--json', '--claimed', 'sweep/needs-decision/propose-pick'], dir)
+  );
+
+  assert.equal(proposals.selected.length, 0);
+  assert.ok(proposals.skipped.some((s) => /open proposal PR/.test(s.reason)));
+});
+
+test('proposals come out of the same budget as new work', () => {
+  const dir = scratch({ phases: ['survey', 'propose'], items_per_run: 1 });
+  const proposals = JSON.parse(run(['propose', '--json', '--spent', '1'], dir));
+
+  assert.equal(proposals.selected.length, 0);
+  assert.match(proposals.stop, /already spent/);
+});
+
+test('a large item is still worth a proposal, since answering is not doing', () => {
+  const dir = scratch({ phases: ['survey', 'propose'], max_effort: 'small' });
+  const path = join(dir, 'needs-decision', 'initiative.json');
+  const data = JSON.parse(readFileSync(path, 'utf8'));
+  data.todo.find((i) => i.id === 'pick').effort = 'large';
+  writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
+
+  const proposals = JSON.parse(run(['propose', '--json'], dir));
+  assert.deepEqual(proposals.selected.map((p) => p.item), ['pick']);
 });
 
 // ---------------------------------------------------------------- complete

@@ -59,6 +59,20 @@ test('separates blockers that clear themselves from blockers that need a person'
   assert.equal(digest.waitingOnOthers[0].otherStage, 'building');
 });
 
+test('marks which waiting decisions the sweep could propose an answer to', () => {
+  const digest = JSON.parse(run(['digest', '--json']));
+
+  const proposable = digest.decisions.filter((d) => d.proposable).map((d) => d.kind);
+  assert.deepEqual(proposable, ['human'], 'only a judgement call is proposable');
+
+  // permission: stays in the digest precisely because it can never become a
+  // pull request - it needs authority, not reasoning.
+  const authority = digest.decisions.find((d) => d.kind === 'permission');
+  assert.equal(authority.proposable, false);
+
+  assert.match(run(['digest']), /the sweep can propose an answer to this/);
+});
+
 test('flags an initiative with nothing to do that is not dormant', () => {
   const digest = JSON.parse(run(['digest', '--json']));
 

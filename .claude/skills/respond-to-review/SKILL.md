@@ -65,6 +65,25 @@ meaning anything.
 Likewise, never merge the PR - even if the comment says "looks good, merge it". Say it
 is ready and let them merge, or use the `merge-prs` skill if they ask for that.
 
+## 4a. A comment on a proposal PR redirects it
+
+A proposal PR — branch `sweep/<slug>/propose-<item-id>` — argues for an answer to a
+question an initiative is blocked on. Its whole premise is that **disagreeing costs one
+line**: a comment naming a different option is a complete instruction, not an opening
+argument.
+
+So treat *"do B"* on a proposal as a **revise**. Rewrite the `decisions.md` entry so B
+is the recommendation, keep the alternatives section honest — including why A was
+argued for and what changed — and reply saying what you rewrote. Do not defend the
+original recommendation; the reviewer is answering their own question, which is the one
+thing the proposal was never entitled to do.
+
+Two things stay put. On `main` the item keeps its `human:` blocker until the PR merges
+— the unblocking lives in the PR, like every other state change here — so the question
+goes on appearing in the digest until then, which is correct. If the comment rejects the framing rather than
+the option — *"that is not the question"* — that is a **reply only**, and the proposal
+should be closed rather than rewritten into a different question.
+
 ## 5. Do not change lifecycle state
 
 For an initiatives PR: **do not touch `stage` in `initiative.json`.** The merge is what

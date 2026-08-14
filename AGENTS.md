@@ -34,9 +34,9 @@ Do not call demo content a "deck" or "section" unless a user explicitly asks for
 
 `INITIATIVES_VISION.md` is the full design. This section is the working vocabulary.
 
-**The sweep runs in survey mode only.** `initiatives/sweep.json` sets `phases` to `["survey"]`, so a run reports and changes nothing; do not act as though it opens pull requests. Everything else is built - `scripts/initiatives.mjs` generates the Initiative TOC and overview pages, validates the data, and produces the digest. See `INITIATIVES_TECHDOC.md` and `initiatives/sweep-setup.md`. Do not create an initiative unless the user asks for one.
+**The sweep is fully switched on.** `initiatives/sweep.json` sets `phases` to `["survey", "respond", "propose", "work"]`, so a scheduled run surveys, answers review comments on its own pull requests, proposes answers to `human:` questions, and starts new work - opening pull requests for all of it. It never merges, and never writes outside the initiative it is working on. `scripts/initiatives.mjs` generates the Initiative TOC and overview pages, validates the data, produces the digest, and computes what each phase may do. See `INITIATIVES_TECHDOC.md`, `initiatives/sweep-prompt.md`, and `initiatives/sweep-setup.md`. Do not create an initiative unless the user asks for one.
 
-Four skills cover the work the sweep would otherwise do, and are used by hand in the meantime:
+The same four skills the sweep uses are also how this work is done by hand:
 
 - **`new-initiative`** - scaffolds a new initiative at `wish` stage. Use it rather than creating the files by hand.
 - **`respond-to-review`** - answers review comments on a pull request: revise, reply, or escalate. Never resolves threads and never merges.
@@ -97,7 +97,7 @@ Stages may regress; `archived` may not.
 - **`wish.md` is the user's words, not yours.** It can be edited freely while the initiative is still in the pull request that creates it - tidying a rough first draft there is expected. Once that PR has merged the wish is the record: never rewrite it to be clearer, and when it genuinely changes, put the new dated version at the top and keep the previous text below it, visible.
 - **Every non-dormant initiative needs at least one actionable todo item.** An initiative with nothing actionable and no `dormant` stage is a defect.
 - **An answered question goes in `decisions.md`**, dated and appended, with the reasoning and what is still open. A decision recorded only in a commit message or a chat gets re-argued months later, which is the drift initiatives exist to prevent. Use the `answer-decision` skill rather than editing by hand.
-- **A blocked todo item must say what blocks it**, using a namespaced prefix: `todo:`, `initiative:`, `review:`, `schedule:`, `human:`, `permission:`, `cost:`, `legal:`, `data:`, `external:`, `upstream:`.
+- **A blocked todo item must say what blocks it**, using a namespaced prefix: `todo:`, `initiative:`, `review:`, `schedule:`, `human:`, `permission:`, `cost:`, `legal:`, `data:`, `external:`, `upstream:`. The prefix decides what may happen next, so pick it honestly: `human:` is a judgement call the sweep may propose an answer to, while `data:` is a fact only the user has and `permission:`, `cost:` and `legal:` need their authority - none of those may ever be proposed.
 - **There is no `updated` field.** Last activity comes from git.
 - **A published output may never reference code under `initiatives/`.** Anything under an initiative is mutable and private to it, so a deck or demo that loaded it would change without any PR appearing to touch it. Either graduate the library to `shared/`, or vendor a copy into the output and record the source path and commit.
 

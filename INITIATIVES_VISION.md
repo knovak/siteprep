@@ -592,6 +592,16 @@ A proposal counts against `items_per_run` like any other item, and against
 `max_items_per_initiative`. It is ordinary work that happens to produce a
 decision rather than a document.
 
+> **What was built.** `initiatives.mjs propose` selects the questions, ranking
+> them exactly as `select` ranks work and sharing the same caps; both take
+> `--spent` so the shared budget is arithmetic rather than a thing the prompt
+> has to remember. Two details are decided here rather than left to the model:
+> `max_effort` does not apply, because composing a proposal is not doing the
+> item, and a proposal branch is `sweep/<slug>/propose-<item-id>` so it cannot
+> collide with the item's own work branch once the answer merges and the item
+> unblocks. Non-proposable human-class blockers are returned in a separate list,
+> which is exactly the residue §8.4 says the digest issue is left carrying.
+
 ### 7.4 Phase 4 — Do new work (each run)
 
 Take the **top-ranked actionable items across all initiatives**, up to a configured
@@ -643,6 +653,12 @@ behaviour is readable from the repo alone.
 **`phases` is how the sweep is switched on, one capability at a time.** Enabling
 `respond` or `work` is a reviewable commit to a config file, not an edit to a prompt —
 the same reasoning that puts the budget here rather than at the call site.
+
+> **Where it stands.** The block above is the default the design proposed. The
+> live `initiatives/sweep.json` now reads
+> `"phases": ["survey", "respond", "propose", "work"]` with every other value as
+> shown — Phases 5, 5a and 6 of §12, landed together. Turning a capability back
+> off is the same reviewable commit that turning it on was.
 
 Three notes on these values:
 
@@ -775,7 +791,12 @@ or, in an interactive session, *"run the sweep prompt"*. A scheduled run is the 
 text on a cron. During development, add `--dry-run` semantics by appending one line:
 *"Stop after Phase 1 and print the digest; do not create branches or PRs."*
 
-The prompt itself:
+The prompt itself, as first drafted. **The live text is
+`initiatives/sweep-prompt.md`**, which has since gained the propose phase (§7.3)
+and now numbers new work as Phase 4; it also calls `select` and `propose` rather
+than restating the ranking rules, since those are computed. This copy is kept as
+the design sketch — when the two disagree, the file in `initiatives/` is the one
+that runs.
 
 ```markdown
 Run a sweep of the initiatives in this repository.
@@ -1330,9 +1351,24 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 | 2 | **done**, with a gap | `initiatives/` exists; **two contrasting initiatives**, created with the skill, no automation | The schema survives contact with both kinds |
 | 3 | **done** | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; documents rendered at build time | The TOC renders on Pages and in branch previews |
 | 4 | **done** | Sweep job, **survey phase only** — digest, no changes. Needs no model (§7.1) | Digests are useful for a week |
-| 5 | next | Set `phases` to include `"work"` (§7.5), temporarily at `items_per_run: 1` | First agent PR merges |
-| 5a | later | Implement and enable `"propose"` (§7.3) | A proposal PR is merged as the answer |
-| 6 | later | Restore the configured budget (§7.5) | Review load, not ambition, sets the ceiling |
+| 5 | **done** | Set `phases` to include `"work"` (§7.5) | First agent PR merges |
+| 5a | **done** | Implement and enable `"propose"` (§7.3) | A proposal PR is merged as the answer |
+| 6 | **done** | Restore the configured budget (§7.5) | Review load, not ambition, sets the ceiling |
+
+**Phases 5, 5a and 6 landed together, at the user's direction**, so `phases` is
+now `["survey", "respond", "propose", "work"]` at the configured budget of four
+items per run. The staged bring-up below — `work` alone first, at
+`items_per_run: 1`, then `respond`, then `propose` — was a precaution, not a
+dependency; collapsing it trades a slower start for a shorter path to finding
+out whether a whole run works. `items_per_run` remains the dial if the review
+load turns out to be too much: turning it down slows the flow without giving up
+a capability.
+
+Their "done when" criteria are observations, and none has been made yet: no
+sweep pull request has been opened, so none has merged, and no proposal has been
+written. What is done is the machinery and the config; what the first real runs
+report is still ahead. `propose` in particular has nothing to select right now,
+because no initiative currently carries a `human:` blocker.
 
 **The gap in Phase 2.** The criterion was two *contrasting* initiatives — one
 producing publishable content, one whose only output is capability (§2.1), since
@@ -1345,19 +1381,28 @@ nor the §3.1 vendoring rule has run for real.
 whether it becomes a website or "codex skills", and the skills route would make
 it capability-producing. Until that is decided, treat this half as unproven.
 
-**Two notes for Phase 5**, both learned while building:
+**Three notes written for Phase 5**, kept because they name what the collapsed
+bring-up is trading away:
 
 - **Enable `"work"` before `"respond"`.** `respond-to-review` has never
   executed — no sweep PR has ever received a comment — so turning both on at
-  once means two untested paths at once. Add `"respond"` once a real sweep PR
-  exists to comment on.
+  once means two untested paths at once.
 - **`"propose"` comes last**, and depends on `"respond"` working. A proposal is
   only cheap if redirecting it with a comment is cheap, and that is
   `respond-to-review`'s job. Enabling proposals while comments go unanswered
   would mean the model deciding things and no working channel to overrule it.
 - **Nothing has run end to end.** Every piece is tested in isolation and no
   sweep has ever produced a pull request, which is the real reason
-  `items_per_run: 1` matters for the first week.
+  `items_per_run: 1` mattered for the first week.
+
+All three are now live at once. The safety that remains is structural rather
+than sequential, and it is the part that was never going to come from ordering:
+the sweep cannot merge, `sweep-scope.yml` fails any PR that writes outside its
+initiative, `select` and `propose` refuse anything the config does not allow,
+and a proposal that is closed unmerged leaves `main` untouched (§7.3). The first
+few runs are worth watching for what the ordering would have caught — a review
+comment that goes unanswered, or a proposal argued past the question that was
+actually asked.
 
 **Phase 2 trials two initiatives, deliberately contrasting**: one that produces
 publishable content, and one whose output is pure capability (§2.1). They exercise
@@ -1366,10 +1411,12 @@ opposite halves of the model — the first tests graduation, output ownership, a
 there is nothing to publish. A single trial initiative would leave whichever half it
 skipped to be discovered later, in Phase 5, when an agent is already writing to it.
 
-Phase 5 lowers `items_per_run` to 1 for the first week and then restores the configured
-default. That is a bring-up precaution, not a change of intent — the point is to see
-the first few PRs one at a time, and to find out whether a whole run works, which no
-test can tell us.
+Phase 5 was to lower `items_per_run` to 1 for the first week and then restore the
+configured default — a bring-up precaution, not a change of intent. **In the event it
+was skipped**: Phases 5, 5a and 6 landed in one commit, so the first run starts at the
+full budget of four. The thing that precaution was buying — seeing the first few PRs one
+at a time — is still available at any moment by setting `items_per_run` back to 1, which
+costs one line and no capability.
 
 Phase 2 is still the important one. Creating a real initiative will expose whichever
 part of §6 is wrong, at a point where changing it costs nothing.
@@ -1444,6 +1491,10 @@ automation instructions land with the automation, in Phases 3–5.
 | It never proposes for `data:`, `permission:`, `cost:` or `legal:` blockers | §7.3 |
 | A proposal leaves `main` unchanged until it merges, so a closed one leaves no wreckage | §7.3 |
 | The digest issue carries what can never become a pull request | §8.4 |
+| A proposal runs on `sweep/<slug>/propose-<item-id>`, never the item's work branch | §7.3 |
+| `max_effort` does not gate a proposal — answering a question is not doing the item | §7.3 |
+| All four phases share one budget, taken in phase order, passed along as `--spent` | §7.5 |
+| Phases 5, 5a and 6 landed together; `items_per_run` is the dial, not the phase list | §12 |
 | Backlog health warns; only malformed or unsafe data fails the build | §9 |
 | The validator and dashboard generator are Node, not shell | §9.1 |
 | A `new-initiative` skill, built before the first initiative | §7.10 |
@@ -1479,5 +1530,10 @@ sweep, not a corrupted state file.
 ### Still open
 
 Nothing blocking. Every question raised so far is either settled above or deferred by
-choice — which means the next useful step is Phase P, not another round of revisions to
-this document.
+choice. With the adoption path finished, the next useful step is **watching real runs**,
+not another round of revisions to this document: whether a sweep's pull requests are
+worth merging, whether a proposal reads as a recommendation rather than a decision, and
+whether four items a run is more review than it is worth. Those are answers only the
+first weeks can give, and they belong in `log.md` and `decisions.md` as they arrive.
+
+The capability-producing half of Phase 2 also remains untested, as noted above.

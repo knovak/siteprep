@@ -1,5 +1,5 @@
 {
-  "phases": ["survey"],
+  "phases": ["survey", "respond", "propose", "work"],
   "items_per_run": 4,
   "max_items_per_initiative": 2,
   "max_effort": "large",

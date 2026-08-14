@@ -10,9 +10,14 @@
  * Subcommands:
  *   validate            check every initiative; exit 1 on an error, 0 on warnings
  *   digest [--json]     the sweep survey: what needs attention, as markdown
+ *   propose [--json]    which `human:` questions this run should propose answers to
+ *                       [--claimed a,b] branches of open sweep PRs
+ *                       [--open-prs n]  how many sweep PRs are already open
+ *                       [--spent n]     budget already used earlier in the run
  *   select [--json]     which items this run should work on
  *                       [--claimed a,b] branches of open sweep PRs
  *                       [--open-prs n]  how many sweep PRs are already open
+ *                       [--spent n]     budget already used earlier in the run
  *   complete <slug> <item-id> [--note "..."] [--stage <stage>]
  *                       record an item done: remove it, unblock dependents, log it
  *   check-scope <slug> --files <path>...   or --files-from <file>
@@ -64,6 +69,15 @@ const BLOCKER_PREFIXES = [
 /** Blockers the sweep can clear on its own, versus those needing a person. */
 const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal']);
 
+/**
+ * The sweep may propose an answer only to a judgement call.
+ *
+ * `permission:`, `cost:` and `legal:` need the user's authority rather than
+ * reasoning, and `data:` is a fact about their world - proposing one would be
+ * an invention wearing the costume of an answer.
+ */
+const PROPOSABLE_BLOCKERS = new Set(['human']);
+
 const DOCUMENTS = [
   ['wish.md', 'Wish'],
   ['objectives.md', 'Objectives'],
@@ -78,7 +92,7 @@ const DOCUMENTS = [
 const DEFAULT_STALENESS_DAYS = 14;
 
 /** What a sweep run is permitted to do, in order. Survey is never optional. */
-const SWEEP_PHASES = ['survey', 'respond', 'work'];
+const SWEEP_PHASES = ['survey', 'respond', 'propose', 'work'];
 
 // ---------------------------------------------------------------- loading
 
@@ -390,7 +404,14 @@ function buildDigest() {
       const entry = { slug: record.slug, item: item.title || item.id, blocker: raw, detail };
 
       if (HUMAN_BLOCKERS.has(prefix)) {
-        digest.decisions.push({ ...entry, kind: prefix });
+        // Flagged rather than filtered: a proposable question still waits on
+        // you, it just arrives as a pull request to judge instead of a blank
+        // page to fill.
+        digest.decisions.push({
+          ...entry,
+          kind: prefix,
+          proposable: PROPOSABLE_BLOCKERS.has(prefix)
+        });
       } else if (prefix === 'schedule') {
         const due = new Date(detail);
         if (!Number.isNaN(due.getTime()) && due.getTime() <= Date.now()) {
@@ -453,9 +474,12 @@ function formatDigest(digest) {
     out.push('');
   };
 
-  // The most valuable part: the only things the sweep genuinely cannot resolve.
+  // The most valuable part: what the sweep cannot decide for itself. A
+  // proposable entry is still yours to settle - it just arrives as a pull
+  // request rather than a blank page.
   section('Waiting on a decision from you', digest.decisions.map(
     (d) => `- **${d.slug}** — ${d.item}\n  - \`${d.kind}\`: ${d.detail}`
+      + (d.proposable ? '\n  - the sweep can propose an answer to this' : '')
   ));
 
   section('Cannot be read', digest.unreadable.map(
@@ -509,6 +533,99 @@ function weight(table, key, fallback) {
 }
 
 /**
+ * The configuration a selecting phase runs under, resolved once.
+ *
+ * `spent` is what earlier phases of the same run have already used. Review
+ * responses and proposals come out of the same `items_per_run` as new work,
+ * taken in phase order, so the remaining budget is arithmetic rather than
+ * something the prompt has to reason about.
+ */
+function runContext({ claimed = [], openPrs = 0, spent = 0 } = {}) {
+  const sweep = loadSweepConfig().config;
+  const perRun = Number.isFinite(sweep.items_per_run) ? sweep.items_per_run : 1;
+  const maxOpen = Number.isFinite(sweep.max_open_prs) ? sweep.max_open_prs : 4;
+
+  return {
+    sweep,
+    phases: sweep.phases || ['survey'],
+    perRun,
+    perInitiative: Number.isFinite(sweep.max_items_per_initiative)
+      ? sweep.max_items_per_initiative
+      : 1,
+    maxOpen,
+    openPrs,
+    spent,
+    remaining: Math.min(perRun - spent, maxOpen - openPrs),
+    globalStaleness: Number.isFinite(sweep.staleness_days)
+      ? sweep.staleness_days
+      : DEFAULT_STALENESS_DAYS,
+    // sweep/<slug>/<branch-suffix> - the branch name is the record of what is
+    // claimed, so no second source of truth is needed.
+    claimedItems: new Set(
+      claimed
+        .map((branch) => branch.trim().replace(/^sweep\//, ''))
+        .filter(Boolean)
+    )
+  };
+}
+
+/** Why a phase cannot proceed at all, or null when it can. */
+function phaseStop(ctx, phase) {
+  // The config is the switch. If a phase is not enabled, nothing is selected -
+  // enabling it has to be a reviewable commit, not a persuasive prompt.
+  if (!ctx.phases.includes(phase)) {
+    return `sweep.json does not enable the "${phase}" phase`;
+  }
+  if (ctx.openPrs >= ctx.maxOpen) {
+    return `already ${ctx.openPrs} open sweep PR(s), at the max_open_prs limit of ${ctx.maxOpen}`;
+  }
+  if (ctx.remaining <= 0) {
+    return `the budget of ${ctx.perRun} item(s) is already spent (${ctx.spent} used earlier this run)`;
+  }
+  return null;
+}
+
+function stalenessBonusFor(record, ctx) {
+  const age = daysSince(record.lastActivity);
+  const threshold = Number.isFinite(record.data.staleness_days)
+    ? record.data.staleness_days
+    : ctx.globalStaleness;
+  return age === null ? 0 : Math.min(age / Math.max(threshold, 1), MAX_STALENESS_BONUS);
+}
+
+function scoreItem(data, item, stalenessBonus) {
+  const effort = weight(EFFORT_WEIGHT, item.effort, 2);
+  const score = (weight(VALUE_WEIGHT, data.value, 2) * weight(VALUE_WEIGHT, item.value, 2)) / effort
+    + (item.advances_stage ? STAGE_GATE_BONUS : 0)
+    + stalenessBonus;
+  return Math.round(score * 100) / 100;
+}
+
+/** Rank, then apply the run budget and the per-initiative cap. */
+function applyBudget(candidates, ctx, result) {
+  candidates.sort((a, b) => b.score - a.score || a.slug.localeCompare(b.slug));
+
+  const perInitiativeCount = new Map();
+  for (const candidate of candidates) {
+    if (result.selected.length >= ctx.remaining) {
+      result.skipped.push({ ...candidate, reason: 'budget for this run is spent' });
+      continue;
+    }
+    const taken = perInitiativeCount.get(candidate.slug) || 0;
+    if (taken >= ctx.perInitiative) {
+      result.skipped.push({
+        ...candidate,
+        reason: `max_items_per_initiative (${ctx.perInitiative}) reached`
+      });
+      continue;
+    }
+    perInitiativeCount.set(candidate.slug, taken + 1);
+    result.selected.push(candidate);
+  }
+  return result;
+}
+
+/**
  * Which items a sweep run should work on.
  *
  * Ranking is arithmetic over recorded state — value, effort, whether the item
@@ -520,44 +637,13 @@ function weight(table, key, fallback) {
  * @param {object} options
  * @param {string[]} options.claimed   branches of open sweep PRs
  * @param {number}   options.openPrs   how many sweep PRs are already open
+ * @param {number}   options.spent     budget used by earlier phases of this run
  */
-function selectWork({ claimed = [], openPrs = 0 } = {}) {
-  const sweep = loadSweepConfig().config;
-  const phases = sweep.phases || ['survey'];
-  const perRun = Number.isFinite(sweep.items_per_run) ? sweep.items_per_run : 1;
-  const perInitiative = Number.isFinite(sweep.max_items_per_initiative)
-    ? sweep.max_items_per_initiative
-    : 1;
-  const maxOpen = Number.isFinite(sweep.max_open_prs) ? sweep.max_open_prs : 4;
-  const effortCeiling = weight(EFFORT_WEIGHT, sweep.max_effort, 3);
-  const globalStaleness = Number.isFinite(sweep.staleness_days)
-    ? sweep.staleness_days
-    : DEFAULT_STALENESS_DAYS;
-
-  const result = { phases, selected: [], skipped: [], stop: null };
-
-  // The config is the switch. If work is not enabled, nothing is selected -
-  // enabling it has to be a reviewable commit, not a persuasive prompt.
-  if (!phases.includes('work')) {
-    result.stop = 'sweep.json does not enable the "work" phase';
-    return result;
-  }
-  if (openPrs >= maxOpen) {
-    result.stop = `already ${openPrs} open sweep PR(s), at the max_open_prs limit of ${maxOpen}`;
-    return result;
-  }
-
-  // sweep/<slug>/<item-id> - the branch name is the record of what is claimed,
-  // so no second source of truth is needed.
-  const claimedItems = new Set(
-    claimed
-      .map((branch) => branch.trim().replace(/^sweep\//, ''))
-      .filter(Boolean)
-      .map((rest) => {
-        const cut = rest.indexOf('/');
-        return cut === -1 ? rest : `${rest.slice(0, cut)}/${rest.slice(cut + 1)}`;
-      })
-  );
+function selectWork({ claimed = [], openPrs = 0, spent = 0 } = {}) {
+  const ctx = runContext({ claimed, openPrs, spent });
+  const effortCeiling = weight(EFFORT_WEIGHT, ctx.sweep.max_effort, 3);
+  const result = { phases: ctx.phases, selected: [], skipped: [], stop: phaseStop(ctx, 'work') };
+  if (result.stop) return result;
 
   const candidates = [];
   for (const record of loadAll()) {
@@ -566,67 +652,116 @@ function selectWork({ claimed = [], openPrs = 0 } = {}) {
       continue;
     }
     const data = record.data;
-    const age = daysSince(record.lastActivity);
-    const threshold = Number.isFinite(data.staleness_days)
-      ? data.staleness_days
-      : globalStaleness;
-    const stalenessBonus = age === null
-      ? 0
-      : Math.min(age / Math.max(threshold, 1), MAX_STALENESS_BONUS);
+    const stalenessBonus = stalenessBonusFor(record, ctx);
 
     for (const item of data.todo || []) {
       if (item.state !== 'actionable') continue;
 
-      const key = `${record.slug}/${item.id}`;
-      if (claimedItems.has(key)) {
+      if (ctx.claimedItems.has(`${record.slug}/${item.id}`)) {
         result.skipped.push({ slug: record.slug, item: item.id, reason: 'already has an open sweep PR' });
         continue;
       }
-      const effort = weight(EFFORT_WEIGHT, item.effort, 2);
-      if (effort > effortCeiling) {
+      if (weight(EFFORT_WEIGHT, item.effort, 2) > effortCeiling) {
         result.skipped.push({
           slug: record.slug,
           item: item.id,
-          reason: `effort "${item.effort}" exceeds max_effort "${sweep.max_effort}"`
+          reason: `effort "${item.effort}" exceeds max_effort "${ctx.sweep.max_effort}"`
         });
         continue;
       }
-
-      const score = (weight(VALUE_WEIGHT, data.value, 2) * weight(VALUE_WEIGHT, item.value, 2)) / effort
-        + (item.advances_stage ? STAGE_GATE_BONUS : 0)
-        + stalenessBonus;
 
       candidates.push({
         slug: record.slug,
         item: item.id,
         title: item.title || item.id,
         branch: `sweep/${record.slug}/${item.id}`,
-        score: Math.round(score * 100) / 100,
+        score: scoreItem(data, item, stalenessBonus),
         advancesStage: Boolean(item.advances_stage),
         effort: item.effort || 'medium'
       });
     }
   }
 
-  candidates.sort((a, b) => b.score - a.score || a.slug.localeCompare(b.slug));
+  return applyBudget(candidates, ctx, result);
+}
 
-  const perInitiativeCount = new Map();
-  const budget = Math.min(perRun, maxOpen - openPrs);
-  for (const candidate of candidates) {
-    if (result.selected.length >= budget) {
-      result.skipped.push({ ...candidate, reason: 'budget for this run is spent' });
+/**
+ * Which open questions this run should propose an answer to.
+ *
+ * Only `human:` blockers qualify. `permission:`, `cost:` and `legal:` need the
+ * user's authority and `data:` needs a fact only they have, so a proposal for
+ * one of those would be a fabrication - they are reported separately as things
+ * that can never become a pull request.
+ *
+ * `max_effort` deliberately does not apply. It caps the work the sweep may
+ * attempt unattended, and composing a proposal is not doing the item: a large
+ * item's question is often exactly the one worth answering first.
+ */
+function selectProposals({ claimed = [], openPrs = 0, spent = 0 } = {}) {
+  const ctx = runContext({ claimed, openPrs, spent });
+  const result = {
+    phases: ctx.phases,
+    selected: [],
+    skipped: [],
+    notProposable: [],
+    stop: phaseStop(ctx, 'propose')
+  };
+  if (result.stop) return result;
+
+  const candidates = [];
+  for (const record of loadAll()) {
+    if (record.error) {
+      result.skipped.push({ slug: record.slug, reason: record.error });
       continue;
     }
-    const taken = perInitiativeCount.get(candidate.slug) || 0;
-    if (taken >= perInitiative) {
-      result.skipped.push({ ...candidate, reason: `max_items_per_initiative (${perInitiative}) reached` });
-      continue;
+    const data = record.data;
+    const stalenessBonus = stalenessBonusFor(record, ctx);
+
+    for (const item of data.todo || []) {
+      if (item.state !== 'blocked') continue;
+      const raw = String(item.blocked_by || '');
+      const prefix = raw.split(':', 1)[0];
+      const question = raw.slice(prefix.length + 1);
+
+      if (!PROPOSABLE_BLOCKERS.has(prefix)) {
+        if (HUMAN_BLOCKERS.has(prefix)) {
+          result.notProposable.push({
+            slug: record.slug,
+            item: item.id,
+            title: item.title || item.id,
+            blocker: raw,
+            reason: `"${prefix}" needs your authority, not reasoning`
+          });
+        }
+        continue;
+      }
+
+      // A proposal branch is namespaced so it cannot collide with the work
+      // branch for the same item once the answer merges and the item unblocks.
+      const branch = `sweep/${record.slug}/propose-${item.id}`;
+      if (ctx.claimedItems.has(`${record.slug}/propose-${item.id}`)) {
+        result.skipped.push({
+          slug: record.slug,
+          item: item.id,
+          reason: 'already has an open proposal PR'
+        });
+        continue;
+      }
+
+      candidates.push({
+        slug: record.slug,
+        item: item.id,
+        title: item.title || item.id,
+        question,
+        blocker: raw,
+        branch,
+        score: scoreItem(data, item, stalenessBonus),
+        advancesStage: Boolean(item.advances_stage)
+      });
     }
-    perInitiativeCount.set(candidate.slug, taken + 1);
-    result.selected.push(candidate);
   }
 
-  return result;
+  return applyBudget(candidates, ctx, result);
 }
 
 function formatSelection(selection) {
@@ -643,6 +778,38 @@ function formatSelection(selection) {
     lines.push('', 'Not this run:');
     for (const skip of selection.skipped) {
       lines.push(`- ${skip.slug}${skip.item ? `/${skip.item}` : ''} — ${skip.reason}`);
+    }
+  }
+  return lines.join('\n');
+}
+
+function formatProposals(selection) {
+  const lines = [];
+  if (selection.stop) {
+    lines.push(`No proposals: ${selection.stop}`);
+  } else if (!selection.selected.length) {
+    lines.push('No proposals: no question is waiting on a judgement call.');
+  } else {
+    lines.push('Answers to propose this run:', '');
+    for (const item of selection.selected) {
+      lines.push(`- ${item.slug}/${item.item} — ${item.title}`);
+      lines.push(`  question: ${item.question}`);
+      lines.push(`  branch: ${item.branch}  score: ${item.score}`);
+    }
+    if (selection.skipped.length) {
+      lines.push('', 'Not this run:');
+      for (const skip of selection.skipped) {
+        lines.push(`- ${skip.slug}${skip.item ? `/${skip.item}` : ''} — ${skip.reason}`);
+      }
+    }
+  }
+
+  // Reported next to the selection, because these are the entries that stay in
+  // the digest issue: no amount of reasoning can advance them.
+  if (selection.notProposable?.length) {
+    lines.push('', 'Never proposable — these need you:');
+    for (const entry of selection.notProposable) {
+      lines.push(`- ${entry.slug}/${entry.item} — \`${entry.blocker}\` (${entry.reason})`);
     }
   }
   return lines.join('\n');
@@ -1054,18 +1221,19 @@ switch (command) {
       : formatDigest(digest));
     break;
   }
+  case 'propose':
   case 'select': {
     const claimedArg = args[args.indexOf('--claimed') + 1];
-    const openArg = args[args.indexOf('--open-prs') + 1];
-    const selection = selectWork({
-      claimed: args.includes('--claimed') && claimedArg
-        ? claimedArg.split(',')
-        : [],
-      openPrs: args.includes('--open-prs') ? Number(openArg) || 0 : 0
-    });
+    const options = {
+      claimed: args.includes('--claimed') && claimedArg ? claimedArg.split(',') : [],
+      openPrs: args.includes('--open-prs') ? Number(args[args.indexOf('--open-prs') + 1]) || 0 : 0,
+      spent: args.includes('--spent') ? Number(args[args.indexOf('--spent') + 1]) || 0 : 0
+    };
+    const proposing = command === 'propose';
+    const selection = proposing ? selectProposals(options) : selectWork(options);
     console.log(args.includes('--json')
       ? JSON.stringify(selection, null, 2)
-      : formatSelection(selection));
+      : (proposing ? formatProposals(selection) : formatSelection(selection)));
     break;
   }
   case 'complete': {
@@ -1142,6 +1310,6 @@ switch (command) {
     break;
   }
   default:
-    console.error('usage: initiatives.mjs validate|digest|select|complete|check-scope|list|toc|page|docs|doc|title');
+    console.error('usage: initiatives.mjs validate|digest|propose|select|complete|check-scope|list|toc|page|docs|doc|title');
     process.exit(2);
 }
