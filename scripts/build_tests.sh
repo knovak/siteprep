@@ -286,20 +286,40 @@ done
 pass "BUILD-11 shared resources verified"
 
 # BUILD-14: Version footer injected outside every inline script
-# The footer carries its own <script>, so injecting it inside a page's still-open
+# The footer carries a <script> tag, so injecting it inside a page's still-open
 # inline script terminates that script early and breaks the whole block. Nothing
 # may follow the injected footer except the closing body/html tags.
+footers_found=0
 while IFS= read -r -d '' html_file; do
-  if ! grep -q '<footer class="site-footer">' "$html_file"; then
+  # Only the injected footer carries the version, so this stays right even if a
+  # page ever grows a footer of its own again.
+  if ! grep -q '<footer class="site-footer" data-version=' "$html_file"; then
     continue
   fi
+  footers_found=$((footers_found + 1))
 
   after_footer=$(awk 'BEGIN { RS = "</footer>" } { last = $0 } END { print last }' "$html_file")
   if grep -q "</script>" <<< "$after_footer"; then
     fail "BUILD-14 version footer injected inside an inline script: ${html_file#$OUTPUT_DIR/}"
   fi
+
+  # The footer's links come from the shared library, so a page whose footer
+  # points at a path that isn't there renders no footer at all. Resolve the
+  # src the same way the browser will - relative to the page.
+  footer_src=$(sed -n 's/.*<script src="\([^"]*site_footer\.js\)"><\/script>.*/\1/p' "$html_file" | head -n 1)
+  if [ -z "$footer_src" ]; then
+    fail "BUILD-14 footer does not load site_footer.js: ${html_file#$OUTPUT_DIR/}"
+  fi
+  if [ ! -f "$(dirname "$html_file")/$footer_src" ]; then
+    fail "BUILD-14 footer library missing at ${footer_src} from ${html_file#$OUTPUT_DIR/}"
+  fi
 done < <(find "$OUTPUT_DIR" -name "*.html" -type f -print0)
-pass "BUILD-14 version footer injected outside inline scripts"
+
+# A grep pattern that stops matching would make every check above vacuous.
+if [ "$footers_found" -eq 0 ]; then
+  fail "BUILD-14 no injected footers found in the build output"
+fi
+pass "BUILD-14 version footer injected outside inline scripts ($footers_found pages)"
 
 # BUILD-12: Clean build capability
 # This test verifies build can work from clean state

@@ -423,6 +423,7 @@ cat > "$OUTPUT_DIR/index-versions.html" <<EOF_VERSIONS
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SitePrep - All Versions</title>
   <link rel="stylesheet" href="$DEFAULT_STYLE">
+  <script defer src="$DEFAULT_SCRIPT"></script>
 </head>
 <body>
   <header class="card">
@@ -485,58 +486,25 @@ inject_version_footer() {
     deck_path="index.html"
   fi
 
-  # Create footer HTML with JavaScript for dynamic rendering
-  local footer_html="  <footer class=\"site-footer\">\n"
-  footer_html="${footer_html}    <script>\n"
-  footer_html="${footer_html}      (function() {\n"
-  footer_html="${footer_html}        var footer = document.currentScript.parentElement;\n"
-  footer_html="${footer_html}        var nav = document.createElement('div');\n"
-  footer_html="${footer_html}        nav.className = 'footer-nav';\n"
-  footer_html="${footer_html}        var links = [];\n"
-  footer_html="${footer_html}        \n"
-  footer_html="${footer_html}        // Version link to home\n"
-  footer_html="${footer_html}        links.push({ href: '${rel_path}index.html', text: 'Version: $VERSION_NAME' });\n"
-  footer_html="${footer_html}        \n"
+  # The footer's markup and link list live in shared/site_footer/, next to the
+  # nav bar they mirror - the build supplies only what it alone knows: the
+  # version name and where this page sits in the tree. The library is loaded
+  # from inside the <footer> element it fills, which keeps the rendering script
+  # off the end of <body> (see BUILD-14) and gives it its mount point for free.
+  local footer_attrs="data-version=\"$VERSION_NAME\" data-root=\"${rel_path}\""
 
   # Add deck link if applicable
   if [ "$page_type" = "deck" ] || [ "$page_type" = "section" ]; then
-    footer_html="${footer_html}        // Deck link\n"
-    footer_html="${footer_html}        links.push({ href: '${deck_path}', text: 'Deck' });\n"
-    footer_html="${footer_html}        \n"
+    footer_attrs="${footer_attrs} data-deck=\"${deck_path}\""
   fi
 
   # Add section link if applicable
   if [ "$page_type" = "section" ]; then
-    footer_html="${footer_html}        // Section link\n"
-    footer_html="${footer_html}        links.push({ href: '${section_path}', text: 'Section' });\n"
-    footer_html="${footer_html}        \n"
+    footer_attrs="${footer_attrs} data-section=\"${section_path}\""
   fi
 
-  # Add Google Drive and View all versions links
-  footer_html="${footer_html}        // Google Drive link\n"
-  footer_html="${footer_html}        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });\n"
-  footer_html="${footer_html}        \n"
-  footer_html="${footer_html}        // View all versions link\n"
-  footer_html="${footer_html}        links.push({ href: '${rel_path}index-versions.html', text: 'View all versions' });\n"
-  footer_html="${footer_html}        \n"
-  footer_html="${footer_html}        // Build the navigation\n"
-  footer_html="${footer_html}        links.forEach(function(link, index) {\n"
-  footer_html="${footer_html}          if (index > 0) {\n"
-  footer_html="${footer_html}            var sep = document.createElement('span');\n"
-  footer_html="${footer_html}            sep.className = 'footer-separator';\n"
-  footer_html="${footer_html}            sep.textContent = '|';\n"
-  footer_html="${footer_html}            nav.appendChild(sep);\n"
-  footer_html="${footer_html}          }\n"
-  footer_html="${footer_html}          var a = document.createElement('a');\n"
-  footer_html="${footer_html}          a.href = link.href;\n"
-  footer_html="${footer_html}          a.textContent = link.text;\n"
-  footer_html="${footer_html}          if (link.external) a.target = '_blank';\n"
-  footer_html="${footer_html}          nav.appendChild(a);\n"
-  footer_html="${footer_html}        });\n"
-  footer_html="${footer_html}        \n"
-  footer_html="${footer_html}        footer.appendChild(nav);\n"
-  footer_html="${footer_html}      })();\n"
-  footer_html="${footer_html}    </script>\n"
+  local footer_html="  <footer class=\"site-footer\" ${footer_attrs}>\n"
+  footer_html="${footer_html}    <script src=\"${rel_path}shared/site_footer/site_footer.js\"></script>\n"
   footer_html="${footer_html}  </footer>"
 
   # Insert footer immediately before the closing body tag.
