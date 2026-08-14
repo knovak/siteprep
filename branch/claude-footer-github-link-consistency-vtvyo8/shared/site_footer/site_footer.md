@@ -32,6 +32,11 @@ version browser are properties of the *deployment*, not of a deck. Copied demo
 files under `demos/` are left byte-for-byte unchanged and so have no footer;
 the generated `demos/index.html` has one.
 
+A page has exactly one footer, so a deck does not add a second bar of its own.
+Nineteen once did, for back-links ("All decks | Rockies") that this row already
+carries: `Version:` goes to the site index and `Deck` to the deck index. Page
+navigation belongs in the header nav bar - see `shared/nav_bar/`.
+
 ## Files
 
 | File | Purpose |

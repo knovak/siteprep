@@ -292,9 +292,13 @@ the version browser describe the *deployment*, not a deck:
 ```
 
 The build supplies only what it alone knows - the version name and where the
-page sits in the tree - and the link list lives in `site_footer.js`. A page
-should not hand-write this row: eight pages once carried a copy of it, frozen at
-`Version: main` and missing links added later.
+page sits in the tree - and the link list lives in `site_footer.js`.
+
+A page should not hand-write a footer, and has exactly one. Twenty-seven once
+had two bars stacked: eight a stale copy of this row, frozen at `Version: main`
+and missing links added later, and nineteen a deck back-link bar whose links the
+injected row already carries - `Version:` goes to the site index and `Deck` to
+the deck index.
 
 There is no stylesheet: `.site-footer` and `.footer-nav` are already styled by
 each deck's `assets/styles.css` and by `shared/site_base/site_base.css`.
