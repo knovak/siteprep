@@ -48,6 +48,11 @@
 <h3>2026-08-14 — Review round on the snapshot decision</h3>
 <p>Three review comments, all settling things the entry had deliberately left open: the render pass uses a <strong>paid screenshot API</strong> rather than a browser fleet we run; the duplicate-image threshold <strong>starts at 30</strong>; and an export carries <strong>no captures</strong> — items, URLs, tags and verdicts only.</p>
 <p>The last came with a follow-on worth more than the answer: keep a capture cache so a re-imported collection reuses it instead of reprocessing. Recorded as keying the capture store <strong>by URL rather than by item</strong>, which also makes overlapping collections and the demo collection nearly free. It sharpens the open <code>collection-access</code> question rather than settling it — a URL-keyed store shared across collections leaks the existence of a URL between them, so if collections are meant to be private the cache has to be per-collection.</p>
+<h3>2026-08-14 — Decide how collections are identified and who may open one</h3>
+<p>Signed-in accounts, presuming an OpenAI surface supplies user IDs. Collections have owners and are private by default. The URL-keyed capture cache stays shared across collections - the deferred capture pipeline already closes the timing channel the earlier entry worried about. Recorded in decisions.md.</p>
+<p>The presumption is the user&#39;s and is kept as one: the model is settled, the mechanism leans on the still-open question of which OpenAI surface this runs on. If that host changes, sign-in stops being inherited and becomes work.</p>
+<p>Note that this <strong>reverses</strong> the rule the previous round wrote down — that private collections would force a per-collection cache. That rule was written before the answer existed, and the deferred capture pipeline had already closed the channel it was defending against. Corrected in <code>decisions.md</code> rather than followed.</p>
+<p>Raises one new blocker: private-by-default is exactly what a demo collection is not, so what makes a collection non-personal is now <code>collection-sharing</code>.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="claude/sweep-prompt-hrkodj" data-root="../../">
