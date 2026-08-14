@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Interactive Bookmark Sorter</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Interactive Bookmark Sorter</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Interactive Bookmark Sorter</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<p>Questions this initiative was waiting on, and how they were settled. Newest at the bottom. Written so a later reader — including a later version of us — does not re-argue something already decided.</p>
+<h3>2026-08-14 — How large is the real bookmark pile?</h3>
+<p><strong>5,000–10,000 items.</strong></p>
+<h4>What this settles</h4>
+<p>That number is large enough to rule things out, which is what makes it worth recording:</p>
+<ul><li><strong>Clustering is not a nicety, it is the mechanism.</strong> Judging 5,000 items one</li></ul>
+<p>  at a time at even three seconds each is over four hours of unbroken attention.   Objective 5 — judging related items as a group — is what makes the pile   finishable at all, so it is core rather than a convenience.</p>
+<ul><li><strong>The item view has to be virtualised.</strong> Ten thousand DOM nodes with</li></ul>
+<p>  screenshots is not something to render naively; only a screenful should exist   at a time.</p>
+<ul><li><strong>Snapshot cost is now a real number.</strong> At 10,000 items, anything per-item and</li></ul>
+<p>  slow — fetching and rendering each page — is hours of work and a storage bill,   not a detail. This directly constrains the still-open snapshot question.</p>
+<ul><li><strong>Storage is not a constraint.</strong> Ten thousand rows of title, URL, date, tags</li></ul>
+<p>  and verdicts is small by any measure. Only the images matter.</p>
+<h3>2026-08-14 — Where should this run?</h3>
+<p><strong>A web app</strong> — most likely hosted on an OpenAI site, using its database.</p>
+<p>The &quot;most likely&quot; is the user&#39;s, and is kept: the <em>shape</em> is settled, the host is a leaning.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Web app</strong> <em>(chosen)</em></td><td>One codebase spans widescreen, tablet and phone, which objective 3 asks for directly; full control of a dense snapshot grid and keyboard-driven triage; server-side storage makes backup and export straightforward; reachable from any device with no install</td><td>No direct access to browser bookmarks, so ingestion is a manual export; cannot capture page snapshots client-side; needs hosting and some access control for personal data</td></tr><tr><td><strong>Local script</strong></td><td>Simplest to build; no hosting, no auth, data obviously the user&#39;s; can fetch and render pages freely</td><td>Weakest at the thing that matters most — a fast visual grid across three form factors is not what a script is good at; single-machine, so no phone or tablet triage</td></tr><tr><td><strong>Browser extension</strong></td><td>Direct bookmark access, no export step; the only option where creating tab groups and bookmark folders is natural; can capture snapshots of pages as they are visited</td><td>Cramped UI for an 8×2 grid; per-browser implementation and review overhead; awkward on iOS</td></tr><tr><td><strong>Hosted service</strong></td><td>Most capable — server-side rendering for snapshots, cross-device harvesting, scale</td><td>Most infrastructure and the most to run and pay for; heaviest possible answer to a personal triage problem</td></tr></tbody></table></div>
+<h4>Why the web app wins here</h4>
+<p>The wish&#39;s stated priority is triage speed, and objectives 3 and 4 turn that into a screen-filling grid of snapshots that adapts from a widescreen to a phone. That is the one requirement a local script cannot meet and an extension meets awkwardly. Everything else in the wish — ingestion, tags, clusters, export — is achievable in any of the four.</p>
+<p>The specific cost is worth naming plainly: <strong>the web app is the weakest option for the two capabilities the wish lists as extensions.</strong> Harvesting open tabs from other devices and pushing subsets back into Chrome as tab groups are both natural in an extension and awkward from a web page. Choosing the web app trades those away in exchange for the triage experience being good. Given that the wish marks both as extensions and triage as the point, that is the right trade — but it should be a known one, not a surprise later.</p>
+<h4>On hosting it on an OpenAI site</h4>
+<ul><li><strong>In favour</strong> — hosting, storage and sign-in come with the platform, so none</li></ul>
+<p>  of it has to be built or run. A model is available in-platform, which fits   auto-tagging by topic and automatic clustering (objectives 5 and 6) without a   separate integration. The wish already anticipated this, noting the extensions   &quot;may be offered initially or exclusively through an LLM agent&quot;.</p>
+<ul><li><strong>Against, or unknown</strong> — objective 7 requires the data be exportable and</li></ul>
+<p>  portable, so whatever store is used has to let the data out; how much control   there is over layout density matters for an 8×2 grid; and whether arbitrary   third-party pages can be fetched and rendered there bears directly on   snapshots.</p>
+<p>None of those are blocking to start writing a spec. They are the questions the spec has to answer.</p>
+<h4>What this makes harder</h4>
+<p><strong>The snapshot question is now more constrained, not less.</strong> A web page cannot screenshot an arbitrary third-party page from the browser — same-origin rules prevent it. So with a web app the options narrow to: capture server-side at ingestion, use a third-party thumbnail service, or fall back to whatever favicon and OpenGraph image the page already advertises.</p>
+<p>Combined with a pile of 5,000–10,000, live-fetching per item on demand is effectively ruled out on cost and latency. That is worth knowing before the snapshot decision is made.</p>
+<h4>Still open, following from this</h4>
+<ul><li>Which OpenAI surface, and what its database and export story actually is.</li><li>How snapshots are obtained, now narrowed as above — recorded separately as an</li></ul>
+<p>  open blocker.</p>
+<h3>2026-08-14 — Where do page snapshots come from?</h3>
+<p><strong>Captured at ingestion.</strong> Not live-fetched per item on demand, and not left to whatever favicon the page already advertises.</p>
+<p>The user asked for the follow-on question to be worked out rather than left: <em>&quot;Identify ways to do this: how do iMessage, WhatsApp, and Google Chat do it? How about browsers&#39; tab displays? Find alternatives, compare, and choose one.&quot;</em> So the choice of <strong>mechanism</strong> below is ours, made on their instruction; the choice of <strong>ingestion time</strong> is theirs.</p>
+<h4>How the systems that do this at scale actually do it</h4>
+<p>Worth stating first, because it reframes the question: <strong>none of the three messaging apps takes a screenshot.</strong> All three build a card out of metadata.</p>
+<div class="table-scroll"><table><thead><tr><th>System</th><th>Who fetches</th><th>What it captures</th><th>Notable</th></tr></thead><tbody><tr><td><strong>iMessage</strong></td><td>The sender&#39;s device</td><td>Open Graph tags — <code>og:title</code>, <code>og:description</code>, <code>og:image</code></td><td>Apple&#39;s crawler is deliberately conservative: HTTPS only, static HTML only, <strong>no JavaScript executed</strong>. Missing or JS-injected tags mean no card at all — it degrades to a bare URL rather than guessing</td></tr><tr><td><strong>WhatsApp</strong></td><td>The sender&#39;s device (mobile); Meta&#39;s servers on WhatsApp Web</td><td>Same Open Graph tags</td><td>The preview is generated once and <strong>travels with the message</strong> — the recipient sees the sender&#39;s capture, and sees it even with previews disabled locally</td></tr><tr><td><strong>Google Chat</strong></td><td>Google&#39;s server-side unfurl service (UA <code>GoogleMessages</code>)</td><td>Same Open Graph tags, falling back to <code>&lt;title&gt;</code> and <code>&lt;meta name=description&gt;</code></td><td>Fetch once per URL, <strong>cache against the URL</strong>. Aggressive enough that a corrected tag can take a long time to appear</td></tr><tr><td><strong>Browser tab thumbnails</strong> (Chrome, Firefox, Safari)</td><td>The browser itself</td><td>Real pixels — a compositor capture of the rendered page</td><td>Only possible because <em>the browser already has the page rendered</em>. Extensions get <code>chrome.tabs.captureVisibleTab</code>, and the name is the limit: the <strong>visible</strong> tab</td></tr></tbody></table></div>
+<p>Two things fall out of that table and they drive everything below.</p>
+<p><strong>The metadata path is universal because it is cheap and it degrades well.</strong> Every one of these products chose two HTTP requests and a fallback ladder — OG tags, then <code>&lt;title&gt;</code>, then bare URL — over rendering a page. At messaging volume the economics are the same as ours at 10,000 items.</p>
+<p><strong>Pixels only appear where a renderer already had the page.</strong> The browser is not solving our problem; it is capturing something it rendered anyway for its own reasons. Reproducing that means standing up the renderer ourselves, and Firefox&#39;s history is the warning label. Its background thumbnailer captured pages <em>without cookies</em>, so the thumbnail was the logged-out view rather than the page the user saw — the substance of Mozilla&#39;s bug 1413650, which proposed capturing the loaded tab instead. And the opposite failure has a scar too: in 2012 Firefox&#39;s new-tab thumbnails were found to be caching views of logged-in pages, exposing private data on a shared screen. An anonymous render is inaccurate; an authenticated one is a liability.</p>
+<h4>Alternatives considered</h4>
+<p>All are &quot;at ingestion&quot; — the family the user chose. They differ in what gets captured.</p>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A. Metadata card</strong> — fetch the HTML, parse <code>og:image</code>/<code>twitter:image</code>, title, description, favicon; fetch and downscale that one image</td><td>What every messaging app does, for good reason. Two requests per item, trivially parallel — 10,000 items in minutes, not hours. No browser to run. Degrades in defined steps instead of failing</td><td>Coverage is partial: news, blogs and product pages carry <code>og:image</code>; documentation, PDFs, forum threads and old personal sites often carry nothing. Worse, <code>og:image</code> is frequently a <strong>site-wide banner</strong>, so fifty links from one site produce fifty identical cards — precisely where clustering puts them side by side</td></tr><tr><td><strong>B. Headless render</strong> — Playwright screenshots every URL server-side</td><td>Near-total coverage, and the capture is of <em>that page</em> rather than its publisher&#39;s banner. Most faithful to objective 4&#39;s &quot;judged on sight&quot;</td><td>300–500 MB of RAM per browser process, so real capacity planning. Roughly an hour of wall clock for 10,000 pages at eight workers. Many captures are worthless anyway — cookie walls, consent overlays, paywalls, and login screens all screenshot beautifully and tell you nothing</td></tr><tr><td><strong>C. Third-party screenshot API</strong></td><td>No infrastructure. Priced around $4–10 per thousand, so a 10,000-item backlog is a one-off $40–100 — not the blocker it might sound like</td><td>Every URL in a personal bookmark pile is handed to a third party. Recurring cost for a personal tool, and one more dependency between a bookmark and its picture</td></tr><tr><td><strong>D. Capture on visit</strong> — an extension grabs the page as you actually browse it, the way a browser fills its own thumbnail cache</td><td>The only option that captures the <em>logged-in, dismissed-banner</em> page, because a human was there</td><td>Nothing to show for a backlog accumulated over years — it can only work forward. Already ruled out upstream: the runtime is a web app, not an extension</td></tr><tr><td><strong>E. Metadata first, render the gaps</strong> <em>(chosen)</em></td><td>Spends the cheap path on the majority and the expensive one only where the cheap path fails the sight test. One pipeline, one fallback ladder</td><td>Two capture paths to build and keep working. Needs a rule for what counts as &quot;failed&quot;, which is the interesting part</td></tr></tbody></table></div>
+<h4>The choice: metadata first, render the gaps</h4>
+<p>Ingest with the metadata path. Then run a <strong>second pass, deferred and resumable</strong>, that renders only the items the first pass could not make distinguishable:</p>
+<ol><li><strong>No image found</strong> — no <code>og:image</code>, no <code>twitter:image</code>, nothing usable.</li><li><strong>A duplicated image</strong> — hash each captured image, and where one image covers</li></ol>
+<p>   more than a handful of items, treat all of them as having no image. This is    the case worth naming: fifty links to one documentation site all inheriting    one banner is a <em>worse</em> outcome than fifty blanks, because it looks like it    worked.</p>
+<p>Everything else keeps its metadata card. Ingestion never waits on the render queue; an item is usable — title, site, tags, verdict buttons — the moment it lands, and its picture improves later.</p>
+<p>The reason this beats plain B is not cost, which at these volumes is real but survivable either way. It is that <strong>B&#39;s failure mode is invisible and A&#39;s is loud.</strong> A screenshot of a consent wall is a confident, wrong picture; a missing <code>og:image</code> is a hole you can see and queue work against.</p>
+<h4>Rules this carries</h4>
+<ul><li><strong>Capture anonymously.</strong> No cookies, no session, ever — the 2012 Firefox flap</li></ul>
+<p>  is what the other choice looks like. The logged-out view is less useful and it   is the only one safe to store.</p>
+<ul><li><strong>Do not execute JavaScript on the metadata path.</strong> Apple&#39;s crawler doesn&#39;t,</li></ul>
+<p>  and it keeps the cheap path cheap and predictable. JS-rendered pages fall   through to the render pass, which is exactly where they belong.</p>
+<ul><li><strong>Store the derivative, not the original.</strong> Grid cells are small — an 8×2</li></ul>
+<p>  widescreen layout is roughly 300 px wide per cell — so downscale to a fixed   size on capture. Ten thousand items at that size is a few hundred megabytes,   which the earlier finding already established is not the constraint.</p>
+<ul><li><strong>Cache against the URL and never re-fetch on view</strong>, as Google Chat does.</li></ul>
+<p>  Re-capture is an explicit action, not a page load.</p>
+<ul><li><strong>Record the failure as data.</strong> Dead links, timeouts and 404s discovered during</li></ul>
+<p>  capture are not errors to swallow — in a pile assembled over years they are   among the most valuable triage signals available, and should reach the item as   a tag.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled</strong>: snapshots are captured once, at ingestion, server-side and</li></ul>
+<p>  anonymously; metadata is the primary path, an anonymous headless render is the   fallback for items with no image or a shared one; captures are stored   downscaled and never refreshed on view.</p>
+<ul><li><strong>Not settled</strong>: whether the render pass runs on our own headless browser or a</li></ul>
+<p>  paid API. That is an operational choice that follows the hosting question, and   the volumes here sit near enough to the break-even that it should be decided   with the host known rather than now.</p>
+<ul><li><strong>Not settled</strong>: how many items sharing one image counts as &quot;duplicated&quot;. The</li></ul>
+<p>  rule matters more than the number; the number wants a look at real data.</p>
+<ul><li><strong>Unblocks</strong> <code>draft-spec</code>, which was waiting on this to write its alternatives</li></ul>
+<p>  section — most of the table above is the raw material.</p>
+<h4>One thing WhatsApp does that we should think about</h4>
+<p>WhatsApp&#39;s preview <em>travels with the message</em>: capture and content move together. The analogue here is the export. Objective 7 wants the data portable, and the user has since asked for JSON export by tag — so does an export carry its images, or only URLs pointing back at ours? An export of keepers whose pictures die when this tool does is not obviously &quot;nothing is trapped&quot;.</p>
+<p>Raised, not answered — it belongs to the export work.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/sweep-prompt-hrkodj" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
