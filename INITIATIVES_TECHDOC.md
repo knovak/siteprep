@@ -38,6 +38,9 @@ dependency. That is fine for flat string fields and does not survive nested
 | `doc <slug> <file>` | A rendered markdown document as a page body |
 | `title <slug>` | The display title |
 | `digest [--json]` | The sweep survey - what needs attention |
+| `select [--json]` | Which items a run should work on, ranked and budgeted |
+| `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log |
+| `check-scope <slug>` | Fail if changed files reach outside the write scope |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -141,6 +144,38 @@ run may do, and must always include `"survey"`. Widening it to `"respond"` or
 `initiatives/sweep-prompt.md` is the instruction a sweep follows. It lives in
 the repo so a manual run and a scheduled run are the same text.
 
+### Selecting and completing work
+
+`select` ranks actionable items the same way every time:
+`(initiative value x item value) / effort`, plus a bonus for advancing the
+lifecycle and one that grows with staleness. It then applies `items_per_run`,
+`max_items_per_initiative`, `max_effort`, and `max_open_prs`, and drops anything
+whose `sweep/<slug>/<item-id>` branch is already open.
+
+Like the survey, none of that needs judgement - so leaving it to a model would
+only mean the definition of "most important" drifting between runs. **`select`
+returns nothing when `phases` omits `"work"`**, so the config, not the prompt,
+decides what a run may do.
+
+`complete` performs the §6.3 mechanics in one step: remove the item, flip
+anything blocked on `todo:<id>` to actionable, and append a dated `log.md`
+entry. It changes `stage` only when given `--stage`, and warns when a
+stage-advancing item is completed without one.
+
+`check-scope` compares a list of changed files against
+`initiatives/<slug>/**` plus that initiative's declared `outputs[]`, rejecting
+protected paths.
+
+### Enforcing the write scope
+
+`.github/workflows/sweep-scope.yml` runs on pull requests from `sweep/*`
+branches, reads the initiative slug out of the branch name, and runs
+`check-scope` over the diff.
+
+This is the invariant that lets several sweep pull requests merge in any order.
+It was previously only a sentence in a prompt; now a violation fails CI whether
+or not the agent remembered the rule.
+
 ### Scheduled digest
 
 `.github/workflows/initiatives-digest.yml` runs twice daily and keeps a single
@@ -164,8 +199,14 @@ shallow clone would report every initiative as touched today.
 - every initiative has an overview page, and is linked from the index
 - no raw `.md` is published under `initiatives/` - documents are rendered
 
-`tests/initiatives-digest.test.mjs` covers the survey against fixtures in
-`tests/fixtures/initiatives/`, using `node:test`.
+`tests/initiatives-digest.test.mjs` covers the survey, and
+`tests/initiatives-sweep.test.mjs` covers selection, completion, and the scope
+check - both against fixtures in `tests/fixtures/initiatives/`, using
+`node:test`. The completion tests copy the fixtures to a temporary directory,
+since they mutate state.
+
+`initiatives/sweep-setup.md` documents how to schedule a run and what any
+scheduler has to provide.
 
 `tests/e2e/initiatives.spec.js` covers the rendered result: the TOC explains
 what an initiative is, entries link to overview pages, the nav bar carries the

@@ -10,6 +10,13 @@
  * Subcommands:
  *   validate            check every initiative; exit 1 on an error, 0 on warnings
  *   digest [--json]     the sweep survey: what needs attention, as markdown
+ *   select [--json]     which items this run should work on
+ *                       [--claimed a,b] branches of open sweep PRs
+ *                       [--open-prs n]  how many sweep PRs are already open
+ *   complete <slug> <item-id> [--note "..."] [--stage <stage>]
+ *                       record an item done: remove it, unblock dependents, log it
+ *   check-scope <slug> --files <path>...   or --files-from <file>
+ *                       fail if a change reaches outside the initiative's write scope
  *   list                print one slug per line
  *   toc                 print the TOC page body
  *   page <slug>         print an initiative's overview page body
@@ -22,7 +29,7 @@
  * See INITIATIVES_TECHDOC.md.
  */
 
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -486,6 +493,263 @@ function formatDigest(digest) {
   return out.join('\n');
 }
 
+// ------------------------------------------------------- selecting work
+
+const VALUE_WEIGHT = { high: 3, medium: 2, low: 1 };
+const EFFORT_WEIGHT = { small: 1, medium: 2, large: 3 };
+
+/** An item that advances the lifecycle beats a slightly juicier item that does not. */
+const STAGE_GATE_BONUS = 3;
+/** Neglect compounds: at twice the staleness threshold an initiative gains this much. */
+const MAX_STALENESS_BONUS = 2;
+
+function weight(table, key, fallback) {
+  return table[String(key || '').toLowerCase()] ?? fallback;
+}
+
+/**
+ * Which items a sweep run should work on.
+ *
+ * Ranking is arithmetic over recorded state — value, effort, whether the item
+ * advances the stage, how long the initiative has been untouched — so like the
+ * survey it is computed rather than judged. Leaving it to the model would mean
+ * the definition of "most important" quietly changing between runs, and no way
+ * to test it.
+ *
+ * @param {object} options
+ * @param {string[]} options.claimed   branches of open sweep PRs
+ * @param {number}   options.openPrs   how many sweep PRs are already open
+ */
+function selectWork({ claimed = [], openPrs = 0 } = {}) {
+  const sweep = loadSweepConfig().config;
+  const phases = sweep.phases || ['survey'];
+  const perRun = Number.isFinite(sweep.items_per_run) ? sweep.items_per_run : 1;
+  const perInitiative = Number.isFinite(sweep.max_items_per_initiative)
+    ? sweep.max_items_per_initiative
+    : 1;
+  const maxOpen = Number.isFinite(sweep.max_open_prs) ? sweep.max_open_prs : 4;
+  const effortCeiling = weight(EFFORT_WEIGHT, sweep.max_effort, 3);
+  const globalStaleness = Number.isFinite(sweep.staleness_days)
+    ? sweep.staleness_days
+    : DEFAULT_STALENESS_DAYS;
+
+  const result = { phases, selected: [], skipped: [], stop: null };
+
+  // The config is the switch. If work is not enabled, nothing is selected -
+  // enabling it has to be a reviewable commit, not a persuasive prompt.
+  if (!phases.includes('work')) {
+    result.stop = 'sweep.json does not enable the "work" phase';
+    return result;
+  }
+  if (openPrs >= maxOpen) {
+    result.stop = `already ${openPrs} open sweep PR(s), at the max_open_prs limit of ${maxOpen}`;
+    return result;
+  }
+
+  // sweep/<slug>/<item-id> - the branch name is the record of what is claimed,
+  // so no second source of truth is needed.
+  const claimedItems = new Set(
+    claimed
+      .map((branch) => branch.trim().replace(/^sweep\//, ''))
+      .filter(Boolean)
+      .map((rest) => {
+        const cut = rest.indexOf('/');
+        return cut === -1 ? rest : `${rest.slice(0, cut)}/${rest.slice(cut + 1)}`;
+      })
+  );
+
+  const candidates = [];
+  for (const record of loadAll()) {
+    if (record.error) {
+      result.skipped.push({ slug: record.slug, reason: record.error });
+      continue;
+    }
+    const data = record.data;
+    const age = daysSince(record.lastActivity);
+    const threshold = Number.isFinite(data.staleness_days)
+      ? data.staleness_days
+      : globalStaleness;
+    const stalenessBonus = age === null
+      ? 0
+      : Math.min(age / Math.max(threshold, 1), MAX_STALENESS_BONUS);
+
+    for (const item of data.todo || []) {
+      if (item.state !== 'actionable') continue;
+
+      const key = `${record.slug}/${item.id}`;
+      if (claimedItems.has(key)) {
+        result.skipped.push({ slug: record.slug, item: item.id, reason: 'already has an open sweep PR' });
+        continue;
+      }
+      const effort = weight(EFFORT_WEIGHT, item.effort, 2);
+      if (effort > effortCeiling) {
+        result.skipped.push({
+          slug: record.slug,
+          item: item.id,
+          reason: `effort "${item.effort}" exceeds max_effort "${sweep.max_effort}"`
+        });
+        continue;
+      }
+
+      const score = (weight(VALUE_WEIGHT, data.value, 2) * weight(VALUE_WEIGHT, item.value, 2)) / effort
+        + (item.advances_stage ? STAGE_GATE_BONUS : 0)
+        + stalenessBonus;
+
+      candidates.push({
+        slug: record.slug,
+        item: item.id,
+        title: item.title || item.id,
+        branch: `sweep/${record.slug}/${item.id}`,
+        score: Math.round(score * 100) / 100,
+        advancesStage: Boolean(item.advances_stage),
+        effort: item.effort || 'medium'
+      });
+    }
+  }
+
+  candidates.sort((a, b) => b.score - a.score || a.slug.localeCompare(b.slug));
+
+  const perInitiativeCount = new Map();
+  const budget = Math.min(perRun, maxOpen - openPrs);
+  for (const candidate of candidates) {
+    if (result.selected.length >= budget) {
+      result.skipped.push({ ...candidate, reason: 'budget for this run is spent' });
+      continue;
+    }
+    const taken = perInitiativeCount.get(candidate.slug) || 0;
+    if (taken >= perInitiative) {
+      result.skipped.push({ ...candidate, reason: `max_items_per_initiative (${perInitiative}) reached` });
+      continue;
+    }
+    perInitiativeCount.set(candidate.slug, taken + 1);
+    result.selected.push(candidate);
+  }
+
+  return result;
+}
+
+function formatSelection(selection) {
+  if (selection.stop) return `No new work: ${selection.stop}`;
+  if (!selection.selected.length) {
+    return 'No new work: nothing actionable is available.';
+  }
+  const lines = ['Work for this run:', ''];
+  for (const item of selection.selected) {
+    lines.push(`- ${item.slug}/${item.item} — ${item.title}`);
+    lines.push(`  branch: ${item.branch}  score: ${item.score}${item.advancesStage ? '  (advances the stage)' : ''}`);
+  }
+  if (selection.skipped.length) {
+    lines.push('', 'Not this run:');
+    for (const skip of selection.skipped) {
+      lines.push(`- ${skip.slug}${skip.item ? `/${skip.item}` : ''} — ${skip.reason}`);
+    }
+  }
+  return lines.join('\n');
+}
+
+// ------------------------------------------------------- completing work
+
+/**
+ * Record an item as done, exactly as §6.3 requires.
+ *
+ * These are the mechanics a model editing JSON by hand gets subtly wrong -
+ * forgetting a dependent item, or leaving the log unwritten - so they are done
+ * once, here. The change still only takes effect when the pull request merges.
+ */
+function completeItem(slug, itemId, { note, stage } = {}) {
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+
+  const data = record.data;
+  const index = (data.todo || []).findIndex((item) => item.id === itemId);
+  if (index === -1) throw new Error(`${slug}: no todo item with id "${itemId}"`);
+
+  const [done] = data.todo.splice(index, 1);
+  const changes = [`removed "${done.title || done.id}"`];
+
+  if (done.state !== 'actionable') {
+    changes.push(`warning: it was "${done.state}", not actionable`);
+  }
+
+  // Anything waiting on this item is now free. A dangling todo: reference is a
+  // build error, so a missed unblock cannot pass unnoticed - but it should not
+  // get that far.
+  for (const item of data.todo) {
+    if (item.state === 'blocked' && item.blocked_by === `todo:${itemId}`) {
+      item.state = 'actionable';
+      delete item.blocked_by;
+      changes.push(`unblocked "${item.title || item.id}"`);
+    }
+  }
+
+  if (stage) {
+    if (!STAGES.includes(stage)) throw new Error(`unknown stage "${stage}"`);
+    changes.push(`stage ${data.stage} → ${stage}`);
+    data.stage = stage;
+  } else if (done.advances_stage) {
+    changes.push('warning: this item advances the stage, but no --stage was given');
+  }
+
+  writeFileSync(
+    join(record.dir, 'initiative.json'),
+    `${JSON.stringify(data, null, 2)}\n`
+  );
+
+  const today = new Date().toISOString().slice(0, 10);
+  const logPath = join(record.dir, 'log.md');
+  const existing = existsSync(logPath) ? readFileSync(logPath, 'utf8').trimEnd() : '# Log';
+  const entry = [
+    '',
+    '',
+    `## ${today} — ${done.title || done.id}`,
+    '',
+    note || 'Completed.'
+  ].join('\n');
+  writeFileSync(logPath, `${existing}${entry}\n`);
+  changes.push('appended to log.md');
+
+  return changes;
+}
+
+// ---------------------------------------------------------- write scope
+
+/**
+ * Whether a set of changed files stays inside what a sweep PR may touch.
+ *
+ * This is the invariant that lets several sweep PRs merge in any order, and it
+ * was previously only a sentence in a prompt. Enforcing it in CI means it holds
+ * whether or not the agent remembered it.
+ */
+function checkScope(slug, files) {
+  const sweep = loadSweepConfig().config;
+  const protectedPaths = sweep.protected_paths || [];
+  const record = loadInitiative(slug);
+
+  const allowed = [`initiatives/${slug}/`];
+  if (!record.error) {
+    for (const output of record.data.outputs || []) {
+      if (output.path) allowed.push(`${output.path.replace(/\/$/, '')}/`);
+    }
+  }
+
+  const violations = [];
+  for (const file of files) {
+    const path = file.trim();
+    if (!path) continue;
+
+    const blocked = protectedPaths.find((prefix) => path.startsWith(prefix));
+    if (blocked) {
+      violations.push({ path, reason: `protected path (${blocked})` });
+      continue;
+    }
+    if (!allowed.some((prefix) => path.startsWith(prefix))) {
+      violations.push({ path, reason: 'outside this initiative and its declared outputs' });
+    }
+  }
+
+  return { slug, allowed, violations, unreadable: record.error || null };
+}
+
 // -------------------------------------------------------------- rendering
 
 function escapeHtml(value) {
@@ -789,6 +1053,67 @@ switch (command) {
       : formatDigest(digest));
     break;
   }
+  case 'select': {
+    const claimedArg = args[args.indexOf('--claimed') + 1];
+    const openArg = args[args.indexOf('--open-prs') + 1];
+    const selection = selectWork({
+      claimed: args.includes('--claimed') && claimedArg
+        ? claimedArg.split(',')
+        : [],
+      openPrs: args.includes('--open-prs') ? Number(openArg) || 0 : 0
+    });
+    console.log(args.includes('--json')
+      ? JSON.stringify(selection, null, 2)
+      : formatSelection(selection));
+    break;
+  }
+  case 'complete': {
+    const [slug, itemId] = args;
+    if (!slug || !itemId) {
+      console.error('usage: initiatives.mjs complete <slug> <item-id> [--note "..."] [--stage <stage>]');
+      process.exit(2);
+    }
+    try {
+      const changes = completeItem(slug, itemId, {
+        note: args.includes('--note') ? args[args.indexOf('--note') + 1] : undefined,
+        stage: args.includes('--stage') ? args[args.indexOf('--stage') + 1] : undefined
+      });
+      for (const change of changes) console.log(change);
+    } catch (err) {
+      console.error(`INITIATIVE FAIL: ${err.message}`);
+      process.exit(1);
+    }
+    break;
+  }
+  case 'check-scope': {
+    const slug = args[0];
+    let files = [];
+    if (args.includes('--files-from')) {
+      const path = args[args.indexOf('--files-from') + 1];
+      files = readFileSync(path, 'utf8').split('\n');
+    } else if (args.includes('--files')) {
+      files = args.slice(args.indexOf('--files') + 1);
+    }
+    if (!slug) {
+      console.error('usage: initiatives.mjs check-scope <slug> --files <path>... | --files-from <file>');
+      process.exit(2);
+    }
+    const scope = checkScope(slug, files);
+    if (scope.unreadable) {
+      console.error(`INITIATIVE FAIL: ${slug}: ${scope.unreadable}`);
+      process.exit(1);
+    }
+    if (scope.violations.length) {
+      console.error(`INITIATIVE FAIL: ${scope.violations.length} file(s) outside the write scope for ${slug}`);
+      console.error(`Allowed: ${scope.allowed.join(', ')}`);
+      for (const violation of scope.violations) {
+        console.error(`  ${violation.path} — ${violation.reason}`);
+      }
+      process.exit(1);
+    }
+    console.log(`INITIATIVE PASS: ${files.filter((f) => f.trim()).length} changed file(s) within scope for ${slug}`);
+    break;
+  }
   case 'list':
     console.log(listSlugs().join('\n'));
     break;
@@ -816,6 +1141,6 @@ switch (command) {
     break;
   }
   default:
-    console.error('usage: initiatives.mjs validate|list|toc|page|docs|doc|title');
+    console.error('usage: initiatives.mjs validate|digest|select|complete|check-scope|list|toc|page|docs|doc|title');
     process.exit(2);
 }
