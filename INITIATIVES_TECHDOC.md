@@ -14,7 +14,7 @@ initiatives/
   <slug>/
     initiative.json        # required - stage, value, outputs, todo
     wish.md                # the goal in the user's own words
-    objectives.md spec.md plan.md test-plan.md log.md notes.md
+    objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
     overview.md            # optional narrative, appended to the overview page
 ```
 
@@ -75,6 +75,20 @@ Validation made this part of the build Node anyway, which is that reason - and
 rendering here means no client JS, no `fetch`, and no flash of an unrendered
 page. The `.md` file remains the single source of truth and still renders on
 GitHub, so the choice stays reversible.
+
+## Decisions
+
+`decisions.md` records questions the initiative was blocked on and how they were
+settled - dated, appended, newest at the bottom. It is a rendered document like
+any other, and the `answer-decision` skill writes it.
+
+It is deliberately not `log.md`, which records *what happened*; a decision is
+*why*, and would be buried among routine entries. It is deliberately not
+`objectives.md`, which would get muddier with every amendment.
+
+Keeping it separate gives two things the design already asked for a source for:
+the **Alternatives considered** section `spec.md` is expected to carry, and the
+protection against a revisit re-arguing a settled question.
 
 ## Validation
 

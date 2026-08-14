@@ -8,8 +8,7 @@
     {
       "id": "draft-spec",
       "title": "Draft spec.md, including alternatives considered for the runtime and the snapshot source",
-      "state": "blocked",
-      "blocked_by": "human:where should this run - local script, web app, browser extension, or hosted?",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
@@ -20,13 +19,6 @@
       "state": "blocked",
       "blocked_by": "human:live-fetch and render pages, capture at ingestion, or use existing thumbnails/favicons?",
       "value": "high",
-      "effort": "small"
-    },
-    {
-      "id": "pile-size",
-      "title": "Establish how large the real bookmark pile is",
-      "state": "actionable",
-      "value": "medium",
       "effort": "small"
     }
   ]

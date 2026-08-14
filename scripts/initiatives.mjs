@@ -67,6 +67,7 @@ const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal']);
 const DOCUMENTS = [
   ['wish.md', 'Wish'],
   ['objectives.md', 'Objectives'],
+  ['decisions.md', 'Decisions'],
   ['spec.md', 'Specification'],
   ['plan.md', 'Implementation plan'],
   ['test-plan.md', 'Test plan'],
