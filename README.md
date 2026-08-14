@@ -32,9 +32,14 @@ Each initiative moves through a lifecycle - `wish` → `shaped` → `specified` 
 → `building` → `refining` → `dormant` - and carries a todo list of what is actionable
 and what is blocked.
 
-See `INITIATIVES_VISION.md` for the full design, and the Initiatives section of
-`AGENTS.md` for the working conventions. **The automation described in the vision
-document is not built yet**; initiatives are currently maintained by hand.
+A scheduled **sweep** reads the initiatives, reports what needs a decision, answers
+review comments on its own pull requests, proposes answers to open questions, and works
+the todo lists - opening a pull request for everything and merging nothing. What it is
+allowed to do is set by `phases` in `initiatives/sweep.json`.
+
+See `INITIATIVES_VISION.md` for the full design, `INITIATIVES_TECHDOC.md` for what the
+build actually does, `initiatives/sweep-setup.md` for how the sweep is scheduled and
+switched on, and the Initiatives section of `AGENTS.md` for the working conventions.
 
 ### Deck asset convention
 

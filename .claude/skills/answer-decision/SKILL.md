@@ -100,3 +100,19 @@ they never gave is worse than no record.
 Everything above is a normal change: `decisions.md`, `initiative.json`, and
 `log.md`. Open a PR as usual and let the user merge it. The decision takes
 effect when they do — the same rule as everywhere else here.
+
+## When the answer is yours to propose, not theirs to record
+
+The sweep's propose phase (`initiatives/sweep-prompt.md`, Phase 3) writes the
+same entry in the same format, for a `human:` question the user has not answered
+yet. Everything above still applies, with one section reversed: **the answer is
+a recommendation, not a record**, so the alternatives come before it, it is
+labelled as a recommendation, and the entry says what would make a different
+option correct. Merging is what turns it into the user's answer.
+
+That distinction is the whole safeguard. A proposal written as though the
+question were settled reads exactly like a decision the user made and forgot,
+which is worse than leaving it open.
+
+Only `human:` questions may be proposed — never `data:`, `permission:`, `cost:`
+or `legal:`. Those need a fact only the user has, or their authority.

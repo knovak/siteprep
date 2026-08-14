@@ -1,11 +1,12 @@
 name: Initiatives digest
 
-# Phase 4 of the initiatives plan: the sweep's survey phase, twice daily.
+# The sweep's survey phase, twice daily, on its own.
 #
 # Every part of the survey is derived from initiative.json, the files present,
 # and git, so this needs no model - it runs `initiatives.mjs digest` and keeps a
-# single issue current. A model only becomes necessary when the sweep starts
-# doing work, which is a later phase and is gated by `phases` in sweep.json.
+# single issue current. The phases that need one (respond, propose, work) run in
+# the scheduled sweep instead; see initiatives/sweep-setup.md. This workflow
+# never changes anything, whatever `phases` in sweep.json allows.
 #
 # Noise is the failure mode of a twice-daily job, so the issue body is refreshed
 # silently and a comment - the only thing that notifies - is posted solely when

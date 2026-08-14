@@ -38,6 +38,7 @@ dependency. That is fine for flat string fields and does not survive nested
 | `doc <slug> <file>` | A rendered markdown document as a page body |
 | `title <slug>` | The display title |
 | `digest [--json]` | The sweep survey - what needs attention |
+| `propose [--json]` | Which `human:` questions a run should propose answers to |
 | `select [--json]` | Which items a run should work on, ranked and budgeted |
 | `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log |
 | `check-scope <slug>` | Fail if changed files reach outside the write scope |
@@ -152,8 +153,10 @@ against fixtures instead of live work.
 ### Configuration and the prompt
 
 `initiatives/sweep.json` holds the run configuration; `phases` controls what a
-run may do, and must always include `"survey"`. Widening it to `"respond"` or
-`"work"` is a reviewable commit rather than an edit to a prompt.
+run may do, and must always include `"survey"`. It is now
+`["survey", "respond", "propose", "work"]` - every capability on, at the
+configured budget of four items per run. Narrowing it is the same kind of
+reviewable commit that widening it was.
 
 `initiatives/sweep-prompt.md` is the instruction a sweep follows. It lives in
 the repo so a manual run and a scheduled run are the same text.
@@ -170,6 +173,38 @@ Like the survey, none of that needs judgement - so leaving it to a model would
 only mean the definition of "most important" drifting between runs. **`select`
 returns nothing when `phases` omits `"work"`**, so the config, not the prompt,
 decides what a run may do.
+
+### Proposing answers
+
+`propose` picks the questions a run should answer with a pull request. It ranks
+them exactly as `select` does and shares the same caps, so a proposal is
+ordinary work that happens to produce a decision rather than a document.
+
+Three things are specific to it:
+
+- **Only `human:` blockers are selected.** `permission:`, `cost:` and `legal:`
+  need the user's authority rather than reasoning, and `data:` needs a fact only
+  they have; proposing one would be an invention wearing the costume of an
+  answer. Those are returned in a separate `notProposable` list, which is also
+  what the digest issue is left carrying.
+- **`max_effort` does not apply.** It caps the work the sweep may attempt
+  unattended, and composing a proposal is not doing the item - a large item's
+  question is often the one most worth answering first.
+- **The branch is `sweep/<slug>/propose-<item-id>`**, not the item's work
+  branch. Once a proposal merges the item becomes actionable and `select` may
+  pick it up under `sweep/<slug>/<item-id>`, so the two must not be the same
+  name. `sweep-scope.yml` reads the slug from the second segment either way.
+
+The digest marks each waiting decision `proposable`, so the same list says both
+what needs the user and which entries will arrive as a pull request.
+
+### The shared budget
+
+`items_per_run` is one number covering review responses, proposals, and new
+work, consumed in phase order. `propose` and `select` both take `--spent <n>`,
+the count earlier phases used, and subtract it from the budget - so precedence
+is arithmetic rather than something the prompt has to remember. A run that
+spends everything on revisions and starts nothing new is the correct run.
 
 `complete` performs the §6.3 mechanics in one step: remove the item, flip
 anything blocked on `todo:<id>` to actionable, and append a dated `log.md`
@@ -214,10 +249,14 @@ shallow clone would report every initiative as touched today.
 - no raw `.md` is published under `initiatives/` - documents are rendered
 
 `tests/initiatives-digest.test.mjs` covers the survey, and
-`tests/initiatives-sweep.test.mjs` covers selection, completion, and the scope
-check - both against fixtures in `tests/fixtures/initiatives/`, using
-`node:test`. The completion tests copy the fixtures to a temporary directory,
-since they mutate state.
+`tests/initiatives-sweep.test.mjs` covers selection, proposal selection,
+completion, and the scope check - both against fixtures in
+`tests/fixtures/initiatives/`, using `node:test`. The completion tests copy the
+fixtures to a temporary directory, since they mutate state.
+
+The proposal tests pin the two rules that make the phase safe rather than
+merely useful: that a `permission:` blocker is never selected, and that a
+proposal branch cannot collide with the work branch for the same item.
 
 `initiatives/sweep-setup.md` documents how to schedule a run and what any
 scheduler has to provide.
