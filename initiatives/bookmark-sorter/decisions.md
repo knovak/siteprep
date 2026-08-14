@@ -91,3 +91,123 @@ snapshot decision is made.
 - Which OpenAI surface, and what its database and export story actually is.
 - How snapshots are obtained, now narrowed as above — recorded separately as an
   open blocker.
+
+## 2026-08-14 — Where do page snapshots come from?
+
+**Captured at ingestion.** Not live-fetched per item on demand, and not left to
+whatever favicon the page already advertises.
+
+The user asked for the follow-on question to be worked out rather than left:
+*"Identify ways to do this: how do iMessage, WhatsApp, and Google Chat do it?
+How about browsers' tab displays? Find alternatives, compare, and choose one."*
+So the choice of **mechanism** below is ours, made on their instruction; the
+choice of **ingestion time** is theirs.
+
+### How the systems that do this at scale actually do it
+
+Worth stating first, because it reframes the question: **none of the three
+messaging apps takes a screenshot.** All three build a card out of metadata.
+
+| System | Who fetches | What it captures | Notable |
+|---|---|---|---|
+| **iMessage** | The sender's device | Open Graph tags — `og:title`, `og:description`, `og:image` | Apple's crawler is deliberately conservative: HTTPS only, static HTML only, **no JavaScript executed**. Missing or JS-injected tags mean no card at all — it degrades to a bare URL rather than guessing |
+| **WhatsApp** | The sender's device (mobile); Meta's servers on WhatsApp Web | Same Open Graph tags | The preview is generated once and **travels with the message** — the recipient sees the sender's capture, and sees it even with previews disabled locally |
+| **Google Chat** | Google's server-side unfurl service (UA `GoogleMessages`) | Same Open Graph tags, falling back to `<title>` and `<meta name=description>` | Fetch once per URL, **cache against the URL**. Aggressive enough that a corrected tag can take a long time to appear |
+| **Browser tab thumbnails** (Chrome, Firefox, Safari) | The browser itself | Real pixels — a compositor capture of the rendered page | Only possible because *the browser already has the page rendered*. Extensions get `chrome.tabs.captureVisibleTab`, and the name is the limit: the **visible** tab |
+
+Two things fall out of that table and they drive everything below.
+
+**The metadata path is universal because it is cheap and it degrades well.**
+Every one of these products chose two HTTP requests and a fallback ladder — OG
+tags, then `<title>`, then bare URL — over rendering a page. At messaging volume
+the economics are the same as ours at 10,000 items.
+
+**Pixels only appear where a renderer already had the page.** The browser is not
+solving our problem; it is capturing something it rendered anyway for its own
+reasons. Reproducing that means standing up the renderer ourselves, and Firefox's
+history is the warning label. Its background thumbnailer captured pages
+*without cookies*, so the thumbnail was the logged-out view rather than the page
+the user saw — the substance of Mozilla's bug 1413650, which proposed capturing
+the loaded tab instead. And the opposite failure has a scar too: in 2012
+Firefox's new-tab thumbnails were found to be caching views of logged-in pages,
+exposing private data on a shared screen. An anonymous render is inaccurate; an
+authenticated one is a liability.
+
+### Alternatives considered
+
+All are "at ingestion" — the family the user chose. They differ in what gets
+captured.
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A. Metadata card** — fetch the HTML, parse `og:image`/`twitter:image`, title, description, favicon; fetch and downscale that one image | What every messaging app does, for good reason. Two requests per item, trivially parallel — 10,000 items in minutes, not hours. No browser to run. Degrades in defined steps instead of failing | Coverage is partial: news, blogs and product pages carry `og:image`; documentation, PDFs, forum threads and old personal sites often carry nothing. Worse, `og:image` is frequently a **site-wide banner**, so fifty links from one site produce fifty identical cards — precisely where clustering puts them side by side |
+| **B. Headless render** — Playwright screenshots every URL server-side | Near-total coverage, and the capture is of *that page* rather than its publisher's banner. Most faithful to objective 4's "judged on sight" | 300–500 MB of RAM per browser process, so real capacity planning. Roughly an hour of wall clock for 10,000 pages at eight workers. Many captures are worthless anyway — cookie walls, consent overlays, paywalls, and login screens all screenshot beautifully and tell you nothing |
+| **C. Third-party screenshot API** | No infrastructure. Priced around $4–10 per thousand, so a 10,000-item backlog is a one-off $40–100 — not the blocker it might sound like | Every URL in a personal bookmark pile is handed to a third party. Recurring cost for a personal tool, and one more dependency between a bookmark and its picture |
+| **D. Capture on visit** — an extension grabs the page as you actually browse it, the way a browser fills its own thumbnail cache | The only option that captures the *logged-in, dismissed-banner* page, because a human was there | Nothing to show for a backlog accumulated over years — it can only work forward. Already ruled out upstream: the runtime is a web app, not an extension |
+| **E. Metadata first, render the gaps** *(chosen)* | Spends the cheap path on the majority and the expensive one only where the cheap path fails the sight test. One pipeline, one fallback ladder | Two capture paths to build and keep working. Needs a rule for what counts as "failed", which is the interesting part |
+
+### The choice: metadata first, render the gaps
+
+Ingest with the metadata path. Then run a **second pass, deferred and
+resumable**, that renders only the items the first pass could not make
+distinguishable:
+
+1. **No image found** — no `og:image`, no `twitter:image`, nothing usable.
+2. **A duplicated image** — hash each captured image, and where one image covers
+   more than a handful of items, treat all of them as having no image. This is
+   the case worth naming: fifty links to one documentation site all inheriting
+   one banner is a *worse* outcome than fifty blanks, because it looks like it
+   worked.
+
+Everything else keeps its metadata card. Ingestion never waits on the render
+queue; an item is usable — title, site, tags, verdict buttons — the moment it
+lands, and its picture improves later.
+
+The reason this beats plain B is not cost, which at these volumes is real but
+survivable either way. It is that **B's failure mode is invisible and A's is
+loud.** A screenshot of a consent wall is a confident, wrong picture; a missing
+`og:image` is a hole you can see and queue work against.
+
+### Rules this carries
+
+- **Capture anonymously.** No cookies, no session, ever — the 2012 Firefox flap
+  is what the other choice looks like. The logged-out view is less useful and it
+  is the only one safe to store.
+- **Do not execute JavaScript on the metadata path.** Apple's crawler doesn't,
+  and it keeps the cheap path cheap and predictable. JS-rendered pages fall
+  through to the render pass, which is exactly where they belong.
+- **Store the derivative, not the original.** Grid cells are small — an 8×2
+  widescreen layout is roughly 300 px wide per cell — so downscale to a fixed
+  size on capture. Ten thousand items at that size is a few hundred megabytes,
+  which the earlier finding already established is not the constraint.
+- **Cache against the URL and never re-fetch on view**, as Google Chat does.
+  Re-capture is an explicit action, not a page load.
+- **Record the failure as data.** Dead links, timeouts and 404s discovered during
+  capture are not errors to swallow — in a pile assembled over years they are
+  among the most valuable triage signals available, and should reach the item as
+  a tag.
+
+### What this settles, and what it does not
+
+- **Settled**: snapshots are captured once, at ingestion, server-side and
+  anonymously; metadata is the primary path, an anonymous headless render is the
+  fallback for items with no image or a shared one; captures are stored
+  downscaled and never refreshed on view.
+- **Not settled**: whether the render pass runs on our own headless browser or a
+  paid API. That is an operational choice that follows the hosting question, and
+  the volumes here sit near enough to the break-even that it should be decided
+  with the host known rather than now.
+- **Not settled**: how many items sharing one image counts as "duplicated". The
+  rule matters more than the number; the number wants a look at real data.
+- **Unblocks** `draft-spec`, which was waiting on this to write its alternatives
+  section — most of the table above is the raw material.
+
+### One thing WhatsApp does that we should think about
+
+WhatsApp's preview *travels with the message*: capture and content move
+together. The analogue here is the export. Objective 7 wants the data portable,
+and the user has since asked for JSON export by tag — so does an export carry
+its images, or only URLs pointing back at ours? An export of keepers whose
+pictures die when this tool does is not obviously "nothing is trapped".
+
+Raised, not answered — it belongs to the export work.

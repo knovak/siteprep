@@ -26,3 +26,29 @@ point.
 Unblocks drafting the spec. Leaves the snapshot question open, and narrower: a
 web page cannot capture a third-party page client-side, and at 5,000-10,000
 items live fetching per item is impractical.
+
+## 2026-08-14 — Decide where page snapshots come from
+
+Capture at ingestion: metadata first (Open Graph, as iMessage/WhatsApp/Google Chat do), anonymous headless render as the fallback for items with no image or a shared one. Recorded in decisions.md.
+
+The mechanism was chosen rather than asked back, on the user's instruction to
+compare how iMessage, WhatsApp, Google Chat and browser tab thumbnails do it.
+The finding that decided it: none of the three messaging apps screenshots
+anything — they all build a card from Open Graph metadata — and the browsers
+only have pixels because they had already rendered the page for their own
+reasons.
+
+## 2026-08-14 — Wish amended: collections, import and export
+
+The user added a second block to `wish.md`: the site may be used by more than one
+person, so items live in **collections** — one per user, plus non-personal ones
+such as a demo. Four operations follow, wanted in the UI as a menu: choose a
+collection, import bookmarks into it from a browser export, export a collection
+as JSON with tags and some selection by tag, and import from an export file.
+Imported bookmarks should keep their folder path, probably as a tag.
+
+This widens the scope past what `objectives.md` describes, so drafting the spec
+is now blocked on revising it — a spec written today would be missing a third of
+the requirement. The question the amendment raises but does not answer, whether
+collections are protected by sign-in, by unguessable links, or not at all, is
+recorded as a blocker rather than assumed.

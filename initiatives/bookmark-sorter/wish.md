@@ -19,3 +19,22 @@ Extend by allowing the user to designate subsets based on tags, and create tab g
 Two sentences were unfinished as dictated and are completed here by inference:
 "snapshots from the page" and "a carousel on a phone". Correct them if the intent
 was different.
+
+## 2026-08-14 — amendment: collections, and moving items in and out
+
+Added by the user after the first three decisions were settled.
+
+I might allow multiple people to use this website, especially to test it out. So
+the system should have 'collections', which can be one per user, and could be
+additional non-personal collections (eg to use as a demo).
+
+So we will need these operations in the UI, possibly as a menu:
+
+- choose collection
+- import bookmarks into the current collection (eg from a browser export file)
+- export the items from a collection, presumably as json, with tags. Allow some
+  kind of selection by tag
+- import items into the current collection from an export file
+
+Another detail: if a bookmark file is imported it should retain the bookmark
+folder path, possibly as a tag.
