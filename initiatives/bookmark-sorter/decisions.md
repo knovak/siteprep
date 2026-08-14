@@ -193,21 +193,72 @@ loud.** A screenshot of a consent wall is a confident, wrong picture; a missing
   anonymously; metadata is the primary path, an anonymous headless render is the
   fallback for items with no image or a shared one; captures are stored
   downscaled and never refreshed on view.
-- **Not settled**: whether the render pass runs on our own headless browser or a
-  paid API. That is an operational choice that follows the hosting question, and
-  the volumes here sit near enough to the break-even that it should be decided
-  with the host known rather than now.
-- **Not settled**: how many items sharing one image counts as "duplicated". The
-  rule matters more than the number; the number wants a look at real data.
+- **Settled on review**: the render pass uses a **paid screenshot API**, not a
+  headless browser we run. See below.
+- **Settled on review**: the duplicate threshold **starts at 30** — an image
+  covering 30 or more items marks all of them as needing a render. A starting
+  value, to be moved once there is real data.
 - **Unblocks** `draft-spec`, which was waiting on this to write its alternatives
   section — most of the table above is the raw material.
 
-### One thing WhatsApp does that we should think about
+### The render pass runs on a paid API
+
+The user's call on review: *"Use a paid API."*
+
+It reads better than it did as option C standing alone, because metadata-first
+changes its arithmetic and its privacy cost at the same time. Only the gap items
+are rendered — a minority of the pile — so a 10,000-item backlog is a few
+thousand captures, well inside the $4–10 per thousand band and a one-off rather
+than a running bill. The same reduction applies to the objection: instead of
+handing every bookmarked URL to a third party, we hand over only those with no
+usable `og:image`. That is still a real disclosure and should be recorded as an
+accepted cost, not argued away — but it is a fraction of the pile rather than
+all of it.
+
+What it buys is that nobody has to run and pay for a browser fleet, and the
+300–500 MB-per-process capacity planning in option B never has to happen. For a
+personal tool with a one-off backlog and a slow trickle after it, that is the
+right shape: the expensive path is rented for the burst, not owned for the year.
+
+The dependency is the thing to keep an eye on. A capture that cannot be re-made
+without a vendor is a capture worth storing carefully, which is the next section.
+
+### The export carries no captures, and a cache makes that cheap
 
 WhatsApp's preview *travels with the message*: capture and content move
-together. The analogue here is the export. Objective 7 wants the data portable,
-and the user has since asked for JSON export by tag — so does an export carry
-its images, or only URLs pointing back at ours? An export of keepers whose
-pictures die when this tool does is not obviously "nothing is trapped".
+together. The question was whether an export should do the same. Answered on
+review: **"No metadata in the export."**
 
-Raised, not answered — it belongs to the export work.
+So an export is the user's own material — items, URLs, tags, verdicts — and
+nothing derived. That is a cleaner reading of objective 7 than bundling images
+would have been. What must not be trapped is the *judgement*: which things are
+keepers, and what they were called. Pictures are a rebuildable convenience, and
+shipping thousands of them inside a JSON file would make the portable artefact
+large and awkward in exchange for data the system can produce again.
+
+The user's follow-on, and it is the right one: *"Consider if our system should
+keep its own thumbnail cache, so re-import of a collection can re-use the cache
+rather than reprocessing."*
+
+**Yes — the capture store should be keyed by URL, not by item.** Without that,
+the decision above has an ugly consequence: re-importing a collection you
+exported last week would re-capture every item, paying the API a second time for
+pictures we already have. Keying by URL removes it, and the same key pays off
+three more times:
+
+- **Collections overlap.** Several people testing the same demo, or two users
+  who both bookmarked the same well-known page, capture it once between them.
+- **The demo collection is free.** It is the same URLs as somebody's real one.
+- **Re-import is the normal case, not the exception.** Export and re-import is
+  how a collection moves between users and how a test collection gets reset.
+
+The one thing this forces into the open: **a URL-keyed store shared across
+collections means one user's capture is served to another.** The content itself
+is harmless — every capture is anonymous and logged-out, so it holds nothing
+that a stranger visiting the URL would not see. What can leak is *existence*: a
+fast cache hit says someone, somewhere, has this URL. Whether that matters
+depends entirely on whether collections are meant to be private from each other,
+which is the `collection-access` question already waiting on the user. Recorded
+there rather than decided here — but the two answers have to agree, and if
+collections turn out to be private, the cache should be per-collection with the
+extra capture cost accepted.

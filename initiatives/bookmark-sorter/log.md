@@ -52,3 +52,18 @@ is now blocked on revising it — a spec written today would be missing a third 
 the requirement. The question the amendment raises but does not answer, whether
 collections are protected by sign-in, by unguessable links, or not at all, is
 recorded as a blocker rather than assumed.
+
+## 2026-08-14 — Review round on the snapshot decision
+
+Three review comments, all settling things the entry had deliberately left open:
+the render pass uses a **paid screenshot API** rather than a browser fleet we
+run; the duplicate-image threshold **starts at 30**; and an export carries **no
+captures** — items, URLs, tags and verdicts only.
+
+The last came with a follow-on worth more than the answer: keep a capture cache
+so a re-imported collection reuses it instead of reprocessing. Recorded as
+keying the capture store **by URL rather than by item**, which also makes
+overlapping collections and the demo collection nearly free. It sharpens the
+open `collection-access` question rather than settling it — a URL-keyed store
+shared across collections leaks the existence of a URL between them, so if
+collections are meant to be private the cache has to be per-collection.

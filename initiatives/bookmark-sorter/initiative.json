@@ -25,7 +25,7 @@
       "id": "collection-access",
       "title": "Decide how collections are identified and who may open one",
       "state": "blocked",
-      "blocked_by": "human:signed-in accounts, unguessable share links with no sign-in, or one shared instance with named collections and no protection at all?",
+      "blocked_by": "human:signed-in accounts, unguessable share links with no sign-in, or one shared instance with named collections and no protection at all? Also decides whether the URL-keyed capture cache may be shared across collections.",
       "value": "high",
       "effort": "small"
     }
