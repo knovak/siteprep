@@ -7,7 +7,6 @@
 <h2>Ski and snowboard</h2><ul><li><strong>Jackson Hole Mountain Resort:</strong> The valley’s large destination resort offers skiing and snowboarding from its Teton Village base, with an aerial tram, gondolas, chairlifts, a 4,139-foot vertical drop, and terrain best known for steep, advanced runs alongside beginner and intermediate areas. This is <strong>not Snow King Mountain</strong>, the smaller “ski hill” beside downtown Jackson; allow time to travel roughly 12 miles northwest from town to Teton Village.</li><li><strong>Location:</strong> The supplied map pin marks <strong>Jackson Hole Resort Lodging</strong> in the resort’s Teton Village base area at <strong>3200 McCollister Drive, Teton Village, WY 83025</strong>. <a href="https://maps.app.goo.gl/GfCq64sMYkLVR6hn6?g_st=i&amp;utm_campaign=ac-im" target="_blank" rel="noopener">Open the supplied location in Google Maps</a>. From here, the lifts, rentals, lessons, restaurants, and other base-village services are close at hand.</li><li><strong>Planning:</strong> Lift and terrain availability depend on snowfall and daily conditions. Hours are seasonal and vary by lift; check the <a href="https://www.jacksonhole.com/mountain-report" target="_blank" rel="noopener">official mountain report</a> before leaving, and reserve lift tickets, rentals, and lessons ahead for the December holiday period.</li></ul>
 <h2>Events and Seasonal Planning</h2><ul><li><strong>October 1–8:</strong> This is shoulder season. Check the <a href="https://www.jacksonholechamber.com/events/" target="_blank" rel="noopener">Jackson Hole Chamber calendar</a> for newly announced arts, music, and community events. Grand Teton roads and visitor services begin seasonal closures; verify <a href="https://www.nps.gov/grte/planyourvisit/conditions.htm" target="_blank" rel="noopener">current park conditions</a> before every outing.</li><li><strong>December 23–30:</strong> Skiing and holiday programs are the focus, but operations remain weather-dependent. The National Elk Refuge’s horse-drawn sleigh rides generally operate during the snowy winter season; confirm the opening date, daily times, and reservations close to travel. Christmas Day closures are widespread.</li><li><strong>Wildlife safety:</strong> Never approach or feed wildlife. Carry traction, monitor avalanche and road conditions, and allow extra winter travel time.</li></ul>
 <h2>Map</h2><p>All visitor locations listed above are marked below. Use either clickable legend to focus a location.</p><h3>OpenStreetMap</h3><div id="jh-map-osm" class="map-container"></div><div id="jh-legend-osm" class="map-legend"></div><h3>OpenTopoMap</h3><div id="jh-map-topo" class="map-container"></div><div id="jh-legend-topo" class="map-legend"></div></div></article>
-<footer class="site-footer"><div class="footer-nav"><a href="../../../../index.html">All decks</a><span class="footer-separator">|</span><a href="../../index.html">Rockies</a></div></footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><script src="../../../../shared/standard_map/standard_map.js"></script><script>
 const locations=[
       { name: 'National Museum of Wildlife Art', lat: 43.52, lng: -110.748, color: '#8e44ad', icon: '🎨' },
@@ -23,46 +22,7 @@ StandardMap.render({
   topoLegendId: 'jh-legend-topo'
 });
 </script>
-  <footer class="site-footer">
-    <script>
-      (function() {
-        var footer = document.currentScript.parentElement;
-        var nav = document.createElement('div');
-        nav.className = 'footer-nav';
-        var links = [];
-        
-        // Version link to home
-        links.push({ href: '../../../../index.html', text: 'Version: main' });
-        
-        // Deck link
-        links.push({ href: '../../index.html', text: 'Deck' });
-        
-        // Section link
-        links.push({ href: 'overview.html', text: 'Section' });
-        
-        // Google Drive link
-        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
-        
-        // View all versions link
-        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
-        
-        // Build the navigation
-        links.forEach(function(link, index) {
-          if (index > 0) {
-            var sep = document.createElement('span');
-            sep.className = 'footer-separator';
-            sep.textContent = '|';
-            nav.appendChild(sep);
-          }
-          var a = document.createElement('a');
-          a.href = link.href;
-          a.textContent = link.text;
-          if (link.external) a.target = '_blank';
-          nav.appendChild(a);
-        });
-        
-        footer.appendChild(nav);
-      })();
-    </script>
+  <footer class="site-footer" data-version="main" data-root="../../../../" data-deck="../../index.html" data-section="overview.html">
+    <script src="../../../../shared/site_footer/site_footer.js"></script>
   </footer>
 </body></html>

@@ -17,7 +17,6 @@
 <h3>VIFF Live music schedule</h3><ul><li><strong>Oct 2:</strong> MUTEK × VIFF Live (Dopplereffekt, Honeydrip, MIIIA, and visual artist MELT); plus <em>The Last Angel of History</em> with a preceding Speaker Music performance.</li><li><strong>Oct 3:</strong> <em>TAKKUUK</em>, preceded by Silla and Tarrak; plus <em>The KLF: 23 Seconds to Eternity</em>, preceded by CHXMERAS.</li><li><strong>Oct 4:</strong> Kelly Moran live audiovisual performance, with Bahar Khazei and XEL.</li><li><strong>Oct 5:</strong> Los Thuthanaka’s Canadian debut; and a Cristóbal Tapia de Veer composer masterclass.</li><li><strong>Oct 6:</strong> <em>ERASERHEAD XIU XIU</em>, Xiu Xiu’s live reimagining of the film’s sonic and visual world.</li><li><strong>Oct 7:</strong> Derrick Gee’s <em>Radio Hour</em>.</li><li><strong>Oct 9:</strong> <em>Jóhann Jóhannsson’s Cinematic Suites: The Denis Villeneuve Scores</em>, performed by live orchestra.</li></ul><p>Times, performance venues, availability, and ticket links are on the official <a href="https://viff.org/live/viff-2026/" target="_blank" rel="noopener">VIFF Live 2026 schedule</a>; book individual events early.</p></div>
 <h2>Events</h2><ul><li><strong>VIFF:</strong> October 1–11 at the VIFF Centre and other announced cinemas; see the festival topic above.</li><li><strong>Thanksgiving:</strong> Monday, October 12; not a festival, but restaurants and cultural venues may use holiday hours, so reserve and verify.</li></ul>
 <h2>Map</h2><p>All visitor locations listed above are marked below. Use either clickable legend to focus a location.</p><h3>OpenStreetMap</h3><div id="van-map-osm" class="map-container"></div><div id="van-legend-osm" class="map-legend"></div><h3>OpenTopoMap</h3><div id="van-map-topo" class="map-container"></div><div id="van-legend-topo" class="map-legend"></div></div></article>
-<footer class="site-footer"><div class="footer-nav"><a href="../../../../index.html">All decks</a><span class="footer-separator">|</span><a href="../../index.html">British Columbia</a></div></footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><script src="../../../../shared/standard_map/standard_map.js"></script><script>
 const vancouverLocations = [
   { name: 'Stanley Park', type: 'Attraction', lat: 49.3043, lng: -123.1443, color: '#1e8449', icon: '🌲' },
@@ -34,47 +33,8 @@ StandardMap.render({
   topoLegendId: 'van-legend-topo'
 });
 </script>
-  <footer class="site-footer">
-    <script>
-      (function() {
-        var footer = document.currentScript.parentElement;
-        var nav = document.createElement('div');
-        nav.className = 'footer-nav';
-        var links = [];
-        
-        // Version link to home
-        links.push({ href: '../../../../index.html', text: 'Version: main' });
-        
-        // Deck link
-        links.push({ href: '../../index.html', text: 'Deck' });
-        
-        // Section link
-        links.push({ href: 'overview.html', text: 'Section' });
-        
-        // Google Drive link
-        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
-        
-        // View all versions link
-        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
-        
-        // Build the navigation
-        links.forEach(function(link, index) {
-          if (index > 0) {
-            var sep = document.createElement('span');
-            sep.className = 'footer-separator';
-            sep.textContent = '|';
-            nav.appendChild(sep);
-          }
-          var a = document.createElement('a');
-          a.href = link.href;
-          a.textContent = link.text;
-          if (link.external) a.target = '_blank';
-          nav.appendChild(a);
-        });
-        
-        footer.appendChild(nav);
-      })();
-    </script>
+  <footer class="site-footer" data-version="main" data-root="../../../../" data-deck="../../index.html" data-section="overview.html">
+    <script src="../../../../shared/site_footer/site_footer.js"></script>
   </footer>
 </body>
 </html>
