@@ -309,6 +309,20 @@ cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
   </main>
 EOF_HTML
 
+if [ -d "$ROOT_DIR/initiatives" ]; then
+  cat >> "$OUTPUT_DIR/index.html" <<'EOF_HTML'
+  <main class="card" aria-labelledby="initiative-list-title">
+    <div class="card-header">
+      <h2 id="initiative-list-title">Initiatives</h2>
+      <p class="meta">Bodies of work in progress, with their goals, documents, and next steps.</p>
+    </div>
+    <div class="card-content">
+      <p><a href="./initiatives/index.html">Browse all initiatives</a></p>
+    </div>
+  </main>
+EOF_HTML
+fi
+
 toc_page_close "$OUTPUT_DIR/index.html"
 
 # Generate demos index without modifying copied demo files.
@@ -362,6 +376,42 @@ EOF_DEMO_ITEM
   </main>
 EOF_DEMOS
   toc_page_close "$OUTPUT_DIR/demos/index.html"
+fi
+
+# Generate the initiatives TOC, one overview page per initiative, and a rendered
+# page per initiative document. The bodies come from scripts/initiatives.mjs -
+# nested todo[] and outputs[] are not something to pattern-match out of JSON with
+# grep - while the page shell stays here, shared with the other TOC pages.
+if [ -d "$ROOT_DIR/initiatives" ]; then
+  mkdir -p "$OUTPUT_DIR/initiatives"
+
+  toc_page_open "$OUTPUT_DIR/initiatives/index.html" "SitePrep Initiatives" "Initiatives Index" "../" "initiatives" \
+'      <p>Bodies of work in progress, each with its own goal, documents, and next steps.</p>
+      <p><a href="../index.html">Return to SitePrep home</a></p>'
+  node "$ROOT_DIR/scripts/initiatives.mjs" toc >> "$OUTPUT_DIR/initiatives/index.html"
+  toc_page_close "$OUTPUT_DIR/initiatives/index.html"
+
+  while IFS= read -r initiative; do
+    [ -n "$initiative" ] || continue
+    initiative_out="$OUTPUT_DIR/initiatives/$initiative"
+    mkdir -p "$initiative_out"
+    initiative_title=$(node "$ROOT_DIR/scripts/initiatives.mjs" title "$initiative")
+
+    toc_page_open "$initiative_out/index.html" "$initiative_title" "Initiative" "../../" "initiatives" \
+"      <p><a href=\"../index.html\">All initiatives</a></p>"
+    node "$ROOT_DIR/scripts/initiatives.mjs" page "$initiative" >> "$initiative_out/index.html"
+    toc_page_close "$initiative_out/index.html"
+
+    # Documents are rendered at build time, so the source stays .md - readable on
+    # GitHub, diffable, and still the single source of truth.
+    while IFS='|' read -r doc_file doc_output doc_title; do
+      [ -n "$doc_file" ] || continue
+      toc_page_open "$initiative_out/$doc_output" "${doc_title} — ${initiative_title}" "Initiative Document" "../../" "initiatives" \
+"      <p><a href=\"./index.html\">Back to ${initiative_title}</a></p>"
+      node "$ROOT_DIR/scripts/initiatives.mjs" doc "$initiative" "$doc_file" >> "$initiative_out/$doc_output"
+      toc_page_close "$initiative_out/$doc_output"
+    done < <(node "$ROOT_DIR/scripts/initiatives.mjs" docs "$initiative")
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" list)
 fi
 
 # Create a placeholder index-versions.html (will be replaced during deployment)

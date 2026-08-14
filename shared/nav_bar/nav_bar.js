@@ -16,7 +16,7 @@
   var DEFAULT_DOCS_HREF =
     'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link';
 
-  var DEFAULT_BUTTONS = ['home', 'top', 'documents', 'demos'];
+  var DEFAULT_BUTTONS = ['home', 'top', 'documents', 'demos', 'initiatives'];
 
   /**
    * Collections that own a "top of" button. The key is the path segment; the

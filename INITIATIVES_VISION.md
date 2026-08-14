@@ -123,7 +123,6 @@ initiatives/
   sweep.json           # sweep job configuration (§7.4)
   <initiative-name>/
     initiative.json    # required — the machine-readable state
-    index.html         # required — the initiative's overview page (§8.2)
     wish.md            # required — the original vague goal, in the user's words
     overview.md        # optional — hand-written prose, appended to index.html (§8.2)
     objectives.md      # what "done" would mean, once it can be said
@@ -138,7 +137,7 @@ initiatives/
     skills/            # skills this initiative develops
 ```
 
-**Only `initiative.json`, `index.html`, and `wish.md` exist at birth.** Every other
+**Only `initiative.json` and `wish.md` exist at birth**, and the overview page is generated rather than committed (§8.2). Every other
 document appears as the lifecycle advances. This is deliberate: **the absence of a
 document is itself the signal for the next step.** An initiative with a wish and no
 objectives has an obvious next action, and the sweep job (§7) can see it without being

@@ -1,0 +1,17 @@
+{
+  "title": "Demo metadata",
+  "summary": "Give each demo its own description and links, so the three TOC pages can share one entry renderer instead of only a page shell.",
+  "stage": "wish",
+  "value": "medium",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "draft-objectives",
+      "title": "Draft objectives.md - what \"done\" would mean",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": true
+    }
+  ]
+}

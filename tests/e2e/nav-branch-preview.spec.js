@@ -94,7 +94,8 @@ test.describe('nav bar on the main deployment', () => {
       '🏠 Home',
       '⬆️ Top of deck',
       '🔺 Documents',
-      '🧪 Demos'
+      '🧪 Demos',
+      '🧭 Initiatives'
     ]);
   });
 
@@ -105,7 +106,7 @@ test.describe('nav bar on the main deployment', () => {
       .locator('nav.tag-nav a')
       .evaluateAll((els) => els.map((el) => el.textContent.trim()));
 
-    expect(labels).toEqual(['🏠 Home', '🔺 Documents', '🧪 Demos']);
+    expect(labels).toEqual(['🏠 Home', '🔺 Documents', '🧪 Demos', '🧭 Initiatives']);
   });
 
   test('internal nav links open in the same tab', async ({ page }) => {
