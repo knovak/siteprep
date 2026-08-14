@@ -72,6 +72,12 @@ the schedule run.
 commit to a config file, reviewed like anything else, which is the point:
 enabling autonomy should leave a trace.
 
+**Add `work` before `respond`,** even though the table lists them the other way
+round. `respond-to-review` has never executed — no sweep pull request has ever
+received a comment — so enabling both at once turns on two untested paths
+simultaneously. Enable `["survey", "work"]`, let it open a real pull request,
+then add `"respond"` once there is something to comment on.
+
 When first enabling `work`, set `items_per_run` to `1` for a week or so, then
 restore it. Seeing the first few pull requests one at a time is worth the
 slower start.
