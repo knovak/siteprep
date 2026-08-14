@@ -1,17 +1,33 @@
 {
   "title": "Interactive Bookmark Sorter",
   "summary": "Fast visual triage for a large bookmark pile, with tags, clusters and snapshot views.",
-  "stage": "wish",
+  "stage": "shaped",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-objectives",
-      "title": "Draft objectives.md - what \"done\" would mean",
+      "id": "draft-spec",
+      "title": "Draft spec.md, including alternatives considered for the runtime and the snapshot source",
+      "state": "blocked",
+      "blocked_by": "human:where should this run - local script, web app, browser extension, or hosted?",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": true
+    },
+    {
+      "id": "snapshot-source",
+      "title": "Decide where page snapshots come from",
+      "state": "blocked",
+      "blocked_by": "human:live-fetch and render pages, capture at ingestion, or use existing thumbnails/favicons?",
+      "value": "high",
+      "effort": "small"
+    },
+    {
+      "id": "pile-size",
+      "title": "Establish how large the real bookmark pile is",
       "state": "actionable",
       "value": "medium",
-      "effort": "small",
-      "advances_stage": true
+      "effort": "small"
     }
   ]
 }
