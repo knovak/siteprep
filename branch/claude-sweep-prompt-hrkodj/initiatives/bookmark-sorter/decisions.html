@@ -96,15 +96,27 @@
 <h4>What this settles, and what it does not</h4>
 <ul><li><strong>Settled</strong>: snapshots are captured once, at ingestion, server-side and</li></ul>
 <p>  anonymously; metadata is the primary path, an anonymous headless render is the   fallback for items with no image or a shared one; captures are stored   downscaled and never refreshed on view.</p>
-<ul><li><strong>Not settled</strong>: whether the render pass runs on our own headless browser or a</li></ul>
-<p>  paid API. That is an operational choice that follows the hosting question, and   the volumes here sit near enough to the break-even that it should be decided   with the host known rather than now.</p>
-<ul><li><strong>Not settled</strong>: how many items sharing one image counts as &quot;duplicated&quot;. The</li></ul>
-<p>  rule matters more than the number; the number wants a look at real data.</p>
+<ul><li><strong>Settled on review</strong>: the render pass uses a <strong>paid screenshot API</strong>, not a</li></ul>
+<p>  headless browser we run. See below.</p>
+<ul><li><strong>Settled on review</strong>: the duplicate threshold <strong>starts at 30</strong> — an image</li></ul>
+<p>  covering 30 or more items marks all of them as needing a render. A starting   value, to be moved once there is real data.</p>
 <ul><li><strong>Unblocks</strong> <code>draft-spec</code>, which was waiting on this to write its alternatives</li></ul>
 <p>  section — most of the table above is the raw material.</p>
-<h4>One thing WhatsApp does that we should think about</h4>
-<p>WhatsApp&#39;s preview <em>travels with the message</em>: capture and content move together. The analogue here is the export. Objective 7 wants the data portable, and the user has since asked for JSON export by tag — so does an export carry its images, or only URLs pointing back at ours? An export of keepers whose pictures die when this tool does is not obviously &quot;nothing is trapped&quot;.</p>
-<p>Raised, not answered — it belongs to the export work.</p>
+<h4>The render pass runs on a paid API</h4>
+<p>The user&#39;s call on review: <em>&quot;Use a paid API.&quot;</em></p>
+<p>It reads better than it did as option C standing alone, because metadata-first changes its arithmetic and its privacy cost at the same time. Only the gap items are rendered — a minority of the pile — so a 10,000-item backlog is a few thousand captures, well inside the $4–10 per thousand band and a one-off rather than a running bill. The same reduction applies to the objection: instead of handing every bookmarked URL to a third party, we hand over only those with no usable <code>og:image</code>. That is still a real disclosure and should be recorded as an accepted cost, not argued away — but it is a fraction of the pile rather than all of it.</p>
+<p>What it buys is that nobody has to run and pay for a browser fleet, and the 300–500 MB-per-process capacity planning in option B never has to happen. For a personal tool with a one-off backlog and a slow trickle after it, that is the right shape: the expensive path is rented for the burst, not owned for the year.</p>
+<p>The dependency is the thing to keep an eye on. A capture that cannot be re-made without a vendor is a capture worth storing carefully, which is the next section.</p>
+<h4>The export carries no captures, and a cache makes that cheap</h4>
+<p>WhatsApp&#39;s preview <em>travels with the message</em>: capture and content move together. The question was whether an export should do the same. Answered on review: <strong>&quot;No metadata in the export.&quot;</strong></p>
+<p>So an export is the user&#39;s own material — items, URLs, tags, verdicts — and nothing derived. That is a cleaner reading of objective 7 than bundling images would have been. What must not be trapped is the <em>judgement</em>: which things are keepers, and what they were called. Pictures are a rebuildable convenience, and shipping thousands of them inside a JSON file would make the portable artefact large and awkward in exchange for data the system can produce again.</p>
+<p>The user&#39;s follow-on, and it is the right one: <em>&quot;Consider if our system should keep its own thumbnail cache, so re-import of a collection can re-use the cache rather than reprocessing.&quot;</em></p>
+<p><strong>Yes — the capture store should be keyed by URL, not by item.</strong> Without that, the decision above has an ugly consequence: re-importing a collection you exported last week would re-capture every item, paying the API a second time for pictures we already have. Keying by URL removes it, and the same key pays off three more times:</p>
+<ul><li><strong>Collections overlap.</strong> Several people testing the same demo, or two users</li></ul>
+<p>  who both bookmarked the same well-known page, capture it once between them.</p>
+<ul><li><strong>The demo collection is free.</strong> It is the same URLs as somebody&#39;s real one.</li><li><strong>Re-import is the normal case, not the exception.</strong> Export and re-import is</li></ul>
+<p>  how a collection moves between users and how a test collection gets reset.</p>
+<p>The one thing this forces into the open: <strong>a URL-keyed store shared across collections means one user&#39;s capture is served to another.</strong> The content itself is harmless — every capture is anonymous and logged-out, so it holds nothing that a stranger visiting the URL would not see. What can leak is <em>existence</em>: a fast cache hit says someone, somewhere, has this URL. Whether that matters depends entirely on whether collections are meant to be private from each other, which is the <code>collection-access</code> question already waiting on the user. Recorded there rather than decided here — but the two answers have to agree, and if collections turn out to be private, the cache should be per-collection with the extra capture cost accepted.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="claude/sweep-prompt-hrkodj" data-root="../../">
