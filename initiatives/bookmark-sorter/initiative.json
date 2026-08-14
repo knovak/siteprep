@@ -6,20 +6,20 @@
   "outputs": [],
   "todo": [
     {
+      "id": "revise-objectives",
+      "title": "Revise objectives.md for collections, import/export, imported folder paths as tags, and general sharing as a later revision",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small"
+    },
+    {
       "id": "draft-spec",
       "title": "Draft spec.md, including alternatives considered for the runtime and the snapshot source",
-      "state": "actionable",
+      "state": "blocked",
+      "blocked_by": "todo:revise-objectives",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
-    },
-    {
-      "id": "snapshot-source",
-      "title": "Decide where page snapshots come from",
-      "state": "blocked",
-      "blocked_by": "human:live-fetch and render pages, capture at ingestion, or use existing thumbnails/favicons?",
-      "value": "high",
-      "effort": "small"
     }
   ]
 }
