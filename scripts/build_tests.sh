@@ -291,8 +291,8 @@ pass "BUILD-11 shared resources verified"
 # may follow the injected footer except the closing body/html tags.
 footers_found=0
 while IFS= read -r -d '' html_file; do
-  # The injected footer, not a deck's own back-link footer: only the injected
-  # one carries the version.
+  # Only the injected footer carries the version, so this stays right even if a
+  # page ever grows a footer of its own again.
   if ! grep -q '<footer class="site-footer" data-version=' "$html_file"; then
     continue
   fi

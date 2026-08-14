@@ -6,15 +6,16 @@ const { test, expect } = require('@playwright/test');
  * and page position `scripts/build.sh` writes onto the `<footer>` element.
  *
  * It used to be emitted as a block of escaped JavaScript inlined into each
- * page, and eight pages carried a hand-copied snapshot of it as well - frozen
- * at "Version: main", and one link short. These tests assert the row is now
- * identical everywhere and appears exactly once per page.
+ * page. Twenty-seven pages also carried a hand-written footer of their own:
+ * eight a stale copy of this row, frozen at "Version: main" and one link
+ * short, and nineteen a deck back-link bar - so those pages rendered two
+ * footers, one above the other. These tests assert the row is identical
+ * everywhere and that a page has exactly one footer.
  */
 
 const GITHUB_HREF = 'https://github.com/knovak/siteprep';
 
-// The build's version footer, as opposed to a deck's own back-link footer:
-// only the injected one carries the version.
+// Only the injected footer carries the version.
 const VERSION_FOOTER = '.site-footer[data-version] .footer-nav';
 
 const PAGES = [
@@ -26,6 +27,13 @@ const PAGES = [
     path: '/decks/india1/sections/bangalore/overview.html',
     name: 'section page',
     links: ['Version:', 'Deck', 'Section', 'Google Drive', 'GitHub', 'View all versions']
+  },
+  // Minified single-line source, and one of the pages that carried a deck
+  // back-link bar of its own.
+  {
+    path: '/decks/rockies/sections/aspen/overview.html',
+    name: 'minified section page',
+    links: ['Version:', 'Deck', 'Section', 'Google Drive', 'GitHub', 'View all versions']
   }
 ];
 
@@ -33,6 +41,9 @@ test.describe('site footer', () => {
   for (const target of PAGES) {
     test(`${target.name} renders the shared footer row`, async ({ page }) => {
       await page.goto(target.path);
+
+      // One footer, and it is the shared one - not a second bar above or below.
+      await expect(page.locator('.site-footer')).toHaveCount(1);
 
       const nav = page.locator(VERSION_FOOTER);
       await expect(nav).toHaveCount(1);
