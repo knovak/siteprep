@@ -262,3 +262,71 @@ which is the `collection-access` question already waiting on the user. Recorded
 there rather than decided here — but the two answers have to agree, and if
 collections turn out to be private, the cache should be per-collection with the
 extra capture cost accepted.
+
+## 2026-08-14 — How are collections identified and protected?
+
+**Signed-in accounts.** The user's words: *"(presuming we use ChatGPT sites,
+user IDs will be built in.)"*
+
+The parenthesis is theirs and is kept as one. The **model** is settled —
+collections belong to identified users rather than to whoever holds a link. The
+**mechanism** rests on the same leaning as the runtime decision above, that the
+host is an OpenAI surface and supplies identity. If that host changes, sign-in
+becomes something to build rather than something inherited, and it is not a
+small piece of work. Worth knowing before the surface is chosen, not after.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Signed-in accounts** *(chosen)* | A collection has a real owner, so "one per user" means something enforceable. Free if the host supplies identity. Private by default, which is the right default for a pile of personal bookmarks | Costs a sign-in before a tester can look at anything — the highest-friction option for the exact case that motivated collections. Ties the project to whatever identity the host offers |
+| **Unguessable share links, no sign-in** | Lowest friction for testers — send a link, they are in. No identity to build or depend on | The link *is* the credential, so it leaks by being forwarded, logged, or pasted. Nothing to attach "one per user" to, and no way to revoke one person |
+| **One shared instance, named collections, no protection** | Simplest thing that could work; fine for a demo | Anyone can open, edit, or delete anyone's collection, including by accident. Untenable the moment a real pile is in there |
+
+### What this settles, and what it does not
+
+- **Settled**: collections have owners, and a collection is private unless
+  something explicitly makes it otherwise.
+- **Settled, following from that**: the URL-keyed capture cache stays **shared
+  across collections**. See below — the reason the earlier entry gave for
+  splitting it does not survive contact with this answer.
+- **Not settled**: how non-personal collections work. The wish asks for them
+  ("eg to use as a demo"), and private-by-default is exactly what a demo is not.
+  Recorded as a new blocker rather than assumed.
+- **Not settled**: which OpenAI surface, still — this decision now leans on that
+  question rather than merely following it.
+
+### The cache stays shared, and the earlier entry was too cautious
+
+The previous entry said that if collections turned out to be private, the cache
+should be split per collection. That rule was written before the answer existed
+and is worth correcting rather than obeying: **the deferred capture pipeline
+already closes the channel it was worried about.**
+
+The concern was a timing side channel — an instant thumbnail tells you someone
+else already has this URL. But captures were already specified as deferred and
+asynchronous, precisely so ingestion never blocks: a picture arrives *after* the
+item, whether it came from the cache or the API. There is no fast path to
+observe.
+
+What is left is weak even if you could observe it. Every capture is anonymous
+and logged-out, so the content is what any stranger visiting the URL would see.
+The only inference available is *"someone else also bookmarked a URL that I
+myself just bookmarked"* — you have to already hold the URL to learn anything
+about it. Splitting the cache would trade the demo collection's near-zero cost,
+and cheap re-import, for a defence against that.
+
+So: one URL-keyed capture store, shared. If the sharing decision below lands
+somewhere that makes this uncomfortable, it is cheap to revisit — the cache is
+derived data and can be partitioned later without touching anything the user
+owns.
+
+### Still open, following from this
+
+- **What makes a collection non-personal?** A general sharing model with owners
+  and explicit readers, a public/private flag where public means any signed-in
+  user may read it, or demo collections special-cased and seeded rather than
+  shared at all. Recorded as `collection-sharing`.
+- Whether a user may hold several collections of their own, which the wish's
+  "one per user" implies but does not require, and which the "choose collection"
+  menu has to render either way.

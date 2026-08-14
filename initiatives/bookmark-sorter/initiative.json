@@ -22,11 +22,11 @@
       "advances_stage": true
     },
     {
-      "id": "collection-access",
-      "title": "Decide how collections are identified and who may open one",
+      "id": "collection-sharing",
+      "title": "Decide what makes a collection non-personal, so a demo collection can exist",
       "state": "blocked",
-      "blocked_by": "human:signed-in accounts, unguessable share links with no sign-in, or one shared instance with named collections and no protection at all? Also decides whether the URL-keyed capture cache may be shared across collections.",
-      "value": "high",
+      "blocked_by": "human:a general sharing model with owners and explicit readers, a public/private flag where public means any signed-in user may read it, or demo collections special-cased and seeded rather than shared at all?",
+      "value": "medium",
       "effort": "small"
     }
   ]

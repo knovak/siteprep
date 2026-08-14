@@ -67,3 +67,20 @@ overlapping collections and the demo collection nearly free. It sharpens the
 open `collection-access` question rather than settling it — a URL-keyed store
 shared across collections leaks the existence of a URL between them, so if
 collections are meant to be private the cache has to be per-collection.
+
+## 2026-08-14 — Decide how collections are identified and who may open one
+
+Signed-in accounts, presuming an OpenAI surface supplies user IDs. Collections have owners and are private by default. The URL-keyed capture cache stays shared across collections - the deferred capture pipeline already closes the timing channel the earlier entry worried about. Recorded in decisions.md.
+
+The presumption is the user's and is kept as one: the model is settled, the
+mechanism leans on the still-open question of which OpenAI surface this runs on.
+If that host changes, sign-in stops being inherited and becomes work.
+
+Note that this **reverses** the rule the previous round wrote down — that
+private collections would force a per-collection cache. That rule was written
+before the answer existed, and the deferred capture pipeline had already closed
+the channel it was defending against. Corrected in `decisions.md` rather than
+followed.
+
+Raises one new blocker: private-by-default is exactly what a demo collection is
+not, so what makes a collection non-personal is now `collection-sharing`.
