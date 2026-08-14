@@ -37,6 +37,7 @@ dependency. That is fine for flat string fields and does not survive nested
 | `docs <slug>` | `file|output|title` per renderable document |
 | `doc <slug> <file>` | A rendered markdown document as a page body |
 | `title <slug>` | The display title |
+| `digest [--json]` | The sweep survey - what needs attention |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -111,6 +112,50 @@ or left behind by an edit that touched only markdown; git already knows.
 An initiative whose files are not yet committed reports "not yet committed",
 which is accurate rather than an error.
 
+## The sweep survey
+
+`initiatives.mjs digest` prints the survey the sweep's first phase calls for:
+decisions waiting on a person, blockers now satisfied, items awaiting review,
+initiatives waiting on other initiatives, stale initiatives, initiatives with
+nothing to do, and a state table.
+
+**It is code, not a prompt.** Every part of that list is derived from
+`initiative.json`, the files present, and git - none of it needs judgement - so
+it runs in milliseconds, costs nothing, cannot hallucinate a blocker or miss a
+stale initiative, and is unit-testable. A model becomes necessary only when the
+sweep starts doing work.
+
+The one thing it cannot settle alone is a `review:` blocker, since clearing that
+means asking GitHub whether a pull request closed. Those are listed for a caller
+that can check rather than guessed at.
+
+`INITIATIVES_DIR` overrides which directory is read, which is how the tests run
+against fixtures instead of live work.
+
+### Configuration and the prompt
+
+`initiatives/sweep.json` holds the run configuration; `phases` controls what a
+run may do, and must always include `"survey"`. Widening it to `"respond"` or
+`"work"` is a reviewable commit rather than an edit to a prompt.
+
+`initiatives/sweep-prompt.md` is the instruction a sweep follows. It lives in
+the repo so a manual run and a scheduled run are the same text.
+
+### Scheduled digest
+
+`.github/workflows/initiatives-digest.yml` runs twice daily and keeps a single
+`Initiatives digest` issue current. It needs no model and no secrets beyond the
+default `GITHUB_TOKEN`.
+
+Because noise is the failure mode of a twice-daily job, the issue **body** is
+refreshed silently - editing a body does not notify - and a **comment**, which
+does notify, is posted only when the set of decisions waiting on a person
+changes. If nothing is waiting on anyone and no issue exists, it does nothing at
+all.
+
+The checkout uses `fetch-depth: 0`; last activity comes from git history, and a
+shallow clone would report every initiative as touched today.
+
 ## Build-time checks
 
 `scripts/build_tests.sh` runs `initiatives.mjs validate` and then verifies:
@@ -118,6 +163,9 @@ which is accurate rather than an error.
 - the initiatives index is generated
 - every initiative has an overview page, and is linked from the index
 - no raw `.md` is published under `initiatives/` - documents are rendered
+
+`tests/initiatives-digest.test.mjs` covers the survey against fixtures in
+`tests/fixtures/initiatives/`, using `node:test`.
 
 `tests/e2e/initiatives.spec.js` covers the rendered result: the TOC explains
 what an initiative is, entries link to overview pages, the nav bar carries the

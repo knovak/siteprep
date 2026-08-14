@@ -9,6 +9,7 @@
  *
  * Subcommands:
  *   validate            check every initiative; exit 1 on an error, 0 on warnings
+ *   digest [--json]     the sweep survey: what needs attention, as markdown
  *   list                print one slug per line
  *   toc                 print the TOC page body
  *   page <slug>         print an initiative's overview page body
@@ -22,12 +23,16 @@
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { join, resolve, dirname } from 'node:path';
+import { join, resolve, dirname, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const INITIATIVES_DIR = join(ROOT, 'initiatives');
+// Overridable so the tests can point at a fixture directory rather than having
+// to create and delete real initiatives to exercise the digest.
+const INITIATIVES_DIR = process.env.INITIATIVES_DIR
+  ? resolve(process.env.INITIATIVES_DIR)
+  : join(ROOT, 'initiatives');
 const SWEEP_CONFIG = join(INITIATIVES_DIR, 'sweep.json');
 
 const STAGES = [
@@ -64,6 +69,9 @@ const DOCUMENTS = [
 
 const DEFAULT_STALENESS_DAYS = 14;
 
+/** What a sweep run is permitted to do, in order. Survey is never optional. */
+const SWEEP_PHASES = ['survey', 'respond', 'work'];
+
 // ---------------------------------------------------------------- loading
 
 function listSlugs() {
@@ -85,7 +93,8 @@ function loadSweepConfig() {
 function loadInitiative(slug) {
   const dir = join(INITIATIVES_DIR, slug);
   const jsonPath = join(dir, 'initiative.json');
-  const record = { slug, dir, path: `initiatives/${slug}`, data: null, error: null };
+  // Relative to the repo root, so `git log` resolves it.
+  const record = { slug, dir, path: relative(ROOT, dir) || `initiatives/${slug}`, data: null, error: null };
 
   if (!existsSync(jsonPath)) {
     record.error = 'initiative.json is missing';
@@ -158,6 +167,23 @@ function validate() {
       errors.push(
         `sweep.json: max_items_per_initiative (${perInitiative}) exceeds items_per_run (${perRun})`
       );
+    }
+    // Which phases the sweep may run is config, so widening what the job is
+    // allowed to do is a reviewable commit rather than an edit to the prompt.
+    const phases = sweep.config.phases;
+    if (phases !== undefined) {
+      if (!Array.isArray(phases) || phases.length === 0) {
+        errors.push('sweep.json: phases must be a non-empty array');
+      } else {
+        for (const phase of phases) {
+          if (!SWEEP_PHASES.includes(phase)) {
+            errors.push(`sweep.json: unknown phase "${phase}"`);
+          }
+        }
+        if (!phases.includes('survey')) {
+          errors.push('sweep.json: phases must include "survey" - the sweep always looks before acting');
+        }
+      }
     }
   }
 
@@ -290,6 +316,174 @@ function checkOutputIndependence(slug, outputPath) {
     }
   }
   return problems;
+}
+
+// ----------------------------------------------------------------- digest
+
+/**
+ * The sweep survey.
+ *
+ * Every item the design asks the survey to report is *derived* from
+ * initiative.json, the files present, and git - none of it needs judgement. So
+ * this is code rather than a prompt: it cannot hallucinate a blocker or miss a
+ * stale initiative, it runs in milliseconds, and it costs nothing. A model is
+ * only needed once the sweep starts doing work.
+ *
+ * `review:` blockers are the one exception - clearing them means asking GitHub
+ * whether a pull request has closed - so they are listed for a caller that can
+ * check rather than guessed at here.
+ */
+function buildDigest() {
+  const { records, errors, warnings } = validate();
+  const sweep = loadSweepConfig().config;
+  const globalStaleness = Number.isFinite(sweep.staleness_days)
+    ? sweep.staleness_days
+    : DEFAULT_STALENESS_DAYS;
+
+  const stageOf = new Map(
+    records.filter((r) => r.data).map((r) => [r.slug, r.data.stage])
+  );
+
+  const digest = {
+    generated: new Date().toISOString().slice(0, 10),
+    total: records.length,
+    unreadable: [],
+    decisions: [],
+    readyToUnblock: [],
+    awaitingReview: [],
+    waitingOnOthers: [],
+    stale: [],
+    idle: [],
+    initiatives: [],
+    errors,
+    warnings
+  };
+
+  for (const record of records) {
+    if (record.error) {
+      digest.unreadable.push({ slug: record.slug, reason: record.error });
+      continue;
+    }
+
+    const data = record.data;
+    const todo = data.todo || [];
+    const actionable = todo.filter((item) => item.state === 'actionable');
+    const blocked = todo.filter((item) => item.state === 'blocked');
+    const age = daysSince(record.lastActivity);
+    const threshold = Number.isFinite(data.staleness_days)
+      ? data.staleness_days
+      : globalStaleness;
+    const resting = data.stage === 'dormant' || data.stage === 'archived';
+
+    for (const item of blocked) {
+      const raw = String(item.blocked_by || '');
+      const prefix = raw.split(':', 1)[0];
+      const detail = raw.slice(prefix.length + 1);
+      const entry = { slug: record.slug, item: item.title || item.id, blocker: raw, detail };
+
+      if (HUMAN_BLOCKERS.has(prefix)) {
+        digest.decisions.push({ ...entry, kind: prefix });
+      } else if (prefix === 'schedule') {
+        const due = new Date(detail);
+        if (!Number.isNaN(due.getTime()) && due.getTime() <= Date.now()) {
+          digest.readyToUnblock.push({ ...entry, reason: `scheduled date ${detail} has passed` });
+        }
+      } else if (prefix === 'review') {
+        digest.awaitingReview.push(entry);
+      } else if (prefix === 'initiative') {
+        digest.waitingOnOthers.push({
+          ...entry,
+          otherStage: stageOf.get(detail) || 'unknown initiative'
+        });
+      }
+    }
+
+    if (!resting && age !== null && age > threshold) {
+      digest.stale.push({ slug: record.slug, days: age, threshold });
+    }
+    if (!resting && actionable.length === 0) {
+      digest.idle.push({ slug: record.slug, stage: data.stage });
+    }
+
+    digest.initiatives.push({
+      slug: record.slug,
+      title: data.title || record.slug,
+      stage: data.stage,
+      next: actionable.length ? (actionable[0].title || actionable[0].id) : null,
+      actionable: actionable.length,
+      blocked: blocked.length,
+      lastActivity: relativeDays(age)
+    });
+  }
+
+  return digest;
+}
+
+function formatDigest(digest) {
+  const out = [];
+  const attention = digest.decisions.length + digest.readyToUnblock.length
+    + digest.stale.length + digest.idle.length + digest.unreadable.length
+    + digest.errors.length;
+
+  out.push(`# Initiatives digest — ${digest.generated}`);
+  out.push('');
+
+  if (digest.total === 0) {
+    out.push('No initiatives yet.');
+    return out.join('\n');
+  }
+
+  out.push(attention === 0
+    ? `${digest.total} initiative(s). Nothing needs your attention.`
+    : `${digest.total} initiative(s). **${attention} thing(s) need your attention.**`);
+  out.push('');
+
+  const section = (title, rows) => {
+    if (!rows.length) return;
+    out.push(`## ${title}`, '');
+    out.push(...rows);
+    out.push('');
+  };
+
+  // The most valuable part: the only things the sweep genuinely cannot resolve.
+  section('Waiting on a decision from you', digest.decisions.map(
+    (d) => `- **${d.slug}** — ${d.item}\n  - \`${d.kind}\`: ${d.detail}`
+  ));
+
+  section('Cannot be read', digest.unreadable.map(
+    (u) => `- **${u.slug}** — ${u.reason}`
+  ));
+
+  section('Invalid', digest.errors.map((e) => `- ${e}`));
+
+  section('Ready to unblock', digest.readyToUnblock.map(
+    (r) => `- **${r.slug}** — ${r.item} (${r.reason})`
+  ));
+
+  section('Awaiting review', digest.awaitingReview.map(
+    (r) => `- **${r.slug}** — ${r.item} (${r.blocker})`
+  ));
+
+  section('Waiting on another initiative', digest.waitingOnOthers.map(
+    (w) => `- **${w.slug}** — ${w.item} (waiting on \`${w.detail}\`, currently *${w.otherStage}*)`
+  ));
+
+  section('Stale', digest.stale.map(
+    (s) => `- **${s.slug}** — no activity for ${s.days} days (threshold ${s.threshold})`
+  ));
+
+  section('Nothing actionable, and not dormant', digest.idle.map(
+    (i) => `- **${i.slug}** — stage *${i.stage}*`
+  ));
+
+  out.push('## State', '');
+  out.push('| Initiative | Stage | Next | Blocked | Last activity |');
+  out.push('|---|---|---|---|---|');
+  for (const row of digest.initiatives) {
+    out.push(`| ${row.title} | ${row.stage} | ${row.next || '—'} | ${row.blocked || '—'} | ${row.lastActivity} |`);
+  }
+
+  return out.join('\n');
 }
 
 // -------------------------------------------------------------- rendering
@@ -586,6 +780,13 @@ switch (command) {
     for (const error of errors) console.error(`INITIATIVE FAIL: ${error}`);
     if (errors.length) process.exit(1);
     console.log(`INITIATIVE PASS: ${listSlugs().length} initiative(s) validated`);
+    break;
+  }
+  case 'digest': {
+    const digest = buildDigest();
+    console.log(args.includes('--json')
+      ? JSON.stringify(digest, null, 2)
+      : formatDigest(digest));
     break;
   }
   case 'list':

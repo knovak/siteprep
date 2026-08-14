@@ -221,6 +221,19 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
     fail "BUILD-18 raw markdown published under initiatives/ instead of rendered HTML"
   fi
   pass "BUILD-18 initiative documents rendered rather than copied"
+
+  # BUILD-19: The sweep survey. Deterministic, so it is unit-testable against
+  # fixtures rather than against whatever work happens to be in flight.
+  if ! node --test "$ROOT_DIR/tests/initiatives-digest.test.mjs" > /dev/null 2>&1; then
+    node --test "$ROOT_DIR/tests/initiatives-digest.test.mjs" || true
+    fail "BUILD-19 sweep digest tests failed"
+  fi
+  pass "BUILD-19 sweep digest tests passed"
+
+  if ! node "$ROOT_DIR/scripts/initiatives.mjs" digest > /dev/null; then
+    fail "BUILD-19 sweep digest could not be produced"
+  fi
+  pass "BUILD-19 sweep digest produced for the real initiatives"
 fi
 
 # BUILD-09: Valid HTML - basic structure check
