@@ -120,7 +120,7 @@ under a declared `outputs[]` path may reference a path under `initiatives/`.
 ```
 initiatives/
   index.html           # generated — the Initiative TOC (§8.1)
-  sweep.json           # sweep job configuration (§7.4)
+  sweep.json           # sweep job configuration (§7.5)
   <initiative-name>/
     initiative.json    # required — the machine-readable state
     wish.md            # required — the original vague goal, in the user's words
@@ -331,7 +331,7 @@ per directory. Humans read the markdown; the job reads this.
 - `value` — `high` / `medium` / `low`. The initiative's own worth, used to rank across
   initiatives.
 - `staleness_days` — optional per-initiative override of the global flag threshold
-  (§7.4). A slow-burn initiative can set `90` and stop nagging; a hot one can set `3`.
+  (§7.5). A slow-burn initiative can set `90` and stop nagging; a hot one can set `3`.
 - **There is no `updated` field.** Last activity is derived from git:
   `git log -1 --format=%cI -- initiatives/<name>/`. A hand-maintained timestamp is a
   field that can be forgotten, lied to, or left behind by an edit that touched only
@@ -393,7 +393,7 @@ This keeps the earlier guardrail intact while making it mechanically simple: the
 Why not a merge-time Action:
 
 - It needs write access to `main` and pushes a commit *after* every merge, which
-  races with other merges and creates exactly the conflict class §7.5 exists to avoid.
+  races with other merges and creates exactly the conflict class §7.6 exists to avoid.
 - It needs the PR to declare which items it completed — a second source of truth
   (a trailer, a label) that can disagree with the diff.
 - It breaks the "atomic" property: between merge and Action, the repo asserts that
@@ -410,9 +410,9 @@ because a `blocked_by: todo:<id>` pointing at a nonexistent item is a build fail
 
 ## 7. The sweep job
 
-A scheduled agent runs **twice daily** across all initiatives. Three phases, in order —
-and the order is the design: look at everything, finish what is in flight, then start
-something new.
+A scheduled agent runs **twice daily** across all initiatives. Four phases, in order —
+and the order is the design: look at everything, finish what is in flight, unblock what
+is stuck, then start something new.
 
 ### 7.1 Phase 1 — Survey (always)
 
@@ -439,13 +439,13 @@ Read every `initiative.json`, derive state, and produce a **digest**:
 ### 7.2 Phase 2 — Respond to review
 
 A sweep PR that comes back with comments is **work in flight, not work finished**.
-Without this phase it is a dead end: §7.6.1 excludes an item that already has an open
+Without this phase it is a dead end: §7.7.1 excludes an item that already has an open
 PR, so nothing would ever pick it up again and the revision would fall to you by hand —
 exactly the friction this design exists to remove.
 
 So before starting anything new, the sweep walks its own open PRs and answers what has
 come back. **Finishing work in flight outranks starting more**, which also means
-revisions drain the queue that new work fills (§7.4).
+revisions drain the queue that new work fills (§7.5).
 
 The rules below live in a skill, `.claude/skills/respond-to-review/`, so the sweep
 prompt can call it rather than restate it — and so you can run the same logic by hand
@@ -463,7 +463,7 @@ bots.
 
 | Outcome | When | What it does |
 |---|---|---|
-| **Revise** | The change is inside the write scope (§7.5) and within `max_effort` | Push a commit to the PR branch, and reply saying what changed |
+| **Revise** | The change is inside the write scope (§7.6) and within `max_effort` | Push a commit to the PR branch, and reply saying what changed |
 | **Reply only** | A question, a disagreement, or a request outside the write scope | Reply and explain; no commit |
 | **Escalate** | A design decision the sweep should not make alone | Reply saying so, and raise it in the digest as a human-class blocker |
 
@@ -473,7 +473,7 @@ it this way?" deserves an answer, not a rewrite.
 #### It never resolves a thread
 
 The sweep replies and pushes; **you** decide the conversation is over. Same rule as the
-merge skill (§7.8), for the same reason: resolving your own review threads is how a
+merge skill (§7.9), for the same reason: resolving your own review threads is how a
 safeguard stops meaning anything.
 
 #### It does not let a PR balloon
@@ -485,7 +485,7 @@ to create work; it is not allowed to silently redefine what is already in flight
 #### Termination
 
 The loop hazard is real, and it is the same class of bug as the duplicate PRs in
-§7.6.1: a reply is itself activity, so without a stopping rule the sweep can answer
+§7.7.1: a reply is itself activity, so without a stopping rule the sweep can answer
 itself indefinitely. Two halves, both required:
 
 1. **The sweep never treats its own comments as input.** Self-authored and bot comments
@@ -503,7 +503,96 @@ is needed; this falls out of what is already there.
 Every round appends to `log.md`, so an initiative's history shows the revisions, not
 just the eventual merge.
 
-### 7.3 Phase 3 — Do new work (each run)
+### 7.3 Phase 3 — Propose an answer
+
+An open question costs a blank page. That is the expensive kind of work to leave
+to a person, and it is the reason initiatives sit at `shaped` for weeks.
+
+So for a question the sweep can reason about, it does the reasoning and opens a
+pull request: the alternatives, an evaluation, a recommended answer, and the
+`decisions.md` entry already written (§5.2). Merging it *is* answering. A comment
+redirects it, which `respond-to-review` already knows how to handle.
+
+The asymmetry is the point: **judging a proposal is far cheaper than composing an
+answer.** Reviewing four evaluated options and replying "do B" is a minute's
+work; deriving those four options from scratch is an afternoon.
+
+#### Only judgement is proposable
+
+`human:` currently conflates two different things, and only one of them can be
+proposed:
+
+| Kind | Example | Proposable |
+|---|---|---|
+| **Judgement** — a choice among options that can be reasoned about | `human:local script, web app, extension, or hosted?` | **Yes** |
+| **Information only the user has** — use `data:` | `data:how large is the real pile?` | **No** — proposing means fabricating |
+| **Authority** — `permission:`, `cost:`, `legal:` | `cost:approve $40/mo for tiles` | **No** — needs consent, not reasoning |
+
+This sharpens a distinction the taxonomy already had rather than adding one: use
+`human:` for a judgement call, and `data:` when what is missing is a fact about
+the user's world. A proposal for a `data:` blocker would be an invention wearing
+the costume of an answer.
+
+**The sweep may propose only for `human:`.** Never for `data:`, `permission:`,
+`cost:`, or `legal:`.
+
+#### The hazard: a proposal is more persuasive than a question
+
+A blank question makes you think. A well-argued proposal makes you agree. A
+plausible-but-wrong answer that arrives with three paragraphs of reasoning is
+*harder* to catch than no answer at all — the reasoning is exactly what stops
+you generating your own.
+
+This is not fixed by resolving to read carefully. It is fixed by structure, so
+the PR body must:
+
+1. **Put the alternatives before the recommendation**, each with its strengths
+   and weaknesses, so the choice is visible before the conclusion is.
+2. **Label the recommendation as a recommendation**, not a decision.
+3. **State what would change the answer** — the fact or preference that would
+   make a different option correct. This is the sentence that lets you notice
+   the proposal rests on an assumption you know to be wrong.
+4. **Make disagreement one line.** Naming a different option in a comment has to
+   be enough; if redirecting costs a paragraph, the default wins by attrition.
+
+#### Main is unchanged until it merges
+
+The proposal PR does **not** rewrite the blocker on `main`. The item stays
+`blocked_by: human:…` until the PR merges, at which point the PR's own change
+lands — the same rule as everywhere else here: the merge enacts (§6.3).
+
+That falls out well:
+
+- **A closed, unmerged proposal leaves no wreckage.** Nothing was changed, so the
+  question simply remains open. Had the proposal flipped the blocker to
+  `review:<pr>` up front, closing the PR unmerged would auto-clear it (§6.2) and
+  mark an unanswered question as answered — a stuck item that looks finished.
+- **No duplicate proposals**, because §7.7.1's open-PR check already excludes an
+  item that has one.
+- **The digest keeps listing it**, which is correct. It is still your decision;
+  what changed is that there is now something to react to instead of something
+  to compose.
+
+#### What the digest still carries
+
+This gives the digest issue (§8.4) a sharper job rather than a smaller one. Once
+judgement questions arrive as pull requests, what remains in the issue is the
+residue that **never** becomes a PR:
+
+- `data:` — facts only you can supply
+- `permission:`, `cost:`, `legal:` — things needing your authority
+
+Those are precisely the items no amount of model effort can advance, so an issue
+listing only them is a list where every entry genuinely requires you. That is a
+better list than one mixing them with questions a proposal could have answered.
+
+#### Budget and limits
+
+A proposal counts against `items_per_run` like any other item, and against
+`max_items_per_initiative`. It is ordinary work that happens to produce a
+decision rather than a document.
+
+### 7.4 Phase 4 — Do new work (each run)
 
 Take the **top-ranked actionable items across all initiatives**, up to a configured
 budget, do the work, and open PRs. Never self-merged.
@@ -519,7 +608,7 @@ score = value(initiative) × value(item) ÷ effort(item)
 The stage-gate and staleness bonuses exist to keep the job from grinding on one active
 initiative's easy wins while three others sit at `wish` forever.
 
-### 7.4 The work budget
+### 7.5 The work budget
 
 How much a sweep may do is configured **in the repo**, not baked into the job or passed
 at the call site — so changing throughput is a reviewable commit, and the job's
@@ -542,14 +631,14 @@ behaviour is readable from the repo alone.
 
 | Field | Default | Meaning |
 |---|---|---|
-| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `work`. Must include `survey` |
+| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `propose`, `work`. Must include `survey` |
 | `items_per_run` | `4` | Total actionable items a single sweep may complete |
 | `max_items_per_initiative` | `2` | Cap per initiative, so one hot initiative can't eat the whole budget |
 | `max_effort` | `large` | Largest item the job may attempt unsupervised |
 | `staleness_days` | `14` | Days without activity before an initiative is flagged; overridable per initiative (§6.1) |
-| `max_open_prs` | `8` | Ceiling on unmerged sweep PRs; at the cap the sweep does no new work (§7.6.1) |
-| `pr_strategy` | `one-per-initiative` | How completed items are packaged (§7.5) |
-| `protected_paths` | `shared/`, `scripts/`, `.github/` | Paths a sweep PR may never touch unattended (§7.5) |
+| `max_open_prs` | `8` | Ceiling on unmerged sweep PRs; at the cap the sweep does no new work (§7.7.1) |
+| `pr_strategy` | `one-per-initiative` | How completed items are packaged (§7.6) |
+| `protected_paths` | `shared/`, `scripts/`, `.github/` | Paths a sweep PR may never touch unattended (§7.6) |
 
 **`phases` is how the sweep is switched on, one capability at a time.** Enabling
 `respond` or `work` is a reviewable commit to a config file, not an edit to a prompt —
@@ -576,7 +665,7 @@ spends all four on revisions and starts nothing new is not a degraded run, it is
 correct one. A second `revisions_per_run` dial would let new work continue while the
 review queue grew, which is the failure this ordering exists to prevent.
 
-### 7.5 PR isolation — why one per initiative avoids conflicts
+### 7.6 PR isolation — why one per initiative avoids conflicts
 
 At full budget a run could open one PR per initiative. That is safe only if the PRs
 touch disjoint files, so the rule is a **write scope**, not just a packaging preference:
@@ -609,11 +698,11 @@ Two consequences worth stating:
 If every open sweep PR respects the write scope, they merge cleanly in any order — which
 is the whole point of paying for the isolation rule.
 
-### 7.6 Guardrails
+### 7.7 Guardrails
 
 - **Never exceeds the configured budget**, and never merges its own work.
-- **Never writes outside its write scope** (§7.5).
-- **Never opens a second PR for an item that already has one open** (§7.6.1).
+- **Never writes outside its write scope** (§7.6).
+- **Never opens a second PR for an item that already has one open** (§7.7.1).
 - **Never invents a wish.** It elaborates existing intent; it does not create new
   initiatives.
 - **No actionable work anywhere → it does nothing** and says so in the digest. A quiet
@@ -622,7 +711,7 @@ is the whole point of paying for the isolation rule.
   the options are enumerable.
 - Every run appends to each touched initiative's `log.md`.
 
-#### 7.6.1 In-flight work — the duplicate-PR hole
+#### 7.7.1 In-flight work — the duplicate-PR hole
 
 An item stays in `todo[]` until its PR merges (§6.3). That is correct for state, but it
 means **`main` still shows the item as actionable while the PR is open** — so the next
@@ -656,7 +745,7 @@ Two consequences worth stating:
   PRs a week": it cannot, because unmerged work blocks its own item and the cap stops
   the rest.
 
-### 7.7 Where it runs
+### 7.8 Where it runs
 
 **Claude Code or Codex**, on a schedule — either is workable, and the design deliberately
 depends on neither. What the host must provide is repo write access, branch and PR
@@ -668,13 +757,13 @@ merge-related mechanical work noted in §6.3: rebasing stale sweep PRs, re-runni
 build after a merge, and closing PRs whose initiative was archived. That work is
 triggered by repo events rather than by a clock, and it needs no model at all.
 
-#### 7.7.1 The prompt, and how it is invoked
+#### 7.8.1 The prompt, and how it is invoked
 
 **The prompt lives in the repo, at `initiatives/sweep-prompt.md`.** The scheduler does
 not hold a copy — it reads that file. This matters for exactly the reason you raised:
 a manual run during development and the twice-daily scheduled run must be *the same
 prompt*, or debugging the schedule means debugging a text you cannot see. It also makes
-changes to the job's behaviour reviewable, like `sweep.json` (§7.4).
+changes to the job's behaviour reviewable, like `sweep.json` (§7.5).
 
 Manual invocation is then just:
 
@@ -767,7 +856,7 @@ Each thread you handle counts against `items_per_run`.
   correct run.
 ```
 
-### 7.8 Merging the output — the merge skill
+### 7.9 Merging the output — the merge skill
 
 A twice-daily job turning every half-day into PRs that must each be reviewed and merged
 by hand is the most likely way this system dies. The fix is a repo skill, so clearing a
@@ -791,10 +880,10 @@ unresolved comment means you were still talking, and that outranks throughput.
 
 The selector is where the friction actually goes away. `merge all green sweep PRs`
 clears a whole day's batch in one sentence, and because sweep PRs are path-disjoint by
-§7.5, they merge cleanly in any order.
+§7.6, they merge cleanly in any order.
 
 **A conflict between two sweep PRs is a bug report, not a nuisance.** The write scope
-in §7.5 is supposed to make conflicts structurally impossible. If the merge skill hits
+in §7.6 is supposed to make conflicts structurally impossible. If the merge skill hits
 one, an initiative wrote outside its scope or two initiatives declared the same output
 path — so the skill should say that loudly rather than quietly rebasing past it. The
 merge tool doubles as the detector for the invariant that makes the whole parallel
@@ -806,9 +895,9 @@ Auto-merging on CI green would make "review enacts closure" vacuous — items wo
 close because the build passed, which tests nothing about whether the work was any
 good. The merge skill keeps the human decision and removes only the clicking.
 
-### 7.9 Creating an initiative — the new-initiative skill
+### 7.10 Creating an initiative — the new-initiative skill
 
-The sweep never invents an initiative (§7.6), so creation is always deliberate. That
+The sweep never invents an initiative (§7.7), so creation is always deliberate. That
 makes the blank page the system's real bottleneck: if starting one means remembering
 three files and a JSON schema, half-formed ideas will keep going into chat instead —
 which is the exact problem §1 says initiatives exist to solve.
@@ -900,7 +989,7 @@ kept as parallel HTML, or rendered by a JavaScript widget. Four options:
 | Approach | Advantages | Issues |
 |---|---|---|
 | **A. Author in HTML** | Renders everywhere with zero machinery | Markdown is far better for agents to edit and for git to diff; HTML diffs are noisy; raises the cost of writing a wish |
-| **B. Parallel committed HTML** | Renders everywhere; no JS | Two files per document that *will* drift; doubles every diff; a generated file in the tree is a merge-conflict surface — exactly what §7.5 avoids |
+| **B. Parallel committed HTML** | Renders everywhere; no JS | Two files per document that *will* drift; doubles every diff; a generated file in the tree is a merge-conflict surface — exactly what §7.6 avoids |
 | **C. JS markdown widget** | Single source of truth; zero build change; fits the existing `shared/` library idiom exactly | Needs `fetch()`, so `file://` browsing breaks; a brief render flash; no-JS readers see nothing |
 | **D. Render at build time** | Single source of truth; no JS; nothing generated is committed | Adds a markdown dependency to the build; docs are only readable after a build+deploy |
 
@@ -928,7 +1017,7 @@ Three candidates, with the honest trade-offs:
 | Approach | Advantages | Issues |
 |---|---|---|
 | **GitHub issue, rewritten each run** | Push notifications; mobile; a comment thread to reply in; assignable and closable; no repo churn | Rewriting destroys history, or leaves an unreadable edit log; notifies twice daily whether or not anything changed — the fast path to being ignored; lives outside the repo |
-| **Committed `DIGEST.md`** | Versioned and diffable; `git log` shows how the picture changed | Two commits a day to `main` forever; a shared file every sweep wants to edit, reintroducing §7.5 conflicts; no notification |
+| **Committed `DIGEST.md`** | Versioned and diffable; `git log` shows how the picture changed | Two commits a day to `main` forever; a shared file every sweep wants to edit, reintroducing §7.6 conflicts; no notification |
 | **Dashboard page only** | No churn; always current; visual; already being built for §8.1 | No push; no history; only ever shows *now*; needs a deploy to refresh |
 
 **Recommendation: the dashboard is the canonical view, plus one persistent GitHub issue
@@ -945,6 +1034,12 @@ for *changes in human-blocker set* means a quiet run is genuinely silent, and a
 notification always means "you specifically are now the bottleneck." Notification
 fatigue is the actual failure mode of a twice-daily job, and this is the design that
 avoids it.
+
+**Once the sweep proposes answers (§7.3), the issue's job narrows usefully.**
+Judgement questions arrive as pull requests, so what is left in the issue is the
+residue that can never become one: `data:` facts only you have, and `permission:`,
+`cost:`, `legal:` items needing your authority. Every entry then genuinely requires
+you, which is a better list than one where some entries could have been proposed.
 
 ### 8.5 Navigation
 
@@ -989,12 +1084,12 @@ https://knovak.github.io/siteprep/branch/<branch>/initiatives/index.html
 ```
 
 This matters more than it first appears, and it partly answers the friction concern
-behind §7.8. A sweep PR is not just a diff of JSON and markdown — **its rendered
+behind §7.9. A sweep PR is not just a diff of JSON and markdown — **its rendered
 result is browsable before merge.** You can read the initiative's index page, see the
 new status, and check the TOC entry, then merge from the phone. Reviewing generated
 pages as source is what would make this tedious; reviewing them as pages is not.
 
-It also argues for keeping the generated pages **out of the repo** (§7.5): they are
+It also argues for keeping the generated pages **out of the repo** (§7.6): they are
 already visible per-branch without being committed, so committing them would add merge
 conflicts and buy nothing.
 
@@ -1015,7 +1110,7 @@ generated from it would be wrong:
 - `stage` is not a known value
 - an `outputs[].path` that does not exist, or escapes the repo
 - **two initiatives declaring the same `outputs[].path`** — the exclusive-ownership
-  invariant §7.5 depends on
+  invariant §7.6 depends on
 - **a file under a declared `outputs[].path` referencing a path under `initiatives/`** —
   the published-output rule from §3.1
 - a blocked item with no `blocked_by`, or an unknown prefix
@@ -1231,12 +1326,13 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 |---|---|---|---|
 | **P** | **done** | **Navigation and TOC cleanup (§11)** — `shared/nav_bar/`, one TOC renderer, explicit TOC assets | Deck output is unchanged, demos TOC has a nav bar |
 | 0 | **done** | This document, revised until it's right — **plus the instruction-file edits** | You're happy with it |
-| 1 | **done** | The `new-initiative` (§7.9), `answer-decision` (§5.2), `respond-to-review` (§7.2), and `merge-prs` (§7.8) skills | Starting, deciding, revising, and merging are each one sentence |
+| 1 | **done** | The `new-initiative` (§7.10), `answer-decision` (§5.2), `respond-to-review` (§7.2), and `merge-prs` (§7.9) skills | Starting, deciding, revising, and merging are each one sentence |
 | 2 | **done**, with a gap | `initiatives/` exists; **two contrasting initiatives**, created with the skill, no automation | The schema survives contact with both kinds |
 | 3 | **done** | Validation in `build_tests.sh`; TOC, index pages, Initiatives button; documents rendered at build time | The TOC renders on Pages and in branch previews |
 | 4 | **done** | Sweep job, **survey phase only** — digest, no changes. Needs no model (§7.1) | Digests are useful for a week |
-| 5 | next | Set `phases` to include `"work"` (§7.4), temporarily at `items_per_run: 1` | First agent PR merges |
-| 6 | later | Restore the configured budget (§7.4) | Review load, not ambition, sets the ceiling |
+| 5 | next | Set `phases` to include `"work"` (§7.5), temporarily at `items_per_run: 1` | First agent PR merges |
+| 5a | later | Implement and enable `"propose"` (§7.3) | A proposal PR is merged as the answer |
+| 6 | later | Restore the configured budget (§7.5) | Review load, not ambition, sets the ceiling |
 
 **The gap in Phase 2.** The criterion was two *contrasting* initiatives — one
 producing publishable content, one whose only output is capability (§2.1), since
@@ -1255,6 +1351,10 @@ it capability-producing. Until that is decided, treat this half as unproven.
   executed — no sweep PR has ever received a comment — so turning both on at
   once means two untested paths at once. Add `"respond"` once a real sweep PR
   exists to comment on.
+- **`"propose"` comes last**, and depends on `"respond"` working. A proposal is
+  only cheap if redirecting it with a comment is cheap, and that is
+  `respond-to-review`'s job. Enabling proposals while comments go unanswered
+  would mean the model deciding things and no working channel to overrule it.
 - **Nothing has run end to end.** Every piece is tested in isolation and no
   sweep has ever produced a pull request, which is the real reason
   `items_per_run: 1` matters for the first week.
@@ -1313,12 +1413,12 @@ automation instructions land with the automation, in Phases 3–5.
 |---|---|
 | Forward-only; existing demos are not retrofitted | §12 |
 | Travel decks do not get initiatives yet — revisit once a few exist | §12 |
-| Runs on Claude Code or Codex; merge mechanics in Actions | §7.7 |
+| Runs on Claude Code or Codex; merge mechanics in Actions | §7.8 |
 | `wish.md` is verbatim and permanent; revisits append | §4.1 |
-| Staleness is 10 days, overridable per initiative | §7.4 |
+| Staleness is 10 days, overridable per initiative | §7.5 |
 | Digest goes to the dashboard plus a change-triggered issue | §8.4 |
-| PR packaging is `one-per-initiative`, as a write scope | §7.5 |
-| One global budget number; no per-run variation | §7.4 |
+| PR packaging is `one-per-initiative`, as a write scope | §7.6 |
+| One global budget number; no per-run variation | §7.5 |
 | Index pages are generated, with an optional hand-written `overview.md` | §8.2 |
 | No owner field — single-author repo | — |
 | Branch previews need no new machinery | §8.6 |
@@ -1332,30 +1432,34 @@ automation instructions land with the automation, in Phases 3–5.
 | No `updated` field — last activity comes from git | §6.1 |
 | A corrected wish keeps the superseded text visible below it | §4.1 |
 | Choice, Plan, and Critique map onto existing stages, adding no new ones | §5.2 |
-| The sweep prompt lives in the repo and is the same text for manual and scheduled runs | §7.7.1 |
+| The sweep prompt lives in the repo and is the same text for manual and scheduled runs | §7.8.1 |
 | The survey is derived and therefore code, so Phase 4 needs no model | §7.1 |
-| Which phases a run may execute is config in `sweep.json`, not prompt text | §7.4 |
+| Which phases a run may execute is config in `sweep.json`, not prompt text | §7.5 |
 | The scheduled digest refreshes silently and comments only when decisions change | §8.4 |
 | The sweep responds to review on its own PRs, before starting new work | §7.2 |
-| Review responses come out of `items_per_run`, taken first | §7.4 |
+| Review responses come out of `items_per_run`, taken first | §7.5 |
 | The sweep never resolves a review thread, and never reads its own comments | §7.2 |
 | A review comment may create a new todo item, but may not grow a PR in flight | §7.2 |
+| The sweep proposes answers to `human:` questions as pull requests | §7.3 |
+| It never proposes for `data:`, `permission:`, `cost:` or `legal:` blockers | §7.3 |
+| A proposal leaves `main` unchanged until it merges, so a closed one leaves no wreckage | §7.3 |
+| The digest issue carries what can never become a pull request | §8.4 |
 | Backlog health warns; only malformed or unsafe data fails the build | §9 |
 | The validator and dashboard generator are Node, not shell | §9.1 |
-| A `new-initiative` skill, built before the first initiative | §7.9 |
+| A `new-initiative` skill, built before the first initiative | §7.10 |
 | Answers are recorded in `decisions.md`, dated and appended, with reasoning | §5.2 |
 | The merge skill may override CI only when a PR is named individually | below |
 | The sweep skips an invalid initiative and reports it; it never repairs | below |
 
 Two of these you left to my judgement:
 
-**Unresolved review comments (§7.8).** The merge skill refuses by default. An override
+**Unresolved review comments (§7.9).** The merge skill refuses by default. An override
 is allowed only when you name that PR by number — never through a bulk selector like
 `all green sweep PRs`. So the safeguard cannot erode silently through the path you will
 use most, and the escape hatch still exists for the case where you have read the comment
 and decided it does not block. Same rule for a red-CI override.
 
-**Invalid `initiative.json` (§7.6).** The sweep skips that initiative entirely, reports
+**Invalid `initiative.json` (§7.7).** The sweep skips that initiative entirely, reports
 it in the digest, and never attempts a repair. Self-repair would have the job rewriting
 the state file it is otherwise only allowed to read, and a malformed file is already a
 build failure, so it cannot go unnoticed. Given that you don't expect this to happen,
@@ -1369,7 +1473,7 @@ sweep, not a corrupted state file.
    in `get_demo_description()` disappear and the three TOCs can share one entry
    renderer, not just a page shell. Worth doing after Phase P, on its own.
 2. **Travel decks as initiatives** (§12) — revisit once a few initiatives exist.
-3. **PR packaging above a budget of 1** (§7.5) — all strategies are identical at 1, so
+3. **PR packaging above a budget of 1** (§7.6) — all strategies are identical at 1, so
    this settles itself the first time the budget rises.
 
 ### Still open
