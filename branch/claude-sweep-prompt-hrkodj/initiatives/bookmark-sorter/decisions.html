@@ -141,6 +141,30 @@
 <p>  and explicit readers, a public/private flag where public means any signed-in   user may read it, or demo collections special-cased and seeded rather than   shared at all. Recorded as <code>collection-sharing</code>.</p>
 <ul><li>Whether a user may hold several collections of their own, which the wish&#39;s</li></ul>
 <p>  &quot;one per user&quot; implies but does not require, and which the &quot;choose collection&quot;   menu has to render either way.</p>
+<h3>2026-08-14 — What makes a collection non-personal?</h3>
+<p><strong>Special-case the demo collections — seeded, not shared — for now.</strong> With, in the user&#39;s words, a <em>&quot;plan to have a general sharing scheme for a later revision.&quot;</em></p>
+<p>Both halves matter. The first version builds no sharing machinery at all. The second half is not a hedge: sharing is expected, so nothing in the first version should make it harder to add.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Seeded demo collections</strong> <em>(chosen)</em></td><td>No sharing model, no ACLs, no reader lists — the whole question is deferred rather than half-answered. Every collection stays exactly what decision 3 made it: one owner, private. Testers cannot tread on each other</td><td>Only solves the demo case. Any real &quot;show this to a colleague&quot; need has to wait for the general scheme</td></tr><tr><td><strong>Public/private flag</strong></td><td>One boolean, and a demo collection is just a public one. Cheap to build</td><td>A boolean is a sharing model, and the smallest one that is already wrong: no way to share with <em>one</em> person, and &quot;public&quot; means different things once real piles are in there. The kind of thing that is hard to migrate off precisely because it was cheap</td></tr><tr><td><strong>General sharing model now</strong></td><td>Solves it properly and once — owners, explicit readers, revocation</td><td>Substantial machinery in service of a demo, before anyone has used the tool. The wish calls triage the point, and none of this makes triage faster</td></tr></tbody></table></div>
+<h4>What &quot;seeded&quot; has to mean</h4>
+<p>Recording the reading, because the other one quietly reintroduces what we just deferred. <strong>A demo collection is seeded as a per-user copy</strong> — a tester signs in and receives their own collection populated from fixed content. It is an ordinary private collection that happened to arrive pre-filled.</p>
+<p>The alternative reading — one system-owned demo collection that many users read — <em>is</em> sharing, and would need the model this decision defers. If that is what was meant, this decision doesn&#39;t hold and the general scheme comes first. Flagging it rather than assuming it.</p>
+<p>Read as per-user copies, it is better for the actual purpose than sharing would have been: <strong>each tester&#39;s verdicts are their own.</strong> A single shared demo would have testers overwriting each other&#39;s keeper/junk calls, which is precisely the thing being tested.</p>
+<h4>Why this is cheap, and what makes it cheap</h4>
+<p>Per-user copies duplicate rows, which the size finding already established is not a constraint — ten thousand rows of title, URL, date, tags and verdicts is small, and a demo is far smaller than that.</p>
+<p>The part that could have been expensive is captures, and last round&#39;s decision already handles it: <strong>the capture store is keyed by URL, so twenty testers with the same seeded demo cost exactly one capture between them.</strong> That decision was made for re-import and is what makes seeded copies nearly free. Worth noting as a case where two decisions happened to line up — and as a reason not to partition the cache per collection later without checking this first.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled</strong>: no sharing in the first version. A collection has one owner and</li></ul>
+<p>  is private, without exception. Demo collections are seeded copies.</p>
+<ul><li><strong>Settled</strong>: a general sharing scheme is planned, not merely possible. It goes</li></ul>
+<p>  into <code>objectives.md</code> under &quot;Explicitly not the first version&quot;, alongside the   two extensions the wish already holds back — that section is where this repo   keeps things that are real but deliberately later.</p>
+<ul><li><strong>Not settled</strong>: what a general sharing scheme looks like. Deliberately. It</li></ul>
+<p>  should be designed against real use, not against a guess made before anyone   has triaged anything.</p>
+<ul><li><strong>Not settled, and worth watching</strong>: what seeds a demo, and where that content</li></ul>
+<p>  lives. A spec question rather than a decision.</p>
+<h4>The one thing to keep true for later</h4>
+<p>Since sharing is planned rather than hypothetical, the first version should avoid the choice that makes it hard: <strong>do not let &quot;owner&quot; become the only way an item is reachable.</strong> Whatever the store looks like, a collection&#39;s identity should be separable from the single user attached to it, so a reader list can be added later without rewriting every query. That costs nothing now and is the difference between adding sharing and retrofitting it.</p>
+<p>That is a constraint on the spec, not a design — recorded here so the spec has to answer it.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="claude/sweep-prompt-hrkodj" data-root="../../">
