@@ -34,15 +34,16 @@ Do not call demo content a "deck" or "section" unless a user explicitly asks for
 
 `INITIATIVES_VISION.md` is the full design. This section is the working vocabulary.
 
-**The scheduled sweep job is not built yet.** The sweep and `sweep.json` described in the vision document do not exist; do not act as though they run, and do not create an initiative unless the user asks for one. The Initiative TOC and each initiative's overview page **are** built - `scripts/initiatives.mjs` generates them, and `scripts/build_tests.sh` validates the data. See `INITIATIVES_TECHDOC.md`.
+**The sweep runs in survey mode only.** `initiatives/sweep.json` sets `phases` to `["survey"]`, so a run reports and changes nothing; do not act as though it opens pull requests. Everything else is built - `scripts/initiatives.mjs` generates the Initiative TOC and overview pages, validates the data, and produces the digest. See `INITIATIVES_TECHDOC.md` and `initiatives/sweep-setup.md`. Do not create an initiative unless the user asks for one.
 
-Three skills cover the work the sweep would otherwise do, and are used by hand in the meantime:
+Four skills cover the work the sweep would otherwise do, and are used by hand in the meantime:
 
 - **`new-initiative`** - scaffolds a new initiative at `wish` stage. Use it rather than creating the files by hand.
 - **`respond-to-review`** - answers review comments on a pull request: revise, reply, or escalate. Never resolves threads and never merges.
+- **`answer-decision`** - records the user's answer to a question an initiative is blocked on, in `decisions.md`, and unblocks the item.
 - **`merge-prs`** - checks CI, mergeability, and unresolved threads, then merges what qualifies.
 
-Together they cover starting work, iterating on it under review, and finishing it.
+Together they cover starting work, settling what it is blocked on, iterating on it under review, and finishing it.
 
 ### Terminology
 
@@ -51,7 +52,7 @@ Use these names, mirroring the Demos vocabulary above:
 - **Initiative collection**: the `initiatives/` directory and its generated index.
 - **Initiative**: one immediate subdirectory of `initiatives/`.
 - **Initiative index page**: an initiative's own `index.html` overview.
-- **Initiative document**: a markdown file in an initiative - `wish.md`, `objectives.md`, `spec.md`, `plan.md`, `test-plan.md`, `overview.md`, `log.md`.
+- **Initiative document**: a markdown file in an initiative - `wish.md`, `objectives.md`, `decisions.md`, `spec.md`, `plan.md`, `test-plan.md`, `overview.md`, `log.md`.
 - **Initiative capability**: a skill, script, or library an initiative develops, under its `lib/`, `skills/`, or `prompts/`.
 - **Initiative output**: a deck, demo, or external deployment an initiative produced.
 
@@ -64,6 +65,7 @@ initiatives/<initiative-name>/
   initiative.json    # required - stage, value, outputs, todo list
   wish.md            # required - the original goal, in the user's own words
   objectives.md      # what "done" would mean
+  decisions.md       # questions that were open, and how they were settled
   spec.md            # what it is, including alternatives considered
   plan.md            # how it gets built, in phases
   test-plan.md       # how we know it works
@@ -94,6 +96,7 @@ Stages may regress; `archived` may not.
 
 - **`wish.md` is the user's words, not yours.** It can be edited freely while the initiative is still in the pull request that creates it - tidying a rough first draft there is expected. Once that PR has merged the wish is the record: never rewrite it to be clearer, and when it genuinely changes, put the new dated version at the top and keep the previous text below it, visible.
 - **Every non-dormant initiative needs at least one actionable todo item.** An initiative with nothing actionable and no `dormant` stage is a defect.
+- **An answered question goes in `decisions.md`**, dated and appended, with the reasoning and what is still open. A decision recorded only in a commit message or a chat gets re-argued months later, which is the drift initiatives exist to prevent. Use the `answer-decision` skill rather than editing by hand.
 - **A blocked todo item must say what blocks it**, using a namespaced prefix: `todo:`, `initiative:`, `review:`, `schedule:`, `human:`, `permission:`, `cost:`, `legal:`, `data:`, `external:`, `upstream:`.
 - **There is no `updated` field.** Last activity comes from git.
 - **A published output may never reference code under `initiatives/`.** Anything under an initiative is mutable and private to it, so a deck or demo that loaded it would change without any PR appearing to touch it. Either graduate the library to `shared/`, or vendor a copy into the output and record the source path and commit.

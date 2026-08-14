@@ -126,6 +126,7 @@ initiatives/
     wish.md            # required — the original vague goal, in the user's words
     overview.md        # optional — hand-written prose, appended to index.html (§8.2)
     objectives.md      # what "done" would mean, once it can be said
+    decisions.md       # questions that were open, and how they were settled
     spec.md            # what it is
     plan.md            # how it gets built, in steps
     test-plan.md       # how we know it works
@@ -257,6 +258,14 @@ implicit:
 | **Choice** — suggest alternative solutions, evaluate, recommend a leader | The transition `shaped` → `specified` | An **Alternatives considered** section in `spec.md` — options, evaluation, and the recommended leader with its reasoning. A large decision can have its own `alternatives.md`. |
 | **Plan** — implementation plan, multiple phases, testing at each phase | The `planned` stage | `plan.md` broken into phases, with `test-plan.md` required at the same gate. "Testing at each phase" is why both documents advance the stage together rather than the test plan trailing. |
 | **Critique** — identify issues in the plan and improve it | A standard todo item at `planned`, before `building` | A **"critique the plan"** item created automatically when `plan.md` first appears, with `advances_stage: false`. |
+
+**Where a Choice is written down: `decisions.md`.** Each entry is dated and
+appended — the question, the answer in the user's words, the alternatives with
+their strengths and weaknesses, and what the answer leaves open. It is the
+source `spec.md` draws its *Alternatives considered* section from, and the
+reason a revisit (§5.1) does not re-argue a settled question. The
+`answer-decision` skill writes it, so the format holds across sessions that
+share no context.
 
 Two things the earlier phases get right that this document had left unsaid:
 
@@ -1306,6 +1315,7 @@ automation instructions land with the automation, in Phases 3–5.
 | Backlog health warns; only malformed or unsafe data fails the build | §9 |
 | The validator and dashboard generator are Node, not shell | §9.1 |
 | A `new-initiative` skill, built before the first initiative | §7.9 |
+| Answers are recorded in `decisions.md`, dated and appended, with reasoning | §5.2 |
 | The merge skill may override CI only when a PR is named individually | below |
 | The sweep skips an invalid initiative and reports it; it never repairs | below |
 
