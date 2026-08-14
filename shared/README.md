@@ -35,6 +35,9 @@ shared/
 │   ├── nav_bar.md
 │   ├── nav_bar.css
 │   └── nav_bar.js
+├── site_footer/    # Page footer link row (SiteFooter)
+│   ├── site_footer.md
+│   └── site_footer.js
 └── site_base/      # Assets for the generated site-level pages
     ├── site_base.md
     ├── site_base.css
@@ -267,6 +270,36 @@ Opt a page out with `<body data-collapsible-topics="off">`.
 **Maps in collapsed topics:** Leaflet cannot size a map inside a hidden container. Expanding a topic dispatches a window `resize` event, so maps that were already rendered re-fit themselves; a map inside a topic that *starts* collapsed must be rendered lazily when its container first becomes visible.
 
 For complete documentation, see [`collapsible_topics/collapsible_topics.md`](./collapsible_topics/collapsible_topics.md).
+
+## Site Footer Library
+
+The `site_footer/` folder contains `SiteFooter`, which renders the link row at
+the bottom of every published page:
+
+```text
+Version: main | Deck | Section | Google Drive | GitHub | View all versions
+```
+
+It is the one library here that is **not** opt-in. `scripts/build.sh` injects
+the footer element into every page it publishes, because the version link and
+the version browser describe the *deployment*, not a deck:
+
+```html
+  <footer class="site-footer" data-version="main" data-root="../../../"
+          data-deck="../../index.html" data-section="overview.html">
+    <script src="../../../shared/site_footer/site_footer.js"></script>
+  </footer>
+```
+
+The build supplies only what it alone knows - the version name and where the
+page sits in the tree - and the link list lives in `site_footer.js`. A page
+should not hand-write this row: eight pages once carried a copy of it, frozen at
+`Version: main` and missing links added later.
+
+There is no stylesheet: `.site-footer` and `.footer-nav` are already styled by
+each deck's `assets/styles.css` and by `shared/site_base/site_base.css`.
+
+For complete documentation, see [`site_footer/site_footer.md`](./site_footer/site_footer.md).
 
 ## Adding New Shared Libraries
 

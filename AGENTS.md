@@ -125,6 +125,11 @@ When a deck or section is given a specific date range:
 
 Every new deck or section should have a map with all the locations on the page included.
 
+## Page footer
+Do not write a `<footer class="site-footer">` into a deck or section page. `scripts/build.sh` injects one into every published page, filled by the shared `SiteFooter` library (`shared/site_footer/`, see `shared/site_footer/site_footer.md`) with the version, deck, section, Google Drive, GitHub, and version-browser links. A hand-written copy renders as a second footer row and freezes at whatever the row said the day it was copied.
+
+A deck may still add its own footer for *deck* navigation - `decks/rockies/` uses one for "All decks | Rockies" - as long as it does not restate the version row.
+
 ## Collapsible topics
 Every topic on a deck or section page is collapsible: the shared `CollapsibleTopics` library (`shared/collapsible_topics/`, see `shared/collapsible_topics/collapsible_topics.md`) turns each topic heading into a collapse/expand toggle, and it is loaded for every page by each deck's `assets/scripts.js`. Ordinary topic markup - a heading followed by its content - is all that is needed; do not add per-page tags or wrapper divs for this.
 
