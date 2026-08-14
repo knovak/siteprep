@@ -1,0 +1,54 @@
+name: Sweep write scope
+
+# A sweep pull request may only touch its own initiative and that initiative's
+# declared outputs. That rule is what lets several sweep PRs merge in any order
+# without conflicting - so it is checked here rather than left to the agent to
+# remember.
+#
+# Only runs on sweep/* branches. Ordinary pull requests are unaffected.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'sweep/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check the write scope
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # sweep/<slug>/<item-id> - the branch name says which initiative owns
+          # this change, so no label or trailer is needed to find out.
+          SLUG="${HEAD_REF#sweep/}"
+          SLUG="${SLUG%%/*}"
+
+          if [ -z "$SLUG" ]; then
+            echo "Could not read an initiative slug from branch '$HEAD_REF'." >&2
+            echo "Sweep branches must be named sweep/<initiative>/<item-id>." >&2
+            exit 1
+          fi
+
+          echo "Initiative: $SLUG"
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > changed-files.txt
+          echo "Changed files:"
+          sed 's/^/  /' changed-files.txt
+
+          node scripts/initiatives.mjs check-scope "$SLUG" --files-from changed-files.txt
