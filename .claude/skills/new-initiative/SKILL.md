@@ -1,6 +1,6 @@
 ---
 name: new-initiative
-description: Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list. Use when the user wants to start an initiative, or describes an idea they want captured as ongoing work rather than done immediately ("start an initiative for...", "I have an idea I want to track"). Scaffolds only the three files a wish-stage initiative needs.
+description: Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list. Use when the user wants to start an initiative, or describes an idea they want captured as ongoing work rather than done immediately ("start an initiative for...", "I have an idea I want to track"). Scaffolds only the two files a wish-stage initiative needs.
 ---
 
 # Starting an initiative
@@ -14,12 +14,19 @@ minimum and nothing more. Everything else arrives when the lifecycle reaches it.
 
 ## 1. Get the wish in the user's own words
 
-Ask for it if they have not already said it. **Do not improve it.** A vague
-sentence is a legitimate wish - `wish` is a real lifecycle stage, not a
-placeholder for a proper specification.
+Ask for it if they have not already said it. A vague sentence is a legitimate
+wish - `wish` is a real lifecycle stage, not a placeholder for a proper
+specification, so do not pad it into one.
 
 If they have already described the idea in this conversation, use what they
-said, verbatim. Quote it back and confirm before writing.
+said. Quote it back and confirm before writing.
+
+**Tidying is allowed here, and only here.** A wish is not fixed until the pull
+request creating it merges, so fixing typos, finishing a broken sentence, or
+rewording at the user's request is ordinary work while the PR is open - no need
+to preserve the first draft alongside it. Where you have guessed at unclear
+intent, say so and ask. After that PR merges the wish is the record, and any
+later change keeps the superseded text visible below it.
 
 ## 2. Propose a slug
 
@@ -39,7 +46,7 @@ Check `initiatives/<slug>/` does not already exist.
 Do not ask about stage (always `wish`), outputs (unknown yet), or effort on the
 first todo (always `small`).
 
-## 4. Write exactly three files
+## 4. Write exactly two files
 
 ### `initiatives/<slug>/initiative.json`
 
@@ -81,12 +88,12 @@ There is no `updated` field - last activity comes from git.
 Dated, unedited. On a later revisit a new dated wish is added above this one and
 the old text stays visible - it is how drift becomes noticeable.
 
-### `initiatives/<slug>/index.html`
+### No `index.html`
 
-The overview shell. Status blocks are generated from `initiative.json` at build
-time; the page only needs the structure. Follow whatever the current build
-generates for other initiatives - if none exists yet, copy the structure of a
-deck index page's header and a single card.
+Do **not** create one. The build generates the overview page from
+`initiative.json` and the files present, so a committed page would be a second
+copy of the status that could drift from the real one. See
+`INITIATIVES_TECHDOC.md`.
 
 ## 5. Do not create anything else
 
@@ -96,5 +103,5 @@ objectives. Creating them empty destroys that signal.
 
 ## 6. Confirm
 
-Report the path, the stage, and the one actionable item. Mention that
+Report the path, the stage, and the one actionable item. The overview page appears at the next build. Mention that
 `overview.md` can be added later for narrative, but is not needed now.

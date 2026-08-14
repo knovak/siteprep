@@ -188,6 +188,41 @@ if [ "$missing_root" -gt 0 ]; then
 fi
 pass "BUILD-17 every generated page declares its version root"
 
+# BUILD-18: Initiatives validate, and their pages are generated.
+#
+# Only malformed or unsafe data fails the build. Backlog health - an empty
+# backlog, a stale initiative, a missing stage document - is reported as a
+# warning, because this script aborts the build and would otherwise stop an
+# unrelated deck from deploying over someone's todo list.
+if [ -d "$ROOT_DIR/initiatives" ]; then
+  if ! node "$ROOT_DIR/scripts/initiatives.mjs" validate; then
+    fail "BUILD-18 initiative data is invalid"
+  fi
+  pass "BUILD-18 initiative data validated"
+
+  if [ ! -f "$OUTPUT_DIR/initiatives/index.html" ]; then
+    fail "BUILD-18 initiatives index not generated"
+  fi
+  pass "BUILD-18 initiatives index generated"
+
+  while IFS= read -r initiative; do
+    [ -n "$initiative" ] || continue
+    if [ ! -f "$OUTPUT_DIR/initiatives/${initiative}/index.html" ]; then
+      fail "BUILD-18 no overview page generated for ${initiative}"
+    fi
+    if ! grep -q "./${initiative}/index.html" "$OUTPUT_DIR/initiatives/index.html"; then
+      fail "BUILD-18 initiatives index does not link ${initiative}"
+    fi
+    pass "BUILD-18 initiative page generated and linked for ${initiative}"
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" list)
+
+  # Source markdown stays the single source of truth; the build renders it.
+  if find "$OUTPUT_DIR/initiatives" -name '*.md' -print -quit | grep -q .; then
+    fail "BUILD-18 raw markdown published under initiatives/ instead of rendered HTML"
+  fi
+  pass "BUILD-18 initiative documents rendered rather than copied"
+fi
+
 # BUILD-09: Valid HTML - basic structure check
 for deck in "${DECKS[@]}"; do
   deck_index="$OUTPUT_DIR/decks/${deck}/index.html"
