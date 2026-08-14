@@ -1,6 +1,6 @@
 # Wish
 
-## 2026-08-14 (typos corrected)
+## 2026-08-14
 
 Interactive Bookmark sorter: ingest bookmarks, retain title, link, date. Add tags, starting with tags that indicate the source and ingestion date of the item.
 
@@ -16,22 +16,6 @@ Extend by harvesting links open on other devices' browsers (Safari on iPhone, Ch
 
 Extend by allowing the user to designate subsets based on tags, and create tab groups in Chrome or other browsers with the pages in the subset. Possibly also allow the user to create a folder of fresh bookmarks in Chrome or another browser from a subset. (These extended capabilities may be offered initially or exclusively through an LLM agent.)
 
-Two sentences were unfinished in the original and are completed here by inference,
-marked so the guess stays visible: "snapshots from the page" and "a carousel on a
-phone". Correct them if the intent was different.
-
-## 2026-08-14 (as first written)
-
-Interactive Bookmark sorter:  ingest bookmarks, retain title, link, date.  Add tags, starting with tags that indicate the source and ingestion date of the item.
-
-Tag items based on topic or website or type of page.
-
-Sort items into clusters, either automatically are under user selection (for example, a bullying expression on tags, or a pattern match on tags).
-
-Present clusters to user with snapshots from the   Fill a screen (eg.8x2 snapshot on big widescreen, or something smaller on an iPad, or a carousel on ). Have a fast UI for adding tags.  Most important is to pick keepers vs junk vs archive vs needs-more-time.
-
-Retain the resulting tags in some sort of database appropriate to the platform where this system runs. Provider backup, and export mechanism, so that the data is portable to other systems.
-
-Extend by harvesting links open other devices' browsers (safari on iPhone, chrome on iPad, etc)
-
-Extend by allowing the user to designate subsets based on tags, and creates tab groups in chrome or other browsers with the pages in the subset.  Possibly also allow the user to create a folder of fresh bookmarks in chrome more other browser from a subset. (these extended capabilities may be offered  initially or exclusively through an LLM agent.)
+Two sentences were unfinished as dictated and are completed here by inference:
+"snapshots from the page" and "a carousel on a phone". Correct them if the intent
+was different.
