@@ -84,3 +84,23 @@ followed.
 
 Raises one new blocker: private-by-default is exactly what a demo collection is
 not, so what makes a collection non-personal is now `collection-sharing`.
+
+## 2026-08-14 — Decide what makes a collection non-personal, so a demo collection can exist
+
+Special-case demo collections as seeded per-user copies for now; no sharing machinery in the first version. A general sharing scheme is planned for a later revision and goes into objectives.md under 'Explicitly not the first version'. Recorded in decisions.md.
+
+"Seeded" is recorded as meaning a **per-user copy**, because the other reading —
+one system-owned demo that many people read — is sharing, and would need the
+model this defers. Read that way it is also better for the purpose: each tester's
+verdicts are their own, rather than testers overwriting each other's calls.
+
+Last round's URL-keyed capture store is what makes the copies nearly free —
+twenty testers with the same seeded demo cost one capture between them. Two
+decisions lining up by luck, and a reason not to partition that cache later
+without checking here first.
+
+The `revise-objectives` item grows to cover general sharing as a held-back
+capability, alongside the two the wish already holds back.
+
+**No decisions are now waiting on the user.** Every question this initiative
+raised has an answer; what remains is work.

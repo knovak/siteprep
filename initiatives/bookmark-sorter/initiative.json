@@ -7,7 +7,7 @@
   "todo": [
     {
       "id": "revise-objectives",
-      "title": "Revise objectives.md for collections, import/export, and imported folder paths as tags",
+      "title": "Revise objectives.md for collections, import/export, imported folder paths as tags, and general sharing as a later revision",
       "state": "actionable",
       "value": "high",
       "effort": "small"
@@ -20,14 +20,6 @@
       "value": "high",
       "effort": "medium",
       "advances_stage": true
-    },
-    {
-      "id": "collection-sharing",
-      "title": "Decide what makes a collection non-personal, so a demo collection can exist",
-      "state": "blocked",
-      "blocked_by": "human:a general sharing model with owners and explicit readers, a public/private flag where public means any signed-in user may read it, or demo collections special-cased and seeded rather than shared at all?",
-      "value": "medium",
-      "effort": "small"
     }
   ]
 }
