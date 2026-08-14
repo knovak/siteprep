@@ -76,7 +76,13 @@ test.describe('initiative overview page', () => {
   });
 
   test('a rendered document page shows the document body', async ({ page }) => {
-    await page.goto('/initiatives/demo-metadata/wish.html');
+    // Discovered rather than hardcoded, so the suite does not depend on which
+    // initiatives happen to exist.
+    await page.goto('/initiatives/index.html');
+    const slugHref = await page.locator('.toc-item h3 a').first().getAttribute('href');
+    const slug = slugHref.replace(/^\.\//, '').replace(/\/index\.html$/, '');
+
+    await page.goto(`/initiatives/${slug}/wish.html`);
 
     const body = await page.textContent('body');
     expect(body).toContain('Wish');
