@@ -143,19 +143,29 @@ document is itself the signal for the next step.** An initiative with a wish and
 objectives has an obvious next action, and the sweep job (§7) can see it without being
 told.
 
-### 4.1 `wish.md` is verbatim and permanent
+### 4.1 `wish.md` is fixed at its first merge
 
-`wish.md` holds the user's original words. Elaboration happens in `objectives.md` and
-later documents — never by revising the wish. Months of drift are exactly when the
-original *why* becomes most valuable and least recoverable.
+`wish.md` holds the user's own words. It is **not** fixed the moment it is typed: while
+the initiative is still in the pull request that creates it, the wish can be edited
+freely — tidied, corrected, reworded, replaced outright. Nothing needs preserving,
+because nothing has been agreed yet. Getting a half-formed thought into shape is what
+that PR is *for*.
+
+**The wish becomes the record when that PR merges.** From then on, elaboration happens
+in `objectives.md` and later documents — never by quietly revising the wish. Months of
+drift are exactly when the original *why* becomes most valuable and least recoverable.
+
+This is the same rule the rest of the design already runs on: the merge is the event
+that makes a thing real. It closes a todo item (§6.3), it advances a lifecycle stage
+(§7.2), and it fixes a wish.
 
 A revisit that produces version 2 **appends** a new dated wish rather than replacing the
 first one, so the file becomes a chronological record of what was wanted and when.
 
-**A wish may be corrected — but the original stays visible.** Requirements go wrong,
-and occasionally something needs removing. When a wish is changed, the newest version
-goes at the top and the previous text is kept below it, in the same file, plainly
-readable:
+**A merged wish may still be corrected — but the original stays visible.** Requirements
+go wrong, and occasionally something needs removing. When a wish is changed *after* it
+has been merged, the newest version goes at the top and the previous text is kept below
+it, in the same file, plainly readable:
 
 ```markdown
 # Wish

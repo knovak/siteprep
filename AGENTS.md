@@ -92,7 +92,7 @@ Stages may regress; `archived` may not.
 
 ### Rules that matter when editing an initiative
 
-- **`wish.md` is the user's words, not yours.** Never rewrite a wish to be clearer. When a wish genuinely changes, put the new dated version at the top and keep the previous text below it, visible.
+- **`wish.md` is the user's words, not yours.** It can be edited freely while the initiative is still in the pull request that creates it - tidying a rough first draft there is expected. Once that PR has merged the wish is the record: never rewrite it to be clearer, and when it genuinely changes, put the new dated version at the top and keep the previous text below it, visible.
 - **Every non-dormant initiative needs at least one actionable todo item.** An initiative with nothing actionable and no `dormant` stage is a defect.
 - **A blocked todo item must say what blocks it**, using a namespaced prefix: `todo:`, `initiative:`, `review:`, `schedule:`, `human:`, `permission:`, `cost:`, `legal:`, `data:`, `external:`, `upstream:`.
 - **There is no `updated` field.** Last activity comes from git.

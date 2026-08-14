@@ -14,12 +14,19 @@ minimum and nothing more. Everything else arrives when the lifecycle reaches it.
 
 ## 1. Get the wish in the user's own words
 
-Ask for it if they have not already said it. **Do not improve it.** A vague
-sentence is a legitimate wish - `wish` is a real lifecycle stage, not a
-placeholder for a proper specification.
+Ask for it if they have not already said it. A vague sentence is a legitimate
+wish - `wish` is a real lifecycle stage, not a placeholder for a proper
+specification, so do not pad it into one.
 
 If they have already described the idea in this conversation, use what they
-said, verbatim. Quote it back and confirm before writing.
+said. Quote it back and confirm before writing.
+
+**Tidying is allowed here, and only here.** A wish is not fixed until the pull
+request creating it merges, so fixing typos, finishing a broken sentence, or
+rewording at the user's request is ordinary work while the PR is open - no need
+to preserve the first draft alongside it. Where you have guessed at unclear
+intent, say so and ask. After that PR merges the wish is the record, and any
+later change keeps the superseded text visible below it.
 
 ## 2. Propose a slug
 
