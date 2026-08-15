@@ -86,7 +86,8 @@ Safari, Firefox and Edge all produce) and a previously exported JSON file (§9).
 Both land in the *current* collection.
 
 Parsing an export yields, per item: title, URL, `add_date` where the file
-carries it, and the enclosing folder path.
+carries it, the enclosing folder path, and the `<DD>` description where one is
+present — which lands in `note` (§5.1) rather than being dropped.
 
 Tags written at ingestion (O1):
 
@@ -120,8 +121,8 @@ literal form (§10).
   `demo-template` | `demo-copy`), `template_id` (for a copy, which template it
   came from), `copied_at`, `created_at`. §10 says what the kinds do.
 - **item** — `id`, `collection_id`, `url` (as saved), `url_key` (normalised,
-  unique per collection), `title`, `added_at`, `ingested_at`, `verdict` (null =
-  untriaged), `verdict_at`.
+  unique per collection), `title`, `note` (see §5.1), `added_at`,
+  `ingested_at`, `verdict` (null = untriaged), `verdict_at`.
 - **tag** — `item_id`, `tag`. **A free string; the schema is not fixed.** The
   `src:`, `in:`, `folder:`, `topic:`, `site:`, `kind:` and `err:` prefixes are a
   naming convention the app itself writes, not a vocabulary the user is confined
@@ -148,6 +149,40 @@ literal form (§10).
    item*. This is the one live constraint `objectives.md` puts on the spec:
    sharing is planned, and this is the difference between adding it later and
    retrofitting it.
+
+### 5.1 `note`, and why it is not a tag or a title
+
+**`note` is free text on the item**, nullable, distinct from `title`. It arrives
+in one of two ways: carried in on an import, or typed by the user against any
+item at any time.
+
+Two uses drive it, and they are different enough to be worth naming separately:
+
+- **A note the user writes to make an item recognisable.** Some items never get
+  a useful picture — §6's gap items, PDFs, login-walled pages — and for those a
+  sentence in the owner's own words does what the capture could not.
+- **A note that already existed when the link was saved.** A link shared in a
+  chat message usually arrives with a comment attached, and browser bookmark
+  exports carry a description field of their own: Netscape bookmark HTML puts it
+  in the `<DD>` element beneath the link. Ingestion reads it into `note` rather
+  than discarding it, since that text is often the only record of *why* the thing
+  was saved.
+
+**Why not a tag.** Tags are for selecting (§8) — short, repeated, and compared
+against each other. A note is prose, unique to one item, and never usefully
+matched with `and`/`or`. Putting it in the tag set would pollute autocomplete
+with strings nobody will ever type twice.
+
+**Why not the title.** The title is what the page calls itself; the note is what
+you or the sender said about it. Overwriting one with the other loses the
+distinction precisely when it matters — an untitled or badly titled page is
+exactly the case where a note earns its place.
+
+**Rules.** It shows in the grid cell alongside the capture (§7), truncated to fit
+and full on the focused item. It travels in the export (§9). On import it follows
+the same principle as a verdict: an existing note is never overwritten, an empty
+one is filled, and where both exist and differ the existing text wins — a note is
+the user's own writing, and an import must not silently edit it.
 
 ## 6. The capture pipeline
 
@@ -212,7 +247,8 @@ Recorded in §10's host table as a requirement with a stated consequence, and in
 ## 7. The triage surface
 
 The screen O3 and O4 describe: a screenful of items, each showing its capture,
-title and tags, judged without scrolling or leaving the keyboard.
+title, tags and `note` where it has one, judged without scrolling or leaving the
+keyboard.
 
 **Layout.**
 
@@ -369,6 +405,7 @@ O7 is a round trip, not a download. An export is JSON:
     {
       "url": "https://example.com/page?x=1",
       "title": "Example page",
+      "note": "the section on lifetimes is the useful bit",
       "added_at": "2019-03-04",
       "tags": ["src:chrome-export", "in:2026-08-15", "folder:reading"],
       "verdict": "keeper",
@@ -386,8 +423,8 @@ O7 is a round trip, not a download. An export is JSON:
 - **No captures.** They are a rebuildable convenience; the judgement is what must
   not be trapped. This also keeps the file small enough to move around.
 - **Import is the merge of §4**, keyed by normalised URL: tags union, earliest
-  date wins, and an existing verdict is not overwritten. Re-importing what you
-  exported is a no-op, which is the test that makes O7 mean something.
+  date wins, and an existing verdict or `note` is not overwritten. Re-importing
+  what you exported is a no-op, which is the test that makes O7 mean something.
 
 Because the capture store is URL-keyed and global, a re-import gets its pictures
 back from cache rather than paying the API again.

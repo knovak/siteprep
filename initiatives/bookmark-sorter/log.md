@@ -166,3 +166,17 @@ one, and delete. That needs exactly one capability on the user and two fields on
 the collection. It adds one real cross-user read - a template is readable by all
 signed-in users, or nobody could copy it - which is recorded against the deferred
 sharing decision rather than quietly widening it.
+
+## 2026-08-15 — Review round: the note field
+
+Added `note` to the item - free text, distinct from the title, either carried in
+on import or typed by the user. Section 5.1 records why it is neither a tag nor a
+title: tags are for selecting and a note is prose that will never be matched with
+and/or, and the title is what the page calls itself while the note is what the
+user or the sender said about it - a distinction that matters most for the badly
+titled pages where a note earns its place.
+
+Two findings while specifying it. Netscape bookmark HTML already carries a
+description in its DD element, so ingestion can read notes the user wrote years
+ago rather than discarding them. And an import must never overwrite an existing
+note, on the same principle as a verdict: it is the user's own writing.
