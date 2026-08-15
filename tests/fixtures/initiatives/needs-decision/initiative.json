@@ -4,6 +4,7 @@
   "todo": [
     {"id":"pick","title":"Pick a storage backend","state":"blocked","blocked_by":"human:SQLite or Postgres?"},
     {"id":"deploy","title":"Enable deploys","state":"blocked","blocked_by":"permission:AWS deploy role"},
+    {"id":"harvest","title":"Scope the harvest","state":"blocked","blocked_by":"data:which senders count?"},
     {"id":"trial","title":"Start the trial","state":"blocked","blocked_by":"schedule:2020-01-01"},
     {"id":"parser","title":"Land the parser","state":"blocked","blocked_by":"review:#204"},
     {"id":"maps","title":"Use the map lib","state":"blocked","blocked_by":"initiative:idle-one"},

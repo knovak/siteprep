@@ -42,9 +42,12 @@ test('separates blockers that clear themselves from blockers that need a person'
   const digest = JSON.parse(run(['digest', '--json']));
 
   const decisionBlockers = digest.decisions.map((d) => d.blocker);
-  assert.equal(decisionBlockers.length, 2, 'human and permission are the only human-class blockers here');
+  assert.equal(decisionBlockers.length, 3, 'human, permission and data are the human-class blockers here');
   assert.ok(decisionBlockers.some((b) => b.startsWith('human:')));
   assert.ok(decisionBlockers.some((b) => b.startsWith('permission:')));
+  // A data: blocker is a fact only a person has, so it is named in the digest
+  // rather than counted as blocked and then dropped.
+  assert.ok(decisionBlockers.some((b) => b.startsWith('data:')));
 
   // A schedule date in the past is satisfied, so it is reported as ready.
   assert.equal(digest.readyToUnblock.length, 1);
@@ -69,6 +72,11 @@ test('marks which waiting decisions the sweep could propose an answer to', () =>
   // pull request - it needs authority, not reasoning.
   const authority = digest.decisions.find((d) => d.kind === 'permission');
   assert.equal(authority.proposable, false);
+
+  // data: is in the digest for the same reason, and is equally unproposable -
+  // an invented fact would be a fabrication wearing the costume of an answer.
+  const fact = digest.decisions.find((d) => d.kind === 'data');
+  assert.equal(fact.proposable, false);
 
   assert.match(run(['digest']), /the sweep can propose an answer to this/);
 });

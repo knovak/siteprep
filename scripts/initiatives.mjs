@@ -67,7 +67,7 @@ const BLOCKER_PREFIXES = [
 ];
 
 /** Blockers the sweep can clear on its own, versus those needing a person. */
-const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal']);
+const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal', 'data']);
 
 /**
  * The sweep may propose an answer only to a judgement call.
@@ -730,7 +730,9 @@ function selectProposals({ claimed = [], openPrs = 0, spent = 0 } = {}) {
             item: item.id,
             title: item.title || item.id,
             blocker: raw,
-            reason: `"${prefix}" needs your authority, not reasoning`
+            reason: prefix === 'data'
+              ? `"${prefix}" needs a fact only you have, not reasoning`
+              : `"${prefix}" needs your authority, not reasoning`
           });
         }
         continue;
