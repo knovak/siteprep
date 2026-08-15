@@ -128,3 +128,41 @@ drafting plan.md and test-plan.md together, which is the gate the lifecycle puts
 at this stage. Without it the initiative reads as finished rather than merely
 specified, which is the distinction the validator's "nothing actionable" warning
 exists to catch.
+
+## 2026-08-15 — Review round on the spec: selection as the reusable function
+
+Ten review comments, all revisions. The largest is a renaming that turned out to
+be a restructuring: what the spec called a cluster is a *selection*, and it is
+pulled out as one function that viewing, exporting, tagging, sweeping a verdict
+and seeding a demo all call. A cluster is now just a named selection. The
+evaluator can cross collections for administrative use; the ordinary UI wraps
+every expression as "collection:<current> and (...)" so a user's selection cannot
+reach another collection by construction.
+
+Automatic clustering stopped being a mechanism of its own and became tag
+production, with three routes that all end in the same place: apply a tag to a
+selection in the app, round-trip a selection through a file that a program or
+skill tags, or hand a selection to a skill that proposes tags. The app therefore
+needs no clustering intelligence of its own to satisfy objective 5.
+
+Two interaction findings. Keys are demoted to a first-cut binding of named
+abstract functions, since the interaction is certain to be refined toward the
+mouse - the functions are the stable part. And a new flow gets a function of its
+own: display a whole selection, mark the few exceptions with one click each, then
+apply a verdict to everything that was not marked. The asymmetry is why it
+matters - naming four keepers out of fifty is quick, judging fifty is not.
+
+Also: the tag schema is explicitly not fixed, so a bare 'boring' or
+'response-required' is an ordinary tag; export takes a selection and is a
+function rather than a menu action; exporting from one collection into another is
+specified as the way a demo is seeded, which needs no cross-collection access
+because everything crosses as a file; and the screenshot API key gets a section -
+pass 2 ships switched off until key custody is resolved, with the pipeline built
+and testable behind the stub.
+
+Demo collections gained the detail the review asked for: a template a maintainer
+edits, copies that testers own, a fresh copy rather than a repair for a dirtied
+one, and delete. That needs exactly one capability on the user and two fields on
+the collection. It adds one real cross-user read - a template is readable by all
+signed-in users, or nobody could copy it - which is recorded against the deferred
+sharing decision rather than quietly widening it.
