@@ -39,3 +39,15 @@ watch.
 The fallback carries one constraint into the spec: the store is the durable
 thing and the generated page is disposable, so moving review into the bookmark
 sorter later is a change of surface rather than a rewrite.
+
+## 2026-08-15 — Draft spec.md, including alternatives considered for the runtime and for how each newsletter shape is turned into stories
+
+Drafted spec.md: the harvest is a skill, the store is a JSON file the skill alone writes, the review page is generated and disposable, and verdicts come back as a small exported file.
+
+Both alternatives sections the item asked for are in it. The runtime one condenses the settled decision. The second is the initiative's own hard problem and was not settled anywhere: how each newsletter shape becomes stories. Chose to declare the shape per source in the inventory and let the model extract under that shape's contract - so the model does the reading but not the deciding, which is the split the objectives implied without naming. The alternatives it beats are a universal every-link-is-a-story rule, a parser per newsletter, and an unguided model; all three either make the unit decision in the wrong place or make the long-form failure invisible.
+
+The long-form failure is now observable rather than merely predicted: a contract carries an expected story count, a long-form source yielding more than one story is reported by name, and the declared shape may be overridden per issue for the author who writes a roundup some weeks.
+
+O1's repeatability is met at the level of identity rather than of text, since a model does not produce the same words twice: identity is structural, first write wins, and re-extraction is an explicit action.
+
+Also settles what the store is and where it lives (a JSON file outside this repository, since it holds a person's mailbox material), that harvests run on demand because a schedule would need the credential the runtime decision exists to avoid, what closely related means for objective 6 (a cluster is a tag, erring toward proposing because nothing is destroyed), and the three questions story-record.md left open. Records that the bookmark sorter shares data conventions with this and no code.
