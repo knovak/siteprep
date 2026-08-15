@@ -118,3 +118,13 @@ New objectives are appended rather than inserted, deliberately: decisions.md arg
 A general sharing scheme joins 'Explicitly not the first version' as a third held-back capability - planned rather than merely possible, which is why it carries a live constraint on the spec: do not let 'owner' become the only way an item is reachable.
 
 'Decisions this raises' listed three open questions and said they were recorded as blockers. All five questions this initiative raised are now answered, so the section is now a map into decisions.md, with what is left stated as what it is - a constraint on the spec, not a question for the user.
+
+## 2026-08-15 — Draft spec.md, including alternatives considered for the runtime and the snapshot source
+
+Drafted spec.md: ingestion and the folder-path tag, the URL-keyed data model, the two-pass capture pipeline, the virtualised grid and its keys, tag-expression and automatic clusters, the JSON round trip, and what the host must supply. Carries condensed alternatives for the runtime and the snapshot source, with decisions.md holding the full argument.
+
+The stage moves to specified, and the todo list gains the next step it implies -
+drafting plan.md and test-plan.md together, which is the gate the lifecycle puts
+at this stage. Without it the initiative reads as finished rather than merely
+specified, which is the distinction the validator's "nothing actionable" warning
+exists to catch.

@@ -1,13 +1,13 @@
 {
   "title": "Interactive Bookmark Sorter",
   "summary": "Fast visual triage for a large bookmark pile, with tags, clusters and snapshot views.",
-  "stage": "shaped",
+  "stage": "specified",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-spec",
-      "title": "Draft spec.md, including alternatives considered for the runtime and the snapshot source",
+      "id": "draft-plan",
+      "title": "Draft plan.md and test-plan.md, resolving the questions spec.md left open for the plan",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
