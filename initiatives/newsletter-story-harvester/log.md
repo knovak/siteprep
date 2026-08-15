@@ -26,3 +26,16 @@ stored Gmail credential nothing in the wish asks for.
 
 Unblocks draft-spec if merged. Leaves the store's actual form to the spec, and
 leaves newsletter-inventory blocked on the user either way.
+
+## 2026-08-15 — Review round on the proposal: C, with D as a standing fallback
+
+The user answered on the pull request: C, with a note that D can be adopted if
+the bookmark sorter's web app ships first and its grid generalises. Rewrote the
+decisions.md entry from a proposal into the decision it now is, in their words,
+and made the fallback a section of its own rather than a line in a list of
+things that would change the answer - it is a route to take, not a risk to
+watch.
+
+The fallback carries one constraint into the spec: the store is the durable
+thing and the generated page is disposable, so moving review into the bookmark
+sorter later is a change of surface rather than a rewrite.
