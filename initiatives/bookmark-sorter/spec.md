@@ -233,7 +233,7 @@ So the **functions** are the stable part of this spec and the bindings are one
 implementation of them; a later revision may rebind everything without this
 section changing.
 
-| Function | Operates on | First-cut binding |
+| Function | Operates on | Key (first cut) |
 |---|---|---|
 | `verdict(v)` | the focused item, or the marked set if any | `k` / `j` / `a` / `n` |
 | `focus(direction)` | the grid | arrows |
