@@ -22,23 +22,64 @@ could read.
 | `url_key` | string, nullable | Normalised form of `url`, used for matching. Never shown |
 | `title` | string | What the story is called. From the link text, the heading, or the subject for a whole-issue story |
 | `text` | string | The blurb **as written**, or a summary where the source is long-form. Objective 2 asks for the story's own text, not a pointer to it |
-| `text_is_summary` | boolean | Whether `text` was written by us or by the newsletter. A reader judging a story deserves to know which |
-| `newsletter` | string | Which newsletter it came from, by stable key rather than display name |
+| `text_is_summary` | boolean | Whether `text` was written by a harvester or by the source. A reader judging a story deserves to know which |
+| `source` | string | Which newsletter — or other source (§6) — it came from, by stable key rather than display name |
+| `harvester` | string | Which skill produced this record (§6). Provenance for the extraction itself, not just the material |
 | `issue_date` | date | The date of the issue it arrived in |
 | `story_date` | date, nullable | The story's own date where it differs from the issue's. The wish asks for this directly: it is the difference between *"this was in last week's issue"* and *"this happened last week"* |
-| `shape` | enum | `link-list` \| `annotated-digest` \| `long-form`. Which extraction produced it — see §2 |
-| `source_message` | string | The mailbox message it was extracted from. Provenance, and how a bad extraction is traced back |
-| `source_anchor` | string, nullable | Where in that message — a heading path or the nth link. What makes §3's fallback identity work |
-| `themes` | string[] | Content areas (objective 4). Plural, and correctable — a story can sit in more than one |
-| `verdict` | enum, nullable | `dropped` \| `kept` \| `emphasised`. Null means unjudged, and the count of nulls is the backlog (objective 7) |
+| `shape` | string | `link-list`, `annotated-digest`, `long-form` to begin with — **an open vocabulary**, since a new harvester may find a shape these three do not describe (§2, §6) |
+| `source_doc` | string | The message or document it was extracted from. How a bad extraction is traced back |
+| `source_anchor` | string, nullable | Where in that document — a heading path or the nth link. What makes §3's fallback identity work |
+| `tags` | string[] | **A set of free-string tags.** Themes are tags by convention (`theme:energy`), and so is anything else worth selecting on — see §1.1 |
+| `verdict` | string, nullable | `dropped`, `kept`, `emphasised` to begin with — **an open vocabulary**, so `archive` or `to-be-shared` can be added without a migration (§1.2). Null means unjudged, and the count of nulls is the backlog (objective 7) |
 | `verdict_at` | timestamp, nullable | When it was judged |
 | `harvested_at` | timestamp | When it first entered the store. A re-harvest never moves it |
-| `merged_from` | string[] | The ids this record absorbed, when several newsletters carried the same story (§3, case 2) |
+| `merged_from` | string[] | The ids this record absorbed, when several sources carried the same story (§3, case 2) |
 
 **Not carried, deliberately:** the email HTML, attachments, images, and anything
-about the mailbox beyond `source_message`. `objectives.md` rules out writing back
-to the mailbox, and a harvester that keeps no copy of the mail is a much safer
-thing to run repeatedly while it is still wrong.
+about the mailbox beyond `source_doc`. `objectives.md` rules out writing back to
+the mailbox, and a harvester that keeps no copy of the mail is a much safer thing
+to run repeatedly while it is still wrong.
+
+### 1.1 Themes are tags
+
+There is no separate theme field and no theme table. **A theme is a tag**, by the
+convention `theme:<name>`, held in the same set as everything else worth
+selecting on — the source, the shape, an error, or whatever a reader invents.
+
+Three reasons this is the right structure rather than merely a cheaper one:
+
+- **Grouping and correcting are the same operation.** Objective 4 asks that a
+  story be movable to the right theme. On a set of tags that is adding one and
+  removing another — no special case, and a story may sit in several themes at
+  once because a set does not object.
+- **Whatever adds tags can group stories.** A model proposing themes, a rule
+  matching a keyword, or a person typing — all write the same thing, so the
+  grouping intelligence is replaceable without touching the record.
+- **It matches the bookmark sorter**, whose spec settled on flat free-string tags
+  with prefixes as convention and a boolean selection over them. If review ever
+  moves into that app (the standing fallback in `decisions.md`), the two data
+  models already agree. That is worth having deliberately rather than by luck.
+
+The tag vocabulary is **not fixed**: a bare `boring` is as legal as
+`theme:energy`, and nothing validates against a controlled list.
+
+### 1.2 Verdicts are an open vocabulary
+
+`dropped`, `kept` and `emphasised` are the starting set — the three objective 7
+names — not the permanent one. `archive`, `to-be-shared` or anything else can be
+added later as configuration rather than as a schema change.
+
+Two rules keep that from turning into a mess:
+
+- **A story has exactly one verdict, or none.** This is what makes the backlog
+  count meaningful: unjudged is `null`, and everything else is judged. Keeping
+  the verdict a single-valued field rather than folding it into `tags` is the
+  price of that count, and it is worth paying.
+- **An unknown verdict is preserved, never dropped.** Anything reading the store
+  — an export, a review page, another surface — must round-trip a verdict it does
+  not recognise rather than blanking it. A vocabulary that can grow is only safe
+  if the readers do not silently discard what they have not been told about.
 
 ## 2. `shape` is recorded, not inferred at render time
 
@@ -60,29 +101,36 @@ a harvester either loses material or produces duplicates.
 **Case 1 — the same item, harvested twice.** Ranges overlap and a re-run is
 normal. Identity is:
 
-- where the story has a URL: `(newsletter, issue_date, url_key)`
-- where it does not: `(source_message, source_anchor)` — the heading path or the
-  link's position within the message
+- where the story has a URL: `(source, issue_date, url_key)`
+- where it does not: `(source_doc, source_anchor)` — the heading path or the
+  link's position within the document
 
 Same identity means same story: the existing record wins, `harvested_at` does not
 move, and an existing `verdict` is never overwritten by a harvest. This is the
 whole of objective 3.
 
-**Case 2 — the same story, from two newsletters.** Three newsletters landing in
-one week routinely carry the same article. Matching `url_key` across
-newsletters means the same story, and the records **merge**: one record, both
-sources, the earliest `issue_date` kept, the absorbed id recorded in
-`merged_from`. A verdict on the merged record covers all of it.
+**Case 2 — the same story, from two sources.** Three newsletters landing in one
+week routinely carry the same article. Matching `url_key` across sources means
+the same story, and the records **merge**: one record, every source kept, the
+earliest `issue_date` kept, the absorbed id recorded in `merged_from`. A verdict
+on the merged record covers all of it.
 
 The reason to merge rather than to group is that the reader's question — *do I
 want to keep this?* — has one answer, and asking it three times is the volume
 problem the initiative exists to solve.
 
+**Merging happens at harvest, not at review.** The reader never sees the
+duplicates and never spends a decision on them, which is the point; and because
+`merged_from` records what was absorbed, an early merge is inspectable and
+reversible rather than lossy. The cost is that a merge made on a bad `url_key`
+is invisible until someone looks — which is the argument for §4 being careful,
+not for merging late.
+
 **Case 3 — two stories about the same event.** Different links, different words,
 one event. These are **not the same story**, and merging them here would be
 wrong: objective 6 asks for them to be *read* as one, with the individual links
 and dates surviving underneath. That is grouping with a combined paraphrase, and
-it belongs to the theme layer rather than to identity.
+it belongs to the theme tags rather than to identity.
 
 The line between 2 and 3 is exactly the line between *same URL* and *same
 subject*. The first is decidable; the second is a judgement, and `objectives.md`
@@ -119,14 +167,40 @@ a tracking link, useful to nobody afterwards.
 dropped. It still shows and can still be judged; it just may fail to merge with
 its twin, which is a smaller loss than losing the story.
 
-## 5. What this leaves for the spec
+## 5. Many harvesters, one store
 
-- **How `text` is produced for `long-form`.** A summary is written by a model, so
-  its length, and whether the original is kept alongside it, is a spec choice.
-  `text_is_summary` exists so that choice is visible in the data.
-- **Whether case-2 merging happens at harvest or on review.** Merging early is
-  cheaper; merging late lets a reader see it happen and undo it.
-- **What a theme is, as data** — a free string, or a controlled set. This
-  document deliberately says only that `themes` is a correctable list.
+**Any number of skills may harvest material into this store.** The newsletter
+harvester is the first, not the only one, and nothing here assumes a single
+producer. That is why `harvester` sits on the record beside `source`: the first
+says which skill made the extraction, the second says where the material came
+from, and a bad run is traceable to one of them rather than to "the harvester".
+
+What that buys, and what it costs:
+
+- **Extraction strategy is the harvester's business.** How a long-form column
+  becomes one story — how long the summary is, whether the original text is kept
+  beside it, what counts as a citation rather than a story — is decided by
+  whichever skill is doing the harvesting, not prescribed here. The record only
+  demands that the result be honest about itself, which is what
+  `text_is_summary` is for.
+- **`shape` is an open vocabulary** for the same reason. A harvester meeting
+  material these three shapes do not describe should name a fourth rather than
+  mislabel it, since §2's whole argument is that a wrong shape hides a wrong
+  extraction.
+- **Identity still holds across harvesters.** `url_key` is the cross-source key
+  (§3, case 2), so a story harvested from a newsletter and the same article
+  arriving through some other skill merge into one record. This is the property
+  that makes many producers safe rather than merely possible, and it is the
+  reason §4's unwrapping matters more, not less, as sources multiply.
+- **A harvester never writes a verdict.** Judging is the reader's, and a record
+  that arrives pre-judged would quietly shrink the backlog objective 7 counts.
+  Tags are fair game; `verdict` is not.
+
+## 6. What this leaves for the spec
+
 - **How verdicts travel back into the store**, which the runtime decision already
   named as the fiddly part of the chosen option.
+- **What a harvester must do to register itself**, if anything — whether the
+  store knows the set of harvesters or simply records the name each one claims.
+- **Where the shape and verdict vocabularies live**, given both are open:
+  configuration, or simply whatever values appear in the data.
