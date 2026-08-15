@@ -38,6 +38,59 @@ seven newsletters. At a link-list issue of 20–60 stories and a weekly cadence,
 is large enough that O7 needs a page rather than a conversation and small enough
 that the store can be a file (§7).
 
+### 1.1 The pieces, and how they connect
+
+```
+    the mailbox                    +--------------------------+
+   +-------------+                 |     inventory (§4)       |
+   |  issue      |                 |  per source: key, match, |
+   |  issue      |                 |  shape, unwrap rule      |
+   |  issue      |                 +------------+-------------+
+   +------+------+                              |
+          |                                     v
+          |   read-only,        +---------------------------------+
+          +------------------>  |       harvesting skill          |
+              session-bound,    |  extracts under the contract    |
+              nothing kept (§6) |  for the declared shape (§3.1)  |
+                                +----------------+----------------+
+                                                 |
+                                                 |  story records
+                                                 |  (story-record.md)
+                                                 v
+   +-------------------------------------------------------------------+
+   |                            THE STORE                              |
+   |                      one JSON file (§7)                           |
+   |         stories | runs | vocabularies | sources, harvesters       |
+   |            written by a skill, never by a page (§9)               |
+   +--+-------------------------+----------------------------------+---+
+      |                         |                                   ^
+      |  generate               |  generate                         |
+      v                         v                                   |
+   +-----------------+   +-----------------+                        |
+   |  review page    |   | published page  |                        |
+   |  §8, disposable |   | §12, kept and   |                        |
+   |  filter, sort,  |   | emphasised only |                        |
+   |  verdict, sweep |   +-----------------+                        |
+   +--------+--------+                                              |
+            |                                                       |
+            |  export()          +------------------+               |
+            +-----------------> |  verdict file     | --------------+
+                                |  ids, verdicts,   |   the skill
+                                |  tag changes (§9) |   folds it in
+                                +------------------+
+
+   Later, needing no new fields and no change to any of the above:
+
+     tagging skill (§10.3)  ---- reads the store, proposes
+                                 theme: and about: tags ----> THE STORE
+```
+
+Two things the picture is meant to make obvious. **Every arrow into the store
+starts at a skill** — the page's only output is a file, which is what keeps the
+page disposable and the store authoritative. And **the mailbox appears once, at
+the top left, with nothing flowing back to it**: no labelling, no archiving, and
+no credential living anywhere below that first arrow.
+
 Held out of the first version, from `objectives.md`: publication as an OpenAI
 site, and writing back to the mailbox in any form.
 
@@ -284,6 +337,43 @@ the skill, the page renderer, and a small fixture store for tests — synthetic
 issues in all three shapes, which is also how §3.1's contracts get tested
 without a mailbox.
 
+### 7.1 Exporting and importing a store
+
+**Export is a copy, and that is a property worth protecting rather than a
+shortcut.** The store is already the interchange format — plain JSON, no
+driver, self-describing — so exporting the whole thing is copying the file, and
+a `store export` operation exists only to take a *subset*: a date range, a
+source, a selection of tags, everything not yet judged. The rule is that a
+subset export produces a file of exactly the same shape as the whole one, so
+nothing downstream needs to know which it was handed.
+
+**Import is the harder half, and the answer is that it is not a new
+mechanism.** Importing a store is merging records, which is precisely what a
+harvest already does when it meets a story it has seen before. So import runs
+the same path with records as its input instead of emails:
+
+| Situation | What happens |
+|---|---|
+| The same store imported again | Nothing. Every record matches itself, first-write-wins, and a re-import is a no-op — the same property that makes a re-harvest safe |
+| A store from another machine, or a subset export | Records merge on the `story-record.md` §3 rules: case 1 identity for the same item, case 2 `url_key` merge across sources, `merged_from` recording what was absorbed |
+| Both sides judged the same story | Later `verdict_at` wins, as in §9. Never a silent overwrite of a judged story by an unjudged one — a null verdict never displaces a real one |
+| Both sides tagged it | Union. Tags are a set, so this needs no resolution rule at all, which is a third thing §10.1's structure buys |
+| Vocabularies differ | Union them. §11 already requires an unrecognised value to load and round-trip, so an import cannot arrive with something unreadable |
+| Ids collide but the records are plainly different | Report and skip, do not overwrite. Identity is derived rather than random (`story-record.md` §1), so this means one side's `url_key` or anchor rules differ — a bug worth seeing, not worth resolving silently |
+
+Two rules over all of it:
+
+- **Import never deletes.** There is no "sync": a story absent from the incoming
+  file means nothing, since a subset export is a normal thing to be handed.
+  Removing a story stays a separate, explicit act.
+- **Import reports what it did** — added, matched, merged, conflicted — as a run
+  record like any other (§5.2). A merge nobody can see afterwards is the failure
+  mode `story-record.md` §3 already warns about for bad `url_key`s.
+
+This is also what the D fallback needs. Moving review into the bookmark sorter
+is that app importing this file, and the reason the importer is small is that
+the format is one it can read and the merge rules are written down here.
+
 ## 8. The review page
 
 Generated from the store, self-contained, opened from the filesystem. No server,
@@ -397,6 +487,49 @@ dissolves by removing a tag, and nothing was destroyed. Had clustering been
 implemented as a merge, the opposite bias would be correct — which is the reason
 `story-record.md` keeps identity at case 2 and stops there.
 
+### 10.3 The tagging skill, anticipated
+
+**A second skill, added after the harvester works: it reads a store, reads the
+content, and proposes tags — themes and clusters — using a model's judgement
+about what the stories are actually about.** It is anticipated here rather than
+built now, because anticipating it is what stops the first version foreclosing
+it.
+
+It is worth naming separately from the harvest even though both write tags,
+because they have different information. A harvester sees one issue at a time
+and can only propose a theme from what is in front of it. **A pass over the
+store sees everything**, which is the only position from which "these nine
+stories are one category" is a judgement rather than a guess — and it improves
+as the pile grows, where a per-issue guess does not.
+
+What the first version owes it, all of which §§1.1, 7 and 10.1 already provide:
+
+- **The store is readable on its own**, without the skill that wrote it. That is
+  the §7 choice of a plain JSON file, and this is the second thing it buys after
+  the D fallback.
+- **Tags are open free strings**, so a new theme costs nothing and needs no
+  migration. A controlled vocabulary would have made this skill a schema change.
+- **Nothing distinguishes a tag by origin.** A theme a model proposed and one a
+  reader typed are the same field, so the page needs no knowledge of this skill
+  to display its output.
+
+Three rules it inherits rather than invents:
+
+- **It never writes a verdict** (`story-record.md` §5). Judging is the reader's,
+  and a pass that pre-judged stories would shrink the backlog O7 counts.
+- **It writes tags and nothing else** — never text, title, identity, or a merge.
+  Retagging is always recoverable; the things it may not touch are the things
+  that are not.
+- **It is one pass among any number.** Re-running it, or running a different one
+  beside it, adds tags rather than replacing them, so removing a bad tag is the
+  reader's edit and not a re-run.
+
+Whether its output lands as tags directly or as proposals a reader accepts is
+left to the plan (§15). Directly is defensible here precisely because a tag is
+cheap to remove — the bookmark sorter takes the stricter line because its tags
+drive selections over thousands of items — but it is a real choice and not one
+this document has to make to stay unblocked.
+
 ## 11. Open vocabularies, and who may harvest
 
 Both questions `story-record.md` §6 left open, answered the same way.
@@ -462,6 +595,34 @@ takes items from an import rather than from its own ingestion. Then D is a
 configuration of that app plus an importer for this store, and the tag and
 verdict agreement is what makes the importer small.
 
+### 13.1 Keeping tags aligned, so the selection system can be adopted later
+
+Not building the boolean selection language now is a decision about **scope**,
+not about data. Adopting it later is expected, so the tag format is specified to
+be the same one, and this section is the binding list — if a later change would
+break a row of it, that is a change to be argued rather than made.
+
+| Must stay identical | Why it is the part that matters |
+|---|---|
+| A tag is a **free string**, and the set is unordered with no duplicates | An expression evaluates `tag in tags`. Any other structure — objects, weights, per-tag metadata — is a different evaluator |
+| **Prefixes are convention, not schema**, separated by `:` | `theme:energy` and `about:cop30` must parse as ordinary tags there, and a bare `boring` must remain legal here |
+| **Case and whitespace handled the same way** | The one silent breaker. A tag that matches in one system and not the other looks like a missing story, not a mismatch |
+| **Nothing distinguishes a tag by origin** | An expression cannot ask who wrote a tag, so a model-proposed tag must be indistinguishable — which §10.3 already requires for its own reasons |
+| **One `verdict` field, single-valued, open vocabulary** | Selections there treat the verdict as a field rather than a tag. Folding verdicts into `tags` here would need unpicking on import |
+
+The consequence for §8 is the useful one: **this page's `filter` must be a
+subset of that expression language, not a different one.** A tag filter is
+`tag:x`; adding `and`, `or`, `not` later is then reach rather than migration,
+and the stored data does not move. A filter designed on its own terms — a
+special "theme mode", a fixed set of facets, a UI-shaped query object — would
+cost a rewrite of the same feature, which is exactly the second build this
+section exists to avoid.
+
+What deliberately stays out until then: named and saved selections, selections
+as first-class stored objects, and cross-collection scope. This store has no
+collections, and a name for a filter is worth having only once the filter is
+worth naming.
+
 ## 14. What the environment must supply
 
 | Needs | What breaks without it |
@@ -487,3 +648,10 @@ verdict agreement is what makes the importer small.
   or generated on request by a second skill pass.
 - **Whether `--refresh` (§3.3) is worth building in the first version** or is
   simply a re-harvest into an empty store.
+- **Where the tagging skill (§10.3) sits in the build order**, and whether its
+  tags land directly or as proposals a reader accepts. It comes after the
+  harvester works, but the plan should say how far after — it is the piece that
+  turns a judgeable pile into a themed one, so "eventually" is the wrong answer.
+- **Which subset selectors `store export` (§7.1) needs on day one.** Whole-file
+  copy covers backup; the subsets earn their place only when something is
+  actually being handed somewhere.
