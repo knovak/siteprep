@@ -6,17 +6,9 @@
   "outputs": [],
   "todo": [
     {
-      "id": "revise-objectives",
-      "title": "Revise objectives.md for collections, import/export, imported folder paths as tags, and general sharing as a later revision",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small"
-    },
-    {
       "id": "draft-spec",
       "title": "Draft spec.md, including alternatives considered for the runtime and the snapshot source",
-      "state": "blocked",
-      "blocked_by": "todo:revise-objectives",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
