@@ -8,8 +8,7 @@
     {
       "id": "draft-spec",
       "title": "Draft spec.md, including alternatives considered for the runtime and for how each newsletter shape is turned into stories",
-      "state": "blocked",
-      "blocked_by": "human:does this run as agent skills over the mailbox, or as a website with its own store?",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
