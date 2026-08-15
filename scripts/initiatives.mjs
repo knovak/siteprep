@@ -80,6 +80,7 @@ const PROPOSABLE_BLOCKERS = new Set(['human']);
 
 const DOCUMENTS = [
   ['wish.md', 'Wish'],
+  ['background.md', 'Background'],
   ['objectives.md', 'Objectives'],
   ['decisions.md', 'Decisions'],
   ['spec.md', 'Specification'],

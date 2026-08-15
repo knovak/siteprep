@@ -14,6 +14,7 @@ initiatives/
   <slug>/
     initiative.json        # required - stage, value, outputs, todo
     wish.md                # the goal in the user's own words
+    background.md          # optional research done before objectives
     objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
     overview.md            # optional narrative, appended to the overview page
 ```

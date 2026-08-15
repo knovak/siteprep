@@ -125,6 +125,7 @@ initiatives/
     initiative.json    # required — the machine-readable state
     wish.md            # required — the original vague goal, in the user's words
     overview.md        # optional — hand-written prose, appended to index.html (§8.2)
+    background.md      # optional — prior art and lessons, researched at birth (§7.10)
     objectives.md      # what "done" would mean, once it can be said
     decisions.md       # questions that were open, and how they were settled
     spec.md            # what it is
@@ -143,6 +144,11 @@ document appears as the lifecycle advances. This is deliberate: **the absence of
 document is itself the signal for the next step.** An initiative with a wish and no
 objectives has an obvious next action, and the sweep job (§7) can see it without being
 told.
+
+`background.md` is the one thing that may also be present at birth, and it does not
+weaken that signal: no stage expects it, so its presence says nothing about what to do
+next. It records what the world already offers and what similar attempts taught, at the
+moment the wish is written — see §7.10.
 
 ### 4.1 `wish.md` is fixed at its first merge
 
@@ -935,6 +941,29 @@ scaffolds the minimum:
 
 Nothing else. No spec, no plan, no empty directories — those arrive when the lifecycle
 reaches them.
+
+> **What was built, and one addition.** The `index.html` line above is wrong — pages are
+> generated, never committed (§8.2), so the skill scaffolds two files. It also asks about
+> `value` and the one-line `summary`, and — the addition — whether to **look around before
+> starting**: nothing (the default), prior art, lessons from similar attempts, or both.
+>
+> The research lands in `background.md`, in the same pull request as the wish. That
+> placement is the whole point of it. A wish is editable right up to the merge that fixes
+> it (§4.1), so arriving with the background *beside* the wish is the one moment when
+> learning that four products already do this, or that the last three attempts died on the
+> same rock, can still change what is being asked for — at no cost, with nothing to
+> supersede. A week later the same finding is an amendment.
+>
+> Two rules keep it from becoming something else. It states findings and never
+> recommendations: the stage stays `wish`, the one todo item is still *draft objectives*,
+> and judgement belongs in the documents that draw on this one. And it never edits the
+> wish — it reports, and the user decides. Silently reshaping a wish to fit what was read
+> produces an initiative nobody wished for, which is a worse failure than not researching
+> at all.
+>
+> Finding nothing is a result worth recording. "Nobody appears to be doing this" is
+> information the objectives should be written in light of, and it is only legible if the
+> file is not padded with near-misses.
 
 **Build it before the first initiative is written**, as you suggested. The first
 initiative is then a test of the skill as well as of the schema, and Phase 1 stops
