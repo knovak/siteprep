@@ -39,3 +39,7 @@ watch.
 The fallback carries one constraint into the spec: the store is the durable
 thing and the generated page is disposable, so moving review into the bookmark
 sorter later is a change of surface rather than a rewrite.
+
+## 2026-08-15 — Draft the story record - the fields a harvested story must carry, and what makes two stories the same one
+
+Drafted story-record.md: the fields a story carries, why the extraction shape is stored rather than inferred, the three separate senses of 'the same story' and which two are decidable, and the link unwrapping that identity depends on.
