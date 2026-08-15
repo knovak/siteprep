@@ -35,7 +35,7 @@
 <p>Numbered references to <strong>O1–O8</strong> are the objectives.</p>
 <h3>1. What the first version is</h3>
 <p>A signed-in web app holding one or more <strong>collections</strong> of bookmarks. A collection is imported from a browser export, captured for display, and then triaged: every item ends up <em>keeper</em>, <em>junk</em>, <em>archive</em>, or <em>needs-more-time</em>, and can be tagged and grouped along the way. The results export as JSON and import back.</p>
-<p>Sizing is not hypothetical: <strong>5,000–10,000 items</strong> in a real pile (<code>decisions.md</code>, 2026-08-14). That number is the reason for three things that would otherwise look like over-engineering — the virtualised grid (§7), the deferred capture pipeline (§6), and clusters being the mechanism rather than a convenience (§8).</p>
+<p>Sizing is not hypothetical: <strong>5,000–10,000 items</strong> in a real pile (<code>decisions.md</code>, 2026-08-14). That number is the reason for three things that would otherwise look like over-engineering — the virtualised grid (§7), the deferred capture pipeline (§6), and judging items by the selection rather than one at a time being the mechanism rather than a convenience (§8).</p>
 <p>Held out of the first version, from <code>objectives.md</code>: harvesting open tabs from other devices, pushing subsets back into a browser, and a general sharing scheme.</p>
 <h3>2. Alternatives considered: where this runs</h3>
 <p>Settled 2026-08-14 as <strong>a web app</strong>, most likely hosted on an OpenAI site using its database. The &quot;most likely&quot; is the user&#39;s and is kept: the shape is decided, the host is a leaning. Condensed here because the item asked for it; the full argument is in <code>decisions.md</code>.</p>
@@ -63,15 +63,18 @@
 <p>Re-importing an overlapping export therefore <strong>merges rather than duplicates</strong>: tags union, the earliest <code>add_date</code> wins, and an existing verdict is never overwritten by an import. The original URL is kept alongside the normalised one, because it is what the user actually saved.</p>
 <h3>5. Data model</h3>
 <p>Six things. Written as a relational sketch; the host&#39;s database decides the literal form (§10).</p>
-<ul><li><strong>collection</strong> — <code>id</code>, <code>name</code>, <code>owner_id</code>, <code>created_at</code>.</li><li><strong>item</strong> — <code>id</code>, <code>collection_id</code>, <code>url</code> (as saved), <code>url_key</code> (normalised,</li></ul>
+<ul><li><strong>collection</strong> — <code>id</code>, <code>name</code>, <code>owner_id</code>, <code>kind</code> (<code>personal</code> |</li></ul>
+<p>  <code>demo-template</code> | <code>demo-copy</code>), <code>template_id</code> (for a copy, which template it   came from), <code>copied_at</code>, <code>created_at</code>. §10 says what the kinds do.</p>
+<ul><li><strong>item</strong> — <code>id</code>, <code>collection_id</code>, <code>url</code> (as saved), <code>url_key</code> (normalised,</li></ul>
 <p>  unique per collection), <code>title</code>, <code>added_at</code>, <code>ingested_at</code>, <code>verdict</code> (null =   untriaged), <code>verdict_at</code>.</p>
-<ul><li><strong>tag</strong> — <code>item_id</code>, <code>tag</code>. A flat string namespaced by convention (<code>src:</code>,</li></ul>
-<p>  <code>in:</code>, <code>folder:</code>, <code>topic:</code>, <code>site:</code>, <code>kind:</code>, <code>err:</code>). Flat because O5&#39;s   selection is over tags, and a hierarchy would need a second query language.</p>
-<ul><li><strong>cluster</strong> — <code>id</code>, <code>collection_id</code>, <code>name</code>, <code>kind</code> (<code>saved-query</code> |</li></ul>
-<p>  <code>automatic</code>), <code>expression</code> (for saved queries).</p>
+<ul><li><strong>tag</strong> — <code>item_id</code>, <code>tag</code>. <strong>A free string; the schema is not fixed.</strong> The</li></ul>
+<p>  <code>src:</code>, <code>in:</code>, <code>folder:</code>, <code>topic:</code>, <code>site:</code>, <code>kind:</code> and <code>err:</code> prefixes are a   naming convention the app itself writes, not a vocabulary the user is confined   to. A user&#39;s own <code>boring</code>, <code>archive</code> or <code>response-required</code> is an ordinary tag:   same field, same autocomplete, matched by the same expressions, and a tag   without a prefix simply has no prefix. Nothing is validated against a   controlled list, because a controlled list is exactly what a pile like this   does not have yet. Flat rather than hierarchical, because §8&#39;s selection is   over tags and a hierarchy would need a second query language.</p>
+<ul><li><strong>selection</strong> — <code>id</code>, <code>name</code>, <code>collection_id</code> (null means cross-collection,</li></ul>
+<p>  §8), <code>expression</code>. A <em>saved</em> selection; §8 is the function that evaluates one.</p>
 <ul><li><strong>capture</strong> — keyed by <code>url_key</code>, <strong>not</strong> by item: <code>image_ref</code>, <code>source</code></li></ul>
 <p>  (<code>og</code> | <code>screenshot</code> | <code>none</code>), <code>captured_at</code>, <code>image_hash</code>, <code>state</code>.</p>
-<ul><li><strong>user</strong> — supplied by the host (§10), referenced by <code>owner_id</code> only.</li></ul>
+<ul><li><strong>user</strong> — supplied by the host (§10), referenced by <code>owner_id</code>, plus one</li></ul>
+<p>  app-level capability: <code>can_edit_templates</code> (§10).</p>
 <p><strong>Two structural constraints, both from decisions rather than taste:</strong></p>
 <ol><li><strong>The capture store is global and URL-keyed</strong>, shared across collections. It</li></ol>
 <p>   is what makes seeded demo collections nearly free — twenty testers with the    same demo cost one capture between them — and what makes re-import cheap.</p>
@@ -87,24 +90,63 @@
 <p><strong>Sizing.</strong> Grid cells are ~300 px wide on a widescreen layout, so captures are downscaled to a fixed size at capture time. Ten thousand items at that size is a few hundred megabytes — not the constraint. Only pass 2 costs money, and only for the minority of items that reach it.</p>
 <p><strong>Failure is data.</strong> A fetch that 404s, times out, or resolves to a parked domain writes an <code>err:</code> tag on every item sharing that <code>url_key</code> (<code>err:404</code>, <code>err:timeout</code>, <code>err:tls</code>). A dead link is often an instant verdict.</p>
 <p><strong>Third-party disclosure, recorded as an accepted cost.</strong> Pass 2 sends URLs to a vendor. Metadata-first means only gap items go, not the whole pile — a fraction, not all of it — but it is a real disclosure and is written down here rather than argued away.</p>
+<h4>The API key, and why pass 2 ships switched off</h4>
+<p>A paid screenshot API means a secret, and a secret in a web app is only as safe as the place it is kept. <strong>Pass 2 therefore ships behind a switch that is off until key custody is resolved</strong>, and the resolution is a hosting question rather than a coding one: the host either provides a server-side secret store and a server-side place to call from, or it does not.</p>
+<p>What this means concretely:</p>
+<ul><li><strong>The key never reaches the browser.</strong> No configuration, no proxying through a</li></ul>
+<p>  page, no &quot;temporary&quot; client-side call. If the only way to call the vendor is   from the client, pass 2 does not ship at all.</p>
+<ul><li><strong>The code is complete either way.</strong> The queue, the gap rules of §6, the</li></ul>
+<p>  storage and the <code>err:</code> tagging are built and testable with the vendor call   stubbed. Turning pass 2 on is configuration, not development.</p>
+<ul><li><strong>With pass 2 off, nothing else breaks.</strong> Gap items have no image and say so.</li></ul>
+<p>  That is the degraded state the metadata path was chosen for — visibly missing   rather than confidently wrong — and it is triageable, if less pleasant.</p>
+<p>Recorded in §10&#39;s host table as a requirement with a stated consequence, and in §13 as the first thing the plan sequences.</p>
 <h3>7. The triage surface</h3>
 <p>The screen O3 and O4 describe: a screenful of items, each showing its capture, title and tags, judged without scrolling or leaving the keyboard.</p>
 <p><strong>Layout.</strong></p>
 <div class="table-scroll"><table><thead><tr><th>Form factor</th><th>Layout</th></tr></thead><tbody><tr><td>Widescreen</td><td>8×2 grid, 16 items</td></tr><tr><td>Tablet</td><td>4×3 or 3×3, depending on orientation</td></tr><tr><td>Phone</td><td>Carousel, one item at a time</td></tr></tbody></table></div>
 <p>The grid is <strong>virtualised</strong>: only the visible screenful plus a small buffer exists in the DOM. Ten thousand cells with images rendered naively is not something to attempt, and this follows directly from the size finding.</p>
-<p><strong>Interaction.</strong> Every triage action has a key. A verdict applies to the focused item, or to the whole selection when several are selected:</p>
-<div class="table-scroll"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><code>k</code> / <code>j</code> / <code>a</code> / <code>n</code></td><td>keeper / junk / archive / needs-more-time</td></tr><tr><td>arrows</td><td>move focus within the grid</td></tr><tr><td><code>space</code></td><td>toggle selection</td></tr><tr><td><code>t</code></td><td>open the tag field for the focused item or the selection</td></tr><tr><td><code>u</code></td><td>undo the last action</td></tr><tr><td><code>⏎</code></td><td>advance to the next screenful</td></tr></tbody></table></div>
-<p><code>u</code> is not a convenience. At the speed O3 asks for, misfires are certain, and a verdict that cannot be taken back makes the user slow down to avoid them — which costs more than the mistakes would have.</p>
+<p><strong>Interaction is specified as functions, not as keys.</strong> The keys below are a first cut and are expected to be refined — very likely toward more pointer-driven controls, since one click per item is the natural gesture for the flow in §7.1. So the <strong>functions</strong> are the stable part of this spec and the bindings are one implementation of them; a later revision may rebind everything without this section changing.</p>
+<div class="table-scroll"><table><thead><tr><th>Function</th><th>Operates on</th><th>First-cut binding</th></tr></thead><tbody><tr><td><code>verdict(v)</code></td><td>the focused item, or the marked set if any</td><td><code>k</code> / <code>j</code> / <code>a</code> / <code>n</code></td></tr><tr><td><code>focus(direction)</code></td><td>the grid</td><td>arrows</td></tr><tr><td><code>mark(item)</code></td><td>one item, toggling</td><td><code>space</code>, or a click on the item</td></tr><tr><td><code>tag-apply(tags)</code></td><td>the focused item, or the marked set</td><td><code>t</code></td></tr><tr><td><code>verdict-rest(v)</code></td><td>the current selection <strong>minus</strong> the marked set (§7.1)</td><td>—</td></tr><tr><td><code>undo()</code></td><td>the last function applied</td><td><code>u</code></td></tr><tr><td><code>advance()</code></td><td>the grid</td><td><code>⏎</code></td></tr></tbody></table></div>
+<p>Two properties hold for every function above, and they are the reason to name them at all: each applies to <em>a set</em> rather than to a click target, and each is undoable as one action. A pointer refinement that keeps both is a free change.</p>
+<p><code>undo</code> is not a convenience. At the speed O3 asks for, misfires are certain, and a verdict that cannot be taken back makes the user slow down to avoid them — which costs more than the mistakes would have.</p>
+<h4>7.1 Mark the exceptions, then sweep the rest</h4>
+<p>The flow that makes a large selection finishable, and the reason <code>verdict-rest</code> exists as a function of its own:</p>
+<ol><li>Display every member of a selection (§8), not a screenful at a time.</li><li>Mark the exceptions — one click per item, no keyboard, no dialogue. Typically</li></ol>
+<p>   a handful out of dozens.</p>
+<ol><li>Apply a verdict to <strong>everything that was not marked</strong>.</li></ol>
+<p>The asymmetry is the point. In a selection of fifty near-identical links, naming the four worth keeping is quick and judging all fifty is not, so the cheap action should be the one done per item and the sweep should be the single gesture. Two consequences for the implementation:</p>
+<ul><li><strong>The marked set is a selection too</strong>, so the same three steps also run</li></ul>
+<p>  inverted — mark the keepers, then junk the rest, or mark the junk and keep the   rest. Nothing in the flow privileges a particular verdict.</p>
+<ul><li><strong><code>undo</code> reverses the sweep as one action</strong>, not item by item. A sweep across</li></ul>
+<p>  fifty items that could only be unwound fifty times is a sweep nobody will risk.</p>
 <p><strong>Tagging is part of the pass</strong> (O6): the tag field autocompletes over tags already in the collection, applies to the current selection, and returns focus to the grid on commit. Adding a tag is never a separate screen.</p>
-<p><strong>Progress is always visible.</strong> Untriaged count for the collection, and for the current cluster. That is O2&#39;s backlog, and it is the number that says whether a sitting was worth it.</p>
-<h3>8. Clusters</h3>
-<p>Two ways in, one presentation (O5).</p>
-<p><strong>Saved queries</strong> — a boolean expression over tags, which is what the wish asks for literally:</p>
+<p><strong>Progress is always visible.</strong> Untriaged count for the collection, and for the current selection. That is O2&#39;s backlog, and it is the number that says whether a sitting was worth it.</p>
+<h3>8. Selections</h3>
+<p><strong>A selection is one function, used everywhere.</strong> Viewing a group of items, exporting them, tagging them all at once, sweeping a verdict across them, seeding a demo — every one of those takes a set of items, and there should be exactly one thing that produces a set. It is pulled out as its own component rather than living inside the triage screen, because it is reused more than anything else in the app.</p>
+<p>That also fixes the vocabulary: this document says <strong>selection</strong>, not cluster. A &quot;cluster&quot; is a <em>named selection</em> — the word describes what the result looks like to a person, not a separate kind of object.</p>
+<p><strong>The expression</strong> is a boolean over tags, which is what the wish asks for literally:</p>
 <pre><code>folder:reading/* and not topic:rust
 (src:chrome-export or src:safari-export) and err:404</code></pre>
-<p>Grammar: <code>and</code>, <code>or</code>, <code>not</code>, parentheses, bare tags, and <code>*</code> as a trailing wildcard on a tag. Deliberately small — it is a selection tool, not a language.</p>
-<p><strong>Automatic clusters</strong> — proposed by the app, from signals it already has: same site, same folder path, near-identical titles, and shared topic tags. They are proposals; naming one saves it as a cluster, and a cluster can always be edited into a saved query.</p>
-<p><strong>Judging a cluster as one</strong> is the point: selecting a cluster and pressing a verdict key applies it to every item in it, with a confirmation above a threshold (say 25 items) and <code>u</code> still undoing the whole thing. Judging fifty near-identical links as one group is the difference between an afternoon and a month.</p>
+<p>Grammar: <code>and</code>, <code>or</code>, <code>not</code>, parentheses, bare tags, and <code>*</code> as a trailing wildcard. Deliberately small — a selection tool, not a language. A saved selection (§5) is this expression plus a name.</p>
+<h4>8.1 Scope: one collection by default, all of them for administration</h4>
+<p>The evaluator can select across the whole store; the ordinary UI does not let it.</p>
+<ul><li><strong>In the user interface</strong>, every selection is implicitly wrapped as</li></ul>
+<p>  <code>collection:&lt;current&gt; and ( … )</code>. The wrapping is applied by the app, not typed   by the user, so a user&#39;s expression can never reach another collection&#39;s items   by accident or by construction.</p>
+<ul><li><strong>Administrative use</strong> — maintenance, migration, seeding a demo template,</li></ul>
+<p>  measuring the capture cache — evaluates unwrapped, across collections. That is   the <code>collection_id: null</code> case in §5.</p>
+<p>Making this a property of <em>how the selection is invoked</em> rather than of the grammar is what keeps one implementation. The alternative — a separate &quot;admin query&quot; path — is a second evaluator that will drift from the first.</p>
+<h4>8.2 Tags are how clusters come to exist, and there are three ways to write them</h4>
+<p>Automatic clustering is not a separate mechanism sitting beside selections. It is <strong>tag production</strong>: something adds tags, and a selection over those tags is the cluster. Three routes, and all three end in the same place:</p>
+<div class="table-scroll"><table><thead><tr><th>Route</th><th>How it works</th><th>Notes</th></tr></thead><tbody><tr><td><strong>In the app</strong></td><td>Make a selection, apply a tag to all of it</td><td>The direct case, and the fast path during a triage pass (§7)</td></tr><tr><td><strong>Round trip through a file</strong></td><td>Export a selection (§9), have a program or a skill add tags to the items in the file, import it back</td><td>Tags union on import, so this adds without disturbing anything already there. The most open-ended route: whatever can read JSON can tag</td></tr><tr><td><strong>A skill or app, on a selection</strong></td><td>Hand a selection to an agent and ask it to propose tags that represent a meaningful clustering, at the user&#39;s request</td><td>The wish&#39;s own suggestion that some capabilities may arrive &quot;initially or exclusively through an LLM agent&quot;. Proposals, not writes: what comes back is a set of suggested tags the user accepts or discards</td></tr></tbody></table></div>
+<p>Three consequences worth stating, because they are the payoff for defining it this way:</p>
+<ul><li><strong>The app does not need clustering intelligence of its own</strong> to satisfy O5. It</li></ul>
+<p>  needs selections, tag-apply, and a round trip — and the intelligence can arrive   later, or from three different directions, without a schema change.</p>
+<ul><li><strong>Nothing here is privileged.</strong> A tag written by a skill is the same as one</li></ul>
+<p>  typed by the user, which is what §5&#39;s &quot;the schema is not fixed&quot; is for.</p>
+<ul><li><strong>Cheap in-app proposals still earn their place</strong> — same site, same folder</li></ul>
+<p>  path, near-identical titles are signals the app already holds, and offering   them as pre-filled selections costs almost nothing. They are a convenience on   top of the three routes, not a fourth one.</p>
+<h4>8.3 Judging a selection as one</h4>
+<p>Selecting a group and applying a verdict applies it to every item in the group, with a confirmation above a threshold (say 25 items) and <code>undo</code> reversing the whole thing as one action. §7.1&#39;s mark-then-sweep is the same operation with an exception set, and it is the common case in practice. Judging fifty near-identical links as one group is the difference between an afternoon and a month.</p>
 <h3>9. Export and import</h3>
 <p>O7 is a round trip, not a download. An export is JSON:</p>
 <pre><code>{
@@ -123,23 +165,60 @@
     }
   ]
 }</code></pre>
-<ul><li><strong>A subset can be chosen by tag</strong> — the same expression grammar as §8, recorded</li></ul>
-<p>  in the file as <code>selection</code> so a partial export is self-describing.</p>
+<ul><li><strong>Export takes a selection</strong> — the §8 function, not a separate &quot;choose what to</li></ul>
+<p>  export&quot; mechanism. Whole collection, one folder, everything tagged <code>keeper</code>,   everything a skill just proposed a tag for: all the same call with a different   expression. The expression is recorded in the file as <code>selection</code>, so a partial   export is self-describing.</p>
 <ul><li><strong>No captures.</strong> They are a rebuildable convenience; the judgement is what must</li></ul>
 <p>  not be trapped. This also keeps the file small enough to move around.</p>
 <ul><li><strong>Import is the merge of §4</strong>, keyed by normalised URL: tags union, earliest</li></ul>
 <p>  date wins, and an existing verdict is not overwritten. Re-importing what you   exported is a no-op, which is the test that makes O7 mean something.</p>
 <p>Because the capture store is URL-keyed and global, a re-import gets its pictures back from cache rather than paying the API again.</p>
+<h4>9.1 Exporting from one collection into another</h4>
+<p>The round trip is not only a backup: <strong>the destination may be a different collection, including someone else&#39;s.</strong> The case that matters is building a demo — select the part of a personal collection worth showing, export it, and import it into a demo template (§10):</p>
+<ol><li>In the personal collection, select the subset — say <code>topic:rust and keeper</code>.</li><li>Export. The file carries items, tags and verdicts, and no captures.</li><li>Switch to the destination collection and import the file there.</li></ol>
+<p>What the destination gets, and what it does not:</p>
+<ul><li><strong>Items, tags and verdicts arrive</strong>; nothing else does. Since captures are</li></ul>
+<p>  keyed by URL globally (§5), the imported items show their pictures immediately   without a single new capture — which is what makes seeding a demo nearly free.</p>
+<ul><li><strong>The source collection is unchanged.</strong> Export reads; it never moves an item</li></ul>
+<p>  out.</p>
+<ul><li><strong>Verdicts travel, which is a decision rather than an accident.</strong> A demo built</li></ul>
+<p>  from a triaged collection arrives pre-judged, so anyone triaging the copy is   re-doing work. Strip them with a selection on import, or accept them as a   worked example — the spec&#39;s position is that the file carries them and the   person seeding chooses, because a format that silently dropped verdicts would   fail O7 for every other use.</p>
+<ul><li><strong>Everything crosses as a file</strong>, so nothing here needs cross-collection</li></ul>
+<p>  <em>access</em>. The general sharing scheme stays deferred (§10), and this scenario   works without it — which is exactly why it is worth writing down as the   supported path.</p>
 <h3>10. Collections, identity, and what the host must supply</h3>
 <p>Collections are owned and <strong>private by default</strong> (O8). Identity comes from the host — the decision presumed an OpenAI surface where user IDs are built in.</p>
-<p><strong>Demo collections are seeded per-user copies.</strong> A tester signs in and receives their own collection populated from fixed content; it is an ordinary private collection that happened to arrive pre-filled. Not one shared demo collection — that would be the sharing model this project deliberately deferred, and it would have testers overwriting each other&#39;s verdicts, which is precisely the thing being tested.</p>
-<p><strong>The menu</strong> the wish&#39;s amendment asks for: choose collection, import bookmarks, import from an export file, export (with an optional tag selection).</p>
+<p><strong>The menu</strong> the wish&#39;s amendment asks for: choose collection, import bookmarks, import from an export file, export (taking a selection, §8).</p>
+<h4>10.1 Demo collections: a template, and copies of it</h4>
+<p>A personal collection is simple — one owner, private, nothing else to say. A demo is where the detail lives, and it splits into two kinds of collection:</p>
+<ul><li><strong><code>demo-template</code></strong> — the source. Created and edited by a maintainer, and</li></ul>
+<p>  <strong>readable by every signed-in user</strong> so that they can copy it. Nobody but a   maintainer writes to it.</p>
+<ul><li><strong><code>demo-copy</code></strong> — what a tester actually uses. An ordinary private collection,</li></ul>
+<p>  owned by them, populated from a template at copy time, and thereafter   completely independent: their verdicts, their tags, their mess.</p>
+<p>Copying is the only relationship. A copy never syncs back, and editing the template never disturbs an existing copy — which is what makes a template safe to improve while people are using copies of it.</p>
+<p><strong>Operations, which is what the review asked for:</strong></p>
+<div class="table-scroll"><table><thead><tr><th>Operation</th><th>Who</th><th>What happens</th></tr></thead><tbody><tr><td>Create or edit a template</td><td>a user with <code>can_edit_templates</code></td><td>Ordinary editing, in a collection of kind <code>demo-template</code>. Seeded like any other collection — including by importing an export from a personal one (§9.1)</td></tr><tr><td>List templates</td><td>any signed-in user</td><td>Templates are the one thing visible across owners</td></tr><tr><td>Take a copy</td><td>any signed-in user</td><td>New <code>demo-copy</code>, owned by them, <code>template_id</code> and <code>copied_at</code> recorded, name defaulting to the template&#39;s and editable</td></tr><tr><td>Take a <em>fresh</em> copy</td><td>any signed-in user</td><td>The same operation again. A dirtied copy is not repaired in place; a second copy is made, and the name must differ from the first, which is why the name is editable at copy time</td></tr><tr><td>Delete a copy</td><td>its owner</td><td>Deletes that collection and its items. Captures are untouched — they are URL-keyed and shared (§5)</td></tr></tbody></table></div>
+<p><strong>What this requires us to know.</strong> Exactly three things beyond a personal collection, which is the point of writing it out:</p>
+<ol><li><strong>About the user</strong> — one capability, <code>can_edit_templates</code>. Not a role system:</li></ol>
+<p>   a single boolean separating &quot;can publish a demo&quot; from &quot;can use one&quot;.</p>
+<ol><li><strong>About the collection</strong> — its <code>kind</code>, and for a copy, <code>template_id</code> and</li></ol>
+<p>   <code>copied_at</code>. Enough to answer &quot;where did this come from&quot; and &quot;is this stale    relative to its template&quot;, without any syncing machinery.</p>
+<ol><li><strong>Nothing about sharing.</strong> No reader lists, no ACLs, no revocation.</li></ol>
+<h4>10.2 How this sits with the decision to defer sharing</h4>
+<p><code>decisions.md</code> (2026-08-14) settled demo collections as <strong>seeded per-user copies</strong> and deferred a general sharing scheme, while flagging the reading that would undo it: <em>one system-owned demo collection that many users read is sharing.</em></p>
+<p>What §10.1 specifies is the per-user-copy reading, with the template that decision implied made explicit. The one thing it adds is that <strong>a template is readable by all signed-in users</strong> — otherwise nobody could copy it. That is a real cross-user read, and it is worth naming rather than glossing:</p>
+<ul><li>It is <strong>read-only and one-way</strong>. No user can write to a template, and no user</li></ul>
+<p>  can see another user&#39;s copy.</p>
+<ul><li>It applies <strong>only to <code>demo-template</code></strong>, which exists to be copied. Personal</li></ul>
+<p>  collections remain invisible to everyone but their owner.</p>
+<ul><li>It is <strong>not the general scheme</strong> — there is no way to share a personal</li></ul>
+<p>  collection with a named person, which is still deliberately later.</p>
+<p>So the deferral holds. If a future need is &quot;show my collection to one colleague&quot;, that is the general scheme and this is not a substitute for it.</p>
 <p><strong>What the host has to provide, and what happens if it cannot.</strong> Both remaining uncertainties in <code>objectives.md</code> are here, and they are the first thing the plan should resolve:</p>
-<div class="table-scroll"><table><thead><tr><th>Requirement</th><th>Used by</th><th>If the host lacks it</th></tr></thead><tbody><tr><td>Signed-in user identity</td><td>O8, §5</td><td>Sign-in becomes something to build — not a small piece of work</td></tr><tr><td>A database with per-user rows</td><td>All state</td><td>Substitute any hosted store; the model in §5 is portable</td></tr><tr><td>Outbound HTTP to arbitrary URLs</td><td>§6 pass 1</td><td>Metadata capture cannot run in-platform; captures move behind the same vendor as pass 2, at real cost</td></tr><tr><td>Bulk data export</td><td>O7</td><td>O7 fails outright — this is the hard requirement</td></tr><tr><td>Control over layout density</td><td>O3</td><td>The 8×2 grid degrades; triage speed is the first casualty</td></tr></tbody></table></div>
+<div class="table-scroll"><table><thead><tr><th>Requirement</th><th>Used by</th><th>If the host lacks it</th></tr></thead><tbody><tr><td>Signed-in user identity</td><td>O8, §5</td><td>Sign-in becomes something to build — not a small piece of work</td></tr><tr><td>A database with per-user rows</td><td>All state</td><td>Substitute any hosted store; the model in §5 is portable</td></tr><tr><td>Outbound HTTP to arbitrary URLs</td><td>§6 pass 1</td><td>Metadata capture cannot run in-platform; captures move behind the same vendor as pass 2, at real cost</td></tr><tr><td>Bulk data export</td><td>O7</td><td>O7 fails outright — this is the hard requirement</td></tr><tr><td>A server-side secret store, and a server-side place to call from</td><td>§6 pass 2</td><td>The screenshot API key cannot be held safely, so pass 2 stays switched off and gap items keep no image. Everything else still works</td></tr><tr><td>Read access across owners for one collection kind</td><td>§10.1</td><td>Templates cannot be listed or copied, and a demo has to be seeded per tester by a maintainer instead</td></tr><tr><td>Control over layout density</td><td>O3</td><td>The 8×2 grid degrades; triage speed is the first casualty</td></tr></tbody></table></div>
 <p>Anything that fails this table is a reason to revisit §2 before building, not after.</p>
 <h3>11. The extensions, if they arrive</h3>
 <p><code>objectives.md</code> holds tab harvesting and pushing subsets back into a browser out of the first version, and notes the wish&#39;s own suggestion that they may come <em>&quot;initially or exclusively through an LLM agent&quot;</em>. Taking that seriously here, because §2&#39;s choice made it the cheap path:</p>
-<p>An agent with browser access can read open tabs and create tab groups; the app cannot. So the app&#39;s part is to <strong>be scriptable rather than to grow a browser integration</strong>: the export format of §9 is the interchange, and a tag-selected export is exactly what &quot;create a tab group from this subset&quot; needs as input. Nothing more is specified now — but the export is the seam, and it should not be narrowed to fit only the download button.</p>
+<p>An agent with browser access can read open tabs and create tab groups; the app cannot. So the app&#39;s part is to <strong>be scriptable rather than to grow a browser integration</strong>: the export format of §9 is the interchange, and a selection-based export is exactly what &quot;create a tab group from this subset&quot; needs as input.</p>
+<p>This is why §8 pulls selection out as a function and §9 defines export as taking one. <strong>Export is a function with a selection argument, not a menu action</strong> — the menu is one caller. The others are already in this spec: a skill proposing tags over a round trip (§8.2), seeding a demo template (§9.1), and whatever an agent does with a subset later. Anything that narrows export to fit the download button closes all three.</p>
 <h3>12. How fast is fast enough</h3>
 <p><code>objectives.md</code> declines to set a rate target, on the grounds that setting one now would be a guess dressed as a requirement. This spec keeps that and specifies <strong>the instrument instead</strong>:</p>
 <ul><li>The app records, per triage session, items judged and elapsed time, so a real</li></ul>
@@ -149,12 +228,16 @@
 <ul><li>What is specified now is the <em>shape</em>: the grid must never wait on a capture,</li></ul>
 <p>  and no triage action may cost a page load.</p>
 <h3>13. Open for the plan</h3>
+<ul><li><strong>Where the screenshot API key lives</strong>, which §6 makes the gate on pass 2. It</li></ul>
+<p>  is the first thing to sequence: the pipeline is built and tested with the   vendor call stubbed, and shipping it is a configuration change once the answer   exists.</p>
 <ul><li>Which OpenAI surface, judged against the table in §10.</li><li>Which screenshot vendor, and what its retention terms are — the disclosure in</li></ul>
 <p>  §6 is easier to accept from a vendor that does not keep the images.</p>
 <ul><li>Whether a user may hold several collections of their own. The wish&#39;s &quot;one per</li></ul>
 <p>  user&quot; implies not; the &quot;choose collection&quot; menu has to render either way, and   §5 does not prevent it.</p>
-<ul><li>What seeds the demo collection, and where that content lives.</li><li>Whether automatic clustering runs at ingestion or on demand. It is the one</li></ul>
-<p>  place in §8 where cost and freshness pull against each other.</p>
+<ul><li>What seeds the demo collection, and where that content lives.</li><li>Whether the app&#39;s own cheap cluster proposals (§8.2) are computed at ingestion</li></ul>
+<p>  or on demand. It is the one place in §8 where cost and freshness pull against   each other.</p>
+<ul><li>What a skill hands back in §8.2 — a list of proposed tags, or tags already</li></ul>
+<p>  attached to item ids — and how the user accepts or discards them.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/bookmark-sorter/draft-spec" data-root="../../">
