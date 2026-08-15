@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objectives — Interactive Bookmark Sorter</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Objectives — Interactive Bookmark Sorter</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Interactive Bookmark Sorter</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Objectives</h2>
+    </div>
+    <div class="card-content">
+<h2>Objectives</h2>
+<p>What &quot;done&quot; would mean, derived from the wish. Outcomes, not implementation — how any of this is built belongs in <code>spec.md</code>.</p>
+<h3>The point</h3>
+<p><strong>Turn a bookmark pile that is too big to face into a pile worth keeping.</strong></p>
+<p>The wish names the priority explicitly: <em>&quot;Most important is to pick keepers vs junk vs archive vs needs-more-time.&quot;</em> Everything else — ingestion, tags, clusters, snapshots — earns its place only by making that decision faster. An objective that does not serve triage throughput is not an objective for this initiative.</p>
+<p>That framing matters because the obvious failure mode is building a bookmark <em>manager</em>: a tidy, tagged, searchable library that is still never read. The measure of success is how much of the pile gets resolved, not how well it is organised.</p>
+<h3>Done means</h3>
+<ol><li><strong>A pile can be brought in without loss.</strong> Bookmarks are ingested with title,</li></ol>
+<p>   link, and date intact, and every item carries tags recording where it came    from and when it arrived — so a later import can never be confused with an    earlier one.</p>
+<ol><li>**Every item can be given a verdict, and the verdict is the unit of</li></ol>
+<p>   progress.** Each item ends up as <em>keeper</em>, <em>junk</em>, <em>archive</em>, or    <em>needs-more-time</em>. Items with no verdict yet are the backlog, and the system    can always say how large it is.</p>
+<ol><li><strong>Triage is fast enough to do in a sitting.</strong> A screenful of items can be</li></ol>
+<p>   judged without leaving the keyboard or scrolling away, and a full screen is    presented at a time — roughly 8×2 on a wide display, fewer on a tablet, a    carousel on a phone.</p>
+<ol><li><strong>Seeing an item does not require remembering it.</strong> Each item shows enough —</li></ol>
+<p>   a page snapshot, its title, its tags — to be judged on sight. This is what    makes 3 possible; a list of URLs is not triageable at speed.</p>
+<ol><li><strong>Related items can be judged together.</strong> Items can be gathered into clusters</li></ol>
+<p>   automatically, or by the user selecting on tags — a boolean expression, or a    pattern match. Judging fifty near-identical links as one group is the    difference between an afternoon and a month.</p>
+<ol><li><strong>Tagging is part of triage, not a separate chore.</strong> Tags can be added during</li></ol>
+<p>   a pass, at the same speed as the verdicts, and items can be tagged by topic,    by site, or by kind of page.</p>
+<ol><li><strong>The results are the user&#39;s, and portable.</strong> Verdicts and tags persist in a</li></ol>
+<p>   store suited to wherever this runs, and can be backed up and exported in a    form another system could read. Nothing is trapped.</p>
+<h3>Explicitly not the first version</h3>
+<p>The wish marks two capabilities as extensions, and they stay out until the core above works:</p>
+<ul><li><strong>Harvesting open tabs from other devices</strong> — Safari on iPhone, Chrome on</li></ul>
+<p>  iPad, and so on.</p>
+<ul><li><strong>Pushing subsets back out</strong> — creating browser tab groups, or a folder of</li></ul>
+<p>  fresh bookmarks, from a tag-selected subset.</p>
+<p>Both are worth doing and both are what makes the tool feel finished. Neither makes triage faster, so neither belongs in the first version. The wish also notes they may arrive <em>&quot;initially or exclusively through an LLM agent&quot;</em>, which is a real option and should be weighed in <code>spec.md</code> rather than assumed away.</p>
+<h3>How we will know</h3>
+<ul><li>A real backlog of several hundred bookmarks can be taken from untriaged to</li></ul>
+<p>  fully triaged, and the time it took is known.</p>
+<ul><li>The rate is fast enough to be worth it — a target to be set in <code>spec.md</code>, once</li></ul>
+<p>  there is a measured baseline to argue from. Setting it now would be a guess   dressed as a requirement.</p>
+<ul><li>After a full pass, the keepers can be exported and opened somewhere else.</li></ul>
+<h3>Decisions this raises</h3>
+<p>Drafting these surfaced questions the wish does not settle, and that should not be settled by whoever writes the spec:</p>
+<ol><li><strong>Where does this run?</strong> A local script, a web app, a browser extension, or</li></ol>
+<p>   something hosted. This decides nearly everything downstream — how bookmarks    are read, what &quot;a database appropriate to the platform&quot; means, and whether    harvesting other devices is even possible later.</p>
+<ol><li><strong>Where do page snapshots come from?</strong> Live-fetching and rendering hundreds</li></ol>
+<p>   of pages is a different project from using whatever thumbnail or favicon is    already available, or from capturing snapshots at ingestion time. Objective 4    depends on this, and it is the largest unknown here.</p>
+<ol><li><strong>How big is the real pile?</strong> Hundreds and tens of thousands are different</li></ol>
+<p>   problems for clustering and for storage.</p>
+<p>These are recorded as blocked items in <code>initiative.json</code> rather than answered here.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/newsletter-story-harvester/draft-objectives" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
