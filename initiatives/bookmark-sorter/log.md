@@ -104,3 +104,17 @@ capability, alongside the two the wish already holds back.
 
 **No decisions are now waiting on the user.** Every question this initiative
 raised has an answer; what remains is work.
+
+## 2026-08-15 — Revise objectives.md for collections, import/export, imported folder paths as tags, and general sharing as a later revision
+
+Revised objectives.md for the wish amendment and the two decisions that followed it.
+
+Objective 1 now says that structure the user already made is part of what must not be lost: a browser export's folder path arrives as a tag, so years of shelving becomes selectable by the same mechanism as everything else rather than a hierarchy the tool models separately.
+
+Objective 7 grows from 'exportable' to a round trip - JSON with tags and verdicts, a subset chosen by tag, and an export file that can be imported back - carrying no captures, per the decision that the judgement is what must not be trapped. Objective 8 is new: items live in a collection, a collection has an owner and is private, and a tester receives their own seeded copy of a demo.
+
+New objectives are appended rather than inserted, deliberately: decisions.md argues about several of these by number, and renumbering would have invalidated that record without touching it.
+
+A general sharing scheme joins 'Explicitly not the first version' as a third held-back capability - planned rather than merely possible, which is why it carries a live constraint on the spec: do not let 'owner' become the only way an item is reachable.
+
+'Decisions this raises' listed three open questions and said they were recorded as blockers. All five questions this initiative raised are now answered, so the section is now a map into decisions.md, with what is left stated as what it is - a constraint on the spec, not a question for the user.
