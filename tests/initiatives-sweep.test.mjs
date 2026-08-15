@@ -134,11 +134,13 @@ test('proposes an answer to a judgement call, and never to one needing authority
   assert.deepEqual(ids, ['needs-decision/pick'], 'only the human: blocker is proposable');
   assert.equal(proposals.selected[0].question, 'SQLite or Postgres?');
 
-  // permission:, cost: and legal: need consent, not reasoning, so a proposal
-  // for one would be a fabrication.
+  // permission:, cost: and legal: need consent and data: needs a fact only the
+  // user has, so a proposal for one would be a fabrication. All of them are
+  // still reported, rather than silently dropped.
   const refused = proposals.notProposable.map((p) => p.blocker);
-  assert.deepEqual(refused, ['permission:AWS deploy role']);
+  assert.deepEqual(refused, ['permission:AWS deploy role', 'data:which senders count?']);
   assert.ok(!ids.includes('needs-decision/deploy'));
+  assert.ok(!ids.includes('needs-decision/harvest'));
 });
 
 test('names a proposal branch so it cannot collide with the work branch', () => {
