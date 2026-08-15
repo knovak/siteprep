@@ -20,13 +20,6 @@
       "blocked_by": "data:which senders or labels count as newsletters, and how far back should a harvest reach?",
       "value": "high",
       "effort": "small"
-    },
-    {
-      "id": "story-record",
-      "title": "Draft the story record - the fields a harvested story must carry, and what makes two stories the same one",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "small"
     }
   ]
 }
