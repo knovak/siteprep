@@ -118,3 +118,65 @@ New objectives are appended rather than inserted, deliberately: decisions.md arg
 A general sharing scheme joins 'Explicitly not the first version' as a third held-back capability - planned rather than merely possible, which is why it carries a live constraint on the spec: do not let 'owner' become the only way an item is reachable.
 
 'Decisions this raises' listed three open questions and said they were recorded as blockers. All five questions this initiative raised are now answered, so the section is now a map into decisions.md, with what is left stated as what it is - a constraint on the spec, not a question for the user.
+
+## 2026-08-15 — Draft spec.md, including alternatives considered for the runtime and the snapshot source
+
+Drafted spec.md: ingestion and the folder-path tag, the URL-keyed data model, the two-pass capture pipeline, the virtualised grid and its keys, tag-expression and automatic clusters, the JSON round trip, and what the host must supply. Carries condensed alternatives for the runtime and the snapshot source, with decisions.md holding the full argument.
+
+The stage moves to specified, and the todo list gains the next step it implies -
+drafting plan.md and test-plan.md together, which is the gate the lifecycle puts
+at this stage. Without it the initiative reads as finished rather than merely
+specified, which is the distinction the validator's "nothing actionable" warning
+exists to catch.
+
+## 2026-08-15 — Review round on the spec: selection as the reusable function
+
+Ten review comments, all revisions. The largest is a renaming that turned out to
+be a restructuring: what the spec called a cluster is a *selection*, and it is
+pulled out as one function that viewing, exporting, tagging, sweeping a verdict
+and seeding a demo all call. A cluster is now just a named selection. The
+evaluator can cross collections for administrative use; the ordinary UI wraps
+every expression as "collection:<current> and (...)" so a user's selection cannot
+reach another collection by construction.
+
+Automatic clustering stopped being a mechanism of its own and became tag
+production, with three routes that all end in the same place: apply a tag to a
+selection in the app, round-trip a selection through a file that a program or
+skill tags, or hand a selection to a skill that proposes tags. The app therefore
+needs no clustering intelligence of its own to satisfy objective 5.
+
+Two interaction findings. Keys are demoted to a first-cut binding of named
+abstract functions, since the interaction is certain to be refined toward the
+mouse - the functions are the stable part. And a new flow gets a function of its
+own: display a whole selection, mark the few exceptions with one click each, then
+apply a verdict to everything that was not marked. The asymmetry is why it
+matters - naming four keepers out of fifty is quick, judging fifty is not.
+
+Also: the tag schema is explicitly not fixed, so a bare 'boring' or
+'response-required' is an ordinary tag; export takes a selection and is a
+function rather than a menu action; exporting from one collection into another is
+specified as the way a demo is seeded, which needs no cross-collection access
+because everything crosses as a file; and the screenshot API key gets a section -
+pass 2 ships switched off until key custody is resolved, with the pipeline built
+and testable behind the stub.
+
+Demo collections gained the detail the review asked for: a template a maintainer
+edits, copies that testers own, a fresh copy rather than a repair for a dirtied
+one, and delete. That needs exactly one capability on the user and two fields on
+the collection. It adds one real cross-user read - a template is readable by all
+signed-in users, or nobody could copy it - which is recorded against the deferred
+sharing decision rather than quietly widening it.
+
+## 2026-08-15 — Review round: the note field
+
+Added `note` to the item - free text, distinct from the title, either carried in
+on import or typed by the user. Section 5.1 records why it is neither a tag nor a
+title: tags are for selecting and a note is prose that will never be matched with
+and/or, and the title is what the page calls itself while the note is what the
+user or the sender said about it - a distinction that matters most for the badly
+titled pages where a note earns its place.
+
+Two findings while specifying it. Netscape bookmark HTML already carries a
+description in its DD element, so ingestion can read notes the user wrote years
+ago rather than discarding them. And an import must never overwrite an existing
+note, on the same principle as a verdict: it is the user's own writing.

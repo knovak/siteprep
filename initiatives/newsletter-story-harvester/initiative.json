@@ -14,13 +14,6 @@
       "effort": "small"
     },
     {
-      "id": "story-record",
-      "title": "Draft the story record - the fields a harvested story must carry, and what makes two stories the same one",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "small"
-    },
-    {
       "id": "draft-plan",
       "title": "Draft plan.md and test-plan.md - the build order, and how the three extraction contracts are tested without a mailbox",
       "state": "actionable",

@@ -40,6 +40,39 @@ The fallback carries one constraint into the spec: the store is the durable
 thing and the generated page is disposable, so moving review into the bookmark
 sorter later is a change of surface rather than a rewrite.
 
+## 2026-08-15 — Draft the story record - the fields a harvested story must carry, and what makes two stories the same one
+
+Drafted story-record.md: the fields a story carries, why the extraction shape is stored rather than inferred, the three separate senses of 'the same story' and which two are decidable, and the link unwrapping that identity depends on.
+
+## 2026-08-15 — Review round on the story record: tags, open vocabularies, many harvesters
+
+Five review comments, all revisions, and they pull in one direction: fewer fixed
+schemas.
+
+Themes became tags. There is no theme field and no theme table - a theme is a tag
+by the convention theme:<name>, in the same set as anything else worth selecting
+on. Grouping and correcting are then the same operation, and whatever writes tags
+can group stories. It also matches the bookmark sorter's flat free-string tags,
+which matters because that app is the standing fallback for review.
+
+Verdicts became an open vocabulary, so archive or to-be-shared can be added as
+configuration rather than a migration. Two rules keep it honest: a story still
+has exactly one verdict or none, which is what makes the backlog count mean
+something, and a reader that does not recognise a verdict must round-trip it
+rather than blank it.
+
+The larger change is that the store has many producers. Any number of skills may
+harvest into it, so the record carries harvester alongside source, shape is open
+for a harvester that meets material the three shapes do not describe, and how a
+long-form column becomes one story is the harvesting skill's business rather than
+something this document prescribes. Identity is what makes that safe: url_key is
+the cross-source key, so the same article arriving through two different skills
+still merges. One rule added - a harvester never writes a verdict, because a
+record that arrives pre-judged shrinks the backlog objective 7 counts.
+
+Cross-newsletter merging is settled as happening at harvest: the reader never
+spends a decision on duplicates, and merged_from keeps it inspectable.
+
 ## 2026-08-15 — Draft spec.md, including alternatives considered for the runtime and for how each newsletter shape is turned into stories
 
 Drafted spec.md: the harvest is a skill, the store is a JSON file the skill alone writes, the review page is generated and disposable, and verdicts come back as a small exported file.
