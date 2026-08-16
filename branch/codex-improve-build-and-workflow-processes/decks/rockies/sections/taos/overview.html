@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Taos | Rockies Deck</title><link rel="stylesheet" href="../../assets/styles.css"><link rel="manifest" href="../../../../manifest.webmanifest"><script src="../../assets/scripts.js"></script><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css"></head>
-<body><article class="card"><div class="card-header"><nav class="tag-nav" aria-label="Primary"><a href="../../../../index.html" class="tag">🏠 Home</a><a href="../../index.html" class="tag">⬆️ Top of deck</a></nav><h1>Taos, New Mexico</h1><p class="meta">Monday, September 21–Wednesday, September 30, 2026</p></div><div class="card-content">
+  <meta name="siteprep-version-root" content="../../../../">
+<body><article class="card"><div class="card-header"><a href="../../../../index.html" class="tag">🏠 Home</a><h1>Taos, New Mexico</h1><p class="meta">Monday, September 21–Wednesday, September 30, 2026</p></div><div class="card-content">
 <h2>Basic Info</h2><ul>
 <li><strong>Dates:</strong> Monday, September 21–Wednesday, September 30, 2026.</li>
 <li><strong>Population:</strong> Taos had 6,474 residents in the 2020 census. The wider Taos micropolitan area, coterminous with Taos County, had 34,489 residents.</li>
@@ -23,52 +24,12 @@
 <li><strong>Taos Fall Arts Festival:</strong> This longstanding, town-wide celebration typically brings juried exhibitions and arts programming to late September. Exact 2026 dates, hours, venues, and program had not been posted when this page was prepared; check the calendar before making plans. <strong>Reference location:</strong> Taos Center for the Arts, 133 Paseo del Pueblo Norte, Taos, NM 87571. <a href="https://taosfallarts.com/" target="_blank" rel="noopener">Official festival site</a> | <a href="https://www.google.com/maps/search/?api=1&amp;query=Taos+Center+for+the+Arts+133+Paseo+del+Pueblo+Norte+Taos+NM" target="_blank" rel="noopener">Google Maps</a>.</li>
 <li><strong>San Geronimo Feast Day, Wednesday, September 30:</strong> Taos Pueblo’s annual feast day is a sacred observance that traditionally includes dances and community traditions. Visitors must follow Pueblo rules: no cameras, phones, recording, or alcohol; do not enter homes or restricted areas. Programming and public access can change, so confirm directly before going. <strong>Address:</strong> Taos Pueblo, 120 Veterans Highway, Taos, NM 87571. <strong>Hours:</strong> activities traditionally begin in the morning; timing is not fixed. <a href="https://taospueblo.com/annual-events/" target="_blank" rel="noopener">Official annual-events guidance</a> | <a href="https://www.google.com/maps/search/?api=1&amp;query=Taos+Pueblo+120+Veterans+Highway+Taos+NM" target="_blank" rel="noopener">Google Maps</a>.</li></ul>
 <h2>Map</h2><p>Every attraction, event location, and neighborhood location listed above is marked below; shared locations use one marker. Use either clickable legend to focus a location.</p><h3>OpenStreetMap</h3><div id="taos-map-osm" class="map-container"></div><div id="taos-legend-osm" class="map-legend"></div><h3>OpenTopoMap</h3><div id="taos-map-topo" class="map-container"></div><div id="taos-legend-topo" class="map-legend"></div></div></article>
-<footer class="site-footer"><div class="footer-nav"><a href="../../../../index.html">All decks</a><span class="footer-separator">|</span><a href="../../index.html">Rockies</a></div></footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><script src="../../../../shared/standard_map/standard_map.js"></script><script>
 const locations=[
 {name:'Taos Pueblo and San Geronimo Feast Day',lat:36.4381,lng:-105.5456,color:'#a04000',icon:'🌽'},{name:'Harwood Museum and Ledoux Street',lat:36.4054,lng:-105.5763,color:'#7d3c98',icon:'🎨'},{name:'Rio Grande Gorge Bridge',lat:36.4763,lng:-105.7320,color:'#2471a3',icon:'🌉'},{name:'Kit Carson Home & Museum',lat:36.4070,lng:-105.5722,color:'#d35400',icon:'🏠'},{name:'Earthship Visitor Center',lat:36.4961,lng:-105.7525,color:'#1e8449',icon:'☀️'},{name:'Taos Plaza',lat:36.4070,lng:-105.5735,color:'#2980b9',icon:'⛲'},{name:'Kit Carson Park',lat:36.4115,lng:-105.5702,color:'#117864',icon:'🌳'},{name:'San Francisco de Asís Church',lat:36.3587,lng:-105.6088,color:'#922b21',icon:'⛪'},{name:'Taos Farmers Market',lat:36.4029,lng:-105.5741,color:'#b9770e',icon:'🫑'},{name:'Taos Center for the Arts',lat:36.4089,lng:-105.5733,color:'#8e44ad',icon:'🎭'}];
 StandardMap.render({locations,osmMapId:'taos-map-osm',osmLegendId:'taos-legend-osm',topoMapId:'taos-map-topo',topoLegendId:'taos-legend-topo'});
 </script>
-  <footer class="site-footer">
-    <script>
-      (function() {
-        var footer = document.currentScript.parentElement;
-        var nav = document.createElement('div');
-        nav.className = 'footer-nav';
-        var links = [];
-        
-        // Version link to home
-        links.push({ href: '../../../../index.html', text: 'Version: codex/improve-build-and-workflow-processes' });
-        
-        // Deck link
-        links.push({ href: '../../index.html', text: 'Deck' });
-        
-        // Section link
-        links.push({ href: 'overview.html', text: 'Section' });
-        
-        // Google Drive link
-        links.push({ href: 'https://drive.google.com/drive/folders/1BDF-8Vz_8P5PIH_78GikTFfYA_ZtOoUS?usp=drive_link', text: 'Google Drive', external: true });
-        
-        // View all versions link
-        links.push({ href: '../../../../index-versions.html', text: 'View all versions' });
-        
-        // Build the navigation
-        links.forEach(function(link, index) {
-          if (index > 0) {
-            var sep = document.createElement('span');
-            sep.className = 'footer-separator';
-            sep.textContent = '|';
-            nav.appendChild(sep);
-          }
-          var a = document.createElement('a');
-          a.href = link.href;
-          a.textContent = link.text;
-          if (link.external) a.target = '_blank';
-          nav.appendChild(a);
-        });
-        
-        footer.appendChild(nav);
-      })();
-    </script>
+  <footer class="site-footer" data-version="codex/improve-build-and-workflow-processes" data-root="../../../../" data-deck="../../index.html" data-section="overview.html">
+    <script src="../../../../shared/site_footer/site_footer.js"></script>
   </footer>
 </body></html>
