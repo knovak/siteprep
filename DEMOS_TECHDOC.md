@@ -65,7 +65,7 @@ After the final source edit and `npm run build`, capture a generated page with:
 npm run screenshot -- \
   --device="Desktop Chrome" \
   --full-page \
-  "file:///workspace/siteprep/gh-pages/demos/RMD%20calculator/prompts.html" \
+  "file://$PWD/gh-pages/demos/RMD%20calculator/prompts.html" \
   /tmp/rmd-prompts.png
 ```
 

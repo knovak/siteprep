@@ -140,10 +140,103 @@ for deck in "${DECKS[@]}"; do
   fi
 done
 
-if ! grep -q "scripts.js" "$OUTPUT_DIR/index.html"; then
-  fail "BUILD-08 scripts.js not included in root index"
+# Site-level pages register the service worker through shared/site_base/, not
+# through a deck's scripts.js.
+if ! grep -q "site_base.js" "$OUTPUT_DIR/index.html"; then
+  fail "BUILD-08 site_base.js not included in root index"
+fi
+if ! grep -q "serviceWorker" "$OUTPUT_DIR/shared/site_base/site_base.js"; then
+  fail "BUILD-08 service worker code missing from shared/site_base/site_base.js"
 fi
 pass "BUILD-08 service worker registration code available"
+
+# BUILD-16: Shared nav bar reaches every page that should have one.
+for toc_page in "index.html" "demos/index.html"; do
+  toc_path="$OUTPUT_DIR/$toc_page"
+  [ -f "$toc_path" ] || continue
+  if ! grep -q "site_base.js" "$toc_path"; then
+    fail "BUILD-16 TOC page ${toc_page} does not load the shared nav bar"
+  fi
+  pass "BUILD-16 TOC page ${toc_page} loads the shared nav bar"
+done
+
+for shared_nav_file in nav_bar.js nav_bar.css nav_bar.md; do
+  if [ ! -f "$OUTPUT_DIR/shared/nav_bar/$shared_nav_file" ]; then
+    fail "BUILD-16 shared/nav_bar/${shared_nav_file} not published"
+  fi
+done
+pass "BUILD-16 shared nav bar library published"
+
+# BUILD-17: Every page declares where its deployment root is, so client-side
+# navigation does not have to guess - a guess that used to send every page
+# outside decks/ back to main from a branch preview.
+missing_root=0
+while IFS= read -r -d '' html_file; do
+  file_rel="${html_file#$OUTPUT_DIR/}"
+  # Demo content is copied byte-for-byte and is deliberately left untouched.
+  if [[ "$file_rel" == demos/* && "$file_rel" != "demos/index.html" ]]; then
+    continue
+  fi
+  if ! grep -q 'name="siteprep-version-root"' "$html_file"; then
+    echo "  missing version root: $file_rel" >&2
+    missing_root=$((missing_root + 1))
+  fi
+done < <(find "$OUTPUT_DIR" -name "*.html" -type f -print0)
+
+if [ "$missing_root" -gt 0 ]; then
+  fail "BUILD-17 ${missing_root} page(s) missing the version-root meta tag"
+fi
+pass "BUILD-17 every generated page declares its version root"
+
+# BUILD-18: Initiatives validate, and their pages are generated.
+#
+# Only malformed or unsafe data fails the build. Backlog health - an empty
+# backlog, a stale initiative, a missing stage document - is reported as a
+# warning, because this script aborts the build and would otherwise stop an
+# unrelated deck from deploying over someone's todo list.
+if [ -d "$ROOT_DIR/initiatives" ]; then
+  if ! node "$ROOT_DIR/scripts/initiatives.mjs" validate; then
+    fail "BUILD-18 initiative data is invalid"
+  fi
+  pass "BUILD-18 initiative data validated"
+
+  if [ ! -f "$OUTPUT_DIR/initiatives/index.html" ]; then
+    fail "BUILD-18 initiatives index not generated"
+  fi
+  pass "BUILD-18 initiatives index generated"
+
+  while IFS= read -r initiative; do
+    [ -n "$initiative" ] || continue
+    if [ ! -f "$OUTPUT_DIR/initiatives/${initiative}/index.html" ]; then
+      fail "BUILD-18 no overview page generated for ${initiative}"
+    fi
+    if ! grep -q "./${initiative}/index.html" "$OUTPUT_DIR/initiatives/index.html"; then
+      fail "BUILD-18 initiatives index does not link ${initiative}"
+    fi
+    pass "BUILD-18 initiative page generated and linked for ${initiative}"
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" list)
+
+  # Source markdown stays the single source of truth; the build renders it.
+  if find "$OUTPUT_DIR/initiatives" -name '*.md' -print -quit | grep -q .; then
+    fail "BUILD-18 raw markdown published under initiatives/ instead of rendered HTML"
+  fi
+  pass "BUILD-18 initiative documents rendered rather than copied"
+
+  # BUILD-19: The sweep survey. Deterministic, so it is unit-testable against
+  # fixtures rather than against whatever work happens to be in flight.
+  for suite in initiatives-digest initiatives-sweep; do
+    if ! node --test "$ROOT_DIR/tests/${suite}.test.mjs" > /dev/null 2>&1; then
+      node --test "$ROOT_DIR/tests/${suite}.test.mjs" || true
+      fail "BUILD-19 ${suite} tests failed"
+    fi
+    pass "BUILD-19 ${suite} tests passed"
+  done
+
+  if ! node "$ROOT_DIR/scripts/initiatives.mjs" digest > /dev/null; then
+    fail "BUILD-19 sweep digest could not be produced"
+  fi
+  pass "BUILD-19 sweep digest produced for the real initiatives"
+fi
 
 # BUILD-09: Valid HTML - basic structure check
 for deck in "${DECKS[@]}"; do
@@ -193,20 +286,40 @@ done
 pass "BUILD-11 shared resources verified"
 
 # BUILD-14: Version footer injected outside every inline script
-# The footer carries its own <script>, so injecting it inside a page's still-open
+# The footer carries a <script> tag, so injecting it inside a page's still-open
 # inline script terminates that script early and breaks the whole block. Nothing
 # may follow the injected footer except the closing body/html tags.
+footers_found=0
 while IFS= read -r -d '' html_file; do
-  if ! grep -q '<footer class="site-footer">' "$html_file"; then
+  # Only the injected footer carries the version, so this stays right even if a
+  # page ever grows a footer of its own again.
+  if ! grep -q '<footer class="site-footer" data-version=' "$html_file"; then
     continue
   fi
+  footers_found=$((footers_found + 1))
 
   after_footer=$(awk 'BEGIN { RS = "</footer>" } { last = $0 } END { print last }' "$html_file")
   if grep -q "</script>" <<< "$after_footer"; then
     fail "BUILD-14 version footer injected inside an inline script: ${html_file#$OUTPUT_DIR/}"
   fi
+
+  # The footer's links come from the shared library, so a page whose footer
+  # points at a path that isn't there renders no footer at all. Resolve the
+  # src the same way the browser will - relative to the page.
+  footer_src=$(sed -n 's/.*<script src="\([^"]*site_footer\.js\)"><\/script>.*/\1/p' "$html_file" | head -n 1)
+  if [ -z "$footer_src" ]; then
+    fail "BUILD-14 footer does not load site_footer.js: ${html_file#$OUTPUT_DIR/}"
+  fi
+  if [ ! -f "$(dirname "$html_file")/$footer_src" ]; then
+    fail "BUILD-14 footer library missing at ${footer_src} from ${html_file#$OUTPUT_DIR/}"
+  fi
 done < <(find "$OUTPUT_DIR" -name "*.html" -type f -print0)
-pass "BUILD-14 version footer injected outside inline scripts"
+
+# A grep pattern that stops matching would make every check above vacuous.
+if [ "$footers_found" -eq 0 ]; then
+  fail "BUILD-14 no injected footers found in the build output"
+fi
+pass "BUILD-14 version footer injected outside inline scripts ($footers_found pages)"
 
 # BUILD-12: Clean build capability
 # This test verifies build can work from clean state

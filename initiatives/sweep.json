@@ -1,0 +1,10 @@
+{
+  "phases": ["survey", "respond", "propose", "work"],
+  "items_per_run": 4,
+  "max_items_per_initiative": 2,
+  "max_effort": "large",
+  "staleness_days": 14,
+  "max_open_prs": 8,
+  "pr_strategy": "one-per-initiative",
+  "protected_paths": ["shared/", "scripts/", ".github/"]
+}

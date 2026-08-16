@@ -1,0 +1,25 @@
+{
+  "title": "Newsletter Story Harvester",
+  "summary": "Harvest, organize, review, retain, and publish newsletter stories from Gmail.",
+  "stage": "shaped",
+  "value": "medium",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "draft-spec",
+      "title": "Draft spec.md, including alternatives considered for the runtime and for how each newsletter shape is turned into stories",
+      "state": "actionable",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": true
+    },
+    {
+      "id": "newsletter-inventory",
+      "title": "Establish which newsletters are in scope and how their emails are recognised",
+      "state": "blocked",
+      "blocked_by": "data:which senders or labels count as newsletters, and how far back should a harvest reach?",
+      "value": "high",
+      "effort": "small"
+    }
+  ]
+}

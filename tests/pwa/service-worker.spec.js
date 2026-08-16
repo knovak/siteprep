@@ -138,10 +138,17 @@ test.describe('PWA Functionality Tests', () => {
     const indexResponse = await page.request.get('/');
     const htmlContent = await indexResponse.text();
 
-    // Should include scripts.js which contains service worker registration
-    expect(htmlContent).toContain('scripts.js');
+    // Site-level pages register the service worker through shared/site_base/,
+    // not through a deck's scripts.js - they no longer borrow assets from
+    // whichever deck happens to sort first.
+    expect(htmlContent).toContain('site_base.js');
 
-    // Verify scripts.js actually contains service worker code
+    const siteBaseResponse = await page.request.get('/shared/site_base/site_base.js');
+    const siteBaseContent = await siteBaseResponse.text();
+    expect(siteBaseContent).toContain('serviceWorker');
+    expect(siteBaseContent).toContain('navigator.serviceWorker.register');
+
+    // Deck pages still register it from their own scripts.js.
     const scriptsResponse = await page.request.get('/decks/india1/assets/scripts.js');
     const scriptsContent = await scriptsResponse.text();
     expect(scriptsContent).toContain('serviceWorker');

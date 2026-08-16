@@ -55,10 +55,18 @@ for deck in "${DECKS[@]}"; do
 done
 
 echo ""
-echo "-- Pages with no detected way back to the deck/home (buildBreadcrumb, footer nav, or tag-nav) --"
+echo "-- Pages with no detected way back to the deck/home (nav bar mount, buildBreadcrumb, or breadcrumb nav) --"
+# A page's own navigation, which is what a deck controls. The footer used to
+# count here, back when pages carried a hand-written one; scripts/build.sh now
+# injects the version footer into every published page, so its presence says
+# nothing about this page and matching `<footer` would pass everything.
+#
+# `class="tag"` is the mount SiteNav replaces with the header pill row - every
+# deck's assets/scripts.js calls SiteNav.render(), so a page with the mount
+# gets the bar.
 found_gap=0
 while IFS= read -r -d '' html_file; do
-  if ! grep -Eq 'buildBreadcrumb\(|<footer|class="tag-nav|class="nav"' "$html_file"; then
+  if ! grep -Eq 'buildBreadcrumb\(|class="tag-nav|class="tag"|class="nav"' "$html_file"; then
     echo "  ${html_file#$ROOT_DIR/}"
     found_gap=1
   fi

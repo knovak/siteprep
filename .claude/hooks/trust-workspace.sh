@@ -12,12 +12,38 @@
 # TIMING IS THE WHOLE POINT. Claude Code resolves permission config once, at
 # startup, before hooks run - a SessionStart hook that sets this flag does not
 # affect the session it runs in, only later ones. So this must run BEFORE the
-# session starts, which means calling it from the environment's setup script:
+# session starts, which means calling it from the environment's setup script.
 #
-#     bash .claude/hooks/trust-workspace.sh
+# Do NOT call it as a bare `bash .claude/hooks/trust-workspace.sh`. The setup
+# script runs in parallel with the repo clone, so on a cold container that path
+# may not exist yet. bash exits 127, the setup script dies on that line, and the
+# session opens under a red "Setup script failed with exit code 127" banner
+# reading `.claude/hooks/trust-workspace.sh: No such file or directory`. Wait
+# for the clone to land, and keep a miss non-fatal:
+#
+#     hook=""
+#     for _ in $(seq 1 60); do
+#       for dir in "$PWD" /home/user/*; do
+#         if [ -f "$dir/.claude/hooks/trust-workspace.sh" ]; then
+#           hook="$dir/.claude/hooks/trust-workspace.sh"
+#         fi
+#       done
+#       if [ -n "$hook" ]; then break; fi
+#       sleep 1
+#     done
+#     if [ -n "$hook" ]; then
+#       bash "$hook" || true
+#     else
+#       echo "trust-workspace: clone not ready, SessionStart hook will cover it" >&2
+#     fi
+#
+# That snippet lives in the environment's setup script, which is web UI config
+# rather than repo state - editing this file does not change it. It is written
+# to survive `set -e`: no bare `a && b` as the last command of a block.
 #
 # Registering it as a SessionStart hook is a fallback that helps resumed and
-# checkpointed sessions, not the first one.
+# checkpointed sessions, not the first one - and the safety net for the case
+# where the clone never lands inside the wait window above.
 #
 # The trade-off, stated plainly: this bypasses the trust prompt, so anyone who
 # lands a commit in this repo gets their permissions.allow entries honored in

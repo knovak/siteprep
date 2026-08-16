@@ -1,0 +1,168 @@
+# Sweep prompt
+
+The instruction a sweep run follows. It lives here rather than in the scheduler
+so that a manual run during development and a scheduled run are **the same
+text** — debugging the schedule should not mean debugging a prompt you cannot
+see — and so a change to the job's behaviour is a reviewable commit.
+
+Run it by hand with:
+
+```bash
+claude -p "$(cat initiatives/sweep-prompt.md)"
+```
+
+or, in an interactive session, *"run the sweep prompt"*.
+
+**Which phases run is set by `phases` in `initiatives/sweep.json`, not here.**
+Widening what the job may do is a config change, reviewed like any other. It is
+currently `["survey", "respond", "propose", "work"]`: look, finish what is in
+flight, answer what is stuck, then start something new. Nothing is ever merged.
+
+The phases share one budget, `items_per_run`, taken in that order — so a run
+that spends it all on review responses and starts nothing new is the correct
+run, not a degraded one. Pass what is already spent to each later phase with
+`--spent`, rather than tracking it by hand.
+
+---
+
+## Phase 1 — Survey (always)
+
+1. Read `initiatives/sweep.json`. If it is missing or malformed, stop and say so.
+2. Run the survey:
+
+   ```bash
+   node scripts/initiatives.mjs digest
+   ```
+
+   This is deterministic — every part of the survey is derived from
+   `initiative.json`, the files present, and git, so it is computed rather than
+   judged. Do not re-derive it by reading the files yourself; you will only
+   introduce disagreement.
+
+3. Two things the digest cannot settle on its own, because they need GitHub:
+
+   - **Awaiting review** — for each entry, check whether that pull request has
+     merged or closed. If it has, the item is ready to unblock; say so.
+   - **Ready to unblock** — these are already established (a scheduled date has
+     passed); just carry them into your report.
+
+4. Report the digest. Lead with **Waiting on a decision from you** — it is the
+   part the sweep cannot decide for itself, and the reason anyone reads this.
+   The digest marks which of those entries a proposal could answer; the rest
+   need a fact only the user has, or their authority, and stay on the list until
+   they act. If nothing needs attention, say exactly that in one line. A quiet
+   run is a correct run, and padding it makes the next one easier to ignore.
+
+**Stop here unless `phases` includes more.**
+
+## Phase 2 — Respond to review
+
+Only if `phases` includes `"respond"`.
+
+Use the `respond-to-review` skill, which holds the detailed rules. In outline:
+for each open `sweep/*` pull request, find review threads whose most recent
+comment is from a human with no reply and no newer commit; ignore your own and
+other bots' comments, resolved threads, outdated threads, and approvals. Then
+revise, reply, or escalate — replying in every case, never resolving a thread,
+and never letting a comment grow the PR beyond the item it was opened for.
+
+Each thread handled counts against `items_per_run`. Do not change any
+initiative's `stage`; the merge does that.
+
+## Phase 3 — Propose an answer
+
+Only if `phases` includes `"propose"`.
+
+An open question costs a blank page, which is the expensive kind of work to
+leave to a person — and the reason an initiative sits at `shaped` for weeks.
+Judging a proposal is far cheaper than composing an answer, so for a question
+that can be *reasoned* about, do the reasoning and open a pull request.
+
+1. Ask which questions qualify, passing the budget already spent on review
+   responses and the branches of open sweep PRs:
+
+   ```bash
+   node scripts/initiatives.mjs propose --claimed <branches> --open-prs <n> --spent <n>
+   ```
+
+   Only `human:` blockers are ever selected. **Never propose an answer to a
+   `data:`, `permission:`, `cost:` or `legal:` blocker** — the first needs a
+   fact only the user has, and the rest need their authority. A proposal there
+   would be a fabrication wearing the costume of an answer. The command reports
+   those separately; carry them into the digest untouched.
+
+2. For each selected question, work on branch
+   `sweep/<initiative>/propose-<item-id>`:
+   - Write a dated entry in `initiatives/<initiative>/decisions.md`, in the
+     format the `answer-decision` skill uses: the question, the alternatives
+     with their strengths and weaknesses, the recommended answer, and what it
+     leaves open.
+   - In the same commit, make the change the answer implies: an item the answer
+     *completes* goes through `complete`; an item the answer merely makes
+     *doable* becomes `actionable` with its `blocked_by` removed.
+   - Append a dated line to `log.md`, and open a pull request. Do not merge it.
+
+3. **A well-argued proposal is more persuasive than a blank question**, and a
+   plausible-but-wrong one is harder to catch than no answer at all, because
+   the reasoning is exactly what stops the reader generating their own. So the
+   pull request body must:
+   - put the **alternatives before the recommendation**, each with its
+     strengths and weaknesses;
+   - label the recommendation **as a recommendation**, not a decision;
+   - state **what would change the answer** — the fact or preference that would
+     make a different option correct;
+   - make disagreement one line: naming a different option in a comment has to
+     be enough.
+
+Do not change the blocker on `main` to `review:<pr>`. The item stays blocked
+until the pull request merges — the merge is what answers the question, and a
+proposal that is closed unmerged then leaves no wreckage. The digest keeps
+listing the question until then, which is correct.
+
+Each proposal counts against `items_per_run` and `max_items_per_initiative`,
+like any other item.
+
+## Phase 4 — Do new work
+
+Only if `phases` includes `"work"`.
+
+1. Ask what to work on, again passing what the earlier phases spent:
+
+   ```bash
+   node scripts/initiatives.mjs select --claimed <branches> --open-prs <n> --spent <n>
+   ```
+
+   It excludes every item that already has an open `sweep/*` pull request, and
+   stops on its own if the open PRs are at `max_open_prs` or the budget is
+   spent. Ranking is
+   `score = value(initiative) x value(item) / effort(item)`, plus a bonus if
+   `advances_stage` is true, plus a bonus scaled by staleness; items above
+   `max_effort` are dropped and no more than `max_items_per_initiative` are
+   taken from one initiative. Do not re-rank it yourself.
+2. For each selected item, on branch `sweep/<initiative>/<item-id>`:
+   - Do the work. Write only inside `initiatives/<name>/` and that initiative's
+     declared `outputs[]`. Never touch a path in `protected_paths`.
+   - Record it done, which removes the item, unblocks anything waiting on it,
+     and writes the log entry:
+
+     ```bash
+     node scripts/initiatives.mjs complete <slug> <item-id> --note "..." [--stage <stage>]
+     ```
+
+     Pass `--stage` when the item advances the lifecycle; the command warns if
+     you forget. Do not hand-edit `initiative.json` to do this.
+   - Open a pull request. Do not merge it.
+3. Report what was done, with links.
+
+## Rules
+
+- Never merge your own pull request, and never resolve a review thread.
+- Never treat your own comments, or another bot's, as something to respond to.
+- Never create an initiative, and never invent or edit a wish.
+- Never repair a malformed `initiative.json` — skip that initiative and report it.
+- Never settle a human-class blocker unilaterally. A `human:` question may be
+  **proposed** as a pull request the user merges or redirects; everything else
+  goes in the digest, as multiple choice wherever the options can be enumerated.
+- Never propose an answer to a `data:`, `permission:`, `cost:` or `legal:`
+  blocker — those need a fact only the user has, or their authority.
+- If there is no actionable work anywhere, do nothing and say so.
