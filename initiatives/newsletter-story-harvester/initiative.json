@@ -1,7 +1,7 @@
 {
   "title": "Newsletter Story Harvester",
   "summary": "Harvest, organize, review, retain, and publish newsletter stories from Gmail.",
-  "stage": "specified",
+  "stage": "planned",
   "value": "medium",
   "outputs": [],
   "todo": [
@@ -14,12 +14,29 @@
       "effort": "small"
     },
     {
-      "id": "draft-plan",
-      "title": "Draft plan.md and test-plan.md - the build order, and how the three extraction contracts are tested without a mailbox",
+      "id": "spike-mailbox",
+      "title": "Phase 0 - prove the connector can search by sender, label and date range",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-store",
+      "title": "Phase 1 - the store, url_key unwrapping, identity, and the merge path",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
+    },
+    {
+      "id": "build-contracts",
+      "title": "Phase 2 - the three extraction contracts and their fixtures, against recorded responses",
+      "state": "blocked",
+      "blocked_by": "todo:build-store",
+      "value": "high",
+      "effort": "large",
+      "advances_stage": false
     }
   ]
 }
