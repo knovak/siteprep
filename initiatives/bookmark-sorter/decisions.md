@@ -448,3 +448,84 @@ confirmation exists to provide.
   not sufficient recovery on the visible path. `test-plan.md` §4.4 now measures
   both that and how often the confirmation fires at all, so the question is
   answered from a real sitting rather than re-argued.
+
+## 2026-08-17 — How does the data get out: the platform's export, or ours?
+
+**The app streams its own export.** Not a SQLite dump, not any platform-native
+export facility.
+
+The user's words, on review of the host spike: *"I think the platform should
+plan to stream its own export, rather that using a sql-lite export. the reason
+is that we will stay more platform-independent that way. this means we'll
+probably need to do more work on import -- that's ok"*.
+
+### What this changes, and it is larger than it looks
+
+**O7 stops depending on the host.** §10's table called bulk data export *the
+hard requirement* — the one row whose failure fails O7 outright and sends the
+whole thing back to §2. If the export is a `bookmark-sorter/v1` document the app
+itself writes (§9), then no host can fail that row: any host that runs the app
+at all can run the endpoint that streams it.
+
+So the biggest single risk in phase 0 is not mitigated, it is **dissolved**. The
+row does not disappear, but it changes from *"can the platform let the data
+out?"* to *"can our endpoint stream 10,000 items without something cutting it
+off?"* — a question about our own code and the runtime's limits, not about the
+host's goodwill.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **The app streams its own export** *(chosen)* | Platform-independent: the format is §9's, which already exists for O7's round trip, and moving hosts costs nothing. One export path rather than two | The endpoint has to survive the full pile in one response — pagination, resumability and runtime limits become ours to handle |
+| **A platform SQLite/D1 dump** | Free, complete, and no code | Ties O7 to a facility a host may not offer, in a shape only that host reads. A dump is also the *storage* rather than the *data* — it carries internal ids and schema that §9 deliberately does not |
+| **Both** | Belt and braces | Two export paths that will disagree, and the second is the one nobody tests |
+
+### What this settles, and what it does not
+
+- **There is one export, and §9 already specifies it.** Whole-collection export
+  is the §8 selection with no filter — not a separate mechanism.
+- **Import carries the cost**, and the user accepted that explicitly. §4's merge
+  rules already handle the semantics; what is new is *scale*. A 10,000-item
+  import through the same path as a small one is the case to build for.
+- **Left open, and now a probe:** what the runtime's ceiling actually is on a
+  single streamed response, and whether export and import need chunking on day
+  one. `host-spike.md` probe 3.1 is rewritten to measure exactly this.
+- **§10's table row is rewritten** from "the hard requirement" to a question
+  about our own endpoint. It is still worth probing — it is just no longer the
+  row that can end the project.
+
+## 2026-08-17 — What drives the capture queue, given no background workers?
+
+**An explicit action — "capture the gaps" — and nothing else for now.**
+
+Sites supports no persistent process, no scheduled workers and no cron, while §6
+specifies pass 2 as a *deferred, resumable* queue. Three shapes were available
+that need no background worker; the user chose the simplest: *"how about
+implementing the manual drive-by-hand option, and defer the other options for
+now. This will allow me to test the value of the function carefully before we
+automate it"*.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Driven by hand** *(chosen)* | The captures happen when somebody asks and can be watched while they do. Cheapest to build, and the only one where the *value* of the pass is observable before it is automated | Somebody has to remember. A pile left un-captured looks like a broken feature rather than an unrun one |
+| **Driven by requests** — each request processes a bounded batch | Progress happens whenever the app is used, with no ceremony | Spreads capture cost across every page load, and makes it hard to tell what a capture pass actually cost or achieved |
+| **Driven by the open tab** — the client polls while a sitting runs | Fast during a session, stops honestly when the tab closes | The most machinery, and it competes with triage for the same runtime |
+
+### What this settles, and what it does not
+
+- **The reason is measurement, not simplicity.** The user's point is that
+  automating first would hide whether pass 2 is worth having. §12 already treats
+  the capture pipeline as something whose value is measured rather than assumed,
+  and this is the same instinct applied to when it runs.
+- **Nothing about the queue's *shape* changes.** §6's gap rules, the duplicate
+  rule, the storage and the switch are all unchanged — what changes is who calls
+  the processor. The deferred queue is still a queue; it is just hand-cranked.
+- **The other two options stay live**, and are cheap to add later precisely
+  because the processor is a function taking a batch. Whichever is chosen calls
+  the same thing.
+- **Left open:** whether pass 1 stays automatic at ingestion. It should — it is
+  not deferred, it is part of landing the pile — and nothing in this decision
+  touches it.

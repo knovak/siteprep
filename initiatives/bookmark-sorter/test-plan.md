@@ -70,12 +70,24 @@ Not software, so the exit is evidence rather than a passing suite: **every row o
 §10's table filled in with what was actually observed**, and a `decisions.md`
 entry naming the surface.
 
-Two rows have pass conditions sharp enough to write down, because they are the
-ones that decide the project rather than a feature:
+Three rows have pass conditions sharp enough to write down, because they are the
+ones that decide the project rather than a feature. **The first of them changed
+on 2026-08-17** and the old one is worth stating, since this section was written
+around it: it used to be *"a collection's worth of rows can be got out of the
+host"*, failing O7 outright. Deciding that the app streams its own export
+(`decisions.md`) means no host can fail that, so what is observed here is a
+ceiling rather than a capability.
 
-- **Bulk data export** — a collection's worth of rows can be got out of the host
-  in a form another program can read, by an ordinary user, without an account
-  the project does not have. Anything less fails O7 outright.
+- **Outbound HTTP to arbitrary URLs** — a normal page, a 404 and an unreachable
+  host all behave as the code asks, within a timeout the code sets. This now
+  leads, being the only row left that can change the design: failing it moves
+  pass 1 behind the same paid vendor as pass 2 (`plan.md` phase 0).
+- **A response large enough to carry the pile out** — ten thousand items come out
+  through **the app's own streamed `bookmark-sorter/v1` document**, by an ordinary
+  user, and re-import as the no-op §9 requires. A platform or database dump does
+  not satisfy this row even where one exists. Failure here is a *size*: record
+  where the response cut off, because that number is what sizes the chunking
+  export and import then need on both sides.
 - **A server-side secret store with a server-side place to call from** — a value
   can be held that the browser cannot read, and an outbound call can be made from
   a place that can read it. Failing this switches pass 2 off and nothing else.
@@ -121,6 +133,7 @@ before it existed.
 | **`err:` tags never cross a collection** | Two collections hold the same URL; a failed capture tags only the items in the collection the fetch was for, and the second collection's items acquire the tag when *they* are ingested, from the existing capture record rather than from a write reaching across | O8, `plan.md` §2 |
 | Duplicate rule | Where one image hash covers items above the threshold, all of them are treated as imageless and queued | §6 |
 | Pass 2 against the stub | The queue, gap rules, storage and switch all work with the vendor call stubbed; turning the switch on changes configuration only | §6 |
+| Pass 2 has no automatic trigger | With items queued, nothing processes them until the "capture the gaps" action is invoked — no request, no page load and no open tab drains the queue on its own | §6, `decisions.md` 2026-08-17 |
 | **The key never reaches the browser** | A test over the built client bundle finds no vendor key and no vendor endpoint | §6 |
 | **Measured: coverage** | What fraction of a real pile got a distinguishable picture from metadata alone | `plan.md` §3 |
 | **Measured: duplicate distribution** | The real distribution of items per image hash, and the threshold chosen from it, recorded in `decisions.md` | §6 |
@@ -214,6 +227,8 @@ guarding against.
 | Every UI selection is collection-wrapped by the app | A "search all my stuff" feature makes the wrapping optional |
 | An import never overwrites a verdict or a `note` | A "sync" or "newest wins" import is added and silently edits the user's own writing |
 | Export carries no captures | Someone makes the file self-contained and it stops being movable |
+| The export is the app's own streamed document, never a host or database dump | A platform export turns up later, looks free and complete, and O7 quietly becomes a vendor's format — which strands every archive already taken and gives back the host-independence §10's table was rewritten to gain |
+| Pass 2 runs only when the user asks for it | An automatic driver is added because pressing the button is tedious, and what pass 2 costs stops being visible at the moment it is paid — which is the measurement the manual action exists to take, not an inconvenience to design around |
 | `undo` reverses a set operation as one action | A refactor makes undo per-item and nobody risks a sweep again |
 | A sweep across the visible selection asks nothing, at any size | A confirmation is added back "for safety" on a count, the single gesture becomes two, and people learn to dismiss it without reading — which is the state §8.3 was changed to escape |
 | A tag is a free string with nothing marking its origin | A controlled vocabulary or a `source` column is added and §8.2's skills become a schema change |

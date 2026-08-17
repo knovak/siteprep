@@ -8,7 +8,8 @@
     {
       "id": "host-spike",
       "title": "Run the phase 0 host spike and fill in spec.md's host table with evidence",
-      "state": "actionable",
+      "state": "blocked",
+      "blocked_by": "permission:is ChatGPT Sites available on your plan, region and workspace? It is in public beta and gated, and it answers most of the host table on paper - two probes remain, both written out in host-spike.md",
       "value": "high",
       "effort": "medium",
       "advances_stage": false

@@ -1,0 +1,335 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bookmark sorter — phase 0 host probes</title>
+
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1a1a; --muted: #666; --line: #ddd;
+    --pass: #0a7b34; --fail: #b3261e; --unknown: #8a6d00; --cell: #f4f4f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c; --fg: #e8e8e8; --muted: #9aa0a6; --line: #333;
+      --pass: #4ade80; --fail: #f87171; --unknown: #fbbf24; --cell: #22252a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 1.5rem; background: var(--bg); color: var(--fg);
+         font: 15px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 1.3rem; margin: 0 0 .25rem; }
+  p.sub { color: var(--muted); margin: 0 0 1.25rem; }
+  button { font: inherit; padding: .5rem .9rem; border: 1px solid var(--line);
+           border-radius: 6px; background: var(--cell); color: var(--fg); cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  .bar { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 1.5rem; }
+  th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--line);
+           vertical-align: top; }
+  th { font-weight: 600; white-space: nowrap; }
+  td.result { font-family: ui-monospace, monospace; font-size: 13px; white-space: pre-wrap;
+              word-break: break-word; }
+  .verdict { font-weight: 700; white-space: nowrap; }
+  .PASS { color: var(--pass); } .FAIL { color: var(--fail); } .UNKNOWN, .RUNNING { color: var(--unknown); }
+  .wrap { overflow-x: auto; }
+
+  /* Probe 3.7 — the real thing being measured, not a mock of it. */
+  #grid { display: grid; grid-template-columns: repeat(8, 300px); gap: 8px;
+          margin: .5rem 0 1rem; }
+  #grid .c { background: var(--cell); border: 1px solid var(--line); border-radius: 6px;
+             height: 190px; padding: .5rem; font-size: 12px; color: var(--muted); }
+  @media (max-width: 1100px) { #grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 700px)  { #grid { grid-template-columns: 1fr; } }
+</style>
+
+<h1>Phase 0 host probes</h1>
+<p class="sub">
+  Bookmark sorter — <code>host-spike.md</code> §3. Run these on a deployed Site,
+  then copy the results back into the pull request.
+</p>
+
+<div class="bar">
+  <button id="run-all">Run all</button>
+  <button id="run-iso">Run isolation probe (run as a 2nd user)</button>
+  <button id="copy">Copy results</button>
+</div>
+
+<div class="wrap">
+<table id="results">
+  <thead>
+    <tr><th>Probe</th><th>Row it settles</th><th>Verdict</th><th>Detail</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</div>
+
+<h2 style="font-size:1.05rem">Probe 3.7 — layout density, measured live</h2>
+<p class="sub">
+  Sixteen cells at 300&nbsp;px. On a widescreen viewport this should be 8×2 with
+  no horizontal scrolling. Anything narrower is what §10 calls the first casualty
+  of triage speed.
+</p>
+<div id="grid"></div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Phase 0 probes. Each returns { verdict: PASS|FAIL|UNKNOWN, detail: string }.
+// UNKNOWN is a real outcome: it means the probe could not decide, which is
+// different from the platform saying no, and must not be reported as either.
+// ---------------------------------------------------------------------------
+
+const PROBES = [
+  { id: '3.4', row: 'Outbound HTTP to arbitrary URLs', run: probeOutbound },
+  { id: '3.1', row: 'Streaming the whole pile out',    run: probeExport },
+  { id: '3.2', row: 'Signed-in identity',              run: probeIdentity },
+  { id: '3.3', row: 'Per-user rows (own data)',        run: probeOwnRows },
+  { id: '3.5', row: 'Server-side secret store',        run: probeSecret },
+  { id: '3.6', row: 'Cross-owner read for templates',  run: probeCrossOwner },
+  { id: '3.7', row: 'Layout density',                  run: probeLayout },
+  { id: '3.8', row: 'Metered limits',                  run: probeMetering },
+];
+
+const ROWS = new Map();
+
+function render() {
+  const tbody = document.querySelector('#results tbody');
+  tbody.innerHTML = '';
+  for (const p of PROBES.concat([{ id: '3.3b', row: 'Isolation (2nd user)' }])) {
+    const st = ROWS.get(p.id) || { verdict: '—', detail: 'not run' };
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${p.id}</td><td>${p.row}</td>` +
+      `<td class="verdict ${st.verdict}">${st.verdict}</td>` +
+      `<td class="result"></td>`;
+    tr.lastElementChild.textContent = st.detail;
+    tbody.appendChild(tr);
+  }
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const text = await res.text();
+  let json = null;
+  try { json = JSON.parse(text); } catch { /* endpoint may not exist yet */ }
+  return { ok: res.ok, status: res.status, text, json };
+}
+
+// --- 3.4 Outbound HTTP -----------------------------------------------------
+// The row that leads phase 0: without it, pass 1 metadata capture cannot run
+// in-platform and every capture moves behind the paid vendor.
+async function probeOutbound() {
+  const r = await api('/api/probe/outbound');
+  if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  const d = r.json;
+  if (!d) return { verdict: 'UNKNOWN', detail: 'no JSON returned' };
+  const ok = d.normal?.ok === true && d.notFound?.status === 404 && d.timeout?.timedOut === true;
+  return {
+    verdict: ok ? 'PASS' : 'FAIL',
+    detail:
+      `normal   : ${JSON.stringify(d.normal)}\n` +
+      `404      : ${JSON.stringify(d.notFound)}\n` +
+      `timeout  : ${JSON.stringify(d.timeout)}\n` +
+      `Pass needs all three to behave as asked, and the timeout to be ours.`,
+  };
+}
+
+// --- 3.1 Streaming the pile out -------------------------------------------
+// No longer able to fail the project: the app streams its own export, so this
+// measures a ceiling. A failure means export and import chunk.
+async function probeExport() {
+  const N = 10000;
+  const seed = await api('/api/probe/seed?n=' + N, { method: 'POST' });
+  if (!seed.ok) return { verdict: 'FAIL', detail: `seeding failed: HTTP ${seed.status}\n${seed.text.slice(0, 400)}` };
+
+  const t0 = performance.now();
+  const res = await fetch('/api/probe/export');
+  if (!res.ok) return { verdict: 'FAIL', detail: `export failed: HTTP ${res.status}` };
+  const body = await res.text();
+  const ms = Math.round(performance.now() - t0);
+
+  let parsed = null;
+  try { parsed = JSON.parse(body); } catch { /* truncated or not JSON */ }
+  const count = parsed?.items?.length ?? 0;
+  const complete = count === N;
+
+  return {
+    verdict: complete ? 'PASS' : 'FAIL',
+    detail:
+      `seeded ${N}, exported ${count}\n` +
+      `bytes ${body.length}, ${ms} ms\n` +
+      `parsed as JSON: ${parsed ? 'yes' : 'NO — truncated or cut off'}\n` +
+      (complete ? 'One response carried the pile.'
+                : 'Ceiling found. Record where it cut off; export and import chunk.'),
+  };
+}
+
+// --- 3.2 Identity ----------------------------------------------------------
+// Looking for a stable opaque id, not just the documented email: an email is a
+// poor primary key for owner_id.
+async function probeIdentity() {
+  const r = await api('/api/probe/identity');
+  if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  const d = r.json || {};
+  const hasAny = Boolean(d.email || d.opaqueId);
+  return {
+    verdict: hasAny ? 'PASS' : 'FAIL',
+    detail:
+      `email     : ${d.email ?? '(none)'}\n` +
+      `full name : ${d.fullName ?? '(none)'}\n` +
+      `opaque id : ${d.opaqueId ?? '(none found)'}\n` +
+      `all identity-ish headers seen:\n  ${(d.candidateHeaders || []).join('\n  ') || '(none)'}\n` +
+      (d.opaqueId
+        ? 'Use the opaque id as owner_id.'
+        : 'No opaque id: owner_id is an email, and §5 should say so deliberately.'),
+  };
+}
+
+// --- 3.3 Own rows ----------------------------------------------------------
+async function probeOwnRows() {
+  const r = await api('/api/probe/rows');
+  if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  const d = r.json || {};
+  return {
+    verdict: d.wroteAndRead ? 'PASS' : 'FAIL',
+    detail: `wrote and read back a row scoped to this user: ${d.wroteAndRead}\n` +
+            `rows visible to this user: ${d.visibleToMe}\n` +
+            `rows in table overall: ${d.totalRows}\n` +
+            `Isolation itself needs a second user — use the isolation button.`,
+  };
+}
+
+// --- 3.3b Isolation --------------------------------------------------------
+// Run as user B after user A has run "Run all".
+async function probeIsolation() {
+  const r = await api('/api/probe/isolation');
+  if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  const d = r.json || {};
+  const leaked = (d.otherUsersRowsReachable ?? -1) !== 0;
+  return {
+    verdict: (d.otherUsersRowsReachable === 0) ? 'PASS' : 'FAIL',
+    detail:
+      `rows belonging to other users this user could reach: ${d.otherUsersRowsReachable}\n` +
+      `routes tried: ${(d.routesTried || []).join(', ')}\n` +
+      (leaked ? 'O8 fails as built — isolation is our code, so this is our bug to fix.'
+              : 'No route tried reached another user’s rows.'),
+  };
+}
+
+// --- 3.5 Secret ------------------------------------------------------------
+async function probeSecret() {
+  const r = await api('/api/probe/secret');
+  if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  const d = r.json || {};
+  // The server must never return the value — only whether it could see it.
+  const leakedToClient = JSON.stringify(d).match(/PROBE_SECRET_VALUE|secretValue/) != null;
+  return {
+    verdict: (d.secretVisibleServerSide && !leakedToClient) ? 'PASS' : 'FAIL',
+    detail:
+      `secret readable server-side : ${d.secretVisibleServerSide}\n` +
+      `secret length reported      : ${d.secretLength ?? 'n/a'}\n` +
+      `value present in response   : ${leakedToClient} (must be false)\n` +
+      `Also grep the deployed client bundle for the value by hand — that is the\n` +
+      `check §6 actually requires, and a page cannot do it for itself.`,
+  };
+}
+
+// --- 3.6 Cross-owner read --------------------------------------------------
+async function probeCrossOwner() {
+  const r = await api('/api/probe/crossowner');
+  if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  const d = r.json || {};
+  return {
+    verdict: d.appCouldServeOthersRows ? 'PASS' : 'UNKNOWN',
+    detail:
+      `app served a row owned by another user when its own logic said to: ${d.appCouldServeOthersRows}\n` +
+      `rows seen: ${d.rowsSeen}\n` +
+      `Needs a second user to have run first, or it reports UNKNOWN rather than PASS.`,
+  };
+}
+
+// --- 3.7 Layout ------------------------------------------------------------
+// Measured against the live DOM, so it answers for the real surface.
+async function probeLayout() {
+  const grid = document.getElementById('grid');
+  const cells = [...grid.children];
+  if (cells.length < 16) return { verdict: 'UNKNOWN', detail: 'grid not built' };
+
+  const tops = new Set(cells.map((c) => Math.round(c.getBoundingClientRect().top)));
+  const perRow = cells.filter(
+    (c) => Math.round(c.getBoundingClientRect().top) === Math.round(cells[0].getBoundingClientRect().top)
+  ).length;
+  const overflows = document.documentElement.scrollWidth > document.documentElement.clientWidth;
+  const cellW = Math.round(cells[0].getBoundingClientRect().width);
+  const ok = perRow === 8 && tops.size === 2 && !overflows;
+
+  return {
+    verdict: ok ? 'PASS' : (window.innerWidth < 1400 ? 'UNKNOWN' : 'FAIL'),
+    detail:
+      `viewport ${window.innerWidth}×${window.innerHeight}, cell ${cellW}px\n` +
+      `cells per row ${perRow}, rows ${tops.size}, page scrolls sideways: ${overflows}\n` +
+      (ok ? '8×2 reached with no horizontal scroll.'
+          : window.innerWidth < 1400
+            ? 'Window too narrow to judge — re-run maximised on a widescreen display.'
+            : 'Did not reach 8×2 on a wide viewport. This is O3’s first casualty.'),
+  };
+}
+
+// --- 3.8 Metering ----------------------------------------------------------
+// Partly an observation: the plan's stated limits have to be read by hand.
+async function probeMetering() {
+  const r = await api('/api/probe/usage');
+  const d = r.json || {};
+  return {
+    verdict: 'UNKNOWN',
+    detail:
+      `rows written by the probe : ${d.rows ?? 'unknown'}\n` +
+      `approx bytes in D1        : ${d.approxBytes ?? 'unknown'}\n` +
+      `The real pile is ~10,000 items plus a few hundred MB of captures in R2.\n` +
+      `Read the plan's storage and usage limits from the Site's settings and\n` +
+      `record whether that fits with room. This one is a cost question, so the\n` +
+      `answer is the owner's rather than the probe's.`,
+  };
+}
+
+// --- driver ----------------------------------------------------------------
+
+async function runOne(p) {
+  ROWS.set(p.id, { verdict: 'RUNNING', detail: '…' });
+  render();
+  try {
+    ROWS.set(p.id, await p.run());
+  } catch (err) {
+    ROWS.set(p.id, { verdict: 'FAIL', detail: `threw: ${err && err.message ? err.message : err}` });
+  }
+  render();
+}
+
+document.getElementById('run-all').onclick = async () => {
+  for (const p of PROBES) await runOne(p);   // serial: a probe that seeds 10,000
+};                                           // rows should not race the others
+
+document.getElementById('run-iso').onclick = async () => {
+  await runOne({ id: '3.3b', row: 'Isolation (2nd user)', run: probeIsolation });
+};
+
+document.getElementById('copy').onclick = async () => {
+  const lines = ['Phase 0 probe results', '=====================', ''];
+  for (const [id, st] of ROWS) {
+    lines.push(`${id}  ${st.verdict}`);
+    lines.push(st.detail.split('\n').map((l) => '    ' + l).join('\n'));
+    lines.push('');
+  }
+  const text = lines.join('\n');
+  try { await navigator.clipboard.writeText(text); alert('Results copied.'); }
+  catch { alert(text); }
+};
+
+// Build the 3.7 grid.
+const grid = document.getElementById('grid');
+for (let i = 0; i < 16; i++) {
+  const c = document.createElement('div');
+  c.className = 'c';
+  c.textContent = `cell ${i + 1} — title, site, tags`;
+  grid.appendChild(c);
+}
+render();
+</script>

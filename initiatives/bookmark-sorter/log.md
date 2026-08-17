@@ -197,6 +197,14 @@ Two dependencies were unnamed. Three phase exits need the user and a real pile, 
 
 One tension is surfaced for the spec rather than settled: §8.3 confirms above 25 items while §7.1 describes sweeping fifty as the common case, so the single gesture asks a question nearly every time and undo already provides the recovery. The recommendation is to confirm on the unbounded action rather than the large one, with phase 4 measuring how often the threshold actually fires.
 
+## 2026-08-17 — The host spike could not be run, and is now blocked with its probes written out
+
+Phase 0 asks for spec.md §10's table filled in with evidence rather than expectation. That needs two things the sweep does not have and plan.md §5.2 already assigned to the user: a named surface, since every row of the table is a question about a specific product, and an account or budget on it, since the rows that decide the project are answered by signing in and trying. The item is recorded as blocked rather than done.
+
+What was produced instead is host-spike.md: one probe per row, with its pass condition and the cost of failing it, so that answering the blocker is followed by evidence rather than by planning.
+
+One desk finding changes what the spike has to ask, and is labelled as documentation rather than evidence throughout. The hosting decision of 2026-08-14 rested on "hosting, storage and sign-in come with the platform, so none of it has to be built or run". Public material on how apps in ChatGPT are actually built does not describe that arrangement: the app is a widget in an iframe plus an MCP server the developer hosts, with the database the developer's own choice; and "Sign in with ChatGPT" is a separate identity product for an application that is otherwise your own. If that holds, "an OpenAI site with its database" is not one product but three arrangements that answer the table very differently - and two rows move. Bulk export, the hard requirement, may be satisfied by construction rather than by the platform. Layout density, listed last, becomes the row most likely to fail, because an 8x2 grid of 300px cells inside a chat-column iframe is a different question from one in a browser tab. So the recommended shortest path is to probe those two first, against the in-ChatGPT arrangement only.
+
 ## 2026-08-17 — Review round on the critique: the confirmation rule accepted, and applied to spec.md
 
 Both review comments were agreements, and one carried an instruction to update whatever needed updating including spec.md.
@@ -206,3 +214,33 @@ Both review comments were agreements, and one carried an instruction to update w
 The second comment agreed the user-availability risk and its mitigations. One of those - a phase's code merging on its automated tests while the phase stays open on its measurement - contradicted §3's opening rule that a phase is over when its exit test passes. §3 now says both, since the two sentences would otherwise read as forbidding the thing that was just agreed.
 
 test-plan.md §4.4 also gains a second measured row: how often a sweep is followed immediately by undo. That is the evidence that would reopen §8.3, so it is worth collecting from the first real sitting rather than re-arguing later.
+
+## 2026-08-17 — The host spike has a candidate surface: ChatGPT Sites
+
+The user pointed at the ChatGPT Sites documentation on review of the spike's blocker. It is a different product from the Apps SDK this document first researched, and a much better fit, so host-spike.md §2 is rewritten and the earlier reading is explicitly withdrawn rather than left standing.
+
+Sites is a hosted full-stack surface: a Cloudflare Workers runtime for server-side code, D1 (SQLite) for structured data, R2 for object storage, Sign in with ChatGPT for identity forwarded to the server in request headers, and environment variables and secrets in site settings. It renders as a full page rather than inside a chat column.
+
+That answers five of the seven rows of spec.md §10 on paper. Two remain genuinely open, and they are now the whole of the spike: bulk data export, which is undocumented and is the row that fails O7 outright, and outbound HTTP to arbitrary URLs, which is undocumented and decides whether pass 1 metadata capture can run in-platform at all. The layout-density warning from the earlier reading is withdrawn - that concern was about an iframe in a chat column and does not apply here.
+
+Two things the documentation surfaced that the spec had not anticipated. Identity arrives as an email address and a full name, which is a poor primary key for §5's owner_id, so the spike now also looks for a stable opaque id. And Sites supports no background services - no persistent process, no scheduled workers, no cron - while §6 specifies pass 2 as a deferred, resumable queue. A queue with nothing to run it is not a queue. Three shapes that need no background worker are recorded, request-driven batching being the natural default; this is a finding for phase 3 to absorb rather than a reason to revisit §2, and pass 1's capture at ingestion is unaffected either way.
+
+A new probe was added for metering. Sites is in public beta with plan-specific usage limits that can prevent adding storage or keeping a site public, and a limit that binds at 10,000 items plus a few hundred megabytes of captures is not a degradation but a different host. It is a cost question, so the answer is the user's.
+
+The blocker is narrowed to match: the surface has a name, and what is needed is confirmation that Sites is available on the user's plan.
+
+## 2026-08-17 — Two decisions on the spike, and a drafted probe site
+
+The app streams its own export rather than relying on a platform SQLite dump, to stay platform-independent, with the extra import work accepted. This is the largest single change the plan has had: spec.md §10's bulk-export row was "the hard requirement", the one row whose failure fails O7 outright and sends the whole thing back to §2, and any host that can run the app can run the endpoint. So the biggest risk in phase 0 was not mitigated, it was dissolved - by a choice rather than by a finding, which is worth recording as such. What remains is a milder question about how much one response can carry, and its failure is chunking rather than a wall.
+
+The capture queue is driven by hand for now - an explicit "capture the gaps" action - with the per-request and open-tab drivers deferred. The reason is measurement rather than effort: automating first would hide whether pass 2 is worth having, which is the one thing §12 says should be measured rather than assumed. All three drivers call the same processor, so adopting another later is a caller change. Pass 1 is unaffected, being part of landing the pile rather than deferred work.
+
+Both are recorded in decisions.md with their alternatives, and applied to spec.md §6, §9 and §10, to plan.md phase 0 and phase 3, and to host-spike.md. Phase 0's probe order changed with them: outbound HTTP now leads, being the only remaining row that can change the design, and the export probe follows it.
+
+probe/ holds a drafted site implementing the probes - one HTML page with the layout probe as real DOM, and one server module for the rows that must run server-side. It was written from documentation and never run; it is meant to be handed to ChatGPT and corrected until it works. Both files parse. It prints a results table to paste back, and it is throwaway by construction, as phase 0 requires.
+
+## 2026-08-17 — test-plan.md caught up with the two decisions
+
+Both of the day's decisions landed in spec.md, plan.md and host-spike.md but not in test-plan.md, which still described §4.0's export row as getting rows "out of the host" and failing O7 outright - the exact framing the export decision removed. Three changes close it: §4.0 now leads with outbound HTTP and states the export row as a ceiling to be measured rather than a capability to be found, §4.3 gains a test that nothing drains the capture queue without being asked, and §5 pins both decisions against the changes most likely to undo them - a platform export that looks free, and an automatic driver added because the button is tedious.
+
+Worth noting how this was found: two sessions worked this review round concurrently and produced the same conclusions, and the gap was in the one file neither had reached.

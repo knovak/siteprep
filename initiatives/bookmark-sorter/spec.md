@@ -207,6 +207,22 @@ pass 1 could not make distinguishable:
 
 Everything else keeps its metadata card.
 
+**What drives the queue: an explicit action** (`decisions.md`, 2026-08-17). Pass
+2 is deferred, and deferred work needs something to run it. The candidate host
+supports no background workers, no scheduled jobs and no cron, so the first
+version has **no automatic trigger at all**: a "capture the gaps" action
+processes the queue while the user watches, and stops when it is done.
+
+That is a decision about measurement rather than about effort — automating it
+first would hide whether pass 2 is worth having, which is the one thing §12 says
+should be measured rather than assumed. Two alternatives stay live and are cheap
+to adopt later: a bounded batch processed per request, or the open tab polling
+during a sitting. Both call the same processor, so choosing one is a caller
+change.
+
+**Pass 1 is unaffected.** It runs at ingestion because it is part of landing the
+pile, not because it is deferred.
+
 **Sizing.** Grid cells are ~300 px wide on a widescreen layout, so captures are
 downscaled to a fixed size at capture time. Ten thousand items at that size is a
 few hundred megabytes — not the constraint. Only pass 2 costs money, and only for
@@ -451,6 +467,15 @@ O7 is a round trip, not a download. An export is JSON:
 - **Import is the merge of §4**, keyed by normalised URL: tags union, earliest
   date wins, and an existing verdict or `note` is not overwritten. Re-importing
   what you exported is a no-op, which is the test that makes O7 mean something.
+- **This export is the only one.** There is no platform-native dump beside it
+  (`decisions.md`, 2026-08-17), which is what keeps O7 independent of the host —
+  and what puts the whole weight of getting the data out on this format. A
+  whole-collection export is the §8 selection with no filter, not a second
+  mechanism.
+- **Import carries the cost of that choice, at scale.** The merge semantics are
+  §4's and do not change; what changes is that a full 10,000-item document goes
+  through the same path as a small one. Whether either side needs chunking is a
+  question for phase 0 rather than an assumption here.
 
 Because the capture store is URL-keyed and global, a re-import gets its pictures
 back from cache rather than paying the API again.
@@ -558,13 +583,20 @@ should resolve:
 | Signed-in user identity | O8, §5 | Sign-in becomes something to build — not a small piece of work |
 | A database with per-user rows | All state | Substitute any hosted store; the model in §5 is portable |
 | Outbound HTTP to arbitrary URLs | §6 pass 1 | Metadata capture cannot run in-platform; captures move behind the same vendor as pass 2, at real cost |
-| Bulk data export | O7 | O7 fails outright — this is the hard requirement |
+| A response large enough to stream the whole pile out | O7 | O7 is served by **the app's own export** (§9), not by any platform facility (`decisions.md`, 2026-08-17), so no host can fail this outright. What a host can do is cap a response or a request duration — in which case export and import chunk, which is work rather than a wall |
 | A server-side secret store, and a server-side place to call from | §6 pass 2 | The screenshot API key cannot be held safely, so pass 2 stays switched off and gap items keep no image. Everything else still works |
 | Read access across owners for one collection kind | §10.1 | Templates cannot be listed or copied, and a demo has to be seeded per tester by a maintainer instead |
 | Control over layout density | O3 | The 8×2 grid degrades; triage speed is the first casualty |
 
 Anything that fails this table is a reason to revisit §2 before building, not
 after.
+
+**One row left this table on 2026-08-17.** It used to read *"Bulk data export —
+O7 fails outright — this is the hard requirement"*, and it was the row phase 0
+existed to answer first. Deciding that the app streams its own export dissolved
+it: any host that can run the app can run the endpoint. What remains is the
+milder question above, and it is worth recording that the largest risk in the
+plan was removed by a choice rather than by a finding.
 
 ## 11. The extensions, if they arrive
 
