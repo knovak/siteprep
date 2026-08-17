@@ -58,6 +58,12 @@ Committed under this initiative, small enough to read and diff:
 
 Each section is the gate for the matching phase in `plan.md` §3.
 
+**Every row beginning `Measured:` needs a person and a real pile**, as does §2's
+once-per-phase sitting. `plan.md` §7 names that as the plan's largest scheduling
+dependency, and the consequence here is worth stating plainly: a phase can be
+entirely written, fully green, and still not exit. "Code complete" and "phase
+complete" are two states, and only the second is what §3 gates on.
+
 ### 4.0 — Host spike
 
 Not software, so the exit is evidence rather than a passing suite: **every row of
@@ -111,7 +117,8 @@ before it existed.
 | No JavaScript | A JS-rendered fixture page yields no image from pass 1 and is queued for pass 2 rather than half-parsed | §3 |
 | Derivative only | The stored image is the downscaled one, at the fixed capture size | §3 |
 | No re-fetch on view | Displaying an item makes no outbound request | §3, §12 |
-| Failures as data | The 404, timeout, TLS and parked-domain fixtures each write the matching `err:` tag on every item sharing that `url_key` | §6 |
+| Failures as data | The 404, timeout, TLS and parked-domain fixtures each write the matching `err:` tag on every item sharing that `url_key` **in the same collection** | §6 |
+| **`err:` tags never cross a collection** | Two collections hold the same URL; a failed capture tags only the items in the collection the fetch was for, and the second collection's items acquire the tag when *they* are ingested, from the existing capture record rather than from a write reaching across | O8, `plan.md` §2 |
 | Duplicate rule | Where one image hash covers items above the threshold, all of them are treated as imageless and queued | §6 |
 | Pass 2 against the stub | The queue, gap rules, storage and switch all work with the vendor call stubbed; turning the switch on changes configuration only | §6 |
 | **The key never reaches the browser** | A test over the built client bundle finds no vendor key and no vendor endpoint | §6 |
@@ -131,10 +138,16 @@ sweep a verdict across the result).
 | Scope wrapping | Every selection made through the UI is wrapped `collection:<current> and ( … )`; no user-typed expression can reach another collection's items | §8.1, O8 |
 | One evaluator | The administrative unwrapped path and the UI path are the same function with a different argument | §8.1 |
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
-| Confirmation threshold | A verdict across more than the threshold asks first | §8.3 |
+| **No confirmation on the visible sweep** | A verdict swept across the selection on screen asks nothing, at any size — including a sweep across several thousand | §8.3, O3 |
+| Confirmation on the unbounded path | A verdict applied to a saved selection from a menu, or to an expression whose result was never opened, asks first and shows the count | §8.3 |
 | Mark then sweep | `verdict-rest` applies to the selection minus the marked set; the inverted form (mark the keepers, sweep the rest) behaves identically | §7.1 |
 | **`undo` reverses a sweep as one action** | Fifty items swept and one undo restores all fifty | §7.1 |
 | Saved selection | Round-trips through storage and re-evaluates to the same set | §5 |
+| Cheap proposals: same site | Grouping `export-large.html` by host produces the expected groups, and each arrives as a selection the ordinary path can act on — not as a separate object | §8.2, O5 |
+| Cheap proposals: same folder path | Editing a `folder:` tag changes the proposal on the next request; nothing stale is served | §8.2, `plan.md` §5.6 |
+| Cheap proposals: near-identical titles | The normalised-title key is written at ingestion, and grouping on it still happens on demand — a title key exists for every item imported in phase 1 | §8.2, `plan.md` §5.6 |
+| **Measured: how often confirmation fires** | Over the phase's real sitting, how many times §8.3's confirmation interrupted anything, recorded in `decisions.md`. A rule that never fires and one that always fires are both findings — the first says the unbounded path is not used, the second says the discriminator is wrong | §8.3, `plan.md` §6 |
+| **Measured: sweeps regretted** | How often a sweep is followed immediately by `undo`. This is the number that would reopen §8.3 — it is the evidence that `undo` is not sufficient recovery on the visible path | §8.3 |
 
 ### 4.5 — The round trip
 
@@ -151,6 +164,18 @@ The test O7 actually makes, in three parts:
 Plus: importing `export-v1.json`, a file the code did not write, works; and an
 import never overwrites an existing verdict or `note` — a rule stated in §4,
 §5.1 and §9, and therefore worth one test per surface rather than one in total.
+
+**The proposals file** (`plan.md` §5.7) is the other half of this phase, and
+`proposals.json` is the fixture built for it — including the two cases that
+decide whether it is safe:
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Matched by URL, not by id | Items are found by normalised URL; the fixture's URL that is not in the collection is reported and skipped, not created | `plan.md` §5.7, §4 |
+| Grouped per tag, not per item | Each proposed tag becomes one selection over the items proposed for it, presentable as a screenful and acceptable in one action | §7.1, O5 |
+| **Nothing is written until accepted** | Loading the file changes no tag anywhere; discarding leaves the collection byte-identical to before | §8.2 |
+| Accepting calls the same `tag-apply` | Acceptance goes through the phase 4 function, so tags union rather than replace — the fixture's already-present tag produces no duplicate | §8.2, O6 |
+| The accepted tag is unmarked | Afterwards nothing distinguishes it from a hand-typed tag: same field, same autocomplete | §5, §8.2 |
 
 ### 4.6 — Identity and collections
 
@@ -190,8 +215,12 @@ guarding against.
 | An import never overwrites a verdict or a `note` | A "sync" or "newest wins" import is added and silently edits the user's own writing |
 | Export carries no captures | Someone makes the file self-contained and it stops being movable |
 | `undo` reverses a set operation as one action | A refactor makes undo per-item and nobody risks a sweep again |
+| A sweep across the visible selection asks nothing, at any size | A confirmation is added back "for safety" on a count, the single gesture becomes two, and people learn to dismiss it without reading — which is the state §8.3 was changed to escape |
 | A tag is a free string with nothing marking its origin | A controlled vocabulary or a `source` column is added and §8.2's skills become a schema change |
 | Nothing joins through the user to reach an item | Sharing becomes a retrofit rather than an addition |
+| An `err:` tag is written only inside the collection whose capture failed | The capture store is global, so the obvious implementation tags every item with that `url_key` everywhere — a cross-collection write that no single-collection test can see |
+| Loading a proposals file writes nothing | Acceptance is made implicit "because the user asked for the proposals", and §8.2's proposals-not-writes rule survives only in the prose |
+| A cluster proposal is a selection, not a stored object | Proposals get their own table and their own screen, and O5 acquires a second mechanism beside the one §8 built |
 
 ## 6. What is not tested, and why
 

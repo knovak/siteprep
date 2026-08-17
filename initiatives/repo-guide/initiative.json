@@ -1,16 +1,16 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, PDFs, and simulator explaining how people and agents work in this repository.",
-  "stage": "wish",
+  "stage": "shaped",
   "value": "high",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-objectives",
-      "title": "Draft objectives.md - what \"done\" would mean",
+      "id": "draft-spec",
+      "title": "Draft spec.md - how the description, deck, PDFs, and simulator are built",
       "state": "actionable",
       "value": "high",
-      "effort": "small",
+      "effort": "medium",
       "advances_stage": true
     }
   ]

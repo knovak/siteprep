@@ -385,11 +385,37 @@ this way:
 ### 8.3 Judging a selection as one
 
 Selecting a group and applying a verdict applies it to every item in the group,
-with a confirmation above a threshold (say 25 items) and `undo` reversing the
-whole thing as one action. §7.1's mark-then-sweep is the same operation with an
-exception set, and it is the common case in practice. Judging fifty
-near-identical links as one group is the difference between an afternoon and a
-month.
+with `undo` reversing the whole thing as one action. §7.1's mark-then-sweep is
+the same operation with an exception set, and it is the common case in practice.
+Judging fifty near-identical links as one group is the difference between an
+afternoon and a month.
+
+**Confirmation is asked for the unbounded action, not the large one**
+(`decisions.md`, 2026-08-17). An earlier draft of this section confirmed above a
+count — "say 25 items" — which fires on nearly every sweep §7.1 describes, and a
+confirmation that always fires is one people learn to dismiss without reading.
+The rule instead:
+
+- **No confirmation for a verdict swept across the selection currently on
+  screen**, whatever its size. §7.1 displays every member and the selection's
+  count is always visible (§7.1, *Progress is always visible*), so the size of
+  the action is in front of the user at the moment they take it — and `undo`
+  reverses it as one action, which is the recovery a confirmation exists to
+  provide.
+- **Confirm, showing the count, when the set is not the one being looked at** —
+  a saved selection invoked from a menu, an expression applied without opening
+  its result, or any administrative path (§8.1). Here the size is genuinely
+  unknown to the user, and no amount of `undo` helps somebody who did not know
+  what they were about to do.
+
+The discriminator is therefore **visibility, not cardinality**. It costs one
+question in the case that deserves one and none in the case §7.1 exists to make
+fast.
+
+**What would change this:** a sweep turning out to be regretted often enough
+that `undo` is not sufficient recovery — which would be an argument for a
+confirmation on the visible path too, and phase 4 measures it rather than
+assuming either way (`test-plan.md` §4.4).
 
 ## 9. Export and import
 

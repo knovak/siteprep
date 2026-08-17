@@ -114,3 +114,15 @@ binding table rather than a sentiment, since adopting its boolean selection
 language later is expected. The consequence worth having: this page's filter
 must be a subset of that expression language, so adding and/or/not later is
 reach rather than migration.
+
+## 2026-08-17 — Draft plan.md and test-plan.md - the build order, and how the three extraction contracts are tested without a mailbox
+
+Drafted plan.md and test-plan.md: nine phases and their exit tests.
+
+The ordering rule that shapes everything is that what is blocked on the user goes as late as it can. newsletter-inventory is a data: blocker and stays one, so the naive order - connect to Gmail first - is stopped on day one. The plan reaches phase 5 with no mailbox, no inventory and no real email: the store and identity, the three contracts against fixtures, a whole run over a fixture message source, the review page, and the verdict round trip. Only phase 6 needs the user, and by then everything except the real material is finished.
+
+What makes that possible is a seam: extraction takes a document rather than a message, and the fixture source is the first implementation of the interface Gmail later fills.
+
+The three contracts are tested without a mailbox by splitting the model out of the deterministic part. A contract test is a fixture issue plus a recorded model response, which gates every change; an eval is the same fixtures with a live call, scored against a recorded rubric and deliberately kept out of the gating suite, because a test that fails sometimes gets muted and muting this one would leave extraction quality unmeasured. The sharpest assertion falls out of §3.1's own rule that blurbs are copied rather than paraphrased: on the two verbatim shapes, harvested text must appear in the source document, which turns 'extraction never invents text' from a principle into a test.
+
+Six of the seven questions §15 left are answered by reasoning; only the unwrap rules for the actual senders wait on the inventory. Two answers are worth noting. --refresh is not built, because it is already a composition of a harvest into an empty store and an import of the old one, which §7.1's merge rules make correct. And the cluster paraphrase cannot live where §10.2 suggests: §13.1 forbids per-tag metadata outright, so the plan proposes a clusters block in the store instead and flags the disagreement for the spec.
