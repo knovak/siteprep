@@ -1,7 +1,7 @@
 {
   "title": "Newsletter Story Harvester",
   "summary": "Harvest, organize, review, retain, and publish newsletter stories from Gmail.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
   "todo": [
@@ -14,18 +14,9 @@
       "effort": "small"
     },
     {
-      "id": "build-store",
-      "title": "Phase 1 - the store, url_key unwrapping, identity, and the merge path",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": true
-    },
-    {
       "id": "build-contracts",
       "title": "Phase 2 - the three extraction contracts and their fixtures, against recorded responses",
-      "state": "blocked",
-      "blocked_by": "todo:build-store",
+      "state": "actionable",
       "value": "high",
       "effort": "large",
       "advances_stage": false

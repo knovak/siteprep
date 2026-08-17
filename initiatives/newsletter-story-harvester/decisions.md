@@ -219,3 +219,49 @@ sender addresses, no subjects, no message ids, no body text. §4 already keeps
 the inventory out of the repo on the same grounds: it names a person's mailbox.
 The probes are reproducible from the query shapes in the table above against any
 mailbox that receives a newsletter.
+
+## 2026-08-17 — Phase 1: four things the store had to settle that the spec left open
+
+`plan.md` §4 asks each phase to record what it settled rather than bury it in a
+constant. Phase 1 settled four, and the first two are the kind that cannot be
+revisited once records exist.
+
+**Ids carry the rule that made them** — `u1-` for `(source, issue_date,
+url_key)`, `a1-` for `(source_doc, source_anchor)`, then a truncated SHA-256 of
+those inputs. `plan.md` §3 already said a change to identity does not migrate;
+the prefix is what makes such a change visible in the data instead of something
+a later reader infers from a pile of duplicates. Four characters, once.
+
+**An id is assigned at first write and never re-derived.** After a case 2 merge
+the surviving record's `source` and `issue_date` move to the earlier issue's, so
+re-deriving would silently invalidate every reference to the old id — a verdict
+file, a `merged_from` entry elsewhere. Instead the absorbed id stays in
+`merged_from` and the store's index resolves it to the survivor. Both sides'
+derived ids therefore land on the same record, which is what makes a merge
+idempotent rather than a source of duplicates on the next run, and it is the
+reading of `test-plan.md` §4.1's "every merge is recoverable from `merged_from`
+alone" that the code implements: a hash is not invertible, so what recoverable
+can usefully mean is that the absorbed identity still resolves.
+
+**The sources a merge keeps are kept as `source:` tags**, not as a new field.
+`story-record.md` §1.1 already names the source as a thing tags are for, and a
+second source field would be one more thing every reader of the store has to be
+taught — including, under the standing fallback, the bookmark sorter's importer.
+
+**An unwrappable redirector loses its whole query string.** Stricter than
+`story-record.md` §4's "kept as-is", and the reason is phase 0's condition 3:
+those query strings hold a recipient identifier, and §6 is what makes §12's
+published page safe. The cost is that such a link may not resolve when clicked,
+which is a further input to `plan.md` §6's open question about the HEAD follow —
+it is no longer only about the merge rate, because for these senders it is also
+the difference between a working link and a marked one.
+
+### What this leaves open
+
+- **Whether case 2 should be strictly cross-source.** The code merges on
+  `url_key` whatever the source, so one newsletter linking an article in two
+  issues also merges. Same reader question, same single answer — but
+  `story-record.md` §3 says "from two sources", so this is a reading rather than
+  the letter. A one-line change if the letter was meant.
+- **The HEAD follow's default**, still `plan.md` §6's, still decided by evidence
+  that does not exist until phase 6.

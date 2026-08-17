@@ -1,0 +1,84 @@
+{
+  "_note": [
+    "test-plan.md §3: wrapped URLs in the shapes the named senders use, including",
+    "one that cannot be unwrapped and must be kept and marked. Every URL here is",
+    "synthetic - the shapes are real, the values are not, and no token below came",
+    "from anyone's mailbox.",
+    "",
+    "`expect_key` is what url_key must come out as. `unwrappable: false` means the",
+    "target is not in the URL at all, which is the case story-record.md §4 step 2",
+    "exists for and the case phase 0 found Substack's ordinary links to be in."
+  ],
+  "cases": [
+    {
+      "name": "substack encoded target",
+      "unwrap": "substack",
+      "url": "https://substack.com/redirect/2/eyJlIjoiaHR0cHM6Ly93d3cucHVibGlzaGVyLmV4YW1wbGUvc3RvcnktYSIsInAiOjEyM30",
+      "unwrappable": true,
+      "expect_key": "https://www.publisher.example/story-a"
+    },
+    {
+      "name": "substack opaque redirect, recipient token in the query",
+      "unwrap": "substack",
+      "url": "https://substack.com/redirect/1f2e3d4c-0000-4444-8888-aaaabbbbcccc?j=SYNTHETIC_RECIPIENT_TOKEN",
+      "unwrappable": false,
+      "expect_key": "https://substack.com/redirect/1f2e3d4c-0000-4444-8888-aaaabbbbcccc",
+      "expect_tags": ["err:unwrap"]
+    },
+    {
+      "name": "mailchimp click tracker, recipient in `e`",
+      "unwrap": "mailchimp",
+      "url": "https://example.us4.list-manage.com/track/click?u=abc123&id=def456&e=SYNTHETIC_RECIPIENT",
+      "unwrappable": false,
+      "expect_key": "https://example.us4.list-manage.com/track/click",
+      "expect_tags": ["err:unwrap"]
+    },
+    {
+      "name": "target in a query parameter, itself carrying utm_*",
+      "unwrap": "query-param",
+      "url": "https://click.example-news.test/f/a?url=https%3A%2F%2Fwww.publisher.example%2Fstory-b%3Futm_source%3Dnewsletter%26utm_medium%3Demail",
+      "unwrappable": true,
+      "expect_key": "https://www.publisher.example/story-b"
+    },
+    {
+      "name": "target base64url-encoded into a path segment",
+      "unwrap": "base64-path",
+      "url": "https://links.example.test/e/c/aHR0cHM6Ly93d3cucHVibGlzaGVyLmV4YW1wbGUvc3RvcnktYw",
+      "unwrappable": true,
+      "expect_key": "https://www.publisher.example/story-c"
+    },
+    {
+      "name": "not wrapped at all, only tracked",
+      "unwrap": null,
+      "url": "https://WWW.Publisher.example/story-d/?utm_campaign=weekly&fbclid=xyz#section-2",
+      "unwrappable": true,
+      "expect_key": "https://www.publisher.example/story-d/"
+    }
+  ],
+  "normalisation": [
+    {
+      "name": "case, fragment and tracking parameters collapse",
+      "a": "HTTPS://WWW.Publisher.example/Story-E?utm_source=news#top",
+      "b": "https://www.publisher.example/Story-E",
+      "same": true
+    },
+    {
+      "name": "a trailing slash on an empty path collapses",
+      "a": "https://www.publisher.example/",
+      "b": "https://www.publisher.example",
+      "same": true
+    },
+    {
+      "name": "a differing query string does not",
+      "a": "https://www.publisher.example/story?id=1",
+      "b": "https://www.publisher.example/story?id=2",
+      "same": false
+    },
+    {
+      "name": "a trailing slash on a real path is not touched",
+      "a": "https://www.publisher.example/story/",
+      "b": "https://www.publisher.example/story",
+      "same": false
+    }
+  ]
+}

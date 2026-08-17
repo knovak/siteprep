@@ -130,3 +130,7 @@ Six of the seven questions §15 left are answered by reasoning; only the unwrap 
 ## 2026-08-17 — Phase 0 - prove the connector can search by sender, label and date range
 
 Phase 0: the Gmail connector searches by sender, label and date range, and unions several matchers in one query - §14's first row answered with evidence. Three conditions carried into §4, §5.1 and §5.2: from: over-matches plus-tagged siblings, the range is half-open in local dates, and the result count is an estimate. A fourth, that Substack's redirector carries a recipient token and cannot be unwrapped by table, goes to phase 1's normalisation. No mailbox content recorded.
+
+## 2026-08-17 — Phase 1 - the store, url_key unwrapping, identity, and the merge path
+
+Phase 1: the store as one JSON file with atomic write and a kept generation, url_key unwrapping with the redirector table and the optional HEAD follow, identity for both cases, the case 2 cross-source merge, and the import path - which is the same merge with records as input. Every row of test-plan.md §4.1 has a test; 31 pass, no dependencies, no mailbox, no model.
