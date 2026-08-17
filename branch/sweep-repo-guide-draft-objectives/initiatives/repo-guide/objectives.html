@@ -57,9 +57,9 @@
 <ol><li><strong>A reader can always reach the authoritative text.</strong> The guide is a way in,</li></ol>
 <p>   not a replacement: every rule it states points at the file that actually    governs it, so a reader who needs the real answer is one link from it. This    is what keeps the guide short enough to stay true.</p>
 <ol><li><strong>The material is portable off the site.</strong> The slides and the description</li></ol>
-<p>   exist as PDFs that can be sent to someone who will not clone anything or    open a browser tab. The PDFs are renderings of the same source, not separate    documents maintained beside it.</p>
+<p>   exist as PDFs that can be sent to someone who will not clone anything or    open a browser tab. They are made by hand and kept on Google Drive    (<code>decisions.md</code>, 2026-08-17), so they are the one deliverable that is neither    generated nor in the repository — which is why objective 9 applies to them    most of all.</p>
 <ol><li><strong>Drift is detectable rather than discovered.</strong> When the process changes, the</li></ol>
-<p>   guide&#39;s disagreement with the repository shows up as a failure somewhere a    person will see it — not as a reader following an instruction that stopped    working. What that mechanism is belongs to the spec; that there must be one    is an objective, because without it objectives 2, 3 and 6 have a shelf life.</p>
+<p>   guide&#39;s disagreement with the repository shows up where a person will see it    — not as a reader following an instruction that stopped working. Two    mechanisms, both settled in <code>decisions.md</code> on 2026-08-17: the process content    is <strong>generated from the repository&#39;s own sources</strong>, so it cannot disagree;    and <strong>every output carries a date</strong>, so the parts generation does not reach    can be checked by hand. The second is not a weaker version of the first. It    is what covers the hand-written narrative, the simulator, and the PDFs, none    of which generation reaches.</p>
 <h3>Explicitly not the first version</h3>
 <ul><li><strong>A tutorial that walks a reader through making a real contribution.</strong></li></ul>
 <p>  Valuable, and a different kind of document — it goes stale faster than   anything above and cannot be written until the explanation exists to hang it   on. <code>background.md</code> notes Diátaxis&#39;s distinction between explanation and   guided instruction; this initiative is doing the first.</p>
@@ -78,17 +78,17 @@
 <p>  shows corresponds to something <code>initiative.json</code> and the sweep actually do.</p>
 <ul><li>**A process change lands, and the guide either updates with it or something</li></ul>
 <p>  complains.** This is the test objective 9 makes, and the one a guide that is   merely accurate today would pass without meaning anything.</p>
-<h3>Decisions this raises</h3>
-<p>Two questions the wish does not settle, and that should not be settled quietly by whoever writes the spec. Both are recorded as blocked items.</p>
-<ol><li><strong>What is authoritative, and how does the guide stay true to it?</strong> There is a</li></ol>
-<p>   real choice here — generate the guide&#39;s process content from the repository&#39;s    own sources so it cannot disagree; hand-write it and have a test assert the    claims that matter; or accept drift and date the material. Each buys    correctness at a different price, and the answer decides how much of this    initiative is a build rather than a piece of writing. Objective 9 depends on    it entirely, and objective 7 leans on it.</p>
-<ol><li><strong>How faithful is the simulator?</strong> It can animate an abstract lifecycle that</li></ol>
-<p>   merely resembles this repository&#39;s, or drive the real <code>initiative.json</code>    shapes and the real sweep rules. The first is a diagram that moves and could    be finished in a day; the second is the only version that cannot quietly    teach something false, and is a substantially larger build. Objective 4&#39;s    value and objective 9&#39;s reach both hang on this.</p>
-<p>Two more are noted for the spec rather than raised as blockers:</p>
-<ul><li><strong>Where the PDFs come from.</strong> This repository does not commit generated files</li></ul>
-<p>  — <code>INITIATIVES_TECHDOC.md</code> states it as an invariant and §7.6 of the vision   explains why — and a PDF is both generated and binary. Whether they are built   in the pipeline, produced on demand, or are the one deliberate exception is a   spec decision with a repository-wide precedent attached.</p>
+<h3>Decisions this raised, and where they landed</h3>
+<p>Drafting these surfaced three questions the wish does not settle. All three were answered on review the same day and are now in <code>decisions.md</code> — the reasoning lives there, and this list is only a map to it. Nothing here is still waiting on the user.</p>
+<ol><li><strong>What is authoritative, and how does the guide stay true to it?</strong></li></ol>
+<p>   The process content is <strong>generated from the repository&#39;s own sources</strong>, and    <strong>the outputs are dated</strong> so the parts generation does not reach can be    checked by hand. This is what makes the initiative a build rather than a piece    of writing, and it is the whole of objective 9.</p>
+<ol><li><strong>How faithful is the simulator?</strong> An <strong>abstract lifecycle for now</strong>, with an</li></ol>
+<p>   upgrade to the real <code>initiative.json</code> held open if the animation turns out not    to be adequate. It is therefore the one deliverable outside decision 1&#39;s    guarantee, which is the cost recorded with it.</p>
+<ol><li><strong>Where do the PDFs come from?</strong> <strong>Made by hand and kept on Google Drive</strong> —</li></ol>
+<p>   so the repository&#39;s rule against committing generated files is sidestepped    rather than argued, and objective 8 is written accordingly.</p>
+<p>One question is left to the spec rather than raised as a blocker:</p>
 <ul><li><strong>Whether the deck and the description share a source.</strong> They cover the same</li></ul>
-<p>  ground at different lengths, which is either one document rendered two ways or   two documents that will disagree. The answer follows from decision 1 and   should be made with it in view, not separately.</p>
+<p>  ground at different lengths, which is either one document rendered two ways or   two documents that will disagree. Decision 1 makes sharing a source the cheap   default — if the process content is generated, generating it twice at two   lengths is a parameter — but that is an argument for the spec to make, not a   decision the user has taken.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/repo-guide/draft-objectives" data-root="../../">
