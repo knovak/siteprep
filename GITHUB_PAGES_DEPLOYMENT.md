@@ -1,5 +1,8 @@
 # GitHub Pages deployment
 
+This document covers the workflow's `deploy` job - what happens to the built
+site. BUILD_TECHDOC.md covers the `build` job that produces it.
+
 The `Build and Deploy GitHub Pages` workflow publishes the `main` branch at the
 site root. Other branches are published below `branch/`, with slashes in the
 branch name replaced by hyphens.

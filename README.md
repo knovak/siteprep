@@ -75,10 +75,11 @@ Create a `deck.json` file in your deck's root directory (e.g., `/decks/india1/de
 ## Build and preview
 
 ```bash
-scripts/build.sh
+npm ci
+npm run build
 ```
 
-The script assembles the static site into the `/gh-pages` directory for local preview or GitHub Pages deployment.
+The build assembles the static site into the `/gh-pages` directory for local preview or GitHub Pages deployment, and validates the output before reporting success. `npm run build` runs `scripts/build.sh`, which can also be invoked directly. See BUILD_TECHDOC.md for the full build, browser setup, and screenshot workflow.
 
 ## GitHub Pages URL
 

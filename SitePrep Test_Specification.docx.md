@@ -23,6 +23,8 @@ This specification defines 100+ automated tests covering build processes, naviga
 | BUILD-11 | BUILD | Shared resources | Shared CSS/JS included | Check for shared imports | Imports resolved |
 | BUILD-12 | BUILD | Clean build | Build works on empty dist | Delete dist/, rebuild | Success |
 | BUILD-14 | BUILD | Footer injection placement | Version footer is injected outside every inline script | Build, then check that nothing after the injected `</footer>` closes a script | No `</script>` follows the injected footer |
+| BUILD-20 | BUILD | Build runs its own tests | CI has no separate build-test step, so `scripts/build.sh` must invoke `scripts/build_tests.sh` | Read scripts/build.sh and look for the invocation | The invocation is present |
+| BUILD-21 | BUILD | Browser setup scripts split | `setup:browsers` works without root; `setup:browsers:ci` installs system libraries | Read the scripts in package.json | Only the `:ci` variant passes `--with-deps` |
 
 # **3\. Navigation Tests (NAV)**
 
