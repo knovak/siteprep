@@ -17,7 +17,7 @@
       "id": "host-spike",
       "title": "Run the phase 0 host spike and fill in spec.md's host table with evidence",
       "state": "blocked",
-      "blocked_by": "permission:which surface is probed, and an account or budget on it - every row of the host table is a question about a specific product, and the rows that decide the project are answered by signing in and trying. The probes are written out in host-spike.md",
+      "blocked_by": "permission:is ChatGPT Sites available on your plan, region and workspace? It is in public beta and gated, and it answers most of the host table on paper - two probes remain, both written out in host-spike.md",
       "value": "high",
       "effort": "medium",
       "advances_stage": false

@@ -2,198 +2,220 @@
 
 `plan.md` phase 0 asks for §10's table filled in **with evidence rather than
 expectation**, and a dated `decisions.md` entry naming the surface. This document
-is not that. It is what a sweep could honestly produce without an account on the
-candidate host: the probes written out so the spike is an afternoon rather than a
-design exercise, and one desk finding that changes what the spike has to ask.
+is not that. It is what could honestly be prepared without an account: the probes
+written out so the spike is an afternoon rather than a design exercise, and what
+the documentation says so the probes go after the right things.
 
-**Nothing below is spike evidence.** §2 is documentation and third-party
-accounts, which is exactly the category `plan.md` phase 0 exists to replace.
-Where it contradicts a presumption in `decisions.md` it is a reason to *look*,
-not a finding.
+**Nothing below is spike evidence.** §2 is documentation, which is exactly the
+category phase 0 exists to replace. It is good enough to narrow the probes and
+not good enough to fill in a row.
 
 ## 1. Why the spike did not run
 
-Phase 0 needs two things the repository does not have, and `plan.md` §5.2 already
-named both as belonging to the user rather than to a spike:
+Phase 0 needs an account on a named surface, and `plan.md` §5.2 assigned both to
+the user rather than to a spike. The rows that decide the project — bulk data
+export, per-user rows, a server-side secret store — are answered by signing in
+and trying.
 
-- **A named surface.** `decisions.md` (2026-08-14) settled the shape as a web
-  app "most likely hosted on an OpenAI site, using its database", and left
-  *which* surface open. Every row of §10's table is a question about a specific
-  product; asked of "an OpenAI site" it has no answer.
-- **An account or budget on it.** The rows that decide the project — bulk data
-  export, per-user rows, a server-side secret store — are answered by signing in
-  and trying, not by reading. Spending or signing up on the user's behalf is not
-  the sweep's to do.
+**The surface now has a strong candidate.** §2 was rewritten on 2026-08-17 after
+the user pointed at **ChatGPT Sites**, which is a much better fit than the
+arrangement first researched here and answers most of §10's table on paper. What
+remains is confirming access and running the two probes documentation cannot
+settle.
 
-So the item is recorded as blocked rather than done. What follows is the part
-that can be prepared in advance, so that answering the blocker is immediately
-followed by evidence rather than by planning.
-
-## 2. What desk research changed about the question
+## 2. What the documentation says
 
 Read as documentation, and to be confirmed rather than believed.
 
-`decisions.md` recorded the case for an OpenAI host as: *"hosting, storage and
-sign-in come with the platform, so none of it has to be built or run."* That
-sentence is the load-bearing one — it is why §10's table was expected to come
-back mostly green, and it is what made the web app cheap relative to a hosted
-service.
+### 2.1 The earlier reading was about the wrong product
 
-**Public material about how apps in ChatGPT are actually built does not describe
-that arrangement.** The Apps SDK, as documented and as described in several
-independent build guides, is an app in two parts: a widget rendered in an iframe
-inside ChatGPT, and **an MCP server the developer hosts**, with the database a
-choice the developer makes and runs. The build guides that exist are written by
-hosting and database vendors — Supabase, Koyeb, DigitalOcean, Render — which is
-itself the tell: they exist because there is something to host.
+The first version of this document researched **the Apps SDK** — apps that run
+*inside* a ChatGPT conversation — and concluded that hosting and storage were the
+developer's own, and that layout density was the row most likely to fail because
+an 8×2 grid of ~300 px cells inside a chat-column iframe is a different question
+from one in a browser tab.
 
-Separately, **"Sign in with ChatGPT"** launched as a live beta on 2026-08-02 and
-supplies an identity — name, email, profile picture — to an application that is
-otherwise the developer's own.
+That reading stands for the Apps SDK and **does not apply to Sites**, which is a
+different product. The layout warning in particular is withdrawn: Sites renders
+as a full page, not in a chat column.
 
-If both hold, then "an OpenAI site with its database" is not one product but a
-choice between three arrangements that answer §10's table very differently:
+### 2.2 ChatGPT Sites
 
-| Arrangement | Identity | Database | Server-side secret store | Layout density |
-|---|---|---|---|---|
-| **A. An app inside ChatGPT** (Apps SDK) | from the platform | **yours to run** | yours, so yes | **an iframe inside a chat** — the row most at risk |
-| **B. Your own web app, "Sign in with ChatGPT"** | from the platform | yours to run | yours, so yes | full control |
-| **C. Neither — an ordinary host** | build or buy | yours to run | yours, so yes | full control |
+Sites is a hosted full-stack surface: a Cloudflare Workers edge runtime for
+server-side code, **D1** (SQLite) for structured data, and **R2** for object
+storage, provisioned and deployed by the platform. Identity comes from *Sign in
+with ChatGPT*, and the platform forwards the visitor to server-side code through
+request headers — documented ones being `oai-authenticated-user-email` and
+`oai-authenticated-user-full-name`. Site settings hold **environment variables
+and secrets**. It is in public beta, availability depends on plan, region and
+workspace, and **usage is metered** — reaching a limit can prevent adding
+storage or keeping a high-usage Site public.
 
-Two consequences worth stating before anyone runs a probe:
+Against §10's table, on paper:
 
-- **The bulk-export row may be answered by construction rather than by the
-  platform.** If the database is the developer's in all three arrangements, O7's
-  hard requirement stops being a question about OpenAI at all. That is the
-  single largest thing this changes, and it is the row `plan.md` §1 says could
-  invalidate the spec.
-- **Layout density becomes the sharp row for arrangement A.** §10's table lists
-  it last and calls triage speed the first casualty. An 8×2 grid of ~300 px cells
-  (§6) inside a chat-column iframe is a different question from an 8×2 grid in a
-  browser tab, and O3 is the objective the entire runtime decision was made for.
+| §10 row | What Sites appears to give | Confidence |
+|---|---|---|
+| Bulk data export | **Undocumented.** D1 is SQLite, so a dump is conceptually easy; whether an ordinary user can take one is not stated | **The row that still decides the project** |
+| Signed-in user identity | Sign in with ChatGPT, forwarded server-side in headers | High, with a caveat — see below |
+| A database with per-user rows | D1. Isolation is the app's own logic over the forwarded identity, which is what §5 already assumes | High |
+| Outbound HTTP to arbitrary URLs | **Undocumented.** The Workers runtime ordinarily permits `fetch`, but Sites does not say so | **The second row to probe** |
+| Server-side secret store, and a place to call from | Hosted environment variables and secrets, plus server-side code | High — this is the row that decides whether pass 2 can ever ship |
+| Cross-owner read for one collection kind | Answered by construction rather than by the platform: site-level access control is coarse, and a `demo-template` readable by every signed-in user is ordinary app logic over D1 | High |
+| Control over layout density | Full page, not a chat column | High — **the earlier warning is withdrawn** |
 
-**What would change this reading:** any of it being out of date or wrong — which
-is precisely why it is §2 of a probe plan and not an entry in `decisions.md`.
+**The identity caveat.** What is documented as arriving is an *email* and a full
+name. §5 wants an `owner_id`, and an email is a poor primary key: people change
+them, and it puts a personal identifier in every row. Probe 3.2 therefore asks
+whether a stable, opaque id is also available, and §5's `owner_id` should be that
+if one exists.
+
+### 2.3 The limitation the spec did not anticipate
+
+Sites documents that "some frameworks, private networks, databases, **background
+services**, and hosting patterns aren't supported" — no persistent process, no
+scheduled workers, no cron.
+
+**§6's pass 2 is specified as "deferred and resumable" — a queue.** A queue with
+nothing to run it is not a queue. This does not break the design, but it does
+decide the shape of the capture pipeline, and nothing in `spec.md` or `plan.md`
+currently accounts for it. The options, none of which needs a background worker:
+
+- **Drive the queue from requests** — each request processes a bounded batch of
+  pending captures. Simple, and it means captures progress whenever the app is
+  used, which for a personal tool is most of when it matters.
+- **Drive it from the open tab** — the client polls a "process next batch"
+  endpoint while a triage session is running. Faster during a sitting, and it
+  stops when the tab closes, which is honest rather than a bug.
+- **Drive it by hand** — an explicit "capture the gaps" action.
+
+The first is the natural default and the second is a small addition to it. What
+matters for now is that this is a **finding for phase 0 to confirm and phase 3 to
+absorb**, not a reason to revisit §2 — and that pass 1's ingestion-time capture,
+which is not deferred, is unaffected either way.
 
 ## 3. The probes
 
-One per row of §10's table, in `plan.md` phase 0's order — the order in which
-they can break the project. Each is deliberately small: the spike's code is a
-probe and is deleted.
+One per row of §10's table. Re-ordered on 2026-08-17: what §2 answers on paper is
+now cheap confirmation, and two rows carry nearly all the remaining risk.
 
-### 3.1 Bulk data export — *the hard requirement*
+**Run 3.1 and 3.4 first.** They are the two the documentation does not answer,
+one of them fails the project outright, and the other decides whether captures
+can happen in-platform at all. Everything else is confirmation.
 
-**Probe.** Create a table, write a few thousand rows, and get them out as a file
-another program can read, signed in as an ordinary user, using nothing the
-project would not have in production.
+### 3.1 Bulk data export — *the hard requirement, and still open*
+
+**Probe.** Create a D1 table, write a few thousand rows, and get them out as a
+file another program can read — signed in as an ordinary user, using nothing the
+project would not have in production. Try the platform's own export first; if
+there is none, an application endpoint that streams the table as JSON counts,
+provided nothing rate-limits it into uselessness at 10,000 rows.
 
 **Pass.** A file arrives, it parses, and the row count matches.
 
-**Fail.** O7 fails outright and this goes back to §2. Not a degradation — the
-objective is a round trip, and a store nothing can leave is not one.
+**Fail.** O7 fails outright and this goes back to §2.
 
-**Note.** Under §2's reading this is a question about the database chosen, not
-about OpenAI, and may be answered before the surface is. If so, say so in
-`decisions.md`: a hard requirement that turned out to be satisfied by
-construction is worth recording, because the next reader will otherwise assume it
-was tested against the host.
+**Note.** If the answer is "no platform export, but the app can stream its own",
+say so explicitly in `decisions.md` rather than ticking the row — it means O7 is
+satisfied by code this project must write and keep working, not by the host, and
+that is a different fact with a different maintenance cost.
 
-### 3.2 Signed-in user identity
+### 3.2 Signed-in user identity — *confirm, and look for an opaque id*
 
-**Probe.** Sign in as two different users and read a stable per-user identifier
-from the server side. Confirm it is stable across sessions and devices.
+**Probe.** Sign in as two users and read the identity headers server-side.
+Confirm they are stable across sessions and devices, and **look for a stable
+opaque identifier alongside the email**.
 
-**Pass.** Two distinct, stable ids, readable where the data layer runs — not only
-in the browser.
+**Pass.** Two distinct stable identities, readable where the data layer runs.
 
-**Fail.** Sign-in becomes something to build, which §10 says is explicitly not
-small. It does not stop phases 1–5: `plan.md` §2's scope rule means
-`collection_id` is on every row from the first migration, and phase 6 is where
-`owner_id` and a sign-in arrive.
-
-**Watch for.** An identity that is only available client-side is not an identity
-for this purpose. O8's isolation is enforced where the rows are.
+**If only an email is available**, `owner_id` is an email and §5 should say so
+deliberately — including what happens when one changes.
 
 ### 3.3 A database with per-user rows
 
-**Probe.** Two users, one table, a query as user B that attempts to read user A's
-rows — by id, by listing, and by any escape the platform offers.
+**Probe.** Two users, one D1 table, a query as user B that attempts to read user
+A's rows by id, by listing, and by any escape the surface offers.
 
 **Pass.** B gets nothing of A's by any route tried.
 
-**Fail.** Substitute any hosted store; §5's model is portable, and this is the
-row §10 already treats as replaceable.
+**Note.** Isolation here is the app's, not the platform's. That is expected —
+§5's model assumes exactly this — but it means the O8 test in `test-plan.md`
+§4.6 is testing our own code rather than a platform guarantee, which is worth
+knowing when it passes.
 
-### 3.4 Outbound HTTP to arbitrary URLs
+### 3.4 Outbound HTTP to arbitrary URLs — *the second open row*
 
-**Probe.** From wherever server-side code runs, fetch three pages: a normal site,
-one that 404s, and one that times out. Confirm no allow-list, and confirm the
-timeout is controllable.
+**Probe.** From server-side code, fetch three pages: a normal site, one that
+404s, and one that times out. Confirm there is no allow-list and that the timeout
+is controllable.
 
 **Pass.** All three behave as the code asks, within a timeout the code sets.
 
-**Fail.** Pass 1 metadata capture cannot run in-platform, and captures move
-behind the same vendor as pass 2 at real cost — which also makes §5.3's vendor
-blocker load-bearing rather than optional.
+**Fail.** Pass 1 metadata capture cannot run in-platform. Captures then move
+behind the same vendor as pass 2 at real cost, which also promotes §5.3's vendor
+question from optional to load-bearing.
+
+**Also probe here:** how a bounded batch of captures behaves inside one request,
+since §2.3 makes request-driven work the likely shape of the queue. What is
+worth knowing is the ceiling — how many fetches fit in a request before
+something cuts it off.
 
 ### 3.5 A server-side secret store, with a server-side place to call from
 
-**Probe.** Store a value the browser cannot read, then make an outbound call from
-a place that can read it. Then check the built client bundle for the value.
+**Probe.** Put a value in Site settings, read it from server-side code, make an
+outbound call with it, then search the built client bundle for it.
 
 **Pass.** The call succeeds and the value is absent from the bundle.
 
-**Fail.** Pass 2 stays switched off and nothing else changes — the state §6
-designed for. Gap items keep no picture, visibly rather than wrongly.
+Documented as available, so this is confirmation — but it is the row that decides
+whether pass 2 ships at all, so it is confirmed rather than assumed.
 
-**This is the row that decides §5.1's rule**, not the vendor question. The key
-never reaching the browser is fixed either way; this says whether pass 2 can ever
-ship at all.
+### 3.6 Read across owners for one collection kind
 
-### 3.6 Read access across owners for one collection kind
+**Probe.** Nothing platform-level. Confirm that site-level access control does
+not *prevent* the app from serving one user rows owned by another when its own
+logic says to.
 
-**Probe.** As user B, list collections of kind `demo-template` owned by A, and
-copy one. Then confirm B still cannot read A's `personal` collection.
+**Pass.** The app decides, and the platform does not override it.
 
-**Pass.** Templates are listable and copyable across owners; nothing else is.
+### 3.7 Layout density — *downgraded to confirmation*
 
-**Fail.** `plan.md` phase 6 loses three of its five operations and a maintainer
-seeds each tester by hand. The phase still happens.
-
-### 3.7 Control over layout density
-
-**Probe.** Render 16 cells at ~300 px in the real surface, at a widescreen
-viewport, and measure what is actually visible without scrolling. Then the tablet
+**Probe.** Render 16 cells at ~300 px at a widescreen viewport, then the tablet
 and phone layouts of §7.
 
-**Pass.** 8×2 is reachable, and the three form factors of §7 are distinguishable.
+**Pass.** 8×2 is reachable and the three form factors of §7 are distinguishable.
 
-**Fail.** §10 says triage speed is the first casualty, and O3 is what the runtime
-decision was made for. Under §2's arrangement A this is the row most likely to
-fail, so it is worth probing **early despite being last in the table** — a
-throwaway page of 16 boxes answers it before anything else is built.
+Sites renders full page, so this is expected to pass. It is kept because O3 is
+the objective the runtime decision was made for and it costs ten minutes.
+
+### 3.8 Metering, which is new
+
+**Probe.** Find the plan's storage and usage limits and compare them against the
+real thing: 10,000 items, plus a few hundred megabytes of downscaled captures in
+R2 (§6).
+
+**Pass.** The pile fits with room to grow.
+
+**Why this is a probe rather than a footnote.** Beta metering can prevent adding
+storage or keeping a high-usage Site public. A limit that binds at 10,000 items
+is not a degradation, it is a different host — and it is a *cost* question, so
+the answer belongs to the user.
 
 ## 4. What the user has to supply
 
-Two things, and the second follows from the first:
+Smaller than it was:
 
-1. **Which surface**, or the instruction to probe more than one. §2's three
-   arrangements are different enough that probing all seven rows against all
-   three is most of a week, and probing 3.1 and 3.7 against each is an afternoon.
-2. **An account or budget on it**, plus — where the surface has no identity of
-   its own — whether building sign-in is in appetite at all. `plan.md` §5.2 names
-   this as the user's rather than the spike's, and it is the one answer no
-   probe produces.
+1. **Confirmation that Sites is available** on the plan, region and workspace in
+   question. It is in public beta and gated, so this is a fact rather than a
+   preference.
+2. **Whether the metered limits of 3.8 are acceptable**, once known — the one
+   part of the spike that is the user's money rather than an observation.
 
-The recommended shortest path, if the choice is open: **run 3.7 and 3.1 first,
-against arrangement A only.** They are the two rows that would send this back to
-§2, they are the cheapest two to run, and a failure on either makes the other
-five moot for that arrangement.
+The appetite question `plan.md` §5.2 raised — whether building sign-in is worth
+it if the host has none — appears to be moot: Sites supplies identity.
 
 ## 5. What this document is not
 
-It does not name a surface, fill in a row of §10's table, or add an entry to
-`decisions.md`. Doing any of those from documentation is what `plan.md` phase 0
-was written to prevent — the table has a column for what breaks if the host
-cannot do a thing, and a table filled from a vendor's marketing would answer that
-column with a guess while looking like a finding.
+It does not name the surface in `decisions.md`, fill in a row of §10's table, or
+close phase 0. §2 makes the spike cheap and well-aimed; it does not make it
+unnecessary, and a table filled in from documentation would answer §10's
+"what breaks if it cannot" column with a guess while looking like a finding.
