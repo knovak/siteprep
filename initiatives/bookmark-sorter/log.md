@@ -196,3 +196,13 @@ One finding is a correctness bug rather than an omission. The capture store is k
 Two dependencies were unnamed. Three phase exits need the user and a real pile, which is the plan's largest scheduling dependency and not a technical one - so 'code complete' and 'phase complete' are now separate states. And the demo seed needs the user's approval of their own bookmarks, with no todo item behind it; it becomes one when phase 5 completes rather than sitting in the digest for five phases.
 
 One tension is surfaced for the spec rather than settled: §8.3 confirms above 25 items while §7.1 describes sweeping fifty as the common case, so the single gesture asks a question nearly every time and undo already provides the recovery. The recommendation is to confirm on the unbounded action rather than the large one, with phase 4 measuring how often the threshold actually fires.
+
+## 2026-08-17 — Review round on the critique: the confirmation rule accepted, and applied to spec.md
+
+Both review comments were agreements, and one carried an instruction to update whatever needed updating including spec.md.
+
+§8.3's confirmation threshold is settled: confirm on the unbounded action, not the large one. The discriminator is visibility rather than cardinality - a verdict swept across the selection on screen asks nothing at any size, because its count is already in front of the user and undo reverses it as one action, while a verdict applied to a set the user is not looking at confirms and shows the count. spec.md §8.3 is rewritten, decisions.md carries the argument and the three options, plan.md's phase 4 and §6 follow it, and test-plan.md §4.4 now has a row for each side of the rule plus a drift pin against somebody adding a count-based confirmation back "for safety".
+
+The second comment agreed the user-availability risk and its mitigations. One of those - a phase's code merging on its automated tests while the phase stays open on its measurement - contradicted §3's opening rule that a phase is over when its exit test passes. §3 now says both, since the two sentences would otherwise read as forbidding the thing that was just agreed.
+
+test-plan.md §4.4 also gains a second measured row: how often a sweep is followed immediately by undo. That is the evidence that would reopen §8.3, so it is worth collecting from the first real sitting rather than re-arguing later.

@@ -77,6 +77,13 @@ Each phase names what it produces, what it explicitly leaves out, and the exit
 test in `test-plan.md` that ends it. A phase is over when that test passes and
 `log.md` records what was learned — not when the code is written.
 
+**Which is not the same as saying the code waits.** Three phases cannot exit
+without the user sitting down with a real pile (§7), so a phase's code merges on
+its automated tests and the phase stays open on its measurement. The dependency
+then delays a *finding* rather than the work that comes after it. Agreed on
+review 2026-08-17, and stated here rather than only among the risks, because the
+two sentences above would otherwise read as forbidding it.
+
 ### Phase 0 — Prove the host, or change §2
 
 **Produces:** §10's table, filled in with evidence rather than expectation, and a
@@ -156,8 +163,8 @@ entry, not a constant quietly edited.
 
 **Produces:** the §8 expression evaluator as a single function — `and`, `or`,
 `not`, parentheses, bare tags, trailing `*` — the UI wrapping of §8.1, saved
-selections, `tag-apply` over a selection, §8.3's confirmation above a threshold,
-and §7.1's mark-then-sweep with `verdict-rest` and a single-action `undo`.
+selections, `tag-apply` over a selection, §8.3's confirmation on the unbounded
+path, and §7.1's mark-then-sweep with `verdict-rest` and a single-action `undo`.
 
 Also **§8.2's cheap in-app proposals** — same site, same folder path,
 near-identical titles — offered as pre-filled selections, computed as §5.6 below
@@ -400,24 +407,17 @@ nothing marking its origin, as §5 requires.
   back into a browser, general sharing. §11 says the export format is what makes
   the first two cheap later, and phase 5 is where that becomes true.
 
-And one thing this plan cannot decide but should not leave unsaid, because phase
-4 builds both halves of it:
+One thing this plan raised and no longer decides, because it has since been
+settled:
 
-- **§8.3's confirmation threshold and §7.1's sweep pull against each other.** The
-  spec sets confirmation at "say 25 items" and describes mark-then-sweep over a
-  selection of fifty as the common case. Taken together, the flow designed to be
-  a single gesture asks a question nearly every time it is used, and a
-  confirmation that always fires is one people learn to dismiss without reading —
-  which is worse than not having it, since it also costs the speed O3 is about.
-  The two mechanisms are also redundant by design: `undo` reverses a sweep as one
-  action, which is the recovery a confirmation exists to provide.
-
-  The plan's recommendation, for the spec to accept or reject: **confirm on the
-  unbounded action, not on the large one.** A verdict swept across a selection the
-  user is looking at is bounded and reversible; the cases worth a question are the
-  ones where the size is not on screen. Phase 4 should measure how often the
-  threshold fires during the real sitting its exit test already requires, and the
-  number should be settled from that rather than from either guess.
+- **§8.3's confirmation threshold and §7.1's sweep pulled against each other.**
+  The spec confirmed above "say 25 items" while describing mark-then-sweep over
+  fifty as the common case, so the flow designed to be a single gesture asked a
+  question nearly every time. Accepted on review 2026-08-17 and now in §8.3 and
+  `decisions.md`: **confirm on the unbounded action, not on the large one** — the
+  discriminator is visibility rather than cardinality. Phase 4 still measures
+  whether the confirmation ever fires in ordinary use, since a rule that never
+  fires and a rule that always fires are both worth knowing about.
 
 ## 7. The risks worth naming
 

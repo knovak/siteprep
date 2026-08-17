@@ -138,14 +138,16 @@ sweep a verdict across the result).
 | Scope wrapping | Every selection made through the UI is wrapped `collection:<current> and ( … )`; no user-typed expression can reach another collection's items | §8.1, O8 |
 | One evaluator | The administrative unwrapped path and the UI path are the same function with a different argument | §8.1 |
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
-| Confirmation threshold | A verdict across more than the threshold asks first | §8.3 |
+| **No confirmation on the visible sweep** | A verdict swept across the selection on screen asks nothing, at any size — including a sweep across several thousand | §8.3, O3 |
+| Confirmation on the unbounded path | A verdict applied to a saved selection from a menu, or to an expression whose result was never opened, asks first and shows the count | §8.3 |
 | Mark then sweep | `verdict-rest` applies to the selection minus the marked set; the inverted form (mark the keepers, sweep the rest) behaves identically | §7.1 |
 | **`undo` reverses a sweep as one action** | Fifty items swept and one undo restores all fifty | §7.1 |
 | Saved selection | Round-trips through storage and re-evaluates to the same set | §5 |
 | Cheap proposals: same site | Grouping `export-large.html` by host produces the expected groups, and each arrives as a selection the ordinary path can act on — not as a separate object | §8.2, O5 |
 | Cheap proposals: same folder path | Editing a `folder:` tag changes the proposal on the next request; nothing stale is served | §8.2, `plan.md` §5.6 |
 | Cheap proposals: near-identical titles | The normalised-title key is written at ingestion, and grouping on it still happens on demand — a title key exists for every item imported in phase 1 | §8.2, `plan.md` §5.6 |
-| **Measured: how often confirmation fires** | Over the phase's real sitting, the number of times the §8.3 threshold interrupted a sweep, recorded in `decisions.md` with the threshold chosen from it | `plan.md` §6 |
+| **Measured: how often confirmation fires** | Over the phase's real sitting, how many times §8.3's confirmation interrupted anything, recorded in `decisions.md`. A rule that never fires and one that always fires are both findings — the first says the unbounded path is not used, the second says the discriminator is wrong | §8.3, `plan.md` §6 |
+| **Measured: sweeps regretted** | How often a sweep is followed immediately by `undo`. This is the number that would reopen §8.3 — it is the evidence that `undo` is not sufficient recovery on the visible path | §8.3 |
 
 ### 4.5 — The round trip
 
@@ -213,6 +215,7 @@ guarding against.
 | An import never overwrites a verdict or a `note` | A "sync" or "newest wins" import is added and silently edits the user's own writing |
 | Export carries no captures | Someone makes the file self-contained and it stops being movable |
 | `undo` reverses a set operation as one action | A refactor makes undo per-item and nobody risks a sweep again |
+| A sweep across the visible selection asks nothing, at any size | A confirmation is added back "for safety" on a count, the single gesture becomes two, and people learn to dismiss it without reading — which is the state §8.3 was changed to escape |
 | A tag is a free string with nothing marking its origin | A controlled vocabulary or a `source` column is added and §8.2's skills become a schema change |
 | Nothing joins through the user to reach an item | Sharing becomes a retrofit rather than an addition |
 | An `err:` tag is written only inside the collection whose capture failed | The capture store is global, so the obvious implementation tags every item with that `url_key` everywhere — a cross-collection write that no single-collection test can see |
