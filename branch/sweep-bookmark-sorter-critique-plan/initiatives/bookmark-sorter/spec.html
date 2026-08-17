@@ -156,7 +156,14 @@
 <ul><li><strong>Cheap in-app proposals still earn their place</strong> — same site, same folder</li></ul>
 <p>  path, near-identical titles are signals the app already holds, and offering   them as pre-filled selections costs almost nothing. They are a convenience on   top of the three routes, not a fourth one.</p>
 <h4>8.3 Judging a selection as one</h4>
-<p>Selecting a group and applying a verdict applies it to every item in the group, with a confirmation above a threshold (say 25 items) and <code>undo</code> reversing the whole thing as one action. §7.1&#39;s mark-then-sweep is the same operation with an exception set, and it is the common case in practice. Judging fifty near-identical links as one group is the difference between an afternoon and a month.</p>
+<p>Selecting a group and applying a verdict applies it to every item in the group, with <code>undo</code> reversing the whole thing as one action. §7.1&#39;s mark-then-sweep is the same operation with an exception set, and it is the common case in practice. Judging fifty near-identical links as one group is the difference between an afternoon and a month.</p>
+<p><strong>Confirmation is asked for the unbounded action, not the large one</strong> (<code>decisions.md</code>, 2026-08-17). An earlier draft of this section confirmed above a count — &quot;say 25 items&quot; — which fires on nearly every sweep §7.1 describes, and a confirmation that always fires is one people learn to dismiss without reading. The rule instead:</p>
+<ul><li>**No confirmation for a verdict swept across the selection currently on</li></ul>
+<p>  screen**, whatever its size. §7.1 displays every member and the selection&#39;s   count is always visible (§7.1, <em>Progress is always visible</em>), so the size of   the action is in front of the user at the moment they take it — and <code>undo</code>   reverses it as one action, which is the recovery a confirmation exists to   provide.</p>
+<ul><li><strong>Confirm, showing the count, when the set is not the one being looked at</strong> —</li></ul>
+<p>  a saved selection invoked from a menu, an expression applied without opening   its result, or any administrative path (§8.1). Here the size is genuinely   unknown to the user, and no amount of <code>undo</code> helps somebody who did not know   what they were about to do.</p>
+<p>The discriminator is therefore <strong>visibility, not cardinality</strong>. It costs one question in the case that deserves one and none in the case §7.1 exists to make fast.</p>
+<p><strong>What would change this:</strong> a sweep turning out to be regretted often enough that <code>undo</code> is not sufficient recovery — which would be an argument for a confirmation on the visible path too, and phase 4 measures it rather than assuming either way (<code>test-plan.md</code> §4.4).</p>
 <h3>9. Export and import</h3>
 <p>O7 is a round trip, not a download. An export is JSON:</p>
 <pre><code>{
