@@ -90,21 +90,35 @@ two sentences above would otherwise read as forbidding it.
 dated entry in `decisions.md` naming the surface that was chosen and the readings
 that decided it.
 
-Seven rows to answer, in the order they can break the project: bulk data export
-(O7 fails outright without it), signed-in user identity, a database with per-user
-rows, outbound HTTP to arbitrary URLs, a server-side secret store with a
-server-side place to call from, cross-owner read for one collection kind, and
-control over layout density.
+The rows of §10's table, in the order they can break the project. **The order
+changed on 2026-08-17** and it is worth saying why, because this phase was built
+around a row that no longer exists: bulk data export used to lead, as the row
+that fails O7 outright. Deciding that the app streams its own export dissolved
+it — any host that runs the app can run the endpoint — so what leads now is
+**outbound HTTP to arbitrary URLs**, which decides whether captures can happen
+in-platform at all.
+
+Then: whether a single response can carry the whole pile, signed-in user
+identity, a database with per-user rows, a server-side secret store with a
+server-side place to call from, cross-owner read for one collection kind,
+control over layout density, and the metered limits of a beta platform.
+
+**The probes are written**, in `host-spike.md` §3, and drafted as a runnable
+site under `probe/`.
 
 **Deliberately throwaway.** The spike's code is a probe, not the first increment
 — it proves a row and is deleted. Anything that survives contact with phase 1 was
 not a spike.
 
 **What a failure here means.** A failed row is a reason to revisit §2 *before*
-building, which is what §10's last line says. Concretely: no bulk export sends
-this back to the runtime decision; no secret store leaves pass 2 switched off and
+building, which is what §10's last line says. Concretely: no outbound HTTP moves
+pass 1 behind the same paid vendor as pass 2, at real cost; a capped response
+means export and import chunk; no secret store leaves pass 2 switched off and
 changes nothing else; no cross-owner read costs the demo template and a
 maintainer seeds each tester by hand.
+
+**No row here can now fail O7**, which is the single largest change this plan has
+had. It came from a decision rather than a finding.
 
 **Exit:** `test-plan.md` §4.0.
 
@@ -148,7 +162,12 @@ none ladder, downscaling, the image hash, `err:` tagging, and the whole of pass 
 — the queue, the gap rules, the duplicate-image rule, the storage — against a
 **stubbed vendor call** behind the switch §6 describes.
 
-**Leaves out:** any real vendor call, and therefore any spend.
+**Leaves out:** any real vendor call, and therefore any spend. Also every
+automatic trigger for the queue: the gaps are captured by an explicit action
+(§6, `decisions.md` 2026-08-17), so this phase builds the processor and one
+button, not a scheduler. The per-request and open-tab drivers are deferred
+deliberately, so that whether pass 2 is worth having is observed before it is
+made invisible.
 
 Two numbers come out of this phase and both feed decisions rather than dashboards:
 **coverage** (what fraction of a real pile got a distinguishable picture from

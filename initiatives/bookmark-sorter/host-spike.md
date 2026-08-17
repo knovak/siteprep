@@ -80,44 +80,62 @@ nothing to run it is not a queue. This does not break the design, but it does
 decide the shape of the capture pipeline, and nothing in `spec.md` or `plan.md`
 currently accounts for it. The options, none of which needs a background worker:
 
-- **Drive the queue from requests** — each request processes a bounded batch of
-  pending captures. Simple, and it means captures progress whenever the app is
-  used, which for a personal tool is most of when it matters.
-- **Drive it from the open tab** — the client polls a "process next batch"
-  endpoint while a triage session is running. Faster during a sitting, and it
-  stops when the tab closes, which is honest rather than a bug.
-- **Drive it by hand** — an explicit "capture the gaps" action.
+- **Drive it by hand** — an explicit "capture the gaps" action. ***Chosen***
+  (`decisions.md`, 2026-08-17).
+- **Drive the queue from requests** — each request processes a bounded batch.
+  Deferred.
+- **Drive it from the open tab** — the client polls while a sitting runs.
+  Deferred.
 
-The first is the natural default and the second is a small addition to it. What
-matters for now is that this is a **finding for phase 0 to confirm and phase 3 to
-absorb**, not a reason to revisit §2 — and that pass 1's ingestion-time capture,
-which is not deferred, is unaffected either way.
+**The reason for choosing the simplest is measurement, not effort.** The user's
+words: *"this will allow me to test the value of the function carefully before we
+automate it"*. Automating first would hide whether pass 2 is worth having, which
+is the one thing §12 says should be measured rather than assumed. The other two
+stay live and are cheap later, because all three call the same processor — the
+choice is a caller, not a redesign.
+
+Pass 1's ingestion-time capture is unaffected: it is not deferred, it is part of
+landing the pile.
 
 ## 3. The probes
 
 One per row of §10's table. Re-ordered on 2026-08-17: what §2 answers on paper is
 now cheap confirmation, and two rows carry nearly all the remaining risk.
 
-**Run 3.1 and 3.4 first.** They are the two the documentation does not answer,
-one of them fails the project outright, and the other decides whether captures
-can happen in-platform at all. Everything else is confirmation.
+**Run 3.4 first, then 3.1.** That order changed on 2026-08-17: 3.1 used to lead
+as the row that fails O7 outright, and the decision to stream our own export
+dissolved it. **3.4 is now the only row that can change the design** — without
+arbitrary outbound `fetch`, pass 1's metadata capture cannot run in-platform and
+every capture moves behind the paid vendor. Everything else degrades or is
+confirmation.
 
-### 3.1 Bulk data export — *the hard requirement, and still open*
+**A drafted probe site lives in [`probe/`](probe/).** One HTML page and one
+server module implementing §3 below, written from documentation and never run —
+it is meant to be handed to ChatGPT to be corrected until it works. It prints a
+table to paste back here.
 
-**Probe.** Create a D1 table, write a few thousand rows, and get them out as a
-file another program can read — signed in as an ordinary user, using nothing the
-project would not have in production. Try the platform's own export first; if
-there is none, an application endpoint that streams the table as JSON counts,
-provided nothing rate-limits it into uselessness at 10,000 rows.
+### 3.1 Streaming the whole pile out — *no longer able to fail the project*
 
-**Pass.** A file arrives, it parses, and the row count matches.
+**Settled on 2026-08-17**: the app streams its own `bookmark-sorter/v1` export
+(§9) rather than relying on any platform dump, to stay platform-independent
+(`decisions.md`). That dissolves the row this probe used to carry. It was *"can
+the platform let the data out?"*, whose failure failed O7 outright; it is now
+*"how much can one response carry?"*, whose failure is chunking.
 
-**Fail.** O7 fails outright and this goes back to §2.
+**Probe.** Seed 10,000 rows into D1, then stream them out through the app's own
+endpoint as one JSON document. Parse what comes back and count the items.
 
-**Note.** If the answer is "no platform export, but the app can stream its own",
-say so explicitly in `decisions.md` rather than ticking the row — it means O7 is
-satisfied by code this project must write and keep working, not by the host, and
-that is a different fact with a different maintenance cost.
+**Pass.** 10,000 items arrive and the document parses.
+
+**Fail.** Not a wall. Record **where it cut off** — that number is the finding,
+and it says whether export and import need chunking on day one. The user
+accepted this cost explicitly: *"this means we'll probably need to do more work
+on import — that's ok"*.
+
+**Note.** Import is the half that inherits the difficulty, since a 10,000-item
+document goes through the same §4 merge path as a small one. That is a phase 1
+and phase 5 concern rather than a phase 0 one, but the ceiling measured here is
+what sizes it.
 
 ### 3.2 Signed-in user identity — *confirm, and look for an opaque id*
 
