@@ -43,13 +43,20 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          # The v2 prefix is a cache generation. The install step below is
+          # skipped on a cache hit, so it goes unexercised for as long as the
+          # cache survives; bumping this forces one real run of it. Bump it
+          # again after changing how browsers are provisioned.
+          key: playwright-v2-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            playwright-${{ runner.os }}-
+            playwright-v2-${{ runner.os }}-
 
       - name: Install Playwright Browsers
         if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        # setup:browsers:ci is the runner variant: it also installs the system
+        # libraries Chromium needs, which requires root. Developer machines use
+        # npm run setup:browsers instead. See BUILD_TECHDOC.md.
+        run: npm run setup:browsers:ci
 
       - name: Set version info
         id: version
@@ -67,14 +74,13 @@ jobs:
             echo "is_main=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build deck outputs
+      - name: Build and validate deck outputs
         env:
           BRANCH_NAME: ${{ steps.version.outputs.branch }}
           VERSION_NAME: ${{ steps.version.outputs.version }}
-        run: scripts/build.sh
-
-      - name: Run build tests
-        run: npm run test:build
+        # scripts/build.sh runs scripts/build_tests.sh before it succeeds, so a
+        # build-test failure fails this step. BUILD-20 guards that invocation.
+        run: npm run build
 
       - name: Run Playwright tests
         run: npm test

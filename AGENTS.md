@@ -167,3 +167,22 @@ LEAFLET_IMPLEMENTATION_GUIDE.md remains the reference for this pattern and for b
 
 ## minimize merge conflicts
 When adding content, do not modify README.md unless a new deck is added, or a new top-level content area such as `initiatives/` is introduced.
+
+## Build and visual verification workflow
+
+BUILD_TECHDOC.md is the reference for the commands below. The rules here are the
+ones to follow while working; go there for what each command does and why.
+
+- Install dependencies with `npm ci`, and use the npm scripts or the binaries
+  from that installation. Do not download ad hoc package versions with commands
+  such as `npx --yes package@version`.
+- Run `npm run build` once, after the final source change. It runs
+  `scripts/build_tests.sh` itself, so do not invoke that script or
+  `npm run test:build` separately afterwards.
+- Provision Chromium only when the environment has not already done so, with
+  `npm run setup:browsers`.
+- When a visible web page changes, take a screenshot with `npm run screenshot`
+  after that last build, write it under `screenshots/`, display the image in the
+  conversation, and give its path in the final response. Skip the screenshot
+  when the change is to configuration, documentation, or scripts - there is
+  nothing rendered to show.

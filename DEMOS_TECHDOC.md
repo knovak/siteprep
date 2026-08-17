@@ -38,3 +38,6 @@ and is available on GitHub Pages under `/siteprep/demos/migration_map/`.
 - every immediate source demo directory is copied
 - every source demo directory is linked from the demos index
 - copied demo source files are byte-for-byte unchanged in the output
+
+These run as part of `npm run build`; see BUILD_TECHDOC.md for the build,
+browser setup, and screenshot workflow.

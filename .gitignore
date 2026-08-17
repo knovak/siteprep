@@ -13,3 +13,6 @@ node_modules/
 /playwright-report/
 /test-results/
 /playwright/.cache/
+
+# Visual-verification screenshots (see BUILD_TECHDOC.md)
+/screenshots/
