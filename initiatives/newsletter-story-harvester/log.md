@@ -72,3 +72,45 @@ record that arrives pre-judged shrinks the backlog objective 7 counts.
 
 Cross-newsletter merging is settled as happening at harvest: the reader never
 spends a decision on duplicates, and merged_from keeps it inspectable.
+
+## 2026-08-15 — Draft spec.md, including alternatives considered for the runtime and for how each newsletter shape is turned into stories
+
+Drafted spec.md: the harvest is a skill, the store is a JSON file the skill alone writes, the review page is generated and disposable, and verdicts come back as a small exported file.
+
+Both alternatives sections the item asked for are in it. The runtime one condenses the settled decision. The second is the initiative's own hard problem and was not settled anywhere: how each newsletter shape becomes stories. Chose to declare the shape per source in the inventory and let the model extract under that shape's contract - so the model does the reading but not the deciding, which is the split the objectives implied without naming. The alternatives it beats are a universal every-link-is-a-story rule, a parser per newsletter, and an unguided model; all three either make the unit decision in the wrong place or make the long-form failure invisible.
+
+The long-form failure is now observable rather than merely predicted: a contract carries an expected story count, a long-form source yielding more than one story is reported by name, and the declared shape may be overridden per issue for the author who writes a roundup some weeks.
+
+O1's repeatability is met at the level of identity rather than of text, since a model does not produce the same words twice: identity is structural, first write wins, and re-extraction is an explicit action.
+
+Also settles what the store is and where it lives (a JSON file outside this repository, since it holds a person's mailbox material), that harvests run on demand because a schedule would need the credential the runtime decision exists to avoid, what closely related means for objective 6 (a cluster is a tag, erring toward proposing because nothing is destroyed), and the three questions story-record.md left open. Records that the bookmark sorter shares data conventions with this and no code.
+
+## 2026-08-15 — Review round on the spec: a diagram, a tagging skill, store import, tag alignment
+
+Four review comments, and three of them pull in one direction: the store is the
+interchange point, so specify what else can arrive at it.
+
+Added a diagram of the chosen scheme (§1.1) - mailbox, inventory, harvesting
+skill, store, review page, published page, verdict file. Two things it is drawn
+to make obvious: every arrow into the store starts at a skill, and the mailbox
+appears once with nothing flowing back to it.
+
+Anticipated the tagging skill as §10.3 - a later pass that reads the whole
+store and proposes themes and clusters with a model's judgement. Named
+separately from the harvest because it has different information: a harvester
+sees one issue, a pass over the store sees everything, which is the only
+position from which "these nine stories are one category" is a judgement rather
+than a guess. The first version owes it a readable store, open tags, and tags
+that carry no origin - all of which were already there for other reasons.
+
+Specified store export and import as §7.1. Export is a copy, and the operation
+exists only to take a subset. Import is the harder half and the answer is that
+it is not a new mechanism: it is the harvest merge with records as input
+instead of emails, so the story-record identity rules do the work. Import never
+deletes, and reports what it merged.
+
+Aligned the tag format with the bookmark sorter deliberately (§13.1), as a
+binding table rather than a sentiment, since adopting its boolean selection
+language later is expected. The consequence worth having: this page's filter
+must be a subset of that expression language, so adding and/or/not later is
+reach rather than migration.
