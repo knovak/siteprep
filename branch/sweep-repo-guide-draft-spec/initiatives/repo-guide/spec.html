@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specification — Repo Guide</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Specification — Repo Guide</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Repo Guide</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Specification</h2>
+    </div>
+    <div class="card-content">
+<h2>Spec</h2>
+<p>How the Repo Guide is built. <code>objectives.md</code> says what &quot;done&quot; means; this says what gets made. Where a choice was already settled, <code>decisions.md</code> holds the argument and this file records the conclusion and what follows from it.</p>
+<p>Numbered references to <strong>O1–O9</strong> are the objectives; <strong>§n</strong> is a section of this file unless it says otherwise.</p>
+<h3>1. What the first version is</h3>
+<p><strong>One account of the process, rendered four ways.</strong> A generator reads this repository, extracts the facts that make up the process, and substitutes them into hand-written narrative. Out of that come:</p>
+<div class="table-scroll"><table><thead><tr><th>Deliverable</th><th>What it is</th><th>Where it lives</th></tr></thead><tbody><tr><td><strong>The description</strong></td><td>A web page — the long rendering</td><td><code>gh-pages/guide/</code></td></tr><tr><td><strong>The deck</strong></td><td>10–20 slides — the short rendering of the same source</td><td><code>gh-pages/guide/deck/</code></td></tr><tr><td><strong>The simulator</strong></td><td>A stepped animation of the lifecycle</td><td><code>gh-pages/guide/simulator/</code></td></tr><tr><td><strong>The PDFs</strong></td><td>Renderings of the first two, made by hand</td><td>Google Drive (<code>decisions.md</code>, 2026-08-17)</td></tr></tbody></table></div>
+<p>The generator is what makes this an initiative rather than an afternoon&#39;s writing. <code>decisions.md</code> settled that the process content is <strong>generated from the repository&#39;s own sources</strong>, which turns O9 from an aspiration into a build step: the guide cannot state a stage list that disagrees with the code, because it does not contain one.</p>
+<p><strong>What &quot;the process content&quot; covers, and what it does not.</strong> The user&#39;s phrase is narrower than &quot;the guide&quot;, and the line this spec draws is §3&#39;s: a <strong>fact</strong> is something the repository already asserts somewhere executable — a stage name, a blocker class, a sweep budget, a workflow trigger. Everything else — why the process is shaped this way, what a contributor is expected to bring, what a forker should take — is <strong>narrative</strong>, written by hand, and §4 is what keeps it honest.</p>
+<h3>2. Alternatives considered: do the deck and the description share a source?</h3>
+<p><code>objectives.md</code> left this to the spec rather than to the user. <strong>They share one source</strong>, rendered at two lengths.</p>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>One source, two renderings</strong> <em>(chosen)</em></td><td>The deck cannot contradict the description, which is half of O9&#39;s problem removed by construction. Writing happens once. A process change flows into both</td><td>The source must carry length metadata, so it is a document with structure rather than prose. Slide-shaped and page-shaped writing are not identical, and one of them is always slightly compromised</td></tr><tr><td><strong>Two documents, both generated from the fact set</strong></td><td>Each is written for its form; the deck can be genuinely slide-shaped</td><td>The facts agree and the narratives drift. That is the failure mode <code>objectives.md</code> names — six copies of every rule, five of which will be wrong first — reduced in count but not in kind</td></tr><tr><td><strong>The deck is a rendering of the description&#39;s headings</strong></td><td>Almost free</td><td>A deck of headings is not a deck. It presents as an outline, and O5&#39;s ten-minute presentation is not something an outline supports</td></tr></tbody></table></div>
+<p><strong>What follows.</strong> The source is not prose but a <strong>section list</strong>, and every section carries a <code>slide</code> field (§5.1). The description renders every section; the deck renders those marked for it, at slide length. One consequence is worth naming because it constrains the writing: <strong>a section&#39;s slide text is not a truncation of its page text.</strong> It is written separately, in the same section, and the build fails when a slide-marked section has no slide text — which is how the compromise above is made visible rather than absorbed.</p>
+<h3>3. The fact set</h3>
+<p>The heart of the build. A fact is a value extracted from a repository source, addressed by a dotted key, and substituted into narrative by §4.</p>
+<h4>3.1 The authority rule</h4>
+<p><code>decisions.md</code> left open <em>which</em> source is authoritative for a given claim, and called it &quot;the real work this decision creates&quot;. The rule this spec adopts, in priority order:</p>
+<ol><li><strong>Executable truth wins.</strong> Where a fact is enforced by code, a workflow, or a</li></ol>
+<p>   configuration file the build reads, that file is authoritative and no prose    document can override it. The stage list is what <code>scripts/initiatives.mjs</code>    accepts, not what any document says it is.</p>
+<ol><li><strong>Configuration beats code where the code reads it.</strong> <code>initiatives/sweep.json</code></li></ol>
+<p>   is authoritative for the sweep&#39;s phases and budgets even though    <code>initiatives.mjs</code> enforces them, because the file is the thing a person    changes.</p>
+<ol><li><strong>Prose is authoritative only for intent</strong>, never for a value — and where the</li></ol>
+<p>   guide uses it, it is <strong>quoted and linked, not paraphrased</strong>. A paraphrase of    <code>INITIATIVES_VISION.md</code> is a sixth copy of the rule, which is what    <code>objectives.md</code> is against.</p>
+<ol><li><strong>Nothing is authoritative twice.</strong> Every fact key names exactly one source.</li></ol>
+<p>   Where two sources could supply it, this spec picks one and the other is    ignored, even when it agrees today.</p>
+<p>Rule 4 is the one that does the work. Two agreeing sources are not redundancy, they are a future disagreement with no rule for settling it.</p>
+<h4>3.2 The facts, and where each comes from</h4>
+<div class="table-scroll"><table><thead><tr><th>Fact key</th><th>Source</th><th>Extracted as</th></tr></thead><tbody><tr><td><code>lifecycle.stages</code></td><td><code>scripts/initiatives.mjs</code> → <code>STAGES</code></td><td>Ordered list</td></tr><tr><td><code>lifecycle.stage_documents</code></td><td><code>scripts/initiatives.mjs</code> → <code>STAGE_DOCUMENTS</code></td><td>Stage → documents expected</td></tr><tr><td><code>blockers.prefixes</code></td><td><code>scripts/initiatives.mjs</code> → <code>BLOCKER_PREFIXES</code></td><td>List</td></tr><tr><td><code>blockers.human</code></td><td><code>scripts/initiatives.mjs</code> → <code>HUMAN_BLOCKERS</code></td><td>The classes needing a person</td></tr><tr><td><code>blockers.proposable</code></td><td><code>scripts/initiatives.mjs</code> → <code>PROPOSABLE_BLOCKERS</code></td><td>The one class a sweep may answer</td></tr><tr><td><code>sweep.phases</code></td><td><code>initiatives/sweep.json</code></td><td>List, in run order</td></tr><tr><td><code>sweep.budget</code></td><td><code>initiatives/sweep.json</code></td><td><code>items_per_run</code>, <code>max_items_per_initiative</code>, <code>max_open_prs</code>, <code>max_effort</code></td></tr><tr><td><code>sweep.protected_paths</code></td><td><code>initiatives/sweep.json</code></td><td>List</td></tr><tr><td><code>sweep.phase_summaries</code></td><td><code>initiatives/sweep-prompt.md</code></td><td>The <code>## Phase n</code> headings and their first paragraph, <strong>quoted</strong></td></tr><tr><td><code>sweep.rules</code></td><td><code>initiatives/sweep-prompt.md</code> → the <code>## Rules</code> list</td><td>Quoted verbatim</td></tr><tr><td><code>agent.commands</code></td><td><code>package.json</code> → <code>scripts</code></td><td>Name → command</td></tr><tr><td><code>workflows.*</code></td><td><code>.github/workflows/*.yml</code></td><td>File → job names and <code>on:</code> triggers</td></tr><tr><td><code>skills.*</code></td><td><code>.claude/skills/*/SKILL.md</code></td><td>Frontmatter name and description</td></tr><tr><td><code>structure.content_areas</code></td><td><code>scripts/build.sh</code></td><td>Which top-level directories become site sections</td></tr><tr><td><code>initiatives.live</code></td><td><code>initiatives/*/initiative.json</code></td><td>Slug, title, stage — the real backlog, as an example</td></tr></tbody></table></div>
+<p><strong><code>initiatives.live</code> is the one fact drawn from data rather than rules</strong>, and it is deliberately shallow: slug, title and stage only. It exists so the guide can show a real initiative at a real stage rather than an invented one, and it stops short of anything a reader might mistake for the backlog itself — which is one click away, at <code>/initiatives/</code>, and does not need repeating here.</p>
+<h4>3.3 How the facts are read</h4>
+<p><strong>By importing them, not by parsing the file as text.</strong> <code>initiatives.mjs</code> currently keeps <code>STAGES</code>, <code>STAGE_DOCUMENTS</code>, <code>BLOCKER_PREFIXES</code>, <code>HUMAN_BLOCKERS</code> and <code>PROPOSABLE_BLOCKERS</code> as module-private constants; the change this spec asks for is a one-line <code>export</code> on each, and the generator imports the module.</p>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Export the constants and import them</strong> <em>(chosen)</em></td><td>The guide reads the same values the code uses — not a copy that happens to match. Reformatting, renaming or restructuring cannot silently change what the guide prints</td><td>Touches <code>scripts/</code>, which is a protected path (§9.2), so it needs a change the sweep cannot make</td></tr><tr><td><strong>Scrape the source text with a strict parser</strong></td><td>Needs no change outside the initiative&#39;s own files</td><td>Reads a <em>rendering</em> of the values rather than the values. It is a second implementation of JavaScript&#39;s array literal, and its failure mode on an unfamiliar formatting is either a crash or, worse, a plausible wrong answer</td></tr><tr><td><strong>Re-declare the facts in the guide and test that they agree</strong></td><td>Simple, and the test is a real signal</td><td>This is <code>decisions.md</code>&#39;s rejected option wearing a build step. It pins what somebody remembered to assert</td></tr></tbody></table></div>
+<p><strong>An extraction that fails is an error, not a fallback.</strong> If a fact key cannot be resolved — the export is gone, the JSON key was renamed, the workflow file moved — the guide build fails. There is no default value and no &quot;leave it out&quot; path, because both of those publish a guide that looks complete and is not, which is precisely what O9 exists to prevent. §9.3 says where that failure surfaces.</p>
+<h3>4. The narrative, and what keeps it honest</h3>
+<p>Narrative lives in <code>guide/content/*.md</code>, hand-written, and refers to facts by token: <code>{{lifecycle.stages}}</code>, <code>{{sweep.budget.items_per_run}}</code>. The generator substitutes them at build time.</p>
+<p>Three rules, and each one is a build check:</p>
+<ul><li><strong>An unknown token fails the build.</strong> A token naming a fact that does not exist</li></ul>
+<p>  is a typo or a fact that was removed; either way the sentence around it is   wrong.</p>
+<ul><li><strong>A fact no narrative cites is a warning.</strong> Not an error — the fact set is</li></ul>
+<p>  allowed to be richer than the guide. But a fact that nothing mentions is the   most common shape of drift: the process grew something and nobody wrote about   it.</p>
+<ul><li><strong>A number or a stage name written as a literal is a build error.</strong> The check</li></ul>
+<p>  is mechanical: the narrative source may not contain any string in   <code>lifecycle.stages</code> or <code>blockers.prefixes</code> outside a token, and may not contain a   digit sequence matching a <code>sweep.budget</code> value. This is the rule that stops the   guide slowly reverting to hand-maintained prose one convenient sentence at a   time.</p>
+<p>The third rule will occasionally be annoying — a sentence that legitimately says &quot;four&quot; when the budget happens to be 4 has to be rewritten. That is the cost, and it is accepted: the alternative is a check that only catches the careless case, which is not the case that causes the harm.</p>
+<h3>5. The source document</h3>
+<h4>5.1 Section shape</h4>
+<p><code>guide/content/</code> holds one markdown file per section. Frontmatter:</p>
+<pre><code>id: lifecycle-stages
+title: The stages an initiative moves through
+order: 30
+slide: true              # does this section appear in the deck?
+slide_title: Stages      # optional, defaults to title
+audience: both           # both | forker | contributor</code></pre>
+<p>The body has two parts, separated by a <code>---</code> rule: the <strong>page text</strong> and, when <code>slide: true</code>, the <strong>slide text</strong>. §2 requires the second to be written rather than derived, and the build enforces it.</p>
+<p><code>audience</code> exists because <code>objectives.md</code> names two readers wanting different things from the same material. It is a rendering hint, not two documents: the description shows everything with the audience marked in the margin, and the deck takes a path through it (§6).</p>
+<h4>5.2 What the sections are</h4>
+<p>Fixed by the objectives rather than left to the writer, so that O2, O3 and O6 each have a section that is theirs:</p>
+<ol><li><strong>What this repository is</strong> — the site, the content areas, and why there is a</li></ol>
+<p>   process at all. <code>audience: both</code>.</p>
+<ol><li><strong>The initiative lifecycle</strong> — the stages, what changes at each, and what</li></ol>
+<p>   document is expected when. O2. The spine of everything else.</p>
+<ol><li><strong>Who supplies what</strong> — per stage, what the person brings and what the agents</li></ol>
+<p>   bring. O3, and the section <code>objectives.md</code> says is hardest to assemble from    the existing documents because it is spread across all of them.</p>
+<ol><li><strong>How work gets picked up</strong> — the sweep: its phases, its budget, what it may</li></ol>
+<p>   never do. Facts from <code>sweep.*</code>, rules quoted from <code>sweep-prompt.md</code>.</p>
+<ol><li><strong>When a person is required</strong> — the blocker classes, and why only <code>human:</code> may</li></ol>
+<p>   be answered by a proposal. This is where the division of labour becomes a rule    rather than a convention.</p>
+<ol><li><strong>Decks, briefly</strong> — how a deck is modified. O5, and short by requirement.</li><li><strong>Demos, briefly</strong> — how a demo is added. O5, same.</li><li><strong>Taking this elsewhere</strong> — which files carry the process and which are this</li></ol>
+<p>   repository&#39;s own content. O6, <code>audience: forker</code>.</p>
+<ol><li><strong>Where the real answers are</strong> — the five source documents, what each is for,</li></ol>
+<p>   and when to open it. O7.</p>
+<p>Section 8 is generated more than written: the file list comes from <code>structure.content_areas</code> and <code>sweep.protected_paths</code>, plus a hand-maintained <code>portable: true</code> marker in the guide&#39;s own config for files the generator cannot classify. That marker is a fact the repository does not assert anywhere else, which makes it exactly the kind of thing §10&#39;s dating exists to cover.</p>
+<h3>6. The deck</h3>
+<p>Generated from the same sections, filtered to <code>slide: true</code>, in <code>order</code>.</p>
+<ul><li><strong>Length is checked, not hoped for.</strong> The wish says 10–20 slides; fewer than 10</li></ul>
+<p>  or more than 20 marked sections fails the build. A deck that quietly grew to   thirty slides is no longer the thing O5 says can be presented in ten minutes.</p>
+<ul><li><strong>One idea per slide.</strong> Enforced weakly, by a length limit on slide text rather</li></ul>
+<p>  than by judgement.</p>
+<ul><li><strong>It is a page, not a <code>decks/</code> entry.</strong> The site&#39;s deck machinery is built</li></ul>
+<p>  around <code>deck.json</code> and hand-authored section HTML, and registering there would   put a generated artefact into a directory whose convention is that its contents   are written. The guide&#39;s deck is one generated HTML page with keyboard   navigation, styled from the site&#39;s shared assets by reference.</p>
+<p>The trade in the third point: the guide&#39;s deck will not automatically gain whatever the deck system gains later. That is accepted for the first version, and <code>plan.md</code> should carry it as a known divergence rather than a bug to be found later.</p>
+<h3>7. The simulator</h3>
+<p><code>decisions.md</code> settled this as <strong>an abstract lifecycle</strong>, with an upgrade to the real <code>initiative.json</code> held open if the animation is not adequate.</p>
+<p><strong>Abstract in behaviour, generated in vocabulary.</strong> The simulator does not read the backlog and does not implement the sweep&#39;s rules. But its stage names, blocker classes and phase names come from the same fact set as everything else (§3.2), so the one thing it cannot do is teach a stage that does not exist. That narrows the cost <code>decisions.md</code> recorded — a hand-drawn animation that &quot;can, and will, disagree the first time a stage changes&quot; — to the choreography, which is the part a person has to check.</p>
+<p><strong>The walk-through</strong>, a fixed sequence with Step, Back and Play:</p>
+<ol><li>A wish is written. One initiative appears at <code>wish</code>.</li><li>Objectives are drafted; the stage advances, and the todo list gains items.</li><li>An item is blocked on a <code>human:</code> question. It goes amber; the digest column</li></ol>
+<p>   shows it.</p>
+<ol><li>A sweep run: the survey picks the highest-scoring actionable item, opens a</li></ol>
+<p>   pull request, and the item shows as in flight. Another item is passed over    because the budget is spent — <strong>which is a step, not a footnote</strong>, since the    budget is the part of the sweep newcomers do not expect.</p>
+<ol><li>The blocked item is answered. The blocker clears and the item becomes</li></ol>
+<p>   actionable.</p>
+<ol><li>The pull request merges. The item disappears, its dependants unblock, and the</li></ol>
+<p>   stage advances.</p>
+<p>Step 4&#39;s passed-over item and step 6&#39;s cascade are the two moments a stage table cannot convey, and they are why O4 asks for this at all.</p>
+<p><strong>What it is not:</strong> a sandbox. <code>objectives.md</code> puts free play out of the first version explicitly.</p>
+<h3>8. The PDFs</h3>
+<p>Made by hand and kept on Google Drive (<code>decisions.md</code>, 2026-08-17). Nothing in the build produces them, and nothing in the repository stores them.</p>
+<p>What the build <em>does</em> carry is the one thing that keeps them honest: a <code>guide/pdfs.json</code> holding, per PDF, a link and the date it was last refreshed by hand. §10 uses that date.</p>
+<h3>9. How it is built</h3>
+<h4>9.1 Layout</h4>
+<pre><code>guide/
+  config.json          # nav placement, PDF links, portable-file markers
+  content/*.md         # the sections of §5
+  simulator/           # the walk-through&#39;s own source
+  build/               # the generator: facts, tokens, renderers, checks</code></pre>
+<p>Output mirrors <code>initiatives/</code>: <code>gh-pages/guide/index.html</code>, <code>.../deck/</code>, <code>.../simulator/</code>. Nothing generated is committed, which is the repository&#39;s existing rule.</p>
+<h4>9.2 The one change outside the initiative</h4>
+<p>The generator runs from <code>scripts/build.sh</code>, which means <strong>one line in a protected path</strong>. <code>initiatives/sweep.json</code> protects <code>shared/</code>, <code>scripts/</code> and <code>.github/</code>, so a sweep pull request cannot add it.</p>
+<p>Named here because it is a scheduling fact, not a detail: the guide can be built, tested and reviewed entirely inside <code>guide/</code>, but it cannot be <em>published</em> until a human-authored change lands three things — the <code>build.sh</code> invocation, the <code>export</code> keywords of §3.3, and a nav entry in <code>shared/nav_bar/</code>. <code>plan.md</code> should put those together as one small hand-landed change rather than three, and should not schedule work that depends on them before that.</p>
+<h4>9.3 Severity</h4>
+<p>The guide&#39;s build failing aborts the site build, the same way an unparseable <code>initiative.json</code> does — and unlike the initiatives <em>backlog</em> warnings, which are never fatal because one initiative&#39;s empty todo list must not stop an unrelated deck from publishing.</p>
+<p>The distinction is between a backlog needing attention and <strong>data being wrong</strong>. A guide that cannot resolve a fact key is the second: publishing it means publishing a page that states the process incorrectly, which O9 rates as worse than not publishing at all.</p>
+<h4>9.4 Tests</h4>
+<p>Owned by this initiative, so they have to be declared in its <code>outputs[]</code>:</p>
+<ul><li><strong>Build-time, in the generator:</strong> every token resolves; every <code>slide: true</code></li></ul>
+<p>  section has slide text; the deck is 10–20 slides; no literal stage name or   budget number in narrative source (§4); every fact key resolves to exactly one   source (§3.1&#39;s rule 4).</p>
+<ul><li><strong>Browser-driven, in <code>tests/</code>:</strong> the guide is reachable from the root index and</li></ul>
+<p>  the nav bar (O1); every &quot;the real answer is here&quot; link resolves (O7); the   simulator steps end to end and returns to its start (O4).</p>
+<ul><li><strong>The drift test</strong>, which is O9&#39;s and the only one that fails on a change made</li></ul>
+<p>  somewhere else: rename a stage in <code>initiatives.mjs</code> in a fixture, and the guide   build must fail rather than publish the old name.</p>
+<h3>10. Dating, and how drift surfaces</h3>
+<p>Two mechanisms, from <code>decisions.md</code>: generation for what can be derived, dating for what cannot.</p>
+<ul><li><strong>Every page carries its provenance in the footer:</strong> the build date, and the</li></ul>
+<p>  short commit sha the sources were read at.</p>
+<ul><li><strong><code>pdfs.json</code> carries a hand-set refresh date per PDF</strong> (§8).</li><li><strong>The guide compares the two.</strong> When the newest commit touching any source in</li></ul>
+<p>  §3.2&#39;s table is later than a PDF&#39;s refresh date, the guide&#39;s own page shows the   PDF as <strong>possibly stale</strong>, next to the link, with both dates.</p>
+<p>That last one is the whole of O9 for the deliverable O9 applies to most: the PDFs are the only part that is neither generated nor in the repository, and a warning a reader sees is worth more than one only a maintainer would.</p>
+<p><strong>Deliberately not done:</strong> failing the build on a stale PDF. The build would then break because somebody edited <code>AGENTS.md</code>, which trains people to bypass it — and the staleness is <code>decisions.md</code>&#39;s accepted cost, not a defect.</p>
+<h3>11. Open questions this leaves</h3>
+<ul><li><strong>How much narrative there is</strong> — §3 draws the fact/narrative line, but not how</li></ul>
+<p>  long the written half runs. That is a drafting judgement and belongs to the   work, not to a decision.</p>
+<ul><li><strong>Whether the simulator&#39;s choreography needs its own review cadence.</strong> It is</li></ul>
+<p>  the piece generation does not reach (§7), and nothing currently prompts anyone   to re-watch it after a stage change. The dating covers detection; it does not   schedule a look.</p>
+<ul><li>**Whether section 8&#39;s <code>portable: true</code> markers survive contact with a real</li></ul>
+<p>  fork.** Nobody has done one. The list is a claim about what carries the   process, and the only test of it is somebody trying.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/repo-guide/draft-spec" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
