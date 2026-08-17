@@ -404,3 +404,47 @@ difference between adding sharing and retrofitting it.
 
 That is a constraint on the spec, not a design — recorded here so the spec has
 to answer it.
+
+## 2026-08-17 — When does judging a group ask for confirmation?
+
+**On the unbounded action, not the large one.** A verdict swept across the
+selection on screen asks nothing, whatever its size; a verdict applied to a set
+the user is not looking at confirms and shows the count.
+
+Raised by the critique of `plan.md` and `test-plan.md`, and accepted by the user
+on review of that pull request: *"accepted. please update any docs needed for
+this, including spec.md if needed"*. `spec.md` §8.3 is rewritten accordingly.
+
+### The problem
+
+`spec.md` §8.3 confirmed above a count — "say 25 items" — while §7.1 describes
+mark-then-sweep over a selection of fifty as **the common case**. Held together,
+the flow designed to be a single gesture asked a question nearly every time it
+was used.
+
+That is worse than it sounds. A confirmation that always fires is one people
+learn to dismiss without reading, so it stops being a safeguard while continuing
+to cost the speed O3 is about. The two mechanisms were also redundant by design:
+`undo` already reverses a sweep as one action, which is the recovery a
+confirmation exists to provide.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Confirm on visibility** *(chosen)* | Asks in the one case where the user genuinely does not know the size, and never in the case §7.1 exists to make fast. Costs nothing to implement — the selection view already displays its count | "Visible" has to be defined once and honoured; a future surface that applies a verdict from somewhere new has to decide which side it is on |
+| **Confirm above a count** *(the original)* | Simple, and one number to tune | Fires on the common path by construction. Tuning it is choosing between a safeguard nobody reads and no safeguard |
+| **No confirmation at all** | Simplest, and `undo` is genuinely the recovery | Leaves the unbounded case unguarded, where undo does not help somebody who did not know what they were about to do |
+
+### What this settles, and what it does not
+
+- **The discriminator is visibility, not cardinality.** A sweep across several
+  thousand visible items asks nothing; a verdict on a saved selection invoked
+  from a menu asks, and shows the count.
+- **Left open:** nothing in the mechanism, but the rule has to be applied at each
+  new entry point rather than being a property of the verdict function. That is
+  noted in §8.3 as its cost.
+- **What would reopen it:** sweeps being regretted often enough that `undo` is
+  not sufficient recovery on the visible path. `test-plan.md` §4.4 now measures
+  both that and how often the confirmation fires at all, so the question is
+  answered from a real sitting rather than re-argued.
