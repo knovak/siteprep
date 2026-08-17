@@ -1,13 +1,13 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, PDFs, and simulator explaining how people and agents work in this repository.",
-  "stage": "shaped",
+  "stage": "specified",
   "value": "high",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-spec",
-      "title": "Draft spec.md - how the description, deck, PDFs, and simulator are built",
+      "id": "draft-plan",
+      "title": "Draft plan.md and test-plan.md - build order, and how the generator is tested",
       "state": "actionable",
       "value": "high",
       "effort": "medium",

@@ -21,3 +21,7 @@ The dating is not the third option arriving through the back door - the user too
 Answered on review of #227: animate an abstract lifecycle for now, with an upgrade to the real initiative.json held open if the animation turns out not to be adequate. Recorded in decisions.md.
 
 The trigger for the upgrade is the user's judgement and is deliberately not converted into a metric. The cost recorded with it: the simulator is the one deliverable outside the generation guarantee, so it is the case the dating requirement is carrying.
+
+## 2026-08-17 — Draft spec.md - how the description, deck, PDFs, and simulator are built
+
+spec.md drafted: one generated fact set, hand-written narrative that cites it by token, and four renderings of one source. Settles the two questions decisions.md left open - authority per claim, and where the generated/written line falls - and names the protected-path change publication needs.
