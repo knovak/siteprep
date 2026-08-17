@@ -238,3 +238,9 @@ The capture queue is driven by hand for now - an explicit "capture the gaps" act
 Both are recorded in decisions.md with their alternatives, and applied to spec.md §6, §9 and §10, to plan.md phase 0 and phase 3, and to host-spike.md. Phase 0's probe order changed with them: outbound HTTP now leads, being the only remaining row that can change the design, and the export probe follows it.
 
 probe/ holds a drafted site implementing the probes - one HTML page with the layout probe as real DOM, and one server module for the rows that must run server-side. It was written from documentation and never run; it is meant to be handed to ChatGPT and corrected until it works. Both files parse. It prints a results table to paste back, and it is throwaway by construction, as phase 0 requires.
+
+## 2026-08-17 — test-plan.md caught up with the two decisions
+
+Both of the day's decisions landed in spec.md, plan.md and host-spike.md but not in test-plan.md, which still described §4.0's export row as getting rows "out of the host" and failing O7 outright - the exact framing the export decision removed. Three changes close it: §4.0 now leads with outbound HTTP and states the export row as a ceiling to be measured rather than a capability to be found, §4.3 gains a test that nothing drains the capture queue without being asked, and §5 pins both decisions against the changes most likely to undo them - a platform export that looks free, and an automatic driver added because the button is tedious.
+
+Worth noting how this was found: two sessions worked this review round concurrently and produced the same conclusions, and the gap was in the one file neither had reached.
