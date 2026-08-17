@@ -236,7 +236,7 @@ One entry per newsletter:
 |---|---|
 | `key` | Stable identifier, written to `source` on every record. Never a display name, which changes |
 | `name` | What to show a reader |
-| `match` | How its emails are recognised: a from-address, a Gmail label, a subject pattern, or several — matched as a union |
+| `match` | How its emails are recognised: a from-address, a Gmail label, a subject pattern, or several — matched as a union. The union is one search, not several merged (phase 0). A from-address matcher is a **pre-filter**: `from:` ignores the plus-tag, so `name@host` also returns `name+section@host`, which on some senders is a different publication with a different shape — §5.1 verifies the actual From address before an issue is attributed to this entry |
 | `shape` | `link-list`, `annotated-digest` or `long-form` — the §3 declaration |
 | `unwrap` | Which redirector rule applies (`story-record.md` §4), where the sender uses one |
 | `since` | The earliest issue worth reaching for, if the user has an opinion |
@@ -256,7 +256,15 @@ same answer twice.
 Search the mailbox for each inventory entry's matchers over the requested date
 range, and take the message list as the run's input. The range is explicit —
 never "since last time" — because an implicit range is what makes a re-run
-unrepeatable.
+unrepeatable. The connector's range is **half-open in local dates** (phase 0),
+so the range a run resolves and the range a user typed are not the same string;
+the run record writes the resolved one.
+
+**The search is a pre-filter, and its results are checked.** A message is
+attributed to an inventory entry only after its actual From address is matched
+against that entry, because `from:` over-matches plus-tagged siblings (§4). An
+unattributed message is not harvested — and, since it never matched an entry,
+gets no `source_doc` either.
 
 Every message that matched is recorded as a `source_doc` whether or not it
 yielded stories. An issue that produced nothing is a finding, and without the
@@ -275,8 +283,11 @@ record it is indistinguishable from an issue that was never fetched.
 7. Report: issues per source, stories added, stories matched, merges, flags.
 
 The report is written to the store as a run record — when it ran, over what
-range, with which inventory, and what it produced. Three runs later, "why does
-this month look thin" is answerable.
+range (as resolved, §5.1), with which inventory, and what it produced. Three
+runs later, "why does this month look thin" is answerable. Every count in it is
+of things the run actually paged through: the connector's own result count is an
+estimate that saturates on large result sets (phase 0), and a run record built
+from it would answer that question wrongly.
 
 ### 5.3 On demand, not on a schedule
 
@@ -627,7 +638,7 @@ worth naming.
 
 | Needs | What breaks without it |
 |---|---|
-| A read-only Gmail connector that can search by sender, label and date | Everything. There is no other input |
+| A read-only Gmail connector that can search by sender, label and date | Everything. There is no other input. **Confirmed** by the phase 0 probe (`plan.md` §3, `decisions.md` 2026-08-17): sender, label and range all work, and several matchers union in one query as §4 requires. Three conditions came with it — `from:` ignores the plus-tag and so over-matches sibling publications, the range is half-open in local dates, and the result count is an estimate — carried into §4, §5.1 and §5.2 below |
 | A model the skill can call | Long-form yields no summary (O2), and theme proposals stop (O4) |
 | A writable path for the store and inventory | Nothing persists; O3 and O8 both fail |
 | A browser to open a local file | Review falls back to conversation, which is option A and fails O7 |
