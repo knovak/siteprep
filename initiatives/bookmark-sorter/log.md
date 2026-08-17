@@ -180,3 +180,7 @@ Two findings while specifying it. Netscape bookmark HTML already carries a
 description in its DD element, so ingestion can read notes the user wrote years
 ago rather than discarding them. And an import must never overwrite an existing
 note, on the same principle as a verdict: it is the user's own writing.
+
+## 2026-08-15 — Draft plan.md and test-plan.md, resolving the questions spec.md left open for the plan
+
+Drafted plan.md and test-plan.md together. Eight phases, ordered by what could invalidate the spec first (the host spike), then by what makes the pile faceable (ingestion, then a grid built blind), then by what other phases would have to be rewritten without (selections before export, tagging and demo seeding). Five of the seven questions spec.md left open are answered by reasoning; the other two are answered by evidence phase 0 produces, or are the user's money to spend.
