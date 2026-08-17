@@ -15,8 +15,9 @@ Three rules, applied in this priority, produce the sequence in §3:
 1. **The thing that could invalidate the spec goes first.** §10's table of what
    the host must supply has a column for what breaks if it cannot, and one row —
    bulk data export — fails O7 outright. Anything built before that row is
-   answered is built on a presumption. So phase 0 is a spike, and it is the only
-   phase whose output is a decision rather than software.
+   answered is built on a presumption. So phase 0 is a spike, and its output is a
+   decision rather than software — as is phase 7's, at the other end, for the
+   same reason in reverse: it is gated on answers rather than on code.
 2. **Then the thing that makes the pile faceable at all.** O2 calls the verdict
    the unit of progress and `objectives.md` calls everything else earning its
    place by making that decision faster. Ingestion and the grid therefore precede
@@ -54,6 +55,21 @@ separable from its owner.
 rather than a rule to be observed later — a grid that was born blind cannot
 acquire a synchronous dependency on a picture in phase 3 without the change being
 obvious.
+
+**A capture is global; a tag is not.** §5 keys the capture store by `url_key`
+across every collection, and §6 says a failed fetch writes an `err:` tag "on
+every item sharing that `url_key`". Read literally those two sentences make a
+capture failure in one person's collection write tags into another's, which is a
+cross-collection write and fails O8 — the isolation phase 6 is tested on. The
+rule this plan builds to, from phase 3 onward, is the one that keeps both
+sentences true: **the capture record is shared, the `err:` tags derived from it
+are written only within the collection the item belongs to**, and an item
+arriving later in another collection picks its `err:` tags up from the existing
+capture record at ingestion rather than from a write that reaches across.
+
+This is stated here rather than left to §6 because it is invisible until there
+are two collections, and phase 6 is where two collections first exist — three
+phases after the code that would have got it wrong.
 
 ## 3. The phases
 
@@ -143,8 +159,18 @@ entry, not a constant quietly edited.
 selections, `tag-apply` over a selection, §8.3's confirmation above a threshold,
 and §7.1's mark-then-sweep with `verdict-rest` and a single-action `undo`.
 
+Also **§8.2's cheap in-app proposals** — same site, same folder path,
+near-identical titles — offered as pre-filled selections, computed as §5.6 below
+decides. They belong here rather than in a phase of their own because a proposal
+*is* a selection: each one is a `group by` over data the app already holds, plus
+the normalised-title key written at ingestion. Without them O5's "gathered into
+clusters **automatically**" is delivered by no phase at all, and §5.6 answers a
+question about a feature nothing was scheduled to build.
+
 **Leaves out:** cross-collection administrative use beyond what the tests need,
-and every route to automatic tags except applying one by hand.
+and every route to tags from *outside* the app — the file round trip and the
+skill proposals of §8.2 both wait for phase 5, which is where the file format
+they travel in gets built.
 
 This is the phase that turns O5 from "clusters" into something built, and §7.1 is
 the part that makes a five-figure pile finishable rather than merely triageable.
@@ -160,8 +186,18 @@ would mean extracting it from them.
 document of §9 with the expression recorded in it, and import as the phase 1
 merge with records as input instead of an HTML export.
 
-**Leaves out:** nothing much — this phase is small precisely because §4's merge
-and §8's selection already exist. That it is small is the payoff for the order.
+Also the **proposals file** of §5.7 below — the same document with
+`proposed_tags` in place of `tags` and a `proposal` block — read in, matched by
+URL, and turned into one selection per proposed tag that the user accepts or
+discards. This completes §8.2's third route, and it is the last thing standing
+between O5 and being finished. It is a small addition here and a phase of its own
+anywhere else: the parser, the URL matching and the `tag-apply` it calls are all
+built by the time this phase starts, which is the same payoff the rest of the
+phase collects.
+
+**Leaves out:** nothing much — this phase is small precisely because §4's merge,
+§8's selection and phase 4's `tag-apply` already exist. That it is small is the
+payoff for the order.
 
 **Exit:** `test-plan.md` §4.5 — the round trip, which is the test that makes O7
 mean something.
@@ -176,6 +212,14 @@ the collection menu the wish's amendment asks for.
 **Leaves out:** every part of the general sharing scheme. No reader lists, no
 ACLs, no revocation (§10.2).
 
+**Conditional on one of phase 0's rows.** Templates are listed and copied across
+owners, so if phase 0 finds no cross-owner read, three of the five operations
+above do not exist and a maintainer seeds each tester by hand instead. The phase
+still happens — isolation, `owner_id` and sign-in are the bulk of it — but two
+rows of its exit test are struck rather than failed. Phase 0 says this in one
+line; it is repeated here because this is the phase that would otherwise be
+reported as incomplete for doing exactly what the finding required.
+
 **Exit:** `test-plan.md` §4.6, whose central case is two users: a tester takes a
 copy, triages it, and can reach nothing of anyone else's.
 
@@ -189,6 +233,10 @@ which vendor at what price (§5 below).
 If either answer never comes, the app is finished without it and gap items keep
 no picture — visibly missing rather than confidently wrong, which is the state
 §3 chose the metadata path for.
+
+**Exit:** `test-plan.md` §4.7 — one contract test against the real vendor, then a
+bounded live run with spend recorded. Being a configuration change rather than a
+development phase is not a reason to end it on somebody's say-so.
 
 ## 4. What each phase leaves behind
 
@@ -283,6 +331,13 @@ lives. Both resolve the same way:
 bookmarks, so the selection is theirs to approve before anything is committed.
 The plan does not choose the items.
 
+That makes the seed a **dependency on the user rather than on a phase**, and it
+is the only one in the build that has no todo item behind it. It is not raised as
+a blocker now because nothing before phase 6 touches it and a blocker that sits
+in the digest for five phases is noise. It becomes an item when phase 5 completes
+— named here so that the obligation survives the gap rather than being
+rediscovered when phase 6 stalls on it.
+
 ### 5.6 Cheap cluster proposals: at ingestion or on demand? — *split, along the line of what they depend on*
 
 §8.2's in-app proposals are three different computations wearing one name, and
@@ -345,6 +400,25 @@ nothing marking its origin, as §5 requires.
   back into a browser, general sharing. §11 says the export format is what makes
   the first two cheap later, and phase 5 is where that becomes true.
 
+And one thing this plan cannot decide but should not leave unsaid, because phase
+4 builds both halves of it:
+
+- **§8.3's confirmation threshold and §7.1's sweep pull against each other.** The
+  spec sets confirmation at "say 25 items" and describes mark-then-sweep over a
+  selection of fifty as the common case. Taken together, the flow designed to be
+  a single gesture asks a question nearly every time it is used, and a
+  confirmation that always fires is one people learn to dismiss without reading —
+  which is worse than not having it, since it also costs the speed O3 is about.
+  The two mechanisms are also redundant by design: `undo` reverses a sweep as one
+  action, which is the recovery a confirmation exists to provide.
+
+  The plan's recommendation, for the spec to accept or reject: **confirm on the
+  unbounded action, not on the large one.** A verdict swept across a selection the
+  user is looking at is bounded and reversible; the cases worth a question are the
+  ones where the size is not on screen. Phase 4 should measure how often the
+  threshold fires during the real sitting its exit test already requires, and the
+  number should be settled from that rather than from either guess.
+
 ## 7. The risks worth naming
 
 - **Phase 0 comes back badly.** The mitigation is that it comes back *first*; the
@@ -358,3 +432,17 @@ nothing marking its origin, as §5 requires.
 - **Identity in phase 6 turns out to need more than the host gives.** §10's table
   says sign-in becomes something to build, and it is explicitly not small. The
   scope rule in §2 above is what keeps that a phase rather than a migration.
+- **Three phases cannot end without the user sitting down.** Phase 2's baseline,
+  phase 3's coverage and duplicate distribution, and `test-plan.md` §2's manual
+  sitting all require a real pile and the person who owns it. This is the largest
+  scheduling dependency in the plan and it is not a technical one: the build can
+  be complete and the phase still open. Two mitigations, and they are cheap:
+  export the real pile once, early, so the measurements do not each need a fresh
+  one; and let a phase's code merge on its automated tests while the phase stays
+  open on its measurement, so the dependency delays a *finding* rather than the
+  work that comes after it.
+- **The `err:` scope rule in §2 is a rule, not a mechanism.** It is the one
+  constraint here that no test can catch before phase 6, because it needs two
+  collections to be observable at all. `test-plan.md` §4.3 asserts it in phase 3
+  against a second collection created for the test alone, which is why that row
+  exists three phases before collections do.

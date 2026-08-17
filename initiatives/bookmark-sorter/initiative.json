@@ -6,14 +6,6 @@
   "outputs": [],
   "todo": [
     {
-      "id": "critique-plan",
-      "title": "Critique plan.md and test-plan.md, and improve them before building starts",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "host-spike",
       "title": "Run the phase 0 host spike and fill in spec.md's host table with evidence",
       "state": "actionable",
