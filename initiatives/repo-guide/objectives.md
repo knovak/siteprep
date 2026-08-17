@@ -91,14 +91,20 @@ written: a description, a deck, and a simulator.
 
 8. **The material is portable off the site.** The slides and the description
    exist as PDFs that can be sent to someone who will not clone anything or
-   open a browser tab. The PDFs are renderings of the same source, not separate
-   documents maintained beside it.
+   open a browser tab. They are made by hand and kept on Google Drive
+   (`decisions.md`, 2026-08-17), so they are the one deliverable that is neither
+   generated nor in the repository — which is why objective 9 applies to them
+   most of all.
 
 9. **Drift is detectable rather than discovered.** When the process changes, the
-   guide's disagreement with the repository shows up as a failure somewhere a
-   person will see it — not as a reader following an instruction that stopped
-   working. What that mechanism is belongs to the spec; that there must be one
-   is an objective, because without it objectives 2, 3 and 6 have a shelf life.
+   guide's disagreement with the repository shows up where a person will see it
+   — not as a reader following an instruction that stopped working. Two
+   mechanisms, both settled in `decisions.md` on 2026-08-17: the process content
+   is **generated from the repository's own sources**, so it cannot disagree;
+   and **every output carries a date**, so the parts generation does not reach
+   can be checked by hand. The second is not a weaker version of the first. It
+   is what covers the hand-written narrative, the simulator, and the PDFs, none
+   of which generation reaches.
 
 ## Explicitly not the first version
 
@@ -132,34 +138,33 @@ written: a description, a deck, and a simulator.
   complains.** This is the test objective 9 makes, and the one a guide that is
   merely accurate today would pass without meaning anything.
 
-## Decisions this raises
+## Decisions this raised, and where they landed
 
-Two questions the wish does not settle, and that should not be settled quietly
-by whoever writes the spec. Both are recorded as blocked items.
+Drafting these surfaced three questions the wish does not settle. All three were
+answered on review the same day and are now in `decisions.md` — the reasoning
+lives there, and this list is only a map to it. Nothing here is still waiting on
+the user.
 
-1. **What is authoritative, and how does the guide stay true to it?** There is a
-   real choice here — generate the guide's process content from the repository's
-   own sources so it cannot disagree; hand-write it and have a test assert the
-   claims that matter; or accept drift and date the material. Each buys
-   correctness at a different price, and the answer decides how much of this
-   initiative is a build rather than a piece of writing. Objective 9 depends on
-   it entirely, and objective 7 leans on it.
+1. **What is authoritative, and how does the guide stay true to it?**
+   The process content is **generated from the repository's own sources**, and
+   **the outputs are dated** so the parts generation does not reach can be
+   checked by hand. This is what makes the initiative a build rather than a piece
+   of writing, and it is the whole of objective 9.
 
-2. **How faithful is the simulator?** It can animate an abstract lifecycle that
-   merely resembles this repository's, or drive the real `initiative.json`
-   shapes and the real sweep rules. The first is a diagram that moves and could
-   be finished in a day; the second is the only version that cannot quietly
-   teach something false, and is a substantially larger build. Objective 4's
-   value and objective 9's reach both hang on this.
+2. **How faithful is the simulator?** An **abstract lifecycle for now**, with an
+   upgrade to the real `initiative.json` held open if the animation turns out not
+   to be adequate. It is therefore the one deliverable outside decision 1's
+   guarantee, which is the cost recorded with it.
 
-Two more are noted for the spec rather than raised as blockers:
+3. **Where do the PDFs come from?** **Made by hand and kept on Google Drive** —
+   so the repository's rule against committing generated files is sidestepped
+   rather than argued, and objective 8 is written accordingly.
 
-- **Where the PDFs come from.** This repository does not commit generated files
-  — `INITIATIVES_TECHDOC.md` states it as an invariant and §7.6 of the vision
-  explains why — and a PDF is both generated and binary. Whether they are built
-  in the pipeline, produced on demand, or are the one deliberate exception is a
-  spec decision with a repository-wide precedent attached.
+One question is left to the spec rather than raised as a blocker:
+
 - **Whether the deck and the description share a source.** They cover the same
   ground at different lengths, which is either one document rendered two ways or
-  two documents that will disagree. The answer follows from decision 1 and
-  should be made with it in view, not separately.
+  two documents that will disagree. Decision 1 makes sharing a source the cheap
+  default — if the process content is generated, generating it twice at two
+  lengths is a parameter — but that is an argument for the spec to make, not a
+  decision the user has taken.

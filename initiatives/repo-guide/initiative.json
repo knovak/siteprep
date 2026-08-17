@@ -6,28 +6,9 @@
   "outputs": [],
   "todo": [
     {
-      "id": "guide-authority",
-      "title": "Decide what is authoritative, and how the guide stays true to it",
-      "state": "blocked",
-      "blocked_by": "human:is the guide's process content generated from the repository's own sources, asserted by tests, or hand-written and dated? This decides how much of the initiative is a build rather than a piece of writing",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "simulator-fidelity",
-      "title": "Decide how faithful the lifecycle simulator has to be",
-      "state": "blocked",
-      "blocked_by": "human:does the simulator animate an abstract lifecycle, or drive the real initiative.json shapes and sweep rules? The second cannot teach something false and is a substantially larger build",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "draft-spec",
       "title": "Draft spec.md - how the description, deck, PDFs, and simulator are built",
-      "state": "blocked",
-      "blocked_by": "todo:guide-authority",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
