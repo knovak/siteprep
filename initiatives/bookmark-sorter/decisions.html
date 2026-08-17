@@ -165,6 +165,21 @@
 <h4>The one thing to keep true for later</h4>
 <p>Since sharing is planned rather than hypothetical, the first version should avoid the choice that makes it hard: <strong>do not let &quot;owner&quot; become the only way an item is reachable.</strong> Whatever the store looks like, a collection&#39;s identity should be separable from the single user attached to it, so a reader list can be added later without rewriting every query. That costs nothing now and is the difference between adding sharing and retrofitting it.</p>
 <p>That is a constraint on the spec, not a design — recorded here so the spec has to answer it.</p>
+<h3>2026-08-17 — When does judging a group ask for confirmation?</h3>
+<p><strong>On the unbounded action, not the large one.</strong> A verdict swept across the selection on screen asks nothing, whatever its size; a verdict applied to a set the user is not looking at confirms and shows the count.</p>
+<p>Raised by the critique of <code>plan.md</code> and <code>test-plan.md</code>, and accepted by the user on review of that pull request: <em>&quot;accepted. please update any docs needed for this, including spec.md if needed&quot;</em>. <code>spec.md</code> §8.3 is rewritten accordingly.</p>
+<h4>The problem</h4>
+<p><code>spec.md</code> §8.3 confirmed above a count — &quot;say 25 items&quot; — while §7.1 describes mark-then-sweep over a selection of fifty as <strong>the common case</strong>. Held together, the flow designed to be a single gesture asked a question nearly every time it was used.</p>
+<p>That is worse than it sounds. A confirmation that always fires is one people learn to dismiss without reading, so it stops being a safeguard while continuing to cost the speed O3 is about. The two mechanisms were also redundant by design: <code>undo</code> already reverses a sweep as one action, which is the recovery a confirmation exists to provide.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Confirm on visibility</strong> <em>(chosen)</em></td><td>Asks in the one case where the user genuinely does not know the size, and never in the case §7.1 exists to make fast. Costs nothing to implement — the selection view already displays its count</td><td>&quot;Visible&quot; has to be defined once and honoured; a future surface that applies a verdict from somewhere new has to decide which side it is on</td></tr><tr><td><strong>Confirm above a count</strong> <em>(the original)</em></td><td>Simple, and one number to tune</td><td>Fires on the common path by construction. Tuning it is choosing between a safeguard nobody reads and no safeguard</td></tr><tr><td><strong>No confirmation at all</strong></td><td>Simplest, and <code>undo</code> is genuinely the recovery</td><td>Leaves the unbounded case unguarded, where undo does not help somebody who did not know what they were about to do</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>The discriminator is visibility, not cardinality.</strong> A sweep across several</li></ul>
+<p>  thousand visible items asks nothing; a verdict on a saved selection invoked   from a menu asks, and shows the count.</p>
+<ul><li><strong>Left open:</strong> nothing in the mechanism, but the rule has to be applied at each</li></ul>
+<p>  new entry point rather than being a property of the verdict function. That is   noted in §8.3 as its cost.</p>
+<ul><li><strong>What would reopen it:</strong> sweeps being regretted often enough that <code>undo</code> is</li></ul>
+<p>  not sufficient recovery on the visible path. <code>test-plan.md</code> §4.4 now measures   both that and how often the confirmation fires at all, so the question is   answered from a real sitting rather than re-argued.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
