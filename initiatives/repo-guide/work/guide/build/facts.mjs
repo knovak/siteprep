@@ -254,9 +254,14 @@ export class FactRegistry {
     return [...this.#entries.entries()].map(([key, { source }]) => ({ key, source }));
   }
 
-  async resolve() {
+  async resolve(keys = [...this.#entries.keys()]) {
     const facts = {};
-    for (const [key, entry] of [...this.#entries.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+    const requested = [...new Set(keys)];
+    for (const key of requested) {
+      if (!this.#entries.has(key)) throw new Error(`Unknown fact key: ${key}`);
+    }
+    for (const key of requested.sort((a, b) => a.localeCompare(b))) {
+      const entry = this.#entries.get(key);
       try {
         facts[key] = await entry.reader();
       } catch (error) {
@@ -414,4 +419,9 @@ export async function createFactRegistry(sourceConfig) {
 export async function resolveRepositoryFacts(rootPath, overrides = {}) {
   const registry = await createFactRegistry(repositorySources(rootPath, overrides));
   return registry.resolve();
+}
+
+export async function resolveRepositoryFactKeys(rootPath, keys, overrides = {}) {
+  const registry = await createFactRegistry(repositorySources(rootPath, overrides));
+  return registry.resolve(keys);
 }
