@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Newsletter Story Harvester</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Newsletter Story Harvester</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Newsletter Story Harvester</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<p>Questions this initiative was waiting on, and how they were settled. Newest at the bottom. Written so a later reader — including a later version of us — does not re-argue something already decided.</p>
+<h3>2026-08-15 — Does this run as agent skills, or as a website?</h3>
+<p><strong>Agent skills over the mailbox for the harvest, a generated page for the review</strong> — option C below.</p>
+<p>The user&#39;s words, answering the sweep&#39;s proposal on review: <em>&quot;Decision: C, with simple note that if the bookmark sorter&#39;s web app ships first and its grid generalises then D can be adopted&quot;</em>. The fallback is theirs and is kept as a standing one, not a hypothetical — see below.</p>
+<p>The question, as <code>objectives.md</code> recorded it, comes from the wish itself: <em>&quot;This entire process might run through codex skills rather than a freestanding website. That would allow the skills to do some of the harvesting and paraphrasing.&quot;</em></p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A. Agent skills, end to end</strong> — a skill reads the mailbox, extracts stories, groups and paraphrases them, and writes out a page; verdicts are given by talking to the skill</td><td>Nothing to host, nothing to authorise beyond a mailbox connector that already exists. The two genuinely hard parts — deciding what one story is in three different newsletter shapes, and paraphrasing several stories into one — are model work, which is what a skill is. Runs today</td><td>Objective 7 is the weak spot: dropping, keeping and emphasising a few hundred stories by <em>conversation</em> is slower than reading the newsletters would have been, which is the one thing the objectives say must not happen. No place for a backlog count to live between runs</td></tr><tr><td><strong>B. A website with its own store</strong> — a server holds Gmail credentials, ingests on a schedule, keeps stories in a database, and serves the review UI</td><td>The strongest answer to objectives 5 and 7: a real UI for expand/collapse, reordering, and one-keystroke verdicts, with state that survives the tab. Publishing (objective 8) is a page it already knows how to render. Reachable from a phone</td><td>Everything the wish did not ask for: hosting, sign-in, and a stored Gmail refresh token for a personal mailbox — the heaviest liability in the whole design, held permanently so that it can read mail that a human could have handed over. The extraction and paraphrase work still needs a model, so the server ends up calling one anyway; the website adds a second system rather than replacing the first</td></tr><tr><td><strong>C. Skills harvest, a generated page reviews</strong> <em>(chosen)</em></td><td>Splits the problem where its two halves actually differ. The mailbox and the model work stay in a skill, so no server ever holds mail credentials. Review is a self-contained HTML page — expand/collapse, sort, and verdict buttons are ordinary DOM, and objective 5 is met by a page rather than by a conversation. Verdicts come back as a file the skill folds into the store, so re-running a harvest sees what was already judged</td><td>Two artefacts to keep agreeing with each other, and the verdict round-trip is the fiddly part: a page that exports and a skill that imports is more moving parts than a database write. Not multi-device — the page and its store live wherever the skill ran</td></tr><tr><td><strong>D. Skills harvest, the bookmark sorter&#39;s web app reviews</strong> <em>(the standing fallback)</em></td><td>Objectives 5 and 7 here are close cousins of that initiative&#39;s grid and verdicts; one triage surface for both piles means building it once and getting the phone case for free</td><td>That app does not exist yet. It couples two initiatives before either has run, and it inherits an ingestion and collection model built for bookmarks — items that arrive discrete, which is precisely what a harvested story is not</td></tr></tbody></table></div>
+<h4>Why C</h4>
+<p>This initiative is two problems wearing one name, and they want opposite things:</p>
+<ul><li><strong>Harvesting is judgement.</strong> <code>objectives.md</code> puts the hard case first: a</li></ul>
+<p>  long-form Substack column has to yield one story, not thirty footnotes, and   the unit of harvest is a per-newsletter decision. That is model work, and a   skill is the cheapest possible place to put it.</p>
+<ul><li><strong>Reviewing is throughput.</strong> Objective 7 asks that every story end up dropped,</li></ul>
+<p>  kept, or emphasised, <em>fast enough to keep up with reading</em>. Conversation is a   poor instrument for a few hundred small identical decisions; a page with   buttons is a good one.</p>
+<p>Option A is strong on the first and fails the second. Option B is strong on the second and pays for the first twice — a server that still has to call a model, plus hosting and a stored mail credential nobody asked for. C takes each half from the option that is good at it.</p>
+<p>The credential point is worth stating on its own, because it is the part that is hard to reverse. A website with its own store needs long-lived OAuth access to a personal Gmail account, sitting on a server, so that it can re-read mail on a schedule. A skill reads the mailbox while a human is present and keeps nothing. Since <code>objectives.md</code> already rules out writing back to the mailbox, the whole mail relationship can stay read-only and session-bound — and that is worth more here than scheduled ingestion, which nothing in the wish asks for.</p>
+<h4>The standing fallback: D, if the bookmark sorter&#39;s grid generalises</h4>
+<p><strong>If the bookmark sorter&#39;s web app ships first and its grid generalises, adopt D</strong> — move review into that app rather than building a second review surface.</p>
+<p>So C is a staging post, not a dead end, and that puts one constraint on the spec: <strong>the store is the durable thing and the page is disposable.</strong> Stories, themes and verdicts live in a plain, portable form that another surface could read, so moving review into the bookmark sorter is a change of surface rather than a rewrite. Nothing in the first version should assume the generated page is the only thing that will ever read the store.</p>
+<p>Note that this is a fallback the user can take at any time, not a condition to be waited on: harvesting stays in a skill under both C and D, so the work done now is not what gets thrown away.</p>
+<h4>What would reopen this</h4>
+<ul><li><strong>Triage has to happen on a phone, or away from the machine that harvested.</strong></li></ul>
+<p>  C&#39;s single-machine store is then the wrong shape, and B or D is required   rather than optional.</p>
+<ul><li><strong>Verdicts must be shared with anyone else.</strong> C assumes a single reviewer.</li><li><strong>Reading a month of newsletters from a skill turns out to be unreliable</strong> —</li></ul>
+<p>  rate limits, attachment-heavy issues, or a connector that cannot search well   enough to make a harvest repeatable (objective 1). That failure argues for B,   which can ingest slowly in the background and retry, and is the one route that   D does not cover.</p>
+<ul><li><strong>The volume is smaller than assumed.</strong> If a week&#39;s harvest is tens of stories</li></ul>
+<p>  rather than hundreds, A is enough and the generated page is over-building.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled</strong>: no server holds Gmail credentials; harvesting, extraction and</li></ul>
+<p>  paraphrase are skill work; review is a generated page rather than a   conversation, and moves into the bookmark sorter&#39;s app if that ships first.</p>
+<ul><li><strong>Not settled</strong>: what the store actually is — a file, SQLite, or something</li></ul>
+<p>  else — and where it lives. A spec question, constrained only to being plain   and portable enough for another surface to read.</p>
+<ul><li><strong>Not settled</strong>: where published HTML is hosted. <code>objectives.md</code> already holds</li></ul>
+<p>  &quot;publication as an OpenAI site&quot; out of the first version, and this answer does   not disturb that.</p>
+<ul><li><strong>Unaffected</strong>: <code>newsletter-inventory</code> stays blocked on the user either way —</li></ul>
+<p>  which senders count and how far back a harvest reaches is a fact about the   mailbox, not a consequence of the runtime.</p>
+<ul><li><strong>Unblocks</strong> <code>draft-spec</code>, which was waiting on this to write its alternatives</li></ul>
+<p>  section. Most of the table above is the raw material.</p>
+<h4>Questions this raises, deliberately not answered here</h4>
+<ul><li><strong>How do verdicts get back into the store?</strong> An exported file the skill reads,</li></ul>
+<p>  or the page writing directly to a local store. The fiddly part of C, and a   spec question rather than a decision.</p>
+<ul><li><strong>Does the harvest run on demand, or on a schedule?</strong> C makes on-demand the</li></ul>
+<p>  natural answer; nothing in the wish requires a schedule, but it has not been   ruled out.</p>
+<h3>2026-08-17 — Phase 0: what the mailbox connector can actually do</h3>
+<p><strong>It reaches.</strong> The Gmail connector available to a skill searches by from-address, by Gmail label and by date range, takes several matchers as a union in one query, and returns a message body the extractor can read. §14&#39;s first row is answered with observation rather than expectation, and <code>plan.md</code> §3&#39;s phase 0 exits.</p>
+<p>This is a findings entry rather than a choice between options. The question was never <em>which</em> connector — there is one — but whether the shape §5.1 assumed is the shape it has. Two of the four observations came back better than expected and two brought conditions the later phases have to carry.</p>
+<h4>What was asked, and what was observed</h4>
+<p><code>test-plan.md</code> §4.0 names four observations. All four were run read-only against the user&#39;s own mailbox — search and read, nothing written, nothing labelled, nothing kept beyond the notes below.</p>
+<div class="table-scroll"><table><thead><tr><th>Observation</th><th>Result</th><th>What was run</th></tr></thead><tbody><tr><td>Search by <strong>from-address</strong> over a date range</td><td><strong>Works.</strong> Five issues of one daily newsletter, every one inside the range and from that sender</td><td><code>from:&lt;sender&gt; after:2026/08/01 before:2026/08/09</code></td></tr><tr><td>The <strong>message body</strong> comes back readably</td><td><strong>Works.</strong> Plain text, links inline, no HTML needed</td><td><code>get_thread(messageFormat: PLAIN_TEXT)</code></td></tr><tr><td>Search by <strong>Gmail label</strong></td><td><strong>Works, by display name</strong></td><td><code>label:&lt;display-name&gt;</code></td></tr><tr><td><strong>Several matchers union</strong></td><td><strong>Works, in one query.</strong> Two senders and a label, nine messages, the date range applied to the union rather than to one arm</td><td><code>{from:a from:b label:c} after:… before:…</code></td></tr></tbody></table></div>
+<p>The union is the one §4&#39;s <code>match</code> field depends on and the one most likely to have disappointed. It did not: Gmail&#39;s <code>{…}</code> groups the arms and the range outside the braces applies to all of them, so an inventory entry with a sender <em>and</em> a label costs one search, not two searches and a merge. <code>plan.md</code> §3&#39;s &quot;what a failure here means&quot; paragraph — the client-side date filter, the fall back to §2 — is not needed.</p>
+<h4>The four conditions that came with it</h4>
+<p>Each of these is a fact about the connector that a later phase would otherwise discover the expensive way.</p>
+<ol><li><strong><code>from:</code> ignores the plus-tag, so a sender matcher over-matches.</strong> Searching</li></ol>
+<p>   <code>from:name@substack.com</code> returns mail from <code>name+section@substack.com</code> as    well — on Substack these are <em>different publications</em> with different shapes.    §4&#39;s <code>key</code> is &quot;written to <code>source</code> on every record&quot;, so an over-matching    matcher silently files two newsletters under one source and the identity of    <code>(source, issue_date, url_key)</code> inherits the error. <strong>Phase 3 must verify the    actual From address against the matcher after the search</strong>, and treat the    search as a pre-filter rather than as the answer. Cheap now; a re-harvest    away from a migration once records exist.</p>
+<ol><li><strong>The date range is half-open, in local dates.</strong> <code>after:D before:D</code> returns</li></ol>
+<p>   nothing; a single day D is <code>after:D before:D+1</code>. §5.1 requires an explicit    range, so this is a documentation fact rather than a hazard, but &quot;the range    the user typed&quot; and &quot;the range the connector applied&quot; differ by a day at the    top end and the run record should write the resolved one.</p>
+<ol><li>**Every link in a Substack issue is wrapped, and the wrapper carries a</li></ol>
+<p>   recipient token.<strong> Links arrive as    <code>https://substack.com/redirect/&lt;uuid&gt;?j=&lt;token&gt;</code>, where the token is a signed    blob identifying the subscriber, and the publisher URL is </strong>not recoverable    from the string** — the uuid is opaque. Two consequences, and the second is    the sharper one:</p>
+<ul><li>This shape needs <code>story-record.md</code> §4&#39;s <em>optional single HEAD follow</em>, not</li></ul>
+<p>     the unwrap table, which settles nothing about whether the follow is on by      default but does say that for at least one major sender the table alone      cannot unwrap. <code>plan.md</code> §6 leaves that open on the phase 6 merge rate;      this is a second input to it.</p>
+<ul><li><strong>The token must never be stored.</strong> It identifies the recipient, it would</li></ul>
+<p>     travel into <code>url_key</code> and therefore into §12&#39;s published page, and it is      exactly the class of thing §6 says the design keeps nothing of. Phase 1&#39;s      normalisation should drop the whole query string of an unwrappable      redirector rather than only the <code>utm_*</code> family, and mark it unwrapped.</p>
+<ol><li><strong>Result counts are not to be trusted, and paging is the only honest count.</strong></li></ol>
+<p>   <code>resultCountEstimate</code> was exact on small result sets and returned a flat    <code>201</code> on every large one. §5.2&#39;s run record reports issues per source, so it    must count what it paged rather than what the search claimed. Page size is    capped at 50.</p>
+<p>Two smaller notes, recorded because they cost nothing here and an afternoon later: an empty result comes back as an empty object with no <code>threads</code> key at all, and archived mail is searched by default, which is what the harvest wants since a newsletter read a year ago is not in the inbox.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled</strong>: the §2 seam&#39;s Gmail implementation is a thin one. Search takes a</li></ul>
+<p>  Gmail query string built from an inventory entry&#39;s matchers; read takes a   message id and returns plain text. Nothing in phases 1–5 has to bend around a   connector limitation, which is what <code>plan.md</code> §1&#39;s rule 1 was betting on.</p>
+<ul><li><strong>Settled</strong>: label matchers are usable, so §4&#39;s <code>match</code> union is a real</li></ul>
+<p>  feature rather than half of one.</p>
+<ul><li><strong>Not settled</strong>: whether the HEAD follow is on by default. Phase 6&#39;s merge</li></ul>
+<p>  rate still decides it (<code>plan.md</code> §6); condition 3 only establishes that the   table cannot carry Substack on its own.</p>
+<ul><li><strong>Not settled</strong>: anything about <em>which</em> senders are in scope.</li></ul>
+<p>  <code>newsletter-inventory</code> is untouched by this and stays a <code>data:</code> blocker — the   probe deliberately asked what the connector can do, not what is in the   mailbox.</p>
+<ul><li><strong>Changes phase 1</strong>: normalisation drops the full query string on an</li></ul>
+<p>  unwrappable redirector (condition 3), which is a <code>redirectors.json</code> case to   fixture rather than a new mechanism.</p>
+<ul><li><strong>Changes phase 3</strong>: the From address is verified after the search</li></ul>
+<p>  (condition 1), and the run record writes the resolved date range   (condition 2) and a paged count (condition 4).</p>
+<p><strong>No mailbox content is recorded here or anywhere in this repository</strong> — no sender addresses, no subjects, no message ids, no body text. §4 already keeps the inventory out of the repo on the same grounds: it names a person&#39;s mailbox. The probes are reproducible from the query shapes in the table above against any mailbox that receives a newsletter.</p>
+<h3>2026-08-17 — Phase 1: four things the store had to settle that the spec left open</h3>
+<p><code>plan.md</code> §4 asks each phase to record what it settled rather than bury it in a constant. Phase 1 settled four, and the first two are the kind that cannot be revisited once records exist.</p>
+<p><strong>Ids carry the rule that made them</strong> — <code>u1-</code> for <code>(source, issue_date, url_key)</code>, <code>a1-</code> for <code>(source_doc, source_anchor)</code>, then a truncated SHA-256 of those inputs. <code>plan.md</code> §3 already said a change to identity does not migrate; the prefix is what makes such a change visible in the data instead of something a later reader infers from a pile of duplicates. Four characters, once.</p>
+<p><strong>An id is assigned at first write and never re-derived.</strong> After a case 2 merge the surviving record&#39;s <code>source</code> and <code>issue_date</code> move to the earlier issue&#39;s, so re-deriving would silently invalidate every reference to the old id — a verdict file, a <code>merged_from</code> entry elsewhere. Instead the absorbed id stays in <code>merged_from</code> and the store&#39;s index resolves it to the survivor. Both sides&#39; derived ids therefore land on the same record, which is what makes a merge idempotent rather than a source of duplicates on the next run, and it is the reading of <code>test-plan.md</code> §4.1&#39;s &quot;every merge is recoverable from <code>merged_from</code> alone&quot; that the code implements: a hash is not invertible, so what recoverable can usefully mean is that the absorbed identity still resolves.</p>
+<p><strong>The sources a merge keeps are kept as <code>source:</code> tags</strong>, not as a new field. <code>story-record.md</code> §1.1 already names the source as a thing tags are for, and a second source field would be one more thing every reader of the store has to be taught — including, under the standing fallback, the bookmark sorter&#39;s importer.</p>
+<p><strong>An unwrappable redirector loses its whole query string.</strong> Stricter than <code>story-record.md</code> §4&#39;s &quot;kept as-is&quot;, and the reason is phase 0&#39;s condition 3: those query strings hold a recipient identifier, and §6 is what makes §12&#39;s published page safe. The cost is that such a link may not resolve when clicked, which is a further input to <code>plan.md</code> §6&#39;s open question about the HEAD follow — it is no longer only about the merge rate, because for these senders it is also the difference between a working link and a marked one.</p>
+<h4>What this leaves open</h4>
+<ul><li><strong>Whether case 2 should be strictly cross-source.</strong> The code merges on</li></ul>
+<p>  <code>url_key</code> whatever the source, so one newsletter linking an article in two   issues also merges. Same reader question, same single answer — but   <code>story-record.md</code> §3 says &quot;from two sources&quot;, so this is a reading rather than   the letter. A one-line change if the letter was meant.</p>
+<ul><li><strong>The HEAD follow&#39;s default</strong>, still <code>plan.md</code> §6&#39;s, still decided by evidence</li></ul>
+<p>  that does not exist until phase 6.</p>
+<h3>2026-08-18 — Phase 2: which decision the model is allowed to make, in code</h3>
+<p><code>spec.md</code> §3&#39;s option D is &quot;the shape is declared, the model reads within it&quot;. Building it forced that into something more specific, and the specific version is the one worth recording: **the model returns a link <em>index</em>, never a URL and never an anchor.**</p>
+<p>The document owns the link positions, the heading paths and the text (<code>src/html.mjs</code>); the model chooses which of those links are stories and writes the blurb or the summary. Everything a record&#39;s identity depends on is therefore computed from the bytes of the issue, which is what §3.3 requires and what a reply carrying hrefs would have quietly broken — one mis-copied character in a URL is a new <code>url_key</code>, a new id, and a duplicate that no test would catch.</p>
+<h4>Three structural guards, and why they are not the model&#39;s job</h4>
+<p>Under option D the model does the reading, so on paper every one of these is a prompt problem. They are in the harvester anyway, and the reason is <code>test-plan.md</code> §3&#39;s: <em>the chrome is in every issue, so a contract that only meets it in a hard case has the difficulty exactly backwards.</em></p>
+<ul><li><strong>Chrome is refused</strong> — unsubscribe, preferences, <code>mailto:</code>, and any link under</li></ul>
+<p>  a heading matching sponsor / advertisement / <em>together with</em>. A backstop, not   the mechanism: refusals are counted per issue, so a prompt that starts   returning the footer shows up as a number rather than as a page of junk.</p>
+<ul><li>**A link inside a heading is refused on <code>link-list</code> and accepted on</li></ul>
+<p>  <code>annotated-digest</code>.** The same structure means opposite things in the two   shapes — a section heading in one, an item&#39;s own title in the other — which is   why it is a per-contract field rather than a global rule.</p>
+<ul><li>**A verbatim blurb that is not in the issue is refused, and the story is</li></ul>
+<p>  dropped.** This is the one place phase 2 is stricter than §3.2&#39;s &quot;flag, never   suppress&quot;, and the distinction is deliberate: a count anomaly means real   stories and a suspicious number, while an unverifiable blurb means the text a   reader would judge on was not written by the source. §3.1 forbids inventing   text outright, the link is still recoverable from <code>source_doc</code>, and the   refusal is named in the report. Alternative considered and rejected: keep the   story with an <code>err:text</code> tag, which puts fabricated prose in front of the   reader in exchange for a link the next run re-harvests anyway.</p>
+<h4>What this leaves open</h4>
+<ul><li><strong>The chrome patterns are English and are ours.</strong> They cost nothing and catch</li></ul>
+<p>  the case in bulk; a sender whose footer says something else is caught by the   model instead. The refusal counts are what would show this failing.</p>
+<ul><li><strong>Whether the strict reply parser is too strict.</strong> A finding with an unknown</li></ul>
+<p>  field is refused outright rather than trimmed. Cheap to relax, and the   argument for keeping it is that a model doing something the contract did not   ask for is a finding about the prompt.</p>
+<h3>2026-08-18 — A long-form issue&#39;s second story needs an anchor of its own</h3>
+<p><code>spec.md</code> §3.1 gives a long-form story the anchor <code>document</code>, and §3.2 says a long-form source yielding more than one story is the loud case, reported first and by name. <strong>Implemented literally, those two cancel out.</strong></p>
+<p>Every finding takes the same anchor, so every finding after the first collides on identity and is refused as a duplicate — the yield is 1 however many came back, the band is never exceeded, and the loud case can never fire. The pipeline would silently swallow precisely the failure <code>objectives.md</code> calls the sharpest test. It was found by writing the test for the loud case and watching it not fire.</p>
+<p><strong>So the extras are disambiguated</strong>: <code>document</code> for the first story, <code>document#link:&lt;n&gt;</code> for any later one that names a link, <code>document#&lt;n&gt;</code> for one that does not. The stories are written, the band flags them, and the loud case reports the source and the issue by name.</p>
+<p>The cost, recorded rather than absorbed: an extra&#39;s identity is only as stable as the reply&#39;s ordering when it names no link. That applies solely to a case that is already flagged as a broken extraction — and a flagged story a person will look at is worth more than a stable id for a story nobody will see.</p>
+<p><code>spec.md</code> §3.1&#39;s anchor row should say so, since read alone it specifies a pipeline in which §3.2&#39;s loud case is unreachable.</p>
+<h3>2026-08-18 — Phase 2: the count bands, measured</h3>
+<p><code>test-plan.md</code> §4.2&#39;s measured row, against the fixtures and their recorded replies (<code>work/measure-bands.mjs</code>):</p>
+<div class="table-scroll"><table><thead><tr><th>Issue</th><th>Extracted as</th><th>Links</th><th>Findings</th><th>Stories</th><th>Refused</th><th>Band</th></tr></thead><tbody><tr><td><code>link-list-typical</code></td><td><code>link-list</code></td><td>46</td><td>45</td><td>40</td><td>5</td><td>10–60</td></tr><tr><td><code>link-list-headings</code></td><td><code>link-list</code></td><td>15</td><td>14</td><td>13</td><td>1</td><td>10–60</td></tr><tr><td><code>annotated-digest-typical</code></td><td><code>annotated-digest</code></td><td>9</td><td>8</td><td>8</td><td>0</td><td>3–15</td></tr><tr><td><code>long-form-citations</code></td><td><code>long-form</code></td><td>27</td><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><td><code>long-form-roundup</code></td><td><code>long-form</code></td><td>14</td><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><td><code>long-form-roundup</code> <em>(override)</em></td><td><code>link-list</code></td><td>14</td><td>12</td><td>12</td><td>0</td><td>10–60</td></tr><tr><td><code>empty-issue</code></td><td><code>link-list</code></td><td>1</td><td>0</td><td>0</td><td>0</td><td>10–60 → <strong>under</strong></td></tr></tbody></table></div>
+<p><strong>§3.1&#39;s first-cut bands are kept unchanged</strong>, and the honest reason is that this measurement cannot move them. The fixtures were composed rather than derived from real issues — there is no mailbox yet — so a band fitted to them would be a band fitted to what we imagined a newsletter looks like. <code>test-plan.md</code> §2.2 is explicit that a fixture written by whoever wrote the contract tests the contract against its own assumptions, and that is the state this measurement is in. <strong>The bands are decided by phase 6</strong>, against real issues, and this table is the before.</p>
+<p>What the table does establish is the pipeline: the band is computed on stories <em>kept</em>, not findings <em>returned</em>, so an issue whose reply was mostly chrome counts as the small yield it really was. And the empty issue flags <code>under</code> rather than passing quietly, which is the behaviour §5.1 wants for a message that matched and produced nothing.</p>
+<h4>What this leaves open</h4>
+<ul><li><strong>The eval score per contract</strong>, which is the other half of <code>test-plan.md</code></li></ul>
+<p>  §4.2&#39;s exit and needs a live model rather than a recording. Recorded as its   own todo item (<code>eval-contracts</code>) with the rubric to score against, because a   measured row that quietly does not happen is how §2.1&#39;s warning comes true.</p>
+<ul><li><strong>Fixtures derived from real issues.</strong> They arrive with the inventory, and</li></ul>
+<p>  until then the adversarial cases are as adversarial as we could imagine rather   than as adversarial as a mailbox is.</p>
+<h3>2026-08-18 — Phase 2: the live contract eval, and the singular reply that does not parse</h3>
+<p>The live baseline used <code>gpt-5.6-sol</code> with no reasoning pass. Each call received the exact request produced by <code>buildRequest()</code> — the contract, numbered links and fixture text — outside the repository context. The reply then went through the same strict parser and extractor as a harvest. No recorded response was substituted for a live one.</p>
+<h4>The rubric</h4>
+<p>Ten points per contract, two for each row. The same rubric applies on a later run; changing it would make the scores incomparable.</p>
+<div class="table-scroll"><table><thead><tr><th>Criterion</th><th>2 points</th><th>1 point</th><th>0 points</th></tr></thead><tbody><tr><td>Wire contract</td><td>The exact reply parses</td><td>A mechanical cleanup that the parser deliberately refuses would make it parse</td><td>It cannot be recovered as the requested findings</td></tr><tr><td>Yield and selection</td><td>Exact expected count and links</td><td>One omission or extra</td><td>More than one wrong item, or the wrong unit</td></tr><tr><td>Exclusions</td><td>No chrome, heading or citation becomes a story</td><td>One excluded thing is returned</td><td>The watched failure occurs in bulk</td></tr><tr><td>Text</td><td>Verbatim shapes copy every blurb; long-form accurately states thesis, evidence and conclusion</td><td>Grounded but incomplete</td><td>Invented, misleading or missing</td></tr><tr><td>Unit and grouping</td><td>One finding per contract unit</td><td>Right material with one grouping error</td><td>The contract&#39;s watched split/merge failure occurs</td></tr></tbody></table></div>
+<p><strong>Operational cap:</strong> a wire-contract score below 2 caps the contract at 4/10. Content that cannot enter the extractor is useful evidence about the prompt, but it is not a partly working harvest.</p>
+<h4>The scores</h4>
+<div class="table-scroll"><table><thead><tr><th>Contract</th><th>Score</th><th>Live evidence</th></tr></thead><tbody><tr><td><code>link-list</code></td><td><strong>10/10</strong></td><td><code>link-list-typical</code> produced exactly the 40 story links (3–42), no sponsor or footer; <code>link-list-headings</code> produced 13 and omitted the linked section heading; the <code>long-form-roundup</code> override produced exactly its 12 reading links. All 65 blurbs passed the verbatim check and the extractor refused none</td></tr><tr><td><code>annotated-digest</code></td><td><strong>10/10</strong></td><td>Eight findings became eight records; the three-paragraph item stayed one; every commentary block passed the verbatim check; no item was refused or count-flagged</td></tr><tr><td><code>long-form</code></td><td><strong>4/10 operational</strong> <em>(8/10 content before the cap)</em></td><td>The citation-dense column became one accurate summary with the column&#39;s own link and date, no citation became a story, and the thesis, evidence and remedies survived. But the model returned the one finding as a JSON object. <code>parseFindings()</code> requires an array (or <code>{findings: [...]}</code>), so the exact live reply failed with <code>reply for long-form is not a list of findings</code></td></tr></tbody></table></div>
+<p>The long-form diagnosis is narrower than the score makes it look. Wrapping the unchanged live object in an array produced one unflagged record with <code>text_is_summary: true</code>; no content or identity rule then failed. The prompt says &quot;Return exactly one finding, as JSON&quot;, and a singular object is a reasonable answer to that sentence. The parser is strict by design, so the prompt must name the wire shape it actually accepts: <strong>&quot;Return a JSON array containing exactly one finding.&quot;</strong></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The link-list and annotated-digest contracts have a 10/10 fixture baseline.</li></ul>
+<p>  A later prompt change has a number to beat without moving the fixtures or the   rubric.</p>
+<ul><li>Phase 2&#39;s measured eval row has happened; a poor score is a finding, not a</li></ul>
+<p>  reason to leave the measurement todo open. A new actionable item records the   long-form wire fix instead.</p>
+<ul><li>The count bands are unchanged. This eval measured selection quality, not real</li></ul>
+<p>  newsletter volume.</p>
+<ul><li>This is still a synthetic baseline. Phase 6 must repeat the eval against the</li></ul>
+<p>  fixture set derived from the real inventory before these scores can say how   the contracts behave on a mailbox.</p>
+<h3>2026-08-18 — Phase 3: what a run keeps about a message, and where tagging enters</h3>
+<p>The phase 3 loop settled two seams the spec named but did not shape.</p>
+<p><strong>A matched message becomes a small <code>source_doc</code> entry inside the run record, not a new top-level store collection.</strong> It carries only the document id, source key, issue date, extracted shape, story count and count-flag state. That is the minimum that proves <code>empty-issue</code> was fetched and yielded nothing. Keeping the subject, From address or body would contradict §6; keeping a second durable collection would make every future store reader learn a structure §7 never specified.</p>
+<p><strong>Harvest-time themes enter through a tagger seam after extraction and before merge.</strong> The tagger sees story records and a safe issue label, never the mailbox body, and returns ordinary free-string tags. <code>theme:energy</code> has no privileged representation or provenance bit, which is exactly §10.1&#39;s replaceability rule: the same tag may later come from a store-wide pass or a person.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The message-source seam is two calls: search returns envelopes, then read</li></ul>
+<p>  returns a body. The exact From check sits between them, so Gmail&#39;s plus-tag   over-match is refused before content is fetched and receives no <code>source_doc</code>.</p>
+<ul><li>The run record identifies the inventory by id and source keys. It does not</li></ul>
+<p>  copy the private matchers into the store.</p>
+<ul><li>The fixture tagger proves the write path, not the quality of theme judgement.</li></ul>
+<p>  Phase 7 still builds the store-wide tagging skill, where enough stories exist   for themes and clusters to mean something.</p>
+<ul><li><code>source_doc</code> remains an opaque id. How Gmail constructs one is phase 6&#39;s</li></ul>
+<p>  connector implementation and must not leak a message body or recipient token.</p>
+<h3>2026-08-18 — The first newsletter inventory</h3>
+<p>The user supplied exactly three sources, with a rolling reach and an extraction shape for each:</p>
+<div class="table-scroll"><table><thead><tr><th>Source key</th><th>Gmail match</th><th>Lookback</th><th>Shape</th></tr></thead><tbody><tr><td><code>yglesias</code></td><td><code>from:yglesias</code></td><td>14 days</td><td><code>long-form</code></td></tr><tr><td><code>fix-the-news</code></td><td><code>from:fixthenews@substack.com</code></td><td>28 days</td><td><code>annotated-digest</code></td></tr><tr><td><code>chopwood-carrywater-extra</code></td><td><code>from:chopwoodcarrywaterdailyactions subject:extra</code></td><td>28 days</td><td><code>link-list</code></td></tr></tbody></table></div>
+<p>The third row is an intersection: both the From token and a subject containing <code>extra</code> must match. Treating those two conditions as the inventory&#39;s ordinary union would harvest every message from that sender and every unrelated message whose subject contains <code>extra</code>, which is far outside the answer.</p>
+<p>The lookbacks are source-relative defaults inside an explicit run range. For a run ending on local date <code>before</code>, each source starts no earlier than <code>before - lookback_days</code>; a caller may request a narrower range, never a wider one. This keeps §5.1&#39;s repeatability rule — the resolved per-source dates are still written to the run record — while preserving the user&#39;s different reach for each source.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> these are the only sources in scope, their match conditions,</li></ul>
+<p>  their rolling lookbacks, and their declared extraction shapes.</p>
+<ul><li><strong>Settled:</strong> <code>newsletter-inventory</code> is complete. The actual inventory file</li></ul>
+<p>  remains private beside the store, as §4 requires; this decision is the durable   source from which phase 6 fills it.</p>
+<ul><li><strong>Not settled:</strong> the redirect-unwrapping rule for each sender. Phase 6 learns</li></ul>
+<p>  those rules from real issues rather than guessing them from the address.</p>
+<ul><li><strong>Not settled:</strong> whether the declared shapes fit every issue. §3.2&#39;s per-issue</li></ul>
+<p>  override and count flags remain the mechanism for exceptions.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/repo-guide/build-checks" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
