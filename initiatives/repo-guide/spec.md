@@ -132,10 +132,25 @@ click away, at `/initiatives/`, and does not need repeating here.
 
 ### 3.3 How the facts are read
 
-**By importing them, not by parsing the file as text.** `initiatives.mjs`
-currently keeps `STAGES`, `STAGE_DOCUMENTS`, `BLOCKER_PREFIXES`, `HUMAN_BLOCKERS`
-and `PROPOSABLE_BLOCKERS` as module-private constants; the change this spec asks
-for is a one-line `export` on each, and the generator imports the module.
+**By importing them, not by parsing the file as text.** `initiatives.mjs` keeps
+`STAGES`, `STAGE_DOCUMENTS`, `BLOCKER_PREFIXES`, `HUMAN_BLOCKERS` and
+`PROPOSABLE_BLOCKERS` as module-private constants, so each needs an `export`.
+
+**And one thing this spec first got wrong, corrected here because the difference
+is instructive.** The earlier draft said the change was "a one-line `export` on
+each" — drafting it found that it is not. The module's CLI dispatch is
+top-level, so importing it fell through the `switch` to `default:` and called
+`process.exit(2)`: the importing process died before it saw a value. The exports
+alone would have produced a generator that failed in a way that looks like the
+generator's fault rather than a module that was never importable. The dispatch
+now sits behind a run-as-a-program guard, and a test pins the guard, since an
+ordinary refactor could drop it with every other test green — the CLI would keep
+working and only the import would break.
+
+Worth keeping in mind for the rest of this spec: **"just add an export" was a
+guess about somebody else's file, and it was wrong on first contact.** The other
+extraction targets in §3.2 — the workflow YAML, the skill frontmatter,
+`build.sh`'s content areas — have had no such contact yet.
 
 | Option | Strengths | Weaknesses |
 |---|---|---|
@@ -336,10 +351,11 @@ produces them, and whoever asked takes them from `guide/out/`.
 ### 9.3 What still touches a protected path, and what no longer does
 
 **One change, not three.** The generator reads the fact set by importing
-`scripts/initiatives.mjs` (§3.3), and five constants there are module-private:
-`STAGES`, `STAGE_DOCUMENTS`, `BLOCKER_PREFIXES`, `HUMAN_BLOCKERS` and
-`PROPOSABLE_BLOCKERS`. Each needs an `export` keyword. Nothing else in that file
-changes, and nothing that uses it changes.
+`scripts/initiatives.mjs` (§3.3): five constants there gain an `export`, and the
+CLI dispatch gains a run-as-a-program guard so that importing the module does not
+run a command. Nothing else in that file changes, and nothing that uses it
+changes. **It is drafted** — see the pull request opened alongside this spec's
+review round.
 
 `initiatives/sweep.json` protects `shared/`, `scripts/` and `.github/`, so a
 sweep pull request cannot make even that one edit — it has to arrive as an

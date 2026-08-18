@@ -39,3 +39,11 @@ Each artefact is a **single self-contained HTML file** - styling, script and dat
 A vocabulary correction, which was worth more than it looked: the spec said "hand-written" and "hand-drawn" where it meant "not derived from a source". Nothing here is written by hand - it is all authored by an agent. The distinction that matters is where a sentence gets its truth, so the words are now **derived** and **composed**, defined once in §1.
 
 The protected-path change shrank from three edits to one: five `export` keywords in scripts/initiatives.mjs, drafted as its own pull request because a sweep branch cannot touch scripts/.
+
+## 2026-08-18 — The enabling change, drafted and found to be bigger than stated
+
+Asked for on review: draft the protected-path change the spec says it needs. Doing it turned up something the spec had asserted without checking.
+
+The spec said the change was "a one-line `export` on each" of five constants in scripts/initiatives.mjs. It is not. That module's CLI dispatch is top-level, so importing it fell through the switch to `default:` and called process.exit(2) - the importing process died before it saw a value. Exporting alone would have produced a generator failing in a way that looks like the generator's fault. The dispatch now sits behind a run-as-a-program guard, with a test pinning the guard line, because an ordinary refactor could drop it with every other test staying green.
+
+§3.3 records the correction rather than quietly fixing the sentence, and draws the general lesson: "just add an export" was a guess about somebody else's file and it was wrong on first contact. The other extraction targets - workflow YAML, skill frontmatter, build.sh's content areas - have had no such contact yet.
