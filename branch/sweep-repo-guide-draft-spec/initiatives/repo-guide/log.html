@@ -55,6 +55,9 @@
 <p>Asked for on review: draft the protected-path change the spec says it needs. Doing it turned up something the spec had asserted without checking.</p>
 <p>The spec said the change was &quot;a one-line <code>export</code> on each&quot; of five constants in scripts/initiatives.mjs. It is not. That module&#39;s CLI dispatch is top-level, so importing it fell through the switch to <code>default:</code> and called process.exit(2) - the importing process died before it saw a value. Exporting alone would have produced a generator failing in a way that looks like the generator&#39;s fault. The dispatch now sits behind a run-as-a-program guard, with a test pinning the guard line, because an ordinary refactor could drop it with every other test staying green.</p>
 <p>§3.3 records the correction rather than quietly fixing the sentence, and draws the general lesson: &quot;just add an export&quot; was a guess about somebody else&#39;s file and it was wrong on first contact. The other extraction targets - workflow YAML, skill frontmatter, build.sh&#39;s content areas - have had no such contact yet.</p>
+<h3>2026-08-18 — The enabling change merged; the spec&#39;s prerequisite is gone</h3>
+<p>#235 merged during the review round, so §9.3 is rewritten from a thing plan.md has to sequence around into a thing already done. The five constants are importable and the CLI dispatch is guarded, both with tests.</p>
+<p>The practical effect is worth stating once: <strong>no protected-path work is left in this initiative&#39;s build.</strong> Everything remaining lives inside guide/ plus the tests/ path §9.5 asks it to declare, so it can be built end to end by a sweep rather than waiting on a hand-landed change.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/repo-guide/draft-spec" data-root="../../">
