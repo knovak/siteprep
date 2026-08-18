@@ -103,6 +103,7 @@
 <p><strong>Sizing.</strong> Grid cells are ~300 px wide on a widescreen layout, so captures are downscaled to a fixed size at capture time. Ten thousand items at that size is a few hundred megabytes — not the constraint. Only pass 2 costs money, and only for the minority of items that reach it.</p>
 <p><strong>Failure is data.</strong> A fetch that 404s, times out, or resolves to a parked domain writes an <code>err:</code> tag on every item sharing that <code>url_key</code> (<code>err:404</code>, <code>err:timeout</code>, <code>err:tls</code>). A dead link is often an instant verdict.</p>
 <p><strong>Third-party disclosure, recorded as an accepted cost.</strong> Pass 2 sends URLs to a vendor. Metadata-first means only gap items go, not the whole pile — a fraction, not all of it — but it is a real disclosure and is written down here rather than argued away.</p>
+<p><strong>Current configuration: no vendor.</strong> On 2026-08-18 the user chose none at present, so pass 2 stays off. <code>decisions.md</code> records three candidates and a conditional recommendation; neither that shortlist nor the stubbed integration authorises an account, a key, or spend.</p>
 <h4>The API key, and why pass 2 ships switched off</h4>
 <p>A paid screenshot API means a secret, and a secret in a web app is only as safe as the place it is kept. <strong>Pass 2 therefore ships behind a switch that is off until key custody is resolved</strong>, and the resolution is a hosting question rather than a coding one: the host either provides a server-side secret store and a server-side place to call from, or it does not.</p>
 <p>What this means concretely:</p>
@@ -256,8 +257,8 @@
 <h3>13. Open for the plan</h3>
 <ul><li><strong>Where the screenshot API key lives</strong>, which §6 makes the gate on pass 2. It</li></ul>
 <p>  is the first thing to sequence: the pipeline is built and tested with the   vendor call stubbed, and shipping it is a configuration change once the answer   exists.</p>
-<ul><li>Which OpenAI surface, judged against the table in §10.</li><li>Which screenshot vendor, and what its retention terms are — the disclosure in</li></ul>
-<p>  §6 is easier to accept from a vendor that does not keep the images.</p>
+<ul><li>Which OpenAI surface, judged against the table in §10.</li><li>Whether pass 2 proves valuable enough to revisit the current no-vendor</li></ul>
+<p>  decision, and whether target-URL logging is acceptable if it does.</p>
 <ul><li>Whether a user may hold several collections of their own. The wish&#39;s &quot;one per</li></ul>
 <p>  user&quot; implies not; the &quot;choose collection&quot; menu has to render either way, and   §5 does not prevent it.</p>
 <ul><li>What seeds the demo collection, and where that content lives.</li><li>Whether the app&#39;s own cheap cluster proposals (§8.2) are computed at ingestion</li></ul>

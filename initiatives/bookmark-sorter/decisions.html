@@ -211,6 +211,31 @@
 <p>  because the processor is a function taking a batch. Whichever is chosen calls   the same thing.</p>
 <ul><li><strong>Left open:</strong> whether pass 1 stays automatic at ingestion. It should — it is</li></ul>
 <p>  not deferred, it is part of landing the pile — and nothing in this decision   touches it.</p>
+<h3>2026-08-18 — Sites access is confirmed; the host spike may run</h3>
+<p><strong>Yes: ChatGPT Sites is available on the user&#39;s plan and in this workspace.</strong></p>
+<p>This is a permission fact, not evidence that the host meets the spec. It clears the only gate that prevented the drafted site in <code>probe/</code> from being run, so <code>host-spike</code> is actionable rather than blocked. The probes in <code>host-spike.md</code> still decide whether Sites is the host.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> Sites can be used for the phase 0 spike in this workspace. No</li></ul>
+<p>  alternative account or host is needed before the probe begins.</p>
+<ul><li><strong>Not settled:</strong> any row of <code>spec.md</code> §10. Availability is not a result for</li></ul>
+<p>  outbound HTTP, identity stability, row isolation, response size, secret   custody, cross-owner template reads, layout density, or metering.</p>
+<ul><li><strong>Still needs the user&#39;s authority after it is measured:</strong> whether Sites&#39;</li></ul>
+<p>  metered limits are acceptable. The probe supplies the numbers; it cannot   approve their cost.</p>
+<h3>2026-08-18 — No screenshot vendor is acceptable at present</h3>
+<p><strong>None at present.</strong> Capture pass 2 stays switched off, with no account, API key, or spend authorised. The stubbed integration remains part of phase 3 so the feature can be evaluated later without redesigning the queue.</p>
+<p>The user asked for three choices and a recommendation for that later decision. Prices and policies below were checked on 2026-08-18 and must be rechecked before purchase.</p>
+<h4>Alternatives considered for a later revisit</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Current entry price</th><th>Retention terms relevant here</th><th>Assessment</th></tr></thead><tbody><tr><td><strong><a href="https://screenshotone.com/pricing/">ScreenshotOne Basic</a></strong></td><td>$17/month for 2,000 successful renders; $0.009 per extra</td><td>Its <a href="https://screenshotone.com/privacy-policy/">privacy policy</a> says the default binary response is not stored persistently when caching and storage are disabled. Temporary processing may occur, and request metadata including the target URL is logged</td><td><strong>Recommended if pass 2 is later approved.</strong> Lowest-priced candidate that can avoid persistent image storage, and its direct binary response fits the app&#39;s own URL-keyed capture store</td></tr><tr><td><a href="https://urlbox.com/pricing">Urlbox Hi-Fi</a></td><td>$49/month for 5,000 renders</td><td>The <a href="https://urlbox.com/products/screenshot-api">Screenshot API</a> advertises zero data retention and bring-your-own storage. Render Links cache images for 30 days by default, so the implementation would have to use the synchronous API and verify the zero-retention terms before purchase</td><td>Stronger compliance posture and support, but nearly three times the minimum monthly cost</td></tr><tr><td><a href="https://www.screenshotapi.net/pricing">ScreenshotAPI.net Essential</a></td><td>$9/month for 1,000 renders</td><td>Its <a href="https://www.screenshotapi.net/help">help page</a> says paid-tier screenshots are kept for six months</td><td>Cheapest, but incompatible with the stated retention priority</td></tr></tbody></table></div>
+<h4>Recommendation, and what would change it</h4>
+<p>If the value of pass 2 later justifies spending, start with a bounded ScreenshotOne Basic trial using the default binary response, <code>cache=false</code>, no vendor storage, and the app&#39;s own downscaled store. Before paying, confirm that logging target URLs is acceptable; &quot;no persistent image&quot; is narrower than no retention of request metadata.</p>
+<p>Choose Urlbox instead if formal zero-retention assurance, SOC 2 controls, or support is worth the higher subscription. ScreenshotAPI.net becomes eligible only if its six-month retention changes or the retention requirement changes.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> no vendor is selected now, and pass 2 remains off. This completes</li></ul>
+<p>  the present vendor-choice item without authorising future spend.</p>
+<ul><li><strong>Settled:</strong> ScreenshotOne is the first candidate to trial if the question is</li></ul>
+<p>  reopened under the same price and retention priorities.</p>
+<ul><li><strong>Not settled:</strong> whether pass 2 produces enough value to reopen the question,</li></ul>
+<p>  whether target-URL logging is acceptable, or whether these prices and policies   remain current at that time.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">

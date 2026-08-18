@@ -183,6 +183,20 @@
 <p>  Phase 7 still builds the store-wide tagging skill, where enough stories exist   for themes and clusters to mean something.</p>
 <ul><li><code>source_doc</code> remains an opaque id. How Gmail constructs one is phase 6&#39;s</li></ul>
 <p>  connector implementation and must not leak a message body or recipient token.</p>
+<h3>2026-08-18 — The first newsletter inventory</h3>
+<p>The user supplied exactly three sources, with a rolling reach and an extraction shape for each:</p>
+<div class="table-scroll"><table><thead><tr><th>Source key</th><th>Gmail match</th><th>Lookback</th><th>Shape</th></tr></thead><tbody><tr><td><code>yglesias</code></td><td><code>from:yglesias</code></td><td>14 days</td><td><code>long-form</code></td></tr><tr><td><code>fix-the-news</code></td><td><code>from:fixthenews@substack.com</code></td><td>28 days</td><td><code>annotated-digest</code></td></tr><tr><td><code>chopwood-carrywater-extra</code></td><td><code>from:chopwoodcarrywaterdailyactions subject:extra</code></td><td>28 days</td><td><code>link-list</code></td></tr></tbody></table></div>
+<p>The third row is an intersection: both the From token and a subject containing <code>extra</code> must match. Treating those two conditions as the inventory&#39;s ordinary union would harvest every message from that sender and every unrelated message whose subject contains <code>extra</code>, which is far outside the answer.</p>
+<p>The lookbacks are source-relative defaults inside an explicit run range. For a run ending on local date <code>before</code>, each source starts no earlier than <code>before - lookback_days</code>; a caller may request a narrower range, never a wider one. This keeps §5.1&#39;s repeatability rule — the resolved per-source dates are still written to the run record — while preserving the user&#39;s different reach for each source.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> these are the only sources in scope, their match conditions,</li></ul>
+<p>  their rolling lookbacks, and their declared extraction shapes.</p>
+<ul><li><strong>Settled:</strong> <code>newsletter-inventory</code> is complete. The actual inventory file</li></ul>
+<p>  remains private beside the store, as §4 requires; this decision is the durable   source from which phase 6 fills it.</p>
+<ul><li><strong>Not settled:</strong> the redirect-unwrapping rule for each sender. Phase 6 learns</li></ul>
+<p>  those rules from real issues rather than guessing them from the address.</p>
+<ul><li><strong>Not settled:</strong> whether the declared shapes fit every issue. §3.2&#39;s per-issue</li></ul>
+<p>  override and count flags remain the mechanism for exceptions.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
