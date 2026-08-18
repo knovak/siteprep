@@ -1,0 +1,38 @@
+{
+  "_note": [
+    "test-plan.md §3's overlap-a / overlap-b, at the record layer rather than the",
+    "issue layer. Phase 1 has no extractor, so what it needs from those fixtures is",
+    "the pair of records they would produce: one article, two sources, two",
+    "different redirectors wrapping the same publisher URL.",
+    "",
+    "The .html issues those names refer to belong to phase 2, which is where an",
+    "extractor exists to read them. Keeping the pair here as records is what lets",
+    "story-record.md §3 case 2 be tested in the phase that implements it."
+  ],
+  "a": {
+    "url_raw": "https://substack.com/redirect/2/eyJlIjoiaHR0cHM6Ly93d3cucHVibGlzaGVyLmV4YW1wbGUvdGhlLXNoYXJlZC1hcnRpY2xlIiwicCI6OTl9",
+    "unwrap": "substack",
+    "title": "The shared article",
+    "text": "A blurb as the first newsletter wrote it.",
+    "source": "morning-memo",
+    "harvester": "newsletter-story-harvester",
+    "issue_date": "2026-08-12",
+    "shape": "link-list",
+    "source_doc": "issue:morning-memo/2026-08-12",
+    "source_anchor": "links/3",
+    "tags": ["theme:energy"]
+  },
+  "b": {
+    "url_raw": "https://click.example-news.test/f/a?url=https%3A%2F%2Fwww.publisher.example%2Fthe-shared-article%3Futm_source%3Dnewsletter",
+    "unwrap": "query-param",
+    "title": "The shared article, as the other one titled it",
+    "text": "A different blurb, from the second newsletter.",
+    "source": "weekly-roundup",
+    "harvester": "newsletter-story-harvester",
+    "issue_date": "2026-08-10",
+    "shape": "annotated-digest",
+    "source_doc": "issue:weekly-roundup/2026-08-10",
+    "source_anchor": "items/1",
+    "tags": ["theme:policy"]
+  }
+}
