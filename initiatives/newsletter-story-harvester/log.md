@@ -178,3 +178,7 @@ Proposed a 15-minute individual-judgment sitting after one resettable practice d
 ## 2026-08-18 — Revise the review-rate proposal after review selected option C
 
 Revised the proposal at the reviewer's direction to use a deterministic three-pass browser click-through. The phase-4 measurement is now actionable and is explicitly an interaction-throughput baseline, not a claim about human reading or judgment speed.
+
+## 2026-08-18 — Phase 5 - import verdict files idempotently and record the round trip
+
+Closed phase 5 with an addressed verdict/tag importer and atomic CLI: later verdict_at wins, open verdicts survive, wrong stores name both ids, untrusted story content is inert, and a canonical fingerprint makes duplicate files complete no-ops. The browser-to-store round trip and all 95 work tests pass; the recorded fixture import was 0 added, 3 matched, 0 merged, 0 conflicted, and 3 updated. Added the Gmail message-source adapter as the next actionable phase.

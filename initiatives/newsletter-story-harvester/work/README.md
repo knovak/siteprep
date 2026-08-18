@@ -11,7 +11,7 @@ No dependencies, no network, no real mailbox, and no live model — which is
 `plan.md` §2's seam paying for itself in the first phase that could have needed
 all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1–4
+## What is here — phases 1–5
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -57,6 +57,15 @@ all three. Node 18 or later, for the built-in test runner.
 | `fixtures/store-fixture.json` | Offline review input, including one unknown verdict to pin round-tripping | `test-plan.md` §4.4 |
 | `test/review-page.test.mjs` | Offline Playwright checks for every automated Phase 4 row | `test-plan.md` §4.4 |
 
+**Phase 5 — verdicts back into the store**
+
+| File | What it is | Specified in |
+|---|---|---|
+| `src/verdict-import.mjs` | The addressed verdict/tag importer: later judgment wins, unknown verdicts survive, wrong stores are refused, and duplicate files are complete no-ops | `spec.md` §9 |
+| `import-verdicts.mjs` | CLI that loads the durable store, imports one exported sitting, and writes atomically only when it is new | `plan.md` phase 5 |
+| `fixtures/verdicts-*.json` | A valid sitting, a wrong-store file, and an open-vocabulary verdict | `test-plan.md` §4.5 |
+| `test/verdict-import.test.mjs` | Every Phase 5 rule, including inert story content and a duplicate that does not append a second run | `test-plan.md` §4.5 |
+
 Generate a review file:
 
 ```bash
@@ -65,7 +74,20 @@ node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
   /tmp/newsletter-review.html
 ```
 
-Not here, deliberately: Gmail or any real inventory, and the verdict importer.
+Import its exported verdict file:
+
+```bash
+node initiatives/newsletter-story-harvester/work/import-verdicts.mjs \
+  /path/to/store.json \
+  /path/to/newsletter-verdicts-fixture-store-v1.json
+```
+
+The report always includes the §7.1 counters (`added`, `matched`, `merged`,
+`conflicted`) plus `updated`, `conflicts`, and a semantic file fingerprint.
+The second import of the same file returns `duplicate: true` and does not write
+the store or append a run record.
+
+Not here, deliberately: Gmail or any real inventory.
 Phase 3's source is a fixture implementation of the same two-call seam Gmail
 will use later: search returns envelopes, then the run verifies the actual From
 address before it reads a body. That keeps every phase through the working
@@ -181,5 +203,15 @@ change in `merge.mjs`.
 `test/review-page.test.mjs` opens the generated page from `file://` and covers
 self-containment, no store write path, expand/collapse, all sorts, tag filters,
 filtered `verdict-rest`, one-action undo, backlog count, unknown verdicts, and
-the downloaded verdict-file shape. The measured review-rate row remains a human
-sitting; the code does not manufacture that baseline from an automated browser.
+the downloaded verdict-file shape. The remaining phase 4 measurement is the
+deterministic three-pass browser click-through selected on review; it is an
+interaction-throughput baseline, not a claim about human judgment speed.
+
+## Phase 5 exit
+
+`test/verdict-import.test.mjs` and the browser round-trip test cover every row
+of `test-plan.md` §4.5. Against the committed fixture, the CLI imported one
+file as `0 added / 3 matched / 0 merged / 0 conflicted / 3 updated`, kept all 74
+stories, and recorded fingerprint
+`6e2b783695bfa920a789cac5c5c284b7d6a151f52a8e207844ccb431b0a19bf2`.
+Importing the same file again left the store byte-for-byte unchanged.

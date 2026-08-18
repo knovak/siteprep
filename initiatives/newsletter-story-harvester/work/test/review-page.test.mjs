@@ -6,6 +6,7 @@ import {after, before, test} from 'node:test';
 import {chromium} from '@playwright/test';
 
 import {reviewPageHtml} from '../src/review-page.mjs';
+import {importVerdictFile} from '../src/verdict-import.mjs';
 
 const fixturePath = new URL('../fixtures/store-fixture.json', import.meta.url).pathname;
 const store = JSON.parse(readFileSync(fixturePath, 'utf8'));
@@ -84,6 +85,20 @@ test('an individual verdict changes backlog and one undo reverses it', async () 
   assert.equal(await page.locator('#backlog').textContent(), '72 unjudged of 74');
   await page.locator('#undo').click();
   assert.equal(await page.locator('#backlog').textContent(), '73 unjudged of 74');
+  await page.close();
+});
+
+test('a verdict exported by the page imports against the same story id', async () => {
+  const {page} = await openPage();
+  const card = page.locator('.story[data-verdict=""]').first();
+  const id = await card.getAttribute('data-id');
+  await card.locator('summary').click();
+  await card.locator('button[data-verdict="kept"]').click();
+  const verdictFile = await page.evaluate(() => window.reviewPage.getExport());
+  const imported = structuredClone(store);
+  const report = importVerdictFile(imported, verdictFile, {now: '2026-08-18T18:00:00.000Z'});
+  assert.equal(report.conflicted, 0);
+  assert.equal(imported.stories.find(story => story.id === id).verdict, 'kept');
   await page.close();
 });
 

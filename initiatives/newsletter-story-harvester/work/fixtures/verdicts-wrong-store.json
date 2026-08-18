@@ -1,0 +1,12 @@
+{
+  "store_id": "another-store-v1",
+  "exported_at": "2026-08-18T12:00:00.000Z",
+  "verdicts": [
+    {
+      "id": "u1-e24c46cc4a50e555",
+      "verdict": "kept",
+      "verdict_at": "2026-08-18T11:00:00.000Z"
+    }
+  ],
+  "tags": []
+}
