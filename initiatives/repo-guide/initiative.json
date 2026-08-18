@@ -6,18 +6,9 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-checks",
-      "title": "Phase 2 - the section format, token substitution, and the three honesty checks",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false
-    },
-    {
       "id": "build-description",
       "title": "Phase 3 - the nine sections, the description renderer, the provenance footer, and the browser harness",
-      "state": "blocked",
-      "blocked_by": "todo:build-checks",
+      "state": "actionable",
       "value": "high",
       "effort": "large",
       "advances_stage": false
