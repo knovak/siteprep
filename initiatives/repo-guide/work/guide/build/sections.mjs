@@ -81,8 +81,12 @@ function factValue(facts, token) {
 }
 
 function display(value) {
-  if (Array.isArray(value)) return value.join(', ');
-  if (value && typeof value === 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) {
+    return value.map(item => display(item)).join('; ');
+  }
+  if (value && typeof value === 'object') {
+    return Object.entries(value).map(([key, item]) => `${key}: ${display(item)}`).join('; ');
+  }
   return String(value);
 }
 
@@ -116,7 +120,9 @@ function literalDiagnostics(section, facts, text) {
   }
 
   for (const prefix of prefixes) {
-    if (masked.includes(prefix)) diagnostics.push({level: 'error', rule: 'literal-blocker-prefix', section: section.id, value: prefix});
+    const notation = prefix.endsWith(':') ? prefix : `${prefix}:`;
+    const written = new RegExp(`\\b${escaped(notation)}`, 'g');
+    if (written.test(masked)) diagnostics.push({level: 'error', rule: 'literal-blocker-prefix', section: section.id, value: notation});
   }
 
   for (const value of Object.values(budget).filter(candidate => Number.isInteger(candidate))) {
@@ -157,6 +163,13 @@ export function compileSections(sections, facts) {
     pageText: renderText(section, 'pageText', facts, citedFacts, diagnostics),
     slideText: renderText(section, 'slideText', facts, citedFacts, diagnostics),
   }));
+  const metrics = sections.map(section => {
+    const source = `${section.pageText}\n${section.slideText}`;
+    const tokens = [...source.matchAll(TOKEN)].map(match => match[1]);
+    const composed = source.replace(TOKEN, ' ');
+    const composedWords = composed.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) ?? [];
+    return {section: section.id, composed_words: composedWords.length, resolved_tokens: tokens.length};
+  });
 
   for (const key of Object.keys(facts).sort()) {
     if (!citedFacts.has(key)) diagnostics.push({level: 'warning', rule: 'uncited-fact', section: '<all>', value: key});
@@ -166,7 +179,7 @@ export function compileSections(sections, facts) {
   if (rendered.some(section => section.pageText.includes('{{') || section.slideText.includes('{{'))) {
     throw new Error('Token substitution was incomplete');
   }
-  return {sections: rendered, diagnostics, citedFacts: [...citedFacts].sort()};
+  return {sections: rendered, diagnostics, citedFacts: [...citedFacts].sort(), metrics};
 }
 
 export function sectionLabel(section) {

@@ -93,3 +93,7 @@ Built the Phase 1 fact registry and CLI. Twenty live fact keys now resolve from 
 ## 2026-08-18 — Phase 2 - the section format, token substitution, and the three honesty checks
 
 Built the strict section frontmatter and page/slide reader, token substitution, structured diagnostics, and the three honesty checks. Added fixtures for unknown tokens, uncited facts, literal stages, budget numbers, blocker prefixes, and missing slide text; all 22 Phase 1 and Phase 2 tests pass.
+
+## 2026-08-18 — Phase 3 - the nine sections, the description renderer, the provenance footer, and the browser harness
+
+Completed phase 3 with nine ordered source sections, a self-contained SHA-pinned description renderer, per-section composed/token metrics, and an isolated file:// Playwright harness. The 23 Node tests and offline browser check pass; the first baseline is 1,076 composed words to 23 resolved tokens. Kept the non-automatable newcomer reading row as a separate data blocker and unblocked the deck phase.
