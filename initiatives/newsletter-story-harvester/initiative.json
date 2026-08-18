@@ -7,9 +7,8 @@
   "todo": [
     {
       "id": "measure-review-rate",
-      "title": "Run a timed human sitting over the fixture review page and record the first review-rate baseline",
-      "state": "blocked",
-      "blocked_by": "human:review the fixture stories in a timed sitting and report stories judged and elapsed time",
+      "title": "Measure automated verdict click-through on the fixture review page and record the interaction baseline",
+      "state": "actionable",
       "value": "high",
       "effort": "small",
       "advances_stage": false

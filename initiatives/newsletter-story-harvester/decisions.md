@@ -501,3 +501,69 @@ for each source.
   those rules from real issues rather than guessing them from the address.
 - **Not settled:** whether the declared shapes fit every issue. §3.2's per-issue
   override and count flags remain the mechanism for exceptions.
+
+## 2026-08-18 — How should the first review-rate baseline be measured?
+
+The fixture review page is working, but browser automation cannot supply the
+measurement that matters: how quickly a person can make real keep, drop, and
+emphasise decisions. The first baseline needs a protocol that is bounded enough
+to run now and specific enough that a later sitting can be compared with it.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A. Finish the full 73-story unjudged backlog** | Produces a completion time for the exact fixture and includes the slow tail as attention falls | The time commitment is unknown in advance; fatigue and interruptions can dominate the UI being measured; awkward to repeat after a change |
+| **B. Run a fixed 15-minute sitting after one resettable practice judgment** | Bounded, easy to repeat, long enough for startup effects to become a small part of the result, and still measures genuine per-story judgment | Samples only the beginning of the default ordering; gives a rate rather than a full-backlog completion time; requires an uninterrupted person before the phase can move |
+| **C. Measure an automated click-through** *(reviewer's choice)* | Cheap, deterministic, repeatable in CI, and exercises the actual browser interaction and state-update path | Measures rendering and button clicks, not reading or judgment; its result is an interaction-throughput baseline and must not be described as human review speed |
+| **D. Wait and measure only real mailbox stories** | Most representative of eventual use and avoids drawing conclusions from composed fixtures | Defers feedback on the review interaction until phase 6 and mixes UI throughput with extraction quality and unfamiliar real content |
+
+### Recommendation — revised to option C at reviewer direction
+
+**Recommend C: a deterministic automated click-through of the fixture page.**
+The reviewer answered the proposal with: *"I prefer option C. please use C"*.
+That changes the phase-4 baseline from human judgment speed to browser
+interaction throughput; it does not pretend that automation read the stories.
+
+Generate the page from the committed `store-fixture.json`, open it fresh with
+Playwright, and run three measured passes. In each pass, alternate `keep`,
+`drop`, and `emphasise` across every unjudged story, one verdict button at a
+time, until the backlog reaches zero. Reload the fixture between passes so each
+starts with the same 74-story state. Record:
+
+- elapsed milliseconds from the first verdict click through backlog zero;
+- the number of individual verdict clicks;
+- verdict clicks per second;
+- median and 95th-percentile click-to-state-update latency; and
+- whether every pass reached zero backlog without a browser error.
+
+Three fresh passes keep the result bounded while exposing a one-off outlier.
+Alternating verdicts exercises all three controls, and refusing the
+`verdict-rest` shortcut keeps this a measurement of the individual interaction
+path. The browser test can produce this evidence now and repeat it after UI
+changes. The original B recommendation remains the stronger way to measure
+*human* judgment throughput, but the reviewer chose a mechanical baseline for
+this phase.
+
+### What would change the recommendation
+
+- If the desired evidence becomes **human reading and judgment speed**, choose
+  B; C cannot supply it no matter how many times it is run.
+- If the desired number is **human time to clear this exact backlog**, choose A.
+- If representative real-story judgment matters more than an early repeatable
+  UI baseline, choose D.
+- If review moves into the bookmark sorter's generalised grid before this is
+  run, measure that surface instead with the same individual-click protocol.
+
+### What this settles, and what it does not
+
+- **If merged, settles:** that phase 4 uses an automated, three-pass,
+  individual-click browser baseline and the fields it records. The measurement
+  todo becomes actionable because it no longer waits on a person.
+- **Does not settle:** human review speed. The result must be labelled browser
+  interaction throughput, not stories judged per minute.
+- **Does not establish a pass threshold.** As `test-plan.md` says, the first
+  rate is a baseline, not a target retrofitted to one observation.
+- **Does not replace the phase 6 sitting on real stories.** It isolates review
+  mechanics now; the later sitting answers whether the complete harvest is
+  actually faster than reading the newsletters.
