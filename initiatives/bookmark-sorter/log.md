@@ -260,3 +260,7 @@ Ran the owner-only ChatGPT Sites probe. Outbound HTTP, a 10,000-item export, ide
 ## 2026-08-18 — Build the first phase 1 increment: the data model and idempotent bookmark ingestion
 
 Built the first phase 1 increment: a D1/SQLite schema, Netscape bookmark parser, narrow URL normaliser, idempotent merge pipeline, deterministic store adapter, fixtures, and six passing tests. Left the D1 adapter, upload/list surface, and 10,000-item sizing run as the next actionable increment.
+
+## 2026-08-18 — Finish phase 1 with the D1 adapter, file upload and list surface, and 10,000-item sizing test
+
+Finished phase 1 with an owner-scoped, bounded-batch D1 adapter; a 20 MB Netscape HTML upload endpoint; a responsive item-count/list surface; and an indexed generated sizing test that lands exactly 10,000 items. All 11 initiative tests pass. Added the blind virtualised grid as the next actionable phase.

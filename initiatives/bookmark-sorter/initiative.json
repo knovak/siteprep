@@ -6,20 +6,20 @@
   "outputs": [],
   "todo": [
     {
-      "id": "finish-pile-landing",
-      "title": "Finish phase 1 with the D1 adapter, file upload and list surface, and 10,000-item sizing test",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false
-    },
-    {
       "id": "confirm-sites-metering",
       "title": "Confirm that the workspace's Sites limits and cost are acceptable for the pile and capture store",
       "state": "blocked",
       "blocked_by": "cost:confirm the plan-specific Sites limits and accept them for 10,000 D1 items plus up to a few hundred MB of R2 captures",
       "value": "high",
       "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-blind-grid",
+      "title": "Phase 2 - build the virtualised blind grid, verdict functions, undo, marked sets, and session-rate instrument",
+      "state": "actionable",
+      "value": "high",
+      "effort": "large",
       "advances_stage": false
     }
   ]

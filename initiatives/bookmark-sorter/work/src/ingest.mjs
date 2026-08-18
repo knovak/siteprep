@@ -14,8 +14,8 @@ function earlier(left, right) {
   return left < right ? left : right;
 }
 
-export function ingestBookmarkHtml({store, collectionId, html, source, ingestedAt}) {
-  if (!store?.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+export async function ingestBookmarkHtml({store, collectionId, html, source, ingestedAt}) {
+  if (!await store?.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(source)) throw new Error('Source must be a tag-safe slug');
 
   const ingested = new Date(ingestedAt);
@@ -23,40 +23,57 @@ export function ingestBookmarkHtml({store, collectionId, html, source, ingestedA
   const ingestedIso = ingested.toISOString();
   const baseTags = [`src:${source}`, `in:${ingestedIso.slice(0, 10)}`];
   const parsed = parseBookmarkHtml(html);
+
+  const candidates = parsed.map(candidate => ({
+    url: candidate.url,
+    url_key: normaliseUrl(candidate.url),
+    title: candidate.title || candidate.url,
+    note: candidate.note,
+    added_at: isoFromBookmarkDate(candidate.add_date),
+    ingested_at: ingestedIso,
+    tags: candidate.folder_path
+      ? [...baseTags, `folder:${candidate.folder_path}`]
+      : baseTags,
+  }));
+
+  if (typeof store.ingestCandidates === 'function') {
+    const result = await store.ingestCandidates(collectionId, candidates);
+    return {parsed: parsed.length, ...result};
+  }
+
   let added = 0;
   let merged = 0;
 
-  for (const candidate of parsed) {
-    const urlKey = normaliseUrl(candidate.url);
-    const importTags = candidate.folder_path
-      ? [...baseTags, `folder:${candidate.folder_path}`]
-      : baseTags;
-    const existing = store.findItem(collectionId, urlKey);
+  for (const candidate of candidates) {
+    const existing = await store.findItem(collectionId, candidate.url_key);
 
     if (!existing) {
-      const item = store.insertItem({
+      const item = await store.insertItem({
         collection_id: collectionId,
         url: candidate.url,
-        url_key: urlKey,
-        title: candidate.title || candidate.url,
+        url_key: candidate.url_key,
+        title: candidate.title,
         note: candidate.note,
-        added_at: isoFromBookmarkDate(candidate.add_date),
+        added_at: candidate.added_at,
         ingested_at: ingestedIso,
         verdict: null,
         verdict_at: null,
       });
-      store.addTags(item.id, importTags);
+      await store.addTags(item.id, candidate.tags);
       added += 1;
       continue;
     }
 
-    store.updateItem(existing.id, {
-      added_at: earlier(existing.added_at, isoFromBookmarkDate(candidate.add_date)),
+    await store.updateItem(existing.id, {
+      added_at: earlier(existing.added_at, candidate.added_at),
       note: existing.note || candidate.note || null,
     });
-    store.addTags(existing.id, importTags);
+    await store.addTags(existing.id, candidate.tags);
     merged += 1;
   }
 
-  return {parsed: parsed.length, added, merged, total: store.listItems(collectionId).length};
+  const total = typeof store.countItems === 'function'
+    ? await store.countItems(collectionId)
+    : (await store.listItems(collectionId)).length;
+  return {parsed: parsed.length, added, merged, total};
 }
