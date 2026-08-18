@@ -218,3 +218,66 @@ their preceding bullet.
   unexpected line in that list is likewise an error.
 - The captured text is quoted. The guide may explain it separately, but may not
   paraphrase the prompt and call the paraphrase generated.
+
+## 2026-08-18 — Phase 3: the first description baseline and its source links
+
+The description is one self-contained HTML file with inline styling and no
+runtime data load. An authoritative Markdown link uses the explicit
+`source:<repository-path>` form. Generation first proves that path exists in the
+working tree, then renders a GitHub blob link pinned to the same short commit SHA
+shown in the footer. The browser harness checks both halves: the local file
+exists, and the outgoing URL contains that SHA.
+
+This makes a broken source reference a generation error while keeping a copy of
+the guide useful away from the checkout. Ordinary prose cannot accidentally
+become an authoritative link merely because it looks like a path.
+
+### Composed prose against resolved facts
+
+The first complete description measured:
+
+| Section | Composed words | Resolved tokens |
+|---|---:|---:|
+| What this repository is | 132 | 1 |
+| The initiative lifecycle | 122 | 2 |
+| Who supplies what | 152 | 3 |
+| How work gets picked up | 100 | 5 |
+| When a person is required | 129 | 3 |
+| Decks, briefly | 95 | 1 |
+| Demos, briefly | 96 | 1 |
+| Taking this elsewhere | 123 | 7 |
+| Where the real answers are | 127 | 0 |
+| **Total** | **1,076** | **23** |
+
+That is about 47 authored words per resolved token. It is a baseline, not a
+threshold. The last section intentionally has no fact token: its facts are the
+six explicit, SHA-pinned source links rather than values substituted into prose.
+
+### What the honesty checks found on the first real draft
+
+- The bare-stage warning fired twice, both on the ordinary-English word
+  "wish". Both occurrences genuinely describe the first lifecycle record and
+  were kept after review; the warning did its job without becoming a false
+  build failure.
+- The backticked-stage, stage-list, and budget-literal error rules fired zero
+  times.
+- The blocker rule initially matched ordinary words and paths because the live
+  constants contain namespace names without their colon. That was a real false
+  positive in the check, not in the prose. The rule now looks for namespace
+  notation; its existing colon-shaped fixture still pins the intended error.
+- One uncited-fact warning remains for the preview-cleanup workflow. The guide
+  cites the workflows that explain generation, deployment, and sweep behavior;
+  the cleanup job adds no newcomer-facing process fact.
+
+### What this settles, and what it does not
+
+- **Settled:** nine sections render in objective order and audience is always a
+  visible hint, never a filter.
+- **Settled:** the generated copy opens from `file://` with zero console errors,
+  failed requests, or network requests, and every authoritative link resolves
+  locally at generation time.
+- **Not settled:** whether the explanation works for a newcomer. That manual
+  test cannot be replaced by the browser harness and remains a separate data
+  blocker.
+- **Next:** the same section records can gain separately authored slide text;
+  the description renderer does not need to change for phase 4.

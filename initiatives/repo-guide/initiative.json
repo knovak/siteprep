@@ -6,18 +6,18 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-description",
-      "title": "Phase 3 - the nine sections, the description renderer, the provenance footer, and the browser harness",
-      "state": "actionable",
+      "id": "test-description-with-newcomer",
+      "title": "Have someone unfamiliar with the repository read the description and report whether they can identify a live stage and its next move",
+      "state": "blocked",
+      "blocked_by": "data:run the phase 3 newcomer reading test and report the result",
       "value": "high",
-      "effort": "large",
+      "effort": "small",
       "advances_stage": false
     },
     {
       "id": "build-deck",
       "title": "Phase 4 - the deck: slide text, the length check, and keyboard navigation",
-      "state": "blocked",
-      "blocked_by": "todo:build-description",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": false
