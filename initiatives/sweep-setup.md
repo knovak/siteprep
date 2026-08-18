@@ -15,8 +15,9 @@ Four things, and nothing else:
 1. **A checkout of this repository with full history.** Last activity comes from
    `git log`, so a shallow clone reports every initiative as touched today.
 2. **Permission to create branches and open pull requests.** Never to merge.
-3. **A schedule.** Twice daily is the design's assumption; anything from daily to
-   hourly works, since a run with nothing to do costs almost nothing.
+3. **A schedule.** Four times daily is the current setting; the design assumed
+   twice, and anything from daily to hourly works, since a run with nothing to
+   do costs almost nothing.
 4. **The ability to run `node scripts/initiatives.mjs`.** Node 20+, no npm
    install needed — the script uses only built-ins.
 
@@ -38,8 +39,9 @@ Using the Claude app (desktop or web) rather than the CLI.
    repository, so the Routine inherits an environment that can see the repo.
 2. Ask Claude, in that session, to create the Routine. For example:
 
-   > Create a routine that runs at 07:00 and 19:00 UTC every day and sends:
-   > "Read initiatives/sweep-prompt.md in this repository and follow it."
+   > Create a routine that runs at 01:00, 07:00, 13:00 and 19:00 UTC every day
+   > and sends: "Read initiatives/sweep-prompt.md in this repository and follow
+   > it."
 
    Adjust the times to your timezone; Routine schedules are set in UTC.
 3. Confirm it was created, and note that it appears in your Routines list, where
@@ -127,6 +129,64 @@ this repository names Claude, and nothing needs to change here.
 
 The one difference worth planning for: a runner without an interactive session
 needs its own credentials somewhere. That is the trade a Routine avoids.
+
+## Working alongside another agent
+
+Another model may be working on an initiative at the same time as the sweep —
+deploying and revising code that has to be tried in its own environment, say,
+while the sweep carries the rest. That is fine, and needs no new mechanism,
+because of what the design already refuses to do:
+
+- **The sweep never merges.** The worst a collision produces is a pull request
+  you close, never a corrupted `main`.
+- **Every run re-reads `main`.** The survey is derived from `initiative.json`,
+  the files present, and git at the moment it runs. There is no cached picture
+  to go stale, so a run after someone else's merge simply sees the new state.
+- **`initiative.json` is the only ledger.** Nothing tracks work in a second
+  place that could disagree with it.
+- **`complete` fails loudly.** Asked to finish an item another agent already
+  removed, it errors rather than half-applying — and a `blocked_by: todo:<id>`
+  left pointing at a removed item fails the build (§9), so a forgotten unblock
+  cannot hide.
+
+Two conventions make the rest work. Both are free, and neither is code:
+
+1. **Whoever finishes an item records it with `complete`.** The todo list is the
+   only record that an item is done. Work finished by hand and never recorded
+   stays `actionable`, and the sweep will select it again — not once, but on
+   every run until someone records it.
+2. **Use the same branch name: `sweep/<initiative>/<item-id>`.** The branch name
+   *is* the claim (§7.7). `select` drops any item that already has an open
+   branch of that name, whoever opened it, and those pull requests count toward
+   `max_open_prs` — so both the duplicate-work exclusion and the backpressure
+   cap work across agents for free. A different prefix is invisible to both.
+
+The second convention has a price worth paying: `sweep-scope.yml` runs on every
+`sweep/*` pull request, so anything the other agent touches outside
+`initiatives/<slug>/` must be declared in that initiative's `outputs[]`. That is
+the exclusive-ownership rule that makes parallel pull requests safe in the first
+place, so declaring the output is the fix — not a branch name that dodges the
+check.
+
+**Split the work by initiative, not by file.** Two agents on the same initiative
+at the same stage is the one case with no safety net. Git catches the textual
+collision — both agents append to `log.md` and rewrite `initiative.json` — and
+shows it to you. Nothing catches the semantic one: a merged decision that
+invalidates the premise of the other agent's open pull request while touching a
+different file entirely. Only you can see that, so keep them on separate
+initiatives and the question never comes up.
+
+Two smaller things to expect:
+
+- **Review does not relay between agents.** `respond-to-review` skips any thread
+  whose last comment is from a bot — that is what stops the loop — so a comment
+  one agent leaves on the other's pull request is silently ignored. Comments you
+  post yourself are answered normally; if you want a point carried across, make
+  it in your own voice.
+- **Closing the losing pull request is clean.** A work pull request closed
+  unmerged leaves the item `actionable`, which is correct if it was never done
+  and harmless if the other agent's merge already recorded it. A proposal closed
+  unmerged leaves nothing at all, since it never rewrote the blocker on `main`.
 
 ## Safety net
 
