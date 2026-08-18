@@ -85,3 +85,7 @@ The eight build items are recorded as a chained todo list, and link-the-guide is
 ## 2026-08-18 — Phase 0 - prove the four text-derived extractions reach, or drop them
 
 Probed all four text-derived fact targets against live and malformed shapes; kept strict readers for workflows, skill frontmatter and the sweep prompt, and dropped build.sh content areas because no authoritative construct declares them.
+
+## 2026-08-18 — Phase 1 - the fact set: one source per key, an unresolvable key is an error, and the drift test
+
+Built the Phase 1 fact registry and CLI. Twenty live fact keys now resolve from exactly one source; strict readers fail on unsupported workflow, skill-frontmatter, and sweep-prompt shapes; fourteen miniature-repository tests cover imports, missing exports, duplicate sources, shallow live initiatives, and stage drift.
