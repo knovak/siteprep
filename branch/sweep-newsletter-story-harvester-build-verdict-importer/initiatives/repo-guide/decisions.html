@@ -161,6 +161,24 @@
 <p>  test cannot be replaced by the browser harness and remains a separate data   blocker.</p>
 <ul><li><strong>Next:</strong> the same section records can gain separately authored slide text;</li></ul>
 <p>  the description renderer does not need to change for phase 4.</p>
+<h3>2026-08-18 — Phase 4: an ordered slide list, a 90-word ceiling, and the first deck baseline</h3>
+<p>The specification&#39;s nine fixed sections and ten-slide floor cannot both hold if each section has exactly one slide. The plan proposed an ordered slide list; phase 4 makes its text format explicit: the first <code>---</code> after frontmatter still separates page text from slide text, and each later <code>---</code> starts another slide for that same section. Slide copy remains in the section file, while layout and navigation remain in the renderer, so a later PowerPoint rendering can consume the same records.</p>
+<p>The first deck contains <strong>13 slides</strong>:</p>
+<div class="table-scroll"><table><thead><tr><th>Section</th><th>Slides</th></tr></thead><tbody><tr><td>What this repository is</td><td>2</td></tr><tr><td>The initiative lifecycle</td><td>2</td></tr><tr><td>Who supplies what</td><td>2</td></tr><tr><td>How work gets picked up</td><td>2</td></tr><tr><td>When a person is required</td><td>1</td></tr><tr><td>Decks, briefly</td><td>1</td></tr><tr><td>Demos, briefly</td><td>1</td></tr><tr><td>Taking this elsewhere</td><td>1</td></tr><tr><td>Where the real answers are</td><td>1</td></tr></tbody></table></div>
+<p>The split follows the learning progression rather than equal allocation. The opening section establishes the repository and the initiative idea separately; the lifecycle, division of labour, and sweep each need two claims. The brief content-area sections stay brief by requirement, and the source section closes by handing the reader back to the authoritative files.</p>
+<h4>The length limit the specification left open</h4>
+<p><strong>Ninety visible words per rendered slide.</strong> The deck is intended to stand on its own in a ten-minute presentation, so a tiny caption limit would make it depend on expert narration. Ninety is still a hard ceiling: with the title and body counted together, it prevents a section&#39;s page prose from being poured onto one screen. The first deck sits below the ceiling on every slide. A separate guard rejects any slide body that is a prefix of its page text, which pins the stronger rule that slide copy is authored rather than truncated.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> the deck is one self-contained HTML file with inline styling and</li></ul>
+<p>  script, no network dependency, SHA-pinned source links, and forward, back,   first, and last keyboard navigation.</p>
+<ul><li><strong>Settled:</strong> generation counts rendered slides, not marked sections, and</li></ul>
+<p>  fails outside the configured 10–20 range or above the 90-word ceiling.</p>
+<ul><li><strong>Measured:</strong> the first mapping is 13 slides across nine sections, as recorded</li></ul>
+<p>  above. All 13 rendered without horizontal, vertical, or copy overflow at a   16:9 presentation viewport.</p>
+<ul><li><strong>Not settled:</strong> whether somebody unfamiliar with the material can present it</li></ul>
+<p>  end to end in ten minutes. That is observed evidence and remains a separate   data blocker rather than a browser assertion.</p>
+<ul><li><strong>Unaffected:</strong> the description renderer. It still consumes only page text;</li></ul>
+<p>  the ordered slide list is additional source, not a fork of the description.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/newsletter-story-harvester/build-verdict-importer" data-root="../../">
