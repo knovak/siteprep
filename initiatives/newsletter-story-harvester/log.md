@@ -166,3 +166,7 @@ Scope set to from:yglesias for 14 days as long-form; from:fixthenews@substack.co
 ## 2026-08-18 — Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression
 
 Aligned the long-form request with the strict parser by asking for a JSON array containing exactly one finding. A regression now asserts that prompt text and parses the live-shaped recorded reply; all 78 harvester tests pass. Phase 4's review page is now the next actionable increment.
+
+## 2026-08-18 — Phase 4 - build the self-contained review page and measure the first fixture review rate
+
+Built the self-contained offline review-page generator, a reproducible 74-story fixture store, verdict controls, filtered verdict-rest, one-action undo, backlog, sorts, tag filters, and verdict-file export. All 86 work tests pass. Split the first review-rate baseline into an explicit human sitting rather than fabricating it from browser automation, and made the verdict importer actionable.
