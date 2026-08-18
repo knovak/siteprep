@@ -9,7 +9,17 @@ function json(value, status = 200) {
   return Response.json(value, {status, headers: {'cache-control': 'no-store'}});
 }
 
-export function createPileApp({storeFactory = env => new D1BookmarkStore(env.DB), now = () => new Date()} = {}) {
+async function requestJson(request) {
+  const type = request.headers.get('content-type') ?? '';
+  if (!type.includes('application/json')) throw new Error('Expected a JSON request');
+  return request.json();
+}
+
+export function createPileApp({
+  storeFactory = env => new D1BookmarkStore(env.DB),
+  now = () => new Date(),
+  idFactory = prefix => `${prefix}-${crypto.randomUUID()}`,
+} = {}) {
   return {
     async fetch(request, env = {}) {
       const url = new URL(request.url);
@@ -26,11 +36,12 @@ export function createPileApp({storeFactory = env => new D1BookmarkStore(env.DB)
         if (request.method === 'GET' && url.pathname === '/api/items') {
           const limit = url.searchParams.get('limit') ?? 200;
           const offset = url.searchParams.get('offset') ?? 0;
-          const [items, total] = await Promise.all([
+          const [items, total, backlog] = await Promise.all([
             store.listItems(COLLECTION_ID, {limit, offset}),
             store.countItems(COLLECTION_ID),
+            store.countUntriagedItems(COLLECTION_ID),
           ]);
-          return json({collection_id: COLLECTION_ID, total, items});
+          return json({collection_id: COLLECTION_ID, total, backlog, items});
         }
 
         if (request.method === 'POST' && url.pathname === '/api/import') {
@@ -47,6 +58,48 @@ export function createPileApp({storeFactory = env => new D1BookmarkStore(env.DB)
             ingestedAt: now().toISOString(),
           });
           return json(result, 201);
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/session') {
+          const body = await requestJson(request);
+          if (body.action === 'start') {
+            const session = await store.startSession(COLLECTION_ID, {
+              id: idFactory('session'),
+              startedAt: now().toISOString(),
+            });
+            return json(session, 201);
+          }
+          if (body.action === 'finish') {
+            if (!body.session_id) throw new Error('Session id is required');
+            return json(await store.finishSession(COLLECTION_ID, {
+              sessionId: body.session_id,
+              endedAt: now().toISOString(),
+            }));
+          }
+          throw new Error('Unsupported session action');
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/verdict') {
+          const body = await requestJson(request);
+          if (!Array.isArray(body.item_ids) || body.item_ids.length === 0) throw new Error('Choose at least one item');
+          if (!body.session_id) throw new Error('Session id is required');
+          const result = await store.applyVerdict(COLLECTION_ID, {
+            itemIds: body.item_ids,
+            verdict: body.verdict,
+            at: now().toISOString(),
+            sessionId: body.session_id,
+            actionId: idFactory('action'),
+          });
+          return json(result);
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/undo') {
+          const body = await requestJson(request);
+          if (!body.session_id) throw new Error('Session id is required');
+          return json(await store.undoLast(COLLECTION_ID, {
+            sessionId: body.session_id,
+            at: now().toISOString(),
+          }));
         }
 
         return json({error: 'Not found'}, 404);

@@ -88,3 +88,12 @@ test('the migration pins collection identity and global capture identity', async
   assert.match(sql, /CREATE TABLE captures \(\s*url_key TEXT PRIMARY KEY/);
   assert.match(sql, /owner_id TEXT/);
 });
+
+test('the triage migration persists sittings, undo actions, and the backlog index', async () => {
+  const sql = await readFile(fileURLToPath(new URL('../migrations/0002_triage.sql', import.meta.url)), 'utf8');
+  assert.match(sql, /CREATE TABLE triage_sessions/);
+  assert.match(sql, /CREATE TABLE triage_actions/);
+  assert.match(sql, /WHERE verdict IS NULL/);
+  assert.match(sql, /WHERE undone_at IS NULL/);
+  assert.match(sql, /PRAGMA optimize/);
+});
