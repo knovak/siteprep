@@ -629,3 +629,40 @@ That open decision does not block phase 1: the D1 data model and idempotent
 bookmark ingestion can start on the chosen surface. It gates later acceptance
 of the R2 capture store. The no-vendor decision also remains unchanged, so pass
 2 stays switched off regardless of host capability.
+
+## 2026-08-18 — Phase 2 keeps marks local and records undo as one server action
+
+**The blind grid keeps a marked set only for the current rendered window, clears
+it after a verdict or a window change, and stores the whole verdict as one
+server-side action.** Phase 4 remains the place for collection-wide selections
+and sweeps.
+
+### Why this is the phase 2 boundary
+
+At the widest layout a rendered window contains sixteen visible records and an
+eight-record buffer; tablet and phone windows are smaller. Keeping phase 2 marks
+inside that window makes the interaction explicit: mark visible exceptions,
+apply one of four verdicts, then move on. It also keeps a D1 action small and
+atomic. Letting an unnamed set accumulate invisibly across virtual windows would
+create a second, weaker selection mechanism before the expression and saved-
+selection work scheduled for phase 4.
+
+The alternatives were to retain marks across windows, which makes the selected
+scope hard to see, or to persist a named selection now, which pulls phase 4 into
+phase 2. Neither improves the blind baseline this increment exists to measure.
+
+### What the instrument counts
+
+- A sitting records start, end, elapsed milliseconds, and the number of records
+  whose verdict actually changed. Reapplying the same verdict is a no-op and
+  does not inflate the rate.
+- One focused-item verdict is one action. One marked-set verdict is also one
+  action, with all prior values in its payload, so one `undo` restores the
+  complete set and decrements the sitting count by the same number.
+- The client displays items judged per minute, but the real blind baseline is
+  still open. Fixture time proves the calculation; only a sitting on several
+  hundred real bookmarks can supply the number required by `test-plan.md` §4.2.
+
+This decision is deliberately local to phase 2. Phase 4 may replace the
+window-bound set with its selection evaluator, but must preserve the one-action
+undo guarantee.

@@ -264,3 +264,7 @@ Built the first phase 1 increment: a D1/SQLite schema, Netscape bookmark parser,
 ## 2026-08-18 — Finish phase 1 with the D1 adapter, file upload and list surface, and 10,000-item sizing test
 
 Finished phase 1 with an owner-scoped, bounded-batch D1 adapter; a 20 MB Netscape HTML upload endpoint; a responsive item-count/list surface; and an indexed generated sizing test that lands exactly 10,000 items. All 11 initiative tests pass. Added the blind virtualised grid as the next actionable phase.
+
+## 2026-08-18 — Phase 2 - build the virtualised blind grid, verdict functions, undo, marked sets, and session-rate instrument
+
+Built the responsive virtualised blind grid and session instrument. Fourteen Node tests and two browser tests pass across a generated 10,000-item pile; group verdicts undo atomically and verdicts patch cards without navigation. The several-hundred-item real blind baseline remains a separate data blocker, while metadata capture work is now actionable.

@@ -15,8 +15,17 @@
       "advances_stage": false
     },
     {
-      "id": "build-blind-grid",
-      "title": "Phase 2 - build the virtualised blind grid, verdict functions, undo, marked sets, and session-rate instrument",
+      "id": "measure-blind-baseline",
+      "title": "Measure the blind triage baseline on several hundred real bookmarks",
+      "state": "blocked",
+      "blocked_by": "data:run one blind sitting on several hundred real bookmarks and report the items judged and elapsed time",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-metadata-captures",
+      "title": "Phase 3 - build metadata captures, the stubbed pass-2 queue, and capture-gap controls",
       "state": "actionable",
       "value": "high",
       "effort": "large",
