@@ -69,3 +69,15 @@ Asked for on review. A permission: blocker described the item most literally - l
 So the item is blocked on todo:draft-plan instead, and re-pointing it is now part of what draft-plan delivers: completing draft-plan clears that blocker automatically, so an item not re-pointed at the last build item in the same change becomes actionable, and a sweep picking it up would fail the write-scope check. Safe, but confusing. The instruction is in the draft-plan item's own title as well as spec §11, because a requirement living only in a spec section is one a future run may not read.
 
 Verified: the digest no longer lists repo-guide under "waiting on you".
+
+## 2026-08-18 — Draft plan.md and test-plan.md - build order, how the generator is tested, and re-point link-the-guide at the last build item
+
+Eight phases and their exit tests. The ordering rule that shapes everything is the lesson §3.3 already paid for: what has never touched a real file goes first, so phase 0 is an afternoon spent proving the four text-derived extractions - build.sh's content areas, the workflow YAML, the skill frontmatter, and the two keys read out of sweep-prompt.md - can be read honestly or must be dropped.
+
+Then the machinery before the prose. The fact set and §4's honesty checks come before a word of narrative, because the third check constrains how every sentence in the guide may be phrased and finding that out after nine sections are drafted means drafting them twice.
+
+The plan's claim is stronger than §9.3's: the whole build fits inside initiatives/repo-guide/, no outputs are declared, and nothing waits on the user until delivery. Two decisions had to go differently for that to hold, and both are better on their own terms.
+
+Drafting found three places the spec cannot be followed as written. §9.5's instruction to put the browser checks in tests/ and declare that path fails validation - a declared output may not reference anything under initiatives/, and every check here must open one - and would also run them on every unrelated pull request against artefacts that are generated on request and never committed, reinstating in the test suite the coupling §9.1 removed from the build. §5.2's nine sections cannot render §6's ten-slide floor, so a section carries an ordered list of slide texts and the check counts rendered slides. And §4's literal ban is unwritable for stage names: wish, shaped, planned and building are ordinary English words a guide about a lifecycle made of them cannot avoid, so the error tier is backticks and a run of three, and a bare occurrence warns.
+
+The eight build items are recorded as a chained todo list, and link-the-guide is re-pointed at the last of them - package-skill - as §11 requires, so it stays quiet until there is a guide to link.

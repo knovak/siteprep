@@ -1,23 +1,86 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, PDFs, and simulator explaining how people and agents work in this repository.",
-  "stage": "specified",
+  "stage": "planned",
   "value": "high",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-plan",
-      "title": "Draft plan.md and test-plan.md - build order, how the generator is tested, and re-point link-the-guide at the last build item",
+      "id": "spike-extractions",
+      "title": "Phase 0 - prove the four text-derived extractions reach, or drop them",
       "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-facts",
+      "title": "Phase 1 - the fact set: one source per key, an unresolvable key is an error, and the drift test",
+      "state": "blocked",
+      "blocked_by": "todo:spike-extractions",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
     },
     {
-      "id": "link-the-guide",
-      "title": "Link the generated guide into the site so a newcomer can find it",
+      "id": "build-checks",
+      "title": "Phase 2 - the section format, token substitution, and the three honesty checks",
       "state": "blocked",
-      "blocked_by": "todo:draft-plan",
+      "blocked_by": "todo:build-facts",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": false
+    },
+    {
+      "id": "build-description",
+      "title": "Phase 3 - the nine sections, the description renderer, the provenance footer, and the browser harness",
+      "state": "blocked",
+      "blocked_by": "todo:build-checks",
+      "value": "high",
+      "effort": "large",
+      "advances_stage": false
+    },
+    {
+      "id": "build-deck",
+      "title": "Phase 4 - the deck: slide text, the length check, and keyboard navigation",
+      "state": "blocked",
+      "blocked_by": "todo:build-description",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": false
+    },
+    {
+      "id": "build-simulator",
+      "title": "Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set",
+      "state": "blocked",
+      "blocked_by": "todo:build-deck",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": false
+    },
+    {
+      "id": "build-pdf-dating",
+      "title": "Phase 6 - PDF links, refresh dates, and the possibly-stale comparison",
+      "state": "blocked",
+      "blocked_by": "todo:build-simulator",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "package-skill",
+      "title": "Phase 7 - package the generator as a skill that generates and then checks",
+      "state": "blocked",
+      "blocked_by": "todo:build-pdf-dating",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "link-the-guide",
+      "title": "Link the generated guide into the site so a newcomer can find it, and install the skill where Claude Code finds it",
+      "state": "blocked",
+      "blocked_by": "todo:package-skill",
       "value": "medium",
       "effort": "small",
       "advances_stage": false
