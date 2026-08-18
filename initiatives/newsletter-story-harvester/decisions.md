@@ -265,3 +265,118 @@ the difference between a working link and a marked one.
   the letter. A one-line change if the letter was meant.
 - **The HEAD follow's default**, still `plan.md` §6's, still decided by evidence
   that does not exist until phase 6.
+
+## 2026-08-18 — Phase 2: which decision the model is allowed to make, in code
+
+`spec.md` §3's option D is "the shape is declared, the model reads within it".
+Building it forced that into something more specific, and the specific version
+is the one worth recording: **the model returns a link *index*, never a URL and
+never an anchor.**
+
+The document owns the link positions, the heading paths and the text
+(`src/html.mjs`); the model chooses which of those links are stories and writes
+the blurb or the summary. Everything a record's identity depends on is therefore
+computed from the bytes of the issue, which is what §3.3 requires and what a
+reply carrying hrefs would have quietly broken — one mis-copied character in a
+URL is a new `url_key`, a new id, and a duplicate that no test would catch.
+
+### Three structural guards, and why they are not the model's job
+
+Under option D the model does the reading, so on paper every one of these is a
+prompt problem. They are in the harvester anyway, and the reason is
+`test-plan.md` §3's: *the chrome is in every issue, so a contract that only
+meets it in a hard case has the difficulty exactly backwards.*
+
+- **Chrome is refused** — unsubscribe, preferences, `mailto:`, and any link under
+  a heading matching sponsor / advertisement / *together with*. A backstop, not
+  the mechanism: refusals are counted per issue, so a prompt that starts
+  returning the footer shows up as a number rather than as a page of junk.
+- **A link inside a heading is refused on `link-list` and accepted on
+  `annotated-digest`.** The same structure means opposite things in the two
+  shapes — a section heading in one, an item's own title in the other — which is
+  why it is a per-contract field rather than a global rule.
+- **A verbatim blurb that is not in the issue is refused, and the story is
+  dropped.** This is the one place phase 2 is stricter than §3.2's "flag, never
+  suppress", and the distinction is deliberate: a count anomaly means real
+  stories and a suspicious number, while an unverifiable blurb means the text a
+  reader would judge on was not written by the source. §3.1 forbids inventing
+  text outright, the link is still recoverable from `source_doc`, and the
+  refusal is named in the report. Alternative considered and rejected: keep the
+  story with an `err:text` tag, which puts fabricated prose in front of the
+  reader in exchange for a link the next run re-harvests anyway.
+
+### What this leaves open
+
+- **The chrome patterns are English and are ours.** They cost nothing and catch
+  the case in bulk; a sender whose footer says something else is caught by the
+  model instead. The refusal counts are what would show this failing.
+- **Whether the strict reply parser is too strict.** A finding with an unknown
+  field is refused outright rather than trimmed. Cheap to relax, and the
+  argument for keeping it is that a model doing something the contract did not
+  ask for is a finding about the prompt.
+
+## 2026-08-18 — A long-form issue's second story needs an anchor of its own
+
+`spec.md` §3.1 gives a long-form story the anchor `document`, and §3.2 says a
+long-form source yielding more than one story is the loud case, reported first
+and by name. **Implemented literally, those two cancel out.**
+
+Every finding takes the same anchor, so every finding after the first collides
+on identity and is refused as a duplicate — the yield is 1 however many came
+back, the band is never exceeded, and the loud case can never fire. The
+pipeline would silently swallow precisely the failure `objectives.md` calls the
+sharpest test. It was found by writing the test for the loud case and watching
+it not fire.
+
+**So the extras are disambiguated**: `document` for the first story,
+`document#link:<n>` for any later one that names a link, `document#<n>` for one
+that does not. The stories are written, the band flags them, and the loud case
+reports the source and the issue by name.
+
+The cost, recorded rather than absorbed: an extra's identity is only as stable
+as the reply's ordering when it names no link. That applies solely to a case
+that is already flagged as a broken extraction — and a flagged story a person
+will look at is worth more than a stable id for a story nobody will see.
+
+`spec.md` §3.1's anchor row should say so, since read alone it specifies a
+pipeline in which §3.2's loud case is unreachable.
+
+## 2026-08-18 — Phase 2: the count bands, measured
+
+`test-plan.md` §4.2's measured row, against the fixtures and their recorded
+replies (`work/measure-bands.mjs`):
+
+| Issue | Extracted as | Links | Findings | Stories | Refused | Band |
+|---|---|---|---|---|---|---|
+| `link-list-typical` | `link-list` | 46 | 45 | 40 | 5 | 10–60 |
+| `link-list-headings` | `link-list` | 15 | 14 | 13 | 1 | 10–60 |
+| `annotated-digest-typical` | `annotated-digest` | 9 | 8 | 8 | 0 | 3–15 |
+| `long-form-citations` | `long-form` | 27 | 1 | 1 | 0 | 1 |
+| `long-form-roundup` | `long-form` | 14 | 1 | 1 | 0 | 1 |
+| `long-form-roundup` *(override)* | `link-list` | 14 | 12 | 12 | 0 | 10–60 |
+| `empty-issue` | `link-list` | 1 | 0 | 0 | 0 | 10–60 → **under** |
+
+**§3.1's first-cut bands are kept unchanged**, and the honest reason is that
+this measurement cannot move them. The fixtures were composed rather than
+derived from real issues — there is no mailbox yet — so a band fitted to them
+would be a band fitted to what we imagined a newsletter looks like.
+`test-plan.md` §2.2 is explicit that a fixture written by whoever wrote the
+contract tests the contract against its own assumptions, and that is the state
+this measurement is in. **The bands are decided by phase 6**, against real
+issues, and this table is the before.
+
+What the table does establish is the pipeline: the band is computed on stories
+*kept*, not findings *returned*, so an issue whose reply was mostly chrome
+counts as the small yield it really was. And the empty issue flags `under`
+rather than passing quietly, which is the behaviour §5.1 wants for a message
+that matched and produced nothing.
+
+### What this leaves open
+
+- **The eval score per contract**, which is the other half of `test-plan.md`
+  §4.2's exit and needs a live model rather than a recording. Recorded as its
+  own todo item (`eval-contracts`) with the rubric to score against, because a
+  measured row that quietly does not happen is how §2.1's warning comes true.
+- **Fixtures derived from real issues.** They arrive with the inventory, and
+  until then the adversarial cases are as adversarial as we could imagine rather
+  than as adversarial as a mailbox is.
