@@ -179,6 +179,20 @@
 <p>  end to end in ten minutes. That is observed evidence and remains a separate   data blocker rather than a browser assertion.</p>
 <ul><li><strong>Unaffected:</strong> the description renderer. It still consumes only page text;</li></ul>
 <p>  the ordered slide list is additional source, not a fork of the description.</p>
+<h3>2026-08-18 — Phase 5: fixed choreography, selective facts, and six visible states</h3>
+<p>The simulator keeps the six-step abstract choreography settled in the specification and derives only the vocabulary that can drift: lifecycle stages, the proposable blocker class, configured sweep phases, and the per-run item budget.</p>
+<h4>The derived boundary</h4>
+<p>The fact registry now supports resolving a named subset. Simulator generation asks for exactly four keys and never resolves <code>initiatives.live</code>, so it neither opens nor embeds any <code>initiative.json</code>. That is stronger than reading a real initiative and discarding its details: generation still succeeds when the initiatives directory is absent, while an inconsistent lifecycle constant still fails as drift.</p>
+<p>The fixed sequence uses the first three derived lifecycle stages for wish, shaping, and the post-merge advance; draws the complete derived stage track; uses the first derived proposable blocker class; displays every configured sweep phase; and reads the displayed budget from <code>items_per_run</code>. No stage name, blocker namespace, phase name, or budget number is typed into the animation.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> one self-contained HTML file presents all six states with Back,</li></ul>
+<p>  Step, and interruptible Play controls. Step 4 visibly passes an item over at   the budget boundary; step 6 removes completed work, unblocks its dependent,   and advances the stage.</p>
+<ul><li><strong>Settled:</strong> Play visits the exact same six states as manual stepping. It does</li></ul>
+<p>  not introduce a second choreography.</p>
+<ul><li><strong>Settled:</strong> the browser harness opens the file offline, walks both directions,</li></ul>
+<p>  checks harmless boundary actions, interrupts and resumes Play, verifies the   budget and cascade states, and reports no network or console failures.</p>
+<ul><li><strong>Not settled:</strong> whether the abstract animation is adequate to teach the</li></ul>
+<p>  lifecycle. The user&#39;s earlier decision keeps a real-JSON upgrade open if a   person watches this version and finds it inadequate, so that walkthrough   remains a separate data blocker.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/newsletter-story-harvester/build-gmail-source" data-root="../../">
