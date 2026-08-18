@@ -350,18 +350,24 @@ produces them, and whoever asked takes them from `guide/out/`.
 
 ### 9.3 What still touches a protected path, and what no longer does
 
-**One change, not three.** The generator reads the fact set by importing
-`scripts/initiatives.mjs` (§3.3): five constants there gain an `export`, and the
-CLI dispatch gains a run-as-a-program guard so that importing the module does not
-run a command. Nothing else in that file changes, and nothing that uses it
-changes. **It is drafted** — see the pull request opened alongside this spec's
-review round.
+**One change, not three — and it has landed.** The generator reads the fact set
+by importing `scripts/initiatives.mjs` (§3.3): five constants there gained an
+`export`, and the CLI dispatch gained a run-as-a-program guard so that importing
+the module does not run a command. Nothing else in that file changed, and nothing
+that uses it changed. **Merged on 2026-08-18** (#235), during this spec's review
+round, so the prerequisite is no longer something `plan.md` has to sequence
+around — the facts of §3.2's first five rows are importable today.
 
 `initiatives/sweep.json` protects `shared/`, `scripts/` and `.github/`, so a
-sweep pull request cannot make even that one edit — it has to arrive as an
-ordinary pull request. It is a prerequisite for the generator running at all, so
-`plan.md` should put it first and schedule nothing that imports facts until it
-has landed.
+sweep pull request could not make even that one edit — it had to arrive as an
+ordinary pull request, which is why it was drafted separately rather than
+included here.
+
+**What that leaves for `plan.md`:** nothing to sequence around, and no
+protected-path work in the build at all. Every remaining piece lives inside
+`guide/` plus the `tests/` path §9.5 asks the initiative to declare. That is the
+whole practical effect of the two decisions this review round settled — the
+initiative can now be built end to end by a sweep.
 
 **Two changes the previous draft asked for are gone**, both as consequences of
 §9.1 and §1:

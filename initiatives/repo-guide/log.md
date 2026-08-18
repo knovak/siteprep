@@ -47,3 +47,9 @@ Asked for on review: draft the protected-path change the spec says it needs. Doi
 The spec said the change was "a one-line `export` on each" of five constants in scripts/initiatives.mjs. It is not. That module's CLI dispatch is top-level, so importing it fell through the switch to `default:` and called process.exit(2) - the importing process died before it saw a value. Exporting alone would have produced a generator failing in a way that looks like the generator's fault. The dispatch now sits behind a run-as-a-program guard, with a test pinning the guard line, because an ordinary refactor could drop it with every other test staying green.
 
 §3.3 records the correction rather than quietly fixing the sentence, and draws the general lesson: "just add an export" was a guess about somebody else's file and it was wrong on first contact. The other extraction targets - workflow YAML, skill frontmatter, build.sh's content areas - have had no such contact yet.
+
+## 2026-08-18 — The enabling change merged; the spec's prerequisite is gone
+
+#235 merged during the review round, so §9.3 is rewritten from a thing plan.md has to sequence around into a thing already done. The five constants are importable and the CLI dispatch is guarded, both with tests.
+
+The practical effect is worth stating once: **no protected-path work is left in this initiative's build.** Everything remaining lives inside guide/ plus the tests/ path §9.5 asks it to declare, so it can be built end to end by a sweep rather than waiting on a hand-landed change.
