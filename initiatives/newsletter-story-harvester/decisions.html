@@ -222,6 +222,23 @@
 <p>  rate is a baseline, not a target retrofitted to one observation.</p>
 <ul><li><strong>Does not replace the phase 6 sitting on real stories.</strong> It isolates review</li></ul>
 <p>  mechanics now; the later sitting answers whether the complete harvest is   actually faster than reading the newsletters.</p>
+<h3>2026-08-18 — Phase 5: what idempotent means for a verdict file</h3>
+<p>The spec already said importing the same file twice changes nothing. Phase 5 makes that the strong form: <strong>a duplicate does not append another run record or rewrite the store.</strong> Each file gets a SHA-256 fingerprint over only the fields the importer is allowed to read — store id, export time, verdicts, and tag edits, in canonical order. Story text, additions, deletions, and every other field are inert and therefore do not change the fingerprint or the store.</p>
+<p>That choice keeps the run log useful. One recorded run means one sitting folded in, rather than one invocation of a command; retries are reported as duplicates without becoming durable activity.</p>
+<p>Two ambiguous cases are loud rather than order-dependent:</p>
+<ul><li>an id the store cannot resolve is a conflict, never a new story; and</li><li>two different verdicts with the same <code>verdict_at</code> are a conflict, because</li></ul>
+<p>  §9&#39;s later-wins rule cannot choose between them honestly.</p>
+<h4>Recorded fixture round trip</h4>
+<p>The committed valid verdict file was exported against <code>fixture-store-v1</code> and imported through the same CLI a skill will call. The first import reported <strong>0 added, 3 matched, 0 merged, 0 conflicted, 3 updated</strong>, retained all 74 stories, and wrote fingerprint <code>6e2b783695bfa920a789cac5c5c284b7d6a151f52a8e207844ccb431b0a19bf2</code>. The second import reported the same fingerprint with <code>duplicate: true</code>; the store&#39;s bytes and run count did not change. A browser test also assigns a verdict on the generated page, calls its real export function, and imports that file against the same story id.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> phase 5 closes the fixture loop — harvested stories out to the</li></ul>
+<p>  page, verdicts and tag edits back, with the durable store as the only writer.</p>
+<ul><li><strong>Settled:</strong> open verdict vocabulary is preserved; the fixture&#39;s <code>archive</code></li></ul>
+<p>  value is stored and added to the offered vocabulary without migration.</p>
+<ul><li><strong>Not settled:</strong> human review speed. The round-trip automation cannot establish</li></ul>
+<p>  it, and the phase 4 decision deliberately chose a browser interaction baseline   instead. <code>measure-review-rate</code> is therefore actionable, not blocked.</p>
+<ul><li><strong>Next:</strong> run that automated click-through baseline; phase 6 can replace the</li></ul>
+<p>  fixture message source with Gmail without changing this file format or merge   path.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
