@@ -416,7 +416,8 @@ because a `blocked_by: todo:<id>` pointing at a nonexistent item is a build fail
 
 ## 7. The sweep job
 
-A scheduled agent runs **twice daily** across all initiatives. Four phases, in order —
+A scheduled agent runs **several times a day** across all initiatives — four times at
+present, twice in the original design. Four phases, in order —
 and the order is the design: look at everything, finish what is in flight, unblock what
 is stuck, then start something new.
 
@@ -763,9 +764,10 @@ Two consequences worth stating:
   remain eligible, so an unreviewed PR slows one thread rather than the whole initiative.
 - **`max_open_prs` caps the pileup.** At the ceiling the sweep does no new work and says
   so in the digest — though it still responds to review, since that drains the queue
-  rather than adding to it. This is the real answer to "twice daily could mean fourteen
-  PRs a week": it cannot, because unmerged work blocks its own item and the cap stops
-  the rest.
+  rather than adding to it. This is the real answer to "four runs a day could mean
+  twenty-eight PRs a week": it cannot, because unmerged work blocks its own item and the
+  cap stops the rest — and it holds at any frequency, which is why the schedule is a
+  setting rather than a design parameter.
 
 ### 7.8 Where it runs
 
@@ -783,8 +785,8 @@ triggered by repo events rather than by a clock, and it needs no model at all.
 
 **The prompt lives in the repo, at `initiatives/sweep-prompt.md`.** The scheduler does
 not hold a copy — it reads that file. This matters for exactly the reason you raised:
-a manual run during development and the twice-daily scheduled run must be *the same
-prompt*, or debugging the schedule means debugging a text you cannot see. It also makes
+a manual run during development and the scheduled run must be *the same prompt*, or
+debugging the schedule means debugging a text you cannot see. It also makes
 changes to the job's behaviour reviewable, like `sweep.json` (§7.5).
 
 Manual invocation is then just:
@@ -885,8 +887,8 @@ Each thread you handle counts against `items_per_run`.
 
 ### 7.9 Merging the output — the merge skill
 
-A twice-daily job turning every half-day into PRs that must each be reviewed and merged
-by hand is the most likely way this system dies. The fix is a repo skill, so clearing a
+A job that runs several times a day, turning every few hours into PRs that must each be
+reviewed and merged by hand, is the most likely way this system dies. The fix is a repo skill, so clearing a
 batch is one sentence rather than a browser session.
 
 `.claude/skills/merge-prs/SKILL.md`, invoked as *"use the merge skill to merge PRs 231,
@@ -969,6 +971,40 @@ reaches them.
 initiative is then a test of the skill as well as of the schema, and Phase 1 stops
 being hand-work that has to be repeated correctly from memory every time afterwards.
 
+### 7.11 Running alongside another agent
+
+Some work has to happen where the tooling is — deploying and revising a ChatGPT Sites
+build has to be tried in that environment, not described from here — so a second agent
+will sometimes be working on an initiative while the sweep runs. **This needs no new
+mechanism**, because three properties already established carry it:
+
+- **The sweep never merges (§7.7).** A collision costs a pull request you close, not a
+  corrupted `main`.
+- **Every run re-derives its picture from `main` (§7.1).** There is no cached state to
+  go stale, so the run after someone else's merge simply sees the new state. "Claude's
+  sweep discovers what happened" is the design working, not a recovery path.
+- **`initiative.json` is the only ledger (§6.3).** Drift is caught by the validator, and
+  `complete` errors rather than half-applying when an item is already gone.
+
+What it costs is two conventions, both free: whoever finishes an item records it with
+`complete`, and both agents name branches `sweep/<initiative>/<item-id>` — since the
+branch name *is* the claim (§7.7), a different prefix is invisible to the duplicate-work
+exclusion and to `max_open_prs`. `initiatives/sweep-setup.md` carries the operational
+detail.
+
+**The one real limit is semantic, not mechanical.** Git shows you a textual collision;
+nothing detects a merged decision that invalidates the premise of the other agent's open
+pull request while touching a different file. So the rule is to split by *initiative*
+rather than by file, and the exclusive-output-ownership check (§9) is what makes that
+split hold once an initiative writes code outside `initiatives/`.
+
+**Deferred: a designation mechanism.** A field saying which agent owns an initiative, or
+an item, is the obvious next step, and is deliberately not built yet. Two conventions and
+a habit are cheaper than a schema field, and the field is only worth adding once the
+habit demonstrably fails — most likely when the same item is picked up twice despite
+matching branch names, or when a third agent joins. Recording the deferral here so the
+next reader knows it was a decision rather than an oversight.
+
 ## 8. Publishing
 
 The site gains a third TOC, parallel to decks and demos. This **extends the earlier
@@ -986,7 +1022,7 @@ Someone arriving at the TOC cold, including a future version of you, should not 
 find a design document to understand what they are looking at. Concretely: initiatives
 are durable units of intent; they progress through a lifecycle from wish to refinement;
 they produce decks, demos, code that runs elsewhere, or reusable capability; and they
-carry a todo list that an agent sweeps twice daily. Roughly a short paragraph and the
+carry a todo list that an agent sweeps several times a day. Roughly a short paragraph and the
 lifecycle sequence, in a collapsible topic so it stays out of the way once it's familiar.
 
 Then one entry per initiative, each with a brief description, a brief status, and a link
@@ -1177,7 +1213,7 @@ human matter and not a reason to hold a deploy:
 
 Warnings surface where they are actionable: flagged on the dashboard (§8.1) and gathered
 in the digest (§7.1). Nothing is lost by demoting them — the sweep reads the same data
-twice a day and will not let them hide.
+several times a day and will not let them hide.
 
 Two error checks do the heavy lifting. **Exclusive output ownership** is what makes
 parallel PRs safe. **`todo:` references must resolve** means a forgotten unblock breaks
