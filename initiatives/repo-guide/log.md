@@ -21,3 +21,51 @@ The dating is not the third option arriving through the back door - the user too
 Answered on review of #227: animate an abstract lifecycle for now, with an upgrade to the real initiative.json held open if the animation turns out not to be adequate. Recorded in decisions.md.
 
 The trigger for the upgrade is the user's judgement and is deliberately not converted into a metric. The cost recorded with it: the simulator is the one deliverable outside the generation guarantee, so it is the case the dating requirement is carrying.
+
+## 2026-08-17 — Draft spec.md - how the description, deck, PDFs, and simulator are built
+
+spec.md drafted: one generated fact set, hand-written narrative that cites it by token, and four renderings of one source. Settles the two questions decisions.md left open - authority per claim, and where the generated/written line falls - and names the protected-path change publication needs.
+
+## 2026-08-18 — Review round on the spec: generated on request, self-contained, and delivery out of scope
+
+Seven comments, and three of them changed the shape of the thing rather than its wording.
+
+The guide is now produced **on request by a skill**, not by the site build. That removes the build.sh hook, and with it the arrangement where a fact-extraction failure sat in the path of an unrelated deck's deploy - the guide's correctness now gates the guide only. The cost, recorded rather than absorbed: nothing prompts a regeneration, so an artefact in circulation can be stale, which makes the dating requirement load-bearing instead of a nicety.
+
+Each artefact is a **single self-contained HTML file** - styling, script and data inline, no origin needed. That is what makes deployment a later choice rather than a prerequisite, and it is why the deck cannot share the site's assets by reference.
+
+**Delivery is out of scope**, on the user's instruction. This leaves objective 1 - a newcomer finding the entry point without being told where it is - unmet by what is specified, since a file in guide/out/ is reachable by nobody. Recorded in a section of its own rather than quietly reworded, with the two ways it can go, because amending an objective is the user's call.
+
+A vocabulary correction, which was worth more than it looked: the spec said "hand-written" and "hand-drawn" where it meant "not derived from a source". Nothing here is written by hand - it is all authored by an agent. The distinction that matters is where a sentence gets its truth, so the words are now **derived** and **composed**, defined once in §1.
+
+The protected-path change shrank from three edits to one: five `export` keywords in scripts/initiatives.mjs, drafted as its own pull request because a sweep branch cannot touch scripts/.
+
+## 2026-08-18 — The enabling change, drafted and found to be bigger than stated
+
+Asked for on review: draft the protected-path change the spec says it needs. Doing it turned up something the spec had asserted without checking.
+
+The spec said the change was "a one-line `export` on each" of five constants in scripts/initiatives.mjs. It is not. That module's CLI dispatch is top-level, so importing it fell through the switch to `default:` and called process.exit(2) - the importing process died before it saw a value. Exporting alone would have produced a generator failing in a way that looks like the generator's fault. The dispatch now sits behind a run-as-a-program guard, with a test pinning the guard line, because an ordinary refactor could drop it with every other test staying green.
+
+§3.3 records the correction rather than quietly fixing the sentence, and draws the general lesson: "just add an export" was a guess about somebody else's file and it was wrong on first contact. The other extraction targets - workflow YAML, skill frontmatter, build.sh's content areas - have had no such contact yet.
+
+## 2026-08-18 — The enabling change merged; the spec's prerequisite is gone
+
+#235 merged during the review round, so §9.3 is rewritten from a thing plan.md has to sequence around into a thing already done. The five constants are importable and the CLI dispatch is guarded, both with tests.
+
+The practical effect is worth stating once: **no protected-path work is left in this initiative's build.** Everything remaining lives inside guide/ plus the tests/ path §9.5 asks it to declare, so it can be built end to end by a sweep rather than waiting on a hand-landed change.
+
+## 2026-08-18 — O1 answered, and a PowerPoint deck recorded as a future objective
+
+Objective 1 stays as written, and delivery becomes its own item at the end of the backlog: link-the-guide. It is blocked on a permission: blocker rather than left actionable, because linking the guide needs the nav entry and build.sh line that §9.3 removed from the build - both protected paths no sweep can write, however far down the list the item sits.
+
+The cost is stated in §11 rather than discovered later: that item shows in every digest under "waiting on you" from now until it lands. That is a standing reminder, which is what was asked for, and the price of encoding the dependency truthfully.
+
+A .pptx deck is recorded in objectives.md under "explicitly not the first version", with what would decide it - whether the recipient needs to *edit* the slides or merely open them, since that changes how much layout has to survive conversion. spec.md §6 notes the constraint it puts on the first version: keep slide text as text in the section files, so a PowerPoint rendering is a third rendering of one source rather than a second deck to keep in step.
+
+## 2026-08-18 — link-the-guide re-pointed so it stays quiet until the guide exists
+
+Asked for on review. A permission: blocker described the item most literally - linking the guide needs protected-path changes only the user can land - but it also put a request nobody could act on into every digest from now until the guide is built, which is how a digest teaches people to skim it.
+
+So the item is blocked on todo:draft-plan instead, and re-pointing it is now part of what draft-plan delivers: completing draft-plan clears that blocker automatically, so an item not re-pointed at the last build item in the same change becomes actionable, and a sweep picking it up would fail the write-scope check. Safe, but confusing. The instruction is in the draft-plan item's own title as well as spec §11, because a requirement living only in a spec section is one a future run may not read.
+
+Verified: the digest no longer lists repo-guide under "waiting on you".

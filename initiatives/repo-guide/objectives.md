@@ -122,6 +122,16 @@ written: a description, a deck, and a simulator.
   walk-through. Letting a reader construct arbitrary initiatives and see what
   the rules do is the more interesting toy and the larger build, and it is not
   what makes the process understandable the first time.
+- **The deck as a PowerPoint file rather than HTML.** Raised on review
+  2026-08-17 as a *future possible objective*, so it is recorded here rather
+  than left in a comment. The first version's deck is a self-contained HTML file
+  (`spec.md` §6); a `.pptx` would be a second rendering of the same section
+  source, not a second deck — which is the only shape worth building, since two
+  decks would drift the way `objectives.md` warns about above. It is held out of
+  the first version because nobody has yet needed to hand this to someone who
+  will edit the slides, and that need is what would decide whether the file has
+  to be *editable* or merely *openable* — a difference that changes how much of
+  the layout has to survive the conversion.
 
 ## How we will know
 

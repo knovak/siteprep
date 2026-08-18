@@ -1,17 +1,26 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, PDFs, and simulator explaining how people and agents work in this repository.",
-  "stage": "shaped",
+  "stage": "specified",
   "value": "high",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-spec",
-      "title": "Draft spec.md - how the description, deck, PDFs, and simulator are built",
+      "id": "draft-plan",
+      "title": "Draft plan.md and test-plan.md - build order, how the generator is tested, and re-point link-the-guide at the last build item",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true
+    },
+    {
+      "id": "link-the-guide",
+      "title": "Link the generated guide into the site so a newcomer can find it",
+      "state": "blocked",
+      "blocked_by": "todo:draft-plan",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false
     }
   ]
 }
