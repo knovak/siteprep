@@ -47,12 +47,12 @@ const INITIATIVES_DIR = process.env.INITIATIVES_DIR
   : join(ROOT, 'initiatives');
 const SWEEP_CONFIG = join(INITIATIVES_DIR, 'sweep.json');
 
-const STAGES = [
+export const STAGES = [
   'wish', 'shaped', 'specified', 'planned', 'building', 'refining', 'dormant', 'archived'
 ];
 
 /** Documents expected once a stage is reached, used for warnings only. */
-const STAGE_DOCUMENTS = {
+export const STAGE_DOCUMENTS = {
   shaped: ['objectives.md'],
   specified: ['objectives.md', 'spec.md'],
   planned: ['objectives.md', 'spec.md', 'plan.md'],
@@ -60,14 +60,14 @@ const STAGE_DOCUMENTS = {
   refining: ['objectives.md', 'spec.md', 'plan.md']
 };
 
-const BLOCKER_PREFIXES = [
+export const BLOCKER_PREFIXES = [
   'todo', 'initiative', 'review', 'schedule',
   'human', 'permission', 'cost', 'legal',
   'data', 'external', 'upstream'
 ];
 
 /** Blockers the sweep can clear on its own, versus those needing a person. */
-const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal', 'data']);
+export const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal', 'data']);
 
 /**
  * The sweep may propose an answer only to a judgement call.
@@ -76,7 +76,7 @@ const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal', 'data'])
  * reasoning, and `data:` is a fact about their world - proposing one would be
  * an invention wearing the costume of an answer.
  */
-const PROPOSABLE_BLOCKERS = new Set(['human']);
+export const PROPOSABLE_BLOCKERS = new Set(['human']);
 
 const DOCUMENTS = [
   ['wish.md', 'Wish'],
@@ -1206,9 +1206,18 @@ function renderDoc(slug, file) {
 
 // -------------------------------------------------------------------- cli
 
+// Dispatch only when this file is run as a program. Importing it - which the
+// repo guide's generator does, to read the constants above rather than keep a
+// second copy of them - must not run a command or exit the process.
+//
+// The `switch` is the body of the `if` without braces, deliberately: wrapping it
+// would re-indent every case below and bury the change in whitespace.
+const RUN_AS_CLI = process.argv[1] !== undefined
+  && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
 const [command, ...args] = process.argv.slice(2);
 
-switch (command) {
+if (RUN_AS_CLI) switch (command) {
   case 'validate': {
     const { errors, warnings } = validate();
     for (const warning of warnings) console.log(`INITIATIVE WARN: ${warning}`);
