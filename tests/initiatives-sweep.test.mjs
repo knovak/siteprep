@@ -273,3 +273,48 @@ test('allows a declared output, which is the point of declaring it', () => {
   );
   assert.match(output, /within scope/);
 });
+
+/**
+ * The module is importable, and importing it does not run a command.
+ *
+ * The repo guide's generator reads these constants rather than keeping a second
+ * copy that has to be kept in step (`initiatives/repo-guide/spec.md` §3.3), so
+ * two properties have to hold together: the values are exported, and importing
+ * the file is side-effect free. Before the export was added the second was
+ * false - a bare import fell through the CLI dispatch to `default:` and exited
+ * the importing process, which is the kind of failure that looks like a broken
+ * generator rather than a module that was never meant to be imported.
+ */
+test('importing the module exports the vocabulary without running the CLI', async () => {
+  const module = await import(SCRIPT);
+
+  assert.ok(Array.isArray(module.STAGES), 'STAGES is exported as an array');
+  assert.ok(module.STAGES.includes('specified'), 'the stage list is the real one');
+  assert.ok(module.BLOCKER_PREFIXES.includes('human'), 'blocker prefixes are exported');
+  assert.ok(module.HUMAN_BLOCKERS.has('cost'), 'the human blocker classes are exported');
+  assert.ok(module.PROPOSABLE_BLOCKERS.has('human'), 'the proposable class is exported');
+  assert.deepEqual(
+    module.STAGE_DOCUMENTS.specified,
+    ['objectives.md', 'spec.md'],
+    'the stage document map is exported'
+  );
+
+  // Reaching this line at all is the side-effect assertion: a dispatching
+  // module would have called process.exit(2) during the import above.
+  assert.equal(module.PROPOSABLE_BLOCKERS.size, 1);
+});
+
+/**
+ * The guard is what makes the import above safe, and it is one line that an
+ * ordinary refactor could drop while every other test stayed green - the CLI
+ * would keep working and only the import would break. So the line itself is
+ * pinned, the way BUILD-20 pins build.sh's call to the build tests.
+ */
+test('the CLI dispatch stays behind the run-as-a-program guard', () => {
+  const source = readFileSync(SCRIPT, 'utf8');
+  assert.match(
+    source,
+    /if \(RUN_AS_CLI\) switch \(command\)/,
+    'the switch must stay guarded, or importing this module runs a command'
+  );
+});
