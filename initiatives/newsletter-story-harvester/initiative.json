@@ -14,8 +14,16 @@
       "effort": "small"
     },
     {
-      "id": "build-contracts",
-      "title": "Phase 2 - the three extraction contracts and their fixtures, against recorded responses",
+      "id": "eval-contracts",
+      "title": "Phase 2's other exit - run each contract live against the fixtures and record the score and its rubric",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-run-loop",
+      "title": "Phase 3 - a whole run over a fixture mailbox: the run loop, a source_doc for every matched message, and the run record",
       "state": "actionable",
       "value": "high",
       "effort": "large",

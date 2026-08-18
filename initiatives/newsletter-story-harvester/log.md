@@ -134,3 +134,19 @@ Phase 0: the Gmail connector searches by sender, label and date range, and union
 ## 2026-08-17 — Phase 1 - the store, url_key unwrapping, identity, and the merge path
 
 Phase 1: the store as one JSON file with atomic write and a kept generation, url_key unwrapping with the redirector table and the optional HEAD follow, identity for both cases, the case 2 cross-source merge, and the import path - which is the same merge with records as input. Every row of test-plan.md §4.1 has a test; 31 pass, no dependencies, no mailbox, no model.
+
+## 2026-08-18 — Phase 2 - the three extraction contracts and their fixtures, against recorded responses
+
+The three contracts, their fixtures, and the recorded-response harness that makes them deterministic.
+
+The decision the build forced, and the one worth carrying forward: the model returns a link *index*, never a URL. §3.3 requires identity to be structural, and a reply carrying hrefs puts the model one mis-copied character away from a new url_key, a new id, and a duplicate no test would catch. So html.mjs numbers the links, the prompt shows that numbering, and a finding says which link rather than what link.
+
+Three structural guards sit in the harvester rather than only in the prompt, because test-plan §3's point is that the chrome is in every issue: chrome links are refused; a link inside a heading is a section heading on link-list and an item title on annotated-digest; and a verbatim blurb that is not in the issue is refused outright. The last is stricter than §3.2's flag-never-suppress, deliberately - a count anomaly is real stories and a suspicious number, while an unverifiable blurb is text the source did not write.
+
+Writing the loud-case test found that §3.1 and §3.2 cancel out as specified. Every long-form finding takes the anchor 'document', so all but the first collide on identity and are refused as duplicates - the yield is 1 however many come back, and the case objectives.md calls the sharpest test can never fire. The extras now take an anchor of their own, so the band flags them and the report names the source and the issue. Recorded in decisions.md as a spec correction.
+
+The recorded replies are deliberately not idealised: they carry the sponsor block, the unsubscribe link, an invented blurb, a duplicate and an impossible index, so the tests assert the pipeline rather than the recording.
+
+Measured against the fixtures and recorded in decisions.md, with the honest caveat that §3.1's bands are kept unchanged - the fixtures are composed rather than derived, so a band fitted to them would be a band fitted to what we imagined a newsletter looks like. Phase 6 decides them.
+
+The other half of §4.2's exit, the live eval score per contract, needs a model rather than a recording and is now its own item.
