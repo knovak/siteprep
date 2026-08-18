@@ -25,3 +25,17 @@ The trigger for the upgrade is the user's judgement and is deliberately not conv
 ## 2026-08-17 — Draft spec.md - how the description, deck, PDFs, and simulator are built
 
 spec.md drafted: one generated fact set, hand-written narrative that cites it by token, and four renderings of one source. Settles the two questions decisions.md left open - authority per claim, and where the generated/written line falls - and names the protected-path change publication needs.
+
+## 2026-08-18 — Review round on the spec: generated on request, self-contained, and delivery out of scope
+
+Seven comments, and three of them changed the shape of the thing rather than its wording.
+
+The guide is now produced **on request by a skill**, not by the site build. That removes the build.sh hook, and with it the arrangement where a fact-extraction failure sat in the path of an unrelated deck's deploy - the guide's correctness now gates the guide only. The cost, recorded rather than absorbed: nothing prompts a regeneration, so an artefact in circulation can be stale, which makes the dating requirement load-bearing instead of a nicety.
+
+Each artefact is a **single self-contained HTML file** - styling, script and data inline, no origin needed. That is what makes deployment a later choice rather than a prerequisite, and it is why the deck cannot share the site's assets by reference.
+
+**Delivery is out of scope**, on the user's instruction. This leaves objective 1 - a newcomer finding the entry point without being told where it is - unmet by what is specified, since a file in guide/out/ is reachable by nobody. Recorded in a section of its own rather than quietly reworded, with the two ways it can go, because amending an objective is the user's call.
+
+A vocabulary correction, which was worth more than it looked: the spec said "hand-written" and "hand-drawn" where it meant "not derived from a source". Nothing here is written by hand - it is all authored by an agent. The distinction that matters is where a sentence gets its truth, so the words are now **derived** and **composed**, defined once in §1.
+
+The protected-path change shrank from three edits to one: five `export` keywords in scripts/initiatives.mjs, drafted as its own pull request because a sweep branch cannot touch scripts/.
