@@ -96,6 +96,12 @@ ceiling rather than a capability.
   can be held that the browser cannot read, and an outbound call can be made from
   a place that can read it. Failing this switches pass 2 off and nothing else.
 
+**Observed 2026-08-18:** all three sharp pass conditions succeeded on ChatGPT
+Sites. The other §10 capability rows also passed at the host level; the exact
+plan-specific metering limit remains a `cost:` decision and the two-user
+isolation attack remains the phase 6 product test. Measurements are in
+`host-spike.md` §6 and the filled table is in `spec.md` §10.
+
 ### 4.1 — The pile lands
 
 | Test | Pass condition | Protects |

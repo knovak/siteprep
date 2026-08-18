@@ -589,3 +589,43 @@ only if its six-month retention changes or the retention requirement changes.
 - **Not settled:** whether pass 2 produces enough value to reopen the question,
   whether target-URL logging is acceptable, or whether these prices and policies
   remain current at that time.
+
+## 2026-08-18 — ChatGPT Sites is the host; metering remains open
+
+**Choose ChatGPT Sites for the web app.** An owner-only full-stack probe ran on
+the real service and passed every executable host-capability row in `spec.md`
+§10. The live receipt is [Bookmark Sorter Host Probe](https://bookmark-sorter-host-probe-20260818.ken-novak.chatgpt.site/),
+version 2, deployed at 2026-08-18 18:51:24 UTC. It remains owner-only and is not
+an initiative output.
+
+### Evidence that decided it
+
+- Server-side outbound HTTP returned normal 200 and 404 responses, obeyed a
+  100 ms abort, and completed ten concurrent requests in 151 ms.
+- The app exported 10,000 seeded rows as a complete 1,525,841-byte
+  `bookmark-sorter/v1` document in 1,786 ms, and the browser parsed all items.
+- Sign in with ChatGPT supplied a stable opaque id as well as email and full
+  name to server code. The probe returned only header presence, never values.
+- D1 supported owner-scoped reads and the cross-owner query a `demo-template`
+  needs. The host adds no row-level policy: isolation remains application logic
+  and is still attacked with two accounts in phase 6.
+- A server-side secret was readable where an outbound call ran and was absent
+  from the response except for its length.
+- Sixteen 300 px cells fit 8×2 at 2,600×1,200 without horizontal page scrolling.
+
+The first publish of the corrected saved version hit a transient Sites callback
+error; retrying the same version succeeded. That is operational evidence worth
+keeping, but not a reason to reject the surface after the live result passed.
+
+### What remains open
+
+The runtime accepted 10,003 D1 rows with about 1,616,053 bytes of item payload.
+It did not expose plan quotas, and the [Sites help article](https://help.openai.com/en/articles/20001339)
+describes limits as plan-specific rather than publishing the workspace's exact
+allowance. Accepting those limits for 10,000 items plus up to a few hundred MB
+of R2 captures is a `cost:` decision and remains blocked for the user.
+
+That open decision does not block phase 1: the D1 data model and idempotent
+bookmark ingestion can start on the chosen surface. It gates later acceptance
+of the R2 capture store. The no-vendor decision also remains unchanged, so pass
+2 stays switched off regardless of host capability.

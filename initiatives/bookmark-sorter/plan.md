@@ -103,8 +103,10 @@ identity, a database with per-user rows, a server-side secret store with a
 server-side place to call from, cross-owner read for one collection kind,
 control over layout density, and the metered limits of a beta platform.
 
-**The probes are written**, in `host-spike.md` §3, and drafted as a runnable
-site under `probe/`.
+**The probes ran on 2026-08-18.** `host-spike.md` §6 records the evidence and
+`spec.md` §10 carries it beside each requirement. The runnable probe was deleted
+afterward as this phase requires; an owner-only live receipt remains temporarily
+available for reproduction.
 
 **Deliberately throwaway.** The spike's code is a probe, not the first increment
 — it proves a row and is deleted. Anything that survives contact with phase 1 was
@@ -279,9 +281,9 @@ Every phase ends with three things, and the third is the one that is easy to ski
 
 ## 5. The questions §13 left for this plan
 
-Seven were open. Five are answered here by reasoning; two are answered by
-evidence that does not exist yet, and this plan says who produces it and when
-rather than guessing.
+Seven were open. Five were answered here by reasoning; the host question was
+answered by the 2026-08-18 phase 0 evidence, and plan-specific metering remains
+the user's cost decision rather than something this plan guesses.
 
 ### 5.1 Where the screenshot API key lives — *phase 0, with the answer pre-committed*
 
@@ -292,19 +294,18 @@ vendor is from the client, pass 2 does not ship at all. The pipeline is built an
 tested against the stub in phase 3 either way, so this question can only ever
 cost the *feature*, never the schedule.
 
-### 5.2 Which OpenAI surface — *phase 0, on evidence*
+### 5.2 Which OpenAI surface — *ChatGPT Sites, on phase 0 evidence*
 
-Judged against §10's table, not chosen here. Naming a surface now would be a
-guess given the standing of a spec section, and it would be the second time the
-same presumption was recorded as if it were a finding. What is fixed now is the
-**decision rule**: the surface that satisfies bulk export and per-user rows wins;
-among surfaces that satisfy both, the one with a server-side secret store wins,
-because it is the difference between pass 2 shipping and not.
+Chosen on 2026-08-18 against §10's table rather than from documentation alone.
+The live owner-only probe passed outbound HTTP, a target-size app export,
+identity, D1 owner scoping, a server-side secret, the cross-owner template query
+and the deciding wide layout. `host-spike.md` §6 records the measurements and
+`decisions.md` records the choice.
 
-Access to the candidate is no longer hypothetical: on 2026-08-18 the user
-confirmed that ChatGPT Sites is available on their plan and in this workspace.
-That makes the spike actionable, not the host chosen. The spike will say what
-Sites can do; it still cannot approve the metered cost on the user's behalf.
+One authority question remains separate from capability: whether this
+workspace's plan-specific Sites limits are acceptable for 10,000 items plus up
+to a few hundred MB of captures. That is a `cost:` blocker. It does not prevent
+phase 1 ingestion from starting; it gates accepting the later R2 capture store.
 
 ### 5.3 Which screenshot vendor, and its retention terms — *none at present*
 

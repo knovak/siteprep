@@ -583,15 +583,16 @@ that is the general scheme and this is not a substitute for it.
 uncertainties in `objectives.md` are here, and they are the first thing the plan
 should resolve:
 
-| Requirement | Used by | If the host lacks it |
-|---|---|---|
-| Signed-in user identity | O8, §5 | Sign-in becomes something to build — not a small piece of work |
-| A database with per-user rows | All state | Substitute any hosted store; the model in §5 is portable |
-| Outbound HTTP to arbitrary URLs | §6 pass 1 | Metadata capture cannot run in-platform; captures move behind the same vendor as pass 2, at real cost |
-| A response large enough to stream the whole pile out | O7 | O7 is served by **the app's own export** (§9), not by any platform facility (`decisions.md`, 2026-08-17), so no host can fail this outright. What a host can do is cap a response or a request duration — in which case export and import chunk, which is work rather than a wall |
-| A server-side secret store, and a server-side place to call from | §6 pass 2 | The screenshot API key cannot be held safely, so pass 2 stays switched off and gap items keep no image. Everything else still works |
-| Read access across owners for one collection kind | §10.1 | Templates cannot be listed or copied, and a demo has to be seeded per tester by a maintainer instead |
-| Control over layout density | O3 | The 8×2 grid degrades; triage speed is the first casualty |
+| Requirement | Used by | If the host lacks it | Observed on ChatGPT Sites, 2026-08-18 |
+|---|---|---|---|
+| Signed-in user identity | O8, §5 | Sign-in becomes something to build — not a small piece of work | **Pass, with one test still deferred.** Server code received a stable opaque user id, email and full name from Sign in with ChatGPT without returning their values to the browser. One signed-in account was exercised; two-account stability remains an O8 test rather than a platform assumption |
+| A database with per-user rows | All state | Substitute any hosted store; the model in §5 is portable | **Pass for host capability.** D1 stored 10,003 probe rows. An owner-scoped insert and read returned the caller's 10,001 rows while the shared table also held two synthetic template-owner rows. Isolation is application query logic, as §5 assumes; a hostile second-user read remains a phase 6 test |
+| Outbound HTTP to arbitrary URLs | §6 pass 1 | Metadata capture cannot run in-platform; captures move behind the same vendor as pass 2, at real cost | **Pass.** Server-side `fetch` returned 200 and 404 responses as expected, a 100 ms abort was observed as a timeout, and ten concurrent requests completed in 151 ms |
+| A response large enough to stream the whole pile out | O7 | O7 is served by **the app's own export** (§9), not by any platform facility (`decisions.md`, 2026-08-17), so no host can fail this outright. What a host can do is cap a response or a request duration — in which case export and import chunk, which is work rather than a wall | **Pass at the target size.** The app seeded and exported 10,000 items as a complete `bookmark-sorter/v1` JSON document: 1,525,841 bytes, parsed in the browser after a 1,786 ms response |
+| A server-side secret store, and a server-side place to call from | §6 pass 2 | The screenshot API key cannot be held safely, so pass 2 stays switched off and gap items keep no image. Everything else still works | **Pass.** A 43-character secret was read only in server code, an outbound call from that code succeeded, and the response exposed only presence and length, never the value |
+| Read access across owners for one collection kind | §10.1 | Templates cannot be listed or copied, and a demo has to be seeded per tester by a maintainer instead | **Pass by construction.** The app inserted two rows owned by a synthetic template owner and could return them when its own query requested cross-owner data. The host imposed no row-level barrier, so `demo-template` access can remain an explicit application rule |
+| Control over layout density | O3 | The 8×2 grid degrades; triage speed is the first casualty | **Pass on the deciding layout.** Sixteen 300 px cells rendered as 8×2 at a 2,600×1,200 viewport with no horizontal page scroll. Tablet and phone behavior remain phase 2 product tests |
+| Metered storage and usage | All phases; R2 in §6 | A limit that binds at the real pile changes the host, while an unacceptable price needs the user's authority | **Open cost decision, not a failed capability.** 10,003 D1 rows with about 1,616,053 bytes of item payload succeeded. The runtime and [Sites help](https://help.openai.com/en/articles/20001339) describe plan-specific limits but do not expose exact quotas here, so the few-hundred-MB R2 estimate still needs comparison with the workspace's Sites limits |
 
 Anything that fails this table is a reason to revisit §2 before building, not
 after.
@@ -641,7 +642,8 @@ now would be a guess dressed as a requirement. This spec keeps that and specifie
   is the first thing to sequence: the pipeline is built and tested with the
   vendor call stubbed, and shipping it is a configuration change once the answer
   exists.
-- Which OpenAI surface, judged against the table in §10.
+- Whether ChatGPT Sites' plan-specific metering is acceptable at the target size;
+  the capability rows in §10 otherwise passed the phase 0 probe.
 - Whether pass 2 proves valuable enough to revisit the current no-vendor
   decision, and whether target-URL logging is acceptable if it does.
 - Whether a user may hold several collections of their own. The wish's "one per
