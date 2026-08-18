@@ -1,23 +1,14 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, PDFs, and simulator explaining how people and agents work in this repository.",
-  "stage": "planned",
+  "stage": "building",
   "value": "high",
   "outputs": [],
   "todo": [
     {
-      "id": "build-facts",
-      "title": "Phase 1 - the fact set: one source per key, an unresolvable key is an error, and the drift test",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": true
-    },
-    {
       "id": "build-checks",
       "title": "Phase 2 - the section format, token substitution, and the three honesty checks",
-      "state": "blocked",
-      "blocked_by": "todo:build-facts",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": false

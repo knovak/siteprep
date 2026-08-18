@@ -1,0 +1,6 @@
+{
+  "title": "Alpha",
+  "summary": "Must not escape the shallow reader.",
+  "stage": "seed",
+  "todo": [{"id": "secret-detail", "state": "actionable"}]
+}
