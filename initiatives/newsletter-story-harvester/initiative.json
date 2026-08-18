@@ -7,9 +7,8 @@
   "todo": [
     {
       "id": "measure-review-rate",
-      "title": "Run the proposed 15-minute fixture review protocol and record the first review-rate baseline",
-      "state": "blocked",
-      "blocked_by": "data:run the 15-minute fixture protocol and report stories judged and elapsed time",
+      "title": "Measure automated verdict click-through on the fixture review page and record the interaction baseline",
+      "state": "actionable",
       "value": "high",
       "effort": "small",
       "advances_stage": false

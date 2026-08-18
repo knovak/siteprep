@@ -174,3 +174,7 @@ Built the self-contained offline review-page generator, a reproducible 74-story 
 ## 2026-08-18 — Propose a bounded protocol for the first human review-rate baseline
 
 Proposed a 15-minute individual-judgment sitting after one resettable practice decision, with elapsed seconds, stories judged, rate, completion state, and the exported verdict file recorded. Reclassified the remaining blocker as `data:` because the protocol is reasoned but its numeric result can only be observed by a person.
+
+## 2026-08-18 — Revise the review-rate proposal after review selected option C
+
+Revised the proposal at the reviewer's direction to use a deterministic three-pass browser click-through. The phase-4 measurement is now actionable and is explicitly an interaction-throughput baseline, not a claim about human reading or judgment speed.

@@ -514,54 +514,56 @@ to run now and specific enough that a later sitting can be compared with it.
 | Option | Strengths | Weaknesses |
 |---|---|---|
 | **A. Finish the full 73-story unjudged backlog** | Produces a completion time for the exact fixture and includes the slow tail as attention falls | The time commitment is unknown in advance; fatigue and interruptions can dominate the UI being measured; awkward to repeat after a change |
-| **B. Run a fixed 15-minute sitting after one resettable practice judgment** | Bounded, easy to repeat, long enough for startup effects to become a small part of the result, and still measures genuine per-story judgment | Samples only the beginning of the default ordering; gives a rate rather than a full-backlog completion time |
-| **C. Measure an automated click-through** | Cheap, deterministic, and already close to what the browser suite can do | Measures rendering and button clicks, not reading or judgment; would manufacture the human evidence objective 7 asks for |
+| **B. Run a fixed 15-minute sitting after one resettable practice judgment** | Bounded, easy to repeat, long enough for startup effects to become a small part of the result, and still measures genuine per-story judgment | Samples only the beginning of the default ordering; gives a rate rather than a full-backlog completion time; requires an uninterrupted person before the phase can move |
+| **C. Measure an automated click-through** *(reviewer's choice)* | Cheap, deterministic, repeatable in CI, and exercises the actual browser interaction and state-update path | Measures rendering and button clicks, not reading or judgment; its result is an interaction-throughput baseline and must not be described as human review speed |
 | **D. Wait and measure only real mailbox stories** | Most representative of eventual use and avoids drawing conclusions from composed fixtures | Defers feedback on the review interaction until phase 6 and mixes UI throughput with extraction quality and unfamiliar real content |
 
-### Recommendation
+### Recommendation — revised to option C at reviewer direction
 
-**Recommend B: a fixed 15-minute sitting, using individual judgments.** Generate
-the page from the committed `store-fixture.json`, open it fresh in the default
-story-date order with no tag filter, make one untimed practice judgment, then
-reload so the embedded fixture resets. Start the timer when the first card is
-opened. For 15 minutes, judge stories individually; do not use
-`verdict-rest`, because a batch click is not evidence that the stories were
-read. Stop at 15 minutes or when the backlog reaches zero, whichever comes
-first. Record:
+**Recommend C: a deterministic automated click-through of the fixture page.**
+The reviewer answered the proposal with: *"I prefer option C. please use C"*.
+That changes the phase-4 baseline from human judgment speed to browser
+interaction throughput; it does not pretend that automation read the stories.
 
-- elapsed time in seconds;
-- the number of stories newly judged;
-- stories per minute (`judged / elapsed_seconds * 60`);
-- whether the backlog finished; and
-- the exported verdict file as reproducible evidence of which records were
-  judged.
+Generate the page from the committed `store-fixture.json`, open it fresh with
+Playwright, and run three measured passes. In each pass, alternate `keep`,
+`drop`, and `emphasise` across every unjudged story, one verdict button at a
+time, until the backlog reaches zero. Reload the fixture between passes so each
+starts with the same 74-story state. Record:
 
-The fixed window answers the immediate question — whether the generated page
-can sustain human triage — without turning the first baseline into an
-open-ended chore. The exported file also makes the sitting useful to phase 5's
-importer rather than producing a number with no round-trip evidence.
+- elapsed milliseconds from the first verdict click through backlog zero;
+- the number of individual verdict clicks;
+- verdict clicks per second;
+- median and 95th-percentile click-to-state-update latency; and
+- whether every pass reached zero backlog without a browser error.
+
+Three fresh passes keep the result bounded while exposing a one-off outlier.
+Alternating verdicts exercises all three controls, and refusing the
+`verdict-rest` shortcut keeps this a measurement of the individual interaction
+path. The browser test can produce this evidence now and repeat it after UI
+changes. The original B recommendation remains the stronger way to measure
+*human* judgment throughput, but the reviewer chose a mechanical baseline for
+this phase.
 
 ### What would change the recommendation
 
-- If the desired number is **time to clear this exact backlog**, choose A; a
-  fixed-window rate is then the wrong measurement.
-- If the fixture's first fifteen minutes are visibly dominated by one source or
-  one story shape, repeat B once per source or choose D rather than treating the
-  mixed rate as representative.
-- If review is moved into the bookmark sorter's generalised grid before this is
-  run, measure that surface instead; the 15-minute, individual-judgment protocol
-  still applies.
-- If only mechanical interaction latency matters, C is sufficient, but that is
-  a different test and must not be recorded as the human review-rate baseline.
+- If the desired evidence becomes **human reading and judgment speed**, choose
+  B; C cannot supply it no matter how many times it is run.
+- If the desired number is **human time to clear this exact backlog**, choose A.
+- If representative real-story judgment matters more than an early repeatable
+  UI baseline, choose D.
+- If review moves into the bookmark sorter's generalised grid before this is
+  run, measure that surface instead with the same individual-click protocol.
 
 ### What this settles, and what it does not
 
-- **If merged, settles:** the duration, reset, ordering, filtering, judgment
-  granularity, stop rule, and fields to record for the first baseline.
-- **Does not settle:** the numeric rate. That is observed data, so the todo
-  remains blocked until a person runs the protocol and reports the result.
+- **If merged, settles:** that phase 4 uses an automated, three-pass,
+  individual-click browser baseline and the fields it records. The measurement
+  todo becomes actionable because it no longer waits on a person.
+- **Does not settle:** human review speed. The result must be labelled browser
+  interaction throughput, not stories judged per minute.
 - **Does not establish a pass threshold.** As `test-plan.md` says, the first
   rate is a baseline, not a target retrofitted to one observation.
 - **Does not replace the phase 6 sitting on real stories.** It isolates review
-  throughput now; the later sitting answers whether the complete harvest is
+  mechanics now; the later sitting answers whether the complete harvest is
   actually faster than reading the newsletters.
