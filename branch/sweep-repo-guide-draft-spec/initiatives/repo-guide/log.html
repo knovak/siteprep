@@ -44,6 +44,13 @@
 <p>The trigger for the upgrade is the user&#39;s judgement and is deliberately not converted into a metric. The cost recorded with it: the simulator is the one deliverable outside the generation guarantee, so it is the case the dating requirement is carrying.</p>
 <h3>2026-08-17 — Draft spec.md - how the description, deck, PDFs, and simulator are built</h3>
 <p>spec.md drafted: one generated fact set, hand-written narrative that cites it by token, and four renderings of one source. Settles the two questions decisions.md left open - authority per claim, and where the generated/written line falls - and names the protected-path change publication needs.</p>
+<h3>2026-08-18 — Review round on the spec: generated on request, self-contained, and delivery out of scope</h3>
+<p>Seven comments, and three of them changed the shape of the thing rather than its wording.</p>
+<p>The guide is now produced <strong>on request by a skill</strong>, not by the site build. That removes the build.sh hook, and with it the arrangement where a fact-extraction failure sat in the path of an unrelated deck&#39;s deploy - the guide&#39;s correctness now gates the guide only. The cost, recorded rather than absorbed: nothing prompts a regeneration, so an artefact in circulation can be stale, which makes the dating requirement load-bearing instead of a nicety.</p>
+<p>Each artefact is a <strong>single self-contained HTML file</strong> - styling, script and data inline, no origin needed. That is what makes deployment a later choice rather than a prerequisite, and it is why the deck cannot share the site&#39;s assets by reference.</p>
+<p><strong>Delivery is out of scope</strong>, on the user&#39;s instruction. This leaves objective 1 - a newcomer finding the entry point without being told where it is - unmet by what is specified, since a file in guide/out/ is reachable by nobody. Recorded in a section of its own rather than quietly reworded, with the two ways it can go, because amending an objective is the user&#39;s call.</p>
+<p>A vocabulary correction, which was worth more than it looked: the spec said &quot;hand-written&quot; and &quot;hand-drawn&quot; where it meant &quot;not derived from a source&quot;. Nothing here is written by hand - it is all authored by an agent. The distinction that matters is where a sentence gets its truth, so the words are now <strong>derived</strong> and <strong>composed</strong>, defined once in §1.</p>
+<p>The protected-path change shrank from three edits to one: five <code>export</code> keywords in scripts/initiatives.mjs, drafted as its own pull request because a sweep branch cannot touch scripts/.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/repo-guide/draft-spec" data-root="../../">
