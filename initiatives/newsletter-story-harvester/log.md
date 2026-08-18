@@ -158,3 +158,7 @@ Ran every extraction contract live against its fixture cases with a fixed ten-po
 ## 2026-08-18 — Phase 3 - a whole run over a fixture mailbox: the run loop, a source_doc for every matched message, and the run record
 
 Built the phase 3 fixture harvest end to end: strict inventory and range resolution, two-step message source with post-search From verification, extraction and theme-tag seams, store merging, source_doc accounting for every matched message, and persisted run records. The 75-test suite covers every phase 3 exit row, including a 49-match/25-add overlapping rerun.
+
+## 2026-08-18 — Establish which newsletters are in scope and how their emails are recognised
+
+Scope set to from:yglesias for 14 days as long-form; from:fixthenews@substack.com for 28 days as annotated-digest; and from:chopwoodcarrywaterdailyactions with subject containing extra for 28 days as link-list.

@@ -1,10 +1,11 @@
 // The phase 3 implementation of spec.md §2's message-source seam.
 //
 // It behaves like the mailbox connector where the run loop needs that behavior
-// to be visible: matchers are a union, the range is half-open, `from:` ignores
-// plus-tags during search, and reading the body is a separate operation. The
-// last point lets the integration test prove an over-matched message was not
-// fetched after its actual From address failed verification.
+// to be visible: matcher groups are a union, conditions inside `all` intersect,
+// the range is half-open, `from:` may over-match during search, and reading the
+// body is a separate operation. The last point lets the integration test prove
+// an over-matched message was not fetched after its actual From value failed
+// verification.
 
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -23,11 +24,11 @@ export function fixtureMessageSource(mailbox, { root } = {}) {
     searches,
 
     async search(entry, range) {
-      const matchers = matchersFor(entry);
+      const groups = matcherGroupsFor(entry);
       searches.push({ source: entry.key, range: { ...range } });
       return messages
         .filter((message) => inRange(message.issue_date, range))
-        .filter((message) => matchers.some((matcher) => prefilterMatches(message, matcher)))
+        .filter((message) => groups.some((group) => group.every((matcher) => prefilterMatches(message, matcher))))
         .map(publicMessage)
         .sort((a, b) => `${a.issue_date}\0${a.id}`.localeCompare(`${b.issue_date}\0${b.id}`));
     },
@@ -46,21 +47,21 @@ export function fixtureMessageSource(mailbox, { root } = {}) {
 export function actualFromMatchesEntry(message, entry) {
   const from = matchersFor(entry).filter((matcher) => matcher.type === 'from');
   // A label-only fixture is allowed by §4's inventory shape. There is no
-  // claimed address to verify in that case; attribution rests on the matcher.
-  return from.length === 0 || from.some((matcher) => addressOf(message.from) === addressOf(matcher.value));
+  // claimed From value to verify in that case; attribution rests on the matcher.
+  return from.length === 0 || from.some((matcher) => actualFromMatches(message.from, matcher.value));
 }
 
 export function matchersFor(entry) {
-  const matchers = Array.isArray(entry?.match) ? entry.match : [entry?.match].filter(Boolean);
-  if (!matchers.length) throw new Error(`inventory source ${entry?.key || '(unknown)'} has no matchers`);
-  return matchers.map((matcher) => {
-    if (!matcher || typeof matcher !== 'object' || !matcher.type || !matcher.value) {
-      throw new Error(`inventory source ${entry?.key || '(unknown)'} has an invalid matcher`);
-    }
-    if (!['from', 'label', 'subject'].includes(matcher.type)) {
-      throw new Error(`inventory source ${entry?.key || '(unknown)'} has unknown matcher ${matcher.type}`);
-    }
-    return matcher;
+  return matcherGroupsFor(entry).flat();
+}
+
+export function matcherGroupsFor(entry) {
+  const groups = Array.isArray(entry?.match) ? entry.match : [entry?.match].filter(Boolean);
+  if (!groups.length) throw new Error(`inventory source ${entry?.key || '(unknown)'} has no matchers`);
+  return groups.map((group) => {
+    const matchers = Array.isArray(group?.all) ? group.all : [group];
+    if (!matchers.length) throw new Error(`inventory source ${entry?.key || '(unknown)'} has an empty all matcher`);
+    return matchers.map((matcher) => validateMatcher(matcher, entry));
   });
 }
 
@@ -76,10 +77,32 @@ function publicMessage(message) {
 }
 
 function prefilterMatches(message, matcher) {
-  if (matcher.type === 'from') return sameMailboxIgnoringPlus(message.from, matcher.value);
+  if (matcher.type === 'from') return fromPrefilterMatches(message.from, matcher.value);
   if (matcher.type === 'label') return (message.labels || []).includes(matcher.value);
   if (matcher.type === 'subject') return new RegExp(matcher.value, 'i').test(message.subject || '');
   return false;
+}
+
+function validateMatcher(matcher, entry) {
+  if (!matcher || typeof matcher !== 'object' || !matcher.type || !matcher.value) {
+    throw new Error(`inventory source ${entry?.key || '(unknown)'} has an invalid matcher`);
+  }
+  if (!['from', 'label', 'subject'].includes(matcher.type)) {
+    throw new Error(`inventory source ${entry?.key || '(unknown)'} has unknown matcher ${matcher.type}`);
+  }
+  return matcher;
+}
+
+function fromPrefilterMatches(actual, expected) {
+  return String(expected).includes('@')
+    ? sameMailboxIgnoringPlus(actual, expected)
+    : String(actual || '').toLowerCase().includes(String(expected).toLowerCase());
+}
+
+function actualFromMatches(actual, expected) {
+  return String(expected).includes('@')
+    ? addressOf(actual) === addressOf(expected)
+    : String(actual || '').toLowerCase().includes(String(expected).toLowerCase());
 }
 
 function sameMailboxIgnoringPlus(a, b) {

@@ -466,3 +466,38 @@ the same tag may later come from a store-wide pass or a person.
   for themes and clusters to mean something.
 - `source_doc` remains an opaque id. How Gmail constructs one is phase 6's
   connector implementation and must not leak a message body or recipient token.
+
+## 2026-08-18 — The first newsletter inventory
+
+The user supplied exactly three sources, with a rolling reach and an extraction
+shape for each:
+
+| Source key | Gmail match | Lookback | Shape |
+|---|---|---:|---|
+| `yglesias` | `from:yglesias` | 14 days | `long-form` |
+| `fix-the-news` | `from:fixthenews@substack.com` | 28 days | `annotated-digest` |
+| `chopwood-carrywater-extra` | `from:chopwoodcarrywaterdailyactions subject:extra` | 28 days | `link-list` |
+
+The third row is an intersection: both the From token and a subject containing
+`extra` must match. Treating those two conditions as the inventory's ordinary
+union would harvest every message from that sender and every unrelated message
+whose subject contains `extra`, which is far outside the answer.
+
+The lookbacks are source-relative defaults inside an explicit run range. For a
+run ending on local date `before`, each source starts no earlier than
+`before - lookback_days`; a caller may request a narrower range, never a wider
+one. This keeps §5.1's repeatability rule — the resolved per-source dates are
+still written to the run record — while preserving the user's different reach
+for each source.
+
+### What this settles, and what it does not
+
+- **Settled:** these are the only sources in scope, their match conditions,
+  their rolling lookbacks, and their declared extraction shapes.
+- **Settled:** `newsletter-inventory` is complete. The actual inventory file
+  remains private beside the store, as §4 requires; this decision is the durable
+  source from which phase 6 fills it.
+- **Not settled:** the redirect-unwrapping rule for each sender. Phase 6 learns
+  those rules from real issues rather than guessing them from the address.
+- **Not settled:** whether the declared shapes fit every issue. §3.2's per-issue
+  override and count flags remain the mechanism for exceptions.

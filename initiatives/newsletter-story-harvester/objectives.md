@@ -116,7 +116,10 @@ be settled by whoever writes the spec:
 2. **Which newsletters are in scope, and how is an email recognised as one of
    them?** The wish names seven by title, which is not the same as knowing the
    sender addresses, labels, or how far back to reach. Only the user's mailbox
-   can settle it, so it is recorded as a blocked item rather than guessed.
+   can settle it, so it was recorded as a blocked item rather than guessed.
+   **Answered on 2026-08-18:** three sources, their Gmail match conditions,
+   rolling lookback windows, and extraction shapes are recorded in
+   `decisions.md` and specified in `spec.md` §4.
 
 Two more are noted here for the spec rather than raised as blockers:
 

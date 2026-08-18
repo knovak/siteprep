@@ -179,6 +179,8 @@ silently wrong extraction gets wrong.
 | Test | Pass condition | Protects |
 |---|---|---|
 | Explicit range only | A run without a date range is refused; "since last time" does not exist | O1, §5.1 |
+| Per-source lookback | A source with `lookback_days: 14` searches no earlier than fourteen days before the run's exclusive `before`, without widening a narrower requested range | §4, §5.1 |
+| Matcher intersection | A matcher group requiring sender and subject returns only messages satisfying both; sibling groups still union | §4, phase 0 |
 | Repeatable | Two runs over the same range against the same fixtures produce the same set of ids | O1, §3.3 |
 | Second run adds only what is new | An overlapping range adds the new issues' stories and nothing else | O3 |
 | Every matched message recorded | `empty-issue.html` produces a `source_doc` and no stories | §5.1 |
