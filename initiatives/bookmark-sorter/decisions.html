@@ -254,6 +254,19 @@
 <h4>What remains open</h4>
 <p>The runtime accepted 10,003 D1 rows with about 1,616,053 bytes of item payload. It did not expose plan quotas, and the <a href="https://help.openai.com/en/articles/20001339">Sites help article</a> describes limits as plan-specific rather than publishing the workspace&#39;s exact allowance. Accepting those limits for 10,000 items plus up to a few hundred MB of R2 captures is a <code>cost:</code> decision and remains blocked for the user.</p>
 <p>That open decision does not block phase 1: the D1 data model and idempotent bookmark ingestion can start on the chosen surface. It gates later acceptance of the R2 capture store. The no-vendor decision also remains unchanged, so pass 2 stays switched off regardless of host capability.</p>
+<h3>2026-08-18 — Phase 2 keeps marks local and records undo as one server action</h3>
+<p><strong>The blind grid keeps a marked set only for the current rendered window, clears it after a verdict or a window change, and stores the whole verdict as one server-side action.</strong> Phase 4 remains the place for collection-wide selections and sweeps.</p>
+<h4>Why this is the phase 2 boundary</h4>
+<p>At the widest layout a rendered window contains sixteen visible records and an eight-record buffer; tablet and phone windows are smaller. Keeping phase 2 marks inside that window makes the interaction explicit: mark visible exceptions, apply one of four verdicts, then move on. It also keeps a D1 action small and atomic. Letting an unnamed set accumulate invisibly across virtual windows would create a second, weaker selection mechanism before the expression and saved- selection work scheduled for phase 4.</p>
+<p>The alternatives were to retain marks across windows, which makes the selected scope hard to see, or to persist a named selection now, which pulls phase 4 into phase 2. Neither improves the blind baseline this increment exists to measure.</p>
+<h4>What the instrument counts</h4>
+<ul><li>A sitting records start, end, elapsed milliseconds, and the number of records</li></ul>
+<p>  whose verdict actually changed. Reapplying the same verdict is a no-op and   does not inflate the rate.</p>
+<ul><li>One focused-item verdict is one action. One marked-set verdict is also one</li></ul>
+<p>  action, with all prior values in its payload, so one <code>undo</code> restores the   complete set and decrements the sitting count by the same number.</p>
+<ul><li>The client displays items judged per minute, but the real blind baseline is</li></ul>
+<p>  still open. Fixture time proves the calculation; only a sitting on several   hundred real bookmarks can supply the number required by <code>test-plan.md</code> §4.2.</p>
+<p>This decision is deliberately local to phase 2. Phase 4 may replace the window-bound set with its selection evaluator, but must preserve the one-action undo guarantee.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
