@@ -1,17 +1,17 @@
 {
   "title": "Interactive Bookmark Sorter",
   "summary": "Fast visual triage for a large bookmark pile, with tags, clusters and snapshot views.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "build-pile-landing",
-      "title": "Build the first phase 1 increment: the data model and idempotent bookmark ingestion",
+      "id": "finish-pile-landing",
+      "title": "Finish phase 1 with the D1 adapter, file upload and list surface, and 10,000-item sizing test",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
-      "advances_stage": true
+      "advances_stage": false
     },
     {
       "id": "confirm-sites-metering",
