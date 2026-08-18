@@ -611,3 +611,37 @@ file against the same story id.
 - **Next:** run that automated click-through baseline; phase 6 can replace the
   fixture message source with Gmail without changing this file format or merge
   path.
+
+## 2026-08-18 — First automated review interaction baseline
+
+**The three-pass fixture baseline completed successfully at roughly 15 verdict
+clicks per second.** This is browser interaction throughput, not human reading
+or judgment speed.
+
+The committed `newsletter-review-interaction/v1` runner opened a fresh generated
+page for each pass at 1280×900, then alternated `kept`, `dropped`, and
+`emphasised` one individual button click at a time across all 73 initially
+unjudged fixture stories. It ran with Node v23.11.0 and Playwright Chromium
+143.0.7499.4 on arm64 macOS.
+
+| Pass | Clicks | Elapsed | Clicks/second | p50 update | p95 update | Zero backlog | Browser errors |
+|---:|---:|---:|---:|---:|---:|---|---:|
+| 1 | 73 | 4,829.58 ms | 15.115 | 37.53 ms | 38.96 ms | yes | 0 |
+| 2 | 73 | 4,867.95 ms | 14.996 | 37.43 ms | 38.72 ms | yes | 0 |
+| 3 | 73 | 4,868.29 ms | 14.995 | 37.45 ms | 38.36 ms | yes | 0 |
+
+The median pass was 4,867.95 ms and 14.996 clicks/second. All three passes
+reached zero backlog without a console error, page error, or failed request.
+
+### What this settles, and what it does not
+
+- **Settled:** phase 4 now has its repeatable mechanics baseline and a runner
+  that can produce the same fields after a UI change.
+- **No threshold is inferred.** This is the first observation, so it is a point
+  of comparison rather than a pass/fail target.
+- **Human throughput remains unknown by choice.** The result says how quickly
+  the current browser path accepts scripted decisions; it says nothing about
+  how quickly a person understands or judges a story.
+- **Re-run when the review interaction changes.** A material change in click
+  rate or p50/p95 latency is evidence to inspect, not automatically a regression
+  until a later decision establishes a threshold.

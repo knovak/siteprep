@@ -56,6 +56,7 @@ all three. Node 18 or later, for the built-in test runner.
 | `build-fixture-store.mjs` | Reproducibly builds the committed 74-story fixture store from phase 3 inputs | `test-plan.md` §4.4 |
 | `fixtures/store-fixture.json` | Offline review input, including one unknown verdict to pin round-tripping | `test-plan.md` §4.4 |
 | `test/review-page.test.mjs` | Offline Playwright checks for every automated Phase 4 row | `test-plan.md` §4.4 |
+| `measure-review-rate.mjs` | Runs the selected three-pass individual-click protocol and reports elapsed time, throughput, p50/p95 state-update latency, completion, and browser errors | `decisions.md` 2026-08-18 |
 
 **Phase 5 — verdicts back into the store**
 
@@ -72,6 +73,12 @@ Generate a review file:
 node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
   initiatives/newsletter-story-harvester/work/fixtures/store-fixture.json \
   /tmp/newsletter-review.html
+```
+
+Measure the repeatable browser interaction baseline:
+
+```bash
+node initiatives/newsletter-story-harvester/work/measure-review-rate.mjs
 ```
 
 Import its exported verdict file:

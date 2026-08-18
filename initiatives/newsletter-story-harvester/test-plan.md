@@ -202,7 +202,7 @@ silently wrong extraction gets wrong.
 | `undo` reverses a sweep as one action | Fifty swept, one undo restores all fifty | §8 |
 | Backlog count | Correct after every action, and shown at all times | O7 |
 | Unrecognised verdict displays | A store carrying `to-be-shared` renders and round-trips it | §11, `story-record.md` §1.2 |
-| **Measured: the review rate** | A sitting over `store-fixture.json` records stories judged and elapsed time; the rate is written into `decisions.md` as the first baseline | O7 |
+| **Measured: interaction throughput** | Three fresh automated passes over `store-fixture.json` alternate individual verdict clicks until backlog zero, recording elapsed time, clicks per second, p50/p95 click-to-state-update latency, completion, and browser errors in `decisions.md`; it is never labelled human review speed | O7, `decisions.md` 2026-08-18 |
 
 The rate is a recorded number, not a threshold. There is nothing to compare it
 against until it exists — and it is the first evidence for or against the whole

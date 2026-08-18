@@ -182,3 +182,7 @@ Revised the proposal at the reviewer's direction to use a deterministic three-pa
 ## 2026-08-18 — Phase 5 - import verdict files idempotently and record the round trip
 
 Closed phase 5 with an addressed verdict/tag importer and atomic CLI: later verdict_at wins, open verdicts survive, wrong stores name both ids, untrusted story content is inert, and a canonical fingerprint makes duplicate files complete no-ops. The browser-to-store round trip and all 95 work tests pass; the recorded fixture import was 0 added, 3 matched, 0 merged, 0 conflicted, and 3 updated. Added the Gmail message-source adapter as the next actionable phase.
+
+## 2026-08-18 — Measure automated verdict click-through on the fixture review page and record the interaction baseline
+
+Recorded the newsletter-review-interaction/v1 baseline with three fresh 73-click Playwright passes. Throughput was 14.995-15.115 clicks/second, p50 state-update latency 37.43-37.53 ms, p95 38.36-38.96 ms; every pass reached zero backlog with no browser errors. Added the repeatable runner and kept the result explicitly separate from human judgment speed.

@@ -6,14 +6,6 @@
   "outputs": [],
   "todo": [
     {
-      "id": "measure-review-rate",
-      "title": "Measure automated verdict click-through on the fixture review page and record the interaction baseline",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "build-gmail-source",
       "title": "Phase 6 - implement the Gmail message-source adapter and private-inventory handoff without committing mailbox data",
       "state": "actionable",
