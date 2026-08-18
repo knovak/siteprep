@@ -72,6 +72,28 @@ Create a `deck.json` file in your deck's root directory (e.g., `/decks/india1/de
 - Or use descriptive strings: `"main"`, `"secondary"`, `"archive"`
 - Without `deck.json`, decks default to alphabetical order by folder name
 
+## Skills
+
+Repository-scoped skills provide reusable workflows while working anywhere in
+this repository.
+
+- [`deploy-to-chatgpt-sites`](.agents/skills/deploy-to-chatgpt-sites/README.md)
+  publishes a prebuilt static directory as a new or replacement ChatGPT Site.
+  Each run uses a unique off-repository temporary workspace so generated files
+  and deployment state cannot enter the source repository or leak between
+  deployments.
+
+The initiative lifecycle also has four workflow skills under `.claude/skills/`:
+
+- [`new-initiative`](.claude/skills/new-initiative/SKILL.md) creates an
+  initiative at the `wish` stage.
+- [`answer-decision`](.claude/skills/answer-decision/SKILL.md) records an answer
+  to a question that blocks an initiative and unblocks the related work.
+- [`respond-to-review`](.claude/skills/respond-to-review/SKILL.md) handles pull
+  request review comments without resolving threads or merging.
+- [`merge-prs`](.claude/skills/merge-prs/SKILL.md) verifies and merges pull
+  requests that meet the initiative workflow's safeguards.
+
 ## Build and preview
 
 ```bash

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deploy to ChatGPT Sites"
+  short_description: "Deploy static folders to ChatGPT Sites"
+  default_prompt: "Use $deploy-to-chatgpt-sites to deploy this static site directory as a new private ChatGPT Site."
