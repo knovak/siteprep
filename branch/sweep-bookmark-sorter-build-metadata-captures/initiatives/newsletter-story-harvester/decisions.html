@@ -239,6 +239,20 @@
 <p>  it, and the phase 4 decision deliberately chose a browser interaction baseline   instead. <code>measure-review-rate</code> is therefore actionable, not blocked.</p>
 <ul><li><strong>Next:</strong> run that automated click-through baseline; phase 6 can replace the</li></ul>
 <p>  fixture message source with Gmail without changing this file format or merge   path.</p>
+<h3>2026-08-18 — First automated review interaction baseline</h3>
+<p><strong>The three-pass fixture baseline completed successfully at roughly 15 verdict clicks per second.</strong> This is browser interaction throughput, not human reading or judgment speed.</p>
+<p>The committed <code>newsletter-review-interaction/v1</code> runner opened a fresh generated page for each pass at 1280×900, then alternated <code>kept</code>, <code>dropped</code>, and <code>emphasised</code> one individual button click at a time across all 73 initially unjudged fixture stories. It ran with Node v23.11.0 and Playwright Chromium 143.0.7499.4 on arm64 macOS.</p>
+<div class="table-scroll"><table><thead><tr><th>Pass</th><th>Clicks</th><th>Elapsed</th><th>Clicks/second</th><th>p50 update</th><th>p95 update</th><th>Zero backlog</th><th>Browser errors</th></tr></thead><tbody><tr><td>1</td><td>73</td><td>4,829.58 ms</td><td>15.115</td><td>37.53 ms</td><td>38.96 ms</td><td>yes</td><td>0</td></tr><tr><td>2</td><td>73</td><td>4,867.95 ms</td><td>14.996</td><td>37.43 ms</td><td>38.72 ms</td><td>yes</td><td>0</td></tr><tr><td>3</td><td>73</td><td>4,868.29 ms</td><td>14.995</td><td>37.45 ms</td><td>38.36 ms</td><td>yes</td><td>0</td></tr></tbody></table></div>
+<p>The median pass was 4,867.95 ms and 14.996 clicks/second. All three passes reached zero backlog without a console error, page error, or failed request.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> phase 4 now has its repeatable mechanics baseline and a runner</li></ul>
+<p>  that can produce the same fields after a UI change.</p>
+<ul><li><strong>No threshold is inferred.</strong> This is the first observation, so it is a point</li></ul>
+<p>  of comparison rather than a pass/fail target.</p>
+<ul><li><strong>Human throughput remains unknown by choice.</strong> The result says how quickly</li></ul>
+<p>  the current browser path accepts scripted decisions; it says nothing about   how quickly a person understands or judges a story.</p>
+<ul><li><strong>Re-run when the review interaction changes.</strong> A material change in click</li></ul>
+<p>  rate or p50/p95 latency is evidence to inspect, not automatically a regression   until a later decision establishes a threshold.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/bookmark-sorter/build-metadata-captures" data-root="../../">
