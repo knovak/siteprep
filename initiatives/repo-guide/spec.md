@@ -460,21 +460,29 @@ item** — *"make a task at the end of other tasks, to remind me to link up the
 output so users can find it."* So the objective stands unamended, and
 `link-the-guide` is the last item in the backlog.
 
-It is recorded as **blocked on a `permission:` blocker rather than left
-actionable**, which is the honest encoding: linking the guide needs the
-`shared/nav_bar/` entry and the `build.sh` line that §9.3 removed from the build,
-both protected paths, so no sweep can ever do it however far down the list it
-sits. It is the user's pull request to land.
+**It stays quiet until the guide exists** (asked for on review, 2026-08-18). A
+`permission:` blocker would be the most literal description of the item — it
+needs the `shared/nav_bar/` entry and the `build.sh` line §9.3 removed from the
+build, both protected paths, so it is the user's pull request to land — but it
+would also put the item in every digest under "waiting on you" from now until the
+guide is built, asking for something that cannot be done yet. A standing request
+nobody can act on is how a digest teaches people to skim it.
 
-The consequence, said once so it is not a surprise: **that item will appear in
-every digest under "waiting on you"**, starting now and continuing until the
-guide exists and it is landed. That is a standing reminder rather than a request
-for a decision — which is what was asked for, and it is the cost of encoding the
-dependency truthfully rather than parking the item somewhere quieter and less
-accurate.
+So it is **blocked on `todo:draft-plan`**, and this hand-off is part of what
+`draft-plan` has to deliver:
 
-Until it lands, **O1 is not met**, and the digest saying so every run is the
-point rather than a defect.
+> When `plan.md` creates the build items, **re-point `link-the-guide` at the last
+> of them.** Completing `draft-plan` clears its current blocker automatically, so
+> an item that is not re-pointed in the same change becomes actionable — and a
+> sweep that picks it up will fail the write-scope check, which is a safe failure
+> but a confusing one.
+
+The item's title carries the instruction too, since a requirement that lives only
+in a spec section is one a future run may not read.
+
+**Until it lands, O1 is not met.** That is recorded here and in the item rather
+than in the digest, which is the trade this arrangement makes: quieter now, and
+dependent on the plan actually re-pointing it.
 
 ## 12. Open questions this leaves
 

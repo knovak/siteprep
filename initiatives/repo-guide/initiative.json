@@ -7,7 +7,7 @@
   "todo": [
     {
       "id": "draft-plan",
-      "title": "Draft plan.md and test-plan.md - build order, and how the generator is tested",
+      "title": "Draft plan.md and test-plan.md - build order, how the generator is tested, and re-point link-the-guide at the last build item",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
@@ -17,7 +17,7 @@
       "id": "link-the-guide",
       "title": "Link the generated guide into the site so a newcomer can find it",
       "state": "blocked",
-      "blocked_by": "permission:linking the guide needs a nav entry in shared/nav_bar/ and a build.sh line - both protected paths a sweep cannot write, so it has to be a pull request you land. Not due until the guide exists; it is here as the standing reminder that objective 1 is not met until it does",
+      "blocked_by": "todo:draft-plan",
       "value": "medium",
       "effort": "small",
       "advances_stage": false

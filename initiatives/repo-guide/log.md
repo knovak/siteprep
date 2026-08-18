@@ -61,3 +61,11 @@ Objective 1 stays as written, and delivery becomes its own item at the end of th
 The cost is stated in §11 rather than discovered later: that item shows in every digest under "waiting on you" from now until it lands. That is a standing reminder, which is what was asked for, and the price of encoding the dependency truthfully.
 
 A .pptx deck is recorded in objectives.md under "explicitly not the first version", with what would decide it - whether the recipient needs to *edit* the slides or merely open them, since that changes how much layout has to survive conversion. spec.md §6 notes the constraint it puts on the first version: keep slide text as text in the section files, so a PowerPoint rendering is a third rendering of one source rather than a second deck to keep in step.
+
+## 2026-08-18 — link-the-guide re-pointed so it stays quiet until the guide exists
+
+Asked for on review. A permission: blocker described the item most literally - linking the guide needs protected-path changes only the user can land - but it also put a request nobody could act on into every digest from now until the guide is built, which is how a digest teaches people to skim it.
+
+So the item is blocked on todo:draft-plan instead, and re-pointing it is now part of what draft-plan delivers: completing draft-plan clears that blocker automatically, so an item not re-pointed at the last build item in the same change becomes actionable, and a sweep picking it up would fail the write-scope check. Safe, but confusing. The instruction is in the draft-plan item's own title as well as spec §11, because a requirement living only in a spec section is one a future run may not read.
+
+Verified: the digest no longer lists repo-guide under "waiting on you".
