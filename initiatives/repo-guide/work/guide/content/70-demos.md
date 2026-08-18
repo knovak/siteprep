@@ -2,7 +2,8 @@
 id: demos
 title: Demos, briefly
 order: 70
-slide: false
+slide: true
+slide_title: A demo stays a standalone example
 audience: both
 ---
 A demo is a standalone example under the demo collection. It owns its pages,
@@ -16,3 +17,11 @@ entry with its concise description. Visual verification uses
 `{{agent.commands.screenshot}}` after the final build. [The concise publishing
 contract is in the demos technical document](source:DEMOS_TECHDOC.md), with
 [shared working rules in the repository instructions](source:AGENTS.md).
+
+---
+## A demo stays a standalone example
+
+A demo owns its pages, assets, and optional prompt history. The build copies it
+without rewriting its source and generates the demo table of contents from the
+immediate directories. Demo language stays distinct from deck and section
+language because the two outputs have different publishing shapes.

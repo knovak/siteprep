@@ -35,6 +35,8 @@ test('frontmatter and page/slide text are read separately and ordered', async ()
   assert.equal(sections[0].slide_title, 'The path');
   assert.match(sections[0].pageText, /live stages/);
   assert.match(sections[0].slideText, /^Stages:/);
+  assert.equal(sections[0].slideTexts.length, 2);
+  assert.match(sections[0].slideTexts[1], /^## The record grows/);
 });
 
 test('slide text is required when slide is true', async () => {
@@ -45,6 +47,7 @@ test('known tokens resolve totally in page and slide text', async () => {
   const result = compileSections(await loadSections(join(fixtures, 'sections-ok')), FACTS);
   assert.equal(result.diagnostics.length, 0);
   assert.ok(result.sections.every(item => !item.pageText.includes('{{') && !item.slideText.includes('{{')));
+  assert.ok(result.sections.every(item => item.slideTexts.every(text => !text.includes('{{'))));
   assert.match(result.sections[1].pageText, /4 items/);
 });
 

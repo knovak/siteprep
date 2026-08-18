@@ -2,7 +2,8 @@
 id: supplies
 title: Who supplies what
 order: 30
-slide: false
+slide: true
+slide_title: People provide intent, facts, and authority
 audience: contributor
 ---
 The person supplies intent, facts that exist only in their world, and authority
@@ -21,3 +22,19 @@ When the person answers a blocked question, the helper is described as:
 {{skills.answer-decision.description}} The answer is appended to the decision
 record with what it settles and what remains open. [The working vocabulary and
 write rules are here](source:AGENTS.md); [the longer reasoning is here](source:INITIATIVES_VISION.md).
+
+---
+## People provide intent, facts, and authority
+
+The person says what they want, supplies facts that exist only in their world,
+and authorises consequential choices. The blocker classes that require that
+input are {{blockers.human}}. Those labels keep uncertainty visible instead of
+letting an agent turn a guess into repository history.
+
+---
+## Agents turn that input into reviewable increments
+
+Agents shape objectives, compare alternatives, plan, build one bounded step,
+answer feedback, and open pull requests. They record what a decision settles
+and what remains open. A merge makes proposed work part of the record; an agent
+never treats its own pull request as permission to merge.

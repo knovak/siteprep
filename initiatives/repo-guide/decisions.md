@@ -281,3 +281,59 @@ six explicit, SHA-pinned source links rather than values substituted into prose.
   blocker.
 - **Next:** the same section records can gain separately authored slide text;
   the description renderer does not need to change for phase 4.
+
+## 2026-08-18 — Phase 4: an ordered slide list, a 90-word ceiling, and the first deck baseline
+
+The specification's nine fixed sections and ten-slide floor cannot both hold if
+each section has exactly one slide. The plan proposed an ordered slide list;
+phase 4 makes its text format explicit: the first `---` after frontmatter still
+separates page text from slide text, and each later `---` starts another slide
+for that same section. Slide copy remains in the section file, while layout and
+navigation remain in the renderer, so a later PowerPoint rendering can consume
+the same records.
+
+The first deck contains **13 slides**:
+
+| Section | Slides |
+|---|---:|
+| What this repository is | 2 |
+| The initiative lifecycle | 2 |
+| Who supplies what | 2 |
+| How work gets picked up | 2 |
+| When a person is required | 1 |
+| Decks, briefly | 1 |
+| Demos, briefly | 1 |
+| Taking this elsewhere | 1 |
+| Where the real answers are | 1 |
+
+The split follows the learning progression rather than equal allocation. The
+opening section establishes the repository and the initiative idea separately;
+the lifecycle, division of labour, and sweep each need two claims. The brief
+content-area sections stay brief by requirement, and the source section closes
+by handing the reader back to the authoritative files.
+
+### The length limit the specification left open
+
+**Ninety visible words per rendered slide.** The deck is intended to stand on
+its own in a ten-minute presentation, so a tiny caption limit would make it
+depend on expert narration. Ninety is still a hard ceiling: with the title and
+body counted together, it prevents a section's page prose from being poured
+onto one screen. The first deck sits below the ceiling on every slide. A
+separate guard rejects any slide body that is a prefix of its page text, which
+pins the stronger rule that slide copy is authored rather than truncated.
+
+### What this settles, and what it does not
+
+- **Settled:** the deck is one self-contained HTML file with inline styling and
+  script, no network dependency, SHA-pinned source links, and forward, back,
+  first, and last keyboard navigation.
+- **Settled:** generation counts rendered slides, not marked sections, and
+  fails outside the configured 10–20 range or above the 90-word ceiling.
+- **Measured:** the first mapping is 13 slides across nine sections, as recorded
+  above. All 13 rendered without horizontal, vertical, or copy overflow at a
+  16:9 presentation viewport.
+- **Not settled:** whether somebody unfamiliar with the material can present it
+  end to end in ten minutes. That is observed evidence and remains a separate
+  data blocker rather than a browser assertion.
+- **Unaffected:** the description renderer. It still consumes only page text;
+  the ordered slide list is additional source, not a fork of the description.
