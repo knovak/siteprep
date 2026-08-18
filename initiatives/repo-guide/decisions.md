@@ -97,3 +97,124 @@ hand and push them up to google drive. I'm ok with that."*
   all.
 - **Left open:** how often they are refreshed, and whether anything reminds
   anybody to. "I'm ok with that" accepts the staleness; it does not say how much.
+
+## 2026-08-18 — Can `build.sh` authoritatively name the content areas?
+
+**No. Drop `structure.content_areas` from the fact set rather than infer it.**
+
+The live file has no array, function or other single construct that declares a
+content area. Decks are copied unconditionally, demos and initiatives are each
+guarded separately, and `shared/`, `shared_assets/` and `pwa/` are copied by
+similar-looking commands without being content areas. Reading directory names
+from those commands would therefore be a classification invented by the reader,
+not a fact read from the build.
+
+### What the probe established
+
+- **Can it be read today?** Not from one authoritative construct. A reader can
+  find plausible directory names, but cannot tell content from assets without
+  reimplementing the script's intent.
+- **What shape would it assume?** Any proposed shape would be an accidental
+  combination of `cp`, `if` and index-card markup scattered through the file.
+- **What happens on an unfamiliar shape?** There is no honest failure boundary:
+  a new content area could use different commands and be silently omitted while
+  the reader still returned a plausible list.
+
+### What this settles, and what it does not
+
+- The `structure.content_areas` row and the sentence that cited it are removed
+  from `spec.md`.
+- The guide may still explain decks, demos and initiatives in composed prose.
+  It just cannot present that list as generated from `build.sh`.
+- If the build later gains a declarative content-area registry, the fact can be
+  restored against that registry without changing this decision's standard.
+
+## 2026-08-18 — Can workflow triggers and job names be read without YAML?
+
+**Yes, through a deliberately narrow block reader.**
+
+All four current workflows use block-form top-level `on:` and `jobs:` keys.
+The probe read only direct children indented by two spaces and found:
+
+- `cleanup-pr-preview.yml`: `delete`; job `cleanup`
+- `gh-pages.yml`: `push`, `workflow_dispatch`; jobs `build`, `deploy`
+- `initiatives-digest.yml`: `schedule`, `workflow_dispatch`; job `digest`
+- `sweep-scope.yml`: `pull_request`; job `scope`
+
+### What the reader is allowed to assume
+
+- The top-level keys are exactly `on:` and `jobs:` in block form.
+- Trigger and job identifiers are unquoted YAML keys made from letters, digits,
+  `_` and `-`, indented by exactly two spaces.
+- Nested configuration is ignored only after its direct parent has been
+  identified; a top-level key ends the block.
+
+### What this settles, and what it does not
+
+- An inline trigger such as `on: [push]`, a quoted key, a missing block or an
+  unexpected direct-child line is an error. The odd-file probe replaced the
+  block with `on: [push]` and failed with `missing on: block`; it did not return
+  an empty trigger list.
+- This is not a YAML parser and must not grow into one. If a workflow adopts a
+  valid YAML shape outside this subset, generation fails until the reader is
+  deliberately extended or `workflows.*` is dropped.
+- Values below the trigger and job keys are not facts this reader may expose.
+
+## 2026-08-18 — Can skill frontmatter be delimited reliably?
+
+**Yes, for a strict frontmatter subset that includes folded multiline
+descriptions.**
+
+The probe read every current `.claude/skills/*/SKILL.md` from an opening `---`
+through the next exact `---`, requiring one `name` and one `description`. It also
+read a synthetic folded description (`description: >-` followed by indented
+lines) as one value.
+
+### What the reader is allowed to assume
+
+- Frontmatter begins on line one and ends at the next line that is exactly
+  `---`.
+- `name` is a non-empty inline scalar.
+- `description` is either a non-empty inline scalar or a `>`/`|` block scalar
+  whose content lines are indented by two spaces.
+- Unknown frontmatter fields or scalar shapes are errors rather than ignored
+  metadata.
+
+### What this settles, and what it does not
+
+- A deliberately odd file with no closing delimiter failed with `missing
+  closing delimiter`; no body text was mistaken for metadata.
+- The reader does not promise general YAML support. Quoted scalars, anchors or
+  another indentation style require a deliberate extension or cause generation
+  to fail.
+- Only `name` and `description` are guide facts. Skill instructions remain
+  prose, not generated process data.
+
+## 2026-08-18 — Can phase summaries and sweep rules be read from the prompt?
+
+**Yes, by binding the reader to the prompt's heading and list contract and to
+the configured phase set.**
+
+The live probe found four `## Phase n — title` headings and seven bullets under
+the exact `## Rules` heading. For each phase it captured the first non-empty
+paragraph after the heading; for rules it joined indented continuation lines to
+their preceding bullet.
+
+### What the reader is allowed to assume
+
+- Phase headings are exactly level two and use `Phase <number> — <title>`.
+- The expected phase numbers come from the configured sweep phase set; every
+  expected heading must appear once, in order.
+- The phase summary is the first non-empty paragraph before the next heading.
+- Rules are top-level bullets under an exact level-two `Rules` heading, with
+  only indented continuation lines permitted.
+
+### What this settles, and what it does not
+
+- Renaming `## Phase 2 — ...` to `## Review — ...` in the odd-file probe failed
+  with `phase headings were 1,3,4, expected 1,2,3,4`; the reader did not silently
+  publish three summaries.
+- A missing first paragraph, missing `Rules` heading, empty rules list or
+  unexpected line in that list is likewise an error.
+- The captured text is quoted. The guide may explain it separately, but may not
+  paraphrase the prompt and call the paraphrase generated.

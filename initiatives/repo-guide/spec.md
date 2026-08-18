@@ -121,7 +121,6 @@ they are a future disagreement with no rule for settling it.
 | `agent.commands` | `package.json` → `scripts` | Name → command |
 | `workflows.*` | `.github/workflows/*.yml` | File → job names and `on:` triggers |
 | `skills.*` | `.claude/skills/*/SKILL.md` | Frontmatter name and description |
-| `structure.content_areas` | `scripts/build.sh` | Which top-level directories become site sections |
 | `initiatives.live` | `initiatives/*/initiative.json` | Slug, title, stage — the real backlog, as an example |
 
 **`initiatives.live` is the one fact drawn from data rather than rules**, and it
@@ -148,9 +147,13 @@ ordinary refactor could drop it with every other test green — the CLI would ke
 working and only the import would break.
 
 Worth keeping in mind for the rest of this spec: **"just add an export" was a
-guess about somebody else's file, and it was wrong on first contact.** The other
-extraction targets in §3.2 — the workflow YAML, the skill frontmatter,
-`build.sh`'s content areas — have had no such contact yet.
+guess about somebody else's file, and it was wrong on first contact.** Phase 0
+made that contact for the text-derived targets. Workflow blocks, skill
+frontmatter and the sweep prompt each admit a narrow reader that fails on a
+shape it does not know. `build.sh` does not contain one construct that declares
+the site's content areas — those names are distributed across copy commands,
+conditionals and generated index cards — so `structure.content_areas` was
+dropped rather than inferred.
 
 | Option | Strengths | Weaknesses |
 |---|---|---|
@@ -239,10 +242,11 @@ each have a section that is theirs:
 9. **Where the real answers are** — the five source documents, what each is for,
    and when to open it. O7.
 
-Section 8 is generated more than written: the file list comes from
-`structure.content_areas` and `sweep.protected_paths`, plus a maintained
-`portable: true` marker in the guide's own config for files the generator cannot
-classify. That marker is a fact the repository does not assert anywhere else,
+Section 8 is generated where the repository has an authority: protected paths
+come from `sweep.protected_paths`. Whether another file is portable comes from a
+maintained `portable: true` marker in the guide's own config; there is no
+repository construct from which a complete content-area list can be read
+honestly. That marker is a fact the repository does not assert anywhere else,
 which makes it exactly the kind of thing §10's dating exists to cover.
 
 ## 6. The deck

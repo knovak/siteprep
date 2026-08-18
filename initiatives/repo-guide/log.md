@@ -81,3 +81,7 @@ The plan's claim is stronger than §9.3's: the whole build fits inside initiativ
 Drafting found three places the spec cannot be followed as written. §9.5's instruction to put the browser checks in tests/ and declare that path fails validation - a declared output may not reference anything under initiatives/, and every check here must open one - and would also run them on every unrelated pull request against artefacts that are generated on request and never committed, reinstating in the test suite the coupling §9.1 removed from the build. §5.2's nine sections cannot render §6's ten-slide floor, so a section carries an ordered list of slide texts and the check counts rendered slides. And §4's literal ban is unwritable for stage names: wish, shaped, planned and building are ordinary English words a guide about a lifecycle made of them cannot avoid, so the error tier is backticks and a run of three, and a bare occurrence warns.
 
 The eight build items are recorded as a chained todo list, and link-the-guide is re-pointed at the last of them - package-skill - as §11 requires, so it stays quiet until there is a guide to link.
+
+## 2026-08-18 — Phase 0 - prove the four text-derived extractions reach, or drop them
+
+Probed all four text-derived fact targets against live and malformed shapes; kept strict readers for workflows, skill frontmatter and the sweep prompt, and dropped build.sh content areas because no authoritative construct declares them.
