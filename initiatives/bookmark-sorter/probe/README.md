@@ -3,11 +3,11 @@
 A draft site that runs the probes in `../host-spike.md` §3 against ChatGPT Sites
 and prints a table you can paste back into `decisions.md`.
 
-**Untested.** It was written from documentation, not against a running Site, and
-the point of it is to be handed to ChatGPT and fixed until it runs. Expect the
-server-side entry point and the D1 binding syntax to need correcting — those are
-the two things most likely to be wrong, and neither changes what is being
-measured.
+**Locally exercised, not yet deployed.** The request router and browser verdict
+logic have automated regression coverage, but a real Site is still required to
+settle the host questions. Expect the server-side entry point and the D1 binding
+syntax to need correcting if the Sites-generated scaffold differs; neither
+changes what is being measured.
 
 **Throwaway.** `plan.md` phase 0 says the spike's code is a probe, not the first
 increment: it proves a row and is deleted. Nothing here should survive into
@@ -23,6 +23,13 @@ phase 1. If something does, it was not a spike.
    `decisions.md`.
 5. For the isolation probe, open the site as a **second user** and press
    *Run isolation probe* there too. One user cannot prove isolation.
+
+## Local regression check
+
+Run `node --test initiatives/bookmark-sorter/probe/server.test.mjs`. The test
+uses a small in-memory D1 stand-in and controlled `fetch`; it checks routing,
+identity, input validation, row isolation, secret non-disclosure and the export
+shape without pretending to answer any host-specific question.
 
 ## What each probe answers
 

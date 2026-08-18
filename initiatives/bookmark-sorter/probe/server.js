@@ -13,7 +13,10 @@
  * that 500s tells you less than one that reports why it failed.
  */
 
-const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8' };
+const JSON_HEADERS = {
+  'content-type': 'application/json; charset=utf-8',
+  'cache-control': 'no-store',
+};
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj, null, 2), { status, headers: JSON_HEADERS });
@@ -87,12 +90,25 @@ async function probeOutbound() {
     }
   };
 
+  const batchStarted = Date.now();
+  const batch = await Promise.all(
+    Array.from({ length: 10 }, (_, i) =>
+      attempt(`https://${i % 2 ? 'example.org' : 'example.com'}/?probe=${i}`, 5000)
+    )
+  );
+
   return json({
     normal: await attempt('https://example.com/', 5000),
+    secondOrigin: await attempt('https://example.org/', 5000),
     notFound: await attempt('https://example.com/definitely-not-a-real-page-404', 5000),
-    // Deliberately a 1 ms budget against a live host, to prove the abort is ours
-    // rather than the platform's.
-    timeout: await attempt('https://example.com/', 1),
+    // TEST-NET-1 is deliberately non-routable. A short application deadline
+    // distinguishes our abort from a platform request timeout.
+    timeout: await attempt('https://192.0.2.1/', 100),
+    boundedBatch: {
+      attempted: batch.length,
+      succeeded: batch.filter((result) => result.ok).length,
+      ms: Date.now() - batchStarted,
+    },
   });
 }
 
@@ -105,11 +121,17 @@ async function probeSeed(request, env, url) {
   if (!owner) return json({ error: 'no identity — sign in first' }, 401);
   await ensureSchema(env);
 
-  const n = Math.min(parseInt(url.searchParams.get('n') || '10000', 10), 50000);
+  const requested = Number(url.searchParams.get('n') || '10000');
+  if (!Number.isInteger(requested) || requested < 1 || requested > 50000) {
+    return json({ error: 'n must be an integer from 1 through 50000' }, 400);
+  }
+  const n = requested;
   await env.DB.prepare(`DELETE FROM probe_item WHERE owner = ?`).bind(owner).run();
 
   // Batched inserts: one statement per row would be 10,000 round trips.
-  const BATCH = 500;
+  // Four bind parameters per row. Keep each statement at 100 parameters so it
+  // works even where the host retains SQLite's conservative variable limit.
+  const BATCH = 25;
   let written = 0;
   for (let start = 0; start < n; start += BATCH) {
     const size = Math.min(BATCH, n - start);
@@ -157,7 +179,7 @@ async function probeExport(request, env) {
       let first = true;
       for (;;) {
         const { results } = await env.DB
-          .prepare(`SELECT url, title, tags FROM probe_item WHERE owner = ? LIMIT ? OFFSET ?`)
+          .prepare(`SELECT url, title, tags FROM probe_item WHERE owner = ? ORDER BY id LIMIT ? OFFSET ?`)
           .bind(owner, PAGE, offset)
           .all();
         if (!results || results.length === 0) break;
@@ -175,9 +197,10 @@ async function probeExport(request, env) {
       }
       await write('\n  ]\n}\n');
     } catch (err) {
-      // Leave the JSON deliberately unterminated: a truncated document is the
-      // signal, and a tidy error object would hide the ceiling being found.
-      await write(`\n/* export failed after streaming: ${String(err && err.message || err)} */`);
+      // Leave the JSON deliberately unterminated. The browser reports the byte
+      // count and parse failure; appending a JavaScript comment would make an
+      // otherwise complete JSON document invalid for a second reason.
+      console.error('probe export failed', err);
     } finally {
       await writer.close();
     }
@@ -226,12 +249,12 @@ async function probeIsolation(request, env) {
   const routesTried = [];
   let reachable = 0;
 
-  // Route 1: the scoped query the app would actually use.
-  routesTried.push('scoped select');
+  // Route 1: the scoped listing the app would actually use. Every row returned
+  // must belong to the caller; unlike the old contradictory WHERE clause, this
+  // exercises the real query shape.
+  routesTried.push('scoped listing');
   const scoped = await env.DB
-    .prepare(`SELECT COUNT(*) AS n FROM probe_item WHERE owner != ? AND owner = ?`)
-    .bind(owner, owner).first();
-  reachable += scoped?.n ?? 0;
+    .prepare(`SELECT COUNT(*) AS n FROM probe_item WHERE owner = ?`).bind(owner).first();
 
   // Route 2: an unscoped select — what a forgotten WHERE clause would do.
   // It SHOULD return other users' rows; that is the point. The probe records
@@ -254,6 +277,7 @@ async function probeIsolation(request, env) {
   return json({
     otherUsersRowsReachable: reachable,
     otherUsersRowsExist: unscoped?.n ?? 0,
+    ownRowsVisible: scoped?.n ?? 0,
     routesTried,
     note: 'Isolation is enforced by this app, not by D1. A pass means our scoping is right.',
   });
@@ -265,9 +289,26 @@ async function probeIsolation(request, env) {
  */
 async function probeSecret(request, env) {
   const secret = env.PROBE_SECRET;
+  let outboundCall = { attempted: false, ok: false };
+  if (typeof secret === 'string' && secret.length > 0) {
+    // Send only a one-way proof derived from the secret, never the secret. This
+    // confirms that the server-side call site can use secret material rather
+    // than merely confirming that an environment property exists.
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(secret));
+    const proof = Array.from(new Uint8Array(digest).slice(0, 8), (b) => b.toString(16).padStart(2, '0')).join('');
+    try {
+      const response = await fetch('https://example.com/', {
+        headers: { 'x-probe-secret-proof': proof },
+      });
+      outboundCall = { attempted: true, ok: response.ok, status: response.status };
+    } catch (err) {
+      outboundCall = { attempted: true, ok: false, error: String(err && err.message || err) };
+    }
+  }
   return json({
     secretVisibleServerSide: typeof secret === 'string' && secret.length > 0,
     secretLength: typeof secret === 'string' ? secret.length : null,
+    outboundCall,
     note: 'Grep the deployed client bundle for the value by hand — a page cannot check itself.',
   });
 }
@@ -305,6 +346,9 @@ export default {
     const p = url.pathname;
 
     try {
+      if (p === '/api/probe/seed' && request.method !== 'POST') {
+        return json({ error: 'method not allowed' }, 405);
+      }
       if (p === '/api/probe/outbound')   return await probeOutbound();
       if (p === '/api/probe/seed')       return await probeSeed(request, env, url);
       if (p === '/api/probe/export')     return await probeExport(request, env);
