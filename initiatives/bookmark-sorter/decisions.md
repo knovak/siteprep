@@ -529,3 +529,63 @@ automate it"*.
 - **Left open:** whether pass 1 stays automatic at ingestion. It should — it is
   not deferred, it is part of landing the pile — and nothing in this decision
   touches it.
+
+## 2026-08-18 — Sites access is confirmed; the host spike may run
+
+**Yes: ChatGPT Sites is available on the user's plan and in this workspace.**
+
+This is a permission fact, not evidence that the host meets the spec. It clears
+the only gate that prevented the drafted site in `probe/` from being run, so
+`host-spike` is actionable rather than blocked. The probes in `host-spike.md`
+still decide whether Sites is the host.
+
+### What this settles, and what it does not
+
+- **Settled:** Sites can be used for the phase 0 spike in this workspace. No
+  alternative account or host is needed before the probe begins.
+- **Not settled:** any row of `spec.md` §10. Availability is not a result for
+  outbound HTTP, identity stability, row isolation, response size, secret
+  custody, cross-owner template reads, layout density, or metering.
+- **Still needs the user's authority after it is measured:** whether Sites'
+  metered limits are acceptable. The probe supplies the numbers; it cannot
+  approve their cost.
+
+## 2026-08-18 — No screenshot vendor is acceptable at present
+
+**None at present.** Capture pass 2 stays switched off, with no account, API
+key, or spend authorised. The stubbed integration remains part of phase 3 so
+the feature can be evaluated later without redesigning the queue.
+
+The user asked for three choices and a recommendation for that later decision.
+Prices and policies below were checked on 2026-08-18 and must be rechecked before
+purchase.
+
+### Alternatives considered for a later revisit
+
+| Option | Current entry price | Retention terms relevant here | Assessment |
+|---|---:|---|---|
+| **[ScreenshotOne Basic](https://screenshotone.com/pricing/)** | $17/month for 2,000 successful renders; $0.009 per extra | Its [privacy policy](https://screenshotone.com/privacy-policy/) says the default binary response is not stored persistently when caching and storage are disabled. Temporary processing may occur, and request metadata including the target URL is logged | **Recommended if pass 2 is later approved.** Lowest-priced candidate that can avoid persistent image storage, and its direct binary response fits the app's own URL-keyed capture store |
+| [Urlbox Hi-Fi](https://urlbox.com/pricing) | $49/month for 5,000 renders | The [Screenshot API](https://urlbox.com/products/screenshot-api) advertises zero data retention and bring-your-own storage. Render Links cache images for 30 days by default, so the implementation would have to use the synchronous API and verify the zero-retention terms before purchase | Stronger compliance posture and support, but nearly three times the minimum monthly cost |
+| [ScreenshotAPI.net Essential](https://www.screenshotapi.net/pricing) | $9/month for 1,000 renders | Its [help page](https://www.screenshotapi.net/help) says paid-tier screenshots are kept for six months | Cheapest, but incompatible with the stated retention priority |
+
+### Recommendation, and what would change it
+
+If the value of pass 2 later justifies spending, start with a bounded
+ScreenshotOne Basic trial using the default binary response, `cache=false`, no
+vendor storage, and the app's own downscaled store. Before paying, confirm that
+logging target URLs is acceptable; "no persistent image" is narrower than no
+retention of request metadata.
+
+Choose Urlbox instead if formal zero-retention assurance, SOC 2 controls, or
+support is worth the higher subscription. ScreenshotAPI.net becomes eligible
+only if its six-month retention changes or the retention requirement changes.
+
+### What this settles, and what it does not
+
+- **Settled:** no vendor is selected now, and pass 2 remains off. This completes
+  the present vendor-choice item without authorising future spend.
+- **Settled:** ScreenshotOne is the first candidate to trial if the question is
+  reopened under the same price and retention priorities.
+- **Not settled:** whether pass 2 produces enough value to reopen the question,
+  whether target-URL logging is acceptable, or whether these prices and policies
+  remain current at that time.

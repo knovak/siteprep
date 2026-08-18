@@ -237,6 +237,11 @@ vendor. Metadata-first means only gap items go, not the whole pile — a fractio
 not all of it — but it is a real disclosure and is written down here rather than
 argued away.
 
+**Current configuration: no vendor.** On 2026-08-18 the user chose none at
+present, so pass 2 stays off. `decisions.md` records three candidates and a
+conditional recommendation; neither that shortlist nor the stubbed integration
+authorises an account, a key, or spend.
+
 ### The API key, and why pass 2 ships switched off
 
 A paid screenshot API means a secret, and a secret in a web app is only as safe
@@ -637,8 +642,8 @@ now would be a guess dressed as a requirement. This spec keeps that and specifie
   vendor call stubbed, and shipping it is a configuration change once the answer
   exists.
 - Which OpenAI surface, judged against the table in §10.
-- Which screenshot vendor, and what its retention terms are — the disclosure in
-  §6 is easier to accept from a vendor that does not keep the images.
+- Whether pass 2 proves valuable enough to revisit the current no-vendor
+  decision, and whether target-URL logging is acceptable if it does.
 - Whether a user may hold several collections of their own. The wish's "one per
   user" implies not; the "choose collection" menu has to render either way, and
   §5 does not prevent it.

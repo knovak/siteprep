@@ -244,3 +244,11 @@ probe/ holds a drafted site implementing the probes - one HTML page with the lay
 Both of the day's decisions landed in spec.md, plan.md and host-spike.md but not in test-plan.md, which still described §4.0's export row as getting rows "out of the host" and failing O7 outright - the exact framing the export decision removed. Three changes close it: §4.0 now leads with outbound HTTP and states the export row as a ceiling to be measured rather than a capability to be found, §4.3 gains a test that nothing drains the capture queue without being asked, and §5 pins both decisions against the changes most likely to undo them - a platform export that looks free, and an automatic driver added because the button is tedious.
 
 Worth noting how this was found: two sessions worked this review round concurrently and produced the same conclusions, and the gap was in the one file neither had reached.
+
+## 2026-08-18 — Choose the screenshot vendor for capture pass 2
+
+No vendor is acceptable at present; pass 2 remains switched off. ScreenshotOne is the first candidate for a later bounded trial, subject to renewed approval and acceptance of target-URL logging.
+
+## 2026-08-18 — ChatGPT Sites availability confirmed
+
+The user confirmed that ChatGPT Sites is available on their plan and in this workspace. The permission blocker is removed from the host spike; the item is now actionable, while every capability and metering row still awaits the probe evidence in host-spike.md.

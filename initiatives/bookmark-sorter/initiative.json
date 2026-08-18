@@ -8,19 +8,9 @@
     {
       "id": "host-spike",
       "title": "Run the phase 0 host spike and fill in spec.md's host table with evidence",
-      "state": "blocked",
-      "blocked_by": "permission:is ChatGPT Sites available on your plan, region and workspace? It is in public beta and gated, and it answers most of the host table on paper - two probes remain, both written out in host-spike.md",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
-      "advances_stage": false
-    },
-    {
-      "id": "pick-screenshot-vendor",
-      "title": "Choose the screenshot vendor for capture pass 2",
-      "state": "blocked",
-      "blocked_by": "cost:which screenshot vendor, at what price and retention terms? Pass 2 spends money on your account, and no-retention matters more than a lower price",
-      "value": "medium",
-      "effort": "small",
       "advances_stage": false
     }
   ]
