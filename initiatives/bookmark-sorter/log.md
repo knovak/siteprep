@@ -252,3 +252,7 @@ No vendor is acceptable at present; pass 2 remains switched off. ScreenshotOne i
 ## 2026-08-18 — ChatGPT Sites availability confirmed
 
 The user confirmed that ChatGPT Sites is available on their plan and in this workspace. The permission blocker is removed from the host spike; the item is now actionable, while every capability and metering row still awaits the probe evidence in host-spike.md.
+
+## 2026-08-18 — Run the phase 0 host spike and fill in spec.md's host table with evidence
+
+Ran the owner-only ChatGPT Sites probe. Outbound HTTP, a 10,000-item export, identity headers, D1 owner scoping, secret custody, template cross-owner reads and the wide layout passed; recorded metering as a cost decision, deleted the throwaway probe, and made phase 1 ingestion actionable.

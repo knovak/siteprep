@@ -2,26 +2,17 @@
 
 `plan.md` phase 0 asks for §10's table filled in **with evidence rather than
 expectation**, and a dated `decisions.md` entry naming the surface. This document
-is not that. It is what could honestly be prepared without an account: the probes
-written out so the spike is an afternoon rather than a design exercise, and what
-the documentation says so the probes go after the right things.
+now contains both the probes and their 2026-08-18 run. §2 remains documentation;
+§6 is the evidence that closes the executable part of phase 0.
 
-**Nothing below is spike evidence.** §2 is documentation, which is exactly the
-category phase 0 exists to replace. It is good enough to narrow the probes and
-not good enough to fill in a row.
+## 1. How the spike ran
 
-## 1. Why the spike has not run yet
-
-Phase 0 needs access to a named surface. **That access is now confirmed:** on
-2026-08-18 the user confirmed that ChatGPT Sites is available on their plan and
-in this workspace (`decisions.md`). The permission gate is gone and the
-`host-spike` item is actionable. The rows that decide the project are still
-answered by signing in and trying, not by the confirmation itself.
-
-**The surface now has a strong candidate.** §2 was rewritten on 2026-08-17 after
-the user pointed at **ChatGPT Sites**, which is a much better fit than the
-arrangement first researched here and answers most of §10's table on paper. What
-remains is running the probes documentation cannot settle.
+The user confirmed that ChatGPT Sites is available on their plan and in this
+workspace, then approved signing the owner-only probe Site into their ChatGPT
+account. The throwaway probe was deployed twice: version 1 exposed a bad timeout
+target in the probe itself, and version 2 corrected that target before the
+results were recorded. One transient Sites publish failure was retried; the same
+saved version then deployed successfully.
 
 ## 2. What the documentation says
 
@@ -109,10 +100,11 @@ arbitrary outbound `fetch`, pass 1's metadata capture cannot run in-platform and
 every capture moves behind the paid vendor. Everything else degrades or is
 confirmation.
 
-**A drafted probe site lives in [`probe/`](probe/).** One HTML page and one
-server module implementing §3 below, written from documentation and never run —
-it is meant to be handed to ChatGPT to be corrected until it works. It prints a
-table to paste back here.
+The drafted site that used to live in `probe/` was the starting point. The live
+probe was corrected until it worked, its results are in §6, and the repository
+copy is deleted as phase 0 requires. The owner-only live deployment is retained
+temporarily as a reproducible receipt; it is not initiative output or phase 1
+source.
 
 ### 3.1 Streaming the whole pile out — *no longer able to fail the project*
 
@@ -233,9 +225,37 @@ The first requested fact has been supplied:
 The appetite question `plan.md` §5.2 raised — whether building sign-in is worth
 it if the host has none — appears to be moot: Sites supplies identity.
 
-## 5. What this document is not
+## 5. What remains open
 
-It does not name the surface in `decisions.md`, fill in a row of §10's table, or
-close phase 0. §2 makes the spike cheap and well-aimed; it does not make it
-unnecessary, and a table filled in from documentation would answer §10's
-"what breaks if it cannot" column with a guess while looking like a finding.
+The spike cannot approve metered cost. The deployed runtime accepted the target
+10,000-item dataset, but exact plan quotas are not exposed to the app and the
+few-hundred-megabyte R2 estimate has not been compared with the workspace's
+Sites limits. That is recorded as a `cost:` blocker. It does not block phase 1's
+D1 data model and ingestion work; it gates accepting this host for the later
+capture store.
+
+Two product-level tests also remain where they belong in the plan: a second
+signed-in account attempting hostile cross-user reads in phase 6, and the tablet
+and phone layouts in phase 2. The spike established the host capabilities those
+tests need; it did not pretend to complete the product tests early.
+
+## 6. Results — 2026-08-18
+
+The final run used Sites version 2, owner-only access, a 2,600×1,200 viewport for
+the wide-layout check, and one signed-in ChatGPT account. Identity values and
+the secret value were deliberately never returned to the browser.
+
+| Probe | Verdict | Evidence |
+|---|---|---|
+| 3.4 Outbound HTTP | **Pass** | 200 and 404 responses behaved normally; a 100 ms abort timed out; ten concurrent requests completed in 151 ms |
+| 3.1 Whole-pile export | **Pass** | 10,000 items; 1,525,841-byte `bookmark-sorter/v1` document; complete parse after a 1,786 ms response |
+| 3.2 Identity | **Pass for host capability** | Stable opaque id, email and full-name headers all reached server code. Cross-session and two-account stability remain phase 6 tests |
+| 3.3 Per-user rows | **Pass for host capability** | Owner-scoped insert/read succeeded; 10,001 caller rows were visible while 10,003 rows existed in the shared table. Isolation is app logic, not a D1 policy |
+| 3.5 Secret store | **Pass** | Server read a 43-character secret and made an outbound call; only presence and length were returned |
+| 3.6 Template read | **Pass** | Two synthetic template-owner rows were readable only when app logic used the cross-owner query; the host imposed no row-level barrier |
+| 3.7 Layout | **Pass on the deciding wide layout** | Sixteen 300 px cells rendered as 8×2 at 2,600×1,200 with no horizontal page scroll |
+| 3.8 Metering | **Open cost decision** | 10,003 D1 rows and about 1,616,053 bytes of item payload succeeded. Exact plan limits and acceptance of a few hundred MB in R2 remain the user's authority |
+
+The chosen surface is therefore **ChatGPT Sites**. No executable probe row
+requires revisiting the web-app design. Metering remains explicit rather than
+being smuggled into that conclusion as an assumed approval.

@@ -1,0 +1,5 @@
+name: Odd
+on: [push]
+jobs:
+  inspect:
+    runs-on: nowhere

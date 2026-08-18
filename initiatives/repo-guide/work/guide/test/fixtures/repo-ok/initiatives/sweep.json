@@ -1,0 +1,8 @@
+{
+  "phases": ["survey", "work"],
+  "items_per_run": 2,
+  "max_items_per_initiative": 1,
+  "max_open_prs": 3,
+  "max_effort": "tiny",
+  "protected_paths": ["engine/"]
+}
