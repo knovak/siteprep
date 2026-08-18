@@ -236,6 +236,24 @@
 <p>  reopened under the same price and retention priorities.</p>
 <ul><li><strong>Not settled:</strong> whether pass 2 produces enough value to reopen the question,</li></ul>
 <p>  whether target-URL logging is acceptable, or whether these prices and policies   remain current at that time.</p>
+<h3>2026-08-18 — ChatGPT Sites is the host; metering remains open</h3>
+<p><strong>Choose ChatGPT Sites for the web app.</strong> An owner-only full-stack probe ran on the real service and passed every executable host-capability row in <code>spec.md</code> §10. The live receipt is <a href="https://bookmark-sorter-host-probe-20260818.ken-novak.chatgpt.site/">Bookmark Sorter Host Probe</a>, version 2, deployed at 2026-08-18 18:51:24 UTC. It remains owner-only and is not an initiative output.</p>
+<h4>Evidence that decided it</h4>
+<ul><li>Server-side outbound HTTP returned normal 200 and 404 responses, obeyed a</li></ul>
+<p>  100 ms abort, and completed ten concurrent requests in 151 ms.</p>
+<ul><li>The app exported 10,000 seeded rows as a complete 1,525,841-byte</li></ul>
+<p>  <code>bookmark-sorter/v1</code> document in 1,786 ms, and the browser parsed all items.</p>
+<ul><li>Sign in with ChatGPT supplied a stable opaque id as well as email and full</li></ul>
+<p>  name to server code. The probe returned only header presence, never values.</p>
+<ul><li>D1 supported owner-scoped reads and the cross-owner query a <code>demo-template</code></li></ul>
+<p>  needs. The host adds no row-level policy: isolation remains application logic   and is still attacked with two accounts in phase 6.</p>
+<ul><li>A server-side secret was readable where an outbound call ran and was absent</li></ul>
+<p>  from the response except for its length.</p>
+<ul><li>Sixteen 300 px cells fit 8×2 at 2,600×1,200 without horizontal page scrolling.</li></ul>
+<p>The first publish of the corrected saved version hit a transient Sites callback error; retrying the same version succeeded. That is operational evidence worth keeping, but not a reason to reject the surface after the live result passed.</p>
+<h4>What remains open</h4>
+<p>The runtime accepted 10,003 D1 rows with about 1,616,053 bytes of item payload. It did not expose plan quotas, and the <a href="https://help.openai.com/en/articles/20001339">Sites help article</a> describes limits as plan-specific rather than publishing the workspace&#39;s exact allowance. Accepting those limits for 10,000 items plus up to a few hundred MB of R2 captures is a <code>cost:</code> decision and remains blocked for the user.</p>
+<p>That open decision does not block phase 1: the D1 data model and idempotent bookmark ingestion can start on the chosen surface. It gates later acceptance of the R2 capture store. The no-vendor decision also remains unchanged, so pass 2 stays switched off regardless of host capability.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
