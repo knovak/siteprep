@@ -170,6 +170,19 @@
 <p>  newsletter volume.</p>
 <ul><li>This is still a synthetic baseline. Phase 6 must repeat the eval against the</li></ul>
 <p>  fixture set derived from the real inventory before these scores can say how   the contracts behave on a mailbox.</p>
+<h3>2026-08-18 — Phase 3: what a run keeps about a message, and where tagging enters</h3>
+<p>The phase 3 loop settled two seams the spec named but did not shape.</p>
+<p><strong>A matched message becomes a small <code>source_doc</code> entry inside the run record, not a new top-level store collection.</strong> It carries only the document id, source key, issue date, extracted shape, story count and count-flag state. That is the minimum that proves <code>empty-issue</code> was fetched and yielded nothing. Keeping the subject, From address or body would contradict §6; keeping a second durable collection would make every future store reader learn a structure §7 never specified.</p>
+<p><strong>Harvest-time themes enter through a tagger seam after extraction and before merge.</strong> The tagger sees story records and a safe issue label, never the mailbox body, and returns ordinary free-string tags. <code>theme:energy</code> has no privileged representation or provenance bit, which is exactly §10.1&#39;s replaceability rule: the same tag may later come from a store-wide pass or a person.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The message-source seam is two calls: search returns envelopes, then read</li></ul>
+<p>  returns a body. The exact From check sits between them, so Gmail&#39;s plus-tag   over-match is refused before content is fetched and receives no <code>source_doc</code>.</p>
+<ul><li>The run record identifies the inventory by id and source keys. It does not</li></ul>
+<p>  copy the private matchers into the store.</p>
+<ul><li>The fixture tagger proves the write path, not the quality of theme judgement.</li></ul>
+<p>  Phase 7 still builds the store-wide tagging skill, where enough stories exist   for themes and clusters to mean something.</p>
+<ul><li><code>source_doc</code> remains an opaque id. How Gmail constructs one is phase 6&#39;s</li></ul>
+<p>  connector implementation and must not leak a message body or recipient token.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">

@@ -154,6 +154,7 @@
 <p>   stories across sources merged.</p>
 <ol><li>Propose tags, including themes (§10).</li><li>Report: issues per source, stories added, stories matched, merges, flags.</li></ol>
 <p>The report is written to the store as a run record — when it ran, over what range (as resolved, §5.1), with which inventory, and what it produced. Three runs later, &quot;why does this month look thin&quot; is answerable. Every count in it is of things the run actually paged through: the connector&#39;s own result count is an estimate that saturates on large result sets (phase 0), and a run record built from it would answer that question wrongly.</p>
+<p><code>source_doc</code> accounting lives in that run record, as one small entry per matched message: id, source key, issue date, extracted shape, story count, and whether it was flagged. It is not a second top-level store collection. That is enough to distinguish &quot;matched and yielded nothing&quot; from &quot;never fetched&quot; without retaining a subject, From address, body, or any other mailbox content. The inventory named on the run is likewise its id and source keys, not its private matchers.</p>
 <h4>5.3 On demand, not on a schedule</h4>
 <p>A run happens when a person asks for one. §2 explains why: a scheduled harvest needs a credential held while nobody is present, and not holding one is the reason the chosen option was chosen. Nothing in the wish asks for a schedule.</p>
 <h3>6. Mailbox access</h3>
