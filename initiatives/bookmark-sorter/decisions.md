@@ -666,3 +666,48 @@ phase 2. Neither improves the blind baseline this increment exists to measure.
 This decision is deliberately local to phase 2. Phase 4 may replace the
 window-bound set with its selection evaluator, but must preserve the one-action
 undo guarantee.
+
+## 2026-08-18 — Phase 3 fails closed on derivatives and keeps the screenshot path inert
+
+**Pass 1 may store only a derivative no larger than 600×360. If the server-side
+image transformer is absent or cannot produce that derivative, the capture is a
+visible gap and the original image is not written to R2.** This makes “store the
+derivative, not the original” an enforced boundary rather than an instruction
+to a deployment assembler.
+
+The alternative was to keep a small original when it appeared to fit. That
+would make storage depend on an untrusted source's dimensions and encoding, and
+would silently create two retention policies. Failing closed is more honest:
+the item is immediately triageable by title, and its gap enters the same queue
+as a page with no metadata image.
+
+### The queue and isolation boundaries now encoded
+
+- Pass 1 fetches HTML and the selected image anonymously, sends no cookie,
+  executes no JavaScript, and follows `og:image` → `twitter:image` → none.
+- The capture and derivative remain global by normalised URL. A failure writes
+  its `err:` tag only to the collection being captured. An item imported later
+  into another collection reads the error from the shared capture and acquires
+  the tag during that collection's ingestion.
+- Missing derivatives and metadata images shared by at least the current
+  threshold of 30 captures enter a resumable queue. No request, page view, or
+  open tab drains it. Only the explicit “capture the gaps” action calls the
+  bounded processor.
+- Pass 2 is complete against a server-side stub but remains switched off. No
+  vendor endpoint, account, key, or spend is present in the browser or
+  authorised by this build.
+- Capture work continues through the request-lifetime hook after imported rows
+  commit, so a slow page never delays the pile becoming usable.
+
+### What is measured, and what remains open
+
+The capture status now reports the raw metadata-image count, the count and
+fraction that remain distinguishable after the duplicate rule, the current gap
+queue, and the distribution of items per image hash. Fixture data proves the
+instrument and the starting threshold; it cannot choose a threshold for the
+real pile.
+
+The threshold therefore stays at **30**. A representative real import must
+record metadata coverage and the duplicate distribution before this number is
+changed. That is a `data:` item, separate from the completed phase-3 code, for
+the same reason the phase-2 blind rate remains separate from its instrument.

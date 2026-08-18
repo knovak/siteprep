@@ -1,4 +1,6 @@
 import {D1BookmarkStore} from './d1-store.mjs';
+import {createCapturePipeline} from './capture-pipeline.mjs';
+import {R2CaptureImages} from './capture-images.mjs';
 import {ingestBookmarkHtml} from './ingest.mjs';
 import {renderPilePage} from './pile-page.mjs';
 
@@ -17,11 +19,20 @@ async function requestJson(request) {
 
 export function createPileApp({
   storeFactory = env => new D1BookmarkStore(env.DB),
+  transformImage = null,
+  vendorCapture = null,
+  captureFactory = (env, store) => env.CAPTURES ? createCapturePipeline({
+    store,
+    imageStore: new R2CaptureImages(env.CAPTURES),
+    transformImage,
+    passTwoEnabled: env.PASS_TWO_ENABLED === 'true',
+    vendorCapture,
+  }) : null,
   now = () => new Date(),
   idFactory = prefix => `${prefix}-${crypto.randomUUID()}`,
 } = {}) {
   return {
-    async fetch(request, env = {}) {
+    async fetch(request, env = {}, context = {}) {
       const url = new URL(request.url);
       if (request.method === 'GET' && url.pathname === '/') {
         return new Response(renderPilePage(), {headers: {'content-type': 'text/html; charset=utf-8'}});
@@ -31,6 +42,7 @@ export function createPileApp({
 
       try {
         const store = storeFactory(env);
+        const capture = captureFactory(env, store);
         await store.ensureCollection({id: COLLECTION_ID, name: 'Pile', kind: 'personal', createdAt: now().toISOString()});
 
         if (request.method === 'GET' && url.pathname === '/api/items') {
@@ -41,7 +53,35 @@ export function createPileApp({
             store.countItems(COLLECTION_ID),
             store.countUntriagedItems(COLLECTION_ID),
           ]);
-          return json({collection_id: COLLECTION_ID, total, backlog, items});
+          const captureStatus = capture ? await capture.status() : null;
+          return json({
+            collection_id: COLLECTION_ID,
+            total,
+            backlog,
+            captures: captureStatus,
+            items: items.map(item => ({
+              ...item,
+              capture_url: item.capture?.image_ref && item.capture.displayable !== false
+                ? `/api/capture-image?url_key=${encodeURIComponent(item.url_key)}`
+                : null,
+            })),
+          });
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/capture-image') {
+          if (!capture) return json({error: 'Capture storage is not configured'}, 503);
+          const urlKey = url.searchParams.get('url_key');
+          if (!urlKey) return json({error: 'url_key is required'}, 400);
+          const object = await capture.image(urlKey);
+          if (!object) return json({error: 'Capture not found'}, 404);
+          const contentType = object.httpMetadata?.contentType || 'application/octet-stream';
+          return new Response(object.body, {
+            headers: {
+              'content-type': contentType,
+              'cache-control': 'private, max-age=86400, immutable',
+              'x-content-type-options': 'nosniff',
+            },
+          });
         }
 
         if (request.method === 'POST' && url.pathname === '/api/import') {
@@ -56,8 +96,23 @@ export function createPileApp({
             html: await file.text(),
             source,
             ingestedAt: now().toISOString(),
+            capture,
+            scheduleCapture: task => {
+              const pending = task();
+              if (typeof context.waitUntil === 'function') {
+                context.waitUntil(pending);
+                return Promise.resolve();
+              }
+              return pending;
+            },
           });
           return json(result, 201);
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/captures/gaps') {
+          if (!capture) return json({error: 'Capture storage is not configured'}, 503);
+          const body = await requestJson(request);
+          return json(await capture.processGaps({limit: body.limit}));
         }
 
         if (request.method === 'POST' && url.pathname === '/api/session') {

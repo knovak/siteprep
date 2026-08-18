@@ -143,18 +143,195 @@ export class D1BookmarkStore {
     const result = await this.db.prepare(
       `SELECT i.id, i.url, i.url_key, i.title, i.note, i.added_at, i.ingested_at,
               i.verdict, i.verdict_at,
+              c.image_ref AS capture_image_ref, c.source AS capture_source,
+              c.state AS capture_state, c.error_tag AS capture_error_tag,
+              c.page_title AS capture_page_title, c.description AS capture_description,
+              CASE WHEN q.reason = 'duplicate-image' AND q.state != 'complete'
+                   THEN 0 ELSE 1 END AS capture_displayable,
               COALESCE((SELECT json_group_array(tag) FROM
                 (SELECT tag FROM tags WHERE item_id = i.id ORDER BY tag)), '[]') AS tags_json
        FROM items i
+       LEFT JOIN captures c ON c.url_key = i.url_key
+       LEFT JOIN capture_queue q ON q.url_key = i.url_key
        WHERE i.collection_id = ?
        ORDER BY COALESCE(i.added_at, i.ingested_at) DESC, i.id
        LIMIT ? OFFSET ?`,
     ).bind(collectionId, safeLimit, safeOffset).all();
-    return (result.results ?? []).map(({tags_json, ...item}) => ({
+    return (result.results ?? []).map(({tags_json, capture_image_ref, capture_source, capture_state, capture_error_tag, capture_page_title, capture_description, capture_displayable, ...item}) => ({
       ...item,
       collection_id: collectionId,
       tags: JSON.parse(tags_json || '[]'),
+      capture: capture_state ? {
+        image_ref: capture_image_ref,
+        source: capture_source,
+        state: capture_state,
+        error_tag: capture_error_tag,
+        page_title: capture_page_title,
+        description: capture_description,
+        displayable: Number(capture_displayable) !== 0,
+      } : null,
     }));
+  }
+
+  async getCapture(urlKey) {
+    return this.db.prepare(
+      `SELECT url_key, image_ref, source, captured_at, image_hash, state,
+              page_title, description, favicon_url, error_tag, image_candidate,
+              content_type, width, height, byte_size
+       FROM captures WHERE url_key = ? LIMIT 1`,
+    ).bind(urlKey).first();
+  }
+
+  async upsertCapture(capture) {
+    await this.db.prepare(
+      `INSERT INTO captures
+       (url_key, image_ref, source, captured_at, image_hash, state,
+        page_title, description, favicon_url, error_tag, image_candidate,
+        content_type, width, height, byte_size)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(url_key) DO UPDATE SET
+         image_ref = excluded.image_ref,
+         source = excluded.source,
+         captured_at = excluded.captured_at,
+         image_hash = excluded.image_hash,
+         state = excluded.state,
+         page_title = excluded.page_title,
+         description = excluded.description,
+         favicon_url = excluded.favicon_url,
+         error_tag = excluded.error_tag,
+         image_candidate = excluded.image_candidate,
+         content_type = excluded.content_type,
+         width = excluded.width,
+         height = excluded.height,
+         byte_size = excluded.byte_size`,
+    ).bind(
+      capture.url_key,
+      capture.image_ref,
+      capture.source,
+      capture.captured_at,
+      capture.image_hash,
+      capture.state,
+      capture.page_title,
+      capture.description,
+      capture.favicon_url,
+      capture.error_tag,
+      capture.image_candidate,
+      capture.content_type,
+      capture.width,
+      capture.height,
+      capture.byte_size,
+    ).run();
+    return this.getCapture(capture.url_key);
+  }
+
+  async applyCaptureError(collectionId, urlKey, errorTag) {
+    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.db.prepare(
+      `INSERT OR IGNORE INTO tags (item_id, tag)
+       SELECT id, ? FROM items WHERE collection_id = ? AND url_key = ?`,
+    ).bind(errorTag, collectionId, urlKey).run();
+  }
+
+  async applyKnownCaptureErrors(collectionId, urlKeys) {
+    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    for (const batch of chunks([...new Set(urlKeys)], this.batchSize)) {
+      if (!batch.length) continue;
+      const placeholders = batch.map(() => '?').join(', ');
+      await this.db.prepare(
+        `INSERT OR IGNORE INTO tags (item_id, tag)
+         SELECT i.id, c.error_tag
+         FROM items i JOIN captures c ON c.url_key = i.url_key
+         WHERE i.collection_id = ? AND c.error_tag IS NOT NULL
+           AND i.url_key IN (${placeholders})`,
+      ).bind(collectionId, ...batch).run();
+    }
+  }
+
+  async refreshCaptureQueue({duplicateThreshold, at}) {
+    await this.db.batch([
+      this.db.prepare("DELETE FROM capture_queue WHERE state != 'running'"),
+      this.db.prepare(
+        `INSERT INTO capture_queue
+         (url_key, reason, state, queued_at, updated_at, attempts, last_error)
+         SELECT c.url_key,
+                CASE WHEN duplicates.image_count >= ? THEN 'duplicate-image' ELSE 'missing-image' END,
+                'queued', ?, ?, 0, NULL
+         FROM captures c
+         LEFT JOIN (
+           SELECT image_hash, COUNT(*) AS image_count
+           FROM captures
+           WHERE source = 'og' AND image_hash IS NOT NULL
+           GROUP BY image_hash
+         ) duplicates ON duplicates.image_hash = c.image_hash
+         WHERE c.source != 'screenshot'
+           AND (c.image_ref IS NULL OR duplicates.image_count >= ?)
+         ON CONFLICT(url_key) DO UPDATE SET
+           reason = excluded.reason,
+           state = CASE WHEN capture_queue.state = 'running' THEN 'running' ELSE 'queued' END,
+           updated_at = excluded.updated_at`,
+      ).bind(duplicateThreshold, at, at, duplicateThreshold),
+    ]);
+  }
+
+  async listCaptureQueue({limit = 20} = {}) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    const result = await this.db.prepare(
+      `SELECT url_key, reason, state, queued_at, updated_at, attempts, last_error
+       FROM capture_queue
+       WHERE state IN ('queued', 'failed')
+       ORDER BY queued_at, url_key
+       LIMIT ?`,
+    ).bind(safeLimit).all();
+    return result.results ?? [];
+  }
+
+  async markCaptureQueue(urlKey, {state, at, error = null}) {
+    await this.db.prepare(
+      `UPDATE capture_queue
+       SET state = ?, updated_at = ?, last_error = ?,
+           attempts = attempts + CASE WHEN ? = 'running' THEN 1 ELSE 0 END
+       WHERE url_key = ?`,
+    ).bind(state, at, error, state, urlKey).run();
+  }
+
+  async captureStats() {
+    const [counts, queue, distribution] = await Promise.all([
+      this.db.prepare(
+        `SELECT COUNT(*) AS total,
+                SUM(CASE WHEN source = 'og' AND image_ref IS NOT NULL THEN 1 ELSE 0 END) AS metadata_images,
+                SUM(CASE WHEN source = 'og' AND image_ref IS NOT NULL
+                          AND NOT EXISTS (
+                            SELECT 1 FROM capture_queue q
+                            WHERE q.url_key = captures.url_key
+                              AND q.reason = 'duplicate-image'
+                              AND q.state != 'complete'
+                          ) THEN 1 ELSE 0 END) AS distinguishable_metadata,
+                SUM(CASE WHEN source = 'screenshot' AND image_ref IS NOT NULL THEN 1 ELSE 0 END) AS screenshot_images,
+                (SELECT COUNT(*) FROM capture_queue WHERE state != 'complete') AS gaps
+         FROM captures`,
+      ).all(),
+      this.db.prepare(
+        `SELECT COUNT(*) AS queued FROM capture_queue WHERE state IN ('queued', 'failed')`,
+      ).all(),
+      this.db.prepare(
+        `SELECT COUNT(*) AS image_count FROM captures
+         WHERE image_hash IS NOT NULL GROUP BY image_hash
+         ORDER BY image_count DESC`,
+      ).all(),
+    ]);
+    const row = firstResult(counts) ?? {};
+    const total = Number(row.total ?? 0);
+    const distinguishableMetadata = Number(row.distinguishable_metadata ?? 0);
+    return {
+      total,
+      metadata_images: Number(row.metadata_images ?? 0),
+      distinguishable_metadata: distinguishableMetadata,
+      metadata_coverage: total ? distinguishableMetadata / total : null,
+      screenshot_images: Number(row.screenshot_images ?? 0),
+      gaps: Number(row.gaps ?? 0),
+      queued: Number(firstResult(queue)?.queued ?? 0),
+      duplicate_distribution: (distribution.results ?? []).map(value => Number(value.image_count)),
+    };
   }
 
   async countUntriagedItems(collectionId) {

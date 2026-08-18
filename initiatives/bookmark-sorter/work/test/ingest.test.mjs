@@ -97,3 +97,12 @@ test('the triage migration persists sittings, undo actions, and the backlog inde
   assert.match(sql, /WHERE undone_at IS NULL/);
   assert.match(sql, /PRAGMA optimize/);
 });
+
+test('the capture migration indexes duplicate hashes and an explicitly driven resumable queue', async () => {
+  const sql = await readFile(fileURLToPath(new URL('../migrations/0003_captures.sql', import.meta.url)), 'utf8');
+  assert.match(sql, /CREATE TABLE capture_queue/);
+  assert.match(sql, /reason IN \('missing-image', 'duplicate-image'\)/);
+  assert.match(sql, /idx_captures_image_hash/);
+  assert.match(sql, /idx_capture_queue_pending/);
+  assert.match(sql, /PRAGMA optimize/);
+});

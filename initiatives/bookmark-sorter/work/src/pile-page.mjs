@@ -33,6 +33,7 @@ export function renderPilePage() {
     .toolbar button[data-verdict="archive"] { border-color: #90a5c9; color: #36527e; }
     .toolbar button[data-verdict="needs-more-time"] { border-color: #d5a653; color: #795310; }
     .toolbar button:disabled, form button:disabled { opacity: .5; cursor: wait; }
+    #capture-gaps { border-color: #9a78c3; color: #60378b; }
     .toolbar .spacer { flex: 1 0 12px; }
     #mark-count { flex: 0 0 auto; color: #687188; font-size: .78rem; }
     #grid { grid-row: 4; min-height: 0; display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); gap: 8px; overflow: hidden; outline: none; }
@@ -43,6 +44,8 @@ export function renderPilePage() {
     .bookmark-card[data-verdict="junk"] { opacity: .66; box-shadow: inset 0 4px #d65c50, 0 5px 18px #1b294410; }
     .bookmark-card[data-verdict="archive"] { box-shadow: inset 0 4px #7089b3, 0 5px 18px #1b294410; }
     .bookmark-card[data-verdict="needs-more-time"] { box-shadow: inset 0 4px #d3a23f, 0 5px 18px #1b294410; }
+    .capture { min-height: 42%; overflow: hidden; margin: -11px -11px 8px; display: grid; place-items: center; color: #748096; background: linear-gradient(135deg, #e8edf6, #f6f8fc); font-size: .68rem; font-weight: 760; letter-spacing: .06em; text-transform: uppercase; }
+    .capture img { width: 100%; height: 100%; display: block; object-fit: cover; }
     .site { overflow: hidden; color: #6a7387; font-size: .67rem; font-weight: 750; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
     .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
     .note { display: -webkit-box; overflow: hidden; margin: 0; color: #5b6477; font-size: .75rem; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
@@ -68,6 +71,7 @@ export function renderPilePage() {
       form { grid-template-columns: 1fr; }
       .toolbar button { min-height: 42px; padding-inline: 12px; }
       .bookmark-card { padding: 18px; }
+      .capture { min-height: 44%; margin: -18px -18px 12px; }
       .bookmark-card h2 { max-width: 90%; font-size: 1.45rem; -webkit-line-clamp: 4; }
       .site { font-size: .76rem; }
       .note { font-size: .95rem; -webkit-line-clamp: 5; }
@@ -79,7 +83,7 @@ export function renderPilePage() {
 <body>
   <main>
     <header>
-      <div class="brand"><h1>Blind bookmark triage</h1><p>Judge the pile before pictures arrive.</p></div>
+      <div class="brand"><h1>Bookmark triage</h1><p>Metadata pictures arrive without blocking a verdict.</p></div>
       <div class="stats" aria-label="Triage progress">
         <div class="stat total"><strong id="count">0</strong><span>Total</span></div>
         <div class="stat"><strong id="backlog">0</strong><span>Untriaged</span></div>
@@ -100,6 +104,7 @@ export function renderPilePage() {
       <button type="button" data-verdict="archive"><span class="shortcut"><kbd>A</kbd> </span>Archive</button>
       <button type="button" data-verdict="needs-more-time"><span class="shortcut"><kbd>N</kbd> </span>Needs time</button>
       <button id="undo" type="button"><span class="shortcut"><kbd>U</kbd> </span>Undo</button>
+      <button id="capture-gaps" type="button">Capture gaps</button>
       <span class="spacer"></span>
       <span id="mark-count">0 marked</span>
       <button id="session" type="button">End sitting</button>
@@ -116,9 +121,9 @@ export function renderPilePage() {
       form: document.querySelector('#import-form'), importer: document.querySelector('#importer'), grid: document.querySelector('#grid'),
       count: document.querySelector('#count'), backlog: document.querySelector('#backlog'), rate: document.querySelector('#rate'),
       status: document.querySelector('#status'), position: document.querySelector('#position'), markCount: document.querySelector('#mark-count'),
-      session: document.querySelector('#session'), undo: document.querySelector('#undo'),
+      session: document.querySelector('#session'), undo: document.querySelector('#undo'), captureGaps: document.querySelector('#capture-gaps'),
     };
-    const state = {total: 0, backlog: 0, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null};
+    const state = {total: 0, backlog: 0, captures: null, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null};
 
     async function api(path, options = {}) {
       const response = await fetch(path, options);
@@ -167,6 +172,14 @@ export function renderPilePage() {
       card.dataset.verdict = item.verdict || '';
       card.setAttribute('role', 'gridcell');
       card.setAttribute('aria-selected', String(state.marked.has(item.id)));
+      const capture = document.createElement('div');
+      capture.className = 'capture';
+      if (item.capture_url) {
+        const image = document.createElement('img');
+        image.src = item.capture_url; image.alt = ''; image.loading = 'lazy'; image.decoding = 'async';
+        capture.append(image);
+      } else addText(capture, 'span', '', item.capture?.state === 'pass1-error' ? 'Fetch failed' : 'No image');
+      card.append(capture);
       addText(card, 'span', 'site', host(item.url));
       addText(card, 'h2', '', item.title);
       if (item.note) addText(card, 'p', 'note', item.note);
@@ -205,7 +218,7 @@ export function renderPilePage() {
       state.loading = true;
       try {
         const data = await api('/api/items?limit=' + (state.visible + state.buffer) + '&offset=' + Math.max(0, offset));
-        state.total = data.total; state.backlog = data.backlog; state.offset = Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
+        state.total = data.total; state.backlog = data.backlog; state.captures = data.captures; state.offset = Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
         state.items = data.items; state.focused = 0; state.marked.clear(); renderGrid();
         if (state.total) { elements.importer.open = false; await startSession(); elements.grid.focus({preventScroll: true}); }
       } finally { state.loading = false; updateProgress(); }
@@ -268,6 +281,19 @@ export function renderPilePage() {
       else { state.session = await api('/api/session', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'finish', session_id: state.session.id})}); elements.status.textContent = 'Sitting saved: ' + state.session.items_judged.toLocaleString() + ' judged.'; }
       updateProgress();
     }
+    async function captureGaps() {
+      elements.captureGaps.disabled = true;
+      elements.status.textContent = 'Checking capture gaps…';
+      try {
+        const data = await api('/api/captures/gaps', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({limit: 20})});
+        state.captures = data.status;
+        elements.status.textContent = data.enabled
+          ? 'Captured ' + data.processed.toLocaleString() + ' gap' + (data.processed === 1 ? '' : 's') + '; ' + data.status.queued.toLocaleString() + ' remain.'
+          : 'Pass 2 is off; ' + data.status.queued.toLocaleString() + ' metadata gap' + (data.status.queued === 1 ? '' : 's') + ' unchanged.';
+        if (data.processed) await loadWindow(state.offset);
+      } catch (error) { elements.status.textContent = error.message; }
+      finally { elements.captureGaps.disabled = false; }
+    }
     elements.form.addEventListener('submit', async event => {
       event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';
       try {
@@ -278,6 +304,7 @@ export function renderPilePage() {
     });
     document.querySelectorAll('[data-verdict]').forEach(button => button.addEventListener('click', () => applyVerdict(button.dataset.verdict).catch(error => { elements.status.textContent = error.message; })));
     elements.undo.addEventListener('click', () => undo().catch(error => { elements.status.textContent = error.message; }));
+    elements.captureGaps.addEventListener('click', captureGaps);
     elements.session.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));
     document.addEventListener('keydown', event => {
       if (event.target.matches('input, textarea, select')) return;

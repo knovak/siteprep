@@ -14,7 +14,15 @@ function earlier(left, right) {
   return left < right ? left : right;
 }
 
-export async function ingestBookmarkHtml({store, collectionId, html, source, ingestedAt}) {
+export async function ingestBookmarkHtml({
+  store,
+  collectionId,
+  html,
+  source,
+  ingestedAt,
+  capture = null,
+  scheduleCapture = task => task(),
+}) {
   if (!await store?.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
   if (!/^[a-z0-9][a-z0-9-]*$/.test(source)) throw new Error('Source must be a tag-safe slug');
 
@@ -38,6 +46,10 @@ export async function ingestBookmarkHtml({store, collectionId, html, source, ing
 
   if (typeof store.ingestCandidates === 'function') {
     const result = await store.ingestCandidates(collectionId, candidates);
+    if (typeof store.applyKnownCaptureErrors === 'function') {
+      await store.applyKnownCaptureErrors(collectionId, candidates.map(candidate => candidate.url_key));
+    }
+    if (capture) await scheduleCapture(() => capture.captureMany(collectionId, candidates));
     return {parsed: parsed.length, ...result};
   }
 
@@ -75,5 +87,9 @@ export async function ingestBookmarkHtml({store, collectionId, html, source, ing
   const total = typeof store.countItems === 'function'
     ? await store.countItems(collectionId)
     : (await store.listItems(collectionId)).length;
+  if (typeof store.applyKnownCaptureErrors === 'function') {
+    await store.applyKnownCaptureErrors(collectionId, candidates.map(candidate => candidate.url_key));
+  }
+  if (capture) await scheduleCapture(() => capture.captureMany(collectionId, candidates));
   return {parsed: parsed.length, added, merged, total};
 }

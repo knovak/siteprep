@@ -37,6 +37,10 @@ class FakeStatement {
         .filter(action => action.collection_id === collectionId && action.session_id === sessionId && !action.undone_at)
         .sort((left, right) => right.created_at.localeCompare(left.created_at) || right.id.localeCompare(left.id))[0] ?? null;
     }
+    if (this.sql.startsWith('SELECT url_key, image_ref')) {
+      const capture = this.database.captures.get(this.values[0]);
+      return capture ? {...capture} : null;
+    }
     throw new Error(`Unexpected first(): ${this.sql}`);
   }
 
@@ -64,6 +68,13 @@ class FakeStatement {
         .slice(offset, offset + limit)
         .map(item => ({
           ...item,
+          capture_image_ref: this.database.captures.get(item.url_key)?.image_ref ?? null,
+          capture_source: this.database.captures.get(item.url_key)?.source ?? null,
+          capture_state: this.database.captures.get(item.url_key)?.state ?? null,
+          capture_error_tag: this.database.captures.get(item.url_key)?.error_tag ?? null,
+          capture_page_title: this.database.captures.get(item.url_key)?.page_title ?? null,
+          capture_description: this.database.captures.get(item.url_key)?.description ?? null,
+          capture_displayable: 1,
           tags_json: JSON.stringify([...this.database.tags.get(item.id) ?? []].sort()),
         }));
       return {results};
@@ -89,6 +100,27 @@ class FakeStatement {
       Object.assign(session, {ended_at, elapsed_ms});
       return {success: true};
     }
+    if (this.sql.startsWith('INSERT INTO captures')) {
+      const [url_key, image_ref, source, captured_at, image_hash, state, page_title, description, favicon_url, error_tag, image_candidate, content_type, width, height, byte_size] = this.values;
+      this.database.captures.set(url_key, {url_key, image_ref, source, captured_at, image_hash, state, page_title, description, favicon_url, error_tag, image_candidate, content_type, width, height, byte_size});
+      return {success: true};
+    }
+    if (this.sql.startsWith('INSERT OR IGNORE INTO tags (item_id, tag) SELECT id')) {
+      const [tag, collectionId, urlKey] = this.values;
+      for (const item of this.database.items.values()) {
+        if (item.collection_id === collectionId && item.url_key === urlKey) this.database.tags.get(item.id).add(tag);
+      }
+      return {success: true};
+    }
+    if (this.sql.startsWith('INSERT OR IGNORE INTO tags (item_id, tag) SELECT i.id')) {
+      const [collectionId, ...urlKeys] = this.values;
+      const keys = new Set(urlKeys);
+      for (const item of this.database.items.values()) {
+        const errorTag = this.database.captures.get(item.url_key)?.error_tag;
+        if (item.collection_id === collectionId && keys.has(item.url_key) && errorTag) this.database.tags.get(item.id).add(errorTag);
+      }
+      return {success: true};
+    }
     throw new Error(`Unexpected run(): ${this.sql}`);
   }
 }
@@ -99,6 +131,7 @@ class FakeD1Database {
   tags = new Map();
   sessions = new Map();
   actions = new Map();
+  captures = new Map();
   batches = [];
 
   prepare(sql) {
@@ -203,4 +236,26 @@ test('D1 verdict actions update the backlog and undo a marked set atomically', a
 
   const finished = await store.finishSession('pile', {sessionId: session.id, endedAt: '2026-08-18T12:03:00Z'});
   assert.equal(finished.elapsed_ms, 180000);
+});
+
+test('D1 capture errors stay collection-local and attach from the shared cache on later ingestion', async () => {
+  const database = new FakeD1Database();
+  let sequence = 0;
+  const store = new D1BookmarkStore(database, {idFactory: () => `d1-${++sequence}`});
+  await store.ensureCollection({id: 'alpha', name: 'Alpha', createdAt: '2026-08-18T00:00:00Z'});
+  await store.ensureCollection({id: 'beta', name: 'Beta', createdAt: '2026-08-18T00:00:00Z'});
+  const html = await fixture('export-small.html');
+  await ingestBookmarkHtml({store, collectionId: 'alpha', html, source: 'test', ingestedAt: '2026-08-18'});
+  await ingestBookmarkHtml({store, collectionId: 'beta', html, source: 'test', ingestedAt: '2026-08-18'});
+  const urlKey = 'https://example.com/guide';
+  await store.upsertCapture({
+    url_key: urlKey, image_ref: null, source: 'none', captured_at: '2026-08-18T12:00:00Z', image_hash: null,
+    state: 'pass1-error', page_title: null, description: null, favicon_url: null, error_tag: 'err:404',
+    image_candidate: null, content_type: null, width: null, height: null, byte_size: null,
+  });
+  await store.applyCaptureError('alpha', urlKey, 'err:404');
+  assert.ok((await store.listItems('alpha')).find(item => item.url_key === urlKey).tags.includes('err:404'));
+  assert.ok(!(await store.listItems('beta')).find(item => item.url_key === urlKey).tags.includes('err:404'));
+  await store.applyKnownCaptureErrors('beta', [urlKey]);
+  assert.ok((await store.listItems('beta')).find(item => item.url_key === urlKey).tags.includes('err:404'));
 });

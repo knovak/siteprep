@@ -24,8 +24,17 @@
       "advances_stage": false
     },
     {
-      "id": "build-metadata-captures",
-      "title": "Phase 3 - build metadata captures, the stubbed pass-2 queue, and capture-gap controls",
+      "id": "measure-metadata-coverage",
+      "title": "Measure metadata coverage and the duplicate-image distribution on a representative real pile",
+      "state": "blocked",
+      "blocked_by": "data:import a representative slice of the real bookmark pile through phase 3 and report total, distinguishable metadata coverage, and duplicate-image distribution",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-selections",
+      "title": "Phase 4 - build selection expressions, saved selections, proposals, mark-then-sweep, and atomic undo",
       "state": "actionable",
       "value": "high",
       "effort": "large",
