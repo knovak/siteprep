@@ -14,19 +14,19 @@
       "effort": "small"
     },
     {
-      "id": "eval-contracts",
-      "title": "Phase 2's other exit - run each contract live against the fixtures and record the score and its rubric",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "build-run-loop",
       "title": "Phase 3 - a whole run over a fixture mailbox: the run loop, a source_doc for every matched message, and the run record",
       "state": "actionable",
       "value": "high",
       "effort": "large",
+      "advances_stage": false
+    },
+    {
+      "id": "fix-long-form-wire-shape",
+      "title": "Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
       "advances_stage": false
     }
   ]

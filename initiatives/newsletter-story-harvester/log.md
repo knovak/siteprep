@@ -150,3 +150,7 @@ The recorded replies are deliberately not idealised: they carry the sponsor bloc
 Measured against the fixtures and recorded in decisions.md, with the honest caveat that §3.1's bands are kept unchanged - the fixtures are composed rather than derived, so a band fitted to them would be a band fitted to what we imagined a newsletter looks like. Phase 6 decides them.
 
 The other half of §4.2's exit, the live eval score per contract, needs a model rather than a recording and is now its own item.
+
+## 2026-08-18 — Phase 2's other exit - run each contract live against the fixtures and record the score and its rubric
+
+Ran every extraction contract live against its fixture cases with a fixed ten-point rubric: link-list 10/10, annotated-digest 10/10, long-form 4/10 operational after its singular JSON object failed the array-only parser; recorded the diagnosis and added the wire-shape fix as actionable work.
