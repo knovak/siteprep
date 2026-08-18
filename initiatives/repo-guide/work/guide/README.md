@@ -6,7 +6,9 @@ point. Phase 2 adds the strict section reader, token substitution, and the three
 narrative honesty checks. Phase 3 adds all nine authored sections, the
 self-contained description renderer, provenance, and its isolated browser
 harness. Phase 4 adds separately authored slide text, a self-contained HTML
-deck, strict slide-count and copy-length gates, and keyboard navigation.
+deck, strict slide-count and copy-length gates, and keyboard navigation. Phase
+5 adds the abstract six-step lifecycle simulator with derived vocabulary and
+Step, Back, and Play controls.
 
 Resolve the live repository facts from the repository root:
 
@@ -38,6 +40,12 @@ Generate the 13-slide deck and run its offline browser and keyboard checks:
 node initiatives/repo-guide/work/guide/build/cli.mjs deck
 ```
 
+Generate the six-step simulator and run its offline browser checks:
+
+```bash
+node initiatives/repo-guide/work/guide/build/cli.mjs simulator
+```
+
 The file is written to `out/description.html`. `out/` is intentionally ignored:
 the guide is generated on request and the footer identifies the date and source
 commit of that copy. Use `--output <file>` to choose another path or
@@ -48,6 +56,13 @@ The deck is written to `out/deck.html` under the same rules. It is a single
 offline file with inline CSS and JavaScript. Arrow keys and Page Up/Page Down
 move one slide, Home and End jump to the boundaries, and Space/Shift+Space also
 move forward and back.
+
+The simulator is written to `out/simulator.html`. Its choreography is fixed and
+abstract: it never reads an `initiative.json`. Stage names, the proposable
+blocker class, sweep phase names, and per-run budget resolve from the fact
+registry at generation. Step 4 visibly passes an item over when the budget is
+spent; step 6 removes a completed item, unblocks its dependent, and advances the
+stage. Play follows the same six states as Step and can be interrupted.
 
 Run all Node-level generator tests:
 
@@ -83,6 +98,14 @@ unrelated site test suite.
 only sections marked for slides. Its browser harness opens the generated file
 from `file://`, refuses network dependencies, checks all authoritative links,
 and exercises forward, back, first, and last keyboard navigation.
+
+`build/simulator.mjs` resolves only four registered fact keys rather than the
+whole repository fact set. The selective resolver is what makes the spec's
+"reads no initiative data" promise testable: an absent initiatives directory
+does not affect generation, while inconsistent lifecycle constants still fail.
+Its browser harness steps forward and back across every state, checks the budget
+and cascade moments, interrupts and resumes Play, and refuses network
+dependencies.
 
 The first real description contains nine sections, 1,076 composed words and 23
 resolved fact tokens. The per-section baseline and the real drafting-check

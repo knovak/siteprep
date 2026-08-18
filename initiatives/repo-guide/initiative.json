@@ -15,14 +15,6 @@
       "advances_stage": false
     },
     {
-      "id": "build-simulator",
-      "title": "Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false
-    },
-    {
       "id": "test-deck-ten-minutes",
       "title": "Have someone unfamiliar with the material present the deck end to end and report whether it fits ten minutes",
       "state": "blocked",
@@ -32,10 +24,18 @@
       "advances_stage": false
     },
     {
+      "id": "test-simulator-walkthrough",
+      "title": "Have someone watch and step through the simulator and report whether the abstract lifecycle is adequate",
+      "state": "blocked",
+      "blocked_by": "data:watch all six simulator states and report whether they accurately explain the sweep and lifecycle",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
       "id": "build-pdf-dating",
       "title": "Phase 6 - PDF links, refresh dates, and the possibly-stale comparison",
-      "state": "blocked",
-      "blocked_by": "todo:build-simulator",
+      "state": "actionable",
       "value": "medium",
       "effort": "small",
       "advances_stage": false

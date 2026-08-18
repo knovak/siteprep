@@ -337,3 +337,41 @@ pins the stronger rule that slide copy is authored rather than truncated.
   data blocker rather than a browser assertion.
 - **Unaffected:** the description renderer. It still consumes only page text;
   the ordered slide list is additional source, not a fork of the description.
+
+## 2026-08-18 — Phase 5: fixed choreography, selective facts, and six visible states
+
+The simulator keeps the six-step abstract choreography settled in the
+specification and derives only the vocabulary that can drift: lifecycle stages,
+the proposable blocker class, configured sweep phases, and the per-run item
+budget.
+
+### The derived boundary
+
+The fact registry now supports resolving a named subset. Simulator generation
+asks for exactly four keys and never resolves `initiatives.live`, so it neither
+opens nor embeds any `initiative.json`. That is stronger than reading a real
+initiative and discarding its details: generation still succeeds when the
+initiatives directory is absent, while an inconsistent lifecycle constant still
+fails as drift.
+
+The fixed sequence uses the first three derived lifecycle stages for wish,
+shaping, and the post-merge advance; draws the complete derived stage track;
+uses the first derived proposable blocker class; displays every configured sweep
+phase; and reads the displayed budget from `items_per_run`. No stage name,
+blocker namespace, phase name, or budget number is typed into the animation.
+
+### What this settles, and what it does not
+
+- **Settled:** one self-contained HTML file presents all six states with Back,
+  Step, and interruptible Play controls. Step 4 visibly passes an item over at
+  the budget boundary; step 6 removes completed work, unblocks its dependent,
+  and advances the stage.
+- **Settled:** Play visits the exact same six states as manual stepping. It does
+  not introduce a second choreography.
+- **Settled:** the browser harness opens the file offline, walks both directions,
+  checks harmless boundary actions, interrupts and resumes Play, verifies the
+  budget and cascade states, and reports no network or console failures.
+- **Not settled:** whether the abstract animation is adequate to teach the
+  lifecycle. The user's earlier decision keeps a real-JSON upgrade open if a
+  person watches this version and finds it inadequate, so that walkthrough
+  remains a separate data blocker.

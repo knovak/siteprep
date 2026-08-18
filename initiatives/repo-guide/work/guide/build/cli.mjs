@@ -5,9 +5,10 @@ import { fileURLToPath } from 'node:url';
 import {generateDeck, runDeckBrowserChecks} from './deck.mjs';
 import {generateDescription, runDescriptionBrowserChecks} from './description.mjs';
 import { resolveRepositoryFacts } from './facts.mjs';
+import {generateSimulator, runSimulatorBrowserChecks} from './simulator.mjs';
 
 function usage() {
-  return 'Usage: cli.mjs facts [--root <repository>] | description|deck [--root <repository>] [--output <file>] [--skip-browser-check]';
+  return 'Usage: cli.mjs facts [--root <repository>] | description|deck|simulator [--root <repository>] [--output <file>] [--skip-browser-check]';
 }
 
 function parseArguments(argv) {
@@ -32,7 +33,7 @@ function parseArguments(argv) {
     }
     throw new Error(`Unknown or incomplete option: ${option}\n${usage()}`);
   }
-  if (!['facts', 'description', 'deck'].includes(command)) throw new Error(usage());
+  if (!['facts', 'description', 'deck', 'simulator'].includes(command)) throw new Error(usage());
   if (command === 'facts' && (output || !browserCheck)) throw new Error(usage());
   return { command, root, output, browserCheck };
 }
@@ -50,8 +51,10 @@ export async function main(argv = process.argv.slice(2)) {
   }
   const guideRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
   const outputPath = output || resolve(guideRoot, `out/${command}.html`);
-  const generate = command === 'description' ? generateDescription : generateDeck;
-  const check = command === 'description' ? runDescriptionBrowserChecks : runDeckBrowserChecks;
+  const generators = {description: generateDescription, deck: generateDeck, simulator: generateSimulator};
+  const checks = {description: runDescriptionBrowserChecks, deck: runDeckBrowserChecks, simulator: runSimulatorBrowserChecks};
+  const generate = generators[command];
+  const check = checks[command];
   const report = await generate({root, outputPath});
   if (browserCheck) {
     const browser = await check({root, outputPath});

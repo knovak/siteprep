@@ -101,3 +101,7 @@ Completed phase 3 with nine ordered source sections, a self-contained SHA-pinned
 ## 2026-08-18 — Phase 4 - the deck: slide text, the length check, and keyboard navigation
 
 Built the 13-slide self-contained HTML deck with ordered slide text, 10–20 and 90-word gates, SHA-pinned sources, offline browser checks, and full keyboard navigation; all 13 slides render without overflow.
+
+## 2026-08-18 — Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set
+
+Built the six-step abstract lifecycle simulator as one self-contained HTML file. Its stages, proposable blocker class, sweep phases, and item budget resolve from four selected fact keys; it never reads initiative.json. Node tests and the offline browser harness cover Step/Back boundaries, budget pass-over, merge cascade, interruptible Play, derived vocabulary, and drift failure. Added the manual adequacy walkthrough as a data blocker and unblocked PDF dating.
