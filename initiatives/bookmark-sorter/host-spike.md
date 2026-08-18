@@ -144,6 +144,8 @@ Confirm they are stable across sessions and devices, and **look for a stable
 opaque identifier alongside the email**.
 
 **Pass.** Two distinct stable identities, readable where the data layer runs.
+The probe page deliberately reports a single observation as `UNKNOWN`; compare
+results across sessions and devices before changing that verdict to `PASS`.
 
 **If only an email is available**, `owner_id` is an email and §5 should say so
 deliberately — including what happens when one changes.

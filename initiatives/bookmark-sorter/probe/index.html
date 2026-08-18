@@ -121,14 +121,18 @@ async function probeOutbound() {
   if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
   const d = r.json;
   if (!d) return { verdict: 'UNKNOWN', detail: 'no JSON returned' };
-  const ok = d.normal?.ok === true && d.notFound?.status === 404 && d.timeout?.timedOut === true;
+  const ok = d.normal?.ok === true && d.secondOrigin?.ok === true &&
+    d.notFound?.status === 404 && d.timeout?.timedOut === true &&
+    d.boundedBatch?.attempted === 10 && d.boundedBatch?.succeeded === 10;
   return {
     verdict: ok ? 'PASS' : 'FAIL',
     detail:
       `normal   : ${JSON.stringify(d.normal)}\n` +
+      `2nd host : ${JSON.stringify(d.secondOrigin)}\n` +
       `404      : ${JSON.stringify(d.notFound)}\n` +
       `timeout  : ${JSON.stringify(d.timeout)}\n` +
-      `Pass needs all three to behave as asked, and the timeout to be ours.`,
+      `batch    : ${JSON.stringify(d.boundedBatch)}\n` +
+      `Pass needs both origins, all 10 concurrent requests, the 404, and our timeout.`,
   };
 }
 
@@ -171,15 +175,18 @@ async function probeIdentity() {
   const d = r.json || {};
   const hasAny = Boolean(d.email || d.opaqueId);
   return {
-    verdict: hasAny ? 'PASS' : 'FAIL',
+    // One browser session can prove that identity reaches the server, but not
+    // the cross-session/device stability required by 3.2. Do not manufacture a
+    // PASS from the weaker observation.
+    verdict: hasAny ? 'UNKNOWN' : 'FAIL',
     detail:
       `email     : ${d.email ?? '(none)'}\n` +
       `full name : ${d.fullName ?? '(none)'}\n` +
       `opaque id : ${d.opaqueId ?? '(none found)'}\n` +
       `all identity-ish headers seen:\n  ${(d.candidateHeaders || []).join('\n  ') || '(none)'}\n` +
       (d.opaqueId
-        ? 'Use the opaque id as owner_id.'
-        : 'No opaque id: owner_id is an email, and §5 should say so deliberately.'),
+        ? 'Opaque id found. Repeat across sessions/devices before marking PASS.'
+        : 'No opaque id: repeat with two users, then document email as owner_id deliberately.'),
   };
 }
 
@@ -203,13 +210,17 @@ async function probeIsolation() {
   const r = await api('/api/probe/isolation');
   if (!r.ok) return { verdict: 'FAIL', detail: `HTTP ${r.status}\n${r.text.slice(0, 400)}` };
   const d = r.json || {};
+  const hasForeignFixture = (d.otherUsersRowsExist ?? 0) > 0;
   const leaked = (d.otherUsersRowsReachable ?? -1) !== 0;
   return {
-    verdict: (d.otherUsersRowsReachable === 0) ? 'PASS' : 'FAIL',
+    verdict: !hasForeignFixture ? 'UNKNOWN' : (d.otherUsersRowsReachable === 0 ? 'PASS' : 'FAIL'),
     detail:
       `rows belonging to other users this user could reach: ${d.otherUsersRowsReachable}\n` +
+      `other users’ fixture rows present: ${d.otherUsersRowsExist}\n` +
+      `own rows visible through scoped listing: ${d.ownRowsVisible}\n` +
       `routes tried: ${(d.routesTried || []).join(', ')}\n` +
-      (leaked ? 'O8 fails as built — isolation is our code, so this is our bug to fix.'
+      (!hasForeignFixture ? 'No foreign fixture exists. Run all as user A, then retry as user B.'
+       : leaked ? 'O8 fails as built — isolation is our code, so this is our bug to fix.'
               : 'No route tried reached another user’s rows.'),
   };
 }
@@ -222,11 +233,12 @@ async function probeSecret() {
   // The server must never return the value — only whether it could see it.
   const leakedToClient = JSON.stringify(d).match(/PROBE_SECRET_VALUE|secretValue/) != null;
   return {
-    verdict: (d.secretVisibleServerSide && !leakedToClient) ? 'PASS' : 'FAIL',
+    verdict: (d.secretVisibleServerSide && d.outboundCall?.ok && !leakedToClient) ? 'PASS' : 'FAIL',
     detail:
       `secret readable server-side : ${d.secretVisibleServerSide}\n` +
       `secret length reported      : ${d.secretLength ?? 'n/a'}\n` +
       `value present in response   : ${leakedToClient} (must be false)\n` +
+      `derived-proof call succeeded: ${d.outboundCall?.ok ?? false}\n` +
       `Also grep the deployed client bundle for the value by hand — that is the\n` +
       `check §6 actually requires, and a page cannot do it for itself.`,
   };
@@ -259,16 +271,22 @@ async function probeLayout() {
   ).length;
   const overflows = document.documentElement.scrollWidth > document.documentElement.clientWidth;
   const cellW = Math.round(cells[0].getBoundingClientRect().width);
-  const ok = perRow === 8 && tops.size === 2 && !overflows;
+  const styles = getComputedStyle(grid);
+  const gap = parseFloat(styles.columnGap) || 0;
+  const requiredWidth = 8 * 300 + 7 * gap;
+  const availableWidth = grid.getBoundingClientRect().width;
+  const wideEnough = availableWidth >= requiredWidth;
+  const ok = wideEnough && perRow === 8 && tops.size === 2 && !overflows;
 
   return {
-    verdict: ok ? 'PASS' : (window.innerWidth < 1400 ? 'UNKNOWN' : 'FAIL'),
+    verdict: ok ? 'PASS' : (!wideEnough ? 'UNKNOWN' : 'FAIL'),
     detail:
       `viewport ${window.innerWidth}×${window.innerHeight}, cell ${cellW}px\n` +
       `cells per row ${perRow}, rows ${tops.size}, page scrolls sideways: ${overflows}\n` +
+      `grid width ${Math.round(availableWidth)}px; 8 columns require ${Math.round(requiredWidth)}px\n` +
       (ok ? '8×2 reached with no horizontal scroll.'
-          : window.innerWidth < 1400
-            ? 'Window too narrow to judge — re-run maximised on a widescreen display.'
+          : !wideEnough
+            ? 'Viewport is physically too narrow to judge — use at least a 2456px content width.'
             : 'Did not reach 8×2 on a wide viewport. This is O3’s first casualty.'),
   };
 }
@@ -277,6 +295,9 @@ async function probeLayout() {
 // Partly an observation: the plan's stated limits have to be read by hand.
 async function probeMetering() {
   const r = await api('/api/probe/usage');
+  if (!r.ok || !r.json) {
+    return { verdict: 'FAIL', detail: `usage probe failed: HTTP ${r.status}\n${r.text.slice(0, 400)}` };
+  }
   const d = r.json || {};
   return {
     verdict: 'UNKNOWN',

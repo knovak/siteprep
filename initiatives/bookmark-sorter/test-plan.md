@@ -81,13 +81,17 @@ ceiling rather than a capability.
 - **Outbound HTTP to arbitrary URLs** — a normal page, a 404 and an unreachable
   host all behave as the code asks, within a timeout the code sets. This now
   leads, being the only row left that can change the design: failing it moves
-  pass 1 behind the same paid vendor as pass 2 (`plan.md` phase 0).
+  pass 1 behind the same paid vendor as pass 2 (`plan.md` phase 0). A bounded
+  batch of ten concurrent fetches also completes in one request; record its
+  elapsed time so phase 3 starts with evidence rather than an assumed batch
+  size.
 - **A response large enough to carry the pile out** — ten thousand items come out
   through **the app's own streamed `bookmark-sorter/v1` document**, by an ordinary
-  user, and re-import as the no-op §9 requires. A platform or database dump does
+  user and parse with the expected item count. A platform or database dump does
   not satisfy this row even where one exists. Failure here is a *size*: record
-  where the response cut off, because that number is what sizes the chunking
-  export and import then need on both sides.
+  the received byte count, because that number is what sizes the chunking export
+  and import then need on both sides. Re-import cannot be an exit condition before
+  phase 1 builds ingestion; its no-op semantics remain covered by §4.1 and §4.5.
 - **A server-side secret store with a server-side place to call from** — a value
   can be held that the browser cannot read, and an outbound call can be made from
   a place that can read it. Failing this switches pass 2 off and nothing else.
