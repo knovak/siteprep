@@ -6,11 +6,11 @@
   "outputs": [],
   "todo": [
     {
-      "id": "fix-long-form-wire-shape",
-      "title": "Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression",
+      "id": "build-review-page",
+      "title": "Phase 4 - build the self-contained review page and measure the first fixture review rate",
       "state": "actionable",
       "value": "high",
-      "effort": "small",
+      "effort": "large",
       "advances_stage": false
     }
   ]

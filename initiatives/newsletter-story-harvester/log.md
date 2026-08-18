@@ -162,3 +162,7 @@ Built the phase 3 fixture harvest end to end: strict inventory and range resolut
 ## 2026-08-18 — Establish which newsletters are in scope and how their emails are recognised
 
 Scope set to from:yglesias for 14 days as long-form; from:fixthenews@substack.com for 28 days as annotated-digest; and from:chopwoodcarrywaterdailyactions with subject containing extra for 28 days as link-list.
+
+## 2026-08-18 — Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression
+
+Aligned the long-form request with the strict parser by asking for a JSON array containing exactly one finding. A regression now asserts that prompt text and parses the live-shaped recorded reply; all 78 harvester tests pass. Phase 4's review page is now the next actionable increment.

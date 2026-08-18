@@ -33,7 +33,7 @@ all three. Node 18 or later, for the built-in test runner.
 | `src/model.mjs` | The model seam: the recorded-reply implementation, the prompt, and the strict reply parser | `test-plan.md` §2 |
 | `src/extract.mjs` | One issue under one contract into records: the override, the count band, `err:count`, the loud case | `spec.md` §3.2 |
 | `fixtures/issues/*.html` | Six issues, including the three adversarial ones | `test-plan.md` §3 |
-| `fixtures/responses/*.json` | A recorded reply per issue per contract | `test-plan.md` §2 |
+| `fixtures/responses/*.json` | A recorded reply per issue per contract; the long-form citation recording preserves the live eval content, wrapped only in the requested one-element array | `test-plan.md` §2 |
 | `measure-bands.mjs` | The measured row: what each contract actually yields | `test-plan.md` §4.2 |
 | `test/` | One test per row of `test-plan.md` §§4.1–4.3 | |
 
@@ -139,7 +139,7 @@ change in `merge.mjs`.
 | The loud case, by name | `test/extract.test.mjs` — and it is first in the run summary |
 | Nothing of the mail survives | `test/extract.test.mjs` — no markup, no recipient identifier |
 | **Measured: the count bands** | `measure-bands.mjs`, recorded in `decisions.md` |
-| **Measured: eval score per contract** | `decisions.md`, 2026-08-18 — link-list 10/10, annotated-digest 10/10, long-form 4/10 operational; the live long-form reply exposed a singular-object/array mismatch now tracked as its own item |
+| **Measured: eval score per contract** | `decisions.md`, 2026-08-18 — link-list 10/10, annotated-digest 10/10, long-form 4/10 operational; `test/contracts.test.mjs` now pins the repaired one-element-array wire shape against the live-shaped recording |
 
 ## Phase 3 exit
 

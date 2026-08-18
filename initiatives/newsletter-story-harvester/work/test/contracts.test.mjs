@@ -93,6 +93,23 @@ test('a reply may arrive as a bare list or under findings', () => {
   assert.equal(bare[0].story_date, null);
 });
 
+test('the long-form prompt and live-shaped recording agree on an array of one finding', async () => {
+  assert.match(
+    CONTRACTS['long-form'].request,
+    /Return a JSON array containing exactly one finding:/
+  );
+
+  // This recording is the successful live eval content with its singular
+  // object wrapped in the array the strict parser accepts. Keep the parse here
+  // beside the prompt assertion so the request and its wire contract cannot
+  // drift independently again.
+  const model = recordedModel(new URL('../fixtures/responses/', import.meta.url).pathname);
+  const raw = await model({ issue_id: 'long-form-citations', shape: 'long-form' });
+  const findings = parseFindings(raw, { shape: 'long-form' });
+  assert.equal(findings.length, 1);
+  assert.equal(findings[0].title, 'The shortage is permits, not money');
+});
+
 test('a missing recording is an error - the contract layer never calls a model', async () => {
   const model = recordedModel(new URL('../fixtures/responses/', import.meta.url).pathname);
   await assert.rejects(

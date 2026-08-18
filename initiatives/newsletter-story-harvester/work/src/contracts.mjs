@@ -94,7 +94,7 @@ export const CONTRACTS = {
     request: [
       'This is a long-form column. THE WHOLE COLUMN IS ONE STORY.',
       '',
-      'Return exactly one finding, as JSON:',
+      'Return a JSON array containing exactly one finding:',
       '  link_index  the number of the column\'s own link if it has one, else null',
       '  title       the column\'s title',
       '  text        a summary of the column, in your own words',
