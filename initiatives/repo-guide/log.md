@@ -97,3 +97,7 @@ Built the strict section frontmatter and page/slide reader, token substitution, 
 ## 2026-08-18 — Phase 3 - the nine sections, the description renderer, the provenance footer, and the browser harness
 
 Completed phase 3 with nine ordered source sections, a self-contained SHA-pinned description renderer, per-section composed/token metrics, and an isolated file:// Playwright harness. The 23 Node tests and offline browser check pass; the first baseline is 1,076 composed words to 23 resolved tokens. Kept the non-automatable newcomer reading row as a separate data blocker and unblocked the deck phase.
+
+## 2026-08-18 — Phase 4 - the deck: slide text, the length check, and keyboard navigation
+
+Built the 13-slide self-contained HTML deck with ordered slide text, 10–20 and 90-word gates, SHA-pinned sources, offline browser checks, and full keyboard navigation; all 13 slides render without overflow.

@@ -2,11 +2,12 @@
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {generateDeck, runDeckBrowserChecks} from './deck.mjs';
 import {generateDescription, runDescriptionBrowserChecks} from './description.mjs';
 import { resolveRepositoryFacts } from './facts.mjs';
 
 function usage() {
-  return 'Usage: cli.mjs facts [--root <repository>] | description [--root <repository>] [--output <file>] [--skip-browser-check]';
+  return 'Usage: cli.mjs facts [--root <repository>] | description|deck [--root <repository>] [--output <file>] [--skip-browser-check]';
 }
 
 function parseArguments(argv) {
@@ -31,7 +32,7 @@ function parseArguments(argv) {
     }
     throw new Error(`Unknown or incomplete option: ${option}\n${usage()}`);
   }
-  if (!['facts', 'description'].includes(command)) throw new Error(usage());
+  if (!['facts', 'description', 'deck'].includes(command)) throw new Error(usage());
   if (command === 'facts' && (output || !browserCheck)) throw new Error(usage());
   return { command, root, output, browserCheck };
 }
@@ -47,10 +48,13 @@ export async function main(argv = process.argv.slice(2)) {
     process.stdout.write(`${JSON.stringify(facts, null, 2)}\n`);
     return;
   }
-  const outputPath = output || resolve(dirname(fileURLToPath(import.meta.url)), '../out/description.html');
-  const report = await generateDescription({root, outputPath});
+  const guideRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const outputPath = output || resolve(guideRoot, `out/${command}.html`);
+  const generate = command === 'description' ? generateDescription : generateDeck;
+  const check = command === 'description' ? runDescriptionBrowserChecks : runDeckBrowserChecks;
+  const report = await generate({root, outputPath});
   if (browserCheck) {
-    const browser = await runDescriptionBrowserChecks({root, outputPath});
+    const browser = await check({root, outputPath});
     report.browser = {passed: true, output: browser.stdout.trim()};
   }
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);

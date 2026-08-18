@@ -15,20 +15,20 @@
       "advances_stage": false
     },
     {
-      "id": "build-deck",
-      "title": "Phase 4 - the deck: slide text, the length check, and keyboard navigation",
+      "id": "build-simulator",
+      "title": "Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": false
     },
     {
-      "id": "build-simulator",
-      "title": "Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set",
+      "id": "test-deck-ten-minutes",
+      "title": "Have someone unfamiliar with the material present the deck end to end and report whether it fits ten minutes",
       "state": "blocked",
-      "blocked_by": "todo:build-deck",
+      "blocked_by": "data:run the phase 4 ten-minute presentation test and report the result",
       "value": "high",
-      "effort": "medium",
+      "effort": "small",
       "advances_stage": false
     },
     {

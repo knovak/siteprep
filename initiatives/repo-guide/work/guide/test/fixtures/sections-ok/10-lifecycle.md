@@ -10,3 +10,8 @@ The live stages are {{lifecycle.stages}}.
 
 ---
 Stages: {{lifecycle.stages}}.
+
+---
+## The record grows
+
+Each move adds durable reasoning.

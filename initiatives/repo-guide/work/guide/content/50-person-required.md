@@ -2,7 +2,8 @@
 id: person-required
 title: When a person is required
 order: 50
-slide: false
+slide: true
+slide_title: Blocker labels decide who can act
 audience: contributor
 ---
 A blocked item states why it cannot move. The available namespaces are
@@ -20,3 +21,12 @@ A proposal remains blocked until its pull request merges. Disagreement is
 expected: naming another option is enough to redirect it. [The precise sweep
 rules are authoritative here](source:initiatives/sweep-prompt.md), and [the
 working instructions explain how a recorded answer unblocks later work](source:AGENTS.md).
+
+---
+## Blocker labels decide who can act
+
+The available namespaces are {{blockers.prefixes}}. Only
+{{blockers.proposable}} can receive a reasoned proposal. Facts, spending,
+access, policy, and external dependencies stay with whoever can honestly supply
+or authorise them. A proposal remains blocked until its pull request merges;
+naming another option is enough to redirect it.

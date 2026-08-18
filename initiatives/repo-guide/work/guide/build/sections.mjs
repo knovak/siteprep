@@ -44,7 +44,22 @@ export function parseSection(text, path = '<section>') {
   const {frontmatter, bodyLines} = parseFrontmatter(text, path);
   const split = bodyLines.findIndex(line => line === '---');
   const pageText = bodyLines.slice(0, split === -1 ? bodyLines.length : split).join('\n').trim();
-  const slideText = split === -1 ? '' : bodyLines.slice(split + 1).join('\n').trim();
+  const slideLines = split === -1 ? [] : bodyLines.slice(split + 1);
+  const slideTexts = [];
+  let currentSlide = [];
+  for (const line of slideLines) {
+    if (line === '---') {
+      const value = currentSlide.join('\n').trim();
+      if (!value) throw new Error(`${path}: section ${frontmatter.id} has an empty slide`);
+      slideTexts.push(value);
+      currentSlide = [];
+      continue;
+    }
+    currentSlide.push(line);
+  }
+  const finalSlide = currentSlide.join('\n').trim();
+  if (finalSlide) slideTexts.push(finalSlide);
+  const slideText = slideTexts.join('\n\n---\n\n');
   if (!pageText) throw new Error(`${path}: section ${frontmatter.id} has no page text`);
   if (frontmatter.slide && !slideText) throw new Error(`${path}: section ${frontmatter.id} requires slide text`);
   return {
@@ -52,6 +67,7 @@ export function parseSection(text, path = '<section>') {
     slide_title: frontmatter.slide_title ?? frontmatter.title,
     pageText,
     slideText,
+    slideTexts,
     path,
   };
 }
@@ -132,8 +148,7 @@ function literalDiagnostics(section, facts, text) {
   return diagnostics;
 }
 
-function renderText(section, field, facts, citedFacts, diagnostics) {
-  const source = section[field];
+function renderSource(section, source, facts, citedFacts, diagnostics) {
   const rendered = source.replace(TOKEN, (whole, token) => {
     const resolved = factValue(facts, token);
     if (!resolved) {
@@ -158,13 +173,17 @@ export class SectionValidationError extends Error {
 export function compileSections(sections, facts) {
   const diagnostics = [];
   const citedFacts = new Set();
-  const rendered = sections.map(section => ({
-    ...section,
-    pageText: renderText(section, 'pageText', facts, citedFacts, diagnostics),
-    slideText: renderText(section, 'slideText', facts, citedFacts, diagnostics),
-  }));
+  const rendered = sections.map(section => {
+    const slideTexts = section.slideTexts.map(source => renderSource(section, source, facts, citedFacts, diagnostics));
+    return {
+      ...section,
+      pageText: renderSource(section, section.pageText, facts, citedFacts, diagnostics),
+      slideText: slideTexts.join('\n\n---\n\n'),
+      slideTexts,
+    };
+  });
   const metrics = sections.map(section => {
-    const source = `${section.pageText}\n${section.slideText}`;
+    const source = `${section.pageText}\n${section.slideTexts.join('\n')}`;
     const tokens = [...source.matchAll(TOKEN)].map(match => match[1]);
     const composed = source.replace(TOKEN, ' ');
     const composedWords = composed.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) ?? [];
@@ -176,7 +195,7 @@ export function compileSections(sections, facts) {
   }
   const errors = diagnostics.filter(item => item.level === 'error');
   if (errors.length > 0) throw new SectionValidationError(diagnostics);
-  if (rendered.some(section => section.pageText.includes('{{') || section.slideText.includes('{{'))) {
+  if (rendered.some(section => section.pageText.includes('{{') || section.slideTexts.some(text => text.includes('{{')))) {
     throw new Error('Token substitution was incomplete');
   }
   return {sections: rendered, diagnostics, citedFacts: [...citedFacts].sort(), metrics};
