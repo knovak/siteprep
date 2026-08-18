@@ -1,6 +1,7 @@
 export class MemoryBookmarkStore {
   #collections = new Map();
   #items = new Map();
+  #itemsByUrl = new Map();
   #tags = new Map();
   #nextItem = 1;
 
@@ -13,15 +14,15 @@ export class MemoryBookmarkStore {
   }
 
   findItem(collectionId, urlKey) {
-    const item = [...this.#items.values()].find(
-      candidate => candidate.collection_id === collectionId && candidate.url_key === urlKey,
-    );
+    const id = this.#itemsByUrl.get(`${collectionId}\u0000${urlKey}`);
+    const item = id ? this.#items.get(id) : null;
     return item ? structuredClone(item) : null;
   }
 
   insertItem(item) {
     const stored = {...structuredClone(item), id: item.id ?? `item-${this.#nextItem++}`};
     this.#items.set(stored.id, stored);
+    this.#itemsByUrl.set(`${stored.collection_id}\u0000${stored.url_key}`, stored.id);
     this.#tags.set(stored.id, new Set());
     return structuredClone(stored);
   }
@@ -43,5 +44,13 @@ export class MemoryBookmarkStore {
     return [...this.#items.values()]
       .filter(item => item.collection_id === collectionId)
       .map(item => ({...structuredClone(item), tags: [...this.#tags.get(item.id)].sort()}));
+  }
+
+  countItems(collectionId) {
+    let count = 0;
+    for (const item of this.#items.values()) {
+      if (item.collection_id === collectionId) count += 1;
+    }
+    return count;
   }
 }

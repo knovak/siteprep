@@ -37,7 +37,7 @@ test('normalises only the URL identity rules in the spec', () => {
 
 test('ingestion deduplicates normalised URLs and retains the saved URL', async () => {
   const store = newStore();
-  const result = ingestBookmarkHtml({
+  const result = await ingestBookmarkHtml({
     store,
     collectionId: 'pile',
     html: await fixture('export-small.html'),
@@ -53,8 +53,8 @@ test('ingestion deduplicates normalised URLs and retains the saved URL', async (
 test('re-import is idempotent', async () => {
   const store = newStore();
   const html = await fixture('export-small.html');
-  ingestBookmarkHtml({store, collectionId: 'pile', html, source: 'chrome-export', ingestedAt: '2026-08-18'});
-  const second = ingestBookmarkHtml({store, collectionId: 'pile', html, source: 'chrome-export', ingestedAt: '2026-08-18'});
+  await ingestBookmarkHtml({store, collectionId: 'pile', html, source: 'chrome-export', ingestedAt: '2026-08-18'});
+  const second = await ingestBookmarkHtml({store, collectionId: 'pile', html, source: 'chrome-export', ingestedAt: '2026-08-18'});
   assert.equal(second.added, 0);
   assert.equal(second.total, 3);
   assert.equal(store.listItems('pile').length, 3);
@@ -62,11 +62,11 @@ test('re-import is idempotent', async () => {
 
 test('overlap unions tags, keeps the earliest date, and preserves user state', async () => {
   const store = newStore();
-  ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-small.html'), source: 'chrome-export', ingestedAt: '2026-08-18'});
+  await ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-small.html'), source: 'chrome-export', ingestedAt: '2026-08-18'});
   const guide = store.listItems('pile').find(item => item.url_key === 'https://example.com/guide');
   store.updateItem(guide.id, {verdict: 'keeper', verdict_at: '2026-08-19T00:00:00Z', note: 'My note'});
 
-  const result = ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-overlap.html'), source: 'firefox-export', ingestedAt: '2026-08-19'});
+  const result = await ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-overlap.html'), source: 'firefox-export', ingestedAt: '2026-08-19'});
   const merged = store.listItems('pile').find(item => item.id === guide.id);
   assert.deepEqual(result, {parsed: 2, added: 1, merged: 1, total: 4});
   assert.equal(merged.added_at, new Date(1600000000 * 1000).toISOString());
