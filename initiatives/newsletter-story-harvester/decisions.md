@@ -381,6 +381,61 @@ that matched and produced nothing.
   until then the adversarial cases are as adversarial as we could imagine rather
   than as adversarial as a mailbox is.
 
+## 2026-08-18 — Phase 2: the live contract eval, and the singular reply that does not parse
+
+The live baseline used `gpt-5.6-sol` with no reasoning pass. Each call received
+the exact request produced by `buildRequest()` — the contract, numbered links
+and fixture text — outside the repository context. The reply then went through
+the same strict parser and extractor as a harvest. No recorded response was
+substituted for a live one.
+
+### The rubric
+
+Ten points per contract, two for each row. The same rubric applies on a later
+run; changing it would make the scores incomparable.
+
+| Criterion | 2 points | 1 point | 0 points |
+|---|---|---|---|
+| Wire contract | The exact reply parses | A mechanical cleanup that the parser deliberately refuses would make it parse | It cannot be recovered as the requested findings |
+| Yield and selection | Exact expected count and links | One omission or extra | More than one wrong item, or the wrong unit |
+| Exclusions | No chrome, heading or citation becomes a story | One excluded thing is returned | The watched failure occurs in bulk |
+| Text | Verbatim shapes copy every blurb; long-form accurately states thesis, evidence and conclusion | Grounded but incomplete | Invented, misleading or missing |
+| Unit and grouping | One finding per contract unit | Right material with one grouping error | The contract's watched split/merge failure occurs |
+
+**Operational cap:** a wire-contract score below 2 caps the contract at 4/10.
+Content that cannot enter the extractor is useful evidence about the prompt, but
+it is not a partly working harvest.
+
+### The scores
+
+| Contract | Score | Live evidence |
+|---|---:|---|
+| `link-list` | **10/10** | `link-list-typical` produced exactly the 40 story links (3–42), no sponsor or footer; `link-list-headings` produced 13 and omitted the linked section heading; the `long-form-roundup` override produced exactly its 12 reading links. All 65 blurbs passed the verbatim check and the extractor refused none |
+| `annotated-digest` | **10/10** | Eight findings became eight records; the three-paragraph item stayed one; every commentary block passed the verbatim check; no item was refused or count-flagged |
+| `long-form` | **4/10 operational** *(8/10 content before the cap)* | The citation-dense column became one accurate summary with the column's own link and date, no citation became a story, and the thesis, evidence and remedies survived. But the model returned the one finding as a JSON object. `parseFindings()` requires an array (or `{findings: [...]}`), so the exact live reply failed with `reply for long-form is not a list of findings` |
+
+The long-form diagnosis is narrower than the score makes it look. Wrapping the
+unchanged live object in an array produced one unflagged record with
+`text_is_summary: true`; no content or identity rule then failed. The prompt says
+"Return exactly one finding, as JSON", and a singular object is a reasonable
+answer to that sentence. The parser is strict by design, so the prompt must name
+the wire shape it actually accepts: **"Return a JSON array containing exactly
+one finding."**
+
+### What this settles, and what it does not
+
+- The link-list and annotated-digest contracts have a 10/10 fixture baseline.
+  A later prompt change has a number to beat without moving the fixtures or the
+  rubric.
+- Phase 2's measured eval row has happened; a poor score is a finding, not a
+  reason to leave the measurement todo open. A new actionable item records the
+  long-form wire fix instead.
+- The count bands are unchanged. This eval measured selection quality, not real
+  newsletter volume.
+- This is still a synthetic baseline. Phase 6 must repeat the eval against the
+  fixture set derived from the real inventory before these scores can say how
+  the contracts behave on a mailbox.
+
 ## 2026-08-18 — Phase 3: what a run keeps about a message, and where tagging enters
 
 The phase 3 loop settled two seams the spec named but did not shape.

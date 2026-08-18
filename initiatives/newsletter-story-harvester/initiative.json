@@ -14,8 +14,8 @@
       "effort": "small"
     },
     {
-      "id": "eval-contracts",
-      "title": "Phase 2's other exit - run each contract live against the fixtures and record the score and its rubric",
+      "id": "fix-long-form-wire-shape",
+      "title": "Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression",
       "state": "actionable",
       "value": "high",
       "effort": "small",

@@ -139,7 +139,7 @@ change in `merge.mjs`.
 | The loud case, by name | `test/extract.test.mjs` — and it is first in the run summary |
 | Nothing of the mail survives | `test/extract.test.mjs` — no markup, no recipient identifier |
 | **Measured: the count bands** | `measure-bands.mjs`, recorded in `decisions.md` |
-| **Measured: eval score per contract** | **Not done** — needs a live model, so it is the `eval-contracts` item rather than part of this one |
+| **Measured: eval score per contract** | `decisions.md`, 2026-08-18 — link-list 10/10, annotated-digest 10/10, long-form 4/10 operational; the live long-form reply exposed a singular-object/array mismatch now tracked as its own item |
 
 ## Phase 3 exit
 

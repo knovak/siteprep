@@ -6,18 +6,9 @@
   "outputs": [],
   "todo": [
     {
-      "id": "spike-extractions",
-      "title": "Phase 0 - prove the four text-derived extractions reach, or drop them",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "build-facts",
       "title": "Phase 1 - the fact set: one source per key, an unresolvable key is an error, and the drift test",
-      "state": "blocked",
-      "blocked_by": "todo:spike-extractions",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
       "advances_stage": true

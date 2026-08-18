@@ -151,6 +151,10 @@ Measured against the fixtures and recorded in decisions.md, with the honest cave
 
 The other half of §4.2's exit, the live eval score per contract, needs a model rather than a recording and is now its own item.
 
+## 2026-08-18 — Phase 2's other exit - run each contract live against the fixtures and record the score and its rubric
+
+Ran every extraction contract live against its fixture cases with a fixed ten-point rubric: link-list 10/10, annotated-digest 10/10, long-form 4/10 operational after its singular JSON object failed the array-only parser; recorded the diagnosis and added the wire-shape fix as actionable work.
+
 ## 2026-08-18 — Phase 3 - a whole run over a fixture mailbox: the run loop, a source_doc for every matched message, and the run record
 
 Built the phase 3 fixture harvest end to end: strict inventory and range resolution, two-step message source with post-search From verification, extraction and theme-tag seams, store merging, source_doc accounting for every matched message, and persisted run records. The 75-test suite covers every phase 3 exit row, including a 49-match/25-add overlapping rerun.
