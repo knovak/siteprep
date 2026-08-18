@@ -1,0 +1,30 @@
+{
+  "id": "fixture-inventory-v1",
+  "sources": [
+    {
+      "key": "better-news",
+      "name": "Better News Fixture",
+      "match": [
+        { "type": "from", "value": "digest@better.test" },
+        { "type": "label", "value": "fixture-newsletters" }
+      ],
+      "shape": "link-list",
+      "unwrap": { "kind": "none" },
+      "since": "2026-01-01"
+    },
+    {
+      "key": "energy-notes",
+      "name": "Energy Notes Fixture",
+      "match": [{ "type": "from", "value": "notes@energy.test" }],
+      "shape": "annotated-digest",
+      "unwrap": { "kind": "none" }
+    },
+    {
+      "key": "permit-column",
+      "name": "Permit Column Fixture",
+      "match": [{ "type": "from", "value": "column@permits.test" }],
+      "shape": "long-form",
+      "unwrap": { "kind": "none" }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "messages": [
+    {
+      "id": "link-list-typical",
+      "from": "Better News <digest@better.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "The Week in Better News",
+      "issue_date": "2026-01-12",
+      "body_file": "issues/link-list-typical.html"
+    },
+    {
+      "id": "annotated-digest-typical",
+      "from": "Energy Notes <notes@energy.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "Energy Notes — January",
+      "issue_date": "2026-01-13",
+      "body_file": "issues/annotated-digest-typical.html"
+    },
+    {
+      "id": "long-form-citations",
+      "from": "Permit Column <column@permits.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "The shortage is permits, not money",
+      "issue_date": "2026-01-14",
+      "body_file": "issues/long-form-citations.html"
+    },
+    {
+      "id": "empty-issue",
+      "from": "Better News <digest@better.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "A quiet week",
+      "issue_date": "2026-01-15",
+      "body_file": "issues/empty-issue.html"
+    },
+    {
+      "id": "plus-tagged-other-publication",
+      "from": "Other Publication <digest+other@better.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "A different publication",
+      "issue_date": "2026-01-16",
+      "body_file": "issues/empty-issue.html"
+    },
+    {
+      "id": "long-form-roundup",
+      "from": "Permit Column <column@permits.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "January links",
+      "issue_date": "2026-01-22",
+      "shape_override": "link-list",
+      "body_file": "issues/long-form-roundup.html"
+    },
+    {
+      "id": "link-list-headings",
+      "from": "Better News <digest@better.test>",
+      "labels": ["fixture-newsletters"],
+      "subject": "Better News by section",
+      "issue_date": "2026-01-25",
+      "body_file": "issues/link-list-headings.html"
+    }
+  ]
+}

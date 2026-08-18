@@ -380,3 +380,34 @@ that matched and produced nothing.
 - **Fixtures derived from real issues.** They arrive with the inventory, and
   until then the adversarial cases are as adversarial as we could imagine rather
   than as adversarial as a mailbox is.
+
+## 2026-08-18 — Phase 3: what a run keeps about a message, and where tagging enters
+
+The phase 3 loop settled two seams the spec named but did not shape.
+
+**A matched message becomes a small `source_doc` entry inside the run record,
+not a new top-level store collection.** It carries only the document id, source
+key, issue date, extracted shape, story count and count-flag state. That is the
+minimum that proves `empty-issue` was fetched and yielded nothing. Keeping the
+subject, From address or body would contradict §6; keeping a second durable
+collection would make every future store reader learn a structure §7 never
+specified.
+
+**Harvest-time themes enter through a tagger seam after extraction and before
+merge.** The tagger sees story records and a safe issue label, never the mailbox
+body, and returns ordinary free-string tags. `theme:energy` has no privileged
+representation or provenance bit, which is exactly §10.1's replaceability rule:
+the same tag may later come from a store-wide pass or a person.
+
+### What this settles, and what it does not
+
+- The message-source seam is two calls: search returns envelopes, then read
+  returns a body. The exact From check sits between them, so Gmail's plus-tag
+  over-match is refused before content is fetched and receives no `source_doc`.
+- The run record identifies the inventory by id and source keys. It does not
+  copy the private matchers into the store.
+- The fixture tagger proves the write path, not the quality of theme judgement.
+  Phase 7 still builds the store-wide tagging skill, where enough stories exist
+  for themes and clusters to mean something.
+- `source_doc` remains an opaque id. How Gmail constructs one is phase 6's
+  connector implementation and must not leak a message body or recipient token.

@@ -7,11 +7,11 @@ exists so far.
 node --test "initiatives/newsletter-story-harvester/work/test/*.test.mjs"
 ```
 
-No dependencies, no network, no mailbox, and no model — which is `plan.md` §2's
-seam paying for itself in the first phase that could have needed one. Node 18 or
-later, for the built-in test runner.
+No dependencies, no network, no real mailbox, and no live model — which is
+`plan.md` §2's seam paying for itself in the first phase that could have needed
+all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1 and 2
+## What is here — phases 1–3
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -35,12 +35,23 @@ later, for the built-in test runner.
 | `fixtures/issues/*.html` | Six issues, including the three adversarial ones | `test-plan.md` §3 |
 | `fixtures/responses/*.json` | A recorded reply per issue per contract | `test-plan.md` §2 |
 | `measure-bands.mjs` | The measured row: what each contract actually yields | `test-plan.md` §4.2 |
-| `test/` | One test per row of `test-plan.md` §4.1 and §4.2 | |
+| `test/` | One test per row of `test-plan.md` §§4.1–4.3 | |
 
-Not here, deliberately: the mailbox, the store's harvest entry point, the page,
-and verdicts. That is `plan.md` §3's phase 2 boundary — extraction reads a
-*document* and returns records, which is the seam that lets everything above it
-be built without a mailbox.
+**Phase 3 — a whole run, over a fixture mailbox**
+
+| File | What it is | Specified in |
+|---|---|---|
+| `src/fixture-source.mjs` | The message-source seam exercised without Gmail: matcher union, half-open ranges, plus-tag over-match, body reads kept separate | `spec.md` §§2, 4, 5.1 |
+| `src/run.mjs` | Inventory and range resolution, extraction, tag proposals, merging, source-document accounting, persisted run records | `spec.md` §5.2 |
+| `fixtures/inventory-fixture.json` | The committed synthetic form of the private inventory | `spec.md` §4 |
+| `fixtures/mailbox-fixture.json` | Seven message envelopes pointing at the existing synthetic issue bodies, including an over-matched publication that must never be read | `test-plan.md` §4.3 |
+| `test/run.test.mjs` | Every phase 3 exit row, including persistence and the overlapping second run | `test-plan.md` §4.3 |
+
+Not here, deliberately: Gmail or any real inventory, the page, and verdicts.
+Phase 3's source is a fixture implementation of the same two-call seam Gmail
+will use later: search returns envelopes, then the run verifies the actual From
+address before it reads a body. That keeps every phase through the working
+harvester independent of the user's mailbox.
 
 ## Three things worth knowing before reading the code
 
@@ -129,3 +140,18 @@ change in `merge.mjs`.
 | Nothing of the mail survives | `test/extract.test.mjs` — no markup, no recipient identifier |
 | **Measured: the count bands** | `measure-bands.mjs`, recorded in `decisions.md` |
 | **Measured: eval score per contract** | **Not done** — needs a live model, so it is the `eval-contracts` item rather than part of this one |
+
+## Phase 3 exit
+
+`test-plan.md` §4.3, every row, in `test/run.test.mjs`:
+
+| Row | Evidence |
+|---|---|
+| Explicit range only | Missing bounds are refused; a one-day half-open range returns exactly that day's issue |
+| Repeatable | Two empty stores harvested over the same range get the same id set |
+| Second run adds only what is new | The overlapping run matches 49 existing stories and adds the later issues' 25 |
+| Every matched message recorded | `empty-issue` has a `source_doc` entry with zero stories and a count flag |
+| Not in the inventory, not harvested | Removing `energy-notes` means its issue body is never read |
+| Run record | The atomically persisted store records range, inventory keys, per-source issue counts, add/match/merge counts and flags |
+| Themes proposed | The fixture tagger's `theme:` values land as ordinary tags |
+| A harvester writes no verdict | Every record remains unjudged after both runs |

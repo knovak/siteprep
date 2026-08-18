@@ -150,3 +150,7 @@ The recorded replies are deliberately not idealised: they carry the sponsor bloc
 Measured against the fixtures and recorded in decisions.md, with the honest caveat that §3.1's bands are kept unchanged - the fixtures are composed rather than derived, so a band fitted to them would be a band fitted to what we imagined a newsletter looks like. Phase 6 decides them.
 
 The other half of §4.2's exit, the live eval score per contract, needs a model rather than a recording and is now its own item.
+
+## 2026-08-18 — Phase 3 - a whole run over a fixture mailbox: the run loop, a source_doc for every matched message, and the run record
+
+Built the phase 3 fixture harvest end to end: strict inventory and range resolution, two-step message source with post-search From verification, extraction and theme-tag seams, store merging, source_doc accounting for every matched message, and persisted run records. The 75-test suite covers every phase 3 exit row, including a 49-match/25-add overlapping rerun.
