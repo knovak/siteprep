@@ -10,18 +10,18 @@ the documentation says so the probes go after the right things.
 category phase 0 exists to replace. It is good enough to narrow the probes and
 not good enough to fill in a row.
 
-## 1. Why the spike did not run
+## 1. Why the spike has not run yet
 
-Phase 0 needs an account on a named surface, and `plan.md` §5.2 assigned both to
-the user rather than to a spike. The rows that decide the project — bulk data
-export, per-user rows, a server-side secret store — are answered by signing in
-and trying.
+Phase 0 needs access to a named surface. **That access is now confirmed:** on
+2026-08-18 the user confirmed that ChatGPT Sites is available on their plan and
+in this workspace (`decisions.md`). The permission gate is gone and the
+`host-spike` item is actionable. The rows that decide the project are still
+answered by signing in and trying, not by the confirmation itself.
 
 **The surface now has a strong candidate.** §2 was rewritten on 2026-08-17 after
 the user pointed at **ChatGPT Sites**, which is a much better fit than the
 arrangement first researched here and answers most of §10's table on paper. What
-remains is confirming access and running the two probes documentation cannot
-settle.
+remains is running the probes documentation cannot settle.
 
 ## 2. What the documentation says
 
@@ -222,13 +222,13 @@ the answer belongs to the user.
 
 ## 4. What the user has to supply
 
-Smaller than it was:
+The first requested fact has been supplied:
 
-1. **Confirmation that Sites is available** on the plan, region and workspace in
-   question. It is in public beta and gated, so this is a fact rather than a
-   preference.
-2. **Whether the metered limits of 3.8 are acceptable**, once known — the one
-   part of the spike that is the user's money rather than an observation.
+1. **Supplied on 2026-08-18:** Sites is available on the plan and in this
+   workspace.
+2. **Still needed after the probe:** whether the metered limits of 3.8 are
+   acceptable — the one part of the spike that is the user's money rather than
+   an observation.
 
 The appetite question `plan.md` §5.2 raised — whether building sign-in is worth
 it if the host has none — appears to be moot: Sites supplies identity.

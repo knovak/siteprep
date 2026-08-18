@@ -252,9 +252,10 @@ copy, triages it, and can reach nothing of anyone else's.
 ### Phase 7 — Turning pass 2 on
 
 **Not a development phase.** The code shipped in phase 3; this is a configuration
-change plus one contract test against the real vendor, gated on two answers that
-are not the plan's to give: where the key lives (phase 0's secret-store row) and
-which vendor at what price (§5 below).
+change plus one contract test against the real vendor. It remains gated on phase
+0's secret-store finding and on the vendor decision being reopened: on
+2026-08-18 the user chose **none at present**, so this phase deliberately does
+not run.
 
 If either answer never comes, the app is finished without it and gap items keep
 no picture — visibly missing rather than confidently wrong, which is the state
@@ -300,12 +301,12 @@ same presumption was recorded as if it were a finding. What is fixed now is the
 among surfaces that satisfy both, the one with a server-side secret store wins,
 because it is the difference between pass 2 shipping and not.
 
-Two things could change this, and both belong to the user rather than to a spike:
-an account or budget on the candidate host, and the appetite to build sign-in if
-the host has no identity of its own. The spike will say what the host can do; it
-cannot say what the user is willing to pay for or run.
+Access to the candidate is no longer hypothetical: on 2026-08-18 the user
+confirmed that ChatGPT Sites is available on their plan and in this workspace.
+That makes the spike actionable, not the host chosen. The spike will say what
+Sites can do; it still cannot approve the metered cost on the user's behalf.
 
-### 5.3 Which screenshot vendor, and its retention terms — *left to the user, deliberately*
+### 5.3 Which screenshot vendor, and its retention terms — *none at present*
 
 The criteria are settled: **no retention of captured images beats a lower price**,
 since §6 records the disclosure as an accepted cost and retention is what makes
@@ -313,10 +314,13 @@ it more than a fetch; per-thousand pricing beats a subscription at this volume,
 because pass 2 runs on the minority of items and then stops; and an API that
 takes a URL and returns an image needs nothing else.
 
-Picking one spends the user's money on the user's terms, so it is recorded as a
-`cost:` blocker on a todo item of its own rather than settled here. Nothing waits
-on it: phase 3 ships against the stub, and phase 7 is the only phase that needs
-an answer.
+The user answered on 2026-08-18: **none at present**. Phase 3 still ships against
+the stub and phase 7 stays off, so no account, key, or spend is authorised.
+`decisions.md` records three current candidates and recommends ScreenshotOne
+Basic for a later bounded trial because it is the lowest-cost candidate that can
+return the image without persistent vendor-side image storage. That is a
+shortlist, not a selection; target-URL logging must be accepted and every price
+and retention term rechecked before the question is reopened.
 
 ### 5.4 May a user hold several collections? — *yes, and the question is already settled by construction*
 
