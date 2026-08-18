@@ -136,6 +136,31 @@
 <p>  unexpected line in that list is likewise an error.</p>
 <ul><li>The captured text is quoted. The guide may explain it separately, but may not</li></ul>
 <p>  paraphrase the prompt and call the paraphrase generated.</p>
+<h3>2026-08-18 — Phase 3: the first description baseline and its source links</h3>
+<p>The description is one self-contained HTML file with inline styling and no runtime data load. An authoritative Markdown link uses the explicit <code>source:&lt;repository-path&gt;</code> form. Generation first proves that path exists in the working tree, then renders a GitHub blob link pinned to the same short commit SHA shown in the footer. The browser harness checks both halves: the local file exists, and the outgoing URL contains that SHA.</p>
+<p>This makes a broken source reference a generation error while keeping a copy of the guide useful away from the checkout. Ordinary prose cannot accidentally become an authoritative link merely because it looks like a path.</p>
+<h4>Composed prose against resolved facts</h4>
+<p>The first complete description measured:</p>
+<div class="table-scroll"><table><thead><tr><th>Section</th><th>Composed words</th><th>Resolved tokens</th></tr></thead><tbody><tr><td>What this repository is</td><td>132</td><td>1</td></tr><tr><td>The initiative lifecycle</td><td>122</td><td>2</td></tr><tr><td>Who supplies what</td><td>152</td><td>3</td></tr><tr><td>How work gets picked up</td><td>100</td><td>5</td></tr><tr><td>When a person is required</td><td>129</td><td>3</td></tr><tr><td>Decks, briefly</td><td>95</td><td>1</td></tr><tr><td>Demos, briefly</td><td>96</td><td>1</td></tr><tr><td>Taking this elsewhere</td><td>123</td><td>7</td></tr><tr><td>Where the real answers are</td><td>127</td><td>0</td></tr><tr><td><strong>Total</strong></td><td><strong>1,076</strong></td><td><strong>23</strong></td></tr></tbody></table></div>
+<p>That is about 47 authored words per resolved token. It is a baseline, not a threshold. The last section intentionally has no fact token: its facts are the six explicit, SHA-pinned source links rather than values substituted into prose.</p>
+<h4>What the honesty checks found on the first real draft</h4>
+<ul><li>The bare-stage warning fired twice, both on the ordinary-English word</li></ul>
+<p>  &quot;wish&quot;. Both occurrences genuinely describe the first lifecycle record and   were kept after review; the warning did its job without becoming a false   build failure.</p>
+<ul><li>The backticked-stage, stage-list, and budget-literal error rules fired zero</li></ul>
+<p>  times.</p>
+<ul><li>The blocker rule initially matched ordinary words and paths because the live</li></ul>
+<p>  constants contain namespace names without their colon. That was a real false   positive in the check, not in the prose. The rule now looks for namespace   notation; its existing colon-shaped fixture still pins the intended error.</p>
+<ul><li>One uncited-fact warning remains for the preview-cleanup workflow. The guide</li></ul>
+<p>  cites the workflows that explain generation, deployment, and sweep behavior;   the cleanup job adds no newcomer-facing process fact.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> nine sections render in objective order and audience is always a</li></ul>
+<p>  visible hint, never a filter.</p>
+<ul><li><strong>Settled:</strong> the generated copy opens from <code>file://</code> with zero console errors,</li></ul>
+<p>  failed requests, or network requests, and every authoritative link resolves   locally at generation time.</p>
+<ul><li><strong>Not settled:</strong> whether the explanation works for a newcomer. That manual</li></ul>
+<p>  test cannot be replaced by the browser harness and remains a separate data   blocker.</p>
+<ul><li><strong>Next:</strong> the same section records can gain separately authored slide text;</li></ul>
+<p>  the description renderer does not need to change for phase 4.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
