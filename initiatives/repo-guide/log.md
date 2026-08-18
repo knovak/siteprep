@@ -89,3 +89,7 @@ Probed all four text-derived fact targets against live and malformed shapes; kep
 ## 2026-08-18 — Phase 1 - the fact set: one source per key, an unresolvable key is an error, and the drift test
 
 Built the Phase 1 fact registry and CLI. Twenty live fact keys now resolve from exactly one source; strict readers fail on unsupported workflow, skill-frontmatter, and sweep-prompt shapes; fourteen miniature-repository tests cover imports, missing exports, duplicate sources, shallow live initiatives, and stage drift.
+
+## 2026-08-18 — Phase 2 - the section format, token substitution, and the three honesty checks
+
+Built the strict section frontmatter and page/slide reader, token substitution, structured diagnostics, and the three honesty checks. Added fixtures for unknown tokens, uncited facts, literal stages, budget numbers, blocker prefixes, and missing slide text; all 22 Phase 1 and Phase 2 tests pass.
