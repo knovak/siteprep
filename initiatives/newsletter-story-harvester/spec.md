@@ -289,6 +289,13 @@ of things the run actually paged through: the connector's own result count is an
 estimate that saturates on large result sets (phase 0), and a run record built
 from it would answer that question wrongly.
 
+`source_doc` accounting lives in that run record, as one small entry per matched
+message: id, source key, issue date, extracted shape, story count, and whether it
+was flagged. It is not a second top-level store collection. That is enough to
+distinguish "matched and yielded nothing" from "never fetched" without retaining
+a subject, From address, body, or any other mailbox content. The inventory named
+on the run is likewise its id and source keys, not its private matchers.
+
 ### 5.3 On demand, not on a schedule
 
 A run happens when a person asks for one. §2 explains why: a scheduled harvest
