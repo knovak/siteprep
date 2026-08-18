@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objectives — Newsletter Story Harvester</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Objectives — Newsletter Story Harvester</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Newsletter Story Harvester</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Objectives</h2>
+    </div>
+    <div class="card-content">
+<h2>Objectives</h2>
+<p>What &quot;done&quot; would mean, derived from the wish. Outcomes, not implementation — how any of this is built belongs in <code>spec.md</code>.</p>
+<h3>The point</h3>
+<p><strong>Turn a stream of newsletters into a short list of stories worth keeping.</strong></p>
+<p>The wish is about volume before it is about anything else: newsletters &quot;that contain large numbers of stories&quot;. Most of that material is read once and never wanted again; a few items are worth holding on to, and they are buried among the rest. Everything below — harvesting, grouping, paraphrasing, publishing — earns its place by getting to that short list faster than reading the emails would.</p>
+<p>The failure mode to name early is building a newsletter <em>archive</em>: a complete, searchable, well-tagged copy of every issue that nobody ever opens. Completeness is not the measure. What is kept, and how quickly, is.</p>
+<h3>What makes this hard, and what it changes</h3>
+<p>The wish names three kinds of newsletter, and they are not three sizes of the same problem. They are three different extraction problems:</p>
+<div class="table-scroll"><table><thead><tr><th>Shape</th><th>Named in the wish</th><th>What one story is</th></tr></thead><tbody><tr><td><strong>Link list</strong></td><td>Future Crunch, Fix the News, Americans of Conscience</td><td>A link and a sentence or two. Dozens per email</td></tr><tr><td><strong>Annotated digest</strong></td><td>Stanford energy, Yale newsletters</td><td>A link and a paragraph. Several per email</td></tr><tr><td><strong>Long-form column</strong></td><td>Yglesias, Roberts, and other Substack authors</td><td>Possibly the entire email — with links inside it that are <em>citations</em>, not stories</td></tr></tbody></table></div>
+<p>The third shape is the one that breaks the obvious rule. &quot;Every link is a story&quot; works on the first two and produces a page of garbage from the third: one column yields thirty items, each a footnote to an argument, none of them a story anybody wanted. So the unit of harvest has to be decided per newsletter, not per link.</p>
+<p>This is also what distinguishes this initiative from the bookmark sorter, which faces a superficially similar pile. There, an item arrives already discrete — a title and a URL. Here <strong>a story has to be manufactured out of an email</strong>, and whether that was done correctly is itself something that can be wrong.</p>
+<h3>Done means</h3>
+<ol><li>**The right emails can be found, and finding them again gives the same</li></ol>
+<p>   answer.** The set of newsletters in scope is written down rather than    remembered, and a harvest over a date range is repeatable — re-running it    produces the same stories from the same issues.</p>
+<ol><li><strong>An email becomes stories, not links.</strong> Each story carries its own text —</li></ol>
+<p>   the blurb as written, or a summary where the source is long-form — along with    its link, the newsletter it came from, and the issue date. Where a story&#39;s own    date differs from the issue date, that date survives too; the wish asks for    this directly, and it is the difference between &quot;this was in last week&#39;s    issue&quot; and &quot;this happened last week&quot;.</p>
+<ol><li><strong>Harvesting twice does not produce two copies.</strong> Ranges overlap, newsletters</li></ol>
+<p>   repeat each other&#39;s links, and a re-run is the normal case rather than the    exception. An item already harvested is recognised as the same item.</p>
+<ol><li><strong>Stories are grouped by content area, and the grouping can be corrected.</strong></li></ol>
+<p>   Automatic grouping is what makes the volume tractable; being able to move a    story to the right theme is what stops one bad call poisoning the page.</p>
+<ol><li><strong>A theme can be judged in one sitting.</strong> Its stories are presented so that</li></ol>
+<p>   they can be expanded and collapsed rather than scrolled through, and reordered    — by date at minimum, and by whatever else turns out to sort usefully.</p>
+<ol><li><strong>Closely related stories can be read as one.</strong> Where several stories cover</li></ol>
+<p>   the same event — the common case when three newsletters land in the same week    — they can be combined into a single entry with a paraphrase that draws on all    of them, without losing the individual links or dates underneath.</p>
+<ol><li><strong>Every story ends up disposed of or held.</strong> A story is dropped, kept, or</li></ol>
+<p>   emphasized, and doing so is fast enough to keep up with reading. Whatever has    not been judged yet is the backlog, and the system can say how large it is.</p>
+<ol><li><strong>The results outlive the run.</strong> Verdicts, themes, and the stories themselves</li></ol>
+<p>   persist in a store that can be worked with afterwards, and the emphasized or    retained set can be published as HTML that someone else can open.</p>
+<h3>Explicitly not the first version</h3>
+<p>The wish marks these as possibilities rather than requirements, and they stay out until the core above works:</p>
+<ul><li><strong>Publication as an OpenAI site.</strong> The wish says &quot;consider&quot;, and it is a</li></ul>
+<p>  hosting decision that follows the runtime one rather than preceding it.</p>
+<ul><li><strong>Writing back to the mailbox</strong> — labelling, archiving, or otherwise changing</li></ul>
+<p>  what is in Gmail. Nothing in the wish asks for it, and a harvester that only   reads is a much safer thing to run repeatedly while it is still wrong.</p>
+<h3>How we will know</h3>
+<ul><li>A real month of the named newsletters produces a themed page, and how long the</li></ul>
+<p>  harvest and the review each took is known.</p>
+<ul><li><strong>The long-form shape is handled correctly</strong> — a single Substack column</li></ul>
+<p>  produces one story with its argument intact, not one item per embedded link.   This is the sharpest test of whether extraction works, because it is the case a   link-scraper fails silently.</p>
+<ul><li>A second harvest over an overlapping range adds only what is new.</li><li>The kept set can be opened as a page by someone who does not have the mailbox.</li></ul>
+<h3>Decisions this raises</h3>
+<p>Drafting these surfaced questions the wish does not settle, and that should not be settled by whoever writes the spec:</p>
+<ol><li><strong>Does this run as agent skills, or as a website?</strong> The wish raises it</li></ol>
+<p>   explicitly — &quot;This entire process might run through codex skills rather than    a freestanding website. That would allow the skills to do some of the    harvesting and paraphrasing.&quot; It decides nearly everything downstream: what    &quot;a database&quot; means, where the model that paraphrases lives, and whether the    review UI of objective 5 is a real application or a generated page. Recorded    as a blocked item.</p>
+<ol><li>**Which newsletters are in scope, and how is an email recognised as one of</li></ol>
+<p>   them?** The wish names seven by title, which is not the same as knowing the    sender addresses, labels, or how far back to reach. Only the user&#39;s mailbox    can settle it, so it is recorded as a blocked item rather than guessed.</p>
+<p>Two more are noted here for the spec rather than raised as blockers:</p>
+<ul><li><strong>How much of the triage machinery is shared with the bookmark sorter.</strong></li></ul>
+<p>  Objectives 5 and 7 are close cousins of that initiative&#39;s grid and verdicts,   and both may land on a web app. Worth weighing deliberately in <code>spec.md</code> —   including the answer that they stay separate — rather than either duplicating   by accident or coupling two initiatives before either has run.</p>
+<ul><li><strong>What &quot;closely related&quot; means in objective 6.</strong> A judgement the spec has to</li></ul>
+<p>  make concrete, and one where being too eager merges distinct stories and being   too shy leaves the duplication the objective exists to remove.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/critique-and-improve-tests-for-bookmark-sorter" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
