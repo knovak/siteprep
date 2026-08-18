@@ -1,0 +1,90 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {test} from 'node:test';
+import {fileURLToPath} from 'node:url';
+
+import {parseBookmarkHtml} from '../src/bookmark-html.mjs';
+import {ingestBookmarkHtml} from '../src/ingest.mjs';
+import {MemoryBookmarkStore} from '../src/memory-store.mjs';
+import {normaliseUrl} from '../src/url-key.mjs';
+
+const fixture = name => readFile(fileURLToPath(new URL(`fixtures/${name}`, import.meta.url)), 'utf8');
+
+function newStore() {
+  const store = new MemoryBookmarkStore();
+  store.createCollection({id: 'pile', name: 'Pile', kind: 'personal'});
+  return store;
+}
+
+test('parses title, URL, date, nested folder path, and DD note', async () => {
+  const items = parseBookmarkHtml(await fixture('export-small.html'));
+  assert.equal(items.length, 4);
+  assert.deepEqual(items[0], {
+    title: 'The <Guide>',
+    url: 'https://Example.COM:443/guide?utm_source=newsletter#part',
+    add_date: '1700000000',
+    folder_path: 'Reading & research/Rust',
+    note: 'A note with useful context.',
+  });
+  assert.equal(items[3].folder_path, '');
+});
+
+test('normalises only the URL identity rules in the spec', () => {
+  assert.equal(normaliseUrl('HTTPS://Example.COM:443/?utm_source=x#part'), 'https://example.com');
+  assert.equal(normaliseUrl('https://example.com/path?chapter=2&utm_medium=x'), 'https://example.com/path?chapter=2');
+  assert.notEqual(normaliseUrl('https://example.com/path?chapter=2'), normaliseUrl('https://example.com/path?chapter=3'));
+});
+
+test('ingestion deduplicates normalised URLs and retains the saved URL', async () => {
+  const store = newStore();
+  const result = ingestBookmarkHtml({
+    store,
+    collectionId: 'pile',
+    html: await fixture('export-small.html'),
+    source: 'chrome-export',
+    ingestedAt: '2026-08-18T12:00:00Z',
+  });
+  assert.deepEqual(result, {parsed: 4, added: 3, merged: 1, total: 3});
+  const guide = store.listItems('pile').find(item => item.url_key === 'https://example.com/guide');
+  assert.equal(guide.url, 'https://Example.COM:443/guide?utm_source=newsletter#part');
+  assert.deepEqual(guide.tags, ['folder:Reading & research/Rust', 'in:2026-08-18', 'src:chrome-export']);
+});
+
+test('re-import is idempotent', async () => {
+  const store = newStore();
+  const html = await fixture('export-small.html');
+  ingestBookmarkHtml({store, collectionId: 'pile', html, source: 'chrome-export', ingestedAt: '2026-08-18'});
+  const second = ingestBookmarkHtml({store, collectionId: 'pile', html, source: 'chrome-export', ingestedAt: '2026-08-18'});
+  assert.equal(second.added, 0);
+  assert.equal(second.total, 3);
+  assert.equal(store.listItems('pile').length, 3);
+});
+
+test('overlap unions tags, keeps the earliest date, and preserves user state', async () => {
+  const store = newStore();
+  ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-small.html'), source: 'chrome-export', ingestedAt: '2026-08-18'});
+  const guide = store.listItems('pile').find(item => item.url_key === 'https://example.com/guide');
+  store.updateItem(guide.id, {verdict: 'keeper', verdict_at: '2026-08-19T00:00:00Z', note: 'My note'});
+
+  const result = ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-overlap.html'), source: 'firefox-export', ingestedAt: '2026-08-19'});
+  const merged = store.listItems('pile').find(item => item.id === guide.id);
+  assert.deepEqual(result, {parsed: 2, added: 1, merged: 1, total: 4});
+  assert.equal(merged.added_at, new Date(1600000000 * 1000).toISOString());
+  assert.equal(merged.note, 'My note');
+  assert.equal(merged.verdict, 'keeper');
+  assert.deepEqual(merged.tags, [
+    'folder:Reading & research/Rust',
+    'folder:Revisited',
+    'in:2026-08-18',
+    'in:2026-08-19',
+    'src:chrome-export',
+    'src:firefox-export',
+  ]);
+});
+
+test('the migration pins collection identity and global capture identity', async () => {
+  const sql = await readFile(fileURLToPath(new URL('../migrations/0001_core.sql', import.meta.url)), 'utf8');
+  assert.match(sql, /UNIQUE \(collection_id, url_key\)/);
+  assert.match(sql, /CREATE TABLE captures \(\s*url_key TEXT PRIMARY KEY/);
+  assert.match(sql, /owner_id TEXT/);
+});

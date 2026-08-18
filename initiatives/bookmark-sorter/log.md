@@ -256,3 +256,7 @@ The user confirmed that ChatGPT Sites is available on their plan and in this wor
 ## 2026-08-18 — Run the phase 0 host spike and fill in spec.md's host table with evidence
 
 Ran the owner-only ChatGPT Sites probe. Outbound HTTP, a 10,000-item export, identity headers, D1 owner scoping, secret custody, template cross-owner reads and the wide layout passed; recorded metering as a cost decision, deleted the throwaway probe, and made phase 1 ingestion actionable.
+
+## 2026-08-18 — Build the first phase 1 increment: the data model and idempotent bookmark ingestion
+
+Built the first phase 1 increment: a D1/SQLite schema, Netscape bookmark parser, narrow URL normaliser, idempotent merge pipeline, deterministic store adapter, fixtures, and six passing tests. Left the D1 adapter, upload/list surface, and 10,000-item sizing run as the next actionable increment.
