@@ -94,6 +94,16 @@ The initiative lifecycle also has four workflow skills under `.claude/skills/`:
 - [`merge-prs`](.claude/skills/merge-prs/SKILL.md) verifies and merges pull
   requests that meet the initiative workflow's safeguards.
 
+Deck content has one skill of its own:
+
+- [`update-deck-events`](.claude/skills/update-deck-events/SKILL.md) refreshes the
+  Events topic of every current or future deck page that has a date range,
+  searching for festivals, fairs, religious celebrations, concerts, and theater
+  in that place during that window and reconciling them against the events
+  already on the page and on its reject page. The item numbering, promotion, and
+  reject-page conventions it relies on are in `AGENTS.md` and
+  `DECK_ITEMS_TECHDOC.md`.
+
 ## Build and preview
 
 ```bash

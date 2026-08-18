@@ -125,6 +125,38 @@ When a deck or section is given a specific date range:
 
 Every new deck or section should have a map with all the locations on the page included.
 
+## Item numbers
+Attractions and events are numbered items: each one carries a three-digit number that the user quotes back when asking for a later edit ("promote 121, 980", "reject 475"). Give every attraction and every event a number as you add it.
+
+- **Number every item you add** to an Attractions or Events topic, and to any other topic whose entries the user is likely to reorder or discard - excursions, restaurants, performances, day trips. Basic Info, Neighborhoods, and narrative topics are not numbered.
+- **Three digits, 100-999, picked at random** rather than in sequence. A number identifies an item, it does not rank it, and a run of consecutive numbers reads as an order that the next `promote` is about to break.
+- **Unique within the page, and never reused.** Check the page and its reject page (below) before assigning, including numbers on items that have since been removed - a retired number stays retired, so a stale reference from the user fails loudly instead of quietly matching some other item.
+- **A number belongs to its item for life.** It survives rewording, added detail, promotion, rejection, and restoration from the reject page. Never renumber items to tidy a list up.
+- **Show it at the end of the item's bold label**, before the colon, wrapped in `<span class="item-id">`:
+
+```html
+<li><strong>Railyard Artisan Market, September 27 <span class="item-id">{361}</span>:</strong> A Sunday indoor market of juried local art and crafts. <strong>Address:</strong> ...</li>
+```
+
+`.item-id` is in every deck's `assets/styles.css` and renders the number in the muted palette color at normal weight, slightly lighter than the text around it. Do not hand-write a color or a `<span style>`; a deck that wants a different treatment changes its own stylesheet rule. See `DECK_ITEMS_TECHDOC.md`.
+
+## Editing by number: promote and reject
+The user edits a page by quoting item numbers. Both commands act on the page being edited. When the command names a topic ("promote events 121, 980") it acts only within that topic; when it does not, act on whichever topics hold those numbers.
+
+**"promote 121, 980"** - those items become the first items of the list, in the order given: 121 first, 980 second, then everything else in its existing relative order. A promotion is an edit like any other and lasts until the user says otherwise, so nothing may quietly re-sort the list back into date order afterwards.
+
+If a promoted number is on the reject page, restore that item to the page verbatim, keeping its number, and place it in the promoted position - asking for something to be promoted is asking for it back. Say so in the reply. If a number is on neither page, do not guess at the nearest item: report it as not found and leave the list alone.
+
+**"reject 475, 592"** - those items leave the page and are kept on its reject page, a sibling file named for the page with a `-reject` suffix: `overview.html` becomes `overview-reject.html`, `thaipooyam-festival.html` becomes `thaipooyam-festival-reject.html`.
+
+- Create the reject page if it does not exist by copying the edited page's shell - the same `<head>`, deck assets, and header card - with the heading "Rejected items" and a link back to the page it belongs to. Give it no map, no TOC entry, and no nav link: it is a holding page, not a destination.
+- Move the item's markup unchanged, number included, under an `<h2>` naming the topic it came from, so it can be restored verbatim later.
+- Remove the item from the edited page, and remove its marker from that page's map. Leave the address, hours, and links in the item text on the reject page so restoring it does not mean looking them all up again.
+- Rejected items accumulate. Never delete one, never renumber one, and never re-add one to the page on your own initiative - the reject page is the record of what the user has already turned down, and `update-deck-events` reads it to avoid offering the same event twice.
+
+## Refreshing events
+`update-deck-events` (`.claude/skills/update-deck-events/SKILL.md`) refreshes the Events topic of every current or future deck page that has a date range: it searches for festivals, fairs, religious celebrations, concerts, and theater in that place during that window, then reconciles what it finds against the events already on the page and on its reject page. Use it rather than sweeping the decks by hand, and follow it as the pattern when refreshing a single page.
+
 ## Page footer
 Do not write a `<footer class="site-footer">` into a deck or section page. `scripts/build.sh` injects one into every published page, filled by the shared `SiteFooter` library (`shared/site_footer/`, see `shared/site_footer/site_footer.md`) with the version, deck, section, Google Drive, GitHub, and version-browser links. A hand-written copy renders as a second footer row and freezes at whatever the row said the day it was copied.
 

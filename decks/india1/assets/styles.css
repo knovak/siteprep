@@ -181,6 +181,13 @@ a.tag:focus {
   margin: 1rem 0;
 }
 
+.item-id {
+  color: var(--muted);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 .site-footer {
   text-align: center;
   padding: 1.5rem 1rem;
