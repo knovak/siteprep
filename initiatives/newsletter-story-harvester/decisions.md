@@ -501,3 +501,67 @@ for each source.
   those rules from real issues rather than guessing them from the address.
 - **Not settled:** whether the declared shapes fit every issue. §3.2's per-issue
   override and count flags remain the mechanism for exceptions.
+
+## 2026-08-18 — How should the first review-rate baseline be measured?
+
+The fixture review page is working, but browser automation cannot supply the
+measurement that matters: how quickly a person can make real keep, drop, and
+emphasise decisions. The first baseline needs a protocol that is bounded enough
+to run now and specific enough that a later sitting can be compared with it.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A. Finish the full 73-story unjudged backlog** | Produces a completion time for the exact fixture and includes the slow tail as attention falls | The time commitment is unknown in advance; fatigue and interruptions can dominate the UI being measured; awkward to repeat after a change |
+| **B. Run a fixed 15-minute sitting after one resettable practice judgment** | Bounded, easy to repeat, long enough for startup effects to become a small part of the result, and still measures genuine per-story judgment | Samples only the beginning of the default ordering; gives a rate rather than a full-backlog completion time |
+| **C. Measure an automated click-through** | Cheap, deterministic, and already close to what the browser suite can do | Measures rendering and button clicks, not reading or judgment; would manufacture the human evidence objective 7 asks for |
+| **D. Wait and measure only real mailbox stories** | Most representative of eventual use and avoids drawing conclusions from composed fixtures | Defers feedback on the review interaction until phase 6 and mixes UI throughput with extraction quality and unfamiliar real content |
+
+### Recommendation
+
+**Recommend B: a fixed 15-minute sitting, using individual judgments.** Generate
+the page from the committed `store-fixture.json`, open it fresh in the default
+story-date order with no tag filter, make one untimed practice judgment, then
+reload so the embedded fixture resets. Start the timer when the first card is
+opened. For 15 minutes, judge stories individually; do not use
+`verdict-rest`, because a batch click is not evidence that the stories were
+read. Stop at 15 minutes or when the backlog reaches zero, whichever comes
+first. Record:
+
+- elapsed time in seconds;
+- the number of stories newly judged;
+- stories per minute (`judged / elapsed_seconds * 60`);
+- whether the backlog finished; and
+- the exported verdict file as reproducible evidence of which records were
+  judged.
+
+The fixed window answers the immediate question — whether the generated page
+can sustain human triage — without turning the first baseline into an
+open-ended chore. The exported file also makes the sitting useful to phase 5's
+importer rather than producing a number with no round-trip evidence.
+
+### What would change the recommendation
+
+- If the desired number is **time to clear this exact backlog**, choose A; a
+  fixed-window rate is then the wrong measurement.
+- If the fixture's first fifteen minutes are visibly dominated by one source or
+  one story shape, repeat B once per source or choose D rather than treating the
+  mixed rate as representative.
+- If review is moved into the bookmark sorter's generalised grid before this is
+  run, measure that surface instead; the 15-minute, individual-judgment protocol
+  still applies.
+- If only mechanical interaction latency matters, C is sufficient, but that is
+  a different test and must not be recorded as the human review-rate baseline.
+
+### What this settles, and what it does not
+
+- **If merged, settles:** the duration, reset, ordering, filtering, judgment
+  granularity, stop rule, and fields to record for the first baseline.
+- **Does not settle:** the numeric rate. That is observed data, so the todo
+  remains blocked until a person runs the protocol and reports the result.
+- **Does not establish a pass threshold.** As `test-plan.md` says, the first
+  rate is a baseline, not a target retrofitted to one observation.
+- **Does not replace the phase 6 sitting on real stories.** It isolates review
+  throughput now; the later sitting answers whether the complete harvest is
+  actually faster than reading the newsletters.
