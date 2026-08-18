@@ -53,3 +53,11 @@ The spec said the change was "a one-line `export` on each" of five constants in 
 #235 merged during the review round, so §9.3 is rewritten from a thing plan.md has to sequence around into a thing already done. The five constants are importable and the CLI dispatch is guarded, both with tests.
 
 The practical effect is worth stating once: **no protected-path work is left in this initiative's build.** Everything remaining lives inside guide/ plus the tests/ path §9.5 asks it to declare, so it can be built end to end by a sweep rather than waiting on a hand-landed change.
+
+## 2026-08-18 — O1 answered, and a PowerPoint deck recorded as a future objective
+
+Objective 1 stays as written, and delivery becomes its own item at the end of the backlog: link-the-guide. It is blocked on a permission: blocker rather than left actionable, because linking the guide needs the nav entry and build.sh line that §9.3 removed from the build - both protected paths no sweep can write, however far down the list the item sits.
+
+The cost is stated in §11 rather than discovered later: that item shows in every digest under "waiting on you" from now until it lands. That is a standing reminder, which is what was asked for, and the price of encoding the dependency truthfully.
+
+A .pptx deck is recorded in objectives.md under "explicitly not the first version", with what would decide it - whether the recipient needs to *edit* the slides or merely open them, since that changes how much layout has to survive conversion. spec.md §6 notes the constraint it puts on the first version: keep slide text as text in the section files, so a PowerPoint rendering is a third rendering of one source rather than a second deck to keep in step.

@@ -266,6 +266,14 @@ reference. That is accepted for the first version — it is what makes the deck
 something you can attach to an email — and `plan.md` should carry it as a known
 divergence rather than a bug to be found later.
 
+**A `.pptx` rendering is a recorded future objective** (`objectives.md`, raised on
+review 2026-08-17), and §5.1's section list is what makes it cheap when it comes:
+a PowerPoint deck would be a *third rendering of the same source*, not a second
+deck to keep in step. Nothing in this section should be built in a way that
+assumes HTML is the only output — in practice that means the slide text stays in
+the section files as text, and any layout decision that cannot survive being
+re-rendered elsewhere belongs in the renderer rather than in the content.
+
 ## 7. The simulator
 
 `decisions.md` settled this as **an abstract lifecycle**, with an upgrade to the
@@ -447,17 +455,26 @@ guide reachable from the site and the repository's front door, the way decks,
 demos and initiatives are. A file in `guide/out/` is not reachable by anybody. On
 what is specified here, **O1 is not met**.
 
-That is the user's call to make rather than the spec's, so it is recorded rather
-than resolved. The two ways it can go:
+**Answered on review, 2026-08-18: keep O1, and carry the delivery as its own
+item** — *"make a task at the end of other tasks, to remind me to link up the
+output so users can find it."* So the objective stands unamended, and
+`link-the-guide` is the last item in the backlog.
 
-- **Amend O1** to be about the artefacts existing and being sendable, and let
-  reachability be a later initiative.
-- **Keep O1** and add a delivery item to this one — which needs the `build.sh`
-  invocation and the `shared/nav_bar/` entry §9.3 removed, both protected paths,
-  both landed by an ordinary pull request.
+It is recorded as **blocked on a `permission:` blocker rather than left
+actionable**, which is the honest encoding: linking the guide needs the
+`shared/nav_bar/` entry and the `build.sh` line that §9.3 removed from the build,
+both protected paths, so no sweep can ever do it however far down the list it
+sits. It is the user's pull request to land.
 
-What is *not* an option is leaving O1 stated and unmet without saying so, which
-is why this section exists rather than a quiet edit to `objectives.md`.
+The consequence, said once so it is not a surprise: **that item will appear in
+every digest under "waiting on you"**, starting now and continuing until the
+guide exists and it is landed. That is a standing reminder rather than a request
+for a decision — which is what was asked for, and it is the cost of encoding the
+dependency truthfully rather than parking the item somewhere quieter and less
+accurate.
+
+Until it lands, **O1 is not met**, and the digest saying so every run is the
+point rather than a defect.
 
 ## 12. Open questions this leaves
 
