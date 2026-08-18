@@ -1,0 +1,1777 @@
+{
+  "version": 1,
+  "store_id": "fixture-store-v1",
+  "stories": [
+    {
+      "id": "u1-02359c5422b725ec",
+      "url": "https://elpais.example.com/energy/solar-quarter",
+      "url_key": "https://elpais.example.com/energy/solar-quarter",
+      "title": "Spain runs a quarter on solar",
+      "text": "Spain generated more electricity from solar than from coal across a full quarter for the first time, and the grid operator says the record was unremarkable to run.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:3",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": "to-be-shared",
+      "verdict_at": "2026-08-18T10:00:00.000Z",
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-e24c46cc4a50e555",
+      "url": "https://gridwatch.example.org/storage/20gw",
+      "url_key": "https://gridwatch.example.org/storage/20gw",
+      "title": "Grid batteries pass 20 GW",
+      "text": "Global grid-scale battery capacity passed twenty gigawatts, four years earlier than the 2022 central forecast.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:4",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-14744efac4a7b879",
+      "url": "https://heatingtrade.example.com/2026/heat-pumps",
+      "url_key": "https://heatingtrade.example.com/2026/heat-pumps",
+      "title": "Heat pumps outsell furnaces again",
+      "text": "For the third year running, heat pumps outsold gas furnaces in the United States, by a margin that widened in the south.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:5",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-ca0e90c719a67ce0",
+      "url": "https://windnews.example.net/auction-clears",
+      "url_key": "https://windnews.example.net/auction-clears",
+      "title": "Offshore wind auction clears",
+      "text": "The delayed North Sea auction cleared at a price below the last onshore round, ending eighteen months of speculation that it would fail.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:6",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-531bc4bf4797eb85",
+      "url": "https://regional.example.com/coal-early-close",
+      "url_key": "https://regional.example.com/coal-early-close",
+      "title": "Coal plant closes early",
+      "text": "A plant scheduled to run until 2031 will close in March, after its owner failed to find a buyer for the last two units.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:7",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-53121b17da95b9e6",
+      "url": "https://nucleartoday.example.com/restart-approved",
+      "url_key": "https://nucleartoday.example.com/restart-approved",
+      "title": "Nuclear restart approved",
+      "text": "Regulators approved the restart of a reactor idle since 2013, with conditions on cooling water that the operator says it can meet.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:8",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-3f2c3dd2cce2efdd",
+      "url": "https://gridwatch.example.org/line-breaks-ground",
+      "url_key": "https://gridwatch.example.org/line-breaks-ground",
+      "title": "Transmission line breaks ground",
+      "text": "Construction started on a line that has been in planning for eleven years, after a rule change removed the last of the county-level vetoes.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:9",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-49f3a892d31d72f5",
+      "url": "https://pvprice.example.com/january",
+      "url_key": "https://pvprice.example.com/january",
+      "title": "Solar panel prices fall again",
+      "text": "Module prices fell another six per cent, which manufacturers describe as unsustainable and installers describe as January.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:10",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-1486323c093e0326",
+      "url": "https://deepheat.example.org/drilling-doubles",
+      "url_key": "https://deepheat.example.org/drilling-doubles",
+      "title": "Geothermal drilling doubles",
+      "text": "Drilling rigs working on geothermal projects doubled year on year, most of them redeployed from oil and gas.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:11",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-482f0d76ef7a9592",
+      "url": "https://transitwire.example.com/half-the-fleet",
+      "url_key": "https://transitwire.example.com/half-the-fleet",
+      "title": "Electric buses reach half the fleet",
+      "text": "One large transit agency now runs more electric buses than diesel, three years ahead of its own plan.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:12",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-549dbdc23b456a2c",
+      "url": "https://globalhealth.example.org/malaria-ten-million",
+      "url_key": "https://globalhealth.example.org/malaria-ten-million",
+      "title": "Malaria vaccine reaches ten million",
+      "text": "Ten million children have now received the malaria vaccine, and the programme reports supply rather than demand as the binding constraint.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:13",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-2e441c8f1303ecea",
+      "url": "https://eradication.example.org/guinea-worm",
+      "url_key": "https://eradication.example.org/guinea-worm",
+      "title": "Guinea worm cases fall to nine",
+      "text": "Nine human cases were recorded worldwide last year, the lowest count since surveillance began.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:14",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-a2ebc4f1d215cb1b",
+      "url": "https://pharmawatch.example.com/insulin-price",
+      "url_key": "https://pharmawatch.example.com/insulin-price",
+      "title": "A cheaper insulin arrives",
+      "text": "A biosimilar insulin launched at a fifth of the reference price, and two large insurers moved it to their preferred tier the same week.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:15",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-c1f4d9dfe28e8feb",
+      "url": "https://oncologynews.example.com/screening",
+      "url_key": "https://oncologynews.example.com/screening",
+      "title": "Cervical cancer screening changes",
+      "text": "Self-collected samples were approved for primary screening, which trials suggest reaches women that clinic-based programmes do not.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:16",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-fdbbc5d0314ab9df",
+      "url": "https://tballiance.example.org/regimen",
+      "url_key": "https://tballiance.example.org/regimen",
+      "title": "Tuberculosis regimen shortens",
+      "text": "A four-month regimen matched the six-month standard in a large trial, with fewer people stopping treatment early.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:17",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-a3b0486168dee709",
+      "url": "https://foodsafety.example.org/lead-spices",
+      "url_key": "https://foodsafety.example.org/lead-spices",
+      "title": "Lead in spices traced",
+      "text": "Investigators traced a cluster of childhood lead poisoning to a single grinding facility, and the recall covers eleven brands.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:18",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-13fc5dfad6a0931c",
+      "url": "https://immunise.example.org/measles-recovery",
+      "url_key": "https://immunise.example.org/measles-recovery",
+      "title": "Measles vaccination recovers",
+      "text": "Routine measles coverage recovered to its pre-2020 level in most countries, though not in the four with the largest outbreaks.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:19",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-a804d2d1c6ad1f1c",
+      "url": "https://genemed.example.com/sickle-cell",
+      "url_key": "https://genemed.example.com/sickle-cell",
+      "title": "Sickle cell therapy approved widely",
+      "text": "A gene therapy approved in three more countries, with the price still the open question in every one of them.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:20",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-99a9afa752f2083c",
+      "url": "https://infectioncontrol.example.org/fall",
+      "url_key": "https://infectioncontrol.example.org/fall",
+      "title": "Hospital infections fall",
+      "text": "Bloodstream infections acquired in hospital fell by a fifth across a national network, which the authors attribute to a checklist rather than to a drug.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:21",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-50349e7811cc438b",
+      "url": "https://tropmed.example.org/antivenom",
+      "url_key": "https://tropmed.example.org/antivenom",
+      "title": "Snakebite antivenom trial starts",
+      "text": "The first trial of a synthetic antivenom began in two countries, targeting a group of snakes whose current treatment is horse-derived and scarce.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:22",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-72b44a0b1ae4b364",
+      "url": "https://citylab.example.com/congestion",
+      "url_key": "https://citylab.example.com/congestion",
+      "title": "Congestion charge cuts traffic",
+      "text": "Traffic entering the zone fell by eleven per cent in the first month, and bus speeds rose enough to change the timetable.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:23",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-bccab2bd59d18a26",
+      "url": "https://streetsblog.example.org/right-on-red",
+      "url_key": "https://streetsblog.example.org/right-on-red",
+      "title": "A city bans right on red",
+      "text": "Pedestrian injuries at signalised junctions fell in the year after the ban, against a flat trend in neighbouring towns.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:24",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-cc5e1593d09b9aeb",
+      "url": "https://housingdata.example.com/permits",
+      "url_key": "https://housingdata.example.com/permits",
+      "title": "Housing permits jump",
+      "text": "Permits rose sharply after a zoning reform that legalised three-storey buildings on lots that previously allowed one.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:25",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-291b21b4b97e4010",
+      "url": "https://cycling.example.org/network-complete",
+      "url_key": "https://cycling.example.org/network-complete",
+      "title": "Bike lane network completes",
+      "text": "The last gap in a protected network closed, and ridership on the connecting segment doubled within six weeks.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:26",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-bea81a7273610f4f",
+      "url": "https://transitwire.example.com/camera-enforced",
+      "url_key": "https://transitwire.example.com/camera-enforced",
+      "title": "Bus lanes go camera-enforced",
+      "text": "Camera enforcement of bus lanes began on four corridors, after a pilot found blocking fell by two thirds.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:27",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-d362d2d7e370b429",
+      "url": "https://urbanist.example.com/office-conversion",
+      "url_key": "https://urbanist.example.com/office-conversion",
+      "title": "Vacant office converted",
+      "text": "A conversion of an empty office block to two hundred flats completed under a code written specifically to allow it.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:28",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-cb3c1f7f54d42d6c",
+      "url": "https://urbanforest.example.org/planting",
+      "url_key": "https://urbanforest.example.org/planting",
+      "title": "Street trees planted at scale",
+      "text": "Fifty thousand street trees went in over one season, concentrated in the neighbourhoods that measured hottest.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:29",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-6383e2b2931c71d8",
+      "url": "https://waterworks.example.com/leaks",
+      "url_key": "https://waterworks.example.com/leaks",
+      "title": "Water leaks halve",
+      "text": "Acoustic sensors across the network cut non-revenue water by half, paying for themselves in under two years.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:30",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-e1df4eba2937dcca",
+      "url": "https://citylab.example.com/pedestrian-street",
+      "url_key": "https://citylab.example.com/pedestrian-street",
+      "title": "A pedestrian street stays",
+      "text": "A street pedestrianised as a temporary measure was made permanent, after the shops on it opposed removing it.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:31",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-d728e55abd1e9a9a",
+      "url": "https://transitwire.example.com/night-buses",
+      "url_key": "https://transitwire.example.com/night-buses",
+      "title": "Night buses return",
+      "text": "Night service returned to four routes, funded by a levy that the hospitality trade lobbied for.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:32",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-338a8b23028b1962",
+      "url": "https://sciencedaily.example.com/protein-puzzle",
+      "url_key": "https://sciencedaily.example.com/protein-puzzle",
+      "title": "A protein structure puzzle falls",
+      "text": "A structure that resisted prediction for a decade was solved, and the method generalises to a family of about forty.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:33",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-14a2c95e9e49718d",
+      "url": "https://retractionwatch.example.org/claim",
+      "url_key": "https://retractionwatch.example.org/claim",
+      "title": "Room-temperature claim retracted",
+      "text": "The superconductivity claim was retracted by its authors, who published the raw data alongside the retraction.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:34",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-f25d65eda5b9beca",
+      "url": "https://archaeogen.example.org/genome",
+      "url_key": "https://archaeogen.example.org/genome",
+      "title": "Ancient genome sequenced",
+      "text": "A genome recovered from a two-thousand-year-old tooth settles a long argument about a migration route.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:35",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-d6450b4188fa5db1",
+      "url": "https://fusionwatch.example.com/repeat",
+      "url_key": "https://fusionwatch.example.com/repeat",
+      "title": "Fusion shot repeats",
+      "text": "The ignition result was repeated four times in a row, which is the part that matters and the part that took two years.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:36",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-e284053ec5e13a7b",
+      "url": "https://reefscience.example.org/spawning",
+      "url_key": "https://reefscience.example.org/spawning",
+      "title": "Coral spawning restored",
+      "text": "Corals raised in a nursery spawned on a restored reef, the first time the whole cycle has closed outside a tank.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:37",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-76fb25b1fbd94c6e",
+      "url": "https://microbiology.example.org/soil-antibiotic",
+      "url_key": "https://microbiology.example.org/soil-antibiotic",
+      "title": "Antibiotic found in soil",
+      "text": "A new class of antibiotic was isolated from a soil bacterium and works against a resistant organism in mice.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:38",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-530b87305a0ea14e",
+      "url": "https://astronews.example.com/earliest-galaxy",
+      "url_key": "https://astronews.example.com/earliest-galaxy",
+      "title": "Telescope sees earliest galaxy",
+      "text": "The earliest confirmed galaxy is now three hundred million years after the big bang, and it is brighter than models expect.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:39",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-8b267d19dd15f4ff",
+      "url": "https://greenchem.example.org/enzyme",
+      "url_key": "https://greenchem.example.org/enzyme",
+      "title": "Plastic-eating enzyme improves",
+      "text": "An engineered enzyme broke down bottle plastic to monomers in hours rather than days, at a temperature a plant could run.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:40",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-aad719ab13ca8cd5",
+      "url": "https://vetscience.example.org/poultry-vaccine",
+      "url_key": "https://vetscience.example.org/poultry-vaccine",
+      "title": "Bird flu vaccine for poultry",
+      "text": "A poultry vaccine cut transmission enough in field trials that two countries changed their culling policy.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:41",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-40c0ad1d7838ae82",
+      "url": "https://quantumreport.example.com/error-rate",
+      "url_key": "https://quantumreport.example.com/error-rate",
+      "title": "Quantum error rate falls",
+      "text": "Logical error rates fell below the physical ones for the first time on a machine of this size.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-12",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-typical",
+      "source_anchor": "link:42",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-35d05ba574a25c0e",
+      "url": "https://policywire.example.com/big-one",
+      "url_key": "https://policywire.example.com/big-one",
+      "title": "Parliament passes the housing bill",
+      "text": "after three failed attempts, the bill passed with amendments that kept the density provisions intact.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:0",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-72621f1d856f7c01",
+      "url": "https://climatenews.example.org/emissions-peak",
+      "url_key": "https://climatenews.example.org/emissions-peak",
+      "title": "Emissions peak confirmed",
+      "text": "the statistical agency confirmed that national emissions peaked in 2023 and have fallen since.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:2",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-f9a5cfd42c687811",
+      "url": "https://climatenews.example.org/forest-return",
+      "url_key": "https://climatenews.example.org/forest-return",
+      "title": "Forest cover returns",
+      "text": "a fifth year of net forest gain, driven mostly by land coming out of pasture.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:3",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-894bd8015287697f",
+      "url": "https://climatenews.example.org/methane-rule",
+      "url_key": "https://climatenews.example.org/methane-rule",
+      "title": "Methane rule survives challenge",
+      "text": "the court upheld the leak-detection rule, and the industry group said it would comply rather than appeal.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:4",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-a031853e6c7454d5",
+      "url": "https://econnews.example.com/child-poverty",
+      "url_key": "https://econnews.example.com/child-poverty",
+      "title": "Child poverty falls again",
+      "text": "the second consecutive annual fall, and the first in which the rural rate fell faster than the urban one.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:5",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-fa2b670d73538dd2",
+      "url": "https://econnews.example.com/wage-floor",
+      "url_key": "https://econnews.example.com/wage-floor",
+      "title": "Wage floor rises in eleven states",
+      "text": "eleven states raised their minimum wage in January, covering about nine million workers.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:6",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-fccb5bb9a78c1390",
+      "url": "https://econnews.example.com/bank-fees",
+      "url_key": "https://econnews.example.com/bank-fees",
+      "title": "Overdraft fees cut",
+      "text": "three large banks cut overdraft fees to a level the regulator had proposed but not required.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:7",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-c4481c48355db760",
+      "url": "https://longreads.example.com/water-rights",
+      "url_key": "https://longreads.example.com/water-rights",
+      "title": "The water rights piece everyone is quoting",
+      "text": "a long argument about who owns a river, told through one county’s hundred-year fight.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:8",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-d314082688e496b7",
+      "url": "https://longreads.example.com/night-shift",
+      "url_key": "https://longreads.example.com/night-shift",
+      "title": "What the night shift does",
+      "text": "a reported piece on sleep, wages, and the people who keep hospitals running at four in the morning.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:9",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-0903b746634c2ca5",
+      "url": "https://misc.example.com/library-card",
+      "url_key": "https://misc.example.com/library-card",
+      "title": "A library card that works everywhere",
+      "text": "a state-wide card launched, and the first month’s borrowing was double the forecast.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:10",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-0a35db4ef8825e16",
+      "url": "https://misc.example.com/bus-map",
+      "url_key": "https://misc.example.com/bus-map",
+      "title": "The bus map that people can read",
+      "text": "a redesigned network map, and a study saying riders found their route twice as fast with it.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:11",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-904676a6c34dfe60",
+      "url": "https://misc.example.com/repair-cafe",
+      "url_key": "https://misc.example.com/repair-cafe",
+      "title": "Repair cafés spread",
+      "text": "two hundred new repair cafés opened, most of them in libraries.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:12",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-7c7524a681d2c76c",
+      "url": "https://misc.example.com/school-meals",
+      "url_key": "https://misc.example.com/school-meals",
+      "title": "Universal school meals stay",
+      "text": "a programme due to expire was made permanent, after uptake stayed above ninety per cent.",
+      "text_is_summary": false,
+      "source": "better-news",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-25",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "link-list-headings",
+      "source_anchor": "link:13",
+      "tags": [
+        "theme:better-news"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-3139a7737a515491",
+      "url": "https://energyinstitute.example.edu/queues",
+      "url_key": "https://energyinstitute.example.edu/queues",
+      "title": "Grid interconnection queues are the bottleneck",
+      "text": "The queue to connect a project to the grid now runs longer than the time it takes to build one, and the papers this month put numbers on how much of the delay is study work that could be done in parallel.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026#link:0",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-049161ab3038e2f4",
+      "url": "https://energyinstitute.example.edu/industrial-heat",
+      "url_key": "https://energyinstitute.example.edu/industrial-heat",
+      "title": "Industrial heat is the hard part",
+      "text": "Electrifying process heat above four hundred degrees remains the open problem, and this review is the clearest account of which processes are close and which are not.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > Grid interconnection queues are the bottleneck#link:1",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-05b6afe8a65886ff",
+      "url": "https://energyinstitute.example.edu/storage-displaced",
+      "url_key": "https://energyinstitute.example.edu/storage-displaced",
+      "title": "What the storage build actually displaced",
+      "text": "A careful counterfactual analysis of two years of battery deployment. The headline result is that storage displaced peaking gas rather than baseload, which is what the modelling predicted and had not been measured at scale. The second result is less comfortable: in one market the batteries raised emissions slightly for six months, because they charged on the margin from coal and discharged against gas.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > Industrial heat is the hard part#link:2",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-f8c911cb6596d1bb",
+      "url": "https://energyinstitute.example.edu/overruns",
+      "url_key": "https://energyinstitute.example.edu/overruns",
+      "title": "Transmission cost overruns, catalogued",
+      "text": "A database of ninety transmission projects and what each one ended up costing against its first estimate, which is the kind of unglamorous work the field has been missing.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > What the storage build actually displaced#link:3",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-cc29abaa360c8112",
+      "url": "https://energyinstitute.example.edu/demand-response",
+      "url_key": "https://energyinstitute.example.edu/demand-response",
+      "title": "Demand response finally has a price",
+      "text": "Two markets ran auctions that let demand response bid against generation on equal terms, and the clearing prices are the first honest estimate of what flexibility is worth.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > Transmission cost overruns, catalogued#link:4",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-480b4c184824f75c",
+      "url": "https://energyinstitute.example.edu/cold-climate",
+      "url_key": "https://energyinstitute.example.edu/cold-climate",
+      "title": "Heat pump performance in cold climates",
+      "text": "Field data from four thousand installations north of the fiftieth parallel, which puts a long-running argument about coefficient of performance in real winters to rest.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > Demand response finally has a price#link:5",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-70141d83859b8a46",
+      "url": "https://energyinstitute.example.edu/permitting",
+      "url_key": "https://energyinstitute.example.edu/permitting",
+      "title": "The permitting reform nobody noticed",
+      "text": "A procedural change to how environmental reviews are sequenced has cut median review time by a third, with no measurable change in outcomes.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > Heat pump performance in cold climates#link:6",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-184ff03bab6ba2c0",
+      "url": "https://energyinstitute.example.edu/demand-growth",
+      "url_key": "https://energyinstitute.example.edu/demand-growth",
+      "title": "Electricity demand is growing again",
+      "text": "After fifteen flat years, demand is rising, and the paper separates how much is data centres, how much is electrification, and how much is weather.",
+      "text_is_summary": false,
+      "source": "energy-notes",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-13",
+      "story_date": null,
+      "shape": "annotated-digest",
+      "source_doc": "annotated-digest-typical",
+      "source_anchor": "Energy Notes - January 2026 > The permitting reform nobody noticed#link:7",
+      "tags": [
+        "theme:energy-notes"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-ad708cd385a8323e",
+      "url": "https://slowboring.example.com/p/the-shortage-is-permits",
+      "url_key": "https://slowboring.example.com/p/the-shortage-is-permits",
+      "title": "The shortage is permits, not money",
+      "text": "A narrow argument that the sector is constrained by permitting rather than by capital: money committed has risen and its cost has fallen, while median permit times have doubled and their variance has grown faster still. Two objections - more applications, and understaffing - are addressed with the observation that the slowest jurisdictions are not the busiest and that two states doubled staff for little gain, because the binding step is sequential review. The recommendation is to run reviews in parallel and publish the queue.",
+      "text_is_summary": true,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-14",
+      "story_date": "2026-01-26",
+      "shape": "long-form",
+      "source_doc": "long-form-citations",
+      "source_anchor": "document",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-94458aa736d7d489",
+      "url": "https://citations.example.org/paper/1",
+      "url_key": "https://citations.example.org/paper/1",
+      "title": "The permitting paper I keep citing",
+      "text": "The one from last spring, which is still the best thing on sequencing.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:1",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-bf287c2a9d839eff",
+      "url": "https://gridwatch.example.org/transmission-piece",
+      "url_key": "https://gridwatch.example.org/transmission-piece",
+      "title": "A good piece on transmission",
+      "text": "Long, and worth it for the section on county vetoes.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:2",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-b5fc5936eb581f3a",
+      "url": "https://queuecount.example.com/count",
+      "url_key": "https://queuecount.example.com/count",
+      "title": "Someone finally counted the queue",
+      "text": "A spreadsheet, and the only honest one I have seen.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:3",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-b9e9eccb99067089",
+      "url": "https://critics.example.com/against",
+      "url_key": "https://critics.example.com/against",
+      "title": "Against my own argument",
+      "text": "The strongest version of the case that money is binding after all.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:4",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-0f597ce5e06b1fcc",
+      "url": "https://legalhistory.example.edu/statute",
+      "url_key": "https://legalhistory.example.edu/statute",
+      "title": "A history of the review statute",
+      "text": "How a two-page provision became the thing everything routes around.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:5",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-50bed6c1dc655ab2",
+      "url": "https://publicadmin.example.edu/staffing",
+      "url_key": "https://publicadmin.example.edu/staffing",
+      "title": "The staffing study",
+      "text": "The one I mention whenever somebody says hire more people.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:6",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-e8cbcbaed480408c",
+      "url": "https://statepolicy.example.org/two-states",
+      "url_key": "https://statepolicy.example.org/two-states",
+      "title": "Two states that reformed",
+      "text": "A comparison that is fair to both of them, which is rarer than it should be.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:7",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-eb2d6846f3a2c039",
+      "url": "https://europolicy.example.eu/germany",
+      "url_key": "https://europolicy.example.eu/germany",
+      "title": "What Germany did",
+      "text": "The obvious comparison, done carefully.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:8",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-34f991172528eca2",
+      "url": "https://courtwatch.example.com/dissent",
+      "url_key": "https://courtwatch.example.com/dissent",
+      "title": "A dissent worth reading",
+      "text": "Short, and it names the trade-off the majority did not.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:9",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-beb3773065a237ac",
+      "url": "https://gridwatch.example.org/primer",
+      "url_key": "https://gridwatch.example.org/primer",
+      "title": "The interconnection primer",
+      "text": "If you only read one thing here, read this one.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:10",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-05cc5f82c49b74a4",
+      "url": "https://transparency.example.org/queue",
+      "url_key": "https://transparency.example.org/queue",
+      "title": "On publishing the queue",
+      "text": "The administrative argument, which is better than the political one.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:11",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    },
+    {
+      "id": "u1-4165167f0317efbd",
+      "url": "https://slowboring.example.com/p/mailbag-january",
+      "url_key": "https://slowboring.example.com/p/mailbag-january",
+      "title": "A reader writes",
+      "text": "Three good corrections and one that I do not accept.",
+      "text_is_summary": false,
+      "source": "permit-column",
+      "harvester": "harvest-newsletters",
+      "issue_date": "2026-01-22",
+      "story_date": null,
+      "shape": "link-list",
+      "source_doc": "long-form-roundup",
+      "source_anchor": "link:12",
+      "tags": [
+        "theme:permit-column"
+      ],
+      "verdict": null,
+      "verdict_at": null,
+      "harvested_at": "2026-08-18T09:00:00.000Z",
+      "merged_from": []
+    }
+  ],
+  "runs": [
+    {
+      "kind": "harvest",
+      "at": "2026-08-18T09:00:00.000Z",
+      "range": {
+        "after": "2026-01-01",
+        "before": "2026-02-01",
+        "sources": {
+          "better-news": {
+            "after": "2026-01-01",
+            "before": "2026-02-01"
+          },
+          "energy-notes": {
+            "after": "2026-01-01",
+            "before": "2026-02-01"
+          },
+          "permit-column": {
+            "after": "2026-01-01",
+            "before": "2026-02-01"
+          }
+        }
+      },
+      "inventory": {
+        "id": "fixture-inventory-v1",
+        "sources": [
+          "better-news",
+          "energy-notes",
+          "permit-column"
+        ]
+      },
+      "note": null,
+      "issues": 6,
+      "issues_per_source": {
+        "better-news": 3,
+        "energy-notes": 1,
+        "permit-column": 2
+      },
+      "source_docs": [
+        {
+          "source_doc": "link-list-typical",
+          "source": "better-news",
+          "issue_date": "2026-01-12",
+          "shape": "link-list",
+          "stories": 40,
+          "flagged": false
+        },
+        {
+          "source_doc": "empty-issue",
+          "source": "better-news",
+          "issue_date": "2026-01-15",
+          "shape": "link-list",
+          "stories": 0,
+          "flagged": true
+        },
+        {
+          "source_doc": "link-list-headings",
+          "source": "better-news",
+          "issue_date": "2026-01-25",
+          "shape": "link-list",
+          "stories": 13,
+          "flagged": false
+        },
+        {
+          "source_doc": "annotated-digest-typical",
+          "source": "energy-notes",
+          "issue_date": "2026-01-13",
+          "shape": "annotated-digest",
+          "stories": 8,
+          "flagged": false
+        },
+        {
+          "source_doc": "long-form-citations",
+          "source": "permit-column",
+          "issue_date": "2026-01-14",
+          "shape": "long-form",
+          "stories": 1,
+          "flagged": false
+        },
+        {
+          "source_doc": "long-form-roundup",
+          "source": "permit-column",
+          "issue_date": "2026-01-22",
+          "shape": "link-list",
+          "stories": 12,
+          "flagged": false
+        }
+      ],
+      "stories_extracted": 74,
+      "extraction_refused": 6,
+      "extraction_refused_by_reason": {
+        "chrome": 2,
+        "duplicate anchor": 1,
+        "text not in the issue": 1,
+        "no such link": 1,
+        "section heading": 1
+      },
+      "loud": [],
+      "flagged": [
+        {
+          "issue_id": "empty-issue",
+          "source": "better-news",
+          "shape": "link-list",
+          "stories": 0,
+          "band": "10-60",
+          "direction": "under"
+        }
+      ],
+      "overridden": [
+        {
+          "issue_id": "long-form-roundup",
+          "declared": "long-form",
+          "extracted": "link-list"
+        }
+      ],
+      "unattributed": 4,
+      "added": 74,
+      "matched": 0,
+      "merged": 0,
+      "conflicted": 0,
+      "conflicts": [],
+      "verdicts_refused": 0
+    }
+  ],
+  "vocabularies": {
+    "shape": [
+      "annotated-digest",
+      "link-list",
+      "long-form"
+    ],
+    "verdict": [
+      "dropped",
+      "kept",
+      "emphasised"
+    ]
+  },
+  "harvesters": [
+    "harvest-newsletters"
+  ],
+  "sources": [
+    "better-news",
+    "energy-notes",
+    "permit-column"
+  ]
+}

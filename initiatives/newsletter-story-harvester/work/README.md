@@ -11,7 +11,7 @@ No dependencies, no network, no real mailbox, and no live model — which is
 `plan.md` §2's seam paying for itself in the first phase that could have needed
 all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1–3
+## What is here — phases 1–4
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -47,7 +47,25 @@ all three. Node 18 or later, for the built-in test runner.
 | `fixtures/mailbox-fixture.json` | Seven message envelopes pointing at the existing synthetic issue bodies, including an over-matched publication that must never be read | `test-plan.md` §4.3 |
 | `test/run.test.mjs` | Every phase 3 exit row, including persistence and the overlapping second run | `test-plan.md` §4.3 |
 
-Not here, deliberately: Gmail or any real inventory, the page, and verdicts.
+**Phase 4 — the self-contained review page**
+
+| File | What it is | Specified in |
+|---|---|---|
+| `src/review-page.mjs` | Pure store-to-HTML generator with embedded data, CSS, verdict state and export | `spec.md` §§8–9 |
+| `generate-review-page.mjs` | CLI that writes one disposable review file from a store | `plan.md` phase 4 |
+| `build-fixture-store.mjs` | Reproducibly builds the committed 74-story fixture store from phase 3 inputs | `test-plan.md` §4.4 |
+| `fixtures/store-fixture.json` | Offline review input, including one unknown verdict to pin round-tripping | `test-plan.md` §4.4 |
+| `test/review-page.test.mjs` | Offline Playwright checks for every automated Phase 4 row | `test-plan.md` §4.4 |
+
+Generate a review file:
+
+```bash
+node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
+  initiatives/newsletter-story-harvester/work/fixtures/store-fixture.json \
+  /tmp/newsletter-review.html
+```
+
+Not here, deliberately: Gmail or any real inventory, and the verdict importer.
 Phase 3's source is a fixture implementation of the same two-call seam Gmail
 will use later: search returns envelopes, then the run verifies the actual From
 address before it reads a body. That keeps every phase through the working
@@ -157,3 +175,11 @@ change in `merge.mjs`.
 | Run record | The atomically persisted store records range, inventory keys, per-source issue counts, add/match/merge counts and flags |
 | Themes proposed | The fixture tagger's `theme:` values land as ordinary tags |
 | A harvester writes no verdict | Every record remains unjudged after both runs |
+
+## Phase 4 automated exit
+
+`test/review-page.test.mjs` opens the generated page from `file://` and covers
+self-containment, no store write path, expand/collapse, all sorts, tag filters,
+filtered `verdict-rest`, one-action undo, backlog count, unknown verdicts, and
+the downloaded verdict-file shape. The measured review-rate row remains a human
+sitting; the code does not manufacture that baseline from an automated browser.

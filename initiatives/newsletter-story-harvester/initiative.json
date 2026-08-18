@@ -6,11 +6,20 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-review-page",
-      "title": "Phase 4 - build the self-contained review page and measure the first fixture review rate",
+      "id": "measure-review-rate",
+      "title": "Run a timed human sitting over the fixture review page and record the first review-rate baseline",
+      "state": "blocked",
+      "blocked_by": "human:review the fixture stories in a timed sitting and report stories judged and elapsed time",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "build-verdict-importer",
+      "title": "Phase 5 - import verdict files idempotently and record the round trip",
       "state": "actionable",
       "value": "high",
-      "effort": "large",
+      "effort": "medium",
       "advances_stage": false
     }
   ]
