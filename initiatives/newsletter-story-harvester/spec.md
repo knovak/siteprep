@@ -132,7 +132,7 @@ link-scraper produces **silently**.
 | **A. One universal rule — every link is a story** | Trivial to build, perfectly repeatable, no model cost. Correct on the two link-dense shapes, which are most of the volume | Wrong on exactly the case the objectives call the sharpest test, and wrong invisibly: thirty citations from one column look like a productive harvest. Contradicts "the unit is a per-newsletter decision" by making it a per-link one |
 | **B. A hand-written parser per newsletter** | Deterministic, so O1's repeatability is free; cheap per run; a parser that breaks breaks loudly | Seven newsletters is seven parsers, and senders restyle without warning. Still cannot write the summary O2 asks for on long-form, so a model is needed anyway — this is extra machinery, not less |
 | **C. A model reads the whole email, unguided** | One implementation for every shape; handles long-form natively; a new newsletter costs nothing | It decides the *unit* silently, which is the decision `objectives.md` says must be made per newsletter and written down. Non-deterministic where O1 wants repeatability, and its failure mode is the invisible one again |
-| **D. Shape declared per source; the model extracts under that shape's contract** *(chosen)* | The per-newsletter decision is made once, recorded, and reviewable. The model does the reading — including the long-form summary — but not the deciding. Failure becomes visible, because a contract carries an expected story count and `shape` is recorded on every record | Needs the inventory, which is blocked on the user (§4). A mis-declared shape produces confidently wrong extraction, so §3.2 has to make disagreement loud |
+| **D. Shape declared per source; the model extracts under that shape's contract** *(chosen)* | The per-newsletter decision is made once, recorded, and reviewable. The model does the reading — including the long-form summary — but not the deciding. Failure becomes visible, because a contract carries an expected story count and `shape` is recorded on every record | Needs an explicit inventory (§4). A mis-declared shape produces confidently wrong extraction, so §3.2 has to make disagreement loud |
 
 ### Why D
 
@@ -225,10 +225,10 @@ because it never gets to apply one:
 
 ## 4. The newsletter inventory
 
-`newsletter-inventory` is blocked on the user (`data:`) and stays blocked: which
-senders count and how far back a harvest reaches is a fact about a mailbox. What
-the spec can do — and does — is specify the **form**, so answering becomes
-filling in a file rather than a design exercise.
+Settled by the user on 2026-08-18. The private inventory contains exactly three
+sources; `decisions.md` records the supplied Gmail queries, lookbacks and shapes.
+This section specifies the form those answers require without committing a file
+that names a person's mailbox.
 
 One entry per newsletter:
 
@@ -236,10 +236,11 @@ One entry per newsletter:
 |---|---|
 | `key` | Stable identifier, written to `source` on every record. Never a display name, which changes |
 | `name` | What to show a reader |
-| `match` | How its emails are recognised: a from-address, a Gmail label, a subject pattern, or several — matched as a union. The union is one search, not several merged (phase 0). A from-address matcher is a **pre-filter**: `from:` ignores the plus-tag, so `name@host` also returns `name+section@host`, which on some senders is a different publication with a different shape — §5.1 verifies the actual From address before an issue is attributed to this entry |
+| `match` | One matcher or a list of matcher groups. Groups are a **union**; conditions inside `{ "all": [...] }` are an **intersection**. A condition is a from-address or from-token, Gmail label, or subject pattern. The union is one search, not several merged (phase 0). A `from` condition is a **pre-filter**: §5.1 checks the actual From value before attribution because Gmail may over-match |
 | `shape` | `link-list`, `annotated-digest` or `long-form` — the §3 declaration |
 | `unwrap` | Which redirector rule applies (`story-record.md` §4), where the sender uses one |
 | `since` | The earliest issue worth reaching for, if the user has an opinion |
+| `lookback_days` | A positive integer limiting this source to the last N days of the explicit run range. It may coexist with `since`; the later effective start wins |
 
 The inventory is configuration held beside the store (§7), not code, and not
 committed to this repository — it names a person's mailbox.
@@ -258,13 +259,16 @@ range, and take the message list as the run's input. The range is explicit —
 never "since last time" — because an implicit range is what makes a re-run
 unrepeatable. The connector's range is **half-open in local dates** (phase 0),
 so the range a run resolves and the range a user typed are not the same string;
-the run record writes the resolved one.
+the run record writes the resolved one. For an entry with `lookback_days`, its
+effective start is the later of the requested start and `before - N days`; a
+`since` date may move it later again.
 
 **The search is a pre-filter, and its results are checked.** A message is
-attributed to an inventory entry only after its actual From address is matched
-against that entry, because `from:` over-matches plus-tagged siblings (§4). An
-unattributed message is not harvested — and, since it never matched an entry,
-gets no `source_doc` either.
+attributed to an inventory entry only after its actual From value is checked
+against that entry's `from` condition, because `from:` can over-match (§4). A
+full address is checked as an address; a supplied token is checked against the
+actual From text. An unattributed message is not harvested — and, since it never
+matched an entry, gets no `source_doc` either.
 
 Every message that matched is recorded as a `source_doc` whether or not it
 yielded stories. An issue that produced nothing is a finding, and without the

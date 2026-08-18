@@ -148,6 +148,8 @@ change in `merge.mjs`.
 | Row | Evidence |
 |---|---|
 | Explicit range only | Missing bounds are refused; a one-day half-open range returns exactly that day's issue |
+| Per-source lookback | `lookback_days` caps the entry's resolved range relative to the explicit `before` date |
+| Matcher intersection | An `{ "all": [...] }` group requires both sender and subject while ordinary matcher groups remain a union |
 | Repeatable | Two empty stores harvested over the same range get the same id set |
 | Second run adds only what is new | The overlapping run matches 49 existing stories and adds the later issues' 25 |
 | Every matched message recorded | `empty-issue` has a `source_doc` entry with zero stories and a count flag |

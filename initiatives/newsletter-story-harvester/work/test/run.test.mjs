@@ -38,6 +38,42 @@ test('an explicit range is required, and is half-open', async () => {
   assert.deepEqual(result.run.source_docs.map((doc) => doc.source_doc), ['link-list-typical']);
 });
 
+test('a per-source lookback narrows the explicit range and is recorded', async () => {
+  const messageSource = source();
+  const betterNews = inventory.sources.find((entry) => entry.key === 'better-news');
+  const result = await runHarvest({
+    inventory: { id: 'lookback-test', sources: [{ ...betterNews, lookback_days: 14 }] },
+    range: { after: '2026-01-01', before: '2026-02-01' },
+    source: messageSource,
+    model,
+    store: emptyStore(),
+    now: NOW
+  });
+  assert.deepEqual(messageSource.searches, [{
+    source: 'better-news',
+    range: { after: '2026-01-18', before: '2026-02-01' }
+  }]);
+  assert.deepEqual(result.run.range.sources['better-news'], {
+    after: '2026-01-18',
+    before: '2026-02-01'
+  });
+  assert.deepEqual(result.run.source_docs.map((doc) => doc.source_doc), ['link-list-headings']);
+});
+
+test('an all matcher requires sender and subject instead of unioning them', async () => {
+  const messageSource = source();
+  const matches = await messageSource.search({
+    key: 'better-news-extra',
+    match: {
+      all: [
+        { type: 'from', value: 'better' },
+        { type: 'subject', value: 'section' }
+      ]
+    }
+  }, { after: '2026-01-01', before: '2026-02-01' });
+  assert.deepEqual(matches.map((message) => message.id), ['link-list-headings']);
+});
+
 test('the whole inventory is validated before any message body is read', async () => {
   const badInventory = {
     ...inventory,

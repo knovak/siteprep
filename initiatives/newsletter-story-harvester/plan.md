@@ -13,12 +13,11 @@ Numbered references to **O1–O8** are the objectives; **§n** is a section of
 Three rules, applied in this priority, produce the sequence in §3:
 
 1. **What is blocked on the user goes as late as it can.**
-   `newsletter-inventory` is a `data:` blocker and stays one — which senders
-   count is a fact about a mailbox, and §4 is explicit that a source not in the
-   inventory is not harvested. The naive order starts by connecting to Gmail and
-   is therefore stopped on the first day. The order below reaches phase 5 without
-   a mailbox, an inventory, or a single real email, and that is the plan's main
-   claim: **the blocker costs five phases of nothing.**
+   `newsletter-inventory` was a `data:` blocker — which senders count is a fact
+   about a mailbox, and §4 is explicit that a source not in the inventory is not
+   harvested. The 2026-08-18 answer arrived after the fixture contracts and run
+   loop existed, validating the ordering: no earlier phase waited for mailbox
+   data, and phase 6 now has concrete input rather than a guess.
 2. **Then the durable thing before the disposable ones.** §1 divides the design
    by lifetime — the store outlives every run, the page is regenerated whenever
    it is wanted, and the skill is one harvester among any number. Building in
@@ -214,14 +213,14 @@ page out, verdicts back. **Everything except the real material is finished.**
 
 ### Phase 6 — The real mailbox, and the real inventory
 
-**Produces:** the Gmail implementation of the §2 seam, the inventory file in §4's
-form filled in with the user's answer, the unwrap rules for the senders it names
-(§15), and the first real harvest over a real date range.
+**Produces:** the Gmail implementation of the §2 seam, the private inventory
+file in §4's form filled from the 2026-08-18 decision, the unwrap rules for the
+senders it names (§15), and the first real harvest over a real date range.
 
-**This is the only phase blocked on the user**, and it is blocked on exactly one
-thing: `newsletter-inventory`. The form of the file is already specified, so
-answering is filling it in rather than a design exercise — which is what §4 set
-out to make true and what this ordering cashes in.
+**The user-data blocker is settled.** The answer also sharpened the inventory
+form: each source has its own rolling lookback, and one source requires sender
+**and** subject conditions rather than a union. Phase 3's fixture loop pins both
+rules before the Gmail implementation uses them.
 
 **What the first real harvest is for.** Not volume. It is the first contact
 between the phase 2 contracts and prose nobody wrote for a test, and the numbers

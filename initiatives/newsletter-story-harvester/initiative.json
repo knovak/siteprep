@@ -6,14 +6,6 @@
   "outputs": [],
   "todo": [
     {
-      "id": "newsletter-inventory",
-      "title": "Establish which newsletters are in scope and how their emails are recognised",
-      "state": "blocked",
-      "blocked_by": "data:which senders or labels count as newsletters, and how far back should a harvest reach?",
-      "value": "high",
-      "effort": "small"
-    },
-    {
       "id": "fix-long-form-wire-shape",
       "title": "Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression",
       "state": "actionable",

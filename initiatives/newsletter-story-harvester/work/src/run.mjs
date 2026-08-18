@@ -194,8 +194,19 @@ function validateInventory(inventory) {
 
 function rangeForEntry(range, entry) {
   if (entry.since && !DATE.test(entry.since)) throw new Error(`harvest: ${entry.key}.since is not YYYY-MM-DD`);
-  const after = entry.since && entry.since > range.after ? entry.since : range.after;
+  if (entry.lookback_days !== undefined && (!Number.isInteger(entry.lookback_days) || entry.lookback_days < 1)) {
+    throw new Error(`harvest: ${entry.key}.lookback_days must be a positive integer`);
+  }
+  const candidates = [range.after];
+  if (entry.since) candidates.push(entry.since);
+  if (entry.lookback_days) candidates.push(daysBefore(range.before, entry.lookback_days));
+  const after = candidates.sort().at(-1);
   return { after, before: range.before };
+}
+
+function daysBefore(date, days) {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day) - days * 86_400_000).toISOString().slice(0, 10);
 }
 
 function emptyMergeReport() {
