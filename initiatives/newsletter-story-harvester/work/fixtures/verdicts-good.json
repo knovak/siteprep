@@ -1,0 +1,23 @@
+{
+  "store_id": "fixture-store-v1",
+  "exported_at": "2026-08-18T12:00:00.000Z",
+  "verdicts": [
+    {
+      "id": "u1-e24c46cc4a50e555",
+      "verdict": "kept",
+      "verdict_at": "2026-08-18T11:00:00.000Z"
+    },
+    {
+      "id": "u1-14744efac4a7b879",
+      "verdict": "dropped",
+      "verdict_at": "2026-08-18T11:01:00.000Z"
+    }
+  ],
+  "tags": [
+    {
+      "id": "u1-e24c46cc4a50e555",
+      "add": ["theme:selected"],
+      "remove": ["theme:better-news"]
+    }
+  ]
+}
