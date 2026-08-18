@@ -9,7 +9,7 @@ import { loadStore, saveStore } from './store.mjs';
 import { extractIssue, summariseRun } from './extract.mjs';
 import { mergeRecords, recordRun } from './merge.mjs';
 import { uniqueTags } from './identity.mjs';
-import { actualFromMatchesEntry, matchersFor } from './fixture-source.mjs';
+import { actualFromMatchesEntry, matchersFor } from './source-contract.mjs';
 import { contractFor } from './contracts.mjs';
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;

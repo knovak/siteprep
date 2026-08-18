@@ -502,6 +502,52 @@ for each source.
 - **Not settled:** whether the declared shapes fit every issue. §3.2's per-issue
   override and count flags remain the mechanism for exceptions.
 
+## 2026-08-18 — Gmail handoff: 22 readable messages, no writes, and no HEAD follow yet
+
+The phase-6 adapter and private inventory handoff ran read-only over the exact
+scope above, with a requested half-open range of 2026-07-22 through 2026-08-19.
+The per-source lookback narrowed Yglesias to 2026-08-05; the two 28-day sources
+kept the requested start.
+
+| Source | Messages paged | Post-search matcher failures |
+|---|---:|---:|
+| `yglesias` | 14 | 0 |
+| `fix-the-news` | 4 | 0 |
+| `chopwood-carrywater-extra` | 4 | 0 |
+
+All 22 messages had a readable inline HTML body. The connector required no next
+page for these bounded windows. Its complete operation log was **3 searches, 22
+reads, 0 writes** — no label, archive, mark-read, draft, send, or mailbox-state
+operation exists in the adapter's connector surface.
+
+### Redirect handling
+
+All three live sources use the Substack redirect shape. The private inventory
+therefore selects the existing `substack` rule for each. **The optional
+single-HEAD follow remains off for the first extraction.** The reason is not
+that it cannot work; phase 0 established why it exists. It is that following an
+opaque, recipient-token link creates a real outbound click before the first
+merge rate says the extra resolution is valuable. With the follow off, the
+token query is removed, the opaque redirect is kept, and `err:unwrap` makes the
+miss visible.
+
+Reopen that choice after the first real harvest if the merge report shows that
+unresolved redirects are preventing meaningful cross-source merges. Until
+then, generating subscriber-specific clicks to improve a number not yet known
+is the wrong default.
+
+### Private handoff boundary
+
+The inventory and a body-free handoff receipt now live under the ignored
+`work/private/` directory at mode 0600. The receipt retains only dates, counts,
+operation kinds and settings. No raw body, subject, recipient, message id or
+connector response was written to disk or committed.
+
+This completes the source adapter and handoff, not the whole phase-6 exit. The
+next bounded item is the first real extraction into the private store; it is
+what supplies count-band flags and merge rate. The manual real-story sitting
+remains evidence no adapter test can manufacture.
+
 ## 2026-08-18 — How should the first review-rate baseline be measured?
 
 The fixture review page is working, but browser automation cannot supply the
