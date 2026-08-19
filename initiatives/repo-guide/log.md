@@ -105,3 +105,7 @@ Built the 13-slide self-contained HTML deck with ordered slide text, 10–20 and
 ## 2026-08-18 — Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set
 
 Built the six-step abstract lifecycle simulator as one self-contained HTML file. Its stages, proposable blocker class, sweep phases, and item budget resolve from four selected fact keys; it never reads initiative.json. Node tests and the offline browser harness cover Step/Back boundaries, budget pass-over, merge cascade, interruptible Play, derived vocabulary, and drift failure. Added the manual adequacy walkthrough as a data blocker and unblocked PDF dating.
+
+## 2026-08-19 — Phase 6 - PDF links, refresh dates, and the possibly-stale comparison
+
+Built strict PDF-link configuration, fact-source commit dating, visible possibly-stale warnings, and simulator watched-date diagnostics; no current guide PDFs were identifiable on Drive, so the config remains empty until their links and refresh dates are supplied.

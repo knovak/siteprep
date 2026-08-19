@@ -8,7 +8,9 @@ self-contained description renderer, provenance, and its isolated browser
 harness. Phase 4 adds separately authored slide text, a self-contained HTML
 deck, strict slide-count and copy-length gates, and keyboard navigation. Phase
 5 adds the abstract six-step lifecycle simulator with derived vocabulary and
-Step, Back, and Play controls.
+Step, Back, and Play controls. Phase 6 adds strict PDF-link configuration,
+source-commit dating, visible possibly-stale warnings, and the simulator's
+watched-date report.
 
 Resolve the live repository facts from the repository root:
 
@@ -106,6 +108,20 @@ does not affect generation, while inconsistent lifecycle constants still fail.
 Its browser harness steps forward and back across every state, checks the budget
 and cascade moments, interrupts and resumes Play, and refuses network
 dependencies.
+
+`config.json` carries the hand-maintained portable-copy data. Each entry in
+`pdfs` requires a unique id, label, HTTPS link, and real `YYYY-MM-DD` refresh
+date; an incomplete entry stops generation rather than producing a plausible
+link. The list begins empty because no current description or deck PDFs were
+identifiable on Drive when this increment was built. Once a PDF exists, adding
+its entry makes it appear on the description. A refresh date older than the
+newest commit touching any registered fact source renders as **Possibly stale**
+with both dates, but never blocks generation.
+
+`simulator_watched` records the last complete human walkthrough. Simulator
+generation compares it only with the lifecycle and sweep-phase sources and
+returns a report diagnostic when another walkthrough may be due. Unrelated
+commits advance neither comparison.
 
 The first real description contains nine sections, 1,076 composed words and 23
 resolved fact tokens. The per-section baseline and the real drafting-check

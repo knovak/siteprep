@@ -33,9 +33,10 @@
       "advances_stage": false
     },
     {
-      "id": "build-pdf-dating",
-      "title": "Phase 6 - PDF links, refresh dates, and the possibly-stale comparison",
-      "state": "actionable",
+      "id": "add-pdf-links",
+      "title": "Add the hand-made description and deck PDF links with their refresh dates",
+      "state": "blocked",
+      "blocked_by": "data:provide the Google Drive links and refresh dates for the hand-made description and deck PDFs",
       "value": "medium",
       "effort": "small",
       "advances_stage": false
@@ -43,8 +44,7 @@
     {
       "id": "package-skill",
       "title": "Phase 7 - package the generator as a skill that generates and then checks",
-      "state": "blocked",
-      "blocked_by": "todo:build-pdf-dating",
+      "state": "actionable",
       "value": "high",
       "effort": "small",
       "advances_stage": false
