@@ -749,3 +749,43 @@ skills are meant for direct invocation by an interactive user."*
   directory boundary, so moving or renaming those modules breaks the skill.
 - **Unchanged:** what the skill does, its guardrails, and the privacy rules for
   the store, brief, and proposal.
+
+## 2026-08-19 — Publishing withholds provenance by allow-list, and rides on one flag
+
+**Phase 8 settled two things `spec.md` §12 left as a description rather than a
+mechanism.**
+
+§12 says the published page is "the review page's renderer with the verdict
+controls removed and the selection narrowed", and that `source_doc` and
+`source_anchor` "do not travel". Both needed a shape.
+
+- **Settled: a published story is built from an allow-list, not by deleting two
+  fields.** `PUBLISHED_STORY_FIELDS` names the ten fields a published story may
+  carry. A deny-list would have satisfied the test written today and quietly
+  failed the first time the record grows an eleventh field — and the record has
+  already grown `merged_from`, `shape`, and `harvester` since it was specified.
+  The cost is that a genuinely publishable new field needs a one-line edit, and
+  that edit is exactly the review this deserves.
+- **Settled: `runs` does not travel either.** §12 named the two story fields,
+  but a run record accounts for issues by `source_doc`, so publishing the store
+  wholesale would have leaked the same provenance one level up. The published
+  payload is `store_id`, stories, clusters, and the verdict vocabulary.
+- **Settled: `judgeable: false` withholds provenance as well as controls.** Two
+  arguments change (`include` and `judgeable`), not three. Provenance is not a
+  separate knob because publishing must not be half-done by forgetting one: a
+  page nobody can judge on is a page meant to leave this machine.
+- **Settled: the controls are removed at generation, not hidden by CSS.** The
+  published file contains no `setVerdicts`, `getExport`, `downloadExport`, or
+  `window.reviewPage`. "No way to judge anything" is a property of the file, and
+  a disabled control is still a control.
+- **Settled: sort and tag filter survive publication.** Neither judges, and
+  filtering by `theme:` is how a theme is a page (O4). The backlog count does
+  not survive — it counts unjudged stories, and there are none.
+- **Settled: a cluster publishes with its withheld members dropped.** If fewer
+  than two members survive the selection, the cluster does not render and the
+  survivors appear as ordinary stories, which is the existing phase 7 rule
+  rather than a new one.
+- **Note: the published file is mode 0644, deliberately.** Every other artefact
+  touching a real store is 0600. This one exists to be shared, which is the
+  whole reason nothing of the mailbox is allowed into it.
+- **Unchanged:** where such a page is hosted stays out of scope, per §12.
