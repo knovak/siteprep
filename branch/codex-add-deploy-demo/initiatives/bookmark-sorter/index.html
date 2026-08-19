@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Bookmark Sorter</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative</p>
+      <h1>Interactive Bookmark Sorter</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="../index.html">All initiatives</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="initiative-purpose">
+    <div class="card-header">
+      <h2 id="initiative-purpose">Purpose</h2>
+    </div>
+    <div class="card-content">
+<h3>2026-08-14</h3>
+<p>Interactive Bookmark sorter: ingest bookmarks, retain title, link, date. Add tags, starting with tags that indicate the source and ingestion date of the item.</p>
+<p>Tag items based on topic or website or type of page.</p>
+<p>Sort items into clusters, either automatically or under user selection (for example, a boolean expression on tags, or a pattern match on tags).</p>
+<p>Present clusters to user with snapshots from the page. Fill a screen (e.g. 8x2 snapshots on a big widescreen, or something smaller on an iPad, or a carousel on a phone). Have a fast UI for adding tags. Most important is to pick keepers vs junk vs archive vs needs-more-time.</p>
+<p>Retain the resulting tags in some sort of database appropriate to the platform where this system runs. Provide backup, and export mechanism, so that the data is portable to other systems.</p>
+<p>Extend by harvesting links open on other devices&#39; browsers (Safari on iPhone, Chrome on iPad, etc).</p>
+<p>Extend by allowing the user to designate subsets based on tags, and create tab groups in Chrome or other browsers with the pages in the subset. Possibly also allow the user to create a folder of fresh bookmarks in Chrome or another browser from a subset. (These extended capabilities may be offered initially or exclusively through an LLM agent.)</p>
+<p>Two sentences were unfinished as dictated and are completed here by inference: &quot;snapshots from the page&quot; and &quot;a carousel on a phone&quot;. Correct them if the intent was different.</p>
+<h3>2026-08-14 — amendment: collections, and moving items in and out</h3>
+<p>Added by the user after the first three decisions were settled.</p>
+<p>I might allow multiple people to use this website, especially to test it out. So the system should have &#39;collections&#39;, which can be one per user, and could be additional non-personal collections (eg to use as a demo).</p>
+<p>So we will need these operations in the UI, possibly as a menu:</p>
+<ul><li>choose collection</li><li>import bookmarks into the current collection (eg from a browser export file)</li><li>export the items from a collection, presumably as json, with tags. Allow some</li></ul>
+<p>  kind of selection by tag</p>
+<ul><li>import items into the current collection from an export file</li></ul>
+<p>Another detail: if a bookmark file is imported it should retain the bookmark folder path, possibly as a tag.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-status">
+    <div class="card-header">
+      <h2 id="initiative-status">Status</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li>Stage: <span class="tag">building</span></li>
+        <li>Value: medium</li>
+        <li>Last activity: today</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-next">
+    <div class="card-header">
+      <h2 id="initiative-next">What&#39;s next</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li>Phase 6 - build identity, owner-scoped collections, and per-user demo copies</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-blocked">
+    <div class="card-header">
+      <h2 id="initiative-blocked">What&#39;s blocked</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li>Confirm that the workspace&#39;s Sites limits and cost are acceptable for the pile and capture store — <code>cost:confirm the plan-specific Sites limits and accept them for 10,000 D1 items plus up to a few hundred MB of R2 captures</code> <em>(needs a decision)</em></li>
+        <li>Measure the blind triage baseline on several hundred real bookmarks — <code>data:run one blind sitting on several hundred real bookmarks and report the items judged and elapsed time</code> <em>(needs a decision)</em></li>
+        <li>Measure metadata coverage and the duplicate-image distribution on a representative real pile — <code>data:import a representative slice of the real bookmark pile through phase 3 and report total, distinguishable metadata coverage, and duplicate-image distribution</code> <em>(needs a decision)</em></li>
+        <li>Measure confirmation interruptions and immediately undone sweeps in one real selection sitting — <code>data:run one real phase 4 selection sitting and report selections opened, confirmations shown, sweeps applied, and sweeps immediately undone</code> <em>(needs a decision)</em></li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-documents">
+    <div class="card-header">
+      <h2 id="initiative-documents">Documents</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="./wish.html">Wish</a></li>
+        <li><a href="./objectives.html">Objectives</a></li>
+        <li><a href="./decisions.html">Decisions</a></li>
+        <li><a href="./spec.html">Specification</a></li>
+        <li><a href="./plan.html">Implementation plan</a></li>
+        <li><a href="./test-plan.html">Test plan</a></li>
+        <li><a href="./log.html">Log</a></li>
+      </ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/add-deploy-demo" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
