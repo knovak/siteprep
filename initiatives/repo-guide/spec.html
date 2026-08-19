@@ -86,6 +86,19 @@
 <ul><li><strong>A number or a stage name written as a literal is a build error.</strong> The check</li></ul>
 <p>  is mechanical: the narrative source may not contain any string in   <code>lifecycle.stages</code> or <code>blockers.prefixes</code> outside a token, and may not contain a   digit sequence matching a <code>sweep.budget</code> value. This is the rule that stops the   guide slowly reverting to prose nothing checks, one convenient sentence at a   time.</p>
 <p>The third rule will occasionally be annoying — a sentence that legitimately says &quot;four&quot; when the budget happens to be 4 has to be rewritten. That is the cost, and it is accepted: the alternative is a check that only catches the careless case, which is not the case that causes the harm.</p>
+<h4>4.1 A fourth rule: only scalars may be inlined</h4>
+<p><em>Added 2026-08-19 after the first complete outputs were reviewed; the reasoning is in <code>decisions.md</code>.</em></p>
+<p>The three rules above are necessary and were not sufficient. Substituting <em>any</em> fact into a sentence means every fact-bearing sentence has to survive whatever shape the value turns out to be, and the only phrasing that does is a plural noun phrase, a copula, and a dumped value. Combined with the second and third rules — which require every fact to be cited somewhere and forbid writing the value in plain words — the guide could not be written in any other register. The stilted result was not a drafting failure; it was this rule set working as specified.</p>
+<p>So facts split by shape:</p>
+<ul><li><strong>A scalar may be inlined.</strong> <code>{{sweep.budget.items_per_run}}</code> inside a</li></ul>
+<p>  sentence reads as English, and that was never the problem.</p>
+<ul><li><strong>A structured value may not be.</strong> A list, a map, or a set of records is</li></ul>
+<p>  named on its own line as a block directive — <code>@fact &lt;key&gt; [as &lt;view&gt;]</code> — and   renders as a rail, a table, a chip row, a list, or cards.</p>
+<ul><li><strong>Inlining a structured value is a build error</strong>, on the same footing as a</li></ul>
+<p>  literal stage name. Making it an error rather than a convention is the point:   the old frame stops being expressible.</p>
+<ul><li><strong>A block cites the facts it resolves</strong>, so structure discharges the</li></ul>
+<p>  uncited-fact warning. Without this the second rule would go on forcing values   into prose that does not want them, which is exactly what it had been doing.</p>
+<p>A <code>@figure &lt;name&gt;</code> directive is the same mechanism for diagrams: a figure is a pure function of resolved facts and declares the keys it consumes, so it cites them and cannot drift. This is what lets O9&#39;s guarantee cover pictures too — the alternative was hand-drawn diagrams, which are the fastest-staling thing a guide can contain.</p>
 <h3>5. The source document</h3>
 <h4>5.1 Section shape</h4>
 <p><code>guide/content/</code> holds one markdown file per section. Frontmatter:</p>
@@ -127,16 +140,16 @@ audience: both           # both | forker | contributor</code></pre>
 <h3>7. The simulator</h3>
 <p><code>decisions.md</code> settled this as <strong>an abstract lifecycle</strong>, with an upgrade to the real <code>initiative.json</code> held open if the animation is not adequate.</p>
 <p><strong>Abstract in behaviour, generated in vocabulary.</strong> The simulator does not read the backlog and does not implement the sweep&#39;s rules. But its stage names, blocker classes and phase names come from the same fact set as everything else (§3.2), so the one thing it cannot do is teach a stage that does not exist. That narrows the cost <code>decisions.md</code> recorded — a composed animation that &quot;can, and will, disagree the first time a stage changes&quot; — to the choreography, which is the part a person has to check.</p>
-<p><strong>The walk-through</strong>, a fixed sequence with Step, Back and Play:</p>
-<ol><li>A wish is written. One initiative appears at <code>wish</code>.</li><li>Objectives are drafted; the stage advances, and the todo list gains items.</li><li>An item is blocked on a <code>human:</code> question. It goes amber; the digest column</li></ol>
-<p>   shows it.</p>
-<ol><li>A sweep run: the survey picks the highest-scoring actionable item, opens a</li></ol>
-<p>   pull request, and the item shows as in flight. Another item is passed over    because the budget is spent — <strong>which is a step, not a footnote</strong>, since the    budget is the part of the sweep newcomers do not expect.</p>
-<ol><li>The blocked item is answered. The blocker clears and the item becomes</li></ol>
-<p>   actionable.</p>
-<ol><li>The pull request merges. The item disappears, its dependants unblock, and the</li></ol>
-<p>   stage advances.</p>
-<p>Step 4&#39;s passed-over item and step 6&#39;s cascade are the two moments a stage table cannot convey, and they are why O4 asks for this at all.</p>
+<p><strong>The walk-through</strong> is a fixed sequence with Step, Back and Play, and it covers the lifecycle end to end — <em>revised 2026-08-19; see <code>decisions.md</code>.</em> The first version stopped three stages in, which taught the beginning of the process and left the reader to assume the rest. It now reaches every derived stage:</p>
+<ol><li>A wish is written; one initiative appears at the first stage.</li><li>Objectives are drafted; the stage advances and the todo list gains items.</li><li>An item is blocked on a proposable question. It goes amber and waits.</li><li>A sweep run, spending its allowance **across timed beats rather than arriving</li></ol>
+<p>   finished<strong>: phases light in order, the budget meter fills, and an item is    passed over at the boundary — </strong>a step, not a footnote**, since the budget is    the part newcomers do not expect.</p>
+<ol><li>The blocked item is answered; the blocker clears.</li><li>The specification merges. The item leaves the list, a dependant unblocks, and</li></ol>
+<p>   the stage advances.</p>
+<ol><li>An assumption breaks and <strong>the stage moves back</strong> — a supported move, and one</li></ol>
+<p>   a forward-only walk-through silently denies.</p>
+<ol><li>A plan sequences the build.</li><li>An increment is opened for review; nothing is merged.</li><li>Review comes back, and answering it outranks starting anything new.</li><li>The merge cascades again, inside the build this time.</li><li>Outputs are registered and what remains is polish.</li><li>Nothing actionable is left and the initiative rests.</li><li>It is closed out, and the whole record stays readable.</li></ol>
+<p><strong>The items are keyed, and the list is reconciled rather than replaced.</strong> This is the difference between a simulation and a slideshow, and the first version got it wrong: it rebuilt the item list every step, so an item persisting across a step was a different element wearing the same words. Nothing ever visibly happened, which is why the narrative panel had to describe changes the picture was failing to show. An item that survives a step is now the same element — it recolours in place, slides when a neighbour leaves, and collapses out when it merges.</p>
+<p>Step 4&#39;s passed-over item, step 6&#39;s cascade, and step 7&#39;s move backwards are the moments a stage table cannot convey, and they are why O4 asks for this at all.</p>
 <p><strong>What it is not:</strong> a sandbox. <code>objectives.md</code> puts free play out of the first version explicitly.</p>
 <p><strong>One file, no dependencies.</strong> The simulator is a single HTML document with its markup, styling, animation and step data inline — no framework, no fetch, no sibling assets. That is what makes it deployable anywhere or nowhere: it opens from a <code>file://</code> path, survives being emailed, and needs no decision about hosting before it can be looked at.</p>
 <h3>8. The PDFs</h3>
