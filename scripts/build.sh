@@ -452,17 +452,38 @@ cat > "$OUTPUT_DIR/index-versions.html" <<EOF_VERSIONS
 </html>
 EOF_VERSIONS
 
+# Relative path from a page in the build output back to the root of the
+# deployment - "" at the root, "../" one level down, and so on. Every page is
+# found under $OUTPUT_DIR, so this is one "../" per directory level, worked out
+# here rather than with `realpath --relative-to`: that flag is GNU-only, so on
+# macOS the call fails, the path comes back empty, and every footer ends up
+# loading an absolute /shared/site_footer/site_footer.js that exists only at the
+# root (caught by BUILD-14).
+page_root_prefix() {
+  local file_rel_path="${1#"$OUTPUT_DIR"/}"
+  local dir="${file_rel_path%/*}"
+  local prefix=""
+
+  # No slash left means the page sits at the root and $dir is the file itself.
+  if [ "$dir" != "$file_rel_path" ]; then
+    while true; do
+      prefix="../$prefix"
+      local parent="${dir%/*}"
+      [ "$parent" != "$dir" ] || break
+      dir="$parent"
+    done
+  fi
+
+  printf '%s' "$prefix"
+}
+
 # Function to inject version footer into HTML files
 inject_version_footer() {
   local html_file="$1"
 
   # Calculate relative path from this HTML file to the root
-  local rel_path=$(realpath --relative-to="$(dirname "$html_file")" "$OUTPUT_DIR")
-  if [ "$rel_path" = "." ]; then
-    rel_path=""
-  else
-    rel_path="$rel_path/"
-  fi
+  local rel_path
+  rel_path=$(page_root_prefix "$html_file")
 
   # Declare where the root of this deployment is - "" at the root, "../../" from
   # a section, and so on. The build knows this exactly; client-side code that
