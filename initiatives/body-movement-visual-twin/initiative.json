@@ -1,17 +1,26 @@
 {
   "title": "Body Movement Visual Twin",
   "summary": "A 3D visual twin that shows bones and muscles during small body movements.",
-  "stage": "wish",
+  "stage": "shaped",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-objectives",
-      "title": "Draft objectives.md - what \"done\" would mean",
+      "id": "draft-spec",
+      "title": "Draft spec.md, including anatomy assets, movement representation, personalization, and review alternatives",
       "state": "actionable",
       "value": "high",
-      "effort": "small",
+      "effort": "medium",
       "advances_stage": true
+    },
+    {
+      "id": "confirm-publication-rights",
+      "title": "Before a successor public release, confirm the rights and trademark basis for the movement collection and anatomy assets",
+      "state": "blocked",
+      "blocked_by": "legal:after private validation, review the selected movement descriptions, recordings, names, anatomical assets, licenses, attribution terms, and intended public or commercial use before a successor public release",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": false
     }
   ]
 }
