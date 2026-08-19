@@ -1,0 +1,17 @@
+{
+  "format": "bookmark-sorter/v1",
+  "exported_at": "2026-08-15T00:00:00Z",
+  "collection": "hand-written",
+  "selection": "topic:portable",
+  "items": [
+    {
+      "url": "https://portable.example/one?utm_source=fixture#part",
+      "title": "Portable one",
+      "note": "A note from a file the importer did not write.",
+      "added_at": "2020-01-02T00:00:00Z",
+      "tags": ["topic:portable", "src:hand-written"],
+      "verdict": "keeper",
+      "verdict_at": "2026-08-14T12:00:00Z"
+    }
+  ]
+}

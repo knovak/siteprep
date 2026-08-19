@@ -5,6 +5,7 @@ import {fileURLToPath} from 'node:url';
 
 import {D1BookmarkStore} from '../src/d1-store.mjs';
 import {ingestBookmarkHtml} from '../src/ingest.mjs';
+import {importExportDocument} from '../src/round-trip.mjs';
 
 const fixture = name => readFile(fileURLToPath(new URL(`fixtures/${name}`, import.meta.url)), 'utf8');
 
@@ -166,14 +167,14 @@ class FakeD1Database {
     this.batches.push(statements);
     for (const statement of statements) {
       if (statement.sql.startsWith('INSERT INTO items')) {
-        const [id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at] = statement.values;
-        this.items.set(id, {id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict: null, verdict_at: null});
+        const [id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at] = statement.values;
+        this.items.set(id, {id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at});
         this.tags.set(id, new Set());
       } else if (statement.sql.startsWith('UPDATE items SET added_at')) {
-        const [added_at, note, title_key, id, collection_id] = statement.values;
+        const [added_at, note, title_key, verdict, verdict_at, id, collection_id] = statement.values;
         const current = this.items.get(id);
         assert.equal(current.collection_id, collection_id);
-        this.items.set(id, {...current, added_at, note, title_key});
+        this.items.set(id, {...current, added_at, note, title_key, verdict, verdict_at});
       } else if (statement.sql.startsWith('INSERT OR IGNORE INTO tags') && !statement.sql.includes('SELECT id')) {
         const [itemId, tag] = statement.values;
         this.tags.get(itemId).add(tag);
@@ -238,6 +239,28 @@ test('D1 adapter creates an owner-scoped collection and imports idempotently in 
   const items = await store.listItems('pile');
   const guide = items.find(item => item.url_key === 'https://example.com/guide');
   assert.deepEqual(guide.tags, ['folder:Reading & research/Rust', 'in:2026-08-18', 'src:chrome-export']);
+});
+
+test('D1 portable import carries judgement and preserves it on a conflicting re-import', async () => {
+  const database = new FakeD1Database();
+  let sequence = 0;
+  const store = new D1BookmarkStore(database, {batchSize: 4, idFactory: () => `portable-${++sequence}`});
+  await store.ensureCollection({id: 'pile', name: 'Pile', createdAt: '2026-08-18T00:00:00Z'});
+  const document = JSON.parse(await fixture('export-v1.json'));
+  const first = await importExportDocument({store, collectionId: 'pile', document, importedAt: '2026-08-19T00:00:00Z'});
+  assert.deepEqual(first, {parsed: 1, added: 1, merged: 0, total: 1});
+  const item = (await store.listAllItems('pile'))[0];
+  assert.equal(item.verdict, 'keeper');
+  assert.equal(item.note, 'A note from a file the importer did not write.');
+  assert.deepEqual(item.tags, ['src:hand-written', 'topic:portable']);
+
+  document.items[0].note = 'Conflicting later note';
+  document.items[0].verdict = 'archive';
+  document.items[0].verdict_at = '2026-08-20T00:00:00Z';
+  await importExportDocument({store, collectionId: 'pile', document, importedAt: '2026-08-20T00:00:00Z'});
+  const preserved = (await store.listAllItems('pile'))[0];
+  assert.equal(preserved.verdict, 'keeper');
+  assert.equal(preserved.note, 'A note from a file the importer did not write.');
 });
 
 test('D1 collection ownership is enforced by every entry point', async () => {

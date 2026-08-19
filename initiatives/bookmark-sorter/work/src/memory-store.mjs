@@ -1,5 +1,11 @@
 const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 
+function earlier(left, right) {
+  if (!left) return right;
+  if (!right) return left;
+  return left < right ? left : right;
+}
+
 export class MemoryBookmarkStore {
   #collections = new Map();
   #items = new Map();
@@ -45,6 +51,56 @@ export class MemoryBookmarkStore {
     const stored = this.#tags.get(id);
     if (!stored) throw new Error(`Unknown item: ${id}`);
     for (const tag of tags) stored.add(tag);
+  }
+
+  ingestCandidates(collectionId, candidates) {
+    if (!this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    const incoming = new Map();
+    for (const candidate of candidates) {
+      const current = incoming.get(candidate.url_key);
+      if (!current) {
+        incoming.set(candidate.url_key, {...structuredClone(candidate), tags: new Set(candidate.tags || [])});
+        continue;
+      }
+      current.added_at = earlier(current.added_at, candidate.added_at);
+      current.note ||= candidate.note;
+      if (!current.verdict && candidate.verdict) {
+        current.verdict = candidate.verdict;
+        current.verdict_at = candidate.verdict_at;
+      }
+      for (const tag of candidate.tags || []) current.tags.add(tag);
+    }
+
+    let added = 0;
+    for (const candidate of incoming.values()) {
+      const existing = this.findItem(collectionId, candidate.url_key);
+      if (!existing) {
+        const item = this.insertItem({
+          collection_id: collectionId,
+          url: candidate.url,
+          url_key: candidate.url_key,
+          title: candidate.title,
+          title_key: candidate.title_key,
+          note: candidate.note,
+          added_at: candidate.added_at,
+          ingested_at: candidate.ingested_at,
+          verdict: candidate.verdict ?? null,
+          verdict_at: candidate.verdict_at ?? null,
+        });
+        this.addTags(item.id, candidate.tags);
+        added += 1;
+        continue;
+      }
+      this.updateItem(existing.id, {
+        added_at: earlier(existing.added_at, candidate.added_at),
+        note: existing.note || candidate.note || null,
+        title_key: existing.title_key || candidate.title_key,
+        verdict: existing.verdict || candidate.verdict || null,
+        verdict_at: existing.verdict ? existing.verdict_at : candidate.verdict_at || null,
+      });
+      this.addTags(existing.id, candidate.tags);
+    }
+    return {added, merged: candidates.length - added, total: this.countItems(collectionId)};
   }
 
   saveSelection(collectionId, selection) {

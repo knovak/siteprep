@@ -276,3 +276,7 @@ Built anonymous metadata capture, derivative-only R2 storage, hash-based duplica
 ## 2026-08-19 — Phase 4 - build selection expressions, saved selections, proposals, mark-then-sweep, and atomic undo
 
 Built the shared selection evaluator, saved selections, additive tag sweeps, same-site/folder/title proposals, visible mark-then-sweep, unopened-set confirmation, and one-action undo. All 29 Node tests and three browser tests pass, including a visible 3,000-item sweep.
+
+## 2026-08-19 — Phase 5 - build selection export/import and the proposed-tags file round trip
+
+Built the bookmark-sorter/v1 selection export and URL-keyed import for memory and D1 stores, plus read-only proposed-tag review grouped per tag and acceptance through the existing additive undo action; added hand-written fixtures and API/integration coverage.

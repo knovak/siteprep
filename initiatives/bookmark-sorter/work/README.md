@@ -27,6 +27,11 @@ private initiative work, not a published demo.
   administrative calls. It parses `and`, `or`, `not`, parentheses, bare tags,
   and trailing wildcards; adds synthetic collection/site/title/folder keys; and
   computes the three cheap proposal kinds on demand.
+- `src/round-trip.mjs` owns the `bookmark-sorter/v1` boundary. It exports any
+  ordinary selection without captures, imports portable records through the
+  same URL-keyed merge as browser HTML, and reads proposed-tag documents into
+  one reviewable item set per tag. Loading or discarding a proposals file is
+  read-only; acceptance calls the existing additive, one-action-undo tag path.
 - `src/ingest.mjs` applies import tags and the merge rules against a small store
   interface, then hands the unique imported URLs to capture pass 1 without
   making the item list or triage grid wait on a later view.
@@ -127,12 +132,16 @@ evaluator. No capture request is made by the grid.
 node --test initiatives/bookmark-sorter/work/test/*.test.mjs
 ```
 
-The 29 Node tests cover parsing, normalisation, tag creation, idempotent
+The Node tests cover parsing, normalisation, tag creation, idempotent
 re-import, overlap merging, D1 owner scoping and batch chunking, the upload API,
 the 20 MB guard, verdicts, group undo, sitting totals, and a generated
 10,000-item export. Phase 4 adds table-driven grammar and scope tests, D1 and
 memory-store saved-selection/tag-undo checks, on-demand proposal checks, both
 confirmation paths, and a visible 3,000-item sweep followed by one undo.
+Phase 5 adds a hand-written portable export, selection-scoped export, same- and
+cross-collection round trips, existing note/verdict protection, shared capture
+reuse, URL-matched proposals, read-only discard, and per-tag acceptance through
+the ordinary tag action.
 Capture tests use a local HTTP fixture server rather than
 mocking pass 1: they cover metadata precedence, anonymous requests, the
 no-JavaScript rule, derivative-only storage, 404/timeout/TLS/parked failures,
