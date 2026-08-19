@@ -7,9 +7,11 @@ import {chromium} from '@playwright/test';
 
 import {reviewPageHtml} from '../src/review-page.mjs';
 import {importVerdictFile} from '../src/verdict-import.mjs';
+import {applyTaggingPass} from '../../skills/tag-newsletter-stories/scripts/tagging-pass.mjs';
 
 const fixturePath = new URL('../fixtures/store-fixture.json', import.meta.url).pathname;
 const store = JSON.parse(readFileSync(fixturePath, 'utf8'));
+const taggingProposal = JSON.parse(readFileSync(new URL('../fixtures/tagging-proposal.json', import.meta.url), 'utf8'));
 const output = join(mkdtempSync(join(tmpdir(), 'newsletter-review-')), 'review.html');
 writeFileSync(output, reviewPageHtml(store), 'utf8');
 
@@ -124,5 +126,27 @@ test('the export button downloads the verdict-file shape', async () => {
   const exported = JSON.parse(text);
   assert.deepEqual(Object.keys(exported), ['store_id', 'exported_at', 'verdicts', 'tags']);
   assert.equal(exported.store_id, 'fixture-store-v1');
+  await page.close();
+});
+
+test('a cluster renders once with its member provenance and judges every member together', async () => {
+  const tagged = applyTaggingPass(store, taggingProposal).store;
+  const clusteredOutput = join(mkdtempSync(join(tmpdir(), 'newsletter-cluster-')), 'review.html');
+  writeFileSync(clusteredOutput, reviewPageHtml(tagged), 'utf8');
+  const page = await browser.newPage();
+  await page.goto(`file://${clusteredOutput}`);
+
+  assert.equal(await page.locator('.story.cluster').count(), 1);
+  assert.equal(await page.locator('.story').count(), 71);
+  const cluster = page.locator('.story.cluster');
+  await cluster.locator(':scope > summary').click();
+  assert.equal(await cluster.locator('.cluster-member').count(), 4);
+  assert.equal(await cluster.locator('.cluster-member .story-link').count(), 4);
+  assert.equal(await cluster.locator('.cluster-member .meta').count(), 4);
+  await cluster.locator('.cluster-controls button[data-verdict="kept"]').click();
+  assert.equal(await page.locator('#backlog').textContent(), '69 unjudged of 74');
+  const exported = await page.evaluate(() => window.reviewPage.getExport());
+  const memberIds = new Set(taggingProposal.clusters[0].story_ids);
+  assert.equal(exported.verdicts.filter(entry => memberIds.has(entry.id) && entry.verdict === 'kept').length, 4);
   await page.close();
 });

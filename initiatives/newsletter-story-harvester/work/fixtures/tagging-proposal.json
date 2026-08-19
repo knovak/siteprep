@@ -1,0 +1,41 @@
+{
+  "store_id": "fixture-store-v1",
+  "pass_id": "tag-2026-08-19-fixture-themes",
+  "created_at": "2026-08-19T18:00:00.000Z",
+  "themes": [
+    {
+      "tag": "theme:clean-energy",
+      "story_ids": [
+        "u1-02359c5422b725ec",
+        "u1-e24c46cc4a50e555",
+        "u1-14744efac4a7b879",
+        "u1-ca0e90c719a67ce0",
+        "u1-3f2c3dd2cce2efdd",
+        "u1-49f3a892d31d72f5",
+        "u1-3139a7737a515491",
+        "u1-05b6afe8a65886ff"
+      ]
+    },
+    {
+      "tag": "theme:permitting",
+      "story_ids": [
+        "u1-70141d83859b8a46",
+        "u1-ad708cd385a8323e",
+        "u1-94458aa736d7d489",
+        "u1-e8cbcbaed480408c"
+      ]
+    }
+  ],
+  "clusters": [
+    {
+      "tag": "about:permitting-reform",
+      "paraphrase": "Four accounts trace the same permitting reform push from its hidden policy changes through the evidence and state-level examples behind it.",
+      "story_ids": [
+        "u1-70141d83859b8a46",
+        "u1-ad708cd385a8323e",
+        "u1-94458aa736d7d489",
+        "u1-e8cbcbaed480408c"
+      ]
+    }
+  ]
+}

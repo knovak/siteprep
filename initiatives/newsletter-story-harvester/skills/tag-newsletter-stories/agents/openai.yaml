@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tag newsletter stories"
+  short_description: "Theme and cluster a newsletter story store"
+  default_prompt: "Use $tag-newsletter-stories to add themes and event clusters to this newsletter story store."

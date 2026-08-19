@@ -194,3 +194,7 @@ Built the paged, read-only Gmail message-source adapter and mode-0600 private-in
 ## 2026-08-19 — Phase 6 - run the first real extraction, record count-band flags and merge rate, and generate the private review page
 
 Ran 22 mailbox-backed issues through the private extraction handoff: 169 accepted findings became 163 review records, 13 chrome/heading findings were refused, every count band passed, and three identities merged (1.775%). Recorded the calibration and left optional HEAD following off.
+
+## 2026-08-19 — Phase 7 - build the additive, set-undoable tagging and cluster-paraphrase skill
+
+Built the reusable tag-newsletter-stories skill with a deterministic prepare/apply/undo guardrail, additive theme and event-cluster writes, mode-preserving atomic storage, cluster paraphrases in the store, and one-entry cluster review with per-member provenance and verdicts. The skill validator, CLI rehearsal, and all 109 initiative tests pass.

@@ -48,6 +48,12 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
     .verdict.unjudged { background: #fff3df; color: #8b4d00; }
     .body { border-top: 1px solid #e7ebf3; padding: 18px; }
     .story-text { margin: 0 0 12px; white-space: pre-wrap; }
+    .cluster-paraphrase { margin: 0 0 16px; color: #263a68; font-size: 1.02rem; }
+    .cluster-members { display: grid; gap: 10px; margin: 16px 0; }
+    .cluster-member { padding: 14px; border: 1px solid #dce3f0; border-radius: 11px; background: #f8faff; }
+    .cluster-member h3 { margin: 0; color: #17264a; font-size: 1rem; }
+    .cluster-member .story-text { margin-top: 10px; }
+    .cluster-controls { padding-top: 12px; border-top: 1px solid #e1e7f2; }
     .summary-note { color: #73510d; font-size: .85rem; }
     .story-link { color: #1745a1; font-weight: 650; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
@@ -94,6 +100,8 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
     'use strict';
     const store = JSON.parse(document.getElementById('store-data').textContent);
     const stories = store.stories.map((story) => Object.assign({}, story, { tags: Array.from(story.tags || []) }));
+    const byId = new Map(stories.map(story => [story.id, story]));
+    const clusters = Object.values(store.clusters || {});
     const verdicts = Array.from(new Set(store.vocabularies.verdict || []));
     const state = { filter: '', sort: 'story-date', undo: [] };
     const root = document.getElementById('stories');
@@ -105,16 +113,32 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
 
     function dateOf(story) { return story.story_date || story.issue_date || ''; }
     function visible(story) { return !state.filter || story.tags.includes(state.filter); }
+    function rows() {
+      const claimed = new Set();
+      const result = [];
+      for (const cluster of [...clusters].sort((a, b) => String(a.tag).localeCompare(String(b.tag)))) {
+        const members = (cluster.members || []).map(id => byId.get(id)).filter(Boolean);
+        if (members.length < 2 || members.some(story => claimed.has(story.id))) continue;
+        for (const story of members) claimed.add(story.id);
+        result.push({kind: 'cluster', cluster, members});
+      }
+      for (const story of stories) if (!claimed.has(story.id)) result.push({kind: 'story', story, members: [story]});
+      return result;
+    }
+    function rowDate(row) { return row.members.map(dateOf).sort().at(-1) || ''; }
+    function rowSource(row) { return [...new Set(row.members.map(story => story.source || ''))].sort().join(', '); }
+    function rowTitle(row) { return row.kind === 'cluster' ? row.cluster.tag : row.story.title; }
+    function rowVisible(row) { return row.members.some(visible); }
     function sortedVisible() {
-      const rows = stories.filter(visible);
+      const visibleRows = rows().filter(rowVisible);
       const byText = (a, b) => String(a).localeCompare(String(b));
-      rows.sort((a, b) => {
-        if (state.sort === 'source') return byText(a.source, b.source) || byText(dateOf(b), dateOf(a));
-        if (state.sort === 'issue-date') return byText(b.issue_date, a.issue_date) || byText(a.title, b.title);
-        if (state.sort === 'unjudged') return Number(a.verdict !== null) - Number(b.verdict !== null) || byText(dateOf(b), dateOf(a));
-        return byText(dateOf(b), dateOf(a)) || byText(a.title, b.title);
+      visibleRows.sort((a, b) => {
+        if (state.sort === 'source') return byText(rowSource(a), rowSource(b)) || byText(rowDate(b), rowDate(a));
+        if (state.sort === 'issue-date') return byText(rowDate(b), rowDate(a)) || byText(rowTitle(a), rowTitle(b));
+        if (state.sort === 'unjudged') return Number(a.members.every(story => story.verdict !== null)) - Number(b.members.every(story => story.verdict !== null)) || byText(rowDate(b), rowDate(a));
+        return byText(rowDate(b), rowDate(a)) || byText(rowTitle(a), rowTitle(b));
       });
-      return rows;
+      return visibleRows;
     }
 
     function setVerdicts(targets, verdict) {
@@ -192,8 +216,55 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       body.append(controls); details.append(body); return details;
     }
 
+    function verdictControls(targets, className = 'verdict-buttons') {
+      const controls = document.createElement('div'); controls.className = className; controls.setAttribute('aria-label', 'Verdict');
+      for (const verdict of verdicts) {
+        const button = text('button', '', verdict);
+        button.type = 'button'; button.dataset.verdict = verdict;
+        button.setAttribute('aria-pressed', String(targets.every(story => story.verdict === verdict)));
+        button.addEventListener('click', () => setVerdicts(targets, verdict)); controls.append(button);
+      }
+      return controls;
+    }
+
+    function clusterMember(story) {
+      const member = document.createElement('article'); member.className = 'cluster-member'; member.dataset.id = story.id;
+      member.append(text('h3', '', story.title || '(untitled)'));
+      member.append(text('div', 'meta', (story.source || 'unknown source') + ' · ' + dateOf(story)));
+      member.append(text('p', 'story-text', story.text || '(No text)'));
+      if (/^https?:\\/\\//i.test(story.url || '')) {
+        const link = text('a', 'story-link', 'Open story'); link.href = story.url; link.target = '_blank'; link.rel = 'noreferrer'; member.append(link);
+      }
+      member.append(verdictControls([story]));
+      return member;
+    }
+
+    function clusterCard(row) {
+      const {cluster, members} = row;
+      const details = document.createElement('details'); details.className = 'story cluster'; details.dataset.id = cluster.tag;
+      details.dataset.source = rowSource(row);
+      details.dataset.tags = JSON.stringify(Array.from(new Set(members.flatMap(story => story.tags))));
+      const sharedVerdict = verdicts.find(verdict => members.every(story => story.verdict === verdict)) || '';
+      details.dataset.verdict = sharedVerdict;
+      const summary = document.createElement('summary');
+      const heading = document.createElement('div');
+      heading.append(text('div', 'title', cluster.tag.replace(/^about:/, '').replaceAll('-', ' ')));
+      heading.append(text('div', 'meta', members.length + ' stories · ' + rowDate(row)));
+      summary.append(heading);
+      summary.append(text('span', 'verdict' + (sharedVerdict ? '' : ' unjudged'), sharedVerdict || 'mixed or unjudged'));
+      details.append(summary);
+      const body = document.createElement('div'); body.className = 'body';
+      body.append(text('p', 'cluster-paraphrase', cluster.paraphrase));
+      const memberList = document.createElement('div'); memberList.className = 'cluster-members';
+      for (const story of members) memberList.append(clusterMember(story));
+      body.append(memberList);
+      body.append(verdictControls(members, 'verdict-buttons cluster-controls'));
+      details.append(body);
+      return details;
+    }
+
     function render() {
-      root.replaceChildren(...sortedVisible().map(storyCard));
+      root.replaceChildren(...sortedVisible().map(row => row.kind === 'cluster' ? clusterCard(row) : storyCard(row.story)));
       if (!root.children.length) root.append(text('div', 'empty', 'No stories match this tag.'));
       const remaining = stories.filter(story => story.verdict === null).length;
       backlog.textContent = remaining + ' unjudged of ' + stories.length;
