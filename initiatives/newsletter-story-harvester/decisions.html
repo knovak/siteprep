@@ -274,6 +274,17 @@
 <p>  three merge opportunities after 169 accepted extractions. A network request   per link is not justified by a 1.775% observed merge rate, especially because   opaque newsletter redirects can contain recipient tokens. Revisit this only   if review of the private pile finds a meaningful cluster of duplicates that   differ solely because a redirect could not be unwrapped locally.</p>
 <ul><li><strong>The review artefacts stay private and disposable.</strong> The store and generated</li></ul>
 <p>  page are ignored, mode 0600, and created with overwrite refusal. Only these   aggregate measurements and the connector operation counts enter Git.</p>
+<h3>2026-08-19 — <code>tag-newsletter-stories</code> moves to <code>.claude/skills/</code></h3>
+<p><strong>The skill moved from this initiative&#39;s <code>skills/</code> to <code>.claude/skills/tag-newsletter-stories/</code>, as part of a repository-wide change to how skills are organized.</strong></p>
+<p>The user&#39;s words: <em>&quot;skills are graduated by default, and are in an initiative only if explicitly meant for just that initiative... the reason is that most skills are meant for direct invocation by an interactive user.&quot;</em></p>
+<ul><li><strong>Settled:</strong> the skill is discoverable, so a user can invoke it by name from</li></ul>
+<p>  anywhere rather than only by knowing its path inside this initiative.</p>
+<ul><li><strong>Settled:</strong> <code>scripts/tagging-pass.mjs</code> moved with it. Its imports of</li></ul>
+<p>  <code>work/src/merge.mjs</code> and <code>work/src/store.mjs</code> are now repository-relative, and   <code>work/test/tagging-skill.test.mjs</code> imports it from its new location. The   tagging tests pass unchanged.</p>
+<ul><li><strong>Note:</strong> the skill still depends on this initiative&#39;s <code>work/src/</code> store</li></ul>
+<p>  modules. That coupling is unchanged by the move; it just now crosses a   directory boundary, so moving or renaming those modules breaks the skill.</p>
+<ul><li><strong>Unchanged:</strong> what the skill does, its guardrails, and the privacy rules for</li></ul>
+<p>  the store, brief, and proposal.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">

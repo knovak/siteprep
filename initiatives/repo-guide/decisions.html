@@ -251,6 +251,18 @@
 <p>  build. Tracking the latest copy does not add a workflow or build hook.</p>
 <ul><li><strong>Still open:</strong> tracking the files makes them available in the repository but</li></ul>
 <p>  does not link them into the published site. The existing <code>link-the-guide</code>   permission blocker remains the route to satisfying that part of O1.</p>
+<h3>2026-08-19 — Skills are discoverable by default, so <code>generate-guide</code> is installed</h3>
+<p><strong><code>generate-guide</code> moved from this initiative&#39;s <code>skills/</code> to <code>.claude/skills/generate-guide/</code>, as part of a repository-wide change to how skills are organized.</strong></p>
+<p>The user&#39;s words: <em>&quot;skills are graduated by default, and are in an initiative only if explicitly meant for just that initiative... the reason is that most skills are meant for direct invocation by an interactive user.&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> the skill is installed where Claude Code and Codex discover it.</li></ul>
+<p>  Phase 7 of <code>plan.md</code> no longer &quot;leaves out installing it&quot;.</p>
+<ul><li><strong>Settled:</strong> the <code>link-the-guide</code> item&#39;s permission blocker narrows to the</li></ul>
+<p>  site-navigation half. Installing the skill is no longer part of it.</p>
+<ul><li><strong>Unchanged:</strong> the guide&#39;s generated artifacts are still not linked into the</li></ul>
+<p>  published site, which is what <code>link-the-guide</code> still needs permission for.</p>
+<ul><li><strong>Note:</strong> the skill runs <code>initiatives/repo-guide/work/guide/build/cli.mjs</code>,</li></ul>
+<p>  so a repo-wide skill now depends on this initiative&#39;s code. That is allowed —   the rule against depending on <code>initiatives/</code> covers <em>published outputs</em>, which   are served silently to readers; a skill is invoked deliberately by someone who   sees it fail. Moving or renaming that CLI now breaks the skill, so keep them   in step.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
