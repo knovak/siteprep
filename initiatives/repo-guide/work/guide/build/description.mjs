@@ -4,6 +4,7 @@ import {dirname, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {promisify} from 'node:util';
 
+import {resolveDating} from './dating.mjs';
 import {resolveRepositoryFacts} from './facts.mjs';
 import {compileSections, loadSections} from './sections.mjs';
 
@@ -97,7 +98,21 @@ function renderMarkdown(markdown, context) {
   return output.join('\n');
 }
 
-function descriptionHtml({sections, generatedDate, sha, repositoryUrl}) {
+function pdfPanel(dating) {
+  const items = dating.pdfs.length
+    ? dating.pdfs.map(pdf => `<li data-pdf-id="${escapeHtml(pdf.id)}" data-possibly-stale="${pdf.possibly_stale}">
+        <a href="${escapeHtml(pdf.link)}"><strong>${escapeHtml(pdf.label)}</strong></a>
+        <span class="pdf-dates">Refreshed ${escapeHtml(pdf.refreshed)} · sources changed ${escapeHtml(pdf.source_date)}</span>
+        ${pdf.possibly_stale ? '<mark>Possibly stale</mark>' : ''}
+      </li>`).join('')
+    : '<li class="pdf-empty">No hand-made PDFs are linked yet.</li>';
+  return `<aside class="pdf-panel" aria-labelledby="pdf-heading">
+    <div><p class="eyebrow">Portable copies</p><h2 id="pdf-heading">PDFs on Google Drive</h2></div>
+    <ul>${items}</ul>
+  </aside>`;
+}
+
+function descriptionHtml({sections, generatedDate, sha, repositoryUrl, dating}) {
   const context = {sha, repositoryUrl};
   const cards = sections.map(section => `
     <section id="${escapeHtml(section.id)}" data-audience="${escapeHtml(section.audience)}">
@@ -126,6 +141,15 @@ function descriptionHtml({sections, generatedDate, sha, repositoryUrl}) {
     nav { display: flex; gap: 8px; overflow-x: auto; padding: 16px max(24px, calc((100vw - 1100px) / 2)); border-bottom: 1px solid #d9dfeb; background: rgba(255,255,255,.96); position: sticky; top: 0; z-index: 4; }
     nav a { flex: 0 0 auto; padding: 7px 10px; border-radius: 999px; background: #edf2ff; font-size: .78rem; font-weight: 700; text-decoration: none; }
     main { width: min(1100px, calc(100% - 32px)); margin: 32px auto 70px; display: grid; gap: 18px; }
+    .pdf-panel { display: grid; grid-template-columns: minmax(190px, .38fr) 1fr; gap: 28px; padding: 28px 34px; border-radius: 20px; color: white; background: #102452; }
+    .pdf-panel .eyebrow { margin-bottom: 4px; }
+    .pdf-panel h2 { margin: 0; color: white; font-size: 1.45rem; }
+    .pdf-panel ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .pdf-panel li { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; align-items: center; padding: 12px 14px; border-radius: 12px; color: #dfe7fa; background: #ffffff12; }
+    .pdf-panel a { color: white; }
+    .pdf-dates { grid-column: 1; color: #becbec; font-size: .78rem; }
+    .pdf-panel mark { grid-column: 2; grid-row: 1 / span 2; padding: 4px 7px; border-radius: 999px; color: #5d3100; background: #ffd982; font-size: .72rem; font-weight: 850; text-transform: uppercase; }
+    .pdf-panel .pdf-empty { display: block; color: #c9d5ef; }
     section { display: grid; grid-template-columns: 115px minmax(0, 1fr); gap: 26px; padding: 34px; border: 1px solid #dce2ed; border-radius: 20px; background: white; box-shadow: 0 10px 30px #2637570d; scroll-margin-top: 82px; }
     .audience { align-self: start; padding: 5px 8px; border-radius: 999px; color: #31508d; background: #edf2ff; font-size: .72rem; font-style: normal; font-weight: 850; letter-spacing: .07em; text-align: center; text-transform: uppercase; }
     h2 { margin: 0 0 18px; color: #17397f; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.12; letter-spacing: -.025em; }
@@ -137,7 +161,7 @@ function descriptionHtml({sections, generatedDate, sha, repositoryUrl}) {
     code { padding: 2px 5px; border-radius: 5px; background: #eef1f7; font-size: .88em; }
     footer { padding: 28px max(24px, calc((100vw - 1100px) / 2)); border-top: 1px solid #d9dfeb; color: #566078; background: white; font-size: .85rem; }
     footer strong { color: #263e6d; }
-    @media (max-width: 700px) { .hero { padding-top: 48px; } section { grid-template-columns: 1fr; padding: 24px; } .audience { justify-self: start; } }
+    @media (max-width: 700px) { .hero { padding-top: 48px; } .pdf-panel, section { grid-template-columns: 1fr; padding: 24px; } .audience { justify-self: start; } }
   </style>
 </head>
 <body>
@@ -147,7 +171,7 @@ function descriptionHtml({sections, generatedDate, sha, repositoryUrl}) {
     <p class="lede">A short way into the lifecycle, the division of labour, and the files that remain authoritative.</p>
   </header>
   <nav aria-label="Guide sections">${navigation}</nav>
-  <main>${cards}
+  <main>${pdfPanel(dating)}${cards}
   </main>
   <footer data-generated-date="${escapeHtml(generatedDate)}" data-source-sha="${escapeHtml(sha)}">
     Generated <strong>${escapeHtml(generatedDate)}</strong> from source commit
@@ -166,7 +190,7 @@ function sourcePaths(sections) {
   return [...new Set(paths)];
 }
 
-export async function generateDescription({root, outputPath, now = new Date(), sha, repositoryUrl} = {}) {
+export async function generateDescription({root, outputPath, now = new Date(), sha, repositoryUrl, dating} = {}) {
   if (!root || !outputPath) throw new Error('root and outputPath are required');
   const contentDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '../content');
   const facts = await resolveRepositoryFacts(root);
@@ -174,12 +198,14 @@ export async function generateDescription({root, outputPath, now = new Date(), s
   const resolvedSha = sha || await gitValue(root, ['rev-parse', '--short=12', 'HEAD']);
   const resolvedRepository = repositoryUrl || normaliseRepositoryUrl(await gitValue(root, ['remote', 'get-url', 'origin']));
   const generatedDate = new Date(now).toISOString().slice(0, 10);
+  const guideRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const resolvedDating = dating || await resolveDating({root, guideRoot});
   const sources = sourcePaths(compiled.sections);
   for (const path of sources) {
     if (path.startsWith('/') || path.split('/').includes('..')) throw new Error(`Unsafe source link: ${path}`);
     await access(resolve(root, path));
   }
-  const html = descriptionHtml({sections: compiled.sections, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository});
+  const html = descriptionHtml({sections: compiled.sections, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository, dating: resolvedDating});
   await mkdir(dirname(outputPath), {recursive: true});
   await writeFile(outputPath, html, 'utf8');
   return {
@@ -190,6 +216,7 @@ export async function generateDescription({root, outputPath, now = new Date(), s
     source_paths: sources,
     metrics: compiled.metrics,
     diagnostics: compiled.diagnostics,
+    dating: resolvedDating,
   };
 }
 
