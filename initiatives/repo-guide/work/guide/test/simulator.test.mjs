@@ -16,6 +16,11 @@ const syntheticFacts = {
   'sweep.phases': ['survey', 'work'],
   'sweep.budget': {items_per_run: 2},
 };
+const dating = {
+  pdfs: [],
+  simulator: {watched: '2026-08-15', source_date: '2026-08-17', possibly_stale: true},
+  diagnostics: ['Simulator may need re-watching: watched 2026-08-15; sources changed 2026-08-17.'],
+};
 
 describe('simulator choreography', () => {
   test('six fixed steps use only derived stage, blocker, phase, and budget vocabulary', () => {
@@ -38,10 +43,13 @@ describe('simulator choreography', () => {
       sha: 'abc1234',
       repositoryUrl: 'https://github.com/example/repo',
       factOverrides: {initiativesDir: join(FIXTURES, 'does-not-exist')},
+      dating,
     });
     assert.equal(report.steps, 6);
     assert.deepEqual(Object.keys(report.vocabulary).sort(), ['blocker_classes', 'items_per_run', 'phases', 'stages']);
     assert.deepEqual(SIMULATOR_FACT_KEYS, ['lifecycle.stages', 'blockers.proposable', 'sweep.phases', 'sweep.budget']);
+    assert.equal(report.dating.simulator.possibly_stale, true);
+    assert.match(report.dating.diagnostics[0], /may need re-watching/);
     const html = readFileSync(outputPath, 'utf8');
     assert.match(html, /data-source-sha="abc1234"/);
     assert.doesNotMatch(html, /initiative\.json/);
@@ -55,6 +63,7 @@ describe('simulator choreography', () => {
       sha: 'abc1234',
       repositoryUrl: 'https://github.com/example/repo',
       factOverrides: {initiativesModule: join(FIXTURES, 'repo-renamed-stage', 'initiatives.mjs')},
+      dating,
     }), /Lifecycle drift/);
   });
 });

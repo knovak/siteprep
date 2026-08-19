@@ -47,6 +47,7 @@ test('ingestion deduplicates normalised URLs and retains the saved URL', async (
   assert.deepEqual(result, {parsed: 4, added: 3, merged: 1, total: 3});
   const guide = store.listItems('pile').find(item => item.url_key === 'https://example.com/guide');
   assert.equal(guide.url, 'https://Example.COM:443/guide?utm_source=newsletter#part');
+  assert.equal(guide.title_key, 'the-guide');
   assert.deepEqual(guide.tags, ['folder:Reading & research/Rust', 'in:2026-08-18', 'src:chrome-export']);
 });
 
@@ -104,5 +105,14 @@ test('the capture migration indexes duplicate hashes and an explicitly driven re
   assert.match(sql, /reason IN \('missing-image', 'duplicate-image'\)/);
   assert.match(sql, /idx_captures_image_hash/);
   assert.match(sql, /idx_capture_queue_pending/);
+  assert.match(sql, /PRAGMA optimize/);
+});
+
+test('the selection migration stores title keys and makes tag actions undoable', async () => {
+  const sql = await readFile(fileURLToPath(new URL('../migrations/0004_selections.sql', import.meta.url)), 'utf8');
+  assert.match(sql, /ADD COLUMN title_key/);
+  assert.match(sql, /idx_items_collection_title_key/);
+  assert.match(sql, /'verdict', 'tag-apply'/);
+  assert.match(sql, /idx_triage_actions_session_active/);
   assert.match(sql, /PRAGMA optimize/);
 });

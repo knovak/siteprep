@@ -4,6 +4,7 @@ import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {promisify} from 'node:util';
 
+import {resolveDating} from './dating.mjs';
 import {resolveRepositoryFactKeys} from './facts.mjs';
 
 const execFile = promisify(execFileCallback);
@@ -246,17 +247,19 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
 </html>\n`;
 }
 
-export async function generateSimulator({root, outputPath, now = new Date(), sha, repositoryUrl, factOverrides = {}} = {}) {
+export async function generateSimulator({root, outputPath, now = new Date(), sha, repositoryUrl, factOverrides = {}, dating} = {}) {
   if (!root || !outputPath) throw new Error('root and outputPath are required');
   const facts = await resolveRepositoryFactKeys(root, SIMULATOR_FACT_KEYS, factOverrides);
   const {steps, vocabulary} = buildSimulatorSteps(facts);
   const resolvedSha = sha || await gitValue(root, ['rev-parse', '--short=12', 'HEAD']);
   const resolvedRepository = repositoryUrl || normaliseRepositoryUrl(await gitValue(root, ['remote', 'get-url', 'origin']));
   const generatedDate = new Date(now).toISOString().slice(0, 10);
+  const guideRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const resolvedDating = dating || await resolveDating({root, guideRoot});
   for (const path of SOURCE_PATHS) await access(resolve(root, path));
   await mkdir(dirname(outputPath), {recursive: true});
   await writeFile(outputPath, simulatorHtml({steps, vocabulary, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository}), 'utf8');
-  return {output: outputPath, generated_date: generatedDate, sha: resolvedSha, steps: steps.length, vocabulary, source_paths: SOURCE_PATHS};
+  return {output: outputPath, generated_date: generatedDate, sha: resolvedSha, steps: steps.length, vocabulary, source_paths: SOURCE_PATHS, dating: {simulator: resolvedDating.simulator, diagnostics: resolvedDating.diagnostics}};
 }
 
 export async function runSimulatorBrowserChecks({root, outputPath} = {}) {

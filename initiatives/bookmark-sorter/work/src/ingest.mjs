@@ -1,5 +1,6 @@
 import {parseBookmarkHtml} from './bookmark-html.mjs';
 import {normaliseUrl} from './url-key.mjs';
+import {normaliseTitle} from './selections.mjs';
 
 function isoFromBookmarkDate(value) {
   if (!value) return null;
@@ -36,6 +37,7 @@ export async function ingestBookmarkHtml({
     url: candidate.url,
     url_key: normaliseUrl(candidate.url),
     title: candidate.title || candidate.url,
+    title_key: normaliseTitle(candidate.title || candidate.url),
     note: candidate.note,
     added_at: isoFromBookmarkDate(candidate.add_date),
     ingested_at: ingestedIso,
@@ -65,6 +67,7 @@ export async function ingestBookmarkHtml({
         url: candidate.url,
         url_key: candidate.url_key,
         title: candidate.title,
+        title_key: candidate.title_key,
         note: candidate.note,
         added_at: candidate.added_at,
         ingested_at: ingestedIso,
@@ -79,6 +82,7 @@ export async function ingestBookmarkHtml({
     await store.updateItem(existing.id, {
       added_at: earlier(existing.added_at, candidate.added_at),
       note: existing.note || candidate.note || null,
+      title_key: existing.title_key || candidate.title_key,
     });
     await store.addTags(existing.id, candidate.tags);
     merged += 1;

@@ -272,3 +272,7 @@ Built the responsive virtualised blind grid and session instrument. Fourteen Nod
 ## 2026-08-18 — Phase 3 - build metadata captures, the stubbed pass-2 queue, and capture-gap controls
 
 Built anonymous metadata capture, derivative-only R2 storage, hash-based duplicate detection, the explicit resumable pass-2 queue and capture-gap control. Twenty-one Node tests and three browser tests pass; the real-pile coverage and duplicate distribution remain a data measurement, and pass 2 remains switched off.
+
+## 2026-08-19 — Phase 4 - build selection expressions, saved selections, proposals, mark-then-sweep, and atomic undo
+
+Built the shared selection evaluator, saved selections, additive tag sweeps, same-site/folder/title proposals, visible mark-then-sweep, unopened-set confirmation, and one-action undo. All 29 Node tests and three browser tests pass, including a visible 3,000-item sweep.
