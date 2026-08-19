@@ -42,18 +42,10 @@
       "advances_stage": false
     },
     {
-      "id": "package-skill",
-      "title": "Phase 7 - package the generator as a skill that generates and then checks",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "link-the-guide",
       "title": "Link the generated guide into the site so a newcomer can find it, and install the skill where Claude Code finds it",
       "state": "blocked",
-      "blocked_by": "todo:package-skill",
+      "blocked_by": "permission:install the generated skill under .claude/skills and add the guide to protected site navigation and build paths",
       "value": "medium",
       "effort": "small",
       "advances_stage": false

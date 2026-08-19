@@ -109,3 +109,7 @@ Built the six-step abstract lifecycle simulator as one self-contained HTML file.
 ## 2026-08-19 — Phase 6 - PDF links, refresh dates, and the possibly-stale comparison
 
 Built strict PDF-link configuration, fact-source commit dating, visible possibly-stale warnings, and simulator watched-date diagnostics; no current guide PDFs were identifiable on Drive, so the config remains empty until their links and refresh dates are supplied.
+
+## 2026-08-19 — Phase 7 - package the generator as a skill that generates and then checks
+
+Packaged the Repo Guide generator as a skill that generates all three artifacts, runs their offline browser checks, reports fact failures, and verifies its outputs remain ignored; re-pointed delivery to its real permission boundary.
