@@ -186,3 +186,7 @@ Closed phase 5 with an addressed verdict/tag importer and atomic CLI: later verd
 ## 2026-08-18 — Measure automated verdict click-through on the fixture review page and record the interaction baseline
 
 Recorded the newsletter-review-interaction/v1 baseline with three fresh 73-click Playwright passes. Throughput was 14.995-15.115 clicks/second, p50 state-update latency 37.43-37.53 ms, p95 38.36-38.96 ms; every pass reached zero backlog with no browser errors. Added the repeatable runner and kept the result explicitly separate from human judgment speed.
+
+## 2026-08-18 — Phase 6 - implement the Gmail message-source adapter and private-inventory handoff without committing mailbox data
+
+Built the paged, read-only Gmail message-source adapter and mode-0600 private-inventory handoff. All 101 Node tests pass. A live bounded handoff found 14, 4 and 4 messages across the three configured sources; all 22 passed post-search attribution and had readable HTML, with 3 searches, 22 reads and no writes. No mailbox body was retained. The first real extraction remains the next actionable item.

@@ -11,7 +11,7 @@ No dependencies, no network, no real mailbox, and no live model — which is
 `plan.md` §2's seam paying for itself in the first phase that could have needed
 all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1–5
+## What is here — phases 1–6 adapter
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -67,6 +67,51 @@ all three. Node 18 or later, for the built-in test runner.
 | `fixtures/verdicts-*.json` | A valid sitting, a wrong-store file, and an open-vocabulary verdict | `test-plan.md` §4.5 |
 | `test/verdict-import.test.mjs` | Every Phase 5 rule, including inert story content and a duplicate that does not append a second run | `test-plan.md` §4.5 |
 
+**Phase 6 — Gmail source and private handoff**
+
+| File | What it is | Specified in |
+|---|---|---|
+| `src/source-contract.mjs` | Matcher validation and the post-search actual-From check shared by fixture and Gmail sources | `spec.md` §§4, 5.1 |
+| `src/gmail-source.mjs` | The Gmail implementation of the same `search(entry, range)` / `read(message)` seam: query composition, honest pagination, public envelopes, and HTML/plain MIME reads | `spec.md` §§2, 5.1, 6 |
+| `src/private-inventory.mjs` | Strict inventory validation plus atomic mode-0600 read/write; symlinks and group/world-readable files are refused | `spec.md` §§4, 7 |
+| `prepare-private-inventory.mjs` | Reads inventory JSON from stdin so private matcher values do not appear in command arguments, then writes the protected file | `plan.md` phase 6 |
+| `private/.gitignore` | Keeps the inventory, store, live handoff, and any other mailbox-specific artefact out of Git | `spec.md` §§4, 6 |
+| `test/gmail-source.test.mjs` | Query union/intersection, half-open dates, pagination, MIME fallback, read-only operations, full fixture-harvest substitution, and private-file permissions | `test-plan.md` §4.6 |
+
+The constructor for `gmailMessageSource` accepts exactly two connector
+operations: `search_emails` and `read_email`. Search pages at 50 and counts the
+messages actually returned; it never trusts an estimate. Read requests full
+MIME and prefers the inline HTML part, with a link-preserving plain-text
+fallback. The transient envelope contains only id, From, labels, subject and
+local issue date; snippets, recipients and connector response objects never
+cross the adapter, and neither envelope fields nor message bodies enter the run
+record beyond its already-specified body-free `source_doc` accounting.
+
+Create or replace the private inventory without putting its values in shell
+arguments:
+
+```bash
+node initiatives/newsletter-story-harvester/work/prepare-private-inventory.mjs \
+  initiatives/newsletter-story-harvester/work/private/inventory.json \
+  < /path/to/private-inventory-input.json
+```
+
+The 2026-08-18 live handoff used the three user-supplied sources over the
+half-open range ending 2026-08-19. It found 14 Yglesias, 4 Fix the News, and 4
+Chop Wood Carry Water Extra messages. All 22 passed the post-search matcher
+check and had readable inline HTML; the connector made 3 searches, 22 reads,
+and no writes. Only those counts and settings are retained in the ignored,
+mode-0600 handoff file. No body was written to disk.
+
+All three sources use the existing Substack redirect shape. The private
+inventory therefore names `unwrap: "substack"`; the optional single-HEAD follow
+remains off. Opaque recipient-token links lose their query string and carry
+`err:unwrap` rather than generating a click or retaining a subscriber token.
+
+The first real extraction into the private store remains the next item. It is
+what supplies count-band flags and merge rate; the adapter handoff deliberately
+does not manufacture either number from message counts.
+
 Generate a review file:
 
 ```bash
@@ -94,11 +139,11 @@ The report always includes the §7.1 counters (`added`, `matched`, `merged`,
 The second import of the same file returns `duplicate: true` and does not write
 the store or append a run record.
 
-Not here, deliberately: Gmail or any real inventory.
-Phase 3's source is a fixture implementation of the same two-call seam Gmail
-will use later: search returns envelopes, then the run verifies the actual From
-address before it reads a body. That keeps every phase through the working
-harvester independent of the user's mailbox.
+Not committed, deliberately: the Gmail inventory, bodies, or private store.
+Phase 3's fixture source and phase 6's Gmail source implement the same two-call
+seam: search returns envelopes, then the run verifies the actual From address
+before it reads a body. That keeps the gating suite independent of the user's
+mailbox even after the live handoff exists.
 
 ## Three things worth knowing before reading the code
 
@@ -222,3 +267,13 @@ file as `0 added / 3 matched / 0 merged / 0 conflicted / 3 updated`, kept all 74
 stories, and recorded fingerprint
 `6e2b783695bfa920a789cac5c5c284b7d6a151f52a8e207844ccb431b0a19bf2`.
 Importing the same file again left the store byte-for-byte unchanged.
+
+## Phase 6 adapter exit
+
+The complete Node suite now has 101 passing tests. The six Gmail-focused tests
+prove the source swaps into a full fixture harvest without changing the run
+loop, and that its complete connector vocabulary is read-only. The live
+read-only handoff then exercised the exact queries the private inventory
+resolves, including the sender-and-subject intersection. The first real
+extraction, count-band measurements, merge rate, and real-story review sitting
+remain the rest of `test-plan.md` §4.6 rather than being claimed by the adapter.
