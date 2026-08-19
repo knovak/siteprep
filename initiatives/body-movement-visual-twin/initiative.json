@@ -15,9 +15,9 @@
     },
     {
       "id": "confirm-publication-rights",
-      "title": "Confirm the rights and trademark basis for the first public movement collection and anatomy assets",
+      "title": "Before a successor public release, confirm the rights and trademark basis for the movement collection and anatomy assets",
       "state": "blocked",
-      "blocked_by": "legal:review the selected movement descriptions, recordings, names, anatomical assets, licenses, attribution terms, and intended public or commercial use",
+      "blocked_by": "legal:after private validation, review the selected movement descriptions, recordings, names, anatomical assets, licenses, attribution terms, and intended public or commercial use before a successor public release",
       "value": "high",
       "effort": "medium",
       "advances_stage": false
