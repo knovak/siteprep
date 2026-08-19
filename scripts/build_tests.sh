@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 OUTPUT_DIR="$ROOT_DIR/gh-pages"
+DEMO_METADATA_SCRIPT="$ROOT_DIR/scripts/demo_metadata.mjs"
 
 fail() {
   echo "BUILD-TEST FAIL: $1" >&2
@@ -113,6 +114,29 @@ if [ -d "$ROOT_DIR/demos" ]; then
       fail "BUILD-13 demos index missing link for ${demo}"
     fi
     pass "BUILD-13 demos index links ${demo}"
+
+    if [ -f "$ROOT_DIR/demos/${demo}/demo.json" ]; then
+      if ! node "$DEMO_METADATA_SCRIPT" validate "$ROOT_DIR/demos/${demo}" "$demo" > /dev/null; then
+        fail "BUILD-13 invalid demo metadata for ${demo}"
+      fi
+      manifest_href=$(node "$DEMO_METADATA_SCRIPT" href "$ROOT_DIR/demos/${demo}" "$demo")
+      manifest_title=$(node "$DEMO_METADATA_SCRIPT" html-field "$ROOT_DIR/demos/${demo}" "$demo" title)
+      manifest_description=$(node "$DEMO_METADATA_SCRIPT" description "$ROOT_DIR/demos/${demo}" "$demo")
+      manifest_links=$(node "$DEMO_METADATA_SCRIPT" links "$ROOT_DIR/demos/${demo}" "$demo")
+      if ! grep -Fq "href=\"${manifest_href}\"" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index has the wrong root link for ${demo}"
+      fi
+      if ! grep -Fq "<h3>${manifest_title}</h3>" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index has the wrong title for ${demo}"
+      fi
+      if ! grep -Fq "<p>${manifest_description}</p>" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index has the wrong description for ${demo}"
+      fi
+      if [ -n "$manifest_links" ] && ! grep -Fq "$manifest_links" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index is missing additional links for ${demo}"
+      fi
+      pass "BUILD-13 demos index uses metadata for ${demo}"
+    fi
 
     if [ -f "$ROOT_DIR/demos/${demo}/prompts.html" ]; then
       if ! grep -q "href=\"./${encoded_demo}/prompts.html\">Prompt history</a> (<a href=\"./${encoded_demo}/prompts.txt\">text</a>)" "$OUTPUT_DIR/demos/index.html"; then

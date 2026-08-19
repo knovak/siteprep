@@ -3,6 +3,10 @@
 ## Technical documentation (techdoc)
 You will find technical documentation ("techdoc") in the markdown files in this repo, in the root folder or under `shared`. Whenever you add executable code to the repo as a javascript file or github action, be sure to update the techdoc, either by adding a markdown file or by expanding an existing markdown file.  (Do not add documentation for changes only to html files.)
 
+## Pull requests
+Create pull requests as ready for review by default. Create a draft pull request
+only when the user explicitly asks for a draft.
+
 ## Content organization
 You will often be asked by the user to add content. Most content is located in a deck or a section, as described in the techdoc. Demo content is located under `demos/` and uses demo-specific terminology instead of "deck" and "section".
 
@@ -25,6 +29,11 @@ When adding or updating content under `demos/`, use these names for demo element
 - Demo TOC: the generated list of demo links in `demos/index.html`.
 
 `scripts/build.sh` creates `demos/index.html` in the published output from the immediate subdirectories of `demos/`. The Demo TOC should include one `.toc-link` entry for each demo directory. Each Demo TOC entry should include a short description and any links the user specifically asks to include for that demo.
+
+Use `deploy-demo` (`.claude/skills/deploy-demo/SKILL.md`) when copying or
+replacing a complete folder from elsewhere in this repository as a demo. It
+records the Demo TOC title, description, root HTML file, and optional links in
+the destination's `demo.json`.
 
 Do not call demo content a "deck" or "section" unless a user explicitly asks for a comparison with deck/section content.
 
