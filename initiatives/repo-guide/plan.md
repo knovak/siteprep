@@ -323,16 +323,17 @@ have been a feature with nowhere to appear.
 
 ### Phase 7 — Package it as a skill
 
-**Produces:** `initiatives/repo-guide/skills/generate-guide/SKILL.md` — a
+**Produces:** `.claude/skills/generate-guide/SKILL.md` — a
 description that triggers on a request for the guide, the command that generates
 all three artefacts, the command that runs the browser checks against what it
 just generated, and what to do when a fact fails to resolve (report it; §9.4).
 
-**Leaves out:** installing it. A skill is discovered under `.claude/skills/`,
-which is outside a sweep's write scope — not a protected path, but not this
-initiative's either — so the copy that Claude Code finds is landed by the user.
-AGENTS.md already puts an initiative's own capability under its `skills/`, so
-nothing here is in the wrong place; it is simply not yet installed.
+**Installed.** The skill lives at `.claude/skills/generate-guide/`, which is
+where both Claude Code and Codex discover it. It was originally written under
+this initiative's `skills/` and moved when AGENTS.md changed to put skills in
+`.claude/skills/` by default — a skill nobody can invoke is not a delivered
+skill. `.claude/skills/` is outside a sweep's write scope, so a later change to
+this skill is landed by the user rather than by a sweep.
 
 **Thin by construction.** Every command it names exists and is tested by the time
 this phase starts, which is why it is a small item at the end rather than the

@@ -727,3 +727,25 @@ conflicts, unattributed messages, count flags, loud cases, or shape overrides.
 - **The review artefacts stay private and disposable.** The store and generated
   page are ignored, mode 0600, and created with overwrite refusal. Only these
   aggregate measurements and the connector operation counts enter Git.
+
+## 2026-08-19 — `tag-newsletter-stories` moves to `.claude/skills/`
+
+**The skill moved from this initiative's `skills/` to
+`.claude/skills/tag-newsletter-stories/`, as part of a repository-wide change to
+how skills are organized.**
+
+The user's words: *"skills are graduated by default, and are in an initiative
+only if explicitly meant for just that initiative... the reason is that most
+skills are meant for direct invocation by an interactive user."*
+
+- **Settled:** the skill is discoverable, so a user can invoke it by name from
+  anywhere rather than only by knowing its path inside this initiative.
+- **Settled:** `scripts/tagging-pass.mjs` moved with it. Its imports of
+  `work/src/merge.mjs` and `work/src/store.mjs` are now repository-relative, and
+  `work/test/tagging-skill.test.mjs` imports it from its new location. The
+  tagging tests pass unchanged.
+- **Note:** the skill still depends on this initiative's `work/src/` store
+  modules. That coupling is unchanged by the move; it just now crosses a
+  directory boundary, so moving or renaming those modules breaks the skill.
+- **Unchanged:** what the skill does, its guardrails, and the privacy rules for
+  the store, brief, and proposal.

@@ -33,7 +33,7 @@ An initiative holds three kinds of thing:
 | | What it is | Lifetime |
 |---|---|---|
 | **Intent** | The wish, objectives, spec, plan, test plan — the elaboration chain | Grows monotonically; never deleted |
-| **Capability** | Skills, scripts, prompts, code libraries the initiative develops | Outlives any single output; reused on revisit |
+| **Capability** | Scripts, prompts, code libraries the initiative develops (skills normally live in `.claude/skills/`) | Outlives any single output; reused on revisit |
 | **Outputs** | Pointers to what it actually produced | Graduates out of the initiative |
 
 ### 2.1 What an initiative can produce
@@ -69,9 +69,14 @@ initiatives/night-sky/            decks/ , demos/                external
 2. When it is good enough, it **graduates** — moves to `decks/<name>/` or
    `demos/<name>/`, and from then on follows the normal conventions in `AGENTS.md`.
    The initiative keeps a pointer in `outputs[]`, not a copy.
-3. **Capability does not graduate with it.** `lib/`, `skills/`, and `prompts/` stay
+3. **Most capability does not graduate with it.** `lib/` and `prompts/` stay
    in the initiative, because that is what makes the initiative revisitable. When the
    initiative wakes up to produce version 2, the tooling is right there.
+   **Skills are the exception.** A skill is invoked by name by a user working
+   interactively, and only `.claude/skills/` is discovered, so a skill filed under an
+   initiative is one nobody can invoke. Skills therefore go to `.claude/skills/` by
+   default; an initiative's own `skills/` is for a skill deliberately scoped to that
+   initiative alone. See the Skills section of `AGENTS.md`.
 4. If a library becomes broadly useful to *other* initiatives or decks, it graduates
    a second time — into `shared/`, under the existing opt-in-library convention.
 
@@ -81,7 +86,9 @@ initiatives/night-sky/            decks/ , demos/                external
 | Demo | `work/` | `demos/<name>/` | `{"kind":"demo","path":"demos/<name>"}` |
 | External code | `work/` or `src/` | stays in initiative; deployed out | `{"kind":"external","url":"..."}` |
 | Shared library | `lib/` | `shared/<lib>/` when widely used | `{"kind":"capability","path":"shared/<lib>"}` |
-| Skill / prompt | `skills/`, `prompts/` | stays in the initiative | `{"kind":"capability","path":"initiatives/<n>/skills/x"}` |
+| Skill | `.claude/skills/<name>/` from the start | already there; nothing to graduate | `{"kind":"capability","path":".claude/skills/<name>"}` |
+| Initiative-scoped skill | `skills/` by explicit choice | `.claude/skills/<name>/` if it turns out to be general | `{"kind":"capability","path":"initiatives/<n>/skills/x"}` |
+| Prompt | `prompts/` | stays in the initiative | `{"kind":"capability","path":"initiatives/<n>/prompts/x"}` |
 
 Nothing about existing decks or demos changes, and no migration is required.
 
@@ -136,7 +143,8 @@ initiatives/
     notes/             # research, references, dead ends
     work/              # in-progress output, pre-graduation
     lib/               # code libraries this initiative develops
-    skills/            # skills this initiative develops
+    skills/            # only a skill deliberately scoped to this initiative;
+                       #   skills otherwise live in .claude/skills/
 ```
 
 **Only `initiative.json` and `wish.md` exist at birth**, and the overview page is generated rather than committed (§8.2). Every other

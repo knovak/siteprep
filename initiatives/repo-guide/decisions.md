@@ -505,3 +505,28 @@ shall keep the contents of the latest generation of the guide in the folder.)"*
 - **Still open:** tracking the files makes them available in the repository but
   does not link them into the published site. The existing `link-the-guide`
   permission blocker remains the route to satisfying that part of O1.
+
+## 2026-08-19 — Skills are discoverable by default, so `generate-guide` is installed
+
+**`generate-guide` moved from this initiative's `skills/` to
+`.claude/skills/generate-guide/`, as part of a repository-wide change to how
+skills are organized.**
+
+The user's words: *"skills are graduated by default, and are in an initiative
+only if explicitly meant for just that initiative... the reason is that most
+skills are meant for direct invocation by an interactive user."*
+
+### What this settles, and what it does not
+
+- **Settled:** the skill is installed where Claude Code and Codex discover it.
+  Phase 7 of `plan.md` no longer "leaves out installing it".
+- **Settled:** the `link-the-guide` item's permission blocker narrows to the
+  site-navigation half. Installing the skill is no longer part of it.
+- **Unchanged:** the guide's generated artifacts are still not linked into the
+  published site, which is what `link-the-guide` still needs permission for.
+- **Note:** the skill runs `initiatives/repo-guide/work/guide/build/cli.mjs`,
+  so a repo-wide skill now depends on this initiative's code. That is allowed —
+  the rule against depending on `initiatives/` covers *published outputs*, which
+  are served silently to readers; a skill is invoked deliberately by someone who
+  sees it fail. Moving or renaming that CLI now breaks the skill, so keep them
+  in step.

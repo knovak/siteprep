@@ -7,7 +7,7 @@ import {chromium} from '@playwright/test';
 
 import {reviewPageHtml} from '../src/review-page.mjs';
 import {importVerdictFile} from '../src/verdict-import.mjs';
-import {applyTaggingPass} from '../../skills/tag-newsletter-stories/scripts/tagging-pass.mjs';
+import {applyTaggingPass} from '../../../../.claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs';
 
 const fixturePath = new URL('../fixtures/store-fixture.json', import.meta.url).pathname;
 const store = JSON.parse(readFileSync(fixturePath, 'utf8'));

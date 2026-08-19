@@ -345,6 +345,15 @@ if [ "$footers_found" -eq 0 ]; then
 fi
 pass "BUILD-14 version footer injected outside inline scripts ($footers_found pages)"
 
+# BUILD-15: The README skills index matches the skills on disk
+# The index is generated from .claude/skills/*/SKILL.md, so a skill that was
+# added, removed, or renamed without regenerating leaves the README pointing at
+# skills that are not there and hiding ones that are.
+if ! node "$ROOT_DIR/scripts/skills_index.mjs" --check >/dev/null; then
+  fail "BUILD-15 README skills index is stale; run: node scripts/skills_index.mjs"
+fi
+pass "BUILD-15 README skills index matches .claude/skills"
+
 # BUILD-12: Clean build capability
 # This test verifies build can work from clean state
 # (Already tested by BUILD-01 running a fresh build)
