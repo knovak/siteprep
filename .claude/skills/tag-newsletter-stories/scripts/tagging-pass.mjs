@@ -5,8 +5,8 @@ import {chmodSync, existsSync, readFileSync, statSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {recordRun} from '../../../work/src/merge.mjs';
-import {hydrate, loadStore, saveStore} from '../../../work/src/store.mjs';
+import {recordRun} from '../../../../initiatives/newsletter-story-harvester/work/src/merge.mjs';
+import {hydrate, loadStore, saveStore} from '../../../../initiatives/newsletter-story-harvester/work/src/store.mjs';
 
 const TAG = /^(theme|about):[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DAY_MS = 24 * 60 * 60 * 1000;

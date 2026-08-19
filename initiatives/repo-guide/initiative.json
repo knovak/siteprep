@@ -43,9 +43,9 @@
     },
     {
       "id": "link-the-guide",
-      "title": "Link the generated guide into the site so a newcomer can find it, and install the skill where Claude Code finds it",
+      "title": "Link the generated guide into the site so a newcomer can find it",
       "state": "blocked",
-      "blocked_by": "permission:install the generated skill under .claude/skills and add the guide to protected site navigation and build paths",
+      "blocked_by": "permission:add the guide to protected site navigation and build paths",
       "value": "medium",
       "effort": "small",
       "advances_stage": false

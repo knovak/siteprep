@@ -1,9 +1,10 @@
 # Deploy to ChatGPT Sites
 
-This repository-scoped Codex skill publishes an already-built static website to
-ChatGPT Sites. Because it lives under the repository's top-level
-`.agents/skills/` directory, it is available while working anywhere in this
-repository, including within an initiative.
+This repository-scoped skill publishes an already-built static website to
+ChatGPT Sites. It lives under `.claude/skills/` with every other skill in this
+repository, and `.agents/skills/deploy-to-chatgpt-sites` symlinks to it so Codex
+finds it at the path it expects. Either way it is available while working
+anywhere in this repository, including within an initiative.
 
 ## Inputs
 

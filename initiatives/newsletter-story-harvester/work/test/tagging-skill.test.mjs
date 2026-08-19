@@ -6,7 +6,7 @@ import {
   applyTaggingPass,
   prepareTaggingBrief,
   undoTaggingPass,
-} from '../../skills/tag-newsletter-stories/scripts/tagging-pass.mjs';
+} from '../../../../.claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs';
 
 const fixture = JSON.parse(readFileSync(new URL('../fixtures/store-fixture.json', import.meta.url), 'utf8'));
 const proposal = JSON.parse(readFileSync(new URL('../fixtures/tagging-proposal.json', import.meta.url), 'utf8'));

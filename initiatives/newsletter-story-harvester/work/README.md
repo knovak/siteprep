@@ -85,8 +85,8 @@ all three. Node 18 or later, for the built-in test runner.
 
 | File | What it is | Specified in |
 |---|---|---|
-| `../skills/tag-newsletter-stories/SKILL.md` | The model workflow: read a provenance-light brief, judge themes and same-event clusters, then apply or undo one checked pass | `spec.md` §§10.2–10.3 |
-| `../skills/tag-newsletter-stories/scripts/tagging-pass.mjs` | Deterministic brief, proposal validation, additive tag/cluster writes, exact set undo, atomic mode-preserving CLI | `plan.md` phase 7 |
+| `.claude/skills/tag-newsletter-stories/SKILL.md` | The model workflow: read a provenance-light brief, judge themes and same-event clusters, then apply or undo one checked pass | `spec.md` §§10.2–10.3 |
+| `.claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs` | Deterministic brief, proposal validation, additive tag/cluster writes, exact set undo, atomic mode-preserving CLI | `plan.md` phase 7 |
 | `src/store.mjs` | Adds the `clusters` block beside stories and runs while hydrating older stores with an empty block | `plan.md` §5.4 |
 | `src/review-page.mjs` | Renders a cluster as one top-level entry, with the paraphrase and individually judgeable linked members underneath | `spec.md` §10.2 |
 | `fixtures/tagging-proposal.json` | A recorded theme-and-cluster pass over the fixture store | `test-plan.md` §4.7 |
@@ -170,9 +170,9 @@ the store or append a run record.
 Prepare, apply, or undo a tagging pass:
 
 ```bash
-node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs prepare /path/to/store.json
-node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs apply /path/to/store.json /path/to/proposal.json
-node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs undo /path/to/store.json tag-2026-08-19-example
+node .claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs prepare /path/to/store.json
+node .claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs apply /path/to/store.json /path/to/proposal.json
+node .claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs undo /path/to/store.json tag-2026-08-19-example
 ```
 
 The apply command accepts only `theme:` and `about:` slugs, known story ids,

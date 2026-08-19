@@ -18,7 +18,7 @@ when the store is private.
 1. Prepare the model-readable brief:
 
    ```bash
-   node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs prepare /path/to/store.json > /private/path/tagging-brief.json
+   node .claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs prepare /path/to/store.json > /private/path/tagging-brief.json
    ```
 
 2. Read every story in the brief and write a proposal JSON object:
@@ -51,7 +51,7 @@ when the store is private.
 3. Apply the checked proposal atomically:
 
    ```bash
-   node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs apply /path/to/store.json /private/path/proposal.json
+   node .claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs apply /path/to/store.json /private/path/proposal.json
    ```
 
 The command validates the store address, story ids, tag prefixes, date window,
@@ -64,7 +64,7 @@ Existing identical clusters are left unchanged; conflicting reuse of an
 Undo only by the recorded pass id:
 
 ```bash
-node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs undo /path/to/store.json tag-2026-08-19-energy-and-permitting
+node .claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs undo /path/to/store.json tag-2026-08-19-energy-and-permitting
 ```
 
 The command removes exactly the tags and clusters that pass added. It refuses

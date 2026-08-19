@@ -11,7 +11,7 @@ deck, strict slide-count and copy-length gates, and keyboard navigation. Phase
 Step, Back, and Play controls. Phase 6 adds strict PDF-link configuration,
 source-commit dating, visible possibly-stale warnings, and the simulator's
 watched-date report. Phase 7 packages the complete generate-and-check workflow
-as `initiatives/repo-guide/skills/generate-guide/SKILL.md`; installing that
+as `.claude/skills/generate-guide/SKILL.md`; installing that
 skill is intentionally a later delivery step. Phase 8 splits facts by shape so
 structured values render as blocks and figures rather than being flattened into
 sentences, and rebuilds the simulator around keyed items and the whole
