@@ -1,17 +1,8 @@
 {
   "title": "Tide Here",
   "summary": "A website that displays upcoming tide, moon, and sun times for the user's location.",
-  "stage": "specified",
+  "stage": "planned",
   "value": "medium",
   "outputs": [],
-  "todo": [
-    {
-      "id": "draft-plan-and-test-plan",
-      "title": "Draft plan.md and test-plan.md from the NOAA-first specification",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": true
-    }
-  ]
+  "todo": []
 }
