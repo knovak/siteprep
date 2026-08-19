@@ -1,7 +1,15 @@
-# Bookmark sorter — phases 1–6 work
+# Bookmark sorter — phases 1–6 work and test deployment
 
-This directory holds the first six build increments for the bookmark sorter. It is
-private initiative work, not a published demo.
+This directory holds the first six build increments for the bookmark sorter and
+the full-stack ChatGPT Sites wrapper used to test them. It remains private
+initiative work, not a published demo or a graduated initiative output.
+
+The app does not have or need a source `index.html`. `src/worker.mjs` is the
+application root: it returns the complete browser page for `/` and handles the
+stateful `/api/*` routes. `worker/index.ts` is the thin Sites entry point that
+wires that application to the hosted runtime. A static-folder deployment would
+serve only a shell and cannot provide the D1-backed import, collection, triage,
+selection, and export operations.
 
 ## What exists
 
@@ -109,6 +117,41 @@ vendor endpoint is emitted into the page.
 The list endpoint accepts `limit` and `offset`; `limit` is clamped to 500. The
 response always includes the total collection count so the page does not have
 to load all 10,000 records to prove the pile landed.
+
+## ChatGPT Sites test deployment
+
+The deployment surface is this `work/` directory, not the initiative directory.
+It uses the full Sites build and hosting workflow rather than the
+static-folder-only `deploy-to-chatgpt-sites` skill.
+
+- `.openai/hosting.json` declares D1 as `DB`. R2 is intentionally `null` in the
+  first test deployment, so the still-open storage-cost decision is not silently
+  accepted.
+- `db/schema.ts` is the deployable final form of migrations 0001–0005. The
+  generated `drizzle/` migration is packaged with a Site version and creates the
+  same tables, constraints, and query indexes on a fresh D1 database.
+- `worker/index.ts` passes `/` and `/api/*` to the existing application and
+  leaves the framework-owned image and sign-in routes to Sites.
+- A private Site supplies the stable `oai-authenticated-user-id` header. The app
+  uses that opaque value for ownership and creates one private personal
+  collection on first API use.
+- With R2 absent, importing and triage work normally but pass-1 metadata capture
+  and capture-gap processing are disabled. This is suitable for the blind
+  baseline and selection-interaction tests. Enabling capture testing later
+  requires setting `r2` to `CAPTURES` after the user accepts the Sites storage
+  limits, rebuilding, and replacing the Site version.
+
+Install and validate this project from this directory:
+
+```bash
+npm ci
+npm test
+npm run build
+```
+
+The root repository build remains a separate validation step for generated
+initiative pages. See `END_USER_TESTING.md` for the private test procedure and
+the data-handling boundary.
 
 ## Triage API and interaction
 

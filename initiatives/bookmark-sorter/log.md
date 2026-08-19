@@ -284,3 +284,15 @@ Built the bookmark-sorter/v1 selection export and URL-keyed import for memory an
 ## 2026-08-19 — Phase 6 - build identity, owner-scoped collections, and per-user demo copies
 
 Added ChatGPT Sites identity, server-enforced owner scoping, one personal collection per user, cross-owner read-only demo templates, private copy/fresh-copy/rename/delete operations, capability-gated template editing, a collection menu, and collection-scoped capture statistics and gap processing. Added D1 indexes, two-user isolation tests, API coverage, and responsive browser checks.
+
+## 2026-08-19 — Assemble and deploy the private D1-only end-user test
+
+Added the full-stack ChatGPT Sites wrapper, generated the final phase 1–6 D1
+migration, and documented the first real-pile and selection sittings. Deployed
+version 1 owner-only at [Bookmark Sorter Test](https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site).
+
+The first test Site deliberately provisions D1 without R2. Bookmark import,
+private collections, verdicts, selections, undo, sitting rate and JSON export
+are live; metadata images and the capture-gap pipeline remain off. This makes
+the blind and selection measurements runnable without treating the open Sites
+storage-cost question as accepted.
