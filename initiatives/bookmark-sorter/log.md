@@ -284,3 +284,7 @@ Built the bookmark-sorter/v1 selection export and URL-keyed import for memory an
 ## 2026-08-19 — Phase 6 - build identity, owner-scoped collections, and per-user demo copies
 
 Added ChatGPT Sites identity, server-enforced owner scoping, one personal collection per user, cross-owner read-only demo templates, private copy/fresh-copy/rename/delete operations, capability-gated template editing, a collection menu, and collection-scoped capture statistics and gap processing. Added D1 indexes, two-user isolation tests, API coverage, and responsive browser checks.
+
+## 2026-08-19 — Confirm that the workspace's Sites limits and cost are acceptable for the pile and capture store
+
+Recorded approval of Sites costs and plan-specific limits for 10,000 D1 items and up to a few hundred MB of R2 captures.
