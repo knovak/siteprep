@@ -12,7 +12,10 @@ Step, Back, and Play controls. Phase 6 adds strict PDF-link configuration,
 source-commit dating, visible possibly-stale warnings, and the simulator's
 watched-date report. Phase 7 packages the complete generate-and-check workflow
 as `initiatives/repo-guide/skills/generate-guide/SKILL.md`; installing that
-skill is intentionally a later delivery step.
+skill is intentionally a later delivery step. Phase 8 splits facts by shape so
+structured values render as blocks and figures rather than being flattened into
+sentences, and rebuilds the simulator around keyed items and the whole
+lifecycle.
 
 Resolve the live repository facts from the repository root:
 
@@ -38,13 +41,13 @@ Generate the description and run its offline browser checks:
 node initiatives/repo-guide/work/guide/build/cli.mjs description
 ```
 
-Generate the 13-slide deck and run its offline browser and keyboard checks:
+Generate the deck and run its offline browser and keyboard checks:
 
 ```bash
 node initiatives/repo-guide/work/guide/build/cli.mjs deck
 ```
 
-Generate the six-step simulator and run its offline browser checks:
+Generate the lifecycle simulator and run its offline browser checks:
 
 ```bash
 node initiatives/repo-guide/work/guide/build/cli.mjs simulator
@@ -62,11 +65,24 @@ move one slide, Home and End jump to the boundaries, and Space/Shift+Space also
 move forward and back.
 
 The simulator is written to `out/simulator.html`. Its choreography is fixed and
-abstract: it never reads an `initiative.json`. Stage names, the proposable
-blocker class, sweep phase names, and per-run budget resolve from the fact
-registry at generation. Step 4 visibly passes an item over when the budget is
-spent; step 6 removes a completed item, unblocks its dependent, and advances the
-stage. Play follows the same six states as Step and can be interrupted.
+abstract: it never reads an `initiative.json`. Stage names, their expected
+documents, the proposable and unproposable human blocker classes, sweep phase
+names, and the per-run budget resolve from the fact registry at generation.
+
+The walk-through covers the whole lifecycle — every derived stage, including one
+deliberate move backwards when an assumption breaks, and the quiet stages at the
+end. Items carry stable keys and the item list is *reconciled* rather than
+replaced, so an item that survives a step is the same element: it recolours in
+place, slides when a neighbour leaves, and collapses out when it merges. That is
+the difference between watching a process and paging through screenshots of one.
+
+Two steps choreograph their interesting moment across timed beats rather than
+presenting it finished: the sweep run spends its allowance with the meter
+filling and greys the passed-over item at the boundary, and the review step
+shows feedback being answered before new work starts. `window.simulatorState`
+exposes `settle()`, which cancels pending beats and jumps to a step's finished
+state — navigation uses it, and so do the tests, which cannot wait on wall time.
+Play is paced from narrative length and can be interrupted.
 
 Run all Node-level generator tests:
 
@@ -80,10 +96,42 @@ an unsupported workflow, skill-frontmatter, prompt, or exported-module shape is
 an error. There are no defaults and no partial fact sets.
 
 `build/sections.mjs` reads one strict markdown section at a time. Unknown tokens,
-literal blocker prefixes, literal budget numbers, backticked stage names, and
-stage lists are errors. Bare stage words and uncited facts are warnings. The
-module returns structured diagnostics so later renderers can print one report
-without reimplementing the rules.
+literal blocker prefixes, literal budget numbers, backticked stage names, stage
+lists, unresolvable blocks, and **structured values used inline** are errors.
+Bare stage words and uncited facts are warnings. The module returns structured
+diagnostics so later renderers can print one report without reimplementing the
+rules.
+
+The `structured-inline` rule is the one that decides how the guide reads. A
+scalar — a count, a command, a single name — belongs in a sentence. A list, a
+map, or a set of records does not: flattening one into prose forces every
+sentence carrying it into the same "the X are A; B; C" frame, which is what made
+the first version read like a machine. Structured values take a block instead.
+
+`build/blocks.mjs` renders those blocks. A section names a directive on its own
+line:
+
+```
+@fact sweep.budget as table
+@fact lifecycle.stages as rail
+@fact skills.* as cards
+@figure lifecycle-flow
+```
+
+Views are `rail`, `chips`, `paths`, `table`, `stack`, `list`, `cards`, and
+`initiatives`; omitting `as <view>` picks one from the value's shape. A
+`prefix.*` glob resolves a whole registered collection and only supports
+`cards`. A block cites every fact it resolves, so putting a value in a table
+discharges the `uncited-fact` warning the same way a sentence would — which is
+what stops the warning from pushing values into prose that does not want them.
+Block directives are excluded from the literal checks and from the word counts.
+
+`build/figures.mjs` holds the inline SVG figures. Each is a pure function of
+resolved facts and declares the keys it consumes, so a diagram cannot drift from
+the repository; each also namespaces its arrowhead marker, because several
+figures share one page. Figures carry no colours of their own — they paint with
+`--fig-*` custom properties that the description and the deck each define, so
+one source renders correctly on a white page and on a cream slide.
 
 The first `---` rule after frontmatter separates page text from slide text.
 Further `---` rules divide that slide half into an ordered list, allowing one
@@ -99,9 +147,12 @@ directly with `file://`; it needs no server and is not part of the repository's
 unrelated site test suite.
 
 `build/deck.mjs` uses the same compiled section and fact records, then renders
-only sections marked for slides. Its browser harness opens the generated file
-from `file://`, refuses network dependencies, checks all authoritative links,
-and exercises forward, back, first, and last keyboard navigation.
+only sections marked for slides. A slide takes its layout from what it carries —
+`figure`, `data`, or `statement` — so a deck of one repeated shape is no longer
+possible. Its browser harness opens the generated file from `file://`, refuses
+network dependencies, checks all authoritative links, exercises forward, back,
+first, and last keyboard navigation, and asserts that no slide's content
+overflows its fixed frame.
 
 `build/simulator.mjs` resolves only four registered fact keys rather than the
 whole repository fact set. The selective resolver is what makes the spec's
@@ -110,6 +161,11 @@ does not affect generation, while inconsistent lifecycle constants still fail.
 Its browser harness steps forward and back across every state, checks the budget
 and cascade moments, interrupts and resumes Play, and refuses network
 dependencies.
+
+The PDF panel renders only once `config.json` carries at least one entry: an
+empty state promoted above the first section told a first-time reader nothing
+except that something was missing. When entries exist the panel sits at the end
+of the page, next to the provenance it shares.
 
 `config.json` carries the hand-maintained portable-copy data. Each entry in
 `pdfs` requires a unique id, label, HTTPS link, and real `YYYY-MM-DD` refresh
@@ -125,11 +181,13 @@ generation compares it only with the lifecycle and sweep-phase sources and
 returns a report diagnostic when another walkthrough may be due. Unrelated
 commits advance neither comparison.
 
-The first real description contains nine sections, 1,076 composed words and 23
-resolved fact tokens. The per-section baseline and the real drafting-check
-results are recorded in `decisions.md`.
+The description contains nine sections. Per-section composed words, resolved
+inline tokens, and block counts are reported by generation; the reasoning behind
+the scalar/structured split is recorded in `decisions.md` under 2026-08-19.
 
 Fact keys are registered once with a source label. Registering the same key a
 second time fails before any source is read. Dynamic collections use one key per
 file (`workflows.<name>` and `skills.<name>`); `initiatives.live` is a shallow
-directory read containing only slug, title, and stage.
+directory read containing only slug, title, and stage. A skill fact carries its
+`name`, its full `description`, and a derived `summary` — the description's
+first sentence, which is what a card shows and what a sentence may cite.

@@ -375,3 +375,111 @@ blocker namespace, phase name, or budget number is typed into the animation.
   lifecycle. The user's earlier decision keeps a real-JSON upgrade open if a
   person watches this version and finds it inadequate, so that walkthrough
   remains a separate data blocker.
+
+## 2026-08-19 — Output quality: structure renders as structure, and the simulator simulates
+
+The first complete set of outputs was reviewed and rejected on two grounds: the
+wording read as stilted, and the simulator was not appealing. Both turned out to
+have single mechanical causes rather than being matters of taste, and both are
+fixed at the cause.
+
+### Why the prose read like a machine
+
+`sections.mjs` flattened *any* fact into a sentence — arrays joined with `; `,
+objects rendered `key: value; key: value`. Because a token could expand into a
+scalar, a list, a map, or a whole multi-sentence skill description, every
+sentence carrying one had to be phrased to survive any of those, which forces
+one frame: plural noun phrase, copula, dumped value.
+
+> The current budget is items_per_run: 4; max_items_per_initiative: 2;
+> max_open_prs: 8; max_effort: large.
+
+Three lint rules made it worse rather than better. `literal-budget` bans any
+integer matching a budget value and `literal-stage-*` ban naming stages, so an
+author is *forbidden* from writing the plain sentence and must reach for a
+token; and `uncited-fact` requires every registered fact to appear somewhere,
+which turns the prose into a quota to be discharged. That is why the portability
+section had crammed three entire skill descriptions — trigger phrases and
+parenthetical examples included — into a single sentence.
+
+So the register was not a drafting failure. It was the price being paid for
+objective 9's generation guarantee, and it was being paid in the wrong currency.
+
+### What replaced it
+
+Facts are split by shape and rendered accordingly.
+
+- **Scalars stay inline.** `{{sweep.budget.items_per_run}}` inside "a run
+  handles at most 4 items" reads as English and always did.
+- **Structured values become blocks.** A section names `@fact <key> [as <view>]`
+  or `@figure <name>` on its own line and the value arrives as a rail, a table,
+  a chip row, a list, or a set of cards. `build/blocks.mjs` owns the views.
+- **Inlining a structured value is now an error** (`structured-inline`), the way
+  a literal stage name already was. That single lint flip is what forces the
+  prose to be prose: the old frame is no longer expressible.
+- **A block cites its facts**, so structure discharges `uncited-fact` and the
+  quota stops pushing values into sentences that do not want them. A `prefix.*`
+  glob lets one block cite a whole registered collection.
+- **`skills.<name>.summary`** is a new derived fact: the first sentence of a
+  skill's own description. A card shows the summary; the full description with
+  its trigger phrases is still available and is no longer inlined anywhere.
+
+Objective 9 is unaffected. Every value still resolves from the repository at
+generation; only its presentation changed. The guarantee is now paid for in
+layout, which is where it belongs.
+
+### Why the simulator was not appealing
+
+It was a slideshow of six states. `show()` called `replaceChildren` on the item
+list every step, so an item that persisted across a step was a *different DOM
+element with the same words*. Nothing ever visibly happened to anything, which
+is why each step read as a new screen rather than as a consequence — and why the
+left-hand "changes" list existed at all: it was narrating what the picture
+failed to show. It also stopped three stages into an eight-stage lifecycle.
+
+### What replaced it
+
+- **Items are keyed and the DOM is reconciled.** An item that survives a step is
+  the same element: it recolours in place, slides when a neighbour leaves, and
+  collapses out of the list when it merges. A browser test tags live nodes and
+  asserts the tags survive a step, which is precisely what the old renderer
+  could not do.
+- **The interesting moments are choreographed, not presented finished.** The
+  sweep step runs its phases in sequence with the budget meter filling, and the
+  passed-over item greys at the moment the allowance runs out. Steps expose
+  `settle()` so tests need not wait on wall time.
+- **The whole lifecycle is covered** — fourteen steps reaching every derived
+  stage, including one deliberate backward move when an assumption breaks, and
+  the quiet stages at the end.
+- **The record accumulates.** `stage_documents` says what a stage *expects*, and
+  the quiet stages expect nothing new; showing the record empty out at the end
+  would have contradicted the reason it is kept. Documents now only ever grow.
+- **Play is paced to be readable** — derived from narrative length rather than a
+  flat 700ms — and the Step button names what is about to happen.
+
+### Graphics
+
+Six fact-derived inline SVG figures (`build/figures.mjs`) now appear in both the
+description and the deck: the lifecycle rail with its accumulating documents,
+the division of labour, one sweep run and its allowance, blocker triage, the
+fork boundary, and the three content areas. They are pure functions of resolved
+facts and declare the keys they consume, so a diagram cannot drift from the
+repository — the same guarantee the prose has. Deck slides now take their layout
+from what they carry, so a diagram slide, a data slide, and a statement slide no
+longer look identical.
+
+### What this settles, and what it does not
+
+- **Settled:** no output flattens a structured value into prose; a browser
+  assertion fails the description if any paragraph does.
+- **Settled:** the simulator reconciles rather than replaces, covers all eight
+  derived stages, and its record never shrinks.
+- **Settled:** slides are no longer one shape repeated, and no slide overflows
+  its frame at a 16:9 viewport.
+- **Not settled:** whether a newcomer finds the result adequate. The three
+  observation blockers on `initiative.json` are unchanged and still need people
+  rather than assertions — this work makes them worth running, it does not
+  answer them.
+- **Unaffected:** the abstract-versus-real-JSON decision of 2026-08-17. The
+  simulator still reads no initiative data; it covers more of the lifecycle
+  abstractly, which is a different axis from fidelity.

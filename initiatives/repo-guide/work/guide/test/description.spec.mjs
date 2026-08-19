@@ -47,3 +47,54 @@ test('description opens offline with provenance, all sections, and resolvable so
   expect(failedRequests).toEqual([]);
   expect(networkRequests).toEqual([]);
 });
+
+test('structured facts render as structure, not as flattened prose', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+
+  // Every rendered block is a real component, and none of them is a paragraph
+  // of semicolon-joined values.
+  const blocks = await page.locator('[data-fact-block]').evaluateAll(nodes => nodes.map(node => ({
+    fact: node.dataset.factBlock,
+    view: node.dataset.factView,
+  })));
+  expect(blocks.length).toBeGreaterThanOrEqual(5);
+  expect(blocks.map(block => block.view)).not.toContain(undefined);
+
+  // The budget is a table of named rows rather than a sentence.
+  const budget = page.locator('[data-fact-block="sweep.budget"] .fact-table > div');
+  await expect(budget.first()).toBeVisible();
+  expect(await budget.count()).toBeGreaterThanOrEqual(3);
+
+  // No paragraph anywhere flattens a structured value the old way.
+  const flattened = await page.locator('main p').evaluateAll(nodes => nodes
+    .map(node => node.textContent)
+    .filter(text => /\b\w+: [^;]+;\s*\w+:/.test(text)));
+  expect(flattened).toEqual([]);
+});
+
+test('figures are inline, self-contained, and described', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  const figures = page.locator('figure[data-figure]');
+  expect(await figures.count()).toBeGreaterThanOrEqual(4);
+
+  for (const svg of await page.locator('figure[data-figure] svg').all()) {
+    await expect(svg).toHaveAttribute('role', 'img');
+    const label = await svg.getAttribute('aria-label');
+    expect(label && label.length).toBeGreaterThan(10);
+  }
+
+  // Arrowhead markers are namespaced per figure: duplicate ids on one page make
+  // every arrow resolve to whichever marker rendered first.
+  const markerIds = await page.locator('marker').evaluateAll(nodes => nodes.map(node => node.id));
+  expect(new Set(markerIds).size).toBe(markerIds.length);
+});
+
+test('the portable-copies panel is absent while there is nothing to link', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  const panels = await page.locator('.pdf-panel').count();
+  const entries = await page.locator('.pdf-panel li[data-pdf-id]').count();
+  // Either the panel is gone, or it carries real links — never an empty state
+  // promoted above the first section.
+  expect(panels === 0 || entries > 0).toBe(true);
+  await expect(page.locator('main > *').first()).toHaveAttribute('id', 'repository');
+});

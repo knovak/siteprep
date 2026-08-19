@@ -4,7 +4,9 @@ import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {promisify} from 'node:util';
 
+import {BLOCK_CSS, parseBlockDirective, renderBlock} from './blocks.mjs';
 import {resolveRepositoryFacts} from './facts.mjs';
+import {FIGURE_CSS} from './figures.mjs';
 import {compileSections, loadSections} from './sections.mjs';
 
 const execFile = promisify(execFileCallback);
@@ -69,6 +71,12 @@ function renderMarkdown(markdown, context) {
   };
   for (const line of markdown.replaceAll('\r\n', '\n').split('\n')) {
     if (!line.trim()) { flushParagraph(); flushList(); continue; }
+    const directive = parseBlockDirective(line.trim());
+    if (directive) {
+      flushParagraph(); flushList();
+      output.push(renderBlock(directive, context.facts));
+      continue;
+    }
     const bullet = line.match(/^[-*]\s+(.+)$/);
     if (bullet) { flushParagraph(); list.push(bullet[1]); continue; }
     flushList(); paragraph.push(line.trim());
@@ -77,8 +85,18 @@ function renderMarkdown(markdown, context) {
   return output.join('\n');
 }
 
-function words(value) {
+// A block directive contributes a diagram or a table, not slide copy, so it is
+// excluded from the copy budget the way whitespace is.
+function withoutBlocks(value) {
   return value
+    .replaceAll('\r\n', '\n')
+    .split('\n')
+    .filter(line => !parseBlockDirective(line.trim()))
+    .join('\n');
+}
+
+function words(value) {
+  return withoutBlocks(value)
     .replace(SOURCE_LINK, '$1')
     .replace(/[#*_`]/g, ' ')
     .match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) ?? [];
@@ -99,6 +117,20 @@ function titleAndBody(section, markdown, index) {
   return {title: heading[1].trim(), body: [...lines.slice(0, first), ...lines.slice(first + 1)].join('\n').trim()};
 }
 
+// Thirteen identically shaped slides read as one slide shown thirteen times.
+// The layout follows what the slide actually carries, so a diagram slide, a
+// data slide, and a statement slide look different from across a room.
+export function slideLayout(markdown) {
+  const directives = markdown
+    .replaceAll('\r\n', '\n')
+    .split('\n')
+    .map(line => parseBlockDirective(line.trim()))
+    .filter(Boolean);
+  if (directives.some(directive => directive.kind === 'figure')) return 'figure';
+  if (directives.length > 0) return 'data';
+  return 'statement';
+}
+
 export function flattenSlides(sections) {
   return sections
     .filter(section => section.slide)
@@ -111,6 +143,7 @@ export function flattenSlides(sections) {
       page_text: section.pageText,
       markdown,
       ...titleAndBody(section, markdown, sectionSlideIndex),
+      layout: slideLayout(markdown),
     })));
 }
 
@@ -140,10 +173,10 @@ function sourcePaths(slides) {
   return [...new Set(paths)];
 }
 
-function deckHtml({slides, generatedDate, sha, repositoryUrl}) {
-  const context = {sha, repositoryUrl};
+function deckHtml({slides, facts, generatedDate, sha, repositoryUrl}) {
+  const context = {sha, repositoryUrl, facts};
   const rendered = slides.map((slide, index) => `
-    <article class="slide${index === 0 ? ' title-slide' : ''}" data-index="${index}" data-section-id="${escapeHtml(slide.section_id)}" data-audience="${escapeHtml(slide.audience)}" ${index === 0 ? '' : 'hidden'} aria-hidden="${index === 0 ? 'false' : 'true'}">
+    <article class="slide${index === 0 ? ' title-slide' : ''}" data-index="${index}" data-section-id="${escapeHtml(slide.section_id)}" data-audience="${escapeHtml(slide.audience)}" data-layout="${escapeHtml(slide.layout)}" ${index === 0 ? '' : 'hidden'} aria-hidden="${index === 0 ? 'false' : 'true'}">
       <div class="slide-inner">
         <p class="section-label">${escapeHtml(slide.section_title)}</p>
         <h1>${renderInline(slide.title, context)}</h1>
@@ -161,7 +194,14 @@ function deckHtml({slides, generatedDate, sha, repositoryUrl}) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How work moves through this repository</title>
   <style>
-    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #10182d; }
+    :root {
+      color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #10182d;
+      --fig-ink: #1d2b47; --fig-muted: #5d6a85; --fig-line: #cbd3e2; --fig-fill: #f0f3fa; --fig-surface: #ffffff;
+      --fig-accent: #3563c4; --fig-accent-soft: #e4ecfb; --fig-accent-ink: #1b3f8f;
+      --fig-warn: #c9871c; --fig-warn-soft: #fdf3e0; --fig-warn-ink: #7d5210;
+      --fig-go: #2f8560; --fig-go-soft: #e4f3ec; --fig-go-ink: #1b5b40;
+      --fig-doc: #e6ebf6; --fig-doc-ink: #46567a;
+    }
     * { box-sizing: border-box; }
     body { min-width: 320px; min-height: 100vh; margin: 0; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 15% 15%, #2f4d8b 0, #172747 34%, #10182d 72%); }
     button { font: inherit; }
@@ -192,7 +232,32 @@ function deckHtml({slides, generatedDate, sha, repositoryUrl}) {
     #controls button:disabled { opacity: .3; cursor: default; }
     #progress { min-width: 5em; text-align: center; font-variant-numeric: tabular-nums; }
     @media (max-aspect-ratio: 4/3) { .slide-copy { max-width: 88%; } h1 { max-width: 92%; } }
-  </style>
+
+    /* Layout variants. A slide's shape follows what it carries. */
+    /* A figure needs the whole stage: the decorative wedge is dropped so a
+       diagram is never cut across by it. */
+    .slide[data-layout="figure"] { background: #fbf8f1; }
+    .slide[data-layout="figure"]::after { background: #3563c4; }
+    .slide[data-layout="figure"] .slide-inner { padding: 4.6% 6% 4.6%; }
+    .slide[data-layout="figure"] h1 { max-width: 86%; font-size: clamp(25px, 3vw, 47px); }
+    .slide[data-layout="figure"] .slide-copy { max-width: 100%; margin-top: 2%; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 2%; font-size: clamp(13px, 1.32vw, 21px); }
+    .slide[data-layout="figure"] .figure { margin: 0; min-height: 0; }
+    .slide[data-layout="figure"] .figure-svg { max-width: 100%; max-height: 100%; }
+    .slide[data-layout="figure"] p { max-width: 80%; margin: 0; }
+    .slide[data-layout="data"] { background: linear-gradient(160deg, #fbf8f1 0 58%, #eef3ff 100%); }
+    .slide[data-layout="data"] .slide-inner { padding: 5.6% 7.5% 5%; }
+    .slide[data-layout="data"] h1 { max-width: 82%; font-size: clamp(28px, 3.5vw, 55px); }
+    .slide[data-layout="data"] .slide-copy { max-width: 100%; margin-top: 3%; font-size: clamp(15px, 1.5vw, 24px); }
+    .slide[data-layout="data"] .fact-block { margin: 3% 0 0; }
+    .slide[data-layout="data"] p + .fact-block { margin-top: 2.4%; }
+    .slide[data-layout="statement"] .slide-copy { max-width: 74%; }
+    /* A slide is a fixed frame. However long a description grows in the
+       repository, a card clamps rather than pushing the deck off the slide. */
+    .slide-copy .fact-cards { grid-template-columns: repeat(auto-fit, minmax(min(200px, 45%), 1fr)); align-content: start; }
+    .slide-copy .fact-cards article { overflow: hidden; }
+    .slide-copy .fact-cards p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
+    .slide[data-layout="data"] .slide-copy { overflow: hidden; }
+${FIGURE_CSS}${BLOCK_CSS}  </style>
 </head>
 <body data-generated-date="${escapeHtml(generatedDate)}" data-source-sha="${escapeHtml(sha)}">
   <div id="frame">
@@ -255,7 +320,7 @@ export async function generateDeck({root, outputPath, now = new Date(), sha, rep
     await access(resolve(root, path));
   }
   await mkdir(dirname(outputPath), {recursive: true});
-  await writeFile(outputPath, deckHtml({slides, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository}), 'utf8');
+  await writeFile(outputPath, deckHtml({slides, facts, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository}), 'utf8');
   const slidesPerSection = Object.fromEntries(compiled.sections
     .filter(section => section.slide)
     .map(section => [section.id, section.slideTexts.length]));

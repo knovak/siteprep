@@ -113,3 +113,16 @@ Built strict PDF-link configuration, fact-source commit dating, visible possibly
 ## 2026-08-19 — Phase 7 - package the generator as a skill that generates and then checks
 
 Packaged the Repo Guide generator as a skill that generates all three artifacts, runs their offline browser checks, reports fact failures, and verifies its outputs remain ignored; re-pointed delivery to its real permission boundary.
+
+## 2026-08-19 — Output quality: register, structure, and a simulator that simulates
+
+Reviewed the generated outputs and traced both complaints to single causes. The
+stilted register came from `sections.mjs` flattening any fact into a sentence,
+which forced every fact-bearing sentence into one copula frame; structured
+values now render as blocks — rails, tables, chip rows, cards — and inlining one
+is an error. The simulator was not appealing because it replaced its item list
+every step, so nothing visibly happened; items are now keyed and reconciled,
+the sweep's budget spends over time, and the walk-through covers all eight
+stages including a backward move. Added six fact-derived SVG figures shared by
+the description and the deck, and gave slides layouts that follow what they
+carry. Rewrote all nine sections against the new rules.

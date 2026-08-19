@@ -10,7 +10,11 @@ test.beforeAll(() => {
   if (!outputPath || !repositoryRoot) throw new Error('GUIDE_SIMULATOR_PATH and GUIDE_REPO_ROOT are required');
 });
 
-test('simulator opens offline, steps end to end, and returns to its start', async ({page}) => {
+async function stepCount(page) {
+  return page.evaluate(() => window.simulatorState.count);
+}
+
+test('simulator opens offline, walks the whole lifecycle, and comes back', async ({page}) => {
   const consoleErrors = [];
   const failedRequests = [];
   const networkRequests = [];
@@ -19,30 +23,38 @@ test('simulator opens offline, steps end to end, and returns to its start', asyn
   page.on('request', request => { if (/^https?:/i.test(request.url())) networkRequests.push(request.url()); });
   await page.goto(pathToFileURL(outputPath).href);
 
-  await expect(page.locator('#progress')).toHaveText('1 / 6');
+  const count = await stepCount(page);
+  expect(count).toBeGreaterThanOrEqual(12);
+
+  await expect(page.locator('#progress')).toHaveText(`1 / ${count}`);
   await expect(page.locator('#back')).toBeDisabled();
   await page.evaluate(() => document.querySelector('#back').click());
-  await expect(page.locator('#progress')).toHaveText('1 / 6');
-  for (let step = 2; step <= 6; step += 1) {
+  await expect(page.locator('#progress')).toHaveText(`1 / ${count}`);
+
+  // Every stage the vocabulary names is reached by stepping forward.
+  const vocabulary = await page.evaluate(() => window.simulatorState.vocabulary);
+  const seenStages = new Set();
+  for (let step = 1; step <= count; step += 1) {
+    seenStages.add(await page.locator('body').getAttribute('data-stage'));
+    if (step === count) break;
     await page.locator('#step').click();
-    await expect(page.locator('#progress')).toHaveText(`${step} / 6`);
+    await page.evaluate(() => window.simulatorState.settle());
+    await expect(page.locator('#progress')).toHaveText(`${step + 1} / ${count}`);
   }
+  expect([...seenStages].sort()).toEqual([...vocabulary.stages].sort());
+
   await expect(page.locator('#step')).toBeDisabled();
+  await expect(page.locator('#next-label')).toHaveText(/complete/i);
   await page.evaluate(() => document.querySelector('#step').click());
-  await expect(page.locator('#progress')).toHaveText('6 / 6');
-  await expect(page.locator('[data-cascade="true"]')).toBeVisible();
-  for (let step = 5; step >= 1; step -= 1) {
+  await expect(page.locator('#progress')).toHaveText(`${count} / ${count}`);
+
+  for (let step = count - 1; step >= 1; step -= 1) {
     await page.locator('#back').click();
-    await expect(page.locator('#progress')).toHaveText(`${step} / 6`);
+    await expect(page.locator('#progress')).toHaveText(`${step} / ${count}`);
   }
 
-  const vocabulary = await page.evaluate(() => window.simulatorState.vocabulary);
-  const shownStages = await page.locator('[data-stage]').evaluateAll(nodes => nodes.map(node => node.dataset.stage));
-  expect(shownStages.every(stage => vocabulary.stages.includes(stage))).toBe(true);
-  await page.evaluate(() => window.simulatorState.show(3));
-  await expect(page.locator('[data-item-state="passed"]')).toBeVisible();
-  const phases = await page.locator('[data-phase]').evaluateAll(nodes => nodes.map(node => node.dataset.phase));
-  expect(phases).toEqual(vocabulary.phases);
+  const shownStages = await page.locator('#stage-track [data-stage]').evaluateAll(nodes => nodes.map(node => node.dataset.stage));
+  expect(shownStages).toEqual(vocabulary.stages);
 
   const sha = await page.locator('body').getAttribute('data-source-sha');
   expect(sha).toMatch(/^[a-f0-9]{7,40}$/);
@@ -59,15 +71,94 @@ test('simulator opens offline, steps end to end, and returns to its start', asyn
   expect(networkRequests).toEqual([]);
 });
 
-test('Play follows the same sequence and can be interrupted', async ({page}) => {
+test('an item that survives a step is the same element, and a finished one leaves', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+
+  // Tag the live nodes, step, and see which tags survived. A rebuilt list would
+  // lose every tag — which is exactly what the first version did.
+  const survived = await page.evaluate(async () => {
+    const container = document.querySelector('#items');
+    const find = () => [...container.children].filter(node => node.dataset.exiting !== 'true');
+    window.simulatorState.show(1, {animate: false});
+    const before = find().map(node => node.dataset.key);
+    for (const node of find()) node.dataset.probe = node.dataset.key;
+    window.simulatorState.show(2, {animate: false});
+    const after = find();
+    return {
+      before,
+      after: after.map(node => node.dataset.key),
+      probed: after.filter(node => node.dataset.probe === node.dataset.key).map(node => node.dataset.key),
+    };
+  });
+  expect(survived.before).toContain('interaction');
+  expect(survived.after).toContain('interaction');
+  expect(survived.probed).toContain('interaction');
+
+  // The blocked item recoloured in place rather than being replaced.
+  await expect(page.locator('#items [data-key="interaction"]')).toHaveAttribute('data-item-state', 'blocked');
+
+  // A merge removes an item: the key disappears from the list.
+  const cascade = await page.evaluate(async () => {
+    const container = document.querySelector('#items');
+    const keys = () => [...container.children].filter(node => node.dataset.exiting !== 'true').map(node => node.dataset.key);
+    window.simulatorState.show(4, {animate: false});
+    const before = keys();
+    window.simulatorState.show(5, {animate: false});
+    return {before, after: keys()};
+  });
+  expect(cascade.before).toContain('spec');
+  expect(cascade.after).not.toContain('spec');
+  expect(cascade.after).toContain('plan');
+});
+
+test('the sweep step spends its allowance over time and can be interrupted', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  const spent = () => page.locator('#meter .slot[data-spent="true"]').count();
+
+  await page.evaluate(() => window.simulatorState.show(3));
+  expect(await spent()).toBe(0);
+  await expect.poll(spent, {timeout: 6000}).toBeGreaterThan(0);
+  await expect.poll(spent, {timeout: 6000}).toBe(await page.locator('#meter .slot').count());
+  await expect(page.locator('#items [data-item-state="passed"]')).toBeVisible();
+
+  // Navigating away mid-choreography cancels its pending beats.
+  await page.evaluate(() => window.simulatorState.show(3));
+  await page.locator('#step').click();
+  await page.waitForTimeout(1200);
+  expect(await page.evaluate(() => window.simulatorState.current())).toBe(4);
+});
+
+test('the record accumulates and never empties out', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  const count = await stepCount(page);
+  const documents = await page.evaluate(async total => {
+    const seen = [];
+    for (let index = 0; index < total; index += 1) {
+      window.simulatorState.show(index, {animate: false});
+      seen.push([...document.querySelectorAll('#documents .document')].map(node => node.textContent));
+    }
+    return seen;
+  }, count);
+
+  for (let index = 1; index < documents.length; index += 1) {
+    for (const name of documents[index - 1]) expect(documents[index]).toContain(name);
+  }
+  expect(documents.at(-1).length).toBeGreaterThan(0);
+});
+
+test('Play advances by itself and can be paused and resumed', async ({page}) => {
   await page.goto(pathToFileURL(outputPath).href);
   await page.locator('#play').click();
-  await expect.poll(() => page.evaluate(() => window.simulatorState.current())).toBeGreaterThanOrEqual(1);
+  await expect.poll(() => page.evaluate(() => window.simulatorState.current()), {timeout: 15000}).toBeGreaterThanOrEqual(1);
   await page.locator('#play').click();
+  expect(await page.evaluate(() => window.simulatorState.playing())).toBe(false);
   const pausedAt = await page.evaluate(() => window.simulatorState.current());
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(1200);
   expect(await page.evaluate(() => window.simulatorState.current())).toBe(pausedAt);
   await page.locator('#play').click();
-  await expect(page.locator('#progress')).toHaveText('6 / 6', {timeout: 5000});
-  expect(await page.evaluate(() => window.simulatorState.visited())).toEqual([0, 1, 2, 3, 4, 5]);
+  expect(await page.evaluate(() => window.simulatorState.playing())).toBe(true);
+  await page.locator('#play').click();
+
+  const visited = await page.evaluate(() => window.simulatorState.visited());
+  expect(visited).toEqual([...visited].sort((left, right) => left - right));
 });

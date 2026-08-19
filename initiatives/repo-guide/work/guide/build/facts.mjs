@@ -127,6 +127,11 @@ function readInlineScalar(value, field, path) {
   return scalar;
 }
 
+export function firstSentence(description) {
+  const match = description.replace(/\s+/g, ' ').trim().match(/^(.*?[.!?])\s+[A-Z(]/s);
+  return match ? match[1] : description.replace(/\s+/g, ' ').trim();
+}
+
 export function readSkillFrontmatter(text, path = '<skill>') {
   const lines = text.replaceAll('\r\n', '\n').split('\n');
   if (lines[0] !== '---') {
@@ -167,7 +172,7 @@ export function readSkillFrontmatter(text, path = '<skill>') {
   for (const field of ['name', 'description']) {
     if (!values[field]) throw new Error(`${path}: missing ${field}`);
   }
-  return values;
+  return { ...values, summary: firstSentence(values.description) };
 }
 
 function firstParagraph(lines, start, end, path, phaseNumber) {

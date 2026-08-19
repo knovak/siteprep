@@ -6,22 +6,27 @@ slide: true
 slide_title: A demo stays a standalone example
 audience: both
 ---
-A demo is a standalone example under the demo collection. It owns its pages,
-assets, and optional prompt history, and the build generates the table of
-contents from immediate demo directories. Demo language stays distinct from
-deck and section language because the two outputs have different publishing
-shapes.
+A demo is a self-contained example living under the demo collection. It owns its
+own pages, its own assets, and optionally the prompt history that produced it.
 
-The build copies each demo without rewriting its source and creates one table-of-contents
-entry with its concise description. Visual verification uses
-`{{agent.commands.screenshot}}` after the final build. [The concise publishing
-contract is in the demos technical document](source:DEMOS_TECHDOC.md), with
-[shared working rules in the repository instructions](source:AGENTS.md).
+The build treats a demo as something to carry rather than something to
+interpret: it copies the source without rewriting it, and generates one
+table-of-contents entry per immediate demo directory from that demo's own
+concise description. Verify visually with `{{agent.commands.screenshot}}` once
+the final build has run.
+
+Demo language stays deliberately distinct from deck and section language. The
+two have different publishing shapes, and blurring the words is how a demo ends
+up half-converted into a deck page.
+[The concise publishing contract is in the demos technical
+document](source:DEMOS_TECHDOC.md), with [shared working rules in the repository
+instructions](source:AGENTS.md).
 
 ---
 ## A demo stays a standalone example
 
-A demo owns its pages, assets, and optional prompt history. The build copies it
-without rewriting its source and generates the demo table of contents from the
-immediate directories. Demo language stays distinct from deck and section
-language because the two outputs have different publishing shapes.
+Self-contained: it owns its pages, assets, and optional prompt history. The
+build copies it without rewriting the source and generates one contents entry
+per immediate directory. Demo language stays distinct from deck language,
+because blurring the words is how a demo ends up half-converted into a deck
+page.

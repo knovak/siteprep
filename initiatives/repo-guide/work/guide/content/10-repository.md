@@ -6,31 +6,42 @@ slide: true
 slide_title: How work moves through this repository
 audience: both
 ---
-This repository builds a travel-planning site, but the process around that site
-is also part of the work. The working instructions distinguish three content
-areas: published decks, standalone demos, and durable initiatives that keep the
-wish, the reasoning, the capability, and pointers to whatever the work
-produced. [The working conventions are authoritative here](source:AGENTS.md).
+On the surface this repository builds a travel-planning site. Underneath it, an
+unusual amount of care goes into the process that builds it — enough that the
+process is fairly described as a second product. Most of the changes here in any
+given month are changes to how work gets done, not to the pages that get
+published.
 
-The process exists because an unfinished idea should remain understandable and
-cheap to resume. An initiative is not a project with an end date; it may become
-quiet and later produce another version. [The design and its reasoning live in
-the vision document](source:INITIATIVES_VISION.md).
+Three kinds of content live side by side, and the working instructions keep
+their vocabularies deliberately separate.
 
-The current shallow snapshot is {{initiatives.live}}. It intentionally shows
-only names and lifecycle state. The actual backlog belongs on the generated
-initiatives pages, not in an introductory copy that would immediately drift.
+@figure content-areas
+
+Initiatives are the reason the other two stay cheap. An idea arrives half-formed,
+gets worked on for an afternoon, and then waits — sometimes for months. What
+makes that survivable is that the record keeps the original intent, the reasoning
+that followed it, and the next useful move all in one place, so picking the work
+back up costs a read rather than an archaeology session.
+[The working conventions are authoritative here](source:AGENTS.md), and
+[the design and its reasoning live in the vision document](source:INITIATIVES_VISION.md).
+
+Here is what happens to be live in this copy of the repository:
+
+@fact initiatives.live as initiatives
+
+That table is a snapshot, not a backlog. The generated initiative pages carry the
+real state; a list copied into an introduction would be wrong within the week.
 
 ---
 ## How work moves through this repository
 
-A short guide to the initiative lifecycle, the division of labour, and the
-files that stay authoritative.
+An entry point to the lifecycle, the division of labour between people and
+agents, and the files that stay authoritative when this guide goes stale.
 
 ---
 ## The process is part of the product
 
-This repository publishes travel content, but it also preserves how work gets
-done. Decks are published collections. Demos are standalone examples.
-Initiatives keep the original purpose, the decisions, the capability, and the
-next useful action together so unfinished work remains cheap to resume.
+Three vocabularies, kept separate on purpose. Decks and demos are what gets
+published; initiatives are what keeps unfinished work cheap to resume.
+
+@figure content-areas

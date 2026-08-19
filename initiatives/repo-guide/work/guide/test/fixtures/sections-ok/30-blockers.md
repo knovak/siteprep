@@ -5,4 +5,6 @@ order: 30
 slide: false
 audience: forker
 ---
-The blocker prefixes are {{blockers.prefixes}}.
+A blocked item names a prefix from this set.
+
+@fact blockers.prefixes
