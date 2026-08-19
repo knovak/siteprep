@@ -182,7 +182,7 @@ function deckHtml({slides, facts, generatedDate, sha, repositoryUrl}) {
         <h1>${renderInline(slide.title, context)}</h1>
         <div class="slide-copy">${renderMarkdown(slide.body, context)}</div>
         <footer>
-          <span>${escapeHtml(slide.audience)}</span>
+          <span>Ken Novak</span>
           <span>${escapeHtml(generatedDate)} · ${escapeHtml(sha)}</span>
         </footer>
       </div>
@@ -228,9 +228,11 @@ function deckHtml({slides, facts, generatedDate, sha, repositoryUrl}) {
     .title-slide h1 { color: white; font-size: clamp(44px, 5.7vw, 91px); }
     .title-slide .slide-copy { max-width: 70%; color: #e5ebf8; font-size: clamp(19px, 2vw, 32px); }
     #controls { position: absolute; left: 0; right: 0; bottom: 1.5%; z-index: 3; display: flex; justify-content: center; align-items: center; gap: 1.1em; color: #556177; font-size: clamp(10px, .9vw, 14px); }
-    #controls button { border: 0; padding: .25em .45em; color: inherit; background: transparent; cursor: pointer; }
+    #controls button { border: 0; padding: .2em .5em; color: inherit; background: transparent; font-size: clamp(22px, 2vw, 32px); font-weight: 850; line-height: .75; cursor: pointer; }
     #controls button:disabled { opacity: .3; cursor: default; }
     #progress { min-width: 5em; text-align: center; font-variant-numeric: tabular-nums; }
+    #frame:has(.title-slide:not([hidden])) #controls { color: #f7f9ff; text-shadow: 0 1px 7px #000c; }
+    #frame:has(.title-slide:not([hidden])) #controls button:disabled { opacity: .58; }
     @media (max-aspect-ratio: 4/3) { .slide-copy { max-width: 88%; } h1 { max-width: 92%; } }
 
     /* Layout variants. A slide's shape follows what it carries. */

@@ -25,10 +25,12 @@ The three outputs are:
 After all three commands pass:
 
 1. Confirm that all three files exist.
-2. Run `git check-ignore` on the three paths and confirm each is ignored.
+2. Run `git diff --check -- initiatives/repo-guide/work/guide/out`.
 3. Run `git status --short --untracked-files=all -- initiatives/repo-guide/work/guide/out`
-   and confirm generation left no committable file.
-4. Report the three output paths, their source commit, and any diagnostics from
+   and report which tracked artifacts changed.
+4. Include changed files under `out/` in the same commit as the source changes
+   that produced them so the repository keeps the latest successful generation.
+5. Report the three output paths, their source commit, and any diagnostics from
    the generator.
 
 If any command fails, stop. Report the complete error and do not describe the
@@ -36,6 +38,6 @@ guide as refreshed. A fact-resolution error is actionable output: name the fact
 key and source printed by the generator. Do not substitute a default, edit the
 generated files, or retry with browser checks disabled.
 
-Write only under `initiatives/repo-guide/work/guide/out/`. The generator reads
-repository process sources, including protected paths, but this skill never
-writes them.
+Do not hand-edit files under `initiatives/repo-guide/work/guide/out/`. The
+generator writes only there. It reads repository process sources, including
+protected paths, but never writes them.

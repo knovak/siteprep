@@ -483,3 +483,25 @@ longer look identical.
 - **Unaffected:** the abstract-versus-real-JSON decision of 2026-08-17. The
   simulator still reads no initiative data; it covers more of the lifecycle
   abstractly, which is a different axis from fidelity.
+
+## 2026-08-19 — Keep the latest generated guide in the repository
+
+**Commit the three files under `guide/out/` and keep the latest successful
+generation there from now on.**
+
+The user's words: *"commit the 'out' folder. and make a PR. (in future, we
+shall keep the contents of the latest generation of the guide in the folder.)"*
+
+### What this settles, and what it does not
+
+- **Settled:** `description.html`, `deck.html`, and `simulator.html` are tracked
+  derived artifacts. A guide source change includes any regenerated outputs in
+  the same commit after all three offline browser checks pass.
+- **Settled:** the generator skill no longer proves that `out/` is ignored or
+  clean. It reports the tracked artifacts that changed and includes them in the
+  resulting change set.
+- **Unchanged:** generation remains on request rather than part of every site
+  build. Tracking the latest copy does not add a workflow or build hook.
+- **Still open:** tracking the files makes them available in the repository but
+  does not link them into the published site. The existing `link-the-guide`
+  permission blocker remains the route to satisfying that part of O1.

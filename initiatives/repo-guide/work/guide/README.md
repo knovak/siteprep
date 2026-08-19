@@ -53,11 +53,13 @@ Generate the lifecycle simulator and run its offline browser checks:
 node initiatives/repo-guide/work/guide/build/cli.mjs simulator
 ```
 
-The file is written to `out/description.html`. `out/` is intentionally ignored:
-the guide is generated on request and the footer identifies the date and source
-commit of that copy. Use `--output <file>` to choose another path or
-`--skip-browser-check` only when a caller is deliberately separating generation
-from the bundled Playwright harness.
+The file is written to `out/description.html`. The three files under `out/` are
+tracked as the repository's latest successful generation. Regenerate them on
+request and commit any changed artifacts with the source change that produced
+them; the footer identifies the date and source commit of that copy. Use
+`--output <file>` to choose another path or `--skip-browser-check` only when a
+caller is deliberately separating generation from the bundled Playwright
+harness.
 
 The deck is written to `out/deck.html` under the same rules. It is a single
 offline file with inline CSS and JavaScript. Arrow keys and Page Up/Page Down
@@ -131,7 +133,10 @@ resolved facts and declares the keys it consumes, so a diagram cannot drift from
 the repository; each also namespaces its arrowhead marker, because several
 figures share one page. Figures carry no colours of their own — they paint with
 `--fig-*` custom properties that the description and the deck each define, so
-one source renders correctly on a white page and on a cream slide.
+one source renders correctly on a white page and on a cream slide. Figure and
+structured-block rendering also remove horizontal whitespace at line endings so
+the tracked generated HTML passes the repository's diff checks without
+hand-editing.
 
 The first `---` rule after frontmatter separates page text from slide text.
 Further `---` rules divide that slide half into an ordered list, allowing one
@@ -149,10 +154,12 @@ unrelated site test suite.
 `build/deck.mjs` uses the same compiled section and fact records, then renders
 only sections marked for slides. A slide takes its layout from what it carries —
 `figure`, `data`, or `statement` — so a deck of one repeated shape is no longer
-possible. Its browser harness opens the generated file from `file://`, refuses
-network dependencies, checks all authoritative links, exercises forward, back,
-first, and last keyboard navigation, and asserts that no slide's content
-overflows its fixed frame.
+possible. The footer names Ken Novak and keeps the generated date and source
+commit; the lower-edge navigation uses larger arrows and switches to a bright,
+shadowed treatment over the dark title slide. Its browser harness opens the
+generated file from `file://`, refuses network dependencies, checks all
+authoritative links, exercises forward, back, first, and last keyboard
+navigation, and asserts that no slide's content overflows its fixed frame.
 
 `build/simulator.mjs` resolves only four registered fact keys rather than the
 whole repository fact set. The selective resolver is what makes the spec's
