@@ -406,12 +406,13 @@ guide/
   content/*.md         # the sections of §5
   simulator/           # the walk-through's own source
   build/               # the generator: facts, tokens, renderers, checks
-  out/                 # the three generated files — git-ignored
+  out/                 # the three generated files — latest generation tracked
 ```
 
-Nothing generated is committed, which is the repository's existing rule. The
-generated files are therefore not in the repository between runs: the skill
-produces them, and whoever asked takes them from `guide/out/`.
+The three generated files are committed as the latest successful generation.
+The skill produces and verifies them on request, and any changed outputs travel
+in the same change as the source that produced them. They remain derived files:
+never edit them by hand.
 
 ### 9.3 What still touches a protected path, and what no longer does
 
@@ -509,8 +510,9 @@ nothing here forecloses a choice.
 **One objective is left short by it, and this spec will not quietly reword it.**
 O1 says a newcomer finds the entry point without being told where it is — the
 guide reachable from the site and the repository's front door, the way decks,
-demos and initiatives are. A file in `guide/out/` is not reachable by anybody. On
-what is specified here, **O1 is not met**.
+demos and initiatives are. A tracked file in `guide/out/` can be found in the
+repository, but it is not linked from the site or its navigation. On what is
+specified here, **O1 is not met**.
 
 **Answered on review, 2026-08-18: keep O1, and carry the delivery as its own
 item** — *"make a task at the end of other tasks, to remind me to link up the

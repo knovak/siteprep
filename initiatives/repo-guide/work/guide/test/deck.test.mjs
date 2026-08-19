@@ -48,6 +48,9 @@ test('deck generation writes fourteen ordered slides and their section mapping',
     'sweep', 'sweep', 'person-required', 'decks', 'demos', 'portability', 'portability', 'sources',
   ]);
   assert.match(html, /data-source-sha="abcdef123456"/);
+  assert.equal([...html.matchAll(/<span>Ken Novak<\/span>/g)].length, 14);
+  assert.match(html, /#frame:has\(\.title-slide:not\(\[hidden\]\)\) #controls/);
+  assert.doesNotMatch(html, /[ \t]+$/m);
   assert.doesNotMatch(html, /<script[^>]+src=|<link[^>]+stylesheet|\bfetch\s*\(/i);
   assert.doesNotMatch(html, /\{\{/);
 

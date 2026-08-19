@@ -380,7 +380,10 @@ export function renderFigure(name, facts) {
   // Every figure defines its own arrowhead marker, and several of them share a
   // page. Duplicate ids would make every arrow point at whichever marker
   // rendered first, so each figure's marker is namespaced on the way out.
-  return {...rendered, html: rendered.html.replaceAll('fig-arrowhead', `fig-arrowhead-${name}`)};
+  const html = rendered.html
+    .replaceAll('fig-arrowhead', `fig-arrowhead-${name}`)
+    .replace(/[ \t]+$/gm, '');
+  return {...rendered, html};
 }
 
 // The CSS both hosts inline. Colours come from the host's `--fig-*` values so a

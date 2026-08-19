@@ -137,8 +137,8 @@ function cards(records) {
   return `<div class="fact-cards">${records.map(record => `
     <article data-fact-key="${escapeHtml(record.key)}">
       <h4>${escapeHtml(clean(record.title))}</h4>
-      <p>${escapeHtml(clean(record.body))}</p>
-      ${record.meta ? `<p class="fact-card-meta">${escapeHtml(record.meta)}</p>` : ''}
+      <p>${escapeHtml(clean(record.body))}</p>${record.meta ? `
+      <p class="fact-card-meta">${escapeHtml(record.meta)}</p>` : ''}
     </article>`).join('')}</div>`;
 }
 
