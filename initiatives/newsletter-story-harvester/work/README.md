@@ -11,7 +11,7 @@ No dependencies, no network, no real mailbox, and no live model — which is
 `plan.md` §2's seam paying for itself in the first phase that could have needed
 all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1–6 adapter
+## What is here — phases 1–6 extraction
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -75,8 +75,11 @@ all three. Node 18 or later, for the built-in test runner.
 | `src/gmail-source.mjs` | The Gmail implementation of the same `search(entry, range)` / `read(message)` seam: query composition, honest pagination, public envelopes, and HTML/plain MIME reads | `spec.md` §§2, 5.1, 6 |
 | `src/private-inventory.mjs` | Strict inventory validation plus atomic mode-0600 read/write; symlinks and group/world-readable files are refused | `spec.md` §§4, 7 |
 | `prepare-private-inventory.mjs` | Reads inventory JSON from stdin so private matcher values do not appear in command arguments, then writes the protected file | `plan.md` phase 6 |
+| `private-extract-message.mjs` | Two-turn, in-memory handoff: full MIME becomes model context, and only extracted records plus count-only diagnostics leave the second turn | `spec.md` §§3, 6 |
+| `finalize-private-harvest.mjs` | Streams safe extraction results into a new private store and review page, refuses replacement, and forces both outputs to mode 0600 | `spec.md` §§6–8 |
 | `private/.gitignore` | Keeps the inventory, store, live handoff, and any other mailbox-specific artefact out of Git | `spec.md` §§4, 6 |
 | `test/gmail-source.test.mjs` | Query union/intersection, half-open dates, pagination, MIME fallback, read-only operations, full fixture-harvest substitution, and private-file permissions | `test-plan.md` §4.6 |
+| `test/private-real-harvest.test.mjs` | Pins the body-to-model boundary, safe second-turn output, mode-0600 store/review files, and overwrite refusal | `test-plan.md` §4.6 |
 
 The constructor for `gmailMessageSource` accepts exactly two connector
 operations: `search_emails` and `read_email`. Search pages at 50 and counts the
@@ -99,18 +102,32 @@ node initiatives/newsletter-story-harvester/work/prepare-private-inventory.mjs \
 The 2026-08-18 live handoff used the three user-supplied sources over the
 half-open range ending 2026-08-19. It found 14 Yglesias, 4 Fix the News, and 4
 Chop Wood Carry Water Extra messages. All 22 passed the post-search matcher
-check and had readable inline HTML; the connector made 3 searches, 22 reads,
-and no writes. Only those counts and settings are retained in the ignored,
-mode-0600 handoff file. No body was written to disk.
+check and had readable inline HTML. The first extraction run made 3 searches,
+28 reads, and no writes; the six reads above the 22 unique issues were explicit
+handoff rehearsals or retries and are counted rather than hidden. No mailbox
+body was written to disk. The ignored private store and review page are mode
+0600 and the finalizer refuses to replace either one.
 
 All three sources use the existing Substack redirect shape. The private
 inventory therefore names `unwrap: "substack"`; the optional single-HEAD follow
 remains off. Opaque recipient-token links lose their query string and carry
 `err:unwrap` rather than generating a click or retaining a subscriber token.
 
-The first real extraction into the private store remains the next item. It is
-what supplies count-band flags and merge rate; the adapter handoff deliberately
-does not manufacture either number from message counts.
+The first real extraction produced 169 accepted findings before identity merge
+and 163 private review records. Thirteen additional findings were refused as
+newsletter chrome or linked section headings. Every issue stayed inside its
+declared count band: 0/14 Yglesias, 0/4 Fix the News, and 0/4 Chop Wood Carry
+Water issues were flagged. Three findings merged into existing identities, for
+a 1.775% merge rate. `decisions.md` records why these observations keep the
+bands unchanged and leave optional single-HEAD following off.
+
+The live protocol is intentionally interactive. Feed the connector result,
+searched envelope, inventory entry, and harvest timestamp as the first JSON
+line to `private-extract-message.mjs`; pass its model context to the model, then
+write the returned findings as the second line. Forward only the second JSON
+line to a long-running `finalize-private-harvest.mjs` process. Finish with a
+count-only JSON object naming expected issues and connector operation counts.
+The test file above is the executable reference for the protocol.
 
 Generate a review file:
 

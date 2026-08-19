@@ -691,3 +691,39 @@ reached zero backlog without a console error, page error, or failed request.
 - **Re-run when the review interaction changes.** A material change in click
   rate or p50/p95 latency is evidence to inspect, not automatically a regression
   until a later decision establishes a threshold.
+
+## 2026-08-18 — First real extraction calibration
+
+The first mailbox-backed extraction covered the full configured lookback for
+all three sources: 14 Yglesias long-form issues, 4 Fix the News annotated
+digests, and 4 Chop Wood Carry Water Extra link lists. All 22 messages passed
+post-search attribution. The read-only connector made 3 searches and 28 reads;
+six rehearsal or retry reads are included in that total, and there were no
+mailbox writes.
+
+The model returned 182 findings. The structural backstop refused 13 of them —
+9 newsletter-chrome links and 4 linked section headings — leaving 169 accepted
+extractions. Identity merge added 163 private review records and merged 3
+findings into existing records, a **1.775% merge rate**. There were no merge
+conflicts, unattributed messages, count flags, loud cases, or shape overrides.
+
+| Source contract | Issues | Flagged outside band |
+|---|---:|---:|
+| `long-form` | 14 | 0 |
+| `annotated-digest` | 4 | 0 |
+| `link-list` | 4 | 0 |
+
+### Decisions
+
+- **Keep the count bands unchanged.** Every real issue landed inside its
+  declared band, while the chrome and heading refusals show the backstop still
+  rejects plausible-looking non-stories before the count is measured.
+- **Keep optional single-HEAD following off by default.** The sample found only
+  three merge opportunities after 169 accepted extractions. A network request
+  per link is not justified by a 1.775% observed merge rate, especially because
+  opaque newsletter redirects can contain recipient tokens. Revisit this only
+  if review of the private pile finds a meaningful cluster of duplicates that
+  differ solely because a redirect could not be unwrapped locally.
+- **The review artefacts stay private and disposable.** The store and generated
+  page are ignored, mode 0600, and created with overwrite refusal. Only these
+  aggregate measurements and the connector operation counts enter Git.

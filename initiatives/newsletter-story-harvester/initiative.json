@@ -6,18 +6,9 @@
   "outputs": [],
   "todo": [
     {
-      "id": "run-first-real-harvest",
-      "title": "Phase 6 - run the first real extraction, record count-band flags and merge rate, and generate the private review page",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false
-    },
-    {
       "id": "build-tagging-skill",
       "title": "Phase 7 - build the additive, set-undoable tagging and cluster-paraphrase skill",
-      "state": "blocked",
-      "blocked_by": "todo:run-first-real-harvest",
+      "state": "actionable",
       "value": "high",
       "effort": "large",
       "advances_stage": false
