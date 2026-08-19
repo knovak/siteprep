@@ -126,3 +126,7 @@ the sweep's budget spends over time, and the walk-through covers all eight
 stages including a backward move. Added six fact-derived SVG figures shared by
 the description and the deck, and gave slides layouts that follow what they
 carry. Rewrote all nine sections against the new rules.
+
+## 2026-08-19 — Add the hand-made description and deck PDF links with their refresh dates
+
+Removed portable-document copies from the current Repo Guide scope, deleted their metadata configuration, and kept simulator review dating without a config file.

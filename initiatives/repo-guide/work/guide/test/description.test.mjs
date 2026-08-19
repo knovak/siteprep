@@ -32,28 +32,3 @@ test('description generation writes nine ordered, attributed sections and metric
   assert.doesNotMatch(html, /[ \t]+$/m);
   assert.doesNotMatch(html, /\{\{/);
 });
-
-test('description shows fresh and possibly-stale PDF links with both comparison dates', async () => {
-  const outputPath = join(mkdtempSync(join(tmpdir(), 'repo-guide-pdfs-')), 'description.html');
-  const report = await generateDescription({
-    root,
-    outputPath,
-    now: '2026-08-18T20:00:00.000Z',
-    sha: 'abcdef123456',
-    repositoryUrl: 'https://github.com/knovak/siteprep',
-    dating: {
-      pdfs: [
-        {id: 'description', label: 'Description PDF', link: 'https://drive.google.com/file/d/description/view', refreshed: '2026-08-18', source_date: '2026-08-18', possibly_stale: false},
-        {id: 'deck', label: 'Deck PDF', link: 'https://drive.google.com/file/d/deck/view', refreshed: '2026-08-17', source_date: '2026-08-18', possibly_stale: true},
-      ],
-      simulator: {watched: '2026-08-18', source_date: '2026-08-18', possibly_stale: false},
-      diagnostics: [],
-    },
-  });
-  const html = readFileSync(outputPath, 'utf8');
-  assert.equal(report.dating.pdfs.length, 2);
-  assert.match(html, /data-pdf-id="description" data-possibly-stale="false"/);
-  assert.match(html, /data-pdf-id="deck" data-possibly-stale="true"/);
-  assert.match(html, /Possibly stale/);
-  assert.match(html, /Refreshed 2026-08-17 · sources changed 2026-08-18/);
-});

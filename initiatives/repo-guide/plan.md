@@ -64,7 +64,6 @@ generator lives at `initiatives/repo-guide/work/guide/`:
 ```text
 initiatives/repo-guide/work/guide/
   .gitignore           # out/
-  config.json          # PDF links, portable-file markers, the watched date (§6.3)
   content/*.md         # the sections of §5
   simulator/           # the walk-through's own source
   build/               # the generator: facts, tokens, renderers, checks
@@ -239,7 +238,7 @@ provenance footer with the generation date and the short sha of the sources; and
 `work/guide/test/`, the browser checks of §3.3 above, with the config that runs
 them against `file://`.
 
-**Leaves out:** slide text, the simulator, and the PDF dating.
+**Leaves out:** slide text, the simulator, and simulator review dating.
 
 **This is the largest phase and it is deliberately not split.** The nine sections
 are one document with one argument; drafting five of them and stopping produces
@@ -304,20 +303,16 @@ it is not what O4 asks for.
 
 **Exit:** `test-plan.md` §4.5.
 
-### Phase 6 — PDF dating
+### Phase 6 — Simulator review dating
 
-**Produces:** `config.json`'s PDF block — a link and a hand-set refresh date per
-PDF (§8) — and §10's comparison: when the newest commit touching any source in
-§3.2's table is later than a PDF's refresh date, the description shows that PDF
-as **possibly stale**, with both dates.
+**Produces:** a hand-set last-watched date in `build/dating.mjs` and §10's
+comparison with the newest commit touching the lifecycle and sweep sources the
+simulator uses. When those sources are newer, generation reports that another
+walkthrough may be due without refusing to generate.
 
-**Leaves out:** making a PDF, storing one, or refusing to generate when one is
-stale. §10 rules the last of those out by name.
-
-**Small, and that is the payoff for the order.** By now the fact table exists, so
-"the newest commit touching any source" is a walk over a list that is already
-there, and the description exists to display the warning in. Built first it would
-have been a feature with nowhere to appear.
+**Small, and that is the payoff for the order.** The simulator and its exact
+source list already exist, so the comparison adds no metadata file and no
+second source registry.
 
 **Exit:** `test-plan.md` §4.6.
 
@@ -399,19 +394,18 @@ artefact that travels as an attachment. Regeneration is cheap, so the answer to
 "is this current?" is always "generate it again and compare the sha", and that is
 a better arrangement than a schedule that guesses how often the process changes.
 
-### 6.3 Whether the simulator needs its own review cadence — *yes, and it reuses §10's mechanism*
+### 6.3 Whether the simulator needs its own review cadence — *yes, using §10's mechanism*
 
 §12 notes that the simulator is the piece generation does not reach and that
-nothing prompts anyone to re-watch it after a stage change. The dating covers
-detection for the PDFs; the same mechanism covers this, for the same reason and
-at the same cost.
+nothing prompts anyone to re-watch it after a stage change. Dating covers that
+detection directly.
 
-`config.json` carries a `simulator_watched` date, set by hand when somebody steps
-through it. Generation compares it against the newest commit touching
+`build/dating.mjs` carries the last-watched date, set by hand when somebody steps
+through the simulator. Generation compares it against the newest commit touching
 `lifecycle.*` or `sweep.phases` — the facts the choreography depends on — and
 when the sources are newer, the generation report says so. A report line rather
-than a failure, exactly as §10 rules for the PDFs, and for the same reason:
-refusing to generate would train people to work around it.
+than a failure keeps review visible without training people to work around the
+generator.
 
 The alternative considered and rejected was pinning the step sequence with a
 test. It cannot be done honestly — the steps are a *narrative* about the rules,

@@ -89,12 +89,7 @@ test('figures are inline, self-contained, and described', async ({page}) => {
   expect(new Set(markerIds).size).toBe(markerIds.length);
 });
 
-test('the portable-copies panel is absent while there is nothing to link', async ({page}) => {
+test('the description begins with the repository entry point', async ({page}) => {
   await page.goto(pathToFileURL(outputPath).href);
-  const panels = await page.locator('.pdf-panel').count();
-  const entries = await page.locator('.pdf-panel li[data-pdf-id]').count();
-  // Either the panel is gone, or it carries real links — never an empty state
-  // promoted above the first section.
-  expect(panels === 0 || entries > 0).toBe(true);
   await expect(page.locator('main > *').first()).toHaveAttribute('id', 'repository');
 });
