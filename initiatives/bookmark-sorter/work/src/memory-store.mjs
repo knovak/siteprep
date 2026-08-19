@@ -7,6 +7,8 @@ export class MemoryBookmarkStore {
   #tags = new Map();
   #sessions = new Map();
   #actions = [];
+  #captures = new Map();
+  #captureQueue = new Map();
   #nextItem = 1;
 
   createCollection(collection) {
@@ -47,7 +49,111 @@ export class MemoryBookmarkStore {
   listItems(collectionId) {
     return [...this.#items.values()]
       .filter(item => item.collection_id === collectionId)
-      .map(item => ({...structuredClone(item), tags: [...this.#tags.get(item.id)].sort()}));
+      .map(item => {
+        const capture = this.#captures.get(item.url_key);
+        const queueEntry = this.#captureQueue.get(item.url_key);
+        const displayable = !(queueEntry?.reason === 'duplicate-image' && queueEntry.state !== 'complete');
+        return {
+          ...structuredClone(item),
+          tags: [...this.#tags.get(item.id)].sort(),
+          capture: capture ? {...structuredClone(capture), displayable} : null,
+        };
+      });
+  }
+
+  getCapture(urlKey) {
+    const capture = this.#captures.get(urlKey);
+    return capture ? structuredClone(capture) : null;
+  }
+
+  upsertCapture(capture) {
+    this.#captures.set(capture.url_key, structuredClone(capture));
+    return structuredClone(capture);
+  }
+
+  applyCaptureError(collectionId, urlKey, errorTag) {
+    let tagged = 0;
+    for (const item of this.#items.values()) {
+      if (item.collection_id !== collectionId || item.url_key !== urlKey) continue;
+      this.#tags.get(item.id).add(errorTag);
+      tagged += 1;
+    }
+    return tagged;
+  }
+
+  applyKnownCaptureErrors(collectionId, urlKeys) {
+    let tagged = 0;
+    for (const urlKey of new Set(urlKeys)) {
+      const errorTag = this.#captures.get(urlKey)?.error_tag;
+      if (errorTag) tagged += this.applyCaptureError(collectionId, urlKey, errorTag);
+    }
+    return tagged;
+  }
+
+  refreshCaptureQueue({duplicateThreshold, at}) {
+    const hashCounts = new Map();
+    for (const capture of this.#captures.values()) {
+      if (capture.source === 'og' && capture.image_hash) {
+        hashCounts.set(capture.image_hash, (hashCounts.get(capture.image_hash) ?? 0) + 1);
+      }
+    }
+    const queue = new Map();
+    for (const capture of this.#captures.values()) {
+      if (capture.source === 'screenshot') continue;
+      const duplicate = capture.image_hash && hashCounts.get(capture.image_hash) >= duplicateThreshold;
+      if (capture.image_ref && !duplicate) continue;
+      const previous = this.#captureQueue.get(capture.url_key);
+      queue.set(capture.url_key, {
+        url_key: capture.url_key,
+        reason: duplicate ? 'duplicate-image' : 'missing-image',
+        state: previous?.state === 'running' ? 'running' : 'queued',
+        queued_at: previous?.queued_at ?? at,
+        updated_at: at,
+        attempts: previous?.attempts ?? 0,
+        last_error: previous?.last_error ?? null,
+      });
+    }
+    this.#captureQueue = queue;
+    return queue.size;
+  }
+
+  listCaptureQueue({limit = 20} = {}) {
+    return [...this.#captureQueue.values()]
+      .filter(entry => entry.state === 'queued' || entry.state === 'failed')
+      .sort((left, right) => left.queued_at.localeCompare(right.queued_at) || left.url_key.localeCompare(right.url_key))
+      .slice(0, limit)
+      .map(entry => structuredClone(entry));
+  }
+
+  markCaptureQueue(urlKey, {state, at, error = null}) {
+    const entry = this.#captureQueue.get(urlKey);
+    if (!entry) throw new Error(`Unknown capture queue item: ${urlKey}`);
+    entry.state = state;
+    entry.updated_at = at;
+    entry.last_error = error;
+    if (state === 'running') entry.attempts += 1;
+    return structuredClone(entry);
+  }
+
+  captureStats() {
+    const captures = [...this.#captures.values()];
+    const pending = [...this.#captureQueue.values()].filter(entry => entry.state !== 'complete');
+    const duplicateKeys = new Set(pending.filter(entry => entry.reason === 'duplicate-image').map(entry => entry.url_key));
+    const distribution = new Map();
+    for (const capture of captures) {
+      if (capture.image_hash) distribution.set(capture.image_hash, (distribution.get(capture.image_hash) ?? 0) + 1);
+    }
+    const distinguishableMetadata = captures.filter(capture => capture.source === 'og' && capture.image_ref && !duplicateKeys.has(capture.url_key)).length;
+    return {
+      total: captures.length,
+      metadata_images: captures.filter(capture => capture.source === 'og' && capture.image_ref).length,
+      distinguishable_metadata: distinguishableMetadata,
+      metadata_coverage: captures.length ? distinguishableMetadata / captures.length : null,
+      screenshot_images: captures.filter(capture => capture.source === 'screenshot' && capture.image_ref).length,
+      gaps: pending.length,
+      queued: [...this.#captureQueue.values()].filter(entry => entry.state === 'queued' || entry.state === 'failed').length,
+      duplicate_distribution: [...distribution.values()].sort((left, right) => right - left),
+    };
   }
 
   countItems(collectionId) {

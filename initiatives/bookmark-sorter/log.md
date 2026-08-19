@@ -268,3 +268,7 @@ Finished phase 1 with an owner-scoped, bounded-batch D1 adapter; a 20 MB Netscap
 ## 2026-08-18 — Phase 2 - build the virtualised blind grid, verdict functions, undo, marked sets, and session-rate instrument
 
 Built the responsive virtualised blind grid and session instrument. Fourteen Node tests and two browser tests pass across a generated 10,000-item pile; group verdicts undo atomically and verdicts patch cards without navigation. The several-hundred-item real blind baseline remains a separate data blocker, while metadata capture work is now actionable.
+
+## 2026-08-18 — Phase 3 - build metadata captures, the stubbed pass-2 queue, and capture-gap controls
+
+Built anonymous metadata capture, derivative-only R2 storage, hash-based duplicate detection, the explicit resumable pass-2 queue and capture-gap control. Twenty-one Node tests and three browser tests pass; the real-pile coverage and duplicate distribution remain a data measurement, and pass 2 remains switched off.

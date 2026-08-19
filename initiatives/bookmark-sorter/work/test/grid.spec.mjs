@@ -11,6 +11,8 @@ function sampleItems(count = 10_000) {
     tags: [`folder:Reading/topic-${index % 12}`, 'src:browser-export'],
     verdict: null,
     verdict_at: null,
+    capture: index % 3 ? {state: 'pass1-gap', image_ref: null} : {state: 'pass1-ready', image_ref: `capture-${index}`},
+    capture_url: index % 3 ? null : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAF/gL+XIVz0gAAAABJRU5ErkJggg==',
   }));
 }
 
@@ -32,7 +34,7 @@ async function installPile(page) {
       const offset = Number(url.searchParams.get('offset') || 0);
       const limit = Number(url.searchParams.get('limit') || 200);
       const backlog = backend.items.filter(item => !item.verdict).length;
-      return route.fulfill({json: {collection_id: 'pile', total: backend.items.length, backlog, items: backend.items.slice(offset, offset + limit)}});
+      return route.fulfill({json: {collection_id: 'pile', total: backend.items.length, backlog, captures: {total: backend.items.length, metadata_images: 3334, screenshot_images: 0, gaps: 6666, queued: 6666, duplicate_distribution: [12, 7, 4]}, items: backend.items.slice(offset, offset + limit)}});
     }
     const body = request.postDataJSON();
     if (request.method() === 'POST' && url.pathname === '/api/session') {
@@ -68,6 +70,9 @@ async function installPile(page) {
       for (const change of changes) Object.assign(backend.items.find(item => item.id === change.item_id), {verdict: change.verdict, verdict_at: change.verdict_at});
       backend.session.items_judged = Math.max(0, backend.session.items_judged - changes.length);
       return route.fulfill({json: {changes, backlog: backend.items.filter(item => !item.verdict).length, session: backend.session}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/captures/gaps') {
+      return route.fulfill({json: {enabled: false, processed: 0, status: {total: backend.items.length, metadata_images: 3334, screenshot_images: 0, gaps: 6666, queued: 6666, duplicate_distribution: [12, 7, 4]}}});
     }
     return route.fulfill({status: 404, json: {error: 'Not found'}});
   });
@@ -135,4 +140,16 @@ test('keyboard verdicts, marked groups, atomic undo, and sitting rate work witho
   expect(backend.session.items_judged).toBe(1);
   expect(navigations).toBe(1);
   expect(page.url()).toBe('https://pile.test/');
+});
+
+test('stored captures render locally and pass 2 runs only from its explicit control', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+  await expect(page.locator('.capture img')).toHaveCount(8);
+  expect(backend.requests.some(request => request.path.startsWith('/read/'))).toBe(false);
+  expect(backend.requests.filter(request => request.path === '/api/captures/gaps')).toHaveLength(0);
+  await page.locator('#capture-gaps').click();
+  await expect(page.locator('#status')).toHaveText('Pass 2 is off; 6,666 metadata gaps unchanged.');
+  expect(backend.requests.filter(request => request.path === '/api/captures/gaps')).toHaveLength(1);
 });
