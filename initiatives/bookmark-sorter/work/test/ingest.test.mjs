@@ -116,3 +116,12 @@ test('the selection migration stores title keys and makes tag actions undoable',
   assert.match(sql, /idx_triage_actions_session_active/);
   assert.match(sql, /PRAGMA optimize/);
 });
+
+test('the identity migration pins one personal pile and the collection menu indexes', async () => {
+  const sql = await readFile(fileURLToPath(new URL('../migrations/0005_identity_collections.sql', import.meta.url)), 'utf8');
+  assert.match(sql, /CREATE UNIQUE INDEX idx_collections_owner_personal/);
+  assert.match(sql, /WHERE kind = 'personal'/);
+  assert.match(sql, /idx_collections_owner_kind_created/);
+  assert.match(sql, /idx_collections_template_id/);
+  assert.match(sql, /PRAGMA optimize/);
+});

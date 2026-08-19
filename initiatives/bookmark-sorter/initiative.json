@@ -42,11 +42,11 @@
       "advances_stage": false
     },
     {
-      "id": "build-identity-collections",
-      "title": "Phase 6 - build identity, owner-scoped collections, and per-user demo copies",
+      "id": "critique-first-version",
+      "title": "Critique the six-phase local build and prepare its graduation or dormancy decision",
       "state": "actionable",
-      "value": "high",
-      "effort": "large",
+      "value": "medium",
+      "effort": "small",
       "advances_stage": false
     }
   ]

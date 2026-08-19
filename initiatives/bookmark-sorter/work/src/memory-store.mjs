@@ -17,13 +17,115 @@ export class MemoryBookmarkStore {
   #captures = new Map();
   #captureQueue = new Map();
   #nextItem = 1;
+  #canEditTemplates;
+
+  constructor({canEditTemplates = false} = {}) {
+    this.#canEditTemplates = canEditTemplates;
+  }
 
   createCollection(collection) {
-    this.#collections.set(collection.id, structuredClone(collection));
+    const stored = {
+      owner_id: null,
+      template_id: null,
+      copied_at: null,
+      created_at: new Date().toISOString(),
+      kind: 'personal',
+      ...structuredClone(collection),
+    };
+    this.#collections.set(stored.id, stored);
+    return structuredClone(stored);
   }
 
   hasCollection(id) {
     return this.#collections.has(id);
+  }
+
+  ownedCollection(id) {
+    const collection = this.#collections.get(id);
+    return collection ? structuredClone(collection) : null;
+  }
+
+  ensureUser() {
+    return {owner_id: null, can_edit_templates: this.#canEditTemplates};
+  }
+
+  canEditTemplates() {
+    return this.#canEditTemplates;
+  }
+
+  ensureCollection(collection) {
+    return this.hasCollection(collection.id)
+      ? structuredClone(this.#collections.get(collection.id))
+      : this.createCollection(collection);
+  }
+
+  ensurePersonalCollection({id, name = 'My bookmarks', createdAt = new Date().toISOString()} = {}) {
+    const existing = [...this.#collections.values()].find(collection => collection.kind === 'personal');
+    return existing ? structuredClone(existing) : this.createCollection({id, name, kind: 'personal', created_at: createdAt});
+  }
+
+  listCollections() {
+    return [...this.#collections.values()]
+      .map(collection => ({...structuredClone(collection), item_count: this.countItems(collection.id)}))
+      .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.id.localeCompare(right.id));
+  }
+
+  listTemplates() {
+    return this.listCollections().filter(collection => collection.kind === 'demo-template');
+  }
+
+  renameCollection(id, name) {
+    const collection = this.#collections.get(id);
+    if (!collection) throw new Error(`Unknown collection: ${id}`);
+    const nextName = String(name || '').trim();
+    if (!nextName) throw new Error('Collection name is required');
+    collection.name = nextName;
+    return structuredClone(collection);
+  }
+
+  copyTemplate(templateId, {id, name, copiedAt, createdAt = copiedAt} = {}) {
+    const template = this.#collections.get(templateId);
+    if (!template || template.kind !== 'demo-template') throw new Error(`Not a demo template: ${templateId}`);
+    const usedNames = new Set([...this.#collections.values()].map(collection => collection.name));
+    const rootName = String(name || `${template.name} copy`).trim() || `${template.name} copy`;
+    let copyName = rootName;
+    for (let suffix = 2; usedNames.has(copyName); suffix += 1) copyName = `${rootName} (${suffix})`;
+    const copy = this.createCollection({
+      id,
+      name: copyName,
+      kind: 'demo-copy',
+      template_id: templateId,
+      copied_at: copiedAt,
+      created_at: createdAt,
+    });
+    for (const source of this.listAllItems(templateId)) {
+      const item = this.insertItem({...source, id: undefined, collection_id: id});
+      this.addTags(item.id, source.tags);
+    }
+    for (const selection of this.listSelections(templateId)) {
+      this.saveSelection(id, {...selection, id: `selection-copy-${this.#nextItem++}`});
+    }
+    return copy;
+  }
+
+  deleteDemoCopy(id) {
+    const collection = this.#collections.get(id);
+    if (!collection || collection.kind !== 'demo-copy') throw new Error('Only a demo copy can be deleted here');
+    for (const item of [...this.#items.values()]) {
+      if (item.collection_id !== id) continue;
+      this.#items.delete(item.id);
+      this.#itemsByUrl.delete(`${id}\u0000${item.url_key}`);
+      this.#tags.delete(item.id);
+    }
+    for (const [selectionId, selection] of this.#selections) {
+      if (selection.collection_id === id) this.#selections.delete(selectionId);
+    }
+    this.#collections.delete(id);
+    return structuredClone(collection);
+  }
+
+  collectionHasUrlKey(collectionId, urlKey) {
+    return Boolean(this.#itemsByUrl.get(`${collectionId}\u0000${urlKey}`));
   }
 
   findItem(collectionId, urlKey) {
@@ -206,9 +308,13 @@ export class MemoryBookmarkStore {
     return queue.size;
   }
 
-  listCaptureQueue({limit = 20} = {}) {
+  listCaptureQueue({limit = 20, collectionId = null} = {}) {
+    const scoped = collectionId === null
+      ? null
+      : new Set([...this.#items.values()].filter(item => item.collection_id === collectionId).map(item => item.url_key));
     return [...this.#captureQueue.values()]
       .filter(entry => entry.state === 'queued' || entry.state === 'failed')
+      .filter(entry => scoped === null || scoped.has(entry.url_key))
       .sort((left, right) => left.queued_at.localeCompare(right.queued_at) || left.url_key.localeCompare(right.url_key))
       .slice(0, limit)
       .map(entry => structuredClone(entry));
@@ -224,9 +330,12 @@ export class MemoryBookmarkStore {
     return structuredClone(entry);
   }
 
-  captureStats() {
-    const captures = [...this.#captures.values()];
-    const pending = [...this.#captureQueue.values()].filter(entry => entry.state !== 'complete');
+  captureStats(collectionId = null) {
+    const scoped = collectionId === null
+      ? null
+      : new Set([...this.#items.values()].filter(item => item.collection_id === collectionId).map(item => item.url_key));
+    const captures = [...this.#captures.values()].filter(capture => scoped === null || scoped.has(capture.url_key));
+    const pending = [...this.#captureQueue.values()].filter(entry => entry.state !== 'complete' && (scoped === null || scoped.has(entry.url_key)));
     const duplicateKeys = new Set(pending.filter(entry => entry.reason === 'duplicate-image').map(entry => entry.url_key));
     const distribution = new Map();
     for (const capture of captures) {
@@ -240,7 +349,7 @@ export class MemoryBookmarkStore {
       metadata_coverage: captures.length ? distinguishableMetadata / captures.length : null,
       screenshot_images: captures.filter(capture => capture.source === 'screenshot' && capture.image_ref).length,
       gaps: pending.length,
-      queued: [...this.#captureQueue.values()].filter(entry => entry.state === 'queued' || entry.state === 'failed').length,
+      queued: [...this.#captureQueue.values()].filter(entry => (entry.state === 'queued' || entry.state === 'failed') && (scoped === null || scoped.has(entry.url_key))).length,
       duplicate_distribution: [...distribution.values()].sort((left, right) => right - left),
     };
   }

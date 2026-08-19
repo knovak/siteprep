@@ -247,15 +247,15 @@ export function createCapturePipeline({
     }
     await Promise.all(Array.from({length: Math.min(concurrency, unique.length)}, worker));
     await store.refreshCaptureQueue({duplicateThreshold, at: now().toISOString()});
-    return {processed: unique.length, captures: results, status: await store.captureStats()};
+    return {processed: unique.length, captures: results, status: await store.captureStats(collectionId)};
   }
 
-  async function processGaps({limit = 20} = {}) {
+  async function processGaps({limit = 20, collectionId = null} = {}) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
-    if (!passTwoEnabled) return {enabled: false, processed: 0, status: await store.captureStats()};
+    if (!passTwoEnabled) return {enabled: false, processed: 0, status: await store.captureStats(collectionId)};
     if (typeof vendorCapture !== 'function') throw new Error('Pass 2 is enabled without a server-side vendor adapter');
     let processed = 0;
-    const entries = await store.listCaptureQueue({limit: safeLimit});
+    const entries = await store.listCaptureQueue({limit: safeLimit, collectionId});
     for (const entry of entries) {
       await store.markCaptureQueue(entry.url_key, {state: 'running', at: now().toISOString()});
       try {
@@ -278,7 +278,7 @@ export function createCapturePipeline({
         await store.markCaptureQueue(entry.url_key, {state: 'failed', at: now().toISOString(), error: error.message});
       }
     }
-    return {enabled: true, processed, status: await store.captureStats()};
+    return {enabled: true, processed, status: await store.captureStats(collectionId)};
   }
 
   async function image(urlKey) {
@@ -292,7 +292,7 @@ export function createCapturePipeline({
     image,
     passOne,
     processGaps,
-    status: () => store.captureStats(),
+    status: collectionId => store.captureStats(collectionId),
     settings: {duplicateThreshold, passTwoEnabled, derivative: DERIVATIVE_SPEC},
   };
 }

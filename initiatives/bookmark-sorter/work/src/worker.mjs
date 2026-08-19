@@ -5,9 +5,10 @@ import {ingestBookmarkHtml} from './ingest.mjs';
 import {renderPilePage} from './pile-page.mjs';
 import {acceptProposedTag, exportSelection, importExportDocument, readProposalDocument} from './round-trip.mjs';
 import {compileSelection, evaluateSelection, proposeSelections, wrapUiSelection} from './selections.mjs';
+import {readSiteIdentity} from './site-identity.mjs';
 
-const COLLECTION_ID = 'pile';
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+const COLLECTION_HEADER = 'x-bookmark-collection-id';
 
 function json(value, status = 200) {
   return Response.json(value, {status, headers: {'cache-control': 'no-store'}});
@@ -19,22 +20,23 @@ async function requestJson(request) {
   return request.json();
 }
 
-function withCaptureUrl(item) {
+function withCaptureUrl(item, collectionId) {
   return {
     ...item,
     capture_url: item.capture?.image_ref && item.capture.displayable !== false
-      ? `/api/capture-image?url_key=${encodeURIComponent(item.url_key)}`
+      ? `/api/capture-image?collection_id=${encodeURIComponent(collectionId)}&url_key=${encodeURIComponent(item.url_key)}`
       : null,
   };
 }
 
-async function selectedItems(store, expression) {
-  const items = await store.listAllItems(COLLECTION_ID);
-  return evaluateSelection(items, expression, {collectionId: COLLECTION_ID});
+async function selectedItems(store, collectionId, expression) {
+  const items = await store.listAllItems(collectionId);
+  return evaluateSelection(items, expression, {collectionId});
 }
 
 export function createPileApp({
-  storeFactory = env => new D1BookmarkStore(env.DB),
+  storeFactory = (env, identity) => new D1BookmarkStore(env.DB, {ownerId: identity.id}),
+  identityFromRequest = readSiteIdentity,
   transformImage = null,
   vendorCapture = null,
   captureFactory = (env, store) => env.CAPTURES ? createCapturePipeline({
@@ -46,6 +48,7 @@ export function createPileApp({
   }) : null,
   now = () => new Date(),
   idFactory = prefix => `${prefix}-${crypto.randomUUID()}`,
+  personalCollectionIdFactory = () => idFactory('collection'),
 } = {}) {
   return {
     async fetch(request, env = {}, context = {}) {
@@ -57,25 +60,78 @@ export function createPileApp({
       if (!url.pathname.startsWith('/api/')) return new Response('Not found', {status: 404});
 
       try {
-        const store = storeFactory(env);
+        const identity = identityFromRequest(request);
+        if (!identity?.id) return json({error: 'Sign in with ChatGPT to continue'}, 401);
+        const store = storeFactory(env, identity);
         const capture = captureFactory(env, store);
-        await store.ensureCollection({id: COLLECTION_ID, name: 'Pile', kind: 'personal', createdAt: now().toISOString()});
+        await store.ensureUser();
+        const personal = await store.ensurePersonalCollection({
+          id: personalCollectionIdFactory(identity),
+          name: 'My bookmarks',
+          createdAt: now().toISOString(),
+        });
+
+        if (request.method === 'GET' && url.pathname === '/api/collections') {
+          const [collections, templates, canEditTemplates] = await Promise.all([
+            store.listCollections(),
+            store.listTemplates(),
+            store.canEditTemplates(),
+          ]);
+          return json({
+            active_collection_id: request.headers.get(COLLECTION_HEADER) || personal.id,
+            can_edit_templates: canEditTemplates,
+            collections,
+            templates,
+          });
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/collections') {
+          const body = await requestJson(request);
+          const at = now().toISOString();
+          let collection;
+          if (body.action === 'copy-template') {
+            collection = await store.copyTemplate(body.template_id, {
+              id: idFactory('collection'), name: body.name, copiedAt: at, createdAt: at,
+            });
+          } else if (body.action === 'fresh-copy') {
+            const source = await store.ownedCollection(body.collection_id);
+            if (!source || source.kind !== 'demo-copy') throw new Error('Choose one of your demo copies');
+            collection = await store.copyTemplate(source.template_id, {
+              id: idFactory('collection'), name: body.name || `${source.name} fresh`, copiedAt: at, createdAt: at,
+            });
+          } else if (body.action === 'rename') {
+            collection = await store.renameCollection(body.collection_id, body.name);
+          } else if (body.action === 'delete-copy') {
+            collection = await store.deleteDemoCopy(body.collection_id);
+          } else if (body.action === 'create-template') {
+            collection = await store.ensureCollection({
+              id: idFactory('collection'), name: body.name || 'New demo', kind: 'demo-template', createdAt: at,
+            });
+          } else {
+            throw new Error('Unsupported collection action');
+          }
+          return json({action: body.action, collection});
+        }
+
+        const collectionId = url.searchParams.get('collection_id')
+          || request.headers.get(COLLECTION_HEADER)
+          || personal.id;
 
         if (request.method === 'GET' && url.pathname === '/api/items') {
           const limit = url.searchParams.get('limit') ?? 200;
           const offset = url.searchParams.get('offset') ?? 0;
           const [items, total, backlog] = await Promise.all([
-            store.listItems(COLLECTION_ID, {limit, offset}),
-            store.countItems(COLLECTION_ID),
-            store.countUntriagedItems(COLLECTION_ID),
+            store.listItems(collectionId, {limit, offset}),
+            store.countItems(collectionId),
+            store.countUntriagedItems(collectionId),
           ]);
-          const captureStatus = capture ? await capture.status() : null;
+          const captureStatus = capture ? await capture.status(collectionId) : null;
           return json({
-            collection_id: COLLECTION_ID,
+            collection_id: collectionId,
             total,
             backlog,
             captures: captureStatus,
-            items: items.map(withCaptureUrl),
+            items: items.map(item => withCaptureUrl(item, collectionId)),
           });
         }
 
@@ -83,27 +139,27 @@ export function createPileApp({
           const expression = url.searchParams.get('expression') || '';
           const limit = Math.max(1, Math.min(500, Number(url.searchParams.get('limit')) || 200));
           const offset = Math.max(0, Number(url.searchParams.get('offset')) || 0);
-          const matches = await selectedItems(store, expression);
+          const matches = await selectedItems(store, collectionId, expression);
           const [collectionTotal, collectionBacklog, captureStatus] = await Promise.all([
-            store.countItems(COLLECTION_ID),
-            store.countUntriagedItems(COLLECTION_ID),
-            capture ? capture.status() : null,
+            store.countItems(collectionId),
+            store.countUntriagedItems(collectionId),
+            capture ? capture.status(collectionId) : null,
           ]);
           return json({
-            collection_id: COLLECTION_ID,
+            collection_id: collectionId,
             expression,
-            effective_expression: wrapUiSelection(COLLECTION_ID, expression),
+            effective_expression: wrapUiSelection(collectionId, expression),
             collection_total: collectionTotal,
             collection_backlog: collectionBacklog,
             total: matches.length,
             backlog: matches.filter(item => !item.verdict).length,
             captures: captureStatus,
-            items: matches.slice(offset, offset + limit).map(withCaptureUrl),
+            items: matches.slice(offset, offset + limit).map(item => withCaptureUrl(item, collectionId)),
           });
         }
 
         if (request.method === 'GET' && url.pathname === '/api/selections') {
-          return json({selections: await store.listSelections(COLLECTION_ID)});
+          return json({selections: await store.listSelections(collectionId)});
         }
 
         if (request.method === 'POST' && url.pathname === '/api/selections') {
@@ -111,8 +167,8 @@ export function createPileApp({
           const name = String(body.name || '').trim();
           const expression = String(body.expression || '').trim();
           if (!name) throw new Error('Selection name is required');
-          compileSelection(wrapUiSelection(COLLECTION_ID, expression));
-          const selection = await store.saveSelection(COLLECTION_ID, {
+          compileSelection(wrapUiSelection(collectionId, expression));
+          const selection = await store.saveSelection(collectionId, {
             id: body.id || idFactory('selection'),
             name,
             expression,
@@ -121,13 +177,13 @@ export function createPileApp({
         }
 
         if (request.method === 'GET' && url.pathname === '/api/proposals') {
-          return json({proposals: proposeSelections(await store.listAllItems(COLLECTION_ID))});
+          return json({proposals: proposeSelections(await store.listAllItems(collectionId))});
         }
 
         if (request.method === 'GET' && url.pathname === '/api/export') {
           const document = await exportSelection({
             store,
-            collectionId: COLLECTION_ID,
+            collectionId,
             expression: url.searchParams.get('expression') || '',
             exportedAt: now().toISOString(),
           });
@@ -144,6 +200,7 @@ export function createPileApp({
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const urlKey = url.searchParams.get('url_key');
           if (!urlKey) return json({error: 'url_key is required'}, 400);
+          if (!await store.collectionHasUrlKey(collectionId, urlKey)) return json({error: 'Capture not found'}, 404);
           const object = await capture.image(urlKey);
           if (!object) return json({error: 'Capture not found'}, 404);
           const contentType = object.httpMetadata?.contentType || 'application/octet-stream';
@@ -165,10 +222,10 @@ export function createPileApp({
           const text = await file.text();
           const isJson = file.type === 'application/json' || String(file.name || '').toLowerCase().endsWith('.json');
           const result = isJson
-            ? await importExportDocument({store, collectionId: COLLECTION_ID, document: text, importedAt: now().toISOString()})
+            ? await importExportDocument({store, collectionId, document: text, importedAt: now().toISOString()})
             : await ingestBookmarkHtml({
               store,
-              collectionId: COLLECTION_ID,
+              collectionId,
               html: text,
               source,
               ingestedAt: now().toISOString(),
@@ -188,7 +245,7 @@ export function createPileApp({
         if (request.method === 'POST' && url.pathname === '/api/import-json') {
           return json(await importExportDocument({
             store,
-            collectionId: COLLECTION_ID,
+            collectionId,
             document: await requestJson(request),
             importedAt: now().toISOString(),
           }), 201);
@@ -197,7 +254,7 @@ export function createPileApp({
         if (request.method === 'POST' && url.pathname === '/api/proposal-file') {
           return json(await readProposalDocument({
             store,
-            collectionId: COLLECTION_ID,
+            collectionId,
             document: await requestJson(request),
           }));
         }
@@ -207,7 +264,7 @@ export function createPileApp({
           if (!body.session_id) throw new Error('Session id is required');
           return json(await acceptProposedTag({
             store,
-            collectionId: COLLECTION_ID,
+            collectionId,
             document: body.document,
             tag: body.tag,
             sessionId: body.session_id,
@@ -219,13 +276,13 @@ export function createPileApp({
         if (request.method === 'POST' && url.pathname === '/api/captures/gaps') {
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const body = await requestJson(request);
-          return json(await capture.processGaps({limit: body.limit}));
+          return json(await capture.processGaps({limit: body.limit, collectionId}));
         }
 
         if (request.method === 'POST' && url.pathname === '/api/session') {
           const body = await requestJson(request);
           if (body.action === 'start') {
-            const session = await store.startSession(COLLECTION_ID, {
+            const session = await store.startSession(collectionId, {
               id: idFactory('session'),
               startedAt: now().toISOString(),
             });
@@ -233,7 +290,7 @@ export function createPileApp({
           }
           if (body.action === 'finish') {
             if (!body.session_id) throw new Error('Session id is required');
-            return json(await store.finishSession(COLLECTION_ID, {
+            return json(await store.finishSession(collectionId, {
               sessionId: body.session_id,
               endedAt: now().toISOString(),
             }));
@@ -245,7 +302,7 @@ export function createPileApp({
           const body = await requestJson(request);
           if (!Array.isArray(body.item_ids) || body.item_ids.length === 0) throw new Error('Choose at least one item');
           if (!body.session_id) throw new Error('Session id is required');
-          const result = await store.applyVerdict(COLLECTION_ID, {
+          const result = await store.applyVerdict(collectionId, {
             itemIds: body.item_ids,
             verdict: body.verdict,
             at: now().toISOString(),
@@ -259,14 +316,14 @@ export function createPileApp({
           const body = await requestJson(request);
           if (!body.session_id) throw new Error('Session id is required');
           let expression = String(body.expression || '');
-          if (body.selection_id) expression = (await store.selection(COLLECTION_ID, body.selection_id)).expression;
+          if (body.selection_id) expression = (await store.selection(collectionId, body.selection_id)).expression;
           const excluded = new Set(Array.isArray(body.exclude_item_ids) ? body.exclude_item_ids : []);
-          const matches = (await selectedItems(store, expression)).filter(item => !excluded.has(item.id));
+          const matches = (await selectedItems(store, collectionId, expression)).filter(item => !excluded.has(item.id));
           if (!body.visible && !body.confirmed) {
             return json({confirmation_required: true, count: matches.length}, 409);
           }
           if (!matches.length) throw new Error('The selection has no items to judge');
-          return json(await store.applyVerdict(COLLECTION_ID, {
+          return json(await store.applyVerdict(collectionId, {
             itemIds: matches.map(item => item.id),
             verdict: body.verdict,
             at: now().toISOString(),
@@ -281,8 +338,8 @@ export function createPileApp({
           const tags = Array.isArray(body.tags) ? body.tags : String(body.tags || '').split(/[\s,]+/);
           const items = Array.isArray(body.item_ids) && body.item_ids.length
             ? body.item_ids
-            : (await selectedItems(store, String(body.expression || ''))).map(item => item.id);
-          return json(await store.applyTags(COLLECTION_ID, {
+            : (await selectedItems(store, collectionId, String(body.expression || ''))).map(item => item.id);
+          return json(await store.applyTags(collectionId, {
             itemIds: items,
             tags,
             at: now().toISOString(),
@@ -294,7 +351,7 @@ export function createPileApp({
         if (request.method === 'POST' && url.pathname === '/api/undo') {
           const body = await requestJson(request);
           if (!body.session_id) throw new Error('Session id is required');
-          return json(await store.undoLast(COLLECTION_ID, {
+          return json(await store.undoLast(collectionId, {
             sessionId: body.session_id,
             at: now().toISOString(),
           }));

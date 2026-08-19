@@ -30,6 +30,13 @@ async function installPile(page) {
     if (request.method() === 'GET' && url.pathname === '/') {
       return route.fulfill({contentType: 'text/html', body: renderPilePage()});
     }
+    if (request.method() === 'GET' && url.pathname === '/api/collections') {
+      return route.fulfill({json: {
+        active_collection_id: 'pile', can_edit_templates: false,
+        collections: [{id: 'pile', name: 'My bookmarks', kind: 'personal', item_count: backend.items.length}],
+        templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
+      }});
+    }
     if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
       const offset = Number(url.searchParams.get('offset') || 0);
       const limit = Number(url.searchParams.get('limit') || 200);

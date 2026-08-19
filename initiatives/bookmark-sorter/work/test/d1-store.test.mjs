@@ -21,6 +21,15 @@ class FakeStatement {
   }
 
   async first() {
+    if (this.sql.startsWith('SELECT c.id') && this.sql.includes('FROM collections c')) {
+      const row = this.database.collections.get(this.values[0]);
+      if (!row) return null;
+      const ownerMatches = this.sql.includes('c.owner_id IS NULL')
+        ? row.owner_id === null
+        : !this.sql.includes('c.owner_id = ?') || row.owner_id === this.values[1];
+      if (!ownerMatches && !(this.sql.includes("OR c.kind = 'demo-template'") && row.kind === 'demo-template')) return null;
+      return {...row};
+    }
     if (this.sql.startsWith('SELECT id FROM collections')) {
       const row = this.database.collections.get(this.values[0]);
       if (!row) return null;
