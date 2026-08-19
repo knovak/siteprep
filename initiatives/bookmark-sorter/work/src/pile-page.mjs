@@ -59,13 +59,23 @@ export function renderPilePage() {
     .capture { min-height: 42%; overflow: hidden; margin: -11px -11px 8px; display: grid; place-items: center; color: #748096; background: linear-gradient(135deg, #e8edf6, #f6f8fc); font-size: .68rem; font-weight: 760; letter-spacing: .06em; text-transform: uppercase; }
     .capture img { width: 100%; height: 100%; display: block; object-fit: cover; }
     .site { overflow: hidden; color: #6a7387; font-size: .67rem; font-weight: 750; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-    .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+    .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
+    .bookmark-card h2 a { color: inherit; text-decoration: none; }
+    .bookmark-card h2 a:hover { text-decoration: underline; text-underline-offset: .15em; }
+    .bookmark-card h2 a:focus-visible { border-radius: 3px; outline: 2px solid #315fd2; outline-offset: 2px; }
     .note { display: -webkit-box; overflow: hidden; margin: 0; color: #5b6477; font-size: .75rem; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     .tags { display: flex; gap: 4px; overflow: hidden; margin-top: auto; padding-top: 8px; }
     .tag { flex: 0 0 auto; max-width: 9.5em; overflow: hidden; border-radius: 999px; padding: 2px 6px; color: #36538f; background: #edf2ff; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
     .verdict-label { margin-top: 6px; color: #697287; font-size: .66rem; font-weight: 760; text-transform: uppercase; }
     .mark { position: absolute; top: 7px; right: 7px; width: 28px; height: 28px; border: 1px solid #b7c0d0; border-radius: 50%; padding: 0; color: #4f5d76; background: #fff; font-weight: 900; }
     .mark[aria-pressed="true"] { border-color: #d39422; color: white; background: #d39422; }
+    .copy-url { position: absolute; top: 7px; left: 7px; width: 28px; height: 28px; border: 1px solid #b7c0d0; border-radius: 50%; padding: 0; color: #4f5d76; background: #fff; }
+    .copy-url:hover, .copy-url:focus-visible { border-color: #315fd2; color: #234fc4; }
+    .copy-url[data-copied="true"] { border-color: #38a667; color: #18733d; background: #effaf3; }
+    .copy-icon::before, .copy-icon::after { position: absolute; width: 8px; height: 9px; border: 1.5px solid currentColor; border-radius: 2px; content: ''; }
+    .copy-icon::before { top: 7px; left: 8px; }
+    .copy-icon::after { top: 10px; left: 11px; background: #fff; }
+    .copy-url[data-copied="true"] .copy-icon::after { background: #effaf3; }
     .empty { grid-column: 1 / -1; align-self: center; justify-self: center; max-width: 32rem; color: #697287; text-align: center; }
     .footer-line { grid-row: 7; display: flex; justify-content: space-between; gap: 14px; color: #657087; font-size: .76rem; }
     #status { min-height: 1.2em; margin: 0; }
@@ -90,7 +100,7 @@ export function renderPilePage() {
       .toolbar button { min-height: 42px; padding-inline: 12px; }
       .bookmark-card { padding: 18px; }
       .capture { min-height: 44%; margin: -18px -18px 12px; }
-      .bookmark-card h2 { max-width: 90%; font-size: 1.45rem; -webkit-line-clamp: 4; }
+      .bookmark-card h2 { max-width: 90%; font-size: 1.45rem; -webkit-line-clamp: 5; }
       .site { font-size: .76rem; }
       .note { font-size: .95rem; -webkit-line-clamp: 5; }
       .tag { font-size: .72rem; }
@@ -217,6 +227,12 @@ export function renderPilePage() {
       updateProgress();
     }
     function host(url) { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return 'saved link'; } }
+    function externalUrl(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.href : '';
+      } catch { return ''; }
+    }
     function verdictText(verdict) { return ({keeper: 'Keeper', junk: 'Junk', archive: 'Archive', 'needs-more-time': 'Needs more time'})[verdict] || 'Untriaged'; }
     function addText(parent, tagName, className, text) {
       const element = document.createElement(tagName);
@@ -242,7 +258,15 @@ export function renderPilePage() {
       } else addText(capture, 'span', '', item.capture?.state === 'pass1-error' ? 'Fetch failed' : 'No image');
       card.append(capture);
       addText(card, 'span', 'site', host(item.url));
-      addText(card, 'h2', '', item.title);
+      const heading = document.createElement('h2');
+      const href = externalUrl(item.url);
+      if (href) {
+        const titleLink = document.createElement('a');
+        titleLink.href = href; titleLink.target = '_blank'; titleLink.rel = 'noopener noreferrer'; titleLink.textContent = item.title;
+        titleLink.addEventListener('click', event => event.stopPropagation());
+        heading.append(titleLink);
+      } else heading.textContent = item.title;
+      card.append(heading);
       if (item.note) addText(card, 'p', 'note', item.note);
       const tags = document.createElement('div');
       tags.className = 'tags';
@@ -254,6 +278,23 @@ export function renderPilePage() {
       mark.setAttribute('aria-label', 'Mark ' + item.title); mark.setAttribute('aria-pressed', String(state.marked.has(item.id)));
       mark.addEventListener('click', event => { event.stopPropagation(); toggleMark(index); });
       card.append(mark);
+      const copy = document.createElement('button');
+      copy.type = 'button'; copy.className = 'copy-url'; copy.title = 'Copy URL';
+      copy.setAttribute('aria-label', 'Copy URL for ' + item.title);
+      const copyIcon = document.createElement('span'); copyIcon.className = 'copy-icon'; copyIcon.setAttribute('aria-hidden', 'true');
+      copy.append(copyIcon);
+      copy.addEventListener('click', async event => {
+        event.stopPropagation();
+        try {
+          await navigator.clipboard.writeText(item.url);
+          copy.dataset.copied = 'true';
+          elements.status.textContent = 'Copied URL for ' + item.title + '.';
+          setTimeout(() => { delete copy.dataset.copied; }, 1200);
+        } catch {
+          elements.status.textContent = 'Could not copy this URL.';
+        }
+      });
+      card.append(copy);
       card.addEventListener('click', () => { setFocus(index); elements.grid.focus({preventScroll: true}); });
       return card;
     }

@@ -82,8 +82,10 @@ selection, and export operations.
 - `src/pile-page.mjs` renders the self-contained grid. It has 8×2 wide,
   4×3 or 3×3 tablet, and single-card phone layouts; only the visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
-  never HTML strings. Stored derivatives appear without any request to the saved
-  page. A verdict patches the affected cards in place rather than navigating or
+  never HTML strings. Bookmark titles show up to five lines and link to the
+  saved URL in a new tab; each card also has a keyboard-accessible URL-copy
+  control. Stored derivatives appear without any request to the saved page. A
+  verdict patches the affected cards in place rather than navigating or
   rebuilding the grid. A collection bar switches among the owner's personal
   pile and demo copies, and exposes template-copy operations without putting
   identity or authorization state in the page.

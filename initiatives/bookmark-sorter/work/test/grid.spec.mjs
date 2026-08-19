@@ -166,3 +166,25 @@ test('stored captures render locally and pass 2 runs only from its explicit cont
   await expect(page.locator('#status')).toHaveText('Pass 2 is off; 6,666 metadata gaps unchanged.');
   expect(backend.requests.filter(request => request.path === '/api/captures/gaps')).toHaveLength(1);
 });
+
+test('bookmark titles link out and the copy control copies the saved URL', async ({page}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {writeText: async value => { window.__copiedBookmarkUrl = value; }},
+    });
+  });
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+
+  const firstCard = page.locator('[data-item-id="item-1"]');
+  const titleLink = firstCard.locator('h2 a');
+  await expect(titleLink).toHaveAttribute('href', 'https://example0.com/read/1');
+  await expect(titleLink).toHaveAttribute('target', '_blank');
+  await expect(titleLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+  await firstCard.locator('.copy-url').click();
+  await expect(page.locator('#status')).toHaveText('Copied URL for Bookmark 1: a useful article with enough title context.');
+  await expect.poll(() => page.evaluate(() => window.__copiedBookmarkUrl)).toBe('https://example0.com/read/1');
+});

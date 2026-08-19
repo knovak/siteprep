@@ -39,6 +39,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="sweep-rest"/);
   assert.match(html, /id="tag-selection"/);
   assert.match(html, /data-verdict="keeper"/);
+  assert.match(html, /-webkit-line-clamp: 5/);
+  assert.match(html, /titleLink\.target = '_blank'/);
+  assert.match(html, /navigator\.clipboard\.writeText\(item\.url\)/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);
 
