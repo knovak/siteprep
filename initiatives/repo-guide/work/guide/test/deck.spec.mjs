@@ -20,25 +20,25 @@ test('deck opens offline and supports complete keyboard navigation', async ({pag
   await page.goto(pathToFileURL(outputPath).href);
 
   const slides = page.locator('.slide');
-  await expect(slides).toHaveCount(13);
+  await expect(slides).toHaveCount(14);
   await expect(slides.nth(0)).toBeVisible();
   await expect(slides.nth(1)).toBeHidden();
-  await expect(page.locator('#progress')).toHaveText('1 / 13');
+  await expect(page.locator('#progress')).toHaveText('1 / 14');
 
   await page.keyboard.press('ArrowRight');
   await expect(slides.nth(1)).toBeVisible();
-  await expect(page.locator('#progress')).toHaveText('2 / 13');
+  await expect(page.locator('#progress')).toHaveText('2 / 14');
   await page.keyboard.press('End');
-  await expect(slides.nth(12)).toBeVisible();
-  await expect(page.locator('#progress')).toHaveText('13 / 13');
+  await expect(slides.nth(13)).toBeVisible();
+  await expect(page.locator('#progress')).toHaveText('14 / 14');
   await page.keyboard.press('Home');
   await expect(slides.nth(0)).toBeVisible();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('#progress')).toHaveText('1 / 13');
+  await expect(page.locator('#progress')).toHaveText('1 / 14');
   await page.keyboard.press('PageDown');
-  await expect(page.locator('#progress')).toHaveText('2 / 13');
+  await expect(page.locator('#progress')).toHaveText('2 / 14');
   await page.keyboard.press('PageUp');
-  await expect(page.locator('#progress')).toHaveText('1 / 13');
+  await expect(page.locator('#progress')).toHaveText('1 / 14');
 
   const sha = await page.locator('body').getAttribute('data-source-sha');
   expect(sha).toMatch(/^[a-f0-9]{7,40}$/);
@@ -57,4 +57,28 @@ test('deck opens offline and supports complete keyboard navigation', async ({pag
   expect(consoleErrors).toEqual([]);
   expect(failedRequests).toEqual([]);
   expect(networkRequests).toEqual([]);
+});
+
+test('slides vary in shape and nothing overflows the frame', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  const slides = page.locator('.slide');
+  const total = await slides.count();
+
+  const layouts = await slides.evaluateAll(nodes => nodes.map(node => node.dataset.layout));
+  expect(new Set(layouts).size).toBeGreaterThanOrEqual(2);
+  expect(layouts).toContain('figure');
+
+  // Every slide is a fixed frame: its content has to fit inside it.
+  for (let index = 0; index < total; index += 1) {
+    await page.evaluate(slideIndex => window.deckState.show(slideIndex), index);
+    const overflow = await page.locator('.slide:not([hidden])').evaluate(node => {
+      const inner = node.querySelector('.slide-inner');
+      return {
+        vertical: inner.scrollHeight - inner.clientHeight,
+        horizontal: inner.scrollWidth - inner.clientWidth,
+      };
+    });
+    expect(overflow.vertical, `slide ${index + 1} overflows vertically`).toBeLessThanOrEqual(2);
+    expect(overflow.horizontal, `slide ${index + 1} overflows horizontally`).toBeLessThanOrEqual(2);
+  }
 });

@@ -6,30 +6,48 @@ slide: true
 slide_title: Fork the process, not the travel content
 audience: forker
 ---
-Carry the process, not this repository's travel content. The process-bearing
-set is the working instruction file, lifecycle scripts and tests, the sweep
-prompt and configuration, the focused skills, and the workflows that schedule,
-validate, and publish. Current protected paths are
-{{sweep.protected_paths}}; they mark shared machinery a sweep cannot casually
-rewrite.
+If what you want from this repository is the way it works rather than what it
+publishes, the line between those two is fairly clean.
 
-The live workflow shapes are {{workflows.gh-pages}},
-{{workflows.initiatives-digest}}, and {{workflows.sweep-scope}}. Focused helpers
-include {{skills.new-initiative.description}},
-{{skills.respond-to-review.description}}, and {{skills.merge-prs.description}}.
-Those descriptions are resolved from the helpers themselves, so a fork sees
-what it actually copied.
+@figure fork-boundary
 
-Decks, demos, and the present initiative directories are local content and
-history. Copy them only when their subject matter belongs in the new repository.
-[The vision document explains which mechanism is essential and why](source:INITIATIVES_VISION.md);
-[the technical document explains how it is wired](source:INITIATIVES_TECHDOC.md).
+The paths marked protected are the ones a sweep is not allowed to casually
+rewrite, which makes them a useful inventory of the shared machinery: whatever
+the repository defends from its own automation is roughly what a fork needs to
+take.
+
+Four workflows schedule, validate, and publish. These shapes are read from the
+workflow files themselves, so what you see is what you would actually be
+copying:
+
+@fact workflows.* as cards
+
+Alongside them sit the focused skills — small, single-purpose procedures the
+agents reach for by name. Their descriptions come from the skills themselves:
+
+@fact skills.* as cards
+
+What you should leave behind is everything about travel. The decks, the demos,
+and the initiative histories already here are this repository's own subject
+matter; they are worth copying only if that subject matter is also yours.
+[The vision document explains which mechanism is essential and
+why](source:INITIATIVES_VISION.md); [the technical document explains how it is
+wired](source:INITIATIVES_TECHDOC.md).
 
 ---
 ## Fork the process, not the travel content
 
-Carry the working instructions, lifecycle scripts and tests, sweep prompt and
-configuration, focused skills, and workflows. Current protected paths are
-{{sweep.protected_paths}}. Decks, demos, and existing initiative histories are
-local content; copy them only when their subject matter belongs in the new
-repository.
+The line between the way this repository works and what it publishes is fairly
+clean. Whatever the repository defends from its own automation is roughly what a
+fork needs to take.
+
+@figure fork-boundary
+
+---
+## What a fork actually copies
+
+Four workflows schedule, validate, and publish; a handful of focused skills
+carry the procedures the agents reach for by name. Both shapes are read from
+the files themselves, so this is what you would really be taking.
+
+@fact workflows.* as cards

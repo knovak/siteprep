@@ -6,32 +6,47 @@ slide: true
 slide_title: An initiative keeps intent alive
 audience: both
 ---
-The live lifecycle, in order, is {{lifecycle.stages}}. These names are resolved
-from the executable lifecycle rather than copied into this guide.
+An initiative is a durable unit of purpose. It has no expiry date, no owner it
+must be handed to, and no obligation to finish. What it has is a record that
+grows as the thinking gets more definite.
 
-Each move makes an additional piece of reasoning durable. The document
-expectations currently resolve to {{lifecycle.stage_documents}}. Absence is
-meaningful: a document appears only when the lifecycle reaches it, so an empty
-placeholder would hide what comes next.
+@figure lifecycle-flow
 
-The first record preserves the person's own purpose. Objectives describe what
-done would mean; the specification chooses a shape and records alternatives;
-the plan sequences the build and its tests. Later states describe work being
-built, refined, or deliberately resting. [The lifecycle rules and vocabulary
-remain authoritative in the working instructions](source:AGENTS.md), while
-[the technical document explains what validates and renders them](source:INITIATIVES_TECHDOC.md).
+Those names are read out of the executable lifecycle, not copied here, so the
+rail above cannot quietly disagree with the code that enforces it. Movement goes
+both ways: an initiative that runs into a bad assumption moves back, and one
+nobody needs right now goes quiet without anybody declaring it dead.
+
+What changes at each move is how much reasoning has been made durable. The first
+record holds the person's own words, untouched. Then comes a statement of what
+done would mean, then a choice of shape with the alternatives that lost written
+down beside it, then a sequence for the build and its tests.
+
+@fact lifecycle.stage_documents as stack
+
+Notice what is missing from the early rows. A document shows up when the work
+reaches it and not before, so a gap is information: it tells the next
+contributor what has not been decided yet. An empty file with the right name
+would destroy that signal, which is why the tooling refuses to create one.
+[The lifecycle rules and vocabulary are authoritative in the working
+instructions](source:AGENTS.md), and [the technical document explains what
+validates and renders them](source:INITIATIVES_TECHDOC.md).
 
 ---
 ## An initiative keeps intent alive
 
-An initiative is a durable unit of purpose, not a project with an expiry date.
-Its live lifecycle is {{lifecycle.stages}}. It can advance, move back when the
-reasoning changes, or rest until another version is worth making.
+Not a project with an expiry date — a durable unit of purpose that can advance,
+move back when an assumption breaks, or rest until another version is worth
+making.
+
+@figure lifecycle-flow
 
 ---
-## Documents appear only when they become useful
+## A missing document is information
 
-The record grows with the work: purpose first, then objectives, alternatives,
-a build plan, tests, and working output. Absence is meaningful. A missing
-document tells the next contributor what comes next; an empty placeholder would
-hide that signal.
+Each move makes one more piece of reasoning durable: purpose, then outcomes,
+then a chosen shape with its rejected alternatives, then a sequence for building
+and testing it. A gap tells the next contributor what has not been decided yet,
+so the tooling refuses to scaffold an empty file that would hide it.
+
+@fact lifecycle.stage_documents as stack

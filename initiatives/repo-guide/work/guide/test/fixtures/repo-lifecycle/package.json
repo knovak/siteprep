@@ -1,0 +1,6 @@
+{
+  "name": "miniature-repository",
+  "scripts": {
+    "check": "node check.mjs"
+  }
+}

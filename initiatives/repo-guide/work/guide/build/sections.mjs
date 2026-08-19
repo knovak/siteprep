@@ -1,6 +1,8 @@
 import {readFile, readdir} from 'node:fs/promises';
 import {basename, join} from 'node:path';
 
+import {inspectBlock, isScalar, parseBlockDirective} from './blocks.mjs';
+
 const TOKEN = /\{\{([a-z0-9_.-]+)\}\}/gi;
 const AUDIENCES = new Set(['both', 'forker', 'contributor']);
 
@@ -96,14 +98,29 @@ function factValue(facts, token) {
   return {base, value};
 }
 
+// Only a scalar may be inlined. A structured value flattened into a sentence is
+// what forced every fact-bearing sentence into the same "the X are A; B; C"
+// frame; it renders as a block instead, so the prose around it can be written
+// like prose.
 function display(value) {
-  if (Array.isArray(value)) {
-    return value.map(item => display(item)).join('; ');
-  }
-  if (value && typeof value === 'object') {
-    return Object.entries(value).map(([key, item]) => `${key}: ${display(item)}`).join('; ');
-  }
   return String(value);
+}
+
+export function blockDirectives(text) {
+  const directives = [];
+  for (const line of text.replaceAll('\r\n', '\n').split('\n')) {
+    const directive = parseBlockDirective(line.trim());
+    if (directive) directives.push(directive);
+  }
+  return directives;
+}
+
+function maskBlockLines(text) {
+  return text
+    .replaceAll('\r\n', '\n')
+    .split('\n')
+    .map(line => (parseBlockDirective(line.trim()) ? '' : line))
+    .join('\n');
 }
 
 function escaped(value) {
@@ -149,16 +166,31 @@ function literalDiagnostics(section, facts, text) {
 }
 
 function renderSource(section, source, facts, citedFacts, diagnostics) {
+  for (const directive of blockDirectives(source)) {
+    let inspected;
+    try {
+      inspected = inspectBlock(directive, facts);
+    } catch (error) {
+      diagnostics.push({level: 'error', rule: 'unresolvable-block', section: section.id, value: `${directive.line.trim()} — ${error.message}`});
+      continue;
+    }
+    for (const key of inspected.cites) citedFacts.add(key);
+  }
+
   const rendered = source.replace(TOKEN, (whole, token) => {
     const resolved = factValue(facts, token);
     if (!resolved) {
       diagnostics.push({level: 'error', rule: 'unknown-token', section: section.id, value: token});
       return whole;
     }
+    if (!isScalar(resolved.value)) {
+      diagnostics.push({level: 'error', rule: 'structured-inline', section: section.id, value: token});
+      return whole;
+    }
     citedFacts.add(resolved.base);
     return display(resolved.value);
   });
-  diagnostics.push(...literalDiagnostics(section, facts, source));
+  diagnostics.push(...literalDiagnostics(section, facts, maskBlockLines(source)));
   return rendered;
 }
 
@@ -185,9 +217,14 @@ export function compileSections(sections, facts) {
   const metrics = sections.map(section => {
     const source = `${section.pageText}\n${section.slideTexts.join('\n')}`;
     const tokens = [...source.matchAll(TOKEN)].map(match => match[1]);
-    const composed = source.replace(TOKEN, ' ');
+    const composed = maskBlockLines(source).replace(TOKEN, ' ');
     const composedWords = composed.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) ?? [];
-    return {section: section.id, composed_words: composedWords.length, resolved_tokens: tokens.length};
+    return {
+      section: section.id,
+      composed_words: composedWords.length,
+      resolved_tokens: tokens.length,
+      blocks: blockDirectives(source).length,
+    };
   });
 
   for (const key of Object.keys(facts).sort()) {

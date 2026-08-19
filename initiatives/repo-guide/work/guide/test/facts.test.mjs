@@ -43,8 +43,32 @@ describe('strict text readers', () => {
     const path = join(REPO_OK, '.claude', 'skills', 'sample', 'SKILL.md');
     assert.deepEqual(readSkillFrontmatter(await readFile(path, 'utf8'), path), {
       name: 'sample',
-      description: 'Read a miniature source and return its exact facts.'
+      description: 'Read a miniature source and return its exact facts.',
+      summary: 'Read a miniature source and return its exact facts.'
     });
+  });
+
+  test('skill reader summarises a description to its first sentence', () => {
+    const text = [
+      '---',
+      'name: sample',
+      'description: >-',
+      '  Do one specific thing well. Use when the user asks for it by name',
+      '  ("do the thing"), or describes it without naming it.',
+      '---',
+      ''
+    ].join('\n');
+    const skill = readSkillFrontmatter(text, '<inline>');
+    assert.equal(skill.summary, 'Do one specific thing well.');
+    // The full description stays available; the summary is what a card shows,
+    // because a whole trigger-phrase description inlined into prose is what made
+    // the first version unreadable.
+    assert.match(skill.description, /Use when the user asks/);
+  });
+
+  test('a description with no sentence boundary summarises to the whole of itself', () => {
+    const text = '---\nname: sample\ndescription: One clause only\n---\n';
+    assert.equal(readSkillFrontmatter(text, '<inline>').summary, 'One clause only');
   });
 
   test('skill reader fails when its delimiter is missing', () => {

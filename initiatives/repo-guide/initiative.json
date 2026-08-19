@@ -27,7 +27,7 @@
       "id": "test-simulator-walkthrough",
       "title": "Have someone watch and step through the simulator and report whether the abstract lifecycle is adequate",
       "state": "blocked",
-      "blocked_by": "data:watch all six simulator states and report whether they accurately explain the sweep and lifecycle",
+      "blocked_by": "data:walk the simulator end to end and report whether it accurately explains the sweep and the whole lifecycle",
       "value": "high",
       "effort": "small",
       "advances_stage": false

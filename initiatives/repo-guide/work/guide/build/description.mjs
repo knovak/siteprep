@@ -4,8 +4,10 @@ import {dirname, relative, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {promisify} from 'node:util';
 
+import {BLOCK_CSS, parseBlockDirective, renderBlock} from './blocks.mjs';
 import {resolveDating} from './dating.mjs';
 import {resolveRepositoryFacts} from './facts.mjs';
+import {FIGURE_CSS} from './figures.mjs';
 import {compileSections, loadSections} from './sections.mjs';
 
 const execFile = promisify(execFileCallback);
@@ -77,6 +79,12 @@ function renderMarkdown(markdown, context) {
 
   for (const line of lines) {
     if (!line.trim()) { flush(); continue; }
+    const directive = parseBlockDirective(line.trim());
+    if (directive) {
+      flush();
+      output.push(renderBlock(directive, context.facts));
+      continue;
+    }
     const heading = line.match(/^(#{2,4})\s+(.+)$/);
     if (heading) {
       flush();
@@ -98,22 +106,24 @@ function renderMarkdown(markdown, context) {
   return output.join('\n');
 }
 
+// The portable copies belong at the end, next to the provenance they share, and
+// only once there is something to link. An empty state promoted above the first
+// section told a first-time reader nothing except that something was missing.
 function pdfPanel(dating) {
-  const items = dating.pdfs.length
-    ? dating.pdfs.map(pdf => `<li data-pdf-id="${escapeHtml(pdf.id)}" data-possibly-stale="${pdf.possibly_stale}">
+  if (dating.pdfs.length === 0) return '';
+  const items = dating.pdfs.map(pdf => `<li data-pdf-id="${escapeHtml(pdf.id)}" data-possibly-stale="${pdf.possibly_stale}">
         <a href="${escapeHtml(pdf.link)}"><strong>${escapeHtml(pdf.label)}</strong></a>
         <span class="pdf-dates">Refreshed ${escapeHtml(pdf.refreshed)} · sources changed ${escapeHtml(pdf.source_date)}</span>
         ${pdf.possibly_stale ? '<mark>Possibly stale</mark>' : ''}
-      </li>`).join('')
-    : '<li class="pdf-empty">No hand-made PDFs are linked yet.</li>';
+      </li>`).join('');
   return `<aside class="pdf-panel" aria-labelledby="pdf-heading">
     <div><p class="eyebrow">Portable copies</p><h2 id="pdf-heading">PDFs on Google Drive</h2></div>
     <ul>${items}</ul>
   </aside>`;
 }
 
-function descriptionHtml({sections, generatedDate, sha, repositoryUrl, dating}) {
-  const context = {sha, repositoryUrl};
+function descriptionHtml({sections, facts, generatedDate, sha, repositoryUrl, dating}) {
+  const context = {sha, repositoryUrl, facts};
   const cards = sections.map(section => `
     <section id="${escapeHtml(section.id)}" data-audience="${escapeHtml(section.audience)}">
       <aside class="audience" aria-label="Audience">${escapeHtml(section.audience)}</aside>
@@ -130,7 +140,14 @@ function descriptionHtml({sections, generatedDate, sha, repositoryUrl, dating}) 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How work moves through this repository</title>
   <style>
-    :root { color-scheme: light; font: 17px/1.58 ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f2f5fa; }
+    :root {
+      color-scheme: light; font: 17px/1.58 ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f2f5fa;
+      --fig-ink: #1d2b47; --fig-muted: #63708c; --fig-line: #d3dae7; --fig-fill: #f4f7fd; --fig-surface: #ffffff;
+      --fig-accent: #3563c4; --fig-accent-soft: #e7eefc; --fig-accent-ink: #1b3f8f;
+      --fig-warn: #d59422; --fig-warn-soft: #fdf4e3; --fig-warn-ink: #865710;
+      --fig-go: #37916a; --fig-go-soft: #e8f5ee; --fig-go-ink: #1d6144;
+      --fig-doc: #e9edf6; --fig-doc-ink: #4a5a7c;
+    }
     * { box-sizing: border-box; }
     body { margin: 0; }
     a { color: #1647a5; text-underline-offset: .18em; }
@@ -161,8 +178,9 @@ function descriptionHtml({sections, generatedDate, sha, repositoryUrl, dating}) 
     code { padding: 2px 5px; border-radius: 5px; background: #eef1f7; font-size: .88em; }
     footer { padding: 28px max(24px, calc((100vw - 1100px) / 2)); border-top: 1px solid #d9dfeb; color: #566078; background: white; font-size: .85rem; }
     footer strong { color: #263e6d; }
+    .figure { margin: 26px 0; padding: 20px; border: 1px solid #e2e7f1; border-radius: 16px; background: #fbfcfe; overflow-x: auto; }
     @media (max-width: 700px) { .hero { padding-top: 48px; } .pdf-panel, section { grid-template-columns: 1fr; padding: 24px; } .audience { justify-self: start; } }
-  </style>
+${FIGURE_CSS}${BLOCK_CSS}  </style>
 </head>
 <body>
   <header class="hero">
@@ -171,7 +189,7 @@ function descriptionHtml({sections, generatedDate, sha, repositoryUrl, dating}) 
     <p class="lede">A short way into the lifecycle, the division of labour, and the files that remain authoritative.</p>
   </header>
   <nav aria-label="Guide sections">${navigation}</nav>
-  <main>${pdfPanel(dating)}${cards}
+  <main>${cards}${pdfPanel(dating)}
   </main>
   <footer data-generated-date="${escapeHtml(generatedDate)}" data-source-sha="${escapeHtml(sha)}">
     Generated <strong>${escapeHtml(generatedDate)}</strong> from source commit
@@ -205,7 +223,7 @@ export async function generateDescription({root, outputPath, now = new Date(), s
     if (path.startsWith('/') || path.split('/').includes('..')) throw new Error(`Unsafe source link: ${path}`);
     await access(resolve(root, path));
   }
-  const html = descriptionHtml({sections: compiled.sections, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository, dating: resolvedDating});
+  const html = descriptionHtml({sections: compiled.sections, facts, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository, dating: resolvedDating});
   await mkdir(dirname(outputPath), {recursive: true});
   await writeFile(outputPath, html, 'utf8');
   return {

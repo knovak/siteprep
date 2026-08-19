@@ -1,0 +1,13 @@
+name: Example
+
+on:
+  push:
+    branches:
+      - main
+  manual:
+
+jobs:
+  inspect:
+    runs-on: nowhere
+  publish:
+    runs-on: nowhere

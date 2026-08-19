@@ -6,10 +6,14 @@ slide: true
 slide_title: The path
 audience: both
 ---
-The live stages are {{lifecycle.stages}}.
+The live stages run in order.
+
+@fact lifecycle.stages as rail
 
 ---
-Stages: {{lifecycle.stages}}.
+Stages, in order:
+
+@fact lifecycle.stages as rail
 
 ---
 ## The record grows

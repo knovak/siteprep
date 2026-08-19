@@ -194,6 +194,40 @@ The third rule will occasionally be annoying — a sentence that legitimately sa
 it is accepted: the alternative is a check that only catches the careless case,
 which is not the case that causes the harm.
 
+### 4.1 A fourth rule: only scalars may be inlined
+
+*Added 2026-08-19 after the first complete outputs were reviewed; the reasoning
+is in `decisions.md`.*
+
+The three rules above are necessary and were not sufficient. Substituting *any*
+fact into a sentence means every fact-bearing sentence has to survive whatever
+shape the value turns out to be, and the only phrasing that does is a plural
+noun phrase, a copula, and a dumped value. Combined with the second and third
+rules — which require every fact to be cited somewhere and forbid writing the
+value in plain words — the guide could not be written in any other register.
+The stilted result was not a drafting failure; it was this rule set working as
+specified.
+
+So facts split by shape:
+
+- **A scalar may be inlined.** `{{sweep.budget.items_per_run}}` inside a
+  sentence reads as English, and that was never the problem.
+- **A structured value may not be.** A list, a map, or a set of records is
+  named on its own line as a block directive — `@fact <key> [as <view>]` — and
+  renders as a rail, a table, a chip row, a list, or cards.
+- **Inlining a structured value is a build error**, on the same footing as a
+  literal stage name. Making it an error rather than a convention is the point:
+  the old frame stops being expressible.
+- **A block cites the facts it resolves**, so structure discharges the
+  uncited-fact warning. Without this the second rule would go on forcing values
+  into prose that does not want them, which is exactly what it had been doing.
+
+A `@figure <name>` directive is the same mechanism for diagrams: a figure is a
+pure function of resolved facts and declares the keys it consumes, so it cites
+them and cannot drift. This is what lets O9's guarantee cover pictures too —
+the alternative was hand-drawn diagrams, which are the fastest-staling thing a
+guide can contain.
+
 ## 5. The source document
 
 ### 5.1 Section shape
@@ -291,23 +325,42 @@ narrows the cost `decisions.md` recorded — a composed animation that "can, and
 will, disagree the first time a stage changes" — to the choreography, which is
 the part a person has to check.
 
-**The walk-through**, a fixed sequence with Step, Back and Play:
+**The walk-through** is a fixed sequence with Step, Back and Play, and it covers
+the lifecycle end to end — *revised 2026-08-19; see `decisions.md`.* The first
+version stopped three stages in, which taught the beginning of the process and
+left the reader to assume the rest. It now reaches every derived stage:
 
-1. A wish is written. One initiative appears at `wish`.
-2. Objectives are drafted; the stage advances, and the todo list gains items.
-3. An item is blocked on a `human:` question. It goes amber; the digest column
-   shows it.
-4. A sweep run: the survey picks the highest-scoring actionable item, opens a
-   pull request, and the item shows as in flight. Another item is passed over
-   because the budget is spent — **which is a step, not a footnote**, since the
-   budget is the part of the sweep newcomers do not expect.
-5. The blocked item is answered. The blocker clears and the item becomes
-   actionable.
-6. The pull request merges. The item disappears, its dependants unblock, and the
-   stage advances.
+1. A wish is written; one initiative appears at the first stage.
+2. Objectives are drafted; the stage advances and the todo list gains items.
+3. An item is blocked on a proposable question. It goes amber and waits.
+4. A sweep run, spending its allowance **across timed beats rather than arriving
+   finished**: phases light in order, the budget meter fills, and an item is
+   passed over at the boundary — **a step, not a footnote**, since the budget is
+   the part newcomers do not expect.
+5. The blocked item is answered; the blocker clears.
+6. The specification merges. The item leaves the list, a dependant unblocks, and
+   the stage advances.
+7. An assumption breaks and **the stage moves back** — a supported move, and one
+   a forward-only walk-through silently denies.
+8. A plan sequences the build.
+9. An increment is opened for review; nothing is merged.
+10. Review comes back, and answering it outranks starting anything new.
+11. The merge cascades again, inside the build this time.
+12. Outputs are registered and what remains is polish.
+13. Nothing actionable is left and the initiative rests.
+14. It is closed out, and the whole record stays readable.
 
-Step 4's passed-over item and step 6's cascade are the two moments a stage table
-cannot convey, and they are why O4 asks for this at all.
+**The items are keyed, and the list is reconciled rather than replaced.** This
+is the difference between a simulation and a slideshow, and the first version
+got it wrong: it rebuilt the item list every step, so an item persisting across
+a step was a different element wearing the same words. Nothing ever visibly
+happened, which is why the narrative panel had to describe changes the picture
+was failing to show. An item that survives a step is now the same element — it
+recolours in place, slides when a neighbour leaves, and collapses out when it
+merges.
+
+Step 4's passed-over item, step 6's cascade, and step 7's move backwards are the
+moments a stage table cannot convey, and they are why O4 asks for this at all.
 
 **What it is not:** a sandbox. `objectives.md` puts free play out of the first
 version explicitly.
