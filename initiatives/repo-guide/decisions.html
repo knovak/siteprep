@@ -239,6 +239,18 @@
 <p>  observation blockers on <code>initiative.json</code> are unchanged and still need people   rather than assertions — this work makes them worth running, it does not   answer them.</p>
 <ul><li><strong>Unaffected:</strong> the abstract-versus-real-JSON decision of 2026-08-17. The</li></ul>
 <p>  simulator still reads no initiative data; it covers more of the lifecycle   abstractly, which is a different axis from fidelity.</p>
+<h3>2026-08-19 — Keep the latest generated guide in the repository</h3>
+<p><strong>Commit the three files under <code>guide/out/</code> and keep the latest successful generation there from now on.</strong></p>
+<p>The user&#39;s words: <em>&quot;commit the &#39;out&#39; folder. and make a PR. (in future, we shall keep the contents of the latest generation of the guide in the folder.)&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> <code>description.html</code>, <code>deck.html</code>, and <code>simulator.html</code> are tracked</li></ul>
+<p>  derived artifacts. A guide source change includes any regenerated outputs in   the same commit after all three offline browser checks pass.</p>
+<ul><li><strong>Settled:</strong> the generator skill no longer proves that <code>out/</code> is ignored or</li></ul>
+<p>  clean. It reports the tracked artifacts that changed and includes them in the   resulting change set.</p>
+<ul><li><strong>Unchanged:</strong> generation remains on request rather than part of every site</li></ul>
+<p>  build. Tracking the latest copy does not add a workflow or build hook.</p>
+<ul><li><strong>Still open:</strong> tracking the files makes them available in the repository but</li></ul>
+<p>  does not link them into the published site. The existing <code>link-the-guide</code>   permission blocker remains the route to satisfying that part of O1.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
