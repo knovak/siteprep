@@ -11,7 +11,7 @@ No dependencies, no network, no real mailbox, and no live model — which is
 `plan.md` §2's seam paying for itself in the first phase that could have needed
 all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1–6 extraction
+## What is here — phases 1–7
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -80,6 +80,17 @@ all three. Node 18 or later, for the built-in test runner.
 | `private/.gitignore` | Keeps the inventory, store, live handoff, and any other mailbox-specific artefact out of Git | `spec.md` §§4, 6 |
 | `test/gmail-source.test.mjs` | Query union/intersection, half-open dates, pagination, MIME fallback, read-only operations, full fixture-harvest substitution, and private-file permissions | `test-plan.md` §4.6 |
 | `test/private-real-harvest.test.mjs` | Pins the body-to-model boundary, safe second-turn output, mode-0600 store/review files, and overwrite refusal | `test-plan.md` §4.6 |
+
+**Phase 7 — additive tagging and event clusters**
+
+| File | What it is | Specified in |
+|---|---|---|
+| `../skills/tag-newsletter-stories/SKILL.md` | The model workflow: read a provenance-light brief, judge themes and same-event clusters, then apply or undo one checked pass | `spec.md` §§10.2–10.3 |
+| `../skills/tag-newsletter-stories/scripts/tagging-pass.mjs` | Deterministic brief, proposal validation, additive tag/cluster writes, exact set undo, atomic mode-preserving CLI | `plan.md` phase 7 |
+| `src/store.mjs` | Adds the `clusters` block beside stories and runs while hydrating older stores with an empty block | `plan.md` §5.4 |
+| `src/review-page.mjs` | Renders a cluster as one top-level entry, with the paraphrase and individually judgeable linked members underneath | `spec.md` §10.2 |
+| `fixtures/tagging-proposal.json` | A recorded theme-and-cluster pass over the fixture store | `test-plan.md` §4.7 |
+| `test/tagging-skill.test.mjs` | Pins tags-only writes, additive reruns, exact undo, and proposal refusals | `test-plan.md` §4.7 |
 
 The constructor for `gmailMessageSource` accepts exactly two connector
 operations: `search_emails` and `read_email`. Search pages at 50 and counts the
@@ -155,6 +166,21 @@ The report always includes the §7.1 counters (`added`, `matched`, `merged`,
 `conflicted`) plus `updated`, `conflicts`, and a semantic file fingerprint.
 The second import of the same file returns `duplicate: true` and does not write
 the store or append a run record.
+
+Prepare, apply, or undo a tagging pass:
+
+```bash
+node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs prepare /path/to/store.json
+node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs apply /path/to/store.json /path/to/proposal.json
+node initiatives/newsletter-story-harvester/skills/tag-newsletter-stories/scripts/tagging-pass.mjs undo /path/to/store.json tag-2026-08-19-example
+```
+
+The apply command accepts only `theme:` and `about:` slugs, known story ids,
+same-event clusters of at least two members within fourteen days, and a proposal
+addressed to the store. It writes no story field other than the additive tag
+set. The cluster paraphrase lives in `store.clusters`, not tag metadata. Undo
+requires the recorded tag-state fingerprint to match, and the CLI preserves a
+private store's file mode across its atomic replacement.
 
 Not committed, deliberately: the Gmail inventory, bodies, or private store.
 Phase 3's fixture source and phase 6's Gmail source implement the same two-call

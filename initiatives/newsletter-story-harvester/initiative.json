@@ -6,12 +6,12 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-tagging-skill",
-      "title": "Phase 7 - build the additive, set-undoable tagging and cluster-paraphrase skill",
+      "id": "build-published-page",
+      "title": "Phase 8 - render the kept and emphasised stories as a provenance-safe published page",
       "state": "actionable",
       "value": "high",
-      "effort": "large",
-      "advances_stage": false
+      "effort": "medium",
+      "advances_stage": true
     }
   ]
 }

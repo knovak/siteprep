@@ -60,7 +60,7 @@ that the store can be a file (§7).
    +-------------------------------------------------------------------+
    |                            THE STORE                              |
    |                      one JSON file (§7)                           |
-   |         stories | runs | vocabularies | sources, harvesters       |
+   |      stories | clusters | runs | vocabularies | source facets     |
    |            written by a skill, never by a page (§9)               |
    +--+-------------------------+----------------------------------+---+
       |                         |                                   ^
@@ -346,6 +346,9 @@ Three rules that make that choice safe:
 ### What is in it
 
 - `stories` — records exactly as `story-record.md` specifies them.
+- `clusters` — keyed by `about:<slug>`, with the cluster paraphrase, member
+  story ids, and the tagging pass that wrote it. Membership remains an ordinary
+  tag on each story.
 - `runs` — the §5.2 run records.
 - `vocabularies` — the open `shape` and `verdict` values currently *offered*
   (§11).
@@ -509,13 +512,13 @@ dissolves by removing a tag, and nothing was destroyed. Had clustering been
 implemented as a merge, the opposite bias would be correct — which is the reason
 `story-record.md` keeps identity at case 2 and stops there.
 
-### 10.3 The tagging skill, anticipated
+### 10.3 The tagging skill
 
-**A second skill, added after the harvester works: it reads a store, reads the
-content, and proposes tags — themes and clusters — using a model's judgement
-about what the stories are actually about.** It is anticipated here rather than
-built now, because anticipating it is what stops the first version foreclosing
-it.
+**A second skill reads a store, reads the content, and proposes tags — themes
+and clusters — using a model's judgement about what the stories are actually
+about.** Phase 7 implements it as `tag-newsletter-stories`: a model writes a
+strict proposal, and a deterministic script applies only additive tags and
+cluster records.
 
 It is worth naming separately from the harvest even though both write tags,
 because they have different information. A harvester sees one issue at a time
@@ -524,7 +527,7 @@ store sees everything**, which is the only position from which "these nine
 stories are one category" is a judgement rather than a guess — and it improves
 as the pile grows, where a per-issue guess does not.
 
-What the first version owes it, all of which §§1.1, 7 and 10.1 already provide:
+The contract it relies on, all of which §§1.1, 7 and 10.1 provide:
 
 - **The store is readable on its own**, without the skill that wrote it. That is
   the §7 choice of a plain JSON file, and this is the second thing it buys after
@@ -546,11 +549,10 @@ Three rules it inherits rather than invents:
   beside it, adds tags rather than replacing them, so removing a bad tag is the
   reader's edit and not a re-run.
 
-Whether its output lands as tags directly or as proposals a reader accepts is
-left to the plan (§15). Directly is defensible here precisely because a tag is
-cheap to remove — the bookmark sorter takes the stricter line because its tags
-drive selections over thousands of items — but it is a real choice and not one
-this document has to make to stay unblocked.
+Its output lands as tags directly, as `plan.md` phase 7 settles. Every pass
+records exactly what it added and a fingerprint of tag-and-cluster state, so an
+unchanged pass can be undone as a set while a later edit makes an inexact undo
+fail loudly.
 
 ## 11. Open vocabularies, and who may harvest
 

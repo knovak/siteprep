@@ -15,6 +15,7 @@ export function emptyStore() {
     version: STORE_VERSION,
     store_id: null,
     stories: [],
+    clusters: {},
     runs: [],
     vocabularies: { shape: [], verdict: [] },
     harvesters: [],
@@ -30,6 +31,7 @@ export function loadStore(path) {
 /** A store read from anywhere - a file, an export, another machine. */
 export function hydrate(raw) {
   const store = { ...emptyStore(), ...raw };
+  store.clusters = { ...(raw.clusters || {}) };
   store.vocabularies = { ...emptyStore().vocabularies, ...(raw.vocabularies || {}) };
   return store;
 }
