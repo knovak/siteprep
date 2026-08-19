@@ -172,6 +172,55 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   assert.equal((await confirmed.json()).changes.length, 2);
 });
 
+test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {
+  const store = new AppStore();
+  let sequence = 0;
+  const app = createPileApp({
+    storeFactory: () => store,
+    now: () => new Date('2026-08-18T12:00:00Z'),
+    idFactory: prefix => `${prefix}-${++sequence}`,
+  });
+  const form = new FormData();
+  form.append('source', 'chrome-export');
+  form.append('file', new Blob([await fixture('export-small.html')], {type: 'text/html'}), 'bookmarks.html');
+  await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: form}));
+
+  const exported = await app.fetch(new Request('https://pile.test/api/export?expression=site%3Aexample.com'));
+  assert.equal(exported.status, 200);
+  assert.match(exported.headers.get('content-disposition'), /bookmark-sorter-export\.json/);
+  const document = await exported.json();
+  assert.equal(document.selection, 'site:example.com');
+  assert.equal(document.items.length, 2);
+  assert.ok(document.items.every(item => !('capture' in item)));
+
+  const imported = await app.fetch(new Request('https://pile.test/api/import-json', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(document),
+  }));
+  assert.equal(imported.status, 201);
+  assert.deepEqual(await imported.json(), {parsed: 2, added: 0, merged: 2, total: 3});
+
+  const proposalDocument = JSON.parse(await fixture('proposals.json'));
+  const reviewed = await app.fetch(new Request('https://pile.test/api/proposal-file', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(proposalDocument),
+  }));
+  assert.equal(reviewed.status, 200);
+  const review = await reviewed.json();
+  assert.equal(review.groups.find(group => group.tag === 'cluster:example-guides').count, 2);
+  assert.deepEqual(review.unmatched_urls, ['https://missing.example/not-in-the-pile']);
+  assert.ok(store.listAllItems('pile').every(item => !item.tags.includes('cluster:example-guides')));
+
+  const session = await (await app.fetch(new Request('https://pile.test/api/session', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
+  }))).json();
+  const accepted = await app.fetch(new Request('https://pile.test/api/proposal-file/accept', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, tag: 'cluster:example-guides', document: proposalDocument}),
+  }));
+  assert.equal(accepted.status, 200);
+  assert.equal((await accepted.json()).result.changes.length, 2);
+  assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('cluster:example-guides')).length, 2);
+});
+
 test('a visible sweep across several thousand items never gains a count-based confirmation', async () => {
   const store = new AppStore();
   store.createCollection({id: 'pile', name: 'Pile'});

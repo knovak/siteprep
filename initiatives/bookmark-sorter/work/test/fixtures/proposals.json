@@ -1,0 +1,21 @@
+{
+  "format": "bookmark-sorter/v1",
+  "proposal": {
+    "by": "cluster-skill",
+    "at": "2026-08-18T13:00:00Z"
+  },
+  "items": [
+    {
+      "url": "https://example.com/guide?utm_campaign=proposal",
+      "proposed_tags": ["topic:rust", "cluster:example-guides"]
+    },
+    {
+      "url": "https://example.com/guide?chapter=2#proposal",
+      "proposed_tags": ["cluster:example-guides"]
+    },
+    {
+      "url": "https://missing.example/not-in-the-pile",
+      "proposed_tags": ["topic:missing"]
+    }
+  ]
+}

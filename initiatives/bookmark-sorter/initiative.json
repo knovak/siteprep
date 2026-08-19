@@ -42,11 +42,11 @@
       "advances_stage": false
     },
     {
-      "id": "build-round-trip",
-      "title": "Phase 5 - build selection export/import and the proposed-tags file round trip",
+      "id": "build-identity-collections",
+      "title": "Phase 6 - build identity, owner-scoped collections, and per-user demo copies",
       "state": "actionable",
       "value": "high",
-      "effort": "medium",
+      "effort": "large",
       "advances_stage": false
     }
   ]

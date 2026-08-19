@@ -70,6 +70,10 @@ export class D1BookmarkStore {
       }
       current.added_at = earlier(current.added_at, candidate.added_at);
       current.note ||= candidate.note;
+      if (!current.verdict && candidate.verdict) {
+        current.verdict = candidate.verdict;
+        current.verdict_at = candidate.verdict_at;
+      }
       for (const tag of candidate.tags) current.tags.add(tag);
     }
 
@@ -84,11 +88,13 @@ export class D1BookmarkStore {
           title_key: candidate.title_key,
           note: candidate.note,
           added_at: candidate.added_at,
+          verdict: candidate.verdict ?? null,
+          verdict_at: candidate.verdict_at ?? null,
         };
         statements.push(this.db.prepare(
           `INSERT INTO items
            (id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         ).bind(
           item.id,
           collectionId,
@@ -99,6 +105,8 @@ export class D1BookmarkStore {
           candidate.note,
           candidate.added_at,
           candidate.ingested_at,
+          candidate.verdict ?? null,
+          candidate.verdict_at ?? null,
         ));
         existing.set(candidate.url_key, item);
         added += 1;
@@ -106,10 +114,13 @@ export class D1BookmarkStore {
         const addedAt = earlier(item.added_at, candidate.added_at);
         const note = item.note || candidate.note || null;
         const titleKey = item.title_key || candidate.title_key;
-        if (addedAt !== item.added_at || note !== item.note || titleKey !== item.title_key) {
+        const verdict = item.verdict || candidate.verdict || null;
+        const verdictAt = item.verdict ? item.verdict_at : candidate.verdict_at || null;
+        if (addedAt !== item.added_at || note !== item.note || titleKey !== item.title_key
+            || verdict !== item.verdict || verdictAt !== item.verdict_at) {
           statements.push(this.db.prepare(
-            'UPDATE items SET added_at = ?, note = ?, title_key = ? WHERE id = ? AND collection_id = ?',
-          ).bind(addedAt, note, titleKey, item.id, collectionId));
+            'UPDATE items SET added_at = ?, note = ?, title_key = ?, verdict = ?, verdict_at = ? WHERE id = ? AND collection_id = ?',
+          ).bind(addedAt, note, titleKey, verdict, verdictAt, item.id, collectionId));
         }
       }
 

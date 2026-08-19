@@ -3,6 +3,7 @@ import {createCapturePipeline} from './capture-pipeline.mjs';
 import {R2CaptureImages} from './capture-images.mjs';
 import {ingestBookmarkHtml} from './ingest.mjs';
 import {renderPilePage} from './pile-page.mjs';
+import {acceptProposedTag, exportSelection, importExportDocument, readProposalDocument} from './round-trip.mjs';
 import {compileSelection, evaluateSelection, proposeSelections, wrapUiSelection} from './selections.mjs';
 
 const COLLECTION_ID = 'pile';
@@ -123,6 +124,22 @@ export function createPileApp({
           return json({proposals: proposeSelections(await store.listAllItems(COLLECTION_ID))});
         }
 
+        if (request.method === 'GET' && url.pathname === '/api/export') {
+          const document = await exportSelection({
+            store,
+            collectionId: COLLECTION_ID,
+            expression: url.searchParams.get('expression') || '',
+            exportedAt: now().toISOString(),
+          });
+          return new Response(`${JSON.stringify(document, null, 2)}\n`, {
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+              'content-disposition': 'attachment; filename="bookmark-sorter-export.json"',
+              'cache-control': 'no-store',
+            },
+          });
+        }
+
         if (request.method === 'GET' && url.pathname === '/api/capture-image') {
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const urlKey = url.searchParams.get('url_key');
@@ -145,23 +162,58 @@ export function createPileApp({
           const source = String(form.get('source') || 'browser-export');
           if (!file || typeof file.text !== 'function') return json({error: 'Choose a bookmark HTML file'}, 400);
           if (file.size > MAX_UPLOAD_BYTES) return json({error: 'Bookmark export exceeds the 20 MB upload limit'}, 413);
-          const result = await ingestBookmarkHtml({
+          const text = await file.text();
+          const isJson = file.type === 'application/json' || String(file.name || '').toLowerCase().endsWith('.json');
+          const result = isJson
+            ? await importExportDocument({store, collectionId: COLLECTION_ID, document: text, importedAt: now().toISOString()})
+            : await ingestBookmarkHtml({
+              store,
+              collectionId: COLLECTION_ID,
+              html: text,
+              source,
+              ingestedAt: now().toISOString(),
+              capture,
+              scheduleCapture: task => {
+                const pending = task();
+                if (typeof context.waitUntil === 'function') {
+                  context.waitUntil(pending);
+                  return Promise.resolve();
+                }
+                return pending;
+              },
+            });
+          return json(result, 201);
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/import-json') {
+          return json(await importExportDocument({
             store,
             collectionId: COLLECTION_ID,
-            html: await file.text(),
-            source,
-            ingestedAt: now().toISOString(),
-            capture,
-            scheduleCapture: task => {
-              const pending = task();
-              if (typeof context.waitUntil === 'function') {
-                context.waitUntil(pending);
-                return Promise.resolve();
-              }
-              return pending;
-            },
-          });
-          return json(result, 201);
+            document: await requestJson(request),
+            importedAt: now().toISOString(),
+          }), 201);
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/proposal-file') {
+          return json(await readProposalDocument({
+            store,
+            collectionId: COLLECTION_ID,
+            document: await requestJson(request),
+          }));
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/proposal-file/accept') {
+          const body = await requestJson(request);
+          if (!body.session_id) throw new Error('Session id is required');
+          return json(await acceptProposedTag({
+            store,
+            collectionId: COLLECTION_ID,
+            document: body.document,
+            tag: body.tag,
+            sessionId: body.session_id,
+            actionId: idFactory('action'),
+            at: now().toISOString(),
+          }));
         }
 
         if (request.method === 'POST' && url.pathname === '/api/captures/gaps') {
