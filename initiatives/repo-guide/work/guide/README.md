@@ -10,7 +10,9 @@ deck, strict slide-count and copy-length gates, and keyboard navigation. Phase
 5 adds the abstract six-step lifecycle simulator with derived vocabulary and
 Step, Back, and Play controls. Phase 6 adds strict PDF-link configuration,
 source-commit dating, visible possibly-stale warnings, and the simulator's
-watched-date report.
+watched-date report. Phase 7 packages the complete generate-and-check workflow
+as `initiatives/repo-guide/skills/generate-guide/SKILL.md`; installing that
+skill is intentionally a later delivery step.
 
 Resolve the live repository facts from the repository root:
 
