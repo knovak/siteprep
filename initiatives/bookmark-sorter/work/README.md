@@ -1,6 +1,6 @@
-# Bookmark sorter — phases 1–4 work
+# Bookmark sorter — phases 1–6 work
 
-This directory holds the first four build increments for the bookmark sorter. It is
+This directory holds the first six build increments for the bookmark sorter. It is
 private initiative work, not a published demo.
 
 ## What exists
@@ -18,6 +18,10 @@ private initiative work, not a published demo.
 - `migrations/0004_selections.sql` adds the stored title key used by cheap title
   proposals and extends the action log so an additive tag sweep is undoable as
   one action without removing tags that were already present.
+- `migrations/0005_identity_collections.sql` enforces one personal collection per
+  owner and indexes the owner/kind and template-copy queries used by the
+  collection menu. The existing foreign-key path remains item → collection →
+  user; items never join directly to users.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -44,33 +48,55 @@ private initiative work, not a published demo.
   object key is content-addressed below a hash of the URL; neither the original
   bytes nor the URL itself appear in the key.
 - `src/d1-store.mjs` is the production D1 adapter. Every public operation first
-  checks the collection in the current owner scope; imports read the existing
-  collection once and write in bounded D1 batches rather than making tens of
-  thousands of request-sized round trips.
+  checks read or write access in the current owner scope; the sole cross-owner
+  read is a `demo-template`. It creates one personal collection per signed-in
+  user, copies template items/tags/selections in one D1 batch, and leaves the
+  global capture rows untouched when a copy is deleted. Imports read the
+  existing collection once and write in bounded D1 batches rather than making
+  tens of thousands of request-sized round trips.
+- `src/site-identity.mjs` reads the stable
+  `oai-authenticated-user-id` supplied by ChatGPT Sites. Email and the optional
+  encoded full name are display-only; neither participates in ownership.
 - `src/memory-store.mjs` is the deterministic test adapter, indexed by
   `(collection_id, url_key)` so the generated 10,000-item sizing run exercises
   the same identity rule without quadratic test behavior.
 - `src/worker.mjs` exposes the upload, capture and triage API. Uploads are capped
   at 20 MB; reads are bounded; capture bytes are served only from R2; verdict
   and undo writes return the authoritative backlog and sitting totals. The same
-  surface now evaluates, saves, tags and sweeps selections.
+  surface now evaluates, saves, tags and sweeps selections. Every API route
+  requires Sites identity, resolves the active collection server-side, and
+  rejects another owner's collection even when its id is supplied directly.
+  Collection operations list templates, take or refresh a private copy, rename
+  a collection, delete a copy, and allow template creation only for users whose
+  D1 capability is set.
 - `src/pile-page.mjs` renders the self-contained grid. It has 8×2 wide,
   4×3 or 3×3 tablet, and single-card phone layouts; only the visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
   never HTML strings. Stored derivatives appear without any request to the saved
   page. A verdict patches the affected cards in place rather than navigating or
-  rebuilding the grid.
+  rebuilding the grid. A collection bar switches among the owner's personal
+  pile and demo copies, and exposes template-copy operations without putting
+  identity or authorization state in the page.
 
 ## D1 binding
 
 Apply `migrations/0001_core.sql`, `migrations/0002_triage.sql`,
-`migrations/0003_captures.sql`, then `migrations/0004_selections.sql`. Bind that database to the Worker as `DB` and the
-capture bucket as `CAPTURES`. These increments deliberately have no sign-in:
-`D1BookmarkStore` therefore defaults to
-the null owner scope. A later authenticated caller supplies `ownerId`; the same
-adapter then requires every collection operation to match it. The Worker creates
-the single `pile` collection on first API use. Template access remains later
-work; captures and collection-scoped saved selections are live.
+`migrations/0003_captures.sql`, `migrations/0004_selections.sql`, then
+`migrations/0005_identity_collections.sql`. Bind that database to the Worker as
+`DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies
+`oai-authenticated-user-id`; the Worker rejects an API request without it and
+constructs `D1BookmarkStore` with that stable id as `ownerId`. The first request
+creates the app-user row and one private personal collection. Grant template
+editing by setting `app_users.can_edit_templates = 1` through an administrative
+D1 change; it is never accepted from a browser request or identity header.
+
+Template rows are readable across owners and writable only by their owner when
+that owner has the capability. A copied template is a new `demo-copy` owned by
+the current user, with `template_id` and `copied_at` recorded. Items, tags,
+verdicts, and saved selections copy once; later template edits do not sync into
+the copy. Taking a fresh copy creates another collection with a distinct name.
+Deleting a copy cascades through its collection-owned rows but cannot delete a
+URL-keyed capture.
 
 The deployment assembler supplies the server-side `transformImage` function.
 It must return a derivative no larger than 600×360; if it is absent or returns
@@ -87,6 +113,12 @@ to load all 10,000 records to prove the pile landed.
 ## Triage API and interaction
 
 - `GET /api/items` returns one virtual window plus `total` and `backlog`.
+- `GET /api/collections` returns the current user's collections, all readable
+  demo templates, and the server-derived template-edit capability.
+- `POST /api/collections` performs `copy-template`, `fresh-copy`, `rename`,
+  `delete-copy`, or capability-gated `create-template`. The current collection
+  travels in `x-bookmark-collection-id`; every data method checks it again in
+  D1 rather than trusting the header.
 - `POST /api/session` starts or ends a sitting. A sitting records its start,
   end, elapsed milliseconds, and number of records whose verdict changed.
 - `POST /api/verdict` applies `keeper`, `junk`, `archive`, or
@@ -113,7 +145,10 @@ to load all 10,000 records to prove the pile landed.
 - `POST /api/captures/gaps` is the only pass-2 driver. With the current switch
   off it reports the gap count and performs no vendor call. When a vendor is
   later authorised, the same endpoint processes a bounded batch through the
-  injected server-only adapter.
+  injected server-only adapter. Both its queue and the capture statistics are
+  scoped to URLs in the active collection, so one user cannot inspect or trigger
+  work for another user's private pile even though completed captures are
+  globally reusable.
 
 `GET /api/items` carries capture totals, distinguishable metadata coverage, and
 the duplicate-image distribution. Those values exist to record the real-pile
@@ -141,7 +176,12 @@ confirmation paths, and a visible 3,000-item sweep followed by one undo.
 Phase 5 adds a hand-written portable export, selection-scoped export, same- and
 cross-collection round trips, existing note/verdict protection, shared capture
 reuse, URL-matched proposals, read-only discard, and per-tag acceptance through
-the ordinary tag action.
+the ordinary tag action. Phase 6 adds the real SQLite migrations plus two
+authenticated sessions: personal collections are mutually unreachable, only
+templates cross owner boundaries, template writes require the D1 capability,
+copies are private snapshots, fresh copies are additive, and deletion preserves
+the shared capture. Header parsing and missing-identity rejection have separate
+tests so neither can quietly fall back to an email or anonymous owner.
 Capture tests use a local HTTP fixture server rather than
 mocking pass 1: they cover metadata precedence, anonymous requests, the
 no-JavaScript rule, derivative-only storage, 404/timeout/TLS/parked failures,

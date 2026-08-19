@@ -21,9 +21,15 @@ class AppStore extends MemoryBookmarkStore {
   }
 }
 
+const createTestApp = options => createPileApp({
+  ...options,
+  identityFromRequest: options?.identityFromRequest || (() => ({id: 'test-user'})),
+  personalCollectionIdFactory: options?.personalCollectionIdFactory || (() => 'pile'),
+});
+
 test('pile app serves the upload/list surface and imports through its API', async () => {
   const store = new AppStore();
-  const app = createPileApp({storeFactory: () => store, now: () => new Date('2026-08-18T12:00:00Z')});
+  const app = createTestApp({storeFactory: () => store, now: () => new Date('2026-08-18T12:00:00Z')});
   const page = await app.fetch(new Request('https://pile.test/'));
   const html = await page.text();
   assert.match(html, /type="file"/);
@@ -55,7 +61,7 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
   const store = new AppStore();
   let tick = 0;
   let sequence = 0;
-  const app = createPileApp({
+  const app = createTestApp({
     storeFactory: () => store,
     now: () => new Date(Date.UTC(2026, 7, 18, 12, tick++)),
     idFactory: prefix => `${prefix}-${++sequence}`,
@@ -106,7 +112,7 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
 test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms only unopened sets', async () => {
   const store = new AppStore();
   let sequence = 0;
-  const app = createPileApp({
+  const app = createTestApp({
     storeFactory: () => store,
     now: () => new Date('2026-08-18T12:00:00Z'),
     idFactory: prefix => `${prefix}-${++sequence}`,
@@ -175,7 +181,7 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {
   const store = new AppStore();
   let sequence = 0;
-  const app = createPileApp({
+  const app = createTestApp({
     storeFactory: () => store,
     now: () => new Date('2026-08-18T12:00:00Z'),
     idFactory: prefix => `${prefix}-${++sequence}`,
@@ -233,7 +239,7 @@ test('a visible sweep across several thousand items never gains a count-based co
     store.addTags(item.id, ['group:bulk']);
   }
   let sequence = 0;
-  const app = createPileApp({storeFactory: () => store, idFactory: prefix => `${prefix}-${++sequence}`});
+  const app = createTestApp({storeFactory: () => store, idFactory: prefix => `${prefix}-${++sequence}`});
   const session = await (await app.fetch(new Request('https://pile.test/api/session', {
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
   }))).json();
@@ -250,9 +256,55 @@ test('a visible sweep across several thousand items never gains a count-based co
   assert.equal(store.countUntriagedItems('pile'), 3_000);
 });
 
+test('collection API lists templates and creates, refreshes, renames, and deletes private copies', async () => {
+  const store = new AppStore({canEditTemplates: true});
+  store.createCollection({id: 'template-one', name: 'Starter pile', kind: 'demo-template', created_at: '2026-08-19T00:00:00Z'});
+  const seeded = store.insertItem({
+    collection_id: 'template-one', url: 'https://example.com/starter', url_key: 'https://example.com/starter',
+    title: 'Starter', title_key: 'starter', note: null, added_at: null,
+    ingested_at: '2026-08-19T00:00:00Z', verdict: null, verdict_at: null,
+  });
+  store.addTags(seeded.id, ['topic:starter']);
+  let sequence = 0;
+  const app = createTestApp({storeFactory: () => store, idFactory: prefix => `${prefix}-${++sequence}`});
+
+  const listed = await (await app.fetch(new Request('https://pile.test/api/collections'))).json();
+  assert.equal(listed.active_collection_id, 'pile');
+  assert.deepEqual(listed.templates.map(template => template.id), ['template-one']);
+  assert.equal(listed.can_edit_templates, true);
+
+  const copied = await (await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'copy-template', template_id: 'template-one'}),
+  }))).json();
+  assert.equal(copied.collection.kind, 'demo-copy');
+  assert.equal(store.countItems(copied.collection.id), 1);
+
+  const fresh = await (await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'fresh-copy', collection_id: copied.collection.id}),
+  }))).json();
+  assert.notEqual(fresh.collection.id, copied.collection.id);
+  assert.notEqual(fresh.collection.name, copied.collection.name);
+
+  const renamed = await (await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'rename', collection_id: fresh.collection.id, name: 'My clean demo'}),
+  }))).json();
+  assert.equal(renamed.collection.name, 'My clean demo');
+
+  const deleted = await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'delete-copy', collection_id: copied.collection.id}),
+  }));
+  assert.equal(deleted.status, 200);
+  assert.equal(store.hasCollection(copied.collection.id), false);
+  assert.equal(store.hasCollection(fresh.collection.id), true);
+});
+
 test('pile app refuses oversized uploads before reading them', async () => {
   const store = new AppStore();
-  const app = createPileApp({storeFactory: () => store});
+  const app = createTestApp({storeFactory: () => store});
   const form = new FormData();
   form.append('file', new Blob([new Uint8Array(20 * 1024 * 1024 + 1)]), 'too-large.html');
   const response = await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: form}));
@@ -272,7 +324,7 @@ test('pile app serves stored derivatives and the explicit gap action without exp
   store.refreshCaptureQueue({duplicateThreshold: 30, at: '2026-08-18T00:00:00Z'});
   let vendorCalls = 0;
   const pipeline = createCapturePipeline({store, imageStore: images, transformImage: value => value, passTwoEnabled: false, vendorCapture: async () => { vendorCalls += 1; }});
-  const app = createPileApp({storeFactory: () => store, captureFactory: () => pipeline});
+  const app = createTestApp({storeFactory: () => store, captureFactory: () => pipeline});
 
   const pageText = await (await app.fetch(new Request('https://pile.test/'))).text();
   assert.match(pageText, /id="capture-gaps"/);
@@ -298,7 +350,7 @@ test('import commits the pile before pass 1 continues in the request lifetime', 
     },
   };
   const pending = [];
-  const app = createPileApp({storeFactory: () => store, captureFactory: () => capture, now: () => new Date('2026-08-18T12:00:00Z')});
+  const app = createTestApp({storeFactory: () => store, captureFactory: () => capture, now: () => new Date('2026-08-18T12:00:00Z')});
   const form = new FormData();
   form.append('source', 'chrome-export');
   form.append('file', new Blob([await fixture('export-small.html')], {type: 'text/html'}), 'bookmarks.html');

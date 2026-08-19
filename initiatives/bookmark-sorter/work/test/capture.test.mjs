@@ -200,3 +200,32 @@ test('duplicate and missing images queue pass 2, which stays inert until its exp
   assert.equal(processed.status.queued, 2);
   assert.equal((await store.getCapture(queue[0].url_key)).source, 'screenshot');
 });
+
+test('capture stats and the explicit gap action stay inside the active collection', async () => {
+  const store = storeWith('alpha', 'beta');
+  const images = new MemoryCaptureImages();
+  for (const collectionId of ['alpha', 'beta']) {
+    const urlKey = `https://${collectionId}.example/gap`;
+    store.insertItem({collection_id: collectionId, url: urlKey, url_key: urlKey, title: collectionId, note: null, added_at: null, ingested_at: '2026-08-19T00:00:00Z', verdict: null, verdict_at: null});
+    store.upsertCapture({url_key: urlKey, image_ref: null, source: 'none', captured_at: '2026-08-19T00:00:00Z', image_hash: null, state: 'pass1-gap', page_title: null, description: null, favicon_url: null, error_tag: null, image_candidate: null, content_type: null, width: null, height: null, byte_size: null});
+  }
+  store.refreshCaptureQueue({duplicateThreshold: 30, at: '2026-08-19T00:00:00Z'});
+  const vendorUrls = [];
+  const pipeline = createCapturePipeline({
+    store,
+    imageStore: images,
+    transformImage: derivative,
+    passTwoEnabled: true,
+    vendorCapture: async ({url}) => {
+      vendorUrls.push(url);
+      return {bytes: new Uint8Array(80).fill(44), contentType: 'image/png'};
+    },
+  });
+  assert.equal((await pipeline.status('alpha')).total, 1);
+  assert.equal((await pipeline.status('alpha')).queued, 1);
+  const processed = await pipeline.processGaps({limit: 10, collectionId: 'alpha'});
+  assert.equal(processed.processed, 1);
+  assert.deepEqual(vendorUrls, ['https://alpha.example/gap']);
+  assert.equal((await pipeline.status('alpha')).queued, 0);
+  assert.equal((await pipeline.status('beta')).queued, 1);
+});

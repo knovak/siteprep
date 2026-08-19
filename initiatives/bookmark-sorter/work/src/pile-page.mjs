@@ -12,7 +12,7 @@ export function renderPilePage() {
     body { margin: 0; overflow: hidden; }
     button, input, select { font: inherit; }
     button { cursor: pointer; }
-    main { height: 100dvh; display: grid; grid-template-rows: auto auto auto auto minmax(0, 1fr) auto; gap: 8px; padding: 12px; }
+    main { height: 100dvh; display: grid; grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto; gap: 8px; padding: 12px; }
     header { grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
     .brand { min-width: 0; }
     h1 { margin: 0; color: #142a58; font-size: clamp(1.45rem, 3vw, 2.4rem); line-height: 1; letter-spacing: -.045em; }
@@ -20,18 +20,25 @@ export function renderPilePage() {
     .stats { display: flex; gap: 18px; align-items: baseline; white-space: nowrap; }
     .stat strong { display: block; color: #142a58; font-size: 1.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
     .stat span { color: #687188; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
-    details { grid-row: 2; border: 1px solid #d8deea; border-radius: 12px; background: white; }
+    .collection-bar { grid-row: 2; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding: 8px; border: 1px solid #d8deea; border-radius: 12px; background: white; }
+    .collection-bar select, .collection-bar button { flex: 0 0 auto; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; color: #29406e; background: white; font-weight: 720; }
+    #collection-select { min-width: min(280px, 42vw); }
+    #template-select { min-width: min(220px, 35vw); }
+    .collection-bar .danger { border-color: #e08b83; color: #8f2820; }
+    .collection-bar .spacer { flex: 1 0 12px; }
+    .collection-kind { flex: 0 0 auto; color: #687188; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; }
+    details { grid-row: 3; border: 1px solid #d8deea; border-radius: 12px; background: white; }
     summary { padding: 8px 12px; color: #29406e; font-weight: 750; cursor: pointer; }
     form { display: grid; grid-template-columns: 1fr minmax(160px, .35fr) auto; gap: 10px; align-items: end; padding: 0 12px 12px; }
     label { display: grid; gap: 4px; color: #4d5870; font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
     input, form button { min-height: 40px; border: 1px solid #b9c2d3; border-radius: 9px; padding: 8px 10px; background: white; }
     form button { border-color: #234fc4; color: white; background: #234fc4; font-weight: 760; }
-    .selection-panel { grid-row: 3; display: grid; grid-template-columns: minmax(220px, 2fr) auto minmax(150px, 1fr) auto minmax(150px, 1fr) auto; gap: 7px; align-items: center; padding: 9px; border: 1px solid #d8deea; border-radius: 12px; background: white; }
+    .selection-panel { grid-row: 4; display: grid; grid-template-columns: minmax(220px, 2fr) auto minmax(150px, 1fr) auto minmax(150px, 1fr) auto; gap: 7px; align-items: center; padding: 9px; border: 1px solid #d8deea; border-radius: 12px; background: white; }
     .selection-panel input, .selection-panel select, .selection-panel button { min-width: 0; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; background: white; }
     .selection-panel button { color: #29406e; font-weight: 740; }
     .selection-panel .primary { border-color: #234fc4; color: white; background: #234fc4; }
     #selection-summary { color: #5f6b82; font-size: .76rem; white-space: nowrap; }
-    .toolbar { grid-row: 4; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding-bottom: 1px; }
+    .toolbar { grid-row: 5; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding-bottom: 1px; }
     .toolbar button { flex: 0 0 auto; min-height: 38px; border: 1px solid #c6cedd; border-radius: 9px; padding: 7px 10px; color: #2c374e; background: white; font-weight: 720; }
     .toolbar button[data-verdict="keeper"] { border-color: #73b58b; color: #155d31; }
     .toolbar button[data-verdict="junk"] { border-color: #e08b83; color: #8f2820; }
@@ -41,7 +48,7 @@ export function renderPilePage() {
     #capture-gaps { border-color: #9a78c3; color: #60378b; }
     .toolbar .spacer { flex: 1 0 12px; }
     #mark-count { flex: 0 0 auto; color: #687188; font-size: .78rem; }
-    #grid { grid-row: 5; min-height: 0; display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); gap: 8px; overflow: hidden; outline: none; }
+    #grid { grid-row: 6; min-height: 0; display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); gap: 8px; overflow: hidden; outline: none; }
     .bookmark-card { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; border: 2px solid transparent; border-radius: 13px; padding: 11px; color: #263149; background: #fff; box-shadow: 0 5px 18px #1b294410; }
     .bookmark-card.focused { border-color: #315fd2; box-shadow: 0 0 0 2px #b9c9f3, 0 8px 22px #1b294420; }
     .bookmark-card.marked { background: #fff9e8; }
@@ -60,7 +67,7 @@ export function renderPilePage() {
     .mark { position: absolute; top: 7px; right: 7px; width: 28px; height: 28px; border: 1px solid #b7c0d0; border-radius: 50%; padding: 0; color: #4f5d76; background: #fff; font-weight: 900; }
     .mark[aria-pressed="true"] { border-color: #d39422; color: white; background: #d39422; }
     .empty { grid-column: 1 / -1; align-self: center; justify-self: center; max-width: 32rem; color: #697287; text-align: center; }
-    .footer-line { grid-row: 6; display: flex; justify-content: space-between; gap: 14px; color: #657087; font-size: .76rem; }
+    .footer-line { grid-row: 7; display: flex; justify-content: space-between; gap: 14px; color: #657087; font-size: .76rem; }
     #status { min-height: 1.2em; margin: 0; }
     #position { white-space: nowrap; font-variant-numeric: tabular-nums; }
     kbd { border: 1px solid #c8cfdb; border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: #fff; font: .68rem ui-monospace, monospace; }
@@ -68,10 +75,13 @@ export function renderPilePage() {
     @media (max-width: 1100px) and (orientation: portrait) { :root { --columns: 3; --rows: 3; } }
     @media (max-width: 640px) {
       :root { --columns: 1; --rows: 1; }
-      main { padding: 9px; gap: 8px; }
+      main { padding: 9px; gap: 4px; }
       .brand p, .stat.total, .toolbar .shortcut { display: none; }
       .stats { gap: 10px; }
       .stat strong { font-size: 1.15rem; }
+      .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
+      .collection-bar select, .collection-bar button { min-height: 32px; padding: 4px 7px; }
+      .collection-kind, .collection-bar .spacer { display: none; }
       details:not([open]) { display: none; }
       .selection-panel { display: flex; overflow-x: auto; }
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
@@ -98,6 +108,17 @@ export function renderPilePage() {
         <div class="stat"><strong id="rate">—</strong><span>Per min</span></div>
       </div>
     </header>
+    <section class="collection-bar" aria-label="Collections">
+      <select id="collection-select" aria-label="Current collection"></select>
+      <span id="collection-kind" class="collection-kind"></span>
+      <button id="rename-collection" type="button">Rename</button>
+      <button id="fresh-copy" type="button" hidden>Fresh copy</button>
+      <button id="delete-copy" class="danger" type="button" hidden>Delete copy</button>
+      <span class="spacer"></span>
+      <select id="template-select" aria-label="Demo template"><option value="">Demo templates</option></select>
+      <button id="copy-template" type="button">Take a copy</button>
+      <button id="create-template" type="button" hidden>Create template</button>
+    </section>
     <details id="importer" open>
       <summary>Import a browser bookmark file</summary>
       <form id="import-form">
@@ -155,11 +176,17 @@ export function renderPilePage() {
       tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'),
       sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'),
       sweepSaved: document.querySelector('#sweep-saved'), selectionSummary: document.querySelector('#selection-summary'),
+      collectionSelect: document.querySelector('#collection-select'), collectionKind: document.querySelector('#collection-kind'),
+      renameCollection: document.querySelector('#rename-collection'), freshCopy: document.querySelector('#fresh-copy'),
+      deleteCopy: document.querySelector('#delete-copy'), templateSelect: document.querySelector('#template-select'),
+      copyTemplate: document.querySelector('#copy-template'), createTemplate: document.querySelector('#create-template'),
     };
-    const state = {collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: []};
+    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: []};
 
     async function api(path, options = {}) {
-      const response = await fetch(path, options);
+      const headers = new Headers(options.headers || {});
+      if (state.collectionId) headers.set('x-bookmark-collection-id', state.collectionId);
+      const response = await fetch(path, {...options, headers});
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Request failed');
       return data;
@@ -277,6 +304,68 @@ export function renderPilePage() {
       for (const row of rows) select.append(new Option(row.name + (row.count ? ' (' + row.count.toLocaleString() + ')' : ''), row.id));
     }
 
+    function currentCollection() {
+      return state.collections.find(collection => collection.id === state.collectionId) || null;
+    }
+
+    function renderCollections() {
+      const previous = state.collectionId;
+      elements.collectionSelect.replaceChildren(...state.collections.map(collection => new Option(
+        collection.name + ' · ' + Number(collection.item_count || 0).toLocaleString(), collection.id,
+      )));
+      elements.collectionSelect.value = previous;
+      elements.templateSelect.replaceChildren(new Option('Demo templates', ''), ...state.templates.map(template => new Option(
+        template.name + ' · ' + Number(template.item_count || 0).toLocaleString(), template.id,
+      )));
+      const collection = currentCollection();
+      elements.collectionKind.textContent = collection ? collection.kind.replaceAll('-', ' ') : '';
+      elements.freshCopy.hidden = collection?.kind !== 'demo-copy';
+      elements.deleteCopy.hidden = collection?.kind !== 'demo-copy';
+      elements.createTemplate.hidden = !state.canEditTemplates;
+      elements.copyTemplate.disabled = !state.templates.length;
+      elements.renameCollection.disabled = !collection;
+    }
+
+    async function loadCollections(preferredId = state.collectionId) {
+      const data = await api('/api/collections');
+      state.collections = data.collections;
+      state.templates = data.templates;
+      state.canEditTemplates = data.can_edit_templates;
+      state.collectionId = state.collections.some(collection => collection.id === preferredId)
+        ? preferredId
+        : state.collections.some(collection => collection.id === data.active_collection_id)
+          ? data.active_collection_id
+          : state.collections[0]?.id || '';
+      renderCollections();
+    }
+
+    async function openCollection(id) {
+      if (!id || id === state.collectionId) return;
+      state.collectionId = id;
+      state.session = null;
+      state.expression = '';
+      state.offset = 0;
+      state.focused = 0;
+      clearMarks();
+      renderCollections();
+      await Promise.all([loadWindow(0), loadSelectionTools()]);
+    }
+
+    async function collectionAction(action, payload = {}) {
+      const result = await api('/api/collections', {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({action, ...payload}),
+      });
+      const deleted = action === 'delete-copy';
+      await loadCollections(deleted ? '' : result.collection?.id || state.collectionId);
+      state.session = null;
+      state.expression = '';
+      clearMarks();
+      await Promise.all([loadWindow(0), loadSelectionTools()]);
+      return result;
+    }
+
     async function loadSelectionTools() {
       const [saved, proposals] = await Promise.all([api('/api/selections'), api('/api/proposals')]);
       state.saved = saved.selections; state.proposals = proposals.proposals;
@@ -317,7 +406,7 @@ export function renderPilePage() {
       const id = elements.savedSelections.value;
       if (!id) throw new Error('Choose a saved selection first');
       await startSession();
-      const response = await fetch('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
+      const response = await fetch('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': state.collectionId}, body: JSON.stringify({
         session_id: state.session.id, selection_id: id, verdict: elements.sweepVerdict.value, visible: false, confirmed,
       })});
       const data = await response.json();
@@ -407,10 +496,30 @@ export function renderPilePage() {
     elements.form.addEventListener('submit', async event => {
       event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';
       try {
-        const response = await fetch('/api/import', {method: 'POST', body: new FormData(elements.form)}); const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Import failed');
+        const data = await api('/api/import', {method: 'POST', body: new FormData(elements.form)});
         elements.status.textContent = 'Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.'; await loadWindow(0);
       } catch (error) { elements.status.textContent = error.message; } finally { button.disabled = false; }
+    });
+    elements.collectionSelect.addEventListener('change', () => openCollection(elements.collectionSelect.value).catch(error => { elements.status.textContent = error.message; }));
+    elements.templateSelect.addEventListener('change', () => { elements.copyTemplate.disabled = !elements.templateSelect.value; });
+    elements.copyTemplate.addEventListener('click', () => {
+      const templateId = elements.templateSelect.value || state.templates[0]?.id;
+      if (!templateId) return;
+      collectionAction('copy-template', {template_id: templateId}).then(() => { elements.status.textContent = 'Private demo copy created.'; }).catch(error => { elements.status.textContent = error.message; });
+    });
+    elements.freshCopy.addEventListener('click', () => collectionAction('fresh-copy', {collection_id: state.collectionId}).then(() => { elements.status.textContent = 'Fresh private copy created; the earlier copy is unchanged.'; }).catch(error => { elements.status.textContent = error.message; }));
+    elements.renameCollection.addEventListener('click', () => {
+      const collection = currentCollection();
+      const name = collection ? prompt('Collection name', collection.name) : null;
+      if (name && name.trim() && name.trim() !== collection.name) collectionAction('rename', {collection_id: collection.id, name}).then(() => { elements.status.textContent = 'Collection renamed.'; }).catch(error => { elements.status.textContent = error.message; });
+    });
+    elements.deleteCopy.addEventListener('click', () => {
+      const collection = currentCollection();
+      if (collection && confirm('Delete “' + collection.name + '”? Its shared captures will remain available to other collections.')) collectionAction('delete-copy', {collection_id: collection.id}).then(() => { elements.status.textContent = 'Demo copy deleted; shared captures were kept.'; }).catch(error => { elements.status.textContent = error.message; });
+    });
+    elements.createTemplate.addEventListener('click', () => {
+      const name = prompt('Template name', 'New demo');
+      if (name?.trim()) collectionAction('create-template', {name}).then(() => { elements.status.textContent = 'Demo template created.'; }).catch(error => { elements.status.textContent = error.message; });
     });
     elements.openSelection.addEventListener('click', () => openExpression(elements.expression.value).catch(error => { elements.status.textContent = error.message; }));
     elements.expression.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); elements.openSelection.click(); } });
@@ -458,7 +567,7 @@ export function renderPilePage() {
     const initial = layout(); state.columns = initial.columns; state.visible = initial.columns * initial.rows; state.buffer = initial.buffer;
     document.documentElement.style.setProperty('--columns', initial.columns); document.documentElement.style.setProperty('--rows', initial.rows);
     setInterval(updateProgress, 500); window.__pileState = state;
-    loadWindow(0).then(loadSelectionTools).catch(error => { elements.status.textContent = error.message; });
+    loadCollections().then(() => Promise.all([loadWindow(0), loadSelectionTools()])).catch(error => { elements.status.textContent = error.message; });
   </script>
 </body>
 </html>`;

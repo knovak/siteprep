@@ -280,3 +280,7 @@ Built the shared selection evaluator, saved selections, additive tag sweeps, sam
 ## 2026-08-19 — Phase 5 - build selection export/import and the proposed-tags file round trip
 
 Built the bookmark-sorter/v1 selection export and URL-keyed import for memory and D1 stores, plus read-only proposed-tag review grouped per tag and acceptance through the existing additive undo action; added hand-written fixtures and API/integration coverage.
+
+## 2026-08-19 — Phase 6 - build identity, owner-scoped collections, and per-user demo copies
+
+Added ChatGPT Sites identity, server-enforced owner scoping, one personal collection per user, cross-owner read-only demo templates, private copy/fresh-copy/rename/delete operations, capability-gated template editing, a collection menu, and collection-scoped capture statistics and gap processing. Added D1 indexes, two-user isolation tests, API coverage, and responsive browser checks.

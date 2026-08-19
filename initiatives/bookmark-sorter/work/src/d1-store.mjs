@@ -1,7 +1,8 @@
-function ownerClause(ownerId) {
+function ownerClause(ownerId, alias = '') {
+  const column = alias ? `${alias}.owner_id` : 'owner_id';
   return ownerId === null
-    ? {sql: 'owner_id IS NULL', values: []}
-    : {sql: 'owner_id = ?', values: [ownerId]};
+    ? {sql: `${column} IS NULL`, values: []}
+    : {sql: `${column} = ?`, values: [ownerId]};
 }
 
 function firstResult(result) {
@@ -33,27 +34,196 @@ export class D1BookmarkStore {
     this.idFactory = idFactory;
   }
 
-  async hasCollection(id) {
-    const scope = ownerClause(this.ownerId);
-    const row = await this.db.prepare(
-      `SELECT id FROM collections WHERE id = ? AND ${scope.sql} LIMIT 1`,
+  async ensureUser() {
+    if (this.ownerId === null) return {owner_id: null, can_edit_templates: 0};
+    await this.db.prepare(
+      'INSERT OR IGNORE INTO app_users (owner_id, can_edit_templates) VALUES (?, 0)',
+    ).bind(this.ownerId).run();
+    return this.user();
+  }
+
+  async user() {
+    if (this.ownerId === null) return {owner_id: null, can_edit_templates: 0};
+    const user = await this.db.prepare(
+      'SELECT owner_id, can_edit_templates FROM app_users WHERE owner_id = ? LIMIT 1',
+    ).bind(this.ownerId).first();
+    return user ? {...user, can_edit_templates: Number(user.can_edit_templates) !== 0} : null;
+  }
+
+  async canEditTemplates() {
+    return Boolean((await this.user())?.can_edit_templates);
+  }
+
+  async ownedCollection(id) {
+    const scope = ownerClause(this.ownerId, 'c');
+    return this.db.prepare(
+      `SELECT c.id, c.name, c.owner_id, c.kind, c.template_id, c.copied_at, c.created_at
+       FROM collections c WHERE c.id = ? AND ${scope.sql} LIMIT 1`,
     ).bind(id, ...scope.values).first();
-    return Boolean(row);
+  }
+
+  async readableCollection(id) {
+    const scope = ownerClause(this.ownerId, 'c');
+    return this.db.prepare(
+      `SELECT c.id, c.name, c.owner_id, c.kind, c.template_id, c.copied_at, c.created_at
+       FROM collections c
+       WHERE c.id = ? AND (${scope.sql} OR c.kind = 'demo-template')
+       LIMIT 1`,
+    ).bind(id, ...scope.values).first();
+  }
+
+  async writableCollection(id) {
+    const collection = await this.ownedCollection(id);
+    if (!collection) return null;
+    if (collection.kind === 'demo-template' && !await this.canEditTemplates()) return null;
+    return collection;
+  }
+
+  async assertCollectionReadable(id) {
+    const collection = await this.readableCollection(id);
+    if (!collection) throw new Error(`Unknown collection: ${id}`);
+    return collection;
+  }
+
+  async assertCollectionWritable(id) {
+    const collection = await this.writableCollection(id);
+    if (!collection) throw new Error(`Unknown or read-only collection: ${id}`);
+    return collection;
+  }
+
+  async hasCollection(id) {
+    return Boolean(await this.ownedCollection(id));
   }
 
   async ensureCollection({id, name = 'Pile', kind = 'personal', createdAt = new Date().toISOString()} = {}) {
     if (!id) throw new Error('Collection id is required');
-    if (await this.hasCollection(id)) return;
+    if (await this.writableCollection(id)) return this.ownedCollection(id);
+    await this.ensureUser();
+    if (kind === 'demo-template' && !await this.canEditTemplates()) {
+      throw new Error('Template editing is not allowed for this user');
+    }
     await this.db.prepare(
       `INSERT OR IGNORE INTO collections
        (id, name, owner_id, kind, template_id, copied_at, created_at)
        VALUES (?, ?, ?, ?, NULL, NULL, ?)`,
     ).bind(id, name, this.ownerId, kind, createdAt).run();
-    if (!await this.hasCollection(id)) throw new Error(`Collection is outside this owner scope: ${id}`);
+    const collection = await this.writableCollection(id);
+    if (!collection) throw new Error(`Collection is outside this owner scope: ${id}`);
+    return collection;
+  }
+
+  async ensurePersonalCollection({id, name = 'My bookmarks', createdAt = new Date().toISOString()} = {}) {
+    await this.ensureUser();
+    const scope = ownerClause(this.ownerId);
+    const findExisting = () => this.db.prepare(
+      `SELECT id, name, owner_id, kind, template_id, copied_at, created_at
+       FROM collections WHERE ${scope.sql} AND kind = 'personal'
+       ORDER BY created_at, id LIMIT 1`,
+    ).bind(...scope.values).first();
+    const existing = await findExisting();
+    if (existing) return existing;
+    try {
+      return await this.ensureCollection({id, name, kind: 'personal', createdAt});
+    } catch (error) {
+      const concurrent = await findExisting();
+      if (concurrent) return concurrent;
+      throw error;
+    }
+  }
+
+  async listCollections() {
+    const scope = ownerClause(this.ownerId, 'c');
+    const result = await this.db.prepare(
+      `SELECT c.id, c.name, c.owner_id, c.kind, c.template_id, c.copied_at, c.created_at,
+              (SELECT COUNT(*) FROM items i WHERE i.collection_id = c.id) AS item_count
+       FROM collections c WHERE ${scope.sql}
+       ORDER BY CASE c.kind WHEN 'personal' THEN 0 WHEN 'demo-copy' THEN 1 ELSE 2 END,
+                c.created_at, c.id`,
+    ).bind(...scope.values).all();
+    return (result.results ?? []).map(row => ({...row, item_count: Number(row.item_count ?? 0)}));
+  }
+
+  async listTemplates() {
+    const result = await this.db.prepare(
+      `SELECT c.id, c.name, c.kind, c.created_at,
+              (SELECT COUNT(*) FROM items i WHERE i.collection_id = c.id) AS item_count
+       FROM collections c WHERE c.kind = 'demo-template'
+       ORDER BY c.name, c.id`,
+    ).all();
+    return (result.results ?? []).map(row => ({...row, item_count: Number(row.item_count ?? 0)}));
+  }
+
+  async renameCollection(id, name) {
+    const collection = await this.assertCollectionWritable(id);
+    const nextName = String(name || '').trim();
+    if (!nextName) throw new Error('Collection name is required');
+    await this.db.prepare(
+      'UPDATE collections SET name = ? WHERE id = ? AND owner_id = ?',
+    ).bind(nextName, id, this.ownerId).run();
+    return {...collection, name: nextName};
+  }
+
+  async copyTemplate(templateId, {id, name, copiedAt, createdAt = copiedAt} = {}) {
+    if (!id) throw new Error('Collection id is required');
+    await this.ensureUser();
+    const template = await this.assertCollectionReadable(templateId);
+    if (template.kind !== 'demo-template') throw new Error(`Not a demo template: ${templateId}`);
+    const owned = await this.listCollections();
+    const usedNames = new Set(owned.map(collection => collection.name));
+    const rootName = String(name || `${template.name} copy`).trim() || `${template.name} copy`;
+    let copyName = rootName;
+    for (let suffix = 2; usedNames.has(copyName); suffix += 1) copyName = `${rootName} (${suffix})`;
+
+    await this.db.batch([
+      this.db.prepare(
+        `INSERT INTO collections
+         (id, name, owner_id, kind, template_id, copied_at, created_at)
+         VALUES (?, ?, ?, 'demo-copy', ?, ?, ?)`,
+      ).bind(id, copyName, this.ownerId, template.id, copiedAt, createdAt),
+      this.db.prepare(
+        `INSERT INTO items
+         (id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at)
+         SELECT lower(hex(randomblob(16))), ?, url, url_key, title, title_key, note,
+                added_at, ingested_at, verdict, verdict_at
+         FROM items WHERE collection_id = ?`,
+      ).bind(id, template.id),
+      this.db.prepare(
+        `INSERT INTO tags (item_id, tag)
+         SELECT destination.id, source_tag.tag
+         FROM items source
+         JOIN tags source_tag ON source_tag.item_id = source.id
+         JOIN items destination ON destination.collection_id = ?
+          AND destination.url_key = source.url_key
+         WHERE source.collection_id = ?`,
+      ).bind(id, template.id),
+      this.db.prepare(
+        `INSERT INTO selections (id, name, collection_id, expression)
+         SELECT lower(hex(randomblob(16))), name, ?, expression
+         FROM selections WHERE collection_id = ?`,
+      ).bind(id, template.id),
+    ]);
+    return this.ownedCollection(id);
+  }
+
+  async deleteDemoCopy(id) {
+    const collection = await this.assertCollectionWritable(id);
+    if (collection.kind !== 'demo-copy') throw new Error('Only a demo copy can be deleted here');
+    await this.db.prepare(
+      'DELETE FROM collections WHERE id = ? AND owner_id = ? AND kind = \'demo-copy\'',
+    ).bind(id, this.ownerId).run();
+    return collection;
+  }
+
+  async collectionHasUrlKey(collectionId, urlKey) {
+    await this.assertCollectionReadable(collectionId);
+    const row = await this.db.prepare(
+      'SELECT id FROM items WHERE collection_id = ? AND url_key = ? LIMIT 1',
+    ).bind(collectionId, urlKey).first();
+    return Boolean(row);
   }
 
   async ingestCandidates(collectionId, candidates) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionWritable(collectionId);
 
     const existingResult = await this.db.prepare(
       `SELECT id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at
@@ -143,7 +313,7 @@ export class D1BookmarkStore {
   }
 
   async countItems(collectionId) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionReadable(collectionId);
     const result = await this.db.prepare(
       'SELECT COUNT(*) AS count FROM items WHERE collection_id = ?',
     ).bind(collectionId).all();
@@ -151,7 +321,7 @@ export class D1BookmarkStore {
   }
 
   async listItems(collectionId, {limit = 200, offset = 0} = {}) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionReadable(collectionId);
     const safeLimit = Math.max(1, Math.min(500, Number(limit) || 200));
     const safeOffset = Math.max(0, Number(offset) || 0);
     const result = await this.db.prepare(
@@ -197,7 +367,7 @@ export class D1BookmarkStore {
   }
 
   async saveSelection(collectionId, selection) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionWritable(collectionId);
     await this.db.prepare(
       `INSERT INTO selections (id, name, collection_id, expression)
        VALUES (?, ?, ?, ?)
@@ -208,7 +378,7 @@ export class D1BookmarkStore {
   }
 
   async listSelections(collectionId) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionReadable(collectionId);
     const result = await this.db.prepare(
       `SELECT id, name, collection_id, expression FROM selections
        WHERE collection_id = ? ORDER BY name, id`,
@@ -217,7 +387,7 @@ export class D1BookmarkStore {
   }
 
   async selection(collectionId, id) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionReadable(collectionId);
     const selection = await this.db.prepare(
       `SELECT id, name, collection_id, expression FROM selections
        WHERE id = ? AND collection_id = ? LIMIT 1`,
@@ -278,7 +448,7 @@ export class D1BookmarkStore {
   }
 
   async applyCaptureError(collectionId, urlKey, errorTag) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionWritable(collectionId);
     await this.db.prepare(
       `INSERT OR IGNORE INTO tags (item_id, tag)
        SELECT id, ? FROM items WHERE collection_id = ? AND url_key = ?`,
@@ -286,7 +456,7 @@ export class D1BookmarkStore {
   }
 
   async applyKnownCaptureErrors(collectionId, urlKeys) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionWritable(collectionId);
     for (const batch of chunks([...new Set(urlKeys)], this.batchSize)) {
       if (!batch.length) continue;
       const placeholders = batch.map(() => '?').join(', ');
@@ -326,15 +496,17 @@ export class D1BookmarkStore {
     ]);
   }
 
-  async listCaptureQueue({limit = 20} = {}) {
+  async listCaptureQueue({limit = 20, collectionId = null} = {}) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    if (collectionId !== null) await this.assertCollectionReadable(collectionId);
     const result = await this.db.prepare(
       `SELECT url_key, reason, state, queued_at, updated_at, attempts, last_error
        FROM capture_queue
        WHERE state IN ('queued', 'failed')
+         ${collectionId === null ? '' : 'AND EXISTS (SELECT 1 FROM items i WHERE i.collection_id = ? AND i.url_key = capture_queue.url_key)'}
        ORDER BY queued_at, url_key
        LIMIT ?`,
-    ).bind(safeLimit).all();
+    ).bind(...(collectionId === null ? [safeLimit] : [collectionId, safeLimit])).all();
     return result.results ?? [];
   }
 
@@ -347,7 +519,58 @@ export class D1BookmarkStore {
     ).bind(state, at, error, state, urlKey).run();
   }
 
-  async captureStats() {
+  async captureStats(collectionId = null) {
+    if (collectionId !== null) {
+      await this.assertCollectionReadable(collectionId);
+      const [counts, queue, distribution] = await Promise.all([
+        this.db.prepare(
+          `WITH scoped AS (
+             SELECT DISTINCT c.* FROM captures c
+             JOIN items i ON i.url_key = c.url_key
+             WHERE i.collection_id = ?
+           )
+           SELECT COUNT(*) AS total,
+                  SUM(CASE WHEN source = 'og' AND image_ref IS NOT NULL THEN 1 ELSE 0 END) AS metadata_images,
+                  SUM(CASE WHEN source = 'og' AND image_ref IS NOT NULL
+                            AND NOT EXISTS (
+                              SELECT 1 FROM capture_queue q
+                              WHERE q.url_key = scoped.url_key
+                                AND q.reason = 'duplicate-image'
+                                AND q.state != 'complete'
+                            ) THEN 1 ELSE 0 END) AS distinguishable_metadata,
+                  SUM(CASE WHEN source = 'screenshot' AND image_ref IS NOT NULL THEN 1 ELSE 0 END) AS screenshot_images,
+                  SUM(CASE WHEN EXISTS (
+                    SELECT 1 FROM capture_queue q WHERE q.url_key = scoped.url_key AND q.state != 'complete'
+                  ) THEN 1 ELSE 0 END) AS gaps
+           FROM scoped`,
+        ).bind(collectionId).all(),
+        this.db.prepare(
+          `SELECT COUNT(*) AS queued FROM capture_queue q
+           WHERE q.state IN ('queued', 'failed')
+             AND EXISTS (SELECT 1 FROM items i WHERE i.collection_id = ? AND i.url_key = q.url_key)`,
+        ).bind(collectionId).all(),
+        this.db.prepare(
+          `SELECT COUNT(*) AS image_count FROM (
+             SELECT DISTINCT c.url_key, c.image_hash FROM captures c
+             JOIN items i ON i.url_key = c.url_key
+             WHERE i.collection_id = ? AND c.image_hash IS NOT NULL
+           ) GROUP BY image_hash ORDER BY image_count DESC`,
+        ).bind(collectionId).all(),
+      ]);
+      const row = firstResult(counts) ?? {};
+      const total = Number(row.total ?? 0);
+      const distinguishableMetadata = Number(row.distinguishable_metadata ?? 0);
+      return {
+        total,
+        metadata_images: Number(row.metadata_images ?? 0),
+        distinguishable_metadata: distinguishableMetadata,
+        metadata_coverage: total ? distinguishableMetadata / total : null,
+        screenshot_images: Number(row.screenshot_images ?? 0),
+        gaps: Number(row.gaps ?? 0),
+        queued: Number(firstResult(queue)?.queued ?? 0),
+        duplicate_distribution: (distribution.results ?? []).map(value => Number(value.image_count)),
+      };
+    }
     const [counts, queue, distribution] = await Promise.all([
       this.db.prepare(
         `SELECT COUNT(*) AS total,
@@ -388,7 +611,7 @@ export class D1BookmarkStore {
   }
 
   async countUntriagedItems(collectionId) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionReadable(collectionId);
     const result = await this.db.prepare(
       'SELECT COUNT(*) AS count FROM items WHERE collection_id = ? AND verdict IS NULL',
     ).bind(collectionId).all();
@@ -396,7 +619,7 @@ export class D1BookmarkStore {
   }
 
   async startSession(collectionId, {id, startedAt}) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionWritable(collectionId);
     await this.db.prepare(
       `INSERT INTO triage_sessions
        (id, collection_id, started_at, ended_at, items_judged, elapsed_ms)
@@ -406,7 +629,7 @@ export class D1BookmarkStore {
   }
 
   async getSession(collectionId, sessionId) {
-    if (!await this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    await this.assertCollectionReadable(collectionId);
     const session = await this.db.prepare(
       `SELECT id, collection_id, started_at, ended_at, items_judged, elapsed_ms
        FROM triage_sessions WHERE id = ? AND collection_id = ? LIMIT 1`,
@@ -416,6 +639,7 @@ export class D1BookmarkStore {
   }
 
   async applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
+    await this.assertCollectionWritable(collectionId);
     if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
     const session = await this.getSession(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
@@ -465,6 +689,7 @@ export class D1BookmarkStore {
   }
 
   async applyTags(collectionId, {itemIds, tags, at, sessionId, actionId}) {
+    await this.assertCollectionWritable(collectionId);
     const session = await this.getSession(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
     const ids = [...new Set(itemIds)];
@@ -517,6 +742,7 @@ export class D1BookmarkStore {
   }
 
   async undoLast(collectionId, {sessionId, at}) {
+    await this.assertCollectionWritable(collectionId);
     const session = await this.getSession(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
     const action = await this.db.prepare(
@@ -556,6 +782,7 @@ export class D1BookmarkStore {
   }
 
   async finishSession(collectionId, {sessionId, endedAt}) {
+    await this.assertCollectionWritable(collectionId);
     const session = await this.getSession(collectionId, sessionId);
     if (session.ended_at) return session;
     const elapsed = Math.max(0, new Date(endedAt).valueOf() - new Date(session.started_at).valueOf());
