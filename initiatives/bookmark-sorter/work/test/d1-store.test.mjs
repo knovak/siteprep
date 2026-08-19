@@ -31,7 +31,7 @@ class FakeStatement {
       const session = this.database.sessions.get(this.values[0]);
       return session?.collection_id === this.values[1] ? {...session} : null;
     }
-    if (this.sql.startsWith('SELECT id, payload_json FROM triage_actions')) {
+    if (this.sql.startsWith('SELECT id, action_kind, payload_json FROM triage_actions')) {
       const [collectionId, sessionId] = this.values;
       return [...this.database.actions.values()]
         .filter(action => action.collection_id === collectionId && action.session_id === sessionId && !action.undone_at)
@@ -40,6 +40,10 @@ class FakeStatement {
     if (this.sql.startsWith('SELECT url_key, image_ref')) {
       const capture = this.database.captures.get(this.values[0]);
       return capture ? {...capture} : null;
+    }
+    if (this.sql.startsWith('SELECT id, name, collection_id, expression FROM selections')) {
+      const selection = this.database.selections.get(this.values[0]);
+      return selection?.collection_id === this.values[1] ? {...selection} : null;
     }
     throw new Error(`Unexpected first(): ${this.sql}`);
   }
@@ -58,6 +62,17 @@ class FakeStatement {
     if (this.sql.startsWith('SELECT id, verdict, verdict_at FROM items')) {
       const ids = new Set(this.values.slice(1));
       return {results: [...this.database.items.values()].filter(item => item.collection_id === collectionId && ids.has(item.id)).map(({id, verdict, verdict_at}) => ({id, verdict, verdict_at}))};
+    }
+    if (this.sql.startsWith('SELECT i.id, t.tag FROM items')) {
+      const ids = new Set(this.values.slice(1));
+      const results = [];
+      for (const item of this.database.items.values()) {
+        if (item.collection_id !== collectionId || !ids.has(item.id)) continue;
+        const tags = [...this.database.tags.get(item.id)];
+        if (!tags.length) results.push({id: item.id, tag: null});
+        else for (const tag of tags) results.push({id: item.id, tag});
+      }
+      return {results};
     }
     if (this.sql.startsWith('SELECT i.id')) {
       const limit = this.values[1];
@@ -78,6 +93,9 @@ class FakeStatement {
           tags_json: JSON.stringify([...this.database.tags.get(item.id) ?? []].sort()),
         }));
       return {results};
+    }
+    if (this.sql.startsWith('SELECT id, name, collection_id, expression FROM selections')) {
+      return {results: [...this.database.selections.values()].filter(selection => selection.collection_id === collectionId)};
     }
     throw new Error(`Unexpected all(): ${this.sql}`);
   }
@@ -103,6 +121,11 @@ class FakeStatement {
     if (this.sql.startsWith('INSERT INTO captures')) {
       const [url_key, image_ref, source, captured_at, image_hash, state, page_title, description, favicon_url, error_tag, image_candidate, content_type, width, height, byte_size] = this.values;
       this.database.captures.set(url_key, {url_key, image_ref, source, captured_at, image_hash, state, page_title, description, favicon_url, error_tag, image_candidate, content_type, width, height, byte_size});
+      return {success: true};
+    }
+    if (this.sql.startsWith('INSERT INTO selections')) {
+      const [id, name, collection_id, expression] = this.values;
+      this.database.selections.set(id, {id, name, collection_id, expression});
       return {success: true};
     }
     if (this.sql.startsWith('INSERT OR IGNORE INTO tags (item_id, tag) SELECT id')) {
@@ -132,6 +155,7 @@ class FakeD1Database {
   sessions = new Map();
   actions = new Map();
   captures = new Map();
+  selections = new Map();
   batches = [];
 
   prepare(sql) {
@@ -142,25 +166,37 @@ class FakeD1Database {
     this.batches.push(statements);
     for (const statement of statements) {
       if (statement.sql.startsWith('INSERT INTO items')) {
-        const [id, collection_id, url, url_key, title, note, added_at, ingested_at] = statement.values;
-        this.items.set(id, {id, collection_id, url, url_key, title, note, added_at, ingested_at, verdict: null, verdict_at: null});
+        const [id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at] = statement.values;
+        this.items.set(id, {id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict: null, verdict_at: null});
         this.tags.set(id, new Set());
       } else if (statement.sql.startsWith('UPDATE items SET added_at')) {
-        const [added_at, note, id, collection_id] = statement.values;
+        const [added_at, note, title_key, id, collection_id] = statement.values;
         const current = this.items.get(id);
         assert.equal(current.collection_id, collection_id);
-        this.items.set(id, {...current, added_at, note});
-      } else if (statement.sql.startsWith('INSERT OR IGNORE INTO tags')) {
+        this.items.set(id, {...current, added_at, note, title_key});
+      } else if (statement.sql.startsWith('INSERT OR IGNORE INTO tags') && !statement.sql.includes('SELECT id')) {
         const [itemId, tag] = statement.values;
         this.tags.get(itemId).add(tag);
+      } else if (statement.sql.startsWith('INSERT OR IGNORE INTO tags') && statement.sql.includes('SELECT id')) {
+        const [tag, collectionId, ...ids] = statement.values;
+        for (const id of ids) if (this.items.get(id)?.collection_id === collectionId) this.tags.get(id).add(tag);
       } else if (statement.sql.startsWith('UPDATE items SET verdict')) {
-        const [verdict, verdict_at, id, collection_id] = statement.values;
-        const item = this.items.get(id);
-        assert.equal(item.collection_id, collection_id);
-        Object.assign(item, {verdict, verdict_at});
+        if (statement.sql.includes('id IN')) {
+          const [verdict, verdict_at, collection_id, ...ids] = statement.values;
+          for (const id of ids) {
+            const item = this.items.get(id); assert.equal(item.collection_id, collection_id); Object.assign(item, {verdict, verdict_at});
+          }
+        } else {
+          const [verdict, verdict_at, id, collection_id] = statement.values;
+          const item = this.items.get(id); assert.equal(item.collection_id, collection_id); Object.assign(item, {verdict, verdict_at});
+        }
       } else if (statement.sql.startsWith('INSERT INTO triage_actions')) {
         const [id, collection_id, session_id, payload_json, created_at] = statement.values;
-        this.actions.set(id, {id, collection_id, session_id, payload_json, created_at, undone_at: null});
+        const action_kind = statement.sql.includes("'tag-apply'") ? 'tag-apply' : 'verdict';
+        this.actions.set(id, {id, collection_id, session_id, action_kind, payload_json, created_at, undone_at: null});
+      } else if (statement.sql.startsWith('DELETE FROM tags')) {
+        const [itemId, tag] = statement.values;
+        this.tags.get(itemId).delete(tag);
       } else if (statement.sql.startsWith('UPDATE triage_sessions SET items_judged = items_judged +')) {
         const [amount, id, collection_id] = statement.values;
         const session = this.sessions.get(id);
@@ -236,6 +272,30 @@ test('D1 verdict actions update the backlog and undo a marked set atomically', a
 
   const finished = await store.finishSession('pile', {sessionId: session.id, endedAt: '2026-08-18T12:03:00Z'});
   assert.equal(finished.elapsed_ms, 180000);
+});
+
+test('D1 saved selections and additive tag actions round-trip and undo only their additions', async () => {
+  const database = new FakeD1Database();
+  let sequence = 0;
+  const store = new D1BookmarkStore(database, {batchSize: 4, idFactory: () => `d1-${++sequence}`});
+  await store.ensureCollection({id: 'pile', name: 'Pile', createdAt: '2026-08-18T00:00:00Z'});
+  await ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-small.html'), source: 'chrome-export', ingestedAt: '2026-08-18'});
+  const items = await store.listItems('pile');
+  const selection = await store.saveSelection('pile', {id: 'selection-1', name: 'Examples', expression: 'site:example.com'});
+  assert.equal(selection.expression, 'site:example.com');
+  assert.deepEqual((await store.listSelections('pile')).map(value => value.id), ['selection-1']);
+
+  const session = await store.startSession('pile', {id: 'session-tags', startedAt: '2026-08-18T12:00:00Z'});
+  const changed = await store.applyTags('pile', {
+    itemIds: items.slice(0, 2).map(item => item.id), tags: ['src:chrome-export', 'cluster:examples'],
+    at: '2026-08-18T12:01:00Z', sessionId: session.id, actionId: 'tag-action',
+  });
+  assert.equal(changed.changes.length, 2);
+  assert.ok((await store.listItems('pile')).slice(0, 2).every(item => item.tags.includes('cluster:examples')));
+  const undone = await store.undoLast('pile', {sessionId: session.id, at: '2026-08-18T12:02:00Z'});
+  assert.equal(undone.kind, 'tag-apply');
+  assert.ok((await store.listItems('pile')).every(item => !item.tags.includes('cluster:examples')));
+  assert.ok((await store.listItems('pile')).every(item => item.tags.includes('src:chrome-export')));
 });
 
 test('D1 capture errors stay collection-local and attach from the shared cache on later ingestion', async () => {

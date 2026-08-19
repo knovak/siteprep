@@ -7,6 +7,7 @@ export class MemoryBookmarkStore {
   #tags = new Map();
   #sessions = new Map();
   #actions = [];
+  #selections = new Map();
   #captures = new Map();
   #captureQueue = new Map();
   #nextItem = 1;
@@ -46,6 +47,27 @@ export class MemoryBookmarkStore {
     for (const tag of tags) stored.add(tag);
   }
 
+  saveSelection(collectionId, selection) {
+    if (!this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    const stored = {...structuredClone(selection), collection_id: collectionId};
+    this.#selections.set(stored.id, stored);
+    return structuredClone(stored);
+  }
+
+  listSelections(collectionId) {
+    if (!this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    return [...this.#selections.values()]
+      .filter(selection => selection.collection_id === collectionId)
+      .sort((left, right) => left.name.localeCompare(right.name))
+      .map(selection => structuredClone(selection));
+  }
+
+  selection(collectionId, id) {
+    const selection = this.#selections.get(id);
+    if (!selection || selection.collection_id !== collectionId) throw new Error(`Unknown selection: ${id}`);
+    return structuredClone(selection);
+  }
+
   listItems(collectionId) {
     return [...this.#items.values()]
       .filter(item => item.collection_id === collectionId)
@@ -58,6 +80,17 @@ export class MemoryBookmarkStore {
           tags: [...this.#tags.get(item.id)].sort(),
           capture: capture ? {...structuredClone(capture), displayable} : null,
         };
+      });
+  }
+
+  listAllItems(collectionId) {
+    return [...this.#items.values()]
+      .filter(item => item.collection_id === collectionId)
+      .map(item => {
+        const capture = this.#captures.get(item.url_key);
+        const queueEntry = this.#captureQueue.get(item.url_key);
+        const displayable = !(queueEntry?.reason === 'duplicate-image' && queueEntry.state !== 'complete');
+        return {...structuredClone(item), tags: [...this.#tags.get(item.id)].sort(), capture: capture ? {...structuredClone(capture), displayable} : null};
       });
   }
 
@@ -224,6 +257,40 @@ export class MemoryBookmarkStore {
     };
   }
 
+  applyTags(collectionId, {itemIds, tags, at, sessionId, actionId}) {
+    const session = this.session(collectionId, sessionId);
+    if (session.ended_at) throw new Error('The sitting has ended');
+    const wanted = [...new Set(tags.map(tag => String(tag).trim()).filter(Boolean))];
+    if (!wanted.length) throw new Error('Choose at least one tag');
+    const changes = [];
+    for (const id of [...new Set(itemIds)]) {
+      const item = this.#items.get(id);
+      if (!item || item.collection_id !== collectionId) throw new Error(`Unknown item in collection: ${id}`);
+      const stored = this.#tags.get(id);
+      const added = wanted.filter(tag => !stored.has(tag));
+      if (!added.length) continue;
+      for (const tag of added) stored.add(tag);
+      changes.push({item_id: id, tags: added});
+    }
+    if (changes.length) {
+      this.#actions.push({
+        id: actionId,
+        collection_id: collectionId,
+        session_id: sessionId,
+        action_kind: 'tag-apply',
+        payload: {changes},
+        created_at: at,
+        undone_at: null,
+      });
+    }
+    return {
+      kind: 'tag-apply',
+      changes: changes.map(change => ({item_id: change.item_id, added_tags: [...change.tags]})),
+      backlog: this.countUntriagedItems(collectionId),
+      session: structuredClone(session),
+    };
+  }
+
   undoLast(collectionId, {sessionId, at}) {
     const session = this.session(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
@@ -237,12 +304,18 @@ export class MemoryBookmarkStore {
     for (const change of action.payload.changes) {
       const item = this.#items.get(change.item_id);
       if (!item || item.collection_id !== collectionId) continue;
-      this.#items.set(change.item_id, {...item, verdict: change.verdict, verdict_at: change.verdict_at});
-      restored.push({...change});
+      if (action.action_kind === 'tag-apply') {
+        const tags = this.#tags.get(change.item_id);
+        for (const tag of change.tags) tags.delete(tag);
+        restored.push({item_id: change.item_id, removed_tags: [...change.tags]});
+      } else {
+        this.#items.set(change.item_id, {...item, verdict: change.verdict, verdict_at: change.verdict_at});
+        restored.push({...change});
+      }
     }
     action.undone_at = at;
-    session.items_judged = Math.max(0, session.items_judged - restored.length);
-    return {changes: restored, backlog: this.countUntriagedItems(collectionId), session: structuredClone(session)};
+    if (action.action_kind === 'verdict') session.items_judged = Math.max(0, session.items_judged - restored.length);
+    return {kind: action.action_kind, changes: restored, backlog: this.countUntriagedItems(collectionId), session: structuredClone(session)};
   }
 
   finishSession(collectionId, {sessionId, endedAt}) {

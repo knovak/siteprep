@@ -3,6 +3,7 @@ import {createCapturePipeline} from './capture-pipeline.mjs';
 import {R2CaptureImages} from './capture-images.mjs';
 import {ingestBookmarkHtml} from './ingest.mjs';
 import {renderPilePage} from './pile-page.mjs';
+import {compileSelection, evaluateSelection, proposeSelections, wrapUiSelection} from './selections.mjs';
 
 const COLLECTION_ID = 'pile';
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
@@ -15,6 +16,20 @@ async function requestJson(request) {
   const type = request.headers.get('content-type') ?? '';
   if (!type.includes('application/json')) throw new Error('Expected a JSON request');
   return request.json();
+}
+
+function withCaptureUrl(item) {
+  return {
+    ...item,
+    capture_url: item.capture?.image_ref && item.capture.displayable !== false
+      ? `/api/capture-image?url_key=${encodeURIComponent(item.url_key)}`
+      : null,
+  };
+}
+
+async function selectedItems(store, expression) {
+  const items = await store.listAllItems(COLLECTION_ID);
+  return evaluateSelection(items, expression, {collectionId: COLLECTION_ID});
 }
 
 export function createPileApp({
@@ -59,13 +74,53 @@ export function createPileApp({
             total,
             backlog,
             captures: captureStatus,
-            items: items.map(item => ({
-              ...item,
-              capture_url: item.capture?.image_ref && item.capture.displayable !== false
-                ? `/api/capture-image?url_key=${encodeURIComponent(item.url_key)}`
-                : null,
-            })),
+            items: items.map(withCaptureUrl),
           });
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/selection') {
+          const expression = url.searchParams.get('expression') || '';
+          const limit = Math.max(1, Math.min(500, Number(url.searchParams.get('limit')) || 200));
+          const offset = Math.max(0, Number(url.searchParams.get('offset')) || 0);
+          const matches = await selectedItems(store, expression);
+          const [collectionTotal, collectionBacklog, captureStatus] = await Promise.all([
+            store.countItems(COLLECTION_ID),
+            store.countUntriagedItems(COLLECTION_ID),
+            capture ? capture.status() : null,
+          ]);
+          return json({
+            collection_id: COLLECTION_ID,
+            expression,
+            effective_expression: wrapUiSelection(COLLECTION_ID, expression),
+            collection_total: collectionTotal,
+            collection_backlog: collectionBacklog,
+            total: matches.length,
+            backlog: matches.filter(item => !item.verdict).length,
+            captures: captureStatus,
+            items: matches.slice(offset, offset + limit).map(withCaptureUrl),
+          });
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/selections') {
+          return json({selections: await store.listSelections(COLLECTION_ID)});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/selections') {
+          const body = await requestJson(request);
+          const name = String(body.name || '').trim();
+          const expression = String(body.expression || '').trim();
+          if (!name) throw new Error('Selection name is required');
+          compileSelection(wrapUiSelection(COLLECTION_ID, expression));
+          const selection = await store.saveSelection(COLLECTION_ID, {
+            id: body.id || idFactory('selection'),
+            name,
+            expression,
+          });
+          return json(selection, 201);
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/proposals') {
+          return json({proposals: proposeSelections(await store.listAllItems(COLLECTION_ID))});
         }
 
         if (request.method === 'GET' && url.pathname === '/api/capture-image') {
@@ -146,6 +201,42 @@ export function createPileApp({
             actionId: idFactory('action'),
           });
           return json(result);
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/selection/verdict') {
+          const body = await requestJson(request);
+          if (!body.session_id) throw new Error('Session id is required');
+          let expression = String(body.expression || '');
+          if (body.selection_id) expression = (await store.selection(COLLECTION_ID, body.selection_id)).expression;
+          const excluded = new Set(Array.isArray(body.exclude_item_ids) ? body.exclude_item_ids : []);
+          const matches = (await selectedItems(store, expression)).filter(item => !excluded.has(item.id));
+          if (!body.visible && !body.confirmed) {
+            return json({confirmation_required: true, count: matches.length}, 409);
+          }
+          if (!matches.length) throw new Error('The selection has no items to judge');
+          return json(await store.applyVerdict(COLLECTION_ID, {
+            itemIds: matches.map(item => item.id),
+            verdict: body.verdict,
+            at: now().toISOString(),
+            sessionId: body.session_id,
+            actionId: idFactory('action'),
+          }));
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/tag') {
+          const body = await requestJson(request);
+          if (!body.session_id) throw new Error('Session id is required');
+          const tags = Array.isArray(body.tags) ? body.tags : String(body.tags || '').split(/[\s,]+/);
+          const items = Array.isArray(body.item_ids) && body.item_ids.length
+            ? body.item_ids
+            : (await selectedItems(store, String(body.expression || ''))).map(item => item.id);
+          return json(await store.applyTags(COLLECTION_ID, {
+            itemIds: items,
+            tags,
+            at: now().toISOString(),
+            sessionId: body.session_id,
+            actionId: idFactory('action'),
+          }));
         }
 
         if (request.method === 'POST' && url.pathname === '/api/undo') {

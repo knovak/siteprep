@@ -29,6 +29,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /type="file"/);
   assert.match(html, /id="count"/);
   assert.match(html, /id="grid"/);
+  assert.match(html, /id="selection-expression"/);
+  assert.match(html, /id="sweep-rest"/);
+  assert.match(html, /id="tag-selection"/);
   assert.match(html, /data-verdict="keeper"/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);
@@ -98,6 +101,104 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
   const finishResult = await finished.json();
   assert.equal(finishResult.items_judged, 2);
   assert.ok(finishResult.elapsed_ms > 0);
+});
+
+test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms only unopened sets', async () => {
+  const store = new AppStore();
+  let sequence = 0;
+  const app = createPileApp({
+    storeFactory: () => store,
+    now: () => new Date('2026-08-18T12:00:00Z'),
+    idFactory: prefix => `${prefix}-${++sequence}`,
+  });
+  const form = new FormData();
+  form.append('source', 'chrome-export');
+  form.append('file', new Blob([await fixture('export-small.html')], {type: 'text/html'}), 'bookmarks.html');
+  await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: form}));
+
+  const selected = await (await app.fetch(new Request('https://pile.test/api/selection?expression=site%3Aexample.com&limit=10'))).json();
+  assert.equal(selected.total, 2);
+  assert.equal(selected.collection_total, 3);
+  assert.equal(selected.effective_expression, 'collection:pile and (site:example.com)');
+  const ids = selected.items.map(item => item.id);
+
+  const proposals = await (await app.fetch(new Request('https://pile.test/api/proposals'))).json();
+  assert.equal(proposals.proposals.find(proposal => proposal.id === 'site:example.com').count, 2);
+
+  const savedResponse = await app.fetch(new Request('https://pile.test/api/selections', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({name: 'Example site', expression: 'site:example.com'}),
+  }));
+  assert.equal(savedResponse.status, 201);
+  const saved = await savedResponse.json();
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/selections'))).json()).selections[0].expression, 'site:example.com');
+
+  const session = await (await app.fetch(new Request('https://pile.test/api/session', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
+  }))).json();
+
+  const tagged = await (await app.fetch(new Request('https://pile.test/api/tag', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, expression: 'site:example.com', tags: ['cluster:example']}),
+  }))).json();
+  assert.equal(tagged.changes.length, 2);
+  assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('cluster:example')).length, 2);
+  const tagUndo = await (await app.fetch(new Request('https://pile.test/api/undo', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: session.id}),
+  }))).json();
+  assert.equal(tagUndo.kind, 'tag-apply');
+  assert.ok(store.listAllItems('pile').every(item => !item.tags.includes('cluster:example')));
+
+  const visible = await app.fetch(new Request('https://pile.test/api/selection/verdict', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, expression: 'site:example.com', exclude_item_ids: [ids[0]], verdict: 'junk', visible: true}),
+  }));
+  assert.equal(visible.status, 200);
+  assert.equal((await visible.json()).changes.length, 1);
+  await app.fetch(new Request('https://pile.test/api/undo', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: session.id}),
+  }));
+
+  const unopened = await app.fetch(new Request('https://pile.test/api/selection/verdict', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, selection_id: saved.id, verdict: 'archive', visible: false}),
+  }));
+  assert.equal(unopened.status, 409);
+  assert.deepEqual(await unopened.json(), {confirmation_required: true, count: 2});
+  const confirmed = await app.fetch(new Request('https://pile.test/api/selection/verdict', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, selection_id: saved.id, verdict: 'archive', visible: false, confirmed: true}),
+  }));
+  assert.equal(confirmed.status, 200);
+  assert.equal((await confirmed.json()).changes.length, 2);
+});
+
+test('a visible sweep across several thousand items never gains a count-based confirmation', async () => {
+  const store = new AppStore();
+  store.createCollection({id: 'pile', name: 'Pile'});
+  for (let index = 0; index < 3_000; index += 1) {
+    const item = store.insertItem({
+      collection_id: 'pile', url: `https://bulk.test/${index}`, url_key: `https://bulk.test/${index}`,
+      title: `Bulk ${index}`, title_key: `bulk-${index}`, note: null, added_at: null,
+      ingested_at: '2026-08-18T00:00:00Z', verdict: null, verdict_at: null,
+    });
+    store.addTags(item.id, ['group:bulk']);
+  }
+  let sequence = 0;
+  const app = createPileApp({storeFactory: () => store, idFactory: prefix => `${prefix}-${++sequence}`});
+  const session = await (await app.fetch(new Request('https://pile.test/api/session', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
+  }))).json();
+  const swept = await app.fetch(new Request('https://pile.test/api/selection/verdict', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, expression: 'group:bulk', verdict: 'junk', visible: true}),
+  }));
+  assert.equal(swept.status, 200);
+  assert.equal((await swept.json()).changes.length, 3_000);
+  const undone = await (await app.fetch(new Request('https://pile.test/api/undo', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: session.id}),
+  }))).json();
+  assert.equal(undone.changes.length, 3_000);
+  assert.equal(store.countUntriagedItems('pile'), 3_000);
 });
 
 test('pile app refuses oversized uploads before reading them', async () => {

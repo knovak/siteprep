@@ -30,11 +30,17 @@ async function installPile(page) {
     if (request.method() === 'GET' && url.pathname === '/') {
       return route.fulfill({contentType: 'text/html', body: renderPilePage()});
     }
-    if (request.method() === 'GET' && url.pathname === '/api/items') {
+    if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
       const offset = Number(url.searchParams.get('offset') || 0);
       const limit = Number(url.searchParams.get('limit') || 200);
       const backlog = backend.items.filter(item => !item.verdict).length;
-      return route.fulfill({json: {collection_id: 'pile', total: backend.items.length, backlog, captures: {total: backend.items.length, metadata_images: 3334, screenshot_images: 0, gaps: 6666, queued: 6666, duplicate_distribution: [12, 7, 4]}, items: backend.items.slice(offset, offset + limit)}});
+      return route.fulfill({json: {collection_id: 'pile', collection_total: backend.items.length, collection_backlog: backlog, total: backend.items.length, backlog, captures: {total: backend.items.length, metadata_images: 3334, screenshot_images: 0, gaps: 6666, queued: 6666, duplicate_distribution: [12, 7, 4]}, items: backend.items.slice(offset, offset + limit)}});
+    }
+    if (request.method() === 'GET' && url.pathname === '/api/selections') {
+      return route.fulfill({json: {selections: []}});
+    }
+    if (request.method() === 'GET' && url.pathname === '/api/proposals') {
+      return route.fulfill({json: {proposals: []}});
     }
     const body = request.postDataJSON();
     if (request.method() === 'POST' && url.pathname === '/api/session') {
