@@ -190,3 +190,7 @@ Recorded the newsletter-review-interaction/v1 baseline with three fresh 73-click
 ## 2026-08-18 — Phase 6 - implement the Gmail message-source adapter and private-inventory handoff without committing mailbox data
 
 Built the paged, read-only Gmail message-source adapter and mode-0600 private-inventory handoff. All 101 Node tests pass. A live bounded handoff found 14, 4 and 4 messages across the three configured sources; all 22 passed post-search attribution and had readable HTML, with 3 searches, 22 reads and no writes. No mailbox body was retained. The first real extraction remains the next actionable item.
+
+## 2026-08-19 — Phase 6 - run the first real extraction, record count-band flags and merge rate, and generate the private review page
+
+Ran 22 mailbox-backed issues through the private extraction handoff: 169 accepted findings became 163 review records, 13 chrome/heading findings were refused, every count band passed, and three identities merged (1.775%). Recorded the calibration and left optional HEAD following off.
