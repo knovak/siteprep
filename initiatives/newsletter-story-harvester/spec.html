@@ -65,7 +65,7 @@
    +-------------------------------------------------------------------+
    |                            THE STORE                              |
    |                      one JSON file (§7)                           |
-   |         stories | runs | vocabularies | sources, harvesters       |
+   |      stories | clusters | runs | vocabularies | source facets     |
    |            written by a skill, never by a page (§9)               |
    +--+-------------------------+----------------------------------+---+
       |                         |                                   ^
@@ -172,7 +172,9 @@
 <ul><li><strong>Splitting is by issue-month, and only if it is ever needed.</strong> Same record</li></ul>
 <p>  format, several files, readers take the union. Recorded so that growth is a   known step rather than a redesign.</p>
 <h4>What is in it</h4>
-<ul><li><code>stories</code> — records exactly as <code>story-record.md</code> specifies them.</li><li><code>runs</code> — the §5.2 run records.</li><li><code>vocabularies</code> — the open <code>shape</code> and <code>verdict</code> values currently <em>offered</em></li></ul>
+<ul><li><code>stories</code> — records exactly as <code>story-record.md</code> specifies them.</li><li><code>clusters</code> — keyed by <code>about:&lt;slug&gt;</code>, with the cluster paraphrase, member</li></ul>
+<p>  story ids, and the tagging pass that wrote it. Membership remains an ordinary   tag on each story.</p>
+<ul><li><code>runs</code> — the §5.2 run records.</li><li><code>vocabularies</code> — the open <code>shape</code> and <code>verdict</code> values currently <em>offered</em></li></ul>
 <p>  (§11).</p>
 <ul><li><code>harvesters</code> and <code>sources</code> — names seen in the data, for display (§11).</li></ul>
 <h4>Where it lives</h4>
@@ -229,10 +231,10 @@
 <ul><li><strong>A verdict applied to a cluster applies to each member.</strong> The backlog counts</li></ul>
 <p>  stories, so a cluster must not become a second kind of object with a verdict   of its own — and a member can still be judged individually.</p>
 <p><strong>Err toward proposing.</strong> This is only safe because clustering is tag production rather than merging: a wrong cluster costs one bad grouping that a reader dissolves by removing a tag, and nothing was destroyed. Had clustering been implemented as a merge, the opposite bias would be correct — which is the reason <code>story-record.md</code> keeps identity at case 2 and stops there.</p>
-<h4>10.3 The tagging skill, anticipated</h4>
-<p><strong>A second skill, added after the harvester works: it reads a store, reads the content, and proposes tags — themes and clusters — using a model&#39;s judgement about what the stories are actually about.</strong> It is anticipated here rather than built now, because anticipating it is what stops the first version foreclosing it.</p>
+<h4>10.3 The tagging skill</h4>
+<p><strong>A second skill reads a store, reads the content, and proposes tags — themes and clusters — using a model&#39;s judgement about what the stories are actually about.</strong> Phase 7 implements it as <code>tag-newsletter-stories</code>: a model writes a strict proposal, and a deterministic script applies only additive tags and cluster records.</p>
 <p>It is worth naming separately from the harvest even though both write tags, because they have different information. A harvester sees one issue at a time and can only propose a theme from what is in front of it. <strong>A pass over the store sees everything</strong>, which is the only position from which &quot;these nine stories are one category&quot; is a judgement rather than a guess — and it improves as the pile grows, where a per-issue guess does not.</p>
-<p>What the first version owes it, all of which §§1.1, 7 and 10.1 already provide:</p>
+<p>The contract it relies on, all of which §§1.1, 7 and 10.1 provide:</p>
 <ul><li><strong>The store is readable on its own</strong>, without the skill that wrote it. That is</li></ul>
 <p>  the §7 choice of a plain JSON file, and this is the second thing it buys after   the D fallback.</p>
 <ul><li><strong>Tags are open free strings</strong>, so a new theme costs nothing and needs no</li></ul>
@@ -246,7 +248,7 @@
 <p>  Retagging is always recoverable; the things it may not touch are the things   that are not.</p>
 <ul><li><strong>It is one pass among any number.</strong> Re-running it, or running a different one</li></ul>
 <p>  beside it, adds tags rather than replacing them, so removing a bad tag is the   reader&#39;s edit and not a re-run.</p>
-<p>Whether its output lands as tags directly or as proposals a reader accepts is left to the plan (§15). Directly is defensible here precisely because a tag is cheap to remove — the bookmark sorter takes the stricter line because its tags drive selections over thousands of items — but it is a real choice and not one this document has to make to stay unblocked.</p>
+<p>Its output lands as tags directly, as <code>plan.md</code> phase 7 settles. Every pass records exactly what it added and a fingerprint of tag-and-cluster state, so an unchanged pass can be undone as a set while a later edit makes an inexact undo fail loudly.</p>
 <h3>11. Open vocabularies, and who may harvest</h3>
 <p>Both questions <code>story-record.md</code> §6 left open, answered the same way.</p>
 <p>**Vocabularies are configuration for what is <em>offered</em>, never for what is <em>legal</em>.** The store&#39;s <code>vocabularies</code> block lists the <code>shape</code> and <code>verdict</code> values the page shows buttons for. Adding <code>to-be-shared</code> is an edit there. Nothing validates a record against the list: a value that is not in it still loads, still displays, and still round-trips, exactly as <code>story-record.md</code> §1.2 requires. Configuration that could reject data would turn an open vocabulary back into a closed one.</p>
