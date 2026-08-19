@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 OUTPUT_DIR="$ROOT_DIR/gh-pages"
+DEMO_METADATA_SCRIPT="$ROOT_DIR/scripts/demo_metadata.mjs"
 
 # Get version info from environment or defaults
 BRANCH_NAME="${BRANCH_NAME:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'unknown')}"
@@ -345,9 +346,18 @@ EOF_DEMOS
 
   for demo in "${DEMO_NAMES[@]}"; do
     demo_dir="$ROOT_DIR/demos/$demo"
-    title=$(get_html_title "$demo_dir/index.html" "$demo")
-    description=$(get_demo_description "$demo_dir" "$demo" "$title")
-    href=$(get_demo_href "$demo_dir" "$demo")
+    additional_links=""
+    if [ -f "$demo_dir/demo.json" ]; then
+      node "$DEMO_METADATA_SCRIPT" validate "$demo_dir" "$demo" > /dev/null
+      title=$(node "$DEMO_METADATA_SCRIPT" html-field "$demo_dir" "$demo" title)
+      description=$(node "$DEMO_METADATA_SCRIPT" description "$demo_dir" "$demo")
+      href=$(node "$DEMO_METADATA_SCRIPT" href "$demo_dir" "$demo")
+      additional_links=$(node "$DEMO_METADATA_SCRIPT" links "$demo_dir" "$demo")
+    else
+      title=$(get_html_title "$demo_dir/index.html" "$demo")
+      description=$(get_demo_description "$demo_dir" "$demo" "$title")
+      href=$(get_demo_href "$demo_dir" "$demo")
+    fi
 
     prompts_link=""
     if [ -f "$demo_dir/prompts.txt" ]; then
@@ -365,6 +375,7 @@ EOF_DEMOS
             <h3>${title}</h3>
           </a>
           <p>${description}</p>
+${additional_links}
 ${prompts_link}
         </li>
 EOF_DEMO_ITEM

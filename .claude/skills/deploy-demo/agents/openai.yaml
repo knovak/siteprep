@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deploy Demo"
+  short_description: "Copy a folder into the demo collection"
+  default_prompt: "Use $deploy-demo to publish a repository folder as a SitePrep demo."
