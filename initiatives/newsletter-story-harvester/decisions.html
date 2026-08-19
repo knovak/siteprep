@@ -197,6 +197,16 @@
 <p>  those rules from real issues rather than guessing them from the address.</p>
 <ul><li><strong>Not settled:</strong> whether the declared shapes fit every issue. §3.2&#39;s per-issue</li></ul>
 <p>  override and count flags remain the mechanism for exceptions.</p>
+<h3>2026-08-18 — Gmail handoff: 22 readable messages, no writes, and no HEAD follow yet</h3>
+<p>The phase-6 adapter and private inventory handoff ran read-only over the exact scope above, with a requested half-open range of 2026-07-22 through 2026-08-19. The per-source lookback narrowed Yglesias to 2026-08-05; the two 28-day sources kept the requested start.</p>
+<div class="table-scroll"><table><thead><tr><th>Source</th><th>Messages paged</th><th>Post-search matcher failures</th></tr></thead><tbody><tr><td><code>yglesias</code></td><td>14</td><td>0</td></tr><tr><td><code>fix-the-news</code></td><td>4</td><td>0</td></tr><tr><td><code>chopwood-carrywater-extra</code></td><td>4</td><td>0</td></tr></tbody></table></div>
+<p>All 22 messages had a readable inline HTML body. The connector required no next page for these bounded windows. Its complete operation log was <strong>3 searches, 22 reads, 0 writes</strong> — no label, archive, mark-read, draft, send, or mailbox-state operation exists in the adapter&#39;s connector surface.</p>
+<h4>Redirect handling</h4>
+<p>All three live sources use the Substack redirect shape. The private inventory therefore selects the existing <code>substack</code> rule for each. <strong>The optional single-HEAD follow remains off for the first extraction.</strong> The reason is not that it cannot work; phase 0 established why it exists. It is that following an opaque, recipient-token link creates a real outbound click before the first merge rate says the extra resolution is valuable. With the follow off, the token query is removed, the opaque redirect is kept, and <code>err:unwrap</code> makes the miss visible.</p>
+<p>Reopen that choice after the first real harvest if the merge report shows that unresolved redirects are preventing meaningful cross-source merges. Until then, generating subscriber-specific clicks to improve a number not yet known is the wrong default.</p>
+<h4>Private handoff boundary</h4>
+<p>The inventory and a body-free handoff receipt now live under the ignored <code>work/private/</code> directory at mode 0600. The receipt retains only dates, counts, operation kinds and settings. No raw body, subject, recipient, message id or connector response was written to disk or committed.</p>
+<p>This completes the source adapter and handoff, not the whole phase-6 exit. The next bounded item is the first real extraction into the private store; it is what supplies count-band flags and merge rate. The manual real-story sitting remains evidence no adapter test can manufacture.</p>
 <h3>2026-08-18 — How should the first review-rate baseline be measured?</h3>
 <p>The fixture review page is working, but browser automation cannot supply the measurement that matters: how quickly a person can make real keep, drop, and emphasise decisions. The first baseline needs a protocol that is bounded enough to run now and specific enough that a later sitting can be compared with it.</p>
 <h4>Alternatives considered</h4>
