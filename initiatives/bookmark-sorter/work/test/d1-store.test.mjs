@@ -17,6 +17,7 @@ class FakeStatement {
   }
 
   bind(...values) {
+    this.database.boundParameterCounts.push(values.length);
     return new FakeStatement(this.database, this.sql, values);
   }
 
@@ -167,6 +168,7 @@ class FakeD1Database {
   captures = new Map();
   selections = new Map();
   batches = [];
+  boundParameterCounts = [];
 
   prepare(sql) {
     return new FakeStatement(this, sql);
@@ -350,4 +352,17 @@ test('D1 capture errors stay collection-local and attach from the shared cache o
   assert.ok(!(await store.listItems('beta')).find(item => item.url_key === urlKey).tags.includes('err:404'));
   await store.applyKnownCaptureErrors('beta', [urlKey]);
   assert.ok((await store.listItems('beta')).find(item => item.url_key === urlKey).tags.includes('err:404'));
+});
+
+test('D1 capture-error lookup reserves a binding for the collection id', async () => {
+  const database = new FakeD1Database();
+  const store = new D1BookmarkStore(database);
+  await store.ensureCollection({id: 'pile', name: 'Pile', createdAt: '2026-08-19T00:00:00Z'});
+  database.boundParameterCounts.length = 0;
+
+  const urlKeys = Array.from({length: 205}, (_, index) => `https://example.com/${index}`);
+  await store.applyKnownCaptureErrors('pile', urlKeys);
+
+  assert.deepEqual(database.boundParameterCounts.filter(count => count > 2), [100, 100, 8]);
+  assert.ok(database.boundParameterCounts.every(count => count <= 100));
 });

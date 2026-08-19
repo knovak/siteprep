@@ -61,7 +61,9 @@ selection, and export operations.
   user, copies template items/tags/selections in one D1 batch, and leaves the
   global capture rows untouched when a copy is deleted. Imports read the
   existing collection once and write in bounded D1 batches rather than making
-  tens of thousands of request-sized round trips.
+  tens of thousands of request-sized round trips. Queries that use an `IN`
+  list reserve parameter slots for fixed values such as `collection_id`, so no
+  statement exceeds D1's 100-bound-parameter limit.
 - `src/site-identity.mjs` reads the stable
   `oai-authenticated-user-id` supplied by ChatGPT Sites. Email and the optional
   encoded full name are display-only; neither participates in ownership.

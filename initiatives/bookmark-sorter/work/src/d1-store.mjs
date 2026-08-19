@@ -24,6 +24,11 @@ function chunks(values, size) {
 }
 
 const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
+const D1_MAX_BOUND_PARAMETERS = 100;
+
+function d1ChunkSize(requestedSize, reservedParameters = 0) {
+  return Math.max(1, Math.min(requestedSize, D1_MAX_BOUND_PARAMETERS - reservedParameters));
+}
 
 export class D1BookmarkStore {
   constructor(db, {ownerId = null, batchSize = 100, idFactory = () => crypto.randomUUID()} = {}) {
@@ -457,7 +462,8 @@ export class D1BookmarkStore {
 
   async applyKnownCaptureErrors(collectionId, urlKeys) {
     await this.assertCollectionWritable(collectionId);
-    for (const batch of chunks([...new Set(urlKeys)], this.batchSize)) {
+    const urlBatchSize = d1ChunkSize(this.batchSize, 1);
+    for (const batch of chunks([...new Set(urlKeys)], urlBatchSize)) {
       if (!batch.length) continue;
       const placeholders = batch.map(() => '?').join(', ');
       await this.db.prepare(
