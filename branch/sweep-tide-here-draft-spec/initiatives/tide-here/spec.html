@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specification — Tide Here</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Specification — Tide Here</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Tide Here</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Specification</h2>
+    </div>
+    <div class="card-content">
+<h2>Spec</h2>
+<p>How Tide Here is built. <code>objectives.md</code> says what “done” means; this document chooses the first version and the boundaries that keep its answers honest. Numbered references to <strong>O1–O8</strong> are the objectives.</p>
+<h3>1. What the first version is</h3>
+<p>A compact web page with a manual location form and a five-day result. A person enters a place name or latitude/longitude. The page resolves the input, makes the coastal match explicit, and then shows high and low tides, sunrise and sunset, moonrise and moonset, and moon phase for five civil days at that coast.</p>
+<p>The first version has deliberately limited tide coverage: <strong>NOAA CO-OPS prediction stations in the United States and its territories.</strong> Arbitrary place strings are accepted as input, but a place outside that coverage receives a coverage message rather than a tide table borrowed from a distant station. Global coverage is an alternative considered in §2, not an implication of the form.</p>
+<p>The browser serves the interface; a small server-side function performs geocoding, station selection, tide retrieval, and astronomical calculation. There is no account, saved-place list, browser-location prompt, or custom domain in this version (O7–O8).</p>
+<h3>2. Alternatives considered: tide coverage and source</h3>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>NOAA CO-OPS predictions</strong> <em>(chosen)</em></td><td>Official station metadata and high/low predictions; reference and subordinate stations are identified; no account or key; local daylight-aware or GMT output is supported</td><td>Limited to NOAA-supported U.S. regions; station proximity alone does not establish coastal relevance</td></tr><tr><td><strong>A commercial global tide API</strong></td><td>One integration can cover many countries; usually offers a nearby-station endpoint and support</td><td>Key, quota, cost, vendor dependence, and redistribution terms become part of the first demo; “global” coverage still needs validation coast by coast</td></tr><tr><td><strong>A local harmonic engine and constituent dataset</strong></td><td>No runtime tide provider; repeatable and potentially global</td><td>The constituent dataset, datum, station updates, and validation become our responsibility; weather effects remain outside the prediction</td></tr><tr><td><strong>Scrape published tide pages</strong></td><td>Broad apparent coverage with little modelling work</td><td>Brittle, difficult to attribute, often disallowed, and incapable of a stable response contract</td></tr></tbody></table></div>
+<p>NOAA is chosen because the first version needs a defensible answer more than a wide one. The <a href="https://api.tidesandcurrents.noaa.gov/api/prod/">CO-OPS Data API</a> provides <code>predictions</code> with <code>interval=hilo</code>; subordinate prediction stations use the MLLW datum. The app requests GMT and converts the returned instants itself, so one explicit IANA time zone controls tides, astronomy, headings, and date boundaries (O5).</p>
+<p>The page says “NOAA-supported U.S. coasts” beside the form. Unsupported does not mean broken: it is a first-class result with a short explanation of the coverage boundary and no events.</p>
+<h3>3. Alternatives considered: resolving a place and coast</h3>
+<h4>3.1 Geocoder</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Public Nominatim, behind an adapter</strong> <em>(chosen for the low-traffic first demo)</em></td><td>Handles forward and reverse geocoding; no account; returns a standard display name and coordinates</td><td>Shared service: absolute maximum one request per second, identifying headers and attribution required, no autocomplete, and the app must be able to switch providers</td></tr><tr><td><strong>Commercial geocoder</strong></td><td>Contracted quota and support; often stronger structured address data</td><td>Key, billing, and another account before the product shape is validated</td></tr><tr><td><strong>Browser-only place lookup</strong></td><td>No server boundary</td><td>Cannot reliably supply an identifying application header or shared rate limit; leaks provider details into the client and makes switching harder</td></tr></tbody></table></div>
+<p>The first demo makes exactly one geocoder request when the user submits. It has no typeahead. The server sets the identifying header, serialises requests to at most one per second across the deployment, caches successful query-to-place results, displays OpenStreetMap attribution, and keeps the provider behind a <code>Geocoder</code> interface. These are requirements of the current <a href="https://operations.osmfoundation.org/policies/nominatim/">public Nominatim policy</a>, not optional politeness. Before usage grows beyond a small demo, deployment must switch the adapter to a hosted or commercial service.</p>
+<p>A coordinate input uses reverse geocoding so O1 can still show a standard place name. A failed reverse lookup preserves and displays the coordinates rather than inventing a name.</p>
+<h4>3.2 Coastal relevance</h4>
+<p>“Nearest seafront” is represented by a <strong>coastal match</strong>, not by silently taking the first station after sorting by straight-line distance.</p>
+<ol><li>Maintain a cached catalogue of active NOAA tide-prediction stations from the CO-OPS metadata API: station id, name, latitude/longitude, state or territory, and reference/subordinate kind.</li><li>Rank candidates by great-circle distance to the resolved input.</li><li>Automatically accept a candidate only when it is within 25 km and is clearly closer than the next candidate (no more than 60% of the next distance).</li><li>Otherwise return up to three candidates with station name, jurisdiction, distance, and a small map. The user must choose one before events are shown.</li><li>Refuse the match when the closest candidate is over 150 km away. The result may name that coverage is unavailable, but it must not call the station the user’s coast.</li></ol>
+<p>The selected station name is the first version’s standard coastal-place name; the response labels it <strong>Coast</strong> and separately labels the precise <strong>Prediction station</strong> and its id. If a subordinate station is backed by a reference station, that relationship is shown in source details. This is intentionally conservative. Distances cannot prove that a station across an island, inlet, or watershed is relevant, so the ambiguous case costs one explicit choice (O2, O6).</p>
+<p>The 25 km, 60%, and 150 km values are configuration, not hidden facts. The test plan must challenge them with islands, estuaries, and inland places before a global provider or automatic browser location is added.</p>
+<h3>4. Alternatives considered: sun and moon data</h3>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Calculate with SunCalc 2.x</strong> <em>(chosen)</em></td><td>No second runtime provider or key; supplies sunrise, sunset, moonrise, moonset, and illumination from one location</td><td>The caller must construct the correct civil-day window and represent polar/no-event cases; library upgrades can change conventions</td></tr><tr><td><strong>Astronomy API</strong></td><td>Provider may return already-labelled local events</td><td>A second quota and failure domain; the tide and astronomy locations or time zones can drift</td></tr><tr><td><strong>Hand-written formulas</strong></td><td>Total control</td><td>Re-implements specialist, test-sensitive astronomy for no product advantage</td></tr></tbody></table></div>
+<p>The server calculates astronomy at the selected station’s coordinates with a pinned SunCalc version. The current <a href="https://github.com/mourner/suncalc/blob/master/README.md">SunCalc documentation</a> states that returned <code>Date</code> values are absolute instants and must be formatted with an explicit time zone; it also documents always-up and always-down states. The app therefore never formats an event in the server or device default zone.</p>
+<p>For each coast-local date, the server builds the UTC instants bounding local midnight-to-midnight in the station’s IANA zone, calculates events for that window, and returns arrays for <code>sunrise</code>, <code>sunset</code>, <code>moonrise</code>, and <code>moonset</code>. Arrays preserve zero, one, or more events without changing the response shape. Moon phase is calculated at local noon for each row; the page gives the current phase extra emphasis but does not imply that a phase changes at midnight.</p>
+<h3>5. Time and date model</h3>
+<p>The selected prediction station is authoritative for location and time zone. Its coordinates resolve once to an IANA zone using a pinned, offline coordinate-to-zone dataset. Device time zone and geocoder time zone are never used for event grouping.</p>
+<p>The five rows are the coast-local date containing “now” plus the next four dates. Internally, every event is an ISO UTC instant. The response also carries the IANA zone and numeric UTC offset used for each displayed instant, because a five-day range may cross a daylight-saving transition.</p>
+<p>NOAA predictions are requested in GMT for a range wide enough to cover all five local days, converted to the station zone, and included only when their local date matches a row. Astronomy follows the same midnight boundaries. This rule prevents a device in Los Angeles from moving a New York event into the wrong day (O3–O5).</p>
+<h3>6. Server boundary and provider adapters</h3>
+<h4>6.1 Why there is a server function</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Static page calling providers directly</strong></td><td>Cheapest deployment; no application server</td><td>Provider CORS and identifying-header rules become browser constraints; no shared throttling or cache; provider changes leak into the UI</td></tr><tr><td><strong>Static page plus one serverless function</strong> <em>(chosen)</em></td><td>Central rate limiting, caching, normalisation, and provider switching; still deploys as a small site</td><td>Requires a host with HTTPS functions and logs that can be configured not to retain raw queries</td></tr><tr><td><strong>Long-running application server</strong></td><td>Maximum operational control</td><td>More infrastructure than a five-day read-only page needs</td></tr></tbody></table></div>
+<p>One serverless endpoint is enough. The logical API may be implemented as two requests so an ambiguous coast can be confirmed without repeating geocoding:</p>
+<ul><li><code>POST /api/resolve</code> with <code>{ &quot;input&quot;: &quot;...&quot; }</code> returns the preserved input, resolved place, coverage state, and one accepted or up to three candidate coasts.</li><li><code>POST /api/forecast</code> with the opaque resolution token and chosen station id returns the five-day forecast. The token is signed and short-lived; it is not a database record or location history.</li></ul>
+<p>Adapters isolate <code>Geocoder</code>, <code>StationCatalogue</code>, <code>TideProvider</code>, <code>Astronomy</code>, and <code>TimeZoneLookup</code>. Provider responses never flow directly to the browser. Each adapter maps its failures to §8’s small error vocabulary and records a source name and retrieval time.</p>
+<h4>6.2 Caching and privacy</h4>
+<ul><li>Normalised forward queries and rounded reverse coordinates may be cached for 24 hours; NOAA station metadata may be cached for seven days; forecasts may be cached until the next coast-local hour.</li><li>Cache keys use a one-way hash of the normalised query. Application logs omit raw location strings, coordinates, resolution tokens, and provider URLs that contain them.</li><li>There is no analytics event containing the input or selected station. The page explains that the submitted place is sent to a geocoding service (O8).</li><li>The server does not store a user id, saved place, or history.</li></ul>
+<h3>7. Response and page shape</h3>
+<p>The forecast response has one stable shape:</p>
+<pre><code>{
+  &quot;input&quot;: { &quot;display&quot;: &quot;what the user entered&quot; },
+  &quot;place&quot;: { &quot;name&quot;: &quot;resolved standard name&quot;, &quot;lat&quot;: 0, &quot;lon&quot;: 0 },
+  &quot;coast&quot;: { &quot;name&quot;: &quot;coastal place&quot;, &quot;distanceKm&quot;: 0 },
+  &quot;station&quot;: { &quot;id&quot;: &quot;NOAA id&quot;, &quot;name&quot;: &quot;station name&quot;, &quot;kind&quot;: &quot;reference&quot; },
+  &quot;timeZone&quot;: &quot;Area/City&quot;,
+  &quot;days&quot;: [
+    {
+      &quot;date&quot;: &quot;YYYY-MM-DD&quot;,
+      &quot;tides&quot;: [{ &quot;type&quot;: &quot;high&quot;, &quot;at&quot;: &quot;UTC instant&quot;, &quot;height&quot;: 0, &quot;unit&quot;: &quot;m&quot; }],
+      &quot;sunrise&quot;: [&quot;UTC instant&quot;],
+      &quot;sunset&quot;: [&quot;UTC instant&quot;],
+      &quot;moonrise&quot;: [&quot;UTC instant&quot;],
+      &quot;moonset&quot;: [&quot;UTC instant&quot;],
+      &quot;moonPhase&quot;: { &quot;fraction&quot;: 0, &quot;name&quot;: &quot;Waxing crescent&quot; }
+    }
+  ],
+  &quot;sources&quot;: [],
+  &quot;warnings&quot;: []
+}</code></pre>
+<p>The page begins with a labelled form accepting place text or decimal coordinates. Results keep three names visible together: <strong>You entered</strong>, <strong>Resolved place</strong>, and <strong>Coast</strong>. Station and time zone sit immediately below. Five equal day cards follow; each separates tides, sun, and moon but uses one time format throughout. Tide heights are secondary to high/low time and state their datum and unit in source details.</p>
+<p>On narrow screens, days stack rather than becoming a horizontally clipped table. Keyboard focus, form errors, coast choices, and retry actions are visible. The cheerful tone comes from colour and small sun/moon/tide marks, never from replacing labels with unexplained icons (O7).</p>
+<h3>8. Failure states</h3>
+<p>The API returns machine-readable codes and user-facing safe summaries:</p>
+<div class="table-scroll"><table><thead><tr><th>Code</th><th>Meaning</th><th>Page action</th></tr></thead><tbody><tr><td><code>invalid-input</code></td><td>Neither a place nor valid coordinates</td><td>Keep the input; show accepted examples</td></tr><tr><td><code>place-not-found</code></td><td>Geocoder found no match</td><td>Edit and retry</td></tr><tr><td><code>geocoder-unavailable</code></td><td>Provider timeout, throttle, or error</td><td>Retry later; do not call it not found</td></tr><tr><td><code>coverage-unavailable</code></td><td>No NOAA prediction candidate within 150 km</td><td>Explain first-version coverage</td></tr><tr><td><code>coast-choice-required</code></td><td>Candidate is not unambiguous</td><td>Show candidate names, distances, map, and explicit choice</td></tr><tr><td><code>tides-unavailable</code></td><td>Selected station returned no valid prediction</td><td>Preserve place and station; show no tide rows and retry guidance</td></tr><tr><td><code>astronomy-unavailable</code></td><td>Calculation failed</td><td>Preserve tide result; mark astronomy unavailable</td></tr><tr><td><code>no-event</code></td><td>A valid day has no rise or set</td><td>Show “does not rise” or “does not set”, not an error</td></tr></tbody></table></div>
+<p>Partial data stays partial. A tide-provider failure does not erase resolved place or astronomy, and an astronomical failure does not turn into an empty tide table. Every result ends with: “Predictions are informational and are not for navigation or safety decisions” (O6).</p>
+<h3>9. Deployment</h3>
+<p>The deliverable is host-neutral static assets plus one JavaScript serverless function. It requires HTTPS, environment configuration for the geocoder identity, a shared rate limiter/cache, and no persistent application database. The first temporary host is whichever available host meets those properties; the code must not contain its URL.</p>
+<p>The eventual <code>tidehere.info</code>-style domain is a later routing change. Browser geolocation is also later and enters only through the same coordinate-input path after explicit permission. Neither change alters the provider adapters, coastal match, five-day model, or result component (O7–O8).</p>
+<h3>10. Validation contract</h3>
+<p>Implementation is not complete until fixtures and live smoke tests cover:</p>
+<ul><li>two NOAA coasts in different time zones and with different tide regimes;</li><li>the same coast entered as coordinates and text;</li><li>an ambiguous station choice, an inland input, and a place outside NOAA coverage;</li><li>a five-day span crossing a daylight-saving transition;</li><li>zero-event and polar always-up/always-down astronomy cases;</li><li>reference and subordinate tide stations;</li><li>each provider failure independently, proving partial results stay visible;</li><li>phone and desktop layouts from a temporary HTTPS URL.</li></ul>
+<p>Provider fixtures are recorded responses with retrieval dates and attribution. Live tests confirm adapters still speak to their services; deterministic tests run only against fixtures. Thresholds in §3.2 and provider policies are reviewed after those tests rather than silently tuned in code.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/tide-here/draft-spec" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
