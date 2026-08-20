@@ -5,12 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {describe, test} from 'node:test';
 
-import {classifyDating, newestCommitDate, validateDatingConfig} from '../build/dating.mjs';
-
-const valid = {
-  pdfs: [{id: 'description', label: 'Description PDF', link: 'https://drive.google.com/file/d/example/view', refreshed: '2026-08-18'}],
-  simulator_watched: '2026-08-18',
-};
+import {classifySimulatorReview, newestCommitDate} from '../build/dating.mjs';
 
 function commit(root, path, content, date) {
   const fullPath = join(root, path);
@@ -23,28 +18,19 @@ function commit(root, path, content, date) {
   });
 }
 
-describe('PDF and simulator dating', () => {
-  test('fresh PDFs stay plain; stale PDFs and simulator reviews report both dates without blocking', () => {
-    const config = validateDatingConfig({
-      pdfs: [
-        valid.pdfs[0],
-        {id: 'deck', label: 'Deck PDF', link: 'https://drive.google.com/file/d/deck/view', refreshed: '2026-08-16'},
-      ],
-      simulator_watched: '2026-08-15',
-    });
-    const result = classifyDating(config, '2026-08-18', '2026-08-17');
-    assert.equal(result.pdfs[0].possibly_stale, false);
-    assert.equal(result.pdfs[1].possibly_stale, true);
+describe('simulator review dating', () => {
+  test('a source change after the walkthrough produces a diagnostic without blocking', () => {
+    const result = classifySimulatorReview('2026-08-15', '2026-08-17');
     assert.equal(result.simulator.possibly_stale, true);
     assert.deepEqual(result.diagnostics, [
-      'PDF "Deck PDF" may be stale: refreshed 2026-08-16; sources changed 2026-08-18.',
       'Simulator may need re-watching: watched 2026-08-15; sources changed 2026-08-17.',
     ]);
   });
 
-  test('a configured PDF without a link or refresh date is an error', () => {
-    assert.throws(() => validateDatingConfig({...valid, pdfs: [{id: 'description', label: 'Description PDF', refreshed: '2026-08-18'}]}), /link must be an HTTPS link/);
-    assert.throws(() => validateDatingConfig({...valid, pdfs: [{id: 'description', label: 'Description PDF', link: 'https://drive.google.com/file/d/example/view'}]}), /refreshed must be a real YYYY-MM-DD date/);
+  test('a walkthrough on or after the source date stays quiet', () => {
+    const result = classifySimulatorReview('2026-08-18', '2026-08-17');
+    assert.equal(result.simulator.possibly_stale, false);
+    assert.deepEqual(result.diagnostics, []);
   });
 
   test('only commits touching the declared source paths advance the comparison date', async () => {

@@ -1,17 +1,8 @@
 {
   "title": "Newsletter Story Harvester",
   "summary": "Harvest, organize, review, retain, and publish newsletter stories from Gmail.",
-  "stage": "building",
+  "stage": "refining",
   "value": "medium",
   "outputs": [],
-  "todo": [
-    {
-      "id": "build-published-page",
-      "title": "Phase 8 - render the kept and emphasised stories as a provenance-safe published page",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": true
-    }
-  ]
+  "todo": []
 }

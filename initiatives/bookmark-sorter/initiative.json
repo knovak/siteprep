@@ -31,14 +31,6 @@
       "value": "high",
       "effort": "small",
       "advances_stage": false
-    },
-    {
-      "id": "critique-first-version",
-      "title": "Critique the six-phase local build and prepare its graduation or dormancy decision",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false
     }
   ]
 }

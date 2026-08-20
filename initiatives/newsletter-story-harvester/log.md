@@ -198,3 +198,7 @@ Ran 22 mailbox-backed issues through the private extraction handoff: 169 accepte
 ## 2026-08-19 — Phase 7 - build the additive, set-undoable tagging and cluster-paraphrase skill
 
 Built the reusable tag-newsletter-stories skill with a deterministic prepare/apply/undo guardrail, additive theme and event-cluster writes, mode-preserving atomic storage, cluster paraphrases in the store, and one-entry cluster review with per-member provenance and verdicts. The skill validator, CLI rehearsal, and all 109 initiative tests pass.
+
+## 2026-08-19 — Phase 8 - render the kept and emphasised stories as a provenance-safe published page
+
+Phase 8: the review renderer now publishes with two arguments changed - include: ['kept','emphasised'] and judgeable: false - removing every judging control and the code behind it, and withholding provenance. A published story is assembled from an allow-list rather than by deleting two fields, and the runs block is withheld because a run record accounts for issues by source_doc. Added publish-page.mjs and nine tests covering every test-plan.md 4.8 row. 118 tests pass.
