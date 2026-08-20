@@ -14,6 +14,8 @@ export function renderPilePage() {
     button { cursor: pointer; }
     main { height: 100dvh; display: grid; grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto; gap: 8px; padding: 12px; }
     header { grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .header-tools { display: flex; align-items: center; gap: 12px; }
+    #help-toggle { min-height: 34px; border: 1px solid #9eabc2; border-radius: 9px; padding: 6px 10px; color: #29406e; background: white; font-weight: 760; }
     .brand { min-width: 0; }
     h1 { margin: 0; color: #142a58; font-size: clamp(1.45rem, 3vw, 2.4rem); line-height: 1; letter-spacing: -.045em; }
     .brand p { margin: 4px 0 0; color: #687188; font-size: .82rem; }
@@ -36,15 +38,19 @@ export function renderPilePage() {
     .selection-panel { grid-row: 4; display: grid; grid-template-columns: minmax(220px, 2fr) auto minmax(150px, 1fr) auto minmax(150px, 1fr) auto; gap: 7px; align-items: center; padding: 9px; border: 1px solid #d8deea; border-radius: 12px; background: white; }
     .selection-panel input, .selection-panel select, .selection-panel button { min-width: 0; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; background: white; }
     .selection-panel button { color: #29406e; font-weight: 740; }
+    .selection-panel button:disabled { opacity: .45; cursor: not-allowed; }
     .selection-panel .primary { border-color: #234fc4; color: white; background: #234fc4; }
-    #selection-summary { color: #5f6b82; font-size: .76rem; white-space: nowrap; }
+    #selection-summary { grid-column: 1 / 5; color: #5f6b82; font-size: .76rem; white-space: nowrap; }
+    #sweep-saved { grid-column: 5; }
+    .page-controls { grid-column: 6; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .toolbar { grid-row: 5; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding-bottom: 1px; }
     .toolbar button { flex: 0 0 auto; min-height: 38px; border: 1px solid #c6cedd; border-radius: 9px; padding: 7px 10px; color: #2c374e; background: white; font-weight: 720; }
     .toolbar button[data-verdict="keeper"] { border-color: #73b58b; color: #155d31; }
     .toolbar button[data-verdict="junk"] { border-color: #e08b83; color: #8f2820; }
     .toolbar button[data-verdict="archive"] { border-color: #90a5c9; color: #36527e; }
     .toolbar button[data-verdict="needs-more-time"] { border-color: #d5a653; color: #795310; }
-    .toolbar button:disabled, form button:disabled { opacity: .5; cursor: wait; }
+    .toolbar button:disabled { opacity: .45; cursor: not-allowed; }
+    form button:disabled { opacity: .5; cursor: wait; }
     #capture-gaps { border-color: #9a78c3; color: #60378b; }
     .toolbar .spacer { flex: 1 0 12px; }
     #mark-count { flex: 0 0 auto; color: #687188; font-size: .78rem; }
@@ -81,12 +87,21 @@ export function renderPilePage() {
     #status { min-height: 1.2em; margin: 0; }
     #position { white-space: nowrap; font-variant-numeric: tabular-nums; }
     kbd { border: 1px solid #c8cfdb; border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: #fff; font: .68rem ui-monospace, monospace; }
+    .help-panel { position: fixed; z-index: 20; top: 74px; right: 12px; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 90px); overflow: auto; border: 1px solid #b8c3d7; border-radius: 14px; padding: 16px 18px; background: white; box-shadow: 0 18px 60px #172b5540; }
+    .help-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .help-heading h2 { margin: 0; color: #142a58; font-size: 1.15rem; }
+    #help-close { border: 1px solid #b9c2d3; border-radius: 8px; padding: 5px 9px; color: #29406e; background: white; }
+    .help-panel h3 { margin: 16px 0 6px; color: #29406e; font-size: .88rem; }
+    .help-panel p, .help-panel li { color: #4d5870; font-size: .83rem; }
+    .help-panel ul { margin: 6px 0; padding-left: 20px; }
+    .help-panel code { border-radius: 4px; padding: 1px 4px; color: #243c72; background: #edf2ff; font-size: .78rem; }
     @media (max-width: 1100px) { :root { --columns: 4; --rows: 3; } .bookmark-card h2 { font-size: .98rem; } }
     @media (max-width: 1100px) and (orientation: portrait) { :root { --columns: 3; --rows: 3; } }
     @media (max-width: 640px) {
       :root { --columns: 1; --rows: 1; }
       main { padding: 9px; gap: 4px; }
       .brand p, .stat.total, .toolbar .shortcut { display: none; }
+      .header-tools { gap: 6px; }
       .stats { gap: 10px; }
       .stat strong { font-size: 1.15rem; }
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
@@ -96,6 +111,7 @@ export function renderPilePage() {
       .selection-panel { display: flex; overflow-x: auto; }
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
       .selection-panel button { flex-basis: auto; }
+      .page-controls { display: flex; }
       form { grid-template-columns: 1fr; }
       .toolbar button { min-height: 42px; padding-inline: 12px; }
       .bookmark-card { padding: 18px; }
@@ -112,12 +128,39 @@ export function renderPilePage() {
   <main>
     <header>
       <div class="brand"><h1>Bookmark triage</h1><p>Metadata pictures arrive without blocking a verdict.</p></div>
-      <div class="stats" aria-label="Triage progress">
-        <div class="stat total"><strong id="count">0</strong><span>Total</span></div>
-        <div class="stat"><strong id="backlog">0</strong><span>Untriaged</span></div>
-        <div class="stat"><strong id="rate">—</strong><span>Per min</span></div>
+      <div class="header-tools">
+        <button id="help-toggle" type="button" aria-expanded="false" aria-controls="help-panel">Help</button>
+        <div class="stats" aria-label="Triage progress">
+          <div class="stat total"><strong id="count">0</strong><span>Total</span></div>
+          <div class="stat"><strong id="backlog">0</strong><span>Untriaged</span></div>
+          <div class="stat"><strong id="rate">—</strong><span>Per min</span></div>
+        </div>
       </div>
     </header>
+    <aside id="help-panel" class="help-panel" aria-labelledby="help-title" hidden>
+      <div class="help-heading"><h2 id="help-title">Bookmark triage help</h2><button id="help-close" type="button">Close</button></div>
+      <h3>Card and action buttons</h3>
+      <ul>
+        <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
+        <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
+        <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page.</li>
+        <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
+        <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
+        <li><strong>Apply saved unopened…</strong> applies the chosen verdict to a saved selection after showing a confirmation count.</li>
+        <li><strong>Capture gaps</strong> is unavailable until bookmark-image support is enabled.</li>
+        <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
+      </ul>
+      <h3>Selection expressions</h3>
+      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>.</p>
+      <ul>
+        <li><code>site:example.com</code> — items from one site.</li>
+        <li><code>title:court-drama*</code> — normalized titles beginning with that text.</li>
+        <li><code>src:safari</code>, <code>in:2026-08-19</code>, or <code>folder:Favorites*</code> — imported tags.</li>
+        <li><code>collection:&lt;id&gt;</code> — collection scope; the interface adds the current collection automatically.</li>
+        <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder groups used by Automatic proposals.</li>
+        <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses. One trailing <code>*</code> performs prefix matching.</li>
+      </ul>
+    </aside>
     <section class="collection-bar" aria-label="Collections">
       <select id="collection-select" aria-label="Current collection"></select>
       <span id="collection-kind" class="collection-kind"></span>
@@ -151,9 +194,12 @@ export function renderPilePage() {
       <select id="sweep-verdict" aria-label="Sweep verdict">
         <option value="junk">Junk</option><option value="keeper">Keep</option><option value="archive">Archive</option><option value="needs-more-time">Needs time</option>
       </select>
-      <button id="sweep-rest" class="primary" type="button">Sweep unmarked</button>
+      <button id="sweep-rest" class="primary" type="button">Sweep untriaged</button>
       <span id="selection-summary">All items</span>
       <button id="sweep-saved" type="button">Apply saved unopened…</button>
+      <div class="page-controls" aria-label="Page through the current selection">
+        <button id="previous-page" type="button">Previous</button><button id="next-page" type="button">Next</button>
+      </div>
     </section>
     <section class="toolbar" aria-label="Triage actions">
       <button type="button" data-verdict="keeper"><span class="shortcut"><kbd>K</kbd> </span>Keep</button>
@@ -161,7 +207,7 @@ export function renderPilePage() {
       <button type="button" data-verdict="archive"><span class="shortcut"><kbd>A</kbd> </span>Archive</button>
       <button type="button" data-verdict="needs-more-time"><span class="shortcut"><kbd>N</kbd> </span>Needs time</button>
       <button id="undo" type="button"><span class="shortcut"><kbd>U</kbd> </span>Undo</button>
-      <button id="capture-gaps" type="button">Capture gaps</button>
+      <button id="capture-gaps" type="button" disabled title="Available when bookmark images are supported">Capture gaps</button>
       <span class="spacer"></span>
       <span id="mark-count">0 marked</span>
       <button id="session" type="button">End sitting</button>
@@ -190,6 +236,8 @@ export function renderPilePage() {
       renameCollection: document.querySelector('#rename-collection'), freshCopy: document.querySelector('#fresh-copy'),
       deleteCopy: document.querySelector('#delete-copy'), templateSelect: document.querySelector('#template-select'),
       copyTemplate: document.querySelector('#copy-template'), createTemplate: document.querySelector('#create-template'),
+      helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'),
+      previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
     };
     const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: []};
 
@@ -220,6 +268,8 @@ export function renderPilePage() {
       elements.markCount.textContent = state.marked.size.toLocaleString() + ' marked';
       elements.session.textContent = state.session?.ended_at ? 'Start sitting' : 'End sitting';
       elements.selectionSummary.textContent = (state.expression ? state.expression : 'All items') + ' · ' + state.total.toLocaleString() + ' selected · ' + state.selectionBacklog.toLocaleString() + ' untriaged';
+      elements.previousPage.disabled = state.loading || state.offset <= 0;
+      elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
     }
     async function startSession() {
       if (!state.collectionTotal || (state.session && !state.session.ended_at)) return;
@@ -270,7 +320,13 @@ export function renderPilePage() {
       if (item.note) addText(card, 'p', 'note', item.note);
       const tags = document.createElement('div');
       tags.className = 'tags';
-      for (const value of (item.tags || []).slice(0, 3)) addText(tags, 'span', 'tag', value);
+      const allTags = item.tags || [];
+      const allTagsLabel = allTags.length ? 'All tags:\\n' + allTags.join('\\n') : 'No tags';
+      for (const value of allTags.slice(0, 3)) {
+        const tag = addText(tags, 'span', 'tag', value);
+        tag.title = allTagsLabel;
+        tag.setAttribute('aria-label', value + '. All tags: ' + allTags.join(', '));
+      }
       card.append(tags);
       addText(card, 'span', 'verdict-label', verdictText(item.verdict));
       const mark = document.createElement('button');
@@ -338,6 +394,15 @@ export function renderPilePage() {
       const data = await api('/api/selection?limit=1&offset=0&expression=' + encodeURIComponent(state.expression));
       state.collectionTotal = data.collection_total; state.total = data.total; state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog; state.captures = data.captures;
       updateProgress();
+    }
+
+    async function pageWindow(delta) {
+      if (!state.total || state.loading) return false;
+      const lastOffset = Math.floor((state.total - 1) / state.visible) * state.visible;
+      const nextOffset = Math.max(0, Math.min(lastOffset, state.offset + delta * state.visible));
+      if (nextOffset === state.offset) return false;
+      await loadWindow(nextOffset);
+      return true;
     }
 
     function fillSelect(select, rows, label) {
@@ -433,14 +498,21 @@ export function renderPilePage() {
       elements.tagInput.value = ''; clearMarks(); await loadWindow(state.offset); await loadSelectionTools();
     }
 
-    async function sweepCurrentSelection() {
+    async function sweepCurrentPage() {
+      const ids = state.items.slice(0, state.visible).filter(item => !item.verdict).map(item => item.id);
+      if (!ids.length) {
+        const advanced = await pageWindow(1);
+        elements.status.textContent = advanced ? 'No untriaged items on that page; showing the next page.' : 'No untriaged items on the final page.';
+        return;
+      }
       await startSession();
-      const data = await api('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
-        session_id: state.session.id, expression: state.expression, exclude_item_ids: [...state.marked], verdict: elements.sweepVerdict.value, visible: true,
+      const data = await api('/api/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
+        session_id: state.session.id, item_ids: ids, verdict: elements.sweepVerdict.value,
       })});
       patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
-      elements.status.textContent = verdictText(elements.sweepVerdict.value) + ' swept across ' + data.changes.length.toLocaleString() + ' unmarked item' + (data.changes.length === 1 ? '' : 's') + '; no confirmation because this selection is open.';
       clearMarks(); await refreshSelectionCounts();
+      const advanced = await pageWindow(1);
+      elements.status.textContent = verdictText(elements.sweepVerdict.value) + ' applied to ' + data.changes.length.toLocaleString() + ' untriaged item' + (data.changes.length === 1 ? '' : 's') + (advanced ? '; showing the next page.' : '; this is the final page.');
     }
 
     async function sweepSavedUnopened(confirmed = false) {
@@ -574,13 +646,22 @@ export function renderPilePage() {
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
     elements.tagSelection.addEventListener('click', () => tagCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
-    elements.sweepRest.addEventListener('click', () => sweepCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
+    elements.sweepRest.addEventListener('click', () => sweepCurrentPage().catch(error => { elements.status.textContent = error.message; }));
     elements.sweepSaved.addEventListener('click', () => sweepSavedUnopened().catch(error => { elements.status.textContent = error.message; }));
+    elements.previousPage.addEventListener('click', () => pageWindow(-1).catch(error => { elements.status.textContent = error.message; }));
+    elements.nextPage.addEventListener('click', () => pageWindow(1).catch(error => { elements.status.textContent = error.message; }));
+    function setHelp(open) {
+      elements.helpPanel.hidden = !open;
+      elements.helpToggle.setAttribute('aria-expanded', String(open));
+      (open ? elements.helpClose : elements.helpToggle).focus();
+    }
+    elements.helpToggle.addEventListener('click', () => setHelp(elements.helpPanel.hidden));
+    elements.helpClose.addEventListener('click', () => setHelp(false));
     document.querySelectorAll('[data-verdict]').forEach(button => button.addEventListener('click', () => applyVerdict(button.dataset.verdict).catch(error => { elements.status.textContent = error.message; })));
     elements.undo.addEventListener('click', () => undo().catch(error => { elements.status.textContent = error.message; }));
-    elements.captureGaps.addEventListener('click', captureGaps);
     elements.session.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));
     document.addEventListener('keydown', event => {
+      if (!elements.helpPanel.hidden) { if (event.key === 'Escape') { event.preventDefault(); setHelp(false); } return; }
       if (event.target.matches('input, textarea, select')) return;
       const verdict = {k: 'keeper', j: 'junk', a: 'archive', n: 'needs-more-time'}[event.key.toLowerCase()];
       if (verdict) { event.preventDefault(); applyVerdict(verdict).catch(error => { elements.status.textContent = error.message; }); return; }

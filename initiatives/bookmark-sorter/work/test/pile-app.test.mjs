@@ -42,6 +42,11 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /-webkit-line-clamp: 5/);
   assert.match(html, /titleLink\.target = '_blank'/);
   assert.match(html, /navigator\.clipboard\.writeText\(item\.url\)/);
+  assert.match(html, /id="help-toggle"/);
+  assert.match(html, /Sweep untriaged/);
+  assert.match(html, /id="capture-gaps" type="button" disabled/);
+  assert.match(html, /id="previous-page"/);
+  assert.match(html, /id="next-page"/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);
 

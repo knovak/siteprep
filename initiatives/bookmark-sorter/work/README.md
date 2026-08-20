@@ -84,9 +84,13 @@ selection, and export operations.
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
   never HTML strings. Bookmark titles show up to five lines and link to the
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy
-  control. Stored derivatives appear without any request to the saved page. A
+  control. Truncated tag chips expose the item's complete tag list through
+  their hover text. Help documents the controls and selection grammar in the
+  page. Stored derivatives appear without any request to the saved page. A
   verdict patches the affected cards in place rather than navigating or
-  rebuilding the grid. A collection bar switches among the owner's personal
+  rebuilding the grid. The visible-page sweep changes only untriaged cards and
+  advances to the next page; Previous and Next page without writing. A
+  collection bar switches among the owner's personal
   pile and demo copies, and exposes template-copy operations without putting
   identity or authorization state in the page.
 
@@ -202,11 +206,12 @@ the duplicate-image distribution. Those values exist to record the real-pile
 phase measurement in `decisions.md`; they are not a product dashboard.
 
 Arrow keys move focus, Space toggles the current mark, `k`/`j`/`a`/`n` apply a
-verdict, `u` undoes, and Enter advances. Marks now survive virtual-window
-changes inside the open selection. The user can mark a few exceptions, sweep
-the unmarked remainder with one gesture, and undo the whole sweep once. Saved
+verdict, `u` undoes, and Enter advances. Marks survive virtual-window changes
+inside the open selection. The user can judge a marked set together or sweep
+only the still-untriaged cards on the visible page before advancing. Saved
 expressions, proposal expressions and typed expressions all enter the same
-evaluator. No capture request is made by the grid.
+evaluator. The capture-gap button remains disabled while the test deployment
+has no image storage, and no capture request is made by the grid.
 
 ## Run the tests
 
