@@ -253,7 +253,7 @@ export function createCapturePipeline({
     if (markRetried) {
       for (const [index, record] of results.entries()) {
         if (record?.image_ref || record?.state !== 'pass1-gap') continue;
-        results[index] = await store.upsertCapture({...record, state: 'pass1-retried-gap'});
+        results[index] = await store.upsertCapture({...record, state: 'pass1-diagnosed-gap'});
       }
     }
     await store.refreshCaptureQueue({duplicateThreshold, at: now().toISOString()});

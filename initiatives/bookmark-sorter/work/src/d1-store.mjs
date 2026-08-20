@@ -492,13 +492,13 @@ export class D1BookmarkStore {
 
   async listRetryableCaptureItems(collectionId, {limit = 20} = {}) {
     await this.assertCollectionWritable(collectionId);
-    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    const safeLimit = 1;
     const result = await this.db.prepare(
       `SELECT i.url, i.url_key
        FROM items i
        JOIN captures c ON c.url_key = i.url_key
        WHERE i.collection_id = ?
-         AND c.state = 'pass1-gap'
+         AND c.state = 'pass1-retried-gap'
          AND c.image_candidate IS NOT NULL
          AND c.image_ref IS NULL
        ORDER BY i.id
