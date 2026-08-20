@@ -641,14 +641,14 @@ export function renderPilePage() {
       updateProgress();
       let processed = 0;
       try {
-        for (const retry of [false, true]) {
+        for (const retry of [false, true, 2]) {
           while (true) {
             elements.status.textContent = 'Capturing metadata… ' + processed.toLocaleString() + (retry ? ' checked or retried.' : ' checked.');
-            const data = await api('/api/captures/pass-one?limit=20' + (retry ? '&retry=1' : ''), {method: 'POST'});
+            const data = await api('/api/captures/pass-one?limit=' + (retry === 2 ? '1&retry=2' : '20' + (retry ? '&retry=1' : '')), {method: 'POST'});
             state.captures = data.status;
             processed += data.processed;
             updateProgress();
-            if (!data.processed) break;
+            if (!data.processed || retry === 2) break;
           }
         }
         const coverage = state.captures.metadata_coverage === null ? '—' : (state.captures.metadata_coverage * 100).toFixed(1) + '%';
