@@ -151,6 +151,28 @@ Only if `phases` includes `"work"`.
 
      Pass `--stage` when the item advances the lifecycle; the command warns if
      you forget. Do not hand-edit `initiative.json` to do this.
+
+     **`complete` will refuse if the item you are closing is the last one**, at
+     any stage other than `dormant` or `archived`. That is deliberate: an
+     initiative with nothing to do is either finished or forgotten, and the
+     difference has to be stated rather than left to be noticed. Seed what comes
+     next in the same pull request:
+
+     ```bash
+     node scripts/initiatives.mjs add <slug> <item-id> --title "..." \
+       [--value high|medium|low] [--effort small|medium|large] \
+       [--blocked-by <prefix:text>] [--advances-stage]
+     ```
+
+     Take the next items from the initiative's own `plan.md` where it has one -
+     that is transcription, not invention. Where the next step is genuinely a
+     judgement call rather than a written plan, add the item and stop; do not
+     decide it. **If you believe the initiative is actually finished, do not
+     declare it dormant yourself** - that is the user's call. Complete what you
+     can, leave the last item, and say so in the digest.
+
+     Entering `refining` seeds its own two items (a user-facing README, and a
+     standing optional-improvements pull request), so no `add` is needed there.
    - Open a pull request. Do not merge it.
 3. Report what was done, with links.
 
@@ -159,6 +181,8 @@ Only if `phases` includes `"work"`.
 - Never merge your own pull request, and never resolve a review thread.
 - Never treat your own comments, or another bot's, as something to respond to.
 - Never create an initiative, and never invent or edit a wish.
+- Never declare an initiative `dormant`. Running out of work is not the same as
+  being finished, and only the user can say which one it is.
 - Never repair a malformed `initiative.json` — skip that initiative and report it.
 - Never settle a human-class blocker unilaterally. A `human:` question may be
   **proposed** as a pull request the user merges or redirects; everything else

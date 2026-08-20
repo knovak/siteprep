@@ -549,3 +549,46 @@ time. And you can remove the json file that keeps info about PDF."*
   once planned. This decision supersedes them for all current work.
 - A portable-document format could be reconsidered later, but there is no
   current requirement or placeholder for it.
+
+## 2026-08-20 — Did the three newcomer tests pass, and how does the guide get linked into the site?
+
+**Yes to all three tests. And the guide is published by hand to `demos/`, not
+linked into site navigation.**
+
+The user's words, on the three testing items: *"Yes to all these."* On linking:
+*"I have done a manual release to demos, with a skill for the purpose. I will
+continue to do manual releases when I think something significant has changed.
+So that is done."*
+
+### What this settles
+
+- **The phase 3 newcomer reading test passed** — someone unfamiliar with the
+  repository can read the description and identify a live stage and its next
+  move.
+- **The phase 4 ten-minute presentation test passed** — someone unfamiliar with
+  the material can present the deck end to end inside ten minutes.
+- **The simulator walkthrough passed** — it accurately explains the sweep and
+  the whole lifecycle, and the abstract treatment of the lifecycle is adequate.
+- **Publication is manual and already done.** `link-the-guide` asked for
+  permission to write into protected site navigation and build paths. That
+  permission is not granted and is no longer needed: the `deploy-demo` skill
+  copies the built guide into `demos/`, and the user runs it when something
+  significant has changed. The item is complete by a different route than the
+  one it was written for.
+
+### What this leaves open
+
+- **Refresh is a human trigger, not a schedule.** Nothing detects that the
+  guide has drifted from the repository it describes; the user decides when a
+  change is significant enough to re-release. If the guide is later found stale
+  in a way that matters, the answer is a staleness check, not automation of the
+  release.
+- **The generated artifacts are still absent from site navigation.** A reader
+  who does not know the demo exists will not stumble onto it. That is accepted
+  for now rather than solved.
+
+### Consequence
+
+With these four items closed the initiative has no remaining work, and the user
+has declared it **dormant** rather than seeding another round — the §5.1
+distinction made explicitly instead of by neglect.

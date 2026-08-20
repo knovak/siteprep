@@ -18,8 +18,12 @@
  *                       [--claimed a,b] branches of open sweep PRs
  *                       [--open-prs n]  how many sweep PRs are already open
  *                       [--spent n]     budget already used earlier in the run
+ *   add <slug> <item-id> --title "..." [--value ...] [--effort ...]
+ *                       [--blocked-by <prefix:text>] [--advances-stage]
+ *                       author a new todo item
  *   complete <slug> <item-id> [--note "..."] [--stage <stage>]
  *                       record an item done: remove it, unblock dependents, log it
+ *                       refuses to leave a non-dormant initiative with nothing to do
  *   check-scope <slug> --files <path>...   or --files-from <file>
  *                       fail if a change reaches outside the initiative's write scope
  *   list                print one slug per line
@@ -49,6 +53,45 @@ const SWEEP_CONFIG = join(INITIATIVES_DIR, 'sweep.json');
 
 export const STAGES = [
   'wish', 'shaped', 'specified', 'planned', 'building', 'refining', 'dormant', 'archived'
+];
+
+/**
+ * Stages at which an empty todo list is an honest state rather than neglect.
+ *
+ * Everywhere else, no actionable work means the initiative has gone quiet
+ * without anyone deciding it should - the §5.1 distinction the validator has
+ * always warned about and nothing enforced.
+ */
+export const RESTING_STAGES = new Set(['dormant', 'archived']);
+
+/**
+ * The work that entering `refining` creates, seeded automatically by
+ * `complete --stage refining`.
+ *
+ * An output that has graduated has an audience, and the two things it most
+ * reliably lacks are a way in for someone who did not build it and any pressure
+ * to keep getting better. Neither arrives on its own, so both are items rather
+ * than hopes. The improvements item is what keeps a refining initiative from
+ * going silent: completing it empties the list, which the guard below refuses
+ * unless the initiative is also being declared dormant.
+ */
+export const REFINING_ENTRY_ITEMS = [
+  {
+    id: 'refining-readme',
+    title: 'Write a user-facing README covering how to use it and how to deploy it',
+    state: 'actionable',
+    value: 'high',
+    effort: 'small',
+    advances_stage: false
+  },
+  {
+    id: 'refining-improvements',
+    title: 'Propose optional improvements as a pull request, from better documentation to suggested features',
+    state: 'actionable',
+    value: 'medium',
+    effort: 'medium',
+    advances_stage: false
+  }
 ];
 
 /** Documents expected once a stage is reached, used for warnings only. */
@@ -818,6 +861,64 @@ function formatProposals(selection) {
   return lines.join('\n');
 }
 
+// ---------------------------------------------------------- adding work
+
+/**
+ * Add a todo item.
+ *
+ * The system could remove items and never create one, so the todo list could
+ * only ever run down. That is how an initiative reaches a stage with nothing
+ * left to do and no sign anything is wrong: `select` has nothing to rank, and
+ * the digest reports a quiet initiative rather than a stalled one.
+ *
+ * Authoring items by hand-editing the JSON is what this exists to stop, for the
+ * same reason `complete` exists - the fields a person forgets are exactly the
+ * ones the ranking and the validator depend on.
+ */
+function addItem(slug, itemId, {
+  title, value = 'medium', effort = 'medium', blockedBy, advancesStage = false
+} = {}) {
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+  if (!title) throw new Error(`${slug}: an item needs a --title`);
+
+  const data = record.data;
+  data.todo = data.todo || [];
+  if (data.todo.some((item) => item.id === itemId)) {
+    throw new Error(`${slug}: a todo item with id "${itemId}" already exists`);
+  }
+  if (!(value in VALUE_WEIGHT)) throw new Error(`unknown value "${value}"`);
+  if (!(effort in EFFORT_WEIGHT)) throw new Error(`unknown effort "${effort}"`);
+
+  const item = {
+    id: itemId,
+    title,
+    state: blockedBy ? 'blocked' : 'actionable',
+    value,
+    effort,
+    advances_stage: Boolean(advancesStage)
+  };
+  if (blockedBy) {
+    const prefix = String(blockedBy).split(':', 1)[0];
+    if (!BLOCKER_PREFIXES.includes(prefix)) {
+      throw new Error(`unknown blocker prefix "${prefix}" in "${blockedBy}"`);
+    }
+    if (prefix === 'todo' && !data.todo.some(
+      (other) => other.id === String(blockedBy).slice('todo:'.length)
+    )) {
+      throw new Error(`${slug}: blocked by "${blockedBy}", which does not exist`);
+    }
+    item.blocked_by = blockedBy;
+  }
+
+  data.todo.push(item);
+  writeFileSync(
+    join(record.dir, 'initiative.json'),
+    `${JSON.stringify(data, null, 2)}\n`
+  );
+  return [`added "${title}"${blockedBy ? ` (blocked on ${blockedBy})` : ''}`];
+}
+
 // ------------------------------------------------------- completing work
 
 /**
@@ -856,9 +957,38 @@ function completeItem(slug, itemId, { note, stage } = {}) {
   if (stage) {
     if (!STAGES.includes(stage)) throw new Error(`unknown stage "${stage}"`);
     changes.push(`stage ${data.stage} → ${stage}`);
+    const enteringRefining = stage === 'refining' && data.stage !== 'refining';
     data.stage = stage;
+
+    // Reaching `refining` means the output has an audience, which creates work
+    // that nothing else in the lifecycle asks for. Seeding it here rather than
+    // trusting the transition to be remembered is the whole point.
+    if (enteringRefining) {
+      for (const seed of REFINING_ENTRY_ITEMS) {
+        if (data.todo.some((item) => item.id === seed.id)) continue;
+        data.todo.push({ ...seed });
+        changes.push(`seeded "${seed.title}"`);
+      }
+    }
   } else if (done.advances_stage) {
     changes.push('warning: this item advances the stage, but no --stage was given');
+  }
+
+  // The durable half of §5.1: an initiative may not be left with nothing to do
+  // unless someone has decided it is finished. Refusing here rather than
+  // warning later is the difference between a rule and a wish - a warning at
+  // validate time is read after the fact, by which point the initiative has
+  // already gone quiet and nobody is looking.
+  if (!RESTING_STAGES.has(data.stage) && data.todo.length === 0) {
+    throw new Error(
+      `${slug}: completing "${itemId}" would leave nothing to do at stage `
+      + `"${data.stage}", and an initiative with no work is either finished or `
+      + `forgotten. Either seed what comes next:\n`
+      + `  node scripts/initiatives.mjs add ${slug} <item-id> --title "..." `
+      + `[--effort small|medium|large] [--advances-stage]\n`
+      + `or, if the user has said it is finished:\n`
+      + `  node scripts/initiatives.mjs complete ${slug} ${itemId} --stage dormant`
+    );
   }
 
   writeFileSync(
@@ -1248,6 +1378,30 @@ if (RUN_AS_CLI) switch (command) {
       : (proposing ? formatProposals(selection) : formatSelection(selection)));
     break;
   }
+  case 'add': {
+    const [slug, itemId] = args;
+    if (!slug || !itemId) {
+      console.error('usage: initiatives.mjs add <slug> <item-id> --title "..." '
+        + '[--value high|medium|low] [--effort small|medium|large] '
+        + '[--blocked-by <prefix:text>] [--advances-stage]');
+      process.exit(2);
+    }
+    const flag = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
+    try {
+      const changes = addItem(slug, itemId, {
+        title: flag('--title'),
+        value: flag('--value') || 'medium',
+        effort: flag('--effort') || 'medium',
+        blockedBy: flag('--blocked-by'),
+        advancesStage: args.includes('--advances-stage')
+      });
+      for (const change of changes) console.log(change);
+    } catch (err) {
+      console.error(`INITIATIVE FAIL: ${err.message}`);
+      process.exit(1);
+    }
+    break;
+  }
   case 'complete': {
     const [slug, itemId] = args;
     if (!slug || !itemId) {
@@ -1322,6 +1476,6 @@ if (RUN_AS_CLI) switch (command) {
     break;
   }
   default:
-    console.error('usage: initiatives.mjs validate|digest|propose|select|complete|check-scope|list|toc|page|docs|doc|title');
+    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|list|toc|page|docs|doc|title');
     process.exit(2);
 }

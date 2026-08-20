@@ -130,3 +130,19 @@ carry. Rewrote all nine sections against the new rules.
 ## 2026-08-19 — Add the hand-made description and deck PDF links with their refresh dates
 
 Removed portable-document copies from the current Repo Guide scope, deleted their metadata configuration, and kept simulator review dating without a config file.
+
+## 2026-08-20 — Have someone unfamiliar with the repository read the description and report whether they can identify a live stage and its next move
+
+Passed. A newcomer reading the description could identify a live stage and its next move. Recorded in decisions.md 2026-08-20.
+
+## 2026-08-20 — Have someone unfamiliar with the material present the deck end to end and report whether it fits ten minutes
+
+Passed. Someone unfamiliar with the material presented the deck end to end within ten minutes. Recorded in decisions.md 2026-08-20.
+
+## 2026-08-20 — Have someone watch and step through the simulator and report whether the abstract lifecycle is adequate
+
+Passed. The simulator accurately explains the sweep and the whole lifecycle, and the abstract treatment is adequate. Recorded in decisions.md 2026-08-20.
+
+## 2026-08-20 — Link the generated guide into the site so a newcomer can find it
+
+Done by a different route than the item was written for. The guide is published by hand into demos/ with the deploy-demo skill rather than linked into protected site navigation, so no permission was needed. The user will re-release when something significant changes. With no work remaining and no next round wanted, the initiative is declared dormant rather than left quiet.

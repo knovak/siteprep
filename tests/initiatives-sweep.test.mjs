@@ -201,8 +201,14 @@ test('removing an item unblocks whatever was waiting on it', () => {
   assert.equal(dependent.blocked_by, undefined, 'a cleared blocker must not linger');
 });
 
+/** `healthy` has a single item, so completing it needs a successor seeded. */
+function withSuccessor(dir) {
+  run(['add', 'healthy', 'spec', '--title', 'Write the spec', '--effort', 'small'], dir);
+  return dir;
+}
+
 test('writes a dated log entry', () => {
-  const dir = scratch();
+  const dir = withSuccessor(scratch());
   run(['complete', 'healthy', 'obj', '--note', 'Drafted the objectives.'], dir);
 
   const log = readFileSync(join(dir, 'healthy', 'log.md'), 'utf8');
@@ -212,7 +218,7 @@ test('writes a dated log entry', () => {
 });
 
 test('advances the stage only when told to', () => {
-  const dir = scratch();
+  const dir = withSuccessor(scratch());
   const path = join(dir, 'healthy', 'initiative.json');
 
   const output = run(['complete', 'healthy', 'obj'], dir);
@@ -220,7 +226,7 @@ test('advances the stage only when told to', () => {
   assert.equal(JSON.parse(readFileSync(path, 'utf8')).stage, 'wish',
     'the stage must not move on its own');
 
-  const dir2 = scratch();
+  const dir2 = withSuccessor(scratch());
   run(['complete', 'healthy', 'obj', '--stage', 'shaped'], dir2);
   assert.equal(
     JSON.parse(readFileSync(join(dir2, 'healthy', 'initiative.json'), 'utf8')).stage,
@@ -231,6 +237,134 @@ test('advances the stage only when told to', () => {
 test('refuses an unknown item rather than doing nothing quietly', () => {
   const dir = scratch();
   assert.throws(() => run(['complete', 'healthy', 'no-such-item'], dir));
+});
+
+// ------------------------------------------------- never leave nothing to do
+
+test('refuses to leave a live initiative with an empty todo list', () => {
+  const dir = scratch();
+  const path = join(dir, 'healthy', 'initiative.json');
+
+  assert.throws(
+    () => run(['complete', 'healthy', 'obj', '--stage', 'shaped'], dir),
+    /would leave nothing to do/
+  );
+  const after = JSON.parse(readFileSync(path, 'utf8'));
+  assert.equal(after.todo.length, 1, 'a refused completion must not half-apply');
+  assert.equal(after.stage, 'wish', 'nor move the stage');
+});
+
+test('the refusal names both ways out', () => {
+  const dir = scratch();
+  try {
+    run(['complete', 'healthy', 'obj'], dir);
+    assert.fail('expected the guard to refuse');
+  } catch (err) {
+    const message = String(err.stderr || err.message);
+    assert.match(message, /initiatives\.mjs add healthy/, 'seed what comes next');
+    assert.match(message, /--stage dormant/, 'or declare it finished');
+  }
+});
+
+test('declaring it dormant is how an initiative is allowed to run out', () => {
+  const dir = scratch();
+  run(['complete', 'healthy', 'obj', '--stage', 'dormant'], dir);
+
+  const after = JSON.parse(readFileSync(join(dir, 'healthy', 'initiative.json'), 'utf8'));
+  assert.equal(after.stage, 'dormant');
+  assert.equal(after.todo.length, 0, 'a dormant initiative may have nothing to do');
+});
+
+test('entering refining seeds the readme and the improvements item', () => {
+  const dir = scratch();
+  const output = run(
+    ['complete', 'needs-decision', 'spec', '--stage', 'refining', '--note', 'Shipped.'],
+    dir
+  );
+  assert.match(output, /seeded/);
+
+  const after = JSON.parse(
+    readFileSync(join(dir, 'needs-decision', 'initiative.json'), 'utf8')
+  );
+  const readme = after.todo.find((i) => i.id === 'refining-readme');
+  const improvements = after.todo.find((i) => i.id === 'refining-improvements');
+
+  assert.ok(readme, 'a graduated output needs a way in for someone who did not build it');
+  assert.match(readme.title, /how to use it and how to deploy it/);
+  assert.equal(readme.state, 'actionable');
+
+  assert.ok(improvements, 'and standing pressure to keep getting better');
+  assert.equal(improvements.state, 'actionable');
+  assert.equal(improvements.advances_stage, false);
+});
+
+test('re-entering refining does not seed the entry items twice', () => {
+  const dir = scratch();
+  run(['complete', 'needs-decision', 'spec', '--stage', 'refining'], dir);
+  run(['add', 'needs-decision', 'more', '--title', 'Something else'], dir);
+  run(['complete', 'needs-decision', 'refining-readme', '--stage', 'refining'], dir);
+
+  const after = JSON.parse(
+    readFileSync(join(dir, 'needs-decision', 'initiative.json'), 'utf8')
+  );
+  const seeded = after.todo.filter((i) => i.id === 'refining-improvements');
+  assert.equal(seeded.length, 1, 'the seed is for entering refining, not for being in it');
+});
+
+// --------------------------------------------------------------------- add
+
+test('adds an actionable item the sweep can then rank', () => {
+  const dir = scratch({ phases: ['survey', 'work'] });
+  run(['add', 'idle-one', 'first', '--title', 'Get going', '--value', 'high',
+    '--effort', 'small', '--advances-stage'], dir);
+
+  const after = JSON.parse(readFileSync(join(dir, 'idle-one', 'initiative.json'), 'utf8'));
+  const item = after.todo.find((i) => i.id === 'first');
+  assert.equal(item.title, 'Get going');
+  assert.equal(item.state, 'actionable');
+  assert.equal(item.value, 'high');
+  assert.equal(item.effort, 'small');
+  assert.equal(item.advances_stage, true);
+
+  const selection = JSON.parse(
+    run(['select', '--json'], dir)
+  );
+  assert.ok(
+    selection.selected.some((s) => s.item === 'first'),
+    'an added item is indistinguishable from one written by hand'
+  );
+});
+
+test('adds a blocked item, which is how a question gets recorded', () => {
+  const dir = scratch();
+  run(['add', 'idle-one', 'ask', '--title', 'Ask about the host',
+    '--blocked-by', 'human:where should this run?'], dir);
+
+  const after = JSON.parse(readFileSync(join(dir, 'idle-one', 'initiative.json'), 'utf8'));
+  const item = after.todo.find((i) => i.id === 'ask');
+  assert.equal(item.state, 'blocked');
+  assert.equal(item.blocked_by, 'human:where should this run?');
+});
+
+test('refuses a duplicate id, an unknown blocker, and a dangling todo reference', () => {
+  const dir = scratch();
+  assert.throws(
+    () => run(['add', 'healthy', 'obj', '--title', 'Again'], dir),
+    /already exists/
+  );
+  assert.throws(
+    () => run(['add', 'healthy', 'x', '--title', 'X', '--blocked-by', 'weather:rain'], dir),
+    /unknown blocker prefix/
+  );
+  assert.throws(
+    () => run(['add', 'healthy', 'y', '--title', 'Y', '--blocked-by', 'todo:nope'], dir),
+    /does not exist/
+  );
+});
+
+test('refuses an item with no title, which would be unrankable and unreadable', () => {
+  const dir = scratch();
+  assert.throws(() => run(['add', 'healthy', 'untitled'], dir));
 });
 
 // ------------------------------------------------------------- check-scope

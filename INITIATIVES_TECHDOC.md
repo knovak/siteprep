@@ -41,7 +41,8 @@ dependency. That is fine for flat string fields and does not survive nested
 | `digest [--json]` | The sweep survey - what needs attention |
 | `propose [--json]` | Which `human:` questions a run should propose answers to |
 | `select [--json]` | Which items a run should work on, ranked and budgeted |
-| `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log |
+| `add <slug> <item>` | Author a new todo item |
+| `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log; refuses to leave a live initiative with nothing to do |
 | `check-scope <slug>` | Fail if changed files reach outside the write scope |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
@@ -211,6 +212,41 @@ spends everything on revisions and starts nothing new is the correct run.
 anything blocked on `todo:<id>` to actionable, and append a dated `log.md`
 entry. It changes `stage` only when given `--stage`, and warns when a
 stage-advancing item is completed without one.
+
+### Authoring items, and never running dry
+
+`add <slug> <item-id> --title "..."` is the counterpart to `complete`, with
+`--value`, `--effort`, `--blocked-by <prefix:text>` and `--advances-stage`. It
+refuses a duplicate id, an unknown blocker prefix, and a `todo:` reference that
+does not resolve. Use it rather than hand-editing `initiative.json`: the fields
+it fills in are the ones `select` ranks on and the validator checks.
+
+`complete` then **refuses to leave a live initiative with an empty todo list**,
+naming both ways out - seed the next item with `add`, or declare the initiative
+finished with `--stage dormant`. Only `dormant` and `archived` may have nothing
+to do.
+
+The check runs after the removal, the unblocking and any stage change are
+applied in memory but before anything is written, so a refused completion leaves
+no trace: the JSON is untouched and no log entry appears.
+
+This is the enforcing half of a rule the validator could previously only warn
+about. `nothing actionable, and not marked dormant` is still emitted, but it now
+catches drift from hand edits rather than being the only line of defence.
+
+### What `--stage refining` seeds
+
+Entering `refining` - and only entering it, not re-completing an item while
+already there - appends two items, unless ids of the same name already exist:
+
+| id | Item |
+|---|---|
+| `refining-readme` | A user-facing README: how to use it, and how to deploy it |
+| `refining-improvements` | A standing pull request of optional improvements |
+
+Both are `actionable` with `advances_stage: false`. Together with the empty-list
+rule above they mean a refining initiative always has an open invitation to
+improve it until someone declares it dormant. See INITIATIVES_VISION.md §6.5.
 
 `check-scope` compares a list of changed files against
 `initiatives/<slug>/**` plus that initiative's declared `outputs[]`, rejecting

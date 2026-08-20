@@ -1,45 +1,8 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, and simulator explaining how people and agents work in this repository.",
-  "stage": "building",
+  "stage": "dormant",
   "value": "high",
   "outputs": [],
-  "todo": [
-    {
-      "id": "test-description-with-newcomer",
-      "title": "Have someone unfamiliar with the repository read the description and report whether they can identify a live stage and its next move",
-      "state": "blocked",
-      "blocked_by": "data:run the phase 3 newcomer reading test and report the result",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "test-deck-ten-minutes",
-      "title": "Have someone unfamiliar with the material present the deck end to end and report whether it fits ten minutes",
-      "state": "blocked",
-      "blocked_by": "data:run the phase 4 ten-minute presentation test and report the result",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "test-simulator-walkthrough",
-      "title": "Have someone watch and step through the simulator and report whether the abstract lifecycle is adequate",
-      "state": "blocked",
-      "blocked_by": "data:walk the simulator end to end and report whether it accurately explains the sweep and the whole lifecycle",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "link-the-guide",
-      "title": "Link the generated guide into the site so a newcomer can find it",
-      "state": "blocked",
-      "blocked_by": "permission:add the guide to protected site navigation and build paths",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false
-    }
-  ]
+  "todo": []
 }
