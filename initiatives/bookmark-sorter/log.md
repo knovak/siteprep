@@ -284,3 +284,7 @@ Built the bookmark-sorter/v1 selection export and URL-keyed import for memory an
 ## 2026-08-19 — Phase 6 - build identity, owner-scoped collections, and per-user demo copies
 
 Added ChatGPT Sites identity, server-enforced owner scoping, one personal collection per user, cross-owner read-only demo templates, private copy/fresh-copy/rename/delete operations, capability-gated template editing, a collection menu, and collection-scoped capture statistics and gap processing. Added D1 indexes, two-user isolation tests, API coverage, and responsive browser checks.
+
+## 2026-08-19 — Critique the six-phase local build and prepare its graduation or dormancy decision
+
+Wrote critique.md: applied test-plan.md 4's own gate and found phases 2, 3 and 4 are code-complete but not exited, all three for the same reason - the three data blockers. Found the derivative-only image path has no implementation and neither of its two guards is exercised by any test; the app has never run on ChatGPT Sites, so identity is tested against a header we supply; pass 2 being permanently off makes an unmeasured fraction of blank cards a product fact; and O3's rate criterion is undefined rather than unmet, by design. Prepared the graduation-or-dormancy decision as four options with a recommendation and what would change it. 42 Node tests and 3 browser tests pass.
