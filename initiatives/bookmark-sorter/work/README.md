@@ -202,7 +202,9 @@ the data-handling boundary.
   that do not yet have a capture record. It exists for the one-time migration
   of collections imported before R2 was enabled; ordinary HTML imports still
   start pass 1 automatically. Repeating the request is safe and returns zero
-  processed items when the active collection has caught up.
+  processed items when the active collection has caught up. The **Capture
+  metadata** action runs those bounded batches until the active collection is
+  current, while keeping each individual request small.
 - `POST /api/captures/gaps` is the only pass-2 driver. With the current switch
   off it reports the gap count and performs no vendor call. When a vendor is
   later authorised, the same endpoint processes a bounded batch through the

@@ -45,6 +45,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="help-toggle"/);
   assert.match(html, /Sweep untriaged/);
   assert.match(html, /id="capture-gaps" type="button" disabled/);
+  assert.match(html, /id="capture-pass-one" type="button" disabled/);
+  assert.match(html, /api\/captures\/pass-one\?limit=20/);
   assert.match(html, /id="previous-page"/);
   assert.match(html, /id="next-page"/);
   assert.match(html, /id="rename-form"/);

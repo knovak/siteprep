@@ -55,7 +55,7 @@ export function renderPilePage() {
     .toolbar button[data-verdict="needs-more-time"] { border-color: #d5a653; color: #795310; }
     .toolbar button:disabled { opacity: .45; cursor: not-allowed; }
     form button:disabled { opacity: .5; cursor: wait; }
-    #capture-gaps { border-color: #9a78c3; color: #60378b; }
+    #capture-pass-one, #capture-gaps { border-color: #9a78c3; color: #60378b; }
     .toolbar .spacer { flex: 1 0 12px; }
     #mark-count { flex: 0 0 auto; color: #687188; font-size: .78rem; }
     #grid { grid-row: 6; min-height: 0; display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); gap: 8px; overflow: hidden; outline: none; }
@@ -218,6 +218,7 @@ export function renderPilePage() {
       <button type="button" data-verdict="archive"><span class="shortcut"><kbd>A</kbd> </span>Archive</button>
       <button type="button" data-verdict="needs-more-time"><span class="shortcut"><kbd>N</kbd> </span>Needs time</button>
       <button id="undo" type="button"><span class="shortcut"><kbd>U</kbd> </span>Undo</button>
+      <button id="capture-pass-one" type="button" disabled title="Capture metadata for bookmarks imported before image storage was enabled">Capture metadata</button>
       <button id="capture-gaps" type="button" disabled title="Available when bookmark images are supported">Capture gaps</button>
       <span class="spacer"></span>
       <span id="mark-count">0 marked</span>
@@ -235,7 +236,7 @@ export function renderPilePage() {
       form: document.querySelector('#import-form'), importer: document.querySelector('#importer'), grid: document.querySelector('#grid'),
       count: document.querySelector('#count'), backlog: document.querySelector('#backlog'), rate: document.querySelector('#rate'),
       status: document.querySelector('#status'), position: document.querySelector('#position'), markCount: document.querySelector('#mark-count'),
-      session: document.querySelector('#session'), undo: document.querySelector('#undo'), captureGaps: document.querySelector('#capture-gaps'),
+      session: document.querySelector('#session'), undo: document.querySelector('#undo'), capturePassOne: document.querySelector('#capture-pass-one'), captureGaps: document.querySelector('#capture-gaps'),
       expression: document.querySelector('#selection-expression'), openSelection: document.querySelector('#open-selection'),
       selectionName: document.querySelector('#selection-name'), saveSelection: document.querySelector('#save-selection'),
       savedSelections: document.querySelector('#saved-selections'), openSaved: document.querySelector('#open-saved'),
@@ -282,6 +283,7 @@ export function renderPilePage() {
       elements.selectionSummary.textContent = (state.expression ? state.expression : 'All items') + ' · ' + state.total.toLocaleString() + ' selected · ' + state.selectionBacklog.toLocaleString() + ' untriaged';
       elements.previousPage.disabled = state.loading || state.offset <= 0;
       elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
+      elements.capturePassOne.disabled = state.loading || !state.captures || state.captures.total >= state.collectionTotal;
     }
     async function startSession() {
       if (!state.collectionTotal || (state.session && !state.session.ended_at)) return;
@@ -634,6 +636,23 @@ export function renderPilePage() {
       } catch (error) { elements.status.textContent = error.message; }
       finally { elements.captureGaps.disabled = false; }
     }
+    async function capturePassOne() {
+      elements.capturePassOne.disabled = true;
+      let processed = 0;
+      try {
+        while (true) {
+          elements.status.textContent = 'Capturing metadata… ' + processed.toLocaleString() + ' checked.';
+          const data = await api('/api/captures/pass-one?limit=20', {method: 'POST'});
+          state.captures = data.status;
+          processed += data.processed;
+          updateProgress();
+          if (!data.processed) break;
+        }
+        elements.status.textContent = 'Metadata capture caught up on ' + processed.toLocaleString() + ' bookmark' + (processed === 1 ? '' : 's') + '.';
+        await loadWindow(state.offset);
+      } catch (error) { elements.status.textContent = error.message; }
+      finally { updateProgress(); }
+    }
     elements.form.addEventListener('submit', async event => {
       event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';
       try {
@@ -702,6 +721,7 @@ export function renderPilePage() {
     document.querySelectorAll('[data-verdict]').forEach(button => button.addEventListener('click', () => applyVerdict(button.dataset.verdict).catch(error => { elements.status.textContent = error.message; })));
     elements.undo.addEventListener('click', () => undo().catch(error => { elements.status.textContent = error.message; }));
     elements.session.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));
+    elements.capturePassOne.addEventListener('click', () => capturePassOne());
     document.addEventListener('keydown', event => {
       if (!elements.helpPanel.hidden) { if (event.key === 'Escape') { event.preventDefault(); setHelp(false); } return; }
       if (event.target.matches('input, textarea, select')) return;
