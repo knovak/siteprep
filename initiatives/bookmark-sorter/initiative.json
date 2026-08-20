@@ -6,15 +6,6 @@
   "outputs": [],
   "todo": [
     {
-      "id": "confirm-sites-metering",
-      "title": "Confirm that the workspace's Sites limits and cost are acceptable for the pile and capture store",
-      "state": "blocked",
-      "blocked_by": "cost:confirm the plan-specific Sites limits and accept them for 10,000 D1 items plus up to a few hundred MB of R2 captures",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "measure-blind-baseline",
       "title": "Measure the blind triage baseline on several hundred real bookmarks",
       "state": "blocked",
