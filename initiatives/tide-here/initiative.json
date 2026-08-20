@@ -1,7 +1,7 @@
 {
   "title": "Tide Here",
   "summary": "A website that displays upcoming tide, moon, and sun times for the user's location.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
   "todo": [
@@ -14,21 +14,12 @@
       "advances_stage": false
     },
     {
-      "id": "phase-0-provider-reach",
-      "title": "Phase 0 - prove NOAA CO-OPS, CHS IWLS and Nominatim reach a real HTTPS page, and record the responses as fixtures",
+      "id": "phase-1-day-model",
+      "title": "Phase 1 - the day model: zone resolution, the five coast-local dates, and placing a UTC instant into a row",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
-      "advances_stage": true
-    },
-    {
-      "id": "phase-1-day-model",
-      "title": "Phase 1 - the day model: zone resolution, the five coast-local dates, and placing a UTC instant into a row",
-      "state": "blocked",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "todo:phase-0-provider-reach"
+      "advances_stage": false
     }
   ]
 }

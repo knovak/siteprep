@@ -1,0 +1,23 @@
+[
+  {
+    "place_id": 287175858,
+    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+    "osm_type": "relation",
+    "osm_id": 9092218,
+    "lat": "44.6486180",
+    "lon": "-63.5859487",
+    "category": "boundary",
+    "type": "administrative",
+    "place_rank": 16,
+    "importance": 0.6446438149607956,
+    "addresstype": "city",
+    "name": "Halifax",
+    "display_name": "Halifax, Halifax Regional Municipality, Halifax County, Nova Scotia, Canada",
+    "boundingbox": [
+      "44.5811670",
+      "44.7112114",
+      "-63.7226567",
+      "-63.5427496"
+    ]
+  }
+]
