@@ -4,5 +4,14 @@
   "stage": "specified",
   "value": "medium",
   "outputs": [],
-  "todo": []
+  "todo": [
+    {
+      "id": "draft-plan-and-test-plan",
+      "title": "Draft plan.md and test-plan.md from the specification",
+      "state": "actionable",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": true
+    }
+  ]
 }

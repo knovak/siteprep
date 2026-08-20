@@ -225,8 +225,8 @@ stateDiagram-v2
 | `specified` | + `spec.md` | Breaking it into ordered work | Draft `plan.md` and `test-plan.md` |
 | `planned` | + `plan.md` | Doing the first step | Build the first increment in `work/` |
 | `building` | `work/` has real content | Reaching publishable quality | Next plan step, or graduate |
-| `refining` | Output has graduated | Feedback, polish, follow-on versions | Work the todo list |
-| `dormant` | Nothing actionable, by choice | A new wish, or an external trigger | Nothing — this is a resting state |
+| `refining` | Output has graduated | Feedback, polish, follow-on versions | Work the todo list — entering seeds a README and a standing improvements PR (§6.5) |
+| `dormant` | Nothing actionable, by choice — the only stage where an empty todo list is allowed (§6.4) | A new wish, or an external trigger | Nothing — this is a resting state |
 | `archived` | Explicitly retired | — | Nothing, ever |
 
 Two rules make the lifecycle useful rather than decorative:
@@ -421,6 +421,77 @@ mechanical and does not touch initiative state.
 forgets to remove the item, the next sweep sees it and can propose the cleanup. And
 because a `blocked_by: todo:<id>` pointing at a nonexistent item is a build failure
 (§9), a forgotten unblock cannot stay hidden — the build tells you.
+
+### 6.4 How todo items get created, and the rule that an initiative may not run dry
+
+§6.3 gave the system a way to remove items and no way to author one, so the todo
+list could only ever run down. That is not a hypothetical: on 2026-08-20 three of
+five initiatives sat with `"todo": []` — `tide-here` with a nine-phase `plan.md`
+whose phases had never become items, `body-movement-visual-twin` parked at the
+`specified` → `planned` gate, and `newsletter-story-harvester` genuinely finished
+but never declared so. None of them looked broken. `select` had nothing to rank,
+so the digest reported them as quiet rather than stalled, and the validator's
+"nothing actionable, and not marked dormant" warning — the §5.1 distinction,
+correctly detected — scrolled past unread every run.
+
+**A warning read after the fact is not a guardrail.** By the time anyone reads it
+the initiative has already gone silent, which is the failure it was meant to
+prevent.
+
+So two changes, both in `initiatives.mjs`:
+
+- **`add <slug> <item-id> --title "..."`** — the missing primitive. It validates
+  the vocabulary, refuses a duplicate id and a dangling `todo:` reference, and
+  writes the fields the ranking depends on. Authoring items by hand-editing the
+  JSON is what it exists to stop, for the same reason `complete` exists.
+- **`complete` refuses to leave a live initiative with an empty todo list.** It
+  names both ways out: seed what comes next with `add`, or say the initiative is
+  finished with `--stage dormant`. Only `dormant` and `archived` may have nothing
+  to do, because at those stages an empty list is a statement rather than an
+  omission.
+
+The rule is one sentence: **an initiative may not be left with nothing to do
+unless someone has decided it is finished.** §5.1's distinction between dormant
+and neglected stops depending on anyone noticing.
+
+Note what this does *not* do: it never invents the next item. It refuses, and
+makes the person or agent closing the last item say what comes next — which is
+the judgement the sweep should not be making anyway (§7.7).
+
+### 6.5 What entering `refining` creates
+
+One transition is exempt from "never invents an item", because at exactly one
+point in the lifecycle the next work is predictable. `refining` means the output
+has graduated (§4) and now has an audience — and an output with an audience
+reliably lacks two things, neither of which arrives on its own. So
+`complete --stage refining` seeds them as items rather than hopes:
+
+- **`refining-readme`** — a user-facing README: **how to use it** and **how to
+  deploy it**. Everything written up to this point — objectives, spec, plan — is
+  addressed to whoever is *building* the thing. Nothing in the lifecycle has ever
+  asked for a document addressed to whoever *uses* it, and the moment it
+  graduates is the moment that gap starts costing something.
+- **`refining-improvements`** — a standing pull request of optional improvements.
+  It may be as little as better documentation, or features suggested outright.
+
+The improvements item is the more unusual of the two, and it is deliberate. A
+finished-looking thing attracts no suggestions, because suggesting one means
+composing it from a blank page — the same asymmetry §7.8 uses to justify
+proposing answers rather than asking questions. **Reacting to a proposal is far
+cheaper than originating one.** An open PR full of candidate improvements gives
+the user something to react to: better ideas in a comment, a redirect, a new
+conversation, or nothing at all. What it does not give them is silence.
+
+Two properties keep this from becoming noise:
+
+- **It is labelled optional, and none of it advances the stage.** The PR is a
+  menu, not a plan. Closing it unmerged is a legitimate outcome and leaves no
+  wreckage.
+- **It ends when the user says it ends.** Because §6.4 forbids an empty list at a
+  live stage, completing the improvements item forces either another round or
+  `--stage dormant`. So a refining initiative always has an open invitation until
+  the user declares it done — which makes going dormant an explicit act, exactly
+  as §5.1 wanted.
 
 ## 7. The sweep job
 
@@ -1572,6 +1643,9 @@ automation instructions land with the automation, in Phases 3–5.
 | The validator and dashboard generator are Node, not shell | §9.1 |
 | A `new-initiative` skill, built before the first initiative | §7.10 |
 | Answers are recorded in `decisions.md`, dated and appended, with reasoning | §5.2 |
+| Items are authored with `add`, never by hand-editing the JSON | §6.4 |
+| An initiative may not be left with nothing to do unless it is declared dormant | §6.4 |
+| Entering `refining` seeds a user-facing README and a standing improvements PR | §6.5 |
 | The merge skill may override CI only when a PR is named individually | below |
 | The sweep skips an invalid initiative and reports it; it never repairs | below |
 
