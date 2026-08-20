@@ -507,6 +507,23 @@ export class D1BookmarkStore {
     return result.results ?? [];
   }
 
+  async listDiagnosableCaptureItems(collectionId, {limit = 1} = {}) {
+    await this.assertCollectionWritable(collectionId);
+    const safeLimit = Math.max(1, Math.min(1, Number(limit) || 1));
+    const result = await this.db.prepare(
+      `SELECT i.url, i.url_key
+       FROM items i
+       JOIN captures c ON c.url_key = i.url_key
+       WHERE i.collection_id = ?
+         AND c.state = 'pass1-retried-gap'
+         AND c.image_candidate IS NOT NULL
+         AND c.image_ref IS NULL
+       ORDER BY i.id
+       LIMIT ?`,
+    ).bind(collectionId, safeLimit).all();
+    return result.results ?? [];
+  }
+
   async refreshCaptureQueue({duplicateThreshold, at}) {
     await this.db.batch([
       this.db.prepare("DELETE FROM capture_queue WHERE state != 'running'"),

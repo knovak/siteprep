@@ -190,11 +190,13 @@ export function createCapturePipeline({
       return record;
     }
 
+    let imageStage = 'fetch';
     try {
       const imageResponse = await withTimeout(timeoutMs, signal => fetchFn(metadata.image_url, anonymousRequest(signal, 'image/avif,image/webp,image/png,image/jpeg;q=0.9,*/*;q=0.1')));
       if (!imageResponse.ok) throw new Error(`Image returned ${imageResponse.status}`);
       const original = await boundedBytes(imageResponse, 20 * 1024 * 1024);
       if (typeof transformImage !== 'function') throw new Error('No derivative transformer is configured');
+      imageStage = 'transform';
       const derivative = await transformImage({
         bytes: original,
         contentType: imageResponse.headers.get('content-type') || 'application/octet-stream',
@@ -207,6 +209,7 @@ export function createCapturePipeline({
         throw new Error('The derivative exceeds the fixed capture size');
       }
       const imageHash = await sha256Hex(derivative.bytes);
+      imageStage = 'store';
       const imageRef = await imageStore.putDerivative({
         urlKey,
         bytes: derivative.bytes,
@@ -228,7 +231,8 @@ export function createCapturePipeline({
       });
       await store.upsertCapture(record);
       return record;
-    } catch {
+    } catch (error) {
+      console.warn('Bookmark capture image stage failed', imageStage, error?.name || 'Error', error?.message || 'Unknown error');
       const record = captureRecord(urlKey, now().toISOString(), metadata);
       await store.upsertCapture(record);
       return record;
