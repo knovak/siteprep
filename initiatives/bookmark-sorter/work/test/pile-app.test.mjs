@@ -344,7 +344,7 @@ test('pass-1 backfill processes only uncaptured items in repeatable bounded batc
         captured.push(candidate.url_key);
         store.upsertCapture({
           url_key: candidate.url_key, image_ref: null, source: 'none', captured_at: '2026-08-20T00:00:00Z',
-          image_hash: null, state: options.markRetried ? 'pass1-retried-gap' : 'pass1-gap', page_title: null, description: null, favicon_url: null,
+          image_hash: null, state: options.markRetried ? 'pass1-final-gap' : 'pass1-gap', page_title: null, description: null, favicon_url: null,
           error_tag: null, image_candidate: options.force ? 'og:image' : null, content_type: null, width: null, height: null, byte_size: null,
         });
       }

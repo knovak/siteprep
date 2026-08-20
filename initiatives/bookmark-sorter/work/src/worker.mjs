@@ -281,13 +281,13 @@ export function createPileApp({
 
         if (request.method === 'POST' && url.pathname === '/api/captures/pass-one') {
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
-          const retry = url.searchParams.get('retry');
-          const candidates = await store[retry === '2' ? 'listDiagnosableCaptureItems' : retry === '1' ? 'listRetryableCaptureItems' : 'listUncapturedItems'](collectionId, {
+          const retry = url.searchParams.get('retry') === '1';
+          const candidates = await store[retry ? 'listRetryableCaptureItems' : 'listUncapturedItems'](collectionId, {
             limit: url.searchParams.get('limit'),
           });
           return json(await capture.captureMany(collectionId, candidates, {
-            force: Boolean(retry),
-            markRetried: retry === '1',
+            force: retry,
+            markRetried: retry,
           }));
         }
 

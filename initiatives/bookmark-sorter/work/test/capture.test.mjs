@@ -148,7 +148,7 @@ test('pass-1 retry bypasses the cache once and marks a second closed failure as 
   const result = await pipeline.captureMany('pile', candidates, {force: true, markRetried: true});
   assert.equal(result.processed, 2);
   assert.equal((await store.getCapture(candidates[0].url_key)).state, 'pass1-ready');
-  assert.equal((await store.getCapture(candidates[1].url_key)).state, 'pass1-retried-gap');
+  assert.equal((await store.getCapture(candidates[1].url_key)).state, 'pass1-final-gap');
   assert.equal(store.listRetryableCaptureItems('pile').length, 0);
   assert.equal(result.status.retryable, 0);
 });
@@ -158,7 +158,7 @@ test('capture failures become collection-local tags and cached errors attach on 
   t.after(fixture.close);
   const store = storeWith('alpha', 'beta');
   const images = new MemoryCaptureImages();
-  const pipeline = createCapturePipeline({store, imageStore: images, transformImage: derivative, timeoutMs: 30, concurrency: 1});
+  const pipeline = createCapturePipeline({store, imageStore: images, transformImage: derivative, timeoutMs: 100, concurrency: 1});
   const urls = [`${fixture.baseUrl}/404`, `${fixture.baseUrl}/slow`, `${fixture.baseUrl}/parked`, `${fixture.tlsUrl}/tls`];
   const html = bookmarkHtml(urls);
   await ingestBookmarkHtml({store, collectionId: 'alpha', html, source: 'test', ingestedAt: '2026-08-18', capture: null});

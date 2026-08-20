@@ -119,10 +119,13 @@ URL-keyed capture.
 The deployment assembler supplies the server-side `transformImage` function.
 It must return a derivative no larger than 600×360; if it is absent or returns
 an invalid result, the pipeline stores no image rather than putting an original
-in R2. The Sites capability layer therefore fails closed while keeping the
-image implementation replaceable. `PASS_TWO_ENABLED` defaults off. Turning it
-on still requires a server-side `vendorCapture` adapter; neither a secret nor a
-vendor endpoint is emitted into the page.
+in R2. Sites currently exposes only the declared D1 and R2 bindings, so the
+worker transforms an external image through Cloudflare's `cf.image` fetch
+options and uses the raw-byte Images binding only when the runtime supplies it.
+Failures are logged without the bookmark or image URL and remain fail-closed.
+`PASS_TWO_ENABLED` defaults off. Turning it on still requires a server-side
+`vendorCapture` adapter; neither a secret nor a vendor endpoint is emitted into
+the page.
 
 The list endpoint accepts `limit` and `offset`; `limit` is clamped to 500. The
 response always includes the total collection count so the page does not have
@@ -204,9 +207,9 @@ the data-handling boundary.
   start pass 1 automatically. Repeating the request is safe and returns zero
   processed items when the active collection has caught up. The **Capture
   metadata** action runs those bounded batches until the active collection is
-  current, while keeping each individual request small. It then retries once
-  any metadata-image candidates that failed closed during the first deployment;
-  a second failure is marked so the action cannot loop forever. The final status
+  current, while keeping each individual request small. It then makes one final
+  retry for metadata-image candidates left by the earlier binding failure; a
+  final failure is marked so the action cannot loop forever. The final status
   reports coverage and duplicate-image group sizes for the real collection.
   The action stays available afterward; rerunning it is an idempotent status
   refresh that processes zero items unless a later import needs catching up.

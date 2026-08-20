@@ -296,7 +296,7 @@ export class MemoryBookmarkStore {
       .filter(item => item.collection_id === collectionId)
       .filter(item => {
         const capture = this.#captures.get(item.url_key);
-        return capture?.state === 'pass1-gap' && capture.image_candidate && !capture.image_ref;
+        return ['pass1-gap', 'pass1-retried-gap', 'pass1-diagnosed-gap'].includes(capture?.state) && capture.image_candidate && !capture.image_ref;
       })
       .sort((left, right) => left.id.localeCompare(right.id))
       .slice(0, safeLimit)

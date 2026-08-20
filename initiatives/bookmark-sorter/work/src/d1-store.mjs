@@ -492,31 +492,13 @@ export class D1BookmarkStore {
 
   async listRetryableCaptureItems(collectionId, {limit = 20} = {}) {
     await this.assertCollectionWritable(collectionId);
-    const safeLimit = 1;
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
     const result = await this.db.prepare(
       `SELECT i.url, i.url_key
        FROM items i
        JOIN captures c ON c.url_key = i.url_key
        WHERE i.collection_id = ?
-         AND c.state = 'pass1-retried-gap'
-         AND c.image_candidate IS NOT NULL
-         AND c.image_ref IS NULL
-         AND NOT EXISTS (SELECT 1 FROM captures diagnostic WHERE diagnostic.state = 'pass1-diagnosed-gap')
-       ORDER BY i.id
-       LIMIT ?`,
-    ).bind(collectionId, safeLimit).all();
-    return result.results ?? [];
-  }
-
-  async listDiagnosableCaptureItems(collectionId, {limit = 1} = {}) {
-    await this.assertCollectionWritable(collectionId);
-    const safeLimit = Math.max(1, Math.min(1, Number(limit) || 1));
-    const result = await this.db.prepare(
-      `SELECT i.url, i.url_key
-       FROM items i
-       JOIN captures c ON c.url_key = i.url_key
-       WHERE i.collection_id = ?
-         AND c.state = 'pass1-retried-gap'
+         AND c.state IN ('pass1-gap', 'pass1-retried-gap', 'pass1-diagnosed-gap')
          AND c.image_candidate IS NOT NULL
          AND c.image_ref IS NULL
        ORDER BY i.id

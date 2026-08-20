@@ -200,6 +200,7 @@ export function createCapturePipeline({
       const derivative = await transformImage({
         bytes: original,
         contentType: imageResponse.headers.get('content-type') || 'application/octet-stream',
+        sourceUrl: metadata.image_url,
         ...DERIVATIVE_SPEC,
       });
       if (!derivative?.bytes || !derivative?.contentType || !derivative?.width || !derivative?.height) {
@@ -253,7 +254,7 @@ export function createCapturePipeline({
     if (markRetried) {
       for (const [index, record] of results.entries()) {
         if (record?.image_ref || record?.state !== 'pass1-gap') continue;
-        results[index] = await store.upsertCapture({...record, state: 'pass1-diagnosed-gap'});
+        results[index] = await store.upsertCapture({...record, state: 'pass1-final-gap'});
       }
     }
     await store.refreshCaptureQueue({duplicateThreshold, at: now().toISOString()});
