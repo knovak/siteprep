@@ -530,3 +530,22 @@ skills are meant for direct invocation by an interactive user."*
   are served silently to readers; a skill is invoked deliberately by someone who
   sees it fail. Moving or renaming that CLI now breaks the skill, so keep them
   in step.
+
+## 2026-08-19 — Are portable document copies part of the current Repo Guide?
+
+**No. They are removed from the current scope.**
+
+The user's words: *"Remove all mentions of PDF, we won't need them at this
+time. And you can remove the json file that keeps info about PDF."*
+
+### What this settles, and what it does not
+
+- The current deliverables are the self-contained web description, slide deck,
+  and simulator. No portable-document links, metadata, refresh dates, panels,
+  tests, or active todo item remain.
+- The metadata configuration file is removed. The simulator's independent
+  watched-date check remains in code and needs no configuration file.
+- Prior decision and log entries remain as the append-only history of what was
+  once planned. This decision supersedes them for all current work.
+- A portable-document format could be reconsidered later, but there is no
+  current requirement or placeholder for it.

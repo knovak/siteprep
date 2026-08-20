@@ -40,14 +40,12 @@ So the guide is not filling a vacuum. Nothing here is undocumented; it is
 documented at a length and in a register that assumes you already work here.
 The gap is an *entry point*, not information.
 
-That changes what the deliverables are for. The wish asks for five artefacts —
-a web description, a 10–20 slide deck, PDFs of each, and a simulator — and the
-naive reading makes each one a fresh retelling of the lifecycle. That is six
-copies of every rule, five of which will be wrong first, and it is exactly the
-failure mode above with more surface area. **The five artefacts are five ways
-into one account, not five accounts.** Two of them (the PDFs) are renderings
-rather than documents at all, which leaves three things that are genuinely
-written: a description, a deck, and a simulator.
+That changes what the deliverables are for. The current wish asks for three
+artefacts — a web description, a 10–20 slide deck, and a simulator — and the
+naive reading makes each one a fresh retelling of the lifecycle. That is three
+copies of every rule, two of which will be wrong first, and it is exactly the
+failure mode above with more surface area. **The three artefacts are three ways
+into one account, not three accounts.**
 
 ## Done means
 
@@ -89,12 +87,10 @@ written: a description, a deck, and a simulator.
    governs it, so a reader who needs the real answer is one link from it. This
    is what keeps the guide short enough to stay true.
 
-8. **The material is portable off the site.** The slides and the description
-   exist as PDFs that can be sent to someone who will not clone anything or
-   open a browser tab. They are made by hand and kept on Google Drive
-   (`decisions.md`, 2026-08-17), so they are the one deliverable that is neither
-   generated nor in the repository — which is why objective 9 applies to them
-   most of all.
+8. **The material is portable off the site.** The description, deck, and
+   simulator are self-contained HTML files. Each can be opened directly,
+   attached, or hosted as a static file without cloning the repository or
+   depending on shared site assets.
 
 9. **Drift is detectable rather than discovered.** When the process changes, the
    guide's disagreement with the repository shows up where a person will see it
@@ -103,8 +99,8 @@ written: a description, a deck, and a simulator.
    is **generated from the repository's own sources**, so it cannot disagree;
    and **every output carries a date**, so the parts generation does not reach
    can be checked by hand. The second is not a weaker version of the first. It
-   is what covers the hand-written narrative, the simulator, and the PDFs, none
-   of which generation reaches.
+   is what covers the composed narrative and simulator choreography that
+   generation cannot derive.
 
 ## Explicitly not the first version
 
@@ -150,7 +146,7 @@ written: a description, a deck, and a simulator.
 
 ## Decisions this raised, and where they landed
 
-Drafting these surfaced three questions the wish does not settle. All three were
+Drafting these surfaced two questions the wish does not settle. Both were
 answered on review the same day and are now in `decisions.md` — the reasoning
 lives there, and this list is only a map to it. Nothing here is still waiting on
 the user.
@@ -165,10 +161,6 @@ the user.
    upgrade to the real `initiative.json` held open if the animation turns out not
    to be adequate. It is therefore the one deliverable outside decision 1's
    guarantee, which is the cost recorded with it.
-
-3. **Where do the PDFs come from?** **Made by hand and kept on Google Drive** —
-   so the repository's rule against committing generated files is sidestepped
-   rather than argued, and objective 8 is written accordingly.
 
 One question is left to the spec rather than raised as a blocker:
 

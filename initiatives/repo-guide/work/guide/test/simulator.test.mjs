@@ -19,7 +19,6 @@ const syntheticFacts = {
   'sweep.budget': {items_per_run: 3},
 };
 const dating = {
-  pdfs: [],
   simulator: {watched: '2026-08-15', source_date: '2026-08-17', possibly_stale: true},
   diagnostics: ['Simulator may need re-watching: watched 2026-08-15; sources changed 2026-08-17.'],
 };
