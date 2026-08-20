@@ -493,6 +493,28 @@ Two properties keep this from becoming noise:
   the user declares it done — which makes going dormant an explicit act, exactly
   as §5.1 wanted.
 
+### 6.6 Where an optional idea goes
+
+An idea worth keeping but not worth committing to has no home in `todo[]`, and
+putting one there is actively harmful: `select` does not filter by stage, so an
+actionable item inside a `dormant` initiative is ranked and worked like any
+other. "Add a low-priority item" therefore un-dormants the initiative silently,
+which is the §5.1 distinction being erased from the other direction — an
+initiative doing work nobody decided to restart.
+
+**Optional ideas go in `notes.md`**, which is already a rendered document. The
+property that makes it right is that no tooling reads it: a note cannot be
+selected, proposed, counted, or nagged about. It is promoted by being written as
+a real item with `add` (§6.4), which is exactly the moment someone has to say
+what it is worth and what it costs.
+
+Not GitHub issues, for three reasons. The record lives in the repository so a
+fork carries the process with it, which is the claim §8 makes about portability
+and the one an external backlog quietly breaks. An idea's whole future is
+becoming a todo item, and storing it somewhere with no path into `add` means
+retyping it. And the sweep already maintains exactly one issue — the digest
+(§8.4) — which is a rendering of repository state, not a place state lives.
+
 ## 7. The sweep job
 
 A scheduled agent runs **several times a day** across all initiatives — four times at
@@ -1646,6 +1668,7 @@ automation instructions land with the automation, in Phases 3–5.
 | Items are authored with `add`, never by hand-editing the JSON | §6.4 |
 | An initiative may not be left with nothing to do unless it is declared dormant | §6.4 |
 | Entering `refining` seeds a user-facing README and a standing improvements PR | §6.5 |
+| An optional "maybe later" goes in `notes.md`, never in `todo[]` | §6.6 |
 | The merge skill may override CI only when a PR is named individually | below |
 | The sweep skips an invalid initiative and reports it; it never repairs | below |
 

@@ -312,3 +312,15 @@ supports Save, Cancel and Escape. Added selection clauses for the five visible
 verdict states: keep, junk, archive, needs time and untriaged. The in-page Help,
 technical documentation, evaluator tests, API tests and browser coverage now
 describe and exercise both changes.
+
+## 2026-08-20 — Measure the blind triage baseline on several hundred real bookmarks
+
+Withdrawn, not performed. Reclassified as an optional observation in notes.md (decisions.md, 2026-08-20): the throughput numbers are already instrumented in triage_sessions and accrue from ordinary sittings, so this never needed a staged blind sitting and was not blocking anything. The spec.md throughput target stays unset until someone reads them.
+
+## 2026-08-20 — Measure confirmation interruptions and immediately undone sweeps in one real selection sitting
+
+Withdrawn, not performed. Reclassified as an optional observation in notes.md (decisions.md, 2026-08-20). Sweeps applied and immediately undone are already recorded via triage_actions.undone_at; selections opened and confirmations shown are not persisted and would need two counters, to be added only if the undo signal is ambiguous without them.
+
+## 2026-08-20 — Measure metadata coverage and the duplicate-image distribution on a representative real pile
+
+Superseded by enable-captures-and-measure, not performed. The blocker was misdiagnosed as data: the code already computes these numbers and GET /api/items already returns them; what was missing was the R2 bucket the capture pipeline needs. The user granted that on 2026-08-20 (decisions.md), so this is ordinary work rather than a question.

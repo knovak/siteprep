@@ -6,30 +6,11 @@
   "outputs": [],
   "todo": [
     {
-      "id": "measure-blind-baseline",
-      "title": "Measure the blind triage baseline on several hundred real bookmarks",
-      "state": "blocked",
-      "blocked_by": "data:run one blind sitting on several hundred real bookmarks and report the items judged and elapsed time",
+      "id": "enable-captures-and-measure",
+      "title": "Provision the R2 capture bucket, turn on pass 1, and record the coverage and duplicate-image numbers",
+      "state": "actionable",
       "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "measure-metadata-coverage",
-      "title": "Measure metadata coverage and the duplicate-image distribution on a representative real pile",
-      "state": "blocked",
-      "blocked_by": "data:import a representative slice of the real bookmark pile through phase 3 and report total, distinguishable metadata coverage, and duplicate-image distribution",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "measure-selection-sitting",
-      "title": "Measure confirmation interruptions and immediately undone sweeps in one real selection sitting",
-      "state": "blocked",
-      "blocked_by": "data:run one real phase 4 selection sitting and report selections opened, confirmations shown, sweeps applied, and sweeps immediately undone",
-      "value": "high",
-      "effort": "small",
+      "effort": "medium",
       "advances_stage": false
     }
   ]
