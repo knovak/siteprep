@@ -38,6 +38,22 @@ guide as refreshed. A fact-resolution error is actionable output: name the fact
 key and source printed by the generator. Do not substitute a default, edit the
 generated files, or retry with browser checks disabled.
 
+## Generating is not publishing
+
+These commands rewrite `out/` only. Readers see the released copy under
+`demos/Guide to Initiatives/`, which does not change until someone runs the
+`deploy-demo` skill against `out/`. Releasing is the user's decision, made when
+they judge something significant has changed — never automatic, and never
+something to do on your own initiative.
+
+So when you report a refresh, say plainly that the published guide is unchanged,
+and name the drift if there is any: compare the released copy's footer commit
+against `git rev-parse --short HEAD`. Note that the live facts age on their own —
+`initiatives.live` renders each initiative's current stage, so the release can be
+stale from an initiative advancing even when the generator's own code has not
+moved. The release procedure is in `initiatives/repo-guide/work/guide/README.md`
+under "Releasing to `demos/`".
+
 Do not hand-edit files under `initiatives/repo-guide/work/guide/out/`. The
 generator writes only there. It reads repository process sources, including
 protected paths, but never writes them.

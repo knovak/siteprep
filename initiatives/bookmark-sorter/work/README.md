@@ -146,10 +146,13 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
   uses that opaque value for ownership and creates one private personal
   collection on first API use.
 - With R2 absent, importing and triage work normally but pass-1 metadata capture
-  and capture-gap processing are disabled. This is suitable for the blind
-  baseline and selection-interaction tests. Enabling capture testing later
-  requires setting `r2` to `CAPTURES` after the user accepts the Sites storage
-  limits, rebuilding, and replacing the Site version.
+  and capture-gap processing are disabled. That was the first deployment. The
+  user accepted the Sites storage limits and authorised the bucket on 2026-08-20
+  (`decisions.md`), so enabling captures is now a deployment step rather than a
+  question: create the bucket in Sites, bind it as `CAPTURES`, rebuild, and
+  replace the Site version. No repository change is needed — `worker/index.ts`
+  already declares `CAPTURES?: R2Bucket` and `src/worker.mjs` switches on its
+  presence. Pass 2 and its paid vendor stay switched off regardless.
 
 Install and validate this project from this directory:
 

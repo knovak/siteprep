@@ -729,3 +729,63 @@ The user's words: *"I approve Sites costs/limits."*
   switched off until that separate capability is authorised.
 - The three real-pile measurements remain open because they require observed
   data, not a cost decision.
+
+## 2026-08-20 — What are the three real-pile measurements for, and which of them gate anything?
+
+**None of them gate the build. Two become optional observations recorded in
+`notes.md`; the third is unblocked by provisioning R2 now.**
+
+The three were written as `data:` blockers, which made them look like work the
+initiative was waiting on. Reviewing what each number is actually *used for*
+shows that is only true of one.
+
+### What each measurement feeds
+
+| Measurement | What it decides |
+|---|---|
+| Blind triage baseline | The throughput target `spec.md` still lacks. `objectives.md` deliberately refused to set one: *"a target to be set in `spec.md`, once there is a measured baseline to argue from. Setting it now would be a guess dressed as a requirement."* |
+| Selection sitting | Whether §8's confirmation rule is right. The spec claims the discriminator is **visibility, not cardinality**, and names what would falsify it: *"a sweep turning out to be regretted often enough that `undo` is not sufficient recovery."* Immediately-undone sweeps are that signal. |
+| Metadata coverage | How large pass 2 is, and therefore what the paid screenshot API would cost at ~$4–10 per thousand — and where to move the duplicate-image threshold, which §6 calls *"a starting value to be moved once there is data."* |
+
+### The decision
+
+**The first two are optional, and recorded in `notes.md` rather than `todo[]`.**
+The user's words: *"leave their capture and recording optional, to be done at
+distinct times after entering dormant state but before improvements are underway,
+or not at all if we can't use them directly."*
+
+They are removed as blocked items because they were never blocking. Both are
+already instrumented — `triage_sessions` records `items_judged` and `elapsed_ms`
+and the page displays the rate; `triage_actions.undone_at` records regret — so
+the numbers accrue from ordinary use and can be read whenever someone wants
+them. Neither needs a staged sitting, and neither should hold the initiative.
+
+**Metadata coverage is unblocked by enabling R2.** The user's words: *"accept the
+Sites storage limits and enable the R2 capture bucket now."* This completes the
+2026-08-17 cost approval, which allowed R2 in principle while the first
+deployment deliberately did not provision it.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Keep all three as `data:` blockers | Honest that the numbers are missing | Three permanent entries in "waiting on you" for work nobody intends to schedule — the digest noise that teaches people to skip the digest |
+| Drop the measurements entirely | Simplest | Throws away the only evidence that would set the throughput target or falsify the confirmation rule; the spec explicitly defers both to data |
+| Optional in `notes.md`, plus enable R2 | Keeps what each number is for, stops all three nagging, and unblocks the one with a real answer | The first two may never be taken, leaving the throughput target unset indefinitely |
+
+### What this settles, and what it does not
+
+- **The throughput target stays unset** until someone reads the accrued session
+  data. That is now a known gap rather than a pending question.
+- **Pass 2 remains switched off.** Enabling R2 turns on pass 1 — the anonymous
+  no-JavaScript metadata fetch and its downscaled image. The paid screenshot
+  vendor is a separate authorisation and is unchanged.
+- **Provisioning is not a repository change.** `worker/index.ts` already binds
+  `CAPTURES?: R2Bucket` optionally and `src/worker.mjs` already switches on it.
+  Enabling it means creating the bucket in ChatGPT Sites, binding it as
+  `CAPTURES`, rebuilding, and replacing the Site version — steps that happen in
+  the Sites environment, not here.
+- **The measurement is a read, not a build.** `GET /api/items` already returns
+  capture totals, distinguishable metadata coverage, and the duplicate-image
+  distribution. Once captures exist, recording the numbers is reading that
+  endpoint.

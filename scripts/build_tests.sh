@@ -22,8 +22,14 @@ echo ""
 # of this script being called from build.sh
 pass "BUILD-01 build script executed successfully"
 
+# This script is a stage of the build, not a standalone suite: build.sh calls it
+# once the output directory exists. Run alone against a fresh clone it would
+# otherwise fail here with a bare missing-directory message that reads like a
+# broken build rather than a missing step.
 if [ ! -d "$OUTPUT_DIR" ]; then
-  fail "BUILD-02 output directory missing: $OUTPUT_DIR"
+  fail "BUILD-02 output directory missing: $OUTPUT_DIR
+  These are build-time tests and need a build first. Run \`npm run build\`,
+  which builds and then runs this script."
 fi
 pass "BUILD-02 output directory exists"
 

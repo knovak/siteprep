@@ -234,6 +234,27 @@ This is the enforcing half of a rule the validator could previously only warn
 about. `nothing actionable, and not marked dormant` is still emitted, but it now
 catches drift from hand edits rather than being the only line of defence.
 
+### Recording something you might do later
+
+`notes.md` is already a rendered document (it is in `DOCUMENTS`), and that is
+where an optional idea belongs — a "maybe", a nice-to-have, a thought worth
+keeping that nobody has committed to.
+
+**Do not record one as a todo item.** `select` does not filter by stage: an
+actionable item is ranked and picked up wherever it lives, including inside a
+`dormant` initiative, so adding one there quietly wakes the initiative and puts
+the sweep to work on something nobody asked for. The todo list is for work that
+is meant to happen; `notes.md` is for work that might.
+
+Nothing enforces this and nothing needs to. A note is inert by construction: no
+tooling reads it, so it cannot be selected, proposed, counted, or nagged about.
+Promote one by writing it as a real item with `add` when it stops being
+optional, which is also when someone has to decide its value and effort.
+
+This is deliberately not GitHub issues. Initiatives keep their whole record in
+the repository so a fork carries it, and the sweep already maintains exactly one
+issue - the digest (§8.4) - which is a report, not storage.
+
 ### What `--stage refining` seeds
 
 Entering `refining` - and only entering it, not re-completing an item while

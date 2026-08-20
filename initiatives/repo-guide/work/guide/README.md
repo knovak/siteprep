@@ -185,3 +185,44 @@ file (`workflows.<name>` and `skills.<name>`); `initiatives.live` is a shallow
 directory read containing only slug, title, and stage. A skill fact carries its
 `name`, its full `description`, and a derived `summary` — the description's
 first sentence, which is what a card shows and what a sentence may cite.
+
+## Releasing to `demos/`
+
+**Generating is not publishing.** The commands above rewrite `out/`, which is
+the repository's latest successful generation and nothing else. Readers do not
+see `out/` — they see the copy under `demos/Guide to Initiatives/`, and that
+copy only changes when someone deliberately releases it.
+
+Release is manual and stays that way. The guide's artifacts are not linked into
+site navigation or the build path (`decisions.md`, 2026-08-20): the user runs a
+release when they judge that something significant has changed, rather than the
+guide re-publishing itself on every commit.
+
+To release, from the repository root:
+
+```bash
+python3 .claude/skills/deploy-demo/scripts/deploy_demo.py \
+  --source initiatives/repo-guide/work/guide/out \
+  --destination "Guide to Initiatives" \
+  --title "Guide to Initiatives" \
+  --description "Guide to how this repository works, and how you can adopt it for yourself.  Please also read this slide deck, and play with this simulator." \
+  --root-html description.html \
+  --link "this slide deck" deck.html \
+  --link "this simulator" simulator.html
+npm run build
+```
+
+The helper replaces the destination wholly, so a file that a later version of
+the guide stopped generating does not survive the release. That matters: the
+first release (2026-08-19) carried a portable-document panel that was removed
+from the generator hours afterwards, and the released copy kept showing it —
+along with an orphaned `pdf-dating-preview.html` nothing linked to — because
+nothing re-releases on its own.
+
+**Regenerate before releasing, and check what drifted.** The footer of each
+artifact names the source commit it was generated from, so comparing the
+released copy's footer against `git rev-parse --short HEAD` says whether the
+public guide is describing the repository as it is now. Live facts age
+independently of the generator: `initiatives.live` renders the current stage of
+every initiative, so a release goes stale whenever an initiative advances, not
+only when the guide's own code changes.

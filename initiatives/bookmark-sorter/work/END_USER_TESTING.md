@@ -4,9 +4,11 @@
 
 This is a private, signed-in test of the real bookmark-sorter application. It
 stores bookmark records, tags, verdicts, selections, and sitting measurements in
-ChatGPT Sites D1. The first test version deliberately does not provision R2, so
-it does not fetch or store page pictures and cannot measure metadata-image
-coverage yet.
+ChatGPT Sites D1. The first test version deliberately did not provision R2. The
+user accepted the Sites storage limits and authorised the capture bucket on
+2026-08-20 (`decisions.md`), so the next Site version provisions R2 as
+`CAPTURES` and pass 1 fetches and stores page pictures. Until that version is
+deployed, the running Site still has no captures.
 
 Do not upload a bookmark export unless its URLs and folder names are acceptable
 to store in the test Site. The application export contains items, URLs, tags,
@@ -20,11 +22,11 @@ verdicts, and notes; it never contains capture images.
    `chrome-export` or `safari-export`.
 3. Confirm that the total count looks plausible. Re-importing the same file
    should not increase it.
-4. For a blind baseline, work without adding a selection. Use the on-screen
-   buttons or `K`, `J`, `A`, and `N`; Space marks exceptions and `U` undoes the
-   last whole action.
-5. End the sitting. Record the items judged, elapsed time, and displayed
-   items-per-minute rate before closing the page.
+4. Work however you actually would. Use the on-screen buttons or `K`, `J`, `A`,
+   and `N`; Space marks exceptions and `U` undoes the last whole action.
+5. End the sitting. The items judged, elapsed time, and items-per-minute rate
+   are recorded automatically, so noting them down is optional — see `notes.md`
+   for what they are eventually for.
 
 ## Selection sitting
 
@@ -35,8 +37,9 @@ verdicts, and notes; it never contains capture images.
 3. Try one saved selection without opening it first. It should show the affected
    count and ask before applying a verdict. A selection that is already open
    should sweep without that extra confirmation.
-4. Record how many confirmations interrupted the sitting and how many sweeps you
-   immediately undid.
+4. Optionally note how many confirmations interrupted the sitting. Sweeps you
+   immediately undo are recorded automatically; confirmations are not. Neither
+   is required — see `notes.md`.
 
 ## Backup before replacing the Site
 
@@ -47,8 +50,11 @@ existing D1 data has been confirmed intact.
 
 ## Not covered by this first deployment
 
-- Page metadata and image capture, because R2 is intentionally disabled.
-- The paid screenshot fallback, which remains switched off.
+- Page metadata and image capture, until the R2-enabled Site version replaces
+  this one. Authorised on 2026-08-20; not yet deployed.
+- The paid screenshot fallback (pass 2), which remains switched off. Enabling R2
+  turns on pass 1 only — the anonymous, no-JavaScript metadata fetch. The paid
+  vendor is a separate authorisation and is unchanged.
 - A public multi-tester audience. The first Site is owner-only; broader access
   should be enabled only after its audience and the Sites metering limits are
   accepted explicitly.
