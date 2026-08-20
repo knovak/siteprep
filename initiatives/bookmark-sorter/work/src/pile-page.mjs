@@ -252,7 +252,7 @@ export function renderPilePage() {
       helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
     };
-    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: []};
+    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: []};
 
     async function api(path, options = {}) {
       const headers = new Headers(options.headers || {});
@@ -283,7 +283,7 @@ export function renderPilePage() {
       elements.selectionSummary.textContent = (state.expression ? state.expression : 'All items') + ' · ' + state.total.toLocaleString() + ' selected · ' + state.selectionBacklog.toLocaleString() + ' untriaged';
       elements.previousPage.disabled = state.loading || state.offset <= 0;
       elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
-      elements.capturePassOne.disabled = state.loading || !state.captures || (state.captures.total >= state.collectionTotal && !state.captures.retryable);
+      elements.capturePassOne.disabled = state.loading || state.captureInProgress || !state.captures;
     }
     async function startSession() {
       if (!state.collectionTotal || (state.session && !state.session.ended_at)) return;
@@ -637,7 +637,8 @@ export function renderPilePage() {
       finally { elements.captureGaps.disabled = false; }
     }
     async function capturePassOne() {
-      elements.capturePassOne.disabled = true;
+      state.captureInProgress = true;
+      updateProgress();
       let processed = 0;
       try {
         for (const retry of [false, true]) {
@@ -657,7 +658,7 @@ export function renderPilePage() {
           + '; duplicate image groups: ' + (duplicates.length ? duplicates.join(', ') : 'none') + '.';
         await loadWindow(state.offset);
       } catch (error) { elements.status.textContent = error.message; }
-      finally { updateProgress(); }
+      finally { state.captureInProgress = false; updateProgress(); }
     }
     elements.form.addEventListener('submit', async event => {
       event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';

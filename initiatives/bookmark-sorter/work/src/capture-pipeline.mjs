@@ -85,7 +85,7 @@ function anonymousRequest(signal, accept) {
 function failureTag(error) {
   if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return 'err:timeout';
   const detail = `${error?.code || ''} ${error?.cause?.code || ''} ${error?.message || ''}`.toLowerCase();
-  if (/cert|tls|ssl|handshake|econnreset/.test(detail)) return 'err:tls';
+  if (/cert|tls|ssl|handshake|econnreset|eproto|wrong version|invalid protocol/.test(detail)) return 'err:tls';
   return 'err:fetch';
 }
 

@@ -208,6 +208,8 @@ the data-handling boundary.
   any metadata-image candidates that failed closed during the first deployment;
   a second failure is marked so the action cannot loop forever. The final status
   reports coverage and duplicate-image group sizes for the real collection.
+  The action stays available afterward; rerunning it is an idempotent status
+  refresh that processes zero items unless a later import needs catching up.
 - `POST /api/captures/gaps` is the only pass-2 driver. With the current switch
   off it reports the gap count and performs no vendor call. When a vendor is
   later authorised, the same endpoint processes a bounded batch through the
