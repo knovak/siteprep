@@ -336,14 +336,16 @@ test('pass-1 backfill processes only uncaptured items in repeatable bounded batc
     });
   }
   const captured = [];
+  const optionsSeen = [];
   const capture = {
-    captureMany: async (collectionId, candidates) => {
+    captureMany: async (collectionId, candidates, options = {}) => {
+      optionsSeen.push(options);
       for (const candidate of candidates) {
         captured.push(candidate.url_key);
         store.upsertCapture({
           url_key: candidate.url_key, image_ref: null, source: 'none', captured_at: '2026-08-20T00:00:00Z',
-          image_hash: null, state: 'pass1-gap', page_title: null, description: null, favicon_url: null,
-          error_tag: null, image_candidate: null, content_type: null, width: null, height: null, byte_size: null,
+          image_hash: null, state: options.markRetried ? 'pass1-retried-gap' : 'pass1-gap', page_title: null, description: null, favicon_url: null,
+          error_tag: null, image_candidate: options.force ? 'og:image' : null, content_type: null, width: null, height: null, byte_size: null,
         });
       }
       return {processed: candidates.length, captures: [], status: {total: captured.length}};
@@ -355,6 +357,13 @@ test('pass-1 backfill processes only uncaptured items in repeatable bounded batc
   assert.equal((await (await run()).json()).processed, 1);
   assert.equal((await (await run()).json()).processed, 0);
   assert.deepEqual(captured, ['https://example.com/one', 'https://example.com/two']);
+  store.upsertCapture({...(await store.getCapture('https://example.com/one')), state: 'pass1-gap', image_candidate: 'og:image'});
+  const retried = await app.fetch(new Request('https://pile.test/api/captures/pass-one?limit=1&retry=1', {method: 'POST'}));
+  assert.equal((await retried.json()).processed, 1);
+  assert.deepEqual(optionsSeen.at(-1), {force: true, markRetried: true});
+  const caughtUp = await app.fetch(new Request('https://pile.test/api/captures/pass-one?limit=1&retry=1', {method: 'POST'}));
+  assert.equal((await caughtUp.json()).processed, 0);
+  assert.deepEqual(captured, ['https://example.com/one', 'https://example.com/two', 'https://example.com/one']);
 });
 
 test('pile app serves stored derivatives and the explicit gap action without exposing vendor configuration', async () => {

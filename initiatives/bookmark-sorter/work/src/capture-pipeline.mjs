@@ -161,9 +161,9 @@ export function createCapturePipeline({
     return record;
   }
 
-  async function passOne(collectionId, {url, url_key: urlKey}) {
+  async function passOne(collectionId, {url, url_key: urlKey}, {force = false} = {}) {
     const cached = await store.getCapture(urlKey);
-    if (cached) {
+    if (cached && !force) {
       if (cached.error_tag) await store.applyCaptureError(collectionId, urlKey, cached.error_tag);
       return {...cached, cached: true};
     }
@@ -235,17 +235,23 @@ export function createCapturePipeline({
     }
   }
 
-  async function captureMany(collectionId, candidates) {
+  async function captureMany(collectionId, candidates, {force = false, markRetried = false} = {}) {
     const unique = [...new Map(candidates.map(candidate => [candidate.url_key, candidate])).values()];
     const results = new Array(unique.length);
     let cursor = 0;
     async function worker() {
       while (cursor < unique.length) {
         const index = cursor++;
-        results[index] = await passOne(collectionId, unique[index]);
+        results[index] = await passOne(collectionId, unique[index], {force});
       }
     }
     await Promise.all(Array.from({length: Math.min(concurrency, unique.length)}, worker));
+    if (markRetried) {
+      for (const [index, record] of results.entries()) {
+        if (record?.image_ref || record?.state !== 'pass1-gap') continue;
+        results[index] = await store.upsertCapture({...record, state: 'pass1-retried-gap'});
+      }
+    }
     await store.refreshCaptureQueue({duplicateThreshold, at: now().toISOString()});
     return {processed: unique.length, captures: results, status: await store.captureStats(collectionId)};
   }

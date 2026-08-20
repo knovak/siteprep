@@ -490,6 +490,23 @@ export class D1BookmarkStore {
     return result.results ?? [];
   }
 
+  async listRetryableCaptureItems(collectionId, {limit = 20} = {}) {
+    await this.assertCollectionWritable(collectionId);
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    const result = await this.db.prepare(
+      `SELECT i.url, i.url_key
+       FROM items i
+       JOIN captures c ON c.url_key = i.url_key
+       WHERE i.collection_id = ?
+         AND c.state = 'pass1-gap'
+         AND c.image_candidate IS NOT NULL
+         AND c.image_ref IS NULL
+       ORDER BY i.id
+       LIMIT ?`,
+    ).bind(collectionId, safeLimit).all();
+    return result.results ?? [];
+  }
+
   async refreshCaptureQueue({duplicateThreshold, at}) {
     await this.db.batch([
       this.db.prepare("DELETE FROM capture_queue WHERE state != 'running'"),
@@ -559,6 +576,7 @@ export class D1BookmarkStore {
                                 AND q.state != 'complete'
                             ) THEN 1 ELSE 0 END) AS distinguishable_metadata,
                   SUM(CASE WHEN source = 'screenshot' AND image_ref IS NOT NULL THEN 1 ELSE 0 END) AS screenshot_images,
+                  SUM(CASE WHEN state = 'pass1-gap' AND image_candidate IS NOT NULL AND image_ref IS NULL THEN 1 ELSE 0 END) AS retryable,
                   SUM(CASE WHEN EXISTS (
                     SELECT 1 FROM capture_queue q WHERE q.url_key = scoped.url_key AND q.state != 'complete'
                   ) THEN 1 ELSE 0 END) AS gaps
@@ -586,6 +604,7 @@ export class D1BookmarkStore {
         distinguishable_metadata: distinguishableMetadata,
         metadata_coverage: total ? distinguishableMetadata / total : null,
         screenshot_images: Number(row.screenshot_images ?? 0),
+        retryable: Number(row.retryable ?? 0),
         gaps: Number(row.gaps ?? 0),
         queued: Number(firstResult(queue)?.queued ?? 0),
         duplicate_distribution: (distribution.results ?? []).map(value => Number(value.image_count)),
@@ -603,6 +622,7 @@ export class D1BookmarkStore {
                               AND q.state != 'complete'
                           ) THEN 1 ELSE 0 END) AS distinguishable_metadata,
                 SUM(CASE WHEN source = 'screenshot' AND image_ref IS NOT NULL THEN 1 ELSE 0 END) AS screenshot_images,
+                SUM(CASE WHEN state = 'pass1-gap' AND image_candidate IS NOT NULL AND image_ref IS NULL THEN 1 ELSE 0 END) AS retryable,
                 (SELECT COUNT(*) FROM capture_queue WHERE state != 'complete') AS gaps
          FROM captures`,
       ).all(),
@@ -624,6 +644,7 @@ export class D1BookmarkStore {
       distinguishable_metadata: distinguishableMetadata,
       metadata_coverage: total ? distinguishableMetadata / total : null,
       screenshot_images: Number(row.screenshot_images ?? 0),
+      retryable: Number(row.retryable ?? 0),
       gaps: Number(row.gaps ?? 0),
       queued: Number(firstResult(queue)?.queued ?? 0),
       duplicate_distribution: (distribution.results ?? []).map(value => Number(value.image_count)),

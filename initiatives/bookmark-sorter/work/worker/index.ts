@@ -29,14 +29,14 @@ interface ExecutionContext {
 
 async function transformCaptureImage(
   env: Env,
-  input: {bytes: Uint8Array; contentType?: string; width: number; height: number},
+  input: {bytes: Uint8Array; contentType?: string; maxWidth: number; maxHeight: number},
 ) {
   const body = new Blob([input.bytes], {
     type: input.contentType || "application/octet-stream",
   }).stream();
   const result = await env.IMAGES.input(body).transform({
-    width: input.width,
-    height: input.height,
+    width: input.maxWidth,
+    height: input.maxHeight,
     fit: "scale-down",
   }).output({format: "image/webp", quality: 78});
   const response = result.response();
@@ -44,8 +44,8 @@ async function transformCaptureImage(
   return {
     bytes: new Uint8Array(await response.arrayBuffer()),
     contentType: response.headers.get("content-type") || "image/webp",
-    width: input.width,
-    height: input.height,
+    width: input.maxWidth,
+    height: input.maxHeight,
   };
 }
 
@@ -57,8 +57,8 @@ const worker = {
         transformImage: (input: {
           bytes: Uint8Array;
           contentType?: string;
-          width: number;
-          height: number;
+          maxWidth: number;
+          maxHeight: number;
         }) => transformCaptureImage(env, input),
       });
       return app.fetch(request, env, ctx);

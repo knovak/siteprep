@@ -126,6 +126,33 @@ test('pass 1 follows the metadata ladder anonymously and stores only a fixed der
   assert.equal(stored.derivative, true);
 });
 
+test('pass-1 retry bypasses the cache once and marks a second closed failure as attempted', async t => {
+  const fixture = await fixtureServer();
+  t.after(fixture.close);
+  const store = storeWith('pile');
+  const images = new MemoryCaptureImages();
+  const candidates = [`${fixture.baseUrl}/og`, `${fixture.baseUrl}/twitter`].map((url, index) => {
+    const candidate = {url, url_key: normaliseUrl(url)};
+    store.insertItem({collection_id: 'pile', url, url_key: candidate.url_key, title: `Retry ${index + 1}`, note: null, added_at: null, ingested_at: '2026-08-20T00:00:00Z', verdict: null, verdict_at: null});
+    store.upsertCapture({url_key: candidate.url_key, image_ref: null, source: 'none', captured_at: '2026-08-20T00:00:00Z', image_hash: null, state: 'pass1-gap', page_title: null, description: null, favicon_url: null, error_tag: null, image_candidate: 'og:image', content_type: null, width: null, height: null, byte_size: null});
+    return candidate;
+  });
+  assert.equal(store.listRetryableCaptureItems('pile').length, 2);
+  const pipeline = createCapturePipeline({
+    store,
+    imageStore: images,
+    transformImage: input => input.bytes[0] === 22 ? Promise.reject(new Error('closed failure')) : derivative(input),
+    timeoutMs: 100,
+    concurrency: 1,
+  });
+  const result = await pipeline.captureMany('pile', candidates, {force: true, markRetried: true});
+  assert.equal(result.processed, 2);
+  assert.equal((await store.getCapture(candidates[0].url_key)).state, 'pass1-ready');
+  assert.equal((await store.getCapture(candidates[1].url_key)).state, 'pass1-retried-gap');
+  assert.equal(store.listRetryableCaptureItems('pile').length, 0);
+  assert.equal(result.status.retryable, 0);
+});
+
 test('capture failures become collection-local tags and cached errors attach on later ingestion', async t => {
   const fixture = await fixtureServer();
   t.after(fixture.close);

@@ -10,6 +10,11 @@ test('Sites declares the approved D1 and R2 end-user deployment', async () => {
   assert.match(hosting.project_id, /^appgprj_/);
   assert.equal(hosting.d1, 'DB');
   assert.equal(hosting.r2, 'CAPTURES');
+  const worker = await read('worker/index.ts');
+  assert.match(worker, /input: \{bytes: Uint8Array; contentType\?: string; maxWidth: number; maxHeight: number\}/);
+  assert.match(worker, /width: input\.maxWidth/);
+  assert.match(worker, /height: input\.maxHeight/);
+  assert.doesNotMatch(worker, /width: input\.width|height: input\.height/);
 });
 
 test('the generated deployment migration creates the complete final schema', async () => {

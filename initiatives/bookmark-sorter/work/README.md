@@ -204,7 +204,10 @@ the data-handling boundary.
   start pass 1 automatically. Repeating the request is safe and returns zero
   processed items when the active collection has caught up. The **Capture
   metadata** action runs those bounded batches until the active collection is
-  current, while keeping each individual request small.
+  current, while keeping each individual request small. It then retries once
+  any metadata-image candidates that failed closed during the first deployment;
+  a second failure is marked so the action cannot loop forever. The final status
+  reports coverage and duplicate-image group sizes for the real collection.
 - `POST /api/captures/gaps` is the only pass-2 driver. With the current switch
   off it reports the gap count and performs no vendor call. When a vendor is
   later authorised, the same endpoint processes a bounded batch through the
@@ -252,6 +255,11 @@ no-JavaScript rule, derivative-only storage, 404/timeout/TLS/parked failures,
 collection-local error tags, duplicate queuing, the vendor-off switch, stored
 image delivery, and absence of vendor configuration from the page. The sizing
 export is generated rather than committed as a large fixture.
+
+The Sites assembly passes the capture pipeline's `maxWidth` and `maxHeight` to
+the platform image transformer. This boundary is named explicitly because the
+pipeline fails closed when the assembler supplies no valid derivative, and a
+field-name mismatch would otherwise look like ordinary metadata gaps.
 
 Run the focused browser checks with the installed workspace Playwright binary:
 

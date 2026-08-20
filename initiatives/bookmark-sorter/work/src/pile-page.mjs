@@ -283,7 +283,7 @@ export function renderPilePage() {
       elements.selectionSummary.textContent = (state.expression ? state.expression : 'All items') + ' · ' + state.total.toLocaleString() + ' selected · ' + state.selectionBacklog.toLocaleString() + ' untriaged';
       elements.previousPage.disabled = state.loading || state.offset <= 0;
       elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
-      elements.capturePassOne.disabled = state.loading || !state.captures || state.captures.total >= state.collectionTotal;
+      elements.capturePassOne.disabled = state.loading || !state.captures || (state.captures.total >= state.collectionTotal && !state.captures.retryable);
     }
     async function startSession() {
       if (!state.collectionTotal || (state.session && !state.session.ended_at)) return;
@@ -640,15 +640,21 @@ export function renderPilePage() {
       elements.capturePassOne.disabled = true;
       let processed = 0;
       try {
-        while (true) {
-          elements.status.textContent = 'Capturing metadata… ' + processed.toLocaleString() + ' checked.';
-          const data = await api('/api/captures/pass-one?limit=20', {method: 'POST'});
-          state.captures = data.status;
-          processed += data.processed;
-          updateProgress();
-          if (!data.processed) break;
+        for (const retry of [false, true]) {
+          while (true) {
+            elements.status.textContent = 'Capturing metadata… ' + processed.toLocaleString() + (retry ? ' checked or retried.' : ' checked.');
+            const data = await api('/api/captures/pass-one?limit=20' + (retry ? '&retry=1' : ''), {method: 'POST'});
+            state.captures = data.status;
+            processed += data.processed;
+            updateProgress();
+            if (!data.processed) break;
+          }
         }
-        elements.status.textContent = 'Metadata capture caught up on ' + processed.toLocaleString() + ' bookmark' + (processed === 1 ? '' : 's') + '.';
+        const coverage = state.captures.metadata_coverage === null ? '—' : (state.captures.metadata_coverage * 100).toFixed(1) + '%';
+        const duplicates = state.captures.duplicate_distribution.filter(count => count > 1);
+        elements.status.textContent = 'Metadata capture caught up after ' + processed.toLocaleString() + ' check' + (processed === 1 ? '' : 's')
+          + '. Coverage: ' + state.captures.distinguishable_metadata.toLocaleString() + '/' + state.captures.total.toLocaleString() + ' (' + coverage + ')'
+          + '; duplicate image groups: ' + (duplicates.length ? duplicates.join(', ') : 'none') + '.';
         await loadWindow(state.offset);
       } catch (error) { elements.status.textContent = error.message; }
       finally { updateProgress(); }
