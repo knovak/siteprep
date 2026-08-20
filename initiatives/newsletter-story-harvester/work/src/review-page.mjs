@@ -1,19 +1,81 @@
 const DEFAULT_VERDICTS = ['dropped', 'kept', 'emphasised'];
 
+/**
+ * What a published story may carry. This is an allow-list rather than a list of
+ * fields to delete, so a field added to the record later cannot reach a
+ * published page until someone names it here. `source_doc` and `source_anchor`
+ * are the two that must never travel (spec.md 12, 6) - an allow-list is what
+ * stops a third one arriving unnoticed.
+ */
+const PUBLISHED_STORY_FIELDS = [
+  'id', 'url', 'title', 'text', 'text_is_summary',
+  'source', 'issue_date', 'story_date', 'tags', 'verdict'
+];
+
 function embeddedJson(value) {
   return JSON.stringify(value).replaceAll('<', '\\u003c').replaceAll('>', '\\u003e').replaceAll('&', '\\u0026');
 }
 
-export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) {
+function publishedStory(story) {
+  const published = {};
+  for (const field of PUBLISHED_STORY_FIELDS) {
+    if (field in story) published[field] = structuredClone(story[field]);
+  }
+  if (!Array.isArray(published.tags)) published.tags = [];
+  return published;
+}
+
+function publishedClusters(store, selected) {
+  const kept = new Set(selected.map(story => story.id));
+  const clusters = {};
+  for (const [tag, cluster] of Object.entries(store.clusters || {})) {
+    const members = (cluster.members || []).filter(id => kept.has(id));
+    if (members.length < 2) continue;
+    clusters[tag] = {tag: cluster.tag, paraphrase: cluster.paraphrase, members};
+  }
+  return clusters;
+}
+
+/**
+ * @param store                the durable store
+ * @param options.title        page heading
+ * @param options.include      verdicts to render; null renders every story
+ * @param options.judgeable    false removes every control that can judge, and
+ *                             withholds provenance. The two ride together on
+ *                             purpose: a page nobody can judge on is a page
+ *                             meant to leave this machine, so publishing cannot
+ *                             be half-done by forgetting a second flag.
+ */
+export function reviewPageHtml(store, {
+  title = 'Newsletter story review',
+  include = null,
+  judgeable = true
+} = {}) {
   if (!store || !Array.isArray(store.stories) || !store.store_id) {
     throw new Error('review page: a store with store_id and stories is required');
   }
+  const selected = include
+    ? store.stories.filter(story => include.includes(story.verdict))
+    : store.stories;
   const verdicts = [...new Set([
     ...DEFAULT_VERDICTS,
     ...(store.vocabularies?.verdict || []),
-    ...store.stories.map(story => story.verdict).filter(Boolean),
+    ...selected.map(story => story.verdict).filter(Boolean),
   ])];
-  const payload = {...structuredClone(store), vocabularies: {...store.vocabularies, verdict: verdicts}};
+  const payload = judgeable
+    ? {
+        ...structuredClone(store),
+        stories: structuredClone(selected),
+        vocabularies: {...store.vocabularies, verdict: verdicts}
+      }
+    : {
+        // No `runs`: a run record accounts for issues by `source_doc`, which is
+        // the same provenance the stories drop.
+        store_id: store.store_id,
+        stories: selected.map(publishedStory),
+        clusters: publishedClusters(store, selected),
+        vocabularies: {verdict: verdicts}
+      };
 
   return `<!doctype html>
 <html lang="en">
@@ -32,6 +94,7 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
     h1 { margin: 0; color: #193b8f; font-size: clamp(1.55rem, 3vw, 2.25rem); }
     .backlog { font-weight: 750; color: #8b2f17; white-space: nowrap; }
     .toolbar { display: grid; grid-template-columns: repeat(4, minmax(145px, 1fr)) auto; gap: 10px; margin-top: 14px; }
+    .toolbar.reading { grid-template-columns: repeat(2, minmax(145px, 1fr)); }
     label { display: grid; gap: 4px; color: #4a566f; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
     select, .tool-button { min-height: 42px; border: 1px solid #c9d2e4; border-radius: 10px; background: white; color: #172033; padding: 8px 10px; }
     .tool-button { align-self: end; font-weight: 700; }
@@ -70,9 +133,9 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
   <header class="top">
     <div class="headline">
       <h1>${escapeHtml(title)}</h1>
-      <div class="backlog" id="backlog" aria-live="polite"></div>
+      ${judgeable ? '<div class="backlog" id="backlog" aria-live="polite"></div>' : ''}
     </div>
-    <div class="toolbar">
+    <div class="toolbar${judgeable ? '' : ' reading'}">
       <label>Sort
         <select id="sort">
           <option value="story-date">Story date</option>
@@ -84,16 +147,18 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       <label>Filter by tag
         <select id="filter"><option value="">All tags</option></select>
       </label>
-      <label>Verdict for visible rest
+      ${judgeable ? `<label>Verdict for visible rest
         <select id="sweep-verdict"></select>
       </label>
       <button class="tool-button" id="verdict-rest">Judge visible unjudged</button>
       <button class="tool-button" id="undo" disabled>Undo</button>
-      <button class="tool-button primary" id="export">Export verdicts</button>
+      <button class="tool-button primary" id="export">Export verdicts</button>` : ''}
     </div>
   </header>
   <main id="stories"></main>
-  <footer>Self-contained review for store <strong>${escapeHtml(store.store_id)}</strong>. The store is never written by this page.</footer>
+  <footer>${judgeable
+    ? `Self-contained review for store <strong>${escapeHtml(store.store_id)}</strong>. The store is never written by this page.`
+    : 'Self-contained page. Nothing here names the message a story arrived in.'}</footer>
   <script id="store-data" type="application/json">${embeddedJson(payload)}</script>
   <script>
   (() => {
@@ -105,11 +170,13 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
     const verdicts = Array.from(new Set(store.vocabularies.verdict || []));
     const state = { filter: '', sort: 'story-date', undo: [] };
     const root = document.getElementById('stories');
-    const backlog = document.getElementById('backlog');
     const filter = document.getElementById('filter');
     const sort = document.getElementById('sort');
+    ${judgeable ? `
+    const backlog = document.getElementById('backlog');
     const sweepVerdict = document.getElementById('sweep-verdict');
     const undo = document.getElementById('undo');
+    ` : ''}
 
     function dateOf(story) { return story.story_date || story.issue_date || ''; }
     function visible(story) { return !state.filter || story.tags.includes(state.filter); }
@@ -141,6 +208,7 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       return visibleRows;
     }
 
+    ${judgeable ? `
     function setVerdicts(targets, verdict) {
       const at = new Date().toISOString();
       const changes = targets.map((story) => ({ id: story.id, verdict: story.verdict, verdict_at: story.verdict_at }));
@@ -176,6 +244,7 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 0);
     }
+    ` : ''}
 
     function text(tag, className, value) {
       const node = document.createElement(tag);
@@ -207,15 +276,19 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       const tags = document.createElement('div'); tags.className = 'tags';
       for (const tag of story.tags) tags.append(text('span', 'tag', tag));
       body.append(tags);
+      ${judgeable ? `
       const controls = document.createElement('div'); controls.className = 'verdict-buttons'; controls.setAttribute('aria-label', 'Verdict');
       for (const verdict of verdicts) {
         const button = text('button', '', verdict);
         button.type = 'button'; button.dataset.verdict = verdict; button.setAttribute('aria-pressed', String(story.verdict === verdict));
         button.addEventListener('click', () => setVerdicts([story], verdict)); controls.append(button);
       }
-      body.append(controls); details.append(body); return details;
+      body.append(controls);
+      ` : ''}
+      details.append(body); return details;
     }
 
+    ${judgeable ? `
     function verdictControls(targets, className = 'verdict-buttons') {
       const controls = document.createElement('div'); controls.className = className; controls.setAttribute('aria-label', 'Verdict');
       for (const verdict of verdicts) {
@@ -226,6 +299,7 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       }
       return controls;
     }
+    ` : ''}
 
     function clusterMember(story) {
       const member = document.createElement('article'); member.className = 'cluster-member'; member.dataset.id = story.id;
@@ -235,7 +309,7 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       if (/^https?:\\/\\//i.test(story.url || '')) {
         const link = text('a', 'story-link', 'Open story'); link.href = story.url; link.target = '_blank'; link.rel = 'noreferrer'; member.append(link);
       }
-      member.append(verdictControls([story]));
+      ${judgeable ? 'member.append(verdictControls([story]));' : ''}
       return member;
     }
 
@@ -251,14 +325,14 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
       heading.append(text('div', 'title', cluster.tag.replace(/^about:/, '').replaceAll('-', ' ')));
       heading.append(text('div', 'meta', members.length + ' stories · ' + rowDate(row)));
       summary.append(heading);
-      summary.append(text('span', 'verdict' + (sharedVerdict ? '' : ' unjudged'), sharedVerdict || 'mixed or unjudged'));
+      summary.append(text('span', 'verdict' + (sharedVerdict${judgeable ? '' : ' || true'} ? '' : ' unjudged'), sharedVerdict || ${judgeable ? "'mixed or unjudged'" : "'mixed'"}));
       details.append(summary);
       const body = document.createElement('div'); body.className = 'body';
       body.append(text('p', 'cluster-paraphrase', cluster.paraphrase));
       const memberList = document.createElement('div'); memberList.className = 'cluster-members';
       for (const story of members) memberList.append(clusterMember(story));
       body.append(memberList);
-      body.append(verdictControls(members, 'verdict-buttons cluster-controls'));
+      ${judgeable ? "body.append(verdictControls(members, 'verdict-buttons cluster-controls'));" : ''}
       details.append(body);
       return details;
     }
@@ -266,23 +340,29 @@ export function reviewPageHtml(store, {title = 'Newsletter story review'} = {}) 
     function render() {
       root.replaceChildren(...sortedVisible().map(row => row.kind === 'cluster' ? clusterCard(row) : storyCard(row.story)));
       if (!root.children.length) root.append(text('div', 'empty', 'No stories match this tag.'));
+      ${judgeable ? `
       const remaining = stories.filter(story => story.verdict === null).length;
       backlog.textContent = remaining + ' unjudged of ' + stories.length;
       undo.disabled = state.undo.length === 0;
+      ` : ''}
     }
 
     for (const tag of Array.from(new Set(stories.flatMap(story => story.tags))).sort()) {
       const option = document.createElement('option'); option.value = tag; option.textContent = tag; filter.append(option);
     }
+    ${judgeable ? `
     for (const verdict of verdicts) {
       const option = document.createElement('option'); option.value = verdict; option.textContent = verdict; sweepVerdict.append(option);
     }
+    ` : ''}
     filter.addEventListener('change', () => { state.filter = filter.value; render(); });
     sort.addEventListener('change', () => { state.sort = sort.value; render(); });
+    ${judgeable ? `
     document.getElementById('verdict-rest').addEventListener('click', () => setVerdicts(stories.filter(story => visible(story) && story.verdict === null), sweepVerdict.value));
     undo.addEventListener('click', undoLast);
     document.getElementById('export').addEventListener('click', downloadExport);
     window.reviewPage = { getExport, undo: undoLast, verdictRest: verdict => setVerdicts(stories.filter(story => visible(story) && story.verdict === null), verdict) };
+    ` : ''}
     render();
   })();
   </script>
