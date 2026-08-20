@@ -52,7 +52,6 @@
 <p>§9.2&#39;s <code>guide/</code> tree is rooted at <code>initiatives/repo-guide/work/</code>, so the generator lives at <code>initiatives/repo-guide/work/guide/</code>:</p>
 <pre><code>initiatives/repo-guide/work/guide/
   .gitignore           # out/
-  config.json          # PDF links, portable-file markers, the watched date (§6.3)
   content/*.md         # the sections of §5
   simulator/           # the walk-through&#39;s own source
   build/               # the generator: facts, tokens, renderers, checks
@@ -98,7 +97,7 @@
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.2.</p>
 <h4>Phase 3 — The description, and the harness that opens it</h4>
 <p><strong>Produces:</strong> the nine sections of §5.2, page text only; the description renderer — one self-contained HTML file, styling and script inline; §10&#39;s provenance footer with the generation date and the short sha of the sources; and <code>work/guide/test/</code>, the browser checks of §3.3 above, with the config that runs them against <code>file://</code>.</p>
-<p><strong>Leaves out:</strong> slide text, the simulator, and the PDF dating.</p>
+<p><strong>Leaves out:</strong> slide text, the simulator, and simulator review dating.</p>
 <p><strong>This is the largest phase and it is deliberately not split.</strong> The nine sections are one document with one argument; drafting five of them and stopping produces half an explanation, which is not an increment of anything. Section 3 — who supplies what, per stage — is the one <code>objectives.md</code> calls hardest, because it is the only section whose material is spread across all five existing documents rather than derivable from one.</p>
 <p><strong>What arrives here rather than later:</strong> the footer, because §10 says a guide generated on request travels and the footer is what lets somebody holding a copy work out whether it still describes the repository; and the browser harness, because &quot;opens with no console error and every authoritative link resolves&quot; is this phase&#39;s exit and not a nicety to be added once three artefacts exist.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.3, including the first count of composed words against derived tokens (§6.1).</p>
@@ -113,10 +112,9 @@
 <p><strong>Why after the deck and not before.</strong> The simulator is the one deliverable outside decision 1&#39;s guarantee — the choreography is composed and can disagree with the repository the first time a stage changes. Building it last means it is composed against a fact set that already exists, so the vocabulary is derived from the first line rather than retrofitted, and the part that can drift is narrowed to the sequence of steps.</p>
 <p><strong>The two steps that carry the phase</strong> are §7&#39;s own: the passed-over item in step 4, because the budget is the part of the sweep newcomers do not expect, and the cascade in step 6, when a merge unblocks something else. A version that shows one initiative moving cleanly through its stages is a stage table with animation, and it is not what O4 asks for.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.5.</p>
-<h4>Phase 6 — PDF dating</h4>
-<p><strong>Produces:</strong> <code>config.json</code>&#39;s PDF block — a link and a hand-set refresh date per PDF (§8) — and §10&#39;s comparison: when the newest commit touching any source in §3.2&#39;s table is later than a PDF&#39;s refresh date, the description shows that PDF as <strong>possibly stale</strong>, with both dates.</p>
-<p><strong>Leaves out:</strong> making a PDF, storing one, or refusing to generate when one is stale. §10 rules the last of those out by name.</p>
-<p><strong>Small, and that is the payoff for the order.</strong> By now the fact table exists, so &quot;the newest commit touching any source&quot; is a walk over a list that is already there, and the description exists to display the warning in. Built first it would have been a feature with nowhere to appear.</p>
+<h4>Phase 6 — Simulator review dating</h4>
+<p><strong>Produces:</strong> a hand-set last-watched date in <code>build/dating.mjs</code> and §10&#39;s comparison with the newest commit touching the lifecycle and sweep sources the simulator uses. When those sources are newer, generation reports that another walkthrough may be due without refusing to generate.</p>
+<p><strong>Small, and that is the payoff for the order.</strong> The simulator and its exact source list already exist, so the comparison adds no metadata file and no second source registry.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.6.</p>
 <h4>Phase 7 — Package it as a skill</h4>
 <p><strong>Produces:</strong> <code>.claude/skills/generate-guide/SKILL.md</code> — a description that triggers on a request for the guide, the command that generates all three artefacts, the command that runs the browser checks against what it just generated, and what to do when a fact fails to resolve (report it; §9.4).</p>
@@ -137,9 +135,9 @@
 <h4>6.2 What invokes the skill, and how often — <em>two occasions, neither scheduled</em></h4>
 <p><strong>After a process change that a section describes, and before handing the guide to somebody.</strong> Not on a schedule, and nothing automates it: §9.1 made generation deliberate on purpose, and a scheduled regeneration would quietly re-acquire the thing that decision removed — a guide being rebuilt for nobody, failing for nobody, on a repository nobody is reading it from.</p>
 <p>What makes that safe is §10&#39;s footer, and it is worth being precise about the division. The footer does not keep a copy fresh; it makes a stale copy <em>detectable by the person holding it</em>, which is the property that matters for an artefact that travels as an attachment. Regeneration is cheap, so the answer to &quot;is this current?&quot; is always &quot;generate it again and compare the sha&quot;, and that is a better arrangement than a schedule that guesses how often the process changes.</p>
-<h4>6.3 Whether the simulator needs its own review cadence — <em>yes, and it reuses §10&#39;s mechanism</em></h4>
-<p>§12 notes that the simulator is the piece generation does not reach and that nothing prompts anyone to re-watch it after a stage change. The dating covers detection for the PDFs; the same mechanism covers this, for the same reason and at the same cost.</p>
-<p><code>config.json</code> carries a <code>simulator_watched</code> date, set by hand when somebody steps through it. Generation compares it against the newest commit touching <code>lifecycle.*</code> or <code>sweep.phases</code> — the facts the choreography depends on — and when the sources are newer, the generation report says so. A report line rather than a failure, exactly as §10 rules for the PDFs, and for the same reason: refusing to generate would train people to work around it.</p>
+<h4>6.3 Whether the simulator needs its own review cadence — <em>yes, using §10&#39;s mechanism</em></h4>
+<p>§12 notes that the simulator is the piece generation does not reach and that nothing prompts anyone to re-watch it after a stage change. Dating covers that detection directly.</p>
+<p><code>build/dating.mjs</code> carries the last-watched date, set by hand when somebody steps through the simulator. Generation compares it against the newest commit touching <code>lifecycle.*</code> or <code>sweep.phases</code> — the facts the choreography depends on — and when the sources are newer, the generation report says so. A report line rather than a failure keeps review visible without training people to work around the generator.</p>
 <p>The alternative considered and rejected was pinning the step sequence with a test. It cannot be done honestly — the steps are a <em>narrative</em> about the rules, not a consequence of them, and a test asserting that step 4 shows a passed-over item pins the words rather than their truth.</p>
 <h4>6.4 Whether the <code>portable: true</code> markers survive a fork — <em>nobody can say, and the plan will not pretend</em></h4>
 <p>§5.2&#39;s section 8 is generated from <code>structure.content_areas</code> and <code>sweep.protected_paths</code>, plus a maintained marker for files the generator cannot classify. §12 is right that the marker list is a claim about what carries the process, and that the only test of it is somebody forking.</p>
