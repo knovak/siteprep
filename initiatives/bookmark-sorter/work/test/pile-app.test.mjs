@@ -47,6 +47,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="capture-gaps" type="button" disabled/);
   assert.match(html, /id="previous-page"/);
   assert.match(html, /id="next-page"/);
+  assert.match(html, /id="rename-form"/);
+  assert.doesNotMatch(html, /prompt\('Collection name'/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);
 
@@ -184,6 +186,8 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   }));
   assert.equal(confirmed.status, 200);
   assert.equal((await confirmed.json()).changes.length, 2);
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/selection?expression=verdict%3Aarchive'))).json()).total, 2);
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/selection?expression=verdict%3Auntriaged'))).json()).total, 1);
 });
 
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {
