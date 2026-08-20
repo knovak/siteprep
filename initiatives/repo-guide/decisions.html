@@ -275,6 +275,25 @@
 <p>  once planned. This decision supersedes them for all current work.</p>
 <ul><li>A portable-document format could be reconsidered later, but there is no</li></ul>
 <p>  current requirement or placeholder for it.</p>
+<h3>2026-08-20 — Did the three newcomer tests pass, and how does the guide get linked into the site?</h3>
+<p><strong>Yes to all three tests. And the guide is published by hand to <code>demos/</code>, not linked into site navigation.</strong></p>
+<p>The user&#39;s words, on the three testing items: <em>&quot;Yes to all these.&quot;</em> On linking: <em>&quot;I have done a manual release to demos, with a skill for the purpose. I will continue to do manual releases when I think something significant has changed. So that is done.&quot;</em></p>
+<h4>What this settles</h4>
+<ul><li><strong>The phase 3 newcomer reading test passed</strong> — someone unfamiliar with the</li></ul>
+<p>  repository can read the description and identify a live stage and its next   move.</p>
+<ul><li><strong>The phase 4 ten-minute presentation test passed</strong> — someone unfamiliar with</li></ul>
+<p>  the material can present the deck end to end inside ten minutes.</p>
+<ul><li><strong>The simulator walkthrough passed</strong> — it accurately explains the sweep and</li></ul>
+<p>  the whole lifecycle, and the abstract treatment of the lifecycle is adequate.</p>
+<ul><li><strong>Publication is manual and already done.</strong> <code>link-the-guide</code> asked for</li></ul>
+<p>  permission to write into protected site navigation and build paths. That   permission is not granted and is no longer needed: the <code>deploy-demo</code> skill   copies the built guide into <code>demos/</code>, and the user runs it when something   significant has changed. The item is complete by a different route than the   one it was written for.</p>
+<h4>What this leaves open</h4>
+<ul><li><strong>Refresh is a human trigger, not a schedule.</strong> Nothing detects that the</li></ul>
+<p>  guide has drifted from the repository it describes; the user decides when a   change is significant enough to re-release. If the guide is later found stale   in a way that matters, the answer is a staleness check, not automation of the   release.</p>
+<ul><li><strong>The generated artifacts are still absent from site navigation.</strong> A reader</li></ul>
+<p>  who does not know the demo exists will not stumble onto it. That is accepted   for now rather than solved.</p>
+<h4>Consequence</h4>
+<p>With these four items closed the initiative has no remaining work, and the user has declared it <strong>dormant</strong> rather than seeding another round — the §5.1 distinction made explicitly instead of by neglect.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
