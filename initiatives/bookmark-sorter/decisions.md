@@ -789,3 +789,34 @@ deployment deliberately did not provision it.
   capture totals, distinguishable metadata coverage, and the duplicate-image
   distribution. Once captures exist, recording the numbers is reading that
   endpoint.
+
+## 2026-08-20 — What did metadata pass 1 cover, and should the duplicate threshold move?
+
+**Pass 1 produced 698 distinguishable metadata images for 1,201 bookmarks, or
+58.1% coverage. Keep the duplicate-image threshold at 30 and keep pass 2
+switched off.**
+
+The owner-only Site's version 15 ran the bounded catch-up against the existing
+real pile after R2 was provisioned. The duplicate-image groups larger than one
+were **11, 5, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2**. None reaches the starting
+threshold of 30, so every stored derivative remains distinguishable under the
+current rule. The 503 bookmarks without a distinguishable metadata image stay
+visibly blank; no screenshot vendor was called.
+
+### What the live run changed
+
+The first attempt exposed a deployment boundary rather than a bad source
+image: Sites supplies the declared D1 and R2 bindings but not Cloudflare's raw-
+byte Images binding. The worker now uses Cloudflare's supported `cf.image`
+subrequest path when that optional binding is absent. A final retry recovered
+the 698 derivatives and marked any remaining candidate fail-closed so repeating
+the action cannot loop. The original bytes were never written to R2.
+
+### Why 30 stays
+
+The largest repeated hash covers 11 bookmarks, less than half the current
+threshold. Lowering the threshold to 11 would hide those images and queue a
+paid second pass without evidence that the shared image is misleading. Keeping
+30 preserves the original conservative rule: only a clearly site-wide image
+should be treated as no image. A later visual review may reopen the number, but
+this measurement does not justify changing it.
