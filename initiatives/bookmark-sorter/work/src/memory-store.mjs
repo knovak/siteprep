@@ -281,6 +281,15 @@ export class MemoryBookmarkStore {
     return tagged;
   }
 
+  listUncapturedItems(collectionId, {limit = 20} = {}) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    return [...this.#items.values()]
+      .filter(item => item.collection_id === collectionId && !this.#captures.has(item.url_key))
+      .sort((left, right) => left.id.localeCompare(right.id))
+      .slice(0, safeLimit)
+      .map(({url, url_key}) => ({url, url_key}));
+  }
+
   refreshCaptureQueue({duplicateThreshold, at}) {
     const hashCounts = new Map();
     for (const capture of this.#captures.values()) {

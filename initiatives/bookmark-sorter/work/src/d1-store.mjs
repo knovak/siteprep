@@ -476,6 +476,20 @@ export class D1BookmarkStore {
     }
   }
 
+  async listUncapturedItems(collectionId, {limit = 20} = {}) {
+    await this.assertCollectionWritable(collectionId);
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    const result = await this.db.prepare(
+      `SELECT i.url, i.url_key
+       FROM items i
+       LEFT JOIN captures c ON c.url_key = i.url_key
+       WHERE i.collection_id = ? AND c.url_key IS NULL
+       ORDER BY i.id
+       LIMIT ?`,
+    ).bind(collectionId, safeLimit).all();
+    return result.results ?? [];
+  }
+
   async refreshCaptureQueue({duplicateThreshold, at}) {
     await this.db.batch([
       this.db.prepare("DELETE FROM capture_queue WHERE state != 'running'"),

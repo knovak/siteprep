@@ -279,6 +279,14 @@ export function createPileApp({
           return json(await capture.processGaps({limit: body.limit, collectionId}));
         }
 
+        if (request.method === 'POST' && url.pathname === '/api/captures/pass-one') {
+          if (!capture) return json({error: 'Capture storage is not configured'}, 503);
+          const candidates = await store.listUncapturedItems(collectionId, {
+            limit: url.searchParams.get('limit'),
+          });
+          return json(await capture.captureMany(collectionId, candidates));
+        }
+
         if (request.method === 'POST' && url.pathname === '/api/session') {
           const body = await requestJson(request);
           if (body.action === 'start') {

@@ -323,6 +323,38 @@ test('pile app refuses oversized uploads before reading them', async () => {
   assert.equal(response.status, 413);
 });
 
+test('pass-1 backfill processes only uncaptured items in repeatable bounded batches', async () => {
+  const store = new AppStore();
+  store.createCollection({id: 'pile', name: 'Pile', owner_id: null, kind: 'personal', created_at: '2026-08-18T00:00:00Z'});
+  for (const suffix of ['one', 'two']) {
+    store.insertItem({
+      collection_id: 'pile', url: `https://example.com/${suffix}`, url_key: `https://example.com/${suffix}`,
+      title: suffix, title_key: suffix, note: null, added_at: null, ingested_at: '2026-08-18T00:00:00Z',
+      verdict: null, verdict_at: null,
+    });
+  }
+  const captured = [];
+  const capture = {
+    captureMany: async (collectionId, candidates) => {
+      for (const candidate of candidates) {
+        captured.push(candidate.url_key);
+        store.upsertCapture({
+          url_key: candidate.url_key, image_ref: null, source: 'none', captured_at: '2026-08-20T00:00:00Z',
+          image_hash: null, state: 'pass1-gap', page_title: null, description: null, favicon_url: null,
+          error_tag: null, image_candidate: null, content_type: null, width: null, height: null, byte_size: null,
+        });
+      }
+      return {processed: candidates.length, captures: [], status: {total: captured.length}};
+    },
+  };
+  const app = createTestApp({storeFactory: () => store, captureFactory: () => capture});
+  const run = () => app.fetch(new Request('https://pile.test/api/captures/pass-one?limit=1', {method: 'POST'}));
+  assert.equal((await (await run()).json()).processed, 1);
+  assert.equal((await (await run()).json()).processed, 1);
+  assert.equal((await (await run()).json()).processed, 0);
+  assert.deepEqual(captured, ['https://example.com/one', 'https://example.com/two']);
+});
+
 test('pile app serves stored derivatives and the explicit gap action without exposing vendor configuration', async () => {
   const store = new AppStore();
   store.createCollection({id: 'pile', name: 'Pile', owner_id: null, kind: 'personal', created_at: '2026-08-18T00:00:00Z'});
