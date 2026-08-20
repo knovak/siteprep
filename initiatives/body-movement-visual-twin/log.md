@@ -15,3 +15,7 @@ Specified a private, invitation-only browser demo built on open anatomy sources,
 ## 2026-08-19 — Before a successor public release, confirm the rights and trademark basis for the movement collection and anatomy assets
 
 Recorded that rights, licensing, attribution, and trademark review applies only if a public successor release is prepared; private validation is not gated by it.
+
+## 2026-08-20 — Draft plan.md and test-plan.md from the specification
+
+Drafted a phased build plan and claim-focused test plan; kept the shoulder-and-spine region, reduced initial validation to three movements, and seeded the asset-rights feasibility and movement-contract phases.
