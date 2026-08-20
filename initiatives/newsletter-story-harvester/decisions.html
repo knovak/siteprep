@@ -285,6 +285,24 @@
 <p>  modules. That coupling is unchanged by the move; it just now crosses a   directory boundary, so moving or renaming those modules breaks the skill.</p>
 <ul><li><strong>Unchanged:</strong> what the skill does, its guardrails, and the privacy rules for</li></ul>
 <p>  the store, brief, and proposal.</p>
+<h3>2026-08-19 — Publishing withholds provenance by allow-list, and rides on one flag</h3>
+<p><strong>Phase 8 settled two things <code>spec.md</code> §12 left as a description rather than a mechanism.</strong></p>
+<p>§12 says the published page is &quot;the review page&#39;s renderer with the verdict controls removed and the selection narrowed&quot;, and that <code>source_doc</code> and <code>source_anchor</code> &quot;do not travel&quot;. Both needed a shape.</p>
+<ul><li>**Settled: a published story is built from an allow-list, not by deleting two</li></ul>
+<p>  fields.** <code>PUBLISHED_STORY_FIELDS</code> names the ten fields a published story may   carry. A deny-list would have satisfied the test written today and quietly   failed the first time the record grows an eleventh field — and the record has   already grown <code>merged_from</code>, <code>shape</code>, and <code>harvester</code> since it was specified.   The cost is that a genuinely publishable new field needs a one-line edit, and   that edit is exactly the review this deserves.</p>
+<ul><li><strong>Settled: <code>runs</code> does not travel either.</strong> §12 named the two story fields,</li></ul>
+<p>  but a run record accounts for issues by <code>source_doc</code>, so publishing the store   wholesale would have leaked the same provenance one level up. The published   payload is <code>store_id</code>, stories, clusters, and the verdict vocabulary.</p>
+<ul><li><strong>Settled: <code>judgeable: false</code> withholds provenance as well as controls.</strong> Two</li></ul>
+<p>  arguments change (<code>include</code> and <code>judgeable</code>), not three. Provenance is not a   separate knob because publishing must not be half-done by forgetting one: a   page nobody can judge on is a page meant to leave this machine.</p>
+<ul><li><strong>Settled: the controls are removed at generation, not hidden by CSS.</strong> The</li></ul>
+<p>  published file contains no <code>setVerdicts</code>, <code>getExport</code>, <code>downloadExport</code>, or   <code>window.reviewPage</code>. &quot;No way to judge anything&quot; is a property of the file, and   a disabled control is still a control.</p>
+<ul><li><strong>Settled: sort and tag filter survive publication.</strong> Neither judges, and</li></ul>
+<p>  filtering by <code>theme:</code> is how a theme is a page (O4). The backlog count does   not survive — it counts unjudged stories, and there are none.</p>
+<ul><li><strong>Settled: a cluster publishes with its withheld members dropped.</strong> If fewer</li></ul>
+<p>  than two members survive the selection, the cluster does not render and the   survivors appear as ordinary stories, which is the existing phase 7 rule   rather than a new one.</p>
+<ul><li><strong>Note: the published file is mode 0644, deliberately.</strong> Every other artefact</li></ul>
+<p>  touching a real store is 0600. This one exists to be shared, which is the   whole reason nothing of the mailbox is allowed into it.</p>
+<ul><li><strong>Unchanged:</strong> where such a page is hosted stays out of scope, per §12.</li></ul>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
