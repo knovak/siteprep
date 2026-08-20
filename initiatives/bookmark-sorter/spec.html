@@ -140,8 +140,10 @@
 <p>That also fixes the vocabulary: this document says <strong>selection</strong>, not cluster. A &quot;cluster&quot; is a <em>named selection</em> — the word describes what the result looks like to a person, not a separate kind of object.</p>
 <p><strong>The expression</strong> is a boolean over tags, which is what the wish asks for literally:</p>
 <pre><code>folder:reading/* and not topic:rust
-(src:chrome-export or src:safari-export) and err:404</code></pre>
+(src:chrome-export or src:safari-export) and err:404
+verdict:keep or verdict:needs-time</code></pre>
 <p>Grammar: <code>and</code>, <code>or</code>, <code>not</code>, parentheses, bare tags, and <code>*</code> as a trailing wildcard. Deliberately small — a selection tool, not a language. A saved selection (§5) is this expression plus a name.</p>
+<p>The evaluator also exposes the current verdict as a synthetic tag, using the same words as the interface: <code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, and <code>verdict:untriaged</code>. These values are derived from the item verdict; they are not stored in the ordinary tag table and therefore cannot drift when a verdict changes.</p>
 <h4>8.1 Scope: one collection by default, all of them for administration</h4>
 <p>The evaluator can select across the whole store; the ordinary UI does not let it.</p>
 <ul><li><strong>In the user interface</strong>, every selection is implicitly wrapped as</li></ul>
