@@ -23,12 +23,16 @@ export function renderPilePage() {
     .stat strong { display: block; color: #142a58; font-size: 1.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
     .stat span { color: #687188; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
     .collection-bar { grid-row: 2; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding: 8px; border: 1px solid #d8deea; border-radius: 12px; background: white; }
-    .collection-bar select, .collection-bar button { flex: 0 0 auto; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; color: #29406e; background: white; font-weight: 720; }
+    .collection-bar select, .collection-bar input, .collection-bar button { flex: 0 0 auto; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; color: #29406e; background: white; font-weight: 720; }
     #collection-select { min-width: min(280px, 42vw); }
     #template-select { min-width: min(220px, 35vw); }
+    .rename-form { display: flex; align-items: center; gap: 7px; padding: 0; }
+    #collection-name { min-width: min(240px, 38vw); }
+    .rename-form button[type="submit"] { border-color: #234fc4; color: white; background: #234fc4; }
     .collection-bar .danger { border-color: #e08b83; color: #8f2820; }
     .collection-bar .spacer { flex: 1 0 12px; }
     .collection-kind { flex: 0 0 auto; color: #687188; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
     details { grid-row: 3; border: 1px solid #d8deea; border-radius: 12px; background: white; }
     summary { padding: 8px 12px; color: #29406e; font-weight: 750; cursor: pointer; }
     form { display: grid; grid-template-columns: 1fr minmax(160px, .35fr) auto; gap: 10px; align-items: end; padding: 0 12px 12px; }
@@ -105,7 +109,7 @@ export function renderPilePage() {
       .stats { gap: 10px; }
       .stat strong { font-size: 1.15rem; }
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
-      .collection-bar select, .collection-bar button { min-height: 32px; padding: 4px 7px; }
+      .collection-bar select, .collection-bar input, .collection-bar button { min-height: 32px; padding: 4px 7px; }
       .collection-kind, .collection-bar .spacer { display: none; }
       details:not([open]) { display: none; }
       .selection-panel { display: flex; overflow-x: auto; }
@@ -156,6 +160,7 @@ export function renderPilePage() {
         <li><code>site:example.com</code> — items from one site.</li>
         <li><code>title:court-drama*</code> — normalized titles beginning with that text.</li>
         <li><code>src:safari</code>, <code>in:2026-08-19</code>, or <code>folder:Favorites*</code> — imported tags.</li>
+        <li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, or <code>verdict:untriaged</code> — current verdict.</li>
         <li><code>collection:&lt;id&gt;</code> — collection scope; the interface adds the current collection automatically.</li>
         <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder groups used by Automatic proposals.</li>
         <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses. One trailing <code>*</code> performs prefix matching.</li>
@@ -165,6 +170,12 @@ export function renderPilePage() {
       <select id="collection-select" aria-label="Current collection"></select>
       <span id="collection-kind" class="collection-kind"></span>
       <button id="rename-collection" type="button">Rename</button>
+      <form id="rename-form" class="rename-form" hidden>
+        <label class="visually-hidden" for="collection-name">Collection name</label>
+        <input id="collection-name" name="name" autocomplete="off" maxlength="120" required>
+        <button type="submit">Save</button>
+        <button id="cancel-rename" type="button">Cancel</button>
+      </form>
       <button id="fresh-copy" type="button" hidden>Fresh copy</button>
       <button id="delete-copy" class="danger" type="button" hidden>Delete copy</button>
       <span class="spacer"></span>
@@ -233,7 +244,8 @@ export function renderPilePage() {
       sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'),
       sweepSaved: document.querySelector('#sweep-saved'), selectionSummary: document.querySelector('#selection-summary'),
       collectionSelect: document.querySelector('#collection-select'), collectionKind: document.querySelector('#collection-kind'),
-      renameCollection: document.querySelector('#rename-collection'), freshCopy: document.querySelector('#fresh-copy'),
+      renameCollection: document.querySelector('#rename-collection'), renameForm: document.querySelector('#rename-form'),
+      collectionName: document.querySelector('#collection-name'), cancelRename: document.querySelector('#cancel-rename'), freshCopy: document.querySelector('#fresh-copy'),
       deleteCopy: document.querySelector('#delete-copy'), templateSelect: document.querySelector('#template-select'),
       copyTemplate: document.querySelector('#copy-template'), createTemplate: document.querySelector('#create-template'),
       helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'),
@@ -414,6 +426,21 @@ export function renderPilePage() {
       return state.collections.find(collection => collection.id === state.collectionId) || null;
     }
 
+    function setRenameEditing(editing) {
+      const collection = currentCollection();
+      const open = Boolean(editing && collection);
+      elements.renameForm.hidden = !open;
+      elements.renameCollection.hidden = open;
+      elements.collectionSelect.disabled = open;
+      if (open) {
+        elements.collectionName.value = collection.name;
+        elements.collectionName.focus();
+        elements.collectionName.select();
+      } else {
+        elements.collectionName.value = '';
+      }
+    }
+
     function renderCollections() {
       const previous = state.collectionId;
       elements.collectionSelect.replaceChildren(...state.collections.map(collection => new Option(
@@ -430,6 +457,7 @@ export function renderPilePage() {
       elements.createTemplate.hidden = !state.canEditTemplates;
       elements.copyTemplate.disabled = !state.templates.length;
       elements.renameCollection.disabled = !collection;
+      setRenameEditing(false);
     }
 
     async function loadCollections(preferredId = state.collectionId) {
@@ -621,10 +649,24 @@ export function renderPilePage() {
       collectionAction('copy-template', {template_id: templateId}).then(() => { elements.status.textContent = 'Private demo copy created.'; }).catch(error => { elements.status.textContent = error.message; });
     });
     elements.freshCopy.addEventListener('click', () => collectionAction('fresh-copy', {collection_id: state.collectionId}).then(() => { elements.status.textContent = 'Fresh private copy created; the earlier copy is unchanged.'; }).catch(error => { elements.status.textContent = error.message; }));
-    elements.renameCollection.addEventListener('click', () => {
+    elements.renameCollection.addEventListener('click', () => setRenameEditing(true));
+    elements.renameForm.addEventListener('submit', event => {
+      event.preventDefault();
       const collection = currentCollection();
-      const name = collection ? prompt('Collection name', collection.name) : null;
-      if (name && name.trim() && name.trim() !== collection.name) collectionAction('rename', {collection_id: collection.id, name}).then(() => { elements.status.textContent = 'Collection renamed.'; }).catch(error => { elements.status.textContent = error.message; });
+      const name = elements.collectionName.value.trim();
+      if (!collection) return setRenameEditing(false);
+      if (!name) { elements.status.textContent = 'Collection name is required.'; elements.collectionName.focus(); return; }
+      if (name === collection.name) { elements.status.textContent = 'Collection name unchanged.'; setRenameEditing(false); return; }
+      const button = elements.renameForm.querySelector('button[type="submit"]');
+      button.disabled = true;
+      collectionAction('rename', {collection_id: collection.id, name})
+        .then(() => { elements.status.textContent = 'Collection renamed.'; elements.renameCollection.focus(); })
+        .catch(error => { elements.status.textContent = error.message; elements.collectionName.focus(); })
+        .finally(() => { button.disabled = false; });
+    });
+    elements.cancelRename.addEventListener('click', () => { setRenameEditing(false); elements.renameCollection.focus(); });
+    elements.collectionName.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); setRenameEditing(false); elements.renameCollection.focus(); }
     });
     elements.deleteCopy.addEventListener('click', () => {
       const collection = currentCollection();

@@ -304,3 +304,11 @@ private collections, verdicts, selections, undo, sitting rate and JSON export
 are live; metadata images and the capture-gap pipeline remain off. This makes
 the blind and selection measurements runnable without treating the open Sites
 storage-cost question as accepted.
+
+## 2026-08-20 — Repair collection rename and add verdict selectors
+
+Replaced the unsupported browser prompt behind Rename with an inline form that
+supports Save, Cancel and Escape. Added selection clauses for the five visible
+verdict states: keep, junk, archive, needs time and untriaged. The in-page Help,
+technical documentation, evaluator tests, API tests and browser coverage now
+describe and exercise both changes.

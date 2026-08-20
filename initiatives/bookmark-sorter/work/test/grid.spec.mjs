@@ -19,6 +19,7 @@ function sampleItems(count = 10_000) {
 async function installPile(page) {
   const backend = {
     items: sampleItems(),
+    collection: {id: 'pile', name: 'My bookmarks', kind: 'personal'},
     session: null,
     actions: [],
     requests: [],
@@ -33,7 +34,7 @@ async function installPile(page) {
     if (request.method() === 'GET' && url.pathname === '/api/collections') {
       return route.fulfill({json: {
         active_collection_id: 'pile', can_edit_templates: false,
-        collections: [{id: 'pile', name: 'My bookmarks', kind: 'personal', item_count: backend.items.length}],
+        collections: [{...backend.collection, item_count: backend.items.length}],
         templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
       }});
     }
@@ -50,6 +51,10 @@ async function installPile(page) {
       return route.fulfill({json: {proposals: []}});
     }
     const body = request.postDataJSON();
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'rename') {
+      backend.collection = {...backend.collection, name: body.name.trim()};
+      return route.fulfill({json: {collection: {...backend.collection, item_count: backend.items.length}}});
+    }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
         backend.session = {
@@ -198,10 +203,34 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('Sweep untriaged');
   await expect(page.locator('#help-panel')).toContainText('site:example.com');
   await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
+  await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
   await page.keyboard.press('Escape');
   await expect(page.locator('#help-panel')).toBeHidden();
 
   await expect(page.locator('[data-item-id="item-1"] .tag').first()).toHaveAttribute('title', 'All tags:\nfolder:Reading/topic-0\nsrc:browser-export');
+});
+
+test('collection rename uses an inline form and supports save or keyboard cancel', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await page.getByRole('button', {name: 'Rename'}).click();
+  await expect(page.locator('#rename-form')).toBeVisible();
+  await expect(page.getByLabel('Collection name')).toHaveValue('My bookmarks');
+  await expect(page.getByLabel('Collection name')).toBeFocused();
+  await page.getByLabel('Collection name').press('Escape');
+  await expect(page.locator('#rename-form')).toBeHidden();
+  await expect(page.getByRole('button', {name: 'Rename'})).toBeFocused();
+
+  await page.getByRole('button', {name: 'Rename'}).click();
+  await page.getByLabel('Collection name').fill('Reviewed bookmarks');
+  await page.getByLabel('Collection name').press('Enter');
+  await expect(page.locator('#status')).toHaveText('Collection renamed.');
+  await expect(page.locator('#rename-form')).toBeHidden();
+  await expect(page.getByLabel('Current collection')).toContainText('Reviewed bookmarks');
+  await expect(page.getByRole('button', {name: 'Rename'})).toBeFocused();
+  expect(backend.collection.name).toBe('Reviewed bookmarks');
 });
 
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {

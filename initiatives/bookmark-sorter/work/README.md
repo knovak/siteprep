@@ -86,7 +86,9 @@ selection, and export operations.
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy
   control. Truncated tag chips expose the item's complete tag list through
   their hover text. Help documents the controls and selection grammar in the
-  page. Stored derivatives appear without any request to the saved page. A
+  page. The collection bar renames through an inline form rather than a browser
+  prompt, so it works in the Sites browser environment. Stored derivatives
+  appear without any request to the saved page. A
   verdict patches the affected cards in place rather than navigating or
   rebuilding the grid. The visible-page sweep changes only untriaged cards and
   advances to the next page; Previous and Next page without writing. A
@@ -179,7 +181,9 @@ the data-handling boundary.
   operation.
 - `GET /api/selection` evaluates the expression through the ordinary UI scope,
   implicitly `collection:pile and ( … )`, and returns one virtual window plus
-  both collection and selection counts.
+  both collection and selection counts. In addition to ordinary and synthetic
+  tags, `verdict:keep`, `verdict:junk`, `verdict:archive`,
+  `verdict:needs-time`, and `verdict:untriaged` select by the current verdict.
 - `GET|POST /api/selections` lists and saves named expressions. Saving parses
   the expression first; malformed input is an error, never an empty set.
 - `GET /api/proposals` recomputes same-site, same-folder and near-title groups

@@ -27,6 +27,20 @@ test('UI scope wrapping and administrative selection use the same evaluator', ()
   assert.deepEqual(evaluateSelection(items, 'collection:beta or topic:garden').map(item => item.id), ['c', 'd']);
 });
 
+test('verdict clauses use the labels visible in the interface', () => {
+  const verdictItems = [
+    {...items[0], id: 'keep', verdict: 'keeper'},
+    {...items[0], id: 'junk', verdict: 'junk'},
+    {...items[0], id: 'archive', verdict: 'archive'},
+    {...items[0], id: 'needs-time', verdict: 'needs-more-time'},
+    {...items[0], id: 'untriaged', verdict: null},
+  ];
+  for (const id of ['keep', 'junk', 'archive', 'needs-time', 'untriaged']) {
+    assert.deepEqual(evaluateSelection(verdictItems, `verdict:${id}`).map(item => item.id), [id]);
+  }
+  assert.deepEqual(evaluateSelection(verdictItems, 'verdict:keep or verdict:needs-time').map(item => item.id), ['keep', 'needs-time']);
+});
+
 test('cheap proposals are ordinary selections and mutable folder tags are recomputed on demand', () => {
   assert.equal(normaliseTitle('  Rust — A GUIDE! '), 'rust-a-guide');
   const first = proposeSelections(items);

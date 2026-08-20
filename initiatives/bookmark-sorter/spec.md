@@ -356,11 +356,18 @@ literally:
 ```
 folder:reading/* and not topic:rust
 (src:chrome-export or src:safari-export) and err:404
+verdict:keep or verdict:needs-time
 ```
 
 Grammar: `and`, `or`, `not`, parentheses, bare tags, and `*` as a trailing
 wildcard. Deliberately small — a selection tool, not a language. A saved
 selection (§5) is this expression plus a name.
+
+The evaluator also exposes the current verdict as a synthetic tag, using the
+same words as the interface: `verdict:keep`, `verdict:junk`,
+`verdict:archive`, `verdict:needs-time`, and `verdict:untriaged`. These values
+are derived from the item verdict; they are not stored in the ordinary tag
+table and therefore cannot drift when a verdict changes.
 
 ### 8.1 Scope: one collection by default, all of them for administration
 

@@ -41,6 +41,7 @@ export function evaluateSelection(items, expression, {collectionId = null} = {})
 export function selectionTags(item) {
   const tags = new Set(item.tags || []);
   if (item.collection_id) tags.add(`collection:${item.collection_id}`);
+  tags.add(`verdict:${selectionVerdict(item.verdict)}`);
   const site = siteKey(item.url);
   if (site) tags.add(`site:${site}`);
   const titleKey = item.title_key || normaliseTitle(item.title);
@@ -49,6 +50,13 @@ export function selectionTags(item) {
     if (tag.startsWith('folder:')) tags.add(`folder-key:${encodeURIComponent(tag.slice(7))}`);
   }
   return tags;
+}
+
+function selectionVerdict(verdict) {
+  if (!verdict) return 'untriaged';
+  if (verdict === 'keeper') return 'keep';
+  if (verdict === 'needs-more-time') return 'needs-time';
+  return verdict;
 }
 
 export function proposeSelections(items, {minimum = 2} = {}) {
