@@ -35,7 +35,7 @@
 <p>Numbered references to <strong>O1–O9</strong> are the objectives; <strong>§n</strong> is a section of this file unless it says otherwise.</p>
 <h3>1. What the first version is</h3>
 <p><strong>One account of the process, rendered three ways, produced on request.</strong> A generator reads this repository, extracts the facts that make up the process, and substitutes them into composed narrative. Out of that come:</p>
-<div class="table-scroll"><table><thead><tr><th>Deliverable</th><th>What it is</th><th>Shape</th></tr></thead><tbody><tr><td><strong>The description</strong></td><td>The long rendering</td><td>One self-contained <code>.html</code> file</td></tr><tr><td><strong>The deck</strong></td><td>10–20 slides — the short rendering of the same source</td><td>One self-contained <code>.html</code> file</td></tr><tr><td><strong>The simulator</strong></td><td>A stepped animation of the lifecycle</td><td>One self-contained <code>.html</code> file</td></tr><tr><td><strong>The PDFs</strong></td><td>Renderings of the first two, made by hand by the user</td><td>Google Drive (<code>decisions.md</code>, 2026-08-17)</td></tr></tbody></table></div>
+<div class="table-scroll"><table><thead><tr><th>Deliverable</th><th>What it is</th><th>Shape</th></tr></thead><tbody><tr><td><strong>The description</strong></td><td>The long rendering</td><td>One self-contained <code>.html</code> file</td></tr><tr><td><strong>The deck</strong></td><td>10–20 slides — the short rendering of the same source</td><td>One self-contained <code>.html</code> file</td></tr><tr><td><strong>The simulator</strong></td><td>A stepped animation of the lifecycle</td><td>One self-contained <code>.html</code> file</td></tr></tbody></table></div>
 <p>Three properties, all settled on review 2026-08-17 and each of them a simplification:</p>
 <ul><li><strong>Self-contained.</strong> Every artefact is one file with its own CSS, JavaScript and</li></ul>
 <p>  data inline. No shared assets, no sibling files, no origin required — it works   from a <code>file://</code> URL, an attachment, or any static host.</p>
@@ -152,9 +152,8 @@ audience: both           # both | forker | contributor</code></pre>
 <p>Step 4&#39;s passed-over item, step 6&#39;s cascade, and step 7&#39;s move backwards are the moments a stage table cannot convey, and they are why O4 asks for this at all.</p>
 <p><strong>What it is not:</strong> a sandbox. <code>objectives.md</code> puts free play out of the first version explicitly.</p>
 <p><strong>One file, no dependencies.</strong> The simulator is a single HTML document with its markup, styling, animation and step data inline — no framework, no fetch, no sibling assets. That is what makes it deployable anywhere or nowhere: it opens from a <code>file://</code> path, survives being emailed, and needs no decision about hosting before it can be looked at.</p>
-<h3>8. The PDFs</h3>
-<p>Made by hand and kept on Google Drive (<code>decisions.md</code>, 2026-08-17). Nothing in the generator produces them, and nothing in the repository stores them.</p>
-<p>What the generator <em>does</em> carry is the one thing that keeps them honest: a <code>guide/pdfs.json</code> holding, per PDF, a link and the date it was last refreshed by hand. §10 uses that date.</p>
+<h3>8. Portable outputs</h3>
+<p>The description, deck, and simulator are each a self-contained HTML file. Their styles, scripts, and data are inline, so every output can be opened directly, attached, or placed on any static host without a build step or sibling assets. That is the whole portable-output contract for the current version.</p>
 <h3>9. How it is produced</h3>
 <h4>9.1 On request, not on every build</h4>
 <p><strong>A skill runs the generator; nothing runs it automatically</strong> (settled on review 2026-08-17). <code>npm run build</code> does not call it, no workflow calls it, and no commit triggers it. Somebody — a person or an agent — asks for the guide, and the three files of §1 are written.</p>
@@ -162,7 +161,6 @@ audience: both           # both | forker | contributor</code></pre>
 <p>The second option&#39;s real cost is the one that decided it: it makes the guide&#39;s correctness a gate on publishing the whole site, for material nobody is waiting on.</p>
 <h4>9.2 Layout</h4>
 <pre><code>guide/
-  config.json          # PDF links and portable-file markers
   content/*.md         # the sections of §5
   simulator/           # the walk-through&#39;s own source
   build/               # the generator: facts, tokens, renderers, checks
@@ -189,13 +187,11 @@ audience: both           # both | forker | contributor</code></pre>
 <p>  change made somewhere else: rename a stage in a fixture copy of   <code>initiatives.mjs</code>, and generation must fail rather than emit the old name.</p>
 <h3>10. Dating, and how drift surfaces</h3>
 <p>Two mechanisms, from <code>decisions.md</code>: generation for what can be derived, dating for what cannot.</p>
-<ul><li><strong>Every artefact carries its provenance in the footer:</strong> the generation date, and the</li></ul>
-<p>  short commit sha the sources were read at.</p>
-<ul><li><strong><code>pdfs.json</code> carries a refresh date per PDF</strong>, set when the user makes one (§8).</li><li><strong>The guide compares the two.</strong> When the newest commit touching any source in</li></ul>
-<p>  §3.2&#39;s table is later than a PDF&#39;s refresh date, the guide&#39;s own page shows the   PDF as <strong>possibly stale</strong>, next to the link, with both dates.</p>
-<p>That last one is the whole of O9 for the deliverable O9 applies to most: the PDFs are the only part that is neither generated nor in the repository, and a warning a reader sees is worth more than one only a maintainer would.</p>
-<p><strong>Deliberately not done:</strong> refusing to generate when a PDF is stale. Generation would then fail because somebody edited <code>AGENTS.md</code>, which trains people to work around it — and the staleness is <code>decisions.md</code>&#39;s accepted cost, not a defect.</p>
-<p><strong>Dating carries more weight under §9.1 than it would have otherwise</strong>, and the reason is worth stating where somebody will see it. A guide rebuilt with the site is fresh whenever it is looked at. A guide generated on request is fresh <em>when generated</em> and then travels — as a file, an attachment, a copy on Drive. The footer is what lets somebody holding one work out whether it still describes the repository, so it is a requirement rather than a nicety.</p>
+<ul><li><strong>Every artefact carries its provenance in the footer:</strong> the generation date</li></ul>
+<p>  and the short commit sha the sources were read at.</p>
+<ul><li><strong>The simulator carries a watched date in its dating module.</strong> Generation</li></ul>
+<p>  compares that date with the newest commit touching its lifecycle and sweep   sources. When the sources are newer, the generation report asks for another   walkthrough without refusing to generate.</p>
+<p><strong>Dating carries more weight under §9.1 than it would have otherwise</strong>, and the reason is worth stating where somebody will see it. A guide rebuilt with the site is fresh whenever it is looked at. A guide generated on request is fresh <em>when generated</em> and then travels — as a file or an attachment. The footer is what lets somebody holding one work out whether it still describes the repository, so it is a requirement rather than a nicety.</p>
 <h3>11. Delivery, and the objective it leaves short</h3>
 <p>Delivery is out of scope on review (2026-08-17): <em>&quot;No need for this initiative to do deployment, just make the simulator, slides, and documents.&quot;</em> This spec takes that literally, and §1&#39;s self-contained files are what make it safe to — an artefact that needs no origin can be delivered later by almost any means, so nothing here forecloses a choice.</p>
 <p><strong>One objective is left short by it, and this spec will not quietly reword it.</strong> O1 says a newcomer finds the entry point without being told where it is — the guide reachable from the site and the repository&#39;s front door, the way decks, demos and initiatives are. A tracked file in <code>guide/out/</code> can be found in the repository, but it is not linked from the site or its navigation. On what is specified here, <strong>O1 is not met</strong>.</p>
