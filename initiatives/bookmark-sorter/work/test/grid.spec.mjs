@@ -155,14 +155,71 @@ test('keyboard verdicts, marked groups, atomic undo, and sitting rate work witho
   expect(page.url()).toBe('https://pile.test/');
 });
 
-test('stored captures render locally and pass 2 runs only from its explicit control', async ({page}) => {
+test('stored captures render locally while the capture-gap control stays disabled', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   const backend = await installPile(page);
   await page.goto('https://pile.test/');
   await expect(page.locator('.capture img')).toHaveCount(8);
   expect(backend.requests.some(request => request.path.startsWith('/read/'))).toBe(false);
   expect(backend.requests.filter(request => request.path === '/api/captures/gaps')).toHaveLength(0);
-  await page.locator('#capture-gaps').click();
-  await expect(page.locator('#status')).toHaveText('Pass 2 is off; 6,666 metadata gaps unchanged.');
-  expect(backend.requests.filter(request => request.path === '/api/captures/gaps')).toHaveLength(1);
+  await expect(page.locator('#capture-gaps')).toBeDisabled();
+  expect(backend.requests.filter(request => request.path === '/api/captures/gaps')).toHaveLength(0);
+});
+
+test('bookmark titles link out and the copy control copies the saved URL', async ({page}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {writeText: async value => { window.__copiedBookmarkUrl = value; }},
+    });
+  });
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+
+  const firstCard = page.locator('[data-item-id="item-1"]');
+  const titleLink = firstCard.locator('h2 a');
+  await expect(titleLink).toHaveAttribute('href', 'https://example0.com/read/1');
+  await expect(titleLink).toHaveAttribute('target', '_blank');
+  await expect(titleLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+  await firstCard.locator('.copy-url').click();
+  await expect(page.locator('#status')).toHaveText('Copied URL for Bookmark 1: a useful article with enough title context.');
+  await expect.poll(() => page.evaluate(() => window.__copiedBookmarkUrl)).toBe('https://example0.com/read/1');
+});
+
+test('help explains controls and selection syntax, and tags expose their complete list', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await page.locator('#help-toggle').click();
+  await expect(page.locator('#help-panel')).toBeVisible();
+  await expect(page.locator('#help-panel')).toContainText('Sweep untriaged');
+  await expect(page.locator('#help-panel')).toContainText('site:example.com');
+  await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#help-panel')).toBeHidden();
+
+  await expect(page.locator('[data-item-id="item-1"] .tag').first()).toHaveAttribute('title', 'All tags:\nfolder:Reading/topic-0\nsrc:browser-export');
+});
+
+test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.items[0].verdict = 'keeper';
+  await page.goto('https://pile.test/');
+
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('#position')).toContainText('17–32 of 10,000');
+  expect(backend.items[0].verdict).toBe('keeper');
+  expect(backend.items.slice(1, 16).every(item => item.verdict === 'junk')).toBe(true);
+  expect(backend.items[16].verdict).toBe(null);
+  const judgedAfterSweep = backend.items.filter(item => item.verdict).length;
+
+  await page.locator('#previous-page').click();
+  await expect(page.locator('#position')).toContainText('1–16 of 10,000');
+  await page.locator('#next-page').click();
+  await expect(page.locator('#position')).toContainText('17–32 of 10,000');
+  expect(backend.items.filter(item => item.verdict).length).toBe(judgedAfterSweep);
 });

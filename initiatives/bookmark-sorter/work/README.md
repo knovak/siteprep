@@ -1,7 +1,15 @@
-# Bookmark sorter — phases 1–6 work
+# Bookmark sorter — phases 1–6 work and test deployment
 
-This directory holds the first six build increments for the bookmark sorter. It is
-private initiative work, not a published demo.
+This directory holds the first six build increments for the bookmark sorter and
+the full-stack ChatGPT Sites wrapper used to test them. It remains private
+initiative work, not a published demo or a graduated initiative output.
+
+The app does not have or need a source `index.html`. `src/worker.mjs` is the
+application root: it returns the complete browser page for `/` and handles the
+stateful `/api/*` routes. `worker/index.ts` is the thin Sites entry point that
+wires that application to the hosted runtime. A static-folder deployment would
+serve only a shell and cannot provide the D1-backed import, collection, triage,
+selection, and export operations.
 
 ## What exists
 
@@ -53,7 +61,9 @@ private initiative work, not a published demo.
   user, copies template items/tags/selections in one D1 batch, and leaves the
   global capture rows untouched when a copy is deleted. Imports read the
   existing collection once and write in bounded D1 batches rather than making
-  tens of thousands of request-sized round trips.
+  tens of thousands of request-sized round trips. Queries that use an `IN`
+  list reserve parameter slots for fixed values such as `collection_id`, so no
+  statement exceeds D1's 100-bound-parameter limit.
 - `src/site-identity.mjs` reads the stable
   `oai-authenticated-user-id` supplied by ChatGPT Sites. Email and the optional
   encoded full name are display-only; neither participates in ownership.
@@ -72,9 +82,15 @@ private initiative work, not a published demo.
 - `src/pile-page.mjs` renders the self-contained grid. It has 8×2 wide,
   4×3 or 3×3 tablet, and single-card phone layouts; only the visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
-  never HTML strings. Stored derivatives appear without any request to the saved
-  page. A verdict patches the affected cards in place rather than navigating or
-  rebuilding the grid. A collection bar switches among the owner's personal
+  never HTML strings. Bookmark titles show up to five lines and link to the
+  saved URL in a new tab; each card also has a keyboard-accessible URL-copy
+  control. Truncated tag chips expose the item's complete tag list through
+  their hover text. Help documents the controls and selection grammar in the
+  page. Stored derivatives appear without any request to the saved page. A
+  verdict patches the affected cards in place rather than navigating or
+  rebuilding the grid. The visible-page sweep changes only untriaged cards and
+  advances to the next page; Previous and Next page without writing. A
+  collection bar switches among the owner's personal
   pile and demo copies, and exposes template-copy operations without putting
   identity or authorization state in the page.
 
@@ -109,6 +125,41 @@ vendor endpoint is emitted into the page.
 The list endpoint accepts `limit` and `offset`; `limit` is clamped to 500. The
 response always includes the total collection count so the page does not have
 to load all 10,000 records to prove the pile landed.
+
+## ChatGPT Sites test deployment
+
+The deployment surface is this `work/` directory, not the initiative directory.
+It uses the full Sites build and hosting workflow rather than the
+static-folder-only `deploy-to-chatgpt-sites` skill.
+
+- `.openai/hosting.json` declares D1 as `DB`. R2 is intentionally `null` in the
+  first test deployment, so the still-open storage-cost decision is not silently
+  accepted.
+- `db/schema.ts` is the deployable final form of migrations 0001–0005. The
+  generated `drizzle/` migration is packaged with a Site version and creates the
+  same tables, constraints, and query indexes on a fresh D1 database.
+- `worker/index.ts` passes `/` and `/api/*` to the existing application and
+  leaves the framework-owned image and sign-in routes to Sites.
+- A private Site supplies the stable `oai-authenticated-user-id` header. The app
+  uses that opaque value for ownership and creates one private personal
+  collection on first API use.
+- With R2 absent, importing and triage work normally but pass-1 metadata capture
+  and capture-gap processing are disabled. This is suitable for the blind
+  baseline and selection-interaction tests. Enabling capture testing later
+  requires setting `r2` to `CAPTURES` after the user accepts the Sites storage
+  limits, rebuilding, and replacing the Site version.
+
+Install and validate this project from this directory:
+
+```bash
+npm ci
+npm test
+npm run build
+```
+
+The root repository build remains a separate validation step for generated
+initiative pages. See `END_USER_TESTING.md` for the private test procedure and
+the data-handling boundary.
 
 ## Triage API and interaction
 
@@ -155,11 +206,12 @@ the duplicate-image distribution. Those values exist to record the real-pile
 phase measurement in `decisions.md`; they are not a product dashboard.
 
 Arrow keys move focus, Space toggles the current mark, `k`/`j`/`a`/`n` apply a
-verdict, `u` undoes, and Enter advances. Marks now survive virtual-window
-changes inside the open selection. The user can mark a few exceptions, sweep
-the unmarked remainder with one gesture, and undo the whole sweep once. Saved
+verdict, `u` undoes, and Enter advances. Marks survive virtual-window changes
+inside the open selection. The user can judge a marked set together or sweep
+only the still-untriaged cards on the visible page before advancing. Saved
 expressions, proposal expressions and typed expressions all enter the same
-evaluator. No capture request is made by the grid.
+evaluator. The capture-gap button remains disabled while the test deployment
+has no image storage, and no capture request is made by the grid.
 
 ## Run the tests
 

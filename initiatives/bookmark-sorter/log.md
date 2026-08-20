@@ -292,3 +292,15 @@ Recorded approval of Sites costs and plan-specific limits for 10,000 D1 items an
 ## 2026-08-19 — Critique the six-phase local build and prepare its graduation or dormancy decision
 
 Wrote critique.md: applied test-plan.md 4's own gate and found phases 2, 3 and 4 are code-complete but not exited, all three for the same reason - the three data blockers. Found the derivative-only image path has no implementation and neither of its two guards is exercised by any test; the app has never run on ChatGPT Sites, so identity is tested against a header we supply; pass 2 being permanently off makes an unmeasured fraction of blank cards a product fact; and O3's rate criterion is undefined rather than unmet, by design. Prepared the graduation-or-dormancy decision as four options with a recommendation and what would change it. 42 Node tests and 3 browser tests pass.
+
+## 2026-08-19 — Assemble and deploy the private D1-only end-user test
+
+Added the full-stack ChatGPT Sites wrapper, generated the final phase 1–6 D1
+migration, and documented the first real-pile and selection sittings. Deployed
+version 1 owner-only at [Bookmark Sorter Test](https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site).
+
+The first test Site deliberately provisions D1 without R2. Bookmark import,
+private collections, verdicts, selections, undo, sitting rate and JSON export
+are live; metadata images and the capture-gap pipeline remain off. This makes
+the blind and selection measurements runnable without treating the open Sites
+storage-cost question as accepted.
