@@ -139,6 +139,12 @@
 <p>The first test Site deliberately provisions D1 without R2. Bookmark import, private collections, verdicts, selections, undo, sitting rate and JSON export are live; metadata images and the capture-gap pipeline remain off. This makes the blind and selection measurements runnable without treating the open Sites storage-cost question as accepted.</p>
 <h3>2026-08-20 — Repair collection rename and add verdict selectors</h3>
 <p>Replaced the unsupported browser prompt behind Rename with an inline form that supports Save, Cancel and Escape. Added selection clauses for the five visible verdict states: keep, junk, archive, needs time and untriaged. The in-page Help, technical documentation, evaluator tests, API tests and browser coverage now describe and exercise both changes.</p>
+<h3>2026-08-20 — Measure the blind triage baseline on several hundred real bookmarks</h3>
+<p>Withdrawn, not performed. Reclassified as an optional observation in notes.md (decisions.md, 2026-08-20): the throughput numbers are already instrumented in triage_sessions and accrue from ordinary sittings, so this never needed a staged blind sitting and was not blocking anything. The spec.md throughput target stays unset until someone reads them.</p>
+<h3>2026-08-20 — Measure confirmation interruptions and immediately undone sweeps in one real selection sitting</h3>
+<p>Withdrawn, not performed. Reclassified as an optional observation in notes.md (decisions.md, 2026-08-20). Sweeps applied and immediately undone are already recorded via triage_actions.undone_at; selections opened and confirmations shown are not persisted and would need two counters, to be added only if the undo signal is ambiguous without them.</p>
+<h3>2026-08-20 — Measure metadata coverage and the duplicate-image distribution on a representative real pile</h3>
+<p>Superseded by enable-captures-and-measure, not performed. The blocker was misdiagnosed as data: the code already computes these numbers and GET /api/items already returns them; what was missing was the R2 bucket the capture pipeline needs. The user granted that on 2026-08-20 (decisions.md), so this is ordinary work rather than a question.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">

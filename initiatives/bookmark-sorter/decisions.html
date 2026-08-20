@@ -294,6 +294,26 @@
 <p>  paid screenshot vendor or change the existing decision to keep pass 2   switched off until that separate capability is authorised.</p>
 <ul><li>The three real-pile measurements remain open because they require observed</li></ul>
 <p>  data, not a cost decision.</p>
+<h3>2026-08-20 — What are the three real-pile measurements for, and which of them gate anything?</h3>
+<p><strong>None of them gate the build. Two become optional observations recorded in <code>notes.md</code>; the third is unblocked by provisioning R2 now.</strong></p>
+<p>The three were written as <code>data:</code> blockers, which made them look like work the initiative was waiting on. Reviewing what each number is actually <em>used for</em> shows that is only true of one.</p>
+<h4>What each measurement feeds</h4>
+<div class="table-scroll"><table><thead><tr><th>Measurement</th><th>What it decides</th></tr></thead><tbody><tr><td>Blind triage baseline</td><td>The throughput target <code>spec.md</code> still lacks. <code>objectives.md</code> deliberately refused to set one: <em>&quot;a target to be set in <code>spec.md</code>, once there is a measured baseline to argue from. Setting it now would be a guess dressed as a requirement.&quot;</em></td></tr><tr><td>Selection sitting</td><td>Whether §8&#39;s confirmation rule is right. The spec claims the discriminator is <strong>visibility, not cardinality</strong>, and names what would falsify it: <em>&quot;a sweep turning out to be regretted often enough that <code>undo</code> is not sufficient recovery.&quot;</em> Immediately-undone sweeps are that signal.</td></tr><tr><td>Metadata coverage</td><td>How large pass 2 is, and therefore what the paid screenshot API would cost at ~$4–10 per thousand — and where to move the duplicate-image threshold, which §6 calls <em>&quot;a starting value to be moved once there is data.&quot;</em></td></tr></tbody></table></div>
+<h4>The decision</h4>
+<p><strong>The first two are optional, and recorded in <code>notes.md</code> rather than <code>todo[]</code>.</strong> The user&#39;s words: <em>&quot;leave their capture and recording optional, to be done at distinct times after entering dormant state but before improvements are underway, or not at all if we can&#39;t use them directly.&quot;</em></p>
+<p>They are removed as blocked items because they were never blocking. Both are already instrumented — <code>triage_sessions</code> records <code>items_judged</code> and <code>elapsed_ms</code> and the page displays the rate; <code>triage_actions.undone_at</code> records regret — so the numbers accrue from ordinary use and can be read whenever someone wants them. Neither needs a staged sitting, and neither should hold the initiative.</p>
+<p><strong>Metadata coverage is unblocked by enabling R2.</strong> The user&#39;s words: <em>&quot;accept the Sites storage limits and enable the R2 capture bucket now.&quot;</em> This completes the 2026-08-17 cost approval, which allowed R2 in principle while the first deployment deliberately did not provision it.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td>Keep all three as <code>data:</code> blockers</td><td>Honest that the numbers are missing</td><td>Three permanent entries in &quot;waiting on you&quot; for work nobody intends to schedule — the digest noise that teaches people to skip the digest</td></tr><tr><td>Drop the measurements entirely</td><td>Simplest</td><td>Throws away the only evidence that would set the throughput target or falsify the confirmation rule; the spec explicitly defers both to data</td></tr><tr><td>Optional in <code>notes.md</code>, plus enable R2</td><td>Keeps what each number is for, stops all three nagging, and unblocks the one with a real answer</td><td>The first two may never be taken, leaving the throughput target unset indefinitely</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>The throughput target stays unset</strong> until someone reads the accrued session</li></ul>
+<p>  data. That is now a known gap rather than a pending question.</p>
+<ul><li><strong>Pass 2 remains switched off.</strong> Enabling R2 turns on pass 1 — the anonymous</li></ul>
+<p>  no-JavaScript metadata fetch and its downscaled image. The paid screenshot   vendor is a separate authorisation and is unchanged.</p>
+<ul><li><strong>Provisioning is not a repository change.</strong> <code>worker/index.ts</code> already binds</li></ul>
+<p>  <code>CAPTURES?: R2Bucket</code> optionally and <code>src/worker.mjs</code> already switches on it.   Enabling it means creating the bucket in ChatGPT Sites, binding it as   <code>CAPTURES</code>, rebuilding, and replacing the Site version — steps that happen in   the Sites environment, not here.</p>
+<ul><li><strong>The measurement is a read, not a build.</strong> <code>GET /api/items</code> already returns</li></ul>
+<p>  capture totals, distinguishable metadata coverage, and the duplicate-image   distribution. Once captures exist, recording the numbers is reading that   endpoint.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
