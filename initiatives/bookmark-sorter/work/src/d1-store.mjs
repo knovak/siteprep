@@ -501,6 +501,7 @@ export class D1BookmarkStore {
          AND c.state = 'pass1-retried-gap'
          AND c.image_candidate IS NOT NULL
          AND c.image_ref IS NULL
+         AND NOT EXISTS (SELECT 1 FROM captures diagnostic WHERE diagnostic.state = 'pass1-diagnosed-gap')
        ORDER BY i.id
        LIMIT ?`,
     ).bind(collectionId, safeLimit).all();
