@@ -324,3 +324,7 @@ Withdrawn, not performed. Reclassified as an optional observation in notes.md (d
 ## 2026-08-20 — Measure metadata coverage and the duplicate-image distribution on a representative real pile
 
 Superseded by enable-captures-and-measure, not performed. The blocker was misdiagnosed as data: the code already computes these numbers and GET /api/items already returns them; what was missing was the R2 bucket the capture pipeline needs. The user granted that on 2026-08-20 (decisions.md), so this is ordinary work rather than a question.
+
+## 2026-08-20 — Provision the R2 capture bucket, turn on pass 1, and record the coverage and duplicate-image numbers
+
+Provisioned R2, enabled repeatable pass-1 catch-up, deployed Site version 15, and measured 698 distinguishable metadata images across 1,201 bookmarks (58.1%). The largest duplicate-image group was 11, so the threshold remains 30 and pass 2 remains off.

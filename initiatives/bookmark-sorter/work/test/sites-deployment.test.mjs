@@ -5,11 +5,17 @@ import {DatabaseSync} from 'node:sqlite';
 
 const read = relative => readFile(new URL(`../${relative}`, import.meta.url), 'utf8');
 
-test('Sites declares a D1-only first end-user deployment', async () => {
+test('Sites declares the approved D1 and R2 end-user deployment', async () => {
   const hosting = JSON.parse(await read('.openai/hosting.json'));
   assert.match(hosting.project_id, /^appgprj_/);
   assert.equal(hosting.d1, 'DB');
-  assert.equal(hosting.r2, null);
+  assert.equal(hosting.r2, 'CAPTURES');
+  const worker = await read('worker/index.ts');
+  assert.match(worker, /input: \{bytes: Uint8Array; contentType\?: string; sourceUrl\?: string; maxWidth: number; maxHeight: number\}/);
+  assert.match(worker, /cf: \{image:/);
+  assert.match(worker, /width: input\.maxWidth/);
+  assert.match(worker, /height: input\.maxHeight/);
+  assert.doesNotMatch(worker, /width: input\.width|height: input\.height/);
 });
 
 test('the generated deployment migration creates the complete final schema', async () => {
