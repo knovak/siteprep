@@ -711,3 +711,21 @@ The threshold therefore stays at **30**. A representative real import must
 record metadata coverage and the duplicate distribution before this number is
 changed. That is a `data:` item, separate from the completed phase-3 code, for
 the same reason the phase-2 blind rate remains separate from its instrument.
+
+## 2026-08-19 — Are the Sites limits and costs acceptable for this build?
+
+**Yes. The Sites costs and plan-specific limits are approved for the intended
+10,000-item pile and capture store.**
+
+The user's words: *"I approve Sites costs/limits."*
+
+### What this settles, and what it does not
+
+- The initiative may use Sites with D1 for up to 10,000 bookmark items and R2
+  for up to a few hundred megabytes of derived captures without waiting on a
+  separate cost decision.
+- This approval settles the host-metering blocker. It does not approve a new
+  paid screenshot vendor or change the existing decision to keep pass 2
+  switched off until that separate capability is authorised.
+- The three real-pile measurements remain open because they require observed
+  data, not a cost decision.

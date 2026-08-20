@@ -6,7 +6,7 @@ Researched 2026-08-17, before objectives were drafted. Findings only.
 
 ### GitHub contributor guidelines — [GitHub Docs](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors)
 
-GitHub supports repository-level contribution guidelines in `CONTRIBUTING.md` and surfaces them when a contributor opens an issue or pull request. This provides a familiar home for contribution instructions, but it does not describe this repository's initiative lifecycle or provide the requested set of web, slide, PDF, and simulation materials.
+GitHub supports repository-level contribution guidelines in `CONTRIBUTING.md` and surfaces them when a contributor opens an issue or pull request. This provides a familiar home for contribution instructions, but it does not describe this repository's initiative lifecycle or provide the requested set of web, slide, and simulation materials.
 
 ### GitHub Actions documentation — [GitHub Docs](https://docs.github.com/en/actions)
 
@@ -40,11 +40,11 @@ Learn Git Branching presents sequenced exercises as well as a sandbox. Its struc
 
 ### Different documentation forms answer different reader needs — [Diátaxis](https://diataxis.fr/)
 
-Diátaxis treats learning-oriented tutorials, goal-oriented how-to guides, information-oriented reference, and understanding-oriented explanation as distinct forms. The requested web description, slides, PDFs, and simulator may therefore overlap in subject while serving different reading situations.
+Diátaxis treats learning-oriented tutorials, goal-oriented how-to guides, information-oriented reference, and understanding-oriented explanation as distinct forms. The requested web description, slides, and simulator may therefore overlap in subject while serving different reading situations.
 
 ## Questions this raises
 
 - Which moments in the initiative lifecycle need guided simulation, and which need a free-play sandbox?
 - Should the web description primarily explain the process, guide a contributor through tasks, or provide a reference to repository controls?
-- Which repository source should be authoritative when the guide, slides, exported PDFs, and simulator describe the same lifecycle rule?
+- Which repository source should be authoritative when the guide, slides, and simulator describe the same lifecycle rule?
 - Where should contributors encounter the guide during issue, pull-request, review, and initiative workflows?

@@ -223,16 +223,13 @@ makes it part of the exit rather than a follow-up.
 | It reads nothing | No `initiative.json` is read at generation or at open; the choreography is fixed | §7, `decisions.md` |
 | **Manual: it is watched** | Somebody steps through it and agrees the six steps describe what the sweep does | O4 |
 
-### 4.6 — PDF dating
+### 4.6 — Simulator review dating
 
 | Test | Pass condition | Protects |
 |---|---|---|
-| Fresh PDF shows no warning | A refresh date later than every source commit renders as a plain link | §10 |
-| **Stale PDF is marked** | A refresh date earlier than the newest commit touching any §3.2 source renders as *possibly stale*, with both dates | §10, O8 |
-| Staleness never blocks generation | A stale PDF generates the guide, with a report line | §10 |
-| The comparison uses the fact sources | Editing an unrelated file does not mark a PDF stale; editing `sweep.json` does | §10 |
-| A missing PDF link is a config error | An entry with no link, or no date, fails | §8 |
-| Simulator watched-date | An outdated `simulator_watched` produces a report line, not a failure | `plan.md` §6.3 |
+| Current walkthrough stays quiet | A watched date on or after the newest relevant source commit produces no diagnostic | §10 |
+| Outdated walkthrough is visible | An older watched date produces a report line with both dates, not a failure | `plan.md` §6.3 |
+| The comparison uses only simulator sources | Editing an unrelated file does not advance the comparison; editing `sweep.json` does | §10 |
 
 ### 4.7 — The skill
 
@@ -278,8 +275,6 @@ undo, and each names the change it is guarding against.
   faithfully, not that they are right. A wrong stage list in
   `scripts/initiatives.mjs` produces a guide that faithfully states it, and that
   is correct behaviour.
-- **The PDFs.** They are made by hand and live on Drive (§8). What is tested is
-  the staleness comparison, which is the only part of them this repository holds.
 - **Delivery.** `link-the-guide` is the user's pull request and touches protected
   paths; the row in §5 above is a statement about what this initiative must not
   do instead of it.

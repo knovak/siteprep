@@ -18,7 +18,6 @@ substitutes them into composed narrative. Out of that come:
 | **The description** | The long rendering | One self-contained `.html` file |
 | **The deck** | 10–20 slides — the short rendering of the same source | One self-contained `.html` file |
 | **The simulator** | A stepped animation of the lifecycle | One self-contained `.html` file |
-| **The PDFs** | Renderings of the first two, made by hand by the user | Google Drive (`decisions.md`, 2026-08-17) |
 
 Three properties, all settled on review 2026-08-17 and each of them a
 simplification:
@@ -371,14 +370,12 @@ sibling assets. That is what makes it deployable anywhere or nowhere: it opens
 from a `file://` path, survives being emailed, and needs no decision about
 hosting before it can be looked at.
 
-## 8. The PDFs
+## 8. Portable outputs
 
-Made by hand and kept on Google Drive (`decisions.md`, 2026-08-17). Nothing in
-the generator produces them, and nothing in the repository stores them.
-
-What the generator *does* carry is the one thing that keeps them honest: a
-`guide/pdfs.json` holding, per PDF, a link and the date it was last refreshed by
-hand. §10 uses that date.
+The description, deck, and simulator are each a self-contained HTML file. Their
+styles, scripts, and data are inline, so every output can be opened directly,
+attached, or placed on any static host without a build step or sibling assets.
+That is the whole portable-output contract for the current version.
 
 ## 9. How it is produced
 
@@ -402,7 +399,6 @@ on.
 
 ```text
 guide/
-  config.json          # PDF links and portable-file markers
   content/*.md         # the sections of §5
   simulator/           # the walk-through's own source
   build/               # the generator: facts, tokens, renderers, checks
@@ -477,25 +473,17 @@ incorrectly is what O9 rates as worse than handing them nothing.
 Two mechanisms, from `decisions.md`: generation for what can be derived, dating
 for what cannot.
 
-- **Every artefact carries its provenance in the footer:** the generation date, and the
-  short commit sha the sources were read at.
-- **`pdfs.json` carries a refresh date per PDF**, set when the user makes one (§8).
-- **The guide compares the two.** When the newest commit touching any source in
-  §3.2's table is later than a PDF's refresh date, the guide's own page shows the
-  PDF as **possibly stale**, next to the link, with both dates.
-
-That last one is the whole of O9 for the deliverable O9 applies to most: the
-PDFs are the only part that is neither generated nor in the repository, and a
-warning a reader sees is worth more than one only a maintainer would.
-
-**Deliberately not done:** refusing to generate when a PDF is stale. Generation
-would then fail because somebody edited `AGENTS.md`, which trains people to work
-around it — and the staleness is `decisions.md`'s accepted cost, not a defect.
+- **Every artefact carries its provenance in the footer:** the generation date
+  and the short commit sha the sources were read at.
+- **The simulator carries a watched date in its dating module.** Generation
+  compares that date with the newest commit touching its lifecycle and sweep
+  sources. When the sources are newer, the generation report asks for another
+  walkthrough without refusing to generate.
 
 **Dating carries more weight under §9.1 than it would have otherwise**, and the
 reason is worth stating where somebody will see it. A guide rebuilt with the site
 is fresh whenever it is looked at. A guide generated on request is fresh *when
-generated* and then travels — as a file, an attachment, a copy on Drive. The
+generated* and then travels — as a file or an attachment. The
 footer is what lets somebody holding one work out whether it still describes the
 repository, so it is a requirement rather than a nicety.
 

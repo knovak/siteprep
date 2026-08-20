@@ -4,15 +4,5 @@
   "stage": "specified",
   "value": "medium",
   "outputs": [],
-  "todo": [
-    {
-      "id": "confirm-publication-rights",
-      "title": "Before a successor public release, confirm the rights and trademark basis for the movement collection and anatomy assets",
-      "state": "blocked",
-      "blocked_by": "legal:after private validation, review the selected movement descriptions, recordings, names, anatomical assets, licenses, attribution terms, and intended public or commercial use before a successor public release",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false
-    }
-  ]
+  "todo": []
 }

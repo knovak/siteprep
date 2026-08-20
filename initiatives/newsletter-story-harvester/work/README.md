@@ -11,7 +11,7 @@ No dependencies, no network, no real mailbox, and no live model — which is
 `plan.md` §2's seam paying for itself in the first phase that could have needed
 all three. Node 18 or later, for the built-in test runner.
 
-## What is here — phases 1–7
+## What is here — phases 1–8
 
 **Phase 1 — the store, and what makes two stories the same one**
 
@@ -92,6 +92,34 @@ all three. Node 18 or later, for the built-in test runner.
 | `fixtures/tagging-proposal.json` | A recorded theme-and-cluster pass over the fixture store | `test-plan.md` §4.7 |
 | `test/tagging-skill.test.mjs` | Pins tags-only writes, additive reruns, exact undo, and proposal refusals | `test-plan.md` §4.7 |
 
+**Phase 8 — the published page**
+
+| File | What it is | Specified in |
+|---|---|---|
+| `src/review-page.mjs` | Gains `include` and `judgeable`: the same renderer publishes | `spec.md` §12 |
+| `publish-page.mjs` | CLI that writes the kept-and-emphasised page from a store | `plan.md` phase 8 |
+| `test/publish-page.test.mjs` | Every `test-plan.md` §4.8 row, plus the allow-list and the cluster case | `test-plan.md` §4.8 |
+
+Publishing is **two arguments**, not a second renderer:
+
+```js
+reviewPageHtml(store, {include: ['kept', 'emphasised'], judgeable: false})
+```
+
+`judgeable: false` removes every control that can judge — and the code behind
+them, so the published file contains no `setVerdicts`, `getExport`, or
+`window.reviewPage` — and withholds provenance. The two ride on one flag
+deliberately: a page nobody can judge on is a page meant to leave this machine,
+so publishing cannot be half-done by forgetting a second flag. Sort and tag
+filter survive, because filtering by `theme:` is how a theme is a page; the
+backlog count does not, because it counts unjudged stories and there are none.
+
+A published story is assembled from `PUBLISHED_STORY_FIELDS`, an **allow-list**.
+`source_doc` and `source_anchor` are the two `spec.md` §12 names, but a
+deny-list would pass today's test and leak the next field the record grows.
+`runs` is withheld for the same reason one level up: a run record accounts for
+issues by `source_doc`.
+
 The constructor for `gmailMessageSource` accepts exactly two connector
 operations: `search_emails` and `read_email`. Search pages at 50 and counts the
 messages actually returned; it never trusts an estimate. Read requests full
@@ -147,6 +175,19 @@ node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
   initiatives/newsletter-story-harvester/work/fixtures/store-fixture.json \
   /tmp/newsletter-review.html
 ```
+
+Publish the kept and emphasised stories from a judged store:
+
+```bash
+node initiatives/newsletter-story-harvester/work/publish-page.mjs \
+  /path/to/store.json \
+  /tmp/newsletter-stories.html \
+  --title "Newsletter stories"
+```
+
+It reports how many of the store's stories were published and how many were
+withheld, and writes mode 0644 — unlike every other artefact touching a real
+store, because this one exists to be shared.
 
 Measure the repeatable browser interaction baseline:
 

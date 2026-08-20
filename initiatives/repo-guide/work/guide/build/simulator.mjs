@@ -739,8 +739,7 @@ export async function generateSimulator({root, outputPath, now = new Date(), sha
   const resolvedSha = sha || await gitValue(root, ['rev-parse', '--short=12', 'HEAD']);
   const resolvedRepository = repositoryUrl || normaliseRepositoryUrl(await gitValue(root, ['remote', 'get-url', 'origin']));
   const generatedDate = new Date(now).toISOString().slice(0, 10);
-  const guideRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-  const resolvedDating = dating || await resolveDating({root, guideRoot});
+  const resolvedDating = dating || await resolveDating({root});
   for (const path of SOURCE_PATHS) await access(resolve(root, path));
   await mkdir(dirname(outputPath), {recursive: true});
   await writeFile(outputPath, simulatorHtml({steps, vocabulary, generatedDate, sha: resolvedSha, repositoryUrl: resolvedRepository}), 'utf8');

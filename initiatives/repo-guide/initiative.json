@@ -1,6 +1,6 @@
 {
   "title": "Repo Guide",
-  "summary": "A web guide, slide deck, PDFs, and simulator explaining how people and agents work in this repository.",
+  "summary": "A web guide, slide deck, and simulator explaining how people and agents work in this repository.",
   "stage": "building",
   "value": "high",
   "outputs": [],
@@ -29,15 +29,6 @@
       "state": "blocked",
       "blocked_by": "data:walk the simulator end to end and report whether it accurately explains the sweep and the whole lifecycle",
       "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "add-pdf-links",
-      "title": "Add the hand-made description and deck PDF links with their refresh dates",
-      "state": "blocked",
-      "blocked_by": "data:provide the Google Drive links and refresh dates for the hand-made description and deck PDFs",
-      "value": "medium",
       "effort": "small",
       "advances_stage": false
     },

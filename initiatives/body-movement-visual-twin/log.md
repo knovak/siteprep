@@ -11,3 +11,7 @@ Reframed the first browser release as a private demo for invited validation. Pub
 ## 2026-08-19 — Draft spec.md, including anatomy assets, movement representation, personalization, and review alternatives
 
 Specified a private, invitation-only browser demo built on open anatomy sources, with hand-authored keyframe animation, a registration-tested layer control, tradition-shaped non-geometric instruction, surface-only personalization over a labelled reference anatomy, a flag-and-triage review workflow that never edits the source record, and a hard line between assets accessible privately and assets republishable publicly. Compared the anatomy asset, animation, and instruction-representation alternatives.
+
+## 2026-08-19 — Before a successor public release, confirm the rights and trademark basis for the movement collection and anatomy assets
+
+Recorded that rights, licensing, attribution, and trademark review applies only if a public successor release is prepared; private validation is not gated by it.
