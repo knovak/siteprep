@@ -15,3 +15,7 @@ Expanded the official-source audit across Canada, Australia, the United Kingdom,
 ## 2026-08-19 — Draft plan.md and test-plan.md from the NOAA-first specification
 
 Drafted plan.md and test-plan.md. Eight phases ordered by what could invalidate an architectural decision (phase 0 proves the three providers still allow browser reads, on which the static-page choice rests), then by what a silent wrong answer flows through (the day model), then by what another phase would be rewritten without (the normalized response, fixed with two providers at once). The test plan is organised around the two confidently-wrong answers the objectives name - a distant station presented as the user's coast, and a device time zone moving an event into the wrong day - with the coastal thresholds challenged by real awkward coastlines rather than invented numbers.
+
+## 2026-08-20 — Critique plan.md and test-plan.md before building starts
+
+Critiqued the plan and test plan before building; cleared Phase 0 to proceed with a stricter evidence-bundle contract and identified unresolved local-history and coastal-topology design gaps for their affected phases.
