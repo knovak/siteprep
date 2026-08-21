@@ -321,6 +321,28 @@
 <p>The first attempt exposed a deployment boundary rather than a bad source image: Sites supplies the declared D1 and R2 bindings but not Cloudflare&#39;s raw- byte Images binding. The worker now uses Cloudflare&#39;s supported <code>cf.image</code> subrequest path when that optional binding is absent. A final retry recovered the 698 derivatives and marked any remaining candidate fail-closed so repeating the action cannot loop. The original bytes were never written to R2.</p>
 <h4>Why 30 stays</h4>
 <p>The largest repeated hash covers 11 bookmarks, less than half the current threshold. Lowering the threshold to 11 would hide those images and queue a paid second pass without evidence that the shared image is misleading. Keeping 30 preserves the original conservative rule: only a clearly site-wide image should be treated as no image. A later visual review may reopen the number, but this measurement does not justify changing it.</p>
+<h3>2026-08-20 — Should the live Bookmark Sorter graduate or rest dormant?</h3>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Graduate the live Site to refining now</strong></td><td>Records the already-deployed owner-only Site as the initiative&#39;s external output; recognises that the core import, triage, selection, undo, export, identity, D1, and R2 paths work on the real 1,201-item pile; keeps the known image gaps visible; creates the README and optional-improvement work that a live output needs</td><td>503 bookmarks still have no distinguishable image; pass 2 remains off; the throughput target is still unset; the Site has not yet been handed to a separate tester</td></tr><tr><td><strong>B — Make the initiative dormant now</strong></td><td>Costs nothing further; preserves a working, documented build that can be revisited; matches the earlier choice to treat throughput and sweep-regret measurements as optional</td><td>Leaves an already-live output without the refining-stage README; makes “resting after delivery” look the same as “never graduated”; delays the small handoff work until its context is colder</td></tr><tr><td><strong>C — Keep building before deciding</strong></td><td>Could raise image coverage through a paid second pass or gather more usage evidence before attaching an output label</td><td>Reopens the explicit no-vendor decision without new evidence, turns optional measurements back into gates, and adds work even though the remaining image failures are visible rather than misleading</td></tr></tbody></table></div>
+<h4>Recommendation, not a decision</h4>
+<p><strong>Recommend Option A: graduate the live Site to <code>refining</code>.</strong> Metadata pass 1 covers a majority of the real pile, the largest duplicate group is safely below the existing threshold, and the 503 gaps fail visibly instead of showing a confidently wrong image. More importantly, graduation records what already exists: a functioning external Site with real owner-scoped data. <code>refining</code> is not a claim that every card is perfect; it is the stage that asks for a user-facing README and keeps optional improvements available without inventing another blocking build phase.</p>
+<p>Merging this proposal would record the live Site as an external output, move the initiative to <code>refining</code>, and seed the standard README and optional- improvements items. Commenting <strong>“B”</strong> or <strong>“dormant”</strong> is enough to reject the recommendation; the proposal should then be redirected rather than defended.</p>
+<h4>What would change the recommendation</h4>
+<ul><li>Choose dormancy if an ordinary triage sitting shows that the 41.9% blank-card</li></ul>
+<p>  rate makes the grid materially less useful than the URL-and-title list it   replaces.</p>
+<ul><li>Choose dormancy or reopen hosting if the owner-only Sites deployment or its</li></ul>
+<p>  approved D1/R2 cost is no longer acceptable.</p>
+<ul><li>Continue building first only if there is new approval for a bounded pass-2</li></ul>
+<p>  vendor trial or a concrete usability failure that the current build can fix.</p>
+<ul><li>A throughput measurement that shows the visual workflow does not improve on</li></ul>
+<p>  blind triage would also make dormancy the more honest outcome.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>Graduation would record and document the current live product; it would not</li></ul>
+<p>  enable pass 2, approve a screenshot vendor, or hide the 503 blank cards.</p>
+<ul><li>The optional throughput and sweep-regret observations remain optional in</li></ul>
+<p>  <code>notes.md</code> and may be read after dormancy, before later improvements, or not   at all.</p>
+<ul><li>General sharing, browser-tab harvesting, and pushing subsets back to a</li></ul>
+<p>  browser remain later-version ideas.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
