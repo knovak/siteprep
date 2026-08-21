@@ -51,3 +51,11 @@ Added a policy-aware, switchable Geocoder plus two-step resolve and forecast com
 ## 2026-08-21 — Phase 6 - build the page
 
 Built the five-day page with explicit coast identity and time zone, ambiguous-coast chooser and map, eight distinct states, partial results, and desktop and phone browser coverage.
+
+## 2026-08-21 — Refine the page for fluid windows and iPhone Pro Max
+
+Removed the equal-row sizing that made sparse days inherit the busiest day's
+height on a one-column phone layout. Added compact two-column event groups at
+Pro Max widths, a narrower-phone fallback, safe-area padding, and a 320–1600 px
+browser regression matrix with the phone project pinned to an iPhone 15 Pro
+Max viewport.

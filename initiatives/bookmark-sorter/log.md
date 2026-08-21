@@ -336,3 +336,11 @@ Proposed graduating the live owner-only Bookmark Sorter to refining, recording t
 ## 2026-08-21 — Write a user-facing README covering how to use it and how to deploy it
 
 Added a user-facing README with private-data cautions, import and triage guidance, selection grammar, backup steps, and the full-stack Sites deployment path.
+
+## 2026-08-21 — Add collection and selection export controls
+
+Added an Export section beside Import. It downloads either the active
+collection or the open selection as `bookmark-sorter/v1` JSON with tags and
+verdicts. Import now accepts that JSON text file directly as well as browser
+bookmark HTML, closing the already-tested portable round trip in the visible
+interface.

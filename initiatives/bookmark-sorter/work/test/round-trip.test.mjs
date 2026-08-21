@@ -45,6 +45,9 @@ test('a selection export is self-describing, capture-free, and a same-collection
   assert.equal(document.selection, 'site:example.com');
   assert.equal(document.items.length, 2);
   assert.ok(document.items.every(item => !('capture' in item) && !('url_key' in item) && !('id' in item)));
+  const exportedGuide = document.items.find(item => item.tags.includes('topic:rust'));
+  assert.ok(exportedGuide.tags.includes('topic:rust'));
+  assert.equal(exportedGuide.verdict, 'keeper');
 
   const result = await importExportDocument({
     store, collectionId: 'source', document, importedAt: '2026-08-19T00:00:00Z',

@@ -33,12 +33,15 @@ export function renderPilePage() {
     .collection-bar .spacer { flex: 1 0 12px; }
     .collection-kind { flex: 0 0 auto; color: #687188; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
-    details { grid-row: 3; border: 1px solid #d8deea; border-radius: 12px; background: white; }
+    .file-tools { grid-row: 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
+    details { min-width: 0; border: 1px solid #d8deea; border-radius: 12px; background: white; }
     summary { padding: 8px 12px; color: #29406e; font-weight: 750; cursor: pointer; }
     form { display: grid; grid-template-columns: 1fr minmax(160px, .35fr) auto; gap: 10px; align-items: end; padding: 0 12px 12px; }
     label { display: grid; gap: 4px; color: #4d5870; font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-    input, form button { min-height: 40px; border: 1px solid #b9c2d3; border-radius: 9px; padding: 8px 10px; background: white; }
+    input, form select, form button { min-height: 40px; border: 1px solid #b9c2d3; border-radius: 9px; padding: 8px 10px; background: white; }
     form button { border-color: #234fc4; color: white; background: #234fc4; font-weight: 760; }
+    .file-field { display: grid; gap: 4px; }
+    .portable-copy { align-self: center; margin: 0; color: #687188; font-size: .76rem; }
     .selection-panel { grid-row: 4; display: grid; grid-template-columns: minmax(220px, 2fr) auto minmax(150px, 1fr) auto minmax(150px, 1fr) auto; gap: 7px; align-items: center; padding: 9px; border: 1px solid #d8deea; border-radius: 12px; background: white; }
     .selection-panel input, .selection-panel select, .selection-panel button { min-width: 0; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; background: white; }
     .selection-panel button { color: #29406e; font-weight: 740; }
@@ -113,7 +116,8 @@ export function renderPilePage() {
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
       .collection-bar select, .collection-bar input, .collection-bar button { min-height: 32px; padding: 4px 7px; }
       .collection-kind, .collection-bar .spacer { display: none; }
-      details:not([open]) { display: none; }
+      .file-tools { gap: 4px; }
+      .file-tools:has(details[open]) details { grid-column: 1 / -1; }
       .selection-panel { display: flex; overflow-x: auto; }
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
       .selection-panel button { flex-basis: auto; }
@@ -152,6 +156,7 @@ export function renderPilePage() {
         <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
+        <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         <li><strong>Apply saved unopened…</strong> applies the chosen verdict to a saved selection after showing a confirmation count.</li>
         <li><strong>Capture gaps</strong> is currently unavailable because fallback screenshot capture is not enabled.</li>
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
@@ -190,14 +195,24 @@ export function renderPilePage() {
       <button id="copy-template" type="button">Take a copy</button>
       <button id="create-template" type="button" hidden>Create template</button>
     </section>
-    <details id="importer" open>
-      <summary>Import a browser bookmark file</summary>
-      <form id="import-form">
-        <label>Bookmark HTML<input id="bookmark-file" name="file" type="file" accept=".html,text/html" required></label>
-        <label>Source tag<input id="source" name="source" value="browser-export" pattern="[a-z0-9][a-z0-9-]*" required></label>
-        <button type="submit">Import file</button>
-      </form>
-    </details>
+    <section class="file-tools" aria-label="Import and export">
+      <details id="importer" open>
+        <summary>Import bookmarks</summary>
+        <form id="import-form">
+          <label>Bookmark HTML or Sorter JSON<input id="bookmark-file" name="file" type="file" accept=".html,.json,text/html,application/json" required></label>
+          <label>Source tag (HTML only)<input id="source" name="source" value="browser-export" pattern="[a-z0-9][a-z0-9-]*" required></label>
+          <button type="submit">Import file</button>
+        </form>
+      </details>
+      <details id="exporter">
+        <summary>Export bookmarks</summary>
+        <form id="export-form">
+          <div class="file-field"><label for="export-scope">Export scope</label><select id="export-scope" name="scope"><option value="collection">Current collection</option><option value="selection">Current selection</option></select></div>
+          <p class="portable-copy">Bookmark Sorter JSON includes URLs, notes, tags, and verdicts, and can be imported here again.</p>
+          <button id="export-file" type="submit">Export file</button>
+        </form>
+      </details>
+    </section>
     <section class="selection-panel" aria-label="Selection tools">
       <input id="selection-expression" aria-label="Selection expression" placeholder="folder:reading/* and not topic:rust">
       <button id="open-selection" class="primary" type="button">Open selection</button>
@@ -240,7 +255,7 @@ export function renderPilePage() {
   </main>
   <script>
     const elements = {
-      form: document.querySelector('#import-form'), importer: document.querySelector('#importer'), grid: document.querySelector('#grid'),
+      form: document.querySelector('#import-form'), importer: document.querySelector('#importer'), exportForm: document.querySelector('#export-form'), exporter: document.querySelector('#exporter'), exportScope: document.querySelector('#export-scope'), exportFile: document.querySelector('#export-file'), grid: document.querySelector('#grid'),
       count: document.querySelector('#count'), backlog: document.querySelector('#backlog'), rate: document.querySelector('#rate'),
       status: document.querySelector('#status'), position: document.querySelector('#position'), markCount: document.querySelector('#mark-count'),
       session: document.querySelector('#session'), undo: document.querySelector('#undo'), capturePassOne: document.querySelector('#capture-pass-one'), captureGaps: document.querySelector('#capture-gaps'),
@@ -288,6 +303,9 @@ export function renderPilePage() {
       elements.markCount.textContent = state.marked.size.toLocaleString() + ' marked';
       elements.session.textContent = state.session?.ended_at ? 'Start sitting' : 'End sitting';
       elements.selectionSummary.textContent = (state.expression ? state.expression : 'All items') + ' · ' + state.total.toLocaleString() + ' selected · ' + state.selectionBacklog.toLocaleString() + ' untriaged';
+      elements.exportScope.options[0].textContent = 'Current collection (' + state.collectionTotal.toLocaleString() + ')';
+      elements.exportScope.options[1].textContent = 'Current selection (' + state.total.toLocaleString() + ')';
+      elements.exportFile.disabled = !state.collectionId;
       elements.previousPage.disabled = state.loading || state.offset <= 0;
       elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
       elements.capturePassOne.disabled = state.loading || state.captureInProgress || !state.captures;
@@ -734,6 +752,19 @@ export function renderPilePage() {
         elements.status.textContent = 'Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.';
         await Promise.all([loadWindow(0), loadSelectionTools()]);
       } catch (error) { elements.status.textContent = error.message; } finally { button.disabled = false; }
+    });
+    elements.exportForm.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!state.collectionId) return;
+      const selectionOnly = elements.exportScope.value === 'selection';
+      const exportUrl = new URL('/api/export', location.origin);
+      exportUrl.searchParams.set('collection_id', state.collectionId);
+      if (selectionOnly && state.expression) exportUrl.searchParams.set('expression', state.expression);
+      const link = document.createElement('a');
+      link.href = exportUrl.href; link.download = 'bookmark-sorter-export.json';
+      document.body.append(link); link.click(); link.remove();
+      const count = selectionOnly ? state.total : state.collectionTotal;
+      elements.status.textContent = 'Exporting ' + count.toLocaleString() + ' bookmark' + (count === 1 ? '' : 's') + ' from the current ' + (selectionOnly ? 'selection' : 'collection') + '.';
     });
     elements.collectionSelect.addEventListener('change', () => openCollection(elements.collectionSelect.value).catch(error => { elements.status.textContent = error.message; }));
     elements.templateSelect.addEventListener('change', () => { elements.copyTemplate.disabled = !elements.templateSelect.value; });

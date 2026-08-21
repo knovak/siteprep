@@ -52,6 +52,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="next-page"/);
   assert.match(html, /id="rename-form"/);
   assert.match(html, /id="new-collection" type="button">New</);
+  assert.match(html, /id="exporter"/);
+  assert.match(html, /id="export-scope"/);
+  assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
   assert.match(html, /can be used as a suffix to match any trailing characters/);
@@ -221,6 +224,17 @@ test('portable API exports a selection, imports JSON, and reviews proposed tags 
   assert.equal(document.selection, 'site:example.com');
   assert.equal(document.items.length, 2);
   assert.ok(document.items.every(item => !('capture' in item)));
+
+  const wholeCollection = await app.fetch(new Request('https://pile.test/api/export'));
+  assert.equal(wholeCollection.status, 200);
+  assert.equal((await wholeCollection.json()).items.length, 3);
+
+  const fileForm = new FormData();
+  fileForm.append('source', 'ignored-for-json');
+  fileForm.append('file', new Blob([JSON.stringify(document)], {type: 'application/json'}), 'bookmark-sorter-export.json');
+  const importedFile = await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: fileForm}));
+  assert.equal(importedFile.status, 201);
+  assert.deepEqual(await importedFile.json(), {parsed: 2, added: 0, merged: 2, total: 3});
 
   const imported = await app.fetch(new Request('https://pile.test/api/import-json', {
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(document),
