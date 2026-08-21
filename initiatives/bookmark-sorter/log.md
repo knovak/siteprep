@@ -328,3 +328,7 @@ Superseded by enable-captures-and-measure, not performed. The blocker was misdia
 ## 2026-08-20 — Provision the R2 capture bucket, turn on pass 1, and record the coverage and duplicate-image numbers
 
 Provisioned R2, enabled repeatable pass-1 catch-up, deployed Site version 15, and measured 698 distinguishable metadata images across 1,201 bookmarks (58.1%). The largest duplicate-image group was 11, so the threshold remains 30 and pass 2 remains off.
+
+## 2026-08-21 — Choose whether to graduate the live Bookmark Sorter or make the initiative dormant
+
+Proposed graduating the live owner-only Bookmark Sorter to refining, recording the external Site and leaving pass 2 off; merging this PR would enact the recommendation.

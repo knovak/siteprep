@@ -1,18 +1,31 @@
 {
   "title": "Interactive Bookmark Sorter",
   "summary": "Fast visual triage for a large bookmark pile, with tags, clusters and snapshot views.",
-  "stage": "building",
+  "stage": "refining",
   "value": "medium",
-  "outputs": [],
+  "outputs": [
+    {
+      "kind": "external",
+      "url": "https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/",
+      "status": "live"
+    }
+  ],
   "todo": [
     {
-      "id": "choose-graduation-or-dormancy",
-      "title": "Choose whether to graduate the live Bookmark Sorter or make the initiative dormant",
-      "state": "blocked",
+      "id": "refining-readme",
+      "title": "Write a user-facing README covering how to use it and how to deploy it",
+      "state": "actionable",
       "value": "high",
       "effort": "small",
-      "advances_stage": true,
-      "blocked_by": "human:Choose whether 58.1% metadata coverage is good enough to graduate the live Site or the initiative should rest dormant"
+      "advances_stage": false
+    },
+    {
+      "id": "refining-improvements",
+      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
     }
   ]
 }
