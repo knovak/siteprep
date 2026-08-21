@@ -5,10 +5,10 @@ import {MemoryBookmarkStore} from '../src/memory-store.mjs';
 import {compileSelection, evaluateSelection, normaliseTitle, proposeSelections, wrapUiSelection} from '../src/selections.mjs';
 
 const items = [
-  {id: 'a', collection_id: 'alpha', url: 'https://news.test/one', title: 'Rust: A Guide!', title_key: normaliseTitle('Rust: A Guide!'), tags: ['topic:rust', 'folder:reading/rust']},
-  {id: 'b', collection_id: 'alpha', url: 'https://news.test/two', title: 'Rust — A Guide', title_key: normaliseTitle('Rust — A Guide'), tags: ['topic:rust', 'saved:later', 'folder:reading/rust']},
-  {id: 'c', collection_id: 'alpha', url: 'https://other.test/three', title: 'Gardens', title_key: normaliseTitle('Gardens'), tags: ['topic:garden', 'saved:later', 'folder:reading/garden']},
-  {id: 'd', collection_id: 'beta', url: 'https://news.test/four', title: 'Rust A Guide', title_key: normaliseTitle('Rust A Guide'), tags: ['topic:rust', 'folder:reading/rust']},
+  {id: 'a', collection_id: 'alpha', url: 'https://news.test/one', title: 'Rust: A Guide!', title_key: normaliseTitle('Rust: A Guide!'), tags: ['topic:rust', 'src:safari', 'folder:reading/rust']},
+  {id: 'b', collection_id: 'alpha', url: 'https://news.test/two', title: 'Rust — A Guide', title_key: normaliseTitle('Rust — A Guide'), tags: ['topic:rust', 'saved:later', 'src:safari', 'folder:reading/rust']},
+  {id: 'c', collection_id: 'alpha', url: 'https://other.test/three', title: 'Gardens', title_key: normaliseTitle('Gardens'), tags: ['topic:garden', 'saved:later', 'src:firefox', 'folder:reading/garden']},
+  {id: 'd', collection_id: 'beta', url: 'https://news.test/four', title: 'Rust A Guide', title_key: normaliseTitle('Rust A Guide'), tags: ['topic:rust', 'src:firefox', 'folder:reading/rust']},
 ];
 
 test('selection grammar covers precedence, grouping, not, wildcards, unknown tags, and clear errors', () => {
@@ -41,16 +41,42 @@ test('verdict clauses use the labels visible in the interface', () => {
   assert.deepEqual(evaluateSelection(verdictItems, 'verdict:keep or verdict:needs-time').map(item => item.id), ['keep', 'needs-time']);
 });
 
+test('image clauses distinguish stored, failed, and absent pictures', () => {
+  const imageItems = [
+    {...items[0], id: 'present', capture: {image_ref: 'capture/one.webp', state: 'pass1-ready', displayable: true}},
+    {...items[0], id: 'hidden', capture: {image_ref: 'capture/duplicate.webp', state: 'pass1-ready', displayable: false}},
+    {...items[0], id: 'failed', capture: {image_ref: null, state: 'pass1-error', error_tag: 'err:503'}},
+    {...items[0], id: 'none', capture: null},
+  ];
+  assert.deepEqual(evaluateSelection(imageItems, 'image:present').map(item => item.id), ['present']);
+  assert.deepEqual(evaluateSelection(imageItems, 'image:failed').map(item => item.id), ['failed']);
+  assert.deepEqual(evaluateSelection(imageItems, 'image:none').map(item => item.id), ['hidden', 'none']);
+});
+
 test('cheap proposals are ordinary selections and mutable folder tags are recomputed on demand', () => {
   assert.equal(normaliseTitle('  Rust — A GUIDE! '), 'rust-a-guide');
   const first = proposeSelections(items);
   const site = first.find(proposal => proposal.id === 'site:news.test');
   const title = first.find(proposal => proposal.id === 'title:rust-a-guide');
   const folder = first.find(proposal => proposal.id === 'folder:reading/rust');
+  const source = first.find(proposal => proposal.id === 'src:safari');
+  const tag = first.find(proposal => proposal.id === 'tag:topic:rust');
+  const image = first.find(proposal => proposal.id === 'image:none');
+  const verdicts = first.filter(proposal => proposal.kind === 'verdict');
   assert.equal(site.count, 3);
   assert.equal(title.count, 3);
   assert.equal(folder.count, 3);
+  assert.equal(source.count, 2);
+  assert.equal(tag.count, 3);
+  assert.equal(image.count, 4);
+  assert.deepEqual(verdicts.map(proposal => [proposal.name, proposal.count]), [
+    ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['untriaged', 4],
+  ]);
+  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title']);
+  assert.ok(first.every(proposal => !proposal.name.startsWith('Same ')));
   assert.deepEqual(evaluateSelection(items, site.expression).map(item => item.id), ['a', 'b', 'd']);
+  assert.deepEqual(evaluateSelection(items, tag.expression).map(item => item.id), ['a', 'b', 'd']);
+  assert.deepEqual(evaluateSelection(items, verdicts.at(-1).expression).map(item => item.id), ['a', 'b', 'c', 'd']);
 
   const changed = structuredClone(items);
   changed[1].tags = ['topic:rust', 'saved:later', 'folder:reading/changed'];

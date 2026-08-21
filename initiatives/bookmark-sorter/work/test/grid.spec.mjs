@@ -20,40 +20,73 @@ async function installPile(page) {
   const backend = {
     items: sampleItems(),
     collection: {id: 'pile', name: 'My bookmarks', kind: 'personal'},
+    collections: [],
     session: null,
     actions: [],
     requests: [],
+    proposalRevision: 0,
+    selectionDelays: new Map(),
   };
+  backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
     const request = route.request();
     const url = new URL(request.url());
-    backend.requests.push({method: request.method(), path: url.pathname});
+    const requestCollectionId = request.headers()['x-bookmark-collection-id'] || '';
+    backend.requests.push({method: request.method(), path: url.pathname, collectionId: requestCollectionId});
     if (request.method() === 'GET' && url.pathname === '/') {
       return route.fulfill({contentType: 'text/html', body: renderPilePage()});
     }
     if (request.method() === 'GET' && url.pathname === '/api/collections') {
       return route.fulfill({json: {
         active_collection_id: 'pile', can_edit_templates: false,
-        collections: [{...backend.collection, item_count: backend.items.length}],
+        collections: backend.collections.map(collection => ({
+          ...collection, item_count: collection.id === 'pile' ? backend.items.length : 0,
+        })),
         templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
       }});
     }
     if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
+      const collectionId = request.headers()['x-bookmark-collection-id'] || 'pile';
+      const selectionDelay = backend.selectionDelays.get(collectionId) || 0;
+      if (selectionDelay) await new Promise(resolve => setTimeout(resolve, selectionDelay));
+      const collectionItems = collectionId === 'pile' ? backend.items : [];
       const offset = Number(url.searchParams.get('offset') || 0);
       const limit = Number(url.searchParams.get('limit') || 200);
-      const backlog = backend.items.filter(item => !item.verdict).length;
-      return route.fulfill({json: {collection_id: 'pile', collection_total: backend.items.length, collection_backlog: backlog, total: backend.items.length, backlog, captures: {total: backend.items.length, metadata_images: 3334, screenshot_images: 0, gaps: 6666, queued: 6666, duplicate_distribution: [12, 7, 4]}, items: backend.items.slice(offset, offset + limit)}});
+      const backlog = collectionItems.filter(item => !item.verdict).length;
+      return route.fulfill({json: {collection_id: collectionId, collection_total: collectionItems.length, collection_backlog: backlog, total: collectionItems.length, backlog, captures: {total: collectionItems.length, metadata_images: collectionId === 'pile' ? 3334 : 0, screenshot_images: 0, gaps: collectionId === 'pile' ? 6666 : 0, queued: collectionId === 'pile' ? 6666 : 0, duplicate_distribution: collectionId === 'pile' ? [12, 7, 4] : []}, items: collectionItems.slice(offset, offset + limit)}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/selections') {
       return route.fulfill({json: {selections: []}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/proposals') {
-      return route.fulfill({json: {proposals: []}});
+      const source = requestCollectionId === 'other' ? 'other-source' : 'browser-export';
+      return route.fulfill({json: {proposals: [
+        {id: `src:${source}`, kind: 'src', name: source, expression: `src:${source}`, count: backend.proposalRevision + 1},
+        {id: 'tag:topic:later', kind: 'tag', name: 'topic:later', expression: 'tag-key:topic%3Alater', count: 2},
+        {id: 'folder:Reading/topic-0', kind: 'folder', name: 'Reading/topic-0', expression: 'folder-key:Reading%2Ftopic-0', count: 834},
+        {id: 'site:example0.com', kind: 'site', name: 'example0.com', expression: 'site:example0.com', count: 271},
+        {id: 'image:none', kind: 'image', name: 'none', expression: 'image:none', count: 6666},
+        {id: 'verdict:archive', kind: 'verdict', name: 'archive', expression: 'verdict:archive', count: 0},
+        {id: 'verdict:junk', kind: 'verdict', name: 'junk', expression: 'verdict:junk', count: 0},
+        {id: 'verdict:keep', kind: 'verdict', name: 'keep', expression: 'verdict:keep', count: 0},
+        {id: 'verdict:needs-time', kind: 'verdict', name: 'needs-time', expression: 'verdict:needs-time', count: 0},
+        {id: 'verdict:untriaged', kind: 'verdict', name: 'untriaged', expression: 'verdict:untriaged', count: 10_000},
+      ]}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/import') {
+      backend.proposalRevision += 1;
+      return route.fulfill({status: 201, json: {parsed: 1, added: 1, merged: 0, total: 1}});
     }
     const body = request.postDataJSON();
     if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'rename') {
       backend.collection = {...backend.collection, name: body.name.trim()};
+      backend.collections[0] = backend.collection;
       return route.fulfill({json: {collection: {...backend.collection, item_count: backend.items.length}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'create') {
+      const collection = {id: 'collection-new', name: body.name.trim(), kind: 'private'};
+      backend.collections.push(collection);
+      return route.fulfill({status: 201, json: {collection: {...collection, item_count: 0}}});
     }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
@@ -203,11 +236,35 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('Sweep untriaged');
   await expect(page.locator('#help-panel')).toContainText('site:example.com');
   await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
+  await expect(page.locator('#help-panel')).toContainText('src:safari');
+  await expect(page.locator('#help-panel')).toContainText('folder:Favorites*');
+  await expect(page.locator('#help-panel')).toContainText('in:2026-08-19');
+  await expect(page.locator('#help-panel')).toContainText('can be used as a suffix to match any trailing characters');
+  await expect(page.locator('#help-panel')).toContainText('exact folder names');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
+  await expect(page.locator('#help-panel')).toContainText('image:present');
   await page.keyboard.press('Escape');
   await expect(page.locator('#help-panel')).toBeHidden();
 
-  await expect(page.locator('[data-item-id="item-1"] .tag').first()).toHaveAttribute('title', 'All tags:\nfolder:Reading/topic-0\nsrc:browser-export');
+  const firstTag = page.locator('[data-item-id="item-1"] .tag').first();
+  await firstTag.hover();
+  const popover = page.locator('#tag-popover');
+  await expect(popover).toBeVisible();
+  await expect(popover).toHaveText('All tags:\nfolder:Reading/topic-0\nsrc:browser-export');
+  await popover.hover();
+  await page.waitForTimeout(250);
+  await expect(popover).toBeVisible();
+  await expect.poll(() => popover.evaluate(element => getComputedStyle(element).userSelect)).toBe('text');
+  await expect.poll(() => popover.evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThan(12);
+  const selected = await popover.evaluate(element => {
+    const selection = getSelection();
+    selection.removeAllRanges();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    selection.addRange(range);
+    return selection.toString();
+  });
+  expect(selected).toContain('src:browser-export');
 });
 
 test('collection rename uses an inline form and supports save or keyboard cancel', async ({page}) => {
@@ -231,6 +288,66 @@ test('collection rename uses an inline form and supports save or keyboard cancel
   await expect(page.getByLabel('Current collection')).toContainText('Reviewed bookmarks');
   await expect(page.getByRole('button', {name: 'Rename'})).toBeFocused();
   expect(backend.collection.name).toBe('Reviewed bookmarks');
+});
+
+test('New creates a named empty collection without a browser prompt', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await page.getByRole('button', {name: 'New'}).click();
+  await expect(page.locator('#rename-form')).toBeVisible();
+  await expect(page.getByLabel('Collection name')).toHaveValue('');
+  await page.getByLabel('Collection name').fill('Research queue');
+  await page.getByLabel('Collection name').press('Enter');
+
+  await expect(page.locator('#status')).toHaveText('Empty collection created.');
+  await expect(page.getByLabel('Current collection')).toHaveValue('collection-new');
+  await expect(page.locator('#count')).toHaveText('0');
+  expect(backend.collections.at(-1)).toEqual({id: 'collection-new', name: 'Research queue', kind: 'private'});
+});
+
+test('Automatic proposals are grouped in the requested order without Same labels', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await expect(page.locator('#proposals optgroup')).toHaveCount(6);
+  const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
+  expect(labels).toEqual(['src', 'tag', 'folder', 'site', 'image', 'verdict']);
+  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(5);
+  const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
+  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'untriaged (10,000)']);
+  await expect(page.locator('#proposals')).not.toContainText('Same ');
+});
+
+test('Automatic proposals refresh after choosing a collection and completing an import', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.collections.push({id: 'other', name: 'Other collection', kind: 'private'});
+  await page.goto('https://pile.test/');
+  await expect(page.locator('#proposals option[value="src:browser-export"]')).toHaveText('browser-export (1)');
+
+  await page.getByLabel('Current collection').selectOption('other');
+  await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (1)');
+  expect(backend.requests.filter(request => request.path === '/api/proposals').at(-1).collectionId).toBe('other');
+
+  await page.locator('#importer summary').click();
+  await page.locator('#bookmark-file').setInputFiles({
+    name: 'bookmarks.html', mimeType: 'text/html', buffer: Buffer.from('<!doctype html><title>Bookmarks</title>'),
+  });
+  await page.getByRole('button', {name: 'Import file'}).click();
+  await expect(page.locator('#status')).toHaveText('Imported 1 new; merged 0.');
+  await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (2)');
+
+  await page.getByLabel('Current collection').selectOption('pile');
+  await expect(page.locator('#count')).toHaveText('10,000');
+  backend.selectionDelays.set('other', 400);
+  await page.getByLabel('Current collection').selectOption('other');
+  await page.getByLabel('Current collection').selectOption('pile');
+  await page.waitForTimeout(600);
+  await expect(page.getByLabel('Current collection')).toHaveValue('pile');
+  await expect(page.locator('#count')).toHaveText('10,000');
+  await expect(page.locator('[data-item-id="item-1"]')).toContainText('src:browser-export');
 });
 
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {

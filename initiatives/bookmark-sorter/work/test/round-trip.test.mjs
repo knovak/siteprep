@@ -87,6 +87,27 @@ test('a hand-written v1 document imports without depending on exporter output', 
   assert.equal(item.note, 'A note from a file the importer did not write.');
 });
 
+test('portable imports simplify Google redirect URLs before storing them', async () => {
+  const store = new MemoryBookmarkStore();
+  store.createCollection({id: 'pile', name: 'Pile'});
+  const wrapped = 'https://www.google.com/url?sa=D&q=https%3A%2F%2Fthebaffler.com%2Fsalvos%2Fhydropower-neumann';
+  await importExportDocument({
+    store,
+    collectionId: 'pile',
+    importedAt: '2026-08-20T00:00:00Z',
+    document: {
+      format: 'bookmark-sorter/v1',
+      exported_at: '2026-08-20T00:00:00Z',
+      collection: 'source',
+      selection: '',
+      items: [{url: wrapped, title: 'Hydropower', note: null, added_at: null, tags: [], verdict: null, verdict_at: null}],
+    },
+  });
+  const [item] = store.listAllItems('pile');
+  assert.equal(item.url, 'https://thebaffler.com/salvos/hydropower-neumann');
+  assert.equal(item.url_key, item.url);
+});
+
 test('proposal loading is read-only, URL-matched, grouped per tag, and acceptance uses the additive undo path', async () => {
   const store = await sourceStore();
   const before = store.listAllItems('source');

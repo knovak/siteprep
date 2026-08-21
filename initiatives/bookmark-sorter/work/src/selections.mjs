@@ -6,6 +6,8 @@ export class SelectionSyntaxError extends Error {
   }
 }
 
+const VERDICT_PROPOSAL_KEYS = Object.freeze(['archive', 'junk', 'keep', 'needs-time', 'untriaged']);
+
 /** A stable ingestion key for cheap near-identical-title proposals. */
 export function normaliseTitle(value) {
   return String(value || '')
@@ -42,11 +44,13 @@ export function selectionTags(item) {
   const tags = new Set(item.tags || []);
   if (item.collection_id) tags.add(`collection:${item.collection_id}`);
   tags.add(`verdict:${selectionVerdict(item.verdict)}`);
+  tags.add(`image:${selectionImage(item.capture)}`);
   const site = siteKey(item.url);
   if (site) tags.add(`site:${site}`);
   const titleKey = item.title_key || normaliseTitle(item.title);
   if (titleKey) tags.add(`title:${titleKey}`);
   for (const tag of item.tags || []) {
+    tags.add(`tag-key:${encodeURIComponent(tag)}`);
     if (tag.startsWith('folder:')) tags.add(`folder-key:${encodeURIComponent(tag.slice(7))}`);
   }
   return tags;
@@ -59,29 +63,65 @@ function selectionVerdict(verdict) {
   return verdict;
 }
 
-export function proposeSelections(items, {minimum = 2} = {}) {
-  const proposals = [];
-  proposals.push(...groupProposals(items, 'site', item => siteKey(item.url), key => `Same site: ${key}`));
-  proposals.push(...groupProposals(items, 'folder', item => (item.tags || []).find(tag => tag.startsWith('folder:'))?.slice(7) || '', key => `Same folder: ${key}`, key => `folder-key:${encodeURIComponent(key)}`));
-  proposals.push(...groupProposals(items, 'title', item => item.title_key || normaliseTitle(item.title), key => `Near-identical title: ${key}`));
-  return proposals
-    .filter(proposal => proposal.count >= minimum)
-    .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name));
+function selectionImage(capture) {
+  if (capture?.image_ref && capture.displayable !== false) return 'present';
+  if (capture?.state === 'pass1-error' || capture?.error_tag) return 'failed';
+  return 'none';
 }
 
-function groupProposals(items, kind, keyFor, nameFor, expressionFor = key => `${kind}:${key}`) {
+export function proposeSelections(items, {minimum = 2} = {}) {
+  const proposals = [
+    ...groupProposalValues(items, 'src', item => (item.tags || [])
+      .filter(tag => tag.startsWith('src:'))
+      .map(tag => tag.slice(4)), key => `src:${key}`),
+    ...groupProposalValues(items, 'tag', item => (item.tags || [])
+      .filter(tag => !tag.startsWith('src:') && !tag.startsWith('folder:')), key => `tag-key:${encodeURIComponent(key)}`),
+    ...groupProposalValues(items, 'folder', item => (item.tags || [])
+      .filter(tag => tag.startsWith('folder:'))
+      .map(tag => tag.slice(7)), key => `folder-key:${encodeURIComponent(key)}`),
+    ...groupProposalValues(items, 'site', item => [siteKey(item.url)]),
+    ...groupProposalValues(items, 'image', item => [selectionImage(item.capture)]),
+    ...verdictProposals(items),
+    ...groupProposalValues(items, 'title', item => [item.title_key || normaliseTitle(item.title)]),
+  ];
+  const includeSingleton = new Set(['src', 'tag', 'folder', 'image']);
+  const kindOrder = new Map(['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title'].map((kind, index) => [kind, index]));
+  return proposals
+    .filter(proposal => proposal.kind === 'verdict'
+      || proposal.count >= (includeSingleton.has(proposal.kind) ? 1 : minimum))
+    .sort((left, right) => kindOrder.get(left.kind) - kindOrder.get(right.kind)
+      || left.name.localeCompare(right.name));
+}
+
+function verdictProposals(items) {
+  const counts = new Map(VERDICT_PROPOSAL_KEYS.map(key => [key, 0]));
+  for (const item of items) {
+    const key = selectionVerdict(item.verdict);
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return VERDICT_PROPOSAL_KEYS.map(key => ({
+    id: `verdict:${key}`,
+    kind: 'verdict',
+    key,
+    name: key,
+    expression: `verdict:${key}`,
+    count: counts.get(key),
+  }));
+}
+
+function groupProposalValues(items, kind, valuesFor, expressionFor = key => `${kind}:${key}`) {
   const groups = new Map();
   for (const item of items) {
-    const key = keyFor(item);
-    if (!key) continue;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(item.id);
+    for (const key of new Set(valuesFor(item).filter(Boolean))) {
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item.id);
+    }
   }
   return [...groups].map(([key, ids]) => ({
     id: `${kind}:${key}`,
     kind,
     key,
-    name: nameFor(key),
+    name: key,
     expression: expressionFor(key),
     count: ids.length,
   }));

@@ -1,9 +1,16 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile, readdir} from 'node:fs/promises';
 import {test} from 'node:test';
 import {DatabaseSync} from 'node:sqlite';
 
 const read = relative => readFile(new URL(`../${relative}`, import.meta.url), 'utf8');
+
+async function applyMigration(database, relative) {
+  const sql = await read(relative);
+  for (const statement of sql.split('--> statement-breakpoint')) {
+    if (statement.trim()) database.exec(statement);
+  }
+}
 
 test('Sites declares the approved D1 and R2 end-user deployment', async () => {
   const hosting = JSON.parse(await read('.openai/hosting.json'));
@@ -19,12 +26,12 @@ test('Sites declares the approved D1 and R2 end-user deployment', async () => {
 });
 
 test('the generated deployment migration creates the complete final schema', async () => {
-  const sql = await read('drizzle/0000_lively_fat_cobra.sql');
   const database = new DatabaseSync(':memory:');
   database.exec('PRAGMA foreign_keys = ON');
-  for (const statement of sql.split('--> statement-breakpoint')) {
-    if (statement.trim()) database.exec(statement);
-  }
+  const migrations = (await readdir(new URL('../drizzle/', import.meta.url)))
+    .filter(name => name.endsWith('.sql'))
+    .sort();
+  for (const migration of migrations) await applyMigration(database, `drizzle/${migration}`);
 
   const tables = database.prepare(
     "SELECT name FROM sqlite_schema WHERE type = 'table' ORDER BY name",
@@ -59,4 +66,29 @@ test('the generated deployment migration creates the complete final schema', asy
   assert.throws(() => database.exec(
     "INSERT INTO collections (id, name, owner_id, kind, created_at) VALUES ('other', 'Other', 'tester', 'personal', '2026-08-19T00:00:01Z')",
   ));
+  database.exec(
+    "INSERT INTO collections (id, name, owner_id, kind, created_at) VALUES ('private', 'Research queue', 'tester', 'private', '2026-08-19T00:00:02Z')",
+  );
+  assert.equal(database.prepare("SELECT COUNT(*) AS count FROM items WHERE collection_id = 'private'").get().count, 0);
+});
+
+test('the generated collection migration preserves an existing pile and its items', async () => {
+  const database = new DatabaseSync(':memory:');
+  database.exec('PRAGMA foreign_keys = ON');
+  await applyMigration(database, 'drizzle/0000_lively_fat_cobra.sql');
+  database.exec("INSERT INTO app_users (owner_id) VALUES ('tester')");
+  database.exec(
+    "INSERT INTO collections (id, name, owner_id, kind, created_at) VALUES ('pile', 'My bookmarks', 'tester', 'personal', '2026-08-19T00:00:00Z')",
+  );
+  database.exec(
+    "INSERT INTO items (id, collection_id, url, url_key, title, title_key, ingested_at) VALUES ('item', 'pile', 'https://example.com', 'https://example.com', 'Example', 'example', '2026-08-19T00:00:00Z')",
+  );
+
+  await applyMigration(database, 'drizzle/0001_sticky_wild_pack.sql');
+  assert.equal(database.prepare("SELECT name FROM collections WHERE id = 'pile'").get().name, 'My bookmarks');
+  assert.equal(database.prepare("SELECT collection_id FROM items WHERE id = 'item'").get().collection_id, 'pile');
+  assert.deepEqual(database.prepare('PRAGMA foreign_key_check').all(), []);
+  database.exec(
+    "INSERT INTO collections (id, name, owner_id, kind, created_at) VALUES ('private', 'Research queue', 'tester', 'private', '2026-08-20T00:00:00Z')",
+  );
 });
