@@ -43,3 +43,7 @@ Built and verified a provider-neutral TideProvider seam with NOAA and CHS reques
 ## 2026-08-21 — Phase 4 - add sun and moon calculations
 
 Added the pinned SunCalc astronomy adapter with coast-local event windowing, zero/two-event arrays, polar states, local-noon moon phases, and isolated astronomy-unavailable handling.
+
+## 2026-08-21 — Phase 5 - build resolve, forecast and the failure vocabulary
+
+Added a policy-aware, switchable Geocoder plus two-step resolve and forecast composition with eight distinct failure states, chooser reuse, and partial tide or astronomy results.
