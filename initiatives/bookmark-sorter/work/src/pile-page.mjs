@@ -259,7 +259,7 @@ export function renderPilePage() {
       helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'), tagPopover: document.querySelector('#tag-popover'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
     };
-    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}) {
       const headers = new Headers(options.headers || {});
@@ -428,15 +428,19 @@ export function renderPilePage() {
       setFocus(Math.min(state.focused, state.visible - 1, state.items.length - 1));
     }
     async function loadWindow(offset = state.offset) {
-      if (state.loading) return;
+      const requestId = ++state.windowRequest;
+      const collectionId = state.collectionId;
       state.loading = true;
       try {
         const path = '/api/selection?limit=' + (state.visible + state.buffer) + '&offset=' + Math.max(0, offset) + '&expression=' + encodeURIComponent(state.expression);
         const data = await api(path);
+        if (requestId !== state.windowRequest || collectionId !== state.collectionId) return;
         state.collectionTotal = data.collection_total; state.total = data.total; state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog; state.captures = data.captures; state.offset = Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
         state.items = data.items; state.focused = 0; renderGrid();
         if (state.collectionTotal) { elements.importer.open = false; await startSession(); elements.grid.focus({preventScroll: true}); }
-      } finally { state.loading = false; updateProgress(); }
+      } finally {
+        if (requestId === state.windowRequest) { state.loading = false; updateProgress(); }
+      }
     }
 
     async function openExpression(expression) {

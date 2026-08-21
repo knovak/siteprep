@@ -25,6 +25,7 @@ async function installPile(page) {
     actions: [],
     requests: [],
     proposalRevision: 0,
+    selectionDelays: new Map(),
   };
   backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
@@ -46,6 +47,8 @@ async function installPile(page) {
     }
     if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
       const collectionId = request.headers()['x-bookmark-collection-id'] || 'pile';
+      const selectionDelay = backend.selectionDelays.get(collectionId) || 0;
+      if (selectionDelay) await new Promise(resolve => setTimeout(resolve, selectionDelay));
       const collectionItems = collectionId === 'pile' ? backend.items : [];
       const offset = Number(url.searchParams.get('offset') || 0);
       const limit = Number(url.searchParams.get('limit') || 200);
@@ -335,6 +338,16 @@ test('Automatic proposals refresh after choosing a collection and completing an 
   await page.getByRole('button', {name: 'Import file'}).click();
   await expect(page.locator('#status')).toHaveText('Imported 1 new; merged 0.');
   await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (2)');
+
+  await page.getByLabel('Current collection').selectOption('pile');
+  await expect(page.locator('#count')).toHaveText('10,000');
+  backend.selectionDelays.set('other', 400);
+  await page.getByLabel('Current collection').selectOption('other');
+  await page.getByLabel('Current collection').selectOption('pile');
+  await page.waitForTimeout(600);
+  await expect(page.getByLabel('Current collection')).toHaveValue('pile');
+  await expect(page.locator('#count')).toHaveText('10,000');
+  await expect(page.locator('[data-item-id="item-1"]')).toContainText('src:browser-export');
 });
 
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {

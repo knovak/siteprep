@@ -205,7 +205,9 @@ the data-handling boundary.
   group. Folder and tag groups therefore change on the request after tags
   change; no proposal cache can go stale. The page explicitly reloads proposals
   after a collection change and after an import, and ignores an older response
-  if the user has already switched collections again.
+  if the user has already switched collections again. Card-window requests use
+  the same collection guard, so a slower response cannot replace the newly
+  selected collection's grid.
 - `POST /api/tag` unions tags onto the marked set or current selection and logs
   only the tags it added, so one undo removes those additions and preserves
   everything that existed before the action.
