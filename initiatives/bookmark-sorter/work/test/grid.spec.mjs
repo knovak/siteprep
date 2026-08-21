@@ -24,12 +24,14 @@ async function installPile(page) {
     session: null,
     actions: [],
     requests: [],
+    proposalRevision: 0,
   };
   backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
     const request = route.request();
     const url = new URL(request.url());
-    backend.requests.push({method: request.method(), path: url.pathname});
+    const requestCollectionId = request.headers()['x-bookmark-collection-id'] || '';
+    backend.requests.push({method: request.method(), path: url.pathname, collectionId: requestCollectionId});
     if (request.method() === 'GET' && url.pathname === '/') {
       return route.fulfill({contentType: 'text/html', body: renderPilePage()});
     }
@@ -54,13 +56,23 @@ async function installPile(page) {
       return route.fulfill({json: {selections: []}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/proposals') {
+      const source = requestCollectionId === 'other' ? 'other-source' : 'browser-export';
       return route.fulfill({json: {proposals: [
-        {id: 'src:browser-export', kind: 'src', name: 'browser-export', expression: 'src:browser-export', count: 10_000},
+        {id: `src:${source}`, kind: 'src', name: source, expression: `src:${source}`, count: backend.proposalRevision + 1},
         {id: 'tag:topic:later', kind: 'tag', name: 'topic:later', expression: 'tag-key:topic%3Alater', count: 2},
         {id: 'folder:Reading/topic-0', kind: 'folder', name: 'Reading/topic-0', expression: 'folder-key:Reading%2Ftopic-0', count: 834},
         {id: 'site:example0.com', kind: 'site', name: 'example0.com', expression: 'site:example0.com', count: 271},
         {id: 'image:none', kind: 'image', name: 'none', expression: 'image:none', count: 6666},
+        {id: 'verdict:archive', kind: 'verdict', name: 'archive', expression: 'verdict:archive', count: 0},
+        {id: 'verdict:junk', kind: 'verdict', name: 'junk', expression: 'verdict:junk', count: 0},
+        {id: 'verdict:keep', kind: 'verdict', name: 'keep', expression: 'verdict:keep', count: 0},
+        {id: 'verdict:needs-time', kind: 'verdict', name: 'needs-time', expression: 'verdict:needs-time', count: 0},
+        {id: 'verdict:untriaged', kind: 'verdict', name: 'untriaged', expression: 'verdict:untriaged', count: 10_000},
       ]}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/import') {
+      backend.proposalRevision += 1;
+      return route.fulfill({status: 201, json: {parsed: 1, added: 1, merged: 0, total: 1}});
     }
     const body = request.postDataJSON();
     if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'rename') {
@@ -221,12 +233,35 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('Sweep untriaged');
   await expect(page.locator('#help-panel')).toContainText('site:example.com');
   await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
+  await expect(page.locator('#help-panel')).toContainText('src:safari');
+  await expect(page.locator('#help-panel')).toContainText('folder:Favorites*');
+  await expect(page.locator('#help-panel')).toContainText('in:2026-08-19');
+  await expect(page.locator('#help-panel')).toContainText('can be used as a suffix to match any trailing characters');
+  await expect(page.locator('#help-panel')).toContainText('exact folder names');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
   await expect(page.locator('#help-panel')).toContainText('image:present');
   await page.keyboard.press('Escape');
   await expect(page.locator('#help-panel')).toBeHidden();
 
-  await expect(page.locator('[data-item-id="item-1"] .tag').first()).toHaveAttribute('title', 'All tags:\nfolder:Reading/topic-0\nsrc:browser-export');
+  const firstTag = page.locator('[data-item-id="item-1"] .tag').first();
+  await firstTag.hover();
+  const popover = page.locator('#tag-popover');
+  await expect(popover).toBeVisible();
+  await expect(popover).toHaveText('All tags:\nfolder:Reading/topic-0\nsrc:browser-export');
+  await popover.hover();
+  await page.waitForTimeout(250);
+  await expect(popover).toBeVisible();
+  await expect.poll(() => popover.evaluate(element => getComputedStyle(element).userSelect)).toBe('text');
+  await expect.poll(() => popover.evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThan(12);
+  const selected = await popover.evaluate(element => {
+    const selection = getSelection();
+    selection.removeAllRanges();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    selection.addRange(range);
+    return selection.toString();
+  });
+  expect(selected).toContain('src:browser-export');
 });
 
 test('collection rename uses an inline form and supports save or keyboard cancel', async ({page}) => {
@@ -273,10 +308,33 @@ test('Automatic proposals are grouped in the requested order without Same labels
   await page.setViewportSize({width: 1600, height: 900});
   await installPile(page);
   await page.goto('https://pile.test/');
-  await expect(page.locator('#proposals optgroup')).toHaveCount(5);
+  await expect(page.locator('#proposals optgroup')).toHaveCount(6);
   const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
-  expect(labels).toEqual(['src', 'tag', 'folder', 'site', 'image']);
+  expect(labels).toEqual(['src', 'tag', 'folder', 'site', 'image', 'verdict']);
+  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(5);
+  const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
+  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'untriaged (10,000)']);
   await expect(page.locator('#proposals')).not.toContainText('Same ');
+});
+
+test('Automatic proposals refresh after choosing a collection and completing an import', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.collections.push({id: 'other', name: 'Other collection', kind: 'private'});
+  await page.goto('https://pile.test/');
+  await expect(page.locator('#proposals option[value="src:browser-export"]')).toHaveText('browser-export (1)');
+
+  await page.getByLabel('Current collection').selectOption('other');
+  await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (1)');
+  expect(backend.requests.filter(request => request.path === '/api/proposals').at(-1).collectionId).toBe('other');
+
+  await page.locator('#importer summary').click();
+  await page.locator('#bookmark-file').setInputFiles({
+    name: 'bookmarks.html', mimeType: 'text/html', buffer: Buffer.from('<!doctype html><title>Bookmarks</title>'),
+  });
+  await page.getByRole('button', {name: 'Import file'}).click();
+  await expect(page.locator('#status')).toHaveText('Imported 1 new; merged 0.');
+  await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (2)');
 });
 
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {

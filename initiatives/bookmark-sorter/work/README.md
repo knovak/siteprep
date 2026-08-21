@@ -88,8 +88,9 @@ selection, and export operations.
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
   never HTML strings. Bookmark titles show up to five lines and link to the
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy
-  control. Truncated tag chips expose the item's complete tag list through
-  their hover text. Help documents the controls and selection grammar in the
+  control. Truncated tag chips expose the item's complete tag list through a
+  hover-persistent popover with selectable text and a larger readable font.
+  Help documents the controls and selection grammar in the
   page. The collection bar creates and renames through an inline form rather
   than a browser prompt, so it works in the Sites browser environment. Stored derivatives
   appear without any request to the saved page. A
@@ -196,11 +197,15 @@ the data-handling boundary.
   `image:none`, `image:failed`, and `image:present` select by stored picture state.
 - `GET|POST /api/selections` lists and saves named expressions. Saving parses
   the expression first; malformed input is an error, never an empty set.
-- `GET /api/proposals` recomputes source, exact-tag, folder, site, image, and
-  near-title groups as ordinary pre-filled selections. The interface groups
-  them in that order (with title last for the retained near-title feature) and
-  alphabetizes each group. Folder and tag groups therefore change on the
-  request after tags change; no proposal cache can go stale.
+- `GET /api/proposals` recomputes source, exact-tag, folder, site, image,
+  verdict, and near-title groups as ordinary pre-filled selections. The five
+  verdict expressions are always present, including zero-count values. The
+  interface groups source, tag, folder, site, image, and verdict in that order,
+  with title last for the retained near-title feature, and alphabetizes each
+  group. Folder and tag groups therefore change on the request after tags
+  change; no proposal cache can go stale. The page explicitly reloads proposals
+  after a collection change and after an import, and ignores an older response
+  if the user has already switched collections again.
 - `POST /api/tag` unions tags onto the marked set or current selection and logs
   only the tags it added, so one undo removes those additions and preserves
   everything that existed before the action.

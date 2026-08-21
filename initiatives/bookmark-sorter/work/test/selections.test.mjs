@@ -62,16 +62,21 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   const source = first.find(proposal => proposal.id === 'src:safari');
   const tag = first.find(proposal => proposal.id === 'tag:topic:rust');
   const image = first.find(proposal => proposal.id === 'image:none');
+  const verdicts = first.filter(proposal => proposal.kind === 'verdict');
   assert.equal(site.count, 3);
   assert.equal(title.count, 3);
   assert.equal(folder.count, 3);
   assert.equal(source.count, 2);
   assert.equal(tag.count, 3);
   assert.equal(image.count, 4);
-  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'folder', 'site', 'image', 'title']);
+  assert.deepEqual(verdicts.map(proposal => [proposal.name, proposal.count]), [
+    ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['untriaged', 4],
+  ]);
+  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title']);
   assert.ok(first.every(proposal => !proposal.name.startsWith('Same ')));
   assert.deepEqual(evaluateSelection(items, site.expression).map(item => item.id), ['a', 'b', 'd']);
   assert.deepEqual(evaluateSelection(items, tag.expression).map(item => item.id), ['a', 'b', 'd']);
+  assert.deepEqual(evaluateSelection(items, verdicts.at(-1).expression).map(item => item.id), ['a', 'b', 'c', 'd']);
 
   const changed = structuredClone(items);
   changed[1].tags = ['topic:rust', 'saved:later', 'folder:reading/changed'];

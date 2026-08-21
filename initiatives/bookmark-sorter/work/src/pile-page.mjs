@@ -75,7 +75,9 @@ export function renderPilePage() {
     .bookmark-card h2 a:focus-visible { border-radius: 3px; outline: 2px solid #315fd2; outline-offset: 2px; }
     .note { display: -webkit-box; overflow: hidden; margin: 0; color: #5b6477; font-size: .75rem; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     .tags { display: flex; gap: 4px; overflow: hidden; margin-top: auto; padding-top: 8px; }
-    .tag { flex: 0 0 auto; max-width: 9.5em; overflow: hidden; border-radius: 999px; padding: 2px 6px; color: #36538f; background: #edf2ff; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+    .tag { flex: 0 0 auto; max-width: 9.5em; overflow: hidden; border-radius: 999px; padding: 2px 6px; color: #36538f; background: #edf2ff; cursor: help; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+    .tag:focus-visible { outline: 2px solid #315fd2; outline-offset: 2px; }
+    .tag-popover { position: fixed; z-index: 30; width: max-content; max-width: min(360px, calc(100vw - 16px)); max-height: min(300px, calc(100dvh - 16px)); overflow: auto; border: 1px solid #9eabc2; border-radius: 9px; padding: 8px 10px; color: #263149; background: white; box-shadow: 0 10px 32px #172b5538; cursor: text; font-size: .84rem; line-height: 1.45; user-select: text; white-space: pre-wrap; }
     .verdict-label { margin-top: 6px; color: #697287; font-size: .66rem; font-weight: 760; text-transform: uppercase; }
     .mark { position: absolute; top: 7px; right: 7px; width: 28px; height: 28px; border: 1px solid #b7c0d0; border-radius: 50%; padding: 0; color: #4f5d76; background: #fff; font-weight: 900; }
     .mark[aria-pressed="true"] { border-color: #d39422; color: white; background: #d39422; }
@@ -151,22 +153,25 @@ export function renderPilePage() {
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
         <li><strong>Apply saved unopened…</strong> applies the chosen verdict to a saved selection after showing a confirmation count.</li>
-        <li><strong>Capture gaps</strong> is unavailable until bookmark-image support is enabled.</li>
+        <li><strong>Capture gaps</strong> is currently unavailable because fallback screenshot capture is not enabled.</li>
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
-      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>.</p>
+      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. A <code>*</code> can be used as a suffix to match any trailing characters.</p>
       <ul>
         <li><code>site:example.com</code> — items from one site.</li>
         <li><code>title:court-drama*</code> — normalized titles beginning with that text.</li>
-        <li><code>src:safari</code>, <code>in:2026-08-19</code>, or <code>folder:Favorites*</code> — imported tags.</li>
+        <li><code>src:safari</code> — items imported with <code>safari</code> as the Source tag.</li>
+        <li><code>folder:Favorites*</code> — items whose imported bookmark folder path begins with <code>Favorites</code>.</li>
+        <li><code>in:2026-08-19</code> — items imported on that date.</li>
         <li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, or <code>verdict:untriaged</code> — current verdict.</li>
         <li><code>image:present</code>, <code>image:failed</code>, or <code>image:none</code> — stored picture status.</li>
         <li><code>collection:&lt;id&gt;</code> — collection scope; the interface adds the current collection automatically.</li>
-        <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder groups used by Automatic proposals.</li>
-        <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses. One trailing <code>*</code> performs prefix matching.</li>
+        <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder names used by Automatic proposals.</li>
+        <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses.</li>
       </ul>
     </aside>
+    <aside id="tag-popover" class="tag-popover" role="note" aria-label="All tags" hidden></aside>
     <section class="collection-bar" aria-label="Collections">
       <select id="collection-select" aria-label="Current collection"></select>
       <span id="collection-kind" class="collection-kind"></span>
@@ -221,7 +226,7 @@ export function renderPilePage() {
       <button type="button" data-verdict="needs-more-time"><span class="shortcut"><kbd>N</kbd> </span>Needs time</button>
       <button id="undo" type="button"><span class="shortcut"><kbd>U</kbd> </span>Undo</button>
       <button id="capture-pass-one" type="button" disabled title="Capture metadata for bookmarks imported before image storage was enabled">Capture metadata</button>
-      <button id="capture-gaps" type="button" disabled title="Available when bookmark images are supported">Capture gaps</button>
+      <button id="capture-gaps" type="button" disabled title="Fallback screenshot capture is not enabled">Capture gaps</button>
       <span class="spacer"></span>
       <span id="mark-count">0 marked</span>
       <button id="session" type="button">End sitting</button>
@@ -251,10 +256,10 @@ export function renderPilePage() {
       collectionName: document.querySelector('#collection-name'), cancelRename: document.querySelector('#cancel-rename'), freshCopy: document.querySelector('#fresh-copy'),
       deleteCopy: document.querySelector('#delete-copy'), templateSelect: document.querySelector('#template-select'),
       copyTemplate: document.querySelector('#copy-template'), createTemplate: document.querySelector('#create-template'),
-      helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'),
+      helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'), tagPopover: document.querySelector('#tag-popover'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
     };
-    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: []};
+    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, resizeTimer: null, saved: [], proposals: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}) {
       const headers = new Headers(options.headers || {});
@@ -307,6 +312,37 @@ export function renderPilePage() {
       parent.append(element);
       return element;
     }
+    function cancelTagPopoverHide() {
+      clearTimeout(state.tagPopoverTimer);
+      state.tagPopoverTimer = null;
+    }
+    function hideTagPopover(delay = 180) {
+      cancelTagPopoverHide();
+      const close = () => {
+        if (state.tagPopoverSelecting) return;
+        elements.tagPopover.hidden = true;
+        state.tagPopoverAnchor = null;
+      };
+      if (delay) state.tagPopoverTimer = setTimeout(close, delay);
+      else close();
+    }
+    function showTagPopover(anchor, allTags) {
+      cancelTagPopoverHide();
+      state.tagPopoverAnchor = anchor;
+      elements.tagPopover.textContent = allTags.length ? 'All tags:\\n' + allTags.join('\\n') : 'No tags';
+      elements.tagPopover.hidden = false;
+      requestAnimationFrame(() => {
+        if (elements.tagPopover.hidden || state.tagPopoverAnchor !== anchor) return;
+        const margin = 8;
+        const anchorRect = anchor.getBoundingClientRect();
+        const popoverRect = elements.tagPopover.getBoundingClientRect();
+        const left = Math.max(margin, Math.min(anchorRect.left, innerWidth - popoverRect.width - margin));
+        let top = anchorRect.top - popoverRect.height - 6;
+        if (top < margin) top = Math.min(innerHeight - popoverRect.height - margin, anchorRect.bottom + 6);
+        elements.tagPopover.style.left = left + 'px';
+        elements.tagPopover.style.top = Math.max(margin, top) + 'px';
+      });
+    }
     function renderCard(item, index) {
       const card = document.createElement('article');
       card.id = 'item-' + item.id;
@@ -337,11 +373,14 @@ export function renderPilePage() {
       const tags = document.createElement('div');
       tags.className = 'tags';
       const allTags = item.tags || [];
-      const allTagsLabel = allTags.length ? 'All tags:\\n' + allTags.join('\\n') : 'No tags';
       for (const value of allTags.slice(0, 3)) {
         const tag = addText(tags, 'span', 'tag', value);
-        tag.title = allTagsLabel;
+        tag.tabIndex = 0;
         tag.setAttribute('aria-label', value + '. All tags: ' + allTags.join(', '));
+        tag.addEventListener('pointerenter', () => showTagPopover(tag, allTags));
+        tag.addEventListener('pointerleave', () => hideTagPopover());
+        tag.addEventListener('focus', () => showTagPopover(tag, allTags));
+        tag.addEventListener('blur', () => hideTagPopover());
       }
       card.append(tags);
       addText(card, 'span', 'verdict-label', verdictText(item.verdict));
@@ -378,6 +417,7 @@ export function renderPilePage() {
       updateProgress();
     }
     function renderGrid() {
+      hideTagPopover(0);
       if (!state.items.length) {
         const holder = document.createElement('div');
         addText(holder, 'p', 'empty', 'Import a bookmark HTML file to begin blind triage.');
@@ -428,7 +468,7 @@ export function renderPilePage() {
 
     function fillProposalSelect(rows) {
       elements.proposals.replaceChildren(new Option('Automatic proposals', ''));
-      for (const kind of ['src', 'tag', 'folder', 'site', 'image', 'title']) {
+      for (const kind of ['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title']) {
         const matches = rows.filter(row => row.kind === kind);
         if (!matches.length) continue;
         const group = document.createElement('optgroup');
@@ -523,7 +563,10 @@ export function renderPilePage() {
     }
 
     async function loadSelectionTools() {
+      const requestId = ++state.selectionToolsRequest;
+      const collectionId = state.collectionId;
       const [saved, proposals] = await Promise.all([api('/api/selections'), api('/api/proposals')]);
+      if (requestId !== state.selectionToolsRequest || collectionId !== state.collectionId) return;
       state.saved = saved.selections; state.proposals = proposals.proposals;
       fillSelect(elements.savedSelections, state.saved, 'Saved selections');
       fillProposalSelect(state.proposals);
@@ -684,7 +727,8 @@ export function renderPilePage() {
       event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';
       try {
         const data = await api('/api/import', {method: 'POST', body: new FormData(elements.form)});
-        elements.status.textContent = 'Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.'; await loadWindow(0);
+        elements.status.textContent = 'Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.';
+        await Promise.all([loadWindow(0), loadSelectionTools()]);
       } catch (error) { elements.status.textContent = error.message; } finally { button.disabled = false; }
     });
     elements.collectionSelect.addEventListener('change', () => openCollection(elements.collectionSelect.value).catch(error => { elements.status.textContent = error.message; }));
@@ -749,6 +793,14 @@ export function renderPilePage() {
     }
     elements.helpToggle.addEventListener('click', () => setHelp(elements.helpPanel.hidden));
     elements.helpClose.addEventListener('click', () => setHelp(false));
+    elements.tagPopover.addEventListener('pointerenter', cancelTagPopoverHide);
+    elements.tagPopover.addEventListener('pointerleave', () => hideTagPopover());
+    elements.tagPopover.addEventListener('pointerdown', () => { state.tagPopoverSelecting = true; cancelTagPopoverHide(); });
+    document.addEventListener('pointerup', () => {
+      if (!state.tagPopoverSelecting) return;
+      state.tagPopoverSelecting = false;
+      if (!elements.tagPopover.matches(':hover') && !state.tagPopoverAnchor?.matches(':hover, :focus')) hideTagPopover();
+    });
     document.querySelectorAll('[data-verdict]').forEach(button => button.addEventListener('click', () => applyVerdict(button.dataset.verdict).catch(error => { elements.status.textContent = error.message; })));
     elements.undo.addEventListener('click', () => undo().catch(error => { elements.status.textContent = error.message; }));
     elements.session.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));

@@ -53,6 +53,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="rename-form"/);
   assert.match(html, /id="new-collection" type="button">New</);
   assert.match(html, /image:present/);
+  assert.match(html, /id="tag-popover"/);
+  assert.match(html, /can be used as a suffix to match any trailing characters/);
+  assert.match(html, /exact folder names used by Automatic proposals/);
   assert.doesNotMatch(html, /prompt\('Collection name'/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);
