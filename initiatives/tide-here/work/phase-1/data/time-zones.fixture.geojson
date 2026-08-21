@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "name": "tide-here-phase-1-fixture-zones",
+  "metadata": {
+    "pinned": "2026-08-20",
+    "fixture_only": true,
+    "coverage_note": "Bounded rectangles around named test-plan fixtures; not global production coverage."
+  },
+  "features": [
+    {"type":"Feature","properties":{"name":"Seattle","tzid":"America/Los_Angeles"},"geometry":{"type":"Polygon","coordinates":[[[-122.7,47.2],[-121.9,47.2],[-121.9,48.1],[-122.7,48.1],[-122.7,47.2]]]}},
+    {"type":"Feature","properties":{"name":"Boston","tzid":"America/New_York"},"geometry":{"type":"Polygon","coordinates":[[[-71.5,42.0],[-70.5,42.0],[-70.5,42.8],[-71.5,42.8],[-71.5,42.0]]]}},
+    {"type":"Feature","properties":{"name":"Halifax","tzid":"America/Halifax"},"geometry":{"type":"Polygon","coordinates":[[[-64.0,44.2],[-63.1,44.2],[-63.1,45.0],[-64.0,45.0],[-64.0,44.2]]]}},
+    {"type":"Feature","properties":{"name":"Prudhoe Bay","tzid":"America/Anchorage"},"geometry":{"type":"Polygon","coordinates":[[[-149.0,69.9],[-147.5,69.9],[-147.5,70.7],[-149.0,70.7],[-149.0,69.9]]]}},
+    {"type":"Feature","properties":{"name":"Boundary Bay","tzid":"America/Vancouver"},"geometry":{"type":"Polygon","coordinates":[[[-123.5,48.7],[-122.7,48.7],[-122.7,49.3],[-123.5,49.3],[-123.5,48.7]]]}},
+    {"type":"Feature","properties":{"name":"Honolulu","tzid":"Pacific/Honolulu"},"geometry":{"type":"Polygon","coordinates":[[[-158.3,20.9],[-157.5,20.9],[-157.5,21.7],[-158.3,21.7],[-158.3,20.9]]]}},
+    {"type":"Feature","properties":{"name":"Denver","tzid":"America/Denver"},"geometry":{"type":"Polygon","coordinates":[[[-105.4,39.3],[-104.5,39.3],[-104.5,40.1],[-105.4,40.1],[-105.4,39.3]]]}},
+    {"type":"Feature","properties":{"name":"Phoenix","tzid":"America/Phoenix"},"geometry":{"type":"Polygon","coordinates":[[[-112.5,33.0],[-111.6,33.0],[-111.6,33.9],[-112.5,33.9],[-112.5,33.0]]]}},
+    {"type":"Feature","properties":{"name":"Lisbon","tzid":"Europe/Lisbon"},"geometry":{"type":"Polygon","coordinates":[[[-9.6,38.3],[-8.7,38.3],[-8.7,39.1],[-9.6,39.1],[-9.6,38.3]]]}}
+  ]
+}

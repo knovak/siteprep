@@ -12,14 +12,6 @@
       "value": "high",
       "effort": "small",
       "advances_stage": false
-    },
-    {
-      "id": "phase-1-day-model",
-      "title": "Phase 1 - the day model: zone resolution, the five coast-local dates, and placing a UTC instant into a row",
-      "state": "actionable",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false
     }
   ]
 }
