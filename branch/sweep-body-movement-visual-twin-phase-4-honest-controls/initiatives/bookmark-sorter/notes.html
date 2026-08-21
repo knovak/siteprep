@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes — Interactive Bookmark Sorter</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Notes — Interactive Bookmark Sorter</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Interactive Bookmark Sorter</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Notes</h2>
+    </div>
+    <div class="card-content">
+<h2>Notes</h2>
+<p>Optional ideas and observations. Nothing here is committed work: no tooling reads this file, so nothing in it is ranked, selected, proposed, or counted. Promote an entry by writing it as a real item with <code>node scripts/initiatives.mjs add bookmark-sorter &lt;id&gt; --title &quot;...&quot;</code> when it stops being optional. See INITIATIVES_VISION.md §6.6.</p>
+<h3>Optional measurements from real use</h3>
+<p>Recorded here rather than as todo items on 2026-08-20 (<code>decisions.md</code>). Both are already instrumented, so the numbers accrue from ordinary sittings and can be read whenever anyone wants them. Neither gates anything. The intended moment is after the initiative goes dormant and before improvements start — or never, if they are not useful by then.</p>
+<h4>Triage throughput</h4>
+<p><strong>Read:</strong> <code>triage_sessions.items_judged</code> and <code>elapsed_ms</code> for finished sittings; the page also displays a live items-per-minute rate, and ending a sitting prints <code>Sitting saved: N judged.</code></p>
+<p><strong>For:</strong> the throughput target <code>spec.md</code> still lacks. <code>objectives.md</code> refused to guess one before there was a measurement to argue from, so the target stays unset until someone reads this.</p>
+<p><strong>Note:</strong> an average across several ordinary sittings is better evidence than one staged blind sitting — a single artificial sitting measures a rate nobody works at. There is no need to avoid selections or otherwise perform the measurement.</p>
+<h4>Sweep regret</h4>
+<p><strong>Read:</strong> <code>triage_actions</code> rows against their <code>undone_at</code> — how many sweeps were applied, and how many were undone immediately afterwards.</p>
+<p><strong>For:</strong> falsifying <code>spec.md</code> §8&#39;s confirmation rule. The spec claims the discriminator for asking a confirmation is <strong>visibility, not cardinality</strong>, and names what would overturn it: sweeps regretted often enough that <code>undo</code> is not sufficient recovery. Frequent immediate undos are an argument for confirming on the visible path too.</p>
+<p><strong>Not instrumented:</strong> selections opened, and confirmations shown. A confirmation is a transient <code>409</code> plus a browser <code>confirm()</code> and is never persisted, so those two counts need two counters added before they can be read. Only add them if the undo signal turns out to be ambiguous without them.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/body-movement-visual-twin/phase-4-honest-controls" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
