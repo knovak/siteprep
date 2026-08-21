@@ -6,12 +6,13 @@
   "outputs": [],
   "todo": [
     {
-      "id": "enable-captures-and-measure",
-      "title": "Provision the R2 capture bucket, turn on pass 1, and record the coverage and duplicate-image numbers",
-      "state": "actionable",
+      "id": "choose-graduation-or-dormancy",
+      "title": "Choose whether to graduate the live Bookmark Sorter or make the initiative dormant",
+      "state": "blocked",
       "value": "high",
-      "effort": "medium",
-      "advances_stage": false
+      "effort": "small",
+      "advances_stage": true,
+      "blocked_by": "human:Choose whether 58.1% metadata coverage is good enough to graduate the live Site or the initiative should rest dormant"
     }
   ]
 }

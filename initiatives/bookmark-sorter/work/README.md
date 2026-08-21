@@ -119,10 +119,13 @@ URL-keyed capture.
 The deployment assembler supplies the server-side `transformImage` function.
 It must return a derivative no larger than 600×360; if it is absent or returns
 an invalid result, the pipeline stores no image rather than putting an original
-in R2. The Sites capability layer therefore fails closed while keeping the
-image implementation replaceable. `PASS_TWO_ENABLED` defaults off. Turning it
-on still requires a server-side `vendorCapture` adapter; neither a secret nor a
-vendor endpoint is emitted into the page.
+in R2. Sites currently exposes only the declared D1 and R2 bindings, so the
+worker transforms an external image through Cloudflare's `cf.image` fetch
+options and uses the raw-byte Images binding only when the runtime supplies it.
+Failures are logged without the bookmark or image URL and remain fail-closed.
+`PASS_TWO_ENABLED` defaults off. Turning it on still requires a server-side
+`vendorCapture` adapter; neither a secret nor a vendor endpoint is emitted into
+the page.
 
 The list endpoint accepts `limit` and `offset`; `limit` is clamped to 500. The
 response always includes the total collection count so the page does not have
@@ -134,9 +137,9 @@ The deployment surface is this `work/` directory, not the initiative directory.
 It uses the full Sites build and hosting workflow rather than the
 static-folder-only `deploy-to-chatgpt-sites` skill.
 
-- `.openai/hosting.json` declares D1 as `DB`. R2 is intentionally `null` in the
-  first test deployment, so the still-open storage-cost decision is not silently
-  accepted.
+- `.openai/hosting.json` declares D1 as `DB` and R2 as `CAPTURES`. The first
+  test deployment intentionally left R2 `null`; the user approved the storage
+  limits on 2026-08-20, so later versions keep the capture binding declared.
 - `db/schema.ts` is the deployable final form of migrations 0001–0005. The
   generated `drizzle/` migration is packaged with a Site version and creates the
   same tables, constraints, and query indexes on a fresh D1 database.
@@ -148,11 +151,9 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
 - With R2 absent, importing and triage work normally but pass-1 metadata capture
   and capture-gap processing are disabled. That was the first deployment. The
   user accepted the Sites storage limits and authorised the bucket on 2026-08-20
-  (`decisions.md`), so enabling captures is now a deployment step rather than a
-  question: create the bucket in Sites, bind it as `CAPTURES`, rebuild, and
-  replace the Site version. No repository change is needed — `worker/index.ts`
-  already declares `CAPTURES?: R2Bucket` and `src/worker.mjs` switches on its
-  presence. Pass 2 and its paid vendor stay switched off regardless.
+  (`decisions.md`), so later deployments bind it as `CAPTURES`. The worker
+  switches pass 1 on when that binding is present; pass 2 and its paid vendor
+  stay switched off regardless.
 
 Install and validate this project from this directory:
 
@@ -200,6 +201,18 @@ the data-handling boundary.
   saved selection returns `409` with its count until the caller confirms.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
+- `POST /api/captures/pass-one?limit=20` processes one bounded batch of items
+  that do not yet have a capture record. It exists for the one-time migration
+  of collections imported before R2 was enabled; ordinary HTML imports still
+  start pass 1 automatically. Repeating the request is safe and returns zero
+  processed items when the active collection has caught up. The **Capture
+  metadata** action runs those bounded batches until the active collection is
+  current, while keeping each individual request small. It then makes one final
+  retry for metadata-image candidates left by the earlier binding failure; a
+  final failure is marked so the action cannot loop forever. The final status
+  reports coverage and duplicate-image group sizes for the real collection.
+  The action stays available afterward; rerunning it is an idempotent status
+  refresh that processes zero items unless a later import needs catching up.
 - `POST /api/captures/gaps` is the only pass-2 driver. With the current switch
   off it reports the gap count and performs no vendor call. When a vendor is
   later authorised, the same endpoint processes a bounded batch through the
@@ -248,6 +261,11 @@ collection-local error tags, duplicate queuing, the vendor-off switch, stored
 image delivery, and absence of vendor configuration from the page. The sizing
 export is generated rather than committed as a large fixture.
 
+The Sites assembly passes the capture pipeline's `maxWidth` and `maxHeight` to
+the platform image transformer. This boundary is named explicitly because the
+pipeline fails closed when the assembler supplies no valid derivative, and a
+field-name mismatch would otherwise look like ordinary metadata gaps.
+
 Run the focused browser checks with the installed workspace Playwright binary:
 
 ```bash
@@ -260,10 +278,9 @@ that keyboard verdicts, marked groups, undo, backlog, and rate work without a
 navigation or full grid replacement, and that stored captures render while the
 pass-2 queue remains inert until its button is pressed.
 
-Three real-pile measurements remain data work: the blind rate from a several-
-hundred-bookmark sitting; metadata coverage plus the image-hash duplicate
-distribution after a representative import; and one selection sitting that
-counts confirmation interruptions and sweeps immediately followed by undo.
-Automated fixtures verify all instruments and paths but cannot manufacture
-those baselines. The duplicate threshold therefore remains the documented
+The blind rate and selection-sitting observations are optional and accrue from
+ordinary use. Metadata coverage and the image-hash duplicate distribution are
+read after pass 1 catches up on the real collection. Automated fixtures verify
+all instruments and paths but cannot manufacture those baselines. The duplicate
+threshold therefore remains the documented
 starting value of 30 until the capture result is recorded in `decisions.md`.

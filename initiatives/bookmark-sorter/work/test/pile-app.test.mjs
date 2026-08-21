@@ -45,6 +45,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="help-toggle"/);
   assert.match(html, /Sweep untriaged/);
   assert.match(html, /id="capture-gaps" type="button" disabled/);
+  assert.match(html, /id="capture-pass-one" type="button" disabled/);
+  assert.match(html, /api\/captures\/pass-one\?limit=20/);
   assert.match(html, /id="previous-page"/);
   assert.match(html, /id="next-page"/);
   assert.match(html, /id="rename-form"/);
@@ -321,6 +323,47 @@ test('pile app refuses oversized uploads before reading them', async () => {
   form.append('file', new Blob([new Uint8Array(20 * 1024 * 1024 + 1)]), 'too-large.html');
   const response = await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: form}));
   assert.equal(response.status, 413);
+});
+
+test('pass-1 backfill processes only uncaptured items in repeatable bounded batches', async () => {
+  const store = new AppStore();
+  store.createCollection({id: 'pile', name: 'Pile', owner_id: null, kind: 'personal', created_at: '2026-08-18T00:00:00Z'});
+  for (const suffix of ['one', 'two']) {
+    store.insertItem({
+      collection_id: 'pile', url: `https://example.com/${suffix}`, url_key: `https://example.com/${suffix}`,
+      title: suffix, title_key: suffix, note: null, added_at: null, ingested_at: '2026-08-18T00:00:00Z',
+      verdict: null, verdict_at: null,
+    });
+  }
+  const captured = [];
+  const optionsSeen = [];
+  const capture = {
+    captureMany: async (collectionId, candidates, options = {}) => {
+      optionsSeen.push(options);
+      for (const candidate of candidates) {
+        captured.push(candidate.url_key);
+        store.upsertCapture({
+          url_key: candidate.url_key, image_ref: null, source: 'none', captured_at: '2026-08-20T00:00:00Z',
+          image_hash: null, state: options.markRetried ? 'pass1-final-gap' : 'pass1-gap', page_title: null, description: null, favicon_url: null,
+          error_tag: null, image_candidate: options.force ? 'og:image' : null, content_type: null, width: null, height: null, byte_size: null,
+        });
+      }
+      return {processed: candidates.length, captures: [], status: {total: captured.length}};
+    },
+  };
+  const app = createTestApp({storeFactory: () => store, captureFactory: () => capture});
+  const run = () => app.fetch(new Request('https://pile.test/api/captures/pass-one?limit=1', {method: 'POST'}));
+  assert.equal((await (await run()).json()).processed, 1);
+  assert.equal((await (await run()).json()).processed, 1);
+  assert.equal((await (await run()).json()).processed, 0);
+  assert.deepEqual(captured, ['https://example.com/one', 'https://example.com/two']);
+  store.upsertCapture({...(await store.getCapture('https://example.com/one')), state: 'pass1-gap', image_candidate: 'og:image'});
+  const retried = await app.fetch(new Request('https://pile.test/api/captures/pass-one?limit=1&retry=1', {method: 'POST'}));
+  assert.equal((await retried.json()).processed, 1);
+  assert.deepEqual(optionsSeen.at(-1), {force: true, markRetried: true});
+  const caughtUp = await app.fetch(new Request('https://pile.test/api/captures/pass-one?limit=1&retry=1', {method: 'POST'}));
+  assert.equal((await caughtUp.json()).processed, 0);
+  assert.deepEqual(captured, ['https://example.com/one', 'https://example.com/two', 'https://example.com/one']);
 });
 
 test('pile app serves stored derivatives and the explicit gap action without exposing vendor configuration', async () => {

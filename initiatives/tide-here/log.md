@@ -20,6 +20,10 @@ Drafted plan.md and test-plan.md. Eight phases ordered by what could invalidate 
 
 Critiqued the plan and test plan before building; cleared Phase 0 to proceed with a stricter evidence-bundle contract and identified unresolved local-history and coastal-topology design gaps for their affected phases.
 
+## 2026-08-20 — Phase 0 - prove NOAA CO-OPS, CHS IWLS and Nominatim reach a real HTTPS page, and record the responses as fixtures
+
+Verified NOAA CO-OPS, CHS IWLS, and Nominatim as readable CORS responses from a real HTTPS Chromium page; recorded dated sanitized evidence, source terms, and exact response fixtures, with a failing non-CORS negative control.
+
 ## 2026-08-20 — Revise the critique after review
 
 Recorded the reviewer's choice of Option B for explicit local history, revised O8 to make the 100-entry local-only history and its controls an explicit outcome, and aligned the critique, plan, and test plan with that privacy boundary.

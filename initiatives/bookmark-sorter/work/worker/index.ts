@@ -12,7 +12,7 @@ interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
   CAPTURES?: R2Bucket;
-  IMAGES: {
+  IMAGES?: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
         output(options: {format: string; quality: number}): Promise<{response(): Response}>;
@@ -29,23 +29,37 @@ interface ExecutionContext {
 
 async function transformCaptureImage(
   env: Env,
-  input: {bytes: Uint8Array; contentType?: string; width: number; height: number},
+  input: {bytes: Uint8Array; contentType?: string; sourceUrl?: string; maxWidth: number; maxHeight: number},
 ) {
-  const body = new Blob([input.bytes], {
-    type: input.contentType || "application/octet-stream",
-  }).stream();
-  const result = await env.IMAGES.input(body).transform({
-    width: input.width,
-    height: input.height,
-    fit: "scale-down",
-  }).output({format: "image/webp", quality: 78});
-  const response = result.response();
+  let response: Response;
+  if (env.IMAGES) {
+    const body = new Blob([input.bytes], {
+      type: input.contentType || "application/octet-stream",
+    }).stream();
+    const result = await env.IMAGES.input(body).transform({
+      width: input.maxWidth,
+      height: input.maxHeight,
+      fit: "scale-down",
+    }).output({format: "image/webp", quality: 78});
+    response = result.response();
+  } else {
+    if (!input.sourceUrl) throw new Error("Image transform source is unavailable");
+    const request = new Request(input.sourceUrl, {
+      headers: {
+        accept: "image/webp,image/png,image/jpeg;q=0.9,*/*;q=0.1",
+        "user-agent": "BookmarkSorterCapture/1.0 (+anonymous metadata fetch)",
+      },
+    });
+    response = await fetch(request, {
+      cf: {image: {width: input.maxWidth, height: input.maxHeight, fit: "scale-down", format: "webp", quality: 78}},
+    } as RequestInit & {cf: {image: Record<string, unknown>}});
+  }
   if (!response.ok) throw new Error(`Image transform failed with ${response.status}`);
   return {
     bytes: new Uint8Array(await response.arrayBuffer()),
     contentType: response.headers.get("content-type") || "image/webp",
-    width: input.width,
-    height: input.height,
+    width: input.maxWidth,
+    height: input.maxHeight,
   };
 }
 
@@ -57,14 +71,16 @@ const worker = {
         transformImage: (input: {
           bytes: Uint8Array;
           contentType?: string;
-          width: number;
-          height: number;
+          sourceUrl?: string;
+          maxWidth: number;
+          maxHeight: number;
         }) => transformCaptureImage(env, input),
       });
       return app.fetch(request, env, ctx);
     }
 
     if (url.pathname === "/_vinext/image") {
+      if (!env.IMAGES) return new Response("Image optimization unavailable", {status: 503});
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
       return handleImageOptimization(request, {
         fetchAsset: (path) => env.ASSETS.fetch(new Request(new URL(path, request.url))),

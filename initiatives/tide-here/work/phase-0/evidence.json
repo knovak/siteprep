@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-20T20:44:24.925Z",
+  "page_origin": "https://httpbin.org",
+  "browser": "Chromium 151.0.0.0 on macOS",
+  "method": "Sequential fetch requests with mode=cors from an HTTPS document; parsed bodies rendered into the DOM",
+  "negative_control": {
+    "url": "https://example.com/",
+    "result": "blocked",
+    "error": "TypeError: Failed to fetch"
+  },
+  "providers": [
+    {
+      "id": "noaa",
+      "provider": "NOAA Center for Operational Oceanographic Products and Services (CO-OPS)",
+      "request_url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=tide-here-phase-0&begin_date=20260820&end_date=20260821&datum=MLLW&station=9447130&time_zone=gmt&units=metric&interval=hilo&format=json",
+      "status": 200,
+      "browser_response_type": "cors",
+      "response_url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=tide-here-phase-0&begin_date=20260820&end_date=20260821&datum=MLLW&station=9447130&time_zone=gmt&units=metric&interval=hilo&format=json",
+      "exposed_headers": {
+        "cache-control": "no-cache, no-store, must-revalidate, max-age=0",
+        "content-type": "application/json;charset=UTF-8",
+        "expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+        "pragma": "no-cache"
+      },
+      "access_control_allow_origin_observed_separately": "*",
+      "fixture": "fixtures/noaa-seattle-hilo.json",
+      "documentation_url": "https://api.tidesandcurrents.noaa.gov/api/prod/",
+      "terms_url": "https://www.tidesandcurrents.noaa.gov/disclaimers.html",
+      "attribution": "NOAA CO-OPS"
+    },
+    {
+      "id": "chs",
+      "provider": "Canadian Hydrographic Service (CHS), Fisheries and Oceans Canada",
+      "request_url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/5cebf1df3d0f4a073c4bbcbb/data?time-series-code=wlp-hilo&from=2026-08-20T00%3A00%3A00Z&to=2026-08-22T00%3A00%3A00Z",
+      "status": 200,
+      "browser_response_type": "cors",
+      "response_url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/5cebf1df3d0f4a073c4bbcbb/data?time-series-code=wlp-hilo&from=2026-08-20T00%3A00%3A00Z&to=2026-08-22T00%3A00%3A00Z",
+      "exposed_headers": {
+        "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+        "content-type": "application/json",
+        "expires": "0",
+        "pragma": "no-cache"
+      },
+      "access_control_allow_origin_observed_separately": "*",
+      "fixture": "fixtures/chs-halifax-hilo.json",
+      "documentation_url": "https://api-sine.dfo-mpo.gc.ca/swagger-ui/index.html",
+      "terms_url": "https://www.tides.gc.ca/en/licence-agreement",
+      "attribution": "Canadian Hydrographic Service (CHS), Fisheries and Oceans Canada"
+    },
+    {
+      "id": "nominatim",
+      "provider": "Nominatim / OpenStreetMap",
+      "request_url": "https://nominatim.openstreetmap.org/search?q=Halifax%2C%20Nova%20Scotia&format=jsonv2&limit=1",
+      "status": 200,
+      "browser_response_type": "cors",
+      "response_url": "https://nominatim.openstreetmap.org/search?q=Halifax%2C%20Nova%20Scotia&format=jsonv2&limit=1",
+      "exposed_headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "fixture": "fixtures/nominatim-halifax.json",
+      "documentation_url": "https://nominatim.org/release-docs/latest/api/Search/",
+      "terms_url": "https://operations.osmfoundation.org/policies/nominatim/",
+      "attribution": "Data © OpenStreetMap contributors, ODbL 1.0 — https://www.openstreetmap.org/copyright"
+    }
+  ],
+  "redaction": "No credential, cookie, personal location, requester identifier, or unrelated response header was recorded."
+}

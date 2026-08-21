@@ -61,6 +61,19 @@ class FakeStatement {
 
   async all() {
     const collectionId = this.values[0];
+    if (this.sql.startsWith('SELECT i.url, i.url_key')) {
+      const limit = this.values[1];
+      return {results: [...this.database.items.values()]
+        .filter(item => {
+          if (item.collection_id !== collectionId) return false;
+          const capture = this.database.captures.get(item.url_key);
+          if (this.sql.includes('LEFT JOIN captures c')) return !capture;
+          return capture?.state === 'pass1-gap' && capture.image_candidate && !capture.image_ref;
+        })
+        .sort((left, right) => left.id.localeCompare(right.id))
+        .slice(0, limit)
+        .map(({url, url_key}) => ({url, url_key}))};
+    }
     if (this.sql.startsWith('SELECT id, url, url_key')) {
       return {results: [...this.database.items.values()].filter(item => item.collection_id === collectionId)};
     }
@@ -352,6 +365,27 @@ test('D1 capture errors stay collection-local and attach from the shared cache o
   assert.ok(!(await store.listItems('beta')).find(item => item.url_key === urlKey).tags.includes('err:404'));
   await store.applyKnownCaptureErrors('beta', [urlKey]);
   assert.ok((await store.listItems('beta')).find(item => item.url_key === urlKey).tags.includes('err:404'));
+});
+
+test('D1 capture backfill selects only uncaptured items in a bounded owner-scoped batch', async () => {
+  const database = new FakeD1Database();
+  let sequence = 0;
+  const store = new D1BookmarkStore(database, {idFactory: () => `capture-${++sequence}`});
+  await store.ensureCollection({id: 'pile', name: 'Pile', createdAt: '2026-08-18T00:00:00Z'});
+  await ingestBookmarkHtml({store, collectionId: 'pile', html: await fixture('export-small.html'), source: 'test', ingestedAt: '2026-08-18'});
+  const [first] = await store.listUncapturedItems('pile', {limit: 1});
+  assert.deepEqual(Object.keys(first).sort(), ['url', 'url_key']);
+  await store.upsertCapture({
+    url_key: first.url_key, image_ref: null, source: 'none', captured_at: '2026-08-20T00:00:00Z', image_hash: null,
+    state: 'pass1-gap', page_title: null, description: null, favicon_url: null, error_tag: null,
+    image_candidate: 'og:image', content_type: null, width: null, height: null, byte_size: null,
+  });
+  const remaining = await store.listUncapturedItems('pile', {limit: 1000});
+  assert.equal(remaining.length, 2);
+  assert.ok(remaining.every(item => item.url_key !== first.url_key));
+  assert.deepEqual(await store.listRetryableCaptureItems('pile'), [first]);
+  await assert.rejects(store.listUncapturedItems('missing'), /Unknown or read-only collection/);
+  await assert.rejects(store.listRetryableCaptureItems('missing'), /Unknown or read-only collection/);
 });
 
 test('D1 capture-error lookup reserves a binding for the collection id', async () => {

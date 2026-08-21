@@ -281,6 +281,28 @@ export class MemoryBookmarkStore {
     return tagged;
   }
 
+  listUncapturedItems(collectionId, {limit = 20} = {}) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    return [...this.#items.values()]
+      .filter(item => item.collection_id === collectionId && !this.#captures.has(item.url_key))
+      .sort((left, right) => left.id.localeCompare(right.id))
+      .slice(0, safeLimit)
+      .map(({url, url_key}) => ({url, url_key}));
+  }
+
+  listRetryableCaptureItems(collectionId, {limit = 20} = {}) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 20));
+    return [...this.#items.values()]
+      .filter(item => item.collection_id === collectionId)
+      .filter(item => {
+        const capture = this.#captures.get(item.url_key);
+        return ['pass1-gap', 'pass1-retried-gap', 'pass1-diagnosed-gap'].includes(capture?.state) && capture.image_candidate && !capture.image_ref;
+      })
+      .sort((left, right) => left.id.localeCompare(right.id))
+      .slice(0, safeLimit)
+      .map(({url, url_key}) => ({url, url_key}));
+  }
+
   refreshCaptureQueue({duplicateThreshold, at}) {
     const hashCounts = new Map();
     for (const capture of this.#captures.values()) {
@@ -348,6 +370,7 @@ export class MemoryBookmarkStore {
       distinguishable_metadata: distinguishableMetadata,
       metadata_coverage: captures.length ? distinguishableMetadata / captures.length : null,
       screenshot_images: captures.filter(capture => capture.source === 'screenshot' && capture.image_ref).length,
+      retryable: captures.filter(capture => capture.state === 'pass1-gap' && capture.image_candidate && !capture.image_ref).length,
       gaps: pending.length,
       queued: [...this.#captureQueue.values()].filter(entry => (entry.state === 'queued' || entry.state === 'failed') && (scoped === null || scoped.has(entry.url_key))).length,
       duplicate_distribution: [...distribution.values()].sort((left, right) => right - left),

@@ -85,7 +85,7 @@ function anonymousRequest(signal, accept) {
 function failureTag(error) {
   if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return 'err:timeout';
   const detail = `${error?.code || ''} ${error?.cause?.code || ''} ${error?.message || ''}`.toLowerCase();
-  if (/cert|tls|ssl|handshake|econnreset/.test(detail)) return 'err:tls';
+  if (/cert|tls|ssl|handshake|econnreset|eproto|wrong version|invalid protocol/.test(detail)) return 'err:tls';
   return 'err:fetch';
 }
 
@@ -161,9 +161,9 @@ export function createCapturePipeline({
     return record;
   }
 
-  async function passOne(collectionId, {url, url_key: urlKey}) {
+  async function passOne(collectionId, {url, url_key: urlKey}, {force = false} = {}) {
     const cached = await store.getCapture(urlKey);
-    if (cached) {
+    if (cached && !force) {
       if (cached.error_tag) await store.applyCaptureError(collectionId, urlKey, cached.error_tag);
       return {...cached, cached: true};
     }
@@ -190,14 +190,17 @@ export function createCapturePipeline({
       return record;
     }
 
+    let imageStage = 'fetch';
     try {
       const imageResponse = await withTimeout(timeoutMs, signal => fetchFn(metadata.image_url, anonymousRequest(signal, 'image/avif,image/webp,image/png,image/jpeg;q=0.9,*/*;q=0.1')));
       if (!imageResponse.ok) throw new Error(`Image returned ${imageResponse.status}`);
       const original = await boundedBytes(imageResponse, 20 * 1024 * 1024);
       if (typeof transformImage !== 'function') throw new Error('No derivative transformer is configured');
+      imageStage = 'transform';
       const derivative = await transformImage({
         bytes: original,
         contentType: imageResponse.headers.get('content-type') || 'application/octet-stream',
+        sourceUrl: metadata.image_url,
         ...DERIVATIVE_SPEC,
       });
       if (!derivative?.bytes || !derivative?.contentType || !derivative?.width || !derivative?.height) {
@@ -207,6 +210,7 @@ export function createCapturePipeline({
         throw new Error('The derivative exceeds the fixed capture size');
       }
       const imageHash = await sha256Hex(derivative.bytes);
+      imageStage = 'store';
       const imageRef = await imageStore.putDerivative({
         urlKey,
         bytes: derivative.bytes,
@@ -228,24 +232,31 @@ export function createCapturePipeline({
       });
       await store.upsertCapture(record);
       return record;
-    } catch {
+    } catch (error) {
+      console.warn('Bookmark capture image stage failed', imageStage, error?.name || 'Error', error?.message || 'Unknown error');
       const record = captureRecord(urlKey, now().toISOString(), metadata);
       await store.upsertCapture(record);
       return record;
     }
   }
 
-  async function captureMany(collectionId, candidates) {
+  async function captureMany(collectionId, candidates, {force = false, markRetried = false} = {}) {
     const unique = [...new Map(candidates.map(candidate => [candidate.url_key, candidate])).values()];
     const results = new Array(unique.length);
     let cursor = 0;
     async function worker() {
       while (cursor < unique.length) {
         const index = cursor++;
-        results[index] = await passOne(collectionId, unique[index]);
+        results[index] = await passOne(collectionId, unique[index], {force});
       }
     }
     await Promise.all(Array.from({length: Math.min(concurrency, unique.length)}, worker));
+    if (markRetried) {
+      for (const [index, record] of results.entries()) {
+        if (record?.image_ref || record?.state !== 'pass1-gap') continue;
+        results[index] = await store.upsertCapture({...record, state: 'pass1-final-gap'});
+      }
+    }
     await store.refreshCaptureQueue({duplicateThreshold, at: now().toISOString()});
     return {processed: unique.length, captures: results, status: await store.captureStats(collectionId)};
   }
