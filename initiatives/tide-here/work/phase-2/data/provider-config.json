@@ -1,0 +1,23 @@
+{
+  "catalogueCacheTtlMs": 604800000,
+  "match": {
+    "automaticKm": 25,
+    "clarityRatio": 0.6,
+    "maximumKm": 150,
+    "maxChoices": 3
+  },
+  "providers": {
+    "noaa": {
+      "country": "US",
+      "datum": "MLLW",
+      "catalogueUrl": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions",
+      "attribution": "NOAA CO-OPS"
+    },
+    "chs": {
+      "country": "CA",
+      "datum": "chart-datum",
+      "catalogueUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+      "attribution": "Canadian Hydrographic Service (CHS), Fisheries and Oceans Canada"
+    }
+  }
+}

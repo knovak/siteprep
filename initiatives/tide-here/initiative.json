@@ -6,11 +6,11 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-2-station-catalogue-and-coastal-match",
-      "title": "Phase 2 - build the station catalogue and coastal match",
+      "id": "phase-3-tide-adapters",
+      "title": "Phase 3 - build the NOAA and CHS tide adapters",
       "state": "actionable",
       "value": "high",
-      "effort": "medium",
+      "effort": "large",
       "advances_stage": false
     }
   ]
