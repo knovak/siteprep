@@ -99,7 +99,10 @@ selection, and export operations.
   advances to the next page; Previous and Next page without writing. A
   collection bar switches among the owner's personal
   pile and demo copies, and exposes template-copy operations without putting
-  identity or authorization state in the page.
+  identity or authorization state in the page. Adjacent Import and Export
+  sections accept either browser HTML or the app's JSON and download the whole
+  collection or the currently open selection. The portable JSON carries URLs,
+  notes, tags, and verdicts, but no captures.
 
 ## D1 binding
 
@@ -216,6 +219,10 @@ the data-handling boundary.
   saved selection returns `409` with its count until the caller confirms.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
+- `GET /api/export` streams the active collection or its `expression` subset as
+  an importable `bookmark-sorter/v1` JSON text file. The page exposes both
+  scopes in its Export section; the neighboring Import section recognizes that
+  JSON as well as browser bookmark HTML.
 - `POST /api/captures/pass-one?limit=20` processes one bounded batch of items
   that do not yet have a capture record. It exists for the one-time migration
   of collections imported before R2 was enabled; ordinary HTML imports still

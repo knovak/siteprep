@@ -205,7 +205,7 @@ python3 .claude/skills/deploy-demo/scripts/deploy_demo.py \
   --source initiatives/repo-guide/work/guide/out \
   --destination "Guide to Initiatives" \
   --title "Guide to Initiatives" \
-  --description "Guide to how this repository works, and how you can adopt it for yourself.  Please also read this slide deck, and play with this simulator." \
+  --description "Guide to how this repository works, and how you can adopt it for yourself. (The text is AI slop, but the ideas and images are correct.) Please also view this slide deck, and play with this simulator." \
   --root-html description.html \
   --link "this slide deck" deck.html \
   --link "this simulator" simulator.html

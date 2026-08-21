@@ -69,6 +69,35 @@ test('errors and choices receive keyboard focus and narrow pages do not clip', a
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
+test('the page reflows without clipping from a small phone through a wide desktop', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'One browser project covers the viewport matrix.');
+  const windows = [
+    { width: 320, height: 568, columns: 1 },
+    { width: 430, height: 932, columns: 1 },
+    { width: 768, height: 1024, columns: 2 },
+    { width: 1024, height: 768, columns: 5 },
+    { width: 1600, height: 900, columns: 5 }
+  ];
+  for (const window of windows) {
+    await page.setViewportSize({ width: window.width, height: window.height });
+    await page.goto(pagePath);
+    await expect(page.locator('#result')).toBeVisible();
+    const layout = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll('.day-card')];
+      return {
+        clipped: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        columns: getComputedStyle(document.querySelector('#day-cards')).gridTemplateColumns.split(' ').length,
+        cardWidths: cards.map(card => card.getBoundingClientRect().width),
+        cardHeights: cards.map(card => card.getBoundingClientRect().height)
+      };
+    });
+    expect(layout.clipped, `${window.width}px viewport clips horizontally`).toBe(false);
+    expect(layout.columns).toBe(window.columns);
+    expect(layout.cardWidths.every(width => width > 0 && width <= window.width)).toBe(true);
+    if (window.width === 430) expect(layout.cardHeights[2]).toBeLessThan(layout.cardHeights[0]);
+  }
+});
+
 test('the validation page has no serious accessibility findings', async ({ page }) => {
   await page.goto(pagePath);
   await expect(page.locator('#result')).toBeVisible();

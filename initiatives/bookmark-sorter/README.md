@@ -23,14 +23,15 @@ count and downloaded an application backup.
 ## First use
 
 1. Open the Site while signed in with ChatGPT.
-2. Under **Import a browser bookmark file**, choose the exported HTML file and
+2. Under **Import bookmarks**, choose the exported HTML file and
    give the source a short name such as `safari-export`.
 3. Check that the total item count looks plausible.
 4. Open bookmarks, assign verdicts, or mark several cards and judge them as one
    set.
 5. End the sitting when you want its elapsed time and judged-item count saved.
-6. Download a JSON backup from `/api/export` before replacing the Site or making
-   a large round of changes.
+6. Under **Export bookmarks**, choose **Current collection** and
+   download a JSON backup before replacing the Site or making a large round of
+   changes. Choose **Current selection** when you want only the open selection.
 
 The four verdicts are **Keep**, **Junk**, **Archive**, and **Needs time**.
 Unjudged bookmarks remain **Untriaged**. Applying a verdict changes the current
@@ -87,7 +88,9 @@ feature and is off by default.
 
 The `bookmark-sorter/v1` JSON export contains bookmark records, URLs, tags,
 verdicts, and notes. It does not contain capture images. Treat it as a private
-backup because it contains the bookmark data itself.
+backup because it contains the bookmark data itself. The Import section accepts
+that JSON text file as well as browser bookmark HTML, so either a complete
+collection or an exported selection can be round-tripped through the page.
 
 ## Deploying a private copy
 
@@ -120,10 +123,10 @@ step-by-step source migrations under `migrations/`. The Worker entry point is
 Deploy through the existing Sites project so the Site URL, privacy setting, and
 database are preserved. Do not publish this directory with a static-folder
 host: that would omit the API, identity, D1, and capture behavior. Before
-replacing an existing version, download `/api/export`, confirm the new build and
-migrations, deploy, wait for the deployment to succeed, then verify import,
-collection switching, verdicts, selections, export, and paging on the live
-private Site.
+replacing an existing version, download a complete collection from the Export
+section, confirm the new build and migrations, deploy, wait for the deployment
+to succeed, then verify import, collection switching, verdicts, selections,
+export, and paging on the live private Site.
 
 For implementation details see [`work/README.md`](work/README.md). For the
 current end-user test script and deployment cautions see

@@ -11,7 +11,10 @@ An ambiguous match pauses before forecasting. It shows up to three named
 stations with distance and a small relative map, then passes the selected
 in-memory candidate back to `forecast` without repeating geocoding or catalogue
 work. Narrow layouts stack the cards and chooser, and all controls have visible
-keyboard focus and text labels.
+keyboard focus and text labels. Phone rows size to their own content rather
+than inheriting the busiest day's height. An iPhone Pro Max-width layout uses
+two compact event columns, while narrower phones fall back to one; safe-area
+padding keeps the page clear of device edges.
 
 `src/page-view.mjs` maps the normalized forecast and the eight established
 state codes to display models. Resolution failures, partial tide or astronomy
@@ -34,7 +37,9 @@ node --test initiatives/tide-here/work/phase-{1,2,3,4,5,6}/test/*.test.mjs
 ./node_modules/.bin/playwright test --config initiatives/tide-here/work/phase-6/playwright.config.mjs
 ```
 
-The browser suite runs desktop and phone Chromium against recorded fixtures. It
-checks the three names, five equal cards, explicit zone, chooser and map, all
-eight page states, focus movement, narrow-screen clipping, text labels, datum
-details, safety line, and serious accessibility findings.
+The browser suite runs desktop and iPhone 15 Pro Max-sized Chromium against
+recorded fixtures. It checks the three names, five equal desktop cards,
+content-sized phone cards, explicit zone, chooser and map, all eight page
+states, focus movement, text labels, datum details, safety line, and serious
+accessibility findings. A separate viewport matrix covers widths from 320 to
+1600 pixels and fails on horizontal clipping or an unexpected card count.

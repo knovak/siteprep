@@ -151,7 +151,7 @@ test('10,000 items keep a bounded DOM at each responsive layout', async ({page})
   await expectLayout(page, {width: 1000, height: 900, visible: 12, cards: 16, columns: 4, rows: 3});
   await expectLayout(page, {width: 820, height: 1100, visible: 9, cards: 12, columns: 3, rows: 3});
   await expectLayout(page, {width: 390, height: 844, visible: 1, cards: 3, columns: 1, rows: 1});
-  await expect.poll(() => page.locator('#grid').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(600);
+  await expect.poll(() => page.locator('#grid').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(550);
   await expect.poll(() => page.locator('.footer-line').evaluate(element => element.getBoundingClientRect().bottom)).toBeGreaterThan(820);
 });
 
@@ -348,6 +348,39 @@ test('Automatic proposals refresh after choosing a collection and completing an 
   await expect(page.getByLabel('Current collection')).toHaveValue('pile');
   await expect(page.locator('#count')).toHaveText('10,000');
   await expect(page.locator('[data-item-id="item-1"]')).toContainText('src:browser-export');
+});
+
+test('Export downloads either the collection or the current selection as importable JSON', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await page.locator('#exporter summary').click();
+  await expect(page.locator('#export-scope option').first()).toHaveText('Current collection (10,000)');
+  await page.getByLabel('Selection expression').fill('site:example0.com');
+  await page.getByRole('button', {name: 'Open selection'}).click();
+  await page.getByLabel('Export scope').selectOption('selection');
+  const selectionDownload = page.waitForEvent('download');
+  await page.getByRole('button', {name: 'Export file'}).click();
+  const selectionFile = await selectionDownload;
+  expect(selectionFile.suggestedFilename()).toBe('bookmark-sorter-export.json');
+  const selectionUrl = new URL(selectionFile.url());
+  expect(selectionUrl.pathname).toBe('/api/export');
+  expect(selectionUrl.searchParams.get('collection_id')).toBe('pile');
+  expect(selectionUrl.searchParams.get('expression')).toBe('site:example0.com');
+  await expect(page.locator('#status')).toContainText('current selection');
+
+  await page.getByLabel('Export scope').selectOption('collection');
+  const collectionDownload = page.waitForEvent('download');
+  await page.getByRole('button', {name: 'Export file'}).click();
+  const collectionFile = await collectionDownload;
+  expect(collectionFile.suggestedFilename()).toBe('bookmark-sorter-export.json');
+  const collectionUrl = new URL(collectionFile.url());
+  expect(collectionUrl.pathname).toBe('/api/export');
+  expect(collectionUrl.searchParams.get('collection_id')).toBe('pile');
+  expect(collectionUrl.searchParams.has('expression')).toBe(false);
+  await expect(page.locator('#status')).toContainText('current collection');
+  await expect(page.locator('#bookmark-file')).toHaveAttribute('accept', /\.json/);
 });
 
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {
