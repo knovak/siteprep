@@ -6,11 +6,11 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-1-movement-contract",
-      "title": "Phase 1 - lock the movement schema, validator, and one fixture per tradition",
+      "id": "phase-2-vertical-slice",
+      "title": "Phase 2 - build one complete vertical slice",
       "state": "actionable",
       "value": "high",
-      "effort": "medium",
+      "effort": "large",
       "advances_stage": false
     }
   ]
