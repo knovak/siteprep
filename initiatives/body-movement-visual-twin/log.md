@@ -35,3 +35,7 @@ Built and verified the private one-movement browser slice with stable layer stat
 ## 2026-08-21 — Phase 3 - author one movement per tradition
 
 Built the selectable three-tradition validation collection with distinct hand-authored clips, tradition-specific instruction, named claim sources, caution re-gating, and practitioner-review status.
+
+## 2026-08-21 — Phase 4 - add honest visual-twin controls
+
+Added stature, surface build, visible proportion, and presentation controls that name their visible effects, preserve the fitted-reference boundary, and scale anatomy registration only with stature.

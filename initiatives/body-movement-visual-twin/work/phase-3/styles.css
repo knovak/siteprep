@@ -118,6 +118,11 @@ input[type="range"] { width: 100%; margin: 1.1rem 0 .6rem; accent-color: var(--m
 .phase-readout span { color: #d3d0c9; font-size: .86rem; line-height: 1.45; }
 .layer-scale { display: grid; grid-template-columns: repeat(5, 1fr); padding: 0; margin: 0 0 1rem; list-style: none; color: var(--muted); font-size: .61rem; text-align: center; }
 .control-section label, dialog label { display: grid; gap: .35rem; margin-top: .8rem; color: var(--muted); font-size: .75rem; }
+.twin-controls { background: linear-gradient(135deg, rgba(138, 184, 255, .1), transparent); }
+.twin-controls label { grid-template-columns: 1fr auto; align-items: end; }
+.twin-controls label input, .twin-controls label select { grid-column: 1 / -1; }
+.twin-controls output { color: var(--blue); font-weight: 750; }
+.profile-note { margin: 1rem 0 0; padding: .75rem; border-left: 3px solid var(--blue); color: #d2d8e3; background: rgba(138, 184, 255, .07); font-size: .78rem; line-height: 1.5; }
 select, textarea { width: 100%; border: 1px solid var(--line); border-radius: .65rem; padding: .7rem; color: var(--ink); background: #17191d; }
 #review-pill { padding: .3rem .55rem; border-radius: 99rem; color: var(--coral); background: rgba(255, 155, 123, .1); font-size: .68rem; font-weight: 800; text-transform: uppercase; }
 #flag-record { width: 100%; }
