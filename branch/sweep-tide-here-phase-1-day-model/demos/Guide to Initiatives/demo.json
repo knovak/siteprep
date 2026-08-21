@@ -1,0 +1,15 @@
+{
+  "title": "Guide to Initiatives",
+  "description": "Guide to how this repository works, and how you can adopt it for yourself.  Please also read this slide deck, and play with this simulator.",
+  "root": "description.html",
+  "links": [
+    {
+      "label": "this slide deck",
+      "href": "deck.html"
+    },
+    {
+      "label": "this simulator",
+      "href": "simulator.html"
+    }
+  ]
+}
