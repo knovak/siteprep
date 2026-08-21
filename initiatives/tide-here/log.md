@@ -19,3 +19,7 @@ Drafted plan.md and test-plan.md. Eight phases ordered by what could invalidate 
 ## 2026-08-20 — Critique plan.md and test-plan.md before building starts
 
 Critiqued the plan and test plan before building; cleared Phase 0 to proceed with a stricter evidence-bundle contract and identified unresolved local-history and coastal-topology design gaps for their affected phases.
+
+## 2026-08-20 — Revise the critique after review
+
+Recorded the reviewer's choice of Option B for explicit local history, revised O8 to make the 100-entry local-only history and its controls an explicit outcome, and aligned the critique, plan, and test plan with that privacy boundary.

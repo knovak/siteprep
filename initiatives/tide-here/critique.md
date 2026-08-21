@@ -2,8 +2,9 @@
 
 Written 2026-08-20, before Phase 0. `plan.md` supplies the order and
 `test-plan.md` supplies the exits; this document checks whether those two can
-actually establish the outcomes in `objectives.md`. It does not settle the two
-product decisions identified below.
+actually establish the outcomes in `objectives.md`. Review settled the local-
+history decision identified below by choosing Option B; the coastal-topology
+gap remains an implementation risk to prove before Phase 2.
 
 Numbered references to **O1–O8** are the objectives; **§n** is a section of
 `spec.md`.
@@ -21,17 +22,18 @@ right risks and the right order.
 It proves or reopens the static-browser boundary without committing the rest of
 the build to it.
 
-The whole plan is not yet ready to run unchanged. Two contradictions must be
-settled before their affected phases:
+The whole plan is not yet ready to run unchanged. Review settled the first of
+the two issues this critique identified:
 
-1. Phase 7 retains a 100-entry location history even though O8 says the page
-   does not retain a location history.
+1. **Settled in review:** keep Phase 7's explicit local 100-entry history and
+   revise O8 to make its storage, controls, and non-transmission requirements
+   explicit.
 2. Phase 2's distance rule cannot catch a station that is clearly closest in a
    straight line but belongs to the wrong side of a barrier.
 
-Neither should be hidden as an implementation detail. The first is a product
-and privacy decision; the second reopens the coastal-relevance design if an
-adversarial real-place fixture proves the gap.
+The first is now a recorded product and privacy decision. The second must not
+be hidden as an implementation detail; it reopens the coastal-relevance design
+if an adversarial real-place fixture proves the gap.
 
 ## 2. What should not be lost
 
@@ -55,7 +57,7 @@ adversarial real-place fixture proves the gap.
 
 ## 3. Findings
 
-### 3.1 Phase 7 directly contradicts O8
+### 3.1 Phase 7's local history is now an explicit outcome
 
 O8 says a typed place or coordinates are used only to resolve and display the
 result and that the page **does not retain a location history**. `spec.md` §7
@@ -76,11 +78,11 @@ The available decisions are:
 | **B — Keep explicit local history and revise O8 through a recorded decision** | Preserves the debug/usage artifact; makes local, user-controlled retention an intentional product promise | Changes a stated first-version outcome and adds sensitive-state lifecycle and disclosure work |
 | **C — Export on demand without retaining** | Gives a diagnostic artifact when requested while keeping no history between sessions | Cannot show a multi-session history and requires the user to export at the time of interest |
 
-**Recommendation, not a decision:** A for the first version. The product already
-has deterministic provider fixtures and can add an explicit one-result export
-if debugging needs it. B is reasonable only if local history itself is desired,
-not as a relabelling of “does not retain.” A different choice must update the
-objective and record why before Phase 7 begins.
+**Decision from review:** B. Keep the explicit local history and revise O8 so
+the choice is an intentional product promise rather than a relabelling of “does
+not retain.” `decisions.md` records the alternatives and consequences;
+`objectives.md` now requires the 100-entry cap, visible controls, and proof that
+the application never transmits the history.
 
 ### 3.2 The coastal matcher can confidently accept the wrong water body
 
@@ -181,7 +183,7 @@ not send automated test traffic to a replacement public geocoder.
 | 4 — Astronomy | **Ready** | Test windows and zero/two-event shapes, not SunCalc itself |
 | 5 — Composition/geocoder | **Ready with clarification** | Prove the endpoint switches through a separately deployed config |
 | 6 — Page | **Ready after match contract** | The chooser depends on Phase 2's corrected outcomes |
-| 7 — Local state/privacy | **Not ready** | Settle §3.1 before implementing durable history |
+| 7 — Local state/privacy | **Ready after the response shape is final** | Implement the recorded Option B with the §4.7 privacy tests |
 | 8 — Deployment/review | **Ready when prior exits pass** | Distinguish dated live evidence from the deterministic suite |
 
 ## 5. Recommended plan corrections
@@ -192,8 +194,8 @@ new feature backlog:
 1. Use §3.3's evidence bundle as Phase 0's fixture contract.
 2. Add the topological adversarial fixture before Phase 2 and require ask or
    refuse.
-3. Settle the local-history decision before Phase 7; do not implement the
-   current contradiction.
+3. Implement the recorded Option B in Phase 7 with its cap, visible controls,
+   disclosure, and no-transmission tests.
 4. Clarify live-evidence gating, the test-plan purpose, and the nine-phase count
    when those documents are next revised.
 5. Exercise the provider switch through a separately deployed configuration,
