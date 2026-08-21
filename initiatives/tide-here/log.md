@@ -27,3 +27,7 @@ Verified NOAA CO-OPS, CHS IWLS, and Nominatim as readable CORS responses from a 
 ## 2026-08-20 — Revise the critique after review
 
 Recorded the reviewer's choice of Option B for explicit local history, revised O8 to make the 100-entry local-only history and its controls an explicit outcome, and aligned the critique, plan, and test plan with that privacy boundary.
+
+## 2026-08-21 — Phase 1 - the day model: zone resolution, the five coast-local dates, and placing a UTC instant into a row
+
+Implemented the pinned offline zone lookup and pure five-day coast-local model; seven phase-1 tests cover device-zone independence, DST bounds, row placement, and per-instant offsets.

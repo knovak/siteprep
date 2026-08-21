@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-1-day-model",
-      "title": "Phase 1 - the day model: zone resolution, the five coast-local dates, and placing a UTC instant into a row",
+      "id": "phase-2-station-catalogue-and-coastal-match",
+      "title": "Phase 2 - build the station catalogue and coastal match",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
