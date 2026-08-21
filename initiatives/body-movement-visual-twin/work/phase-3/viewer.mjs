@@ -11,6 +11,12 @@ import {
   surfaceAppearance
 } from '../phase-4/src/visual-twin-controls.mjs';
 import {
+  claimDescriptors,
+  createReviewReport,
+  reviewEmailUrl,
+  serializeReviewReport
+} from '../phase-5/src/review-report.mjs';
+import {
   LAYER_STATES,
   anatomyIsVisible,
   cameraPreset,
@@ -40,6 +46,8 @@ let muscleRequest;
 let lastFrameTime = 0;
 let dragPoint;
 let visualProfile = DEFAULT_VISUAL_PROFILE;
+let selectedClaim;
+const reviewInbox = '';
 
 const [coreResponse, collectionResponse, clipsResponse] = await Promise.all([
   fetch('../phase-2/data/rig-core.json'),
@@ -251,10 +259,8 @@ function updateReadout() {
   $('#reference-label').hidden = !anatomyIsVisible(state);
   $('#play').textContent = state.playing ? 'Pause' : 'Play';
   $('#view-label').textContent = `${Math.round((state.camera.yaw * 180) / Math.PI)}° orbit · ${state.camera.zoom.toFixed(1)}×`;
-  $('#claims-list').replaceChildren(...[
-    ...phase.joint_actions.map((claim) => `${claim.joint}: ${claim.action}`),
-    ...phase.muscles.map((claim) => `${claim.id}: ${claim.behaviour}`)
-  ].map((text) => Object.assign(document.createElement('li'), { textContent: text })));
+  const currentClaims = claimDescriptors(movement, { phaseId: phase.id }).filter((claim) => claim.kind === 'movement' || claim.kind === 'anatomy');
+  $('#claims-list').replaceChildren(...currentClaims.map(flaggableClaim));
   Object.assign(stage.dataset, {
     time: state.time.toFixed(4),
     camera: `${state.camera.yaw.toFixed(4)},${state.camera.pitch.toFixed(4)},${state.camera.zoom.toFixed(4)}`,
@@ -303,8 +309,10 @@ function populateRecord() {
   $('#review-status').textContent = `${movement.source.review.status}: ${movement.source.review.notes}`;
   $('#rights-basis').textContent = movement.source.rights_basis;
   $('#source-basis').textContent = movement.source.tradition_basis;
-  $('#safety-notes').textContent = movement.safety.notes;
-  $('#caution-list').replaceChildren(...movement.safety.cautions.map((text) => Object.assign(document.createElement('li'), { textContent: text })));
+  const claims = claimDescriptors(movement);
+  const safetyClaims = claims.filter((claim) => claim.kind === 'safety');
+  $('#safety-notes').replaceChildren(flaggableClaim(safetyClaims.at(-1)));
+  $('#caution-list').replaceChildren(...safetyClaims.slice(0, -1).map(flaggableClaim));
   $('#instruction-sections').replaceChildren(...instructionSections(movement).flatMap((section) => {
     const heading = Object.assign(document.createElement('h3'), { textContent: section.label });
     const copy = Object.assign(document.createElement('p'), { textContent: section.body });
@@ -324,9 +332,62 @@ function populateRecord() {
     const supports = Object.assign(document.createElement('small'), {
       textContent: `Supports: ${source.supports.join(', ')}`
     });
-    item.append(link, supports);
+    const claim = claims.find((candidate) => candidate.path === `source.claim_sources.${movement.source.claim_sources.indexOf(source)}`);
+    item.append(link, supports, flagButton(claim));
     return item;
   }));
+}
+
+function flagButton(claim) {
+  const button = Object.assign(document.createElement('button'), {
+    type: 'button',
+    className: 'claim-flag',
+    textContent: 'Flag'
+  });
+  button.dataset.claimPath = claim.path;
+  button.dataset.claimKind = claim.kind;
+  button.dataset.claimLabel = claim.label;
+  button.setAttribute('aria-label', `Flag claim: ${claim.label}`);
+  return button;
+}
+
+function flaggableClaim(claim) {
+  const item = document.createElement('li');
+  const text = Object.assign(document.createElement('span'), { textContent: claim.label });
+  item.append(text, flagButton(claim));
+  return item;
+}
+
+function openFlagDialog(claim) {
+  selectedClaim = claim;
+  $('#flag-claim-label').textContent = claim.label;
+  $('#flag-claim-path').textContent = claim.path;
+  $('#flag-form').elements.kind.value = claim.kind;
+  $('#flag-form').elements.reviewer.value = '';
+  $('#flag-form').elements.note.value = '';
+  $('#report-preview').hidden = true;
+  $('#report-preview').textContent = '';
+  $('#report-status').textContent = '';
+  $('#email-flag').hidden = !reviewInbox;
+  $('#flag-dialog').showModal();
+}
+
+function reportFromForm() {
+  const fields = new FormData($('#flag-form'));
+  return createReviewReport({
+    movement,
+    claimPath: selectedClaim.path,
+    reviewer: fields.get('reviewer'),
+    kind: selectedClaim.kind,
+    severity: fields.get('severity'),
+    note: fields.get('note')
+  });
+}
+
+function revealReport(report, message) {
+  $('#report-preview').textContent = serializeReviewReport(report);
+  $('#report-preview').hidden = false;
+  $('#report-status').textContent = message;
 }
 
 function animate(timestamp) {
@@ -420,27 +481,31 @@ stage.addEventListener('keydown', (event) => {
   apply(actions[event.key]());
 });
 
-$('#flag-record').addEventListener('click', () => $('#flag-dialog').showModal());
-$('#flag-form').addEventListener('submit', (event) => {
-  if (event.submitter?.value !== 'default') return;
-  event.preventDefault();
-  const fields = new FormData(event.currentTarget);
-  const report = {
-    movement_id: movement.id,
-    phase_id: activePhase().id,
-    animation_time: state.time,
-    kind: fields.get('kind'),
-    severity: fields.get('severity'),
-    note: fields.get('note'),
-    created_at: new Date().toISOString(),
-    record_changed: false
-  };
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.claim-flag');
+  if (!button) return;
+  openFlagDialog({ path: button.dataset.claimPath, kind: button.dataset.claimKind, label: button.dataset.claimLabel });
+});
+$('#flag-form').addEventListener('submit', (event) => event.preventDefault());
+for (const selector of ['#close-flag', '#cancel-flag']) $(selector).addEventListener('click', () => $('#flag-dialog').close());
+$('#download-flag').addEventListener('click', () => {
+  const report = reportFromForm();
   const link = document.createElement('a');
-  link.href = URL.createObjectURL(new Blob([`${JSON.stringify(report, null, 2)}\n`], { type: 'application/json' }));
+  link.href = URL.createObjectURL(new Blob([serializeReviewReport(report)], { type: 'application/json' }));
   link.download = `movement-review-flag-${Date.now()}.json`;
   link.click();
   URL.revokeObjectURL(link.href);
-  $('#flag-dialog').close();
+  revealReport(report, 'JSON downloaded. The movement record was not changed.');
+});
+$('#copy-flag').addEventListener('click', async () => {
+  const report = reportFromForm();
+  await navigator.clipboard.writeText(serializeReviewReport(report));
+  revealReport(report, 'JSON copied. The identifier and report were not retained.');
+});
+$('#email-flag').addEventListener('click', () => {
+  const report = reportFromForm();
+  location.href = reviewEmailUrl(report, reviewInbox);
+  revealReport(report, 'Email draft opened for a deliberate handoff.');
 });
 
 populateRecord();

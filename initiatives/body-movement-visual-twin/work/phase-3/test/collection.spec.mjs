@@ -71,19 +71,42 @@ test('visual-twin controls name surface changes and preserve the fitted-referenc
   await expect(page.getByText(/not a scan of you/i)).toBeVisible();
 });
 
-test('review reports identify the currently selected movement without editing it', async ({ page }) => {
+test('claim reports download and copy exact paths without editing or retaining the record', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto(pagePath);
   await page.getByLabel('Choose a movement').selectOption('pause-before-standing');
-  await page.getByRole('button', { name: /flag a claim/i }).click();
+  const recordBefore = await (await page.request.get('/initiatives/body-movement-visual-twin/work/phase-1/fixtures/alexander.json')).text();
+  await page.getByRole('button', { name: /flag claim: neck-base/i }).click();
   await expect(page.getByText(/does not edit the movement record/i)).toBeVisible();
+  await page.getByLabel(/reviewer identifier/i).fill('Reviewer 42');
   await page.locator('textarea[name="note"]').fill('Confirm the inhibition wording with a practitioner.');
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Download report' }).click();
+  await page.getByRole('button', { name: 'Download JSON' }).click();
   const download = await downloadPromise;
   const stream = await download.createReadStream();
   let contents = '';
   for await (const chunk of stream) contents += chunk;
-  expect(JSON.parse(contents).movement_id).toBe('pause-before-standing');
+  const report = JSON.parse(contents);
+  expect(report.movement_id).toBe('pause-before-standing');
+  expect(report.claim_path).toMatch(/^phases\.0\.joint_actions\.0$/);
+  expect(report.reviewer).toBe('Reviewer 42');
+  expect(report.record_changed).toBe(false);
+  await page.getByRole('button', { name: 'Copy JSON' }).click();
+  await expect(page.locator('#report-status')).toContainText(/not retained/i);
+  expect(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())).claim_path).toBe(report.claim_path);
+  expect(await (await page.request.get('/initiatives/body-movement-visual-twin/work/phase-1/fixtures/alexander.json')).text()).toBe(recordBefore);
+  expect(await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length }))).toEqual({ local: 0, session: 0 });
+});
+
+test('attribution and safety claims expose their own exact flag controls', async ({ page }) => {
+  await page.goto(pagePath);
+  await page.getByRole('button', { name: /flag claim: about the feldenkrais method/i }).click();
+  await expect(page.locator('#flag-claim-path')).toHaveText('source.claim_sources.0');
+  await expect(page.getByLabel('Kind')).toHaveValue('attribution');
+  await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('button', { name: /flag claim: stop if the seated movement/i }).first().click();
+  await expect(page.locator('#flag-claim-path')).toHaveText('safety.cautions.0');
+  await expect(page.getByLabel('Kind')).toHaveValue('safety');
 });
 
 test('records remain readable without WebGL and at narrow widths', async ({ page }) => {

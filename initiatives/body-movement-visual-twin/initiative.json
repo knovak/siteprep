@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-5-corrective-review",
-      "title": "Phase 5 - make review corrective without making it destructive",
+      "id": "phase-6-private-validation",
+      "title": "Phase 6 - deploy privately and run validation",
       "state": "actionable",
       "value": "high",
       "effort": "large",
