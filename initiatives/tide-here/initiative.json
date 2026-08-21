@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-3-tide-adapters",
-      "title": "Phase 3 - build the NOAA and CHS tide adapters",
+      "id": "phase-4-sun-moon",
+      "title": "Phase 4 - add sun and moon calculations",
       "state": "actionable",
       "value": "high",
       "effort": "large",

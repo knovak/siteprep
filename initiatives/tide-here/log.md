@@ -35,3 +35,7 @@ Implemented the pinned offline zone lookup and pure five-day coast-local model; 
 ## 2026-08-21 — Phase 2 - build the station catalogue and coastal match
 
 Added normalized NOAA and CHS prediction-station catalogues, a seven-day cache, configuration-owned coastal thresholds, and a three-outcome great-circle matcher with Puget Sound, border, subordinate, inland, and cache-expiry tests.
+
+## 2026-08-21 — Phase 3 - build the NOAA and CHS tide adapters
+
+Built and verified a provider-neutral TideProvider seam with NOAA and CHS request builders, five-local-day UTC ranges, datum and station provenance, normalized high/low events and offsets, and tides-unavailable handling for empty, malformed, HTTP-error, and timeout cases.
