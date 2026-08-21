@@ -108,10 +108,19 @@ export function addLocalDays(localDate, amount) {
   });
 }
 
-export function localMidnightUtc(localDate, timeZone) {
+export function localDateTimeUtc(localDate, timeZone, { hour = 0, minute = 0, second = 0 } = {}) {
   assertTimeZone(timeZone);
   const { year, month, day } = parseDate(localDate);
-  const nominalUtc = Date.UTC(year, month - 1, day);
+  for (const [name, value, maximum] of [
+    ['hour', hour, 23],
+    ['minute', minute, 59],
+    ['second', second, 59]
+  ]) {
+    if (!Number.isInteger(value) || value < 0 || value > maximum) {
+      throw new RangeError(`Invalid local ${name}: ${value}`);
+    }
+  }
+  const nominalUtc = Date.UTC(year, month - 1, day, hour, minute, second);
   const offsets = new Set();
 
   for (let hours = -48; hours <= 48; hours += 6) {
@@ -123,13 +132,17 @@ export function localMidnightUtc(localDate, timeZone) {
     const parts = localParts(candidate, timeZone);
     if (
       parts.year === year && parts.month === month && parts.day === day &&
-      parts.hour === 0 && parts.minute === 0 && parts.second === 0
+      parts.hour === hour && parts.minute === minute && parts.second === second
     ) {
       return new Date(candidate).toISOString();
     }
   }
 
-  throw new RangeError(`Local midnight does not exist for ${localDate} in ${timeZone}`);
+  throw new RangeError(`Local time ${localDate} ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')} does not exist in ${timeZone}`);
+}
+
+export function localMidnightUtc(localDate, timeZone) {
+  return localDateTimeUtc(localDate, timeZone);
 }
 
 export function fiveLocalDays(now, timeZone) {

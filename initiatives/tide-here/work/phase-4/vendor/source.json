@@ -1,0 +1,12 @@
+{
+  "name": "suncalc",
+  "version": "2.0.1",
+  "tag": "v2.0.1",
+  "commit": "bbc91f689ede3ff7173011947d435b3fb6c0485d",
+  "source_url": "https://github.com/mourner/suncalc/blob/v2.0.1/index.js",
+  "release_url": "https://github.com/mourner/suncalc/releases/tag/v2.0.1",
+  "retrieved_on": "2026-08-21",
+  "sha256": "5f19965472d4d142455648cd43dc8c4548ec2223b5f7469f660ad2521784469d",
+  "license": "BSD-2-Clause",
+  "license_file": "SUNCALC-LICENSE.txt"
+}

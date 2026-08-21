@@ -9,6 +9,7 @@ import {
   describeInstant,
   fiveLocalDays,
   localDateForInstant,
+  localDateTimeUtc,
   localMidnightUtc,
   offsetMinutesAt,
   placeInstantInRow,
@@ -67,6 +68,12 @@ test('local-midnight bounds include 23-hour and 25-hour DST days', () => {
   assert.equal(localMidnightUtc('2026-03-08', 'America/New_York'), '2026-03-08T05:00:00.000Z');
   assert.equal(localMidnightUtc('2026-03-09', 'America/New_York'), '2026-03-09T04:00:00.000Z');
   assert.ok(fiveLocalDays('2026-03-07T12:00:00.000Z', 'Pacific/Honolulu').every((row) => row.durationHours === 24));
+});
+
+test('an explicit local noon resolves independently of a daylight-saving change', () => {
+  assert.equal(localDateTimeUtc('2026-03-08', 'America/New_York', { hour: 12 }), '2026-03-08T16:00:00.000Z');
+  assert.equal(localDateTimeUtc('2026-11-01', 'America/New_York', { hour: 12 }), '2026-11-01T17:00:00.000Z');
+  assert.throws(() => localDateTimeUtc('2026-03-08', 'America/New_York', { hour: 25 }), /Invalid local hour/);
 });
 
 test('an instant belongs to exactly one half-open local-day row', () => {
