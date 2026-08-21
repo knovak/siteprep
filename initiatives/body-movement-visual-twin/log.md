@@ -19,3 +19,7 @@ Recorded that rights, licensing, attribution, and trademark review applies only 
 ## 2026-08-20 — Draft plan.md and test-plan.md from the specification
 
 Drafted a phased build plan and claim-focused test plan; kept the shoulder-and-spine region, reduced initial validation to three movements, and seeded the asset-rights feasibility and movement-contract phases.
+
+## 2026-08-21 — Phase 0 - confirm private-demo asset licences and prove the shoulder-and-spine asset path
+
+Excluded SKEL and SMPL-Model from hosted use under their current third-party restrictions; selected Open3DModel CC BY-SA and Visible Human reference sources, added a separated rights ledger and shared-rig preview, and passed 100 registration samples at 1.658 mm maximum against the 8 mm limit.

@@ -1,26 +1,17 @@
 {
   "title": "Body Movement Visual Twin",
   "summary": "A 3D visual twin that shows bones and muscles during small body movements.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "phase-0-asset-rights-feasibility",
-      "title": "Phase 0 - confirm private-demo asset licences and prove the shoulder-and-spine asset path",
+      "id": "phase-1-movement-contract",
+      "title": "Phase 1 - lock the movement schema, validator, and one fixture per tradition",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
-      "advances_stage": true
-    },
-    {
-      "id": "phase-1-movement-contract",
-      "title": "Phase 1 - lock the movement schema, validator, and one fixture per tradition",
-      "state": "blocked",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "todo:phase-0-asset-rights-feasibility"
+      "advances_stage": false
     }
   ]
 }

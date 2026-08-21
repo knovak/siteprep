@@ -19,3 +19,40 @@ not apply before a public successor release."*
   release. If a public successor is prepared, that release still needs the
   movement descriptions, recordings, names, anatomical assets, licences,
   attribution terms, and intended use reviewed before publication.
+
+## 2026-08-20 — Which anatomy asset path can actually be hosted for private validation?
+
+**Exclude SKEL and SMPL-Model from the hosted demo. Use the CC BY-SA
+Open3DModel skeleton and upper-limb sources, public-domain Visible Human images
+as reference only, and a project-authored surface and shared-rig fixture.**
+
+The official SKEL and SMPL-Model licences are personal, single-user and
+non-transferable, and prohibit making the data available to third parties
+without prior written permission. An access-controlled page still makes its
+packaged assets available to invited reviewers, so “private” does not cure that
+restriction. No account agreement or model file is present in the repository.
+
+SMPL-Body is different: Max Planck licenses that asset class under CC BY 4.0.
+It remains an eligible later surface source when a concrete asset with that
+provenance is supplied, but the licence page itself is not geometry and does
+not turn a restricted SMPL-Model download into a distributable asset.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **SKEL or SMPL-Model** | Best ready-made surface/skeleton correspondence and parameterisation | Current official terms prohibit third-party availability without written permission; unusable for invited hosting as-is |
+| **A concrete SMPL-Body asset** | CC BY 4.0 expressly permits sharing with attribution; already includes mesh and rig | No concrete ledgered asset is present; excludes SMPL shape tools and is not the muscle source |
+| **Open3DModel plus project-authored rig and surface** *(chosen)* | Official source permits hosting under CC BY-SA; July 2025 upper-limb model covers the chosen shoulder region; share-alike can be contained and audited | Requires selection, retopology and skinning; deep spine paths remain authored and unreviewed; procedural Phase 0 surface is not a production body |
+| **Visible Human reconstruction from source imagery** | Public-domain, high-resolution anatomical reference for the chosen region | Segmentation and credible display geometry are substantial work; source imagery is subject-specific and is deliberately not redistributed here |
+
+### What this settles, and what it does not
+
+- The private demo has a permissible source path without relying on obscurity
+  or a licence the project has not accepted.
+- Share-alike geometry stays under `assets/anatomy/share-alike/` with its own
+  manifest, attribution and modification history.
+- The Phase 0 fixture proves shared hierarchy and attachment registration; it
+  does not claim its landmarks or muscle paths are anatomically reviewed.
+- A public successor still needs the separate rights and trademark review
+  already recorded above.

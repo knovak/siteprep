@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "source": "https://www.nlm.nih.gov/research/visible/visible_human.html",
+  "access_terms": "https://www.nlm.nih.gov/research/visible/getting_data.html",
+  "rights_basis": "NLM describes the image library as public-domain data; no registration has been required since July 2019.",
+  "attribution": "Anatomical reference data courtesy of the U.S. National Library of Medicine Visible Human Project.",
+  "use": "Reference only for later shoulder and spine path authoring.",
+  "redistribution": "No VHP source slice, scan, segmentation, texture or subject-specific reconstruction is committed or packaged in Phase 0."
+}

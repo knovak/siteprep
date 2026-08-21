@@ -44,7 +44,7 @@ can be shown and what may later be republished (§9).
 
 | Option | Strengths | Weaknesses |
 |---|---|---|
-| **Open anatomical sources, assembled and retopologised by us** *(chosen)* | Licences permit private use and are compatible with a later public release under attribution; removing one source is survivable; no per-seat cost | Assembly, retopology, rigging, and muscle-path authoring are real work; whole-body muscle coverage does not exist ready-made at this licence |
+| **Open3DModel anatomy plus a project-authored rig and surface** *(chosen in Phase 0)* | The official source permits hosted use under CC BY-SA; its July 2025 upper-limb model covers the intended shoulder region; share-alike can be contained; no per-seat cost | Assembly, retopology, skinning, and deep-spine path authoring are real work; the procedural Phase 0 surface is not a production body |
 | **BioDigital embed** | Largest structure count, browser-ready, authoring tools for guided views | Its media-use policy limits publication and commercial reuse, so validation would prove a page we could not later ship; plan limits (ten model views/month on the free tier) do not survive review sessions; layer control is theirs, not ours |
 | **Commercial anatomy asset packs** | Whole-body muscle geometry available immediately, usually rigged | Redistribution in a web page is the exact term such licences restrict; the rights question moves from "can we clear it" to "we already cannot", and it moves *before* validation rather than after |
 | **OpenSim musculoskeletal models** | Genuinely biomechanical: muscle paths, moment arms, and joint definitions are the model, not decoration | Research toolkit output, not display geometry; visual quality is far below what O1 needs, and its simulation strengths address force estimation the first version explicitly disclaims |
@@ -55,20 +55,21 @@ assets we cannot republish would answer "is this useful?" while leaving "may we
 ship it?" untouched — and the second question is the one with a standing legal
 blocker. The concrete sources:
 
-- **Surface and skeleton:** the SMPL family, whose SKEL variant already joins an
-  SMPL-compatible skin surface to a biomechanical skeleton — which is exactly
-  the surface↔bone correspondence the layer control needs. Access requires
-  registration and licence agreement; **the plan must confirm the specific
-  licence variant permits a private hosted demo, and record which variant was
-  agreed to.** The separately defined SMPL-Body asset format is CC BY 4.0.
-- **Muscles:** AnatomyTOOL's developing free model (CC BY-SA) and the University
-  of Denver Visible Human derivative (260 CC BY 4.0 lower-extremity
-  geometries). Note the mismatch: the openly-licensed muscle geometry is
-  richest for the **lower extremity**, while §1 chose **shoulder and spine** as
-  the deep region. This is a real gap, and §13 carries it as the first thing
-  the plan must resolve — either by moving the deep region to the lower
-  extremity, or by authoring shoulder muscle paths against Visible Human image
-  data (public domain) as reference.
+- **Surface and skeleton:** Phase 0 excludes SKEL and SMPL-Model. Their official
+  single-user licences prohibit making their data available to invited third
+  parties without prior written permission. The separately defined SMPL-Body
+  asset class is CC BY 4.0 and remains eligible when a concrete ledgered asset
+  is supplied, but none is present. The first slice instead uses a
+  project-authored procedural surface and shared rig, with the Open3DModel
+  skeleton selected as the later display-geometry source.
+- **Muscles:** AnatomyTOOL's June 2025 skeleton and July 2025 upper-limb
+  selection models are CC BY-SA. The upper-limb source includes shoulder and
+  pectoral joints, axio-appendicular muscles and scapulohumeral muscles, which
+  resolves the earlier assumption that only lower-extremity open geometry was
+  rich enough. Erector spinae and multifidus remain honest grouped,
+  project-authored paths against NLM Visible Human public-domain image data as
+  reference; source imagery is not redistributed and all Phase 0 paths remain
+  anatomically `unreviewed`.
 - **CC BY-SA is load-bearing.** If AnatomyTOOL geometry is used and modified,
   the derivative geometry carries share-alike. The plan must keep share-alike
   geometry in a directory whose licence is declared separately from the
@@ -333,29 +334,32 @@ as instruction:
 
 ## 12. What the environment must supply
 
-- An agreed SMPL/SKEL licence, with the agreed variant recorded (§2).
+- The Phase 0 rights ledger and its selected Open3DModel sources; SKEL and
+  SMPL-Model stay excluded unless written third-party-hosting permission is
+  recorded, and a later SMPL-Body surface needs concrete CC BY provenance.
 - A place to host a private, access-controlled static site.
 - A practitioner reviewer for each of the three traditions (O4's check is that
   a practitioner says the entry is not a posture wearing the wrong name — this
   cannot be self-assessed).
 - A destination for review reports (§8) that is not the repository.
 
-## 13. Open for the plan
+## 13. Phase 0 resolutions and what remains
 
-1. **The region mismatch in §2.** Openly-licensed muscle geometry is richest for
-   the lower extremity; §1 chose shoulder and spine. Resolve by moving the deep
-   region, or by authoring shoulder muscle paths against public-domain Visible
-   Human image data. This is the first thing the plan should settle, because
-   §1's scope depends on it.
-2. **Which SMPL/SKEL licence variant** permits a hosted private demo, and
-   whether the CC BY 4.0 SMPL-Body format alone is sufficient.
-3. **Share-alike containment** — where CC BY-SA geometry lives so the obligation
-   is declared and does not reach the application code.
-4. **The registration tolerance** in §4: which landmarks, what tolerance, at
-   which frames.
-5. **The muscle set** for the deep region — which muscles are modelled
-   individually and which are grouped, and how a group is named so it does not
-   over-claim.
+1. **The region mismatch is resolved for feasibility.** Open3DModel's July
+   2025 upper-limb source covers the shoulder structures; the two deep-spine
+   groups remain authored paths against Visible Human reference data.
+2. **The licence path is resolved.** SKEL and SMPL-Model are excluded; a
+   concrete CC BY SMPL-Body remains eligible but is not assumed to exist.
+3. **Share-alike containment is fixed** below
+   `assets/anatomy/share-alike/`; real imported geometry must stay there with
+   attribution and modifications recorded.
+4. **Registration is fixed at 8 mm** for 1700 mm reference stature, sampled at
+   start, midpoint, end and every declared joint-angle extremum. Phase 0's 100
+   samples max at 1.658 mm and a deliberately drifting fixture fails.
+5. **The narrow muscle set is fixed** in `plan.md`, including which structures
+   are named individually and which are grouped. Every name/group carries
+   `unreviewed` until an anatomy reviewer accepts or disputes it, so grouping
+   does not silently over-claim fidelity.
 6. **How review reports are collected** without a backend, given §11 is static.
 7. **Whether three movements or six** is the right first count, given each needs
    a practitioner review pass.
