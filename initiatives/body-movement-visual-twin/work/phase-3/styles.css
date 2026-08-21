@@ -105,7 +105,9 @@ h2, h3, p { margin-top: 0; }
 .collection-panel select { margin-top: .1rem; color: var(--ink); font-weight: 720; }
 .clip-boundary { margin: .75rem 0 0; color: #c8c6c0; font-size: .78rem; line-height: 1.45; }
 .caution-panel { background: linear-gradient(135deg, rgba(255, 155, 123, .11), transparent); }
-.caution-panel ul, #claims-list { margin: .25rem 0 1.15rem; padding-left: 1.2rem; color: #d1cec6; font-size: .87rem; line-height: 1.5; }
+.caution-panel ul, #claims-list { margin: .25rem 0 1.15rem; padding: 0; color: #d1cec6; font-size: .87rem; line-height: 1.5; list-style: none; }
+.caution-panel li, #claims-list li, #safety-notes li { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: .65rem; padding: .45rem 0; }
+.claim-flag { min-height: 2rem; padding: .28rem .58rem; border-radius: 99rem; color: var(--mint); font-size: .68rem; }
 .caution-panel .primary { width: 100%; }
 .section-heading { display: flex; justify-content: space-between; gap: .75rem; align-items: baseline; }
 .section-heading output { color: var(--mint); font-weight: 750; font-size: .78rem; }
@@ -144,7 +146,13 @@ dd { margin: 0; font-size: .86rem; }
 dialog { width: min(34rem, calc(100% - 2rem)); border: 1px solid var(--line); border-radius: 1rem; padding: 1.25rem; color: var(--ink); background: #202329; box-shadow: 0 30px 90px #000; }
 dialog::backdrop { background: rgba(0, 0, 0, .72); backdrop-filter: blur(3px); }
 .dialog-heading, .dialog-actions { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; }
-.dialog-actions { justify-content: flex-end; margin-top: 1rem; }
+.dialog-actions { flex-wrap: wrap; justify-content: flex-end; margin-top: 1rem; }
+.selected-claim { display: grid; gap: .35rem; padding: .8rem; border-radius: .7rem; background: rgba(156, 230, 203, .08); }
+.selected-claim code { overflow-wrap: anywhere; color: var(--mint); font-size: .72rem; }
+.optional { color: var(--muted); font-size: .68rem; }
+#flag-form input { width: 100%; border: 1px solid var(--line); border-radius: .65rem; padding: .7rem; color: var(--ink); background: #17191d; }
+#report-preview { max-height: 11rem; overflow: auto; padding: .7rem; border-radius: .6rem; color: #d7e3ff; background: #11141a; font-size: .68rem; white-space: pre-wrap; }
+.report-status { min-height: 1.2rem; margin: .7rem 0 0; color: var(--mint); font-size: .76rem; }
 
 @keyframes pulse { to { opacity: .25; transform: scale(.65); } }
 

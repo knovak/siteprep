@@ -39,3 +39,7 @@ Built the selectable three-tradition validation collection with distinct hand-au
 ## 2026-08-21 — Phase 4 - add honest visual-twin controls
 
 Added stature, surface build, visible proportion, and presentation controls that name their visible effects, preserve the fitted-reference boundary, and scale anatomy registration only with stature.
+
+## 2026-08-21 — Phase 5 - make review corrective without making it destructive
+
+Added exact-claim review reports, local copy/download handoff, and a documented human correction, dispute, and removal path without editing or retaining the source record.

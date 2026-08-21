@@ -127,7 +127,6 @@
         <section class="control-section details">
           <div class="section-heading"><h2>What this frame says</h2><span id="review-pill">Unreviewed</span></div>
           <ul id="claims-list"></ul>
-          <button id="flag-record" type="button">Flag a claim for review</button>
         </section>
       </aside>
     </section>
@@ -140,7 +139,7 @@
         <div id="record-incomplete" class="record-incomplete" role="status" hidden></div>
         <div id="instruction-sections"></div>
         <h3>Safety boundary</h3>
-        <p id="safety-notes"></p>
+        <ul id="safety-notes"></ul>
       </article>
       <article>
         <p class="eyebrow">Source and review</p>
@@ -161,12 +160,16 @@
 
   <dialog id="flag-dialog">
     <form id="flag-form" method="dialog">
-      <div class="dialog-heading"><div><p class="eyebrow">Separate review report</p><h2>Flag a claim</h2></div><button value="cancel" aria-label="Close">×</button></div>
-      <p>This downloads a report; it does not edit the movement record.</p>
-      <label>Kind<select name="kind"><option>anatomy</option><option>movement</option><option>attribution</option><option>safety</option></select></label>
+      <div class="dialog-heading"><div><p class="eyebrow">Separate review report</p><h2>Flag a claim</h2></div><button id="close-flag" type="button" aria-label="Close">×</button></div>
+      <p>This creates separate JSON evidence; it does not edit the movement record or retain your identifier.</p>
+      <div class="selected-claim"><strong id="flag-claim-label"></strong><code id="flag-claim-path"></code></div>
+      <label>Reviewer identifier <span class="optional">Optional</span><input name="reviewer" autocomplete="off"></label>
+      <label>Kind<select name="kind" disabled><option>anatomy</option><option>movement</option><option>attribution</option><option>safety</option></select></label>
       <label>Severity<select name="severity"><option>question</option><option>important</option><option>blocking</option></select></label>
       <label>Note<textarea name="note" required rows="4"></textarea></label>
-      <div class="dialog-actions"><button value="cancel">Cancel</button><button id="download-flag" class="primary" value="default">Download report</button></div>
+      <pre id="report-preview" hidden></pre>
+      <p id="report-status" class="report-status" role="status"></p>
+      <div class="dialog-actions"><button id="cancel-flag" type="button">Cancel</button><button id="copy-flag" type="button">Copy JSON</button><button id="email-flag" type="button" hidden>Open email draft</button><button id="download-flag" class="primary" type="button">Download JSON</button></div>
     </form>
   </dialog>
 
