@@ -144,13 +144,32 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["tradition_basis", "rights_basis", "authored_by", "authored_on", "review"],
+      "required": ["tradition_basis", "rights_basis", "authored_by", "authored_on", "claim_sources", "review"],
       "properties": {
         "tradition_basis": { "$ref": "#/$defs/nonEmptyString" },
         "rights_basis": { "type": "string", "pattern": "^provisional:" },
         "authored_by": { "$ref": "#/$defs/nonEmptyString" },
         "authored_on": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "claim_sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/claimSource" }
+        },
         "review": { "$ref": "#/$defs/review" }
+      }
+    },
+    "claimSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url", "supports"],
+      "properties": {
+        "title": { "$ref": "#/$defs/nonEmptyString" },
+        "url": { "type": "string", "pattern": "^https://" },
+        "supports": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        }
       }
     },
     "feldenkraisInstruction": {

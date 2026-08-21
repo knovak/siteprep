@@ -48,6 +48,18 @@
     "rights_basis": "provisional: project-authored description; no class sequence, teacher wording, recording, or commercial anatomy was copied",
     "authored_by": "Siteprep project",
     "authored_on": "2026-08-21",
+    "claim_sources": [
+      {
+        "title": "What is Iyengar Yoga?",
+        "url": "https://iyengaryoga.org.uk/iyengar-yoga/about-iyengar-yoga/",
+        "supports": ["progressive posture practice", "supports and props", "safety"]
+      },
+      {
+        "title": "To Prop or not to Prop",
+        "url": "https://iyengaryoga.org.uk/to-prop-or-not-to-prop/",
+        "supports": ["blankets and chairs as props", "judicious use of props"]
+      }
+    ],
     "review": { "status": "unreviewed", "notes": "Requires review by a yoga practitioner." }
   }
 }

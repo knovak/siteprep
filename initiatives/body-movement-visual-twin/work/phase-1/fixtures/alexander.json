@@ -40,6 +40,18 @@
     "rights_basis": "provisional: project-authored description with an explicit boundary around manual teaching",
     "authored_by": "Siteprep project",
     "authored_on": "2026-08-21",
+    "claim_sources": [
+      {
+        "title": "Learning the Alexander Technique",
+        "url": "https://alexandertechnique.co.uk/learning-it/learning-alexander-technique",
+        "supports": ["everyday activities", "hands-on guidance", "verbal explanation"]
+      },
+      {
+        "title": "Keep on running",
+        "url": "https://alexandertechnique.co.uk/keep-running",
+        "supports": ["pause and inhibition", "direction before activity"]
+      }
+    ],
     "review": { "status": "unreviewed", "notes": "Requires review by an Alexander Technique practitioner." }
   }
 }
