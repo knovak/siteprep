@@ -1,0 +1,11 @@
+{
+  "provider": "nominatim",
+  "searchUrl": "https://nominatim.openstreetmap.org/search",
+  "reverseUrl": "https://nominatim.openstreetmap.org/reverse",
+  "format": "jsonv2",
+  "minimumIntervalMs": 1000,
+  "cacheTtlMs": 86400000,
+  "attribution": "Data © OpenStreetMap contributors, ODbL 1.0",
+  "licenceUrl": "https://www.openstreetmap.org/copyright",
+  "policyUrl": "https://operations.osmfoundation.org/policies/nominatim/"
+}
