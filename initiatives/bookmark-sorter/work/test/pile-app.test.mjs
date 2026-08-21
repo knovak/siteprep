@@ -14,6 +14,7 @@ const fixture = name => readFile(fileURLToPath(new URL(`fixtures/${name}`, impor
 class AppStore extends MemoryBookmarkStore {
   async ensureCollection(collection) {
     if (!this.hasCollection(collection.id)) this.createCollection(collection);
+    return this.ownedCollection(collection.id);
   }
 
   listItems(collectionId, {limit = 200, offset = 0} = {}) {
@@ -50,6 +51,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="previous-page"/);
   assert.match(html, /id="next-page"/);
   assert.match(html, /id="rename-form"/);
+  assert.match(html, /id="new-collection" type="button">New</);
+  assert.match(html, /image:present/);
   assert.doesNotMatch(html, /prompt\('Collection name'/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);
@@ -142,6 +145,9 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
 
   const proposals = await (await app.fetch(new Request('https://pile.test/api/proposals'))).json();
   assert.equal(proposals.proposals.find(proposal => proposal.id === 'site:example.com').count, 2);
+  assert.equal(proposals.proposals.find(proposal => proposal.id === 'src:chrome-export').count, 3);
+  assert.ok(proposals.proposals.some(proposal => proposal.kind === 'tag'));
+  assert.equal(proposals.proposals.find(proposal => proposal.id === 'image:none').count, 3);
 
   const savedResponse = await app.fetch(new Request('https://pile.test/api/selections', {
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({name: 'Example site', expression: 'site:example.com'}),
@@ -270,7 +276,7 @@ test('a visible sweep across several thousand items never gains a count-based co
   assert.equal(store.countUntriagedItems('pile'), 3_000);
 });
 
-test('collection API lists templates and creates, refreshes, renames, and deletes private copies', async () => {
+test('collection API creates empty private collections and manages template copies', async () => {
   const store = new AppStore({canEditTemplates: true});
   store.createCollection({id: 'template-one', name: 'Starter pile', kind: 'demo-template', created_at: '2026-08-19T00:00:00Z'});
   const seeded = store.insertItem({
@@ -286,6 +292,14 @@ test('collection API lists templates and creates, refreshes, renames, and delete
   assert.equal(listed.active_collection_id, 'pile');
   assert.deepEqual(listed.templates.map(template => template.id), ['template-one']);
   assert.equal(listed.can_edit_templates, true);
+
+  const created = await (await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'create', name: 'Research queue'}),
+  }))).json();
+  assert.equal(created.collection.name, 'Research queue');
+  assert.equal(created.collection.kind, 'private');
+  assert.equal(store.countItems(created.collection.id), 0);
 
   const copied = await (await app.fetch(new Request('https://pile.test/api/collections', {
     method: 'POST', headers: {'content-type': 'application/json'},

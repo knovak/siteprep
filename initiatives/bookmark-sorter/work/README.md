@@ -30,15 +30,19 @@ selection, and export operations.
   owner and indexes the owner/kind and template-copy queries used by the
   collection menu. The existing foreign-key path remains item → collection →
   user; items never join directly to users.
+- `migrations/0006_private_collections.sql` extends the collection kind check for
+  additional empty private collections while preserving the one automatic
+  personal pile per owner.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
 - `src/url-key.mjs` implements the deliberately narrow URL identity rule from
-  `spec.md` §4.
+  `spec.md` §4 and unwraps Google `/url` references before storing a bookmark.
 - `src/selections.mjs` is the one selection evaluator used by UI-scoped and
   administrative calls. It parses `and`, `or`, `not`, parentheses, bare tags,
-  and trailing wildcards; adds synthetic collection/site/title/folder keys; and
-  computes the three cheap proposal kinds on demand.
+  and trailing wildcards; adds synthetic collection/site/title/folder/image and
+  exact-tag keys; and computes grouped source, tag, folder, site, image, and
+  near-title proposals on demand.
 - `src/round-trip.mjs` owns the `bookmark-sorter/v1` boundary. It exports any
   ordinary selection without captures, imports portable records through the
   same URL-keyed merge as browser HTML, and reads proposed-tag documents into
@@ -76,9 +80,9 @@ selection, and export operations.
   surface now evaluates, saves, tags and sweeps selections. Every API route
   requires Sites identity, resolves the active collection server-side, and
   rejects another owner's collection even when its id is supplied directly.
-  Collection operations list templates, take or refresh a private copy, rename
-  a collection, delete a copy, and allow template creation only for users whose
-  D1 capability is set.
+  Collection operations list templates, create an empty private collection,
+  take or refresh a private copy, rename a collection, delete a copy, and allow
+  template creation only for users whose D1 capability is set.
 - `src/pile-page.mjs` renders the self-contained grid. It has 8×2 wide,
   4×3 or 3×3 tablet, and single-card phone layouts; only the visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
@@ -86,8 +90,8 @@ selection, and export operations.
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy
   control. Truncated tag chips expose the item's complete tag list through
   their hover text. Help documents the controls and selection grammar in the
-  page. The collection bar renames through an inline form rather than a browser
-  prompt, so it works in the Sites browser environment. Stored derivatives
+  page. The collection bar creates and renames through an inline form rather
+  than a browser prompt, so it works in the Sites browser environment. Stored derivatives
   appear without any request to the saved page. A
   verdict patches the affected cards in place rather than navigating or
   rebuilding the grid. The visible-page sweep changes only untriaged cards and
@@ -100,7 +104,8 @@ selection, and export operations.
 
 Apply `migrations/0001_core.sql`, `migrations/0002_triage.sql`,
 `migrations/0003_captures.sql`, `migrations/0004_selections.sql`, then
-`migrations/0005_identity_collections.sql`. Bind that database to the Worker as
+`migrations/0005_identity_collections.sql` and `migrations/0006_private_collections.sql`.
+Bind that database to the Worker as
 `DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies
 `oai-authenticated-user-id`; the Worker rejects an API request without it and
 constructs `D1BookmarkStore` with that stable id as `ownerId`. The first request
@@ -140,7 +145,7 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
 - `.openai/hosting.json` declares D1 as `DB` and R2 as `CAPTURES`. The first
   test deployment intentionally left R2 `null`; the user approved the storage
   limits on 2026-08-20, so later versions keep the capture binding declared.
-- `db/schema.ts` is the deployable final form of migrations 0001–0005. The
+- `db/schema.ts` is the deployable final form of migrations 0001–0006. The
   generated `drizzle/` migration is packaged with a Site version and creates the
   same tables, constraints, and query indexes on a fresh D1 database.
 - `worker/index.ts` passes `/` and `/api/*` to the existing application and
@@ -172,8 +177,8 @@ the data-handling boundary.
 - `GET /api/items` returns one virtual window plus `total` and `backlog`.
 - `GET /api/collections` returns the current user's collections, all readable
   demo templates, and the server-derived template-edit capability.
-- `POST /api/collections` performs `copy-template`, `fresh-copy`, `rename`,
-  `delete-copy`, or capability-gated `create-template`. The current collection
+- `POST /api/collections` performs empty `create`, `copy-template`, `fresh-copy`,
+  `rename`, `delete-copy`, or capability-gated `create-template`. The current collection
   travels in `x-bookmark-collection-id`; every data method checks it again in
   D1 rather than trusting the header.
 - `POST /api/session` starts or ends a sitting. A sitting records its start,
@@ -187,12 +192,15 @@ the data-handling boundary.
   implicitly `collection:pile and ( … )`, and returns one virtual window plus
   both collection and selection counts. In addition to ordinary and synthetic
   tags, `verdict:keep`, `verdict:junk`, `verdict:archive`,
-  `verdict:needs-time`, and `verdict:untriaged` select by the current verdict.
+  `verdict:needs-time`, and `verdict:untriaged` select by the current verdict;
+  `image:none`, `image:failed`, and `image:present` select by stored picture state.
 - `GET|POST /api/selections` lists and saves named expressions. Saving parses
   the expression first; malformed input is an error, never an empty set.
-- `GET /api/proposals` recomputes same-site, same-folder and near-title groups
-  as ordinary pre-filled selections. Folder groups therefore change on the
-  request after a folder tag changes; no proposal cache can go stale.
+- `GET /api/proposals` recomputes source, exact-tag, folder, site, image, and
+  near-title groups as ordinary pre-filled selections. The interface groups
+  them in that order (with title last for the retained near-title feature) and
+  alphabetizes each group. Folder and tag groups therefore change on the
+  request after tags change; no proposal cache can go stale.
 - `POST /api/tag` unions tags onto the marked set or current selection and logs
   only the tags it added, so one undo removes those additions and preserves
   everything that existed before the action.
@@ -239,11 +247,13 @@ has no image storage, and no capture request is made by the grid.
 node --test initiatives/bookmark-sorter/work/test/*.test.mjs
 ```
 
-The Node tests cover parsing, normalisation, tag creation, idempotent
+The Node tests cover parsing, Google redirect simplification, normalisation,
+tag creation, idempotent
 re-import, overlap merging, D1 owner scoping and batch chunking, the upload API,
 the 20 MB guard, verdicts, group undo, sitting totals, and a generated
-10,000-item export. Phase 4 adds table-driven grammar and scope tests, D1 and
-memory-store saved-selection/tag-undo checks, on-demand proposal checks, both
+10,000-item export. Phase 4 adds table-driven grammar and scope tests, image
+attributes, D1 and memory-store saved-selection/tag-undo checks, grouped
+on-demand proposal checks, both
 confirmation paths, and a visible 3,000-item sweep followed by one undo.
 Phase 5 adds a hand-written portable export, selection-scoped export, same- and
 cross-collection round trips, existing note/verdict protection, shared capture
@@ -251,7 +261,7 @@ reuse, URL-matched proposals, read-only discard, and per-tag acceptance through
 the ordinary tag action. Phase 6 adds the real SQLite migrations plus two
 authenticated sessions: personal collections are mutually unreachable, only
 templates cross owner boundaries, template writes require the D1 capability,
-copies are private snapshots, fresh copies are additive, and deletion preserves
+empty named collections and copies are private, fresh copies are additive, and deletion preserves
 the shared capture. Header parsing and missing-identity rejection have separate
 tests so neither can quietly fall back to an email or anonymous owner.
 Capture tests use a local HTTP fixture server rather than

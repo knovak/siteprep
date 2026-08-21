@@ -1,5 +1,5 @@
 import {normaliseTitle, evaluateSelection} from './selections.mjs';
-import {normaliseUrl} from './url-key.mjs';
+import {normaliseUrl, simplifyStoredUrl} from './url-key.mjs';
 
 export const PORTABLE_FORMAT = 'bookmark-sorter/v1';
 
@@ -26,9 +26,10 @@ function urlRecord(item, index) {
     throw new TypeError(`items[${index}] must be an object`);
   }
   if (typeof item.url !== 'string' || !item.url) throw new TypeError(`items[${index}].url is required`);
-  const parsed = new URL(item.url);
+  const url = simplifyStoredUrl(item.url);
+  const parsed = new URL(url);
   if (!['http:', 'https:'].includes(parsed.protocol)) throw new TypeError(`items[${index}].url must use HTTP or HTTPS`);
-  return {item, url_key: normaliseUrl(item.url)};
+  return {item, url, url_key: normaliseUrl(url)};
 }
 
 function tagList(value, field) {
@@ -70,14 +71,14 @@ export function parseExportDocument(value, {importedAt = new Date().toISOString(
   if (!Array.isArray(document.items)) throw new TypeError('Portable bookmark document must contain an items array');
   const ingestedAt = dateValue(importedAt, 'importedAt', {nullable: false});
   const candidates = document.items.map((raw, index) => {
-    const {item, url_key} = urlRecord(raw, index);
+    const {item, url, url_key} = urlRecord(raw, index);
     const verdict = item.verdict ?? null;
     if (verdict !== null && !VERDICTS.has(verdict)) throw new Error(`items[${index}].verdict is unsupported: ${verdict}`);
     const verdictAt = dateValue(item.verdict_at, `items[${index}].verdict_at`);
     if (verdict !== null && verdictAt === null) throw new TypeError(`items[${index}].verdict_at is required with a verdict`);
-    const title = typeof item.title === 'string' && item.title.trim() ? item.title : item.url;
+    const title = typeof item.title === 'string' && item.title.trim() ? item.title : url;
     return {
-      url: item.url,
+      url,
       url_key,
       title,
       title_key: normaliseTitle(title),

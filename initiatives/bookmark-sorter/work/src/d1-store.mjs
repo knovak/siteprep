@@ -142,7 +142,7 @@ export class D1BookmarkStore {
       `SELECT c.id, c.name, c.owner_id, c.kind, c.template_id, c.copied_at, c.created_at,
               (SELECT COUNT(*) FROM items i WHERE i.collection_id = c.id) AS item_count
        FROM collections c WHERE ${scope.sql}
-       ORDER BY CASE c.kind WHEN 'personal' THEN 0 WHEN 'demo-copy' THEN 1 ELSE 2 END,
+       ORDER BY CASE c.kind WHEN 'personal' THEN 0 WHEN 'private' THEN 1 WHEN 'demo-copy' THEN 2 ELSE 3 END,
                 c.created_at, c.id`,
     ).bind(...scope.values).all();
     return (result.results ?? []).map(row => ({...row, item_count: Number(row.item_count ?? 0)}));

@@ -1,5 +1,5 @@
 import {parseBookmarkHtml} from './bookmark-html.mjs';
-import {normaliseUrl} from './url-key.mjs';
+import {normaliseUrl, simplifyStoredUrl} from './url-key.mjs';
 import {normaliseTitle} from './selections.mjs';
 
 function isoFromBookmarkDate(value) {
@@ -33,18 +33,22 @@ export async function ingestBookmarkHtml({
   const baseTags = [`src:${source}`, `in:${ingestedIso.slice(0, 10)}`];
   const parsed = parseBookmarkHtml(html);
 
-  const candidates = parsed.map(candidate => ({
-    url: candidate.url,
-    url_key: normaliseUrl(candidate.url),
-    title: candidate.title || candidate.url,
-    title_key: normaliseTitle(candidate.title || candidate.url),
-    note: candidate.note,
-    added_at: isoFromBookmarkDate(candidate.add_date),
-    ingested_at: ingestedIso,
-    tags: candidate.folder_path
-      ? [...baseTags, `folder:${candidate.folder_path}`]
-      : baseTags,
-  }));
+  const candidates = parsed.map(candidate => {
+    const storedUrl = simplifyStoredUrl(candidate.url);
+    const title = candidate.title || storedUrl;
+    return {
+      url: storedUrl,
+      url_key: normaliseUrl(storedUrl),
+      title,
+      title_key: normaliseTitle(title),
+      note: candidate.note,
+      added_at: isoFromBookmarkDate(candidate.add_date),
+      ingested_at: ingestedIso,
+      tags: candidate.folder_path
+        ? [...baseTags, `folder:${candidate.folder_path}`]
+        : baseTags,
+    };
+  });
 
   if (typeof store.ingestCandidates === 'function') {
     const result = await store.ingestCandidates(collectionId, candidates);

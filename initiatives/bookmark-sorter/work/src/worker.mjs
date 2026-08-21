@@ -101,6 +101,12 @@ export function createPileApp({
             });
           } else if (body.action === 'rename') {
             collection = await store.renameCollection(body.collection_id, body.name);
+          } else if (body.action === 'create') {
+            const name = String(body.name || '').trim();
+            if (!name) throw new Error('Collection name is required');
+            collection = await store.ensureCollection({
+              id: idFactory('collection'), name, kind: 'private', createdAt: at,
+            });
           } else if (body.action === 'delete-copy') {
             collection = await store.deleteDemoCopy(body.collection_id);
           } else if (body.action === 'create-template') {

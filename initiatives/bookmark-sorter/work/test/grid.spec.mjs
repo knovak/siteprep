@@ -20,10 +20,12 @@ async function installPile(page) {
   const backend = {
     items: sampleItems(),
     collection: {id: 'pile', name: 'My bookmarks', kind: 'personal'},
+    collections: [],
     session: null,
     actions: [],
     requests: [],
   };
+  backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
     const request = route.request();
     const url = new URL(request.url());
@@ -34,26 +36,42 @@ async function installPile(page) {
     if (request.method() === 'GET' && url.pathname === '/api/collections') {
       return route.fulfill({json: {
         active_collection_id: 'pile', can_edit_templates: false,
-        collections: [{...backend.collection, item_count: backend.items.length}],
+        collections: backend.collections.map(collection => ({
+          ...collection, item_count: collection.id === 'pile' ? backend.items.length : 0,
+        })),
         templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
       }});
     }
     if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
+      const collectionId = request.headers()['x-bookmark-collection-id'] || 'pile';
+      const collectionItems = collectionId === 'pile' ? backend.items : [];
       const offset = Number(url.searchParams.get('offset') || 0);
       const limit = Number(url.searchParams.get('limit') || 200);
-      const backlog = backend.items.filter(item => !item.verdict).length;
-      return route.fulfill({json: {collection_id: 'pile', collection_total: backend.items.length, collection_backlog: backlog, total: backend.items.length, backlog, captures: {total: backend.items.length, metadata_images: 3334, screenshot_images: 0, gaps: 6666, queued: 6666, duplicate_distribution: [12, 7, 4]}, items: backend.items.slice(offset, offset + limit)}});
+      const backlog = collectionItems.filter(item => !item.verdict).length;
+      return route.fulfill({json: {collection_id: collectionId, collection_total: collectionItems.length, collection_backlog: backlog, total: collectionItems.length, backlog, captures: {total: collectionItems.length, metadata_images: collectionId === 'pile' ? 3334 : 0, screenshot_images: 0, gaps: collectionId === 'pile' ? 6666 : 0, queued: collectionId === 'pile' ? 6666 : 0, duplicate_distribution: collectionId === 'pile' ? [12, 7, 4] : []}, items: collectionItems.slice(offset, offset + limit)}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/selections') {
       return route.fulfill({json: {selections: []}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/proposals') {
-      return route.fulfill({json: {proposals: []}});
+      return route.fulfill({json: {proposals: [
+        {id: 'src:browser-export', kind: 'src', name: 'browser-export', expression: 'src:browser-export', count: 10_000},
+        {id: 'tag:topic:later', kind: 'tag', name: 'topic:later', expression: 'tag-key:topic%3Alater', count: 2},
+        {id: 'folder:Reading/topic-0', kind: 'folder', name: 'Reading/topic-0', expression: 'folder-key:Reading%2Ftopic-0', count: 834},
+        {id: 'site:example0.com', kind: 'site', name: 'example0.com', expression: 'site:example0.com', count: 271},
+        {id: 'image:none', kind: 'image', name: 'none', expression: 'image:none', count: 6666},
+      ]}});
     }
     const body = request.postDataJSON();
     if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'rename') {
       backend.collection = {...backend.collection, name: body.name.trim()};
+      backend.collections[0] = backend.collection;
       return route.fulfill({json: {collection: {...backend.collection, item_count: backend.items.length}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'create') {
+      const collection = {id: 'collection-new', name: body.name.trim(), kind: 'private'};
+      backend.collections.push(collection);
+      return route.fulfill({status: 201, json: {collection: {...collection, item_count: 0}}});
     }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
@@ -204,6 +222,7 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('site:example.com');
   await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
+  await expect(page.locator('#help-panel')).toContainText('image:present');
   await page.keyboard.press('Escape');
   await expect(page.locator('#help-panel')).toBeHidden();
 
@@ -231,6 +250,33 @@ test('collection rename uses an inline form and supports save or keyboard cancel
   await expect(page.getByLabel('Current collection')).toContainText('Reviewed bookmarks');
   await expect(page.getByRole('button', {name: 'Rename'})).toBeFocused();
   expect(backend.collection.name).toBe('Reviewed bookmarks');
+});
+
+test('New creates a named empty collection without a browser prompt', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await page.getByRole('button', {name: 'New'}).click();
+  await expect(page.locator('#rename-form')).toBeVisible();
+  await expect(page.getByLabel('Collection name')).toHaveValue('');
+  await page.getByLabel('Collection name').fill('Research queue');
+  await page.getByLabel('Collection name').press('Enter');
+
+  await expect(page.locator('#status')).toHaveText('Empty collection created.');
+  await expect(page.getByLabel('Current collection')).toHaveValue('collection-new');
+  await expect(page.locator('#count')).toHaveText('0');
+  expect(backend.collections.at(-1)).toEqual({id: 'collection-new', name: 'Research queue', kind: 'private'});
+});
+
+test('Automatic proposals are grouped in the requested order without Same labels', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await expect(page.locator('#proposals optgroup')).toHaveCount(5);
+  const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
+  expect(labels).toEqual(['src', 'tag', 'folder', 'site', 'image']);
+  await expect(page.locator('#proposals')).not.toContainText('Same ');
 });
 
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {

@@ -26,7 +26,7 @@ export const collections = sqliteTable("collections", {
   copiedAt: text("copied_at"),
   createdAt: text("created_at").notNull(),
 }, table => [
-  check("collections_kind_check", sql`${table.kind} in ('personal', 'demo-template', 'demo-copy')`),
+  check("collections_kind_check", sql`${table.kind} in ('personal', 'private', 'demo-template', 'demo-copy')`),
   uniqueIndex("idx_collections_owner_personal").on(table.ownerId).where(sql`${table.kind} = 'personal'`),
   index("idx_collections_owner_kind_created").on(table.ownerId, table.kind, table.createdAt),
   index("idx_collections_template_id").on(table.templateId).where(sql`${table.templateId} is not null`),
