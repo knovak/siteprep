@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-08-21T06:50:00Z",
+  "sources": {
+    "noaa": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions",
+    "chs": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+    "chsMetadata": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/{stationId}/metadata"
+  },
+  "noaa": {
+    "count": 7,
+    "stations": [
+      { "id": "8443970", "name": "BOSTON", "lat": 42.35388888888889, "lng": -71.05027777777778, "state": "MA", "type": "R", "reference_id": "" },
+      { "id": "9445882", "name": "Eagle Harbor, Bainbridge Island", "lat": 47.62, "lng": -122.515, "state": "WA", "type": "S", "reference_id": "9447130" },
+      { "id": "9445913", "name": "Port Blakely", "lat": 47.5967, "lng": -122.51, "state": "WA", "type": "S", "reference_id": "9447130" },
+      { "id": "9447130", "name": "SEATTLE (Madison St.), Elliott Bay", "lat": 47.60263888888889, "lng": -122.3393055555556, "state": "WA", "type": "R", "reference_id": "" },
+      { "id": "9449639", "name": "POINT ROBERTS, PUGET SOUND", "lat": 48.974998474121094, "lng": -123.08300018310547, "state": "WA", "type": "R", "reference_id": "" },
+      { "id": "9449679", "name": "Blaine, Semiahmoo Bay", "lat": 48.9917, "lng": -122.765, "state": "WA", "type": "R", "reference_id": "" },
+      { "id": "9497645", "name": "PRUDHOE BAY", "lat": 70.4113889, "lng": -148.5316667, "state": "AK", "type": "R", "reference_id": "" }
+    ]
+  },
+  "chs": {
+    "stations": [
+      { "id": "5cebf1df3d0f4a073c4bbcbb", "code": "00490", "officialName": "Halifax", "latitude": 44.65914, "longitude": -63.583386, "operating": true, "type": "TEMPORARY", "timeSeries": [{ "code": "wlp-hilo" }] },
+      { "id": "5cebf1de3d0f4a073c4bb933", "code": "07577", "officialName": "White Rock", "latitude": 49.016667, "longitude": -122.8, "operating": false, "type": "TEMPORARY", "timeSeries": [{ "code": "wlp-hilo" }] },
+      { "id": "5cebf1de3d0f4a073c4bb935", "code": "07590", "officialName": "Tsawwassen", "latitude": 49.00677, "longitude": -123.12933, "operating": false, "type": "TEMPORARY", "timeSeries": [{ "code": "wlp-hilo" }] },
+      { "id": "5cebf1de3d0f4a073c4bb943", "code": "07735", "officialName": "Vancouver", "latitude": 49.2863, "longitude": -123.0997, "operating": true, "type": "PERMANENT", "timeSeries": [{ "code": "wlp-hilo" }] }
+    ],
+    "metadataById": {
+      "5cebf1df3d0f4a073c4bbcbb": { "provinceCode": "NS", "isTidal": true, "timeZoneCode": "Canada/Atlantic", "isTideTableReferencePort": true, "referencePortStationId": null },
+      "5cebf1de3d0f4a073c4bb933": { "provinceCode": "BC", "isTidal": true, "timeZoneCode": "Canada/Pacific", "isTideTableReferencePort": false, "referencePortStationId": "5cebf1de3d0f4a073c4bb94c" },
+      "5cebf1de3d0f4a073c4bb935": { "provinceCode": "BC", "isTidal": true, "timeZoneCode": "Canada/Pacific", "isTideTableReferencePort": false, "referencePortStationId": "5cebf1de3d0f4a073c4bb94c" },
+      "5cebf1de3d0f4a073c4bb943": { "provinceCode": "BC", "isTidal": true, "timeZoneCode": "Canada/Pacific", "isTideTableReferencePort": true, "referencePortStationId": null }
+    }
+  }
+}

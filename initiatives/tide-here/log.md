@@ -31,3 +31,7 @@ Recorded the reviewer's choice of Option B for explicit local history, revised O
 ## 2026-08-21 — Phase 1 - the day model: zone resolution, the five coast-local dates, and placing a UTC instant into a row
 
 Implemented the pinned offline zone lookup and pure five-day coast-local model; seven phase-1 tests cover device-zone independence, DST bounds, row placement, and per-instant offsets.
+
+## 2026-08-21 — Phase 2 - build the station catalogue and coastal match
+
+Added normalized NOAA and CHS prediction-station catalogues, a seven-day cache, configuration-owned coastal thresholds, and a three-outcome great-circle matcher with Puget Sound, border, subordinate, inland, and cache-expiry tests.
