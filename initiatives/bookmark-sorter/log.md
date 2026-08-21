@@ -336,3 +336,7 @@ Proposed graduating the live owner-only Bookmark Sorter to refining, recording t
 ## 2026-08-21 — Write a user-facing README covering how to use it and how to deploy it
 
 Added a user-facing README with private-data cautions, import and triage guidance, selection grammar, backup steps, and the full-stack Sites deployment path.
+
+## 2026-08-21 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Proposed five optional refinements with expected value, likely size, safety boundaries, and evidence: visible backup and restore, a guided selection builder, a bookmark detail editor, per-item capture recovery, and app-owned confirmations.
