@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objectives — Interactive Bookmark Sorter</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Objectives — Interactive Bookmark Sorter</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Interactive Bookmark Sorter</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Objectives</h2>
+    </div>
+    <div class="card-content">
+<h2>Objectives</h2>
+<p>What &quot;done&quot; would mean, derived from the wish. Outcomes, not implementation — how any of this is built belongs in <code>spec.md</code>.</p>
+<h3>The point</h3>
+<p><strong>Turn a bookmark pile that is too big to face into a pile worth keeping.</strong></p>
+<p>The wish names the priority explicitly: <em>&quot;Most important is to pick keepers vs junk vs archive vs needs-more-time.&quot;</em> Everything else — ingestion, tags, clusters, snapshots — earns its place only by making that decision faster. An objective that does not serve triage throughput is not an objective for this initiative.</p>
+<p>That framing matters because the obvious failure mode is building a bookmark <em>manager</em>: a tidy, tagged, searchable library that is still never read. The measure of success is how much of the pile gets resolved, not how well it is organised.</p>
+<h3>Done means</h3>
+<p>Numbering is stable: the objectives added by the wish&#39;s amendment are appended rather than inserted, because <code>decisions.md</code> argues about several of these by number and quietly renumbering them would invalidate that record.</p>
+<ol><li><strong>A pile can be brought in without loss.</strong> Bookmarks are ingested with title,</li></ol>
+<p>   link, and date intact, and every item carries tags recording where it came    from and when it arrived — so a later import can never be confused with an    earlier one. <strong>Structure the user already made is part of what must not be    lost</strong>: a browser export&#39;s folder path arrives as a tag, so the shelves    somebody spent years building become selectable by exactly the same mechanism    as everything else, rather than a hierarchy the tool has to model separately.</p>
+<ol><li>**Every item can be given a verdict, and the verdict is the unit of</li></ol>
+<p>   progress.** Each item ends up as <em>keeper</em>, <em>junk</em>, <em>archive</em>, or    <em>needs-more-time</em>. Items with no verdict yet are the backlog, and the system    can always say how large it is.</p>
+<ol><li><strong>Triage is fast enough to do in a sitting.</strong> A screenful of items can be</li></ol>
+<p>   judged without leaving the keyboard or scrolling away, and a full screen is    presented at a time — roughly 8×2 on a wide display, fewer on a tablet, a    carousel on a phone.</p>
+<ol><li><strong>Seeing an item does not require remembering it.</strong> Each item shows enough —</li></ol>
+<p>   a page snapshot, its title, its tags — to be judged on sight. This is what    makes 3 possible; a list of URLs is not triageable at speed.</p>
+<ol><li><strong>Related items can be judged together.</strong> Items can be gathered into clusters</li></ol>
+<p>   automatically, or by the user selecting on tags — a boolean expression, or a    pattern match. Judging fifty near-identical links as one group is the    difference between an afternoon and a month.</p>
+<ol><li><strong>Tagging is part of triage, not a separate chore.</strong> Tags can be added during</li></ol>
+<p>   a pass, at the same speed as the verdicts, and items can be tagged by topic,    by site, or by kind of page.</p>
+<ol><li><strong>The results are the user&#39;s, and portable.</strong> Verdicts and tags persist in a</li></ol>
+<p>   store suited to wherever this runs, and can be backed up and exported in a    form another system could read. Nothing is trapped. Concretely, an export is    JSON carrying items with their tags and verdicts, a subset can be chosen by    tag rather than all-or-nothing, and an export file can be <strong>imported back</strong>    into a collection — so the round trip, not just the download, is what makes    the data portable. It carries no page captures; those are a rebuildable    convenience, and the judgement is what must not be trapped.</p>
+<ol><li><strong>Items live in a collection, and a collection has an owner.</strong> More than one</li></ol>
+<p>   person may use this, so the work is always happening <em>in</em> a named collection    that can be chosen, imported into, and exported from. A collection is private    to its owner, and a tester who needs something to look at receives their own    copy of a demo collection rather than sharing anyone&#39;s. Everything above is    scoped by this: a verdict, a tag, and a backlog count all belong to one    collection.</p>
+<h3>Explicitly not the first version</h3>
+<p>Three capabilities are real, expected, and deliberately later. The wish marks the first two as extensions:</p>
+<ul><li><strong>Harvesting open tabs from other devices</strong> — Safari on iPhone, Chrome on</li></ul>
+<p>  iPad, and so on.</p>
+<ul><li><strong>Pushing subsets back out</strong> — creating browser tab groups, or a folder of</li></ul>
+<p>  fresh bookmarks, from a tag-selected subset.</p>
+<p>Both are worth doing and both are what makes the tool feel finished. Neither makes triage faster, so neither belongs in the first version. The wish also notes they may arrive <em>&quot;initially or exclusively through an LLM agent&quot;</em>, which is a real option and should be weighed in <code>spec.md</code> rather than assumed away.</p>
+<p>The third comes from a decision rather than the wish:</p>
+<ul><li><strong>A general sharing scheme</strong> — owners, explicit readers, and revocation, so a</li></ul>
+<p>  collection can be shown to a named person. Deferred on 2026-08-14 in favour of   seeding demo collections as per-user copies, with the user&#39;s <em>&quot;plan to have a   general sharing scheme for a later revision.&quot;</em></p>
+<p>The distinction matters more here than for the other two. Sharing is <strong>planned, not merely possible</strong>, and building it later is only cheap if the first version does not make it expensive. That puts one live constraint on the spec: <em>do not let &quot;owner&quot; become the only way an item is reachable</em> — a collection&#39;s identity should be separable from the single user attached to it, so a reader list can be added without rewriting every query. That costs nothing now, and it is the difference between adding sharing and retrofitting it.</p>
+<h3>How we will know</h3>
+<ul><li>A real backlog of several hundred bookmarks can be taken from untriaged to</li></ul>
+<p>  fully triaged, and the time it took is known.</p>
+<ul><li>The rate is fast enough to be worth it — a target to be set in <code>spec.md</code>, once</li></ul>
+<p>  there is a measured baseline to argue from. Setting it now would be a guess   dressed as a requirement.</p>
+<ul><li>After a full pass, the keepers can be exported and opened somewhere else.</li><li><strong>A collection survives a round trip.</strong> Exported and re-imported, it comes back</li></ul>
+<p>  with the same items, tags and verdicts — this is the test objective 7 actually   makes, and the one a download-only export would pass without meaning anything.</p>
+<ul><li><strong>A tester can be handed something to use.</strong> They sign in, receive a seeded</li></ul>
+<p>  demo collection of their own, and triage it without touching anybody else&#39;s.</p>
+<h3>Decisions this raised, and where they landed</h3>
+<p>Drafting these surfaced five questions the wish does not settle. All five are now answered, in <code>decisions.md</code> — the reasoning lives there, and this list is only a map to it. Nothing here is still waiting on the user.</p>
+<ol><li><strong>How big is the real pile?</strong> 5,000–10,000 items. Big enough that clustering</li></ol>
+<p>   (objective 5) is the mechanism rather than a convenience, and that anything    slow and per-item is an afternoon of work, not a detail.</p>
+<ol><li><strong>Where does this run?</strong> A web app, most likely hosted on an OpenAI site with</li></ol>
+<p>   its database. Chosen for objectives 3 and 4 — the screen-filling grid across    three form factors — at the known cost of being the weakest option for the    two extensions above.</p>
+<ol><li><strong>Where do page snapshots come from?</strong> Captured at ingestion: Open Graph</li></ol>
+<p>   metadata for the majority, a paid screenshot API for the items where that    produces nothing or a shared site banner. Anonymous, downscaled, cached by    URL, never refreshed on view.</p>
+<ol><li><strong>How are collections identified and protected?</strong> Signed-in accounts, with</li></ol>
+<p>   collections owned and private by default.</p>
+<ol><li><strong>What makes a collection non-personal?</strong> Nothing does, for now — demo</li></ol>
+<p>   collections are seeded per-user copies, and general sharing is held back as    above.</p>
+<p>What remains is a constraint rather than a question, and it belongs to the spec: whether the OpenAI surface chosen can actually supply the identity objective 8 assumes, and let the data back out for objective 7. Both were settled <em>on the presumption</em> of that host, so both follow it if it changes.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/body-movement-visual-twin/phase-0-asset-rights-feasibility" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
