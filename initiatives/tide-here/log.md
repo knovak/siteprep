@@ -47,3 +47,7 @@ Added the pinned SunCalc astronomy adapter with coast-local event windowing, zer
 ## 2026-08-21 — Phase 5 - build resolve, forecast and the failure vocabulary
 
 Added a policy-aware, switchable Geocoder plus two-step resolve and forecast composition with eight distinct failure states, chooser reuse, and partial tide or astronomy results.
+
+## 2026-08-21 — Phase 6 - build the page
+
+Built the five-day page with explicit coast identity and time zone, ambiguous-coast chooser and map, eight distinct states, partial results, and desktop and phone browser coverage.

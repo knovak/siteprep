@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-6-page",
-      "title": "Phase 6 - build the page",
+      "id": "phase-7-local-history",
+      "title": "Phase 7 - add local history, caching, and the privacy statement",
       "state": "actionable",
       "value": "high",
       "effort": "large",

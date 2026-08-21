@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Tide Here — five coast-local days</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Tide Here home"><span aria-hidden="true">≈</span> Tide Here</a>
+    <p>Five coast-local days · NOAA and CHS prediction stations</p>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">No location permission needed</p>
+      <h1 id="page-title">What is the coast doing here?</h1>
+      <p>Enter a place or decimal coordinates. Tide Here checks the coast before it shows a prediction station.</p>
+      <form id="place-form" novalidate>
+        <label for="place">Place or coordinates</label>
+        <div class="search-row">
+          <input id="place" name="place" placeholder="Seattle or 47.61, -122.33" autocomplete="off">
+          <button type="submit">Show five days</button>
+        </div>
+      </form>
+      <p id="fixture-note" class="fixture-note" hidden>Recorded validation data is active. No provider request will leave this page.</p>
+    </section>
+
+    <section id="state-panel" class="state-panel" tabindex="-1" aria-live="polite" hidden>
+      <p class="state-code" id="state-code"></p>
+      <h2 id="state-message"></h2>
+      <button id="state-action" type="button"></button>
+    </section>
+
+    <section id="chooser" class="chooser" aria-labelledby="chooser-title" hidden>
+      <div>
+        <p class="eyebrow">The closest answer is not clear enough</p>
+        <h2 id="chooser-title">Choose the coast that fits</h2>
+        <p id="chooser-place"></p>
+        <div id="candidate-list" class="candidate-list"></div>
+      </div>
+      <svg id="choice-map" viewBox="0 0 420 260" role="img" aria-label="Entered place and candidate prediction stations on a small relative map">
+        <rect width="420" height="260" rx="24"></rect>
+        <path d="M-15 45 Q105 80 118 156 T260 276" class="coast-line"></path>
+        <g id="map-points"></g>
+      </svg>
+    </section>
+
+    <section id="result" hidden>
+      <div class="identity-card">
+        <dl class="names">
+          <div><dt>You entered</dt><dd id="entered-name"></dd></div>
+          <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
+          <div><dt>Coast</dt><dd id="coast-name"></dd></div>
+        </dl>
+        <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
+      </div>
+      <div id="warnings" class="warnings"></div>
+      <div id="day-cards" class="day-cards" aria-label="Five-day tide, sun, and moon forecast"></div>
+      <details class="source-details">
+        <summary>Prediction source details</summary>
+        <p id="source-copy"></p>
+      </details>
+      <p class="safety-line">Predictions are informational and are not for navigation or safety decisions.</p>
+    </section>
+  </main>
+
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
