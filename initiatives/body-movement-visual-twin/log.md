@@ -23,3 +23,7 @@ Drafted a phased build plan and claim-focused test plan; kept the shoulder-and-s
 ## 2026-08-21 — Phase 0 - confirm private-demo asset licences and prove the shoulder-and-spine asset path
 
 Excluded SKEL and SMPL-Model from hosted use under their current third-party restrictions; selected Open3DModel CC BY-SA and Visible Human reference sources, added a separated rights ledger and shared-rig preview, and passed 100 registration samples at 1.658 mm maximum against the 8 mm limit.
+
+## 2026-08-21 — Phase 1 - lock the movement schema, validator, and one fixture per tradition
+
+Locked the movement record as JSON Schema, added a dependency-free validator for tradition, timing, anatomy, provenance, rights and over-claiming boundaries, and committed one passing fixture per tradition with explicit negative tests.

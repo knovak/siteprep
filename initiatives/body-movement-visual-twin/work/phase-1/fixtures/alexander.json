@@ -1,0 +1,45 @@
+{
+  "id": "pause-before-standing",
+  "tradition": "alexander",
+  "title": "Pause before standing from a chair",
+  "summary": "An invented everyday-activity record that keeps directions and inhibition separate from joint motion.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "pause",
+      "t": [0, 6],
+      "joint_actions": [{ "joint": "neck-base", "action": "maintain an unforced relationship to the upper spine" }],
+      "muscles": [{ "id": "trapezius-superior", "behaviour": "lengthens" }]
+    },
+    {
+      "id": "incline",
+      "t": [6, 14],
+      "joint_actions": [{ "joint": "thoracic-lower", "action": "incline the trunk as one coordinated action" }],
+      "muscles": [{ "id": "erector-spinae-group", "behaviour": "stabilises" }]
+    }
+  ],
+  "instruction": {
+    "activity": "Beginning to stand from an ordinary chair.",
+    "directions": [
+      { "phase": "pause", "cue": "Allow length and width without arranging a fixed posture." },
+      { "phase": "incline", "cue": "Let the whole torso incline rather than pulling the head backward." }
+    ],
+    "inhibition": "Pause before carrying out the habitual first effort; the pause is not a command to freeze.",
+    "manual_guidance_boundary": "Hands-on guidance is part of the source practice and is not represented or replaced by this visualization."
+  },
+  "variations": [
+    { "id": "higher-seat", "kind": "support", "note": "Use a higher chair so the everyday activity requires less effort." }
+  ],
+  "safety": {
+    "cautions": ["Use stable support and do not attempt the standing phase if balance is uncertain."],
+    "expects_teacher": true,
+    "notes": "The page cannot reproduce a teacher's observation or manual guidance."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description informed by general Alexander Technique concepts of activity, direction, and inhibition; no teacher text was copied.",
+    "rights_basis": "provisional: project-authored description with an explicit boundary around manual teaching",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-08-21",
+    "review": { "status": "unreviewed", "notes": "Requires review by an Alexander Technique practitioner." }
+  }
+}
