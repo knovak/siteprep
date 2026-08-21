@@ -54,6 +54,23 @@ test('layer controls stay shared while muscles load lazily for the selected reco
   await expect(page.locator('#reference-label')).toBeVisible();
 });
 
+test('visual-twin controls name surface changes and preserve the fitted-reference boundary', async ({ page }) => {
+  await page.goto(pagePath);
+  await page.locator('#stature').fill('195');
+  await expect(page.locator('#stage')).toHaveAttribute('data-profile', /^195,/);
+  await expect(page.locator('#profile-note')).toContainText(/overall visible stature and the fitted reference scale changed/i);
+  await page.locator('#build').fill('70');
+  await expect(page.locator('#profile-note')).toContainText(/surface outline width changed/i);
+  await page.locator('#torso-to-limb').fill('-40');
+  await expect(page.locator('#profile-note')).toContainText(/visible torso-to-limb proportion changed/i);
+  await page.locator('#presentation').selectOption('angular');
+  await expect(page.locator('#profile-note')).toContainText(/surface presentation only changed/i);
+  await expect(page.locator('#profile-note')).toContainText(/Internal anatomy remains fitted reference geometry/i);
+  await page.locator('#layer').fill('4');
+  await expect(page.locator('#reference-label')).toBeVisible();
+  await expect(page.getByText(/not a scan of you/i)).toBeVisible();
+});
+
 test('review reports identify the currently selected movement without editing it', async ({ page }) => {
   await page.goto(pagePath);
   await page.getByLabel('Choose a movement').selectOption('pause-before-standing');

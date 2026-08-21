@@ -80,6 +80,27 @@
           <div class="phase-readout"><strong id="phase-name">Begin</strong><span id="phase-cue"></span></div>
         </section>
 
+        <section class="control-section twin-controls">
+          <div class="section-heading"><h2>Visual twin</h2><output id="profile-output">Reference</output></div>
+          <label>Visible stature <output id="stature-output" for="stature">170 cm</output>
+            <input id="stature" type="range" min="145" max="200" value="170" step="1">
+          </label>
+          <label>Surface build <output id="build-output" for="build">Reference</output>
+            <input id="build" type="range" min="-100" max="100" value="0" step="1">
+          </label>
+          <label>Visible torso-to-limb proportion <output id="proportion-output" for="torso-to-limb">Reference</output>
+            <input id="torso-to-limb" type="range" min="-100" max="100" value="0" step="1">
+          </label>
+          <label>Surface presentation
+            <select id="presentation">
+              <option value="neutral">Neutral study</option>
+              <option value="soft">Soft outline</option>
+              <option value="angular">Angular outline</option>
+            </select>
+          </label>
+          <p id="profile-note" class="profile-note" role="status">No visible dimensions changed. Internal anatomy remains fitted reference geometry; the controls do not infer mobility, muscle behaviour, force, or biomechanics.</p>
+        </section>
+
         <section class="control-section">
           <div class="section-heading"><h2>Anatomical view</h2><output id="layer-output" for="layer">Surface</output></div>
           <input id="layer" type="range" min="0" max="4" value="0" step="1" aria-label="Move from surface to skeleton">

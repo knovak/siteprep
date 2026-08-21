@@ -1,6 +1,16 @@
 import { globalMatrices, muscleWorldPaths, transformPoint } from '../phase-0/scripts/rig-math.mjs';
 import { TRADITION_LABELS, instructionSections, movementCompleteness, phaseCue } from './src/collection.mjs';
 import {
+  DEFAULT_VISUAL_PROFILE,
+  PRESENTATIONS,
+  describeProfileChange,
+  normalizeVisualProfile,
+  personalizeSurfacePoint,
+  scaleMuscleData,
+  scaleReferenceRig,
+  surfaceAppearance
+} from '../phase-4/src/visual-twin-controls.mjs';
+import {
   LAYER_STATES,
   anatomyIsVisible,
   cameraPreset,
@@ -29,6 +39,7 @@ let muscles;
 let muscleRequest;
 let lastFrameTime = 0;
 let dragPoint;
+let visualProfile = DEFAULT_VISUAL_PROFILE;
 
 const [coreResponse, collectionResponse, clipsResponse] = await Promise.all([
   fetch('../phase-2/data/rig-core.json'),
@@ -161,26 +172,27 @@ function visibility() {
   };
 }
 
-function drawSurface(matrices, alpha) {
-  for (const shell of rig.layers.surface) {
+function drawSurface(matrices, alpha, displayRig) {
+  const appearance = surfaceAppearance(visualProfile);
+  for (const shell of displayRig.layers.surface) {
     if (!visibleAround(shell.from) && !visibleAround(shell.to)) continue;
-    const start = transformPoint(matrices.get(shell.from), [0, 0, 0]);
-    const end = transformPoint(matrices.get(shell.to), [0, 0, 0]);
+    const start = personalizeSurfacePoint(transformPoint(matrices.get(shell.from), [0, 0, 0]), shell.from, visualProfile);
+    const end = personalizeSurfacePoint(transformPoint(matrices.get(shell.to), [0, 0, 0]), shell.to, visualProfile);
     const ratio = Math.min(devicePixelRatio || 1, 2);
-    line(start, end, { color: '#b7d8cc', alpha, width: Math.max(26, shell.radius_mm * .82 * ratio * state.camera.zoom) });
+    line(start, end, { color: appearance.color, alpha, width: Math.max(26, shell.radius_mm * appearance.radiusFactor * .82 * ratio * state.camera.zoom) });
   }
   const ratio = Math.min(devicePixelRatio || 1, 2);
-  const leftShoulder = transformPoint(matrices.get('scapula-left'), [0, 0, 0]);
-  const rightShoulder = transformPoint(matrices.get('scapula-right'), [0, 0, 0]);
-  const neck = transformPoint(matrices.get('neck-base'), [0, 0, 0]);
-  const lowerTorso = transformPoint(matrices.get('lumbar-spine'), [0, 0, 0]);
-  line(leftShoulder, rightShoulder, { color: '#b7d8cc', alpha, width: 54 * ratio * state.camera.zoom });
-  point(neck, 44 * ratio * state.camera.zoom, '#b7d8cc', alpha);
-  point(lowerTorso, 49 * ratio * state.camera.zoom, '#b7d8cc', alpha);
+  const leftShoulder = personalizeSurfacePoint(transformPoint(matrices.get('scapula-left'), [0, 0, 0]), 'scapula-left', visualProfile);
+  const rightShoulder = personalizeSurfacePoint(transformPoint(matrices.get('scapula-right'), [0, 0, 0]), 'scapula-right', visualProfile);
+  const neck = personalizeSurfacePoint(transformPoint(matrices.get('neck-base'), [0, 0, 0]), 'neck-base', visualProfile);
+  const lowerTorso = personalizeSurfacePoint(transformPoint(matrices.get('lumbar-spine'), [0, 0, 0]), 'lumbar-spine', visualProfile);
+  line(leftShoulder, rightShoulder, { color: appearance.color, alpha, width: 54 * appearance.radiusFactor * ratio * state.camera.zoom });
+  point(neck, 44 * appearance.radiusFactor * ratio * state.camera.zoom, appearance.color, alpha);
+  point(lowerTorso, 49 * appearance.radiusFactor * ratio * state.camera.zoom, appearance.color, alpha);
 }
 
-function drawSkeleton(matrices) {
-  for (const node of rig.nodes) {
+function drawSkeleton(matrices, displayRig) {
+  for (const node of displayRig.nodes) {
     if (!node.parent || node.id === 'root' || !visibleAround(node.id)) continue;
     const start = transformPoint(matrices.get(node.parent), [0, 0, 0]);
     const end = transformPoint(matrices.get(node.id), [0, 0, 0]);
@@ -190,9 +202,9 @@ function drawSkeleton(matrices) {
   }
 }
 
-function drawMuscles(frame, kinds) {
+function drawMuscles(frame, kinds, displayRig, displayMuscles) {
   if (!muscles) return;
-  const fullRig = { ...rig, layers: { ...rig.layers, muscles: muscles.layers.muscles }, attachments: muscles.attachments };
+  const fullRig = { ...displayRig, layers: { ...displayRig.layers, muscles: displayMuscles.layers.muscles }, attachments: displayMuscles.attachments };
   const paths = muscleWorldPaths(fullRig, frame);
   const ids = kinds.flatMap((kind) => kind === 'superficial'
     ? muscles.layers.muscles.slice(0, 8).map((entry) => entry.id)
@@ -200,7 +212,7 @@ function drawMuscles(frame, kinds) {
   for (const id of ids) {
     const path = paths.get(id);
     if (!path || path.length < 2) continue;
-    const attachmentNodes = muscles.attachments.filter((entry) => entry.muscle_id === id).map((entry) => entry.bone_id);
+    const attachmentNodes = displayMuscles.attachments.filter((entry) => entry.muscle_id === id).map((entry) => entry.bone_id);
     if (!attachmentNodes.some(visibleAround)) continue;
     const ratio = Math.min(devicePixelRatio || 1, 2);
     line(path[0].point, path.at(-1).point, { color: kinds.includes('deep') && id.includes('spinae') ? '#8ab8ff' : '#ff816f', width: 9 * ratio * state.camera.zoom, alpha: .92 });
@@ -212,14 +224,16 @@ function render() {
   resizeCanvas();
   context.clearRect(0, 0, canvas.width, canvas.height);
   const frame = interpolateFrame(state.time);
-  const matrices = globalMatrices(rig, frame);
+  const displayRig = scaleReferenceRig(rig, visualProfile);
+  const displayMuscles = muscles ? scaleMuscleData(muscles, visualProfile) : null;
+  const matrices = globalMatrices(displayRig, frame);
   const shown = visibility();
-  if (shown.surface) drawSurface(matrices, state.layer === 1 ? .22 : .52);
+  if (shown.surface) drawSurface(matrices, state.layer === 1 ? .22 : .52, displayRig);
   const muscleKinds = [];
   if (shown.superficial) muscleKinds.push('superficial');
   if (shown.deep) muscleKinds.push('deep');
-  drawMuscles(frame, muscleKinds);
-  if (shown.skeleton) drawSkeleton(matrices);
+  drawMuscles(frame, muscleKinds, displayRig, displayMuscles);
+  if (shown.skeleton) drawSkeleton(matrices, displayRig);
 }
 
 function activePhase() {
@@ -249,7 +263,8 @@ function updateReadout() {
     isolatedJoint: state.isolatedJoint,
     musclesLoaded: String(Boolean(muscles)),
     movement: movement.id,
-    clip: clip.id
+    clip: clip.id,
+    profile: `${visualProfile.statureCm},${visualProfile.build.toFixed(2)},${visualProfile.torsoToLimb.toFixed(2)},${visualProfile.presentation}`
   });
   render();
 }
@@ -354,6 +369,20 @@ $('#replay').addEventListener('click', () => apply({ ...setTime(state, 0), playi
 $('#step-back').addEventListener('click', () => apply({ ...setTime(state, state.time - .025), playing: false }));
 $('#step-forward').addEventListener('click', () => apply({ ...setTime(state, state.time + .025), playing: false }));
 $('#timeline').addEventListener('input', (event) => apply({ ...setTime(state, Number(event.target.value) / 1000), playing: false }));
+function applyVisualProfile(patch) {
+  const previous = visualProfile;
+  visualProfile = normalizeVisualProfile({ ...visualProfile, ...patch });
+  $('#stature-output').value = `${visualProfile.statureCm} cm`;
+  $('#build-output').value = visualProfile.build === 0 ? 'Reference' : visualProfile.build < 0 ? 'Narrower' : 'Fuller';
+  $('#proportion-output').value = visualProfile.torsoToLimb === 0 ? 'Reference' : visualProfile.torsoToLimb < 0 ? 'Shorter torso' : 'Longer torso';
+  $('#profile-output').value = PRESENTATIONS[visualProfile.presentation].label;
+  $('#profile-note').textContent = describeProfileChange(previous, visualProfile);
+  updateReadout();
+}
+$('#stature').addEventListener('input', (event) => applyVisualProfile({ statureCm: Number(event.target.value) }));
+$('#build').addEventListener('input', (event) => applyVisualProfile({ build: Number(event.target.value) / 100 }));
+$('#torso-to-limb').addEventListener('input', (event) => applyVisualProfile({ torsoToLimb: Number(event.target.value) / 100 }));
+$('#presentation').addEventListener('change', (event) => applyVisualProfile({ presentation: event.target.value }));
 $('#layer').addEventListener('input', (event) => apply(setLayer(state, Number(event.target.value))));
 $('#pin-layer').addEventListener('change', (event) => apply(setPinned(state, event.target.value)));
 $('#isolate-joint').addEventListener('change', (event) => apply(setIsolatedJoint(state, event.target.value)));
