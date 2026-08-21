@@ -105,11 +105,25 @@ function renderMarkdown(markdown, context) {
   return output.join('\n');
 }
 
+// The frontmatter value is an identifier the generator validates and other
+// tooling can query (`data-audience`); a reader wants a plain label instead of
+// that identifier, so the two are kept separate here rather than displaying
+// the raw value.
+const AUDIENCE_LABELS = {
+  both: 'Everyone',
+  contributor: 'Contributors',
+  forker: 'Adapters',
+};
+
+function audienceLabel(audience) {
+  return AUDIENCE_LABELS[audience] ?? audience;
+}
+
 function descriptionHtml({sections, facts, generatedDate, sha, repositoryUrl}) {
   const context = {sha, repositoryUrl, facts};
   const cards = sections.map(section => `
     <section id="${escapeHtml(section.id)}" data-audience="${escapeHtml(section.audience)}">
-      <aside class="audience" aria-label="Audience">${escapeHtml(section.audience)}</aside>
+      <aside class="audience" aria-label="Audience">${escapeHtml(audienceLabel(section.audience))}</aside>
       <div class="section-copy">
         <h2>${escapeHtml(section.title)}</h2>
         ${renderMarkdown(section.pageText, context)}
@@ -160,7 +174,7 @@ ${FIGURE_CSS}${BLOCK_CSS}  </style>
   <header class="hero">
     <p class="eyebrow">Repo guide · generated from live sources</p>
     <h1>How work moves through this repository</h1>
-    <p class="lede">A short way into the lifecycle, the division of labour, and the files that remain authoritative.</p>
+    <p class="lede">A brief guide to how work is started, reviewed, paused, and resumed — and where to find the current rules.</p>
   </header>
   <nav aria-label="Guide sections">${navigation}</nav>
   <main>${cards}

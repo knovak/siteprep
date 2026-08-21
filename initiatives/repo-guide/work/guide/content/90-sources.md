@@ -7,7 +7,8 @@ slide_title: Use the guide to find the authoritative answer
 audience: both
 ---
 Everything above is a way in. None of it governs anything. When you need the
-answer that actually decides a case, open the file that owns the question:
+answer that actually decides a case, open the file that contains the current
+rule:
 
 - [AGENTS.md](source:AGENTS.md) for working conventions, write scope, content vocabulary, and required verification.
 - [INITIATIVES_VISION.md](source:INITIATIVES_VISION.md) for the lifecycle design and the reasoning behind it.

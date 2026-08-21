@@ -80,6 +80,30 @@ function defaultView(value) {
 
 const ACRONYMS = {prs: 'PRs', pr: 'PR', url: 'URL', urls: 'URLs', ci: 'CI'};
 
+// GitHub Actions trigger keys are meaningful to someone who already knows the
+// `on:` block syntax; everyone else just needs a plain-language reason the
+// workflow runs. Anything not in this list falls back to the raw key rather
+// than failing, so a new trigger still renders.
+const TRIGGER_CLAUSES = {
+  push: 'a push happens',
+  pull_request: 'a pull request opens or updates',
+  pull_request_target: 'a pull request opens or updates',
+  workflow_dispatch: 'someone starts it manually',
+  workflow_call: 'another workflow calls it',
+  schedule: 'its schedule fires',
+  delete: 'a branch or tag is deleted',
+  release: 'a release is published',
+  issue_comment: 'an issue gets a new comment',
+};
+
+function triggerSentence(triggers) {
+  const clauses = triggers.map(trigger => TRIGGER_CLAUSES[trigger] ?? trigger);
+  const joined = clauses.length > 1
+    ? `${clauses.slice(0, -1).join(', ')} or ${clauses.at(-1)}`
+    : clauses[0];
+  return `Runs when ${joined}.`;
+}
+
 function humanLabel(key) {
   return key
     .split('_')
@@ -153,7 +177,7 @@ function cardRecord(key, value) {
     return {
       key: value.file,
       title: value.file.replace(/\.ya?ml$/, ''),
-      body: `Runs on ${value.triggers.join(', ')}.`,
+      body: triggerSentence(value.triggers),
       meta: `${value.jobs.length === 1 ? 'Job' : 'Jobs'}: ${value.jobs.join(', ')}`,
     };
   }
