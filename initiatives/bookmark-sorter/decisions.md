@@ -820,3 +820,51 @@ paid second pass without evidence that the shared image is misleading. Keeping
 30 preserves the original conservative rule: only a clearly site-wide image
 should be treated as no image. A later visual review may reopen the number, but
 this measurement does not justify changing it.
+
+## 2026-08-20 — Should the live Bookmark Sorter graduate or rest dormant?
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A — Graduate the live Site to refining now** | Records the already-deployed owner-only Site as the initiative's external output; recognises that the core import, triage, selection, undo, export, identity, D1, and R2 paths work on the real 1,201-item pile; keeps the known image gaps visible; creates the README and optional-improvement work that a live output needs | 503 bookmarks still have no distinguishable image; pass 2 remains off; the throughput target is still unset; the Site has not yet been handed to a separate tester |
+| **B — Make the initiative dormant now** | Costs nothing further; preserves a working, documented build that can be revisited; matches the earlier choice to treat throughput and sweep-regret measurements as optional | Leaves an already-live output without the refining-stage README; makes “resting after delivery” look the same as “never graduated”; delays the small handoff work until its context is colder |
+| **C — Keep building before deciding** | Could raise image coverage through a paid second pass or gather more usage evidence before attaching an output label | Reopens the explicit no-vendor decision without new evidence, turns optional measurements back into gates, and adds work even though the remaining image failures are visible rather than misleading |
+
+### Recommendation, not a decision
+
+**Recommend Option A: graduate the live Site to `refining`.** Metadata pass 1
+covers a majority of the real pile, the largest duplicate group is safely below
+the existing threshold, and the 503 gaps fail visibly instead of showing a
+confidently wrong image. More importantly, graduation records what already
+exists: a functioning external Site with real owner-scoped data. `refining` is
+not a claim that every card is perfect; it is the stage that asks for a
+user-facing README and keeps optional improvements available without inventing
+another blocking build phase.
+
+Merging this proposal would record the live Site as an external output, move
+the initiative to `refining`, and seed the standard README and optional-
+improvements items. Commenting **“B”** or **“dormant”** is enough to reject the
+recommendation; the proposal should then be redirected rather than defended.
+
+### What would change the recommendation
+
+- Choose dormancy if an ordinary triage sitting shows that the 41.9% blank-card
+  rate makes the grid materially less useful than the URL-and-title list it
+  replaces.
+- Choose dormancy or reopen hosting if the owner-only Sites deployment or its
+  approved D1/R2 cost is no longer acceptable.
+- Continue building first only if there is new approval for a bounded pass-2
+  vendor trial or a concrete usability failure that the current build can fix.
+- A throughput measurement that shows the visual workflow does not improve on
+  blind triage would also make dormancy the more honest outcome.
+
+### What this settles, and what it does not
+
+- Graduation would record and document the current live product; it would not
+  enable pass 2, approve a screenshot vendor, or hide the 503 blank cards.
+- The optional throughput and sweep-regret observations remain optional in
+  `notes.md` and may be read after dormancy, before later improvements, or not
+  at all.
+- General sharing, browser-tab harvesting, and pushing subsets back to a
+  browser remain later-version ideas.
