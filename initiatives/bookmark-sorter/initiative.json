@@ -12,14 +12,6 @@
   ],
   "todo": [
     {
-      "id": "refining-readme",
-      "title": "Write a user-facing README covering how to use it and how to deploy it",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "refining-improvements",
       "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
       "state": "actionable",

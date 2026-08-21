@@ -332,3 +332,7 @@ Provisioned R2, enabled repeatable pass-1 catch-up, deployed Site version 15, an
 ## 2026-08-21 — Choose whether to graduate the live Bookmark Sorter or make the initiative dormant
 
 Proposed graduating the live owner-only Bookmark Sorter to refining, recording the external Site and leaving pass 2 off; merging this PR would enact the recommendation.
+
+## 2026-08-21 — Write a user-facing README covering how to use it and how to deploy it
+
+Added a user-facing README with private-data cautions, import and triage guidance, selection grammar, backup steps, and the full-stack Sites deployment path.
