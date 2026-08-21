@@ -50,20 +50,24 @@ schedule.
 
 ### Phase 0 — Prove the asset and rights path
 
-Keep the shoulder-girdle-and-spine choice from `spec.md`. The open lower-limb
-geometry is richer, but moving regions would avoid rather than test the first
-version’s intended movements. Build a narrow shoulder-and-spine slice by
-authoring display geometry against public-domain Visible Human image data and
-open anatomical references; do not redistribute source imagery or imply that
-the resulting paths are measurements of one subject.
+Keep the shoulder-girdle-and-spine choice from `spec.md`. Phase 0 found a newer
+open source that makes the region viable: AnatomyTOOL's July 2025 Open3DModel
+upper-limb selection model includes the shoulder joints and relevant muscle
+families under CC BY-SA. Use it with the Open3DModel skeleton as the later mesh
+source, a project-authored surface and shared rig, and public-domain Visible
+Human image data only as reference for the two deep-spine groups. Do not
+redistribute source imagery or imply that the authored paths measure one
+subject.
 
 Before geometry enters the demo:
 
-- record the exact SMPL/SKEL or SMPL-Body asset variant, licence text, account
-  or agreement date, permitted hosted-private use, attribution, and public-use
-  status in an asset ledger;
-- stop if no recorded variant permits the access-controlled demo — do not
-  substitute an asset merely because it can be downloaded;
+- record every considered SMPL/SKEL, SMPL-Body, Open3DModel and Visible Human
+  variant, licence text, account or agreement state, permitted hosted-private
+  use, attribution, and public-use status in an asset ledger;
+- exclude SKEL and SMPL-Model unless written third-party-hosting permission is
+  recorded; do not treat download access as hosted-use permission. A concrete
+  CC BY SMPL-Body asset may replace the procedural surface later, but the
+  licence page alone is not an asset;
 - make a reference body with surface, skeleton, and a deliberately small deep
   set: the three parts of trapezius, serratus anterior, the rhomboids as a
   labelled group, the three deltoid portions, erector spinae as a labelled

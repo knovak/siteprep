@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "source": "https://anatomytool.org/open3dmodel-create",
+  "license": "CC BY-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "selected_upstream_archives": [
+    {
+      "name": "overview-skeleton-glb.zip",
+      "published": "June 2025",
+      "purpose": "Whole skeleton source geometry; later derive the clavicle, scapula, humerus and sampled vertebrae."
+    },
+    {
+      "name": "upper-limb-glb.zip",
+      "published": "July 2025",
+      "purpose": "Shoulder and pectoral joints, axio-appendicular muscles, scapulohumeral muscles and upper-limb attachment references."
+    }
+  ],
+  "attribution": "Open3DModel by the Open3D project and contributing anatomy departments, AnatomyTOOL.org, CC BY-SA 4.0.",
+  "packaging_rule": "Any downloaded or modified model geometry stays below assets/anatomy/share-alike/open3dmodel and carries source, attribution, licence and modification history. Application code and project-authored fixtures stay outside this directory.",
+  "phase_0_status": "The official archives are selected but not vendored. The procedural fixture proves the rig contract without copying their meshes."
+}

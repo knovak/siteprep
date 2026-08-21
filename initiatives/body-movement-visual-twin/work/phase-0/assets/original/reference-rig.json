@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "title": "Shoulder-and-spine shared-rig feasibility fixture",
+  "units": "mm",
+  "reference_stature_mm": 1700,
+  "registration_tolerance_mm": 8,
+  "rights_refs": [
+    "project-procedural-fixture",
+    "open3dmodel-skeleton",
+    "open3dmodel-upper-limb",
+    "visible-human-reference"
+  ],
+  "excluded_rights_refs": [
+    "skel-data-software",
+    "smpl-model"
+  ],
+  "layers": {
+    "surface": [
+      { "id": "torso-shell", "kind": "capsule", "from": "lumbar-spine", "to": "neck-base", "radius_mm": 150 },
+      { "id": "left-arm-shell", "kind": "capsule", "from": "scapula-left", "to": "humerus-left", "radius_mm": 58 },
+      { "id": "right-arm-shell", "kind": "capsule", "from": "scapula-right", "to": "humerus-right", "radius_mm": 58 }
+    ],
+    "skeleton": [
+      "lumbar-spine",
+      "thoracic-lower",
+      "thoracic-upper",
+      "neck-base",
+      "clavicle-left",
+      "clavicle-right",
+      "scapula-left",
+      "scapula-right",
+      "humerus-left",
+      "humerus-right"
+    ],
+    "muscles": [
+      { "id": "trapezius-superior", "label": "Trapezius, superior part", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "trapezius-middle", "label": "Trapezius, middle part", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "trapezius-inferior", "label": "Trapezius, inferior part", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "serratus-anterior", "label": "Serratus anterior", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "rhomboids-group", "label": "Rhomboids, grouped", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "deltoid-anterior", "label": "Deltoid, anterior part", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "deltoid-middle", "label": "Deltoid, middle part", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "deltoid-posterior", "label": "Deltoid, posterior part", "source_ref": "open3dmodel-upper-limb", "review_status": "unreviewed" },
+      { "id": "erector-spinae-group", "label": "Erector spinae, grouped", "source_ref": "visible-human-reference", "review_status": "unreviewed" },
+      { "id": "multifidus-group", "label": "Multifidus, grouped", "source_ref": "visible-human-reference", "review_status": "unreviewed" }
+    ]
+  },
+  "nodes": [
+    { "id": "root", "parent": null, "translation_mm": [0, 0, 0] },
+    { "id": "lumbar-spine", "parent": "root", "translation_mm": [0, 700, 0] },
+    { "id": "thoracic-lower", "parent": "lumbar-spine", "translation_mm": [0, 180, 0] },
+    { "id": "thoracic-upper", "parent": "thoracic-lower", "translation_mm": [0, 220, 0] },
+    { "id": "neck-base", "parent": "thoracic-upper", "translation_mm": [0, 150, 0] },
+    { "id": "clavicle-left", "parent": "thoracic-upper", "translation_mm": [-35, 115, 10] },
+    { "id": "clavicle-right", "parent": "thoracic-upper", "translation_mm": [35, 115, 10] },
+    { "id": "scapula-left", "parent": "thoracic-upper", "translation_mm": [-115, 65, -35] },
+    { "id": "scapula-right", "parent": "thoracic-upper", "translation_mm": [115, 65, -35] },
+    { "id": "humerus-left", "parent": "scapula-left", "translation_mm": [-150, 5, 10] },
+    { "id": "humerus-right", "parent": "scapula-right", "translation_mm": [150, 5, 10] }
+  ],
+  "clip": {
+    "id": "slow-bilateral-shoulder-and-thoracic-motion",
+    "description": "A deliberately small authored feasibility motion, not a measured movement or instruction.",
+    "required_samples": [
+      "start",
+      "midpoint",
+      "end",
+      "shoulder-angle-extremum",
+      "thoracic-angle-extremum"
+    ],
+    "frames": [
+      { "id": "start", "t": 0, "kind": "start", "rotations_deg": {} },
+      {
+        "id": "shoulder-angle-extremum",
+        "t": 0.25,
+        "kind": "joint-angle-extremum",
+        "rotations_deg": {
+          "scapula-left": [0, 0, -12],
+          "scapula-right": [0, 0, 12],
+          "humerus-left": [0, 0, -34],
+          "humerus-right": [0, 0, 34]
+        }
+      },
+      {
+        "id": "midpoint",
+        "t": 0.5,
+        "kind": "midpoint",
+        "rotations_deg": {
+          "thoracic-lower": [0, 3, 0],
+          "thoracic-upper": [0, 0, 3],
+          "scapula-left": [0, 0, -8],
+          "scapula-right": [0, 0, 8],
+          "humerus-left": [0, 0, -22],
+          "humerus-right": [0, 0, 22]
+        }
+      },
+      {
+        "id": "thoracic-angle-extremum",
+        "t": 0.75,
+        "kind": "joint-angle-extremum",
+        "rotations_deg": {
+          "thoracic-lower": [0, 6, 0],
+          "thoracic-upper": [2, 0, 5],
+          "scapula-left": [0, 0, -5],
+          "scapula-right": [0, 0, 5]
+        }
+      },
+      { "id": "end", "t": 1, "kind": "end", "rotations_deg": {} }
+    ]
+  },
+  "attachments": [
+    { "muscle_id": "trapezius-superior", "endpoint": "origin", "bone_id": "neck-base", "bone_landmark_local_mm": [0, 55, 0], "geometry_landmark_local_mm": [1.0, 55.5, 0.5] },
+    { "muscle_id": "trapezius-superior", "endpoint": "insertion", "bone_id": "clavicle-left", "bone_landmark_local_mm": [-65, 0, 0], "geometry_landmark_local_mm": [-64.0, 0.5, 0.5] },
+    { "muscle_id": "trapezius-middle", "endpoint": "origin", "bone_id": "thoracic-upper", "bone_landmark_local_mm": [0, 45, -15], "geometry_landmark_local_mm": [1.5, 45.5, -14.5] },
+    { "muscle_id": "trapezius-middle", "endpoint": "insertion", "bone_id": "scapula-left", "bone_landmark_local_mm": [-15, 15, -5], "geometry_landmark_local_mm": [-13.5, 15.5, -4.5] },
+    { "muscle_id": "trapezius-inferior", "endpoint": "origin", "bone_id": "thoracic-lower", "bone_landmark_local_mm": [0, -55, -15], "geometry_landmark_local_mm": [1.0, -54.0, -14.5] },
+    { "muscle_id": "trapezius-inferior", "endpoint": "insertion", "bone_id": "scapula-left", "bone_landmark_local_mm": [-5, -25, -5], "geometry_landmark_local_mm": [-4.0, -24.0, -4.5] },
+    { "muscle_id": "serratus-anterior", "endpoint": "origin", "bone_id": "thoracic-lower", "bone_landmark_local_mm": [-90, 20, 20], "geometry_landmark_local_mm": [-88.5, 20.5, 20.5] },
+    { "muscle_id": "serratus-anterior", "endpoint": "insertion", "bone_id": "scapula-left", "bone_landmark_local_mm": [10, -30, 10], "geometry_landmark_local_mm": [11.5, -29.5, 10.5] },
+    { "muscle_id": "rhomboids-group", "endpoint": "origin", "bone_id": "thoracic-upper", "bone_landmark_local_mm": [-10, 10, -20], "geometry_landmark_local_mm": [-8.5, 10.5, -19.5] },
+    { "muscle_id": "rhomboids-group", "endpoint": "insertion", "bone_id": "scapula-left", "bone_landmark_local_mm": [15, 10, -10], "geometry_landmark_local_mm": [16.5, 10.5, -9.5] },
+    { "muscle_id": "deltoid-anterior", "endpoint": "origin", "bone_id": "clavicle-left", "bone_landmark_local_mm": [-75, -5, 10], "geometry_landmark_local_mm": [-73.5, -4.5, 10.5] },
+    { "muscle_id": "deltoid-anterior", "endpoint": "insertion", "bone_id": "humerus-left", "bone_landmark_local_mm": [0, -85, 12], "geometry_landmark_local_mm": [1.5, -84.5, 12.5] },
+    { "muscle_id": "deltoid-middle", "endpoint": "origin", "bone_id": "scapula-left", "bone_landmark_local_mm": [-40, 20, 5], "geometry_landmark_local_mm": [-38.5, 20.5, 5.5] },
+    { "muscle_id": "deltoid-middle", "endpoint": "insertion", "bone_id": "humerus-left", "bone_landmark_local_mm": [0, -90, 0], "geometry_landmark_local_mm": [1.5, -89.5, 0.5] },
+    { "muscle_id": "deltoid-posterior", "endpoint": "origin", "bone_id": "scapula-left", "bone_landmark_local_mm": [-30, 10, -15], "geometry_landmark_local_mm": [-28.5, 10.5, -14.5] },
+    { "muscle_id": "deltoid-posterior", "endpoint": "insertion", "bone_id": "humerus-left", "bone_landmark_local_mm": [0, -82, -12], "geometry_landmark_local_mm": [1.5, -81.5, -11.5] },
+    { "muscle_id": "erector-spinae-group", "endpoint": "origin", "bone_id": "lumbar-spine", "bone_landmark_local_mm": [-35, -45, -25], "geometry_landmark_local_mm": [-34.0, -44.0, -24.5] },
+    { "muscle_id": "erector-spinae-group", "endpoint": "insertion", "bone_id": "thoracic-upper", "bone_landmark_local_mm": [-35, 65, -25], "geometry_landmark_local_mm": [-34.0, 66.0, -24.5] },
+    { "muscle_id": "multifidus-group", "endpoint": "origin", "bone_id": "lumbar-spine", "bone_landmark_local_mm": [20, -20, -18], "geometry_landmark_local_mm": [21.0, -19.0, -17.5] },
+    { "muscle_id": "multifidus-group", "endpoint": "insertion", "bone_id": "thoracic-lower", "bone_landmark_local_mm": [18, 40, -18], "geometry_landmark_local_mm": [19.0, 41.0, -17.5] }
+  ],
+  "anatomy_review": {
+    "status": "unreviewed",
+    "scope": "All muscle names, grouping, landmarks and paths in this procedural fixture.",
+    "required_before_claiming_anatomical_accuracy": true
+  }
+}

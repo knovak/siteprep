@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-08-20",
+  "purpose": "Private, access-controlled, non-commercial validation demo",
+  "policy": "Only entries marked used and permitted for hosted_private_use may be packaged. Reference-only sources may inform project-authored geometry but their source files are not redistributed.",
+  "assets": [
+    {
+      "id": "skel-data-software",
+      "title": "SKEL Data & Software",
+      "variant": "Registration-gated SKEL download",
+      "source_url": "https://skel.is.tue.mpg.de/",
+      "license_url": "https://skel.is.tue.mpg.de/license.html",
+      "license": "Custom single-user non-commercial research licence",
+      "account_or_agreement_date": null,
+      "hosted_private_use": "not_permitted_without_prior_written_permission",
+      "public_use": "not_permitted",
+      "use_status": "excluded",
+      "reason": "The licence is personal, single-user and non-transferable, and prohibits making the Data & Software available to a third party without prior written permission. Invited reviewers are third parties."
+    },
+    {
+      "id": "smpl-model",
+      "title": "SMPL-Model",
+      "variant": "Registration-gated SMPL model and tools",
+      "source_url": "https://smpl.is.tue.mpg.de/",
+      "license_url": "https://smpl.is.tue.mpg.de/modellicense.html",
+      "license": "Custom single-user non-commercial scientific research licence",
+      "account_or_agreement_date": null,
+      "hosted_private_use": "not_permitted_without_prior_written_permission",
+      "public_use": "not_permitted",
+      "use_status": "excluded",
+      "reason": "The licence prohibits copying, sharing, distribution, transfer and making the software available to third parties. No model download or agreement is present in this repository."
+    },
+    {
+      "id": "smpl-body-license",
+      "title": "SMPL-Body asset class",
+      "variant": "SMPL-Body without SMPL shape blendshapes or body-generation tools",
+      "source_url": "https://smpl.is.tue.mpg.de/",
+      "license_url": "https://smpl.is.tue.mpg.de/bodylicense.html",
+      "license": "CC BY 4.0",
+      "account_or_agreement_date": null,
+      "hosted_private_use": "permitted_with_attribution_for_a_concrete_cc_by_asset",
+      "public_use": "permitted_with_attribution_for_a_concrete_cc_by_asset",
+      "use_status": "eligible_not_used",
+      "reason": "The official licence permits sharing an SMPL-Body mesh and rig, but this phase has no concrete CC BY SMPL-Body asset to ledger. The licence page alone is not geometry."
+    },
+    {
+      "id": "open3dmodel-skeleton",
+      "title": "Open3DModel skeleton selection model",
+      "variant": "overview-skeleton-glb.zip, June 2025",
+      "source_url": "https://anatomytool.org/open3dmodel-create",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "license": "CC BY-SA 4.0",
+      "account_or_agreement_date": "No account or separate agreement required; official source and licence checked 2026-08-20",
+      "hosted_private_use": "permitted",
+      "public_use": "permitted_with_attribution_and_share_alike",
+      "use_status": "used",
+      "repository_paths": [
+        "initiatives/body-movement-visual-twin/work/phase-0/assets/anatomy/share-alike/open3dmodel/manifest.json"
+      ],
+      "attribution": "Open3DModel by the Open3D project and contributing anatomy departments, AnatomyTOOL.org, CC BY-SA 4.0.",
+      "reason": "The project describes its model as CC BY-SA and explicitly permits hosting models when the Creative Commons requirements are followed. The archive is selected as the later source geometry; it is not vendored in this feasibility fixture."
+    },
+    {
+      "id": "open3dmodel-upper-limb",
+      "title": "Open3DModel upper-limb selection model",
+      "variant": "upper-limb-glb.zip, July 2025",
+      "source_url": "https://anatomytool.org/open3dmodel-create",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "license": "CC BY-SA 4.0",
+      "account_or_agreement_date": "No account or separate agreement required; official source and licence checked 2026-08-20",
+      "hosted_private_use": "permitted",
+      "public_use": "permitted_with_attribution_and_share_alike",
+      "use_status": "used",
+      "repository_paths": [
+        "initiatives/body-movement-visual-twin/work/phase-0/assets/anatomy/share-alike/open3dmodel/manifest.json"
+      ],
+      "attribution": "Open3DModel upper-limb selection model by the Open3D project and contributors, AnatomyTOOL.org, CC BY-SA 4.0.",
+      "reason": "The July 2025 selection model contains shoulder/pectoral joints, axio-appendicular muscles and scapulohumeral muscles, including the shoulder structures this slice needs."
+    },
+    {
+      "id": "visible-human-reference",
+      "title": "NLM Visible Human Project image data",
+      "variant": "Visible Human male and female CT, MRI and cryosection datasets",
+      "source_url": "https://www.nlm.nih.gov/research/visible/visible_human.html",
+      "license_url": "https://www.nlm.nih.gov/research/visible/getting_data.html",
+      "license": "Public-domain data; NLM Terms and Conditions apply",
+      "account_or_agreement_date": "No registration required since July 2019; official pages checked 2026-08-20",
+      "hosted_private_use": "reference_only",
+      "public_use": "reference_only",
+      "use_status": "used",
+      "repository_paths": [
+        "initiatives/body-movement-visual-twin/work/phase-0/assets/anatomy/public-domain/visible-human/manifest.json"
+      ],
+      "attribution": "Anatomical reference data courtesy of the U.S. National Library of Medicine Visible Human Project.",
+      "reason": "The source imagery may be inspected as public-domain anatomical reference. No source slice, segmentation, or subject-specific reconstruction is redistributed in this phase."
+    },
+    {
+      "id": "project-procedural-fixture",
+      "title": "Shoulder-and-spine procedural registration fixture",
+      "variant": "Phase 0 JSON rig and debug preview",
+      "source_url": "initiatives/body-movement-visual-twin/work/phase-0/README.md",
+      "license_url": null,
+      "license": "Project-authored feasibility fixture",
+      "account_or_agreement_date": "Authored for this repository on 2026-08-20",
+      "hosted_private_use": "permitted",
+      "public_use": "not_assessed_for_successor_release",
+      "use_status": "used",
+      "repository_paths": [
+        "initiatives/body-movement-visual-twin/work/phase-0/assets/original/reference-rig.json",
+        "initiatives/body-movement-visual-twin/work/phase-0/preview.html",
+        "initiatives/body-movement-visual-twin/work/phase-0/preview.mjs"
+      ],
+      "reason": "This fixture proves hierarchy, layer and attachment contracts without copying SMPL, SKEL, Open3DModel meshes, or Visible Human imagery. Its landmarks remain explicitly unreviewed anatomical claims."
+    }
+  ]
+}
