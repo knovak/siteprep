@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UAE Maps | Dubai1 Deck</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="manifest" href="../../../../../manifest.webmanifest">
+  <script defer src="../../assets/scripts.js"></script>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+  <style>
+    .map-section {
+      background: white;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 8px;
+    }
+  </style>
+  <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
+</head>
+<body>
+  <article class="card">
+    <div class="card-header">
+      <p class="tag">Maps</p>
+      <h1>UAE Maps</h1>
+    </div>
+    <div class="card-content">
+      <p>Interactive maps showing key locations across Dubai and Abu Dhabi including cultural sites, hotels, and landmarks. Use the buttons below each map to navigate to specific locations.</p>
+    </div>
+  </article>
+
+  <div class="map-section">
+    <h2>OpenStreetMap Standard</h2>
+    <div id="uae-map-osm" class="map-container"></div>
+    <div id="uae-legend-osm" class="map-legend"></div>
+  </div>
+
+  <div class="map-section">
+    <h2>OpenTopoMap</h2>
+    <div id="uae-map-topo" class="map-container"></div>
+    <div id="uae-legend-topo" class="map-legend"></div>
+  </div>
+
+  <article class="card">
+    <div class="card-header">
+      <h2>Google Maps links</h2>
+    </div>
+    <div class="card-content">
+      <p>Use these links to open each marked location directly in Google Maps.</p>
+      <ul id="maps-links"></ul>
+    </div>
+  </article>
+
+  <article class="card">
+    <div class="card-content">
+      <div id="page-nav"></div>
+    </div>
+  </article>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script src="../../../../shared/standard_map/standard_map.js"></script>
+
+  <script>
+    const locations = [
+      { name: 'Dubai Marina', lat: 25.0760, lng: 55.1320, type: 'Waterfront District', color: '#3498db', icon: '🏙️', zoom: 14 },
+      { name: 'Dubai Al Bastakiya', lat: 25.2631, lng: 55.2972, type: 'Historic District', color: '#e67e22', icon: '🏛️', zoom: 15 },
+      { name: 'Dubai Creek', lat: 25.2631, lng: 55.3095, type: 'Waterway', color: '#1abc9c', icon: '⛵', zoom: 13 },
+      { name: 'Al Seef District, Dubai', lat: 25.2580, lng: 55.2983, type: 'Cultural District', color: '#e74c3c', icon: '🏛️', zoom: 14 },
+      { name: 'Dubai City Walk', lat: 25.2167, lng: 55.2619, type: 'Shopping & Dining', color: '#9b59b6', icon: '🛍️', zoom: 15 },
+      { name: 'Sheraton The Walk, Dubai', lat: 25.0800, lng: 55.1350, type: 'Hotel', color: '#f39c12', icon: '🏨', zoom: 15 },
+      { name: 'Abu Dhabi Louvre', lat: 24.5337, lng: 54.3986, type: 'Museum', color: '#34495e', icon: '🎨', zoom: 15 },
+      { name: 'Sheikh Zayed Grand Mosque', lat: 24.4128, lng: 54.4750, type: 'Mosque', color: '#f39c12', icon: '🕌', zoom: 14 },
+      { name: 'Emirates Palace', lat: 24.4619, lng: 54.3175, type: 'Hotel & Landmark', color: '#e67e22', icon: '🏰', zoom: 15 }
+    ];
+
+    // Calculate center for UAE (between Dubai and Abu Dhabi)
+    const centerLat = 24.8;
+    const centerLng = 54.8;
+    const initialZoom = 9;
+
+    StandardMap.render({
+      locations,
+      osmMapId: 'uae-map-osm',
+      osmLegendId: 'uae-legend-osm',
+      topoMapId: 'uae-map-topo',
+      topoLegendId: 'uae-legend-topo',
+      center: [centerLat, centerLng],
+      zoom: initialZoom
+    });
+
+    const mapsLinks = document.getElementById('maps-links');
+    locations.forEach((loc) => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name)}`;
+      link.textContent = loc.name;
+      li.appendChild(link);
+      mapsLinks.appendChild(li);
+    });
+
+    // Ensure buildBreadcrumb is available before calling
+    if (typeof buildBreadcrumb === 'function') {
+      buildBreadcrumb('page-nav', [
+        { href: '../../../index.html', label: 'Dubai1 Home' },
+        { href: '../../../../index.html', label: 'All decks' }
+      ]);
+    } else {
+      // Wait for script to load
+      document.addEventListener('DOMContentLoaded', () => {
+        buildBreadcrumb('page-nav', [
+          { href: '../../../index.html', label: 'Dubai1 Home' },
+          { href: '../../../../index.html', label: 'All decks' }
+        ]);
+      });
+    }
+  </script>
+  <footer class="site-footer" data-version="sweep/body-movement-visual-twin/phase-2-vertical-slice" data-root="../../../../" data-deck="../../index.html" data-section="overview.html">
+    <script src="../../../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
