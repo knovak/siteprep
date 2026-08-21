@@ -27,3 +27,7 @@ Excluded SKEL and SMPL-Model from hosted use under their current third-party res
 ## 2026-08-21 — Phase 1 - lock the movement schema, validator, and one fixture per tradition
 
 Locked the movement record as JSON Schema, added a dependency-free validator for tradition, timing, anatomy, provenance, rights and over-claiming boundaries, and committed one passing fixture per tradition with explicit negative tests.
+
+## 2026-08-21 — Phase 2 - build one complete vertical slice
+
+Built and verified the private one-movement browser slice with stable layer state, lazy muscle loading, safety and review context, separate flag export, phone and desktop interaction, no-WebGL fallback, and packaged registration checks.
