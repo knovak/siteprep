@@ -231,13 +231,11 @@ response to be final. It is also the phase most able to do harm — a history
 feature that leaks is worse than no history feature — and doing it against a
 finished system means there is exactly one place a response is appended.
 
-**The tension it has to resolve, visibly.** O8 says the page does not retain a
-location history; §7 adds one deliberately, on the ground that it is local,
-user-visible, downloadable, clearable, and never transmitted. That is a
-reasonable reading of an objective about *proportionate privacy* rather than
-about *no storage*, but it is a reading, so the burden is on the tests: §4.7
-proves no application request carries it, and the page says plainly that it stays
-on the device until cleared.
+**The privacy boundary it has to prove, visibly.** The recorded local-history
+decision revises O8 to require the §7 history deliberately: it is capped,
+local, user-visible, downloadable, clearable, and never transmitted. The
+burden remains on the tests: §4.7 proves no application request carries it,
+and the page says plainly that it stays on the device until cleared.
 
 **Exit:** `test-plan.md` §4.7.
 

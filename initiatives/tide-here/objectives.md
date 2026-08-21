@@ -45,8 +45,11 @@ the tide, sun, and moon doing near this place over the next five days?*
 
 8. **Location privacy is proportional to the first version.** A typed place or
    coordinates are used only to resolve and display this result. The page does
-   not request browser location, retain a location history, or imply that a
-   public geocoder or tide service is private.
+   not request browser location. It retains at most 100 successful or partial
+   forecast records only in this browser, provides explicit view, download,
+   and clear controls, and never transmits that history through the
+   application. It does not imply that a public geocoder or tide service is
+   private.
 
 ## Explicitly not the first version
 

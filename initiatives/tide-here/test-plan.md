@@ -232,9 +232,9 @@ accident:
 - **The geocoder switches from configuration alone** (§4.5). §3.1 makes this the
   mitigation for the plan's most fragile dependency; a mitigation that is only
   described is not one.
-- **No outbound request carries a history entry** (§4.7). The history is a
-  deliberate reading of O8 rather than a plain one, so it carries the burden of
-  proof.
+- **No outbound request carries a history entry** (§4.7). The recorded
+  local-history decision makes that an explicit O8 boundary, so it carries the
+  burden of proof.
 - **`coverage-unavailable` never names a station as the coast** (§4.2). This is
   O2 stated as a prohibition, and it is the failure the whole coastal-match
   design exists to prevent.
