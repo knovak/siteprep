@@ -39,3 +39,7 @@ Added normalized NOAA and CHS prediction-station catalogues, a seven-day cache, 
 ## 2026-08-21 — Phase 3 - build the NOAA and CHS tide adapters
 
 Built and verified a provider-neutral TideProvider seam with NOAA and CHS request builders, five-local-day UTC ranges, datum and station provenance, normalized high/low events and offsets, and tides-unavailable handling for empty, malformed, HTTP-error, and timeout cases.
+
+## 2026-08-21 — Phase 4 - add sun and moon calculations
+
+Added the pinned SunCalc astronomy adapter with coast-local event windowing, zero/two-event arrays, polar states, local-noon moon phases, and isolated astronomy-unavailable handling.

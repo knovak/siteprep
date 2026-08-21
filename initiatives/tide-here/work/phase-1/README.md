@@ -4,7 +4,8 @@ This increment implements the calendar boundary in `spec.md` §5 as pure,
 provider-independent functions. It resolves station coordinates through a pinned
 GeoJSON time-zone dataset, builds five coast-local calendar rows, computes the
 UTC instants at their local-midnight boundaries, assigns absolute instants to a
-row, and carries the numeric UTC offset for every described instant.
+row, resolves an explicit local clock time such as noon to a UTC instant, and
+carries the numeric UTC offset for every described instant.
 
 ## Files
 
