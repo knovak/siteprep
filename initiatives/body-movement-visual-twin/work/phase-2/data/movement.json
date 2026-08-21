@@ -1,0 +1,68 @@
+{
+  "id": "slow-bilateral-shoulder-and-thoracic-motion",
+  "tradition": "feldenkrais",
+  "title": "Small shoulder and upper-spine exploration",
+  "summary": "A project-authored feasibility movement for comparing the surface, shoulder girdle, spine, and named muscle paths on one shared rig.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "begin",
+      "t": [0, 0.5],
+      "joint_actions": [
+        { "joint": "scapula-left", "action": "small upward rotation" },
+        { "joint": "scapula-right", "action": "small upward rotation" }
+      ],
+      "muscles": [
+        { "id": "serratus-anterior", "behaviour": "shortens" },
+        { "id": "trapezius-middle", "behaviour": "stabilises" }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [0.5, 1],
+      "joint_actions": [
+        { "joint": "thoracic-upper", "action": "small return from rotation" }
+      ],
+      "muscles": [
+        { "id": "erector-spinae-group", "behaviour": "lengthens" },
+        { "id": "multifidus-group", "behaviour": "stabilises" }
+      ]
+    }
+  ],
+  "instruction": {
+    "exploration": "Notice the relation between the shoulder blades and upper spine while the movement stays small enough to remain easy.",
+    "attention": [
+      { "phase": "begin", "cue": "Notice whether one shoulder begins before the other." },
+      { "phase": "return", "cue": "Let the return be as gradual as the outward path." }
+    ],
+    "range": {
+      "kind": "optional",
+      "smaller_reference": "Use a smaller path or imagine the movement if the visible range is not comfortable."
+    },
+    "rest_pauses": [
+      { "after_phase": "return", "duration_seconds": 8, "note": "Pause at neutral before replaying." }
+    ]
+  },
+  "variations": [
+    { "id": "smaller-range", "kind": "range", "note": "Reduce both shoulder and spine movement together." },
+    { "id": "supported-arms", "kind": "support", "note": "Rest the forearms on a stable surface." }
+  ],
+  "safety": {
+    "cautions": [
+      "Do not continue if the movement increases pain, dizziness, numbness, or tingling.",
+      "Use stable support if sitting balance is uncertain."
+    ],
+    "expects_teacher": false,
+    "notes": "Educational visualization only; it is not diagnosis, treatment, or individualized movement instruction."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description informed by general Feldenkrais principles of attention, optional range, and an unhurried return; no lesson text or recording was copied.",
+    "rights_basis": "provisional: project-authored movement description and project-authored feasibility motion on ledgered local assets",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-08-21",
+    "review": {
+      "status": "unreviewed",
+      "notes": "The motion and wording require practitioner and anatomy review before any public successor."
+    }
+  }
+}
