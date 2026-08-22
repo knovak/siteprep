@@ -1,0 +1,104 @@
+{
+  "seated-pelvic-clock-exploration": {
+    "id": "seated-pelvic-clock-exploration",
+    "duration_seconds": 30,
+    "description": "Small alternating pelvic and spinal motion, authored for this validation record and not measured from a person.",
+    "required_samples": ["start", "notice-center", "explore-forward", "explore-back", "return"],
+    "frames": [
+      { "id": "start", "t": 0, "rotations_deg": {} },
+      {
+        "id": "notice-center",
+        "t": 0.2,
+        "rotations_deg": {
+          "lumbar-spine": [2, 0, 0],
+          "thoracic-lower": [1, 0, 0]
+        }
+      },
+      {
+        "id": "explore-forward",
+        "t": 0.45,
+        "rotations_deg": {
+          "lumbar-spine": [5, 0, 0],
+          "thoracic-lower": [2.5, 0, 0],
+          "thoracic-upper": [1, 0, 0]
+        }
+      },
+      {
+        "id": "explore-back",
+        "t": 0.75,
+        "rotations_deg": {
+          "lumbar-spine": [-4, 0, 0],
+          "thoracic-lower": [-2, 0, 0],
+          "thoracic-upper": [-1, 0, 0]
+        }
+      },
+      { "id": "return", "t": 1, "rotations_deg": {} }
+    ]
+  },
+  "supported-seated-side-reach": {
+    "id": "supported-seated-side-reach",
+    "duration_seconds": 28,
+    "description": "A supported left-arm entry, side reach, and ordered exit, authored for validation rather than copied from a class.",
+    "required_samples": ["start", "enter", "stay", "exit-upright", "end"],
+    "frames": [
+      { "id": "start", "t": 0, "rotations_deg": {} },
+      {
+        "id": "enter",
+        "t": 0.28,
+        "rotations_deg": {
+          "scapula-left": [0, 0, -12],
+          "humerus-left": [0, 0, -48]
+        }
+      },
+      {
+        "id": "stay",
+        "t": 0.62,
+        "rotations_deg": {
+          "thoracic-lower": [0, 0, -4],
+          "thoracic-upper": [0, 0, -8],
+          "scapula-left": [0, 0, -14],
+          "humerus-left": [0, 0, -58]
+        }
+      },
+      {
+        "id": "exit-upright",
+        "t": 0.86,
+        "rotations_deg": {
+          "scapula-left": [0, 0, -10],
+          "humerus-left": [0, 0, -42]
+        }
+      },
+      { "id": "end", "t": 1, "rotations_deg": {} }
+    ]
+  },
+  "pause-before-standing": {
+    "id": "pause-before-standing",
+    "duration_seconds": 14,
+    "description": "A pause followed by a small whole-torso incline; it deliberately stops before claiming to reproduce standing or hands-on guidance.",
+    "required_samples": ["start", "pause", "incline", "begin-standing"],
+    "frames": [
+      { "id": "start", "t": 0, "rotations_deg": {} },
+      { "id": "pause", "t": 0.4, "rotations_deg": {} },
+      {
+        "id": "incline",
+        "t": 0.74,
+        "rotations_deg": {
+          "lumbar-spine": [4, 0, 0],
+          "thoracic-lower": [7, 0, 0],
+          "thoracic-upper": [2, 0, 0],
+          "neck-base": [-2, 0, 0]
+        }
+      },
+      {
+        "id": "begin-standing",
+        "t": 1,
+        "rotations_deg": {
+          "lumbar-spine": [5, 0, 0],
+          "thoracic-lower": [9, 0, 0],
+          "thoracic-upper": [2, 0, 0],
+          "neck-base": [-2, 0, 0]
+        }
+      }
+    ]
+  }
+}

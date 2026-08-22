@@ -1,0 +1,65 @@
+{
+  "id": "supported-seated-side-reach",
+  "tradition": "yoga",
+  "title": "Supported seated side reach",
+  "summary": "An invented supported posture record that keeps entry, stay, and exit distinct.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "enter",
+      "t": [0, 8],
+      "joint_actions": [{ "joint": "scapula-left", "action": "upward rotation during arm lift" }],
+      "muscles": [{ "id": "serratus-anterior", "behaviour": "shortens" }]
+    },
+    {
+      "id": "stay",
+      "t": [8, 20],
+      "joint_actions": [{ "joint": "thoracic-upper", "action": "gentle lateral flexion" }],
+      "muscles": [{ "id": "rhomboids-group", "behaviour": "stabilises" }]
+    },
+    {
+      "id": "exit",
+      "t": [20, 28],
+      "joint_actions": [{ "joint": "humerus-left", "action": "controlled lowering" }],
+      "muscles": [{ "id": "deltoid-middle", "behaviour": "lengthens" }]
+    }
+  ],
+  "instruction": {
+    "posture": "Sit on firm support with one hand grounded and the other arm reaching overhead without collapsing the lower side.",
+    "transitions": [
+      { "phase": "enter", "direction": "entry", "cue": "Raise the arm before beginning the side reach." },
+      { "phase": "exit", "direction": "exit", "cue": "Return the trunk upright before lowering the arm." }
+    ],
+    "modifications": [
+      { "id": "chair-support", "note": "Sit higher on a folded blanket or firm chair if the pelvis rolls backward." }
+    ],
+    "props": ["folded blanket", "firm chair"]
+  },
+  "variations": [
+    { "id": "lower-arm", "kind": "range", "note": "Keep the reaching hand on the shoulder instead of overhead." }
+  ],
+  "safety": {
+    "cautions": ["Avoid the overhead reach if it provokes shoulder pain or tingling."],
+    "expects_teacher": false,
+    "notes": "Educational visualization only and not a claim that the posture is suitable for every person."
+  },
+  "source": {
+    "tradition_basis": "Project-authored posture description using general yoga distinctions among entry, posture, exit, modification, and props.",
+    "rights_basis": "provisional: project-authored description; no class sequence, teacher wording, recording, or commercial anatomy was copied",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-08-21",
+    "claim_sources": [
+      {
+        "title": "What is Iyengar Yoga?",
+        "url": "https://iyengaryoga.org.uk/iyengar-yoga/about-iyengar-yoga/",
+        "supports": ["progressive posture practice", "supports and props", "safety"]
+      },
+      {
+        "title": "To Prop or not to Prop",
+        "url": "https://iyengaryoga.org.uk/to-prop-or-not-to-prop/",
+        "supports": ["blankets and chairs as props", "judicious use of props"]
+      }
+    ],
+    "review": { "status": "unreviewed", "notes": "Requires review by a yoga practitioner." }
+  }
+}

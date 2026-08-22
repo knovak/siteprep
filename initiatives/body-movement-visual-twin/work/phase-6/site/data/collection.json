@@ -1,0 +1,21 @@
+{
+  "id": "three-traditions",
+  "title": "Three traditions, three different kinds of instruction",
+  "records": [
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/feldenkrais.json",
+      "clip": "seated-pelvic-clock-exploration"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/yoga.json",
+      "clip": "supported-seated-side-reach"
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/alexander.json",
+      "clip": "pause-before-standing"
+    }
+  ]
+}
