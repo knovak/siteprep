@@ -3,9 +3,14 @@ import AxeBuilder from '@axe-core/playwright';
 
 const pagePath = '/initiatives/tide-here/work/phase-6/index.html?fixture=1';
 
-test('a forecast shows three names, station and zone, and five equal day cards', async ({ page }, testInfo) => {
+test('a forecast keeps tides visible and folds coast and astronomy details', async ({ page }, testInfo) => {
   await page.goto(pagePath);
   await expect(page.locator('#result')).toBeVisible();
+  const coastDetails = page.locator('.identity-card');
+  await expect(coastDetails).not.toHaveAttribute('open', '');
+  await expect(coastDetails.locator('summary')).toContainText('SEATTLE');
+  await expect(page.getByText('You entered', { exact: true })).toBeHidden();
+  await coastDetails.locator('summary').click();
   await expect(page.getByText('You entered', { exact: true })).toBeVisible();
   await expect(page.locator('#entered-name')).toHaveText('Seattle');
   await expect(page.locator('#resolved-name')).toContainText('Seattle, Washington');
@@ -14,7 +19,14 @@ test('a forecast shows three names, station and zone, and five equal day cards',
   await expect(page.locator('#zone-name')).toHaveText('America/Los_Angeles');
   await expect(page.locator('.day-card')).toHaveCount(5);
   await expect(page.locator('.day-card').first().getByText('Tides', { exact: true })).toBeVisible();
-  await expect(page.locator('.day-card').first().getByText('Sun and moon', { exact: true })).toBeVisible();
+  await expect(page.locator('.day-card').first().locator('.event-group li')).toHaveCount(4);
+  const astronomyDetails = page.locator('.astronomy-details');
+  await expect(astronomyDetails).toHaveCount(5);
+  await expect(astronomyDetails.locator('[open]')).toHaveCount(0);
+  await expect(astronomyDetails.first().locator('summary')).toContainText(/Sun and moon · Moonrise \d{1,2}:\d{2} [AP]M/);
+  await expect(astronomyDetails.first().getByText('Sunrise', { exact: true })).toBeHidden();
+  await astronomyDetails.first().locator('summary').click();
+  await expect(astronomyDetails.first().getByText('Sunrise', { exact: true })).toBeVisible();
   await expect(page.getByText(/informational and are not for navigation or safety decisions/i)).toBeVisible();
   await expect(page.locator('#source-copy')).toContainText(/heights in metres relative to MLLW/i);
   await expect(page.getByText('No location permission needed', { exact: true })).toHaveCount(0);
@@ -99,13 +111,14 @@ test('the page reflows without clipping from a small phone through a wide deskto
         clipped: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         columns: getComputedStyle(document.querySelector('#day-cards')).gridTemplateColumns.split(' ').length,
         cardWidths: cards.map(card => card.getBoundingClientRect().width),
-        cardHeights: cards.map(card => card.getBoundingClientRect().height)
+        cardHeights: cards.map(card => card.getBoundingClientRect().height),
+        secondDayBottom: cards[1].getBoundingClientRect().bottom
       };
     });
     expect(layout.clipped, `${window.width}px viewport clips horizontally`).toBe(false);
     expect(layout.columns).toBe(window.columns);
     expect(layout.cardWidths.every(width => width > 0 && width <= window.width)).toBe(true);
-    if (window.width === 430) expect(layout.cardHeights[2]).toBeLessThan(layout.cardHeights[0]);
+    if (window.width === 430) expect(layout.secondDayBottom, 'the first two days fit in the phone viewport').toBeLessThanOrEqual(window.height);
   }
 });
 

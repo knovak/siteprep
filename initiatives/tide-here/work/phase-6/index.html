@@ -46,14 +46,16 @@
     </section>
 
     <section id="result" hidden>
-      <div class="identity-card">
-        <dl class="names">
-          <div><dt>You entered</dt><dd id="entered-name"></dd></div>
-          <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
-          <div><dt>Coast</dt><dd id="coast-name"></dd></div>
-        </dl>
-        <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
-      </div>
+      <details class="identity-card">
+        <summary><strong id="coast-name"></strong></summary>
+        <div class="identity-details">
+          <dl class="names">
+            <div><dt>You entered</dt><dd id="entered-name"></dd></div>
+            <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
+          </dl>
+          <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
+        </div>
+      </details>
       <div id="warnings" class="warnings"></div>
       <div id="day-cards" class="day-cards" aria-label="Five-day tide, sun, and moon forecast"></div>
       <details class="source-details">

@@ -2,9 +2,11 @@
 
 This increment adds the host-neutral Tide Here page over the Phase 5 service.
 The form accepts a general place name or decimal coordinates and preserves the entry.
-A result displays **You entered**, **Resolved place**, and **Coast** together,
-then names the prediction station and the station's IANA time zone. Five equal
-cards separate tide, sun, and moon events. All event times are formatted with
+A result labels a collapsed identity disclosure with the coast name; opening it
+shows **You entered**, **Resolved place**, the prediction station, and the
+station's IANA time zone. Five equal cards keep high and low tides visible and
+place sun and moon events in collapsed disclosures whose labels include each
+day's moonrise time. All event times are formatted with
 an explicit coast time zone; the device zone is never read.
 
 An ambiguous match pauses before forecasting. It shows up to three named
@@ -14,7 +16,9 @@ work. Narrow layouts stack the cards and chooser, and all controls have visible
 keyboard focus and text labels. Phone rows size to their own content rather
 than inheriting the busiest day's height. An iPhone Pro Max-width layout uses
 two compact event columns, while narrower phones fall back to one; safe-area
-padding keeps the page clear of device edges.
+padding keeps the page clear of device edges. At the iPhone Pro Max viewport,
+the compact closed disclosures leave the complete first two tide days visible
+without scrolling from the top of the result.
 
 `src/page-view.mjs` maps the normalized forecast and the eight established
 state codes to display models. Resolution failures, partial tide or astronomy
@@ -44,8 +48,10 @@ node --test initiatives/tide-here/work/phase-{1,2,3,4,5,6}/test/*.test.mjs
 ```
 
 The browser suite runs desktop and iPhone 15 Pro Max-sized Chromium against
-recorded fixtures. It checks the three names, five equal desktop cards,
+recorded fixtures. It checks the folded coast identity, always-visible tides,
+moonrise-labelled astronomy disclosures, five equal desktop cards,
 content-sized phone cards, explicit zone, chooser and map, all eight page
 states, focus movement, text labels, datum details, safety line, and serious
 accessibility findings. A separate viewport matrix covers widths from 320 to
-1600 pixels and fails on horizontal clipping or an unexpected card count.
+1600 pixels and fails on horizontal clipping, an unexpected card count, or the
+first two tide days not fitting in the Pro Max viewport.

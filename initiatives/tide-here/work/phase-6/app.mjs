@@ -300,11 +300,11 @@ function eventGroup(title, entries) {
 }
 
 function astronomyGroup(day) {
-  const section = document.createElement('section');
-  section.className = 'event-group';
-  section.append(textNode('h3', 'Sun and moon'));
+  const details = document.createElement('details');
+  details.className = 'astronomy-details';
+  details.append(textNode('summary', `Sun and moon · Moonrise ${day.moonrise.label}`));
   const pairs = document.createElement('div');
-  pairs.className = 'event-pair';
+  pairs.className = 'event-pair astronomy-content';
   for (const [label, event] of [
     ['Sunrise', day.sunrise], ['Sunset', day.sunset],
     ['Moonrise', day.moonrise], ['Moonset', day.moonset], ['Moon phase', { label: day.moonPhase }]
@@ -314,8 +314,8 @@ function astronomyGroup(day) {
     if (event.code) row.dataset.code = event.code;
     pairs.append(row);
   }
-  section.append(pairs);
-  return section;
+  details.append(pairs);
+  return details;
 }
 
 function dayCard(day, index) {

@@ -1,8 +1,9 @@
 # Phase 8 live validation
 
-Tide Here version 2 is deployed as an owner-only private ChatGPT Site at
+Tide Here version 3 is deployed as a public ChatGPT Site at
 [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site).
-The replacement succeeded on 2026-08-22 at 10:47 PDT without changing access.
+The replacement succeeded on 2026-08-22 at 13:16 PDT, then the Site's access
+was changed from owner-only to public at the user's request.
 The temporary Site contains 44 static source files; Sites recorded a
 1,351,680-byte archive with 95 packaged files. Deployment staging was removed
 after verification and did not add hosting metadata to this repository.
@@ -23,10 +24,14 @@ The real responses satisfied the normalized contracts. Before deployment, all
 52 phase 1–7 unit tests passed; the desktop/phone browser run passed 13 tests
 with its one intentional duplicate viewport-matrix case skipped.
 
-The live owner-only URL was then checked at 1280×800 and at the 430×932 iPhone
-Pro Max viewport. Neither layout had horizontal overflow. Both kept five day
-cards and placed the history control and privacy statement below the result.
-The three removed entry slogans were absent.
+The live public URL was then checked at the 430×932 iPhone Pro Max viewport.
+Neither provider result had horizontal overflow. Both kept five day cards,
+collapsed the place details under the resolved coast name, kept tides visible,
+and collapsed sun and moon details under moonrise-labelled summaries. The
+second complete tide day ended at 525 px or earlier in the 932 px result
+viewport, so the first two days were immediately visible. Opening the coast
+summary revealed the entered value, and opening an astronomy summary revealed
+sunrise, sunset, moonrise, moonset, and moon phase.
 
 ## Threshold and policy review
 
@@ -36,10 +41,10 @@ U.S.–Canada border ask; Denver refuses coverage. The dated reasoning and what
 would reopen it are recorded in `../../decisions.md`.
 
 The [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/)
-was re-read on 2026-08-22. The page remains within the intended private,
-single-user use: one request per explicit submit, at least one second between
-requests, a 24-hour cache, visible attribution, no autocomplete or background
-requests, and a provider endpoint that can switch in configuration.
+was re-read on 2026-08-22. Public access does not change the page's low-volume,
+manual lookup controls: one request per explicit submit, at least one second
+between requests, a 24-hour cache, visible attribution, no autocomplete or
+background requests, and a provider endpoint that can switch in configuration.
 
 The structured request, layout, deployment, and threshold observations are in
 `evidence.json`.

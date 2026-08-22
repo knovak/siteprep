@@ -1,12 +1,12 @@
 {
-  "schemaVersion": 2,
-  "checkedAt": "2026-08-22T17:47:55Z",
+  "schemaVersion": 3,
+  "checkedAt": "2026-08-22T20:16:40Z",
   "deployment": {
     "title": "Tide Here — five coast-local days",
     "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
     "mode": "replacement",
-    "access": "owner-only private",
-    "version": 2,
+    "access": "public",
+    "version": 3,
     "staticFileCount": 44,
     "archiveSizeBytes": 1351680,
     "archiveFileCount": 95
@@ -30,7 +30,8 @@
       "timeZone": "America/Los_Angeles",
       "dayCards": 5,
       "warningCount": 0,
-      "firstDayTideCount": 4
+      "firstDayTideCount": 4,
+      "firstTwoDayTideCounts": [4, 4]
     },
     "chs": {
       "station": "07710",
@@ -40,7 +41,8 @@
       "timeZone": "Canada/Pacific",
       "dayCards": 5,
       "warningCount": 0,
-      "firstDayTideCount": 2
+      "firstDayTideCount": 2,
+      "firstTwoDayTideCounts": [2, 2]
     }
   },
   "layouts": [
@@ -59,7 +61,12 @@
       "dayCards": 5,
       "horizontalOverflow": false,
       "localToolsBelowResult": true,
-      "removedEntryCopyPresent": false
+      "removedEntryCopyPresent": false,
+      "coastDetailsClosedByDefault": true,
+      "astronomyDetailsClosedByDefault": true,
+      "astronomyLabelsIncludeMoonrise": true,
+      "firstTwoDaysVisible": true,
+      "maximumSecondDayBottomPx": 525
     }
   ],
   "thresholdReview": {
@@ -78,7 +85,7 @@
   "policyReview": {
     "provider": "Nominatim / OpenStreetMap",
     "policyUrl": "https://operations.osmfoundation.org/policies/nominatim/",
-    "outcome": "fits private single-user validation",
+    "outcome": "fits low-volume public manual lookup under the documented controls",
     "controls": [
       "user-triggered submit",
       "one-second minimum request interval",

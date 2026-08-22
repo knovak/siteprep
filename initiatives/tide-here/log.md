@@ -73,3 +73,10 @@ Deployed the owner-only Tide Here validation Site, passed live NOAA, CHS, Nomina
 Moved local history and the data-disclosure copy below the forecast display,
 removed the requested entry-page slogans, and replaced the production fixture
 catalogue with cached complete NOAA/CHS catalogues plus chosen-station metadata.
+
+## 2026-08-22 — Compact coast and astronomy disclosures
+
+Collapsed the detailed entered-place block under the coast name, kept every
+day's high and low tides visible, and folded sun and moon details under a label
+that includes the day's moonrise time. Tightened the phone layout so the first
+two tide days are immediately visible at an iPhone Pro Max viewport.
