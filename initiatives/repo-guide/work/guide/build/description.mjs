@@ -172,9 +172,9 @@ ${FIGURE_CSS}${BLOCK_CSS}  </style>
 </head>
 <body>
   <header class="hero">
-    <p class="eyebrow">Repo guide · generated from live sources</p>
+    <p class="eyebrow">Repo guide · generated from the live repository</p>
     <h1>How work moves through this repository</h1>
-    <p class="lede">A brief guide to how work is started, reviewed, paused, and resumed — and where to find the current rules.</p>
+    <p class="lede">A short tour of how work gets started, reviewed, parked, and picked back up here — and where the rules that actually decide things live.</p>
   </header>
   <nav aria-label="Guide sections">${navigation}</nav>
   <main>${cards}
@@ -182,7 +182,7 @@ ${FIGURE_CSS}${BLOCK_CSS}  </style>
   <footer data-generated-date="${escapeHtml(generatedDate)}" data-source-sha="${escapeHtml(sha)}">
     Generated <strong>${escapeHtml(generatedDate)}</strong> from source commit
     <a href="${escapeHtml(`${repositoryUrl}/tree/${sha}`)}"><strong>${escapeHtml(sha)}</strong></a>.
-    Authored explanation is dated; linked values are resolved from that commit.
+    The explanation was written by hand and dated; every value it links to comes from that commit.
   </footer>
 </body>
 </html>\n`;
