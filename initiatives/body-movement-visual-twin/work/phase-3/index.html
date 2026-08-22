@@ -20,9 +20,14 @@
         <h1 id="page-title">See the anatomy change through movement.</h1>
         <p class="lede">Orbit a full articulated reference body while it moves. Anatomical views expose estimated bone alignment and shaped muscle paths; the movement context stays secondary and below the anatomy controls.</p>
       </div>
-      <aside class="boundary">
+      <aside id="caution-panel" class="boundary caution-panel">
         <strong>Educational visualization</strong>
         <p>This displays project-authored anatomical estimates. It is not diagnosis, treatment, movement instruction, motion capture, or a scan of you.</p>
+        <div class="playback-boundary">
+          <p class="eyebrow">Before playback</p>
+          <ul id="caution-list"></ul>
+          <button id="accept-cautions" class="primary" type="button">Acknowledge boundary — enable playback</button>
+        </div>
       </aside>
     </section>
 
@@ -45,9 +50,9 @@
           </div>
           <div id="anatomy-status" class="anatomy-status" aria-live="polite"></div>
           <div class="camera-presets" aria-label="Camera views">
-            <button type="button" data-camera="front">Front</button>
-            <button type="button" data-camera="side">Side</button>
-            <button type="button" data-camera="back">Back</button>
+            <button type="button" data-camera="front" aria-pressed="true">Front</button>
+            <button type="button" data-camera="side" aria-pressed="false">Side</button>
+            <button type="button" data-camera="back" aria-pressed="false">Back</button>
           </div>
           <p class="stage-help">Drag or swipe to orbit · wheel or +/− to zoom · highlighted structures match this frame</p>
         </div>
@@ -108,15 +113,8 @@
           </label>
         </section>
 
-        <section id="caution-panel" class="caution-panel">
-          <p class="eyebrow">Before playback</p>
-          <h2>Review the display boundary.</h2>
-          <ul id="caution-list"></ul>
-          <button id="accept-cautions" class="primary" type="button">Acknowledge boundary — enable playback</button>
-        </section>
-
         <section class="control-section">
-          <div class="section-heading"><h2>Anatomy over time</h2><output id="time-output" for="timeline">0%</output></div>
+          <div class="section-heading"><h2>Movement</h2><output id="time-output" for="timeline">0%</output></div>
           <div class="transport" aria-label="Playback controls">
             <button id="replay" type="button" aria-label="Replay from start">↺</button>
             <button id="step-back" type="button" aria-label="Step backward">− frame</button>

@@ -32,9 +32,14 @@ paired forearm and lower-leg bones, joint landmarks, skull, pelvis, and rib-cage
 landmarks remain tied to the same animated rig. Switching records changes the
 clip, cautions, timed anatomical readout, context, sources, rights basis, and
 review status while preserving the shared camera and layer controls. Playback
-is gated again for each record. Anatomical view, its pin/isolation controls, the
-boundary gate, timeline, Visual Twin controls, and flaggable claims appear in
-that order.
+requires one acknowledgement per page session; changing records does not ask
+again. The educational boundary and acknowledgement appear above the animation.
+The animation stage is one browser-viewport tall. Front, Side, and Back are
+explicit camera presets with active-state feedback and view-aware surface and
+muscle rendering. A clip-wide projection frame remains fixed through playback,
+so a movement cannot create an unintended zoom pulse. Below the animation,
+Anatomical view and its pin/isolation controls precede Movement, Visual Twin,
+and the remaining flaggable claims.
 
 ## Verification
 
@@ -50,6 +55,7 @@ node --test initiatives/body-movement-visual-twin/work/phase-3/test/*.test.mjs
 The data tests validate all 13 records and sources, prove that removing the
 non-geometric context makes each entry incomplete, verify 13 distinct
 bounded clips on known rig nodes, and rerun the eight-millimetre registration
-check for every clip. Browser tests cover selection, caution re-gating,
-anatomy-first control order, six renderings, source links, WebGL fallback,
-desktop and phone layout, and serious or critical accessibility findings.
+check for every clip. Browser tests cover selection, single-session
+acknowledgement, viewport-height animation, fixed projection, named camera
+presets, six renderings, source links, WebGL fallback, desktop and phone layout,
+and serious or critical accessibility findings.

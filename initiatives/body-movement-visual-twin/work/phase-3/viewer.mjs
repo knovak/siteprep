@@ -48,6 +48,7 @@ let dragPoint;
 let visualProfile = DEFAULT_VISUAL_PROFILE;
 let selectedClaim;
 let projectionFrame = { centerX: 0, centerY: 850, scale: 1 };
+let projectionKey = '';
 const reviewInbox = '';
 
 const [coreResponse, collectionResponse, clipsResponse] = await Promise.all([
@@ -142,10 +143,26 @@ function cameraPoint(point) {
   return [horizontal, vertical, depth];
 }
 
-function fitProjection(matrices) {
-  const points = rig.nodes
-    .filter((node) => node.id !== 'root')
-    .map((node) => cameraPoint(transformPoint(matrices.get(node.id), [0, 0, 0])));
+function fitProjection(displayRig) {
+  const nextKey = [
+    clip.id,
+    canvas.width,
+    canvas.height,
+    state.camera.yaw.toFixed(4),
+    state.camera.pitch.toFixed(4),
+    state.camera.zoom.toFixed(4),
+    visualProfile.statureCm,
+    visualProfile.build.toFixed(3),
+    visualProfile.torsoToLimb.toFixed(3),
+    visualProfile.presentation
+  ].join(':');
+  if (nextKey === projectionKey) return;
+  const points = clip.frames.flatMap((frame) => {
+    const matrices = globalMatrices(displayRig, frame);
+    return displayRig.nodes
+      .filter((node) => node.id !== 'root')
+      .map((node) => cameraPoint(transformPoint(matrices.get(node.id), [0, 0, 0])));
+  });
   const xs = points.map((point) => point[0]);
   const ys = points.map((point) => point[1]);
   const minX = Math.min(...xs);
@@ -162,6 +179,7 @@ function fitProjection(matrices) {
     centerY: (minY + maxY) / 2,
     scale: fitted * state.camera.zoom
   };
+  projectionKey = nextKey;
 }
 
 function project(point) {
@@ -247,7 +265,21 @@ function drawSurface(matrices, alpha, displayRig) {
   const rightHip = world('pelvis', [126, -34, 0]);
   const neck = personalizeSurfacePoint(transformPoint(matrices.get('neck-base'), [0, 0, 0]), 'neck-base', visualProfile);
   const head = project(world('head'));
-  const silhouette = [leftShoulder, leftChest, leftWaist, leftHip, rightHip, rightWaist, rightChest, rightShoulder].map(project);
+  const frontSilhouette = [leftShoulder, leftChest, leftWaist, leftHip, rightHip, rightWaist, rightChest, rightShoulder];
+  const sideSilhouette = [
+    world('thoracic-upper', [0, 45, -68]),
+    world('thoracic-lower', [0, 55, -98]),
+    world('lumbar-spine', [0, 15, -76]),
+    world('pelvis', [0, -34, -108]),
+    world('pelvis', [0, -34, 112]),
+    world('lumbar-spine', [0, 15, 84]),
+    world('thoracic-lower', [0, 55, 118]),
+    world('thoracic-upper', [0, 45, 78])
+  ];
+  const sideAmount = Math.abs(Math.sin(state.camera.yaw));
+  const silhouette = frontSilhouette.map((front, index) => front.map((value, axis) => (
+    value + (sideSilhouette[index][axis] - value) * sideAmount
+  ))).map(project);
   context.save();
   context.globalAlpha = alpha;
   context.fillStyle = appearance.color;
@@ -260,7 +292,7 @@ function drawSurface(matrices, alpha, displayRig) {
   context.fill();
   context.stroke();
   context.beginPath();
-  context.ellipse(head[0], head[1], 76 * ratio * projectionFrame.scale, 104 * ratio * projectionFrame.scale, 0, 0, Math.PI * 2);
+  context.ellipse(head[0], head[1], (76 - sideAmount * 10) * ratio * projectionFrame.scale, 104 * ratio * projectionFrame.scale, 0, 0, Math.PI * 2);
   context.fill();
   context.stroke();
   context.restore();
@@ -388,6 +420,9 @@ function drawMuscles(frame, kinds, displayRig, displayMuscles, activeMuscles) {
   const paths = muscleWorldPaths(fullRig, frame);
   const entries = displayMuscles.layers.muscles.filter((entry) => kinds.includes(entry.depth));
   for (const entry of entries) {
+    const facing = Math.cos(state.camera.yaw);
+    if (facing > .35 && ['back', 'upper-back'].includes(entry.region)) continue;
+    if (facing < -.35 && ['abdomen', 'chest'].includes(entry.region)) continue;
     const id = entry.id;
     const path = paths.get(id);
     if (!path || path.length < 2) continue;
@@ -427,7 +462,7 @@ function render() {
   const displayRig = scaleReferenceRig(rig, visualProfile);
   const displayMuscles = muscles ? scaleMuscleData(muscles, visualProfile) : null;
   const matrices = globalMatrices(displayRig, frame);
-  fitProjection(matrices);
+  fitProjection(displayRig);
   const shown = visibility();
   const phase = activePhase();
   const activeJoints = new Set(phase.joint_actions.map((entry) => entry.joint));
@@ -455,7 +490,17 @@ function updateReadout() {
   $('#layer-output').value = LAYER_STATES[state.layer];
   $('#reference-label').hidden = !anatomyIsVisible(state);
   $('#play').textContent = state.playing ? 'Pause' : 'Play';
-  $('#view-label').textContent = `${Math.round((state.camera.yaw * 180) / Math.PI)}° orbit · ${state.camera.zoom.toFixed(1)}×`;
+  const fullTurn = Math.PI * 2;
+  const normalizedYaw = ((state.camera.yaw % fullTurn) + fullTurn) % fullTurn;
+  const presetViews = [
+    { id: 'front', label: 'Front view', yaw: 0 },
+    { id: 'side', label: 'Side view', yaw: Math.PI / 2 },
+    { id: 'back', label: 'Back view', yaw: Math.PI }
+  ];
+  const distance = (a, b) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)));
+  const activeView = presetViews.find((preset) => distance(normalizedYaw, preset.yaw) < .01 && Math.abs(state.camera.pitch) < .01);
+  $('#view-label').textContent = `${activeView?.label || `${Math.round((normalizedYaw * 180) / Math.PI)}° orbit`} · ${state.camera.zoom.toFixed(1)}×`;
+  for (const button of document.querySelectorAll('.camera-presets [data-camera]')) button.setAttribute('aria-pressed', String(button.dataset.camera === activeView?.id));
   const currentClaims = claimDescriptors(movement, { phaseId: phase.id }).filter((claim) => claim.kind === 'movement' || claim.kind === 'anatomy');
   $('#claims-list').replaceChildren(...currentClaims.map(flaggableClaim));
   Object.assign(stage.dataset, {
@@ -467,9 +512,11 @@ function updateReadout() {
     musclesLoaded: String(Boolean(muscles)),
     movement: movement.id,
     clip: clip.id,
-    profile: `${visualProfile.statureCm},${visualProfile.build.toFixed(2)},${visualProfile.torsoToLimb.toFixed(2)},${visualProfile.presentation}`
+    profile: `${visualProfile.statureCm},${visualProfile.build.toFixed(2)},${visualProfile.torsoToLimb.toFixed(2)},${visualProfile.presentation}`,
+    cameraView: activeView?.id || 'orbit'
   });
   render();
+  stage.dataset.projectionScale = projectionFrame.scale.toFixed(6);
 }
 
 async function loadMusclesIfNeeded() {
@@ -598,19 +645,19 @@ function animate(timestamp) {
   requestAnimationFrame(animate);
 }
 
-function resetCautionGate() {
-  state = { ...setTime(state, 0), playing: false, cautionsAccepted: false };
-  $('#play').disabled = true;
+function resetMovement() {
+  state = { ...setTime(state, 0), playing: false };
+  $('#play').disabled = !state.cautionsAccepted;
   $('#play').textContent = 'Play';
-  $('#caution-panel').classList.remove('accepted');
-  $('#accept-cautions').textContent = 'Acknowledge boundary — enable playback';
-  $('#accept-cautions').disabled = !interactive;
+  $('#caution-panel').classList.toggle('accepted', state.cautionsAccepted);
+  $('#accept-cautions').textContent = state.cautionsAccepted ? 'Playback enabled for this session' : 'Acknowledge boundary — enable playback';
+  $('#accept-cautions').disabled = !interactive || state.cautionsAccepted;
 }
 
 $('#movement-select').addEventListener('change', (event) => {
   movement = movements.find((record) => record.id === event.target.value);
   clip = clips[movement.id];
-  resetCautionGate();
+  resetMovement();
   populateRecord();
   updateReadout();
 });
@@ -619,7 +666,7 @@ $('#accept-cautions').addEventListener('click', () => {
   state = { ...state, cautionsAccepted: true };
   $('#play').disabled = false;
   $('#caution-panel').classList.add('accepted');
-  $('#accept-cautions').textContent = 'Playback enabled';
+  $('#accept-cautions').textContent = 'Playback enabled for this session';
   $('#accept-cautions').disabled = true;
 });
 $('#play').addEventListener('click', () => apply({ ...state, playing: !state.playing }));
@@ -652,9 +699,10 @@ $('#presentation').addEventListener('change', (event) => applyVisualProfile({ pr
 $('#layer').addEventListener('change', (event) => apply(setLayer(state, Number(event.target.value))));
 $('#pin-layer').addEventListener('change', (event) => apply(setPinned(state, event.target.value)));
 $('#isolate-joint').addEventListener('change', (event) => apply(setIsolatedJoint(state, event.target.value)));
-for (const button of document.querySelectorAll('[data-camera]')) button.addEventListener('click', () => apply(cameraPreset(state, button.dataset.camera)));
+for (const button of document.querySelectorAll('.camera-presets [data-camera]')) button.addEventListener('click', () => apply(cameraPreset(state, button.dataset.camera)));
 
 stage.addEventListener('pointerdown', (event) => {
+  if (event.target.closest('button')) return;
   dragPoint = [event.clientX, event.clientY];
   stage.setPointerCapture(event.pointerId);
 });
