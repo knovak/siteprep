@@ -149,10 +149,33 @@ test('10,000 items keep a bounded DOM at each responsive layout', async ({page})
 
   await expectLayout(page, {width: 1600, height: 900, visible: 16, cards: 24, columns: 8, rows: 2});
   await expectLayout(page, {width: 1000, height: 900, visible: 12, cards: 16, columns: 4, rows: 3});
+  await expect(page.getByLabel('Page layout')).toBeDisabled();
   await expectLayout(page, {width: 820, height: 1100, visible: 9, cards: 12, columns: 3, rows: 3});
   await expectLayout(page, {width: 390, height: 844, visible: 1, cards: 3, columns: 1, rows: 1});
   await expect.poll(() => page.locator('#grid').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(550);
   await expect.poll(() => page.locator('.footer-line').evaluate(element => element.getBoundingClientRect().bottom)).toBeGreaterThan(820);
+});
+
+test('page layout dropdown redraws the wide grid immediately', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+
+  const picker = page.getByLabel('Page layout');
+  await expect(picker).toBeEnabled();
+  await expect(picker).toHaveValue('2x8');
+  await expectLayout(page, {width: 1600, height: 900, visible: 16, cards: 24, columns: 8, rows: 2});
+
+  for (const expected of [
+    {value: '3x3', visible: 9, cards: 12, columns: 3, rows: 3},
+    {value: '2x6', visible: 12, cards: 18, columns: 6, rows: 2},
+    {value: '3x12', visible: 36, cards: 48, columns: 12, rows: 3},
+    {value: '2x8', visible: 16, cards: 24, columns: 8, rows: 2},
+  ]) {
+    await picker.selectOption(expected.value);
+    await expectLayout(page, {width: 1600, height: 900, ...expected});
+  }
+  await expect(page.locator('#status')).toHaveText('Showing 2 rows × 8 columns (16 bookmarks per page).');
 });
 
 test('keyboard verdicts, marked groups, atomic undo, and sitting rate work without navigation', async ({page}) => {
