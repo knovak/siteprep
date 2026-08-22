@@ -27,3 +27,50 @@ clearable, and never transmitted by the application.
   location storage.
 - Automatic browser location remains a later version and still requires an
   explicit permission request with manual fallback.
+
+## 2026-08-22 — Which host and coastal thresholds should the first live validation use?
+
+**Use an owner-only ChatGPT Site and keep 25 km / 60% / 150 km unchanged.**
+
+The first live version is deployed privately at
+[Tide Here — five coast-local days](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site).
+It is a temporary validation host, not a final public address or a decision about
+the later custom domain.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A — Keep 25 km / 60% / 150 km** *(chosen)* | Accepts clear Seattle and Halifax matches, asks at the Bainbridge and U.S.–Canada boundary ambiguities, and refuses Denver rather than naming a distant coast | The small validation catalogue cannot establish that the values generalize to every coastline |
+| **B — Loosen automatic acceptance** | Fewer chooser interactions near a coast | Would turn the deliberately ambiguous island and border cases into more confident claims without evidence that the nearest station is relevant |
+| **C — Tighten automatic or maximum distance** | More conservative about station relevance | Would add friction to clear matches or refuse useful coverage without a failing real-coast case to justify it |
+
+### Evidence
+
+- Seattle resolved 0.706 km from NOAA station 9447130, at 5.2% of the next
+  candidate's distance, and was accepted.
+- Halifax resolved 1.187 km from CHS station 00490, at 0.2% of the next
+  candidate's distance, and was accepted.
+- Bainbridge's first two subordinate stations were both 1.309 km away, so the
+  chooser remained mandatory.
+- The border input kept NOAA and CHS choices at 1.855 km and 1.964 km rather
+  than selecting across the boundary.
+- Denver's nearest prediction station was 1,641 km away and correctly returned
+  `coverage-unavailable`.
+
+The live browser check returned readable HTTP 200 responses from Nominatim,
+NOAA CO-OPS, and CHS, then rendered five days for Seattle and Halifax. The
+current [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/)
+still fits this private single-user page: requests are directly triggered by a
+submit, serialized to at most one per second, cached for 24 hours, attributed,
+and switchable by configuration; the page has no autocomplete, periodic
+request, or bulk lookup.
+
+### What this settles, and what it does not
+
+- The configured thresholds remain the reviewed first-version values.
+- ChatGPT Sites is the private host for this validation round.
+- A larger station catalogue or a real coastline that produces a wrong
+  accept/ask/refuse outcome is evidence to reopen the thresholds.
+- This does not authorize public access, choose the final domain, or add a
+  third-country provider.

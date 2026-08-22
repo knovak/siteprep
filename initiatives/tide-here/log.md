@@ -63,3 +63,7 @@ Max viewport.
 ## 2026-08-22 — Phase 7 - add local history, caching, and the privacy statement
 
 Added 100-entry device-local history with view, download, and history-only clear; wired hashed hourly forecast, 24-hour geocoder, and seven-day station caches; and verified the privacy disclosure and no-transmission boundary.
+
+## 2026-08-22 — Phase 8 - deploy, run live smoke tests, and review thresholds
+
+Deployed the owner-only Tide Here validation Site, passed live NOAA, CHS, Nominatim, desktop, and iPhone Pro Max checks, and recorded unchanged thresholds and provider policy review.
