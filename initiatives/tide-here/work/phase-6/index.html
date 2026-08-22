@@ -14,40 +14,15 @@
   </header>
 
   <main id="top">
-    <section class="hero" aria-labelledby="page-title">
-      <p class="eyebrow">No location permission needed</p>
-      <h1 id="page-title">What is the coast doing here?</h1>
-      <p>Enter a place or decimal coordinates. Tide Here checks the coast before it shows a prediction station.</p>
+    <section class="hero" aria-label="Find tides">
       <form id="place-form" novalidate>
         <label for="place">Place or coordinates</label>
         <div class="search-row">
-          <input id="place" name="place" placeholder="Seattle or 47.61, -122.33" autocomplete="off">
+          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, or 47.61, -122.33" autocomplete="off">
           <button type="submit">Show five days</button>
         </div>
       </form>
       <p id="fixture-note" class="fixture-note" hidden>Recorded validation data is active. No provider request will leave this page.</p>
-      <div class="local-tools">
-        <button id="show-history" type="button" class="secondary">Show local history</button>
-        <p class="privacy-copy"><strong>What leaves this device:</strong> Your submitted place or coordinates go directly to the configured Nominatim geocoder. After a coast is selected, the station and five-day time range go directly to NOAA or CHS. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
-      </div>
-    </section>
-
-    <section id="history-panel" class="history-panel" tabindex="-1" aria-labelledby="history-title" hidden>
-      <div class="history-heading">
-        <div>
-          <p class="eyebrow">On this device only</p>
-          <h2 id="history-title">Local forecast history</h2>
-        </div>
-        <button id="close-history" type="button" class="secondary">Close history</button>
-      </div>
-      <p>Up to 100 successful or partial forecasts are kept here. Downloading creates a local JSON file; clearing removes this history without removing the disposable provider caches.</p>
-      <div class="history-actions">
-        <button id="download-history" type="button">Download JSON</button>
-        <button id="clear-history" type="button" class="danger">Clear local history</button>
-      </div>
-      <p id="history-status" class="history-status" role="status"></p>
-      <p id="history-empty" class="history-empty">No local forecast history yet.</p>
-      <div id="history-list" class="history-list"></div>
     </section>
 
     <section id="state-panel" class="state-panel" tabindex="-1" aria-live="polite" hidden>
@@ -71,14 +46,16 @@
     </section>
 
     <section id="result" hidden>
-      <div class="identity-card">
-        <dl class="names">
-          <div><dt>You entered</dt><dd id="entered-name"></dd></div>
-          <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
-          <div><dt>Coast</dt><dd id="coast-name"></dd></div>
-        </dl>
-        <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
-      </div>
+      <details class="identity-card">
+        <summary><strong id="coast-name"></strong></summary>
+        <div class="identity-details">
+          <dl class="names">
+            <div><dt>You entered</dt><dd id="entered-name"></dd></div>
+            <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
+          </dl>
+          <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
+        </div>
+      </details>
       <div id="warnings" class="warnings"></div>
       <div id="day-cards" class="day-cards" aria-label="Five-day tide, sun, and moon forecast"></div>
       <details class="source-details">
@@ -86,6 +63,29 @@
         <p id="source-copy"></p>
       </details>
       <p class="safety-line">Predictions are informational and are not for navigation or safety decisions.</p>
+    </section>
+
+    <section class="local-tools" aria-label="Local history and privacy">
+      <button id="show-history" type="button" class="secondary">Show local history</button>
+      <p class="privacy-copy"><strong>What leaves this device:</strong> Your submitted place or coordinates go directly to the configured Nominatim geocoder. Tide Here then requests prediction-station lists, chosen station details, and the five-day time range directly from NOAA and CHS as needed. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
+    </section>
+
+    <section id="history-panel" class="history-panel" tabindex="-1" aria-labelledby="history-title" hidden>
+      <div class="history-heading">
+        <div>
+          <p class="eyebrow">On this device only</p>
+          <h2 id="history-title">Local forecast history</h2>
+        </div>
+        <button id="close-history" type="button" class="secondary">Close history</button>
+      </div>
+      <p>Up to 100 successful or partial forecasts are kept here. Downloading creates a local JSON file; clearing removes this history without removing the disposable provider caches.</p>
+      <div class="history-actions">
+        <button id="download-history" type="button">Download JSON</button>
+        <button id="clear-history" type="button" class="danger">Clear local history</button>
+      </div>
+      <p id="history-status" class="history-status" role="status"></p>
+      <p id="history-empty" class="history-empty">No local forecast history yet.</p>
+      <div id="history-list" class="history-list"></div>
     </section>
   </main>
 

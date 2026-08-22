@@ -15,10 +15,11 @@ geocoder cache keeps its hashed 24-hour keys, and the existing station-catalogue
 read-through cache keeps its seven-day lifetime.
 
 The page says exactly what leaves the browser: a typed place goes directly to
-the configured geocoder, then the selected station and time range go directly
-to NOAA or CHS. History remains on the device until the user clears it. There is
-no application analytics, service-worker refresh, periodic request, or history
-upload.
+the configured geocoder; prediction-station lists, chosen-station details, and
+the selected time range go directly to NOAA and CHS as needed. History remains
+on the device until the user clears it. The disclosure and history button are
+below the data display. There is no application analytics, service-worker
+refresh, periodic request, or history upload.
 
 ## Verification
 

@@ -1,6 +1,7 @@
 import { resolveTimeZone } from '../phase-1/src/day-model.mjs';
-import { normalizeStationCatalogues, readThroughStationCatalogue } from '../phase-2/src/station-catalogue.mjs';
-import { TideProvider } from '../phase-3/src/tide-provider.mjs';
+import { fetchStationCatalogues, normalizeStationCatalogues, readThroughStationCatalogue } from '../phase-2/src/station-catalogue.mjs';
+import { fetchStationDetails, readThroughStationDetails } from '../phase-2/src/station-details.mjs';
+import { TIDES_UNAVAILABLE, TideProvider } from '../phase-3/src/tide-provider.mjs';
 import { ASTRONOMY_UNAVAILABLE, Astronomy } from '../phase-4/src/astronomy.mjs';
 import { Geocoder, GEOCODER_UNAVAILABLE, INVALID_INPUT, PLACE_NOT_FOUND, parsePlaceInput } from '../phase-5/src/geocoder.mjs';
 import { COAST_CHOICE_REQUIRED, TideHereService } from '../phase-5/src/resolve-forecast.mjs';
@@ -28,9 +29,43 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
   json('../phase-0/fixtures/chs-halifax-hilo.json')
 ]);
 
-const stations = normalizeStationCatalogues(catalogueFixture, providerConfig);
+const fixtureStations = normalizeStationCatalogues(catalogueFixture, providerConfig);
 const history = new LocalHistory({ storage: localStorage, now });
 const forecastCache = new ForecastCache({ storage: localStorage, now });
+const stationDetailPromises = new Map();
+
+async function stationDetails(station) {
+  if (station.timeZone) return station;
+  if (fixtureMode) {
+    return Object.freeze({
+      ...station,
+      timeZone: resolveTimeZone(station.latitude, station.longitude, timeZoneDataset)
+    });
+  }
+  const key = `${station.provider}:${station.id}`;
+  if (!stationDetailPromises.has(key)) {
+    stationDetailPromises.set(key, readThroughStationDetails({
+      storage: localStorage,
+      station,
+      now: now().getTime(),
+      ttlMs: providerConfig.catalogueCacheTtlMs,
+      fetchDetails: () => fetchStationDetails({ station, config: providerConfig, fetchImpl: fetch.bind(globalThis) })
+    }).then((result) => result.station));
+  }
+  return stationDetailPromises.get(key);
+}
+
+function resolutionWithStationDetails(resolution, originalStation, detailedStation) {
+  if (resolution.ok) return Object.freeze({ ...resolution, station: detailedStation });
+  return Object.freeze({
+    ...resolution,
+    candidates: Object.freeze(resolution.candidates.map((candidate) => (
+      candidate.provider === originalStation.provider && candidate.id === originalStation.id
+        ? detailedStation
+        : candidate
+    )))
+  });
+}
 
 function fixturePlace(input) {
   const parsed = parsePlaceInput(input);
@@ -103,10 +138,12 @@ const service = new TideHereService({
     storage: localStorage,
     now: now().getTime(),
     ttlMs: providerConfig.catalogueCacheTtlMs,
-    fetchCatalogue: async () => stations
+    fetchCatalogue: fixtureMode
+      ? async () => fixtureStations
+      : () => fetchStationCatalogues({ config: providerConfig, fetchImpl: fetch.bind(globalThis) })
   })).stations,
   matchConfig: providerConfig.match,
-  timeZoneLookup: async (latitude, longitude) => resolveTimeZone(latitude, longitude, timeZoneDataset),
+  timeZoneLookup: async (_latitude, _longitude, station) => (await stationDetails(station)).timeZone,
   tideProvider: new TideProvider({
     config: providerConfig,
     fetchImpl: fixtureMode ? fixtureTideFetch : fetch.bind(globalThis),
@@ -177,7 +214,9 @@ function showChooser(resolution) {
     const distance = document.createElement('small');
     distance.textContent = `${candidate.distanceKm.toFixed(1)} km · ${candidate.provider.toUpperCase()}`;
     button.append(name, distance);
-    button.addEventListener('click', () => loadForecast(resolution, candidate));
+    button.addEventListener('click', () => {
+      void loadForecast(resolution, candidate).catch(() => showState(TIDES_UNAVAILABLE));
+    });
     return button;
   }));
   renderMap(resolution);
@@ -261,11 +300,11 @@ function eventGroup(title, entries) {
 }
 
 function astronomyGroup(day) {
-  const section = document.createElement('section');
-  section.className = 'event-group';
-  section.append(textNode('h3', 'Sun and moon'));
+  const details = document.createElement('details');
+  details.className = 'astronomy-details';
+  details.append(textNode('summary', `Sun and moon · Moonrise ${day.moonrise.label}`));
   const pairs = document.createElement('div');
-  pairs.className = 'event-pair';
+  pairs.className = 'event-pair astronomy-content';
   for (const [label, event] of [
     ['Sunrise', day.sunrise], ['Sunset', day.sunset],
     ['Moonrise', day.moonrise], ['Moonset', day.moonset], ['Moon phase', { label: day.moonPhase }]
@@ -275,8 +314,8 @@ function astronomyGroup(day) {
     if (event.code) row.dataset.code = event.code;
     pairs.append(row);
   }
-  section.append(pairs);
-  return section;
+  details.append(pairs);
+  return details;
 }
 
 function dayCard(day, index) {
@@ -323,19 +362,17 @@ function showForecast(forecast) {
 
 async function loadForecast(resolution, station = null) {
   const selection = service.chosenStation(resolution, station);
-  const coordinates = {
-    latitude: Number(selection.station.latitude ?? selection.station.lat),
-    longitude: Number(selection.station.longitude ?? selection.station.lon)
-  };
-  const timeZone = resolveTimeZone(coordinates.latitude, coordinates.longitude, timeZoneDataset);
+  const detailedStation = await stationDetails(selection.station);
+  const preparedResolution = resolutionWithStationDetails(resolution, selection.station, detailedStation);
+  const timeZone = detailedStation.timeZone;
   const cacheContext = {
     input: resolution.input.display,
-    station: selection.station,
+    station: detailedStation,
     timeZone,
     now: now()
   };
   const cached = forcedState ? null : await forecastCache.read(cacheContext);
-  const result = cached || await service.forecast(resolution, station);
+  const result = cached || await service.forecast(preparedResolution, resolution.ok ? null : detailedStation);
   if (!cached && !forcedState) await forecastCache.write(cacheContext, result);
   history.append(result);
   updateHistoryCount();
@@ -344,10 +381,14 @@ async function loadForecast(resolution, station = null) {
 
 async function submit() {
   hideOutput();
-  const resolution = await service.resolve($('#place').value);
-  if (resolution.code === COAST_CHOICE_REQUIRED) return showChooser(resolution);
-  if (!resolution.ok) return showState(resolution.code);
-  return loadForecast(resolution);
+  try {
+    const resolution = await service.resolve($('#place').value);
+    if (resolution.code === COAST_CHOICE_REQUIRED) return showChooser(resolution);
+    if (!resolution.ok) return showState(resolution.code);
+    return await loadForecast(resolution);
+  } catch {
+    return showState(TIDES_UNAVAILABLE);
+  }
 }
 
 $('#place-form').addEventListener('submit', (event) => {

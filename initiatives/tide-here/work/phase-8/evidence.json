@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 3,
+  "checkedAt": "2026-08-22T20:16:40Z",
+  "deployment": {
+    "title": "Tide Here — five coast-local days",
+    "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
+    "mode": "replacement",
+    "access": "public",
+    "version": 3,
+    "staticFileCount": 44,
+    "archiveSizeBytes": 1351680,
+    "archiveFileCount": 95
+  },
+  "deterministicTests": {
+    "unit": { "passed": 52, "failed": 0 },
+    "browser": { "passed": 13, "failed": 0, "skipped": 1 }
+  },
+  "liveChecks": {
+    "nominatim": {
+      "inputs": ["half moon bay", "vancouver"],
+      "status": 200,
+      "cors": "*",
+      "contract": "one result readable by Chromium"
+    },
+    "noaa": {
+      "station": "9414131",
+      "input": "half moon bay",
+      "status": 200,
+      "cors": "*",
+      "timeZone": "America/Los_Angeles",
+      "dayCards": 5,
+      "warningCount": 0,
+      "firstDayTideCount": 4,
+      "firstTwoDayTideCounts": [4, 4]
+    },
+    "chs": {
+      "station": "07710",
+      "input": "vancouver",
+      "status": 200,
+      "cors": "*",
+      "timeZone": "Canada/Pacific",
+      "dayCards": 5,
+      "warningCount": 0,
+      "firstDayTideCount": 2,
+      "firstTwoDayTideCounts": [2, 2]
+    }
+  },
+  "layouts": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800,
+      "dayColumns": 5,
+      "horizontalOverflow": false,
+      "localToolsBelowResult": true
+    },
+    {
+      "name": "iPhone Pro Max",
+      "width": 430,
+      "height": 932,
+      "dayCards": 5,
+      "horizontalOverflow": false,
+      "localToolsBelowResult": true,
+      "removedEntryCopyPresent": false,
+      "coastDetailsClosedByDefault": true,
+      "astronomyDetailsClosedByDefault": true,
+      "astronomyLabelsIncludeMoonrise": true,
+      "firstTwoDaysVisible": true,
+      "maximumSecondDayBottomPx": 525
+    }
+  ],
+  "thresholdReview": {
+    "decision": "unchanged",
+    "automaticKm": 25,
+    "clarityRatio": 0.6,
+    "maximumKm": 150,
+    "cases": [
+      { "name": "Seattle", "nearestKm": 0.706, "nearestRatio": 0.052, "outcome": "accepted" },
+      { "name": "Halifax", "nearestKm": 1.187, "nearestRatio": 0.002, "outcome": "accepted" },
+      { "name": "Bainbridge", "nearestKm": 1.309, "nearestRatio": 1, "outcome": "coast-choice-required" },
+      { "name": "U.S.–Canada border", "nearestKm": 1.855, "nearestRatio": 0.945, "outcome": "coast-choice-required" },
+      { "name": "Denver", "nearestKm": 1641.052, "nearestRatio": 0.993, "outcome": "coverage-unavailable" }
+    ]
+  },
+  "policyReview": {
+    "provider": "Nominatim / OpenStreetMap",
+    "policyUrl": "https://operations.osmfoundation.org/policies/nominatim/",
+    "outcome": "fits low-volume public manual lookup under the documented controls",
+    "controls": [
+      "user-triggered submit",
+      "one-second minimum request interval",
+      "24-hour cache",
+      "visible attribution",
+      "switchable endpoint",
+      "no autocomplete",
+      "no periodic requests"
+    ]
+  }
+}

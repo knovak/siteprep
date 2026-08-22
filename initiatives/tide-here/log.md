@@ -63,3 +63,20 @@ Max viewport.
 ## 2026-08-22 — Phase 7 - add local history, caching, and the privacy statement
 
 Added 100-entry device-local history with view, download, and history-only clear; wired hashed hourly forecast, 24-hour geocoder, and seven-day station caches; and verified the privacy disclosure and no-transmission boundary.
+
+## 2026-08-22 — Phase 8 - deploy, run live smoke tests, and review thresholds
+
+Deployed the owner-only Tide Here validation Site, passed live NOAA, CHS, Nominatim, desktop, and iPhone Pro Max checks, and recorded unchanged thresholds and provider policy review.
+
+## 2026-08-22 — General place lookup and quieter entry
+
+Moved local history and the data-disclosure copy below the forecast display,
+removed the requested entry-page slogans, and replaced the production fixture
+catalogue with cached complete NOAA/CHS catalogues plus chosen-station metadata.
+
+## 2026-08-22 — Compact coast and astronomy disclosures
+
+Collapsed the detailed entered-place block under the coast name, kept every
+day's high and low tides visible, and folded sun and moon details under a label
+that includes the day's moonrise time. Tightened the phone layout so the first
+two tide days are immediately visible at an iPhone Pro Max viewport.
