@@ -3,15 +3,22 @@
   "summary": "A 3D visual twin that shows bones and muscles during small body movements.",
   "stage": "building",
   "value": "medium",
-  "outputs": [],
+  "outputs": [
+    {
+      "kind": "external",
+      "url": "https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/",
+      "status": "live"
+    }
+  ],
   "todo": [
     {
-      "id": "phase-6-private-validation",
-      "title": "Phase 6 - deploy privately and run validation",
-      "state": "actionable",
+      "id": "phase-6-practitioner-review",
+      "title": "Record anatomy and tradition-practitioner validation findings",
+      "state": "blocked",
       "value": "high",
-      "effort": "large",
-      "advances_stage": false
+      "effort": "medium",
+      "advances_stage": false,
+      "blocked_by": "data:reviewer identities, invitation addresses, and a report destination for one anatomy reviewer and one practitioner from each tradition"
     }
   ]
 }
