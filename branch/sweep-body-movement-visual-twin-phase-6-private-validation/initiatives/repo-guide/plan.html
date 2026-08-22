@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Implementation plan — Repo Guide</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Implementation plan — Repo Guide</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Repo Guide</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Implementation plan</h2>
+    </div>
+    <div class="card-content">
+<h2>Plan</h2>
+<p>How the Repo Guide gets built, in order. <code>spec.md</code> says what is made; this says what is made <em>first</em>, and why that order rather than another. <code>test-plan.md</code> is its other half — every phase below ends at a named test there, which is what stops &quot;phase complete&quot; from being a judgement call.</p>
+<p>Numbered references to <strong>O1–O9</strong> are the objectives; <strong>§n</strong> is a section of <code>spec.md</code> unless it says otherwise.</p>
+<h3>1. What decides the order</h3>
+<p>Four rules, applied in this priority, produce the sequence in §4:</p>
+<ol><li><strong>What has never touched a real file goes first.</strong> §3.3 records the lesson</li></ol>
+<p>   this initiative already paid for once: &quot;just add an export&quot; was a guess about    somebody else&#39;s file, and it was wrong on first contact. Four of §3.2&#39;s    extraction targets — <code>build.sh</code>&#39;s content areas, the workflow YAML, the skill    frontmatter, and the two keys read out of <code>sweep-prompt.md</code> — have had no such    contact. They are phase 0, and phase 0 is an afternoon.</p>
+<ol><li><strong>Then what everything else is written against.</strong> The fact set and §4&#39;s</li></ol>
+<p>   honesty checks come before a word of narrative, because prose written before    the checks exist is prose written to be rewritten. The third check — no    literal stage name, no literal budget number — is a constraint on how every    sentence in the guide is phrased, and finding that out after the sections are    drafted means drafting them twice.</p>
+<ol><li><strong>Then one artefact end to end before the other two.</strong> The description is</li></ol>
+<p>   built first and completely, including the browser checks that open it. The    deck and the simulator then arrive against a renderer, a footer and a test    harness that already work, and each is a rendering rather than a project.</p>
+<ol><li><strong>What needs the user goes last, and there is almost none of it.</strong> Nothing in</li></ol>
+<p>   phases 0–7 waits on anybody. The two steps that do — installing the skill    where Claude Code will find it, and linking the guide into the site — are both    <em>delivery</em>, both outside a sweep&#39;s write scope, and both land together in one    pull request the user makes at the end (§3.4, §11).</p>
+<p>**What the order is deliberately <em>not</em> sorted by.** Not by what the initiative is <em>for</em>: O2 and O3 are the description&#39;s content and the description is phase 3, behind two phases of machinery that decide what its sentences may say. And not by what is nicest to look at — the simulator is the most demonstrable artefact and it is phase 5, because a walk-through built before the fact set can teach a stage that does not exist, which is the one thing §7 says it must not do.</p>
+<h3>2. What the plan claims</h3>
+<p><strong>The whole build fits inside <code>initiatives/repo-guide/</code>.</strong> That is not a restatement of §9.3, which says the same thing about <em>protected</em> paths; it is stronger, and it is the claim this ordering is arranged to keep. A sweep pull request may write <code>initiatives/&lt;slug&gt;/</code> and that initiative&#39;s declared <code>outputs[]</code>, and this plan declares no outputs at all — so every phase below is buildable by a scheduled run with nothing to hand-land in between.</p>
+<p>Two things had to be decided differently for that to be true, and both are in §3. Neither is a workaround: in each case the arrangement that keeps the build in scope is also the arrangement that is correct on its own terms.</p>
+<h3>3. Where things live, and the three constraints that hold across every phase</h3>
+<h4>3.1 The tree</h4>
+<p>§9.2&#39;s <code>guide/</code> tree is rooted at <code>initiatives/repo-guide/work/</code>, so the generator lives at <code>initiatives/repo-guide/work/guide/</code>:</p>
+<pre><code>initiatives/repo-guide/work/guide/
+  .gitignore           # out/
+  content/*.md         # the sections of §5
+  simulator/           # the walk-through&#39;s own source
+  build/               # the generator: facts, tokens, renderers, checks
+  test/                # the browser checks, and their Playwright config
+  out/                 # the three generated files — git-ignored, never committed</code></pre>
+<p><code>work/</code> is where AGENTS.md puts output under development, and the extra <code>guide/</code> level keeps §9.2&#39;s paths readable verbatim and lets the whole tree move intact if the generator ever graduates to <code>shared/</code>.</p>
+<p><strong>The ignore rule is a nested <code>.gitignore</code>, not the root one.</strong> Root <code>.gitignore</code> is outside a sweep&#39;s write scope, so <code>out/</code> is ignored by a <code>.gitignore</code> inside <code>work/guide/</code>. This is the smallest example of the §2 claim and worth stating because the obvious move — add a line to the root file — is a write-scope failure on the first phase that produces a file.</p>
+<h4>3.2 An unresolvable fact is an error from the first line of code</h4>
+<p>§3.3 states it and §9.4 prices it; the plan&#39;s contribution is <em>when</em>. The resolver is built in phase 1 with no default value, no fallback, and no leave-it-out path, because that is the one property that cannot be added afterwards: a generator that has ever tolerated a missing fact has callers that depend on tolerating it, and by phase 6 the code that would have to change is every renderer.</p>
+<h4>3.3 The browser checks live in the initiative, not in <code>tests/</code></h4>
+<p>§9.5 says the checks that open the generated files &quot;belong in <code>tests/</code> and the initiative must declare that path in its <code>outputs[]</code>&quot;. Drafting this found two reasons that cannot work, and the second is the interesting one.</p>
+<p><strong>It fails validation.</strong> A declared output is scanned for references to anything under <code>initiatives/</code> — <code>checkOutputIndependence</code> in <code>scripts/initiatives.mjs</code> — and the rule behind it is AGENTS.md&#39;s: a published output may never load code from a mutable initiative. A browser check for this guide must open <code>initiatives/repo-guide/work/guide/out/description.html</code>, which is precisely the string the check forbids. Declaring <code>tests/repo-guide/</code> would make <code>initiatives.mjs validate</code> fail on the commit that created it.</p>
+<p><strong>And it would put the guide back in front of the site.</strong> <code>playwright.config.js</code> sets <code>testDir: &#39;./tests&#39;</code> and matches <code>**/*.spec.js</code>, with a web server serving the built site out of <code>gh-pages/</code>. A spec file under <code>tests/</code> therefore runs on every pull request to this repository — against a guide that is generated on request and never committed, so <code>out/</code> is empty on a fresh checkout and the check fails on a change to an unrelated deck. That is the exact coupling §9.1 removed from the build, reappearing one layer down in the test suite.</p>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Checks in <code>work/guide/test/</code>, run by the generator</strong> <em>(chosen)</em></td><td>The guide&#39;s correctness gates the guide, which is §9.4&#39;s rule applied to its own tests. Runs where the artefacts actually exist — immediately after generation, against files that are still there. Needs no output declaration, so the build stays in scope</td><td>The repository&#39;s default suite does not run them, so nothing catches a regression except generating the guide. That is the same exposure §9.1 already accepted for the guide itself</td></tr><tr><td><strong>Checks in <code>tests/</code>, output declared</strong> <em>(§9.5 as written)</em></td><td>One test suite, one command, the convention every other test in this repository follows</td><td>Fails validation, and fails CI on unrelated changes</td></tr><tr><td><strong>Checks in <code>tests/</code>, skipped when <code>out/</code> is absent</strong></td><td>Runs in the default suite when there is something to run</td><td>A check that skips itself when the thing it tests is missing passes forever in CI and is only ever exercised by the person who did not need it</td></tr></tbody></table></div>
+<p><strong>What follows.</strong> The checks are Playwright specs under <code>work/guide/test/</code> with their own config, invoked as <code>npx playwright test --config initiatives/repo-guide/work/guide/test/playwright.config.js</code>. They open <code>file://</code> URLs with no server, which §1&#39;s self-contained files make possible. No npm script is added, because <code>package.json</code> is outside the write scope too — the skill carries the command, which is where a command belonging to one generator belongs anyway.</p>
+<p><strong>This is a spec correction, not a plan preference.</strong> §9.5&#39;s second bullet and the <code>outputs[]</code> sentence should be rewritten; §6 of this plan lists it with the other two.</p>
+<h3>4. The phases</h3>
+<p>Each phase names what it produces, what it explicitly leaves out, and the exit test in <code>test-plan.md</code> that ends it. A phase is over when that test passes and <code>log.md</code> records what was learned — not when the code is written.</p>
+<h4>Phase 0 — Prove the four unproven extractions reach</h4>
+<p><strong>Produces:</strong> an answer, with evidence, for each of §3.2&#39;s four rows that are read as text rather than imported — <code>structure.content_areas</code> from <code>scripts/build.sh</code>, <code>workflows.<em></code> from <code>.github/workflows/</em>.yml</code>, <code>skills.<em></code> from <code>.claude/skills/</em>/SKILL.md</code>, and <code>sweep.phase_summaries</code> and <code>sweep.rules</code> from <code>initiatives/sweep-prompt.md</code>. A dated <code>decisions.md</code> entry per target, saying what shape the reader has to assume and what it does when the file changes shape.</p>
+<p><strong>Leaves out:</strong> everything else. Nothing here survives into phase 1 except the finding; the throwaway script is throwaway.</p>
+<p><strong>Why it is first, in one sentence:</strong> the five imported facts are proven and the other four are guesses, and §3.3 is a written record of what a guess about another file costs when it is discovered late.</p>
+<p><strong>The one that is most likely to disappoint</strong> is the workflow YAML. This repository has no YAML parser and cannot acquire one — <code>package.json</code> is outside the write scope — so <code>workflows.*</code> is either a narrow reader for the two fields §3.2 actually wants, job names and <code>on:</code> triggers, or the fact is dropped. The phase decides which, on evidence, and the decision is recorded rather than absorbed: a hand-rolled reader for a general format is exactly the second implementation §3.3&#39;s middle option warns about, and it is only acceptable because the two fields it reads are shallow and it fails loudly.</p>
+<p><strong>What a failure here means.</strong> Much less than phase 0 usually does. A target that cannot be read honestly is dropped from §3.2 and the sentences that would have cited it are dropped with it — the guide is a little shorter and still cannot disagree with the repository. The bad outcome is not &quot;no fact&quot;, it is a reader that returns a plausible wrong answer on an unfamiliar formatting, which is why the exit is evidence rather than code that ran once.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.0.</p>
+<h4>Phase 1 — The fact set</h4>
+<p><strong>Produces:</strong> the resolver behind §3.2 — a registry mapping each dotted key to exactly one source (§3.1&#39;s rule 4, enforced rather than intended), the five imported constants from <code>scripts/initiatives.mjs</code>, the JSON reads from <code>sweep.json</code>, the shallow <code>initiatives.live</code> read, and whichever text-derived targets phase 0 approved. Plus the CLI entry point every later phase runs through, and the drift test of §9.5.</p>
+<p><strong>Leaves out:</strong> every renderer, every token, every word of narrative.</p>
+<p>This is the phase O9 is actually made of. Everything else in the initiative is downstream of the claim that the guide cannot state a stage list that disagrees with the code, and this is where that claim is either true or a story we tell.</p>
+<p><strong>The drift test is the phase&#39;s point, not its afterthought.</strong> Rename a stage in a fixture copy of <code>initiatives.mjs</code> and generation must fail rather than emit the old name. It is the only test in this initiative that fails because of a change made somewhere else, which is the whole of &quot;drift is detectable rather than discovered&quot;.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.1. Advances the stage to <code>building</code>.</p>
+<h4>Phase 2 — The section format and the three checks</h4>
+<p><strong>Produces:</strong> the <code>guide/content/*.md</code> reader — frontmatter of §5.1, the <code>---</code> split between page text and slide text — token substitution, and §4&#39;s three checks: an unknown token is an error, an uncited fact is a warning, a literal stage name or budget number is an error.</p>
+<p><strong>Leaves out:</strong> the sections themselves. The phase ships with two or three fixture sections that exist to exercise the checks and are deleted in phase 3.</p>
+<p><strong>The third check has to be pinned down before it can be built</strong>, because §4 states it as an intention and it can be implemented three ways. Two of them make the guide unwritable:</p>
+<ul><li><strong>Budget numbers.</strong> The check is a whole-token digit match against the current</li></ul>
+<p>  values of <code>sweep.budget</code> — the four keys §3.2 names, not every number in   <code>sweep.json</code>. Token boundaries matter: a date must not trip the match on a   single-digit budget value. §4 accepts that a   sentence legitimately saying &quot;4&quot; has to be rewritten, and that cost stands.</p>
+<ul><li><strong>Blocker prefixes.</strong> Strict, and easy — <code>human:</code>, <code>data:</code>, <code>cost:</code> with their</li></ul>
+<p>  colons are not words anybody writes by accident.</p>
+<ul><li><strong>Stage names.</strong> Strict is unwritable, and this is the finding. The stages are</li></ul>
+<p>  <code>wish</code>, <code>shaped</code>, <code>specified</code>, <code>planned</code>, <code>building</code>, <code>refining</code>, <code>dormant</code> and   <code>archived</code> — ordinary English words that a guide <em>about</em> a lifecycle made of   them cannot avoid. &quot;The wish behind a piece of work&quot; is a sentence O2 needs and   a strict check rejects. So: an <strong>error</strong> for a stage name in backticks (which   is how this repository writes a stage when it means the stage), an <strong>error</strong>   for three or more stage names in a row anywhere (a stage list, spelled out),   and a <strong>warning</strong> for a bare occurrence, which the writer reads and decides.</p>
+<p>The warning tier is not a softening. §4 already uses one for an uncited fact, on the same reasoning: the check that fires on a judgement call belongs in front of a person rather than in a build gate they will learn to work around. This is the third of the plan&#39;s proposed spec corrections (§6).</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.2.</p>
+<h4>Phase 3 — The description, and the harness that opens it</h4>
+<p><strong>Produces:</strong> the nine sections of §5.2, page text only; the description renderer — one self-contained HTML file, styling and script inline; §10&#39;s provenance footer with the generation date and the short sha of the sources; and <code>work/guide/test/</code>, the browser checks of §3.3 above, with the config that runs them against <code>file://</code>.</p>
+<p><strong>Leaves out:</strong> slide text, the simulator, and simulator review dating.</p>
+<p><strong>This is the largest phase and it is deliberately not split.</strong> The nine sections are one document with one argument; drafting five of them and stopping produces half an explanation, which is not an increment of anything. Section 3 — who supplies what, per stage — is the one <code>objectives.md</code> calls hardest, because it is the only section whose material is spread across all five existing documents rather than derivable from one.</p>
+<p><strong>What arrives here rather than later:</strong> the footer, because §10 says a guide generated on request travels and the footer is what lets somebody holding a copy work out whether it still describes the repository; and the browser harness, because &quot;opens with no console error and every authoritative link resolves&quot; is this phase&#39;s exit and not a nicety to be added once three artefacts exist.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.3, including the first count of composed words against derived tokens (§6.1).</p>
+<h4>Phase 4 — The deck</h4>
+<p><strong>Produces:</strong> slide text in the sections marked for it, the deck renderer, the 10–20 length check of §6, and keyboard navigation — one self-contained file.</p>
+<p><strong>Leaves out:</strong> any change to the description. If the deck needs a section to say something the description does not, that is §2&#39;s compromise surfacing, and it is resolved in the section file rather than by forking the source.</p>
+<p><strong>The arithmetic does not work as specified</strong>, which is the second of §6&#39;s corrections and is settled here because this is the phase that trips over it: §5.2 fixes the section list at <strong>nine</strong>, §6 fails generation below <strong>ten slides</strong>, and a rendering of nine sections is nine slides however they are marked. The plan proposes that a section carries an <em>ordered list</em> of slide texts rather than exactly one, and that the check counts rendered slides rather than marked sections. That keeps everything §2 and §6 were protecting — slide text is written, never truncated; one idea per slide; the source is still one document — and it makes the lifecycle section — one section covering eight stages — able to be the several slides it obviously is.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.4.</p>
+<h4>Phase 5 — The simulator</h4>
+<p><strong>Produces:</strong> §7&#39;s six-step walk-through with Step, Back and Play, in one self-contained file, with its stage names, blocker classes and phase names taken from the phase 1 fact set.</p>
+<p><strong>Leaves out:</strong> free play, the real backlog, and any implementation of the sweep&#39;s rules. <code>objectives.md</code> puts the first out of the first version and <code>decisions.md</code> settled the second.</p>
+<p><strong>Why after the deck and not before.</strong> The simulator is the one deliverable outside decision 1&#39;s guarantee — the choreography is composed and can disagree with the repository the first time a stage changes. Building it last means it is composed against a fact set that already exists, so the vocabulary is derived from the first line rather than retrofitted, and the part that can drift is narrowed to the sequence of steps.</p>
+<p><strong>The two steps that carry the phase</strong> are §7&#39;s own: the passed-over item in step 4, because the budget is the part of the sweep newcomers do not expect, and the cascade in step 6, when a merge unblocks something else. A version that shows one initiative moving cleanly through its stages is a stage table with animation, and it is not what O4 asks for.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.5.</p>
+<h4>Phase 6 — Simulator review dating</h4>
+<p><strong>Produces:</strong> a hand-set last-watched date in <code>build/dating.mjs</code> and §10&#39;s comparison with the newest commit touching the lifecycle and sweep sources the simulator uses. When those sources are newer, generation reports that another walkthrough may be due without refusing to generate.</p>
+<p><strong>Small, and that is the payoff for the order.</strong> The simulator and its exact source list already exist, so the comparison adds no metadata file and no second source registry.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.6.</p>
+<h4>Phase 7 — Package it as a skill</h4>
+<p><strong>Produces:</strong> <code>.claude/skills/generate-guide/SKILL.md</code> — a description that triggers on a request for the guide, the command that generates all three artefacts, the command that runs the browser checks against what it just generated, and what to do when a fact fails to resolve (report it; §9.4).</p>
+<p><strong>Installed.</strong> The skill lives at <code>.claude/skills/generate-guide/</code>, which is where both Claude Code and Codex discover it. It was originally written under this initiative&#39;s <code>skills/</code> and moved when AGENTS.md changed to put skills in <code>.claude/skills/</code> by default — a skill nobody can invoke is not a delivered skill. <code>.claude/skills/</code> is outside a sweep&#39;s write scope, so a later change to this skill is landed by the user rather than by a sweep.</p>
+<p><strong>Thin by construction.</strong> Every command it names exists and is tested by the time this phase starts, which is why it is a small item at the end rather than the scaffolding at the beginning.</p>
+<p><strong>Exit:</strong> <code>test-plan.md</code> §4.7. This is the <strong>last build item</strong>, and <code>link-the-guide</code> is blocked on it.</p>
+<h4>Then: delivery, which is the user&#39;s</h4>
+<p><code>link-the-guide</code> (§11) is the last item in the backlog and the first thing in this initiative that a sweep cannot do. It needs a nav entry in <code>shared/nav_bar/</code> and a line in <code>scripts/build.sh</code>, both protected paths, and it should carry the skill install of phase 7 in the same pull request — two out-of-scope steps, one change, made once when there is something to link. <strong>Until it lands, O1 is not met</strong>, which §11 records and this plan does not soften.</p>
+<h3>5. What each phase leaves behind</h3>
+<p>Every phase ends with three things, and the third is the one that is easy to skip:</p>
+<ul><li>the exit test passing;</li><li>a <code>log.md</code> entry saying what happened;</li><li>**a <code>decisions.md</code> entry for anything the phase settled that the spec left</li></ul>
+<p>  open** — the shape each text-derived reader assumes, the exact form of the   literal check, the composed-to-derived ratio, the slide count per section. A   rule learned in an afternoon and then buried in a regular expression is a   decision nobody can revisit, and the next person to read it has no way to tell   whether it was reasoned or guessed.</p>
+<h3>6. The questions §12 left, answered</h3>
+<p>Four were open. Three are answered here by reasoning; one cannot be answered by anybody yet, and this plan says who produces the evidence rather than guessing.</p>
+<h4>6.1 How much composed prose there is — <em>a ratio, measured from phase 3</em></h4>
+<p>§3 draws the derived/composed line but not how long the written half runs, and calls it a drafting judgement. It is, but an unmeasured one drifts in a predictable direction: composed prose is faster to write than a fact is to extract, so the guide gets longer and less checkable one convenient sentence at a time.</p>
+<p>So the plan asks phase 3 for a number rather than a limit: <strong>the count of composed words and of resolved tokens, per section, recorded in <code>decisions.md</code> as the first baseline.</strong> A section with no token in it is not forbidden — section 8, &quot;taking this elsewhere&quot;, is mostly composed by nature — but it is visible, which is enough. There is nothing to compare against until the number exists, and inventing a threshold now would be inventing the wrong one.</p>
+<h4>6.2 What invokes the skill, and how often — <em>two occasions, neither scheduled</em></h4>
+<p><strong>After a process change that a section describes, and before handing the guide to somebody.</strong> Not on a schedule, and nothing automates it: §9.1 made generation deliberate on purpose, and a scheduled regeneration would quietly re-acquire the thing that decision removed — a guide being rebuilt for nobody, failing for nobody, on a repository nobody is reading it from.</p>
+<p>What makes that safe is §10&#39;s footer, and it is worth being precise about the division. The footer does not keep a copy fresh; it makes a stale copy <em>detectable by the person holding it</em>, which is the property that matters for an artefact that travels as an attachment. Regeneration is cheap, so the answer to &quot;is this current?&quot; is always &quot;generate it again and compare the sha&quot;, and that is a better arrangement than a schedule that guesses how often the process changes.</p>
+<h4>6.3 Whether the simulator needs its own review cadence — <em>yes, using §10&#39;s mechanism</em></h4>
+<p>§12 notes that the simulator is the piece generation does not reach and that nothing prompts anyone to re-watch it after a stage change. Dating covers that detection directly.</p>
+<p><code>build/dating.mjs</code> carries the last-watched date, set by hand when somebody steps through the simulator. Generation compares it against the newest commit touching <code>lifecycle.*</code> or <code>sweep.phases</code> — the facts the choreography depends on — and when the sources are newer, the generation report says so. A report line rather than a failure keeps review visible without training people to work around the generator.</p>
+<p>The alternative considered and rejected was pinning the step sequence with a test. It cannot be done honestly — the steps are a <em>narrative</em> about the rules, not a consequence of them, and a test asserting that step 4 shows a passed-over item pins the words rather than their truth.</p>
+<h4>6.4 Whether the <code>portable: true</code> markers survive a fork — <em>nobody can say, and the plan will not pretend</em></h4>
+<p>§5.2&#39;s section 8 is generated from <code>structure.content_areas</code> and <code>sweep.protected_paths</code>, plus a maintained marker for files the generator cannot classify. §12 is right that the marker list is a claim about what carries the process, and that the only test of it is somebody forking.</p>
+<p>What the plan can do is make the list cheap to correct and self-documenting: <strong>every marker carries a one-line reason, and the list starts empty.</strong> A file appears in it only when somebody found it was needed and said why, so the list grows into a record of what a fork actually took rather than a guess made in advance. The first fork is the evidence; until then section 8 says what it knows and the marker list is short, which is the honest state.</p>
+<h3>7. What this plan does not decide</h3>
+<ul><li><strong>The exact section-to-slide mapping.</strong> §6 above proposes that a section may</li></ul>
+<p>  carry several slides; which sections carry how many is phase 4&#39;s, measured   against the 10–20 band rather than assigned in advance.</p>
+<ul><li>**Whether <code>workflows.<em></code> survives.</em>* Phase 0 decides it on evidence, and the</li></ul>
+<p>  outcome is a <code>decisions.md</code> entry either way.</p>
+<ul><li><strong>The order of the nine sections in the deck.</strong> §6 renders them in <code>order</code>;</li></ul>
+<p>  whether the deck&#39;s path through them is the description&#39;s path is a question   the deck&#39;s first draft answers.</p>
+<ul><li><strong>Anything held out of the first version</strong> — a <code>.pptx</code> rendering, a</li></ul>
+<p>  <code>CONTRIBUTING.md</code>, the tutorial, the simulator sandbox.</p>
+<p>And three things this plan proposes that belong to the spec rather than here. Each is written where it was found, above; collected so the next revision of <code>spec.md</code> has them in one place:</p>
+<ol><li><strong>§9.5&#39;s <code>tests/</code> instruction cannot be followed</strong> (§3.3). The browser checks</li></ol>
+<p>   go in <code>work/guide/test/</code> and no <code>outputs[]</code> path is declared.</p>
+<ol><li><strong>§5.2&#39;s nine sections and §6&#39;s ten-slide floor contradict each other</strong></li></ol>
+<p>   (phase 4). A section carries an ordered list of slide texts, and the check    counts rendered slides.</p>
+<ol><li><strong>§4&#39;s literal ban is unwritable as stated for stage names</strong> (phase 2). Error</li></ol>
+<p>   in backticks and in a run of three or more; warning for a bare occurrence.    Budget numbers and blocker prefixes stay strict.</p>
+<h3>8. The risks worth naming</h3>
+<ul><li><strong>Phase 0 comes back badly on the workflow YAML.</strong> The likeliest single</li></ul>
+<p>  failure, and the cheapest: the fact is dropped, the guide loses two sentences,   and nothing else moves. It becomes expensive only if the answer is &quot;a reader   that mostly works&quot;, which is the option §3.3 already argued against and which   will look tempting for exactly as long as it takes to meet a workflow file   written in a shape it did not expect.</p>
+<ul><li><strong>The literal check is disabled rather than obeyed.</strong> The realistic failure</li></ul>
+<p>  mode of §4&#39;s third rule: a writer hits it four times in an afternoon, adds an   exemption, and by the next draft the guide is prose nothing checks. Phase 2&#39;s   warning tier exists to make that unnecessary, and the drift table in   <code>test-plan.md</code> §5 pins the error tiers so that removing one is a test failure   rather than a config edit.</p>
+<ul><li><strong>The description is written to the sections rather than to the reader.</strong> Nine</li></ul>
+<p>  fixed sections make O2, O3 and O6 each somebody&#39;s job, and they also make it   possible to fill all nine and explain nothing. The check is not automatable:   <code>test-plan.md</code> §4.3 asks for a reading by somebody who has not worked here,   which is <code>objectives.md</code>&#39;s own test and the only one that measures whether any   of this worked.</p>
+<ul><li><strong>The simulator is built and then never watched again.</strong> §6.3&#39;s dated marker</li></ul>
+<p>  makes it detectable; nothing makes it happen. This is a real residual risk and   it is accepted, on the grounds that the alternative — a test over composed   choreography — pins the wrong thing.</p>
+<ul><li><strong>The guide is finished and never linked.</strong> <code>link-the-guide</code> is the last item</li></ul>
+<p>  and it is the user&#39;s to land, so the plausible end state is three good files in   a git-ignored directory and O1 unmet indefinitely. Pairing it with the skill   install is the mitigation — one pull request, made once, when there is finally   something worth linking.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/body-movement-visual-twin/phase-6-private-validation" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
