@@ -38,6 +38,10 @@ Unjudged bookmarks remain **Untriaged**. Applying a verdict changes the current
 bookmark or marked set without reloading the page; **Undo** restores the last
 whole action.
 
+In a wide window, use **Page layout** to switch immediately among 3 × 3,
+2 × 6, 2 × 8 (the default), and 3 × 12 cards. Tablet and phone windows keep
+their compact layouts so the cards remain readable.
+
 ## Keyboard controls
 
 | Key | Action |

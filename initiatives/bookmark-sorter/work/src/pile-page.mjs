@@ -15,6 +15,9 @@ export function renderPilePage() {
     main { height: 100dvh; display: grid; grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto; gap: 8px; padding: 12px; }
     header { grid-row: 1; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
     .header-tools { display: flex; align-items: center; gap: 12px; }
+    .layout-picker { display: flex; grid-template-columns: none; align-items: center; gap: 7px; white-space: nowrap; }
+    .layout-picker select { min-height: 34px; border: 1px solid #9eabc2; border-radius: 9px; padding: 5px 28px 5px 9px; color: #29406e; background: white; font-weight: 760; }
+    .layout-picker select:disabled { opacity: .6; cursor: not-allowed; }
     #help-toggle { min-height: 34px; border: 1px solid #9eabc2; border-radius: 9px; padding: 6px 10px; color: #29406e; background: white; font-weight: 760; }
     .brand { min-width: 0; }
     h1 { margin: 0; color: #142a58; font-size: clamp(1.45rem, 3vw, 2.4rem); line-height: 1; letter-spacing: -.045em; }
@@ -71,6 +74,9 @@ export function renderPilePage() {
     .bookmark-card[data-verdict="needs-more-time"] { box-shadow: inset 0 4px #d3a23f, 0 5px 18px #1b294410; }
     .capture { min-height: 42%; overflow: hidden; margin: -11px -11px 8px; display: grid; place-items: center; color: #748096; background: linear-gradient(135deg, #e8edf6, #f6f8fc); font-size: .68rem; font-weight: 760; letter-spacing: .06em; text-transform: uppercase; }
     .capture img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    :root[data-grid-rows="3"] .capture { flex: 0 0 30%; min-height: 0; }
+    :root[data-grid-rows="3"] .bookmark-card h2 { min-height: 2.34em; -webkit-line-clamp: 2; }
+    :root[data-grid-rows="3"] .note { -webkit-line-clamp: 1; }
     .site { overflow: hidden; color: #6a7387; font-size: .67rem; font-weight: 750; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
     .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
     .bookmark-card h2 a { color: inherit; text-decoration: none; }
@@ -111,6 +117,7 @@ export function renderPilePage() {
       main { padding: 9px; gap: 4px; }
       .brand p, .stat.total, .toolbar .shortcut { display: none; }
       .header-tools { gap: 6px; }
+      .layout-picker span { display: none; }
       .stats { gap: 10px; }
       .stat strong { font-size: 1.15rem; }
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
@@ -139,6 +146,7 @@ export function renderPilePage() {
     <header>
       <div class="brand"><h1>Bookmark triage</h1><p>Metadata pictures arrive without blocking a verdict.</p></div>
       <div class="header-tools">
+        <label class="layout-picker"><span>Page layout</span><select id="page-layout" aria-label="Page layout"><option value="3x3">3 × 3</option><option value="2x6">2 × 6</option><option value="2x8" selected>2 × 8</option><option value="3x12">3 × 12</option></select></label>
         <button id="help-toggle" type="button" aria-expanded="false" aria-controls="help-panel">Help</button>
         <div class="stats" aria-label="Triage progress">
           <div class="stat total"><strong id="count">0</strong><span>Total</span></div>
@@ -155,6 +163,7 @@ export function renderPilePage() {
         <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
         <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
+        <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         <li><strong>Apply saved unopened…</strong> applies the chosen verdict to a saved selection after showing a confirmation count.</li>
@@ -272,6 +281,7 @@ export function renderPilePage() {
       deleteCopy: document.querySelector('#delete-copy'), templateSelect: document.querySelector('#template-select'),
       copyTemplate: document.querySelector('#copy-template'), createTemplate: document.querySelector('#create-template'),
       helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'), tagPopover: document.querySelector('#tag-popover'),
+      pageLayout: document.querySelector('#page-layout'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
     };
     const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
@@ -284,10 +294,31 @@ export function renderPilePage() {
       if (!response.ok) throw new Error(data.error || 'Request failed');
       return data;
     }
+    const pageLayouts = {'3x3': {columns: 3, rows: 3}, '2x6': {columns: 6, rows: 2}, '2x8': {columns: 8, rows: 2}, '3x12': {columns: 12, rows: 3}};
     function layout() {
       if (innerWidth <= 640) return {columns: 1, rows: 1, buffer: 2};
       if (innerWidth <= 1100) { const columns = innerWidth >= innerHeight ? 4 : 3; return {columns, rows: 3, buffer: columns}; }
-      return {columns: 8, rows: 2, buffer: 8};
+      const selected = pageLayouts[elements.pageLayout.value] || pageLayouts['2x8'];
+      return {...selected, buffer: selected.columns};
+    }
+    function setLayoutDimensions() {
+      const next = layout();
+      elements.pageLayout.disabled = innerWidth <= 1100;
+      elements.pageLayout.title = elements.pageLayout.disabled ? 'Page layout choices are available in wide windows.' : '';
+      state.columns = next.columns; state.visible = next.columns * next.rows; state.buffer = next.buffer;
+      document.documentElement.dataset.gridRows = String(next.rows);
+      document.documentElement.style.setProperty('--columns', next.columns); document.documentElement.style.setProperty('--rows', next.rows);
+      return next;
+    }
+    async function redrawLayout() {
+      const current = state.offset + state.focused;
+      const previous = {columns: state.columns, visible: state.visible, buffer: state.buffer};
+      const next = setLayoutDimensions();
+      if (previous.columns === next.columns && previous.visible === next.columns * next.rows && previous.buffer === next.buffer) return;
+      if (state.items.length) renderGrid();
+      if (!state.collectionId) return;
+      await loadWindow(Math.floor(current / state.visible) * state.visible);
+      setFocus(current - state.offset);
     }
     function updateProgress() {
       elements.count.textContent = state.collectionTotal.toLocaleString();
@@ -821,6 +852,12 @@ export function renderPilePage() {
     elements.sweepSaved.addEventListener('click', () => sweepSavedUnopened().catch(error => { elements.status.textContent = error.message; }));
     elements.previousPage.addEventListener('click', () => pageWindow(-1).catch(error => { elements.status.textContent = error.message; }));
     elements.nextPage.addEventListener('click', () => pageWindow(1).catch(error => { elements.status.textContent = error.message; }));
+    elements.pageLayout.addEventListener('change', () => {
+      redrawLayout().then(() => {
+        const selected = pageLayouts[elements.pageLayout.value] || pageLayouts['2x8'];
+        elements.status.textContent = 'Showing ' + selected.rows + ' rows × ' + selected.columns + ' columns (' + (selected.rows * selected.columns) + ' bookmarks per page).';
+      }).catch(error => { elements.status.textContent = error.message; });
+    });
     function setHelp(open) {
       elements.helpPanel.hidden = !open;
       elements.helpToggle.setAttribute('aria-expanded', String(open));
@@ -861,13 +898,10 @@ export function renderPilePage() {
     addEventListener('resize', () => {
       clearTimeout(state.resizeTimer);
       state.resizeTimer = setTimeout(() => {
-        const current = state.offset + state.focused; const next = layout(); state.columns = next.columns; state.visible = next.columns * next.rows; state.buffer = next.buffer;
-        document.documentElement.style.setProperty('--columns', next.columns); document.documentElement.style.setProperty('--rows', next.rows);
-        loadWindow(Math.floor(current / state.visible) * state.visible).then(() => setFocus(current - state.offset));
+        redrawLayout().catch(error => { elements.status.textContent = error.message; });
       }, 120);
     });
-    const initial = layout(); state.columns = initial.columns; state.visible = initial.columns * initial.rows; state.buffer = initial.buffer;
-    document.documentElement.style.setProperty('--columns', initial.columns); document.documentElement.style.setProperty('--rows', initial.rows);
+    setLayoutDimensions();
     setInterval(updateProgress, 500); window.__pileState = state;
     loadCollections().then(() => Promise.all([loadWindow(0), loadSelectionTools()])).catch(error => { elements.status.textContent = error.message; });
   </script>

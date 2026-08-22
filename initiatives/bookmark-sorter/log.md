@@ -344,3 +344,15 @@ collection or the open selection as `bookmark-sorter/v1` JSON with tags and
 verdicts. Import now accepts that JSON text file directly as well as browser
 bookmark HTML, closing the already-tested portable round trip in the visible
 interface.
+
+## 2026-08-21 — Add selectable page layouts
+
+Added a Page layout selector for 3 × 3, 2 × 6, 2 × 8 (the default), and 3 × 12
+wide grids. Changing the selection redraws the current page immediately while
+preserving the compact tablet and phone layouts.
+
+## 2026-08-21 — Restore text space in three-row layouts
+
+Capped each capture at 30% of its card in a three-row grid and reserved two
+title lines, preventing large images from squeezing the bookmark text, tags,
+and verdict out of view.
