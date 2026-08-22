@@ -153,6 +153,10 @@
 <p>Added a user-facing README with private-data cautions, import and triage guidance, selection grammar, backup steps, and the full-stack Sites deployment path.</p>
 <h3>2026-08-21 — Add collection and selection export controls</h3>
 <p>Added an Export section beside Import. It downloads either the active collection or the open selection as <code>bookmark-sorter/v1</code> JSON with tags and verdicts. Import now accepts that JSON text file directly as well as browser bookmark HTML, closing the already-tested portable round trip in the visible interface.</p>
+<h3>2026-08-21 — Add selectable page layouts</h3>
+<p>Added a Page layout selector for 3 × 3, 2 × 6, 2 × 8 (the default), and 3 × 12 wide grids. Changing the selection redraws the current page immediately while preserving the compact tablet and phone layouts.</p>
+<h3>2026-08-21 — Restore text space in three-row layouts</h3>
+<p>Capped each capture at 30% of its card in a three-row grid and reserved two title lines, preventing large images from squeezing the bookmark text, tags, and verdict out of view.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
