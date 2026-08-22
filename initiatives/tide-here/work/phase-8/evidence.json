@@ -1,42 +1,46 @@
 {
-  "schemaVersion": 1,
-  "checkedAt": "2026-08-22T16:59:37Z",
+  "schemaVersion": 2,
+  "checkedAt": "2026-08-22T17:47:55Z",
   "deployment": {
     "title": "Tide Here — five coast-local days",
     "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
-    "mode": "new",
+    "mode": "replacement",
     "access": "owner-only private",
-    "version": 1,
-    "staticFileCount": 41,
-    "archiveSizeBytes": 1331200,
-    "archiveFileCount": 92
+    "version": 2,
+    "staticFileCount": 44,
+    "archiveSizeBytes": 1351680,
+    "archiveFileCount": 95
   },
   "deterministicTests": {
-    "unit": { "passed": 49, "failed": 0 },
-    "browser": { "passed": 14, "failed": 0 }
+    "unit": { "passed": 52, "failed": 0 },
+    "browser": { "passed": 13, "failed": 0, "skipped": 1 }
   },
   "liveChecks": {
     "nominatim": {
-      "inputs": ["Seattle", "Halifax"],
+      "inputs": ["half moon bay", "vancouver"],
       "status": 200,
       "cors": "*",
       "contract": "one result readable by Chromium"
     },
     "noaa": {
-      "station": "9447130",
-      "input": "Seattle",
+      "station": "9414131",
+      "input": "half moon bay",
       "status": 200,
       "cors": "*",
       "timeZone": "America/Los_Angeles",
-      "dayCards": 5
+      "dayCards": 5,
+      "warningCount": 0,
+      "firstDayTideCount": 4
     },
     "chs": {
-      "station": "00490",
-      "input": "Halifax",
+      "station": "07710",
+      "input": "vancouver",
       "status": 200,
       "cors": "*",
-      "timeZone": "America/Halifax",
-      "dayCards": 5
+      "timeZone": "Canada/Pacific",
+      "dayCards": 5,
+      "warningCount": 0,
+      "firstDayTideCount": 2
     }
   },
   "layouts": [
@@ -45,14 +49,17 @@
       "width": 1280,
       "height": 800,
       "dayColumns": 5,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "localToolsBelowResult": true
     },
     {
       "name": "iPhone Pro Max",
       "width": 430,
       "height": 932,
       "dayCards": 5,
-      "horizontalOverflow": false
+      "horizontalOverflow": false,
+      "localToolsBelowResult": true,
+      "removedEntryCopyPresent": false
     }
   ],
   "thresholdReview": {

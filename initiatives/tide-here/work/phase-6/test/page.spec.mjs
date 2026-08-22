@@ -17,6 +17,17 @@ test('a forecast shows three names, station and zone, and five equal day cards',
   await expect(page.locator('.day-card').first().getByText('Sun and moon', { exact: true })).toBeVisible();
   await expect(page.getByText(/informational and are not for navigation or safety decisions/i)).toBeVisible();
   await expect(page.locator('#source-copy')).toContainText(/heights in metres relative to MLLW/i);
+  await expect(page.getByText('No location permission needed', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('What is the coast doing here?', { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Tide Here checks the coast before it shows a prediction station/i)).toHaveCount(0);
+  const outputOrder = await page.evaluate(() => {
+    const result = document.querySelector('#result');
+    const localTools = document.querySelector('.local-tools');
+    return Boolean(result.compareDocumentPosition(localTools) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(outputOrder).toBe(true);
+  await expect(page.getByRole('button', { name: /Show local history/ })).toBeVisible();
+  await expect(page.getByText(/What leaves this device:/i)).toBeVisible();
   if (testInfo.project.name === 'desktop') {
     const heights = await page.locator('.day-card').evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().height)));
     expect(new Set(heights).size).toBe(1);
@@ -133,14 +144,14 @@ test('local history is visible, downloadable, clearable, and never transmitted',
 
   const keysBeforeClear = await page.evaluate(() => Object.keys(localStorage));
   expect(keysBeforeClear).toContain('tide-here.history.v1');
-  expect(keysBeforeClear).toContain('tide-here.station-catalogue.v1');
+  expect(keysBeforeClear).toContain('tide-here.station-catalogue.v2');
   expect(keysBeforeClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
   await page.getByRole('button', { name: 'Clear local history' }).click();
   await expect(page.getByText(/history cleared.*caches were left alone/i)).toBeVisible();
   await expect(page.getByText('No local forecast history yet.')).toBeVisible();
   const keysAfterClear = await page.evaluate(() => Object.keys(localStorage));
   expect(keysAfterClear).not.toContain('tide-here.history.v1');
-  expect(keysAfterClear).toContain('tide-here.station-catalogue.v1');
+  expect(keysAfterClear).toContain('tide-here.station-catalogue.v2');
   expect(keysAfterClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
 
   const requestCount = requests.length;

@@ -18,9 +18,14 @@ away.
   relationships. It covers Boston, Puget Sound, the U.S.–Canada border,
   Halifax, Vancouver, and an Arctic NOAA station without pretending to be a
   production catalogue.
-- `src/station-catalogue.mjs` normalizes both provider shapes and implements a
-  storage-neutral seven-day read-through cache. NOAA `R`/`S` and CHS metadata
-  become the same `reference`/`subordinate` vocabulary.
+- `src/station-catalogue.mjs` fetches and normalizes both complete provider
+  prediction-station lists in normal mode and implements a storage-neutral
+  seven-day read-through cache. NOAA `R`/`S` and CHS metadata become the same
+  `reference`/`subordinate` vocabulary.
+- `src/station-details.mjs` fetches only the chosen station's metadata, caches
+  it for seven days, and supplies its civil IANA time zone. CHS metadata also
+  completes the province and reference-port relationship omitted from the
+  compact catalogue response.
 - `src/coastal-match.mjs` ranks by great-circle distance and returns exactly
   `accepted`, `coast-choice-required`, or `coverage-unavailable`. Candidate
   records keep provider, country, jurisdiction, station kind, distance, and
@@ -39,10 +44,12 @@ province/reference-port fields from station metadata. Normalization is the only
 place those provider field names are read. Later forecast code receives the
 shared record and does not infer jurisdiction from the input place.
 
-The cache accepts a `storage` object with asynchronous `getItem` and `setItem`
-methods. A browser adapter can wrap `localStorage`; tests use an in-memory map.
-A malformed or expired value is a cache miss and is replaced only after the
-caller-provided catalogue fetch succeeds.
+The catalogue and chosen-station caches accept a `storage` object with
+asynchronous `getItem` and `setItem` methods. A browser adapter can wrap
+`localStorage`; tests use an in-memory map. A malformed or expired value is a
+cache miss and is replaced only after the corresponding provider fetch
+succeeds. The catalogue cache uses the `v2` key so browsers that saw the old
+trimmed fixture cannot retain it as production coverage.
 
 `operating` is not used to discard a CHS prediction station: several official
 high/low prediction entries are not current gauges but still expose the
@@ -58,6 +65,7 @@ From the repository root:
 node --test initiatives/tide-here/work/phase-2/test/station-catalogue.test.mjs
 ```
 
-The test is deterministic and never calls a live provider. Phase 8 repeats a
-small live contract check before deployment; fixture refresh is a separate,
-dated action.
+The test is deterministic and never calls a live provider. It exercises the
+live response shapes through fetch doubles, including Half Moon Bay's NOAA
+time zone and Vancouver's CHS metadata. Phase 8 repeats a small live contract
+check before deployment; fixture refresh is a separate, dated action.

@@ -64,9 +64,35 @@ export function normalizeStationCatalogues(raw, config) {
   ];
 }
 
+async function fetchJson(fetchImpl, url, signal) {
+  const response = await fetchImpl(url, { signal });
+  if (!response?.ok) throw new Error(`Station catalogue returned HTTP ${response?.status ?? 'error'}`);
+  return response.json();
+}
+
+export async function fetchStationCatalogues({ config, fetchImpl = globalThis.fetch, timeoutMs = 10000 }) {
+  if (!config?.providers?.noaa?.catalogueUrl || !config?.providers?.chs?.catalogueUrl) {
+    throw new TypeError('Station catalogue fetch requires NOAA and CHS configuration');
+  }
+  if (typeof fetchImpl !== 'function') throw new TypeError('Station catalogue fetch requires fetch');
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new RangeError('Station catalogue timeout must be positive');
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const [noaa, chs] = await Promise.all([
+      fetchJson(fetchImpl, config.providers.noaa.catalogueUrl, controller.signal),
+      fetchJson(fetchImpl, config.providers.chs.catalogueUrl, controller.signal)
+    ]);
+    return normalizeStationCatalogues({ noaa, chs: { stations: chs, metadataById: {} } }, config);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function readThroughStationCatalogue({
   storage,
-  cacheKey = 'tide-here.station-catalogue.v1',
+  cacheKey = 'tide-here.station-catalogue.v2',
   now = Date.now(),
   ttlMs,
   fetchCatalogue

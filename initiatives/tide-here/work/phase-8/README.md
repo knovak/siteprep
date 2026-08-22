@@ -1,31 +1,32 @@
 # Phase 8 live validation
 
-Tide Here version 1 is deployed as an owner-only private ChatGPT Site at
+Tide Here version 2 is deployed as an owner-only private ChatGPT Site at
 [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site).
-Deployment version 1 succeeded on 2026-08-22 at 09:59 PDT. The temporary Site
-contains 41 static source files; Sites recorded a 1,331,200-byte archive with
-92 packaged files. Deployment staging was removed after verification and did
-not add hosting metadata to this repository.
+The replacement succeeded on 2026-08-22 at 10:47 PDT without changing access.
+The temporary Site contains 44 static source files; Sites recorded a
+1,351,680-byte archive with 95 packaged files. Deployment staging was removed
+after verification and did not add hosting metadata to this repository.
 
 ## Live provider and page checks
 
 Chromium loaded the normal page without fixture mode and made one
-user-triggered lookup for each coast:
+user-triggered lookup for each requested place. The normal page used the
+complete live station catalogues and chosen-station metadata rather than the
+trimmed validation catalogue:
 
 | Input | Geocoder | Tide provider | Result |
 |---|---|---|---|
-| Seattle | Nominatim HTTP 200, readable CORS | NOAA CO-OPS HTTP 200, readable CORS | Seattle station 9447130, `America/Los_Angeles`, five day cards |
-| Halifax | Nominatim HTTP 200, readable CORS | CHS station 00490 HTTP 200, readable CORS | Halifax, `America/Halifax`, five day cards |
+| half moon bay | Half Moon Bay, California | NOAA station 9414131, Pillar Point Harbor | `America/Los_Angeles`, five day cards, no warning |
+| vancouver | Vancouver, British Columbia | CHS station 07710, False Creek | `Canada/Pacific`, five day cards, no warning |
 
-The real responses satisfied the existing normalized contracts; no difference
-was patched around. Before deployment, all 49 phase 1–7 unit tests and all 14
-desktop/phone browser tests passed.
+The real responses satisfied the normalized contracts. Before deployment, all
+52 phase 1–7 unit tests passed; the desktop/phone browser run passed 13 tests
+with its one intentional duplicate viewport-matrix case skipped.
 
 The live owner-only URL was then checked at 1280×800 and at the 430×932 iPhone
-Pro Max viewport. Desktop used five columns; the phone stacked content without
-horizontal overflow. Both kept the three place names, station, coast time zone,
-five day cards, history control, privacy statement, and safety line visible.
-No location permission was requested.
+Pro Max viewport. Neither layout had horizontal overflow. Both kept five day
+cards and placed the history control and privacy statement below the result.
+The three removed entry slogans were absent.
 
 ## Threshold and policy review
 

@@ -52,10 +52,10 @@ test('clearing history removes only the documented history key', () => {
   const storage = memoryStorage();
   const history = new LocalHistory({ storage });
   history.append(forecast());
-  storage.setItem('tide-here.station-catalogue.v1', 'cached stations');
+  storage.setItem('tide-here.station-catalogue.v2', 'cached stations');
   history.clear();
   assert.equal(storage.getItem(HISTORY_KEY), null);
-  assert.equal(storage.getItem('tide-here.station-catalogue.v1'), 'cached stations');
+  assert.equal(storage.getItem('tide-here.station-catalogue.v2'), 'cached stations');
 });
 
 test('forecast cache keys are hashed and expire when the coast-local hour changes', async () => {

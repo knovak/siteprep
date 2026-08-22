@@ -22,8 +22,6 @@ button { cursor: pointer; }
 main { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(2.5rem, 7vw, 5rem) 0 5rem; }
 .hero { max-width: 760px; }
 .eyebrow, .state-code { margin: 0 0 .65rem; color: var(--aqua-dark); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-h1 { max-width: 12ch; margin: 0; font-size: clamp(2.6rem, 7vw, 5.6rem); letter-spacing: -.065em; line-height: .92; }
-.hero > p:not(.eyebrow, .fixture-note) { max-width: 610px; margin: 1.4rem 0 2rem; color: var(--muted); font-size: 1.08rem; line-height: 1.65; }
 form label { display: block; margin-bottom: .55rem; font-weight: 750; }
 .search-row { display: grid; grid-template-columns: 1fr auto; gap: .65rem; padding: .45rem; background: var(--card); border: 1px solid var(--line); border-radius: 1rem; box-shadow: 0 16px 42px rgba(36, 90, 91, .1); }
 input { min-width: 0; border: 0; border-radius: .65rem; padding: .8rem .85rem; color: var(--ink); background: transparent; }
@@ -36,7 +34,7 @@ button.danger { border-color: #9f493a; background: #9f493a; }
 button.danger:hover { background: #81392e; }
 button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
 .fixture-note { color: var(--muted); font-size: .82rem; }
-.local-tools { display: grid; gap: .85rem; margin-top: 1rem; }
+.local-tools { display: grid; gap: .85rem; max-width: 760px; margin-top: 2rem; }
 .local-tools > button { justify-self: start; }
 .privacy-copy { margin: 0; padding: .9rem 1rem; border-left: 4px solid var(--aqua-dark); border-radius: .4rem .85rem .85rem .4rem; color: var(--muted); background: rgba(255, 255, 255, .72); font-size: .84rem; line-height: 1.55; }
 .privacy-copy strong { color: var(--ink); }
@@ -121,6 +119,5 @@ dd { margin: .32rem 0 0; font-size: 1.08rem; font-weight: 780; overflow-wrap: an
 @media (max-width: 380px) {
   .site-header { display: grid; }
   .site-header p { max-width: none; text-align: left; }
-  h1 { font-size: clamp(2.35rem, 13vw, 3.2rem); }
   .event-group ul, .event-pair { grid-template-columns: 1fr; }
 }

@@ -1,7 +1,7 @@
 # Phase 6 page
 
 This increment adds the host-neutral Tide Here page over the Phase 5 service.
-The form accepts a place name or decimal coordinates and preserves the entry.
+The form accepts a general place name or decimal coordinates and preserves the entry.
 A result displays **You entered**, **Resolved place**, and **Coast** together,
 then names the prediction station and the station's IANA time zone. Five equal
 cards separate tide, sun, and moon events. All event times are formatted with
@@ -23,6 +23,11 @@ Partial results keep the three names, station, available event family, and the
 informational-not-for-navigation line.
 
 The normal page uses the configured Nominatim, NOAA, and CHS adapters directly.
+It loads the complete NOAA and CHS prediction-station catalogues on the first
+uncached search, then loads metadata only for the selected station so matching
+and civil-time formatting are not limited to the recorded validation places.
+The history control and the visible `What leaves this device` disclosure sit
+after the state, chooser, and forecast display.
 `?fixture=1` selects the committed validation catalogue and recorded provider
 responses, fixes the clock, and makes browser tests deterministic without
 network access. Phase 7 extends this page with its device-local history,

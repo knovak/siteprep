@@ -67,3 +67,9 @@ Added 100-entry device-local history with view, download, and history-only clear
 ## 2026-08-22 — Phase 8 - deploy, run live smoke tests, and review thresholds
 
 Deployed the owner-only Tide Here validation Site, passed live NOAA, CHS, Nominatim, desktop, and iPhone Pro Max checks, and recorded unchanged thresholds and provider policy review.
+
+## 2026-08-22 — General place lookup and quieter entry
+
+Moved local history and the data-disclosure copy below the forecast display,
+removed the requested entry-page slogans, and replaced the production fixture
+catalogue with cached complete NOAA/CHS catalogues plus chosen-station metadata.

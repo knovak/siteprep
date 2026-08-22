@@ -119,7 +119,7 @@ export class TideHereService {
     const selection = this.chosenStation(resolution, selectedStation);
     if (!selection) return resolution;
     const coordinates = stationCoordinates(selection.station);
-    const timeZone = await this.timeZoneLookup(coordinates.latitude, coordinates.longitude);
+    const timeZone = await this.timeZoneLookup(coordinates.latitude, coordinates.longitude, selection.station);
     const rows = fiveLocalDays(this.now(), timeZone);
     const context = {
       input: resolution.input,
