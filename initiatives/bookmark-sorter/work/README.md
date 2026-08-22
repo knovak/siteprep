@@ -86,7 +86,9 @@ selection, and export operations.
 - `src/pile-page.mjs` renders the self-contained grid. Its Page layout selector
   offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
-  and single-card phone layouts; only the visible cells plus
+  and single-card phone layouts. Three-row grids cap captures at 30% of the
+  card height and reserve two title lines so tags and verdicts retain readable
+  space. Only the visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
   never HTML strings. Bookmark titles show up to five lines and link to the
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy

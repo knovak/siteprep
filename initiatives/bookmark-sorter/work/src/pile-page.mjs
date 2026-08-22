@@ -74,6 +74,9 @@ export function renderPilePage() {
     .bookmark-card[data-verdict="needs-more-time"] { box-shadow: inset 0 4px #d3a23f, 0 5px 18px #1b294410; }
     .capture { min-height: 42%; overflow: hidden; margin: -11px -11px 8px; display: grid; place-items: center; color: #748096; background: linear-gradient(135deg, #e8edf6, #f6f8fc); font-size: .68rem; font-weight: 760; letter-spacing: .06em; text-transform: uppercase; }
     .capture img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    :root[data-grid-rows="3"] .capture { flex: 0 0 30%; min-height: 0; }
+    :root[data-grid-rows="3"] .bookmark-card h2 { min-height: 2.34em; -webkit-line-clamp: 2; }
+    :root[data-grid-rows="3"] .note { -webkit-line-clamp: 1; }
     .site { overflow: hidden; color: #6a7387; font-size: .67rem; font-weight: 750; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
     .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
     .bookmark-card h2 a { color: inherit; text-decoration: none; }
@@ -303,6 +306,7 @@ export function renderPilePage() {
       elements.pageLayout.disabled = innerWidth <= 1100;
       elements.pageLayout.title = elements.pageLayout.disabled ? 'Page layout choices are available in wide windows.' : '';
       state.columns = next.columns; state.visible = next.columns * next.rows; state.buffer = next.buffer;
+      document.documentElement.dataset.gridRows = String(next.rows);
       document.documentElement.style.setProperty('--columns', next.columns); document.documentElement.style.setProperty('--rows', next.rows);
       return next;
     }

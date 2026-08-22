@@ -178,6 +178,24 @@ test('page layout dropdown redraws the wide grid immediately', async ({page}) =>
   await expect(page.locator('#status')).toHaveText('Showing 2 rows × 8 columns (16 bookmarks per page).');
 });
 
+test('three-row layouts reserve most of each card for readable bookmark text', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.getByLabel('Page layout').selectOption('3x3');
+  await expectLayout(page, {width: 1600, height: 900, visible: 9, cards: 12, columns: 3, rows: 3});
+
+  const metrics = await page.locator('[data-item-id="item-1"]').evaluate(card => {
+    const capture = card.querySelector('.capture').getBoundingClientRect();
+    const title = card.querySelector('h2').getBoundingClientRect();
+    const bounds = card.getBoundingClientRect();
+    return {captureRatio: capture.height / bounds.height, titleHeight: title.height, titleBottom: title.bottom, cardBottom: bounds.bottom};
+  });
+  expect(metrics.captureRatio).toBeLessThan(0.32);
+  expect(metrics.titleHeight).toBeGreaterThan(20);
+  expect(metrics.titleBottom).toBeLessThan(metrics.cardBottom);
+});
+
 test('keyboard verdicts, marked groups, atomic undo, and sitting rate work without navigation', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   const backend = await installPile(page);
