@@ -1,0 +1,165 @@
+{
+  "id": "chair-pose-study",
+  "tradition": "yoga",
+  "title": "Utkatasana anatomy",
+  "summary": "A side-view-friendly study shows coordinated hip and knee flexion with the trunk and arms counterbalancing.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "bend",
+      "t": [
+        0,
+        7
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "flexion"
+        },
+        {
+          "joint": "hip-right",
+          "action": "flexion"
+        },
+        {
+          "joint": "femur-left",
+          "action": "knee flexion"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "shortens"
+        },
+        {
+          "id": "quadriceps-right",
+          "behaviour": "shortens"
+        }
+      ]
+    },
+    {
+      "id": "display",
+      "t": [
+        7,
+        13
+      ],
+      "joint_actions": [
+        {
+          "joint": "thoracic-lower",
+          "action": "small forward incline"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "upward rotation"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-maximus-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "erector-spinae-left",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        13,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "extension toward neutral"
+        },
+        {
+          "joint": "hip-right",
+          "action": "extension toward neutral"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "lengthens"
+        },
+        {
+          "id": "quadriceps-right",
+          "behaviour": "lengthens"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "posture": "The reference bends at hips and knees while the arms travel overhead and the feet remain planted.",
+    "transitions": [
+      {
+        "phase": "bend",
+        "direction": "entry",
+        "cue": "The reference animation moves from neutral into the displayed joint arrangement."
+      },
+      {
+        "phase": "return",
+        "direction": "exit",
+        "cue": "The final frames return the fitted reference toward neutral."
+      }
+    ],
+    "modifications": [
+      {
+        "id": "supported-reference",
+        "note": "A chair behind the model would mark a smaller hip and knee range."
+      }
+    ],
+    "props": [
+      "chair",
+      "wall"
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "The authored clip may be viewed over a smaller angular range."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This is an anatomical display, not a recommendation to attempt the posture or match its range."
+    ],
+    "expects_teacher": false,
+    "notes": "Suitability, balance, loading, and individual restrictions are outside this visualization."
+  },
+  "source": {
+    "tradition_basis": "Project-authored anatomical study using posture names listed by Iyengar Yoga organizations; no teacher sequence or instructional wording is copied.",
+    "rights_basis": "provisional: project-authored record and animation using a procedural fitted-reference body; no third-party movement media or anatomy asset is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-08-22",
+    "claim_sources": [
+      {
+        "title": "Iyengar Yoga Level I curriculum",
+        "url": "https://iyengar.hu/wp-content/uploads/2017/11/Curriculum-Level-I.pdf",
+        "supports": [
+          "named standing postures",
+          "posture families",
+          "supported variants"
+        ]
+      },
+      {
+        "title": "Geeta S. Iyengar practice sequence",
+        "url": "https://iyengaryoga.org.uk/wp-content/uploads/2023/06/International-Day-of-Yoga-Sequence-IYUK.pdf",
+        "supports": [
+          "Tadasana",
+          "Uttanasana",
+          "Utthita Trikonasana",
+          "Virabhadrasana",
+          "use of props"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Requires review by a yoga practitioner and an anatomy reviewer."
+    }
+  }
+}

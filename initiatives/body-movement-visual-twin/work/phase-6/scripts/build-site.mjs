@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { basename, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const phase6 = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -14,9 +14,6 @@ const copies = [
   ['phase-3/data/movement-clips.json', 'data/movement-clips.json'],
   ['phase-2/data/rig-core.json', 'data/rig-core.json'],
   ['phase-2/data/muscles.json', 'data/muscles.json'],
-  ['phase-1/fixtures/feldenkrais.json', 'records/feldenkrais.json'],
-  ['phase-1/fixtures/yoga.json', 'records/yoga.json'],
-  ['phase-1/fixtures/alexander.json', 'records/alexander.json'],
   ['phase-0/scripts/rig-math.mjs', 'lib/rig-math.mjs'],
   ['phase-2/src/viewer-state.mjs', 'lib/viewer-state.mjs'],
   ['phase-3/src/collection.mjs', 'lib/collection.mjs'],
@@ -32,7 +29,13 @@ for (const [source, destination] of copies) {
 }
 
 const collection = JSON.parse(await readFile(resolve(work, 'phase-3/data/collection.json'), 'utf8'));
-for (const entry of collection.records) entry.record = `./records/${entry.tradition}.json`;
+await mkdir(resolve(site, 'records'), { recursive: true });
+for (const entry of collection.records) {
+  const source = resolve(work, 'phase-3', entry.record);
+  const name = basename(source);
+  await copyFile(source, resolve(site, 'records', name));
+  entry.record = `./records/${name}`;
+}
 await writeFile(resolve(site, 'data/collection.json'), `${JSON.stringify(collection, null, 2)}\n`);
 
 const viewerSource = await readFile(resolve(work, 'phase-3/viewer.mjs'), 'utf8');

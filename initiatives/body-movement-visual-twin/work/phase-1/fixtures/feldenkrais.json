@@ -9,13 +9,13 @@
       "id": "notice-center",
       "t": [0, 12],
       "joint_actions": [{ "joint": "lumbar-spine", "action": "small alternating flexion and extension" }],
-      "muscles": [{ "id": "multifidus-group", "behaviour": "stabilises" }]
+      "muscles": [{ "id": "multifidus-left", "behaviour": "stabilises" }]
     },
     {
       "id": "explore-range",
       "t": [12, 30],
       "joint_actions": [{ "joint": "thoracic-lower", "action": "small following motion" }],
-      "muscles": [{ "id": "erector-spinae-group", "behaviour": "lengthens" }]
+      "muscles": [{ "id": "erector-spinae-left", "behaviour": "lengthens" }]
     }
   ],
   "instruction": {

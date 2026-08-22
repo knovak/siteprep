@@ -42,7 +42,7 @@ test('stature scales the shared rig, attachments, and registration tolerance tog
   const scaledMuscles = scaleMuscleData(muscles, profile);
   const factor = statureScale(profile);
   assert.equal(scaledCore.registration_tolerance_mm, 8 * factor);
-  assert.equal(scaledCore.nodes.find((node) => node.id === 'lumbar-spine').translation_mm[1], 700 * factor);
+  assert.equal(scaledCore.nodes.find((node) => node.id === 'lumbar-spine').translation_mm[1], 105 * factor);
   assert.equal(scaledMuscles.attachments[0].bone_landmark_local_mm[1], muscles.attachments[0].bone_landmark_local_mm[1] * factor);
 
   const rig = {

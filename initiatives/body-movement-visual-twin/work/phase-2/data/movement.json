@@ -13,8 +13,8 @@
         { "joint": "scapula-right", "action": "small upward rotation" }
       ],
       "muscles": [
-        { "id": "serratus-anterior", "behaviour": "shortens" },
-        { "id": "trapezius-middle", "behaviour": "stabilises" }
+        { "id": "serratus-anterior-left", "behaviour": "shortens" },
+        { "id": "trapezius-middle-left", "behaviour": "stabilises" }
       ]
     },
     {
@@ -24,8 +24,8 @@
         { "joint": "thoracic-upper", "action": "small return from rotation" }
       ],
       "muscles": [
-        { "id": "erector-spinae-group", "behaviour": "lengthens" },
-        { "id": "multifidus-group", "behaviour": "stabilises" }
+        { "id": "erector-spinae-left", "behaviour": "lengthens" },
+        { "id": "multifidus-left", "behaviour": "stabilises" }
       ]
     }
   ],

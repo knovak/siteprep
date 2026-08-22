@@ -1,0 +1,140 @@
+{
+  "id": "seated-weight-shift-study",
+  "tradition": "feldenkrais",
+  "title": "Seated weight-shift and foot-response study",
+  "summary": "A seated reference shifts across the pelvis while the hip, knee, ankle, and trunk paths remain visible.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "shift-left",
+      "t": [
+        0,
+        10
+      ],
+      "joint_actions": [
+        {
+          "joint": "pelvis",
+          "action": "left lateral translation"
+        },
+        {
+          "joint": "hip-left",
+          "action": "small adduction"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-medius-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "external-oblique-right",
+          "behaviour": "lengthens"
+        }
+      ]
+    },
+    {
+      "id": "shift-right",
+      "t": [
+        10,
+        22
+      ],
+      "joint_actions": [
+        {
+          "joint": "pelvis",
+          "action": "right lateral translation"
+        },
+        {
+          "joint": "hip-right",
+          "action": "small adduction"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-medius-right",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "external-oblique-left",
+          "behaviour": "lengthens"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "exploration": "An anatomical rendering of a small seated weight shift and its relationship to both feet and the spine.",
+    "attention": [
+      {
+        "phase": "shift-left",
+        "cue": "The display emphasizes pelvis and hip left."
+      },
+      {
+        "phase": "shift-right",
+        "cue": "The display emphasizes pelvis and hip right."
+      }
+    ],
+    "range": {
+      "kind": "optional",
+      "smaller_reference": "A narrower side-to-side shift would retain the same bilateral landmarks."
+    },
+    "rest_pauses": [
+      {
+        "after_phase": "shift-right",
+        "duration_seconds": 8,
+        "note": "The animation ends at neutral so the anatomical relationship can be compared."
+      }
+    ]
+  },
+  "variations": [
+    {
+      "id": "reduced-amplitude",
+      "kind": "range",
+      "note": "A lower-amplitude rendering preserves the same joint relationships."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This animation visualizes an authored movement theme and is not an Awareness Through Movement lesson."
+    ],
+    "expects_teacher": false,
+    "notes": "The display does not replace verbal guidance, individual variation, or practitioner observation."
+  },
+  "source": {
+    "tradition_basis": "Project-authored anatomical study using movement themes published by the Feldenkrais Guild; no lesson text, recording, or teacher sequence is copied.",
+    "rights_basis": "provisional: project-authored record and animation using a procedural fitted-reference body; no third-party movement media or anatomy asset is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-08-22",
+    "claim_sources": [
+      {
+        "title": "Feldenkrais Guild sample lessons",
+        "url": "https://feldenkrais.com/enjoy-a-free-sample-lesson/",
+        "supports": [
+          "dynamic sitting and chair clock",
+          "pelvic and spinal exploration",
+          "shoulder exploration"
+        ]
+      },
+      {
+        "title": "Pleasant Exploration of Hands and Feet",
+        "url": "https://feldenkrais.com/pleasant-exploration-of-hands-and-feet/",
+        "supports": [
+          "small clock movements",
+          "sliding a hand along a surface",
+          "initiating from different places"
+        ]
+      },
+      {
+        "title": "Skeletal anatomy as a basis for attention within the whole",
+        "url": "https://feldenkrais.com/skeletal-anatomy-as-a-basis-for-constellating-attention-within-the-whole/",
+        "supports": [
+          "whole-body skeletal relationships",
+          "shoulder and pelvic girdle relationship",
+          "anatomical observation"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Requires review by a Feldenkrais practitioner and an anatomy reviewer."
+    }
+  }
+}

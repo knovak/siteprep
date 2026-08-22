@@ -68,11 +68,13 @@ function rotationZMatrix(degrees) {
 
 function localMatrix(node, frame) {
   const [x = 0, y = 0, z = 0] = frame.rotations_deg[node.id] || [];
+  const translationDelta = frame.translations_mm?.[node.id] || [0, 0, 0];
+  const translation = node.translation_mm.map((value, index) => value + (translationDelta[index] || 0));
   const rotation = multiplyMatrices(
     multiplyMatrices(rotationZMatrix(z), rotationYMatrix(y)),
     rotationXMatrix(x)
   );
-  return multiplyMatrices(translationMatrix(node.translation_mm), rotation);
+  return multiplyMatrices(translationMatrix(translation), rotation);
 }
 
 export function transformPoint(matrix, [x, y, z]) {

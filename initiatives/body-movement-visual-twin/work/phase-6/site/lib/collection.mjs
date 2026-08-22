@@ -69,3 +69,15 @@ export function phaseCue(record, phaseId) {
   }
   return '';
 }
+
+function anatomicalName(value) {
+  return text(value).replace(/-(left|right)$/, ' ($1)').replaceAll('-', ' ');
+}
+
+export function anatomySummary(record, phaseId) {
+  const phase = record?.phases?.find((entry) => entry.id === phaseId);
+  if (!phase) return '';
+  const joints = (phase.joint_actions ?? []).map((entry) => `${anatomicalName(entry.joint)}: ${entry.action}`);
+  const muscles = (phase.muscles ?? []).map((entry) => `${anatomicalName(entry.id)} ${entry.behaviour}`);
+  return [...joints, muscles.length ? `Muscle paths: ${muscles.join(', ')}` : ''].filter(Boolean).join(' · ');
+}

@@ -135,10 +135,10 @@ function point(location, radius, color, alpha = 1) {
 
 function visibility() {
   return {
-    surface: state.layer < 2 || state.pinned === 'surface',
-    skeleton: state.layer === 1 || state.layer === 4 || state.pinned === 'skeleton',
-    superficial: state.layer === 2 || state.pinned === 'muscles',
-    deep: state.layer === 3 || state.pinned === 'muscles'
+    surface: [0, 1].includes(state.layer) || state.pinned === 'surface',
+    skeleton: [1, 4, 5].includes(state.layer) || state.pinned === 'skeleton',
+    superficial: [2, 4].includes(state.layer) || state.pinned === 'muscles',
+    deep: [3, 4].includes(state.layer) || state.pinned === 'muscles'
   };
 }
 

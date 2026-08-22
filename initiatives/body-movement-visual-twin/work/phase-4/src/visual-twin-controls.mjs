@@ -8,9 +8,9 @@ export const DEFAULT_VISUAL_PROFILE = Object.freeze({
 });
 
 export const PRESENTATIONS = Object.freeze({
-  neutral: Object.freeze({ label: 'Neutral study', surfaceColor: '#b7d8cc', finish: 'even' }),
-  soft: Object.freeze({ label: 'Soft outline', surfaceColor: '#a9d6e5', finish: 'soft' }),
-  angular: Object.freeze({ label: 'Angular outline', surfaceColor: '#dfb2f4', finish: 'angular' })
+  neutral: Object.freeze({ label: 'Neutral study', surfaceColor: '#d6a58b', finish: 'even' }),
+  soft: Object.freeze({ label: 'Soft outline', surfaceColor: '#bd8f7b', finish: 'soft' }),
+  angular: Object.freeze({ label: 'Angular outline', surfaceColor: '#a97865', finish: 'angular' })
 });
 
 function boundedNumber(value, minimum, maximum, fallback) {
@@ -87,10 +87,10 @@ export function personalizeSurfacePoint(point, nodeId, profile) {
   const appearance = surfaceAppearance(profile);
   const next = [...point];
   if (/spine|neck|clavicle/.test(nodeId)) {
-    const waist = 700 * statureScale(profile);
+    const waist = 900 * statureScale(profile);
     next[1] = waist + (next[1] - waist) * appearance.torsoFactor;
   }
-  if (/scapula|humerus/.test(nodeId)) next[0] *= appearance.limbFactor;
+  if (/scapula|humerus|forearm|hand|hip|femur|tibia|foot|toe/.test(nodeId)) next[0] *= appearance.limbFactor;
   return next;
 }
 
