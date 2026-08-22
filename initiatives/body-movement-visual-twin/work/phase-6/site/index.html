@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Body Movement Visual Twin — three-tradition collection</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#viewer">Body Movement <span>Visual Twin</span></a>
+    <p>Private validation collection · three project-authored movements · practitioner review pending</p>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Three traditions · one shared fitted-reference body</p>
+        <h1 id="page-title">The instruction changes more than the pose.</h1>
+        <p class="lede">Compare one project-authored Feldenkrais, yoga, and Alexander Technique record. Each keeps its own timing, attention, support, and teaching boundary while the anatomy controls stay shared.</p>
+      </div>
+      <aside class="boundary">
+        <strong>Educational visualization</strong>
+        <p>This is not diagnosis, treatment, or individualized movement instruction. Internal anatomy is a fitted reference model, not a scan of you.</p>
+      </aside>
+    </section>
+
+    <section id="viewer" class="viewer-shell" aria-label="Interactive movement viewer">
+      <div class="stage-card">
+        <div id="webgl-fallback" class="fallback" hidden>
+          <p class="eyebrow">Interactive view unavailable</p>
+          <h2>This browser cannot start the WebGL scene.</h2>
+          <p>The movement record, cautions, source, and review status remain available below. Try a current browser with hardware acceleration to orbit and layer the reference body.</p>
+        </div>
+        <div id="stage" class="stage" tabindex="0" aria-label="3D reference body. Drag to orbit, use the mouse wheel or plus and minus keys to zoom, and use arrow keys to change the view.">
+          <canvas id="gl-canvas" width="960" height="700" aria-hidden="true"></canvas>
+          <canvas id="model-canvas" width="960" height="700" aria-hidden="true"></canvas>
+          <div class="stage-topline">
+            <span id="view-label">Front view</span>
+            <span id="reference-label" class="reference-label" hidden>Fitted reference anatomy · not individualized</span>
+          </div>
+          <div id="muscle-loading" class="loading" role="status" hidden>
+            <span></span> Loading named muscle paths…
+          </div>
+          <div class="camera-presets" aria-label="Camera views">
+            <button type="button" data-camera="front">Front</button>
+            <button type="button" data-camera="side">Side</button>
+            <button type="button" data-camera="back">Back</button>
+          </div>
+          <p class="stage-help">Drag or swipe to orbit · wheel or +/− to zoom · arrows also orbit</p>
+        </div>
+      </div>
+
+      <aside class="control-card" aria-label="Movement and layer controls">
+        <section class="collection-panel">
+          <p class="eyebrow">Validation collection</p>
+          <label for="movement-select">Choose a movement
+            <select id="movement-select"></select>
+          </label>
+          <p id="clip-boundary" class="clip-boundary"></p>
+        </section>
+
+        <section id="caution-panel" class="caution-panel">
+          <p class="eyebrow">Before playback</p>
+          <h2>Keep the range optional.</h2>
+          <ul id="caution-list"></ul>
+          <button id="accept-cautions" class="primary" type="button">I understand — enable playback</button>
+        </section>
+
+        <section class="control-section">
+          <div class="section-heading"><h2>Movement</h2><output id="time-output" for="timeline">0%</output></div>
+          <div class="transport" aria-label="Playback controls">
+            <button id="replay" type="button" aria-label="Replay from start">↺</button>
+            <button id="step-back" type="button" aria-label="Step backward">− frame</button>
+            <button id="play" class="primary" type="button" disabled>Play</button>
+            <button id="step-forward" type="button" aria-label="Step forward">+ frame</button>
+          </div>
+          <input id="timeline" type="range" min="0" max="1000" value="0" step="1" aria-label="Scrub movement timeline">
+          <div class="phase-readout"><strong id="phase-name">Begin</strong><span id="phase-cue"></span></div>
+        </section>
+
+        <section class="control-section twin-controls">
+          <div class="section-heading"><h2>Visual twin</h2><output id="profile-output">Reference</output></div>
+          <label>Visible stature <output id="stature-output" for="stature">170 cm</output>
+            <input id="stature" type="range" min="145" max="200" value="170" step="1">
+          </label>
+          <label>Surface build <output id="build-output" for="build">Reference</output>
+            <input id="build" type="range" min="-100" max="100" value="0" step="1">
+          </label>
+          <label>Visible torso-to-limb proportion <output id="proportion-output" for="torso-to-limb">Reference</output>
+            <input id="torso-to-limb" type="range" min="-100" max="100" value="0" step="1">
+          </label>
+          <label>Surface presentation
+            <select id="presentation">
+              <option value="neutral">Neutral study</option>
+              <option value="soft">Soft outline</option>
+              <option value="angular">Angular outline</option>
+            </select>
+          </label>
+          <p id="profile-note" class="profile-note" role="status">No visible dimensions changed. Internal anatomy remains fitted reference geometry; the controls do not infer mobility, muscle behaviour, force, or biomechanics.</p>
+        </section>
+
+        <section class="control-section">
+          <div class="section-heading"><h2>Anatomical view</h2><output id="layer-output" for="layer">Surface</output></div>
+          <input id="layer" type="range" min="0" max="4" value="0" step="1" aria-label="Move from surface to skeleton">
+          <ol class="layer-scale" aria-hidden="true"><li>Surface</li><li>Surface + bone</li><li>Superficial</li><li>Deep</li><li>Skeleton</li></ol>
+          <label>Pin a layer
+            <select id="pin-layer">
+              <option value="none">Nothing pinned</option>
+              <option value="surface">Surface</option>
+              <option value="muscles">All muscles</option>
+              <option value="skeleton">Skeleton</option>
+            </select>
+          </label>
+          <label>Isolate around a joint
+            <select id="isolate-joint">
+              <option value="none">Whole shoulder-and-spine slice</option>
+              <option value="scapula-left">Left scapula</option>
+              <option value="scapula-right">Right scapula</option>
+              <option value="thoracic-upper">Upper thoracic spine</option>
+              <option value="lumbar-spine">Lumbar spine</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="control-section details">
+          <div class="section-heading"><h2>What this frame says</h2><span id="review-pill">Unreviewed</span></div>
+          <ul id="claims-list"></ul>
+        </section>
+      </aside>
+    </section>
+
+    <section class="record-grid">
+      <article>
+        <p class="eyebrow">Movement record</p>
+        <h2 id="movement-title"></h2>
+        <p id="movement-summary"></p>
+        <div id="record-incomplete" class="record-incomplete" role="status" hidden></div>
+        <div id="instruction-sections"></div>
+        <h3>Safety boundary</h3>
+        <ul id="safety-notes"></ul>
+      </article>
+      <article>
+        <p class="eyebrow">Source and review</p>
+        <h2>Approximate by design.</h2>
+        <dl>
+          <dt>Authored by</dt><dd id="authored-by"></dd>
+          <dt>Authored on</dt><dd id="authored-on"></dd>
+          <dt>Review</dt><dd id="review-status"></dd>
+          <dt>Anatomy</dt><dd>Fitted reference · unreviewed</dd>
+          <dt>Rights</dt><dd id="rights-basis"></dd>
+        </dl>
+        <p id="source-basis"></p>
+        <h3>Named claim sources</h3>
+        <ul id="claim-source-list" class="source-list"></ul>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="flag-dialog">
+    <form id="flag-form" method="dialog">
+      <div class="dialog-heading"><div><p class="eyebrow">Separate review report</p><h2>Flag a claim</h2></div><button id="close-flag" type="button" aria-label="Close">×</button></div>
+      <p>This creates separate JSON evidence; it does not edit the movement record or retain your identifier.</p>
+      <div class="selected-claim"><strong id="flag-claim-label"></strong><code id="flag-claim-path"></code></div>
+      <label>Reviewer identifier <span class="optional">Optional</span><input name="reviewer" autocomplete="off"></label>
+      <label>Kind<select name="kind" disabled><option>anatomy</option><option>movement</option><option>attribution</option><option>safety</option></select></label>
+      <label>Severity<select name="severity"><option>question</option><option>important</option><option>blocking</option></select></label>
+      <label>Note<textarea name="note" required rows="4"></textarea></label>
+      <pre id="report-preview" hidden></pre>
+      <p id="report-status" class="report-status" role="status"></p>
+      <div class="dialog-actions"><button id="cancel-flag" type="button">Cancel</button><button id="copy-flag" type="button">Copy JSON</button><button id="email-flag" type="button" hidden>Open email draft</button><button id="download-flag" class="primary" type="button">Download JSON</button></div>
+    </form>
+  </dialog>
+
+  <script type="module" src="./viewer.mjs"></script>
+</body>
+</html>

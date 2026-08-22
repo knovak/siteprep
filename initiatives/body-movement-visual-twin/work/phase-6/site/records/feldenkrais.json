@@ -1,0 +1,62 @@
+{
+  "id": "seated-pelvic-clock-exploration",
+  "tradition": "feldenkrais",
+  "title": "Small seated pelvic and spine exploration",
+  "summary": "An invented, slow exploration of small pelvic shifts and the response through the lower spine.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "notice-center",
+      "t": [0, 12],
+      "joint_actions": [{ "joint": "lumbar-spine", "action": "small alternating flexion and extension" }],
+      "muscles": [{ "id": "multifidus-group", "behaviour": "stabilises" }]
+    },
+    {
+      "id": "explore-range",
+      "t": [12, 30],
+      "joint_actions": [{ "joint": "thoracic-lower", "action": "small following motion" }],
+      "muscles": [{ "id": "erector-spinae-group", "behaviour": "lengthens" }]
+    }
+  ],
+  "instruction": {
+    "exploration": "Notice whether the pelvis can travel in a small, easy path without trying to reach an endpoint.",
+    "attention": [
+      { "phase": "notice-center", "cue": "Notice the contact with the chair before beginning." },
+      { "phase": "explore-range", "cue": "Compare the ease of the forward and backward directions." }
+    ],
+    "range": {
+      "kind": "optional",
+      "smaller_reference": "Make the path small enough that breathing and attention remain unhurried."
+    },
+    "rest_pauses": [
+      { "after_phase": "explore-range", "duration_seconds": 10, "note": "Return to neutral and notice any change before repeating." }
+    ]
+  },
+  "variations": [
+    { "id": "less-range", "kind": "range", "note": "Use an almost-imagined shift rather than a visible movement." }
+  ],
+  "safety": {
+    "cautions": ["Stop if the seated movement increases pain, dizziness, or numbness."],
+    "expects_teacher": false,
+    "notes": "Educational visualization only; this is project-authored wording, not an individualized lesson."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description informed by general Feldenkrais principles of attention, variation, and optional range; no lesson text or recording was copied.",
+    "rights_basis": "provisional: project-authored movement description with no third-party lesson text, recording, or protected asset",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-08-21",
+    "claim_sources": [
+      {
+        "title": "About the Feldenkrais Method",
+        "url": "https://feldenkrais.com/about-the-feldenkrais-method/",
+        "supports": ["gentle movement", "directed attention", "verbal guidance"]
+      },
+      {
+        "title": "Pleasant Exploration of Hands and Feet",
+        "url": "https://feldenkrais.com/pleasant-exploration-of-hands-and-feet/",
+        "supports": ["small and slow exploration", "variation", "rest pauses"]
+      }
+    ],
+    "review": { "status": "unreviewed", "notes": "Requires review by a practitioner familiar with the tradition." }
+  }
+}

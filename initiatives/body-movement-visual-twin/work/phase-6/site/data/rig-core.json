@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "title": "Shoulder-and-spine shared-rig feasibility fixture",
+  "units": "mm",
+  "reference_stature_mm": 1700,
+  "registration_tolerance_mm": 8,
+  "rights_refs": [
+    "project-procedural-fixture",
+    "open3dmodel-skeleton",
+    "open3dmodel-upper-limb",
+    "visible-human-reference"
+  ],
+  "excluded_rights_refs": [
+    "skel-data-software",
+    "smpl-model"
+  ],
+  "layers": {
+    "surface": [
+      {
+        "id": "torso-shell",
+        "kind": "capsule",
+        "from": "lumbar-spine",
+        "to": "neck-base",
+        "radius_mm": 150
+      },
+      {
+        "id": "left-arm-shell",
+        "kind": "capsule",
+        "from": "scapula-left",
+        "to": "humerus-left",
+        "radius_mm": 58
+      },
+      {
+        "id": "right-arm-shell",
+        "kind": "capsule",
+        "from": "scapula-right",
+        "to": "humerus-right",
+        "radius_mm": 58
+      }
+    ],
+    "skeleton": [
+      "lumbar-spine",
+      "thoracic-lower",
+      "thoracic-upper",
+      "neck-base",
+      "clavicle-left",
+      "clavicle-right",
+      "scapula-left",
+      "scapula-right",
+      "humerus-left",
+      "humerus-right"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "parent": null,
+      "translation_mm": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "lumbar-spine",
+      "parent": "root",
+      "translation_mm": [
+        0,
+        700,
+        0
+      ]
+    },
+    {
+      "id": "thoracic-lower",
+      "parent": "lumbar-spine",
+      "translation_mm": [
+        0,
+        180,
+        0
+      ]
+    },
+    {
+      "id": "thoracic-upper",
+      "parent": "thoracic-lower",
+      "translation_mm": [
+        0,
+        220,
+        0
+      ]
+    },
+    {
+      "id": "neck-base",
+      "parent": "thoracic-upper",
+      "translation_mm": [
+        0,
+        150,
+        0
+      ]
+    },
+    {
+      "id": "clavicle-left",
+      "parent": "thoracic-upper",
+      "translation_mm": [
+        -35,
+        115,
+        10
+      ]
+    },
+    {
+      "id": "clavicle-right",
+      "parent": "thoracic-upper",
+      "translation_mm": [
+        35,
+        115,
+        10
+      ]
+    },
+    {
+      "id": "scapula-left",
+      "parent": "thoracic-upper",
+      "translation_mm": [
+        -115,
+        65,
+        -35
+      ]
+    },
+    {
+      "id": "scapula-right",
+      "parent": "thoracic-upper",
+      "translation_mm": [
+        115,
+        65,
+        -35
+      ]
+    },
+    {
+      "id": "humerus-left",
+      "parent": "scapula-left",
+      "translation_mm": [
+        -150,
+        5,
+        10
+      ]
+    },
+    {
+      "id": "humerus-right",
+      "parent": "scapula-right",
+      "translation_mm": [
+        150,
+        5,
+        10
+      ]
+    }
+  ],
+  "clip": {
+    "id": "slow-bilateral-shoulder-and-thoracic-motion",
+    "description": "A deliberately small authored feasibility motion, not a measured movement or instruction.",
+    "required_samples": [
+      "start",
+      "midpoint",
+      "end",
+      "shoulder-angle-extremum",
+      "thoracic-angle-extremum"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "kind": "start",
+        "rotations_deg": {}
+      },
+      {
+        "id": "shoulder-angle-extremum",
+        "t": 0.25,
+        "kind": "joint-angle-extremum",
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -12
+          ],
+          "scapula-right": [
+            0,
+            0,
+            12
+          ],
+          "humerus-left": [
+            0,
+            0,
+            -34
+          ],
+          "humerus-right": [
+            0,
+            0,
+            34
+          ]
+        }
+      },
+      {
+        "id": "midpoint",
+        "t": 0.5,
+        "kind": "midpoint",
+        "rotations_deg": {
+          "thoracic-lower": [
+            0,
+            3,
+            0
+          ],
+          "thoracic-upper": [
+            0,
+            0,
+            3
+          ],
+          "scapula-left": [
+            0,
+            0,
+            -8
+          ],
+          "scapula-right": [
+            0,
+            0,
+            8
+          ],
+          "humerus-left": [
+            0,
+            0,
+            -22
+          ],
+          "humerus-right": [
+            0,
+            0,
+            22
+          ]
+        }
+      },
+      {
+        "id": "thoracic-angle-extremum",
+        "t": 0.75,
+        "kind": "joint-angle-extremum",
+        "rotations_deg": {
+          "thoracic-lower": [
+            0,
+            6,
+            0
+          ],
+          "thoracic-upper": [
+            2,
+            0,
+            5
+          ],
+          "scapula-left": [
+            0,
+            0,
+            -5
+          ],
+          "scapula-right": [
+            0,
+            0,
+            5
+          ]
+        }
+      },
+      {
+        "id": "end",
+        "t": 1,
+        "kind": "end",
+        "rotations_deg": {}
+      }
+    ]
+  },
+  "anatomy_review": {
+    "status": "unreviewed",
+    "scope": "All muscle names, grouping, landmarks and paths in this procedural fixture.",
+    "required_before_claiming_anatomical_accuracy": true
+  }
+}

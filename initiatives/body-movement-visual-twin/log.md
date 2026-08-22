@@ -43,3 +43,7 @@ Added stature, surface build, visible proportion, and presentation controls that
 ## 2026-08-21 — Phase 5 - make review corrective without making it destructive
 
 Added exact-claim review reports, local copy/download handoff, and a documented human correction, dispute, and removal path without editing or retaining the source record.
+
+## 2026-08-22 — Phase 6 - deploy privately and run validation
+
+Published an owner-only noindex validation site; desktop and phone technical checks pass, and human reviewer findings remain as an explicit data-blocked follow-up.

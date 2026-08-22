@@ -1,5 +1,5 @@
-import { globalMatrices, muscleWorldPaths, transformPoint } from '../phase-0/scripts/rig-math.mjs';
-import { TRADITION_LABELS, instructionSections, movementCompleteness, phaseCue } from './src/collection.mjs';
+import { globalMatrices, muscleWorldPaths, transformPoint } from './lib/rig-math.mjs';
+import { TRADITION_LABELS, instructionSections, movementCompleteness, phaseCue } from './lib/collection.mjs';
 import {
   DEFAULT_VISUAL_PROFILE,
   PRESENTATIONS,
@@ -9,13 +9,13 @@ import {
   scaleMuscleData,
   scaleReferenceRig,
   surfaceAppearance
-} from '../phase-4/src/visual-twin-controls.mjs';
+} from './lib/visual-twin-controls.mjs';
 import {
   claimDescriptors,
   createReviewReport,
   reviewEmailUrl,
   serializeReviewReport
-} from '../phase-5/src/review-report.mjs';
+} from './lib/review-report.mjs';
 import {
   LAYER_STATES,
   anatomyIsVisible,
@@ -28,7 +28,7 @@ import {
   setPinned,
   setTime,
   zoom
-} from '../phase-2/src/viewer-state.mjs';
+} from './lib/viewer-state.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const stage = $('#stage');
@@ -50,7 +50,7 @@ let selectedClaim;
 const reviewInbox = '';
 
 const [coreResponse, collectionResponse, clipsResponse] = await Promise.all([
-  fetch('../phase-2/data/rig-core.json'),
+  fetch('./data/rig-core.json'),
   fetch('./data/collection.json'),
   fetch('./data/movement-clips.json')
 ]);
@@ -280,7 +280,7 @@ async function loadMusclesIfNeeded() {
   if (!muscleRequest) {
     $('#muscle-loading').hidden = false;
     muscleRequest = Promise.all([
-      fetch('../phase-2/data/muscles.json'),
+      fetch('./data/muscles.json'),
       new Promise((resolve) => setTimeout(resolve, 240))
     ]).then(async ([response]) => {
       if (!response.ok) throw new Error('Named muscle paths could not be loaded.');
