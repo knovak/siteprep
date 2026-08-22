@@ -16,8 +16,8 @@ concise description. Verify visually with `{{agent.commands.screenshot}}` once
 the final build has run.
 
 Demo language stays deliberately distinct from deck and section language. The
-two have different publishing shapes, and blurring the words is how a demo ends
-up half-converted into a deck page.
+two have different publishing structures, and blurring the words is how a demo
+ends up half-converted into a deck page.
 [The concise publishing contract is in the demos technical
 document](source:DEMOS_TECHDOC.md), with [shared working rules in the repository
 instructions](source:AGENTS.md).

@@ -26,8 +26,9 @@ build document gives the reproducible commands](source:BUILD_TECHDOC.md).
 ---
 ## Deck changes follow the publishing contract
 
-Ordinary web work with house rules the shared components assume: topic content
-inside the page's content card, shared libraries for maps, galleries,
-collapsible topics and footers, and every supplied URL preserved exactly. Build
-with `{{agent.commands.build}}` after the final source change, then screenshot
+Ordinary web work, with a few house rules the shared components assume: topic
+content stays inside the page's content card, and maps, galleries, collapsible
+topics, and footers come from the shared libraries rather than a one-off
+build. Every supplied URL is preserved exactly. Build with
+`{{agent.commands.build}}` after the final source change, then screenshot
 anything visibly different.

@@ -12,7 +12,7 @@ publishes, the line between those two is fairly clean.
 @figure fork-boundary
 
 The paths marked protected are the ones a sweep is not allowed to casually
-rewrite, which makes them a useful inventory of the shared machinery: whatever
+rewrite. That makes them a useful inventory of the shared machinery: whatever
 the repository defends from its own automation is roughly what a fork needs to
 take.
 

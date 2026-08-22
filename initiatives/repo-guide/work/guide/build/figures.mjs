@@ -192,7 +192,7 @@ function divisionOfLabour(facts) {
   };
 }
 
-// One sweep run: the phases in order, and the allowance they share.
+// One sweep run: the phases in order, and the budget they share.
 function sweepRun(facts) {
   const phases = facts['sweep.phases'];
   const budget = facts['sweep.budget'];
@@ -224,12 +224,12 @@ function sweepRun(facts) {
     html: svg({
       width,
       height,
-      title: `A run moves through ${phases.join(', then ')} and spends one shared allowance of ${slots} items.`,
+      title: `A run moves through ${phases.join(', then ')} and spends one shared budget of ${slots} items.`,
       className: 'figure-svg--wide',
       body: `${ARROW_DEFS}
         ${text(4, 12, 'Every run, in this order', {variant: 'eyebrow'})}
         ${rail}
-        ${text(4, meterTop - 12, 'One shared allowance, spent left to right', {variant: 'eyebrow'})}
+        ${text(4, meterTop - 12, 'One shared budget, spent left to right', {variant: 'eyebrow'})}
         ${meter}
         ${text(4, meterTop + 46, `Earlier phases spend it first, so a run that only answers review is a complete run.`, {variant: 'caption'})}
         ${text(4, meterTop + 66, `At most ${budget.max_items_per_initiative} from any one initiative; the run stops entirely at ${budget.max_open_prs} open pull requests.`, {variant: 'caption'})}`,

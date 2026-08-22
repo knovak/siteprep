@@ -37,7 +37,7 @@ reasoning is here](source:INITIATIVES_VISION.md).
 Three things no amount of reading the repository will supply: what you actually
 want, facts that live outside it, and permission to spend, grant access, or set
 policy. The amber labels are how the record keeps that uncertainty visible
-instead of letting a guess harden into history.
+instead of letting a guess get recorded as settled fact.
 
 @figure division-of-labour
 
