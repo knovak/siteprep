@@ -26,6 +26,28 @@
         </div>
       </form>
       <p id="fixture-note" class="fixture-note" hidden>Recorded validation data is active. No provider request will leave this page.</p>
+      <div class="local-tools">
+        <button id="show-history" type="button" class="secondary">Show local history</button>
+        <p class="privacy-copy"><strong>What leaves this device:</strong> Your submitted place or coordinates go directly to the configured Nominatim geocoder. After a coast is selected, the station and five-day time range go directly to NOAA or CHS. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
+      </div>
+    </section>
+
+    <section id="history-panel" class="history-panel" tabindex="-1" aria-labelledby="history-title" hidden>
+      <div class="history-heading">
+        <div>
+          <p class="eyebrow">On this device only</p>
+          <h2 id="history-title">Local forecast history</h2>
+        </div>
+        <button id="close-history" type="button" class="secondary">Close history</button>
+      </div>
+      <p>Up to 100 successful or partial forecasts are kept here. Downloading creates a local JSON file; clearing removes this history without removing the disposable provider caches.</p>
+      <div class="history-actions">
+        <button id="download-history" type="button">Download JSON</button>
+        <button id="clear-history" type="button" class="danger">Clear local history</button>
+      </div>
+      <p id="history-status" class="history-status" role="status"></p>
+      <p id="history-empty" class="history-empty">No local forecast history yet.</p>
+      <div id="history-list" class="history-list"></div>
     </section>
 
     <section id="state-panel" class="state-panel" tabindex="-1" aria-live="polite" hidden>

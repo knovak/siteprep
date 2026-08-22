@@ -104,3 +104,47 @@ test('the validation page has no serious accessibility findings', async ({ page 
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact))).toEqual([]);
 });
+
+test('local history is visible, downloadable, clearable, and never transmitted', async ({ page }) => {
+  const requests = [];
+  page.on('request', (request) => requests.push(`${request.url()} ${request.postData() || ''}`));
+  await page.goto(pagePath);
+  await expect(page.getByText(/submitted place or coordinates go directly to the configured Nominatim geocoder/i)).toBeVisible();
+  await expect(page.getByText(/history stays in this browser until you clear it/i)).toBeVisible();
+
+  const marker = 'Harbor Secret 90817';
+  await page.locator('#place').fill(marker);
+  await page.getByRole('button', { name: 'Show five days' }).click();
+  await expect(page.locator('#entered-name')).toHaveText(marker);
+  await page.getByRole('button', { name: /Show local history \(2\)/ }).click();
+  await expect(page.locator('#history-panel')).toBeFocused();
+  await expect(page.locator('.history-entry')).toHaveCount(2);
+  await expect(page.locator('.history-entry').first()).toContainText(marker);
+  await expect(page.locator('.history-entry').first().getByText('Complete response')).toBeVisible();
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download JSON' }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('tide-here-history.json');
+  const stream = await download.createReadStream();
+  let downloaded = '';
+  for await (const chunk of stream) downloaded += chunk;
+  expect(JSON.parse(downloaded).at(-1).response.input.display).toBe(marker);
+
+  const keysBeforeClear = await page.evaluate(() => Object.keys(localStorage));
+  expect(keysBeforeClear).toContain('tide-here.history.v1');
+  expect(keysBeforeClear).toContain('tide-here.station-catalogue.v1');
+  expect(keysBeforeClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
+  await page.getByRole('button', { name: 'Clear local history' }).click();
+  await expect(page.getByText(/history cleared.*caches were left alone/i)).toBeVisible();
+  await expect(page.getByText('No local forecast history yet.')).toBeVisible();
+  const keysAfterClear = await page.evaluate(() => Object.keys(localStorage));
+  expect(keysAfterClear).not.toContain('tide-here.history.v1');
+  expect(keysAfterClear).toContain('tide-here.station-catalogue.v1');
+  expect(keysAfterClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
+
+  const requestCount = requests.length;
+  await page.waitForTimeout(300);
+  expect(requests).toHaveLength(requestCount);
+  expect(requests.some((request) => request.includes(marker))).toBe(false);
+});

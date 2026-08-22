@@ -25,8 +25,9 @@ informational-not-for-navigation line.
 The normal page uses the configured Nominatim, NOAA, and CHS adapters directly.
 `?fixture=1` selects the committed validation catalogue and recorded provider
 responses, fixes the clock, and makes browser tests deterministic without
-network access. This Phase 6 page intentionally does not store history; local
-history, cache tiers, and their privacy statement are Phase 7.
+network access. Phase 7 extends this page with its device-local history,
+disposable cache tiers, download and clear controls, and privacy statement; its
+implementation and additional checks are documented in `../phase-7/README.md`.
 
 ## Verification
 

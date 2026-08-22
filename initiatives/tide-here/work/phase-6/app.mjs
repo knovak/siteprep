@@ -1,15 +1,17 @@
 import { resolveTimeZone } from '../phase-1/src/day-model.mjs';
-import { normalizeStationCatalogues } from '../phase-2/src/station-catalogue.mjs';
+import { normalizeStationCatalogues, readThroughStationCatalogue } from '../phase-2/src/station-catalogue.mjs';
 import { TideProvider } from '../phase-3/src/tide-provider.mjs';
 import { ASTRONOMY_UNAVAILABLE, Astronomy } from '../phase-4/src/astronomy.mjs';
 import { Geocoder, GEOCODER_UNAVAILABLE, INVALID_INPUT, PLACE_NOT_FOUND, parsePlaceInput } from '../phase-5/src/geocoder.mjs';
 import { COAST_CHOICE_REQUIRED, TideHereService } from '../phase-5/src/resolve-forecast.mjs';
+import { ForecastCache, LocalHistory } from '../phase-7/src/local-data.mjs';
 import { forecastViewModel, statePresentation } from './src/page-view.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const fixtureMode = new URLSearchParams(location.search).get('fixture') === '1';
 const forcedState = new URLSearchParams(location.search).get('state');
 const fixedNow = new Date('2026-08-20T12:00:00.000Z');
+const now = () => fixtureMode ? fixedNow : new Date();
 
 async function json(path) {
   const response = await fetch(path);
@@ -27,6 +29,8 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
 ]);
 
 const stations = normalizeStationCatalogues(catalogueFixture, providerConfig);
+const history = new LocalHistory({ storage: localStorage, now });
+const forecastCache = new ForecastCache({ storage: localStorage, now });
 
 function fixturePlace(input) {
   const parsed = parsePlaceInput(input);
@@ -89,22 +93,27 @@ const unavailableAstronomy = {
 
 const geocoder = fixtureMode
   ? fixtureGeocoder
-  : new Geocoder({ config: geocoderConfig, fetchImpl: fetch.bind(globalThis), storage: null });
+  : new Geocoder({ config: geocoderConfig, fetchImpl: fetch.bind(globalThis), storage: localStorage });
 const astronomy = forcedState === 'astronomy-unavailable'
   ? unavailableAstronomy
-  : new Astronomy({ now: () => fixtureMode ? fixedNow : new Date() });
+  : new Astronomy({ now });
 const service = new TideHereService({
   geocoder,
-  getStations: async () => stations,
+  getStations: async () => (await readThroughStationCatalogue({
+    storage: localStorage,
+    now: now().getTime(),
+    ttlMs: providerConfig.catalogueCacheTtlMs,
+    fetchCatalogue: async () => stations
+  })).stations,
   matchConfig: providerConfig.match,
   timeZoneLookup: async (latitude, longitude) => resolveTimeZone(latitude, longitude, timeZoneDataset),
   tideProvider: new TideProvider({
     config: providerConfig,
     fetchImpl: fixtureMode ? fixtureTideFetch : fetch.bind(globalThis),
-    now: () => fixtureMode ? fixedNow : new Date()
+    now
   }),
   astronomy,
-  now: () => fixtureMode ? fixedNow : new Date()
+  now
 });
 
 function hideOutput() {
@@ -181,6 +190,59 @@ function textNode(tag, text, className = '') {
   element.textContent = text;
   if (className) element.className = className;
   return element;
+}
+
+function updateHistoryCount() {
+  const count = history.read().length;
+  $('#show-history').textContent = `Show local history${count ? ` (${count})` : ''}`;
+  return count;
+}
+
+function renderHistory() {
+  const entries = [...history.read()].reverse();
+  $('#history-list').replaceChildren(...entries.map((entry) => {
+    const article = document.createElement('article');
+    article.className = 'history-entry';
+    const response = entry.response;
+    const recordedAt = new Intl.DateTimeFormat('en-US', {
+      timeZone: response.timeZone,
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    }).format(new Date(entry.recordedAt));
+    article.append(
+      textNode('h3', response.input.display),
+      textNode('p', `${recordedAt} ${response.timeZone} · ${response.coast.name} · ${response.station.provider.toUpperCase()}`),
+      textNode('p', response.warnings.length
+        ? `Warnings: ${response.warnings.map((warning) => warning.code).join(', ')}`
+        : 'No warnings')
+    );
+    const details = document.createElement('details');
+    details.append(textNode('summary', 'Complete response'));
+    const raw = textNode('pre', JSON.stringify(response, null, 2));
+    details.append(raw);
+    article.append(details);
+    return article;
+  }));
+  $('#history-empty').hidden = entries.length > 0;
+  $('#download-history').disabled = entries.length === 0;
+  $('#clear-history').disabled = entries.length === 0;
+  updateHistoryCount();
+}
+
+function openHistory() {
+  renderHistory();
+  $('#history-panel').hidden = false;
+  $('#history-panel').focus();
+}
+
+function downloadHistory() {
+  const url = URL.createObjectURL(new Blob([history.downloadText()], { type: 'application/json' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'tide-here-history.json';
+  link.click();
+  URL.revokeObjectURL(url);
+  $('#history-status').textContent = 'History downloaded. It was not sent anywhere.';
 }
 
 function eventGroup(title, entries) {
@@ -260,7 +322,23 @@ function showForecast(forecast) {
 }
 
 async function loadForecast(resolution, station = null) {
-  const result = await service.forecast(resolution, station);
+  const selection = service.chosenStation(resolution, station);
+  const coordinates = {
+    latitude: Number(selection.station.latitude ?? selection.station.lat),
+    longitude: Number(selection.station.longitude ?? selection.station.lon)
+  };
+  const timeZone = resolveTimeZone(coordinates.latitude, coordinates.longitude, timeZoneDataset);
+  const cacheContext = {
+    input: resolution.input.display,
+    station: selection.station,
+    timeZone,
+    now: now()
+  };
+  const cached = forcedState ? null : await forecastCache.read(cacheContext);
+  const result = cached || await service.forecast(resolution, station);
+  if (!cached && !forcedState) await forecastCache.write(cacheContext, result);
+  history.append(result);
+  updateHistoryCount();
   showForecast(result);
 }
 
@@ -285,6 +363,16 @@ $('#state-action').addEventListener('click', () => {
     void submit();
   }
 });
+$('#show-history').addEventListener('click', openHistory);
+$('#close-history').addEventListener('click', () => { $('#history-panel').hidden = true; $('#show-history').focus(); });
+$('#download-history').addEventListener('click', downloadHistory);
+$('#clear-history').addEventListener('click', () => {
+  history.clear();
+  renderHistory();
+  $('#history-status').textContent = 'Local history cleared. Forecast and station caches were left alone.';
+});
+
+updateHistoryCount();
 
 if (fixtureMode) {
   $('#fixture-note').hidden = false;

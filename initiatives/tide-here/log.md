@@ -59,3 +59,7 @@ height on a one-column phone layout. Added compact two-column event groups at
 Pro Max widths, a narrower-phone fallback, safe-area padding, and a 320–1600 px
 browser regression matrix with the phone project pinned to an iPhone 15 Pro
 Max viewport.
+
+## 2026-08-22 — Phase 7 - add local history, caching, and the privacy statement
+
+Added 100-entry device-local history with view, download, and history-only clear; wired hashed hourly forecast, 24-hour geocoder, and seven-day station caches; and verified the privacy disclosure and no-transmission boundary.
