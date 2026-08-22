@@ -127,24 +127,24 @@ export function buildSimulatorSteps(facts) {
     step({
       id: 'wish-written',
       stage: wish,
-      eyebrow: 'A durable intent appears',
+      eyebrow: 'An intent gets written down',
       title: 'Start with the wish',
-      narrative: 'Somebody writes down what they want, in their own words, and nothing else happens yet. The record exists before any of the work does.',
+      narrative: 'Somebody writes down what they want, in their own words, and nothing else happens yet. The record exists before any of the work does, which is the whole trick.',
       items: [
         {key: 'objectives', label: 'Draft objectives', state: 'actionable', detail: 'The only move available.'},
       ],
-      changes: ['One initiative enters the lifecycle.', 'The original wording becomes the record of intent.'],
-      advance: 'an agent drafts objectives',
+      changes: ['One initiative enters the lifecycle.', 'The original wording is now the record of intent.'],
+      advance: 'an agent drafts the objectives',
     }),
     step({
       id: 'objectives-drafted',
       stage: shaped,
-      eyebrow: 'The outcome becomes testable',
+      eyebrow: 'Now there is something to check',
       title: 'Say what done would mean',
-      narrative: 'Objectives turn a want into something you could check. The stage advances, the record gains its first document, and the backlog gains real next moves.',
+      narrative: 'Objectives turn a want into something you can actually check. The stage advances, the record picks up its first document, and the to-do list gets real next moves.',
       items: [
         {key: 'spec', label: 'Draft the specification', state: 'actionable', detail: 'Ready to work.'},
-        {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'A judgement call, not yet named as one.'},
+        {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'A judgment call, though nobody has named it one yet.'},
       ],
       changes: ['The stage advances.', 'The first document joins the record.'],
       advance: 'the agent hits a question it cannot answer',
@@ -154,13 +154,13 @@ export function buildSimulatorSteps(facts) {
       stage: shaped,
       eyebrow: 'A person is required',
       title: 'Name the blocker honestly',
-      narrative: 'The interaction question cannot be settled from anything in the repository. Rather than guessing, the item says so and stops — and a scheduled digest email carries it to a person.',
+      narrative: 'Nothing in the repository settles the interaction question. So the item says so and stops instead of guessing, and a scheduled digest email carries the question to a person.',
       items: [
         {key: 'spec', label: 'Draft the specification', state: 'actionable', detail: 'Still available to work.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'blocked', detail: `${proposable}: pick the trade-off`},
       ],
       phases: phaseStatus(firstPhase),
-      changes: [`The blocker class is ${proposable}.`, 'A guess would have become history; a label does not.'],
+      changes: [`The blocker class is ${proposable}.`, 'A guess would have become history. A label just waits.'],
       advance: 'a bounded sweep runs',
     }),
     step({
@@ -168,7 +168,7 @@ export function buildSimulatorSteps(facts) {
       stage: shaped,
       eyebrow: 'A bounded sweep runs',
       title: 'Finish what fits',
-      narrative: `Watch the budget. The run works through its phases in order and spends at most ${budget} items; when the budget is gone, the next item is passed over rather than squeezed in.`,
+      narrative: `Watch the budget. The run works through its phases in order and spends at most ${budget} items. When the allowance is gone, the next item gets passed over rather than squeezed in.`,
       items: [
         {key: 'spec', label: 'Draft the specification', state: 'actionable', detail: 'Waiting for the run to reach it.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'blocked', detail: `${proposable}: still waiting`},
@@ -220,7 +220,7 @@ export function buildSimulatorSteps(facts) {
       stage: shaped,
       eyebrow: 'The decision arrives',
       title: 'Clear the blocker',
-      narrative: 'The person answers, and the answer is written down with its reasoning and with what it leaves open. The amber goes away without anybody rewriting the original wish.',
+      narrative: 'The person answers, and the answer gets written down with its reasoning and with whatever it leaves open. The amber clears, and nobody had to rewrite the original wish to get there.',
       items: [
         {key: 'spec', label: 'Draft the specification', state: 'in-flight', detail: 'Review continues in its pull request.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'The recorded answer makes this doable.', changed: true},
@@ -228,7 +228,7 @@ export function buildSimulatorSteps(facts) {
       ],
       phases: allComplete,
       budget: {spent: budget, of: budget},
-      changes: ['The decision becomes durable.', 'The formerly blocked item rejoins the queue.'],
+      changes: ['The decision is now durable.', 'The item that was blocked rejoins the queue.'],
       advance: 'the specification merges',
     }),
     step({
@@ -236,7 +236,7 @@ export function buildSimulatorSteps(facts) {
       stage: specified,
       eyebrow: 'A merge changes the state',
       title: 'Finishing one item unblocks the next',
-      narrative: 'The merge is the event that makes proposed work real. The finished item leaves the list, the record gains a document, and the stage advances.',
+      narrative: 'The merge is what makes proposed work real. The finished item leaves the list, the record picks up a document, and the stage advances.',
       items: [
         {key: 'plan', label: 'Plan the build', state: 'actionable', detail: 'Unblocked by the merged specification.', changed: true},
         {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'Ready for a later run.'},
@@ -250,25 +250,25 @@ export function buildSimulatorSteps(facts) {
       stage: shaped,
       eyebrow: 'The lifecycle runs backwards too',
       title: 'Move back when the reasoning changes',
-      narrative: 'Something in the specification turns out not to hold. The stage moves back rather than pretending the work is further along than it is — that is the honest state, and it is a supported move, not a failure.',
+      narrative: 'Something in the specification turns out not to hold. The stage moves back rather than pretend the work is further along than it is. Moving back is a supported move, not a failure.',
       items: [
         {key: 'spec-revision', label: 'Revise the specification', state: 'actionable', detail: 'The rejected alternative looks better now.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'Unaffected by the revision.'},
       ],
-      changes: ['The stage moves back.', 'Nothing is deleted; the reasoning is amended.'],
+      changes: ['The stage moves back.', 'Nothing gets deleted; the reasoning gets amended.'],
       advance: 'the revision is merged',
     }),
     step({
       id: 'plan-written',
       stage: planned,
-      eyebrow: 'The build gets a sequence',
+      eyebrow: 'The work gets an order',
       title: 'Plan it before building it',
       narrative: 'A plan cuts the work into increments small enough to review, each with the tests that would show it works. The record now carries purpose, outcomes, a chosen shape, and an order.',
       items: [
         {key: 'increment-one', label: 'Build increment one', state: 'actionable', detail: 'First in the sequence.'},
         {key: 'increment-two', label: 'Build increment two', state: 'blocked', detail: 'todo: waits for increment one'},
       ],
-      changes: ['The plan and its tests join the record.', 'Work is now ordered rather than merely listed.'],
+      changes: ['The plan and its tests join the record.', 'The work is ordered now, not just listed.'],
       advance: 'a run opens the first increment',
     }),
     step({
@@ -276,14 +276,14 @@ export function buildSimulatorSteps(facts) {
       stage: building,
       eyebrow: 'Work becomes reviewable',
       title: 'One increment at a time',
-      narrative: 'An agent builds the first increment and opens a pull request. It does not merge it. From here the initiative is visibly under review, and a person can see exactly what is being proposed.',
+      narrative: 'An agent builds the first increment and opens a pull request. It does not merge it. From here the work is visibly under review, and a person can see exactly what is being proposed.',
       items: [
         {key: 'increment-one', label: 'Build increment one', state: 'in-flight', detail: 'A pull request is open for review.', changed: true},
         {key: 'increment-two', label: 'Build increment two', state: 'blocked', detail: 'todo: waits for increment one'},
       ],
       phases: phaseStatus(workPhase, phases.filter(phase => phase !== workPhase)),
       budget: {spent: 1, of: budget},
-      changes: ['The stage advances.', 'A proposal exists; nothing is merged.'],
+      changes: ['The stage advances.', 'A proposal exists. Nothing is merged.'],
       advance: 'a reviewer comments',
     }),
     step({
@@ -291,12 +291,12 @@ export function buildSimulatorSteps(facts) {
       stage: building,
       eyebrow: 'Feedback comes back first',
       title: 'Answer review before starting anything',
-      narrative: 'A reviewer leaves comments. On the next run, answering them outranks opening anything new — which is why a run that spends everything on feedback and starts nothing is working correctly.',
+      narrative: 'A reviewer leaves comments. On the next run, answering them outranks opening anything new, which is why a run that spends everything on feedback and starts nothing has done its job.',
       items: [
         {key: 'increment-one', label: 'Build increment one', state: 'review', detail: 'Review comments waiting for an answer.', changed: true},
         {key: 'increment-two', label: 'Build increment two', state: 'blocked', detail: 'todo: waits for increment one'},
       ],
-      changes: ['Finishing outranks starting.', 'The agent replies; it never resolves the thread itself.'],
+      changes: ['Finishing outranks starting.', 'The agent replies. It never resolves the thread itself.'],
       advance: 'the reviewer merges',
       beats: [
         {
@@ -320,19 +320,19 @@ export function buildSimulatorSteps(facts) {
       stage: building,
       eyebrow: 'A merge unblocks the next thing',
       title: 'Finishing unblocks another item',
-      narrative: 'The reviewer merges. The finished increment leaves the list and the one that was waiting on it becomes actionable — the same pattern as before, now inside the build.',
+      narrative: 'The reviewer merges. The finished increment leaves the list, and the one waiting behind it becomes actionable. Same pattern as before, one level down.',
       items: [
         {key: 'increment-two', label: 'Build increment two', state: 'actionable', detail: 'Unblocked by the merge.', changed: true},
       ],
       changes: ['The merged item disappears.', 'The item waiting on it becomes actionable.'],
-      advance: 'the build finishes and produces something',
+      advance: 'the work finishes and produces something',
     }),
     step({
       id: 'outputs-registered',
       stage: refining,
       eyebrow: 'The work produces something',
       title: 'Record the finished outputs',
-      narrative: 'The build is done and the initiative records pointers to what came out of it. What is left is smaller: polish, follow-ups, the things worth doing but not worth blocking on.',
+      narrative: 'The work is done, and the initiative records pointers to what came out of it. What is left is smaller: polish, follow-ups, the things worth doing but not worth blocking on.',
       items: [
         {key: 'polish', label: 'Tidy the rough edges', state: 'actionable', detail: 'Worth doing, not worth blocking on.'},
         {key: 'follow-up', label: 'Extend the output', state: 'blocked', detail: `${factClass}: needs someone with the authority to approve it`},
@@ -343,13 +343,13 @@ export function buildSimulatorSteps(facts) {
     step({
       id: 'goes-quiet',
       stage: dormant,
-      eyebrow: 'Resting is a supported state',
+      eyebrow: 'Resting is allowed',
       title: 'Let it go quiet',
-      narrative: 'Nobody needs the next version right now, and the one blocked item is waiting on something only a person can authorise. The initiative rests. It is not abandoned and it is not finished — those would both be lies.',
+      narrative: 'Nobody needs the next version right now, and the one blocked item is waiting on something only a person can authorize. So it rests. It is not abandoned and it is not finished, and either label would be a lie.',
       items: [
         {key: 'follow-up', label: 'Extend the output', state: 'blocked', detail: `${factClass}: still waiting on a person`},
       ],
-      changes: ['The stage moves to rest.', 'Sweeps stop selecting it; the record stays intact.'],
+      changes: ['The stage moves to rest.', 'Sweeps stop picking it up. The record stays intact.'],
       advance: 'the record is closed out',
     }),
     step({
@@ -357,9 +357,9 @@ export function buildSimulatorSteps(facts) {
       stage: archived,
       eyebrow: 'The record outlives the work',
       title: 'Close it without losing it',
-      narrative: 'Eventually the initiative is closed out. Everything stays readable: the original wish, what done was going to mean, the alternatives that lost, and why it stopped. That is the whole point of keeping the record this way.',
+      narrative: 'Eventually the initiative gets closed out. Everything stays readable: the original wish, what done was going to mean, the alternatives that lost, and why it stopped. That is the whole point of keeping the record this way.',
       items: [],
-      changes: ['The lifecycle reaches its last stage.', 'The reasoning remains legible to whoever reads it next.'],
+      changes: ['The lifecycle reaches its last stage.', 'The reasoning still reads clearly for whoever comes next.'],
       advance: null,
     }),
   ];
@@ -465,7 +465,7 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
   <div class="shell">
     <header>
       <div><p class="eyebrow">Repository lifecycle simulator</p><h1>How an initiative moves</h1></div>
-      <span class="step-number">Abstract behaviour · live vocabulary<br>Every stage, start to finish</span>
+      <span class="step-number">Made-up initiative · real vocabulary<br>Every stage, start to finish</span>
     </header>
     <nav id="stage-track" class="stage-track" aria-label="Lifecycle stages"></nav>
     <main class="simulator">
@@ -666,7 +666,7 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
         elements.progress.textContent = (current + 1) + ' / ' + data.steps.length;
         elements.back.disabled = current === 0;
         elements.step.disabled = current === data.steps.length - 1;
-        elements['next-label'].textContent = state.advance ? 'Next: ' + state.advance : 'The walk-through is complete.';
+        elements['next-label'].textContent = state.advance ? 'Next: ' + state.advance : 'That is the complete lifecycle, start to finish.';
         if (visited.at(-1) !== current) visited.push(current);
       }
 
