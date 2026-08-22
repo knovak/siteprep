@@ -83,7 +83,7 @@ h2, h3, p { margin-top: 0; }
 .stage::after { content: ""; position: absolute; inset: auto 10% 7% 10%; height: 3rem; border-radius: 50%; background: rgba(0, 0, 0, .36); filter: blur(18px); }
 .stage canvas { position: absolute; width: 100%; height: 100%; inset: 0; }
 #model-canvas { z-index: 1; }
-.stage-topline, .camera-presets, .stage-help, .loading { z-index: 2; position: absolute; }
+.stage-topline, .camera-presets, .stage-help, .loading, .anatomy-status { z-index: 2; position: absolute; }
 .stage-topline { inset: 1.2rem 1.2rem auto; display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; pointer-events: none; }
 #view-label { padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 99rem; color: #d9d7d1; background: rgba(10, 12, 15, .62); font-size: .78rem; }
 .reference-label { max-width: 14rem; padding: .45rem .7rem; border-radius: .55rem; background: #f1d69b; color: #282116; font-size: .76rem; font-weight: 800; text-align: right; }
@@ -92,6 +92,7 @@ h2, h3, p { margin-top: 0; }
 .stage-help { inset: auto 1rem .85rem; margin: 0; color: #d8d7d2; font-size: .73rem; text-align: center; pointer-events: none; }
 .loading { left: 50%; top: 50%; transform: translate(-50%, -50%); padding: .75rem 1rem; border-radius: .7rem; background: rgba(11, 14, 18, .92); color: var(--mint); font-weight: 700; }
 .loading span { display: inline-block; width: .65rem; height: .65rem; margin-right: .4rem; border-radius: 50%; background: currentColor; animation: pulse 1s ease-in-out infinite alternate; }
+.anatomy-status { left: 1rem; bottom: 2.5rem; max-width: min(24rem, calc(100% - 2rem)); padding: .45rem .65rem; border: 1px solid rgba(255, 255, 255, .12); border-radius: .55rem; color: #f2d99a; background: rgba(10, 12, 15, .72); font-size: .7rem; pointer-events: none; }
 .fallback { min-height: 42rem; padding: clamp(3rem, 10vw, 8rem); background: linear-gradient(145deg, #20252b, #13161a); }
 .fallback h2 { max-width: 12ch; font-size: clamp(2rem, 5vw, 4rem); }
 .fallback p:last-child { max-width: 38rem; color: var(--muted); line-height: 1.6; }
@@ -118,8 +119,14 @@ input[type="range"] { width: 100%; margin: 1.1rem 0 .6rem; accent-color: var(--m
 .phase-readout strong, .phase-readout span { display: block; }
 .phase-readout strong { margin-bottom: .22rem; color: var(--gold); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
 .phase-readout span { color: #d3d0c9; font-size: .86rem; line-height: 1.45; }
-.layer-scale { display: grid; grid-template-columns: repeat(5, 1fr); padding: 0; margin: 0 0 1rem; list-style: none; color: var(--muted); font-size: .61rem; text-align: center; }
 .control-section label, dialog label { display: grid; gap: .35rem; margin-top: .8rem; color: var(--muted); font-size: .75rem; }
+.anatomy-controls { background: linear-gradient(135deg, rgba(244, 211, 138, .12), transparent); }
+.anatomy-key { display: flex; flex-wrap: wrap; gap: .5rem .8rem; margin: .85rem 0; color: #d0ccc2; font-size: .68rem; }
+.anatomy-key span { display: inline-flex; align-items: center; gap: .35rem; }
+.anatomy-key i { width: .68rem; height: .68rem; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255, 255, 255, .2); }
+.key-bone { background: #f0e4c9; }
+.key-muscle { background: #c84d4f; }
+.key-active { background: #ffbf4a; }
 .twin-controls { background: linear-gradient(135deg, rgba(138, 184, 255, .1), transparent); }
 .twin-controls label { grid-template-columns: 1fr auto; align-items: end; }
 .twin-controls label input, .twin-controls label select { grid-column: 1 / -1; }

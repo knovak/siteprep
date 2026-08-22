@@ -9,13 +9,17 @@ claim produces a separate report instead of changing the source record.
 ## Architecture
 
 `scripts/package-assets.mjs` packages the Phase 0 rig into two local payloads.
-`data/rig-core.json` contains the surface, skeleton, hierarchy, and five-frame
-motion clip loaded at startup. `data/muscles.json` contains the ten named muscle
+`data/rig-core.json` contains the full-body surface, 27-node skeleton,
+hierarchy, and five-frame motion clip loaded at startup. `data/muscles.json`
+contains 40 paired named muscle
 paths and attachment landmarks and is fetched only when a muscle layer is first
 requested. The source rig remains canonical; rerun the packager after it changes.
 
 `viewer.mjs` interpolates the five Phase 0 samples on the shared hierarchy and
-projects surface capsules, bones, and muscle paths into the canvas. Orbit, zoom,
+projects surface geometry, shaped bones, joints, and muscle paths into the
+canvas. Six anatomical views separate surface, transparent skeleton,
+superficial muscle, deep muscle, combined muscle-and-skeleton, and skeleton
+detail displays. Orbit, zoom,
 playback time, layer state, a pinned layer, and joint isolation are independent
 state dimensions. Layer operations therefore cannot reset the camera or pose.
 Pointer Events provide mouse and touch orbiting; keyboard arrows and plus/minus

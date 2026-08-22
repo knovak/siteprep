@@ -1,9 +1,10 @@
 export const LAYER_STATES = [
-  'Surface',
-  'Surface + skeleton',
+  'Surface anatomy',
+  'Transparent surface + skeleton',
   'Superficial muscles',
-  'Deep muscles',
-  'Skeleton'
+  'Deep muscle groups',
+  'Muscles + skeleton',
+  'Skeleton detail'
 ];
 
 export function createViewerState() {
@@ -24,7 +25,7 @@ function updated(state, change) {
 }
 
 export function setLayer(state, layer) {
-  if (!Number.isInteger(layer) || layer < 0 || layer >= LAYER_STATES.length) throw new RangeError('Layer must be 0–4');
+  if (!Number.isInteger(layer) || layer < 0 || layer >= LAYER_STATES.length) throw new RangeError(`Layer must be 0–${LAYER_STATES.length - 1}`);
   return updated(state, { layer });
 }
 
@@ -72,5 +73,5 @@ export function anatomyIsVisible(state) {
 }
 
 export function musclesAreRequested(state) {
-  return state.layer === 2 || state.layer === 3 || state.pinned === 'muscles';
+  return [2, 3, 4].includes(state.layer) || state.pinned === 'muscles';
 }

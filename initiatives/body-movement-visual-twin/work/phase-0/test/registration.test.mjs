@@ -12,7 +12,7 @@ const ledger = JSON.parse(readFileSync(resolve(PHASE_DIR, 'rights-ledger.json'),
 test('the rights-ledgered fixture passes every Phase 0 contract', () => {
   const result = checkPhase0Data(rig, ledger);
   assert.equal(result.ok, true, result.errors.join('\n'));
-  assert.equal(result.report.registration_sample_count, 100);
+  assert.equal(result.report.registration_sample_count, 400);
   assert.ok(result.report.maximum_distance_mm < 8);
 });
 
@@ -21,7 +21,7 @@ test('a drifting landmark fails rather than hiding under the surface', () => {
   drifting.attachments[0].geometry_landmark_local_mm[0] += 12;
   const result = checkPhase0Data(drifting, ledger);
   assert.equal(result.ok, false);
-  assert.match(result.errors.join('\n'), /trapezius-superior\/origin misses by/);
+  assert.match(result.errors.join('\n'), /trapezius-superior-left\/origin misses by/);
 });
 
 test('an excluded third-party asset cannot enter the packaged rig', () => {

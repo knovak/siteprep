@@ -47,3 +47,7 @@ Added exact-claim review reports, local copy/download handoff, and a documented 
 ## 2026-08-22 — Phase 6 - deploy privately and run validation
 
 Published an owner-only noindex validation site; desktop and phone technical checks pass, and human reviewer findings remain as an explicit data-blocked follow-up.
+
+## 2026-08-22 — Refocus the validation site on realistic anatomy in motion
+
+Replaced the shoulder-and-spine debug figure with a 27-node full-body fitted reference and 40 paired superficial and deep muscle paths; added six anatomical renderings with a coherent surface silhouette, shaped muscle bellies, tendons, paired long bones, joints, skull, pelvis, and rib landmarks. Reordered the page so Anatomical view precedes the playback boundary, timeline, Visual Twin controls, and every flaggable claim. Added five yoga and five Feldenkrais anatomical movement studies for a 13-record collection while keeping all geometry and movement claims explicitly unreviewed.

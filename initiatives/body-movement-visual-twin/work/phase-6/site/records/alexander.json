@@ -9,13 +9,13 @@
       "id": "pause",
       "t": [0, 6],
       "joint_actions": [{ "joint": "neck-base", "action": "maintain an unforced relationship to the upper spine" }],
-      "muscles": [{ "id": "trapezius-superior", "behaviour": "lengthens" }]
+      "muscles": [{ "id": "trapezius-superior-left", "behaviour": "lengthens" }]
     },
     {
       "id": "incline",
       "t": [6, 14],
       "joint_actions": [{ "joint": "thoracic-lower", "action": "incline the trunk as one coordinated action" }],
-      "muscles": [{ "id": "erector-spinae-group", "behaviour": "stabilises" }]
+      "muscles": [{ "id": "erector-spinae-left", "behaviour": "stabilises" }]
     }
   ],
   "instruction": {
