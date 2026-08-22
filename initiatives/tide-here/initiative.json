@@ -6,12 +6,12 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-7-local-history",
-      "title": "Phase 7 - add local history, caching, and the privacy statement",
+      "id": "phase-8-live-validation",
+      "title": "Phase 8 - deploy, run live smoke tests, and review thresholds",
       "state": "actionable",
       "value": "high",
       "effort": "large",
-      "advances_stage": false
+      "advances_stage": true
     }
   ]
 }
