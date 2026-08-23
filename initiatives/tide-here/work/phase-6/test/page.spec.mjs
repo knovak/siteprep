@@ -3,9 +3,14 @@ import AxeBuilder from '@axe-core/playwright';
 
 const pagePath = '/initiatives/tide-here/work/phase-6/index.html?fixture=1';
 
-test('a forecast shows three names, station and zone, and five equal day cards', async ({ page }, testInfo) => {
+test('a forecast keeps tides visible and folds coast and astronomy details', async ({ page }, testInfo) => {
   await page.goto(pagePath);
   await expect(page.locator('#result')).toBeVisible();
+  const coastDetails = page.locator('.identity-card');
+  await expect(coastDetails).not.toHaveAttribute('open', '');
+  await expect(coastDetails.locator('summary')).toContainText('SEATTLE');
+  await expect(page.getByText('You entered', { exact: true })).toBeHidden();
+  await coastDetails.locator('summary').click();
   await expect(page.getByText('You entered', { exact: true })).toBeVisible();
   await expect(page.locator('#entered-name')).toHaveText('Seattle');
   await expect(page.locator('#resolved-name')).toContainText('Seattle, Washington');
@@ -14,9 +19,27 @@ test('a forecast shows three names, station and zone, and five equal day cards',
   await expect(page.locator('#zone-name')).toHaveText('America/Los_Angeles');
   await expect(page.locator('.day-card')).toHaveCount(5);
   await expect(page.locator('.day-card').first().getByText('Tides', { exact: true })).toBeVisible();
-  await expect(page.locator('.day-card').first().getByText('Sun and moon', { exact: true })).toBeVisible();
+  await expect(page.locator('.day-card').first().locator('.event-group li')).toHaveCount(4);
+  const astronomyDetails = page.locator('.astronomy-details');
+  await expect(astronomyDetails).toHaveCount(5);
+  await expect(astronomyDetails.locator('[open]')).toHaveCount(0);
+  await expect(astronomyDetails.first().locator('summary')).toContainText(/Sun and moon · Moonrise \d{1,2}:\d{2} [AP]M/);
+  await expect(astronomyDetails.first().getByText('Sunrise', { exact: true })).toBeHidden();
+  await astronomyDetails.first().locator('summary').click();
+  await expect(astronomyDetails.first().getByText('Sunrise', { exact: true })).toBeVisible();
   await expect(page.getByText(/informational and are not for navigation or safety decisions/i)).toBeVisible();
   await expect(page.locator('#source-copy')).toContainText(/heights in metres relative to MLLW/i);
+  await expect(page.getByText('No location permission needed', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('What is the coast doing here?', { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Tide Here checks the coast before it shows a prediction station/i)).toHaveCount(0);
+  const outputOrder = await page.evaluate(() => {
+    const result = document.querySelector('#result');
+    const localTools = document.querySelector('.local-tools');
+    return Boolean(result.compareDocumentPosition(localTools) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(outputOrder).toBe(true);
+  await expect(page.getByRole('button', { name: /Show local history/ })).toBeVisible();
+  await expect(page.getByText(/What leaves this device:/i)).toBeVisible();
   if (testInfo.project.name === 'desktop') {
     const heights = await page.locator('.day-card').evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().height)));
     expect(new Set(heights).size).toBe(1);
@@ -88,13 +111,14 @@ test('the page reflows without clipping from a small phone through a wide deskto
         clipped: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         columns: getComputedStyle(document.querySelector('#day-cards')).gridTemplateColumns.split(' ').length,
         cardWidths: cards.map(card => card.getBoundingClientRect().width),
-        cardHeights: cards.map(card => card.getBoundingClientRect().height)
+        cardHeights: cards.map(card => card.getBoundingClientRect().height),
+        secondDayBottom: cards[1].getBoundingClientRect().bottom
       };
     });
     expect(layout.clipped, `${window.width}px viewport clips horizontally`).toBe(false);
     expect(layout.columns).toBe(window.columns);
     expect(layout.cardWidths.every(width => width > 0 && width <= window.width)).toBe(true);
-    if (window.width === 430) expect(layout.cardHeights[2]).toBeLessThan(layout.cardHeights[0]);
+    if (window.width === 430) expect(layout.secondDayBottom, 'the first two days fit in the phone viewport').toBeLessThanOrEqual(window.height);
   }
 });
 
@@ -133,14 +157,14 @@ test('local history is visible, downloadable, clearable, and never transmitted',
 
   const keysBeforeClear = await page.evaluate(() => Object.keys(localStorage));
   expect(keysBeforeClear).toContain('tide-here.history.v1');
-  expect(keysBeforeClear).toContain('tide-here.station-catalogue.v1');
+  expect(keysBeforeClear).toContain('tide-here.station-catalogue.v2');
   expect(keysBeforeClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
   await page.getByRole('button', { name: 'Clear local history' }).click();
   await expect(page.getByText(/history cleared.*caches were left alone/i)).toBeVisible();
   await expect(page.getByText('No local forecast history yet.')).toBeVisible();
   const keysAfterClear = await page.evaluate(() => Object.keys(localStorage));
   expect(keysAfterClear).not.toContain('tide-here.history.v1');
-  expect(keysAfterClear).toContain('tide-here.station-catalogue.v1');
+  expect(keysAfterClear).toContain('tide-here.station-catalogue.v2');
   expect(keysAfterClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
 
   const requestCount = requests.length;

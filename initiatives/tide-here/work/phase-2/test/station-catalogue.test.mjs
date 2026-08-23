@@ -5,7 +5,8 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { greatCircleDistanceKm, matchCoast, rankStations } from '../src/coastal-match.mjs';
-import { normalizeStationCatalogues, readThroughStationCatalogue } from '../src/station-catalogue.mjs';
+import { fetchStationCatalogues, normalizeStationCatalogues, readThroughStationCatalogue } from '../src/station-catalogue.mjs';
+import { fetchStationDetails, normalizeStationDetails, readThroughStationDetails } from '../src/station-details.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(await readFile(resolve(phaseDirectory, 'data/provider-config.json'), 'utf8'));
@@ -115,5 +116,72 @@ test('the normalized catalogue is reused for seven days and then refreshed', asy
   assert.equal(first.source, 'provider');
   assert.equal(sixthDay.source, 'cache');
   assert.equal(eighthDay.source, 'provider');
+  assert.equal(fetches, 2);
+});
+
+test('normal mode fetches and normalizes the complete provider catalogue shapes', async () => {
+  const requests = [];
+  const fetchImpl = async (url) => {
+    requests.push(url);
+    return {
+      ok: true,
+      async json() {
+        return structuredClone(url === config.providers.noaa.catalogueUrl ? fixture.noaa : fixture.chs.stations);
+      }
+    };
+  };
+  const fetched = await fetchStationCatalogues({ config, fetchImpl });
+  assert.equal(fetched.length, stations.length);
+  assert.deepEqual(requests.sort(), [config.providers.noaa.catalogueUrl, config.providers.chs.catalogueUrl].sort());
+  assert.equal(fetched.find((station) => station.code === '07735').kind, 'unknown');
+});
+
+test('chosen station metadata supplies coast time zone and CHS reference details', async () => {
+  const halfMoonBay = {
+    provider: 'noaa', country: 'US', id: '9414131', code: '9414131', name: 'Pillar Point Harbor, Half Moon Bay',
+    latitude: 37.5025, longitude: -122.4821667, jurisdiction: 'US-CA', datum: 'MLLW', kind: 'reference', referenceStationId: null
+  };
+  const vancouver = stations.find((station) => station.code === '07735');
+  const noaa = normalizeStationDetails(halfMoonBay, {
+    stations: [{ id: '9414131', state: 'CA', lng: -122.48217, timezonecorr: -8 }]
+  });
+  const chs = normalizeStationDetails(vancouver, {
+    provinceCode: 'BC', isTideTableReferencePort: true, referencePortStationId: null, timeZoneCode: 'Canada/Pacific'
+  });
+  assert.equal(noaa.timeZone, 'America/Los_Angeles');
+  assert.equal(chs.timeZone, 'Canada/Pacific');
+  assert.equal(chs.jurisdiction, 'CA-BC');
+  assert.equal(chs.kind, 'reference');
+
+  const requests = [];
+  const fetched = await fetchStationDetails({
+    station: halfMoonBay,
+    config,
+    fetchImpl: async (url) => {
+      requests.push(url);
+      return { ok: true, json: async () => ({ stations: [{ id: '9414131', state: 'CA', lng: -122.48217, timezonecorr: -8 }] }) };
+    }
+  });
+  assert.equal(fetched.timeZone, 'America/Los_Angeles');
+  assert.deepEqual(requests, [config.providers.noaa.stationMetadataUrl.replace('{stationId}', '9414131')]);
+});
+
+test('chosen station details are cached for seven days', async () => {
+  const values = new Map();
+  const storage = {
+    getItem(key) { return values.get(key) ?? null; },
+    setItem(key, value) { values.set(key, value); }
+  };
+  const station = { provider: 'noaa', id: '9414131' };
+  let fetches = 0;
+  const fetchDetails = async () => {
+    fetches += 1;
+    return { ...station, timeZone: 'America/Los_Angeles' };
+  };
+  const day = 24 * 60 * 60 * 1000;
+  const first = await readThroughStationDetails({ storage, station, now: 0, ttlMs: config.catalogueCacheTtlMs, fetchDetails });
+  const sixth = await readThroughStationDetails({ storage, station, now: 6 * day, ttlMs: config.catalogueCacheTtlMs, fetchDetails });
+  const eighth = await readThroughStationDetails({ storage, station, now: 8 * day, ttlMs: config.catalogueCacheTtlMs, fetchDetails });
+  assert.deepEqual([first.source, sixth.source, eighth.source], ['provider', 'cache', 'provider']);
   assert.equal(fetches, 2);
 });

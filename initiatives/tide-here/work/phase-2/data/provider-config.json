@@ -11,6 +11,7 @@
       "country": "US",
       "datum": "MLLW",
       "catalogueUrl": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions",
+      "stationMetadataUrl": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/{stationId}.json",
       "predictionUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter",
       "licenceUrl": "https://www.tidesandcurrents.noaa.gov/disclaimers.html",
       "attribution": "NOAA CO-OPS"
@@ -19,6 +20,7 @@
       "country": "CA",
       "datum": "chart-datum",
       "catalogueUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+      "stationMetadataUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/{stationId}/metadata",
       "predictionUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/{stationId}/data",
       "licenceUrl": "https://www.tides.gc.ca/en/licence-agreement",
       "attribution": "Canadian Hydrographic Service (CHS), Fisheries and Oceans Canada"
