@@ -80,3 +80,11 @@ Collapsed the detailed entered-place block under the coast name, kept every
 day's high and low tides visible, and folded sun and moon details under a label
 that includes the day's moonrise time. Tightened the phone layout so the first
 two tide days are immediately visible at an iPhone Pro Max viewport.
+
+## 2026-08-23 — Write a user-facing README covering how to use it and how to deploy it
+
+Added a user-facing README covering the public Site, NOAA/CHS coverage, coast-local interpretation, device-local history and privacy, local verification, and the path-preserving static deployment workflow.
+
+## 2026-08-23 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Proposed five optional refinements with expected value, likely size, safety boundaries, and evidence: browser location, a geographic coast chooser, local pins, inline help, and another official provider adapter.
