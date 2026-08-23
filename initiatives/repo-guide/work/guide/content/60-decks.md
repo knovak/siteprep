@@ -7,19 +7,19 @@ slide_title: Deck changes follow the publishing contract
 audience: both
 ---
 A deck is published site content — a top-level collection with pages or sections
-beneath it. Changing one is ordinary web work with a few house rules that exist
+under it. Changing one is ordinary web work, with a few house rules that exist
 because the shared components assume them.
 
 Keep ordinary topic content inside the page's content card. Reach for the shared
-libraries rather than rolling your own maps, galleries, collapsible topics, or
+libraries instead of rolling your own maps, galleries, collapsible topics, or
 footers. Preserve every URL you were given, exactly as given. New travel content
 carries the place facts that were asked for, locations written for a visitor
 rather than a resident, and a map.
 
-Then build. After the last source change, run `{{agent.commands.build}}`, and
-capture anything visibly different with the repository's screenshot command —
-the build is what turns source into the published site, so an unbuilt change is
-not really a change.
+Then build. After the last source change, run `{{agent.commands.build}}` and
+capture anything visibly different with the repository's screenshot command. The
+build is what turns source into the published site, so an unbuilt change isn't
+really a change yet.
 [The working conventions define the content requirements](source:AGENTS.md); [the
 build document gives the reproducible commands](source:BUILD_TECHDOC.md).
 
@@ -28,7 +28,7 @@ build document gives the reproducible commands](source:BUILD_TECHDOC.md).
 
 Ordinary web work, with a few house rules the shared components assume: topic
 content stays inside the page's content card, and maps, galleries, collapsible
-topics, and footers come from the shared libraries rather than a one-off
-build. Every supplied URL is preserved exactly. Build with
+topics, and footers come from the shared libraries rather than a one-off build.
+Every URL you were given is preserved exactly. Build with
 `{{agent.commands.build}}` after the final source change, then screenshot
-anything visibly different.
+anything that looks different.

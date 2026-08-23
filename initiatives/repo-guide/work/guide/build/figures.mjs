@@ -134,7 +134,7 @@ function lifecycleFlow(facts) {
       height,
       title: `The lifecycle in order, with the documents each stage expects: ${stages.join(', ')}`,
       className: 'figure-svg--wide',
-      body: `${ARROW_DEFS}${rail}${text(4, height - 8, 'A document appears only when the stage reaches it.', {variant: 'caption'})}`,
+      body: `${ARROW_DEFS}${rail}${text(4, height - 8, 'A document shows up when the stage reaches it, and not before.', {variant: 'caption'})}`,
     }),
   };
 }
@@ -178,7 +178,7 @@ function divisionOfLabour(facts) {
     html: svg({
       width,
       height,
-      title: `The person supplies intent, facts, and authority; the agents supply structure. The classes that wait for a person are ${humanClasses.join(', ')}.`,
+      title: `The person supplies intent, facts, and authority; the agents supply the structure. The classes that wait for a person are ${humanClasses.join(', ')}.`,
       body: `${ARROW_DEFS}
         ${lane(0, 'The person', 'Supplies', personLines, 'person')}
         ${lane(rightX, 'The agents', 'Supply', agentLines, 'agent')}
@@ -187,7 +187,7 @@ function divisionOfLabour(facts) {
         ${arrow(rightX - 10, laneHeight / 2 + 30, laneWidth + 10, laneHeight / 2 + 30, {variant: 'agent'})}
         ${text(width / 2, laneHeight / 2 - 22, 'intent', {variant: 'edge', anchor: 'middle'})}
         ${text(width / 2, laneHeight / 2 + 20, 'increments', {variant: 'edge', anchor: 'middle'})}
-        ${text(0, height - 6, 'Amber classes above stay visibly waiting until the person answers.', {variant: 'caption'})}`,
+        ${text(0, height - 6, 'The amber labels sit there waiting until a person answers.', {variant: 'caption'})}`,
     }),
   };
 }
@@ -231,8 +231,8 @@ function sweepRun(facts) {
         ${rail}
         ${text(4, meterTop - 12, 'One shared budget, spent left to right', {variant: 'eyebrow'})}
         ${meter}
-        ${text(4, meterTop + 46, `Earlier phases spend it first, so a run that only answers review is a complete run.`, {variant: 'caption'})}
-        ${text(4, meterTop + 66, `At most ${budget.max_items_per_initiative} from any one initiative; the run stops entirely at ${budget.max_open_prs} open pull requests.`, {variant: 'caption'})}`,
+        ${text(4, meterTop + 46, `Earlier phases spend it first, so a run that only answers review has done its job.`, {variant: 'caption'})}
+        ${text(4, meterTop + 66, `At most ${budget.max_items_per_initiative} from any one initiative, and the run stops altogether at ${budget.max_open_prs} open pull requests.`, {variant: 'caption'})}`,
     }),
   };
 }
@@ -273,7 +273,7 @@ function blockerTriage(facts) {
       body: `${ARROW_DEFS}
         ${column(0, 'wait', 'Blocked on', 'A person must answer', needsPerson)}
         ${column(rightX, 'auto', 'Blocked on', 'Clears when something else moves', clearsItself)}
-        ${text(0, height - 6, 'Changing the label does not change who can honestly answer the question.', {variant: 'caption'})}`,
+        ${text(0, height - 6, 'Changing the label doesn’t change who can honestly answer the question.', {variant: 'caption'})}`,
     }),
   };
 }
@@ -318,11 +318,11 @@ function forkBoundary(facts) {
     html: svg({
       width,
       height,
-      title: `A fork carries the process-bearing files and leaves this repository's content behind. The protected paths are ${protectedPaths.join(', ')}.`,
+      title: `A fork carries the process-bearing files and leaves this repository's own content behind. The protected paths are ${protectedPaths.join(', ')}.`,
       body: `${ARROW_DEFS}
         ${column(0, 'carry', 'Take it', 'Carries the process', carry, pathChips)}
         ${column(rightX, 'leave', 'Leave it', 'Belongs to this repository', leave, '')}
-        ${text(0, height - 6, 'Protected paths mark shared machinery a sweep cannot casually rewrite.', {variant: 'caption'})}`,
+        ${text(0, height - 6, 'Protected paths are the shared machinery a sweep can’t casually rewrite.', {variant: 'caption'})}`,
     }),
   };
 }
@@ -355,7 +355,7 @@ function contentAreas() {
       width,
       height,
       title: 'The three content areas: decks, demos, and initiatives.',
-      body: `${columns}${text(0, height - 4, 'The working instructions keep the three vocabularies separate on purpose.', {variant: 'caption'})}`,
+      body: `${columns}${text(0, height - 4, 'The working instructions keep the three vocabularies apart on purpose.', {variant: 'caption'})}`,
     }),
   };
 }
@@ -363,7 +363,7 @@ function contentAreas() {
 export const FIGURES = {
   'content-areas': contentAreas,
   'lifecycle-flow': lifecycleFlow,
-  'division-of-labour': divisionOfLabour,
+  'division-of-labor': divisionOfLabour,
   'sweep-run': sweepRun,
   'blocker-triage': blockerTriage,
   'fork-boundary': forkBoundary,
