@@ -1,65 +1,365 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_rig": "phase-0/assets/original/reference-rig.json",
   "layers": {
     "muscles": [
       {
-        "id": "trapezius-superior",
-        "label": "Trapezius, superior part",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "trapezius-middle",
-        "label": "Trapezius, middle part",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "trapezius-inferior",
-        "label": "Trapezius, inferior part",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "serratus-anterior",
-        "label": "Serratus anterior",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "rhomboids-group",
-        "label": "Rhomboids, grouped",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "deltoid-anterior",
-        "label": "Deltoid, anterior part",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "deltoid-middle",
-        "label": "Deltoid, middle part",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "deltoid-posterior",
-        "label": "Deltoid, posterior part",
-        "source_ref": "open3dmodel-upper-limb",
-        "review_status": "unreviewed"
-      },
-      {
-        "id": "erector-spinae-group",
-        "label": "Erector spinae, grouped",
+        "id": "trapezius-superior-left",
+        "label": "Trapezius, superior part, left",
+        "depth": "superficial",
+        "region": "upper-back",
+        "side": "left",
         "source_ref": "visible-human-reference",
         "review_status": "unreviewed"
       },
       {
-        "id": "multifidus-group",
-        "label": "Multifidus, grouped",
+        "id": "trapezius-superior-right",
+        "label": "Trapezius, superior part, right",
+        "depth": "superficial",
+        "region": "upper-back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "trapezius-middle-left",
+        "label": "Trapezius, middle part, left",
+        "depth": "superficial",
+        "region": "upper-back",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "trapezius-middle-right",
+        "label": "Trapezius, middle part, right",
+        "depth": "superficial",
+        "region": "upper-back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "trapezius-inferior-left",
+        "label": "Trapezius, inferior part, left",
+        "depth": "superficial",
+        "region": "upper-back",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "trapezius-inferior-right",
+        "label": "Trapezius, inferior part, right",
+        "depth": "superficial",
+        "region": "upper-back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "serratus-anterior-left",
+        "label": "Serratus anterior, left",
+        "depth": "deep",
+        "region": "chest",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "serratus-anterior-right",
+        "label": "Serratus anterior, right",
+        "depth": "deep",
+        "region": "chest",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "rhomboids-left",
+        "label": "Rhomboids, grouped, left",
+        "depth": "deep",
+        "region": "upper-back",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "rhomboids-right",
+        "label": "Rhomboids, grouped, right",
+        "depth": "deep",
+        "region": "upper-back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "deltoid-left",
+        "label": "Deltoid, left",
+        "depth": "superficial",
+        "region": "shoulder",
+        "side": "left",
+        "source_ref": "open3dmodel-upper-limb",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "deltoid-right",
+        "label": "Deltoid, right",
+        "depth": "superficial",
+        "region": "shoulder",
+        "side": "right",
+        "source_ref": "open3dmodel-upper-limb",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "pectoralis-major-left",
+        "label": "Pectoralis major, left",
+        "depth": "superficial",
+        "region": "chest",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "pectoralis-major-right",
+        "label": "Pectoralis major, right",
+        "depth": "superficial",
+        "region": "chest",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "latissimus-dorsi-left",
+        "label": "Latissimus dorsi, left",
+        "depth": "superficial",
+        "region": "back",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "latissimus-dorsi-right",
+        "label": "Latissimus dorsi, right",
+        "depth": "superficial",
+        "region": "back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "biceps-brachii-left",
+        "label": "Biceps brachii, left",
+        "depth": "superficial",
+        "region": "upper-arm",
+        "side": "left",
+        "source_ref": "open3dmodel-upper-limb",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "biceps-brachii-right",
+        "label": "Biceps brachii, right",
+        "depth": "superficial",
+        "region": "upper-arm",
+        "side": "right",
+        "source_ref": "open3dmodel-upper-limb",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "triceps-brachii-left",
+        "label": "Triceps brachii, left",
+        "depth": "superficial",
+        "region": "upper-arm",
+        "side": "left",
+        "source_ref": "open3dmodel-upper-limb",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "triceps-brachii-right",
+        "label": "Triceps brachii, right",
+        "depth": "superficial",
+        "region": "upper-arm",
+        "side": "right",
+        "source_ref": "open3dmodel-upper-limb",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "erector-spinae-left",
+        "label": "Erector spinae, grouped, left",
+        "depth": "superficial",
+        "region": "back",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "erector-spinae-right",
+        "label": "Erector spinae, grouped, right",
+        "depth": "superficial",
+        "region": "back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "multifidus-left",
+        "label": "Multifidus, grouped, left",
+        "depth": "deep",
+        "region": "back",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "multifidus-right",
+        "label": "Multifidus, grouped, right",
+        "depth": "deep",
+        "region": "back",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "rectus-abdominis-left",
+        "label": "Rectus abdominis, left",
+        "depth": "superficial",
+        "region": "abdomen",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "rectus-abdominis-right",
+        "label": "Rectus abdominis, right",
+        "depth": "superficial",
+        "region": "abdomen",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "external-oblique-left",
+        "label": "External oblique, left",
+        "depth": "superficial",
+        "region": "abdomen",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "external-oblique-right",
+        "label": "External oblique, right",
+        "depth": "superficial",
+        "region": "abdomen",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "gluteus-maximus-left",
+        "label": "Gluteus maximus, left",
+        "depth": "superficial",
+        "region": "hip",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "gluteus-maximus-right",
+        "label": "Gluteus maximus, right",
+        "depth": "superficial",
+        "region": "hip",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "gluteus-medius-left",
+        "label": "Gluteus medius, left",
+        "depth": "deep",
+        "region": "hip",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "gluteus-medius-right",
+        "label": "Gluteus medius, right",
+        "depth": "deep",
+        "region": "hip",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "iliopsoas-left",
+        "label": "Iliopsoas, grouped, left",
+        "depth": "deep",
+        "region": "hip",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "iliopsoas-right",
+        "label": "Iliopsoas, grouped, right",
+        "depth": "deep",
+        "region": "hip",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "quadriceps-left",
+        "label": "Quadriceps, grouped, left",
+        "depth": "superficial",
+        "region": "thigh",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "quadriceps-right",
+        "label": "Quadriceps, grouped, right",
+        "depth": "superficial",
+        "region": "thigh",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "hamstrings-left",
+        "label": "Hamstrings, grouped, left",
+        "depth": "superficial",
+        "region": "thigh",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "hamstrings-right",
+        "label": "Hamstrings, grouped, right",
+        "depth": "superficial",
+        "region": "thigh",
+        "side": "right",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "gastrocnemius-left",
+        "label": "Gastrocnemius, left",
+        "depth": "superficial",
+        "region": "lower-leg",
+        "side": "left",
+        "source_ref": "visible-human-reference",
+        "review_status": "unreviewed"
+      },
+      {
+        "id": "gastrocnemius-right",
+        "label": "Gastrocnemius, right",
+        "depth": "superficial",
+        "region": "lower-leg",
+        "side": "right",
         "source_ref": "visible-human-reference",
         "review_status": "unreviewed"
       }
@@ -67,303 +367,1203 @@
   },
   "attachments": [
     {
-      "muscle_id": "trapezius-superior",
+      "muscle_id": "trapezius-superior-left",
       "endpoint": "origin",
       "bone_id": "neck-base",
       "bone_landmark_local_mm": [
-        0,
-        55,
-        0
+        -5,
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        1,
-        55.5,
-        0.5
+        -3.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "trapezius-superior",
-      "endpoint": "insertion",
-      "bone_id": "clavicle-left",
-      "bone_landmark_local_mm": [
-        -65,
-        0,
-        0
-      ],
-      "geometry_landmark_local_mm": [
-        -64,
-        0.5,
-        0.5
-      ]
-    },
-    {
-      "muscle_id": "trapezius-middle",
-      "endpoint": "origin",
-      "bone_id": "thoracic-upper",
-      "bone_landmark_local_mm": [
-        0,
-        45,
-        -15
-      ],
-      "geometry_landmark_local_mm": [
-        1.5,
-        45.5,
-        -14.5
-      ]
-    },
-    {
-      "muscle_id": "trapezius-middle",
-      "endpoint": "insertion",
-      "bone_id": "scapula-left",
-      "bone_landmark_local_mm": [
-        -15,
-        15,
-        -5
-      ],
-      "geometry_landmark_local_mm": [
-        -13.5,
-        15.5,
-        -4.5
-      ]
-    },
-    {
-      "muscle_id": "trapezius-inferior",
-      "endpoint": "origin",
-      "bone_id": "thoracic-lower",
-      "bone_landmark_local_mm": [
-        0,
-        -55,
-        -15
-      ],
-      "geometry_landmark_local_mm": [
-        1,
-        -54,
-        -14.5
-      ]
-    },
-    {
-      "muscle_id": "trapezius-inferior",
+      "muscle_id": "trapezius-superior-left",
       "endpoint": "insertion",
       "bone_id": "scapula-left",
       "bone_landmark_local_mm": [
         -5,
-        -25,
-        -5
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -4,
-        -24,
-        -4.5
+        -3.5,
+        -7.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "serratus-anterior",
+      "muscle_id": "trapezius-superior-right",
       "endpoint": "origin",
-      "bone_id": "thoracic-lower",
+      "bone_id": "neck-base",
       "bone_landmark_local_mm": [
-        -90,
-        20,
-        20
+        5,
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -88.5,
-        20.5,
-        20.5
+        6.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "serratus-anterior",
+      "muscle_id": "trapezius-superior-right",
       "endpoint": "insertion",
-      "bone_id": "scapula-left",
+      "bone_id": "scapula-right",
       "bone_landmark_local_mm": [
-        10,
-        -30,
-        10
+        5,
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        11.5,
-        -29.5,
-        10.5
+        6.5,
+        -7.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "rhomboids-group",
+      "muscle_id": "trapezius-middle-left",
       "endpoint": "origin",
       "bone_id": "thoracic-upper",
       "bone_landmark_local_mm": [
-        -10,
-        10,
-        -20
-      ],
-      "geometry_landmark_local_mm": [
-        -8.5,
-        10.5,
-        -19.5
-      ]
-    },
-    {
-      "muscle_id": "rhomboids-group",
-      "endpoint": "insertion",
-      "bone_id": "scapula-left",
-      "bone_landmark_local_mm": [
-        15,
-        10,
-        -10
-      ],
-      "geometry_landmark_local_mm": [
-        16.5,
-        10.5,
-        -9.5
-      ]
-    },
-    {
-      "muscle_id": "deltoid-anterior",
-      "endpoint": "origin",
-      "bone_id": "clavicle-left",
-      "bone_landmark_local_mm": [
-        -75,
         -5,
-        10
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -73.5,
-        -4.5,
-        10.5
+        -3.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "deltoid-anterior",
+      "muscle_id": "trapezius-middle-left",
       "endpoint": "insertion",
-      "bone_id": "humerus-left",
+      "bone_id": "scapula-left",
       "bone_landmark_local_mm": [
-        0,
-        -85,
-        12
+        -5,
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        1.5,
-        -84.5,
-        12.5
+        -3.5,
+        -7.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "deltoid-middle",
+      "muscle_id": "trapezius-middle-right",
+      "endpoint": "origin",
+      "bone_id": "thoracic-upper",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "trapezius-middle-right",
+      "endpoint": "insertion",
+      "bone_id": "scapula-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "trapezius-inferior-left",
+      "endpoint": "origin",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "trapezius-inferior-left",
+      "endpoint": "insertion",
+      "bone_id": "scapula-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "trapezius-inferior-right",
+      "endpoint": "origin",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "trapezius-inferior-right",
+      "endpoint": "insertion",
+      "bone_id": "scapula-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "serratus-anterior-left",
+      "endpoint": "origin",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "serratus-anterior-left",
+      "endpoint": "insertion",
+      "bone_id": "scapula-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "serratus-anterior-right",
+      "endpoint": "origin",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "serratus-anterior-right",
+      "endpoint": "insertion",
+      "bone_id": "scapula-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rhomboids-left",
+      "endpoint": "origin",
+      "bone_id": "thoracic-upper",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rhomboids-left",
+      "endpoint": "insertion",
+      "bone_id": "scapula-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rhomboids-right",
+      "endpoint": "origin",
+      "bone_id": "thoracic-upper",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rhomboids-right",
+      "endpoint": "insertion",
+      "bone_id": "scapula-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "deltoid-left",
       "endpoint": "origin",
       "bone_id": "scapula-left",
       "bone_landmark_local_mm": [
-        -40,
-        20,
-        5
+        -5,
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -38.5,
-        20.5,
-        5.5
+        -3.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "deltoid-middle",
+      "muscle_id": "deltoid-left",
       "endpoint": "insertion",
       "bone_id": "humerus-left",
       "bone_landmark_local_mm": [
-        0,
-        -90,
-        0
+        -5,
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        1.5,
-        -89.5,
-        0.5
+        -3.5,
+        -7.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "deltoid-posterior",
+      "muscle_id": "deltoid-right",
       "endpoint": "origin",
-      "bone_id": "scapula-left",
+      "bone_id": "scapula-right",
       "bone_landmark_local_mm": [
-        -30,
-        10,
-        -15
+        5,
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -28.5,
-        10.5,
-        -14.5
+        6.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "deltoid-posterior",
+      "muscle_id": "deltoid-right",
+      "endpoint": "insertion",
+      "bone_id": "humerus-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "pectoralis-major-left",
+      "endpoint": "origin",
+      "bone_id": "thoracic-upper",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "pectoralis-major-left",
       "endpoint": "insertion",
       "bone_id": "humerus-left",
       "bone_landmark_local_mm": [
-        0,
-        -82,
-        -12
+        -5,
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        1.5,
-        -81.5,
-        -11.5
+        -3.5,
+        -7.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "erector-spinae-group",
+      "muscle_id": "pectoralis-major-right",
+      "endpoint": "origin",
+      "bone_id": "thoracic-upper",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "pectoralis-major-right",
+      "endpoint": "insertion",
+      "bone_id": "humerus-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "latissimus-dorsi-left",
       "endpoint": "origin",
       "bone_id": "lumbar-spine",
       "bone_landmark_local_mm": [
-        -35,
-        -45,
-        -25
+        -5,
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -34,
-        -44,
-        -24.5
+        -3.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "erector-spinae-group",
+      "muscle_id": "latissimus-dorsi-left",
+      "endpoint": "insertion",
+      "bone_id": "humerus-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "latissimus-dorsi-right",
+      "endpoint": "origin",
+      "bone_id": "lumbar-spine",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "latissimus-dorsi-right",
+      "endpoint": "insertion",
+      "bone_id": "humerus-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "biceps-brachii-left",
+      "endpoint": "origin",
+      "bone_id": "scapula-left",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "biceps-brachii-left",
+      "endpoint": "insertion",
+      "bone_id": "forearm-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "biceps-brachii-right",
+      "endpoint": "origin",
+      "bone_id": "scapula-right",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "biceps-brachii-right",
+      "endpoint": "insertion",
+      "bone_id": "forearm-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "triceps-brachii-left",
+      "endpoint": "origin",
+      "bone_id": "scapula-left",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "triceps-brachii-left",
+      "endpoint": "insertion",
+      "bone_id": "forearm-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "triceps-brachii-right",
+      "endpoint": "origin",
+      "bone_id": "scapula-right",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "triceps-brachii-right",
+      "endpoint": "insertion",
+      "bone_id": "forearm-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "erector-spinae-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "erector-spinae-left",
       "endpoint": "insertion",
       "bone_id": "thoracic-upper",
       "bone_landmark_local_mm": [
-        -35,
-        65,
-        -25
+        -5,
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        -34,
-        66,
-        -24.5
+        -3.5,
+        -7.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "multifidus-group",
+      "muscle_id": "erector-spinae-right",
       "endpoint": "origin",
-      "bone_id": "lumbar-spine",
+      "bone_id": "pelvis",
       "bone_landmark_local_mm": [
-        20,
-        -20,
-        -18
+        5,
+        8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        21,
-        -19,
-        -17.5
+        6.5,
+        8.5,
+        9.5
       ]
     },
     {
-      "muscle_id": "multifidus-group",
+      "muscle_id": "erector-spinae-right",
+      "endpoint": "insertion",
+      "bone_id": "thoracic-upper",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "multifidus-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "multifidus-left",
       "endpoint": "insertion",
       "bone_id": "thoracic-lower",
       "bone_landmark_local_mm": [
-        18,
-        40,
-        -18
+        -5,
+        -8,
+        9
       ],
       "geometry_landmark_local_mm": [
-        19,
-        41,
-        -17.5
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "multifidus-right",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "multifidus-right",
+      "endpoint": "insertion",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rectus-abdominis-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rectus-abdominis-left",
+      "endpoint": "insertion",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rectus-abdominis-right",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "rectus-abdominis-right",
+      "endpoint": "insertion",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "external-oblique-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "external-oblique-left",
+      "endpoint": "insertion",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "external-oblique-right",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "external-oblique-right",
+      "endpoint": "insertion",
+      "bone_id": "thoracic-lower",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-maximus-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-maximus-left",
+      "endpoint": "insertion",
+      "bone_id": "femur-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-maximus-right",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-maximus-right",
+      "endpoint": "insertion",
+      "bone_id": "femur-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-medius-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-medius-left",
+      "endpoint": "insertion",
+      "bone_id": "femur-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-medius-right",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gluteus-medius-right",
+      "endpoint": "insertion",
+      "bone_id": "femur-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "iliopsoas-left",
+      "endpoint": "origin",
+      "bone_id": "lumbar-spine",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "iliopsoas-left",
+      "endpoint": "insertion",
+      "bone_id": "femur-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "iliopsoas-right",
+      "endpoint": "origin",
+      "bone_id": "lumbar-spine",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "iliopsoas-right",
+      "endpoint": "insertion",
+      "bone_id": "femur-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "quadriceps-left",
+      "endpoint": "origin",
+      "bone_id": "hip-left",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "quadriceps-left",
+      "endpoint": "insertion",
+      "bone_id": "tibia-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "quadriceps-right",
+      "endpoint": "origin",
+      "bone_id": "hip-right",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "quadriceps-right",
+      "endpoint": "insertion",
+      "bone_id": "tibia-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "hamstrings-left",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "hamstrings-left",
+      "endpoint": "insertion",
+      "bone_id": "tibia-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "hamstrings-right",
+      "endpoint": "origin",
+      "bone_id": "pelvis",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "hamstrings-right",
+      "endpoint": "insertion",
+      "bone_id": "tibia-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gastrocnemius-left",
+      "endpoint": "origin",
+      "bone_id": "femur-left",
+      "bone_landmark_local_mm": [
+        -5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gastrocnemius-left",
+      "endpoint": "insertion",
+      "bone_id": "foot-left",
+      "bone_landmark_local_mm": [
+        -5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        -3.5,
+        -7.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gastrocnemius-right",
+      "endpoint": "origin",
+      "bone_id": "femur-right",
+      "bone_landmark_local_mm": [
+        5,
+        8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        8.5,
+        9.5
+      ]
+    },
+    {
+      "muscle_id": "gastrocnemius-right",
+      "endpoint": "insertion",
+      "bone_id": "foot-right",
+      "bone_landmark_local_mm": [
+        5,
+        -8,
+        9
+      ],
+      "geometry_landmark_local_mm": [
+        6.5,
+        -7.5,
+        9.5
       ]
     }
   ]

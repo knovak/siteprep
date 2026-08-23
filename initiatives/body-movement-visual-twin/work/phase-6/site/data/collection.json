@@ -1,21 +1,58 @@
 {
-  "id": "three-traditions",
-  "title": "Three traditions, three different kinds of instruction",
+  "id": "anatomy-in-motion",
+  "title": "Anatomy in motion across yoga, Feldenkrais, and Alexander Technique studies",
   "records": [
     {
       "tradition": "feldenkrais",
-      "record": "./records/feldenkrais.json",
-      "clip": "seated-pelvic-clock-exploration"
+      "record": "./records/feldenkrais.json"
     },
     {
       "tradition": "yoga",
-      "record": "./records/yoga.json",
-      "clip": "supported-seated-side-reach"
+      "record": "./records/yoga.json"
     },
     {
       "tradition": "alexander",
-      "record": "./records/alexander.json",
-      "clip": "pause-before-standing"
+      "record": "./records/alexander.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/mountain-arm-sweep-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/warrior-two-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/triangle-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/chair-pose-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/standing-forward-fold-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/dynamic-chair-clock-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/shoulder-clock-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/sliding-hand-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/seated-counterturn-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/seated-weight-shift-study.json"
     }
   ]
 }

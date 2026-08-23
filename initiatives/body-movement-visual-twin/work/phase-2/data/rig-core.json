@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "title": "Shoulder-and-spine shared-rig feasibility fixture",
+  "schema_version": 2,
+  "title": "Full-body shared fitted-reference rig",
   "units": "mm",
   "reference_stature_mm": 1700,
   "registration_tolerance_mm": 8,
@@ -17,38 +17,161 @@
   "layers": {
     "surface": [
       {
-        "id": "torso-shell",
+        "id": "pelvis-shell",
         "kind": "capsule",
-        "from": "lumbar-spine",
-        "to": "neck-base",
-        "radius_mm": 150
+        "from": "pelvis",
+        "to": "lumbar-spine",
+        "radius_mm": 155,
+        "region": "pelvis"
       },
       {
-        "id": "left-arm-shell",
+        "id": "abdomen-shell",
+        "kind": "capsule",
+        "from": "lumbar-spine",
+        "to": "thoracic-lower",
+        "radius_mm": 132,
+        "region": "torso"
+      },
+      {
+        "id": "chest-shell",
+        "kind": "capsule",
+        "from": "thoracic-lower",
+        "to": "neck-base",
+        "radius_mm": 166,
+        "region": "torso"
+      },
+      {
+        "id": "head-shell",
+        "kind": "capsule",
+        "from": "neck-base",
+        "to": "head",
+        "radius_mm": 92,
+        "region": "head"
+      },
+      {
+        "id": "left-upper-arm-shell",
         "kind": "capsule",
         "from": "scapula-left",
         "to": "humerus-left",
-        "radius_mm": 58
+        "radius_mm": 62,
+        "region": "limb"
       },
       {
-        "id": "right-arm-shell",
+        "id": "right-upper-arm-shell",
         "kind": "capsule",
         "from": "scapula-right",
         "to": "humerus-right",
-        "radius_mm": 58
+        "radius_mm": 62,
+        "region": "limb"
+      },
+      {
+        "id": "left-forearm-shell",
+        "kind": "capsule",
+        "from": "humerus-left",
+        "to": "forearm-left",
+        "radius_mm": 49,
+        "region": "limb"
+      },
+      {
+        "id": "right-forearm-shell",
+        "kind": "capsule",
+        "from": "humerus-right",
+        "to": "forearm-right",
+        "radius_mm": 49,
+        "region": "limb"
+      },
+      {
+        "id": "left-hand-shell",
+        "kind": "capsule",
+        "from": "forearm-left",
+        "to": "hand-left",
+        "radius_mm": 37,
+        "region": "extremity"
+      },
+      {
+        "id": "right-hand-shell",
+        "kind": "capsule",
+        "from": "forearm-right",
+        "to": "hand-right",
+        "radius_mm": 37,
+        "region": "extremity"
+      },
+      {
+        "id": "left-thigh-shell",
+        "kind": "capsule",
+        "from": "hip-left",
+        "to": "femur-left",
+        "radius_mm": 91,
+        "region": "limb"
+      },
+      {
+        "id": "right-thigh-shell",
+        "kind": "capsule",
+        "from": "hip-right",
+        "to": "femur-right",
+        "radius_mm": 91,
+        "region": "limb"
+      },
+      {
+        "id": "left-calf-shell",
+        "kind": "capsule",
+        "from": "femur-left",
+        "to": "tibia-left",
+        "radius_mm": 69,
+        "region": "limb"
+      },
+      {
+        "id": "right-calf-shell",
+        "kind": "capsule",
+        "from": "femur-right",
+        "to": "tibia-right",
+        "radius_mm": 69,
+        "region": "limb"
+      },
+      {
+        "id": "left-foot-shell",
+        "kind": "capsule",
+        "from": "tibia-left",
+        "to": "toe-left",
+        "radius_mm": 45,
+        "region": "extremity"
+      },
+      {
+        "id": "right-foot-shell",
+        "kind": "capsule",
+        "from": "tibia-right",
+        "to": "toe-right",
+        "radius_mm": 45,
+        "region": "extremity"
       }
     ],
     "skeleton": [
+      "pelvis",
       "lumbar-spine",
       "thoracic-lower",
       "thoracic-upper",
       "neck-base",
+      "head",
       "clavicle-left",
       "clavicle-right",
       "scapula-left",
       "scapula-right",
       "humerus-left",
-      "humerus-right"
+      "humerus-right",
+      "forearm-left",
+      "forearm-right",
+      "hand-left",
+      "hand-right",
+      "hip-left",
+      "hip-right",
+      "femur-left",
+      "femur-right",
+      "tibia-left",
+      "tibia-right",
+      "foot-left",
+      "foot-right",
+      "toe-left",
+      "toe-right"
     ]
   },
   "nodes": [
@@ -62,11 +185,20 @@
       ]
     },
     {
-      "id": "lumbar-spine",
+      "id": "pelvis",
       "parent": "root",
       "translation_mm": [
         0,
-        700,
+        900,
+        0
+      ]
+    },
+    {
+      "id": "lumbar-spine",
+      "parent": "pelvis",
+      "translation_mm": [
+        0,
+        105,
         0
       ]
     },
@@ -75,7 +207,7 @@
       "parent": "lumbar-spine",
       "translation_mm": [
         0,
-        180,
+        170,
         0
       ]
     },
@@ -84,13 +216,22 @@
       "parent": "thoracic-lower",
       "translation_mm": [
         0,
-        220,
+        190,
         0
       ]
     },
     {
       "id": "neck-base",
       "parent": "thoracic-upper",
+      "translation_mm": [
+        0,
+        125,
+        0
+      ]
+    },
+    {
+      "id": "head",
+      "parent": "neck-base",
       "translation_mm": [
         0,
         150,
@@ -101,60 +242,186 @@
       "id": "clavicle-left",
       "parent": "thoracic-upper",
       "translation_mm": [
-        -35,
-        115,
-        10
+        -40,
+        85,
+        18
       ]
     },
     {
       "id": "clavicle-right",
       "parent": "thoracic-upper",
       "translation_mm": [
-        35,
-        115,
-        10
+        40,
+        85,
+        18
       ]
     },
     {
       "id": "scapula-left",
       "parent": "thoracic-upper",
       "translation_mm": [
-        -115,
-        65,
-        -35
+        -105,
+        50,
+        -25
       ]
     },
     {
       "id": "scapula-right",
       "parent": "thoracic-upper",
       "translation_mm": [
-        115,
-        65,
-        -35
+        105,
+        50,
+        -25
       ]
     },
     {
       "id": "humerus-left",
       "parent": "scapula-left",
       "translation_mm": [
-        -150,
-        5,
-        10
+        -215,
+        0,
+        0
       ]
     },
     {
       "id": "humerus-right",
       "parent": "scapula-right",
       "translation_mm": [
-        150,
-        5,
-        10
+        215,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "forearm-left",
+      "parent": "humerus-left",
+      "translation_mm": [
+        -235,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "forearm-right",
+      "parent": "humerus-right",
+      "translation_mm": [
+        235,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "hand-left",
+      "parent": "forearm-left",
+      "translation_mm": [
+        -145,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "hand-right",
+      "parent": "forearm-right",
+      "translation_mm": [
+        145,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "hip-left",
+      "parent": "pelvis",
+      "translation_mm": [
+        -90,
+        -35,
+        0
+      ]
+    },
+    {
+      "id": "hip-right",
+      "parent": "pelvis",
+      "translation_mm": [
+        90,
+        -35,
+        0
+      ]
+    },
+    {
+      "id": "femur-left",
+      "parent": "hip-left",
+      "translation_mm": [
+        0,
+        -395,
+        0
+      ]
+    },
+    {
+      "id": "femur-right",
+      "parent": "hip-right",
+      "translation_mm": [
+        0,
+        -395,
+        0
+      ]
+    },
+    {
+      "id": "tibia-left",
+      "parent": "femur-left",
+      "translation_mm": [
+        0,
+        -390,
+        0
+      ]
+    },
+    {
+      "id": "tibia-right",
+      "parent": "femur-right",
+      "translation_mm": [
+        0,
+        -390,
+        0
+      ]
+    },
+    {
+      "id": "foot-left",
+      "parent": "tibia-left",
+      "translation_mm": [
+        0,
+        -55,
+        115
+      ]
+    },
+    {
+      "id": "foot-right",
+      "parent": "tibia-right",
+      "translation_mm": [
+        0,
+        -55,
+        115
+      ]
+    },
+    {
+      "id": "toe-left",
+      "parent": "foot-left",
+      "translation_mm": [
+        0,
+        0,
+        145
+      ]
+    },
+    {
+      "id": "toe-right",
+      "parent": "foot-right",
+      "translation_mm": [
+        0,
+        0,
+        145
       ]
     }
   ],
   "clip": {
-    "id": "slow-bilateral-shoulder-and-thoracic-motion",
-    "description": "A deliberately small authored feasibility motion, not a measured movement or instruction.",
+    "id": "full-body-neutral-reference",
+    "description": "A project-authored full-body reference pose used to verify registration; it is not measured motion.",
     "required_samples": [
       "start",
       "midpoint",
@@ -187,12 +454,12 @@
           "humerus-left": [
             0,
             0,
-            -34
+            -28
           ],
           "humerus-right": [
             0,
             0,
-            34
+            28
           ]
         }
       },
@@ -211,25 +478,15 @@
             0,
             3
           ],
-          "scapula-left": [
+          "hip-left": [
             0,
             0,
-            -8
+            -6
           ],
-          "scapula-right": [
+          "hip-right": [
             0,
             0,
-            8
-          ],
-          "humerus-left": [
-            0,
-            0,
-            -22
-          ],
-          "humerus-right": [
-            0,
-            0,
-            22
+            6
           ]
         }
       },
@@ -270,7 +527,7 @@
   },
   "anatomy_review": {
     "status": "unreviewed",
-    "scope": "All muscle names, grouping, landmarks and paths in this procedural fixture.",
+    "scope": "All procedural bone proportions, muscle names, grouping, landmarks, and paths in this fitted-reference rig.",
     "required_before_claiming_anatomical_accuracy": true
   }
 }

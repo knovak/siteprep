@@ -6,14 +6,14 @@ import { fileURLToPath } from 'node:url';
 
 import { checkPhase0Data } from '../../phase-0/scripts/check-registration.mjs';
 import { validateMovementSet } from '../../phase-1/src/validate-movement.mjs';
-import { instructionSections, movementCompleteness, phaseCue } from '../src/collection.mjs';
+import { anatomySummary, instructionSections, movementCompleteness, phaseCue } from '../src/collection.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const initiativeDirectory = resolve(phaseDirectory, '../..');
 const readJson = async (path) => JSON.parse(await readFile(resolve(initiativeDirectory, path), 'utf8'));
 const collection = await readJson('work/phase-3/data/collection.json');
 const clips = await readJson('work/phase-3/data/movement-clips.json');
-const records = await Promise.all(collection.records.map((entry) => readJson(entry.record.replace('../', 'work/'))));
+const records = await Promise.all(collection.records.map(async (entry) => JSON.parse(await readFile(resolve(phaseDirectory, entry.record), 'utf8'))));
 const core = await readJson('work/phase-2/data/rig-core.json');
 const muscles = await readJson('work/phase-2/data/muscles.json');
 const ledger = await readJson('work/phase-0/rights-ledger.json');
@@ -23,9 +23,12 @@ const rig = {
   attachments: muscles.attachments
 };
 
-test('the collection has one valid, sourced, unreviewed record per tradition', () => {
+test('the collection has 13 valid, sourced, unreviewed records across the three traditions', () => {
   assert.deepEqual(validateMovementSet(records, rig).errors, []);
-  assert.deepEqual(records.map((record) => record.tradition).sort(), ['alexander', 'feldenkrais', 'yoga']);
+  assert.deepEqual(
+    Object.fromEntries(['alexander', 'feldenkrais', 'yoga'].map((tradition) => [tradition, records.filter((record) => record.tradition === tradition).length])),
+    { alexander: 1, feldenkrais: 6, yoga: 6 }
+  );
   for (const record of records) {
     assert.equal(record.source.review.status, 'unreviewed');
     assert.match(record.source.rights_basis, /^provisional:/);
@@ -56,6 +59,8 @@ test('tradition-specific phase cues survive collection rendering', () => {
   assert.match(phaseCue(yoga, 'enter'), /raise the arm/i);
   assert.match(phaseCue(alexander, 'pause'), /allow length and width/i);
   assert.ok(instructionSections(alexander).some((section) => /hands-on guidance/i.test(section.label)));
+  assert.match(anatomySummary(yoga, 'enter'), /scapula.*left.*upward rotation/i);
+  assert.match(anatomySummary(yoga, 'enter'), /serratus anterior.*left.*shortens/i);
 });
 
 test('each hand-authored clip is distinct, bounded, and stays on the registered shared rig', () => {
@@ -76,5 +81,5 @@ test('each hand-authored clip is distinct, bounded, and stays on the registered 
     assert.deepEqual(registration.errors, []);
     assert.ok(registration.report.maximum_distance_mm <= 8);
   }
-  assert.equal(serialized.size, 3);
+  assert.equal(serialized.size, 13);
 });

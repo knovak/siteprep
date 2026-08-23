@@ -6,7 +6,8 @@ deployed page has a root `index.html`, retains `noindex`, and does not depend on
 mutable parent paths under `initiatives/` at runtime.
 
 Run `node scripts/build-site.mjs` whenever an earlier phase changes. The builder
-copies the reviewed records and modules, rewrites only their deployment paths,
+reads the collection manifest and copies all 13 listed records plus their
+modules and generated anatomy data, rewrites only their deployment paths,
 and fails if the active viewer gains an unknown cross-phase dependency.
 
 ## Automated validation

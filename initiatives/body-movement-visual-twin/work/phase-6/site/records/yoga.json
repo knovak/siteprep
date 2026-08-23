@@ -9,19 +9,19 @@
       "id": "enter",
       "t": [0, 8],
       "joint_actions": [{ "joint": "scapula-left", "action": "upward rotation during arm lift" }],
-      "muscles": [{ "id": "serratus-anterior", "behaviour": "shortens" }]
+      "muscles": [{ "id": "serratus-anterior-left", "behaviour": "shortens" }]
     },
     {
       "id": "stay",
       "t": [8, 20],
       "joint_actions": [{ "joint": "thoracic-upper", "action": "gentle lateral flexion" }],
-      "muscles": [{ "id": "rhomboids-group", "behaviour": "stabilises" }]
+      "muscles": [{ "id": "rhomboids-left", "behaviour": "stabilises" }]
     },
     {
       "id": "exit",
       "t": [20, 28],
       "joint_actions": [{ "joint": "humerus-left", "action": "controlled lowering" }],
-      "muscles": [{ "id": "deltoid-middle", "behaviour": "lengthens" }]
+      "muscles": [{ "id": "deltoid-left", "behaviour": "lengthens" }]
     }
   ],
   "instruction": {

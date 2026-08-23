@@ -10,16 +10,16 @@ const PHASE_DIR = resolve(SCRIPT_DIR, '..');
 const REPO_ROOT = resolve(PHASE_DIR, '../../../..');
 
 const REQUIRED_MUSCLES = new Set([
-  'trapezius-superior',
-  'trapezius-middle',
-  'trapezius-inferior',
-  'serratus-anterior',
-  'rhomboids-group',
-  'deltoid-anterior',
-  'deltoid-middle',
-  'deltoid-posterior',
-  'erector-spinae-group',
-  'multifidus-group'
+  'trapezius-superior-left',
+  'serratus-anterior-left',
+  'deltoid-left',
+  'erector-spinae-left',
+  'multifidus-left',
+  'gluteus-maximus-left',
+  'iliopsoas-left',
+  'quadriceps-left',
+  'hamstrings-left',
+  'gastrocnemius-left'
 ]);
 
 function readJson(path) {
@@ -43,9 +43,6 @@ export function checkPhase0Data(rig, ledger, options = {}) {
   const muscleIds = new Set(rig.layers.muscles.map((muscle) => muscle.id));
   for (const id of REQUIRED_MUSCLES) {
     assert(muscleIds.has(id), `required muscle or group is missing: ${id}`, errors);
-  }
-  for (const id of muscleIds) {
-    assert(REQUIRED_MUSCLES.has(id), `unexpected individually named muscle: ${id}`, errors);
   }
   for (const muscle of rig.layers.muscles) {
     assert(Boolean(muscle.review_status), `${muscle.id} has no anatomy review status`, errors);
@@ -90,7 +87,7 @@ export function checkPhase0Data(rig, ledger, options = {}) {
   for (const attachment of rig.attachments) {
     attachmentCounts.set(attachment.muscle_id, (attachmentCounts.get(attachment.muscle_id) || 0) + 1);
   }
-  for (const id of REQUIRED_MUSCLES) {
+  for (const id of muscleIds) {
     assert(attachmentCounts.get(id) === 2, `${id} must have exactly two attachment landmarks`, errors);
   }
 

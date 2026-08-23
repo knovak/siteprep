@@ -7,7 +7,7 @@ test('the private bundle runs the complete movement and correction path', async 
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
-  await expect(page.getByLabel('Choose a movement').locator('option')).toHaveCount(3);
+  await expect(page.getByLabel('Choose a movement').locator('option')).toHaveCount(13);
   await page.getByLabel('Choose a movement').selectOption('supported-seated-side-reach');
   await expect(page.getByRole('heading', { name: 'Supported seated side reach' })).toBeVisible();
   await page.getByRole('button', { name: /enable playback/i }).click();
@@ -15,7 +15,7 @@ test('the private bundle runs the complete movement and correction path', async 
   await expect(page.locator('#stage')).toHaveAttribute('data-movement', 'supported-seated-side-reach');
   await page.locator('#stature').fill('195');
   await expect(page.locator('#profile-note')).toContainText(/fitted reference scale changed/i);
-  await page.locator('#layer').fill('3');
+  await page.locator('#layer').selectOption('3');
   await expect(page.locator('#stage')).toHaveAttribute('data-muscles-loaded', 'true');
   await page.getByRole('button', { name: /flag claim:/i }).first().click();
   await page.locator('textarea[name="note"]').fill('Check this claim with the named reviewer.');

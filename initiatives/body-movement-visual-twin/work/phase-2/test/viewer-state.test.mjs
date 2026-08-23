@@ -30,8 +30,9 @@ test('muscles are requested only for muscle layers or a pinned muscle layer', ()
   assert.equal(musclesAreRequested(createViewerState()), false);
   assert.equal(musclesAreRequested(setLayer(createViewerState(), 2)), true);
   assert.equal(musclesAreRequested(setLayer(createViewerState(), 3)), true);
+  assert.equal(musclesAreRequested(setLayer(createViewerState(), 4)), true);
   assert.equal(musclesAreRequested(setPinned(createViewerState(), 'muscles')), true);
-  assert.equal(musclesAreRequested(setLayer(createViewerState(), 4)), false);
+  assert.equal(musclesAreRequested(setLayer(createViewerState(), 5)), false);
 });
 
 test('the fitted-reference warning follows anatomy visibility', () => {
@@ -46,5 +47,5 @@ test('camera and timeline inputs are bounded', () => {
   assert.equal(state.camera.pitch, 1.1);
   assert.equal(state.camera.zoom, 2.4);
   assert.equal(cameraPreset(state, 'side').camera.yaw, Math.PI / 2);
-  assert.throws(() => setLayer(state, 5), RangeError);
+  assert.throws(() => setLayer(state, 6), RangeError);
 });
