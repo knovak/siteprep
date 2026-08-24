@@ -11,6 +11,20 @@ const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const COLLECTION_HEADER = 'x-bookmark-collection-id';
 const AUTHORIZED_USER_TYPES = new Set(['admin', 'user']);
 
+function exportFilename(name) {
+  const part = String(name || 'collection').normalize('NFKC').trim()
+    .replace(/[^\p{L}\p{N}._-]+/gu, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 100) || 'collection';
+  return `bookmark-sorter-${part}.json`;
+}
+
+function attachmentHeader(filename) {
+  const ascii = filename.replace(/[^\x20-\x7e]/g, '_').replace(/["\\]/g, '_');
+  return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+}
+
 function json(value, status = 200) {
   return Response.json(value, {status, headers: {'cache-control': 'no-store'}});
 }
@@ -49,7 +63,7 @@ async function identityIsAdmin(store, identity) {
 }
 
 export function createPileApp({
-  storeFactory = (env, identity) => new D1BookmarkStore(env.DB, {ownerId: identity.id}),
+  storeFactory = (env, identity) => new D1BookmarkStore(env.DB, {ownerId: identity.id, ownerEmail: identity.email}),
   identityFromRequest = readSiteIdentity,
   transformImage = null,
   vendorCapture = null,
@@ -88,14 +102,15 @@ export function createPileApp({
         });
 
         if (request.method === 'GET' && url.pathname === '/api/collections') {
-          const [collections, templates, canEditTemplates] = await Promise.all([
+          const [collections, templates, canEditTemplates, isAdmin] = await Promise.all([
             store.listCollections(),
             store.listTemplates(),
             store.canEditTemplates(),
+            identityIsAdmin(store, identity),
           ]);
           return json({
             active_collection_id: request.headers.get(COLLECTION_HEADER) || personal.id,
-            can_edit_templates: canEditTemplates,
+            can_edit_templates: canEditTemplates || isAdmin,
             collections,
             templates,
           });
@@ -129,6 +144,7 @@ export function createPileApp({
             const result = await store.eraseCollection(body.collection_id);
             return json({action: body.action, ...result});
           } else if (body.action === 'create-template') {
+            if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
             collection = await store.ensureCollection({
               id: idFactory('collection'), name: body.name || 'New demo', kind: 'demo-template', createdAt: at,
             });
@@ -238,10 +254,12 @@ export function createPileApp({
             expression: url.searchParams.get('expression') || '',
             exportedAt: now().toISOString(),
           });
+          const collection = await store.ownedCollection(collectionId);
+          if (!collection) throw new Error(`Unknown collection: ${collectionId}`);
           return new Response(`${JSON.stringify(document, null, 2)}\n`, {
             headers: {
               'content-type': 'application/json; charset=utf-8',
-              'content-disposition': 'attachment; filename="bookmark-sorter-export.json"',
+              'content-disposition': attachmentHeader(exportFilename(collection.name)),
               'cache-control': 'no-store',
             },
           });

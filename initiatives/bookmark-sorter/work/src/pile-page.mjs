@@ -45,6 +45,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     .admin-menu-content button:disabled { opacity: .45; cursor: not-allowed; }
     .admin-user-form { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) 110px auto; gap: 7px; align-items: end; border-top: 1px solid #e1e6ef; padding: 9px 0 0; }
     .admin-user-form.remove { grid-template-columns: minmax(0, 1fr) auto; }
+    .admin-user-form.template { grid-template-columns: minmax(0, 1fr) auto; }
     .admin-user-form input, .admin-user-form select, .admin-user-form button { min-width: 0; min-height: 38px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 7px 9px; background: white; }
     .admin-user-form button { border-color: #234fc4; color: white; background: #234fc4; font-weight: 760; }
     .collection-bar .admin-user-form button.danger { border-color: #a63b32; color: white; background: #a63b32; }
@@ -72,9 +73,11 @@ export function renderPilePage({isAdmin = false} = {}) {
     #export-form { grid-template-columns: minmax(180px, .8fr) minmax(220px, 1fr) auto auto; }
     .file-field { display: grid; gap: 4px; }
     .portable-copy { align-self: center; margin: 0; color: #687188; font-size: .76rem; }
-    .template-tools { display: grid; grid-template-columns: minmax(180px, 1fr) auto auto; gap: 8px; align-items: end; border-top: 1px solid #e2e6ee; padding: 10px 12px 12px; }
+    .template-tools { display: grid; grid-template-columns: minmax(180px, 1fr) auto; gap: 8px; align-items: end; border-top: 1px solid #e2e6ee; padding: 10px 12px 12px; }
     .template-tools select, .template-tools button { min-width: 0; min-height: 40px; border: 1px solid #b9c2d3; border-radius: 9px; padding: 8px 10px; color: #29406e; background: white; font-weight: 720; }
     .template-tools button { border-color: #234fc4; color: white; background: #234fc4; }
+    .tool-status { min-height: 1.25em; margin: 0; padding: 0 12px 10px; color: #4d5870; font-size: .78rem; }
+    .tool-status.error { color: #a72d28; font-weight: 700; }
     .selection-panel { display: grid; grid-template-columns: minmax(220px, 2fr) auto minmax(150px, 1fr) auto; gap: 7px; align-items: center; padding: 10px 12px 12px; }
     .selection-panel input, .selection-panel select, .selection-panel button { min-width: 0; min-height: 36px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 6px 9px; background: white; }
     .selection-panel button { color: #29406e; font-weight: 740; }
@@ -172,7 +175,6 @@ export function renderPilePage({isAdmin = false} = {}) {
       .page-controls { display: flex; }
       .file-tools form, #export-form { grid-template-columns: 1fr; }
       .template-tools { grid-template-columns: minmax(150px, 1fr) auto; overflow-x: auto; }
-      .template-tools #create-template { grid-column: 1 / -1; }
       .admin-menu-content { top: 118px; max-height: calc(100dvh - 130px); }
       .admin-user-form { grid-template-columns: minmax(0, 1fr) 92px; }
       .admin-user-form button { grid-column: 1 / -1; }
@@ -212,7 +214,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
-        ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
+        ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, demo-template creation, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
@@ -266,6 +268,10 @@ export function renderPilePage({isAdmin = false} = {}) {
           </form>
           <button id="display-users" type="button">Display users</button>
           <ul id="authorized-users" aria-label="Authorized users" hidden></ul>
+          <form id="create-template-form" class="admin-user-form template">
+            <label>Template name<input id="create-template-name" name="name" autocomplete="off" maxlength="120" required></label>
+            <button type="submit">Create template</button>
+          </form>
           <button id="capture-pass-one" class="admin-capture" type="button" disabled title="Capture metadata for bookmarks imported before image storage was enabled">Capture metadata</button>
           <button id="capture-gaps" class="admin-capture" type="button" disabled title="Fallback screenshot capture is not enabled">Capture gaps</button>
         </div>
@@ -279,10 +285,10 @@ export function renderPilePage({isAdmin = false} = {}) {
           <label>Source tag (HTML only)<input id="source" name="source" value="browser-export" pattern="[a-z0-9][a-z0-9-]*" required></label>
           <button type="submit">Import file</button>
         </form>
+        <p id="import-status" class="tool-status" role="status" aria-live="polite"></p>
         <div class="template-tools">
           <label>Demo templates<select id="template-select" aria-label="Demo templates"><option value="">Demo templates</option></select></label>
           <button id="copy-template" type="button">Load a copy</button>
-          <button id="create-template" type="button" hidden>Create template</button>
         </div>
       </details>
       <details id="selector">
@@ -363,12 +369,14 @@ export function renderPilePage({isAdmin = false} = {}) {
       renameCollection: document.querySelector('#rename-collection'), newCollection: document.querySelector('#new-collection'), renameForm: document.querySelector('#rename-form'),
       collectionName: document.querySelector('#collection-name'), cancelRename: document.querySelector('#cancel-rename'), freshCopy: document.querySelector('#fresh-copy'),
       deleteCopy: document.querySelector('#delete-copy'), templateSelect: document.querySelector('#template-select'),
-      copyTemplate: document.querySelector('#copy-template'), createTemplate: document.querySelector('#create-template'),
+      copyTemplate: document.querySelector('#copy-template'),
       adminMenu: document.querySelector('#admin-menu'), addUserForm: document.querySelector('#add-user-form'), addUserEmail: document.querySelector('#add-user-email'), addUserType: document.querySelector('#add-user-type'),
       removeUserForm: document.querySelector('#remove-user-form'), removeUserEmail: document.querySelector('#remove-user-email'), displayUsers: document.querySelector('#display-users'), authorizedUsers: document.querySelector('#authorized-users'),
+      createTemplateForm: document.querySelector('#create-template-form'), createTemplateName: document.querySelector('#create-template-name'),
       helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'), tagPopover: document.querySelector('#tag-popover'),
       pageLayout: document.querySelector('#page-layout'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
+      importStatus: document.querySelector('#import-status'),
     };
     const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
@@ -668,7 +676,6 @@ export function renderPilePage({isAdmin = false} = {}) {
       elements.collectionKind.textContent = collection ? collection.kind.replaceAll('-', ' ') : '';
       elements.freshCopy.hidden = collection?.kind !== 'demo-copy';
       elements.deleteCopy.hidden = collection?.kind !== 'demo-copy';
-      elements.createTemplate.hidden = !state.canEditTemplates;
       elements.copyTemplate.disabled = !state.templates.length;
       elements.renameCollection.disabled = !collection;
       setCollectionEditing();
@@ -975,13 +982,23 @@ export function renderPilePage({isAdmin = false} = {}) {
       setTimeout(() => URL.revokeObjectURL(href), 0);
       elements.status.textContent = 'Exported the displayed sitting data.';
     }
+    function collectionExportFilename(name) {
+      const part = String(name || 'collection').normalize('NFKC').trim()
+        .replace(/[^\\p{L}\\p{N}._-]+/gu, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 100) || 'collection';
+      return 'bookmark-sorter-' + part + '.json';
+    }
     elements.form.addEventListener('submit', async event => {
-      event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';
+      event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…'; elements.importStatus.classList.remove('error'); elements.importStatus.textContent = 'Importing…';
       try {
         const data = await api('/api/import', {method: 'POST', body: new FormData(elements.form)});
         elements.status.textContent = 'Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.';
+        elements.importStatus.textContent = elements.status.textContent;
+        await loadCollections(state.collectionId);
         await Promise.all([loadWindow(0), loadSelectionTools()]);
-      } catch (error) { elements.status.textContent = error.message; } finally { button.disabled = false; }
+      } catch (error) { elements.status.textContent = error.message; elements.importStatus.classList.add('error'); elements.importStatus.textContent = 'Import failed: ' + error.message; } finally { button.disabled = false; }
     });
     elements.exportForm.addEventListener('submit', event => {
       event.preventDefault();
@@ -991,7 +1008,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       exportUrl.searchParams.set('collection_id', state.collectionId);
       if (selectionOnly && state.expression) exportUrl.searchParams.set('expression', state.expression);
       const link = document.createElement('a');
-      link.href = exportUrl.href; link.download = 'bookmark-sorter-export.json';
+      link.href = exportUrl.href; link.download = collectionExportFilename(currentCollection()?.name);
       document.body.append(link); link.click(); link.remove();
       const count = selectionOnly ? state.total : state.collectionTotal;
       elements.status.textContent = 'Exporting ' + count.toLocaleString() + ' bookmark' + (count === 1 ? '' : 's') + ' from the current ' + (selectionOnly ? 'selection' : 'collection') + '.';
@@ -1038,9 +1055,16 @@ export function renderPilePage({isAdmin = false} = {}) {
       const collection = currentCollection();
       if (collection && confirm('Delete “' + collection.name + '”? Its shared captures will remain available to other collections.')) collectionAction('delete-copy', {collection_id: collection.id}).then(() => { elements.status.textContent = 'Demo copy deleted; shared captures were kept.'; }).catch(error => { elements.status.textContent = error.message; });
     });
-    elements.createTemplate.addEventListener('click', () => {
-      const name = prompt('Template name', 'New demo');
-      if (name?.trim()) collectionAction('create-template', {name}).then(() => { elements.status.textContent = 'Demo template created.'; }).catch(error => { elements.status.textContent = error.message; });
+    elements.createTemplateForm?.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = elements.createTemplateName.value.trim();
+      if (!name) return;
+      const button = elements.createTemplateForm.querySelector('button');
+      button.disabled = true;
+      collectionAction('create-template', {name})
+        .then(() => { elements.createTemplateForm.reset(); elements.status.textContent = 'Demo template “' + name + '” created and selected.'; })
+        .catch(error => { elements.status.textContent = error.message; elements.createTemplateName.focus(); })
+        .finally(() => { button.disabled = false; });
     });
     elements.openSelection.addEventListener('click', () => openExpression(elements.expression.value).catch(error => { elements.status.textContent = error.message; }));
     elements.expression.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); elements.openSelection.click(); } });

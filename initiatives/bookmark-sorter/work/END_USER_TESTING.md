@@ -2,7 +2,9 @@
 
 ## What this test Site is
 
-This is a private, signed-in test of the real bookmark-sorter application. It
+This is a public test of the real bookmark-sorter application. Bookmark data is
+still private per signed-in ChatGPT user; anonymous visitors can see the shell
+but cannot create collections or import data. It
 stores bookmark records, tags, verdicts, selections, and sitting measurements in
 ChatGPT Sites D1. The first test version deliberately did not provision R2. The
 user accepted the Sites storage limits and authorised the capture bucket on
@@ -30,6 +32,10 @@ verdicts, and notes; it never contains capture images.
    verdict/tag actions; **Export sitting data** downloads the same durable record
    as `bookmark-sorter/sitting-v1` JSON. An unfinished sitting resumes after a
    reload. Non-admin users do not see this menu.
+6. Administrators can also enter a name under **Admin → Create template**. The
+   new empty template becomes the current collection; import the desired HTML
+   or Sorter JSON into it. Other users can then use **Import → Demo templates →
+   Load a copy**.
 
 ## Selection sitting
 
@@ -49,8 +55,8 @@ verdicts, and notes; it never contains capture images.
 
 ## Backup before replacing the Site
 
-Open **Export**, choose **Current collection**, and
-download the `bookmark-sorter/v1` JSON backup. The same section can export the
+Open **Export**, choose **Current collection**, and download the
+`bookmark-sorter-<collection-name>.json` `bookmark-sorter/v1` backup. The same section can export the
 open selection instead. Keep that file until the next Site version has been
 opened and the backup has been imported through **Import**, or the
 existing D1 data has been confirmed intact.

@@ -31,10 +31,11 @@ function d1ChunkSize(requestedSize, reservedParameters = 0) {
 }
 
 export class D1BookmarkStore {
-  constructor(db, {ownerId = null, batchSize = 100, idFactory = () => crypto.randomUUID()} = {}) {
+  constructor(db, {ownerId = null, ownerEmail = null, batchSize = 100, idFactory = () => crypto.randomUUID()} = {}) {
     if (!db?.prepare || !db?.batch) throw new TypeError('A D1 database binding is required');
     this.db = db;
     this.ownerId = ownerId;
+    this.ownerEmail = String(ownerEmail || '').trim().toLowerCase() || null;
     this.batchSize = batchSize;
     this.idFactory = idFactory;
   }
@@ -56,7 +57,8 @@ export class D1BookmarkStore {
   }
 
   async canEditTemplates() {
-    return Boolean((await this.user())?.can_edit_templates);
+    if (Boolean((await this.user())?.can_edit_templates)) return true;
+    return this.ownerEmail ? await this.authorizedUserType(this.ownerEmail) === 'admin' : false;
   }
 
   async ownedCollection(id) {

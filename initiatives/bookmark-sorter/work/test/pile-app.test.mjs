@@ -246,12 +246,20 @@ test('selection history persists recent expressions and only administrators can 
     {email: 'julie.duffield@gmail.com', type: 'user'},
     {email: 'krnovak@gmail.com', type: 'admin'},
   ]);
+  const adminCollections = await (await app.fetch(new Request('https://pile.test/api/collections'))).json();
+  assert.equal(adminCollections.can_edit_templates, true, 'admin permission includes template editing');
+  const createdTemplate = await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'create-template', name: 'Admin starter'}),
+  }));
+  assert.equal(createdTemplate.status, 200);
+  assert.equal((await createdTemplate.json()).collection.kind, 'demo-template');
   const added = await (await app.fetch(new Request('https://pile.test/api/authorized-users', {
     method: 'POST', headers: {'content-type': 'application/json'},
     body: JSON.stringify({action: 'add', email: 'New.Reader@Example.com', type: 'user'}),
   }))).json();
   assert.deepEqual(added.user, {email: 'new.reader@example.com', type: 'user'});
-  assert.equal((await (await app.fetch(new Request('https://pile.test/api/collections'))).json()).collections.length, 1);
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/collections'))).json()).collections.length, 2);
   await app.fetch(new Request('https://pile.test/api/authorized-users', {
     method: 'POST', headers: {'content-type': 'application/json'},
     body: JSON.stringify({action: 'remove', email: 'new.reader@example.com'}),
@@ -270,6 +278,12 @@ test('selection history persists recent expressions and only administrators can 
   const sittingDenied = await readerApp.fetch(new Request('https://pile.test/api/session'));
   assert.equal(sittingDenied.status, 403);
   assert.deepEqual(await sittingDenied.json(), {error: 'Admin access required'});
+  const templateDenied = await readerApp.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'create-template', name: 'Not allowed'}),
+  }));
+  assert.equal(templateDenied.status, 403);
+  assert.deepEqual(await templateDenied.json(), {error: 'Admin access required'});
 });
 
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {
@@ -287,7 +301,7 @@ test('portable API exports a selection, imports JSON, and reviews proposed tags 
 
   const exported = await app.fetch(new Request('https://pile.test/api/export?expression=site%3Aexample.com'));
   assert.equal(exported.status, 200);
-  assert.match(exported.headers.get('content-disposition'), /bookmark-sorter-export\.json/);
+  assert.match(exported.headers.get('content-disposition'), /bookmark-sorter-My-bookmarks\.json/);
   const document = await exported.json();
   assert.equal(document.selection, 'site:example.com');
   assert.equal(document.items.length, 2);
@@ -330,6 +344,26 @@ test('portable API exports a selection, imports JSON, and reviews proposed tags 
   assert.equal(accepted.status, 200);
   assert.equal((await accepted.json()).result.changes.length, 2);
   assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('cluster:example-guides')).length, 2);
+});
+
+test('a new signed-in user gets a personal collection before importing another user export', async () => {
+  const store = new AppStore();
+  const app = createTestApp({
+    storeFactory: () => store,
+    identityFromRequest: () => ({id: 'brand-new-user', email: 'new.user@example.com'}),
+    personalCollectionIdFactory: () => 'new-user-personal',
+    now: () => new Date('2026-08-25T00:00:00Z'),
+  });
+  const document = JSON.parse(await fixture('export-v1.json'));
+  document.collection = 'another-users-collection';
+  const form = new FormData();
+  form.append('source', 'ignored-for-json');
+  form.append('file', new Blob([JSON.stringify(document)], {type: 'application/json'}), 'bookmark-sorter-Other-person.json');
+  const response = await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: form}));
+  assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), {parsed: 1, added: 1, merged: 0, total: 1});
+  const collections = await (await app.fetch(new Request('https://pile.test/api/collections'))).json();
+  assert.deepEqual(collections.collections.map(row => [row.id, row.item_count]), [['new-user-personal', 1]]);
 });
 
 test('a visible sweep across several thousand items never gains a count-based confirmation', async () => {

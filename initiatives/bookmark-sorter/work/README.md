@@ -91,7 +91,8 @@ selection, and export operations.
   rejects another owner's collection even when its id is supplied directly.
   Collection operations list templates, create an empty private collection,
   take or refresh a private copy, rename or erase a collection, delete a copy,
-  and allow template creation only for users whose D1 capability is set. The
+  and allow template creation for administrators or users whose legacy D1
+  capability is set. The
   same API records each signed-in user's distinct selection expressions by
   most-recent use. Admin-only routes expose the authorized-user list editor;
   hiding the menu is backed by the same server-side role check.
@@ -119,15 +120,19 @@ selection, and export operations.
   collection bar switches among the owner's personal pile and demo copies.
   Import, Select, and Export share one equal-width collapsed row; opening one
   gives it the available width and closes the other two. Import contains both
-  file loading and demo-template copying. Select contains expression, proposal,
+  file loading and demo-template copying, with an inline success or parser-error
+  result after each attempt. Select contains expression, proposal,
   saved-selection, tagging, and per-user recent-query controls.
-  Export downloads the whole collection or open selection and can erase the
+  Export downloads the whole collection or open selection as
+  `bookmark-sorter-<collection-name>.json` and can erase the
   current collection after confirmation while preserving the collection and
   shared captures. Start/End sitting and Show sitting sit together under Admin;
   Show sitting displays the latest durable session and its action log and exports
   `bookmark-sorter/sitting-v1` JSON. Add, remove, and display functions for
   `authorized_user` follow, with both capture actions below the displayed user
-  list. The menu is rendered only for an admin email. Its fixed panel is positioned
+  list and the inline Create template form. The menu is rendered only for an
+  admin email, and that role also grants server-side template write access. Its
+  fixed panel is positioned
   below the Admin summary so the summary remains available to collapse it.
   The verdict selector and split Sweep control remain visible beside the
   triage actions: its default sweeps untriaged cards on the visible page, while
@@ -145,12 +150,13 @@ Bind that database to the Worker as
 `DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies
 `oai-authenticated-user-id`; the Worker rejects an API request without it and
 constructs `D1BookmarkStore` with that stable id as `ownerId`. The first request
-creates the app-user row and one private personal collection. Grant template
-editing by setting `app_users.can_edit_templates = 1` through an administrative
-D1 change; it is never accepted from a browser request or identity header.
+creates the app-user row and one private personal collection. An email with
+`type = 'admin'` in `authorized_user` can create and edit templates; the legacy
+`app_users.can_edit_templates = 1` capability remains supported. Neither path
+trusts a client flag.
 
 Template rows are readable across owners and writable only by their owner when
-that owner has the capability. A copied template is a new `demo-copy` owned by
+that owner has either permission. A copied template is a new `demo-copy` owned by
 the current user, with `template_id` and `copied_at` recorded. Items, tags,
 verdicts, and saved selections copy once; later template edits do not sync into
 the copy. Taking a fresh copy creates another collection with a distinct name.
@@ -214,7 +220,7 @@ the data-handling boundary.
 - `GET /api/collections` returns the current user's collections, all readable
   demo templates, and the server-derived template-edit capability.
 - `POST /api/collections` performs empty `create`, `copy-template`, `fresh-copy`,
-  `rename`, confirmed `erase`, `delete-copy`, or capability-gated `create-template`. The current collection
+  `rename`, confirmed `erase`, `delete-copy`, or admin-gated `create-template`. The current collection
   travels in `x-bookmark-collection-id`; every data method checks it again in
   D1 rather than trusting the header.
 - `POST /api/session` starts or ends a sitting. Starting reuses an unfinished
@@ -269,7 +275,8 @@ the data-handling boundary.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
 - `GET /api/export` streams the active collection or its `expression` subset as
-  an importable `bookmark-sorter/v1` JSON text file. The page exposes both
+  an importable `bookmark-sorter/v1` JSON text file named from the collection.
+  The page exposes both
   scopes in its Export section; the neighboring Import section recognizes that
   JSON as well as browser bookmark HTML.
 - `POST /api/captures/pass-one?limit=20` processes one bounded batch of items

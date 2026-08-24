@@ -31,6 +31,7 @@ async function installPile(page) {
       {email: 'julie.duffield@gmail.com', type: 'user'},
       {email: 'krnovak@gmail.com', type: 'admin'},
     ],
+    templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
   };
   backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
@@ -47,7 +48,7 @@ async function installPile(page) {
         collections: backend.collections.map(collection => ({
           ...collection, item_count: collection.id === 'pile' ? backend.items.length : 0,
         })),
-        templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
+        templates: backend.templates,
       }});
     }
     if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
@@ -111,6 +112,12 @@ async function installPile(page) {
       const collection = {id: 'collection-new', name: body.name.trim(), kind: 'private'};
       backend.collections.push(collection);
       return route.fulfill({status: 201, json: {collection: {...collection, item_count: 0}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'create-template') {
+      const collection = {id: 'template-new', name: body.name.trim(), kind: 'demo-template'};
+      backend.collections.push(collection);
+      backend.templates.push({...collection, item_count: 0});
+      return route.fulfill({json: {collection: {...collection, item_count: 0}}});
     }
     if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'erase') {
       const erasedItems = backend.items.length;
@@ -492,6 +499,9 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
   await page.goto('https://pile.test/');
 
   await expect(page.locator('.toolbar #session, .toolbar #capture-pass-one, .toolbar #capture-gaps')).toHaveCount(0);
+  await page.locator('#importer > summary').click();
+  await expect(page.locator('#importer').getByRole('button', {name: 'Create template'})).toHaveCount(0);
+  await page.locator('#importer > summary').click();
   await page.locator('#admin-menu > summary').click();
   const adminPosition = await page.locator('#admin-menu').evaluate(menu => {
     const summary = menu.querySelector('summary').getBoundingClientRect();
@@ -511,6 +521,12 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
   }));
   expect(adminOrder.metadata).toBeGreaterThan(adminOrder.users);
   expect(adminOrder.gaps).toBeGreaterThan(adminOrder.users);
+
+  await page.getByLabel('Template name').fill('Research starter');
+  await page.getByRole('button', {name: 'Create template'}).click();
+  await expect(page.getByLabel('Current collection')).toHaveValue('template-new');
+  await expect(page.locator('#collection-kind')).toHaveText('demo template');
+  await expect(page.locator('#status')).toHaveText('Demo template “Research starter” created and selected.');
 
   await page.getByRole('button', {name: 'Show sitting'}).click();
   await expect(page.locator('#sitting-report')).toBeVisible();
@@ -573,6 +589,7 @@ test('Automatic proposals refresh after choosing a collection and completing an 
   });
   await page.getByRole('button', {name: 'Import file'}).click();
   await expect(page.locator('#status')).toHaveText('Imported 1 new; merged 0.');
+  await expect(page.locator('#import-status')).toHaveText('Imported 1 new; merged 0.');
   await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (2)');
 
   await page.getByLabel('Current collection').selectOption('pile');
@@ -601,7 +618,7 @@ test('Export downloads either the collection or the current selection as importa
   const selectionDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Export file'}).click();
   const selectionFile = await selectionDownload;
-  expect(selectionFile.suggestedFilename()).toBe('bookmark-sorter-export.json');
+  expect(selectionFile.suggestedFilename()).toBe('bookmark-sorter-My-bookmarks.json');
   const selectionUrl = new URL(selectionFile.url());
   expect(selectionUrl.pathname).toBe('/api/export');
   expect(selectionUrl.searchParams.get('collection_id')).toBe('pile');
@@ -612,7 +629,7 @@ test('Export downloads either the collection or the current selection as importa
   const collectionDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Export file'}).click();
   const collectionFile = await collectionDownload;
-  expect(collectionFile.suggestedFilename()).toBe('bookmark-sorter-export.json');
+  expect(collectionFile.suggestedFilename()).toBe('bookmark-sorter-My-bookmarks.json');
   const collectionUrl = new URL(collectionFile.url());
   expect(collectionUrl.pathname).toBe('/api/export');
   expect(collectionUrl.searchParams.get('collection_id')).toBe('pile');
