@@ -157,6 +157,32 @@ test('D1 keeps selection history owner-scoped and resolves the global authorized
   assert.equal((await first.listAuthorizedUsers()).some(user => user.email === 'reader@example.com'), false);
 });
 
+test('D1 resumes and reports the latest durable sitting with its action details', async () => {
+  const {database, d1} = await identityDatabase();
+  const store = new D1BookmarkStore(d1, {ownerId: 'user-a'});
+  await store.ensurePersonalCollection({id: 'personal-a', createdAt: '2026-08-19T00:00:00Z'});
+  await ingestBookmarkHtml({
+    store, collectionId: 'personal-a', html: await fixture('export-small.html'), source: 'test', ingestedAt: '2026-08-19T00:00:00Z',
+  });
+  const session = await store.startSession('personal-a', {id: 'sitting-a', startedAt: '2026-08-19T01:00:00Z'});
+  const item = (await store.listAllItems('personal-a'))[0];
+  await store.applyVerdict('personal-a', {
+    itemIds: [item.id], verdict: 'keeper', at: '2026-08-19T01:01:00Z', sessionId: session.id, actionId: 'action-a',
+  });
+
+  assert.equal((await store.latestSession('personal-a', {openOnly: true})).id, session.id);
+  const report = await store.sittingReport('personal-a');
+  assert.equal(report.session.items_judged, 1);
+  assert.equal(report.actions.length, 1);
+  assert.equal(report.actions[0].payload.verdict, 'keeper');
+  assert.equal(report.actions[0].payload.changes.length, 1);
+
+  await store.finishSession('personal-a', {sessionId: session.id, endedAt: '2026-08-19T01:02:00Z'});
+  assert.equal(await store.latestSession('personal-a', {openOnly: true}), null);
+  assert.equal((await store.sittingReport('personal-a')).session.elapsed_ms, 120_000);
+  database.close();
+});
+
 test('owner collections isolate two users while templates copy privately and captures stay shared', async () => {
   const {database, d1} = await identityDatabase();
   const admin = new D1BookmarkStore(d1, {ownerId: 'user-a'});

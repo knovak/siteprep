@@ -81,8 +81,21 @@ async function installPile(page) {
         {id: 'verdict:junk', kind: 'verdict', name: 'junk', expression: 'verdict:junk', count: 0},
         {id: 'verdict:keep', kind: 'verdict', name: 'keep', expression: 'verdict:keep', count: 0},
         {id: 'verdict:needs-time', kind: 'verdict', name: 'needs-time', expression: 'verdict:needs-time', count: 0},
+        {id: 'verdict:not-junk', kind: 'verdict', name: 'not junk', expression: 'not verdict:junk', count: 10_000},
         {id: 'verdict:untriaged', kind: 'verdict', name: 'untriaged', expression: 'verdict:untriaged', count: 10_000},
+        {id: 'verdict:untriaged-or-needs-time', kind: 'verdict', name: 'untriaged or needs-time', expression: 'verdict:untriaged or verdict:needs-time', count: 10_000},
       ]}});
+    }
+    if (request.method() === 'GET' && url.pathname === '/api/session') {
+      return route.fulfill({json: {
+        collection_id: requestCollectionId || 'pile',
+        session: backend.session,
+        actions: backend.actions.map((changes, index) => ({
+          id: `action-${index + 1}`, action_kind: 'verdict',
+          payload: {changes, verdict: backend.items.find(item => item.id === changes[0]?.item_id)?.verdict || 'keeper'},
+          created_at: new Date(Date.now() - (backend.actions.length - index) * 1000).toISOString(), undone_at: null,
+        })),
+      }});
     }
     if (request.method() === 'POST' && url.pathname === '/api/import') {
       backend.proposalRevision += 1;
@@ -140,6 +153,7 @@ async function installPile(page) {
     }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
+        if (backend.session && !backend.session.ended_at) return route.fulfill({json: backend.session});
         backend.session = {
           id: 'session-1', collection_id: 'pile', started_at: new Date(Date.now() - 60_000).toISOString(),
           ended_at: null, items_judged: 0, elapsed_ms: null,
@@ -293,6 +307,22 @@ test('three-row layouts reserve most of each card for readable bookmark text', a
   expect(metrics.captureRatio).toBeLessThan(0.32);
   expect(metrics.titleHeight).toBeGreaterThan(20);
   expect(metrics.titleBottom).toBeLessThan(metrics.cardBottom);
+
+  await page.getByLabel('Page layout').selectOption('3x12');
+  await expectLayout(page, {width: 1600, height: 900, visible: 36, cards: 48, columns: 12, rows: 3});
+  const compactMetrics = await page.locator('[data-item-id="item-1"]').evaluate(card => {
+    const capture = card.querySelector('.capture').getBoundingClientRect();
+    const title = card.querySelector('h2');
+    const bounds = card.getBoundingClientRect();
+    return {
+      captureRatio: capture.height / bounds.height,
+      titleHeight: title.getBoundingClientRect().height,
+      lineClamp: getComputedStyle(title).webkitLineClamp,
+    };
+  });
+  expect(compactMetrics.captureRatio).toBeLessThan(0.2);
+  expect(compactMetrics.titleHeight).toBeGreaterThan(45);
+  expect(compactMetrics.lineClamp).toBe('4');
 });
 
 test('keyboard verdicts, marked groups, atomic undo, and sitting rate work without navigation', async ({page}) => {
@@ -307,6 +337,10 @@ test('keyboard verdicts, marked groups, atomic undo, and sitting rate work witho
   await page.keyboard.press('k');
   await expect(page.locator('#backlog')).toHaveText('9,999');
   await expect(page.locator('[data-item-id="item-1"]')).toHaveAttribute('data-verdict', 'keeper');
+  await expect(page.locator('[data-item-id="item-1"] .verdict-label')).toHaveText('Keep');
+  await expect(page.locator('button[data-verdict="needs-more-time"]')).toHaveText(/Needs-time/);
+  await expect(page.locator('body')).not.toContainText('Keeper');
+  await expect(page.locator('body')).not.toContainText('Needs more time');
   expect(await originalCard.evaluate(card => card.isConnected)).toBe(true);
   await expect(page.locator('[data-item-id="item-2"]')).toHaveClass(/focused/);
 
@@ -465,6 +499,22 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
   await expect(page.locator('#capture-gaps')).toBeVisible();
   await page.getByRole('button', {name: 'Display users'}).click();
   await expect(page.locator('#authorized-users')).toContainText('krnovak@gmail.com — admin');
+  const adminOrder = await page.locator('.admin-menu-content').evaluate(panel => ({
+    users: [...panel.children].indexOf(panel.querySelector('#authorized-users')),
+    metadata: [...panel.children].indexOf(panel.querySelector('#capture-pass-one')),
+    gaps: [...panel.children].indexOf(panel.querySelector('#capture-gaps')),
+  }));
+  expect(adminOrder.metadata).toBeGreaterThan(adminOrder.users);
+  expect(adminOrder.gaps).toBeGreaterThan(adminOrder.users);
+
+  await page.getByRole('button', {name: 'Show sitting'}).click();
+  await expect(page.locator('#sitting-report')).toBeVisible();
+  await expect(page.locator('#sitting-summary')).toContainText('In progress');
+  await expect(page.locator('#sitting-summary')).toContainText('Items judged');
+  const sittingDownload = page.waitForEvent('download');
+  await page.getByRole('button', {name: 'Export sitting data'}).click();
+  expect((await sittingDownload).suggestedFilename()).toBe('bookmark-sorter-sitting.json');
+  await expect(page.locator('#status')).toHaveText('Exported the displayed sitting data.');
 
   await page.locator('#add-user-email').fill('New.Reader@Example.com');
   await page.locator('#add-user-type').selectOption('user');
@@ -494,10 +544,10 @@ test('Automatic proposals are grouped in the requested order without Same labels
   await page.goto('https://pile.test/');
   await expect(page.locator('#proposals optgroup')).toHaveCount(6);
   const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
-  expect(labels).toEqual(['src', 'tag', 'folder', 'site', 'image', 'verdict']);
-  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(5);
+  expect(labels).toEqual(['src', 'tag', 'verdict', 'folder', 'site', 'image']);
+  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(7);
   const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
-  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'untriaged (10,000)']);
+  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'not junk (10,000)', 'untriaged (10,000)', 'untriaged or needs-time (10,000)']);
   await expect(page.locator('#proposals')).not.toContainText('Same ');
 });
 

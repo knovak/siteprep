@@ -82,7 +82,10 @@ selection, and export operations.
   the same identity rule without quadratic test behavior.
 - `src/worker.mjs` exposes the upload, capture and triage API. Uploads are capped
   at 20 MB; reads are bounded; capture bytes are served only from R2; verdict
-  and undo writes return the authoritative backlog and sitting totals. The same
+  and undo writes return the authoritative backlog and sitting totals. An
+  unfinished sitting is resumed instead of duplicated after a reload, and the
+  admin-only sitting read returns its durable session row plus parsed action log
+  for on-screen review or JSON export. The same
   surface now evaluates, saves, tags and sweeps selections. Every API route
   requires Sites identity, resolves the active collection server-side, and
   rejects another owner's collection even when its id is supplied directly.
@@ -96,8 +99,8 @@ selection, and export operations.
   offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
   and single-card phone layouts. Three-row grids cap captures at 30% of the
-  card height and reserve two title lines so tags and verdicts retain readable
-  space. Only the visible cells plus
+  card height; the dense 3×12 layout reduces captures to 18% and reserves four
+  title lines so substantially more bookmark text remains visible. Only the visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
   never HTML strings. Bookmark titles show up to five lines and link to the
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy
@@ -117,9 +120,11 @@ selection, and export operations.
   saved-selection, tagging, and per-user recent-query controls.
   Export downloads the whole collection or open selection and can erase the
   current collection after confirmation while preserving the collection and
-  shared captures. End sitting and both capture actions live under the Admin
-  menu alongside add, remove, and display functions for `authorized_user`, and
-  that menu is rendered only for an admin email. Its fixed panel is positioned
+  shared captures. Start/End sitting and Show sitting sit together under Admin;
+  Show sitting displays the latest durable session and its action log and exports
+  `bookmark-sorter/sitting-v1` JSON. Add, remove, and display functions for
+  `authorized_user` follow, with both capture actions below the displayed user
+  list. The menu is rendered only for an admin email. Its fixed panel is positioned
   below the Admin summary so the summary remains available to collapse it.
   The verdict selector and split Sweep control remain visible beside the
   triage actions: its default sweeps untriaged cards on the visible page, while
@@ -209,10 +214,16 @@ the data-handling boundary.
   `rename`, confirmed `erase`, `delete-copy`, or capability-gated `create-template`. The current collection
   travels in `x-bookmark-collection-id`; every data method checks it again in
   D1 rather than trusting the header.
-- `POST /api/session` starts or ends a sitting. A sitting records its start,
-  end, elapsed milliseconds, and number of records whose verdict changed.
-- `POST /api/verdict` applies `keeper`, `junk`, `archive`, or
-  `needs-more-time` to the focused record or current marked set. Sending the
+- `POST /api/session` starts or ends a sitting. Starting reuses an unfinished
+  sitting for that collection. A sitting records its start, end, elapsed
+  milliseconds, and number of records whose verdict changed.
+- `GET /api/session` is admin-only and returns the latest sitting plus every
+  verdict or tag action, including undone actions, for display and
+  `bookmark-sorter/sitting-v1` JSON export.
+- `POST /api/verdict` applies the internal values `keeper`, `junk`, `archive`,
+  or `needs-more-time` to the focused record or current marked set. The
+  interface displays those first and last values as **Keep** and **Needs-time**.
+  Sending the
   existing verdict is a no-op and does not inflate the sitting rate.
 - `POST /api/undo` reverses the last still-active action in that sitting as one
   operation.
@@ -231,10 +242,12 @@ the data-handling boundary.
   `authorized_user`. Both routes require the current signed-in email to have
   type `admin`; the same check gates Admin rendering, capture operations, and
   ending a sitting.
-- `GET /api/proposals` recomputes source, exact-tag, folder, site, image,
-  verdict, and near-title groups as ordinary pre-filled selections. The five
-  verdict expressions are always present, including zero-count values. The
-  interface groups source, tag, folder, site, image, and verdict in that order,
+- `GET /api/proposals` recomputes source, exact-tag, verdict, folder, site,
+  image, and near-title groups as ordinary pre-filled selections. The five
+  individual verdict expressions and the combined **not junk** and
+  **untriaged or needs-time** expressions are always present, including
+  zero-count individual values. The interface groups source, tag, verdict,
+  folder, site, and image in that order,
   with title last for the retained near-title feature, and alphabetizes each
   group. Folder and tag groups therefore change on the request after tags
   change; no proposal cache can go stale. The page explicitly reloads proposals

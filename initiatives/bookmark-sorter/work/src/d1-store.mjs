@@ -738,6 +738,45 @@ export class D1BookmarkStore {
     return {...session, items_judged: Number(session.items_judged), elapsed_ms: session.elapsed_ms === null ? null : Number(session.elapsed_ms)};
   }
 
+  async latestSession(collectionId, {openOnly = false} = {}) {
+    await this.assertCollectionReadable(collectionId);
+    const session = await this.db.prepare(
+      `SELECT id, collection_id, started_at, ended_at, items_judged, elapsed_ms
+       FROM triage_sessions
+       WHERE collection_id = ?${openOnly ? ' AND ended_at IS NULL' : ''}
+       ORDER BY CASE WHEN ended_at IS NULL THEN 0 ELSE 1 END, started_at DESC, id DESC
+       LIMIT 1`,
+    ).bind(collectionId).first();
+    return session
+      ? {...session, items_judged: Number(session.items_judged), elapsed_ms: session.elapsed_ms === null ? null : Number(session.elapsed_ms)}
+      : null;
+  }
+
+  async sittingReport(collectionId, sessionId = null) {
+    await this.assertCollectionReadable(collectionId);
+    const session = sessionId
+      ? await this.getSession(collectionId, sessionId)
+      : await this.latestSession(collectionId);
+    if (!session) return {collection_id: collectionId, session: null, actions: []};
+    const result = await this.db.prepare(
+      `SELECT id, action_kind, payload_json, created_at, undone_at
+       FROM triage_actions
+       WHERE collection_id = ? AND session_id = ?
+       ORDER BY created_at, id`,
+    ).bind(collectionId, session.id).all();
+    return {
+      collection_id: collectionId,
+      session,
+      actions: (result.results ?? []).map(action => ({
+        id: action.id,
+        action_kind: action.action_kind,
+        payload: JSON.parse(action.payload_json),
+        created_at: action.created_at,
+        undone_at: action.undone_at,
+      })),
+    };
+  }
+
   async applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
     await this.assertCollectionWritable(collectionId);
     if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);

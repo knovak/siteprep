@@ -26,8 +26,10 @@ verdicts, and notes; it never contains capture images.
    and `N`; Space marks exceptions and `U` undoes the last whole action.
 5. If your email is listed as an administrator, open **Admin** and end the
    sitting. The items judged, elapsed time, and items-per-minute rate are
-   recorded automatically, so noting them down is optional — see `notes.md`
-   for what they are eventually for. Non-admin users do not see this menu.
+   recorded automatically. **Show sitting** displays the latest sitting and its
+   verdict/tag actions; **Export sitting data** downloads the same durable record
+   as `bookmark-sorter/sitting-v1` JSON. An unfinished sitting resumes after a
+   reload. Non-admin users do not see this menu.
 
 ## Selection sitting
 
@@ -39,7 +41,9 @@ verdicts, and notes; it never contains capture images.
    receive the verdict.
 3. **Sweep all selected** should show the affected count and ask for
    confirmation before applying the verdict.
-4. Optionally note how many confirmations interrupted the sitting. Sweeps you
+4. Under **Select → Automatic proposals**, confirm that the Verdict group appears
+   above Folder and includes **not junk** and **untriaged or needs-time**.
+5. Optionally note how many confirmations interrupted the sitting. Sweeps you
    immediately undo are recorded automatically; confirmations are not. Neither
    is required — see `notes.md`.
 

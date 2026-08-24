@@ -103,6 +103,11 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
   }));
   const session = await start.json();
+  const resumed = await app.fetch(new Request('https://pile.test/api/session', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
+  }));
+  assert.equal(resumed.status, 200);
+  assert.equal((await resumed.json()).id, session.id, 'an unfinished sitting resumes rather than being duplicated');
   const listed = await (await app.fetch(new Request('https://pile.test/api/items?limit=10'))).json();
   const ids = listed.items.map(item => item.id);
 
@@ -129,12 +134,20 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
   assert.equal(undoResult.changes.length, 1);
   assert.equal(undoResult.session.items_judged, 2);
 
+  const activeReport = await (await app.fetch(new Request('https://pile.test/api/session'))).json();
+  assert.equal(activeReport.session.id, session.id);
+  assert.equal(activeReport.actions.length, 2);
+  assert.equal(activeReport.actions[0].payload.verdict, 'keeper');
+  assert.ok(activeReport.actions[1].undone_at);
+
   const finished = await app.fetch(new Request('https://pile.test/api/session', {
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'finish', session_id: session.id}),
   }));
   const finishResult = await finished.json();
   assert.equal(finishResult.items_judged, 2);
   assert.ok(finishResult.elapsed_ms > 0);
+  const savedReport = await (await app.fetch(new Request('https://pile.test/api/session'))).json();
+  assert.equal(savedReport.session.ended_at, finishResult.ended_at);
 });
 
 test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms only unopened sets', async () => {
@@ -254,6 +267,9 @@ test('selection history persists recent expressions and only administrators can 
   const denied = await readerApp.fetch(new Request('https://pile.test/api/authorized-users'));
   assert.equal(denied.status, 403);
   assert.deepEqual(await denied.json(), {error: 'Admin access required'});
+  const sittingDenied = await readerApp.fetch(new Request('https://pile.test/api/session'));
+  assert.equal(sittingDenied.status, 403);
+  assert.deepEqual(await sittingDenied.json(), {error: 'Admin access required'});
 });
 
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {

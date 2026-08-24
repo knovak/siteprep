@@ -50,6 +50,12 @@ export function renderPilePage({isAdmin = false} = {}) {
     .collection-bar .admin-user-form button.danger { border-color: #a63b32; color: white; background: #a63b32; }
     #display-users { grid-column: 1 / -1; }
     #authorized-users { grid-column: 1 / -1; margin: 0; padding: 8px 8px 8px 28px; border-radius: 8px; color: #4d5870; background: #f5f7fb; font-size: .82rem; }
+    .sitting-report { grid-column: 1 / -1; border-radius: 8px; padding: 9px; color: #4d5870; background: #f5f7fb; }
+    .sitting-report dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 10px; margin: 0 0 8px; font-size: .8rem; }
+    .sitting-report dt { font-weight: 760; }
+    .sitting-report dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+    .sitting-report ol { max-height: 160px; overflow: auto; margin: 8px 0; padding-left: 24px; font-size: .76rem; }
+    .sitting-report button { min-height: 34px; border: 1px solid #234fc4; border-radius: 8px; padding: 6px 9px; color: white; background: #234fc4; font-weight: 720; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
     .file-tools { grid-row: 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .file-tools:has(#importer[open]) { grid-template-columns: minmax(0, 1fr) max-content max-content; }
@@ -107,6 +113,11 @@ export function renderPilePage({isAdmin = false} = {}) {
     :root[data-grid-rows="3"] .capture { flex: 0 0 30%; min-height: 0; }
     :root[data-grid-rows="3"] .bookmark-card h2 { min-height: 2.34em; -webkit-line-clamp: 2; }
     :root[data-grid-rows="3"] .note { -webkit-line-clamp: 1; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .capture { flex-basis: 18%; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card { padding: 8px; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .capture { margin: -8px -8px 5px; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card h2 { min-height: 4.68em; margin-block: 5px 3px; font-size: .82rem; -webkit-line-clamp: 4; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .tags { padding-top: 4px; }
     .site { overflow: hidden; color: #6a7387; font-size: .67rem; font-weight: 750; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
     .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
     .bookmark-card h2 a { color: inherit; text-decoration: none; }
@@ -194,14 +205,14 @@ export function renderPilePage({isAdmin = false} = {}) {
       <div class="help-heading"><h2 id="help-title">Bookmark triage help</h2><button id="help-close" type="button">Close</button></div>
       <h3>Card and action buttons</h3>
       <ul>
-        <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
+        <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs-time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
         <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
         <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page. Use its arrow to choose <strong>Sweep all selected</strong>, which applies the verdict to the entire open selection after showing a confirmation count.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
-        ${isAdmin ? '<li><strong>Admin</strong> contains End sitting, metadata capture, capture gaps, and the authorized-user list editor. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
+        ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
@@ -238,8 +249,12 @@ export function renderPilePage({isAdmin = false} = {}) {
         <summary>Admin</summary>
         <div class="admin-menu-content">
           <button id="session" type="button">End sitting</button>
-          <button id="capture-pass-one" class="admin-capture" type="button" disabled title="Capture metadata for bookmarks imported before image storage was enabled">Capture metadata</button>
-          <button id="capture-gaps" class="admin-capture" type="button" disabled title="Fallback screenshot capture is not enabled">Capture gaps</button>
+          <button id="show-sitting" type="button" aria-expanded="false" aria-controls="sitting-report">Show sitting</button>
+          <section id="sitting-report" class="sitting-report" aria-label="Current sitting data" hidden>
+            <dl id="sitting-summary"></dl>
+            <ol id="sitting-actions"></ol>
+            <button id="export-sitting" type="button">Export sitting data</button>
+          </section>
           <form id="add-user-form" class="admin-user-form">
             <label>Email<input id="add-user-email" name="email" type="email" autocomplete="email" required></label>
             <label>Type<select id="add-user-type" name="type"><option value="user">User</option><option value="admin">Admin</option></select></label>
@@ -251,6 +266,8 @@ export function renderPilePage({isAdmin = false} = {}) {
           </form>
           <button id="display-users" type="button">Display users</button>
           <ul id="authorized-users" aria-label="Authorized users" hidden></ul>
+          <button id="capture-pass-one" class="admin-capture" type="button" disabled title="Capture metadata for bookmarks imported before image storage was enabled">Capture metadata</button>
+          <button id="capture-gaps" class="admin-capture" type="button" disabled title="Fallback screenshot capture is not enabled">Capture gaps</button>
         </div>
       </details>` : ''}
     </section>
@@ -300,12 +317,12 @@ export function renderPilePage({isAdmin = false} = {}) {
       <button type="button" data-verdict="keeper"><span class="shortcut"><kbd>K</kbd> </span>Keep</button>
       <button type="button" data-verdict="junk"><span class="shortcut"><kbd>J</kbd> </span>Junk</button>
       <button type="button" data-verdict="archive"><span class="shortcut"><kbd>A</kbd> </span>Archive</button>
-      <button type="button" data-verdict="needs-more-time"><span class="shortcut"><kbd>N</kbd> </span>Needs time</button>
+      <button type="button" data-verdict="needs-more-time"><span class="shortcut"><kbd>N</kbd> </span>Needs-time</button>
       <button id="undo" type="button"><span class="shortcut"><kbd>U</kbd> </span>Undo</button>
       <span class="spacer"></span>
       <span id="mark-count">0 marked</span>
       <select id="sweep-verdict" aria-label="Sweep verdict">
-        <option value="junk">Junk</option><option value="keeper">Keep</option><option value="archive">Archive</option><option value="needs-more-time">Needs time</option>
+        <option value="junk">Junk</option><option value="keeper">Keep</option><option value="archive">Archive</option><option value="needs-more-time">Needs-time</option>
       </select>
       <div class="sweep-control">
         <button id="sweep-rest" type="button">Sweep untriaged</button>
@@ -333,7 +350,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       form: document.querySelector('#import-form'), importer: document.querySelector('#importer'), selector: document.querySelector('#selector'), exportForm: document.querySelector('#export-form'), exporter: document.querySelector('#exporter'), exportScope: document.querySelector('#export-scope'), exportFile: document.querySelector('#export-file'), eraseCollection: document.querySelector('#erase-collection'), grid: document.querySelector('#grid'),
       count: document.querySelector('#count'), backlog: document.querySelector('#backlog'), rate: document.querySelector('#rate'),
       status: document.querySelector('#status'), position: document.querySelector('#position'), markCount: document.querySelector('#mark-count'),
-      session: document.querySelector('#session'), undo: document.querySelector('#undo'), capturePassOne: document.querySelector('#capture-pass-one'), captureGaps: document.querySelector('#capture-gaps'),
+      session: document.querySelector('#session'), showSitting: document.querySelector('#show-sitting'), sittingReport: document.querySelector('#sitting-report'), sittingSummary: document.querySelector('#sitting-summary'), sittingActions: document.querySelector('#sitting-actions'), exportSitting: document.querySelector('#export-sitting'), undo: document.querySelector('#undo'), capturePassOne: document.querySelector('#capture-pass-one'), captureGaps: document.querySelector('#capture-gaps'),
       expression: document.querySelector('#selection-expression'), openSelection: document.querySelector('#open-selection'),
       selectionName: document.querySelector('#selection-name'), saveSelection: document.querySelector('#save-selection'),
       savedSelections: document.querySelector('#saved-selections'), openSaved: document.querySelector('#open-saved'),
@@ -353,7 +370,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       pageLayout: document.querySelector('#page-layout'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
     };
-    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}) {
       const headers = new Headers(options.headers || {});
@@ -376,6 +393,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       elements.pageLayout.title = elements.pageLayout.disabled ? 'Page layout choices are available in wide windows.' : '';
       state.columns = next.columns; state.visible = next.columns * next.rows; state.buffer = next.buffer;
       document.documentElement.dataset.gridRows = String(next.rows);
+      document.documentElement.dataset.gridColumns = String(next.columns);
       document.documentElement.style.setProperty('--columns', next.columns); document.documentElement.style.setProperty('--rows', next.rows);
       return next;
     }
@@ -423,7 +441,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.href : '';
       } catch { return ''; }
     }
-    function verdictText(verdict) { return ({keeper: 'Keeper', junk: 'Junk', archive: 'Archive', 'needs-more-time': 'Needs more time'})[verdict] || 'Untriaged'; }
+    function verdictText(verdict) { return ({keeper: 'Keep', junk: 'Junk', archive: 'Archive', 'needs-more-time': 'Needs-time'})[verdict] || 'Untriaged'; }
     function addText(parent, tagName, className, text) {
       const element = document.createElement(tagName);
       if (className) element.className = className;
@@ -597,7 +615,7 @@ export function renderPilePage({isAdmin = false} = {}) {
 
     function fillProposalSelect(rows) {
       elements.proposals.replaceChildren(new Option('Automatic proposals', ''));
-      for (const kind of ['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title']) {
+      for (const kind of ['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title']) {
         const matches = rows.filter(row => row.kind === kind);
         if (!matches.length) continue;
         const group = document.createElement('optgroup');
@@ -673,6 +691,12 @@ export function renderPilePage({isAdmin = false} = {}) {
       if (!id || id === state.collectionId) return;
       state.collectionId = id;
       state.session = null;
+      state.sittingReport = null;
+      if (elements.sittingReport) {
+        elements.sittingReport.hidden = true;
+        elements.showSitting.textContent = 'Show sitting';
+        elements.showSitting.setAttribute('aria-expanded', 'false');
+      }
       state.expression = '';
       state.offset = 0;
       state.focused = 0;
@@ -690,6 +714,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       const deleted = action === 'delete-copy';
       await loadCollections(deleted ? '' : result.collection?.id || state.collectionId);
       state.session = null;
+      state.sittingReport = null;
       state.expression = '';
       clearMarks();
       await Promise.all([loadWindow(0), loadSelectionTools()]);
@@ -825,6 +850,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       if (!state.collectionTotal) return;
       if (!state.session || state.session.ended_at) { state.session = null; await startSession(); elements.status.textContent = 'New sitting started.'; }
       else { state.session = await api('/api/session', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'finish', session_id: state.session.id})}); elements.status.textContent = 'Sitting saved: ' + state.session.items_judged.toLocaleString() + ' judged.'; }
+      if (elements.sittingReport && !elements.sittingReport.hidden) await loadSitting();
       updateProgress();
     }
     async function captureGaps() {
@@ -877,6 +903,77 @@ export function renderPilePage({isAdmin = false} = {}) {
       const data = await api('/api/authorized-users');
       renderAuthorizedUsers(data.users);
       return data.users;
+    }
+    function sittingElapsed(session) {
+      if (!session) return 0;
+      return session.ended_at
+        ? Number(session.elapsed_ms || 0)
+        : Math.max(0, Date.now() - new Date(session.started_at).valueOf());
+    }
+    function sittingDuration(milliseconds) {
+      const seconds = Math.floor(Math.max(0, milliseconds) / 1000);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainder = seconds % 60;
+      return (hours ? hours + ':' + String(minutes).padStart(2, '0') : String(minutes)) + ':' + String(remainder).padStart(2, '0');
+    }
+    function renderSitting(report) {
+      state.sittingReport = report;
+      elements.sittingSummary.replaceChildren();
+      elements.sittingActions.replaceChildren();
+      if (!report.session) {
+        addText(elements.sittingSummary, 'dt', '', 'Sitting');
+        addText(elements.sittingSummary, 'dd', '', 'No sitting has been saved for this collection.');
+        elements.exportSitting.disabled = true;
+        return;
+      }
+      const session = report.session;
+      const activeActions = report.actions.filter(action => !action.undone_at);
+      const fields = [
+        ['Status', session.ended_at ? 'Ended' : 'In progress'],
+        ['Started', new Date(session.started_at).toLocaleString()],
+        ['Ended', session.ended_at ? new Date(session.ended_at).toLocaleString() : '—'],
+        ['Elapsed', sittingDuration(sittingElapsed(session))],
+        ['Items judged', Number(session.items_judged || 0).toLocaleString()],
+        ['Actions', activeActions.length.toLocaleString() + (activeActions.length === report.actions.length ? '' : ' active; ' + report.actions.length.toLocaleString() + ' recorded')],
+      ];
+      for (const [label, value] of fields) {
+        addText(elements.sittingSummary, 'dt', '', label);
+        addText(elements.sittingSummary, 'dd', '', value);
+      }
+      for (const action of report.actions) {
+        const changes = Array.isArray(action.payload?.changes) ? action.payload.changes.length : 0;
+        const kind = action.action_kind === 'tag-apply'
+          ? 'Tagged ' + changes.toLocaleString()
+          : verdictText(action.payload?.verdict) + ' for ' + changes.toLocaleString();
+        addText(elements.sittingActions, 'li', '', new Date(action.created_at).toLocaleString() + ' — ' + kind + (action.undone_at ? ' (undone)' : ''));
+      }
+      if (!report.actions.length) addText(elements.sittingActions, 'li', '', 'No actions recorded yet.');
+      elements.exportSitting.disabled = false;
+    }
+    async function loadSitting() {
+      const report = await api('/api/session');
+      if (report.session && !report.session.ended_at) state.session = report.session;
+      renderSitting(report);
+      updateProgress();
+      return report;
+    }
+    function exportSitting() {
+      if (!state.sittingReport?.session) return;
+      const collection = currentCollection();
+      const payload = {
+        format: 'bookmark-sorter/sitting-v1',
+        exported_at: new Date().toISOString(),
+        collection: collection ? {id: collection.id, name: collection.name} : {id: state.collectionId},
+        ...state.sittingReport,
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2) + '\\n'], {type: 'application/json'});
+      const href = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = href; link.download = 'bookmark-sorter-sitting.json';
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(href), 0);
+      elements.status.textContent = 'Exported the displayed sitting data.';
     }
     elements.form.addEventListener('submit', async event => {
       event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…';
@@ -991,6 +1088,21 @@ export function renderPilePage({isAdmin = false} = {}) {
     document.querySelectorAll('[data-verdict]').forEach(button => button.addEventListener('click', () => applyVerdict(button.dataset.verdict).catch(error => { elements.status.textContent = error.message; })));
     elements.undo.addEventListener('click', () => undo().catch(error => { elements.status.textContent = error.message; }));
     elements.session?.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));
+    elements.showSitting?.addEventListener('click', () => {
+      if (!elements.sittingReport.hidden) {
+        elements.sittingReport.hidden = true;
+        elements.showSitting.textContent = 'Show sitting';
+        elements.showSitting.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      loadSitting().then(() => {
+        elements.sittingReport.hidden = false;
+        elements.showSitting.textContent = 'Hide sitting';
+        elements.showSitting.setAttribute('aria-expanded', 'true');
+        positionAdminMenu();
+      }).catch(error => { elements.status.textContent = error.message; });
+    });
+    elements.exportSitting?.addEventListener('click', exportSitting);
     elements.capturePassOne?.addEventListener('click', () => capturePassOne());
     elements.captureGaps?.addEventListener('click', () => captureGaps());
     elements.displayUsers?.addEventListener('click', () => loadAuthorizedUsers().catch(error => { elements.status.textContent = error.message; }));

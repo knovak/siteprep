@@ -471,6 +471,37 @@ export class MemoryBookmarkStore {
     return session;
   }
 
+  latestSession(collectionId, {openOnly = false} = {}) {
+    if (!this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    const sessions = [...this.#sessions.values()]
+      .filter(session => session.collection_id === collectionId && (!openOnly || !session.ended_at))
+      .sort((left, right) => Number(Boolean(left.ended_at)) - Number(Boolean(right.ended_at))
+        || right.started_at.localeCompare(left.started_at)
+        || right.id.localeCompare(left.id));
+    return sessions[0] ? structuredClone(sessions[0]) : null;
+  }
+
+  sittingReport(collectionId, sessionId = null) {
+    const session = sessionId
+      ? structuredClone(this.session(collectionId, sessionId))
+      : this.latestSession(collectionId);
+    if (!session) return {collection_id: collectionId, session: null, actions: []};
+    return {
+      collection_id: collectionId,
+      session,
+      actions: this.#actions
+        .filter(action => action.collection_id === collectionId && action.session_id === session.id)
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.id.localeCompare(right.id))
+        .map(action => ({
+          id: action.id,
+          action_kind: action.action_kind,
+          payload: structuredClone(action.payload),
+          created_at: action.created_at,
+          undone_at: action.undone_at,
+        })),
+    };
+  }
+
   applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
     if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
     const session = this.session(collectionId, sessionId);

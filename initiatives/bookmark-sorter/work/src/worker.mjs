@@ -344,9 +344,16 @@ export function createPileApp({
           }));
         }
 
+        if (request.method === 'GET' && url.pathname === '/api/session') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
+          return json(await store.sittingReport(collectionId, url.searchParams.get('session_id')));
+        }
+
         if (request.method === 'POST' && url.pathname === '/api/session') {
           const body = await requestJson(request);
           if (body.action === 'start') {
+            const existing = await store.latestSession(collectionId, {openOnly: true});
+            if (existing) return json(existing);
             const session = await store.startSession(collectionId, {
               id: idFactory('session'),
               startedAt: now().toISOString(),
