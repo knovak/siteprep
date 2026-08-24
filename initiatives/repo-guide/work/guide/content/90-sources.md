@@ -6,8 +6,7 @@ slide: true
 slide_title: Use the guide to find the authoritative answer
 audience: both
 ---
-Everything above is a way in. None of it governs anything. When you need the
-answer that actually settles a case, open the file that holds the current rule:
+The words that drive the agents are in these files:
 
 - [AGENTS.md](source:AGENTS.md) for working conventions, write scope, content vocabulary, and required verification.
 - [INITIATIVES_VISION.md](source:INITIATIVES_VISION.md) for the lifecycle design and the reasoning behind it.
@@ -15,13 +14,9 @@ answer that actually settles a case, open the file that holds the current rule:
 - [BUILD_TECHDOC.md](source:BUILD_TECHDOC.md) for dependency setup, the site build, browser provisioning, and screenshots.
 - [DEMOS_TECHDOC.md](source:DEMOS_TECHDOC.md) for the small, specific contract that publishes a demo.
 
-Every link is pinned to the commit named in the footer, so following one gets
-you the file as it stood when this copy was made, rather than whatever it says
-today.
-
-That matters here because the subject edits itself. If a summary above and a
-linked file disagree, the file wins — and the disagreement means this copy is
-old. Regenerate it before you pass it on.
+Every link is pinned to the commit named in the footer of this document, so that
+it matches this description. You may also prefer to look at the "main" branch
+for the current version of the linked files.
 
 ---
 ## Use the guide to find the authoritative answer
@@ -32,5 +27,6 @@ old. Regenerate it before you pass it on.
 - [The build document](source:BUILD_TECHDOC.md) owns the site build and screenshots.
 - [The demos document](source:DEMOS_TECHDOC.md) owns demo publication.
 
-Links are pinned to the commit in the footer. If a summary here disagrees with
-one, the file wins and this copy is old.
+Every link is pinned to the commit named in the footer of this document, so that
+it matches this description. You may also prefer to look at the "main" branch
+for the current version of the linked files.

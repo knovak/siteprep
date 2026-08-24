@@ -224,14 +224,14 @@ function sweepRun(facts) {
     html: svg({
       width,
       height,
-      title: `A run moves through ${phases.join(', then ')} and spends one shared budget of ${slots} items.`,
+      title: `A run moves through ${phases.join(', then ')} with a budget that is currently ${slots} items per run.`,
       className: 'figure-svg--wide',
       body: `${ARROW_DEFS}
         ${text(4, 12, 'Every run, in this order', {variant: 'eyebrow'})}
         ${rail}
-        ${text(4, meterTop - 12, 'One shared budget, spent left to right', {variant: 'eyebrow'})}
+        ${text(4, meterTop - 12, `The budget is currently ${slots} items per run`, {variant: 'eyebrow'})}
         ${meter}
-        ${text(4, meterTop + 46, `Earlier phases spend it first, so a run that only answers review has done its job.`, {variant: 'caption'})}
+        ${text(4, meterTop + 46, 'PR comments come first, then proposals, then remaining work.', {variant: 'caption'})}
         ${text(4, meterTop + 66, `At most ${budget.max_items_per_initiative} from any one initiative, and the run stops altogether at ${budget.max_open_prs} open pull requests.`, {variant: 'caption'})}`,
     }),
   };
@@ -269,11 +269,11 @@ function blockerTriage(facts) {
     html: svg({
       width,
       height,
-      title: `${needsPerson.join(', ')} wait for a person; ${clearsItself.join(', ')} clear when something else moves. Only ${proposable.join(', ')} can receive a proposed answer.`,
+      title: `${needsPerson.join(', ')} wait for a person; ${clearsItself.join(', ')} clear when something else moves. Items labeled ${proposable.join(', ')} may receive alternatives and a proposal from an agent.`,
       body: `${ARROW_DEFS}
         ${column(0, 'wait', 'Blocked on', 'A person must answer', needsPerson)}
         ${column(rightX, 'auto', 'Blocked on', 'Clears when something else moves', clearsItself)}
-        ${text(0, height - 6, 'Changing the label doesn’t change who can honestly answer the question.', {variant: 'caption'})}`,
+        ${text(0, height - 6, 'An agent may propose alternatives for items labeled "human".', {variant: 'caption'})}`,
     }),
   };
 }
@@ -292,7 +292,6 @@ function forkBoundary(facts) {
     'Published decks',
     'Standalone demos',
     'Existing initiative histories',
-    'This repository’s travel content',
   ];
   const width = 720;
   const columnWidth = 340;

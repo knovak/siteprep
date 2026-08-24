@@ -14,9 +14,8 @@ without rewriting anything, and generates one table-of-contents entry per
 immediate demo directory out of that demo's own short description. Check it
 visually with `{{agent.commands.screenshot}}` once the final build has run.
 
-Demo language stays distinct from deck and section language, on purpose. The two
-have different publishing structures, and blurring the words is how a demo ends
-up half-converted into a deck page.
+Demo language stays distinct from deck and section language because the two have
+different publishing structures.
 [The concise publishing contract is in the demos technical
 document](source:DEMOS_TECHDOC.md), with [shared working rules in the repository
 instructions](source:AGENTS.md).
@@ -26,6 +25,5 @@ instructions](source:AGENTS.md).
 
 Self-contained: it owns its pages, its assets, and an optional prompt history.
 The build copies it without rewriting the source, and generates one contents
-entry per immediate directory. Demo language stays distinct from deck language,
-because blurring the words is how a demo ends up half-converted into a deck
-page.
+entry per immediate directory. Demo language stays distinct from deck language
+because the two have different publishing structures.

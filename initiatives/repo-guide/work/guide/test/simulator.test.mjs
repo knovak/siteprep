@@ -76,9 +76,18 @@ describe('simulator choreography', () => {
     assert.ok(sweep.beats.length >= 3, 'the interesting moment is choreographed');
     assert.equal(sweep.beats[0].budget.spent, 0);
     assert.equal(sweep.beats.at(-1).budget.spent, vocabulary.items_per_run);
+    assert.ok(sweep.narrative.includes(`currently ${vocabulary.items_per_run} items per run`));
+    assert.ok(sweep.beats.some(beat => beat.phases[vocabulary.phases[Math.min(2, vocabulary.phases.length - 1)]] === 'active'));
     assert.ok(sweep.beats.at(-1).items.some(item => item.state === 'passed'
       && item.detail.includes(`${vocabulary.items_per_run}/${vocabulary.items_per_run}`)));
     assert.deepEqual(sweep.beats.map(beat => beat.at), [...sweep.beats.map(beat => beat.at)].sort((a, b) => a - b));
+  });
+
+  test('the recorded answer and optional closeout use the Guide wording', () => {
+    const {steps} = buildSimulatorSteps(syntheticFacts);
+    assert.match(steps.find(step => step.id === 'answer-recorded').narrative,
+      /an agent records it in decisions\.md and unblocks the item/);
+    assert.match(steps.at(-1).narrative, /initiative may be closed out/);
   });
 
   test('every step but the last says what the next one will do', () => {

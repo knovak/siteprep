@@ -79,6 +79,7 @@ function defaultView(value) {
 }
 
 const ACRONYMS = {prs: 'PRs', pr: 'PR', url: 'URL', urls: 'URLs', ci: 'CI'};
+const DISPLAY_LABELS = {items_per_run: 'Current items per run'};
 
 // GitHub Actions trigger keys are meaningful to someone who already knows the
 // `on:` block syntax; everyone else just needs a plain-language reason the
@@ -105,6 +106,7 @@ function triggerSentence(triggers) {
 }
 
 function humanLabel(key) {
+  if (DISPLAY_LABELS[key]) return DISPLAY_LABELS[key];
   return key
     .split('_')
     .map((word, index) => ACRONYMS[word] ?? (index === 0 ? word.replace(/^./, character => character.toUpperCase()) : word))
@@ -170,8 +172,18 @@ function cardRecord(key, value) {
   if (isScalar(value)) return {key, title: key, body: String(value)};
   // A skill: name plus its own first sentence.
   if (value.name && value.summary) return {key, title: value.name, body: value.summary};
-  // A sweep phase summary.
-  if (value.phase && value.title) return {key: value.phase, title: value.title, body: value.summary ?? '', meta: value.phase};
+  // A sweep phase summary. The work card explains its label directly, so it
+  // does not repeat the raw phase name as metadata beneath the sentence.
+  if (value.phase && value.title) {
+    if (value.phase === 'work') {
+      return {
+        key: value.phase,
+        title: value.title,
+        body: 'Only if a phase includes an item labelled "work".',
+      };
+    }
+    return {key: value.phase, title: value.title, body: value.summary ?? '', meta: value.phase};
+  }
   // A workflow shape.
   if (value.file && value.triggers) {
     return {

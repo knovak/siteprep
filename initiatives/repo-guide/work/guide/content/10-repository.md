@@ -28,8 +28,7 @@ Here's what happens to be live in this copy:
 
 @fact initiatives.live as initiatives
 
-That's a snapshot, not a backlog. The generated initiative pages carry the real
-state; a list copied into an introduction would be wrong within a week.
+This is a snapshot of initiatives as of the last revision of this document.
 
 ---
 ## How work moves through this repository

@@ -29,6 +29,10 @@ test('description generation writes nine ordered, attributed sections and metric
   ]);
   assert.match(html, /data-generated-date="2026-08-18"/);
   assert.match(html, /data-source-sha="abcdef123456"/);
+  assert.match(html, /This is a snapshot of initiatives as of the last revision of this document\./);
+  assert.match(html, /Only if a phase includes an item labelled &quot;work&quot;\./);
+  assert.match(html, /Current items per run/);
+  assert.doesNotMatch(html, /snapshot, not a backlog|Changing the label|Disagreeing is cheap/);
   assert.doesNotMatch(html, /[ \t]+$/m);
   assert.doesNotMatch(html, /\{\{/);
 });
