@@ -38,10 +38,12 @@ test('the generated deployment migration creates the complete final schema', asy
   ).all().map(row => row.name);
   assert.deepEqual(tables, [
     'app_users',
+    'authorized_user',
     'capture_queue',
     'captures',
     'collections',
     'items',
+    'selection_history',
     'selections',
     'tags',
     'triage_actions',
@@ -57,7 +59,13 @@ test('the generated deployment migration creates the complete final schema', asy
     'idx_items_collection_untriaged',
     'idx_capture_queue_pending',
     'idx_triage_actions_session_active',
+    'idx_selection_history_owner_used',
   ]) assert.ok(indexes.has(required), `missing deployment index ${required}`);
+
+  assert.deepEqual(database.prepare('SELECT email, type FROM authorized_user ORDER BY email').all().map(user => ({...user})), [
+    {email: 'julie.duffield@gmail.com', type: 'user'},
+    {email: 'krnovak@gmail.com', type: 'admin'},
+  ]);
 
   database.exec("INSERT INTO app_users (owner_id) VALUES ('tester')");
   database.exec(

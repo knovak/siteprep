@@ -9,6 +9,7 @@ import {readSiteIdentity} from './site-identity.mjs';
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const COLLECTION_HEADER = 'x-bookmark-collection-id';
+const AUTHORIZED_USER_TYPES = new Set(['admin', 'user']);
 
 function json(value, status = 200) {
   return Response.json(value, {status, headers: {'cache-control': 'no-store'}});
@@ -32,6 +33,14 @@ function withCaptureUrl(item, collectionId) {
 async function selectedItems(store, collectionId, expression) {
   const items = await store.listAllItems(collectionId);
   return evaluateSelection(items, expression, {collectionId});
+}
+
+function authorizedUserInput(body) {
+  const email = String(body.email || '').trim().toLowerCase();
+  const type = String(body.type || 'user').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address');
+  if (!AUTHORIZED_USER_TYPES.has(type)) throw new Error('User type must be admin or user');
+  return {email, type};
 }
 
 export function createPileApp({
@@ -109,6 +118,9 @@ export function createPileApp({
             });
           } else if (body.action === 'delete-copy') {
             collection = await store.deleteDemoCopy(body.collection_id);
+          } else if (body.action === 'erase') {
+            const result = await store.eraseCollection(body.collection_id);
+            return json({action: body.action, ...result});
           } else if (body.action === 'create-template') {
             collection = await store.ensureCollection({
               id: idFactory('collection'), name: body.name || 'New demo', kind: 'demo-template', createdAt: at,
@@ -117,6 +129,18 @@ export function createPileApp({
             throw new Error('Unsupported collection action');
           }
           return json({action: body.action, collection});
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/authorized-users') {
+          return json({users: await store.listAuthorizedUsers()});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/authorized-users') {
+          const body = await requestJson(request);
+          const {email, type} = authorizedUserInput(body);
+          if (body.action === 'add') return json({user: await store.addAuthorizedUser(email, type)}, 201);
+          if (body.action === 'remove') return json({user: await store.removeAuthorizedUser(email)});
+          throw new Error('Unsupported authorized-user action');
         }
 
         const collectionId = url.searchParams.get('collection_id')
@@ -166,6 +190,18 @@ export function createPileApp({
 
         if (request.method === 'GET' && url.pathname === '/api/selections') {
           return json({selections: await store.listSelections(collectionId)});
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/selection-history') {
+          return json({selections: await store.listSelectionHistory()});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/selection-history') {
+          const body = await requestJson(request);
+          const expression = String(body.expression || '').trim();
+          if (!expression) throw new Error('Selection expression is required');
+          compileSelection(wrapUiSelection(collectionId, expression));
+          return json(await store.recordSelection(expression, now().toISOString()), 201);
         }
 
         if (request.method === 'POST' && url.pathname === '/api/selections') {

@@ -45,8 +45,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /navigator\.clipboard\.writeText\(item\.url\)/);
   assert.match(html, /id="help-toggle"/);
   assert.match(html, /Sweep untriaged/);
-  assert.match(html, /id="capture-gaps" type="button" disabled/);
-  assert.match(html, /id="capture-pass-one" type="button" disabled/);
+  assert.match(html, /id="capture-gaps" class="admin-capture" type="button" disabled/);
+  assert.match(html, /id="capture-pass-one" class="admin-capture" type="button" disabled/);
   assert.match(html, /api\/captures\/pass-one\?limit=20/);
   assert.match(html, /id="previous-page"/);
   assert.match(html, /id="next-page"/);
@@ -54,6 +54,12 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="new-collection" type="button">New</);
   assert.match(html, /id="exporter"/);
   assert.match(html, /id="export-scope"/);
+  assert.match(html, /id="selector"/);
+  assert.match(html, /id="previous-selections"/);
+  assert.match(html, /id="erase-collection"/);
+  assert.match(html, /id="admin-menu"/);
+  assert.match(html, />Load a copy</);
+  assert.match(html, />Apply to entire selection</);
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
@@ -204,6 +210,41 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   assert.equal((await (await app.fetch(new Request('https://pile.test/api/selection?expression=verdict%3Auntriaged'))).json()).total, 1);
 });
 
+test('selection history persists recent expressions per user and authorized users are editable without gating access', async () => {
+  const store = new AppStore();
+  let tick = 0;
+  const app = createTestApp({
+    storeFactory: () => store,
+    now: () => new Date(Date.UTC(2026, 7, 18, 12, tick++)),
+  });
+
+  for (const expression of ['site:first.example', 'folder:Reading/*', 'site:first.example']) {
+    const response = await app.fetch(new Request('https://pile.test/api/selection-history', {
+      method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({expression}),
+    }));
+    assert.equal(response.status, 201);
+  }
+  const history = await (await app.fetch(new Request('https://pile.test/api/selection-history'))).json();
+  assert.deepEqual(history.selections.map(row => row.expression), ['site:first.example', 'folder:Reading/*']);
+
+  const initial = await (await app.fetch(new Request('https://pile.test/api/authorized-users'))).json();
+  assert.deepEqual(initial.users, [
+    {email: 'julie.duffield@gmail.com', type: 'user'},
+    {email: 'krnovak@gmail.com', type: 'admin'},
+  ]);
+  const added = await (await app.fetch(new Request('https://pile.test/api/authorized-users', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'add', email: 'New.Reader@Example.com', type: 'user'}),
+  }))).json();
+  assert.deepEqual(added.user, {email: 'new.reader@example.com', type: 'user'});
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/collections'))).json()).collections.length, 1);
+  await app.fetch(new Request('https://pile.test/api/authorized-users', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'remove', email: 'new.reader@example.com'}),
+  }));
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/authorized-users'))).json()).users.length, 2);
+});
+
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {
   const store = new AppStore();
   let sequence = 0;
@@ -337,6 +378,14 @@ test('collection API creates empty private collections and manages template copi
     body: JSON.stringify({action: 'rename', collection_id: fresh.collection.id, name: 'My clean demo'}),
   }))).json();
   assert.equal(renamed.collection.name, 'My clean demo');
+
+  const erased = await (await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'erase', collection_id: fresh.collection.id}),
+  }))).json();
+  assert.equal(erased.erased_items, 1);
+  assert.equal(store.countItems(fresh.collection.id), 0);
+  assert.equal(store.hasCollection(fresh.collection.id), true);
 
   const deleted = await app.fetch(new Request('https://pile.test/api/collections', {
     method: 'POST', headers: {'content-type': 'application/json'},

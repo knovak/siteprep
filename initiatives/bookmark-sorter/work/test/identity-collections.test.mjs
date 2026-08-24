@@ -61,7 +61,7 @@ class SqliteD1 {
 
 async function identityDatabase() {
   const database = new DatabaseSync(':memory:');
-  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql']) {
+  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql', '0007_authorized_users_history.sql']) {
     database.exec(await readFile(`${workRoot}migrations/${migration}`, 'utf8'));
   }
   return {database, d1: new SqliteD1(database)};
@@ -127,6 +127,31 @@ test('two authenticated API sessions cannot address each other’s collection', 
     assert.match((await response.json()).error, /Unknown collection/);
   }
   database.close();
+});
+
+test('D1 keeps selection history owner-scoped and authorized-user entries globally editable', async () => {
+  const {d1} = await identityDatabase();
+  const first = new D1BookmarkStore(d1, {ownerId: 'user-a'});
+  const second = new D1BookmarkStore(d1, {ownerId: 'user-b'});
+  await first.ensureUser();
+  await second.ensureUser();
+  await first.recordSelection('site:first.example', '2026-08-19T00:00:00Z');
+  await first.recordSelection('folder:Reading/*', '2026-08-19T00:01:00Z');
+  await first.recordSelection('site:first.example', '2026-08-19T00:02:00Z');
+  assert.deepEqual((await first.listSelectionHistory()).map(row => row.expression), [
+    'site:first.example',
+    'folder:Reading/*',
+  ]);
+  assert.deepEqual(await second.listSelectionHistory(), []);
+
+  assert.deepEqual((await first.listAuthorizedUsers()).map(user => ({...user})), [
+    {email: 'julie.duffield@gmail.com', type: 'user'},
+    {email: 'krnovak@gmail.com', type: 'admin'},
+  ]);
+  await first.addAuthorizedUser('reader@example.com', 'user');
+  assert.equal((await second.listAuthorizedUsers()).at(-1).email, 'reader@example.com');
+  await second.removeAuthorizedUser('reader@example.com');
+  assert.equal((await first.listAuthorizedUsers()).some(user => user.email === 'reader@example.com'), false);
 });
 
 test('owner collections isolate two users while templates copy privately and captures stay shared', async () => {

@@ -14,6 +14,11 @@ export class MemoryBookmarkStore {
   #sessions = new Map();
   #actions = [];
   #selections = new Map();
+  #selectionHistory = new Map();
+  #authorizedUsers = new Map([
+    ['krnovak@gmail.com', 'admin'],
+    ['julie.duffield@gmail.com', 'user'],
+  ]);
   #captures = new Map();
   #captureQueue = new Map();
   #nextItem = 1;
@@ -122,6 +127,54 @@ export class MemoryBookmarkStore {
     }
     this.#collections.delete(id);
     return structuredClone(collection);
+  }
+
+  eraseCollection(id) {
+    const collection = this.#collections.get(id);
+    if (!collection) throw new Error(`Unknown collection: ${id}`);
+    const erasedItems = this.countItems(id);
+    for (const item of [...this.#items.values()]) {
+      if (item.collection_id !== id) continue;
+      this.#items.delete(item.id);
+      this.#itemsByUrl.delete(`${id}\u0000${item.url_key}`);
+      this.#tags.delete(item.id);
+    }
+    for (const [selectionId, selection] of this.#selections) {
+      if (selection.collection_id === id) this.#selections.delete(selectionId);
+    }
+    for (const [sessionId, session] of this.#sessions) {
+      if (session.collection_id === id) this.#sessions.delete(sessionId);
+    }
+    this.#actions = this.#actions.filter(action => action.collection_id !== id);
+    return {collection: structuredClone(collection), erased_items: erasedItems};
+  }
+
+  listAuthorizedUsers() {
+    return [...this.#authorizedUsers]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([email, type]) => ({email, type}));
+  }
+
+  addAuthorizedUser(email, type) {
+    this.#authorizedUsers.set(email, type);
+    return {email, type};
+  }
+
+  removeAuthorizedUser(email) {
+    this.#authorizedUsers.delete(email);
+    return {email};
+  }
+
+  recordSelection(expression, usedAt) {
+    if (!expression) return null;
+    this.#selectionHistory.set(expression, usedAt);
+    return {expression, used_at: usedAt};
+  }
+
+  listSelectionHistory() {
+    return [...this.#selectionHistory]
+      .map(([expression, used_at]) => ({expression, used_at}))
+      .sort((left, right) => right.used_at.localeCompare(left.used_at) || left.expression.localeCompare(right.expression));
   }
 
   collectionHasUrlKey(collectionId, urlKey) {

@@ -33,6 +33,10 @@ selection, and export operations.
 - `migrations/0006_private_collections.sql` extends the collection kind check for
   additional empty private collections while preserving the one automatic
   personal pile per owner.
+- `migrations/0007_authorized_users_history.sql` creates the currently
+  advisory `authorized_user` list and per-owner recent selection history. The
+  two supplied example users are seeded, but this version deliberately does
+  not use that table to show, hide, or authorize the Admin menu.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -81,8 +85,10 @@ selection, and export operations.
   requires Sites identity, resolves the active collection server-side, and
   rejects another owner's collection even when its id is supplied directly.
   Collection operations list templates, create an empty private collection,
-  take or refresh a private copy, rename a collection, delete a copy, and allow
-  template creation only for users whose D1 capability is set.
+  take or refresh a private copy, rename or erase a collection, delete a copy,
+  and allow template creation only for users whose D1 capability is set. The
+  same API records each signed-in user's distinct selection expressions by
+  most-recent use and exposes the advisory authorized-user list editor.
 - `src/pile-page.mjs` renders the self-contained grid. Its Page layout selector
   offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
@@ -101,18 +107,25 @@ selection, and export operations.
   verdict patches the affected cards in place rather than navigating or
   rebuilding the grid. The visible-page sweep changes only untriaged cards and
   advances to the next page; Previous and Next page without writing. A
-  collection bar switches among the owner's personal
-  pile and demo copies, and exposes template-copy operations without putting
-  identity or authorization state in the page. Adjacent Import and Export
-  sections accept either browser HTML or the app's JSON and download the whole
-  collection or the currently open selection. The portable JSON carries URLs,
-  notes, tags, and verdicts, but no captures.
+  collection bar switches among the owner's personal pile and demo copies.
+  Import, Select, and Export share one equal-width collapsed row; opening one
+  gives it the available width and closes the other two. Import contains both
+  file loading and demo-template copying. Select contains expression, proposal,
+  saved-selection, tagging, sweeping, and per-user recent-query controls.
+  Export downloads the whole collection or open selection and can erase the
+  current collection after confirmation while preserving the collection and
+  shared captures. End sitting and both capture actions live under the Admin
+  menu alongside add, remove, and display functions for `authorized_user`.
+  Apply to entire selection and Previous/Next remain visible beside the triage
+  actions. The portable JSON carries URLs, notes, tags, and verdicts, but no
+  captures.
 
 ## D1 binding
 
 Apply `migrations/0001_core.sql`, `migrations/0002_triage.sql`,
 `migrations/0003_captures.sql`, `migrations/0004_selections.sql`, then
-`migrations/0005_identity_collections.sql` and `migrations/0006_private_collections.sql`.
+`migrations/0005_identity_collections.sql`, `migrations/0006_private_collections.sql`,
+and `migrations/0007_authorized_users_history.sql`.
 Bind that database to the Worker as
 `DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies
 `oai-authenticated-user-id`; the Worker rejects an API request without it and
@@ -186,7 +199,7 @@ the data-handling boundary.
 - `GET /api/collections` returns the current user's collections, all readable
   demo templates, and the server-derived template-edit capability.
 - `POST /api/collections` performs empty `create`, `copy-template`, `fresh-copy`,
-  `rename`, `delete-copy`, or capability-gated `create-template`. The current collection
+  `rename`, confirmed `erase`, `delete-copy`, or capability-gated `create-template`. The current collection
   travels in `x-bookmark-collection-id`; every data method checks it again in
   D1 rather than trusting the header.
 - `POST /api/session` starts or ends a sitting. A sitting records its start,
@@ -204,6 +217,12 @@ the data-handling boundary.
   `image:none`, `image:failed`, and `image:present` select by stored picture state.
 - `GET|POST /api/selections` lists and saves named expressions. Saving parses
   the expression first; malformed input is an error, never an empty set.
+- `GET|POST /api/selection-history` lists the signed-in user's distinct query
+  strings by most-recent use and records a successfully opened expression.
+  History is user-scoped rather than collection-scoped and persists in D1.
+- `GET|POST /api/authorized-users` displays, adds, updates, or removes rows in
+  `authorized_user`. These rows are intentionally advisory in this version and
+  are not consulted for access control.
 - `GET /api/proposals` recomputes source, exact-tag, folder, site, image,
   verdict, and near-title groups as ordinary pre-filled selections. The five
   verdict expressions are always present, including zero-count values. The

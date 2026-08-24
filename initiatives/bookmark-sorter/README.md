@@ -23,13 +23,14 @@ count and downloaded an application backup.
 ## First use
 
 1. Open the Site while signed in with ChatGPT.
-2. Under **Import bookmarks**, choose the exported HTML file and
+2. Open **Import**, choose the exported HTML file and
    give the source a short name such as `safari-export`.
 3. Check that the total item count looks plausible.
 4. Open bookmarks, assign verdicts, or mark several cards and judge them as one
    set.
-5. End the sitting when you want its elapsed time and judged-item count saved.
-6. Under **Export bookmarks**, choose **Current collection** and
+5. Open **Admin** and end the sitting when you want its elapsed time and
+   judged-item count saved.
+6. Open **Export**, choose **Current collection** and
    download a JSON backup before replacing the Site or making a large round of
    changes. Choose **Current selection** when you want only the open selection.
 
@@ -72,18 +73,26 @@ Verdict clauses are `verdict:keep`, `verdict:junk`, `verdict:archive`,
 `verdict:needs-time`, and `verdict:untriaged`. Ordinary tags are written bare;
 there is no `tag:` prefix.
 
-Opening a selection makes it the visible working set. A saved selection that
+Opening a selection makes it the visible working set and records the query in
+the signed-in user's **Previous selections** list, newest first. A saved selection that
 has not been opened first reports its affected count and asks for confirmation
-before a bulk verdict. **Sweep unmarked** changes only the still-untriaged
+before a bulk verdict. **Sweep untriaged** changes only the still-untriaged
 cards in the visible page, then advances. Group actions are recorded as one
 undoable action.
 
 ## Collections, captures, and backups
 
 Each signed-in user has a private personal collection and may create additional
-private collections. Demo templates can be copied into a private collection;
+private collections. Import, Select, and Export share one collapsed row so the
+bookmark cards keep most of the window; opening one closes the others and gives
+it the available width. **Import** also loads a private copy of a demo template;
 later template changes do not silently alter that copy. Collection names can be
-edited inline.
+edited inline. **Export** can erase the active collection after confirmation
+without deleting the collection itself or its shared captures.
+
+**Admin** contains End sitting, Capture metadata, Capture gaps, and controls to
+add, remove, and display rows in the advisory authorized-user table. That table
+does not restrict the Admin menu in this version.
 
 When the deployment has image storage enabled, importing starts a metadata-only
 capture pass. The grid never waits for a capture and never loads the saved page

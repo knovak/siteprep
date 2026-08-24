@@ -18,13 +18,13 @@ verdicts, and notes; it never contains capture images.
 
 1. Open the private Site while signed in with ChatGPT.
 2. Export bookmarks from the browser you want to test, then choose that HTML file
-   under **Import bookmarks**. Give the source a short name such as
+   under **Import**. Give the source a short name such as
    `chrome-export` or `safari-export`.
 3. Confirm that the total count looks plausible. Re-importing the same file
    should not increase it.
 4. Work however you actually would. Use the on-screen buttons or `K`, `J`, `A`,
    and `N`; Space marks exceptions and `U` undoes the last whole action.
-5. End the sitting. The items judged, elapsed time, and items-per-minute rate
+5. Open **Admin** and end the sitting. The items judged, elapsed time, and items-per-minute rate
    are recorded automatically, so noting them down is optional — see `notes.md`
    for what they are eventually for.
 
@@ -43,10 +43,10 @@ verdicts, and notes; it never contains capture images.
 
 ## Backup before replacing the Site
 
-Open **Export bookmarks**, choose **Current collection**, and
+Open **Export**, choose **Current collection**, and
 download the `bookmark-sorter/v1` JSON backup. The same section can export the
 open selection instead. Keep that file until the next Site version has been
-opened and the backup has been imported through **Import bookmarks**, or the
+opened and the backup has been imported through **Import**, or the
 existing D1 data has been confirmed intact.
 
 ## Not covered by this first deployment

@@ -26,6 +26,11 @@ async function installPile(page) {
     requests: [],
     proposalRevision: 0,
     selectionDelays: new Map(),
+    history: [],
+    authorizedUsers: [
+      {email: 'julie.duffield@gmail.com', type: 'user'},
+      {email: 'krnovak@gmail.com', type: 'admin'},
+    ],
   };
   backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
@@ -58,6 +63,12 @@ async function installPile(page) {
     if (request.method() === 'GET' && url.pathname === '/api/selections') {
       return route.fulfill({json: {selections: []}});
     }
+    if (request.method() === 'GET' && url.pathname === '/api/selection-history') {
+      return route.fulfill({json: {selections: backend.history}});
+    }
+    if (request.method() === 'GET' && url.pathname === '/api/authorized-users') {
+      return route.fulfill({json: {users: backend.authorizedUsers}});
+    }
     if (request.method() === 'GET' && url.pathname === '/api/proposals') {
       const source = requestCollectionId === 'other' ? 'other-source' : 'browser-export';
       return route.fulfill({json: {proposals: [
@@ -87,6 +98,28 @@ async function installPile(page) {
       const collection = {id: 'collection-new', name: body.name.trim(), kind: 'private'};
       backend.collections.push(collection);
       return route.fulfill({status: 201, json: {collection: {...collection, item_count: 0}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'erase') {
+      const erasedItems = backend.items.length;
+      backend.items = [];
+      return route.fulfill({json: {collection: backend.collection, erased_items: erasedItems}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/selection-history') {
+      backend.history = backend.history.filter(row => row.expression !== body.expression);
+      backend.history.unshift({expression: body.expression, used_at: new Date().toISOString()});
+      return route.fulfill({status: 201, json: backend.history[0]});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/authorized-users') {
+      const email = body.email.trim().toLowerCase();
+      if (body.action === 'add') {
+        backend.authorizedUsers = backend.authorizedUsers.filter(user => user.email !== email);
+        const user = {email, type: body.type};
+        backend.authorizedUsers.push(user);
+        backend.authorizedUsers.sort((left, right) => left.email.localeCompare(right.email));
+        return route.fulfill({status: 201, json: {user}});
+      }
+      backend.authorizedUsers = backend.authorizedUsers.filter(user => user.email !== email);
+      return route.fulfill({json: {user: {email}}});
     }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
@@ -154,6 +187,55 @@ test('10,000 items keep a bounded DOM at each responsive layout', async ({page})
   await expectLayout(page, {width: 390, height: 844, visible: 1, cards: 3, columns: 1, rows: 1});
   await expect.poll(() => page.locator('#grid').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(550);
   await expect.poll(() => page.locator('.footer-line').evaluate(element => element.getBoundingClientRect().bottom)).toBeGreaterThan(820);
+});
+
+test('Import, Select, and Export share the row and only one expands at a time', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await expect(page.locator('#count')).toHaveText('10,000');
+
+  const panels = page.locator('.file-tools > details');
+  await expect(panels).toHaveCount(3);
+  const collapsedWidths = await panels.evaluateAll(rows => rows.map(row => row.getBoundingClientRect().width));
+  expect(Math.max(...collapsedWidths) - Math.min(...collapsedWidths)).toBeLessThan(2);
+
+  await page.locator('#importer > summary').click();
+  await expect(page.locator('#importer')).toHaveAttribute('open', '');
+  await expect(page.locator('#selector')).not.toHaveAttribute('open', '');
+  const importWidths = await panels.evaluateAll(rows => rows.map(row => row.getBoundingClientRect().width));
+  expect(importWidths[0]).toBeGreaterThan(importWidths[1] * 3);
+
+  await page.locator('#selector > summary').click();
+  await expect(page.locator('#selector')).toHaveAttribute('open', '');
+  await expect(page.locator('#importer')).not.toHaveAttribute('open', '');
+  const selectWidths = await panels.evaluateAll(rows => rows.map(row => row.getBoundingClientRect().width));
+  expect(selectWidths[1]).toBeGreaterThan(selectWidths[0] * 3);
+
+  await page.locator('#exporter > summary').click();
+  await expect(page.locator('#exporter')).toHaveAttribute('open', '');
+  await expect(page.locator('#selector')).not.toHaveAttribute('open', '');
+  await page.locator('#exporter > summary').click();
+  await expect(page.locator('.file-tools > details[open]')).toHaveCount(0);
+});
+
+test('Select remembers query strings in reverse recent order', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#selector > summary').click();
+
+  await page.getByLabel('Selection expression').fill('site:first.example');
+  await page.getByRole('button', {name: 'Open selection'}).click();
+  await expect(page.getByLabel('Previous selections')).toContainText('site:first.example');
+  await page.getByLabel('Selection expression').fill('folder:Reading/*');
+  await page.getByRole('button', {name: 'Open selection'}).click();
+  await expect(page.getByLabel('Previous selections')).toContainText('folder:Reading/*');
+  const history = await page.getByLabel('Previous selections').locator('option').allTextContents();
+  expect(history).toEqual(['Previous selections', 'folder:Reading/*', 'site:first.example']);
+  await page.getByLabel('Previous selections').selectOption('site:first.example');
+  await page.getByRole('button', {name: 'Open previous'}).click();
+  await expect(page.getByLabel('Selection expression')).toHaveValue('site:first.example');
 });
 
 test('page layout dropdown redraws the wide grid immediately', async ({page}) => {
@@ -348,6 +430,29 @@ test('New creates a named empty collection without a browser prompt', async ({pa
   expect(backend.collections.at(-1)).toEqual({id: 'collection-new', name: 'Research queue', kind: 'private'});
 });
 
+test('Admin contains sitting, capture, and authorized-user controls', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await expect(page.locator('.toolbar #session, .toolbar #capture-pass-one, .toolbar #capture-gaps')).toHaveCount(0);
+  await page.locator('#admin-menu > summary').click();
+  await expect(page.locator('#session')).toBeVisible();
+  await expect(page.locator('#capture-pass-one')).toBeVisible();
+  await expect(page.locator('#capture-gaps')).toBeVisible();
+  await page.getByRole('button', {name: 'Display users'}).click();
+  await expect(page.locator('#authorized-users')).toContainText('krnovak@gmail.com — admin');
+
+  await page.locator('#add-user-email').fill('New.Reader@Example.com');
+  await page.locator('#add-user-type').selectOption('user');
+  await page.getByRole('button', {name: 'Add user'}).click();
+  await expect(page.locator('#authorized-users')).toContainText('new.reader@example.com — user');
+  await page.locator('#remove-user-email').fill('new.reader@example.com');
+  await page.getByRole('button', {name: 'Remove user'}).click();
+  await expect(page.locator('#authorized-users')).not.toContainText('new.reader@example.com');
+  expect(backend.authorizedUsers).toHaveLength(2);
+});
+
 test('Automatic proposals are grouped in the requested order without Same labels', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   await installPile(page);
@@ -398,8 +503,10 @@ test('Export downloads either the collection or the current selection as importa
 
   await page.locator('#exporter summary').click();
   await expect(page.locator('#export-scope option').first()).toHaveText('Current collection (10,000)');
+  await page.locator('#selector > summary').click();
   await page.getByLabel('Selection expression').fill('site:example0.com');
   await page.getByRole('button', {name: 'Open selection'}).click();
+  await page.locator('#exporter > summary').click();
   await page.getByLabel('Export scope').selectOption('selection');
   const selectionDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Export file'}).click();
@@ -424,12 +531,28 @@ test('Export downloads either the collection or the current selection as importa
   await expect(page.locator('#bookmark-file')).toHaveAttribute('accept', /\.json/);
 });
 
+test('Export erases the current collection only after confirmation', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#exporter > summary').click();
+
+  let prompt = '';
+  page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.accept(); });
+  await page.getByRole('button', {name: 'Erase current collection'}).click();
+  await expect(page.locator('#count')).toHaveText('0');
+  expect(prompt).toContain('Erase all 10,000 bookmarks in “My bookmarks”?');
+  await expect(page.locator('#status')).toHaveText('Erased 10,000 bookmarks from “My bookmarks”.');
+  await expect(page.getByLabel('Current collection')).toContainText('My bookmarks');
+});
+
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   const backend = await installPile(page);
   backend.items[0].verdict = 'keeper';
   await page.goto('https://pile.test/');
 
+  await page.locator('#selector > summary').click();
   await page.locator('#sweep-rest').click();
   await expect(page.locator('#position')).toContainText('17–32 of 10,000');
   expect(backend.items[0].verdict).toBe('keeper');

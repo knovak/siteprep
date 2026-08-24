@@ -219,6 +219,56 @@ export class D1BookmarkStore {
     return collection;
   }
 
+  async eraseCollection(id) {
+    const collection = await this.assertCollectionWritable(id);
+    const erasedItems = await this.countItems(id);
+    await this.db.batch([
+      this.db.prepare('DELETE FROM selections WHERE collection_id = ?').bind(id),
+      this.db.prepare('DELETE FROM triage_sessions WHERE collection_id = ?').bind(id),
+      this.db.prepare('DELETE FROM items WHERE collection_id = ?').bind(id),
+    ]);
+    return {collection, erased_items: erasedItems};
+  }
+
+  async listAuthorizedUsers() {
+    const result = await this.db.prepare(
+      'SELECT email, type FROM authorized_user ORDER BY email',
+    ).all();
+    return result.results ?? [];
+  }
+
+  async addAuthorizedUser(email, type) {
+    await this.db.prepare(
+      `INSERT INTO authorized_user (email, type) VALUES (?, ?)
+       ON CONFLICT(email) DO UPDATE SET type = excluded.type`,
+    ).bind(email, type).run();
+    return {email, type};
+  }
+
+  async removeAuthorizedUser(email) {
+    await this.db.prepare('DELETE FROM authorized_user WHERE email = ?').bind(email).run();
+    return {email};
+  }
+
+  async recordSelection(expression, usedAt) {
+    if (this.ownerId === null || !expression) return null;
+    await this.ensureUser();
+    await this.db.prepare(
+      `INSERT INTO selection_history (owner_id, expression, used_at) VALUES (?, ?, ?)
+       ON CONFLICT(owner_id, expression) DO UPDATE SET used_at = excluded.used_at`,
+    ).bind(this.ownerId, expression, usedAt).run();
+    return {expression, used_at: usedAt};
+  }
+
+  async listSelectionHistory() {
+    if (this.ownerId === null) return [];
+    const result = await this.db.prepare(
+      `SELECT expression, used_at FROM selection_history
+       WHERE owner_id = ? ORDER BY used_at DESC, expression`,
+    ).bind(this.ownerId).all();
+    return result.results ?? [];
+  }
+
   async collectionHasUrlKey(collectionId, urlKey) {
     await this.assertCollectionReadable(collectionId);
     const row = await this.db.prepare(
