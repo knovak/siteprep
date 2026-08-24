@@ -213,8 +213,9 @@ test('10,000 items keep a bounded DOM at each responsive layout', async ({page})
 
   await expectLayout(page, {width: 1600, height: 900, visible: 16, cards: 24, columns: 8, rows: 2});
   await expectLayout(page, {width: 1000, height: 900, visible: 12, cards: 16, columns: 4, rows: 3});
-  await expect(page.getByLabel('Page layout')).toBeDisabled();
+  await expect(page.locator('.layout-picker')).toBeHidden();
   await expectLayout(page, {width: 820, height: 1100, visible: 9, cards: 12, columns: 3, rows: 3});
+  await expect(page.locator('.layout-picker')).toBeHidden();
   await expectLayout(page, {width: 390, height: 844, visible: 1, cards: 3, columns: 1, rows: 1});
   await expect.poll(() => page.locator('#grid').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(550);
   await expect.poll(() => page.locator('.footer-line').evaluate(element => element.getBoundingClientRect().bottom)).toBeGreaterThan(820);
@@ -313,16 +314,20 @@ test('three-row layouts reserve most of each card for readable bookmark text', a
   const compactMetrics = await page.locator('[data-item-id="item-1"]').evaluate(card => {
     const capture = card.querySelector('.capture').getBoundingClientRect();
     const title = card.querySelector('h2');
+    const tags = card.querySelector('.tags').getBoundingClientRect();
     const bounds = card.getBoundingClientRect();
     return {
       captureRatio: capture.height / bounds.height,
       titleHeight: title.getBoundingClientRect().height,
       lineClamp: getComputedStyle(title).webkitLineClamp,
+      titleBottom: title.getBoundingClientRect().bottom,
+      tagsTop: tags.top,
     };
   });
   expect(compactMetrics.captureRatio).toBeLessThan(0.2);
-  expect(compactMetrics.titleHeight).toBeGreaterThan(45);
-  expect(compactMetrics.lineClamp).toBe('4');
+  expect(compactMetrics.titleHeight).toBeGreaterThan(80);
+  expect(compactMetrics.lineClamp).toBe('none');
+  expect(compactMetrics.tagsTop - compactMetrics.titleBottom).toBeLessThan(5);
 });
 
 test('keyboard verdicts, marked groups, atomic undo, and sitting rate work without navigation', async ({page}) => {

@@ -116,8 +116,9 @@ export function renderPilePage({isAdmin = false} = {}) {
     :root[data-grid-rows="3"][data-grid-columns="12"] .capture { flex-basis: 18%; }
     :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card { padding: 8px; }
     :root[data-grid-rows="3"][data-grid-columns="12"] .capture { margin: -8px -8px 5px; }
-    :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card h2 { min-height: 4.68em; margin-block: 5px 3px; font-size: .82rem; -webkit-line-clamp: 4; }
-    :root[data-grid-rows="3"][data-grid-columns="12"] .tags { padding-top: 4px; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card h2 { flex: 1 1 auto; min-height: 0; margin-block: 5px 3px; font-size: .82rem; -webkit-line-clamp: unset; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .note { display: none; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .tags { margin-top: 0; padding-top: 4px; }
     .site { overflow: hidden; color: #6a7387; font-size: .67rem; font-weight: 750; letter-spacing: .06em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
     .bookmark-card h2 { display: -webkit-box; overflow: hidden; margin: 7px 0 5px; color: #172b55; font-size: .92rem; line-height: 1.17; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
     .bookmark-card h2 a { color: inherit; text-decoration: none; }
@@ -151,14 +152,13 @@ export function renderPilePage({isAdmin = false} = {}) {
     .help-panel p, .help-panel li { color: #4d5870; font-size: .83rem; }
     .help-panel ul { margin: 6px 0; padding-left: 20px; }
     .help-panel code { border-radius: 4px; padding: 1px 4px; color: #243c72; background: #edf2ff; font-size: .78rem; }
-    @media (max-width: 1100px) { :root { --columns: 4; --rows: 3; } .bookmark-card h2 { font-size: .98rem; } }
+    @media (max-width: 1100px) { :root { --columns: 4; --rows: 3; } .layout-picker { display: none; } .bookmark-card h2 { font-size: .98rem; } }
     @media (max-width: 1100px) and (orientation: portrait) { :root { --columns: 3; --rows: 3; } }
     @media (max-width: 640px) {
       :root { --columns: 1; --rows: 1; }
       main { padding: 9px; gap: 4px; }
       .brand p, .stat.total, .toolbar .shortcut { display: none; }
       .header-tools { gap: 6px; }
-      .layout-picker span { display: none; }
       .stats { gap: 10px; }
       .stat strong { font-size: 1.15rem; }
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
