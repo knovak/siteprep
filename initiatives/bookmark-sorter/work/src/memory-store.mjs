@@ -155,6 +155,10 @@ export class MemoryBookmarkStore {
       .map(([email, type]) => ({email, type}));
   }
 
+  authorizedUserType(email) {
+    return this.#authorizedUsers.get(String(email || '').trim().toLowerCase()) ?? null;
+  }
+
   addAuthorizedUser(email, type) {
     this.#authorizedUsers.set(email, type);
     return {email, type};

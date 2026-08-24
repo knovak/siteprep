@@ -33,10 +33,10 @@ selection, and export operations.
 - `migrations/0006_private_collections.sql` extends the collection kind check for
   additional empty private collections while preserving the one automatic
   personal pile per owner.
-- `migrations/0007_authorized_users_history.sql` creates the currently
-  advisory `authorized_user` list and per-owner recent selection history. The
-  two supplied example users are seeded, but this version deliberately does
-  not use that table to show, hide, or authorize the Admin menu.
+- `migrations/0007_authorized_users_history.sql` creates the `authorized_user`
+  list and per-owner recent selection history. The two supplied example users
+  are seeded. A signed-in email must have type `admin` for the Admin menu and
+  its user-management, capture, and end-sitting operations to be available.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -73,8 +73,10 @@ selection, and export operations.
   list reserve parameter slots for fixed values such as `collection_id`, so no
   statement exceeds D1's 100-bound-parameter limit.
 - `src/site-identity.mjs` reads the stable
-  `oai-authenticated-user-id` supplied by ChatGPT Sites. Email and the optional
-  encoded full name are display-only; neither participates in ownership.
+  `oai-authenticated-user-id` supplied by ChatGPT Sites. That id remains the
+  sole collection-ownership key. The normalized email is consulted only for
+  the separate `authorized_user` admin role; the optional encoded full name is
+  display-only.
 - `src/memory-store.mjs` is the deterministic test adapter, indexed by
   `(collection_id, url_key)` so the generated 10,000-item sizing run exercises
   the same identity rule without quadratic test behavior.
@@ -88,7 +90,8 @@ selection, and export operations.
   take or refresh a private copy, rename or erase a collection, delete a copy,
   and allow template creation only for users whose D1 capability is set. The
   same API records each signed-in user's distinct selection expressions by
-  most-recent use and exposes the advisory authorized-user list editor.
+  most-recent use. Admin-only routes expose the authorized-user list editor;
+  hiding the menu is backed by the same server-side role check.
 - `src/pile-page.mjs` renders the self-contained grid. Its Page layout selector
   offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
@@ -111,14 +114,18 @@ selection, and export operations.
   Import, Select, and Export share one equal-width collapsed row; opening one
   gives it the available width and closes the other two. Import contains both
   file loading and demo-template copying. Select contains expression, proposal,
-  saved-selection, tagging, sweeping, and per-user recent-query controls.
+  saved-selection, tagging, and per-user recent-query controls.
   Export downloads the whole collection or open selection and can erase the
   current collection after confirmation while preserving the collection and
   shared captures. End sitting and both capture actions live under the Admin
-  menu alongside add, remove, and display functions for `authorized_user`.
-  Apply to entire selection and Previous/Next remain visible beside the triage
-  actions. The portable JSON carries URLs, notes, tags, and verdicts, but no
-  captures.
+  menu alongside add, remove, and display functions for `authorized_user`, and
+  that menu is rendered only for an admin email. Its fixed panel is positioned
+  below the Admin summary so the summary remains available to collapse it.
+  The verdict selector and split Sweep control remain visible beside the
+  triage actions: its default sweeps untriaged cards on the visible page, while
+  `Sweep all selected` confirms and applies to the entire open selection.
+  Previous/Next remain beside them. The portable JSON carries URLs, notes,
+  tags, and verdicts, but no captures.
 
 ## D1 binding
 
@@ -221,8 +228,9 @@ the data-handling boundary.
   strings by most-recent use and records a successfully opened expression.
   History is user-scoped rather than collection-scoped and persists in D1.
 - `GET|POST /api/authorized-users` displays, adds, updates, or removes rows in
-  `authorized_user`. These rows are intentionally advisory in this version and
-  are not consulted for access control.
+  `authorized_user`. Both routes require the current signed-in email to have
+  type `admin`; the same check gates Admin rendering, capture operations, and
+  ending a sitting.
 - `GET /api/proposals` recomputes source, exact-tag, folder, site, image,
   verdict, and near-title groups as ordinary pre-filled selections. The five
   verdict expressions are always present, including zero-count values. The
@@ -238,8 +246,10 @@ the data-handling boundary.
   only the tags it added, so one undo removes those additions and preserves
   everything that existed before the action.
 - `POST /api/selection/verdict` implements mark-then-sweep. A current visible
-  selection never confirms, including a tested 3,000-item sweep. An unopened
-  saved selection returns `409` with its count until the caller confirms.
+  selection never confirms, including a tested 3,000-item sweep. An
+  entire-selection request returns `409` with its count until the caller
+  confirms; the split Sweep control uses that path for the current open
+  expression.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
 - `GET /api/export` streams the active collection or its `expression` subset as

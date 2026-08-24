@@ -24,19 +24,21 @@ verdicts, and notes; it never contains capture images.
    should not increase it.
 4. Work however you actually would. Use the on-screen buttons or `K`, `J`, `A`,
    and `N`; Space marks exceptions and `U` undoes the last whole action.
-5. Open **Admin** and end the sitting. The items judged, elapsed time, and items-per-minute rate
-   are recorded automatically, so noting them down is optional — see `notes.md`
-   for what they are eventually for.
+5. If your email is listed as an administrator, open **Admin** and end the
+   sitting. The items judged, elapsed time, and items-per-minute rate are
+   recorded automatically, so noting them down is optional — see `notes.md`
+   for what they are eventually for. Non-admin users do not see this menu.
 
 ## Selection sitting
 
 1. Open a selection such as `folder:Reading/*`, `site:example.com`, or a
    combination such as `folder:Reading/* and not topic:rust`.
-2. Mark the exceptions, choose the verdict for the rest, and use **Sweep
-   unmarked**.
-3. Try one saved selection without opening it first. It should show the affected
-   count and ask before applying a verdict. A selection that is already open
-   should sweep without that extra confirmation.
+2. Choose a verdict and use **Sweep untriaged** to change only untriaged cards
+   on the visible page and advance. Use the arrow on that control to switch to
+   **Sweep all selected** when every item in the current open selection should
+   receive the verdict.
+3. **Sweep all selected** should show the affected count and ask for
+   confirmation before applying the verdict.
 4. Optionally note how many confirmations interrupted the sitting. Sweeps you
    immediately undo are recorded automatically; confirmations are not. Neither
    is required — see `notes.md`.

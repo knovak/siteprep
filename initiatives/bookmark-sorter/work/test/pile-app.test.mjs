@@ -24,7 +24,7 @@ class AppStore extends MemoryBookmarkStore {
 
 const createTestApp = options => createPileApp({
   ...options,
-  identityFromRequest: options?.identityFromRequest || (() => ({id: 'test-user'})),
+  identityFromRequest: options?.identityFromRequest || (() => ({id: 'test-user', email: 'krnovak@gmail.com'})),
   personalCollectionIdFactory: options?.personalCollectionIdFactory || (() => 'pile'),
 });
 
@@ -59,7 +59,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="erase-collection"/);
   assert.match(html, /id="admin-menu"/);
   assert.match(html, />Load a copy</);
-  assert.match(html, />Apply to entire selection</);
+  assert.match(html, /id="sweep-mode"/);
+  assert.match(html, />Sweep all selected</);
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
@@ -210,7 +211,7 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   assert.equal((await (await app.fetch(new Request('https://pile.test/api/selection?expression=verdict%3Auntriaged'))).json()).total, 1);
 });
 
-test('selection history persists recent expressions per user and authorized users are editable without gating access', async () => {
+test('selection history persists recent expressions and only administrators can edit authorized users', async () => {
   const store = new AppStore();
   let tick = 0;
   const app = createTestApp({
@@ -243,6 +244,16 @@ test('selection history persists recent expressions per user and authorized user
     body: JSON.stringify({action: 'remove', email: 'new.reader@example.com'}),
   }));
   assert.equal((await (await app.fetch(new Request('https://pile.test/api/authorized-users'))).json()).users.length, 2);
+
+  const readerApp = createTestApp({
+    storeFactory: () => store,
+    identityFromRequest: () => ({id: 'reader-user', email: 'julie.duffield@gmail.com'}),
+  });
+  const readerPage = await (await readerApp.fetch(new Request('https://pile.test/'))).text();
+  assert.doesNotMatch(readerPage, /id="admin-menu"/);
+  const denied = await readerApp.fetch(new Request('https://pile.test/api/authorized-users'));
+  assert.equal(denied.status, 403);
+  assert.deepEqual(await denied.json(), {error: 'Admin access required'});
 });
 
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {

@@ -1,4 +1,4 @@
-export function renderPilePage() {
+export function renderPilePage({isAdmin = false} = {}) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -39,7 +39,7 @@ export function renderPilePage() {
     .admin-menu > summary::-webkit-details-marker { display: none; }
     .admin-menu > summary::after { position: absolute; top: 11px; right: 10px; content: '▾'; }
     .admin-menu[open] > summary::after { content: '▴'; }
-    .admin-menu-content { position: fixed; z-index: 25; top: 102px; right: 12px; width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 118px); overflow: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border: 1px solid #9eabc2; border-radius: 12px; padding: 10px; background: white; box-shadow: 0 16px 48px #172b5538; }
+    .admin-menu-content { position: fixed; z-index: 25; top: 132px; right: 12px; width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 148px); overflow: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border: 1px solid #9eabc2; border-radius: 12px; padding: 10px; background: white; box-shadow: 0 16px 48px #172b5538; }
     .admin-menu-content > button { min-height: 38px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 7px 9px; color: #29406e; background: white; font-weight: 720; }
     .admin-menu-content .admin-capture { border-color: #9a78c3; color: #60378b; }
     .admin-menu-content button:disabled { opacity: .45; cursor: not-allowed; }
@@ -47,7 +47,7 @@ export function renderPilePage() {
     .admin-user-form.remove { grid-template-columns: minmax(0, 1fr) auto; }
     .admin-user-form input, .admin-user-form select, .admin-user-form button { min-width: 0; min-height: 38px; border: 1px solid #b9c2d3; border-radius: 8px; padding: 7px 9px; background: white; }
     .admin-user-form button { border-color: #234fc4; color: white; background: #234fc4; font-weight: 760; }
-    .admin-user-form .danger { border-color: #a63b32; background: #a63b32; }
+    .collection-bar .admin-user-form button.danger { border-color: #a63b32; color: white; background: #a63b32; }
     #display-users { grid-column: 1 / -1; }
     #authorized-users { grid-column: 1 / -1; margin: 0; padding: 8px 8px 8px 28px; border-radius: 8px; color: #4d5870; background: #f5f7fb; font-size: .82rem; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
@@ -85,7 +85,13 @@ export function renderPilePage() {
     .toolbar button:disabled { opacity: .45; cursor: not-allowed; }
     form button:disabled { opacity: .5; cursor: wait; }
     #capture-pass-one, #capture-gaps { border-color: #9a78c3; color: #60378b; }
-    #sweep-saved { border-color: #234fc4; color: white; background: #234fc4; }
+    #sweep-verdict { flex: 0 0 auto; min-height: 38px; border: 1px solid #b9c2d3; border-radius: 9px; padding: 7px 30px 7px 9px; color: #29406e; background: white; font-weight: 720; }
+    .sweep-control { flex: 0 0 auto; display: flex; align-items: stretch; }
+    .toolbar #sweep-rest { border-color: #234fc4; border-radius: 9px 0 0 9px; color: white; background: #234fc4; }
+    .sweep-mode-picker { position: relative; width: 40px; min-height: 38px; display: grid; place-items: center; border: 1px solid #234fc4; border-left-color: #173b9c; border-radius: 0 9px 9px 0; color: white; background: #234fc4; cursor: pointer; }
+    .sweep-mode-picker select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .sweep-mode-picker:has(select:focus-visible) { outline: 2px solid #9bb4f4; outline-offset: 2px; }
+    .sweep-mode-picker span { pointer-events: none; font-size: 1.05rem; }
     .toolbar .spacer { flex: 1 0 12px; }
     #mark-count { flex: 0 0 auto; color: #687188; font-size: .78rem; }
     #grid { grid-row: 5; min-height: 0; display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); gap: 8px; overflow: hidden; outline: none; }
@@ -156,7 +162,7 @@ export function renderPilePage() {
       .file-tools form, #export-form { grid-template-columns: 1fr; }
       .template-tools { grid-template-columns: minmax(150px, 1fr) auto; overflow-x: auto; }
       .template-tools #create-template { grid-column: 1 / -1; }
-      .admin-menu-content { top: 88px; max-height: calc(100dvh - 100px); }
+      .admin-menu-content { top: 118px; max-height: calc(100dvh - 130px); }
       .admin-user-form { grid-template-columns: minmax(0, 1fr) 92px; }
       .admin-user-form button { grid-column: 1 / -1; }
       .toolbar button { min-height: 42px; padding-inline: 12px; }
@@ -190,13 +196,12 @@ export function renderPilePage() {
       <ul>
         <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
         <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
-        <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page.</li>
-        <li><strong>Previous / Next</strong> changes pages without changing verdicts. <strong>Apply to entire selection</strong> applies the selected verdict to the chosen saved selection after showing a confirmation count.</li>
+        <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page. Use its arrow to choose <strong>Sweep all selected</strong>, which applies the verdict to the entire open selection after showing a confirmation count.</li>
+        <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
-        <li><strong>Admin</strong> contains End sitting, metadata capture, capture gaps, and the authorized-user list editor. The authorized-user list does not control access yet.</li>
-        <li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>
+        ${isAdmin ? '<li><strong>Admin</strong> contains End sitting, metadata capture, capture gaps, and the authorized-user list editor. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
@@ -229,7 +234,7 @@ export function renderPilePage() {
       <button id="fresh-copy" type="button" hidden>Fresh copy</button>
       <button id="delete-copy" class="danger" type="button" hidden>Delete copy</button>
       <span class="spacer"></span>
-      <details id="admin-menu" class="admin-menu">
+      ${isAdmin ? `<details id="admin-menu" class="admin-menu">
         <summary>Admin</summary>
         <div class="admin-menu-content">
           <button id="session" type="button">End sitting</button>
@@ -247,7 +252,7 @@ export function renderPilePage() {
           <button id="display-users" type="button">Display users</button>
           <ul id="authorized-users" aria-label="Authorized users" hidden></ul>
         </div>
-      </details>
+      </details>` : ''}
     </section>
     <section class="file-tools" aria-label="Import, select, and export">
       <details id="importer">
@@ -278,10 +283,6 @@ export function renderPilePage() {
           <button id="open-saved" type="button">Open saved</button>
           <select id="previous-selections" aria-label="Previous selections"><option value="">Previous selections</option></select>
           <button id="open-previous" type="button">Open previous</button>
-          <select id="sweep-verdict" aria-label="Sweep verdict">
-            <option value="junk">Junk</option><option value="keeper">Keep</option><option value="archive">Archive</option><option value="needs-more-time">Needs time</option>
-          </select>
-          <button id="sweep-rest" class="primary" type="button">Sweep untriaged</button>
           <span id="selection-summary">All items</span>
         </section>
       </details>
@@ -303,7 +304,19 @@ export function renderPilePage() {
       <button id="undo" type="button"><span class="shortcut"><kbd>U</kbd> </span>Undo</button>
       <span class="spacer"></span>
       <span id="mark-count">0 marked</span>
-      <button id="sweep-saved" type="button">Apply to entire selection</button>
+      <select id="sweep-verdict" aria-label="Sweep verdict">
+        <option value="junk">Junk</option><option value="keeper">Keep</option><option value="archive">Archive</option><option value="needs-more-time">Needs time</option>
+      </select>
+      <div class="sweep-control">
+        <button id="sweep-rest" type="button">Sweep untriaged</button>
+        <label class="sweep-mode-picker" title="Choose sweep scope">
+          <span aria-hidden="true">▾</span>
+          <select id="sweep-mode" aria-label="Sweep mode">
+            <option value="untriaged">Sweep untriaged</option>
+            <option value="selection">Sweep all selected</option>
+          </select>
+        </label>
+      </div>
       <div class="page-controls" aria-label="Page through the current selection">
         <button id="previous-page" type="button">Previous</button><button id="next-page" type="button">Next</button>
       </div>
@@ -327,8 +340,8 @@ export function renderPilePage() {
       previousSelections: document.querySelector('#previous-selections'), openPrevious: document.querySelector('#open-previous'),
       proposals: document.querySelector('#proposals'), openProposal: document.querySelector('#open-proposal'),
       tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'),
-      sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'),
-      sweepSaved: document.querySelector('#sweep-saved'), selectionSummary: document.querySelector('#selection-summary'),
+      sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'), sweepMode: document.querySelector('#sweep-mode'),
+      selectionSummary: document.querySelector('#selection-summary'),
       collectionSelect: document.querySelector('#collection-select'), collectionKind: document.querySelector('#collection-kind'),
       renameCollection: document.querySelector('#rename-collection'), newCollection: document.querySelector('#new-collection'), renameForm: document.querySelector('#rename-form'),
       collectionName: document.querySelector('#collection-name'), cancelRename: document.querySelector('#cancel-rename'), freshCopy: document.querySelector('#fresh-copy'),
@@ -388,7 +401,7 @@ export function renderPilePage() {
       const last = Math.min(state.total, state.offset + state.visible);
       elements.position.textContent = first.toLocaleString() + '–' + last.toLocaleString() + ' of ' + state.total.toLocaleString() + ' · ' + elapsed;
       elements.markCount.textContent = state.marked.size.toLocaleString() + ' marked';
-      elements.session.textContent = state.session?.ended_at ? 'Start sitting' : 'End sitting';
+      if (elements.session) elements.session.textContent = state.session?.ended_at ? 'Start sitting' : 'End sitting';
       elements.selectionSummary.textContent = (state.expression ? state.expression : 'All items') + ' · ' + state.total.toLocaleString() + ' selected · ' + state.selectionBacklog.toLocaleString() + ' untriaged';
       elements.exportScope.options[0].textContent = 'Current collection (' + state.collectionTotal.toLocaleString() + ')';
       elements.exportScope.options[1].textContent = 'Current selection (' + state.total.toLocaleString() + ')';
@@ -396,7 +409,7 @@ export function renderPilePage() {
       elements.eraseCollection.disabled = !state.collectionId || !state.collectionTotal;
       elements.previousPage.disabled = state.loading || state.offset <= 0;
       elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
-      elements.capturePassOne.disabled = state.loading || state.captureInProgress || !state.captures;
+      if (elements.capturePassOne) elements.capturePassOne.disabled = state.loading || state.captureInProgress || !state.captures;
     }
     async function startSession() {
       if (!state.collectionTotal || (state.session && !state.session.ended_at)) return;
@@ -730,22 +743,28 @@ export function renderPilePage() {
       elements.status.textContent = verdictText(elements.sweepVerdict.value) + ' applied to ' + data.changes.length.toLocaleString() + ' untriaged item' + (data.changes.length === 1 ? '' : 's') + (advanced ? '; showing the next page.' : '; this is the final page.');
     }
 
-    async function sweepSavedUnopened(confirmed = false) {
-      const id = elements.savedSelections.value;
-      if (!id) throw new Error('Choose a saved selection first');
+    async function sweepEntireSelection(confirmed = false) {
       await startSession();
       const response = await fetch('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': state.collectionId}, body: JSON.stringify({
-        session_id: state.session.id, selection_id: id, verdict: elements.sweepVerdict.value, visible: false, confirmed,
+        session_id: state.session.id, expression: state.expression, verdict: elements.sweepVerdict.value, visible: false, confirmed,
       })});
       const data = await response.json();
       if (response.status === 409 && data.confirmation_required) {
-        if (confirm('Apply ' + verdictText(elements.sweepVerdict.value) + ' to all ' + data.count.toLocaleString() + ' items in this saved selection?')) return sweepSavedUnopened(true);
+        if (confirm('Apply ' + verdictText(elements.sweepVerdict.value) + ' to all ' + data.count.toLocaleString() + ' items in the current selection?')) return sweepEntireSelection(true);
         elements.status.textContent = 'Entire-selection action cancelled.'; return;
       }
       if (!response.ok) throw new Error(data.error || 'Request failed');
       patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
-      elements.status.textContent = 'Applied the verdict to all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the saved selection.';
+      elements.status.textContent = 'Applied the verdict to all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the current selection.';
       await refreshSelectionCounts();
+    }
+
+    function updateSweepMode() {
+      const allSelected = elements.sweepMode.value === 'selection';
+      elements.sweepRest.textContent = allSelected ? 'Sweep all selected' : 'Sweep untriaged';
+      elements.sweepRest.title = allSelected
+        ? 'Apply the chosen verdict to every item in the current selection'
+        : 'Apply the chosen verdict to untriaged items on this page';
     }
     function toggleMark(index = state.focused) {
       const item = state.items[index];
@@ -941,8 +960,11 @@ export function renderPilePage() {
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
     elements.tagSelection.addEventListener('click', () => tagCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
-    elements.sweepRest.addEventListener('click', () => sweepCurrentPage().catch(error => { elements.status.textContent = error.message; }));
-    elements.sweepSaved.addEventListener('click', () => sweepSavedUnopened().catch(error => { elements.status.textContent = error.message; }));
+    elements.sweepMode.addEventListener('change', updateSweepMode);
+    elements.sweepRest.addEventListener('click', () => {
+      const action = elements.sweepMode.value === 'selection' ? sweepEntireSelection : sweepCurrentPage;
+      action().catch(error => { elements.status.textContent = error.message; });
+    });
     elements.previousPage.addEventListener('click', () => pageWindow(-1).catch(error => { elements.status.textContent = error.message; }));
     elements.nextPage.addEventListener('click', () => pageWindow(1).catch(error => { elements.status.textContent = error.message; }));
     elements.pageLayout.addEventListener('change', () => {
@@ -968,17 +990,17 @@ export function renderPilePage() {
     });
     document.querySelectorAll('[data-verdict]').forEach(button => button.addEventListener('click', () => applyVerdict(button.dataset.verdict).catch(error => { elements.status.textContent = error.message; })));
     elements.undo.addEventListener('click', () => undo().catch(error => { elements.status.textContent = error.message; }));
-    elements.session.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));
-    elements.capturePassOne.addEventListener('click', () => capturePassOne());
-    elements.captureGaps.addEventListener('click', () => captureGaps());
-    elements.displayUsers.addEventListener('click', () => loadAuthorizedUsers().catch(error => { elements.status.textContent = error.message; }));
-    elements.addUserForm.addEventListener('submit', event => {
+    elements.session?.addEventListener('click', () => toggleSession().catch(error => { elements.status.textContent = error.message; }));
+    elements.capturePassOne?.addEventListener('click', () => capturePassOne());
+    elements.captureGaps?.addEventListener('click', () => captureGaps());
+    elements.displayUsers?.addEventListener('click', () => loadAuthorizedUsers().catch(error => { elements.status.textContent = error.message; }));
+    elements.addUserForm?.addEventListener('submit', event => {
       event.preventDefault();
       api('/api/authorized-users', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'add', email: elements.addUserEmail.value, type: elements.addUserType.value})})
         .then(async data => { elements.addUserForm.reset(); await loadAuthorizedUsers(); elements.status.textContent = 'Added ' + data.user.email + ' as ' + data.user.type + '.'; })
         .catch(error => { elements.status.textContent = error.message; });
     });
-    elements.removeUserForm.addEventListener('submit', event => {
+    elements.removeUserForm?.addEventListener('submit', event => {
       event.preventDefault();
       api('/api/authorized-users', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'remove', email: elements.removeUserEmail.value, type: 'user'})})
         .then(async data => { elements.removeUserForm.reset(); await loadAuthorizedUsers(); elements.status.textContent = 'Removed ' + data.user.email + '.'; })
@@ -990,6 +1012,17 @@ export function renderPilePage() {
         for (const other of [elements.importer, elements.selector, elements.exporter]) if (other !== panel) other.open = false;
       });
     }
+    function positionAdminMenu() {
+      if (!elements.adminMenu?.open) return;
+      const summary = elements.adminMenu.querySelector('summary');
+      const panel = elements.adminMenu.querySelector('.admin-menu-content');
+      const summaryBottom = Math.ceil(summary.getBoundingClientRect().bottom);
+      panel.style.top = (summaryBottom + 6) + 'px';
+      panel.style.maxHeight = Math.max(120, innerHeight - summaryBottom - 18) + 'px';
+    }
+    elements.adminMenu?.addEventListener('toggle', positionAdminMenu);
+    addEventListener('resize', positionAdminMenu);
+    updateSweepMode();
     document.addEventListener('keydown', event => {
       if (!elements.helpPanel.hidden) { if (event.key === 'Escape') { event.preventDefault(); setHelp(false); } return; }
       if (event.target.matches('input, textarea, select')) return;

@@ -129,7 +129,7 @@ test('two authenticated API sessions cannot address each other’s collection', 
   database.close();
 });
 
-test('D1 keeps selection history owner-scoped and authorized-user entries globally editable', async () => {
+test('D1 keeps selection history owner-scoped and resolves the global authorized-user role', async () => {
   const {d1} = await identityDatabase();
   const first = new D1BookmarkStore(d1, {ownerId: 'user-a'});
   const second = new D1BookmarkStore(d1, {ownerId: 'user-b'});
@@ -148,6 +148,9 @@ test('D1 keeps selection history owner-scoped and authorized-user entries global
     {email: 'julie.duffield@gmail.com', type: 'user'},
     {email: 'krnovak@gmail.com', type: 'admin'},
   ]);
+  assert.equal(await first.authorizedUserType('KRNOVAK@GMAIL.COM'), 'admin');
+  assert.equal(await first.authorizedUserType('julie.duffield@gmail.com'), 'user');
+  assert.equal(await first.authorizedUserType('missing@example.com'), null);
   await first.addAuthorizedUser('reader@example.com', 'user');
   assert.equal((await second.listAuthorizedUsers()).at(-1).email, 'reader@example.com');
   await second.removeAuthorizedUser('reader@example.com');

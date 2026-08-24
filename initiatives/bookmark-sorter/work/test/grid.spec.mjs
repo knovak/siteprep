@@ -39,7 +39,7 @@ async function installPile(page) {
     const requestCollectionId = request.headers()['x-bookmark-collection-id'] || '';
     backend.requests.push({method: request.method(), path: url.pathname, collectionId: requestCollectionId});
     if (request.method() === 'GET' && url.pathname === '/') {
-      return route.fulfill({contentType: 'text/html', body: renderPilePage()});
+      return route.fulfill({contentType: 'text/html', body: renderPilePage({isAdmin: true})});
     }
     if (request.method() === 'GET' && url.pathname === '/api/collections') {
       return route.fulfill({json: {
@@ -120,6 +120,23 @@ async function installPile(page) {
       }
       backend.authorizedUsers = backend.authorizedUsers.filter(user => user.email !== email);
       return route.fulfill({json: {user: {email}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/selection/verdict') {
+      const matches = backend.items;
+      if (!body.confirmed) return route.fulfill({status: 409, json: {confirmation_required: true, count: matches.length}});
+      const changes = [];
+      for (const item of matches) {
+        if (item.verdict === body.verdict) continue;
+        changes.push({item_id: item.id, verdict: body.verdict, verdict_at: new Date().toISOString()});
+        Object.assign(item, {verdict: body.verdict, verdict_at: new Date().toISOString()});
+      }
+      backend.actions.push(changes);
+      backend.session.items_judged += changes.length;
+      return route.fulfill({json: {
+        changes,
+        backlog: backend.items.filter(item => !item.verdict).length,
+        session: backend.session,
+      }});
     }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
@@ -437,6 +454,12 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
 
   await expect(page.locator('.toolbar #session, .toolbar #capture-pass-one, .toolbar #capture-gaps')).toHaveCount(0);
   await page.locator('#admin-menu > summary').click();
+  const adminPosition = await page.locator('#admin-menu').evaluate(menu => {
+    const summary = menu.querySelector('summary').getBoundingClientRect();
+    const panel = menu.querySelector('.admin-menu-content').getBoundingClientRect();
+    return {summaryBottom: summary.bottom, panelTop: panel.top};
+  });
+  expect(adminPosition.panelTop).toBeGreaterThan(adminPosition.summaryBottom);
   await expect(page.locator('#session')).toBeVisible();
   await expect(page.locator('#capture-pass-one')).toBeVisible();
   await expect(page.locator('#capture-gaps')).toBeVisible();
@@ -448,9 +471,21 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
   await page.getByRole('button', {name: 'Add user'}).click();
   await expect(page.locator('#authorized-users')).toContainText('new.reader@example.com — user');
   await page.locator('#remove-user-email').fill('new.reader@example.com');
-  await page.getByRole('button', {name: 'Remove user'}).click();
+  const removeUser = page.getByRole('button', {name: 'Remove user'});
+  await expect(removeUser).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await removeUser.click();
   await expect(page.locator('#authorized-users')).not.toContainText('new.reader@example.com');
   expect(backend.authorizedUsers).toHaveLength(2);
+
+  await page.setViewportSize({width: 430, height: 932});
+  const phonePosition = await page.locator('#admin-menu').evaluate(menu => {
+    const summary = menu.querySelector('summary').getBoundingClientRect();
+    const panel = menu.querySelector('.admin-menu-content').getBoundingClientRect();
+    return {summaryTop: summary.top, summaryBottom: summary.bottom, panelTop: panel.top, viewportHeight: innerHeight};
+  });
+  expect(phonePosition.summaryTop).toBeGreaterThanOrEqual(0);
+  expect(phonePosition.summaryBottom).toBeLessThan(phonePosition.viewportHeight);
+  expect(phonePosition.panelTop).toBeGreaterThan(phonePosition.summaryBottom);
 });
 
 test('Automatic proposals are grouped in the requested order without Same labels', async ({page}) => {
@@ -552,7 +587,9 @@ test('sweep changes only visible untriaged cards, advances, and paging is read-o
   backend.items[0].verdict = 'keeper';
   await page.goto('https://pile.test/');
 
-  await page.locator('#selector > summary').click();
+  await expect(page.locator('.toolbar #sweep-verdict')).toHaveCount(1);
+  await expect(page.locator('#selector #sweep-verdict')).toHaveCount(0);
+  await expect(page.locator('#sweep-rest')).toHaveText('Sweep untriaged');
   await page.locator('#sweep-rest').click();
   await expect(page.locator('#position')).toContainText('17–32 of 10,000');
   expect(backend.items[0].verdict).toBe('keeper');
@@ -565,4 +602,21 @@ test('sweep changes only visible untriaged cards, advances, and paging is read-o
   await page.locator('#next-page').click();
   await expect(page.locator('#position')).toContainText('17–32 of 10,000');
   expect(backend.items.filter(item => item.verdict).length).toBe(judgedAfterSweep);
+});
+
+test('sweep scope dropdown switches the action to the entire current selection', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.items = backend.items.slice(0, 4);
+  await page.goto('https://pile.test/');
+
+  await page.getByLabel('Sweep mode').selectOption('selection');
+  await expect(page.locator('#sweep-rest')).toHaveText('Sweep all selected');
+  let prompt = '';
+  page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.accept(); });
+  await page.locator('#sweep-rest').click();
+
+  await expect(page.locator('#status')).toHaveText('Applied the verdict to all 4 items in the current selection.');
+  expect(prompt).toContain('Apply Junk to all 4 items in the current selection?');
+  expect(backend.items.every(item => item.verdict === 'junk')).toBe(true);
 });

@@ -237,6 +237,15 @@ export class D1BookmarkStore {
     return result.results ?? [];
   }
 
+  async authorizedUserType(email) {
+    const normalized = String(email || '').trim().toLowerCase();
+    if (!normalized) return null;
+    const user = await this.db.prepare(
+      'SELECT type FROM authorized_user WHERE email = ? LIMIT 1',
+    ).bind(normalized).first();
+    return user?.type ?? null;
+  }
+
   async addAuthorizedUser(email, type) {
     await this.db.prepare(
       `INSERT INTO authorized_user (email, type) VALUES (?, ?)

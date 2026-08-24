@@ -43,6 +43,11 @@ function authorizedUserInput(body) {
   return {email, type};
 }
 
+async function identityIsAdmin(store, identity) {
+  if (!identity?.email) return false;
+  return await store.authorizedUserType(identity.email) === 'admin';
+}
+
 export function createPileApp({
   storeFactory = (env, identity) => new D1BookmarkStore(env.DB, {ownerId: identity.id}),
   identityFromRequest = readSiteIdentity,
@@ -62,14 +67,16 @@ export function createPileApp({
   return {
     async fetch(request, env = {}, context = {}) {
       const url = new URL(request.url);
+      const identity = identityFromRequest(request);
       if (request.method === 'GET' && url.pathname === '/') {
-        return new Response(renderPilePage(), {headers: {'content-type': 'text/html; charset=utf-8'}});
+        const store = identity?.id ? storeFactory(env, identity) : null;
+        const isAdmin = store ? await identityIsAdmin(store, identity) : false;
+        return new Response(renderPilePage({isAdmin}), {headers: {'content-type': 'text/html; charset=utf-8'}});
       }
 
       if (!url.pathname.startsWith('/api/')) return new Response('Not found', {status: 404});
 
       try {
-        const identity = identityFromRequest(request);
         if (!identity?.id) return json({error: 'Sign in with ChatGPT to continue'}, 401);
         const store = storeFactory(env, identity);
         const capture = captureFactory(env, store);
@@ -132,10 +139,12 @@ export function createPileApp({
         }
 
         if (request.method === 'GET' && url.pathname === '/api/authorized-users') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
           return json({users: await store.listAuthorizedUsers()});
         }
 
         if (request.method === 'POST' && url.pathname === '/api/authorized-users') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
           const body = await requestJson(request);
           const {email, type} = authorizedUserInput(body);
           if (body.action === 'add') return json({user: await store.addAuthorizedUser(email, type)}, 201);
@@ -316,12 +325,14 @@ export function createPileApp({
         }
 
         if (request.method === 'POST' && url.pathname === '/api/captures/gaps') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const body = await requestJson(request);
           return json(await capture.processGaps({limit: body.limit, collectionId}));
         }
 
         if (request.method === 'POST' && url.pathname === '/api/captures/pass-one') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const retry = url.searchParams.get('retry') === '1';
           const candidates = await store[retry ? 'listRetryableCaptureItems' : 'listUncapturedItems'](collectionId, {
@@ -343,6 +354,7 @@ export function createPileApp({
             return json(session, 201);
           }
           if (body.action === 'finish') {
+            if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
             if (!body.session_id) throw new Error('Session id is required');
             return json(await store.finishSession(collectionId, {
               sessionId: body.session_id,
