@@ -3,30 +3,24 @@ id: sweep
 title: How work gets picked up
 order: 40
 slide: true
-slide_title: The sweep finishes work already under review first
+slide_title: The sweep answers PR comments before new work
 audience: both
 ---
 Nobody assigns work here. A scheduled run called the sweep goes over everything
-live, in a fixed order, and stops when its budget runs out.
+live and stops when its budget runs out.
 
 @figure sweep-run
 
-The order is what makes it work. Finishing beats starting, so the run answers
-review comments that are already waiting before it considers opening anything
-new. So a run that spends its whole allowance on feedback and starts nothing has
-done its job. Each phase does one thing.
+The run answers PR comments that are waiting before it considers opening
+anything new. Then it analyzes and recommends items to propose for new work.
+Then it works through remaining items.
 
 @fact sweep.phase_summaries as cards
 
-The budget is shared across all of it, and it's a boundary rather than a target.
+The workload is managed thorough a "budget" that limits the number of work items
+per sweep. The budget is currently {{sweep.budget.items_per_run}} items per run.
 
 @fact sweep.budget as table
-
-Keeping it that small is what keeps the mechanism reviewable by one person on a
-normal afternoon. A run also counts the branches already open before it picks
-anything new, and it takes the ranking the repository computes instead of
-rewriting it — an agent free to re-rank its own queue would drift toward the
-interesting work and away from the finishing work.
 
 A short list of things a run may never do, whatever it finds:
 
@@ -36,20 +30,18 @@ The first one matters most. [Read the exact prompt used by both manual and
 scheduled runs](source:initiatives/sweep-prompt.md).
 
 ---
-## The sweep finishes work already under review first
+## The sweep answers PR comments before new work
 
-Nobody assigns work. A scheduled run goes over everything live in a fixed order,
-and finishing beats starting — a run that spends its whole allowance answering
-review comments and opens nothing new is a complete run.
+The run answers PR comments that are waiting before it considers opening
+anything new. Then it analyzes and recommends items to propose for new work.
+Then it works through remaining items.
 
 @figure sweep-run
 
 ---
-## A shared budget keeps it reviewable
+## A budget limits each sweep
 
-The budget is a boundary, not a target. A run counts the branches already open
-before it picks anything new, and it takes the ranking the repository computes
-instead of rewriting it. An agent free to re-rank its own queue would drift
-toward the interesting work and away from the finishing work.
+The workload is managed thorough a "budget" that limits the number of work items
+per sweep. The budget is currently {{sweep.budget.items_per_run}} items per run.
 
 @fact sweep.budget as table

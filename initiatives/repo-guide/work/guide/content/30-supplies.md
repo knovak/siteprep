@@ -24,10 +24,10 @@ review, and answer the comments that come back. The one thing they never do is
 decide their own work is finished. A pull request is a proposal; merging it is
 somebody else's act.
 
-When you do answer a question the work is stuck on, a focused helper writes it
-down: {{skills.answer-decision.summary}} Your answer lands in the decision
-record along with what it settles and what it leaves open, so the next
-contributor inherits the reasoning and not just the conclusion.
+When you answer a question the work is stuck on, an agent records it in
+`decisions.md` and unblocks the item. Your answer lands in the decision record
+along with what it settles and what it leaves open, so the next contributor
+inherits the reasoning and not just the conclusion.
 [The working vocabulary and write rules are here](source:AGENTS.md); [the longer
 reasoning is here](source:INITIATIVES_VISION.md).
 
