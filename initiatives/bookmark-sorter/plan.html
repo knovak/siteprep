@@ -33,6 +33,7 @@
 <h2>Plan</h2>
 <p>How the Interactive Bookmark Sorter gets built, in order. <code>spec.md</code> says what is made; this says what is made <em>first</em>, and why that order rather than another. <code>test-plan.md</code> is its other half — every phase below ends at a named test there, which is what stops &quot;phase complete&quot; from being a judgement call.</p>
 <p>Numbered references to <strong>O1–O8</strong> are the objectives; <strong>§n</strong> is a section of <code>spec.md</code>.</p>
+<p><strong>Current status, 2026-08-25.</strong> Phases 0–6 have shipped and the initiative is in <code>refining</code>. Phase 7 remains deliberately off because no paid screenshot vendor is approved. The refinement record after the phase sequence names the controls added since the original build plan so they do not disappear from the plan&#39;s account of the product.</p>
 <h3>1. What decides the order</h3>
 <p>Three rules, applied in this priority, produce the sequence in §3:</p>
 <ol><li><strong>The thing that could invalidate the spec goes first.</strong> §10&#39;s table of what</li></ol>
@@ -66,7 +67,7 @@
 <p>The whole phase is judged on a property rather than a feature: <strong>a real export goes in and nothing is lost, and the same export goes in twice with nothing duplicated.</strong> That is O1 and the half of O7 that import carries, and it is the one phase where the test is more interesting than the code.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.1.</p>
 <h4>Phase 2 — The grid, blind</h4>
-<p><strong>Produces:</strong> the virtualised grid at the three layouts of §7, the four verdicts, <code>undo</code>, the marked set, focus movement, the untriaged count, and the session instrument of §12 — items judged and elapsed time, recorded per sitting.</p>
+<p><strong>Produces:</strong> the virtualised grid at the responsive layouts of §7, the four verdicts, <code>undo</code>, the marked set, focus movement, the untriaged count, and the session instrument of §12 — items judged and elapsed time, recorded per sitting.</p>
 <p><strong>Leaves out:</strong> every picture. Cells show title, site, tags and <code>note</code>.</p>
 <p>This is the phase that makes the initiative real: at the end of it a person can sit down with a five-figure pile and reduce it, which is the whole of O2 and most of O3. It is also where §12&#39;s first measured baseline comes from — a rate taken on a few hundred real items, blind, which is the <em>floor</em> every later phase should improve on. Taking the baseline before captures exist is deliberate: it is the only moment when the number is not flattered by them.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.2, including the first recorded rate.</p>
@@ -76,7 +77,7 @@
 <p>Two numbers come out of this phase and both feed decisions rather than dashboards: <strong>coverage</strong> (what fraction of a real pile got a distinguishable picture from metadata alone) and <strong>the duplicate-image distribution</strong>. §6&#39;s threshold of 30 items sharing one image hash is explicitly a starting value; this is the phase that replaces it with a measured one, and the replacement is a <code>decisions.md</code> entry, not a constant quietly edited.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.3.</p>
 <h4>Phase 4 — Selections, and judging a group as one</h4>
-<p><strong>Produces:</strong> the §8 expression evaluator as a single function — <code>and</code>, <code>or</code>, <code>not</code>, parentheses, bare tags, trailing <code>*</code> — the UI wrapping of §8.1, saved selections, <code>tag-apply</code> over a selection, §8.3&#39;s confirmation on the unbounded path, and §7.1&#39;s mark-then-sweep with <code>verdict-rest</code> and a single-action <code>undo</code>.</p>
+<p><strong>Produces:</strong> the §8 expression evaluator as a single function — <code>and</code>, <code>or</code>, <code>not</code>, parentheses, bare tags, trailing <code>*</code> — the UI wrapping of §8.1, saved selections, <code>tag-apply</code> over a selection, §8.3&#39;s confirmation on the unbounded path, visible-page untriaged sweeping, and a single-action <code>undo</code> for every set operation.</p>
 <p>Also <strong>§8.2&#39;s cheap in-app proposals</strong> — same site, same folder path, near-identical titles — offered as pre-filled selections, computed as §5.6 below decides. They belong here rather than in a phase of their own because a proposal <em>is</em> a selection: each one is a <code>group by</code> over data the app already holds, plus the normalised-title key written at ingestion. Without them O5&#39;s &quot;gathered into clusters <strong>automatically</strong>&quot; is delivered by no phase at all, and §5.6 answers a question about a feature nothing was scheduled to build.</p>
 <p><strong>Leaves out:</strong> cross-collection administrative use beyond what the tests need, and every route to tags from <em>outside</em> the app — the file round trip and the skill proposals of §8.2 both wait for phase 5, which is where the file format they travel in gets built.</p>
 <p>This is the phase that turns O5 from &quot;clusters&quot; into something built, and §7.1 is the part that makes a five-figure pile finishable rather than merely triageable. It comes before export because export takes a selection (§9), and before demo seeding because seeding is an export of one (§9.1). Building it after either would mean extracting it from them.</p>
@@ -87,7 +88,7 @@
 <p><strong>Leaves out:</strong> nothing much — this phase is small precisely because §4&#39;s merge, §8&#39;s selection and phase 4&#39;s <code>tag-apply</code> already exist. That it is small is the payoff for the order.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.5 — the round trip, which is the test that makes O7 mean something.</p>
 <h4>Phase 6 — Identity, collections, and demo copies</h4>
-<p><strong>Produces:</strong> sign-in from the host, <code>owner_id</code>, the three collection kinds, <code>can_edit_templates</code>, and the five operations of §10.1 — create or edit a template, list templates, take a copy, take a <em>fresh</em> copy, delete a copy — plus the collection menu the wish&#39;s amendment asks for.</p>
+<p><strong>Produces:</strong> sign-in from the host, <code>owner_id</code>, the personal, private, demo-template, and demo-copy collection kinds, the retained <code>can_edit_templates</code> capability, and the five operations of §10.1 — create or edit a template, list templates, take a copy, take a <em>fresh</em> copy, delete a copy — plus the collection menu the wish&#39;s amendment asks for. Refinement later added the email-based Admin role without changing opaque-id collection ownership.</p>
 <p><strong>Leaves out:</strong> every part of the general sharing scheme. No reader lists, no ACLs, no revocation (§10.2).</p>
 <p><strong>Conditional on one of phase 0&#39;s rows.</strong> Templates are listed and copied across owners, so if phase 0 finds no cross-owner read, three of the five operations above do not exist and a maintainer seeds each tester by hand instead. The phase still happens — isolation, <code>owner_id</code> and sign-in are the bulk of it — but two rows of its exit test are struck rather than failed. Phase 0 says this in one line; it is repeated here because this is the phase that would otherwise be reported as incomplete for doing exactly what the finding required.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.6, whose central case is two users: a tester takes a copy, triages it, and can reach nothing of anyone else&#39;s.</p>
@@ -95,17 +96,32 @@
 <p><strong>Not a development phase.</strong> The code shipped in phase 3; this is a configuration change plus one contract test against the real vendor. It remains gated on phase 0&#39;s secret-store finding and on the vendor decision being reopened: on 2026-08-18 the user chose <strong>none at present</strong>, so this phase deliberately does not run.</p>
 <p>If either answer never comes, the app is finished without it and gap items keep no picture — visibly missing rather than confidently wrong, which is the state §3 chose the metadata path for.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.7 — one contract test against the real vendor, then a bounded live run with spend recorded. Being a configuration change rather than a development phase is not a reason to end it on somebody&#39;s say-so.</p>
+<h4>Refinement increments after phases 0–6</h4>
+<p>Refinement keeps the phase architecture and adds user-facing controls around it. The current product includes:</p>
+<ul><li>selectable 3×3, 2×6, 2×8, and 3×12 wide layouts, plus the automatic tablet</li></ul>
+<p>  and phone layouts;</p>
+<ul><li>mutually exclusive Import, Select, and Export panels;</li><li>visible whole-collection and open-selection export, confirmed collection</li></ul>
+<p>  erasure, and import-compatible <code>bookmark-sorter/v1</code> files;</p>
+<ul><li>multiple private collections, inline create/rename, demo-template copying,</li></ul>
+<p>  and administrator-created templates;</p>
+<ul><li>typed, automatic, saved, and recent selection entry routes, with recent</li></ul>
+<p>  expressions stored per signed-in user;</p>
+<ul><li>visible-page Sweep untriaged and a separate confirmed Sweep all selected;</li><li>an Admin role backed by <code>authorized_user</code>, with server-gated sitting, capture,</li></ul>
+<p>  user-list, and template controls; and</p>
+<ul><li>a file drop target beside the Import chooser plus readiness styling for the</li></ul>
+<p>  Automatic proposal, Saved selection, and Previous selection Open actions.</p>
+<p>Each refinement adds browser-level regression coverage in <code>test-plan.md</code> §7, updates the user README, and appends a log entry. It does not reopen the phase-7 vendor decision or broaden Site access.</p>
 <h3>4. What each phase leaves behind</h3>
 <p>Every phase ends with three things, and the third is the one that is easy to skip:</p>
 <ul><li>the exit test passing;</li><li>a <code>log.md</code> entry saying what happened;</li><li>**a <code>decisions.md</code> entry for anything the phase settled that the spec had left</li></ul>
 <p>  open** — the host, the duplicate threshold, the vendor. A number learned from   data and then buried in a constant is a decision nobody can revisit, and the   next person to see 30 in the source has no idea whether it was measured or   guessed.</p>
 <h3>5. The questions §13 left for this plan</h3>
-<p>Seven were open. Five were answered here by reasoning; the host question was answered by the 2026-08-18 phase 0 evidence, and plan-specific metering remains the user&#39;s cost decision rather than something this plan guesses.</p>
+<p>Seven were open. Five were answered here by reasoning; the host question was answered by the 2026-08-18 phase 0 evidence, and plan-specific metering was approved by the user on 2026-08-19.</p>
 <h4>5.1 Where the screenshot API key lives — <em>phase 0, with the answer pre-committed</em></h4>
 <p>The custody question is a hosting fact, so phase 0 answers it. What does not wait on phase 0 is the <strong>rule</strong>, which §6 already fixes and this plan makes the gate on phase 7: the key never reaches the browser, and if the only way to call the vendor is from the client, pass 2 does not ship at all. The pipeline is built and tested against the stub in phase 3 either way, so this question can only ever cost the <em>feature</em>, never the schedule.</p>
 <h4>5.2 Which OpenAI surface — <em>ChatGPT Sites, on phase 0 evidence</em></h4>
 <p>Chosen on 2026-08-18 against §10&#39;s table rather than from documentation alone. The live owner-only probe passed outbound HTTP, a target-size app export, identity, D1 owner scoping, a server-side secret, the cross-owner template query and the deciding wide layout. <code>host-spike.md</code> §6 records the measurements and <code>decisions.md</code> records the choice.</p>
-<p>One authority question remains separate from capability: whether this workspace&#39;s plan-specific Sites limits are acceptable for 10,000 items plus up to a few hundred MB of captures. That is a <code>cost:</code> blocker. It does not prevent phase 1 ingestion from starting; it gates accepting the later R2 capture store.</p>
+<p>The user approved this workspace&#39;s plan-specific Sites costs and limits for 10,000 items plus up to a few hundred MB of captures on 2026-08-19. R2 was then provisioned and the measured metadata pass was recorded on 2026-08-20. That approval does not cover a separate paid screenshot vendor.</p>
 <h4>5.3 Which screenshot vendor, and its retention terms — <em>none at present</em></h4>
 <p>The criteria are settled: <strong>no retention of captured images beats a lower price</strong>, since §6 records the disclosure as an accepted cost and retention is what makes it more than a fetch; per-thousand pricing beats a subscription at this volume, because pass 2 runs on the minority of items and then stops; and an API that takes a URL and returns an image needs nothing else.</p>
 <p>The user answered on 2026-08-18: <strong>none at present</strong>. Phase 3 still ships against the stub and phase 7 stays off, so no account, key, or spend is authorised. <code>decisions.md</code> records three current candidates and recommends ScreenshotOne Basic for a later bounded trial because it is the lowest-cost candidate that can return the image without persistent vendor-side image storage. That is a shortlist, not a selection; target-URL logging must be accepted and every price and retention term rechecked before the question is reopened.</p>
@@ -142,7 +158,9 @@
 <h3>6. What this plan does not decide</h3>
 <ul><li><strong>The rate target of §12.</strong> It stays unset until phase 2 produces a baseline, on</li></ul>
 <p>  <code>objectives.md</code>&#39;s grounds that a number set now is a guess dressed as a   requirement.</p>
-<ul><li><strong>The duplicate-image threshold.</strong> Phase 3 measures it; 30 is a starting value.</li><li><strong>Anything held out of the first version</strong> — tab harvesting, pushing subsets</li></ul>
+<ul><li><strong>The duplicate-image threshold.</strong> The real-pile measurement kept it at 30:</li></ul>
+<p>  the largest repeated metadata-image group was 11 (<code>decisions.md</code>, 2026-08-20).</p>
+<ul><li><strong>Anything held out of the first version</strong> — tab harvesting, pushing subsets</li></ul>
 <p>  back into a browser, general sharing. §11 says the export format is what makes   the first two cheap later, and phase 5 is where that becomes true.</p>
 <p>One thing this plan raised and no longer decides, because it has since been settled:</p>
 <ul><li><strong>§8.3&#39;s confirmation threshold and §7.1&#39;s sweep pulled against each other.</strong></li></ul>

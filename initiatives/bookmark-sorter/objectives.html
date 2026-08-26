@@ -43,17 +43,17 @@
 <ol><li>**Every item can be given a verdict, and the verdict is the unit of</li></ol>
 <p>   progress.** Each item ends up as <em>keeper</em>, <em>junk</em>, <em>archive</em>, or    <em>needs-more-time</em>. Items with no verdict yet are the backlog, and the system    can always say how large it is.</p>
 <ol><li><strong>Triage is fast enough to do in a sitting.</strong> A screenful of items can be</li></ol>
-<p>   judged without leaving the keyboard or scrolling away, and a full screen is    presented at a time — roughly 8×2 on a wide display, fewer on a tablet, a    carousel on a phone.</p>
+<p>   judged without leaving the keyboard or scrolling away. A wide display offers    several densities, from nine larger cards to thirty-six compact cards;    tablet layouts adapt automatically, and a phone presents one card at a time.</p>
 <ol><li><strong>Seeing an item does not require remembering it.</strong> Each item shows enough —</li></ol>
 <p>   a page snapshot, its title, its tags — to be judged on sight. This is what    makes 3 possible; a list of URLs is not triageable at speed.</p>
 <ol><li><strong>Related items can be judged together.</strong> Items can be gathered into clusters</li></ol>
-<p>   automatically, or by the user selecting on tags — a boolean expression, or a    pattern match. Judging fifty near-identical links as one group is the    difference between an afternoon and a month.</p>
+<p>   automatically, or by the user selecting on tags — a boolean expression, or a    pattern match. Useful expressions can be saved by name or reopened from the    signed-in user&#39;s recent history. Judging fifty near-identical links as one    group is the difference between an afternoon and a month.</p>
 <ol><li><strong>Tagging is part of triage, not a separate chore.</strong> Tags can be added during</li></ol>
 <p>   a pass, at the same speed as the verdicts, and items can be tagged by topic,    by site, or by kind of page.</p>
 <ol><li><strong>The results are the user&#39;s, and portable.</strong> Verdicts and tags persist in a</li></ol>
 <p>   store suited to wherever this runs, and can be backed up and exported in a    form another system could read. Nothing is trapped. Concretely, an export is    JSON carrying items with their tags and verdicts, a subset can be chosen by    tag rather than all-or-nothing, and an export file can be <strong>imported back</strong>    into a collection — so the round trip, not just the download, is what makes    the data portable. It carries no page captures; those are a rebuildable    convenience, and the judgement is what must not be trapped.</p>
 <ol><li><strong>Items live in a collection, and a collection has an owner.</strong> More than one</li></ol>
-<p>   person may use this, so the work is always happening <em>in</em> a named collection    that can be chosen, imported into, and exported from. A collection is private    to its owner, and a tester who needs something to look at receives their own    copy of a demo collection rather than sharing anyone&#39;s. Everything above is    scoped by this: a verdict, a tag, and a backlog count all belong to one    collection.</p>
+<p>   person may use this, so the work is always happening <em>in</em> a named collection    that can be chosen, imported into, and exported from. A person may keep    several private collections. A tester who needs something to look at receives    their own copy of a demo template rather than sharing anyone&#39;s collection.    Everything above is scoped by this: a verdict, a tag, and a backlog count all    belong to one collection.</p>
 <h3>Explicitly not the first version</h3>
 <p>Three capabilities are real, expected, and deliberately later. The wish marks the first two as extensions:</p>
 <ul><li><strong>Harvesting open tabs from other devices</strong> — Safari on iPhone, Chrome on</li></ul>
@@ -78,15 +78,15 @@
 <p>Drafting these surfaced five questions the wish does not settle. All five are now answered, in <code>decisions.md</code> — the reasoning lives there, and this list is only a map to it. Nothing here is still waiting on the user.</p>
 <ol><li><strong>How big is the real pile?</strong> 5,000–10,000 items. Big enough that clustering</li></ol>
 <p>   (objective 5) is the mechanism rather than a convenience, and that anything    slow and per-item is an afternoon of work, not a detail.</p>
-<ol><li><strong>Where does this run?</strong> A web app, most likely hosted on an OpenAI site with</li></ol>
-<p>   its database. Chosen for objectives 3 and 4 — the screen-filling grid across    three form factors — at the known cost of being the weakest option for the    two extensions above.</p>
-<ol><li><strong>Where do page snapshots come from?</strong> Captured at ingestion: Open Graph</li></ol>
-<p>   metadata for the majority, a paid screenshot API for the items where that    produces nothing or a shared site banner. Anonymous, downscaled, cached by    URL, never refreshed on view.</p>
+<ol><li><strong>Where does this run?</strong> A web app on ChatGPT Sites with D1 and optional R2.</li></ol>
+<p>   Chosen for objectives 3 and 4 — the screen-filling grid across three form    factors — at the known cost of being the weakest option for the two    extensions above. Host capability was proved on 2026-08-18 and the intended    Sites costs and limits were approved on 2026-08-19.</p>
+<ol><li><strong>Where do page snapshots come from?</strong> Captured at ingestion: anonymous Open</li></ol>
+<p>   Graph metadata, downscaled and cached by URL, never refreshed on view. A paid    screenshot API remains the designed fallback for gaps, but no vendor is    approved and that pass is switched off.</p>
 <ol><li><strong>How are collections identified and protected?</strong> Signed-in accounts, with</li></ol>
 <p>   collections owned and private by default.</p>
 <ol><li><strong>What makes a collection non-personal?</strong> Nothing does, for now — demo</li></ol>
 <p>   collections are seeded per-user copies, and general sharing is held back as    above.</p>
-<p>What remains is a constraint rather than a question, and it belongs to the spec: whether the OpenAI surface chosen can actually supply the identity objective 8 assumes, and let the data back out for objective 7. Both were settled <em>on the presumption</em> of that host, so both follow it if it changes.</p>
+<p>The host now supplies the identity objective 8 assumes, and the app&#39;s own <code>bookmark-sorter/v1</code> export supplies objective 7. Collection ownership uses the opaque signed-in user id; email is consulted separately for the Admin role. A future host change must preserve both boundaries rather than treating the old presumption as still open.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
