@@ -1,0 +1,17 @@
+{
+  "title": "Educational Global Maps",
+  "summary": "A knowledge base and extensible platform for educational global map data and visualizations.",
+  "stage": "wish",
+  "value": "medium",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "draft-objectives",
+      "title": "Draft objectives.md - what \"done\" would mean",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": true
+    }
+  ]
+}
