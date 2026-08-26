@@ -114,13 +114,6 @@ if [ -d "$ROOT_DIR/demos" ]; then
     done < <(find "$ROOT_DIR/demos/${demo}" -type f -print0)
     pass "BUILD-13 demo files copied without modification for ${demo}"
 
-    encoded_demo="${demo//%/%25}"
-    encoded_demo="${encoded_demo// /%20}"
-    if ! grep -q "./${encoded_demo}/" "$OUTPUT_DIR/demos/index.html"; then
-      fail "BUILD-13 demos index missing link for ${demo}"
-    fi
-    pass "BUILD-13 demos index links ${demo}"
-
     if [ -f "$ROOT_DIR/demos/${demo}/demo.json" ]; then
       if ! node "$DEMO_METADATA_SCRIPT" validate "$ROOT_DIR/demos/${demo}" "$demo" > /dev/null; then
         fail "BUILD-13 invalid demo metadata for ${demo}"
@@ -142,8 +135,17 @@ if [ -d "$ROOT_DIR/demos" ]; then
         fail "BUILD-13 demos index is missing additional links for ${demo}"
       fi
       pass "BUILD-13 demos index uses metadata for ${demo}"
+    else
+      encoded_demo="${demo//%/%25}"
+      encoded_demo="${encoded_demo// /%20}"
+      if ! grep -q "./${encoded_demo}/" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index missing link for ${demo}"
+      fi
+      pass "BUILD-13 demos index links ${demo}"
     fi
 
+    encoded_demo="${demo//%/%25}"
+    encoded_demo="${encoded_demo// /%20}"
     if [ -f "$ROOT_DIR/demos/${demo}/prompts.html" ]; then
       if ! grep -q "href=\"./${encoded_demo}/prompts.html\">Prompt history</a> (<a href=\"./${encoded_demo}/prompts.txt\">text</a>)" "$OUTPUT_DIR/demos/index.html"; then
         fail "BUILD-13 demos index missing formatted and text prompt history links for ${demo}"

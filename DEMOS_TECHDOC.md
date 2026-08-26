@@ -35,11 +35,19 @@ folder elsewhere in the repository. Its helper copies the source tree and adds
 ```
 
 `root` may identify a nested or differently named HTML file when the copied
-folder has no top-level `index.html`. Local link targets are relative to the
-demo directory; external targets use HTTP or HTTPS. The build validates the
-manifest and fails when the root or a local linked file is missing. When a link
-label occurs in the description, the build links that phrase in place; labels
-that do not occur there are listed beneath the description.
+folder has no top-level `index.html`, or an HTTP or HTTPS URL when the demo is
+hosted outside SitePrep. Local link targets are relative to the demo directory;
+external targets use HTTP or HTTPS. The build validates the manifest and fails
+when a local root or linked file is missing. When a link label occurs in the
+description, the build links that phrase in place; labels that do not occur
+there are listed beneath the description.
+
+An initiative-backed demo may declare its initiative slug with `initiative`.
+The demos index orders those entries by the initiative's most recent Git
+activity; demos without an initiative use the demo directory's own most recent
+activity. A manifest may set `featured` to `true` to place an entry before the
+reverse-chronological list. This keeps the Guide to Initiatives first while the
+remaining entries respond automatically to later initiative or demo work.
 
 ## Demos index
 
@@ -49,6 +57,8 @@ that do not occur there are listed beneath the description.
 - a display title from `demo.json` when present, otherwise from the demo's `index.html` `<title>`, falling back to a titleized directory name
 - a description from `demo.json` when present, otherwise from the first non-heading, non-empty line of the demo's `README.md`, falling back to a generic demo description
 - optional local or web links from `demo.json` when metadata is present
+- featured entries first, then reverse-chronological activity (using the
+  associated initiative when `initiative` is present)
 - curated descriptions for special demos that need stable tutorial/version/code-folder links (`world_migration_atlas` and `SBDC Night Sky`)
 - an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file; when a formatted `prompts.html` is also present, the main link opens that page and a parenthetical "text" link opens the original text file
 
