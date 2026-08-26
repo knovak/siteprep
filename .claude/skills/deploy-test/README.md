@@ -1,7 +1,7 @@
-# Deploy test site
+# Deploy test
 
-Refresh an initiative's test ChatGPT Site so you can look at the work on the
-web. Overwriting it is cheap and expected — that's what it's for.
+Refresh an initiative's test deployment so you can look at the work on the web.
+Overwriting it is cheap and expected — that's what it's for.
 
 ```text
 Deploy the test site for tide-here.
@@ -11,30 +11,29 @@ Deploy the test site for tide-here.
 Update the preview so I can look at it on my phone.
 ```
 
-The skill reads the initiative's `sites.source` from `initiative.json`, hands
-that directory to [`deploy-to-chatgpt-sites`](../deploy-to-chatgpt-sites/), and
-records the result back into `initiative.json`. It reports both URLs — test and
-production — every time, so you never have to go looking for the other one.
+The skill reads the initiative's `deployments` from `initiative.json`, asks
+`initiatives.mjs` what a test deployment would do, and uses the engine that plan
+names. It reports both URLs — test and production — every time, so you never
+have to go looking for the other one.
+
+## What it does per kind
+
+| Kind | Test deployment |
+| --- | --- |
+| `chatgpt-site`, `build: static` | Deploys the folder through [`deploy-to-chatgpt-sites`](../deploy-to-chatgpt-sites/) to a private `<slug>-test` Site |
+| `chatgpt-site`, `build: sites-app` | Builds and deploys the project through the Sites hosting workflow |
+| `demo` | Nothing to deploy — a demo's test environment is its branch preview, which appears once the branch is pushed |
 
 ## What it will not do
 
-It will not deploy to production. That is [`release-site`](../release-site/),
-and it only runs when you ask for it by name.
+It will not write production. That is
+[`release-initiative`](../release-initiative/), and it only runs when you ask
+for it by name. In particular it will not run `deploy-demo`, because copying
+into `demos/` *is* the production release.
 
-## First time for an initiative
+## Initiatives with no deployment
 
-An initiative without a `sites` block has no ChatGPT Site. The skill offers to
-add one:
-
-```json
-"sites": {
-  "source": "initiatives/tide-here/work/site"
-}
-```
-
-`source` must be a directory that already has a root `index.html`. If the
-initiative builds its site, build into a static directory and point `source`
-there — nothing in the deployment path runs your build.
-
-The test Site is created private, with the slug `<initiative>-test`, so its URL
-says which environment you are looking at.
+Most initiatives are not deployed, and that is the normal state. An initiative
+can develop for months and pick a deployment kind at the end — or change kind
+late. The skill offers to add one when there is nothing to deploy, and adding
+or changing it means editing a single `deployments` entry.

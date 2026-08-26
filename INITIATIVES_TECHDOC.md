@@ -12,7 +12,7 @@ Each immediate subdirectory of `initiatives/` is one initiative. Only
 initiatives/
   sweep.json               # optional sweep configuration
   <slug>/
-    initiative.json        # required - stage, value, outputs, sites, todo
+    initiative.json        # required - stage, value, outputs, deployments, todo
     wish.md                # the goal in the user's own words
     background.md          # optional research done before objectives
     objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
@@ -44,9 +44,9 @@ dependency. That is fine for flat string fields and does not survive nested
 | `add <slug> <item>` | Author a new todo item |
 | `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log; refuses to leave a live initiative with nothing to do |
 | `check-scope <slug>` | Fail if changed files reach outside the write scope |
-| `sites <slug>` | Both ChatGPT Site URLs, test and production |
-| `sites <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
-| `sites <slug> record --env test\|prod` | Record a completed deployment |
+| `deployments <slug>` | Every deployment, both environment URLs each |
+| `deployments <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
+| `deployments <slug> record --env test\|prod` | Record a completed deployment |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -110,12 +110,17 @@ unrelated deck from publishing.
 - an `outputs[].path` that does not exist, or contains `..`
 - two initiatives declaring the same `outputs[].path`
 - a file under a declared output referencing a path under `initiatives/`
-- a `sites` block with no `source`, or a `source` that does not exist, contains
-  `..`, or has no `index.html`
-- a `sites` environment missing its `slug` or `url`, or with a non-https `url`,
-  an unknown access level, or an unrecognised key
-- `sites.test` and `sites.prod` resolving to the same Site
-- two initiatives declaring the same Site slug or URL
+- a leftover `sites` block, which `deployments` replaced
+- a deployment with an unknown `kind`, an unrecognised key for its kind, or no
+  `source`; a `source` that does not exist or contains `..`; a source missing
+  what its kind needs (`index.html`, `package.json`, or the named `root_html`)
+- a demo with no `destination`, or a `destination` that is a path
+- a recorded environment the kind derives rather than deploys
+- a Site environment missing its `slug` or `url`, or with a non-https `url`, an
+  unknown access level, or an unrecognised key
+- a deployment's `test` and `prod` resolving to the same target
+- two initiatives declaring the same deployment target, or one initiative
+  declaring two deployments of the same kind
 - a blocked item with no `blocked_by`, or an unknown blocker prefix
 - `blocked_by: todo:<id>` pointing at an item that does not exist
 - `sweep.json` unparseable, or `max_items_per_initiative` > `items_per_run`
@@ -134,91 +139,139 @@ what makes parallel sweep pull requests safe. **`todo:` references must
 resolve**, so a forgotten unblock breaks the build instead of stranding an item
 in `blocked` forever.
 
-## ChatGPT Sites: test and production
+## Deployments
 
-Not every initiative publishes a website. Those that do get **two** Sites built
-from one source directory, declared in `initiative.json`:
+Most initiatives are not deployed at all, and an initiative may develop for
+months before it is - so `deployments` is absent by default, added when there is
+something to publish, and may change kind late without anything else in the
+initiative moving. It is a list because nothing stops an initiative from having
+both a demo and a Site.
 
 ```json
-"sites": {
-  "source": "initiatives/tide-here/work/site",
-  "test": {
-    "slug": "tide-here-test",
-    "url": "https://tide-here-test.ken-novak.chatgpt.site/",
-    "access": "private",
-    "deployed_at": "2026-08-26T14:03:11Z",
-    "version": 7,
-    "commit": "5e3f1c0..."
+"deployments": [
+  {
+    "kind": "chatgpt-site",
+    "build": "static",
+    "source": "initiatives/tide-here/work/site",
+    "test": {
+      "slug": "tide-here-test",
+      "url": "https://tide-here-test.ken-novak.chatgpt.site/",
+      "access": "private",
+      "deployed_at": "2026-08-26T14:03:11Z",
+      "version": 7,
+      "commit": "5e3f1c0..."
+    },
+    "prod": { "slug": "tide-here", "url": "…", "access": "public", "version": 3, "commit": "17f2136..." }
   },
-  "prod": {
-    "slug": "tide-here",
-    "url": "https://tide-here.ken-novak.chatgpt.site/",
-    "access": "public",
-    "deployed_at": "2026-08-20T09:12:44Z",
-    "version": 3,
-    "commit": "17f2136..."
+  {
+    "kind": "demo",
+    "source": "initiatives/repo-guide/work/guide/out",
+    "destination": "Guide to Initiatives",
+    "root_html": "description.html",
+    "prod": { "deployed_at": "2026-08-26T00:25:25Z", "commit": "3dd55f6..." }
   }
-}
+]
 ```
 
-Only `source` is required, and it must be a directory that already contains a
-root `index.html` - nothing in the deployment path runs a build. Both
-environments are optional: an initiative may have neither, only a test Site, or
-both. `deployed_at`, `version` and `commit` are written by the deploy skills,
-not by hand.
+Only `kind` and `source` are required. `deployed_at`, `version` and `commit` are
+written by the deploy skills, not by hand.
 
-**The environments differ in who may write them.** `test` is overwritten as
-often as the work needs, by whichever agent is doing the work. `prod` moves only
-when a person runs the release skill. That asymmetry is the whole feature, and
-three things protect it:
+### Kinds
 
-- `sites.test` and `sites.prod` may never resolve to the same slug or URL. That
-  is a validation **error**, and `sites record` refuses it as well - so it holds
-  whether the pair was written by hand or by a deployment.
-- **`sites <slug> plan --env prod` exits non-zero** when the source directory has
-  uncommitted changes, or has never been committed. Production is released from
-  committed files, so the `commit` recorded against a release is a reference you
-  can go back to. Making this an exit code rather than an instruction is the
-  point: a prompt can be talked out of refusing.
-- The naming convention - `<slug>-test` and `<slug>` - means the URL itself says
-  which environment you are looking at. The skills derive those names for new
-  Sites; the validator only warns, because renaming a live Site is not free.
+A **kind** decides which environments exist, which of them are recorded rather
+than derived, what the source directory has to contain, and which engine
+deploys it. Adding a deployment scheme means adding a `KINDS` entry and a skill
+- not touching the validator, the plan, the record, or the page.
 
-The dirty-source check is scoped to `sites.source`. Uncommitted work elsewhere
-in the repository is none of a release's business.
+| Kind | `build` | Source must have | Engine | Production is live |
+| --- | --- | --- | --- | --- |
+| `chatgpt-site` | `static` | `index.html` | `deploy-to-chatgpt-sites` | immediately |
+| `chatgpt-site` | `sites-app` | `package.json` | the platform's `sites-hosting` workflow | immediately |
+| `demo` | — | `index.html`, or the named `root_html` | `deploy-demo` | when the branch merges to `main` |
+
+`sites-app` exists because Bookmark Sorter is a full Sites project - it brings
+its own `.openai/hosting.json`, D1 and R2 bindings, and migrations, and builds
+itself. The static-folder engine cannot deploy that, and pretending otherwise
+was the reason it had no home under the first version of this schema.
+
+A production Site is a **separate Site** from the test one: its own database,
+its own storage, starting empty. Test data does not travel with a release.
+
+### Two environments, everywhere
+
+`test` is overwritten as often as the work needs it, by whichever agent is doing
+the work. `prod` moves only when a person runs the release skill. That asymmetry
+is the whole feature, and three things protect it:
+
+- `test` and `prod` may never resolve to the same target. That is a validation
+  **error**, and `record` refuses it as well - so it holds whether the pair was
+  written by hand or by a deployment.
+- **`deployments <slug> plan --env prod` exits non-zero** when the source
+  directory has uncommitted changes, or has never been committed. Production is
+  released from committed files, so the `commit` recorded against a release is a
+  reference you can go back to. Making this an exit code rather than an
+  instruction is the point: a prompt can be talked out of refusing.
+- The naming convention - `<slug>-test` and `<slug>` - means a Site URL itself
+  says which environment you are looking at. The skills derive those names for
+  new Sites; the validator only warns, because renaming a live Site is not free.
+
+The dirty-source check is scoped to the deployment's `source`. Uncommitted work
+elsewhere in the repository is none of a release's business.
+
+**A kind need not be able to deploy both environments.** A demo has no test copy
+to write: its test environment is the branch preview that gh-pages.yml publishes
+at `branch/<branch-with-slashes-as-dashes>/`, which exists because the branch was
+pushed. So a demo's URLs are *derived* from its `destination` rather than
+recorded - production is `demos/<destination>/`, test is the same path under the
+branch preview, and on `main` they are the same URL because main publishes
+straight to production. Recording a `test` entry on a demo is an error, and
+`record --env test` refuses it.
+
+Deriving those URLs rather than storing them means a demo's link can never drift
+out of step with what is actually under `demos/`. The Pages base comes from the
+`origin` remote, so a fork or a rename needs no edit here.
 
 ### The subcommands
 
 ```text
-sites <slug>                        both URLs, test and production
-sites <slug> plan --env test|prod   what a deployment would do; exits 1 if blocked
-sites <slug> record --env test|prod --site-slug <s> --url <u>
-                                    [--access private|public] [--version n] [--commit <sha>]
+deployments SLUG                        every deployment, both environment URLs each
+deployments SLUG plan --env test|prod [--kind KIND]
+                                        what a deployment would do; exits 1 if blocked
+deployments SLUG record --env test|prod [--kind KIND]
+    chatgpt-site: --site-slug S --url U [--access private|public] [--version N]
+    demo:         (no target arguments - the URL comes from the destination)
+    both:         [--commit SHA]
 ```
 
-`plan` returns the source directory, `new` or `replacement`, the target slug and
-URL, the file count, the source commit, and **both** environment URLs. `record`
-stamps `deployed_at` and fills in the commit from git when one is not supplied.
+`--kind` is needed only when an initiative has more than one deployment;
+guessing which one a release meant is exactly the mistake this arrangement
+exists to prevent. `plan` returns the kind, the engine to use, `new` or
+`replacement`, the target, the file count, the source commit, whether the
+environment is `deployable` at all, and **both** environment URLs.
 
-Every one of them reports both URLs whether or not both Sites exist, so a
-deployment receipt never leaves you hunting for the other environment. The
-overview page shows the same pair as a Sites card, with a "not released yet" row
-rather than a missing one.
+Every one of them reports both URLs whether or not both environments exist, so a
+deployment receipt never leaves you hunting for the other one. The overview page
+shows the same pairs as a Deployments card, with a "not released yet" row rather
+than a missing one.
 
-### The three skills
+The superseded `sites` block is a validation **error**, not an ignored key: a
+record left half-migrated must not quietly stop being deployed.
 
-`.claude/skills/deploy-to-chatgpt-sites` is the engine and has no opinion about
-environments - it deploys the Site it is told to. Two skills sit on top of it
-and decide which Site that is:
+### The skills
+
+Two engines, and two skills above them that decide which target is written:
 
 | Skill | Writes | Run by |
 | --- | --- | --- |
-| `deploy-test-site` | the test Site | any agent, as often as the work needs |
-| `release-site` | the production Site | a person, explicitly, and nothing else |
+| `deploy-test` | the test environment of any kind | any agent, as often as the work needs |
+| `release-initiative` | production, whatever the kind | a person, explicitly, and nothing else |
 
-Splitting them is what makes the release deliberate. An agent refreshing a
-preview reaches for the skill that cannot reach production, and "release this"
-is a thing the user has to say.
+`deploy-to-chatgpt-sites` and `deploy-demo` are engines: each deploys exactly the
+target it is told to and has no opinion about environments. Splitting the
+decision from the mechanism is what makes a release deliberate - an agent
+refreshing a preview reaches for the skill that cannot reach production, and
+"release this" is a thing the user has to say. It is also why `deploy-demo` is
+never called by `deploy-test`: copying into `demos/` *is* the production release.
 
 ## Last activity
 

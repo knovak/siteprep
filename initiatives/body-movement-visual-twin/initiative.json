@@ -4,14 +4,18 @@
   "stage": "building",
   "value": "medium",
   "outputs": [],
-  "sites": {
-    "source": "initiatives/body-movement-visual-twin/work/phase-6/site",
-    "test": {
-      "slug": "body-movement-visual-twin-validation",
-      "url": "https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/",
-      "access": "private"
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "static",
+      "source": "initiatives/body-movement-visual-twin/work/phase-6/site",
+      "test": {
+        "slug": "body-movement-visual-twin-validation",
+        "url": "https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/",
+        "access": "private"
+      }
     }
-  },
+  ],
   "todo": [
     {
       "id": "phase-6-practitioner-review",

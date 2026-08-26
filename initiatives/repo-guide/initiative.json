@@ -4,5 +4,17 @@
   "stage": "dormant",
   "value": "high",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "demo",
+      "source": "initiatives/repo-guide/work/guide/out",
+      "destination": "Guide to Initiatives",
+      "root_html": "description.html",
+      "prod": {
+        "deployed_at": "2026-08-26T00:25:25Z",
+        "commit": "3dd55f64e5ab6eb835220ba72d16b796f477ad83"
+      }
+    }
+  ],
   "todo": []
 }

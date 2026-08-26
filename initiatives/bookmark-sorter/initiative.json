@@ -3,11 +3,17 @@
   "summary": "Fast visual triage for a large bookmark pile, with tags, clusters and snapshot views.",
   "stage": "refining",
   "value": "medium",
-  "outputs": [
+  "outputs": [],
+  "deployments": [
     {
-      "kind": "external",
-      "url": "https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/",
-      "status": "live"
+      "kind": "chatgpt-site",
+      "build": "sites-app",
+      "source": "initiatives/bookmark-sorter/work",
+      "test": {
+        "slug": "bookmark-sorter-end-user-test",
+        "url": "https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/",
+        "access": "private"
+      }
     }
   ],
   "todo": [
