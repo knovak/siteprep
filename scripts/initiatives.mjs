@@ -134,6 +134,7 @@ const DOCUMENTS = [
   ['spec.md', 'Specification'],
   ['plan.md', 'Implementation plan'],
   ['test-plan.md', 'Test plan'],
+  ['releases.md', 'Releases'],
   ['log.md', 'Log'],
   ['notes.md', 'Notes']
 ];
@@ -884,6 +885,7 @@ export function deploymentPlan(slug, env, { kind } = {}) {
     uncommitted: status.dirty,
     urls,
     deployed: { test: isDeployed(entry, 'test'), prod: isDeployed(entry, 'prod') },
+    release: releaseState(entry),
     blockers,
     ready: blockers.length === 0
   };
@@ -991,6 +993,10 @@ export function recordDeployment(slug, env, {
   }
 
   if (sourceCommit) written.commit = sourceCommit;
+
+  // Read the state *before* the record moves, so "since the previous release"
+  // means what it says.
+  const state = releaseState(entry);
   entry[env] = written;
 
   writeFileSync(
@@ -998,9 +1004,194 @@ export function recordDeployment(slug, env, {
     `${JSON.stringify(data, null, 2)}\n`
   );
 
+  const history = appendReleaseHistory(record.dir, slug, entry, env, written, state);
+
   return {
-    slug, kind: entry.kind, environment: env, entry: written, urls: deploymentUrls(entry)
+    slug,
+    kind: entry.kind,
+    environment: env,
+    entry: written,
+    urls: deploymentUrls(entry),
+    history,
+    changes: env === 'prod' ? state.changes : []
   };
+}
+
+// -------------------------------------------------- release state and history
+
+/**
+ * How far production has fallen behind, from git.
+ *
+ * Best-effort by design. The commits recorded against the two environments are
+ * the only inputs, so a deployment made before this existed, a rewritten
+ * history, or a source that moved under a different path all degrade to
+ * "unknown" rather than to a wrong answer. Nothing here blocks a release.
+ */
+export function releaseState(entry) {
+  const state = {
+    released: false,
+    known: false,
+    unreleased: null,
+    test_ahead: false,
+    changes: [],
+    summary: 'not released yet'
+  };
+  if (!entry || typeof entry !== 'object') return state;
+
+  const prod = environmentEntry(entry, 'prod');
+  const test = environmentEntry(entry, 'test');
+  state.released = Boolean(prod);
+  if (!prod) {
+    state.summary = test ? 'on test, never released' : 'not released yet';
+    return state;
+  }
+
+  // What the next release would carry: the source as it stands now, against
+  // what production last got. The test environment's own commit only tells us
+  // whether test is looking at newer code than production.
+  const head = entry.source ? sourceStatus(entry.source).commit : null;
+  if (!prod.commit || !head) {
+    state.summary = 'released, but the released commit is unknown';
+    return state;
+  }
+
+  state.known = true;
+  if (prod.commit === head) {
+    state.summary = 'production is current';
+    state.unreleased = 0;
+  } else {
+    state.changes = commitSubjects(prod.commit, head, entry.source);
+    state.unreleased = state.changes.length;
+    state.summary = state.unreleased
+      ? `${state.unreleased} commit(s) unreleased`
+      : 'production is behind by an unknown amount';
+  }
+
+  if (test?.commit && test.commit !== prod.commit) {
+    // Only "ahead" if test really is newer, not merely different.
+    state.test_ahead = isAncestor(prod.commit, test.commit);
+  }
+  return state;
+}
+
+/** Commit subjects touching `path` in (from, to], newest first. Empty on any doubt. */
+function commitSubjects(from, to, path) {
+  try {
+    const out = git(['log', '--format=%s', `${from}..${to}`, '--', path]);
+    return out ? out.split('\n').filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+function isAncestor(older, newer) {
+  try {
+    execFileSync('git', ['merge-base', '--is-ancestor', older, newer], {
+      cwd: ROOT, stdio: 'ignore'
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Append one entry to the initiative's release history.
+ *
+ * A release is worth a durable record; the hundreds of test deploys that
+ * preceded it are not. So this is written on a production release, and notes
+ * the test environment's state at that moment as the one test observation
+ * worth keeping.
+ *
+ * Best-effort throughout: a git call that fails costs a line of the entry, not
+ * the release. This never throws.
+ */
+function appendReleaseHistory(dir, slug, entry, env, written, state) {
+  if (env !== 'prod') return null;
+
+  const path = join(dir, 'releases.md');
+  const label = KINDS[entry.kind]?.label || entry.kind;
+  const url = deploymentUrls(entry).prod;
+  const lines = [];
+
+  const heading = [
+    `## ${String(written.deployed_at).slice(0, 10)}`,
+    label,
+    written.version !== undefined ? `version ${written.version}` : null
+  ].filter(Boolean).join(' — ');
+  lines.push(heading, '');
+
+  if (url) lines.push(`<${url}>`, '');
+
+  const facts = [];
+  if (written.commit) facts.push(`Released \`${written.commit.slice(0, 7)}\``);
+  if (state.known && state.unreleased) {
+    facts.push(`${state.unreleased} commit(s) since the previous release`);
+  }
+  const test = environmentEntry(entry, 'test');
+  if (test?.deployed_at) {
+    facts.push(`test last deployed ${String(test.deployed_at).slice(0, 10)}`
+      + (test.commit ? ` at \`${test.commit.slice(0, 7)}\`` : ''));
+  }
+  if (facts.length) lines.push(`${facts.join(' · ')}.`, '');
+
+  if (state.changes.length) {
+    // Naming the source makes the scope self-evident: these are the commits
+    // that touched *this* directory, not everything that landed in the repo.
+    lines.push(`Changes since the previous release, in \`${entry.source}\`:`, '');
+    // Enough to see what shipped, not a changelog nobody reads.
+    for (const change of state.changes.slice(0, 20)) lines.push(`- ${change}`);
+    if (state.changes.length > 20) {
+      lines.push(`- …and ${state.changes.length - 20} more`);
+    }
+    lines.push('');
+  }
+
+  appendReleaseLogLine(dir, label, written, url, state);
+
+  try {
+    // Newest first, so the current release is the first thing on the page.
+    const header = '# Releases\n\nWritten by `initiatives.mjs deployments … record --env prod`.\nNewest first.\n';
+    const existing = existsSync(path) ? readFileSync(path, 'utf8') : null;
+    const body = existing
+      ? existing.slice(existing.indexOf('\n## ') === -1 ? existing.length : existing.indexOf('\n## ') + 1)
+      : '';
+    writeFileSync(path, `${header}\n${lines.join('\n')}\n${body}`.replace(/\n{3,}$/, '\n\n'));
+    return 'releases.md and log.md';
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * One line in the initiative's narrative log, alongside its other notable
+ * moments. `releases.md` is the detailed history; the log is where someone
+ * reading the initiative's story finds out a release happened at all.
+ *
+ * Best-effort like the rest: a failed write costs the breadcrumb, not the
+ * release.
+ */
+function appendReleaseLogLine(dir, label, written, url, state) {
+  const path = join(dir, 'log.md');
+  const detail = [
+    label,
+    written.version !== undefined ? `version ${written.version}` : null,
+    written.commit ? `\`${written.commit.slice(0, 7)}\`` : null
+  ].filter(Boolean).join(', ');
+
+  const body = [
+    `Released to production — ${detail}.`,
+    state.known && state.unreleased
+      ? ` ${state.unreleased} commit(s) since the previous release.`
+      : '',
+    url ? ` <${url}>` : '',
+    ' See releases.md.'
+  ].join('');
+
+  try {
+    const existing = existsSync(path) ? readFileSync(path, 'utf8').trimEnd() : '# Log';
+    writeFileSync(path, `${existing}\n\n## ${String(written.deployed_at).slice(0, 10)} — Release\n\n${body}\n`);
+  } catch { /* the breadcrumb is not worth failing a release over */ }
 }
 
 // --------------------------------------------------------------- reporting
@@ -1031,6 +1222,8 @@ export function formatDeployments(slug, data) {
         : (env === 'test' ? 'not deployed yet' : 'not released yet');
       lines.push(`    ${env.padEnd(5)} ${where}`);
     }
+    const state = releaseState(entry);
+    lines.push(`    status ${state.summary}${state.test_ahead ? ' (test is ahead)' : ''}`);
   }
   return lines.join('\n');
 }
@@ -1071,6 +1264,7 @@ function buildDigest() {
     waitingOnOthers: [],
     stale: [],
     idle: [],
+    unreleased: [],
     initiatives: [],
     errors,
     warnings
@@ -1129,6 +1323,21 @@ function buildDigest() {
       digest.idle.push({ slug: record.slug, stage: data.stage });
     }
 
+    // Deployment currency, derived from the recorded commits rather than asked
+    // of anyone. Reported, never acted on: a release is always a person's call.
+    for (const entry of deploymentList(data)) {
+      const state = releaseState(entry);
+      if (state.released && state.known && state.unreleased) {
+        digest.unreleased.push({
+          slug: record.slug,
+          kind: entry.kind,
+          commits: state.unreleased,
+          testAhead: state.test_ahead,
+          latest: state.changes[0] || null
+        });
+      }
+    }
+
     digest.initiatives.push({
       slug: record.slug,
       title: data.title || record.slug,
@@ -1179,6 +1388,14 @@ function formatDigest(digest) {
 
   section('Cannot be read', digest.unreadable.map(
     (u) => `- **${u.slug}** — ${u.reason}`
+  ));
+
+  // Informational: releasing is a person's decision, so this is a list to read
+  // rather than work to pick up.
+  section('Unreleased work', digest.unreleased.map(
+    (u) => `- **${u.slug}** (${u.kind}) — ${u.commits} commit(s) since the last release`
+      + (u.testAhead ? ', already on test' : '')
+      + (u.latest ? `\n  - latest: ${u.latest}` : '')
   ));
 
   section('Invalid', digest.errors.map((e) => `- ${e}`));
@@ -1977,7 +2194,13 @@ function renderPage(slug) {
             + `${detail ? ` <em>(${escapeHtml(detail)})</em>` : ''}</li>`;
         }).join('\n');
         const heading = escapeHtml(DEPLOYMENT_LABELS[entry.kind] || entry.kind || 'Deployment');
-        return `      <p><strong>${heading}</strong></p>\n      <ul>\n${rows}\n      </ul>`;
+        // Whether production is the latest, derived from the two recorded
+        // commits - so the page cannot claim a currency it has not checked.
+        const state = releaseState(entry);
+        const status = escapeHtml(state.summary
+          + (state.test_ahead ? ', and test is ahead of production' : ''));
+        return `      <p><strong>${heading}</strong></p>\n      <ul>\n${rows}\n      </ul>\n`
+          + `      <p class="deployment-status">${status}</p>`;
       }).join('\n')));
   }
 
@@ -2158,6 +2381,8 @@ if (RUN_AS_CLI) switch (command) {
           ...(plan.note ? [`  note:   ${plan.note}`] : []),
           `  test:   ${plan.urls.test || 'not deployed yet'}`,
           `  prod:   ${plan.urls.prod || 'not released yet'}`,
+          `  status: ${plan.release.summary}${plan.release.test_ahead ? ' (test is ahead of production)' : ''}`,
+          ...plan.release.changes.slice(0, 10).map((change) => `    - ${change}`),
           ...plan.blockers.map((blocker) => `  BLOCKED: ${blocker}`)
         ].join('\n'));
         // The release gate is code, not a prompt: a caller that ignores this
@@ -2179,7 +2404,8 @@ if (RUN_AS_CLI) switch (command) {
         console.log(json ? JSON.stringify(result, null, 2) : [
           `recorded ${result.slug} ${result.kind} ${result.environment}`,
           `  test: ${result.urls.test || 'not deployed yet'}`,
-          `  prod: ${result.urls.prod || 'not released yet'}`
+          `  prod: ${result.urls.prod || 'not released yet'}`,
+          ...(result.history ? [`  history: ${result.history} updated`] : [])
         ].join('\n'));
         break;
       }

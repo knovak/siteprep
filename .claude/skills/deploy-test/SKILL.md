@@ -75,14 +75,21 @@ node scripts/initiatives.mjs deployments <slug> record --env test \
 A demo has nothing to record, and `record` refuses it — that refusal is correct,
 not an error to work around.
 
+A test deploy writes no release history. Only a production release does, which
+is why `releases.md` stays a list of releases rather than a log of every preview
+you pushed while working.
+
 Then report, in this order:
 
 - what was deployed: kind, source directory, file count, `new` or `replacement`;
 - **Test:** the URL, plus access, version and deployment time where they exist;
 - **Production:** the production URL, or "not released yet";
-- when production exists and the plan's `source_commit` differs from the
-  recorded production `commit`, one line saying test is ahead of production and
-  that `$release-initiative` is what moves it.
+- the plan's `release.summary` — "production is current", "N commit(s)
+  unreleased", "on test, never released". When there is unreleased work, add one
+  line saying `$release-initiative` is what moves it.
+
+Do not compare commits yourself; the plan has already done it, and it degrades
+to "unknown" rather than to a wrong answer when git cannot tell.
 
 Always report both URLs, even when only one environment exists. Whoever reads
 the receipt should never have to go looking for the other one.

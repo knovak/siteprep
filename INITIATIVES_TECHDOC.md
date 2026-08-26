@@ -16,6 +16,7 @@ initiatives/
     wish.md                # the goal in the user's own words
     background.md          # optional research done before objectives
     objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
+    releases.md            # written by a production release, never by hand
     overview.md            # optional narrative, appended to the overview page
 ```
 
@@ -257,6 +258,59 @@ than a missing one.
 The superseded `sites` block is a validation **error**, not an ignored key: a
 record left half-migrated must not quietly stop being deployed.
 
+### Release history
+
+Two questions, answered from git rather than from anybody's memory.
+
+**Is production the latest?** `releaseState()` compares the commit recorded
+against `prod` with the source directory's current commit, and reports one of:
+
+| Summary | Means |
+| --- | --- |
+| `not released yet` | no production environment |
+| `on test, never released` | test exists, production does not |
+| `production is current` | the released commit is the source's latest |
+| `N commit(s) unreleased` | that many commits have touched the source since |
+| `released, but the released commit is unknown` | nothing to compare against |
+
+It also reports `test_ahead` when the test environment's commit is a genuine
+descendant of production's - "different" is not "ahead". The summary appears
+under each deployment on the overview page, in `deployments <slug>`, and in
+`plan`, whose `release.changes` lists the commit subjects a release would carry.
+
+**What shipped, and when?** `record --env prod` writes two records. The detailed
+one is `initiatives/<slug>/releases.md`, newest first, created on the first
+release: date, kind, version, URL, released commit, the commits since the
+previous release, and where the test environment stood at that moment. The
+narrative one is a one-line `— Release` entry appended to `log.md`, so the
+initiative's story shows that a release happened and points at the detail.
+
+**Every part of it is scoped to the deployment's own `source`.** The change list
+is `git log … -- <source>`, the released commit is `git log -1 … -- <source>`,
+and the unreleased count is the length of that same list - so a deck edit, a
+change to another initiative, or an edit made directly under `demos/` never
+appears in this initiative's release notes. A commit that touched the source
+*and* other paths does appear, with its own subject: it genuinely changed the
+source, so listing it is right even when the subject is broader than this
+release. Each entry names the source it summarizes, so the scope is visible in
+the file rather than only in this document.
+
+That last item is the deliberate answer to recording test deploys: a release is
+worth a durable record and the dozens of preview pushes before it are not, so
+one test observation is captured at the moment it becomes interesting. A test
+deploy writes no history of its own.
+
+**All of it is best-effort, and none of it can block a release.** The commits
+recorded against the two environments are the only inputs, so a deployment made
+before this existed, a rewritten history, or a source moved to a new path
+degrade to "unknown" rather than to a wrong answer. `appendReleaseHistory` never
+throws: a failed write costs the entry, not the release, and `record` reports
+whether the file was updated.
+
+The sweep **reports** unreleased work in its digest and never acts on it -
+releasing is a person's decision, and a sweep that appended to `releases.md` on
+every run would turn a list of releases into churn.
+
 ### The skills
 
 Two engines, and two skills above them that decide which target is written:
@@ -286,6 +340,7 @@ which is accurate rather than an error.
 
 `initiatives.mjs digest` prints the survey the sweep's first phase calls for:
 decisions waiting on a person, blockers now satisfied, items awaiting review,
+unreleased work,
 initiatives waiting on other initiatives, stale initiatives, initiatives with
 nothing to do, and a state table.
 

@@ -36,6 +36,9 @@ Then check the rest yourself, before deploying anything:
 1. Read the plan's `urls.test`. A first release with no test deployment at all
    is worth one question: has the user seen this on test? Proceed if they say
    yes.
+1. Read the plan's `release` block and show the user what this release carries -
+   `summary`, and `changes` when it has them - before deploying. If it reads
+   `production is current`, say so and ask whether they still want to redeploy.
 2. For a ChatGPT Site with `mode: new`, ask whether the production Site should
    be `public` or `private`. Never infer public access. There is no default.
 3. For a ChatGPT Site with `mode: replacement`, keep the existing access exactly
@@ -109,16 +112,45 @@ Then report a release receipt:
 - **Production:** the URL, the released commit, and — for a Site — access,
   version and deployment time; for a demo, that it goes live on merge;
 - **Test:** the test URL, or "not deployed yet";
+- what this release carried: the commit count and the change list, or that the
+  history could not be determined;
 - kind, source directory, file count, and `new` or `replacement`;
 - for a Site, confirmation that the isolated workspace was removed and the
   repository was left unchanged.
 
 Both URLs, every time.
 
-Finally, append a line to `initiatives/<slug>/log.md` recording the release: the
-date, the kind, the version where there is one, the URL, and the commit. A
-release is a fact about the initiative, and the log is where the initiative's
-facts live.
+### The release history writes itself
+
+`record --env prod` writes two records, and **neither should be written by
+hand** — the same reason `add` and `complete` exist applies here:
+
+- `initiatives/<slug>/releases.md` — the detailed history, newest first, created
+  on the first release. Each entry carries the date, the kind, the version, the
+  URL, the released commit, the commits since the previous release, and where
+  the test environment stood at that moment.
+- `initiatives/<slug>/log.md` — a one-line breadcrumb under a `— Release`
+  heading, so someone reading the initiative's story sees that a release
+  happened and where the detail lives.
+
+The change list is commit subjects from `git log` **scoped to this deployment's
+source directory**, so work on a deck, a demo, or another initiative never
+appears in this initiative's release notes. A commit that touched the source
+*and* other things does appear, with its own subject — which is accurate about
+the source having changed, even when the subject is broader than this release.
+
+It is best-effort: a release made before this existed, or a rewritten history,
+gives an entry without a change list rather than a wrong one. Never invent a
+change list to fill the gap, and never hold up a release because the history is
+thin.
+
+Two things are worth your judgement afterwards:
+
+- if the commit subjects do not say what actually changed for a *user* of the
+  site, add one plain sentence above the list saying what they will notice;
+- if the history was not updated (the `record` output names the files it
+  wrote), mention it in the receipt and carry on. A missing record never
+  invalidates a release that actually happened.
 
 ## Refuse
 
