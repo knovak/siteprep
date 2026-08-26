@@ -35,7 +35,7 @@ Site address does not make one person's bookmarks visible to another person.
 ## What it can do
 
 - Import Netscape bookmark HTML from Safari, Chrome, Firefox, or Edge.
-- Import its own `bookmark-sorter/v1` JSON backup format.
+- Import its own `bookmark-sorter/v1` [JSON backup format](JSON_IMPORT.md).
 - Merge a repeated or overlapping import by URL instead of creating duplicate
   bookmarks.
 - Keep several private collections and switch, create, or rename them inline.
@@ -383,3 +383,31 @@ collections public.
 For implementation and validation details see
 [`work/README.md`](work/README.md). For the current public-entry test procedure and
 deployment cautions see [`work/END_USER_TESTING.md`](work/END_USER_TESTING.md).
+
+## Automated tag addition
+
+You can use prompts to automatically add content tags, then use Import to bring
+them into the app. For example, an administrator of a bookmark Site can begin
+with this prompt. An ordinary user can follow the same workflow by starting
+with a bookmark export file instead.
+
+```text
+Review the contents of the database behind the bookmarks application. You'll
+find over 1,000 bookmark records with titles and URLs. Suggest a tagging scheme
+based on each bookmark's theme, with tags such as us_politics, travel,
+climate_change, energy, and australia. Use up to 20 tags, and note that a
+bookmark can have more than one tag. Don't write anything into the database;
+instead, provide a list of the tags you suggest and indicate how often each one
+would apply.
+```
+
+You can keep prompting until you have a list of tags you like. Then use this
+prompt:
+
+```text
+Read https://github.com/knovak/siteprep/blob/main/initiatives/bookmark-sorter/JSON_IMPORT.md?plain=1
+to understand how to save tags as an importable file. Produce an importable
+file with the tags you just created.
+```
+
+Save the resulting file, then use the app's **Import** command to add the tags.
