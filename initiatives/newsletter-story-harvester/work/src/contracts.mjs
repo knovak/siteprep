@@ -22,15 +22,16 @@
  * produce a new id and a duplicate. The document owns the positions and the
  * hrefs (`html.mjs`); the model owns which of them are stories.
  */
-export const FINDING_FIELDS = ['link_index', 'title', 'text', 'story_date'];
+export const FULL_TEXT_CHARACTER_LIMIT = 3000;
+export const FINDING_FIELDS = ['link_index', 'title', 'text', 'text_is_summary', 'story_date'];
 
 export const CONTRACTS = {
   'link-list': {
     shape: 'link-list',
     unit: 'one link with its sentence or two',
     band: { min: 10, max: 60 },
-    text_is_summary: false,
-    verbatim: true,
+    default_text_is_summary: false,
+    summary_threshold: FULL_TEXT_CHARACTER_LIMIT,
     needs_link: true,
     // A link inside a heading is a section heading, not a story - the failure
     // this shape is watched for, and structural enough to refuse rather than
@@ -44,13 +45,15 @@ export const CONTRACTS = {
       'Return one finding per story link, as JSON:',
       '  link_index  the number of the link in the list below',
       '  title       the link text, or a better title from the same sentence',
-      '  text        the blurb AS WRITTEN in the issue, copied not paraphrased',
+      '  text        ALL of the story text AS WRITTEN when it is 3000 characters',
+      '              or fewer; a faithful summary only when it is longer',
+      '  text_is_summary  false for copied text; true only for a summary',
       '  story_date  the story\'s own date if the issue states one, else null',
       '',
       'Do not return a finding for a section heading, a sponsor block, an',
       'unsubscribe or preferences link, or the newsletter\'s own navigation.',
-      'Do not improve the blurb: it is copied so the reader can judge whether',
-      'the source was worth reading.'
+      'Do not shorten or improve text at or below the limit: it is copied so',
+      'the reader can judge whether the source was worth reading.'
     ].join('\n'),
     failure_to_watch: 'a section heading harvested as a story'
   },
@@ -59,8 +62,8 @@ export const CONTRACTS = {
     shape: 'annotated-digest',
     unit: 'one item with its paragraph',
     band: { min: 3, max: 15 },
-    text_is_summary: false,
-    verbatim: true,
+    default_text_is_summary: false,
+    summary_threshold: FULL_TEXT_CHARACTER_LIMIT,
     needs_link: true,
     // Here the item's own title *is* a heading with a link in it, so the same
     // structure that is a refusal above is the ordinary case.
@@ -73,11 +76,14 @@ export const CONTRACTS = {
       'Return one finding per item, as JSON:',
       '  link_index  the number of the item\'s link in the list below',
       '  title       the item\'s heading',
-      '  text        the item\'s commentary AS WRITTEN, copied not paraphrased',
+      '  text        ALL of the item\'s commentary AS WRITTEN when it is 3000',
+      '              characters or fewer; a faithful summary only when longer',
+      '  text_is_summary  false for copied text; true only for a summary',
       '  story_date  the story\'s own date if the issue states one, else null',
       '',
-      'An item whose commentary runs to several paragraphs is ONE story. Do not',
-      'split it. Do not return a finding for a heading with no item under it.'
+      'An item whose commentary runs to several paragraphs is ONE story. Include',
+      'every paragraph up to the limit; do not compress it to a blurb. Do not',
+      'return a finding for a heading with no item under it.'
     ].join('\n'),
     failure_to_watch: 'one item split into three by its paragraphs'
   },
@@ -86,8 +92,8 @@ export const CONTRACTS = {
     shape: 'long-form',
     unit: 'the whole column',
     band: { min: 1, max: 1 },
-    text_is_summary: true,
-    verbatim: false,
+    default_text_is_summary: true,
+    summary_threshold: FULL_TEXT_CHARACTER_LIMIT,
     needs_link: false,
     heading_links: 'accept',
     anchor: 'document',
@@ -97,10 +103,13 @@ export const CONTRACTS = {
       'Return a JSON array containing exactly one finding:',
       '  link_index  the number of the column\'s own link if it has one, else null',
       '  title       the column\'s title',
-      '  text        a summary of the column, in your own words',
+      '  text        the COMPLETE column AS WRITTEN when it is 3000 characters',
+      '              or fewer; a faithful summary only when it is longer',
+      '  text_is_summary  false for copied text; true only for a summary',
       '  story_date  the column\'s own date if it states one, else null',
       '',
-      'The links inside the column are citations to an argument, not stories.',
+      'Do not summarize a short column. The links inside the column are',
+      'citations to an argument, not stories.',
       'Never return one as a finding, however interesting it is.'
     ].join('\n'),
     failure_to_watch: 'thirty citations harvested as stories'

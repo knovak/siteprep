@@ -8,6 +8,12 @@ which is what stops "phase complete" from being a judgement call.
 Numbered references to **O1–O8** are the objectives; **§n** is a section of
 `spec.md`.
 
+**Current status, 2026-08-25.** Phases 0–6 have shipped and the initiative is in
+`refining`. Phase 7 remains deliberately off because no paid screenshot vendor
+is approved. The refinement record after the phase sequence names the controls
+added since the original build plan so they do not disappear from the plan's
+account of the product.
+
 ## 1. What decides the order
 
 Three rules, applied in this priority, produce the sequence in §3:
@@ -142,7 +148,7 @@ one phase where the test is more interesting than the code.
 
 ### Phase 2 — The grid, blind
 
-**Produces:** the virtualised grid at the three layouts of §7, the four verdicts,
+**Produces:** the virtualised grid at the responsive layouts of §7, the four verdicts,
 `undo`, the marked set, focus movement, the untriaged count, and the session
 instrument of §12 — items judged and elapsed time, recorded per sitting.
 
@@ -185,7 +191,8 @@ entry, not a constant quietly edited.
 **Produces:** the §8 expression evaluator as a single function — `and`, `or`,
 `not`, parentheses, bare tags, trailing `*` — the UI wrapping of §8.1, saved
 selections, `tag-apply` over a selection, §8.3's confirmation on the unbounded
-path, and §7.1's mark-then-sweep with `verdict-rest` and a single-action `undo`.
+path, visible-page untriaged sweeping, and a single-action `undo` for every set
+operation.
 
 Also **§8.2's cheap in-app proposals** — same site, same folder path,
 near-identical titles — offered as pre-filled selections, computed as §5.6 below
@@ -232,10 +239,14 @@ mean something.
 
 ### Phase 6 — Identity, collections, and demo copies
 
-**Produces:** sign-in from the host, `owner_id`, the three collection kinds,
-`can_edit_templates`, and the five operations of §10.1 — create or edit a
-template, list templates, take a copy, take a *fresh* copy, delete a copy — plus
-the collection menu the wish's amendment asks for.
+**Produces:** sign-in from the host, `owner_id`, the personal, private,
+demo-template, and demo-copy collection kinds, the retained
+`can_edit_templates` capability, and the five operations of §10.1 — create or
+edit a template, list templates, take a copy, take a *fresh* copy, delete a copy
+— plus the collection menu the wish's amendment asks for. Refinement later
+added the email-based Admin role without changing opaque-id collection
+ownership. A later refinement made the public Site's entry boundary explicit:
+Sign in with ChatGPT followed by an `authorized_user` email-or-linked-id gate.
 
 **Leaves out:** every part of the general sharing scheme. No reader lists, no
 ACLs, no revocation (§10.2).
@@ -267,6 +278,32 @@ no picture — visibly missing rather than confidently wrong, which is the state
 bounded live run with spend recorded. Being a configuration change rather than a
 development phase is not a reason to end it on somebody's say-so.
 
+### Refinement increments after phases 0–6
+
+Refinement keeps the phase architecture and adds user-facing controls around
+it. The current product includes:
+
+- selectable 3×3, 2×6, 2×8, and 3×12 wide layouts, plus the automatic tablet
+  and phone layouts;
+- mutually exclusive Import, Select, and Export panels;
+- visible whole-collection and open-selection export, confirmed collection
+  erasure, and import-compatible `bookmark-sorter/v1` files;
+- multiple private collections, inline create/rename, demo-template copying,
+  and administrator-created templates;
+- typed, automatic, saved, and recent selection entry routes, with recent
+  expressions stored per signed-in user;
+- visible-page Sweep untriaged and a separate confirmed Sweep all selected;
+- an Admin role backed by `authorized_user`, with server-gated sitting, capture,
+  user-list, and template controls;
+- a public entry page with polite sign-in and not-yet-authorized states, backed
+  by the same server-side allowlist on every API route;
+- a file drop target beside the Import chooser plus readiness styling for the
+  Automatic proposal, Saved selection, and Previous selection Open actions.
+
+Each refinement adds browser-level regression coverage in `test-plan.md` §7,
+updates the user README, and appends a log entry. It does not reopen the phase-7
+vendor decision; Site access changes remain explicit user decisions.
+
 ## 4. What each phase leaves behind
 
 Every phase ends with three things, and the third is the one that is easy to skip:
@@ -282,8 +319,8 @@ Every phase ends with three things, and the third is the one that is easy to ski
 ## 5. The questions §13 left for this plan
 
 Seven were open. Five were answered here by reasoning; the host question was
-answered by the 2026-08-18 phase 0 evidence, and plan-specific metering remains
-the user's cost decision rather than something this plan guesses.
+answered by the 2026-08-18 phase 0 evidence, and plan-specific metering was
+approved by the user on 2026-08-19.
 
 ### 5.1 Where the screenshot API key lives — *phase 0, with the answer pre-committed*
 
@@ -302,10 +339,10 @@ identity, D1 owner scoping, a server-side secret, the cross-owner template query
 and the deciding wide layout. `host-spike.md` §6 records the measurements and
 `decisions.md` records the choice.
 
-One authority question remains separate from capability: whether this
-workspace's plan-specific Sites limits are acceptable for 10,000 items plus up
-to a few hundred MB of captures. That is a `cost:` blocker. It does not prevent
-phase 1 ingestion from starting; it gates accepting the later R2 capture store.
+The user approved this workspace's plan-specific Sites costs and limits for
+10,000 items plus up to a few hundred MB of captures on 2026-08-19. R2 was then
+provisioned and the measured metadata pass was recorded on 2026-08-20. That
+approval does not cover a separate paid screenshot vendor.
 
 ### 5.3 Which screenshot vendor, and its retention terms — *none at present*
 
@@ -426,7 +463,8 @@ nothing marking its origin, as §5 requires.
 - **The rate target of §12.** It stays unset until phase 2 produces a baseline, on
   `objectives.md`'s grounds that a number set now is a guess dressed as a
   requirement.
-- **The duplicate-image threshold.** Phase 3 measures it; 30 is a starting value.
+- **The duplicate-image threshold.** The real-pile measurement kept it at 30:
+  the largest repeated metadata-image group was 11 (`decisions.md`, 2026-08-20).
 - **Anything held out of the first version** — tab harvesting, pushing subsets
   back into a browser, general sharing. §11 says the export format is what makes
   the first two cheap later, and phase 5 is where that becomes true.

@@ -789,3 +789,29 @@ controls removed and the selection narrowed", and that `source_doc` and
   touching a real store is 0600. This one exists to be shared, which is the
   whole reason nothing of the mailbox is allowed into it.
 - **Unchanged:** where such a page is hosted stays out of scope, per §12.
+
+## 2026-08-25 — Source slugs are not themes, and private review explains them
+
+**A theme describes what a story is about. Each inventory entry now also names
+an explicit source slug beside the Gmail search configuration.**
+
+The review page exposed the problem by showing `theme:permit-column`: the value
+identified a fixture newsletter, not a subject, and meant nothing to a reader.
+The source already needs stable identity, but neither its private configuration
+key nor its display name is the right lasting vocabulary.
+
+| Option | Consequence |
+|---|---|
+| Keep treating each source as a `theme:` tag | Conflates subject grouping with provenance and produces labels readers cannot interpret |
+| Use the private inventory key as the source value | Avoids another field, but turns an implementation identifier into lasting record data |
+| **Add an explicit slug beside the Gmail search — chosen** | Gives each source a stable, readable value while keeping its name and private matching rules independently editable |
+
+- **Settled:** `source` on a harvested story is the inventory slug. The private
+  key remains an internal configuration identifier.
+- **Settled:** fixture generation no longer invents a `theme:` tag from the
+  source. Themes remain optional subject tags proposed or added separately.
+- **Settled:** the private review page has Help listing each configured source's
+  name, slug, and exact Gmail search string. The published page withholds that
+  configuration along with its other private provenance.
+- **Unchanged:** this does not establish or constrain the vocabulary of subject
+  themes.

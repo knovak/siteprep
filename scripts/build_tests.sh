@@ -114,13 +114,6 @@ if [ -d "$ROOT_DIR/demos" ]; then
     done < <(find "$ROOT_DIR/demos/${demo}" -type f -print0)
     pass "BUILD-13 demo files copied without modification for ${demo}"
 
-    encoded_demo="${demo//%/%25}"
-    encoded_demo="${encoded_demo// /%20}"
-    if ! grep -q "./${encoded_demo}/" "$OUTPUT_DIR/demos/index.html"; then
-      fail "BUILD-13 demos index missing link for ${demo}"
-    fi
-    pass "BUILD-13 demos index links ${demo}"
-
     if [ -f "$ROOT_DIR/demos/${demo}/demo.json" ]; then
       if ! node "$DEMO_METADATA_SCRIPT" validate "$ROOT_DIR/demos/${demo}" "$demo" > /dev/null; then
         fail "BUILD-13 invalid demo metadata for ${demo}"
@@ -142,8 +135,17 @@ if [ -d "$ROOT_DIR/demos" ]; then
         fail "BUILD-13 demos index is missing additional links for ${demo}"
       fi
       pass "BUILD-13 demos index uses metadata for ${demo}"
+    else
+      encoded_demo="${demo//%/%25}"
+      encoded_demo="${encoded_demo// /%20}"
+      if ! grep -q "./${encoded_demo}/" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-13 demos index missing link for ${demo}"
+      fi
+      pass "BUILD-13 demos index links ${demo}"
     fi
 
+    encoded_demo="${demo//%/%25}"
+    encoded_demo="${encoded_demo// /%20}"
     if [ -f "$ROOT_DIR/demos/${demo}/prompts.html" ]; then
       if ! grep -q "href=\"./${encoded_demo}/prompts.html\">Prompt history</a> (<a href=\"./${encoded_demo}/prompts.txt\">text</a>)" "$OUTPUT_DIR/demos/index.html"; then
         fail "BUILD-13 demos index missing formatted and text prompt history links for ${demo}"
@@ -244,6 +246,16 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
       fail "BUILD-18 initiatives index does not link ${initiative}"
     fi
     pass "BUILD-18 initiative page generated and linked for ${initiative}"
+
+    if [ -f "$ROOT_DIR/initiatives/${initiative}/README.md" ]; then
+      if [ ! -f "$OUTPUT_DIR/initiatives/${initiative}/README.html" ]; then
+        fail "BUILD-18 README not rendered for ${initiative}"
+      fi
+      if ! grep -q 'href="./README.html"' "$OUTPUT_DIR/initiatives/${initiative}/index.html"; then
+        fail "BUILD-18 initiative page does not list README for ${initiative}"
+      fi
+      pass "BUILD-18 initiative README rendered and linked for ${initiative}"
+    fi
   done < <(node "$ROOT_DIR/scripts/initiatives.mjs" list)
 
   # Source markdown stays the single source of truth; the build renders it.
@@ -254,7 +266,7 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
 
   # BUILD-19: The sweep survey. Deterministic, so it is unit-testable against
   # fixtures rather than against whatever work happens to be in flight.
-  for suite in initiatives-digest initiatives-sweep; do
+  for suite in initiatives-digest initiatives-sweep initiatives-deployments; do
     if ! node --test "$ROOT_DIR/tests/${suite}.test.mjs" > /dev/null 2>&1; then
       node --test "$ROOT_DIR/tests/${suite}.test.mjs" || true
       fail "BUILD-19 ${suite} tests failed"

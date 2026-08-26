@@ -14,6 +14,11 @@ export class MemoryBookmarkStore {
   #sessions = new Map();
   #actions = [];
   #selections = new Map();
+  #selectionHistory = new Map();
+  #authorizedUsers = new Map([
+    ['krnovak@gmail.com', {type: 'admin', user_id: null}],
+    ['julie.duffield@gmail.com', {type: 'user', user_id: null}],
+  ]);
   #captures = new Map();
   #captureQueue = new Map();
   #nextItem = 1;
@@ -122,6 +127,73 @@ export class MemoryBookmarkStore {
     }
     this.#collections.delete(id);
     return structuredClone(collection);
+  }
+
+  eraseCollection(id) {
+    const collection = this.#collections.get(id);
+    if (!collection) throw new Error(`Unknown collection: ${id}`);
+    const erasedItems = this.countItems(id);
+    for (const item of [...this.#items.values()]) {
+      if (item.collection_id !== id) continue;
+      this.#items.delete(item.id);
+      this.#itemsByUrl.delete(`${id}\u0000${item.url_key}`);
+      this.#tags.delete(item.id);
+    }
+    for (const [selectionId, selection] of this.#selections) {
+      if (selection.collection_id === id) this.#selections.delete(selectionId);
+    }
+    for (const [sessionId, session] of this.#sessions) {
+      if (session.collection_id === id) this.#sessions.delete(sessionId);
+    }
+    this.#actions = this.#actions.filter(action => action.collection_id !== id);
+    return {collection: structuredClone(collection), erased_items: erasedItems};
+  }
+
+  listAuthorizedUsers() {
+    return [...this.#authorizedUsers]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([email, user]) => ({email, type: user.type}));
+  }
+
+  authorizedUserType(email) {
+    return this.#authorizedUsers.get(String(email || '').trim().toLowerCase())?.type ?? null;
+  }
+
+  authorizeIdentity(identity) {
+    const id = String(identity?.id || '').trim();
+    const email = String(identity?.email || '').trim().toLowerCase();
+    if (!id || !email) return null;
+    const idMatch = [...this.#authorizedUsers].find(([, user]) => user.user_id === id);
+    if (idMatch) return {email: idMatch[0], type: idMatch[1].type, user_id: id};
+    const user = this.#authorizedUsers.get(email);
+    if (!user) return null;
+    if (!user.user_id) user.user_id = id;
+    return {email, type: user.type, user_id: user.user_id};
+  }
+
+  addAuthorizedUser(email, type) {
+    const normalized = String(email || '').trim().toLowerCase();
+    const current = this.#authorizedUsers.get(normalized);
+    this.#authorizedUsers.set(normalized, {type, user_id: current?.user_id ?? null});
+    return {email: normalized, type};
+  }
+
+  removeAuthorizedUser(email) {
+    const normalized = String(email || '').trim().toLowerCase();
+    this.#authorizedUsers.delete(normalized);
+    return {email: normalized};
+  }
+
+  recordSelection(expression, usedAt) {
+    if (!expression) return null;
+    this.#selectionHistory.set(expression, usedAt);
+    return {expression, used_at: usedAt};
+  }
+
+  listSelectionHistory() {
+    return [...this.#selectionHistory]
+      .map(([expression, used_at]) => ({expression, used_at}))
+      .sort((left, right) => right.used_at.localeCompare(left.used_at) || left.expression.localeCompare(right.expression));
   }
 
   collectionHasUrlKey(collectionId, urlKey) {
@@ -412,6 +484,37 @@ export class MemoryBookmarkStore {
     const session = this.#sessions.get(sessionId);
     if (!session || session.collection_id !== collectionId) throw new Error(`Unknown session: ${sessionId}`);
     return session;
+  }
+
+  latestSession(collectionId, {openOnly = false} = {}) {
+    if (!this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    const sessions = [...this.#sessions.values()]
+      .filter(session => session.collection_id === collectionId && (!openOnly || !session.ended_at))
+      .sort((left, right) => Number(Boolean(left.ended_at)) - Number(Boolean(right.ended_at))
+        || right.started_at.localeCompare(left.started_at)
+        || right.id.localeCompare(left.id));
+    return sessions[0] ? structuredClone(sessions[0]) : null;
+  }
+
+  sittingReport(collectionId, sessionId = null) {
+    const session = sessionId
+      ? structuredClone(this.session(collectionId, sessionId))
+      : this.latestSession(collectionId);
+    if (!session) return {collection_id: collectionId, session: null, actions: []};
+    return {
+      collection_id: collectionId,
+      session,
+      actions: this.#actions
+        .filter(action => action.collection_id === collectionId && action.session_id === session.id)
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.id.localeCompare(right.id))
+        .map(action => ({
+          id: action.id,
+          action_kind: action.action_kind,
+          payload: structuredClone(action.payload),
+          created_at: action.created_at,
+          undone_at: action.undone_at,
+        })),
+    };
   }
 
   applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {

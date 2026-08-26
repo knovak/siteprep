@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import subprocess
 import tempfile
@@ -44,6 +45,98 @@ class DeployDemoTest(unittest.TestCase):
             text=True,
         )
         return result.stdout.strip()
+
+    def test_supports_external_demo_roots(self):
+        demo_dir = self.test_repo / "demos" / "External Demo"
+        demo_dir.mkdir()
+        (demo_dir / "demo.json").write_text(
+            json.dumps(
+                {
+                    "title": "External Demo",
+                    "description": "Open User guide.",
+                    "root": "https://example.com/app/",
+                    "links": [
+                        {"label": "User guide", "href": "https://example.com/guide"}
+                    ],
+                }
+            )
+        )
+
+        self.assertEqual(
+            self.metadata("href", demo_dir, "External Demo"),
+            "https://example.com/app/",
+        )
+        self.assertIn(
+            'href="https://example.com/guide"',
+            self.metadata("description", demo_dir, "External Demo"),
+        )
+
+    def test_orders_featured_then_by_initiative_activity(self):
+        subprocess.run(["git", "init"], cwd=self.test_repo, check=True, capture_output=True)
+
+        def write_demo(name, initiative=None, featured=False):
+            demo_dir = self.test_repo / "demos" / name
+            demo_dir.mkdir()
+            manifest = {
+                "title": name,
+                "description": f"Open {name}.",
+                "root": "https://example.com/",
+            }
+            if initiative:
+                manifest["initiative"] = initiative
+            if featured:
+                manifest["featured"] = True
+            (demo_dir / "demo.json").write_text(json.dumps(manifest))
+
+        def commit(message, date):
+            subprocess.run(["git", "add", "."], cwd=self.test_repo, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=Test",
+                    "-c",
+                    "user.email=test@example.com",
+                    "commit",
+                    "-m",
+                    message,
+                ],
+                cwd=self.test_repo,
+                check=True,
+                capture_output=True,
+                env={"PATH": os.environ["PATH"], "GIT_AUTHOR_DATE": date, "GIT_COMMITTER_DATE": date},
+            )
+
+        older = self.test_repo / "initiatives" / "older"
+        older.mkdir(parents=True)
+        (older / "initiative.json").write_text("{}")
+        write_demo("Older", initiative="older")
+        commit("Add older initiative", "2026-01-01T00:00:00Z")
+
+        newer = self.test_repo / "initiatives" / "newer"
+        newer.mkdir()
+        (newer / "initiative.json").write_text("{}")
+        write_demo("Newer", initiative="newer")
+        commit("Add newer initiative", "2026-02-01T00:00:00Z")
+
+        write_demo("Featured", initiative="older", featured=True)
+        commit("Add featured demo", "2026-03-01T00:00:00Z")
+
+        result = subprocess.run(
+            [
+                "node",
+                str(METADATA_SCRIPT),
+                "order",
+                str(self.test_repo / "demos"),
+                str(self.test_repo),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        demos = result.stdout.splitlines()
+
+        self.assertEqual(demos, ["Featured", "Newer", "Older"])
 
     def test_creates_and_fully_replaces_a_demo(self):
         first_source = self.test_repo / "first-source"

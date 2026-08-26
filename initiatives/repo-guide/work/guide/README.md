@@ -127,6 +127,9 @@ Views are `rail`, `chips`, `paths`, `table`, `stack`, `list`, `cards`, and
 discharges the `uncited-fact` warning the same way a sentence would — which is
 what stops the warning from pushing values into prose that does not want them.
 Block directives are excluded from the literal checks and from the word counts.
+The sweep budget table labels `items_per_run` as the current limit, and the work
+phase card restates its eligibility in Guide language without changing the
+operational sweep prompt.
 
 `build/figures.mjs` holds the inline SVG figures. Each is a pure function of
 resolved facts and declares the keys it consumes, so a diagram cannot drift from

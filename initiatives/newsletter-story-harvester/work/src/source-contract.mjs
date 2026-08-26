@@ -1,4 +1,14 @@
 /** Shared validation and post-search attribution for every message source. */
+const SOURCE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+export function sourceSlug(entry) {
+  const slug = String(entry?.slug || '').trim();
+  if (!SOURCE_SLUG.test(slug)) {
+    throw new Error(`inventory source ${entry?.key || '(unknown)'} needs a lowercase hyphenated slug`);
+  }
+  return slug;
+}
+
 export function actualFromMatchesEntry(message, entry) {
   const from = matchersFor(entry).filter((matcher) => matcher.type === 'from');
   return from.length === 0 || from.some((matcher) => actualFromMatches(message.from, matcher.value));

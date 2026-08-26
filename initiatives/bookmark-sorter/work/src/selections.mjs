@@ -76,16 +76,16 @@ export function proposeSelections(items, {minimum = 2} = {}) {
       .map(tag => tag.slice(4)), key => `src:${key}`),
     ...groupProposalValues(items, 'tag', item => (item.tags || [])
       .filter(tag => !tag.startsWith('src:') && !tag.startsWith('folder:')), key => `tag-key:${encodeURIComponent(key)}`),
+    ...verdictProposals(items),
     ...groupProposalValues(items, 'folder', item => (item.tags || [])
       .filter(tag => tag.startsWith('folder:'))
       .map(tag => tag.slice(7)), key => `folder-key:${encodeURIComponent(key)}`),
     ...groupProposalValues(items, 'site', item => [siteKey(item.url)]),
     ...groupProposalValues(items, 'image', item => [selectionImage(item.capture)]),
-    ...verdictProposals(items),
     ...groupProposalValues(items, 'title', item => [item.title_key || normaliseTitle(item.title)]),
   ];
   const includeSingleton = new Set(['src', 'tag', 'folder', 'image']);
-  const kindOrder = new Map(['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title'].map((kind, index) => [kind, index]));
+  const kindOrder = new Map(['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title'].map((kind, index) => [kind, index]));
   return proposals
     .filter(proposal => proposal.kind === 'verdict'
       || proposal.count >= (includeSingleton.has(proposal.kind) ? 1 : minimum))
@@ -99,14 +99,32 @@ function verdictProposals(items) {
     const key = selectionVerdict(item.verdict);
     counts.set(key, (counts.get(key) || 0) + 1);
   }
-  return VERDICT_PROPOSAL_KEYS.map(key => ({
+  return [
+    ...VERDICT_PROPOSAL_KEYS.map(key => ({
     id: `verdict:${key}`,
     kind: 'verdict',
     key,
     name: key,
     expression: `verdict:${key}`,
     count: counts.get(key),
-  }));
+    })),
+    {
+      id: 'verdict:not-junk',
+      kind: 'verdict',
+      key: 'not-junk',
+      name: 'not junk',
+      expression: 'not verdict:junk',
+      count: items.length - counts.get('junk'),
+    },
+    {
+      id: 'verdict:untriaged-or-needs-time',
+      kind: 'verdict',
+      key: 'untriaged-or-needs-time',
+      name: 'untriaged or needs-time',
+      expression: 'verdict:untriaged or verdict:needs-time',
+      count: counts.get('untriaged') + counts.get('needs-time'),
+    },
+  ];
 }
 
 function groupProposalValues(items, kind, valuesFor, expressionFor = key => `${kind}:${key}`) {

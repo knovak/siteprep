@@ -356,3 +356,74 @@ preserving the compact tablet and phone layouts.
 Capped each capture at 30% of its card in a three-row grid and reserved two
 title lines, preventing large images from squeezing the bookmark text, tags,
 and verdict out of view.
+
+## 2026-08-24 — Consolidate import, selection, export, and administration controls
+
+Replaced the always-visible selection block with mutually exclusive Import,
+Select, and Export panels that share one collapsed row and give the open panel
+the available width. Moved demo-template copying into Import, added confirmed
+collection erasure to Export, and moved Apply to entire selection plus paging
+beside the verdict toolbar. Added per-user recent selection history and an
+Admin menu for sittings, captures, and advisory authorized-user add/remove/list
+operations; the new authorized-user table is deliberately not an access gate
+in this version.
+
+## 2026-08-25 — Clarify selection targets and add drag-and-drop import
+
+Made Open proposal, Open saved, and Open previous black on white until their
+paired chooser has a real value, then white on blue. Added a keyboard-accessible
+drop target beside the existing file input; a dropped HTML or Sorter JSON file
+enters the same import form, shows its name, and still waits for the explicit
+Import file action.
+
+Reconciled the initiative documents with the shipped refining-stage product:
+selectable wide layouts, paged untriaged versus confirmed whole-selection
+sweeps, per-user selection history, multiple private collections, approved
+Sites/R2 use, and the actual server-gated Admin role. The earlier entry's claim
+that `authorized_user` remained advisory is superseded by the merged
+implementation and the 2026-08-25 decision. Expanded the user README with the
+feature inventory, cautions, workflows, selection grammar, backup/restore,
+administration, and troubleshooting guidance.
+
+All 59 application tests and 20 browser tests passed, including the new chooser
+state, file-drop, and narrow-phone checks. The Sites application production
+build also passed.
+
+## 2026-08-26 — Add the public sign-in and authorized-user gate
+
+Kept the test Site public to reach and added the two-stage application boundary
+chosen by the user. A request missing either Sites identity field now receives
+a polite Sign in with ChatGPT page; a complete signed-in identity outside
+`authorized_user` receives a polite not-yet-authorized page naming the email to
+add. The API returns `401 authentication_required` and `403
+authorization_required` for the same states before creating a user or personal
+collection.
+
+Added an optional Site-specific `user_id` to `authorized_user`, including a
+unique partial index and deployable migration. The first successful email match
+links that id, after which either value can admit the account. Collection
+ownership remains on the opaque Sites id, and the matched row's `admin` type
+continues to gate administrator operations.
+
+Reconciled the user README, objectives, specification, plan, test plan,
+decision record, work documentation, and end-user test procedure with the
+public-entry policy. The historical owner-only deployment entries remain as
+history; current documentation now distinguishes public reachability from
+private owner-scoped bookmark data.
+
+All 61 application tests and 22 browser tests passed, including anonymous,
+unauthorized, linked-id, responsive sign-in, and alternate-account recovery
+coverage. The Sites application production build passed. Public test Site
+version 28 deployed successfully at 2026-08-26 07:31:51 UTC. An anonymous live
+request received the sign-in page and API `401`; the signed-in authorized
+account reached its existing collections and Admin surface. Production was not
+changed.
+
+## 2026-08-26 — Release
+
+Released to production — ChatGPT Site, version 1, `da4fc8b`.
+<https://bookmark-sorter.ken-novak.chatgpt.site/> See `releases.md`.
+
+## 2026-08-26 — Release
+
+Released to production — ChatGPT Site, version 2, `a943830`. 2 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.

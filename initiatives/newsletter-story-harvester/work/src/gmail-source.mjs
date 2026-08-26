@@ -7,10 +7,14 @@ export function gmailQueryFor(entry, range) {
   if (!DATE.test(range?.after || '') || !DATE.test(range?.before || '') || range.after >= range.before) {
     throw new Error('gmail source: search range must be half-open local dates');
   }
+  return `${gmailSearchString(entry)} after:${range.after.replaceAll('-', '/')} before:${range.before.replaceAll('-', '/')}`;
+}
+
+/** The configured Gmail search string without a run-specific date range. */
+export function gmailSearchString(entry) {
   const groups = matcherGroupsFor(entry);
   const arms = groups.map((group) => group.map(gmailMatcher).join(' '));
-  const match = arms.length === 1 ? arms[0] : `{${arms.join(' ')}}`;
-  return `${match} after:${range.after.replaceAll('-', '/')} before:${range.before.replaceAll('-', '/')}`;
+  return arms.length === 1 ? arms[0] : `{${arms.join(' ')}}`;
 }
 
 /**

@@ -202,3 +202,15 @@ Built the reusable tag-newsletter-stories skill with a deterministic prepare/app
 ## 2026-08-19 — Phase 8 - render the kept and emphasised stories as a provenance-safe published page
 
 Phase 8: the review renderer now publishes with two arguments changed - include: ['kept','emphasised'] and judgeable: false - removing every judging control and the code behind it, and withholding provenance. A published story is assembled from an allow-list rather than by deleting two fields, and the runs block is withheld because a run record accounts for issues by source_doc. Added publish-page.mjs and nine tests covering every test-plan.md 4.8 row. 118 tests pass.
+
+## 2026-08-25 — Make the private review page readable without decoding its implementation
+
+Changed story and cluster cards to start expanded, moved outbound navigation to
+the story title, and removed the redundant link row. The extraction contract now
+requires complete, unmodified text through 3,000 characters and permits a
+summary only for longer material, with that choice recorded per finding.
+
+Separated source identity from subject themes: inventory entries carry explicit
+source slugs, fixture generation no longer manufactures source-shaped themes,
+and private review Help shows the configured source names, slugs, and Gmail
+search strings. The published page does not carry that private configuration.

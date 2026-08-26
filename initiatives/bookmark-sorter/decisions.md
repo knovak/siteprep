@@ -868,3 +868,77 @@ recommendation; the proposal should then be redirected rather than defended.
   at all.
 - General sharing, browser-tab harvesting, and pushing subsets back to a
   browser remain later-version ideas.
+
+## 2026-08-25 — How do the consolidated controls show what will happen next?
+
+**A chooser's Open action shows whether it has a target, and Import accepts a
+file by chooser or drag-and-drop without starting automatically.**
+
+The Select panel now has three chooser/action pairs: Automatic proposals with
+Open proposal, Saved selections with Open saved, and Previous selections with
+Open previous. In each pair the action is black on white while the placeholder
+is selected. Choosing a real option changes that action to white on blue. The
+color is a readiness cue, not a disabled state: the selected value still
+determines the expression and all four selection entry routes continue to use
+the same evaluator.
+
+The Import panel keeps the ordinary file input and adds a drop target beside
+it. Dropping one bookmark HTML or Sorter JSON file puts that file into the same
+form and displays its name. It does **not** submit; Import file remains the one
+explicit action, so an accidental drop cannot start a write.
+
+### Why this fits the control center
+
+- Import, Select, and Export still allow none or exactly one open panel.
+- The new states are local to the expanded panel and do not consume grid space
+  when the panel is collapsed.
+- The drop target supplements the accessible file input rather than replacing
+  it, and remains keyboard operable.
+- Black-on-white and white-on-blue use the control center's existing inactive
+  and primary-action palette rather than introducing a new signal.
+
+### Documentation reconciliation
+
+The merged control-center implementation also made `authorized_user` an actual
+server-side gate: only a normalized signed-in email with type `admin` receives
+the Admin menu and its sitting, capture, user-management, and template-creation
+APIs. Earlier text calling that table advisory is superseded. Collection
+ownership still uses the opaque signed-in user id, and a `user` row does not
+grant Admin.
+
+## 2026-08-26 — How should a public Site admit Bookmark Sorter users?
+
+**Keep the Site public to reach, require Sign in with ChatGPT inside the
+application, and then require the signed-in identity to match
+`authorized_user`.**
+
+The user's requested behavior is: *“If they aren't logged in, then they'll have
+a null userid (or null email field), and they should get a polite message
+requesting them to log in. Once they log in, if their userid or email is not in
+the authorized user table, they should get a polite message saying they are not
+yet authorized.”* The user separately confirmed that the Site should remain
+public.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Public Site plus application sign-in and allowlist *(chosen)* | Anyone can reach a clear entry page; authorization stays revocable and server-side; bookmark collections remain private | Adds a two-stage entry flow and requires an administrator to maintain the list |
+| Private Site access only | Platform access blocks anonymous visitors before application code runs | Does not provide the requested polite in-app explanation and makes audience changes depend on Site access rather than the existing user table |
+| Public Site with sign-in only | Simplest signed-in experience | Any ChatGPT account would receive a private collection, contrary to the requested authorized-user boundary |
+
+### What this settles, and what it does not
+
+- Both the Sites user id and email must be present. Missing either shows the
+  Sign in with ChatGPT action; APIs return `401` before opening storage.
+- A signed-in identity is admitted when its normalized email or a linked
+  Site-specific user id matches `authorized_user`. A first successful email
+  match records that id for later matching.
+- A signed-in identity with no match sees its email and a polite not-yet-
+  authorized message; APIs return `403`, and no user or collection is created.
+- Type `user` grants application access. Type `admin` additionally grants the
+  existing Admin controls. Collection ownership remains keyed only by the
+  opaque Sites user id.
+- This does not create general collection sharing or make stored bookmark data
+  public. It also does not replace the Sites-owned sign-in or sign-out routes
+  with application credential handling.

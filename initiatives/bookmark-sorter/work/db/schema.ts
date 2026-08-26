@@ -17,6 +17,24 @@ export const appUsers = sqliteTable("app_users", {
   check("app_users_can_edit_templates_check", sql`${table.canEditTemplates} in (0, 1)`),
 ]);
 
+export const authorizedUser = sqliteTable("authorized_user", {
+  email: text("email").primaryKey(),
+  userId: text("user_id"),
+  type: text("type").notNull(),
+}, table => [
+  check("authorized_user_type_check", sql`${table.type} in ('admin', 'user')`),
+  uniqueIndex("idx_authorized_user_user_id").on(table.userId).where(sql`${table.userId} is not null`),
+]);
+
+export const selectionHistory = sqliteTable("selection_history", {
+  ownerId: text("owner_id").notNull().references(() => appUsers.ownerId, {onDelete: "cascade"}),
+  expression: text("expression").notNull(),
+  usedAt: text("used_at").notNull(),
+}, table => [
+  primaryKey({columns: [table.ownerId, table.expression]}),
+  index("idx_selection_history_owner_used").on(table.ownerId, table.usedAt),
+]);
+
 export const collections = sqliteTable("collections", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),

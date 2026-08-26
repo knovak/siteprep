@@ -21,7 +21,7 @@ await runHarvest({
   source: fixtureMessageSource(mailbox, {root: fixtures}),
   model: recordedModel(resolve(fixtures, 'responses')),
   store,
-  tagger: async ({record}) => [`theme:${record.source}`],
+  tagger: async () => [],
   now: '2026-08-18T09:00:00.000Z',
 });
 

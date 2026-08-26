@@ -70,13 +70,14 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   assert.equal(tag.count, 3);
   assert.equal(image.count, 4);
   assert.deepEqual(verdicts.map(proposal => [proposal.name, proposal.count]), [
-    ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['untriaged', 4],
+    ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['not junk', 4], ['untriaged', 4], ['untriaged or needs-time', 4],
   ]);
-  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'folder', 'site', 'image', 'verdict', 'title']);
+  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title']);
   assert.ok(first.every(proposal => !proposal.name.startsWith('Same ')));
   assert.deepEqual(evaluateSelection(items, site.expression).map(item => item.id), ['a', 'b', 'd']);
   assert.deepEqual(evaluateSelection(items, tag.expression).map(item => item.id), ['a', 'b', 'd']);
   assert.deepEqual(evaluateSelection(items, verdicts.at(-1).expression).map(item => item.id), ['a', 'b', 'c', 'd']);
+  assert.deepEqual(evaluateSelection(items, verdicts.find(proposal => proposal.name === 'not junk').expression).map(item => item.id), ['a', 'b', 'c', 'd']);
 
   const changed = structuredClone(items);
   changed[1].tags = ['topic:rust', 'saved:later', 'folder:reading/changed'];

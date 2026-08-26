@@ -160,8 +160,8 @@ expected record set.
 | Headings are not stories | `link-list-headings.html` yields no story for a section heading, including the one that is a link | §3.1, §15 |
 | `annotated-digest` yield | The three-paragraph item is one story, not three | §3.1 |
 | `long-form` yield | `long-form-citations.html` yields **exactly one** story; no citation becomes one; `url` is the column's own or null | §3.1, O2 |
-| `text_is_summary` | `true` on `long-form` only | `story-record.md` §1 |
-| **Text is never invented** | On both verbatim shapes, every `text` appears in the source document, modulo whitespace | §3.1 |
+| Full text through the threshold | Every finding at or below 3,000 characters keeps its complete original text; only a longer finding may set `text_is_summary: true` | `story-record.md` §1 |
+| **Text is never invented** | Every finding marked as original text appears in the source document, modulo whitespace; legacy replies default to original text for link-list and annotated-digest, and to summary for long-form | §3.1 |
 | Per-issue override | `long-form-roundup.html` extracts under `link-list`, and `shape` on the records is the override — what was extracted, not what was expected | §3.2 |
 | Count band flags | A yield outside the band writes `err:count` on every story from that issue and reports it; **the stories are still written** | §3.2 |
 | The loud case, by name | A `long-form` source yielding more than one story is reported first and named, not counted | §3.2, O2 |
@@ -195,7 +195,9 @@ silently wrong extraction gets wrong.
 |---|---|---|
 | Self-contained | Opened from the filesystem with the network disabled, it renders fully | §8 |
 | No write path | Nothing in the generated file can write the store; its only output is the §9 file | §1.1, `plan.md` §2 |
-| Expand and collapse | Collapsed shows title, source, date, verdict; expanded shows text and link | O5, §8 |
+| Expand and collapse | Stories and clusters start expanded, can still collapse, and show the text again when reopened | O5, §8 |
+| Linked title | A story with a URL uses its title as the outbound link and has no separate “Open story” line | O5, §8 |
+| Source help | The private review page lists every configured source by name and slug with the exact Gmail search string; the published page carries none of that private configuration | §4, §8, §12 |
 | Sort | Story date falling back to issue date, plus issue date, source, and unjudged-first | O5 |
 | Filter by tag | Any tag including `theme:`; this is how a theme is a page | O4, §8 |
 | **`verdict-rest` respects the filter** | Applies to everything **visible and unjudged**, so changing the filter changes what it means | O7, §8 |

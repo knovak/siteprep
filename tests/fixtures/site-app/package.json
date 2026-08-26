@@ -1,0 +1,5 @@
+{
+  "name": "fixture-sites-app",
+  "private": true,
+  "description": "A project-shaped source for the deployments tests. Never built, never deployed."
+}

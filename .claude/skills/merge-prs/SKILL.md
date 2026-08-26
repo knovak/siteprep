@@ -91,7 +91,7 @@ So when two `sweep/` PRs conflict with each other, do **not** quietly rebase pas
 it. Something violated the write scope, or two initiatives claimed the same
 output. Say so explicitly:
 
-> `#234` and `#236` conflict in `demos/migration_map/index.html`. Sweep PRs
+> `#234` and `#236` conflict in `demos/world_migration_atlas/index.html`. Sweep PRs
 > should not be able to conflict — check whether two initiatives declare that
 > path in their `outputs[]`.
 

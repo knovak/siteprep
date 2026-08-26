@@ -9,6 +9,26 @@ Publish the supplied files unchanged through the bundled Sites workflow. Treat
 the source directory as read-only. Create every generated adapter, dependency,
 build, test, Git, and archive file in one unique system-temporary workspace.
 
+## Where this fits
+
+This is one deployment engine, and it deploys exactly the Site it is told to. It
+has no opinion about environments.
+
+For an initiative in this repository, do not call it directly. Two skills sit
+above every engine and decide *which* target is being written:
+
+- `$deploy-test` refreshes the initiative's test deployment, as often as needed;
+- `$release-initiative` writes production, only when a person asks.
+
+Called directly for an initiative that has a `deployments` entry in its
+`initiative.json`, this skill could point either environment at the wrong Site.
+When the target belongs to an initiative, hand the job to the wrapper instead.
+
+This engine deploys a **static folder** only. A Sites project that builds itself
+and brings its own `.openai/hosting.json`, bindings, or migrations is a
+`build: sites-app` deployment and goes through the platform's own Sites hosting
+workflow instead. Do not try to reshape such a project into a static folder.
+
 ## Required inputs
 
 Resolve these before creating or changing a Site:
@@ -155,7 +175,10 @@ Return a compact deployment receipt containing:
 - archive file count when returned;
 - source directory and static-file count;
 - confirmation that the isolated workspace was removed and the source
-  repository was unchanged.
+  repository was unchanged;
+- when the deployment belongs to an initiative, both of that initiative's
+  environment URLs - test and production - even when only one of them exists.
+  `node scripts/initiatives.mjs deployments <slug> --json` returns the pair.
 
 If Sites omits archive metrics, label local archive measurements as fallbacks.
 Do not expose credentials, repository tokens, opaque IDs, or temporary paths.

@@ -72,7 +72,7 @@ get_demo_description() {
   local demo_name="$2"
   local demo_title="$3"
 
-  if [ "$demo_name" = "migration_map" ]; then
+  if [ "$demo_name" = "world_migration_atlas" ]; then
     echo 'Open the World Migration Atlas demo. <a href="https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&amp;ouid=111064312747417346604&amp;rtpof=true&amp;sd=true">Tutorial Slideshow</a> · <a href="https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk">Tutorial as PDF</a>.'
     return
   fi
@@ -328,7 +328,7 @@ toc_page_close "$OUTPUT_DIR/index.html"
 
 # Generate demos index without modifying copied demo files.
 if [ -d "$ROOT_DIR/demos" ]; then
-  mapfile -t DEMO_NAMES < <(find "$ROOT_DIR/demos" -maxdepth 1 -mindepth 1 -type d -print | sort | while read -r path; do basename "$path"; done)
+  mapfile -t DEMO_NAMES < <(node "$DEMO_METADATA_SCRIPT" order "$ROOT_DIR/demos" "$ROOT_DIR")
   mkdir -p "$OUTPUT_DIR/demos"
 
   toc_page_open "$OUTPUT_DIR/demos/index.html" "SitePrep Demos" "Demos Index" "../" "demos" \

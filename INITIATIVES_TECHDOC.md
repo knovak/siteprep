@@ -12,10 +12,12 @@ Each immediate subdirectory of `initiatives/` is one initiative. Only
 initiatives/
   sweep.json               # optional sweep configuration
   <slug>/
-    initiative.json        # required - stage, value, outputs, todo
+    initiative.json        # required - stage, value, outputs, deployments, todo
+    README.md              # optional guide, always rendered and listed when present
     wish.md                # the goal in the user's own words
     background.md          # optional research done before objectives
     objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
+    releases.md            # written by a production release, never by hand
     overview.md            # optional narrative, appended to the overview page
 ```
 
@@ -44,6 +46,9 @@ dependency. That is fine for flat string fields and does not survive nested
 | `add <slug> <item>` | Author a new todo item |
 | `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log; refuses to leave a live initiative with nothing to do |
 | `check-scope <slug>` | Fail if changed files reach outside the write scope |
+| `deployments <slug>` | Every deployment, both environment URLs each |
+| `deployments <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
+| `deployments <slug> record --env test\|prod` | Record a completed deployment |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -54,6 +59,7 @@ indexes use, so page furniture stays defined in one place.
 ```text
 gh-pages/initiatives/index.html              # the TOC
 gh-pages/initiatives/<slug>/index.html       # overview
+gh-pages/initiatives/<slug>/README.html      # rendered when README.md is present
 gh-pages/initiatives/<slug>/wish.html        # one page per source .md
 ```
 
@@ -61,6 +67,10 @@ The overview page is derived entirely from `initiative.json` and the files
 present - purpose, status, what's next, what's blocked, outputs, and links to
 the documents - so displayed status cannot drift from recorded state. An
 `overview.md`, if present, is rendered and appended.
+
+An initiative `README.md`, if present, is always included in the rendered
+documents and listed as **README** on the initiative overview page. It does not
+depend on the initiative's lifecycle stage.
 
 The root index gains an Initiatives card, and `shared/nav_bar/` includes an
 Initiatives button, so the collection is reachable the same way decks and demos
@@ -107,6 +117,17 @@ unrelated deck from publishing.
 - an `outputs[].path` that does not exist, or contains `..`
 - two initiatives declaring the same `outputs[].path`
 - a file under a declared output referencing a path under `initiatives/`
+- a leftover `sites` block, which `deployments` replaced
+- a deployment with an unknown `kind`, an unrecognised key for its kind, or no
+  `source`; a `source` that does not exist or contains `..`; a source missing
+  what its kind needs (`index.html`, `package.json`, or the named `root_html`)
+- a demo with no `destination`, or a `destination` that is a path
+- a recorded environment the kind derives rather than deploys
+- a Site environment missing its `slug` or `url`, or with a non-https `url`, an
+  unknown access level, or an unrecognised key
+- a deployment's `test` and `prod` resolving to the same target
+- two initiatives declaring the same deployment target, or one initiative
+  declaring two deployments of the same kind
 - a blocked item with no `blocked_by`, or an unknown blocker prefix
 - `blocked_by: todo:<id>` pointing at an item that does not exist
 - `sweep.json` unparseable, or `max_items_per_initiative` > `items_per_run`
@@ -117,11 +138,209 @@ unrelated deck from publishing.
 - an initiative past its staleness threshold
 - a document expected at the current stage that is missing
 - an item blocked on a human decision
+- a test Site slug that is the bare initiative slug, or a production Site slug
+  that says "test"
 
 Two error checks carry most of the weight. **Exclusive output ownership** is
 what makes parallel sweep pull requests safe. **`todo:` references must
 resolve**, so a forgotten unblock breaks the build instead of stranding an item
 in `blocked` forever.
+
+## Deployments
+
+Most initiatives are not deployed at all, and an initiative may develop for
+months before it is - so `deployments` is absent by default, added when there is
+something to publish, and may change kind late without anything else in the
+initiative moving. It is a list because nothing stops an initiative from having
+both a demo and a Site.
+
+```json
+"deployments": [
+  {
+    "kind": "chatgpt-site",
+    "build": "static",
+    "source": "initiatives/tide-here/work/site",
+    "test": {
+      "slug": "tide-here-test",
+      "url": "https://tide-here-test.ken-novak.chatgpt.site/",
+      "access": "private",
+      "deployed_at": "2026-08-26T14:03:11Z",
+      "version": 7,
+      "commit": "5e3f1c0..."
+    },
+    "prod": { "slug": "tide-here", "url": "…", "access": "public", "version": 3, "commit": "17f2136..." }
+  },
+  {
+    "kind": "demo",
+    "source": "initiatives/repo-guide/work/guide/out",
+    "destination": "Guide to Initiatives",
+    "root_html": "description.html",
+    "prod": { "deployed_at": "2026-08-26T00:25:25Z", "commit": "3dd55f6..." }
+  }
+]
+```
+
+Only `kind` and `source` are required. `deployed_at`, `version` and `commit` are
+written by the deploy skills, not by hand.
+
+### Kinds
+
+A **kind** decides which environments exist, which of them are recorded rather
+than derived, what the source directory has to contain, and which engine
+deploys it. Adding a deployment scheme means adding a `KINDS` entry and a skill
+- not touching the validator, the plan, the record, or the page.
+
+| Kind | `build` | Source must have | Engine | Production is live |
+| --- | --- | --- | --- | --- |
+| `chatgpt-site` | `static` | `index.html` | `deploy-to-chatgpt-sites` | immediately |
+| `chatgpt-site` | `sites-app` | `package.json` | the platform's `sites-hosting` workflow | immediately |
+| `demo` | — | `index.html`, or the named `root_html` | `deploy-demo` | when the branch merges to `main` |
+
+`sites-app` exists because Bookmark Sorter is a full Sites project - it brings
+its own `.openai/hosting.json`, D1 and R2 bindings, and migrations, and builds
+itself. The static-folder engine cannot deploy that, and pretending otherwise
+was the reason it had no home under the first version of this schema.
+
+A production Site is a **separate Site** from the test one: its own database,
+its own storage, starting empty. Test data does not travel with a release.
+
+**Access belongs to the user, and defaults to private.** Either environment may
+be private or public. `plan` reports `access` - the recorded level, or `private`
+as the default - and `confirm_access`, true when that environment has never been
+deployed and the default has therefore not been agreed to. The skills tell the
+user it will be private unless they say otherwise and take their answer; a
+replacement keeps the access the Site already has, so refreshing a preview can
+never quietly change who can see it. `record` also defaults to `private` when no
+access is passed, so nothing becomes public by omission.
+
+### Two environments, everywhere
+
+`test` is overwritten as often as the work needs it, by whichever agent is doing
+the work. `prod` moves only when a person runs the release skill. That asymmetry
+is the whole feature, and three things protect it:
+
+- `test` and `prod` may never resolve to the same target. That is a validation
+  **error**, and `record` refuses it as well - so it holds whether the pair was
+  written by hand or by a deployment.
+- **`deployments <slug> plan --env prod` exits non-zero** when the source
+  directory has uncommitted changes, or has never been committed. Production is
+  released from committed files, so the `commit` recorded against a release is a
+  reference you can go back to. Making this an exit code rather than an
+  instruction is the point: a prompt can be talked out of refusing.
+- The naming convention - `<slug>-test` and `<slug>` - means a Site URL itself
+  says which environment you are looking at. The skills derive those names for
+  new Sites; the validator only warns, because renaming a live Site is not free.
+
+The dirty-source check is scoped to the deployment's `source`. Uncommitted work
+elsewhere in the repository is none of a release's business.
+
+**A kind need not be able to deploy both environments.** A demo has no test copy
+to write: its test environment is the branch preview that gh-pages.yml publishes
+at `branch/<branch-with-slashes-as-dashes>/`, which exists because the branch was
+pushed. So a demo's URLs are *derived* from its `destination` rather than
+recorded - production is `demos/<destination>/`, test is the same path under the
+branch preview, and on `main` they are the same URL because main publishes
+straight to production. Recording a `test` entry on a demo is an error, and
+`record --env test` refuses it.
+
+Deriving those URLs rather than storing them means a demo's link can never drift
+out of step with what is actually under `demos/`. The Pages base comes from the
+`origin` remote, so a fork or a rename needs no edit here.
+
+### The subcommands
+
+```text
+deployments SLUG                        every deployment, both environment URLs each
+deployments SLUG plan --env test|prod [--kind KIND]
+                                        what a deployment would do; exits 1 if blocked
+deployments SLUG record --env test|prod [--kind KIND]
+    chatgpt-site: --site-slug S --url U [--access private|public] [--version N]
+    demo:         (no target arguments - the URL comes from the destination)
+    both:         [--commit SHA]
+```
+
+`--kind` is needed only when an initiative has more than one deployment;
+guessing which one a release meant is exactly the mistake this arrangement
+exists to prevent. `plan` returns the kind, the engine to use, `new` or
+`replacement`, the target, the file count, the source commit, whether the
+environment is `deployable` at all, and **both** environment URLs.
+
+Every one of them reports both URLs whether or not both environments exist, so a
+deployment receipt never leaves you hunting for the other one. The overview page
+shows the same pairs as a Deployments card, with a "not released yet" row rather
+than a missing one.
+
+The superseded `sites` block is a validation **error**, not an ignored key: a
+record left half-migrated must not quietly stop being deployed.
+
+### Release history
+
+Two questions, answered from git rather than from anybody's memory.
+
+**Is production the latest?** `releaseState()` compares the commit recorded
+against `prod` with the source directory's current commit, and reports one of:
+
+| Summary | Means |
+| --- | --- |
+| `not released yet` | no production environment |
+| `on test, never released` | test exists, production does not |
+| `production is current` | the released commit is the source's latest |
+| `N commit(s) unreleased` | that many commits have touched the source since |
+| `released, but the released commit is unknown` | nothing to compare against |
+
+It also reports `test_ahead` when the test environment's commit is a genuine
+descendant of production's - "different" is not "ahead". The summary appears
+under each deployment on the overview page, in `deployments <slug>`, and in
+`plan`, whose `release.changes` lists the commit subjects a release would carry.
+
+**What shipped, and when?** `record --env prod` writes two records. The detailed
+one is `initiatives/<slug>/releases.md`, newest first, created on the first
+release: date, kind, version, URL, released commit, the commits since the
+previous release, and where the test environment stood at that moment. The
+narrative one is a one-line `— Release` entry appended to `log.md`, so the
+initiative's story shows that a release happened and points at the detail.
+
+**Every part of it is scoped to the deployment's own `source`.** The change list
+is `git log … -- <source>`, the released commit is `git log -1 … -- <source>`,
+and the unreleased count is the length of that same list - so a deck edit, a
+change to another initiative, or an edit made directly under `demos/` never
+appears in this initiative's release notes. A commit that touched the source
+*and* other paths does appear, with its own subject: it genuinely changed the
+source, so listing it is right even when the subject is broader than this
+release. Each entry names the source it summarizes, so the scope is visible in
+the file rather than only in this document.
+
+That last item is the deliberate answer to recording test deploys: a release is
+worth a durable record and the dozens of preview pushes before it are not, so
+one test observation is captured at the moment it becomes interesting. A test
+deploy writes no history of its own.
+
+**All of it is best-effort, and none of it can block a release.** The commits
+recorded against the two environments are the only inputs, so a deployment made
+before this existed, a rewritten history, or a source moved to a new path
+degrade to "unknown" rather than to a wrong answer. `appendReleaseHistory` never
+throws: a failed write costs the entry, not the release, and `record` reports
+whether the file was updated.
+
+The sweep **reports** unreleased work in its digest and never acts on it -
+releasing is a person's decision, and a sweep that appended to `releases.md` on
+every run would turn a list of releases into churn.
+
+### The skills
+
+Two engines, and two skills above them that decide which target is written:
+
+| Skill | Writes | Run by |
+| --- | --- | --- |
+| `deploy-test` | the test environment of any kind | any agent, as often as the work needs |
+| `release-initiative` | production, whatever the kind | a person, explicitly, and nothing else |
+
+`deploy-to-chatgpt-sites` and `deploy-demo` are engines: each deploys exactly the
+target it is told to and has no opinion about environments. Splitting the
+decision from the mechanism is what makes a release deliberate - an agent
+refreshing a preview reaches for the skill that cannot reach production, and
+"release this" is a thing the user has to say. It is also why `deploy-demo` is
+never called by `deploy-test`: copying into `demos/` *is* the production release.
 
 ## Last activity
 
@@ -136,6 +355,7 @@ which is accurate rather than an error.
 
 `initiatives.mjs digest` prints the survey the sweep's first phase calls for:
 decisions waiting on a person, blockers now satisfied, items awaiting review,
+unreleased work,
 initiatives waiting on other initiatives, stale initiatives, initiatives with
 nothing to do, and a state table.
 

@@ -398,11 +398,11 @@ test('allows a declared output, which is the point of declaring it', () => {
   const dir = scratch();
   const path = join(dir, 'healthy', 'initiative.json');
   const data = JSON.parse(readFileSync(path, 'utf8'));
-  data.outputs = [{ kind: 'demo', path: 'demos/migration_map', status: 'published' }];
+  data.outputs = [{ kind: 'demo', path: 'demos/world_migration_atlas', status: 'published' }];
   writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
 
   const output = run(
-    ['check-scope', 'healthy', '--files', 'demos/migration_map/index.html'],
+    ['check-scope', 'healthy', '--files', 'demos/world_migration_atlas/index.html'],
     dir
   );
   assert.match(output, /within scope/);

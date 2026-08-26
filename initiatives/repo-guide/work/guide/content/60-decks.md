@@ -17,9 +17,7 @@ carries the place facts that were asked for, locations written for a visitor
 rather than a resident, and a map.
 
 Then build. After the last source change, run `{{agent.commands.build}}` and
-capture anything visibly different with the repository's screenshot command. The
-build is what turns source into the published site, so an unbuilt change isn't
-really a change yet.
+capture anything visibly different with the repository's screenshot command.
 [The working conventions define the content requirements](source:AGENTS.md); [the
 build document gives the reproducible commands](source:BUILD_TECHDOC.md).
 

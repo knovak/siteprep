@@ -105,6 +105,7 @@ export function buildSimulatorSteps(facts) {
   const phases = vocabulary.phases;
   const firstPhase = phases[0];
   const respondPhase = phases[Math.min(1, phases.length - 1)];
+  const proposePhase = phases[Math.min(2, phases.length - 1)];
   const workPhase = phases.at(-1);
 
   const phaseStatus = (active, completed = []) => Object.fromEntries(phases.map(phase => [
@@ -168,13 +169,13 @@ export function buildSimulatorSteps(facts) {
       stage: shaped,
       eyebrow: 'A bounded sweep runs',
       title: 'Finish what fits',
-      narrative: `Watch the budget. The run works through its phases in order and spends at most ${budget} items. When the allowance is gone, the next item gets passed over rather than squeezed in.`,
+      narrative: `The workload is managed thorough a "budget" that limits the number of work items per sweep. The budget is currently ${budget} items per run.`,
       items: [
         {key: 'spec', label: 'Draft the specification', state: 'actionable', detail: 'Waiting for the run to reach it.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'blocked', detail: `${proposable}: still waiting`},
         {key: 'increment', label: 'Build the first increment', state: 'actionable', detail: 'Also available.'},
       ],
-      changes: ['Earlier phases spend the budget first.', 'The budget is a boundary, not a suggestion.'],
+      changes: ['PR comments come first, then proposals, then remaining work.', `The budget is currently ${budget} items per run.`],
       advance: 'the person answers the question',
       // The moment worth watching, choreographed rather than presented finished.
       beats: [
@@ -195,16 +196,26 @@ export function buildSimulatorSteps(facts) {
         },
         {
           at: 1800,
-          phases: phaseStatus(workPhase, phases.filter(phase => phase !== workPhase)),
-          budget: {spent: budget - 1, of: budget},
+          phases: phaseStatus(proposePhase, phases.filter(phase => phases.indexOf(phase) < phases.indexOf(proposePhase))),
+          budget: {spent: Math.max(1, budget - 2), of: budget},
           items: [
-            {key: 'spec', label: 'Draft the specification', state: 'in-flight', detail: 'A pull request is open.'},
-            {key: 'interaction', label: 'Choose the interaction', state: 'blocked', detail: `${proposable}: still waiting`},
+            {key: 'spec', label: 'Draft the specification', state: 'actionable', detail: 'Waiting for the remaining-work phase.'},
+            {key: 'interaction', label: 'Choose the interaction', state: 'in-flight', detail: 'Alternatives and a proposal are in a pull request.'},
             {key: 'increment', label: 'Build the first increment', state: 'actionable', detail: 'Next in the ranking.'},
           ],
         },
         {
           at: 2700,
+          phases: phaseStatus(workPhase, phases.filter(phase => phase !== workPhase)),
+          budget: {spent: budget - 1, of: budget},
+          items: [
+            {key: 'spec', label: 'Draft the specification', state: 'in-flight', detail: 'A pull request is open.'},
+            {key: 'interaction', label: 'Choose the interaction', state: 'in-flight', detail: 'The proposal is waiting for review.'},
+            {key: 'increment', label: 'Build the first increment', state: 'actionable', detail: 'Next in the ranking.'},
+          ],
+        },
+        {
+          at: 3600,
           phases: allComplete,
           budget: {spent: budget, of: budget},
           items: [
@@ -220,7 +231,7 @@ export function buildSimulatorSteps(facts) {
       stage: shaped,
       eyebrow: 'The decision arrives',
       title: 'Clear the blocker',
-      narrative: 'The person answers, and the answer gets written down with its reasoning and with whatever it leaves open. The amber clears, and nobody had to rewrite the original wish to get there.',
+      narrative: 'When you answer a question the work is stuck on, an agent records it in decisions.md and unblocks the item. The answer includes its reasoning and whatever it leaves open.',
       items: [
         {key: 'spec', label: 'Draft the specification', state: 'in-flight', detail: 'Review continues in its pull request.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'The recorded answer makes this doable.', changed: true},
@@ -290,13 +301,13 @@ export function buildSimulatorSteps(facts) {
       id: 'review-returns',
       stage: building,
       eyebrow: 'Feedback comes back first',
-      title: 'Answer review before starting anything',
-      narrative: 'A reviewer leaves comments. On the next run, answering them outranks opening anything new, which is why a run that spends everything on feedback and starts nothing has done its job.',
+      title: 'Answer PR comments before new work',
+      narrative: 'A reviewer leaves PR comments. The run answers them before it considers opening anything new. Then it analyzes and recommends items to propose for new work. Then it works through remaining items.',
       items: [
         {key: 'increment-one', label: 'Build increment one', state: 'review', detail: 'Review comments waiting for an answer.', changed: true},
         {key: 'increment-two', label: 'Build increment two', state: 'blocked', detail: 'todo: waits for increment one'},
       ],
-      changes: ['Finishing outranks starting.', 'The agent replies. It never resolves the thread itself.'],
+      changes: ['The agent answers the PR comments.', 'The thread remains open for the reviewer.'],
       advance: 'the reviewer merges',
       beats: [
         {
@@ -350,14 +361,14 @@ export function buildSimulatorSteps(facts) {
         {key: 'follow-up', label: 'Extend the output', state: 'blocked', detail: `${factClass}: still waiting on a person`},
       ],
       changes: ['The stage moves to rest.', 'Sweeps stop picking it up. The record stays intact.'],
-      advance: 'the record is closed out',
+      advance: 'the record may be archived',
     }),
     step({
       id: 'archived',
       stage: archived,
       eyebrow: 'The record outlives the work',
-      title: 'Close it without losing it',
-      narrative: 'Eventually the initiative gets closed out. Everything stays readable: the original wish, what done was going to mean, the alternatives that lost, and why it stopped. That is the whole point of keeping the record this way.',
+      title: 'Archive it without losing it',
+      narrative: 'Eventually the initiative may be closed out. Everything stays readable: the original wish, what done was going to mean, the alternatives that lost, and why it stopped. That is the whole point of keeping the record this way.',
       items: [],
       changes: ['The lifecycle reaches its last stage.', 'The reasoning still reads clearly for whoever comes next.'],
       advance: null,

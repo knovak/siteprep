@@ -2,6 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 
 function stop(message) {
   throw new Error(message);
@@ -29,6 +30,19 @@ function relativeFile(value, label) {
   return normalized;
 }
 
+function webUrl(value, label) {
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    return null;
+  }
+  if (!["http:", "https:"].includes(url.protocol)) {
+    stop(`${label} must use http or https`);
+  }
+  return url;
+}
+
 function loadManifest(demoDir, demoName) {
   const manifestPath = path.join(demoDir, "demo.json");
   let manifest;
@@ -43,15 +57,36 @@ function loadManifest(demoDir, demoName) {
 
   const title = singleLine(manifest.title, `${demoName} title`);
   const description = singleLine(manifest.description, `${demoName} description`);
-  const root = relativeFile(manifest.root, `${demoName} root`);
-  if (/[?#]/u.test(root)) {
-    stop(`${demoName} root must be a file path without a query or fragment`);
+  const rootValue = singleLine(manifest.root, `${demoName} root`);
+  const rootUrl = webUrl(rootValue, `${demoName} root`);
+  const root = rootUrl ? rootValue : relativeFile(rootValue, `${demoName} root`);
+  if (!rootUrl) {
+    if (/[?#]/u.test(root)) {
+      stop(`${demoName} root must be a file path without a query or fragment`);
+    }
+    if (!/\.html?$/iu.test(root)) {
+      stop(`${demoName} root must identify an .html or .htm file`);
+    }
+    if (!fs.statSync(path.join(demoDir, root), { throwIfNoEntry: false })?.isFile()) {
+      stop(`${demoName} root file does not exist: ${root}`);
+    }
   }
-  if (!/\.html?$/iu.test(root)) {
-    stop(`${demoName} root must identify an .html or .htm file`);
+
+  let initiative = null;
+  if (manifest.initiative !== undefined) {
+    initiative = singleLine(manifest.initiative, `${demoName} initiative`);
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(initiative)) {
+      stop(`${demoName} initiative must be a lowercase slug`);
+    }
+    const repoRoot = path.resolve(demoDir, "..", "..");
+    if (!fs.statSync(path.join(repoRoot, "initiatives", initiative, "initiative.json"), { throwIfNoEntry: false })?.isFile()) {
+      stop(`${demoName} initiative does not exist: ${initiative}`);
+    }
   }
-  if (!fs.statSync(path.join(demoDir, root), { throwIfNoEntry: false })?.isFile()) {
-    stop(`${demoName} root file does not exist: ${root}`);
+
+  const featured = manifest.featured ?? false;
+  if (typeof featured !== "boolean") {
+    stop(`${demoName} featured must be true or false`);
   }
 
   const rawLinks = manifest.links ?? [];
@@ -71,22 +106,17 @@ function loadManifest(demoDir, demoName) {
     labels.add(label);
 
     let localPath = null;
-    let url;
-    try {
-      url = new URL(href);
-    } catch {
+    const url = webUrl(href, `${demoName} link ${label}`);
+    if (!url) {
       localPath = relativeFile(href.split(/[?#]/u, 1)[0], `${demoName} link ${label}`);
       if (!fs.statSync(path.join(demoDir, localPath), { throwIfNoEntry: false })?.isFile()) {
         stop(`${demoName} local link file does not exist: ${localPath}`);
       }
     }
-    if (url && !["http:", "https:"].includes(url.protocol)) {
-      stop(`${demoName} link ${label} must use http or https`);
-    }
     return { label, href, localPath };
   });
 
-  return { title, description, root, links };
+  return { title, description, root, rootUrl, links, initiative, featured };
 }
 
 function escapeHtml(value) {
@@ -148,8 +178,54 @@ function renderDescription(manifest, demoName) {
   return { html, embedded };
 }
 
+function lastActivity(repoRoot, relativePath) {
+  try {
+    const value = execFileSync(
+      "git",
+      ["log", "-1", "--format=%ct", "--", relativePath],
+      { cwd: repoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    ).trim();
+    return Number.parseInt(value, 10) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function orderedDemoNames(demosDir, repoRoot) {
+  const demosRelative = path.relative(repoRoot, demosDir);
+  return fs.readdirSync(demosDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const demoDir = path.join(demosDir, entry.name);
+      const manifest = fs.statSync(path.join(demoDir, "demo.json"), { throwIfNoEntry: false })?.isFile()
+        ? loadManifest(demoDir, entry.name)
+        : null;
+      const activityPath = manifest?.initiative
+        ? path.join("initiatives", manifest.initiative)
+        : path.join(demosRelative, entry.name);
+      return {
+        name: entry.name,
+        featured: manifest?.featured ?? false,
+        activity: lastActivity(repoRoot, activityPath),
+      };
+    })
+    .sort((left, right) =>
+      Number(right.featured) - Number(left.featured)
+      || right.activity - left.activity
+      || left.name.localeCompare(right.name),
+    )
+    .map((entry) => entry.name);
+}
+
 function main() {
   const [command, demoDir, demoName, field] = process.argv.slice(2);
+  if (command === "order") {
+    if (!demoDir || !demoName) {
+      stop("usage: demo_metadata.mjs order DEMOS_DIR REPO_ROOT");
+    }
+    console.log(orderedDemoNames(path.resolve(demoDir), path.resolve(demoName)).join("\n"));
+    return;
+  }
   if (!command || !demoDir || !demoName) {
     stop("usage: demo_metadata.mjs <validate|html-field|description|href|links> DEMO_DIR DEMO_NAME [FIELD]");
   }
@@ -167,7 +243,9 @@ function main() {
     return;
   }
   if (command === "href") {
-    if (manifest.root === "index.html") {
+    if (manifest.rootUrl) {
+      console.log(manifest.root);
+    } else if (manifest.root === "index.html") {
       console.log(`./${encodePath(demoName)}/`);
     } else {
       console.log(localHref(demoName, manifest.root));
