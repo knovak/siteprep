@@ -18,8 +18,12 @@ test('a forecast keeps tides visible and folds coast and astronomy details', asy
   await expect(page.locator('#station-name')).toContainText('SEATTLE');
   await expect(page.locator('#zone-name')).toHaveText('America/Los_Angeles');
   await expect(page.locator('.day-card')).toHaveCount(5);
-  await expect(page.locator('.day-card').first().getByText('Tides', { exact: true })).toBeVisible();
+  await expect(page.locator('.day-card').first().getByText('Tides', { exact: true })).toHaveCount(0);
   await expect(page.locator('.day-card').first().locator('.event-group li')).toHaveCount(4);
+  await expect(page.locator('.day-card').first().locator('.event-group li.past')).toHaveCount(1);
+  await expect(page.locator('.day-card').first().locator('.event-group li.future')).toHaveCount(3);
+  await expect(page.locator('.day-card').first().locator('.event-group li.past .tide-label')).toHaveCSS('font-weight', '400');
+  await expect(page.locator('.day-card').first().locator('.event-group li.future .tide-label').first()).toHaveCSS('font-weight', '800');
   const astronomyDetails = page.locator('.astronomy-details');
   await expect(astronomyDetails).toHaveCount(5);
   await expect(astronomyDetails.locator('[open]')).toHaveCount(0);
@@ -133,12 +137,12 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   const requests = [];
   page.on('request', (request) => requests.push(`${request.url()} ${request.postData() || ''}`));
   await page.goto(pagePath);
-  await expect(page.getByText(/submitted place or coordinates go directly to the configured Nominatim geocoder/i)).toBeVisible();
+  await expect(page.getByText(/go directly to the configured Nominatim geocoder/i)).toBeVisible();
   await expect(page.getByText(/history stays in this browser until you clear it/i)).toBeVisible();
 
   const marker = 'Harbor Secret 90817';
   await page.locator('#place').fill(marker);
-  await page.getByRole('button', { name: 'Show five days' }).click();
+  await page.getByRole('button', { name: 'Show selection' }).click();
   await expect(page.locator('#entered-name')).toHaveText(marker);
   await page.getByRole('button', { name: /Show local history \(2\)/ }).click();
   await expect(page.locator('#history-panel')).toBeFocused();
@@ -171,4 +175,42 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   await page.waitForTimeout(300);
   expect(requests).toHaveLength(requestCount);
   expect(requests.some((request) => request.includes(marker))).toBe(false);
+});
+
+test('Show here requests browser location only after a click and uses the coordinate path', async ({ page }) => {
+  await page.addInitScript(() => {
+    let calls = 0;
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: {
+        getCurrentPosition(success) {
+          calls += 1;
+          success({ coords: { latitude: 47.6062, longitude: -122.3321 } });
+        }
+      }
+    });
+    Object.defineProperty(window, 'locationRequestCount', { get: () => calls });
+  });
+  await page.goto(pagePath);
+  await expect(page.getByText(/asks your browser for location permission/i)).toBeVisible();
+  expect(await page.evaluate(() => window.locationRequestCount)).toBe(0);
+  await page.getByRole('button', { name: 'Show here' }).click();
+  await expect(page.locator('#place')).toHaveValue('47.60620, -122.33210');
+  await expect(page.locator('#entered-name')).toHaveText('47.60620, -122.33210');
+  expect(await page.evaluate(() => window.locationRequestCount)).toBe(1);
+});
+
+test('location denial leaves the manual selection untouched', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: { getCurrentPosition(_success, error) { error({ code: 1 }); } }
+    });
+  });
+  await page.goto(pagePath);
+  await page.locator('#place').fill('Halifax');
+  await page.getByRole('button', { name: 'Show here' }).click();
+  await expect(page.locator('#place')).toHaveValue('Halifax');
+  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'location-permission-denied');
+  await expect(page.locator('#state-panel')).toContainText(/allow location for this Site/i);
 });

@@ -183,6 +183,9 @@ committed.
 | Three names together | **You entered**, **Resolved place**, and **Coast** are all visible at once, with station and zone below | O1, O2, §7 |
 | Five equal cards | Five day cards, each separating tides, sun, and moon, with one time format throughout | O3, §7 |
 | Time zone is visible | The coast's zone is shown, and no displayed time is formatted in the device zone | O5 |
+| Past tide emphasis | Tide events before the current absolute instant render at normal weight; later events remain bold, regardless of the browser zone | O3, O5 |
+| Browser location is explicit | **Show here** requests one location only after a click, feeds coordinates through the manual coordinate path, and never watches or requests on load | O7, O8, §9 |
+| Location fallback | Permission denial, timeout, unavailable coordinates, or a missing geolocation API leaves the manual selection untouched and gives a readable retry path | O7, O8, §9 |
 | **Narrow screens stack** | At a phone width, days stack; nothing is horizontally clipped and the page does not scroll sideways | O7, §7 |
 | Chooser | The ambiguous fixture renders up to three candidates with distance and a map, and no tide rows appear before a choice | O2, §3.2 |
 | Every §8 state renders | Each of the eight codes has a distinct, readable message and the retry action §8 specifies | O6, §8 |

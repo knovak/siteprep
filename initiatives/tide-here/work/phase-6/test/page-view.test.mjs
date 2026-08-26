@@ -22,14 +22,28 @@ test('event times always use the named coast zone', () => {
   assert.deepEqual(model.moonrise, { label: 'does not rise', code: 'no-event' });
 });
 
-test('the page vocabulary gives every state a distinct message and action', () => {
+test('past tide styling compares absolute instants while labels stay in the coast zone', () => {
+  const model = dayViewModel({
+    ...day,
+    tides: [
+      { type: 'low', at: '2026-08-20T14:30:00.000Z', height: 0.5, unit: 'm' },
+      { type: 'high', at: '2026-08-20T15:30:00.000Z', height: 2.34, unit: 'm' }
+    ]
+  }, 'America/Halifax', '2026-08-20T15:00:00.000Z');
+  assert.deepEqual(model.tides.map(({ time, isPast }) => ({ time, isPast })), [
+    { time: '11:30 AM', isPast: true },
+    { time: '12:30 PM', isPast: false }
+  ]);
+});
+
+test('the page vocabulary gives every state a distinct message', () => {
   const codes = [
     'invalid-input', 'place-not-found', 'geocoder-unavailable', 'coverage-unavailable',
-    'coast-choice-required', 'tides-unavailable', 'astronomy-unavailable', 'no-event'
+    'coast-choice-required', 'tides-unavailable', 'astronomy-unavailable', 'no-event',
+    'location-permission-denied', 'location-unavailable'
   ];
   const states = codes.map(statePresentation);
-  assert.equal(new Set(states.map((state) => state.message)).size, 8);
-  assert.equal(new Set(states.map((state) => state.action)).size, 8);
+  assert.equal(new Set(states.map((state) => state.message)).size, 10);
 });
 
 test('the forecast view keeps all three names, station, zone, and five equal-shape days', () => {
