@@ -1,0 +1,2 @@
+ALTER TABLE `authorized_user` ADD `user_id` text;--> statement-breakpoint
+CREATE UNIQUE INDEX `idx_authorized_user_user_id` ON `authorized_user` (`user_id`) WHERE "authorized_user"."user_id" is not null;
