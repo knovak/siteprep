@@ -149,9 +149,10 @@ the indexes and constraints required by the operations below (§10).
   lets a set operation reverse as one step.
 - **app user** — the host's opaque `owner_id`, plus the retained legacy
   `can_edit_templates` capability.
-- **authorized user** — normalized email and type (`admin` | `user`). Email is
-  not an ownership key; the `admin` type gates the Admin surface and APIs and
-  grants template-edit permission (§10).
+- **authorized user** — normalized email, optional linked Site user id, and type
+  (`admin` | `user`). A matching email or linked id admits a signed-in account;
+  neither is an ownership key. The `admin` type additionally gates the Admin
+  surface and APIs and grants template-edit permission (§10).
 
 **Two structural constraints, both from decisions rather than taste:**
 
@@ -567,14 +568,28 @@ What the destination gets, and what it does not:
 Collections are owned and **private by default** (O8). Identity comes from the
 host — the decision presumed an OpenAI surface where user IDs are built in.
 
+The Site itself is public so anyone can reach the entry page. The application
+has two server-side gates before it creates or reads user data:
+
+1. Both the opaque user id and normalized email must be present in the identity
+   headers supplied by Sign in with ChatGPT. Otherwise `/` shows a polite
+   sign-in action and API requests return `401`.
+2. The identity must match `authorized_user` by normalized email or linked
+   Site-specific user id. Otherwise `/` names the signed-in email and politely
+   says it is not yet authorized, while API requests return `403`.
+
+The first authorized email match records that Site's opaque user id on the row,
+so later requests can match either value. A failed allowlist check creates no
+`app_users` row and no personal collection.
+
 **The collection and file controls** the wish's amendment asks for: choose,
 create, or rename a private collection; import bookmark HTML or an export file;
 copy a demo template; export the collection or current selection; and erase the
 current collection only after confirmation. Import, Select, and Export are the
 mutually exclusive row specified in §7.
 
-The separate **Admin** surface is rendered only when the normalized signed-in
-email has `type = admin` in `authorized_user`. The same server-side check gates
+The separate **Admin** surface is rendered only when the matched authorized
+user has `type = admin`. The same server-side check gates
 user-list changes, sitting inspection/end, capture actions, and template
 creation. The table may also contain `type = user`; that row records an allowed
 user without granting Admin. Ownership continues to use the host's opaque id,
@@ -586,8 +601,8 @@ A personal collection is simple — one owner, private, nothing else to say. A d
 is where the detail lives, and it splits into two kinds of collection:
 
 - **`demo-template`** — the source. Created and edited by a maintainer, and
-  **readable by every signed-in user** so that they can copy it. Nobody but a
-  maintainer writes to it.
+  **readable by every authorized signed-in user** so that they can copy it.
+  Nobody but a maintainer writes to it.
 - **`demo-copy`** — what a tester actually uses. An ordinary private collection,
   owned by them, populated from a template at copy time, and thereafter
   completely independent: their verdicts, their tags, their mess.
@@ -601,18 +616,19 @@ improve while people are using copies of it.
 | Operation | Who | What happens |
 |---|---|---|
 | Create or edit a template | an administrator, or a user with the retained legacy `can_edit_templates` capability | Ordinary editing, in a collection of kind `demo-template`. Seeded like any other collection — including by importing an export from a personal one (§9.1) |
-| List templates | any signed-in user | Templates are the one thing visible across owners |
-| Take a copy | any signed-in user | New `demo-copy`, owned by them, `template_id` and `copied_at` recorded, name defaulting to the template's and editable |
-| Take a *fresh* copy | any signed-in user | The same operation again. A dirtied copy is not repaired in place; a second copy is made, and the name must differ from the first, which is why the name is editable at copy time |
+| List templates | any authorized signed-in user | Templates are the one thing visible across owners |
+| Take a copy | any authorized signed-in user | New `demo-copy`, owned by them, `template_id` and `copied_at` recorded, name defaulting to the template's and editable |
+| Take a *fresh* copy | any authorized signed-in user | The same operation again. A dirtied copy is not repaired in place; a second copy is made, and the name must differ from the first, which is why the name is editable at copy time |
 | Delete a copy | its owner | Deletes that collection and its items. Captures are untouched — they are URL-keyed and shared (§5) |
 
 **What this requires us to know.** Exactly three things beyond a personal
 collection, which is the point of writing it out:
 
-1. **About the user** — the host's opaque owner id, plus a normalized email used
-   only to look up `authorized_user`. Administrator status grants template
-   editing and the Admin operations above; the older `can_edit_templates`
-   boolean remains supported for template editing only.
+1. **About the user** — the host's opaque owner id and normalized email. The
+   email or a previously linked Site user id must match `authorized_user` before
+   any collection is opened. Administrator status grants template editing and
+   the Admin operations above; the older `can_edit_templates` boolean remains
+   supported for template editing only after allowlist admission.
 2. **About the collection** — its `kind`, and for a copy, `template_id` and
    `copied_at`. Enough to answer "where did this come from" and "is this stale
    relative to its template", without any syncing machinery.
@@ -626,7 +642,7 @@ undo it: *one system-owned demo collection that many users read is sharing.*
 
 What §10.1 specifies is the per-user-copy reading, with the template that
 decision implied made explicit. The one thing it adds is that **a template is
-readable by all signed-in users** — otherwise nobody could copy it. That is a
+readable by all authorized signed-in users** — otherwise nobody could copy it. That is a
 real cross-user read, and it is worth naming rather than glossing:
 
 - It is **read-only and one-way**. No user can write to a template, and no user

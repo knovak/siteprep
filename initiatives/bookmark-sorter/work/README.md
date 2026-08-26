@@ -35,8 +35,12 @@ selection, and export operations.
   personal pile per owner.
 - `migrations/0007_authorized_users_history.sql` creates the `authorized_user`
   list and per-owner recent selection history. The two supplied example users
-  are seeded. A signed-in email must have type `admin` for the Admin menu and
-  its user-management, capture, and end-sitting operations to be available.
+  are seeded. Every admitted account must match this list; type `admin` also
+  enables the Admin menu and its user-management, capture, and end-sitting
+  operations.
+- `migrations/0008_authorized_user_identity.sql` adds the optional Site user id
+  link. The first authorized email match stores that Site-specific id, and a
+  unique partial index permits later admission by either value.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -73,10 +77,15 @@ selection, and export operations.
   list reserve parameter slots for fixed values such as `collection_id`, so no
   statement exceeds D1's 100-bound-parameter limit.
 - `src/site-identity.mjs` reads the stable
-  `oai-authenticated-user-id` supplied by ChatGPT Sites. That id remains the
-  sole collection-ownership key. The normalized email is consulted only for
-  the separate `authorized_user` admin role; the optional encoded full name is
-  display-only.
+  `oai-authenticated-user-id` and normalized email supplied by ChatGPT Sites.
+  Both must be present before the app treats the request as signed in. The id
+  remains the sole collection-ownership key; email and the linked id are used
+  for application admission, and the matched row's type supplies the separate
+  Admin role. The optional encoded full name is display-only. The same module
+  constructs same-origin Sign in with ChatGPT and sign-out paths.
+- `src/access-page.mjs` renders the public entry states: a polite sign-in action
+  for missing identity and a not-yet-authorized message naming the email an
+  administrator should add. Neither state exposes or creates collection data.
 - `src/memory-store.mjs` is the deterministic test adapter, indexed by
   `(collection_id, url_key)` so the generated 10,000-item sizing run exercises
   the same identity rule without quadratic test behavior.
@@ -87,8 +96,9 @@ selection, and export operations.
   admin-only sitting read returns its durable session row plus parsed action log
   for on-screen review or JSON export. The same
   surface now evaluates, saves, tags and sweeps selections. Every API route
-  requires Sites identity, resolves the active collection server-side, and
-  rejects another owner's collection even when its id is supplied directly.
+  requires complete Sites identity and an `authorized_user` match before it
+  opens storage, resolves the active collection server-side, and rejects
+  another owner's collection even when its id is supplied directly.
   Collection operations list templates, create an empty private collection,
   take or refresh a private copy, rename or erase a collection, delete a copy,
   and allow template creation for administrators or users whose legacy D1
@@ -135,7 +145,7 @@ selection, and export operations.
   `bookmark-sorter/sitting-v1` JSON. Add, remove, and display functions for
   `authorized_user` follow, with both capture actions below the displayed user
   list and the inline Create template form. The menu is rendered only for an
-  admin email, and that role also grants server-side template write access. Its
+  matched admin row, and that role also grants server-side template write access. Its
   fixed panel is positioned
   below the Admin summary so the summary remains available to collapse it.
   The verdict selector and split Sweep control remain visible beside the
@@ -149,15 +159,18 @@ selection, and export operations.
 Apply `migrations/0001_core.sql`, `migrations/0002_triage.sql`,
 `migrations/0003_captures.sql`, `migrations/0004_selections.sql`, then
 `migrations/0005_identity_collections.sql`, `migrations/0006_private_collections.sql`,
-and `migrations/0007_authorized_users_history.sql`.
+`migrations/0007_authorized_users_history.sql`, and
+`migrations/0008_authorized_user_identity.sql`.
 Bind that database to the Worker as
-`DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies
-`oai-authenticated-user-id`; the Worker rejects an API request without it and
-constructs `D1BookmarkStore` with that stable id as `ownerId`. The first request
-creates the app-user row and one private personal collection. An email with
-`type = 'admin'` in `authorized_user` can create and edit templates; the legacy
-`app_users.can_edit_templates = 1` capability remains supported. Neither path
-trusts a client flag.
+`DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies the opaque id
+and email after Sign in with ChatGPT. Missing either produces the sign-in page
+or an API `401`; an identity outside `authorized_user` produces the
+not-yet-authorized page or API `403`. Only after admission does the Worker
+construct `D1BookmarkStore` with the stable id as `ownerId`, create the app-user
+row, and create one private personal collection. A matched row with
+`type = 'admin'` can create and edit templates; the legacy
+`app_users.can_edit_templates = 1` capability remains supported after
+admission. Neither path trusts a client flag.
 
 Template rows are readable across owners and writable only by their owner when
 that owner has either permission. A copied template is a new `demo-copy` owned by
@@ -191,14 +204,16 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
 - `.openai/hosting.json` declares D1 as `DB` and R2 as `CAPTURES`. The first
   test deployment intentionally left R2 `null`; the user approved the storage
   limits on 2026-08-20, so later versions keep the capture binding declared.
-- `db/schema.ts` is the deployable final form of migrations 0001–0006. The
+- `db/schema.ts` is the deployable final form of migrations 0001–0008. The
   generated `drizzle/` migration is packaged with a Site version and creates the
   same tables, constraints, and query indexes on a fresh D1 database.
 - `worker/index.ts` passes `/` and `/api/*` to the existing application and
   leaves the framework-owned image and sign-in routes to Sites.
-- A private Site supplies the stable `oai-authenticated-user-id` header. The app
-  uses that opaque value for ownership and creates one private personal
-  collection on first API use.
+- The Site is public to reach. Sites owns the `/signin-with-chatgpt` and
+  `/signout-with-chatgpt` flows; the Worker supplies the entry pages and applies
+  the allowlist to `/` and every `/api/*` route. An authorized request uses the
+  opaque id for ownership and creates one private personal collection on first
+  API use.
 - With R2 absent, importing and triage work normally but pass-1 metadata capture
   and capture-gap processing are disabled. That was the first deployment. The
   user accepted the Sites storage limits and authorised the bucket on 2026-08-20
@@ -219,6 +234,11 @@ initiative pages. See `END_USER_TESTING.md` for the private test procedure and
 the data-handling boundary.
 
 ## Triage API and interaction
+
+Every `/api/*` route returns `401 authentication_required` until Sites supplies
+both identity fields and `403 authorization_required` until email or linked
+Site user id matches `authorized_user`. These checks happen before user or
+collection creation.
 
 - `GET /api/items` returns one virtual window plus `total` and `backlog`.
 - `GET /api/collections` returns the current user's collections, all readable
@@ -252,9 +272,9 @@ the data-handling boundary.
   strings by most-recent use and records a successfully opened expression.
   History is user-scoped rather than collection-scoped and persists in D1.
 - `GET|POST /api/authorized-users` displays, adds, updates, or removes rows in
-  `authorized_user`. Both routes require the current signed-in email to have
-  type `admin`; the same check gates Admin rendering, capture operations, and
-  ending a sitting.
+  `authorized_user`. Both routes require the matched row to have type `admin`;
+  the same check gates Admin rendering, capture operations, and ending a
+  sitting.
 - `GET /api/proposals` recomputes source, exact-tag, verdict, folder, site,
   image, and near-title groups as ordinary pre-filled selections. The five
   individual verdict expressions and the combined **not junk** and
@@ -336,8 +356,10 @@ the ordinary tag action. Phase 6 adds the real SQLite migrations plus two
 authenticated sessions: personal collections are mutually unreachable, only
 templates cross owner boundaries, template writes require the D1 capability,
 empty named collections and copies are private, fresh copies are additive, and deletion preserves
-the shared capture. Header parsing and missing-identity rejection have separate
-tests so neither can quietly fall back to an email or anonymous owner.
+the shared capture. Header parsing, public sign-in rendering, missing-identity
+`401`, allowlist `403`, first-email user-id linking, and non-creation for denied
+accounts have separate tests so no route can quietly fall back to an anonymous
+or merely authenticated owner.
 Capture tests use a local HTTP fixture server rather than
 mocking pass 1: they cover metadata precedence, anonymous requests, the
 no-JavaScript rule, derivative-only storage, 404/timeout/TLS/parked failures,

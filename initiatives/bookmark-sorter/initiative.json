@@ -12,7 +12,10 @@
       "test": {
         "slug": "bookmark-sorter-end-user-test",
         "url": "https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/",
-        "access": "private"
+        "access": "public",
+        "deployed_at": "2026-08-26T07:32:05Z",
+        "version": 28,
+        "commit": "da4fc8b4093078152d52f9c6405c0b700f2137f4"
       }
     }
   ],

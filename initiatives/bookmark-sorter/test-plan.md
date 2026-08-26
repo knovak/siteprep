@@ -208,7 +208,7 @@ sessions:
 | Test | Pass condition | Protects |
 |---|---|---|
 | **Isolation** | User B cannot see, select, export or reach by any URL a single item of user A's personal collection | O8, §10 |
-| Template listing | Every signed-in user can list `demo-template` collections, and no other kind across owners | §10.1 |
+| Template listing | Every authorized signed-in user can list `demo-template` collections, and no other kind across owners | §10.1 |
 | Take a copy | Produces a private `demo-copy` owned by the taker, with `template_id` and `copied_at` recorded | §10.1 |
 | Template is read-only | A user without `can_edit_templates` cannot write to a template by any path | §10.1 |
 | Edit the template | Does not disturb an existing copy | §10.1 |
@@ -275,6 +275,9 @@ the user-facing controls that now sit on top of it:
 | Export scopes | Current collection and Current selection produce importable `bookmark-sorter/v1` downloads named from the collection | O7 user workflow |
 | Confirmed erasure | Erase current collection writes only after confirmation, leaves the collection present, and reports the erased count | Destructive-action boundary |
 | Admin authorization | The menu is absent for a non-admin; its APIs also reject the request server-side; an administrator can manage the user list, sittings, captures, and templates | Authority is not CSS |
+| Public sign-in entry | A visitor with either identity field missing sees the polite Sign in with ChatGPT page; API calls return `401` and do not open storage | Public reachability does not create an anonymous owner |
+| Application allowlist | A signed-in identity matching neither email nor linked Site user id sees the polite not-yet-authorized page; API calls return `403` and create no user or collection | Sign-in is authentication, not authorization |
+| Authorized identity link | The first successful email match records the Site user id; later requests match either value, while collection ownership stays on the opaque id | Stable admission without using email as ownership |
 | Narrow phone controls | The one-card grid, accordion panels, drop target, and Admin summary remain reachable at a narrow-phone viewport | O3 and mobile usability |
 
 Visible changes also receive a post-build screenshot so spacing, colors, and the

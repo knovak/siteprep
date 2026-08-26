@@ -245,7 +245,8 @@ demo-template, and demo-copy collection kinds, the retained
 edit a template, list templates, take a copy, take a *fresh* copy, delete a copy
 — plus the collection menu the wish's amendment asks for. Refinement later
 added the email-based Admin role without changing opaque-id collection
-ownership.
+ownership. A later refinement made the public Site's entry boundary explicit:
+Sign in with ChatGPT followed by an `authorized_user` email-or-linked-id gate.
 
 **Leaves out:** every part of the general sharing scheme. No reader lists, no
 ACLs, no revocation (§10.2).
@@ -293,13 +294,15 @@ it. The current product includes:
   expressions stored per signed-in user;
 - visible-page Sweep untriaged and a separate confirmed Sweep all selected;
 - an Admin role backed by `authorized_user`, with server-gated sitting, capture,
-  user-list, and template controls; and
+  user-list, and template controls;
+- a public entry page with polite sign-in and not-yet-authorized states, backed
+  by the same server-side allowlist on every API route;
 - a file drop target beside the Import chooser plus readiness styling for the
   Automatic proposal, Saved selection, and Previous selection Open actions.
 
 Each refinement adds browser-level regression coverage in `test-plan.md` §7,
 updates the user README, and appends a log entry. It does not reopen the phase-7
-vendor decision or broaden Site access.
+vendor decision; Site access changes remain explicit user decisions.
 
 ## 4. What each phase leaves behind
 

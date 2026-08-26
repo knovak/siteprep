@@ -114,7 +114,8 @@ difference between adding sharing and retrofitting it.
 - **A collection survives a round trip.** Exported and re-imported, it comes back
   with the same items, tags and verdicts — this is the test objective 7 actually
   makes, and the one a download-only export would pass without meaning anything.
-- **A tester can be handed something to use.** They sign in, receive a seeded
+- **A tester can be handed something to use.** They open the public Site, sign
+  in with ChatGPT, pass the administrator-managed allowlist, receive a seeded
   demo collection of their own, and triage it without touching anybody else's.
 
 ## Decisions this raised, and where they landed
@@ -135,14 +136,16 @@ only a map to it. Nothing here is still waiting on the user.
    Graph metadata, downscaled and cached by URL, never refreshed on view. A paid
    screenshot API remains the designed fallback for gaps, but no vendor is
    approved and that pass is switched off.
-4. **How are collections identified and protected?** Signed-in accounts, with
-   collections owned and private by default.
+4. **How are collections identified and protected?** The Site is public to
+   reach, but the application requires both ChatGPT sign-in and an
+   `authorized_user` match. Collections remain owned and private by default.
 5. **What makes a collection non-personal?** Nothing does, for now — demo
    collections are seeded per-user copies, and general sharing is held back as
    above.
 
 The host now supplies the identity objective 8 assumes, and the app's own
 `bookmark-sorter/v1` export supplies objective 7. Collection ownership uses the
-opaque signed-in user id; email is consulted separately for the Admin role. A
-future host change must preserve both boundaries rather than treating the old
-presumption as still open.
+opaque signed-in user id. Email and a Site-specific linked user id are the
+application allowlist keys; the `admin` type adds the Admin role. A future host
+change must preserve both boundaries rather than treating the old presumption
+as still open.

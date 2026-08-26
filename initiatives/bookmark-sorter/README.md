@@ -1,13 +1,33 @@
 # Interactive Bookmark Sorter
 
-Interactive Bookmark Sorter is a private, signed-in workspace for turning a
+Interactive Bookmark Sorter is a signed-in, authorized workspace for turning a
 large browser-bookmark export into a pile that can be reviewed quickly. It
 keeps the saved URL, title, folder path, note, tags, and verdict for each
 bookmark. It can also open reusable groups of bookmarks so one decision can be
 applied to a page, a marked set, or a whole selection.
 
-The current validation Site is owner-only:
+The current validation Site is public to reach, but bookmark data remains behind
+ChatGPT sign-in and the Bookmark Sorter allowlist:
 <https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/>.
+
+## Access and sign-in
+
+Open the Site in any browser. If the Site does not receive both a ChatGPT user
+id and email, it shows **Sign in with ChatGPT** instead of the bookmark
+workspace. ChatGPT handles that sign-in; Bookmark Sorter never asks for or
+stores a password.
+
+After sign-in, Bookmark Sorter checks `authorized_user` on the server. A match
+by normalized email or a previously linked Site user id opens the app. The
+first successful email match links that Site-specific user id to the row. If
+there is no match, the page politely says the account is not yet authorized,
+shows the email an administrator should add, and offers a way to sign out and
+use another account. The application does not create a user or collection for
+an unauthorized visitor.
+
+An authorized row of type `user` admits the person to their own private
+collections. Type `admin` also exposes the administrator controls. The public
+Site address does not make one person's bookmarks visible to another person.
 
 ## What it can do
 
@@ -86,7 +106,9 @@ open panel most of the available width.
 ## First-use workflow
 
 1. Export bookmarks from the browser as a Netscape bookmark HTML file.
-2. Open the Site while signed in with ChatGPT.
+2. Open the Site and choose **Sign in with ChatGPT** if asked. If the account is
+   not yet authorized, ask an administrator to add the email shown on the page,
+   then choose **Check again**.
 3. Open **Import**.
 4. Choose the HTML file with **Choose File**, or drag it onto **Drop a file
    here** beside the file chooser.
@@ -215,8 +237,9 @@ groups.
 
 ## Collections and demo templates
 
-Every signed-in user receives a personal collection and may create more private
-collections with **New**. **Rename** edits the current collection name inline.
+Every authorized signed-in user receives a personal collection and may create
+more private collections with **New**. **Rename** edits the current collection
+name inline.
 Switching collections clears the open expression and loads that collection's
 counts, cards, saved selections, and proposals.
 
@@ -227,7 +250,8 @@ without removing the shared capture cache.
 
 Administrators can create an empty demo template under **Admin** and then
 import the desired HTML or Sorter JSON into it. Templates are readable for
-copying by signed-in users, but ordinary users cannot edit the template itself.
+copying by authorized signed-in users, but ordinary users cannot edit the
+template itself.
 
 ## Export, backup, and restore
 
@@ -253,8 +277,8 @@ redundant, and fresh data.
 
 ## Administrator controls
 
-The **Admin** menu appears only when the normalized signed-in email has type
-`admin` in `authorized_user`. The same server-side role check protects its APIs;
+The **Admin** menu appears only when the matched `authorized_user` row has type
+`admin`. The same server-side role check protects its APIs;
 hiding the menu is not the security boundary.
 
 Administrators can:
@@ -267,9 +291,9 @@ Administrators can:
 - run the bounded metadata capture catch-up; and
 - inspect the disabled capture-gap action while the screenshot fallback is off.
 
-Adding a person with type `user` records them in the table but does not give
-them the Admin menu. Adding type `admin` does. Collection ownership still uses
-the opaque signed-in user id rather than email.
+Adding a person with type `user` admits them after sign-in but does not give
+them the Admin menu. Adding type `admin` does both. Collection ownership still
+uses the opaque signed-in user id rather than email.
 
 ## Anticipated workflows
 
@@ -328,23 +352,31 @@ the backup.
   an unknown but valid tag returns an empty set.
 - **Cards have no picture:** that is an expected capture gap, not evidence that
   the bookmark was lost. Use its title, note, tags, and saved URL.
-- **Admin is absent:** the current signed-in email is not an administrator in
-  `authorized_user`, or the Site did not receive a usable signed-in email.
+- **The Site asks you to sign in although ChatGPT is open elsewhere:** choose
+  **Sign in with ChatGPT** on the Site. A browser session alone does not give an
+  individual public Site permission to receive your identity.
+- **You are not authorized yet:** ask an administrator to add the exact email
+  shown on the page, then choose **Check again**. Use the sign-out link if a
+  different ChatGPT account should be used.
+- **Admin is absent:** the matched `authorized_user` row is not an
+  administrator, or the Site did not receive complete signed-in identity.
 - **Page layout is absent:** the window is using an automatic tablet or phone
   layout. Widen the window to use the explicit layout menu.
 
-## Deploying a private copy
+## Deploying a Site copy
 
 This is a full-stack ChatGPT Sites application, not a static HTML folder. Its
 source is `initiatives/bookmark-sorter/work/`; the Worker supplies the page and
 `/api/*`, D1 stores collections and decisions, and R2 stores fixed-size capture
 derivatives when enabled.
 
-Deploy through the existing Sites project so the Site URL, privacy setting, D1
+Deploy through the existing Sites project so the Site URL, access setting, D1
 database, and R2 bucket are preserved. Do not use a static-folder publisher:
 that would omit the API, identity, collections, and import/export behavior. Do
-not broaden Site access without explicit approval.
+not change Site access without explicit approval. Public access requires this
+application-level sign-in and allowlist gate; it does not make bookmark
+collections public.
 
 For implementation and validation details see
-[`work/README.md`](work/README.md). For the current private test procedure and
+[`work/README.md`](work/README.md). For the current public-entry test procedure and
 deployment cautions see [`work/END_USER_TESTING.md`](work/END_USER_TESTING.md).

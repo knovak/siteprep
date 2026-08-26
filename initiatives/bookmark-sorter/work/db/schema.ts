@@ -19,9 +19,11 @@ export const appUsers = sqliteTable("app_users", {
 
 export const authorizedUser = sqliteTable("authorized_user", {
   email: text("email").primaryKey(),
+  userId: text("user_id"),
   type: text("type").notNull(),
 }, table => [
   check("authorized_user_type_check", sql`${table.type} in ('admin', 'user')`),
+  uniqueIndex("idx_authorized_user_user_id").on(table.userId).where(sql`${table.userId} is not null`),
 ]);
 
 export const selectionHistory = sqliteTable("selection_history", {

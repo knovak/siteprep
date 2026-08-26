@@ -60,7 +60,10 @@ test('the generated deployment migration creates the complete final schema', asy
     'idx_capture_queue_pending',
     'idx_triage_actions_session_active',
     'idx_selection_history_owner_used',
+    'idx_authorized_user_user_id',
   ]) assert.ok(indexes.has(required), `missing deployment index ${required}`);
+
+  assert.ok(database.prepare('PRAGMA table_info(authorized_user)').all().some(column => column.name === 'user_id'));
 
   assert.deepEqual(database.prepare('SELECT email, type FROM authorized_user ORDER BY email').all().map(user => ({...user})), [
     {email: 'julie.duffield@gmail.com', type: 'user'},

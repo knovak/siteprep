@@ -905,3 +905,40 @@ the Admin menu and its sitting, capture, user-management, and template-creation
 APIs. Earlier text calling that table advisory is superseded. Collection
 ownership still uses the opaque signed-in user id, and a `user` row does not
 grant Admin.
+
+## 2026-08-26 — How should a public Site admit Bookmark Sorter users?
+
+**Keep the Site public to reach, require Sign in with ChatGPT inside the
+application, and then require the signed-in identity to match
+`authorized_user`.**
+
+The user's requested behavior is: *“If they aren't logged in, then they'll have
+a null userid (or null email field), and they should get a polite message
+requesting them to log in. Once they log in, if their userid or email is not in
+the authorized user table, they should get a polite message saying they are not
+yet authorized.”* The user separately confirmed that the Site should remain
+public.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Public Site plus application sign-in and allowlist *(chosen)* | Anyone can reach a clear entry page; authorization stays revocable and server-side; bookmark collections remain private | Adds a two-stage entry flow and requires an administrator to maintain the list |
+| Private Site access only | Platform access blocks anonymous visitors before application code runs | Does not provide the requested polite in-app explanation and makes audience changes depend on Site access rather than the existing user table |
+| Public Site with sign-in only | Simplest signed-in experience | Any ChatGPT account would receive a private collection, contrary to the requested authorized-user boundary |
+
+### What this settles, and what it does not
+
+- Both the Sites user id and email must be present. Missing either shows the
+  Sign in with ChatGPT action; APIs return `401` before opening storage.
+- A signed-in identity is admitted when its normalized email or a linked
+  Site-specific user id matches `authorized_user`. A first successful email
+  match records that id for later matching.
+- A signed-in identity with no match sees its email and a polite not-yet-
+  authorized message; APIs return `403`, and no user or collection is created.
+- Type `user` grants application access. Type `admin` additionally grants the
+  existing Admin controls. Collection ownership remains keyed only by the
+  opaque Sites user id.
+- This does not create general collection sharing or make stored bookmark data
+  public. It also does not replace the Sites-owned sign-in or sign-out routes
+  with application credential handling.

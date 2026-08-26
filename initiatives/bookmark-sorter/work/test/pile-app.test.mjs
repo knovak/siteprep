@@ -348,6 +348,7 @@ test('portable API exports a selection, imports JSON, and reviews proposed tags 
 
 test('a new signed-in user gets a personal collection before importing another user export', async () => {
   const store = new AppStore();
+  store.addAuthorizedUser('new.user@example.com', 'user');
   const app = createTestApp({
     storeFactory: () => store,
     identityFromRequest: () => ({id: 'brand-new-user', email: 'new.user@example.com'}),
