@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes — Tide Here</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Notes — Tide Here</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Tide Here</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Notes</h2>
+    </div>
+    <div class="card-content">
+<h2>Notes</h2>
+<p>Optional ideas and observations. Nothing here is committed work: no tooling reads this file, so nothing in it is ranked, selected, proposed or counted. Promote an entry by writing it as a real item with <code>node scripts/initiatives.mjs add tide-here &lt;id&gt; --title &quot;...&quot;</code> when it stops being optional. See <code>INITIATIVES_VISION.md</code> §6.6.</p>
+<h3>Optional improvement menu — 2026-08-26</h3>
+<p>These are proposals, not a plan. Any one can be selected as a real todo item, redirected in review or left here indefinitely. Closing the proposal pull request unmerged is also a complete answer. The earlier location-button idea is not included because the current page now provides <strong>Show here</strong> with an explicit, click-triggered permission request and manual-entry fallback.</p>
+<div class="table-scroll"><table><thead><tr><th>Candidate</th><th>Why it could help</th><th>Likely size</th><th>Boundary and evidence</th></tr></thead><tbody><tr><td><strong>Replace the schematic chooser with a geographic coast map</strong></td><td>The current relative point plot shows distance but not land, channels or islands—the geography a person needs when Bainbridge or a border location produces several plausible stations.</td><td>Medium</td><td>Keep the same candidates and matching thresholds; the map may inform the user&#39;s choice but must not select a station. Prefer local coastline data; if remote tiles are used, disclose the request and attribution. Recheck the island, estuary and U.S.–Canada border fixtures.</td></tr><tr><td><strong>Pin a few places on this device</strong></td><td>The 100-entry history is chronological diagnostic data, not a quick way to revisit two or three coasts. A small local-only pinned list could make repeat use faster without adding accounts or synchronization.</td><td>Small</td><td>Keep pins separate from forecast history and disposable caches, show that they are device-local, and provide explicit remove and clear controls. A pin must not trigger a provider request until the user opens it.</td></tr><tr><td><strong>Add concise coverage and coast-choice help on the page</strong></td><td>The README explains U.S./Canadian coverage, ordinary place versus coordinates, the cautious chooser and source details, but a first-time visitor may not know why a nearby place asks them to choose a station or refuses coverage.</td><td>Small</td><td>Put the explanation behind a short Help disclosure so it does not displace the forecast. Use the same supported-country and privacy wording as the live behavior, and verify it at the phone viewport.</td></tr><tr><td><strong>Add one more official tide-provider adapter</strong></td><td>A third provider would test the registry architecture and make the page useful beyond U.S. and Canadian coasts. The existing audit identifies Norway as a strong no-registration candidate and the United Kingdom and New Zealand as possible but operationally different paths.</td><td>Large</td><td>Recheck current licence, attribution, CORS, limits, station semantics and five-day high/low access before selecting a country. Do not scrape Australia&#39;s public pages or hide a credential in the static app. The adapter must preserve datum, time-zone and coverage-refusal behavior and pass live and recorded-fixture checks.</td></tr></tbody></table></div>
+<p>The strongest next increment is the <strong>geographic coast map</strong> if real use shows that the existing station question is hard to answer. <strong>Pin a few places</strong> is the smaller choice if repeat visits, rather than coast ambiguity, are the main friction.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/educational-global-maps/draft-objectives" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
