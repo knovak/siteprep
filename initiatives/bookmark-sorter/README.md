@@ -104,6 +104,9 @@ verdicts, and notes. It does not contain capture images. Treat it as a private
 backup because it contains the bookmark data itself. The Import section accepts
 that JSON text file as well as browser bookmark HTML, so either a complete
 collection or an exported selection can be round-tripped through the page.
+See [`JSON_IMPORT.md`](JSON_IMPORT.md) for the complete field reference, a
+tag-enrichment example, URL matching rules, and the exact behavior for partial,
+redundant, and fresh data.
 
 ## Deploying a private copy
 
