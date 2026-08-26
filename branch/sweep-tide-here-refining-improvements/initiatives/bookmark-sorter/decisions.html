@@ -343,6 +343,35 @@
 <p>  <code>notes.md</code> and may be read after dormancy, before later improvements, or not   at all.</p>
 <ul><li>General sharing, browser-tab harvesting, and pushing subsets back to a</li></ul>
 <p>  browser remain later-version ideas.</p>
+<h3>2026-08-25 — How do the consolidated controls show what will happen next?</h3>
+<p><strong>A chooser&#39;s Open action shows whether it has a target, and Import accepts a file by chooser or drag-and-drop without starting automatically.</strong></p>
+<p>The Select panel now has three chooser/action pairs: Automatic proposals with Open proposal, Saved selections with Open saved, and Previous selections with Open previous. In each pair the action is black on white while the placeholder is selected. Choosing a real option changes that action to white on blue. The color is a readiness cue, not a disabled state: the selected value still determines the expression and all four selection entry routes continue to use the same evaluator.</p>
+<p>The Import panel keeps the ordinary file input and adds a drop target beside it. Dropping one bookmark HTML or Sorter JSON file puts that file into the same form and displays its name. It does <strong>not</strong> submit; Import file remains the one explicit action, so an accidental drop cannot start a write.</p>
+<h4>Why this fits the control center</h4>
+<ul><li>Import, Select, and Export still allow none or exactly one open panel.</li><li>The new states are local to the expanded panel and do not consume grid space</li></ul>
+<p>  when the panel is collapsed.</p>
+<ul><li>The drop target supplements the accessible file input rather than replacing</li></ul>
+<p>  it, and remains keyboard operable.</p>
+<ul><li>Black-on-white and white-on-blue use the control center&#39;s existing inactive</li></ul>
+<p>  and primary-action palette rather than introducing a new signal.</p>
+<h4>Documentation reconciliation</h4>
+<p>The merged control-center implementation also made <code>authorized_user</code> an actual server-side gate: only a normalized signed-in email with type <code>admin</code> receives the Admin menu and its sitting, capture, user-management, and template-creation APIs. Earlier text calling that table advisory is superseded. Collection ownership still uses the opaque signed-in user id, and a <code>user</code> row does not grant Admin.</p>
+<h3>2026-08-26 — How should a public Site admit Bookmark Sorter users?</h3>
+<p><strong>Keep the Site public to reach, require Sign in with ChatGPT inside the application, and then require the signed-in identity to match <code>authorized_user</code>.</strong></p>
+<p>The user&#39;s requested behavior is: <em>“If they aren&#39;t logged in, then they&#39;ll have a null userid (or null email field), and they should get a polite message requesting them to log in. Once they log in, if their userid or email is not in the authorized user table, they should get a polite message saying they are not yet authorized.”</em> The user separately confirmed that the Site should remain public.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td>Public Site plus application sign-in and allowlist <em>(chosen)</em></td><td>Anyone can reach a clear entry page; authorization stays revocable and server-side; bookmark collections remain private</td><td>Adds a two-stage entry flow and requires an administrator to maintain the list</td></tr><tr><td>Private Site access only</td><td>Platform access blocks anonymous visitors before application code runs</td><td>Does not provide the requested polite in-app explanation and makes audience changes depend on Site access rather than the existing user table</td></tr><tr><td>Public Site with sign-in only</td><td>Simplest signed-in experience</td><td>Any ChatGPT account would receive a private collection, contrary to the requested authorized-user boundary</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>Both the Sites user id and email must be present. Missing either shows the</li></ul>
+<p>  Sign in with ChatGPT action; APIs return <code>401</code> before opening storage.</p>
+<ul><li>A signed-in identity is admitted when its normalized email or a linked</li></ul>
+<p>  Site-specific user id matches <code>authorized_user</code>. A first successful email   match records that id for later matching.</p>
+<ul><li>A signed-in identity with no match sees its email and a polite not-yet-</li></ul>
+<p>  authorized message; APIs return <code>403</code>, and no user or collection is created.</p>
+<ul><li>Type <code>user</code> grants application access. Type <code>admin</code> additionally grants the</li></ul>
+<p>  existing Admin controls. Collection ownership remains keyed only by the   opaque Sites user id.</p>
+<ul><li>This does not create general collection sharing or make stored bookmark data</li></ul>
+<p>  public. It also does not replace the Sites-owned sign-in or sign-out routes   with application credential handling.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/tide-here/refining-improvements" data-root="../../">
