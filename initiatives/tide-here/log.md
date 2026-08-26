@@ -92,3 +92,7 @@ Proposed five optional refinements with expected value, likely size, safety boun
 ## 2026-08-26 — Revise documentation and forecast disclosures
 
 Updated the user guide for the current Show selection and opt-in Show here workflow, separated the current test and production Site addresses, and replaced the completed browser-location proposal with still-open options. Moved Prediction source details below the safety notice and added a collapsed Debug record containing the local-history control and the What leaves this device explanation.
+
+## 2026-08-26 — Choose an optional improvement, request another proposal round, or declare the initiative dormant
+
+Recommended concise in-page coverage and coast-choice help, and added it as the actionable follow-up; merging the proposal accepts the recommendation.

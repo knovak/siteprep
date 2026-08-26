@@ -21,13 +21,12 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement",
-      "title": "Choose an optional improvement, request another proposal round, or declare the initiative dormant",
-      "state": "blocked",
+      "id": "inline-coverage-help",
+      "title": "Add concise coverage and coast-choice help on the page",
+      "state": "actionable",
       "value": "medium",
       "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose an optional improvement, request another proposal round, or declare the initiative dormant"
+      "advances_stage": false
     }
   ]
 }
