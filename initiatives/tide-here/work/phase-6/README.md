@@ -16,12 +16,13 @@ is still in the future. All event times are formatted with an explicit coast
 time zone; neither their labels nor their past/future styling uses the device
 zone. The cards omit the redundant tide-section heading beneath each date.
 
-An ambiguous match pauses before forecasting. It shows up to three named
-stations with distance and a small relative map, then passes the selected
-in-memory candidate back to `forecast` without repeating geocoding or catalogue
-work. Narrow layouts stack the cards and chooser, and all controls have visible
-keyboard focus and text labels. Phone rows size to their own content rather
-than inheriting the busiest day's height. An iPhone Pro Max-width layout uses
+An ambiguous match immediately forecasts with the closest of up to three named
+stations. A collapsed **Alternative coasts** disclosure follows the result and,
+when opened, shows the other stations with distance and a small relative map.
+Choosing one passes the in-memory candidate back to `forecast` without repeating
+geocoding or catalogue work. Narrow layouts stack the cards and alternatives,
+and all controls have visible keyboard focus and text labels. Phone rows size
+to their own content rather than inheriting the busiest day's height. An iPhone Pro Max-width layout uses
 two compact event columns, while narrower phones fall back to one; safe-area
 padding keeps the page clear of device edges. At the iPhone Pro Max viewport,
 the compact closed disclosures leave the complete first two tide days visible
@@ -39,8 +40,9 @@ It loads the complete NOAA and CHS prediction-station catalogues on the first
 uncached search, then loads metadata only for the selected station so matching
 and civil-time formatting are not limited to the recorded validation places.
 The safety notice precedes the collapsed **Prediction source details**
-disclosure. A separate collapsed **Debug record** disclosure follows the
-forecast and contains the local-history control and the visible-on-open
+disclosure. When the match is ambiguous, **Alternative coasts** follows the
+forecast and starts collapsed. A separate collapsed **Debug record** disclosure
+comes afterward and contains the local-history control and the visible-on-open
 `What leaves this device` explanation.
 `?fixture=1` selects the committed validation catalogue and recorded provider
 responses, fixes the clock, and makes browser tests deterministic without
@@ -61,8 +63,8 @@ The browser suite runs desktop and iPhone 15 Pro Max-sized Chromium against
 recorded fixtures. It checks the folded coast identity, always-visible tides,
 past/future emphasis in coast time, the two search actions and their permission
 fallback, moonrise-labelled astronomy disclosures, five equal desktop cards,
-content-sized phone cards, explicit zone, chooser and map, all eight page
-states, focus movement, text labels, datum details, safety line, and serious
-accessibility findings. A separate viewport matrix covers widths from 320 to
+content-sized phone cards, explicit zone, closest-first alternatives and map,
+all eight service states, focus movement, text labels, datum details, safety
+line, and serious accessibility findings. A separate viewport matrix covers widths from 320 to
 1600 pixels and fails on horizontal clipping, an unexpected card count, or the
 first two tide days not fitting in the Pro Max viewport.

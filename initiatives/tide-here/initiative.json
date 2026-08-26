@@ -21,13 +21,13 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement",
-      "title": "Choose an optional improvement, request another proposal round, or declare the initiative dormant",
+      "id": "choose-next-refinement-after-alternative-coasts",
+      "title": "Choose another optional improvement, request another proposal round, or declare the initiative dormant",
       "state": "blocked",
       "value": "medium",
       "effort": "small",
       "advances_stage": false,
-      "blocked_by": "human:choose an optional improvement, request another proposal round, or declare the initiative dormant"
+      "blocked_by": "human:choose another optional improvement, request another proposal round, or declare the initiative dormant"
     }
   ]
 }

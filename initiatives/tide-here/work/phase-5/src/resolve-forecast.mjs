@@ -23,7 +23,7 @@ export const FAILURE_MESSAGES = Object.freeze({
   [PLACE_NOT_FOUND]: 'That place was not found. Check the spelling or enter coordinates.',
   [GEOCODER_UNAVAILABLE]: 'Place lookup is unavailable. Try again later.',
   [COVERAGE_UNAVAILABLE]: 'First-version tide coverage is available for configured U.S. and Canadian coasts.',
-  [COAST_CHOICE_REQUIRED]: 'Choose the coast that matches your location before loading predictions.',
+  [COAST_CHOICE_REQUIRED]: 'The closest coast is shown first; alternative coasts are available below the results.',
   [TIDES_UNAVAILABLE]: 'Tide predictions are unavailable; place and astronomy details remain available.',
   [ASTRONOMY_UNAVAILABLE]: 'Sun and moon calculations are unavailable; tide predictions remain available.',
   [NO_EVENT]: 'This event does not rise or set during the selected local day.'

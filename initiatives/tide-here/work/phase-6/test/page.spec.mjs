@@ -39,16 +39,20 @@ test('a forecast keeps tides visible and folds coast and astronomy details', asy
   const outputOrder = await page.evaluate(() => {
     const safety = document.querySelector('.safety-line');
     const source = document.querySelector('.source-details');
+    const alternatives = document.querySelector('#chooser');
     const debug = document.querySelector('.debug-record');
     return {
       safetyBeforeSource: Boolean(safety.compareDocumentPosition(source) & Node.DOCUMENT_POSITION_FOLLOWING),
-      sourceBeforeDebug: Boolean(source.compareDocumentPosition(debug) & Node.DOCUMENT_POSITION_FOLLOWING)
+      sourceBeforeAlternatives: Boolean(source.compareDocumentPosition(alternatives) & Node.DOCUMENT_POSITION_FOLLOWING),
+      alternativesBeforeDebug: Boolean(alternatives.compareDocumentPosition(debug) & Node.DOCUMENT_POSITION_FOLLOWING)
     };
   });
-  expect(outputOrder).toEqual({ safetyBeforeSource: true, sourceBeforeDebug: true });
+  expect(outputOrder).toEqual({ safetyBeforeSource: true, sourceBeforeAlternatives: true, alternativesBeforeDebug: true });
   const sourceDetails = page.locator('.source-details');
+  const alternativeCoasts = page.locator('#chooser');
   const debugRecord = page.locator('.debug-record');
   await expect(sourceDetails).not.toHaveAttribute('open', '');
+  await expect(alternativeCoasts).toBeHidden();
   await expect(debugRecord).not.toHaveAttribute('open', '');
   await expect(page.getByRole('button', { name: /Show local history/ })).toBeHidden();
   await expect(page.getByText(/What leaves this device:/i)).toBeHidden();
@@ -61,26 +65,36 @@ test('a forecast keeps tides visible and folds coast and astronomy details', asy
   }
 });
 
-test('an ambiguous coast shows at most three choices and a map before any tide cards', async ({ page }) => {
+test('an ambiguous coast shows the closest forecast first and keeps alternatives collapsed below it', async ({ page }) => {
   await page.goto(`${pagePath}&state=coast-choice-required`);
+  await expect(page.locator('#result')).toBeVisible();
   await expect(page.locator('#chooser')).toBeVisible();
-  await expect(page.locator('#choice-map')).toBeVisible();
-  await expect(page.locator('.day-card')).toHaveCount(0);
-  const candidates = page.locator('.candidate');
-  expect(await candidates.count()).toBeGreaterThan(1);
-  expect(await candidates.count()).toBeLessThanOrEqual(3);
-  await expect(candidates.first()).toBeFocused();
-  await candidates.first().click();
+  await expect(page.locator('#chooser')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#choice-map')).toBeHidden();
   await expect(page.locator('.day-card')).toHaveCount(5);
+  await expect(page.locator('#coast-name')).toHaveText('Eagle Harbor, Bainbridge Island');
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await page.locator('#chooser summary').click();
+  await expect(page.locator('#choice-map')).toBeVisible();
+  const candidates = page.locator('.candidate');
+  expect(await candidates.count()).toBeGreaterThan(0);
+  expect(await candidates.count()).toBeLessThanOrEqual(2);
+  await expect(page.getByRole('button', { name: /Eagle Harbor/ })).toHaveCount(0);
+  await page.getByRole('button', { name: /Port Blakely/ }).click();
+  await expect(page.locator('#coast-name')).toHaveText('Port Blakely');
+  await expect(page.locator('.day-card')).toHaveCount(5);
+  await expect(page.locator('#chooser')).not.toHaveAttribute('open', '');
+  await expect(page.locator('.candidate').first()).toBeHidden();
+  await page.locator('#chooser summary').click();
+  await expect(page.getByRole('button', { name: /Eagle Harbor/ })).toBeVisible();
 });
 
-test('all eight states have their own readable page treatment', async ({ page }) => {
+test('the seven blocking or partial states have their own readable page treatment', async ({ page }) => {
   const expected = new Map([
     ['invalid-input', /place name or decimal coordinates/i],
     ['place-not-found', /was not found/i],
     ['geocoder-unavailable', /place lookup is unavailable/i],
     ['coverage-unavailable', /U\.S\. and Canadian coasts/i],
-    ['coast-choice-required', /choose the coast/i],
     ['tides-unavailable', /tide predictions are unavailable/i],
     ['astronomy-unavailable', /sun and moon calculations are unavailable/i],
     ['no-event', /does not rise or set/i]
@@ -94,7 +108,7 @@ test('all eight states have their own readable page treatment', async ({ page })
     await expect(panel).toContainText(message);
     messages.push(await panel.locator('#state-message').textContent());
   }
-  expect(new Set(messages).size).toBe(8);
+  expect(new Set(messages).size).toBe(7);
 });
 
 test('errors and choices receive keyboard focus and narrow pages do not clip', async ({ page }) => {
@@ -103,6 +117,10 @@ test('errors and choices receive keyboard focus and narrow pages do not clip', a
   await page.getByRole('button', { name: 'Edit the entry' }).click();
   await expect(page.locator('#place')).toBeFocused();
   await page.goto(`${pagePath}&state=coast-choice-required`);
+  await page.locator('#chooser summary').focus();
+  await expect(page.locator('#chooser summary')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');
   await expect(page.locator('.candidate').first()).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });

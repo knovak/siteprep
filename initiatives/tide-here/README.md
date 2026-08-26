@@ -3,7 +3,8 @@
 Tide Here shows five coast-local days of high and low tides, sunrise and
 sunset, moonrise and moonset, and moon phase for a place or latitude/longitude.
 It names the resolved place, the chosen coast and the official prediction
-station instead of treating the nearest station as automatically correct.
+station. When several nearby coasts are plausible, it shows the closest
+station first and keeps the other candidates available for review.
 
 The two current Sites are separate deployments:
 
@@ -22,17 +23,18 @@ message rather than a prediction borrowed from a distant coast.
    such as `47.61, -122.33`, then choose **Show selection**. Or choose **Show
    here** and approve the browser's one-time location request to use the
    device's current coordinates.
-2. If the nearest coast is ambiguous, choose one of the named prediction
-   stations. Tide Here will not decide silently between similarly plausible
-   coasts.
+2. If several nearby coasts are plausible, Tide Here immediately shows the
+   closest result. Open **Alternative coasts** below the forecast to choose a
+   different named prediction station.
 3. Read each day's high and low tides. Past tide labels are lighter than the
    upcoming tides. Open the day's **Sun and moon** row for sunrise, sunset,
    moonrise, moonset and phase.
 4. Open the coast name for the original entry, resolved place, station and time
    zone.
 5. Below the safety notice, open **Prediction source details** for the provider,
-   station type, units and datum. Open **Debug record** for local history and a
-   description of what leaves the device.
+   station type, units and datum. **Alternative coasts**, when needed, appears
+   after the results and before **Debug record**. Open **Debug record** for
+   local history and a description of what leaves the device.
 
 All headings and events use the selected coast's civil time zone, including
 when the five-day range crosses a daylight-saving change. Heights are metres
@@ -97,9 +99,10 @@ either one preserves its URL and access setting. Merging a source or
 documentation pull request does not deploy either Site.
 
 After deployment, verify the root redirect, one NOAA result such as Half Moon
-Bay, one CHS result such as Vancouver, the coast and astronomy disclosures, the
-safety/source/debug order, the privacy/history controls, and a 430×932 phone
-viewport without horizontal overflow.
+Bay, one CHS result such as Vancouver, an ambiguous result with its closest
+forecast and collapsed alternatives, the coast and astronomy disclosures, the
+safety/source/alternatives/debug order, the privacy/history controls, and a
+430×932 phone viewport without horizontal overflow.
 
 For the implementation contract and alternatives, see [`spec.md`](spec.md).
 For the earlier production-deployment evidence, see
