@@ -328,7 +328,7 @@ toc_page_close "$OUTPUT_DIR/index.html"
 
 # Generate demos index without modifying copied demo files.
 if [ -d "$ROOT_DIR/demos" ]; then
-  mapfile -t DEMO_NAMES < <(find "$ROOT_DIR/demos" -maxdepth 1 -mindepth 1 -type d -print | sort | while read -r path; do basename "$path"; done)
+  mapfile -t DEMO_NAMES < <(node "$DEMO_METADATA_SCRIPT" order "$ROOT_DIR/demos" "$ROOT_DIR")
   mkdir -p "$OUTPUT_DIR/demos"
 
   toc_page_open "$OUTPUT_DIR/demos/index.html" "SitePrep Demos" "Demos Index" "../" "demos" \
