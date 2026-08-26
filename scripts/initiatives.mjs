@@ -26,6 +26,11 @@
  *                       refuses to leave a non-dormant initiative with nothing to do
  *   check-scope <slug> --files <path>...   or --files-from <file>
  *                       fail if a change reaches outside the initiative's write scope
+ *   sites <slug> [--json]              both ChatGPT Site URLs, test and prod
+ *   sites <slug> plan --env test|prod  what a deployment would do; exits 1 if blocked
+ *   sites <slug> record --env test|prod --site-slug <s> --url <u>
+ *                       [--access private|public] [--version n] [--commit <sha>]
+ *                       record a completed deployment
  *   list                print one slug per line
  *   toc                 print the TOC page body
  *   page <slug>         print an initiative's overview page body
@@ -133,6 +138,25 @@ const DOCUMENTS = [
   ['notes.md', 'Notes']
 ];
 
+/**
+ * The two environments an initiative's ChatGPT Site may have.
+ *
+ * `test` is overwritten as often as the work needs it, by whichever agent is
+ * doing the work. `prod` moves only when a person runs the release skill. That
+ * asymmetry is the whole point of the pair, so the order here is also the order
+ * they are reported in: what you can break, then what you cannot.
+ */
+export const SITE_ENVIRONMENTS = ['test', 'prod'];
+
+/** Site access is never inferred - a Site is owner-only unless someone said otherwise. */
+export const SITE_ACCESS = ['private', 'public'];
+
+const SITE_KEYS = new Set(['source', ...SITE_ENVIRONMENTS]);
+const SITE_ENV_KEYS = new Set(['slug', 'url', 'access', 'deployed_at', 'version', 'commit']);
+
+/** ChatGPT Sites slugs: lowercase, digits, single interior hyphens. */
+const SITE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 const DEFAULT_STALENESS_DAYS = 14;
 
 /** What a sweep run is permitted to do, in order. Survey is never optional. */
@@ -222,6 +246,7 @@ function validate() {
   const warnings = [];
   const records = loadAll();
   const outputOwners = new Map();
+  const siteOwners = new Map();
 
   const sweep = loadSweepConfig();
   if (sweep.error) {
@@ -287,6 +312,10 @@ function validate() {
       }
       errors.push(...checkOutputIndependence(slug, output.path));
     }
+
+    const sites = checkSites(slug, data, siteOwners);
+    errors.push(...sites.errors);
+    warnings.push(...sites.warnings);
 
     const ids = new Set((data.todo || []).map((item) => item.id));
     let actionable = 0;
@@ -382,6 +411,324 @@ function checkOutputIndependence(slug, outputPath) {
     }
   }
   return problems;
+}
+
+// ------------------------------------------------------------------ sites
+
+/*
+ * An initiative's ChatGPT Site pair.
+ *
+ * Not every initiative publishes one. Those that do get two Sites from one
+ * source directory: a `test` Site any agent may overwrite mid-conversation, and
+ * a `prod` Site that moves only when a person runs the release skill. Recording
+ * both here - rather than in `outputs[]`, or in a file only the deploy skill
+ * reads - is what lets every deployment report both URLs, and lets the overview
+ * page show which environment is ahead of the other.
+ */
+
+function siteEnvironment(sites, env) {
+  const entry = sites && sites[env];
+  return entry && typeof entry === 'object' ? entry : null;
+}
+
+/** Both URLs, always both keys, so a caller can display the pair unconditionally. */
+export function siteUrls(sites) {
+  const urls = {};
+  for (const env of SITE_ENVIRONMENTS) {
+    urls[env] = siteEnvironment(sites, env)?.url || null;
+  }
+  return urls;
+}
+
+/**
+ * Validate one initiative's `sites` block.
+ *
+ * The one rule here that is a safety property rather than tidiness is that the
+ * two environments may never resolve to the same Site: that is the difference
+ * between a routine test deploy and silently overwriting production.
+ */
+function checkSites(slug, data, siteOwners) {
+  const errors = [];
+  const warnings = [];
+  const sites = data.sites;
+  if (sites === undefined) return { errors, warnings };
+
+  if (sites === null || typeof sites !== 'object' || Array.isArray(sites)) {
+    errors.push(`${slug}: sites must be an object with "source", "test" and "prod"`);
+    return { errors, warnings };
+  }
+
+  for (const key of Object.keys(sites)) {
+    if (!SITE_KEYS.has(key)) {
+      errors.push(`${slug}: unknown sites key "${key}"`);
+    }
+  }
+
+  if (!sites.source) {
+    errors.push(`${slug}: sites needs a "source" directory to publish`);
+  } else if (String(sites.source).includes('..')) {
+    errors.push(`${slug}: sites source escapes the repo: ${sites.source}`);
+  } else if (!existsSync(join(ROOT, sites.source))) {
+    errors.push(`${slug}: sites source does not exist: ${sites.source}`);
+  } else if (!existsSync(join(ROOT, sites.source, 'index.html'))) {
+    errors.push(`${slug}: sites source has no index.html: ${sites.source}`);
+  }
+
+  for (const env of SITE_ENVIRONMENTS) {
+    const entry = siteEnvironment(sites, env);
+    if (!entry) {
+      if (sites[env] !== undefined) {
+        errors.push(`${slug}: sites.${env} must be an object`);
+      }
+      continue;
+    }
+
+    for (const key of Object.keys(entry)) {
+      if (!SITE_ENV_KEYS.has(key)) {
+        errors.push(`${slug}: unknown sites.${env} key "${key}"`);
+      }
+    }
+    if (!entry.slug) {
+      errors.push(`${slug}: sites.${env} has no slug`);
+    } else if (!SITE_SLUG.test(entry.slug)) {
+      errors.push(`${slug}: sites.${env} slug is not a valid Site slug: ${entry.slug}`);
+    }
+    if (!entry.url) {
+      errors.push(`${slug}: sites.${env} has no url`);
+    } else if (!/^https:\/\/[^\s]+$/.test(entry.url)) {
+      errors.push(`${slug}: sites.${env} url is not an https URL: ${entry.url}`);
+    }
+    if (entry.access !== undefined && !SITE_ACCESS.includes(entry.access)) {
+      errors.push(`${slug}: sites.${env} access must be one of ${SITE_ACCESS.join(', ')}`);
+    }
+
+    // Exclusive ownership, for the same reason outputs[] has it: two
+    // initiatives deploying to one Site would overwrite each other.
+    for (const key of [entry.slug, entry.url].filter(Boolean)) {
+      if (siteOwners.has(key)) {
+        errors.push(`${slug}: Site ${key} is already declared by ${siteOwners.get(key)}`);
+      } else {
+        siteOwners.set(key, `${slug} (${env})`);
+      }
+    }
+  }
+
+  const test = siteEnvironment(sites, 'test');
+  const prod = siteEnvironment(sites, 'prod');
+  if (test && prod) {
+    if (test.slug && test.slug === prod.slug) {
+      errors.push(`${slug}: sites.test and sites.prod are the same Site (${test.slug}) - a test deploy would overwrite production`);
+    }
+    if (test.url && test.url === prod.url) {
+      errors.push(`${slug}: sites.test and sites.prod have the same URL (${test.url}) - a test deploy would overwrite production`);
+    }
+  }
+
+  // Naming is a convention rather than a safety property, so it warns. New
+  // Sites are named by the skills - `<slug>-test` and `<slug>` - and these are
+  // the two ways a hand-recorded pair becomes confusable at a glance.
+  if (test?.slug && test.slug === slug) {
+    warnings.push(`${slug}: test Site slug "${test.slug}" is the bare initiative slug, so its URL reads like production - "${slug}-test" is the convention`);
+  }
+  if (prod?.slug && /(^|-)test(-|$)/.test(prod.slug)) {
+    warnings.push(`${slug}: production Site slug "${prod.slug}" says "test"`);
+  }
+
+  return { errors, warnings };
+}
+
+/**
+ * What git knows about the directory being published.
+ *
+ * A release records the commit its files came from, which is only meaningful if
+ * those files were committed - so `dirty` is what the release gate refuses on.
+ * It is scoped to the source directory: unrelated edits elsewhere in the
+ * repository are none of this release's business.
+ */
+function sourceStatus(relPath) {
+  const git = (gitArgs) => execFileSync('git', gitArgs, {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']
+  }).trim();
+
+  let commit = null;
+  let dirty = [];
+  try {
+    commit = git(['log', '-1', '--format=%H', '--', relPath]) || null;
+  } catch { /* not a repository, or no history for this path */ }
+  try {
+    const out = git(['status', '--porcelain=v1', '-uall', '--', relPath]);
+    dirty = out ? out.split('\n').map((line) => line.slice(3).trim()).filter(Boolean) : [];
+  } catch { /* not a repository */ }
+  return { commit, dirty };
+}
+
+function countStaticFiles(abs) {
+  let files = 0;
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === '.git' || entry.name === '.openai' || entry.name === 'node_modules') continue;
+      if (entry.isDirectory()) walk(join(dir, entry.name));
+      else files += 1;
+    }
+  };
+  walk(abs);
+  return files;
+}
+
+/**
+ * Everything a deploy skill needs before it touches ChatGPT Sites: which Site
+ * to write, whether it exists yet, what the other environment is, and - for a
+ * release - whether the source is committed.
+ *
+ * Deriving it here rather than in the skill means the release gate is code. A
+ * prompt can be talked out of refusing; `sites plan --env prod` exits non-zero.
+ */
+export function sitePlan(slug, env) {
+  if (!SITE_ENVIRONMENTS.includes(env)) {
+    throw new Error(env
+      ? `unknown environment "${env}" - use ${SITE_ENVIRONMENTS.join(' or ')}`
+      : `--env ${SITE_ENVIRONMENTS.join('|')} is required`);
+  }
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+
+  const sites = record.data.sites;
+  if (!sites || typeof sites !== 'object') {
+    throw new Error(`${slug}: no "sites" block - add one with a source directory before deploying`);
+  }
+  if (!sites.source) throw new Error(`${slug}: sites needs a "source" directory to publish`);
+
+  const abs = join(ROOT, sites.source);
+  if (!existsSync(abs)) throw new Error(`${slug}: sites source does not exist: ${sites.source}`);
+  if (!existsSync(join(abs, 'index.html'))) {
+    throw new Error(`${slug}: sites source has no index.html: ${sites.source}`);
+  }
+
+  const entry = siteEnvironment(sites, env);
+  const status = sourceStatus(sites.source);
+  const blockers = [];
+
+  // Production is released from committed files only. Test is not: the whole
+  // point of the test Site is to look at work in progress.
+  if (env === 'prod' && status.dirty.length) {
+    blockers.push(`${status.dirty.length} uncommitted change(s) under ${sites.source}`);
+  }
+  if (env === 'prod' && !status.commit) {
+    blockers.push(`${sites.source} has never been committed`);
+  }
+
+  return {
+    slug,
+    environment: env,
+    mode: entry ? 'replacement' : 'new',
+    source: sites.source,
+    source_files: countStaticFiles(abs),
+    site_slug: entry?.slug || (env === 'test' ? `${slug}-test` : slug),
+    site_url: entry?.url || null,
+    access: entry?.access || (env === 'test' ? 'private' : null),
+    last_deployed_at: entry?.deployed_at || null,
+    last_version: entry?.version ?? null,
+    last_commit: entry?.commit || null,
+    source_commit: status.commit,
+    uncommitted: status.dirty,
+    urls: siteUrls(sites),
+    blockers,
+    ready: blockers.length === 0
+  };
+}
+
+/**
+ * Record a completed deployment.
+ *
+ * The skills write through this rather than editing initiative.json, for the
+ * same reason `add` and `complete` exist: the fields a model forgets by hand -
+ * the timestamp, the commit, the environment it actually wrote - are exactly
+ * the ones the validator and the overview page depend on.
+ */
+export function recordSite(slug, env, {
+  siteSlug, url, access, version, commit, deployedAt
+} = {}) {
+  if (!SITE_ENVIRONMENTS.includes(env)) {
+    throw new Error(env
+      ? `unknown environment "${env}" - use ${SITE_ENVIRONMENTS.join(' or ')}`
+      : `--env ${SITE_ENVIRONMENTS.join('|')} is required`);
+  }
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+
+  const data = record.data;
+  const sites = data.sites;
+  if (!sites || typeof sites !== 'object') {
+    throw new Error(`${slug}: no "sites" block - add one with a source directory before deploying`);
+  }
+  if (!siteSlug) throw new Error(`${slug}: recording a deployment needs --site-slug`);
+  if (!SITE_SLUG.test(siteSlug)) throw new Error(`${slug}: not a valid Site slug: ${siteSlug}`);
+  if (!url) throw new Error(`${slug}: recording a deployment needs --url`);
+  if (!/^https:\/\/[^\s]+$/.test(url)) throw new Error(`${slug}: not an https URL: ${url}`);
+  if (access !== undefined && !SITE_ACCESS.includes(access)) {
+    throw new Error(`${slug}: access must be one of ${SITE_ACCESS.join(', ')}`);
+  }
+
+  // The check the whole two-Site arrangement rests on.
+  const other = siteEnvironment(sites, env === 'test' ? 'prod' : 'test');
+  if (other && (other.slug === siteSlug || other.url === url)) {
+    throw new Error(
+      `${slug}: ${siteSlug} is already the ${env === 'test' ? 'production' : 'test'} Site `
+      + '- recording it here would point both environments at one Site'
+    );
+  }
+
+  const previous = siteEnvironment(sites, env) || {};
+  const entry = {
+    slug: siteSlug,
+    url,
+    // Never inferred upward: an environment stays owner-only unless told otherwise.
+    access: access || previous.access || 'private',
+    deployed_at: deployedAt || new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
+  };
+  if (version !== undefined && version !== null && version !== '') {
+    if (!Number.isFinite(Number(version))) {
+      throw new Error(`${slug}: version must be a number, got "${version}"`);
+    }
+    entry.version = Number(version);
+  } else if (previous.version !== undefined) {
+    entry.version = previous.version;
+  }
+  const sourceCommit = commit || sourceStatus(sites.source).commit;
+  if (sourceCommit) entry.commit = sourceCommit;
+
+  sites[env] = entry;
+  writeFileSync(
+    join(record.dir, 'initiative.json'),
+    `${JSON.stringify(data, null, 2)}\n`
+  );
+
+  return { slug, environment: env, entry, urls: siteUrls(sites) };
+}
+
+/** Both environments as the skills report them: one line each, always both. */
+export function formatSites(slug, sites) {
+  const lines = [`${slug}`];
+  if (!sites || typeof sites !== 'object') {
+    lines.push('  no ChatGPT Site');
+    return lines.join('\n');
+  }
+  lines.push(`  source: ${sites.source || '(none)'}`);
+  for (const env of SITE_ENVIRONMENTS) {
+    const entry = siteEnvironment(sites, env);
+    if (!entry) {
+      lines.push(`  ${env.padEnd(5)} not deployed yet`);
+      continue;
+    }
+    const detail = [
+      entry.access,
+      entry.version !== undefined ? `v${entry.version}` : null,
+      entry.deployed_at,
+      entry.commit ? entry.commit.slice(0, 7) : null
+    ].filter(Boolean).join(', ');
+    lines.push(`  ${env.padEnd(5)} ${entry.url}${detail ? `  (${detail})` : ''}`);
+  }
+  return lines.join('\n');
 }
 
 // ----------------------------------------------------------------- digest
@@ -1297,6 +1644,27 @@ function renderPage(slug) {
       }).join('\n')}\n      </ul>`));
   }
 
+  // Both environments, always both rows - the pair is only useful if you can
+  // see at a glance which one is ahead.
+  const sites = data.sites;
+  if (sites && typeof sites === 'object') {
+    parts.push(card('Sites', 'initiative-sites',
+      `      <ul>\n${SITE_ENVIRONMENTS.map((env) => {
+        const entry = sites[env] && typeof sites[env] === 'object' ? sites[env] : null;
+        const label = env === 'test' ? 'Test' : 'Production';
+        if (!entry || !entry.url) {
+          return `        <li>${label} — <em>${env === 'test' ? 'not deployed yet' : 'not released yet'}</em></li>`;
+        }
+        const detail = [
+          entry.access,
+          entry.version !== undefined ? `version ${entry.version}` : null,
+          entry.deployed_at ? `deployed ${String(entry.deployed_at).slice(0, 10)}` : null
+        ].filter(Boolean).join(', ');
+        return `        <li>${label} — <a href="${escapeHtml(entry.url)}">${escapeHtml(entry.url)}</a>`
+          + `${detail ? ` <em>(${escapeHtml(detail)})</em>` : ''}</li>`;
+      }).join('\n')}\n      </ul>`));
+  }
+
   const outputs = data.outputs || [];
   if (outputs.length) {
     parts.push(card('Outputs', 'initiative-outputs',
@@ -1449,6 +1817,70 @@ if (RUN_AS_CLI) switch (command) {
     console.log(`INITIATIVE PASS: ${files.filter((f) => f.trim()).length} changed file(s) within scope for ${slug}`);
     break;
   }
+  case 'sites': {
+    const [slug, sub] = args;
+    const json = args.includes('--json');
+    const flag = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
+
+    if (!slug) {
+      console.error('usage: initiatives.mjs sites <slug> [--json]\n'
+        + '       initiatives.mjs sites <slug> plan --env test|prod [--json]\n'
+        + '       initiatives.mjs sites <slug> record --env test|prod --site-slug <slug> '
+        + '--url <https://...> [--access private|public] [--version n] [--commit <sha>]');
+      process.exit(2);
+    }
+
+    try {
+      if (sub === 'plan') {
+        const plan = sitePlan(slug, flag('--env'));
+        console.log(json ? JSON.stringify(plan, null, 2) : [
+          `${plan.slug} ${plan.environment}: ${plan.mode} deployment of ${plan.source} `
+            + `(${plan.source_files} file(s))`,
+          `  target: ${plan.site_url || `${plan.site_slug} (to be created)`}`,
+          `  test:   ${plan.urls.test || 'not deployed yet'}`,
+          `  prod:   ${plan.urls.prod || 'not released yet'}`,
+          ...plan.blockers.map((blocker) => `  BLOCKED: ${blocker}`)
+        ].join('\n'));
+        // The release gate is code, not a prompt: a caller that ignores this
+        // exit code has to do so deliberately.
+        if (!plan.ready) process.exit(1);
+        break;
+      }
+
+      if (sub === 'record') {
+        const result = recordSite(slug, flag('--env'), {
+          siteSlug: flag('--site-slug'),
+          url: flag('--url'),
+          access: flag('--access'),
+          version: flag('--version'),
+          commit: flag('--commit'),
+          deployedAt: flag('--deployed-at')
+        });
+        console.log(json ? JSON.stringify(result, null, 2) : [
+          `recorded ${result.slug} ${result.environment}: ${result.entry.url}`,
+          `  test: ${result.urls.test || 'not deployed yet'}`,
+          `  prod: ${result.urls.prod || 'not released yet'}`
+        ].join('\n'));
+        break;
+      }
+
+      const record = loadInitiative(slug);
+      if (record.error) throw new Error(`${slug}: ${record.error}`);
+      console.log(json
+        ? JSON.stringify({
+          slug,
+          source: record.data.sites?.source || null,
+          test: record.data.sites?.test || null,
+          prod: record.data.sites?.prod || null,
+          urls: siteUrls(record.data.sites)
+        }, null, 2)
+        : formatSites(slug, record.data.sites));
+    } catch (err) {
+      console.error(`INITIATIVE FAIL: ${err.message}`);
+      process.exit(1);
+    }
+    break;
+  }
   case 'list':
     console.log(listSlugs().join('\n'));
     break;
@@ -1476,6 +1908,6 @@ if (RUN_AS_CLI) switch (command) {
     break;
   }
   default:
-    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|list|toc|page|docs|doc|title');
+    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|sites|list|toc|page|docs|doc|title');
     process.exit(2);
 }

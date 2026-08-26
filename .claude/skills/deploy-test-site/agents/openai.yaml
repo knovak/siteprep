@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deploy Test Site"
+  short_description: "Refresh an initiative's test ChatGPT Site"
+  default_prompt: "Use $deploy-test-site to refresh this initiative's test ChatGPT Site and report both environment URLs."

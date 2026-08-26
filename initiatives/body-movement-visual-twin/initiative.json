@@ -3,13 +3,15 @@
   "summary": "A 3D visual twin that shows bones and muscles during small body movements.",
   "stage": "building",
   "value": "medium",
-  "outputs": [
-    {
-      "kind": "external",
+  "outputs": [],
+  "sites": {
+    "source": "initiatives/body-movement-visual-twin/work/phase-6/site",
+    "test": {
+      "slug": "body-movement-visual-twin-validation",
       "url": "https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/",
-      "status": "live"
+      "access": "private"
     }
-  ],
+  },
   "todo": [
     {
       "id": "phase-6-practitioner-review",

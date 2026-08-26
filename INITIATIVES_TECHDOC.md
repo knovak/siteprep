@@ -12,7 +12,7 @@ Each immediate subdirectory of `initiatives/` is one initiative. Only
 initiatives/
   sweep.json               # optional sweep configuration
   <slug>/
-    initiative.json        # required - stage, value, outputs, todo
+    initiative.json        # required - stage, value, outputs, sites, todo
     wish.md                # the goal in the user's own words
     background.md          # optional research done before objectives
     objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
@@ -44,6 +44,9 @@ dependency. That is fine for flat string fields and does not survive nested
 | `add <slug> <item>` | Author a new todo item |
 | `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log; refuses to leave a live initiative with nothing to do |
 | `check-scope <slug>` | Fail if changed files reach outside the write scope |
+| `sites <slug>` | Both ChatGPT Site URLs, test and production |
+| `sites <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
+| `sites <slug> record --env test\|prod` | Record a completed deployment |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -107,6 +110,12 @@ unrelated deck from publishing.
 - an `outputs[].path` that does not exist, or contains `..`
 - two initiatives declaring the same `outputs[].path`
 - a file under a declared output referencing a path under `initiatives/`
+- a `sites` block with no `source`, or a `source` that does not exist, contains
+  `..`, or has no `index.html`
+- a `sites` environment missing its `slug` or `url`, or with a non-https `url`,
+  an unknown access level, or an unrecognised key
+- `sites.test` and `sites.prod` resolving to the same Site
+- two initiatives declaring the same Site slug or URL
 - a blocked item with no `blocked_by`, or an unknown blocker prefix
 - `blocked_by: todo:<id>` pointing at an item that does not exist
 - `sweep.json` unparseable, or `max_items_per_initiative` > `items_per_run`
@@ -117,11 +126,99 @@ unrelated deck from publishing.
 - an initiative past its staleness threshold
 - a document expected at the current stage that is missing
 - an item blocked on a human decision
+- a test Site slug that is the bare initiative slug, or a production Site slug
+  that says "test"
 
 Two error checks carry most of the weight. **Exclusive output ownership** is
 what makes parallel sweep pull requests safe. **`todo:` references must
 resolve**, so a forgotten unblock breaks the build instead of stranding an item
 in `blocked` forever.
+
+## ChatGPT Sites: test and production
+
+Not every initiative publishes a website. Those that do get **two** Sites built
+from one source directory, declared in `initiative.json`:
+
+```json
+"sites": {
+  "source": "initiatives/tide-here/work/site",
+  "test": {
+    "slug": "tide-here-test",
+    "url": "https://tide-here-test.ken-novak.chatgpt.site/",
+    "access": "private",
+    "deployed_at": "2026-08-26T14:03:11Z",
+    "version": 7,
+    "commit": "5e3f1c0..."
+  },
+  "prod": {
+    "slug": "tide-here",
+    "url": "https://tide-here.ken-novak.chatgpt.site/",
+    "access": "public",
+    "deployed_at": "2026-08-20T09:12:44Z",
+    "version": 3,
+    "commit": "17f2136..."
+  }
+}
+```
+
+Only `source` is required, and it must be a directory that already contains a
+root `index.html` - nothing in the deployment path runs a build. Both
+environments are optional: an initiative may have neither, only a test Site, or
+both. `deployed_at`, `version` and `commit` are written by the deploy skills,
+not by hand.
+
+**The environments differ in who may write them.** `test` is overwritten as
+often as the work needs, by whichever agent is doing the work. `prod` moves only
+when a person runs the release skill. That asymmetry is the whole feature, and
+three things protect it:
+
+- `sites.test` and `sites.prod` may never resolve to the same slug or URL. That
+  is a validation **error**, and `sites record` refuses it as well - so it holds
+  whether the pair was written by hand or by a deployment.
+- **`sites <slug> plan --env prod` exits non-zero** when the source directory has
+  uncommitted changes, or has never been committed. Production is released from
+  committed files, so the `commit` recorded against a release is a reference you
+  can go back to. Making this an exit code rather than an instruction is the
+  point: a prompt can be talked out of refusing.
+- The naming convention - `<slug>-test` and `<slug>` - means the URL itself says
+  which environment you are looking at. The skills derive those names for new
+  Sites; the validator only warns, because renaming a live Site is not free.
+
+The dirty-source check is scoped to `sites.source`. Uncommitted work elsewhere
+in the repository is none of a release's business.
+
+### The subcommands
+
+```text
+sites <slug>                        both URLs, test and production
+sites <slug> plan --env test|prod   what a deployment would do; exits 1 if blocked
+sites <slug> record --env test|prod --site-slug <s> --url <u>
+                                    [--access private|public] [--version n] [--commit <sha>]
+```
+
+`plan` returns the source directory, `new` or `replacement`, the target slug and
+URL, the file count, the source commit, and **both** environment URLs. `record`
+stamps `deployed_at` and fills in the commit from git when one is not supplied.
+
+Every one of them reports both URLs whether or not both Sites exist, so a
+deployment receipt never leaves you hunting for the other environment. The
+overview page shows the same pair as a Sites card, with a "not released yet" row
+rather than a missing one.
+
+### The three skills
+
+`.claude/skills/deploy-to-chatgpt-sites` is the engine and has no opinion about
+environments - it deploys the Site it is told to. Two skills sit on top of it
+and decide which Site that is:
+
+| Skill | Writes | Run by |
+| --- | --- | --- |
+| `deploy-test-site` | the test Site | any agent, as often as the work needs |
+| `release-site` | the production Site | a person, explicitly, and nothing else |
+
+Splitting them is what makes the release deliberate. An agent refreshing a
+preview reaches for the skill that cannot reach production, and "release this"
+is a thing the user has to say.
 
 ## Last activity
 

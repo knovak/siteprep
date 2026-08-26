@@ -84,10 +84,12 @@ conventions they follow.
 
 - [`answer-decision`](.claude/skills/answer-decision/SKILL.md) — Answer a question an initiative is blocked on, recording it in decisions.md and unblocking the item.
 - [`deploy-demo`](.claude/skills/deploy-demo/SKILL.md) — Copy a complete folder from elsewhere in the SitePrep repository into one immediate subdirectory of demos/, replacing an existing demo atomically when necessary, and register its title, description, root HTML file, and optional local or web links for the generated Demo TOC.
+- [`deploy-test-site`](.claude/skills/deploy-test-site/SKILL.md) — Publish or refresh an initiative's test ChatGPT Site from the source directory recorded in its initiative.json, then report both the test and the production URL.
 - [`deploy-to-chatgpt-sites`](.claude/skills/deploy-to-chatgpt-sites/SKILL.md) — Deploy an already-built static website directory containing index.html and optional CSS, JavaScript, images, or data files to ChatGPT Sites.
 - [`generate-guide`](.claude/skills/generate-guide/SKILL.md) — Generate and verify the repository guide description, slide deck, and lifecycle simulator.
 - [`merge-prs`](.claude/skills/merge-prs/SKILL.md) — Merge one or more pull requests after checking CI, mergeability, and review threads.
 - [`new-initiative`](.claude/skills/new-initiative/SKILL.md) — Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list.
+- [`release-site`](.claude/skills/release-site/SKILL.md) — Release an initiative's committed source to its production ChatGPT Site, creating that Site on the first release, and report both the test and the production URL.
 - [`respond-to-review`](.claude/skills/respond-to-review/SKILL.md) — Answer review comments on a pull request - revising the branch, replying, or escalating a decision.
 - [`tag-newsletter-stories`](.claude/skills/tag-newsletter-stories/SKILL.md) — Add theme tags, event clusters, and cluster paraphrases to a Newsletter Story Harvester JSON store.
 - [`update-deck-events`](.claude/skills/update-deck-events/SKILL.md) — Refresh the Events topic of every current or future deck page that has a date range, by searching for festivals, fairs, religious celebrations, concerts, and theater happening in that place during that window and reconciling them against the events already on the page and on its reject page.

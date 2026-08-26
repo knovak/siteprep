@@ -9,6 +9,21 @@ Publish the supplied files unchanged through the bundled Sites workflow. Treat
 the source directory as read-only. Create every generated adapter, dependency,
 build, test, Git, and archive file in one unique system-temporary workspace.
 
+## Where this fits
+
+This is the deployment engine, and it deploys exactly the Site it is told to.
+It has no opinion about environments.
+
+For an initiative in this repository, do not call it directly. Two skills sit on
+top of it and decide *which* Site is being written:
+
+- `$deploy-test-site` refreshes the initiative's test Site, as often as needed;
+- `$release-site` writes the production Site, only when a person asks.
+
+Called directly for an initiative that has a `sites` block in its
+`initiative.json`, this skill could point either environment at the wrong Site.
+When the target belongs to an initiative, hand the job to the wrapper instead.
+
 ## Required inputs
 
 Resolve these before creating or changing a Site:
@@ -155,7 +170,10 @@ Return a compact deployment receipt containing:
 - archive file count when returned;
 - source directory and static-file count;
 - confirmation that the isolated workspace was removed and the source
-  repository was unchanged.
+  repository was unchanged;
+- when the deployment belongs to an initiative, both of that initiative's
+  environment URLs - test and production - even when only one of them exists.
+  `node scripts/initiatives.mjs sites <slug> --json` returns the pair.
 
 If Sites omits archive metrics, label local archive measurements as fallbacks.
 Do not expose credentials, repository tokens, opaque IDs, or temporary paths.
