@@ -47,7 +47,9 @@ time and commit, with the URL derived from the destination so it can never drift
 from what is actually under `demos/`. It also appends a line to the initiative's
 `log.md`, because a release is a fact about the initiative.
 
-Access for a brand-new production Site is never inferred — the skill asks for
-`public` or `private`. A replacement keeps whatever access the Site already has.
+Access is never inferred. The first release to an environment is private unless
+you say otherwise, and the skill tells you so and takes your answer. A
+replacement keeps whatever access the Site already has — changing it is its own
+request, not a side effect of a release.
 
 Both URLs, test and production, are in every receipt.

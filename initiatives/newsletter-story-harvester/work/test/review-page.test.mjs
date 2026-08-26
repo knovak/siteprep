@@ -6,14 +6,19 @@ import {after, before, test} from 'node:test';
 import {chromium} from '@playwright/test';
 
 import {reviewPageHtml} from '../src/review-page.mjs';
+import {gmailSearchString} from '../src/gmail-source.mjs';
 import {importVerdictFile} from '../src/verdict-import.mjs';
 import {applyTaggingPass} from '../../../../.claude/skills/tag-newsletter-stories/scripts/tagging-pass.mjs';
 
 const fixturePath = new URL('../fixtures/store-fixture.json', import.meta.url).pathname;
 const store = JSON.parse(readFileSync(fixturePath, 'utf8'));
+const inventory = JSON.parse(readFileSync(new URL('../fixtures/inventory-fixture.json', import.meta.url), 'utf8'));
+const sources = inventory.sources.map(source => ({name: source.name, slug: source.slug, search: gmailSearchString(source)}));
+const themedStory = store.stories.find(story => story.verdict === null);
+themedStory.tags = [...themedStory.tags, 'theme:clean-energy'];
 const taggingProposal = JSON.parse(readFileSync(new URL('../fixtures/tagging-proposal.json', import.meta.url), 'utf8'));
 const output = join(mkdtempSync(join(tmpdir(), 'newsletter-review-')), 'review.html');
-writeFileSync(output, reviewPageHtml(store), 'utf8');
+writeFileSync(output, reviewPageHtml(store, {sources}), 'utf8');
 
 let browser;
 before(async () => { browser = await chromium.launch({headless: true}); });
@@ -43,13 +48,17 @@ test('it opens offline with the complete fixture and always-visible backlog', as
   await page.close();
 });
 
-test('collapsed metadata expands to text and a safe link', async () => {
+test('stories start expanded and the title is the only story link', async () => {
   const {page} = await openPage();
   const first = page.locator('.story').first();
-  assert.equal(await first.getAttribute('open'), null);
-  await first.locator('summary').click();
+  assert.equal(await first.getAttribute('open'), '');
   await assert.doesNotReject(() => first.locator('.story-text').waitFor({state: 'visible'}));
-  assert.ok((await first.locator('.title').textContent()).length > 0);
+  const title = first.locator('summary .title.story-link');
+  assert.ok((await title.textContent()).length > 0);
+  const id = await first.getAttribute('data-id');
+  const story = store.stories.find(candidate => candidate.id === id);
+  assert.equal(await title.getAttribute('href'), story.url);
+  assert.equal(await first.getByText('Open story', {exact: true}).count(), 0);
   await page.close();
 });
 
@@ -58,15 +67,28 @@ test('source sort and tag filter change the visible set', async () => {
   await page.locator('#sort').selectOption('source');
   const sources = await page.locator('.story').evaluateAll(nodes => nodes.map(node => node.dataset.source));
   assert.deepEqual(sources, [...sources].sort());
-  await page.locator('#filter').selectOption('theme:energy-notes');
+  await page.locator('#filter').selectOption('theme:clean-energy');
   const tags = await page.locator('.story').evaluateAll(nodes => nodes.map(node => JSON.parse(node.dataset.tags)));
-  assert.ok(tags.length > 0 && tags.every(values => values.includes('theme:energy-notes')));
+  assert.ok(tags.length > 0 && tags.every(values => values.includes('theme:clean-energy')));
+  assert.equal(await page.locator('#filter option:checked').textContent(), 'Theme: clean energy');
+  await page.close();
+});
+
+test('Help lists source names, slugs, and configured Gmail searches', async () => {
+  const {page} = await openPage();
+  await page.locator('#help').click();
+  const dialog = page.locator('#help-dialog');
+  await assert.doesNotReject(() => dialog.waitFor({state: 'visible'}));
+  assert.equal(await dialog.locator('dt').count(), 3);
+  assert.match(await dialog.textContent(), /Energy Notes Fixture \(energy-notes\)/);
+  assert.match(await dialog.textContent(), /from:notes@energy\.test/);
+  await page.locator('#help-close').click();
   await page.close();
 });
 
 test('verdict-rest touches only visible unjudged stories and undo restores the sweep', async () => {
   const {page} = await openPage();
-  await page.locator('#filter').selectOption('theme:energy-notes');
+  await page.locator('#filter').selectOption('theme:clean-energy');
   const visibleUnjudged = await page.locator('.story[data-verdict=""]').count();
   await page.locator('#sweep-verdict').selectOption('kept');
   await page.locator('#verdict-rest').click();
@@ -82,7 +104,6 @@ test('verdict-rest touches only visible unjudged stories and undo restores the s
 test('an individual verdict changes backlog and one undo reverses it', async () => {
   const {page} = await openPage();
   const unjudged = page.locator('.story[data-verdict=""]').first();
-  await unjudged.locator('summary').click();
   await unjudged.locator('button[data-verdict="emphasised"]').click();
   assert.equal(await page.locator('#backlog').textContent(), '72 unjudged of 74');
   await page.locator('#undo').click();
@@ -94,7 +115,6 @@ test('a verdict exported by the page imports against the same story id', async (
   const {page} = await openPage();
   const card = page.locator('.story[data-verdict=""]').first();
   const id = await card.getAttribute('data-id');
-  await card.locator('summary').click();
   await card.locator('button[data-verdict="kept"]').click();
   const verdictFile = await page.evaluate(() => window.reviewPage.getExport());
   const imported = structuredClone(store);
@@ -139,7 +159,7 @@ test('a cluster renders once with its member provenance and judges every member 
   assert.equal(await page.locator('.story.cluster').count(), 1);
   assert.equal(await page.locator('.story').count(), 71);
   const cluster = page.locator('.story.cluster');
-  await cluster.locator(':scope > summary').click();
+  assert.equal(await cluster.getAttribute('open'), '');
   assert.equal(await cluster.locator('.cluster-member').count(), 4);
   assert.equal(await cluster.locator('.cluster-member .story-link').count(), 4);
   assert.equal(await cluster.locator('.cluster-member .meta').count(), 4);

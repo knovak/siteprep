@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 
 import {D1BookmarkStore} from '../src/d1-store.mjs';
 import {ingestBookmarkHtml} from '../src/ingest.mjs';
-import {readSiteIdentity} from '../src/site-identity.mjs';
+import {chatGPTSignInPath, chatGPTSignOutPath, hasCompleteSiteIdentity, readSiteIdentity} from '../src/site-identity.mjs';
 import {createPileApp} from '../src/worker.mjs';
 
 const workRoot = fileURLToPath(new URL('../', import.meta.url));
@@ -61,7 +61,7 @@ class SqliteD1 {
 
 async function identityDatabase() {
   const database = new DatabaseSync(':memory:');
-  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql', '0007_authorized_users_history.sql']) {
+  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql', '0007_authorized_users_history.sql', '0008_authorized_user_identity.sql']) {
     database.exec(await readFile(`${workRoot}migrations/${migration}`, 'utf8'));
   }
   return {database, d1: new SqliteD1(database)};
@@ -76,17 +76,63 @@ test('Sites identity uses the stable id and treats display headers as optional',
   }}));
   assert.deepEqual(identity, {id: 'opaque-user-1', email: 'reader@example.com', fullName: 'Avery Reader'});
   assert.equal(readSiteIdentity(new Request('https://pile.test/')), null);
-  assert.equal(readSiteIdentity(new Request('https://pile.test/', {headers: {
+  const incomplete = readSiteIdentity(new Request('https://pile.test/', {headers: {
     'oai-authenticated-user-id': 'opaque-user-2',
     'oai-authenticated-user-full-name': 'not%20trusted',
-  }})).fullName, null);
+  }}));
+  assert.equal(incomplete.fullName, null);
+  assert.equal(hasCompleteSiteIdentity(incomplete), false);
+  assert.equal(hasCompleteSiteIdentity(identity), true);
+  assert.equal(chatGPTSignInPath('/collections?from=home'), '/signin-with-chatgpt?return_to=%2Fcollections%3Ffrom%3Dhome');
+  assert.equal(chatGPTSignInPath('https://malicious.example'), '/signin-with-chatgpt?return_to=%2F');
+  assert.equal(chatGPTSignOutPath('//malicious.example'), '/signout-with-chatgpt?return_to=%2F');
 });
 
 test('API routes reject requests without a Sites identity before touching storage', async () => {
   const app = createPileApp();
   const response = await app.fetch(new Request('https://pile.test/api/collections'));
   assert.equal(response.status, 401);
-  assert.deepEqual(await response.json(), {error: 'Sign in with ChatGPT to continue'});
+  assert.deepEqual(await response.json(), {
+    error: 'Sign in with ChatGPT to continue',
+    code: 'authentication_required',
+    sign_in_url: '/signin-with-chatgpt?return_to=%2F',
+  });
+});
+
+test('the public page politely asks visitors with incomplete identity to sign in', async () => {
+  const app = createPileApp({
+    identityFromRequest: () => ({id: 'id-without-email', email: null}),
+    storeFactory: () => { throw new Error('storage must not be opened before sign-in'); },
+  });
+  const response = await app.fetch(new Request('https://pile.test/'));
+  assert.equal(response.status, 200);
+  const body = await response.text();
+  assert.match(body, /Sign in to continue/);
+  assert.match(body, /href="\/signin-with-chatgpt\?return_to=%2F"/);
+});
+
+test('signed-in visitors outside the allowlist see a polite page and APIs return 403', async () => {
+  const {database, d1} = await identityDatabase();
+  const app = createPileApp();
+  const request = path => new Request(`https://pile.test${path}`, {headers: {
+    'oai-authenticated-user-id': 'unknown-id',
+    'oai-authenticated-user-email': 'waiting@example.com',
+  }});
+  const page = await app.fetch(request('/'), {DB: d1});
+  assert.equal(page.status, 403);
+  const html = await page.text();
+  assert.match(html, /You’re not authorized yet/);
+  assert.match(html, /waiting@example\.com/);
+  assert.match(html, /signout-with-chatgpt/);
+
+  const api = await app.fetch(request('/api/collections'), {DB: d1});
+  assert.equal(api.status, 403);
+  assert.deepEqual(await api.json(), {
+    error: 'You are signed in, but not yet authorized',
+    code: 'authorization_required',
+  });
+  assert.equal(database.prepare('SELECT COUNT(*) AS count FROM app_users').get().count, 0);
+  database.close();
 });
 
 test('two authenticated API sessions cannot address each other’s collection', async () => {
@@ -97,7 +143,10 @@ test('two authenticated API sessions cannot address each other’s collection', 
     idFactory: prefix => `${prefix}-${++sequence}`,
   });
   const env = {DB: d1};
-  const userHeaders = id => ({'oai-authenticated-user-id': id});
+  const userHeaders = id => ({
+    'oai-authenticated-user-id': id,
+    'oai-authenticated-user-email': id === 'user-a' ? 'krnovak@gmail.com' : 'julie.duffield@gmail.com',
+  });
 
   const userA = await (await app.fetch(new Request('https://pile.test/api/collections', {
     headers: userHeaders('user-a'),
@@ -151,6 +200,13 @@ test('D1 keeps selection history owner-scoped and resolves the global authorized
   assert.equal(await first.authorizedUserType('KRNOVAK@GMAIL.COM'), 'admin');
   assert.equal(await first.authorizedUserType('julie.duffield@gmail.com'), 'user');
   assert.equal(await first.authorizedUserType('missing@example.com'), null);
+  assert.deepEqual({...await first.authorizeIdentity({id: 'site-user-a', email: 'KRNOVAK@GMAIL.COM'})}, {
+    email: 'krnovak@gmail.com', type: 'admin', user_id: 'site-user-a',
+  });
+  assert.equal((await second.authorizeIdentity({id: 'site-user-a', email: 'changed@example.com'})).type, 'admin');
+  assert.equal(await new D1BookmarkStore(d1, {
+    ownerId: 'site-user-a', ownerEmail: 'changed@example.com',
+  }).canEditTemplates(), true);
   await first.addAuthorizedUser('reader@example.com', 'user');
   assert.equal((await second.listAuthorizedUsers()).at(-1).email, 'reader@example.com');
   await second.removeAuthorizedUser('reader@example.com');

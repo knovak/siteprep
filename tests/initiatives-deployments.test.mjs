@@ -223,25 +223,64 @@ test('a test Site named like the initiative warns without failing', () => {
 
 // ------------------------------------------------------------------- plan
 
-test('a first test deploy is a new private Site named <slug>-test', () => {
+test('a first test deploy is a new Site named <slug>-test', () => {
   const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'test', '--json'], scratch([staticSite()])));
 
   assert.equal(plan.kind, 'chatgpt-site');
   assert.equal(plan.engine, 'deploy-to-chatgpt-sites');
   assert.equal(plan.mode, 'new');
   assert.equal(plan.site_slug, 'healthy-test');
-  assert.equal(plan.access, 'private');
   assert.equal(plan.deployable, true);
   assert.ok(plan.source_files >= 2, 'counts the files it would publish');
   assert.equal(plan.ready, true);
 });
 
-test('a first release is a new Site named for the initiative, with no assumed access', () => {
+test('a first release is a new Site named for the initiative', () => {
   const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'], scratch([staticSite()])));
 
   assert.equal(plan.mode, 'new');
   assert.equal(plan.site_slug, 'healthy');
-  assert.equal(plan.access, null, 'public access is never inferred');
+});
+
+test('both environments default to private, and say the default needs confirming', () => {
+  const dir = scratch([staticSite()]);
+
+  for (const env of ['test', 'prod']) {
+    const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', env, '--json'], dir));
+    assert.equal(plan.access, 'private', `${env} is private unless the user says otherwise`);
+    assert.equal(plan.confirm_access, true, `${env} has never been deployed, so ask`);
+  }
+});
+
+test('a deployed environment keeps its access, and needs no further asking', () => {
+  const dir = scratch([staticSite({
+    test: { slug: 'healthy-test', url: 'https://healthy-test.example.chatgpt.site/', access: 'public' },
+    prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', access: 'private' }
+  })]);
+
+  const test_ = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'test', '--json'], dir));
+  assert.equal(test_.access, 'public', 'a test Site may be public - that is the user\'s call');
+  assert.equal(test_.confirm_access, false);
+
+  const prod = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'], dir));
+  assert.equal(prod.access, 'private');
+  assert.equal(prod.confirm_access, false);
+});
+
+test('a public test Site and a private production Site both validate', () => {
+  const out = run(['validate'], scratch([staticSite({
+    test: { slug: 'healthy-test', url: 'https://healthy-test.example.chatgpt.site/', access: 'public' },
+    prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', access: 'private' }
+  })]));
+  assert.match(out, /INITIATIVE PASS/);
+});
+
+test('recording without an access level never makes anything public', () => {
+  const dir = scratch([staticSite()]);
+  const result = JSON.parse(run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/', '--json'], dir));
+
+  assert.equal(result.entry.access, 'private', 'nothing becomes public by omission');
 });
 
 test('a sites-app is planned through the Sites hosting workflow, not the static engine', () => {

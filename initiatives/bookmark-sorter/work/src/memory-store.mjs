@@ -16,8 +16,8 @@ export class MemoryBookmarkStore {
   #selections = new Map();
   #selectionHistory = new Map();
   #authorizedUsers = new Map([
-    ['krnovak@gmail.com', 'admin'],
-    ['julie.duffield@gmail.com', 'user'],
+    ['krnovak@gmail.com', {type: 'admin', user_id: null}],
+    ['julie.duffield@gmail.com', {type: 'user', user_id: null}],
   ]);
   #captures = new Map();
   #captureQueue = new Map();
@@ -152,21 +152,36 @@ export class MemoryBookmarkStore {
   listAuthorizedUsers() {
     return [...this.#authorizedUsers]
       .sort(([left], [right]) => left.localeCompare(right))
-      .map(([email, type]) => ({email, type}));
+      .map(([email, user]) => ({email, type: user.type}));
   }
 
   authorizedUserType(email) {
-    return this.#authorizedUsers.get(String(email || '').trim().toLowerCase()) ?? null;
+    return this.#authorizedUsers.get(String(email || '').trim().toLowerCase())?.type ?? null;
+  }
+
+  authorizeIdentity(identity) {
+    const id = String(identity?.id || '').trim();
+    const email = String(identity?.email || '').trim().toLowerCase();
+    if (!id || !email) return null;
+    const idMatch = [...this.#authorizedUsers].find(([, user]) => user.user_id === id);
+    if (idMatch) return {email: idMatch[0], type: idMatch[1].type, user_id: id};
+    const user = this.#authorizedUsers.get(email);
+    if (!user) return null;
+    if (!user.user_id) user.user_id = id;
+    return {email, type: user.type, user_id: user.user_id};
   }
 
   addAuthorizedUser(email, type) {
-    this.#authorizedUsers.set(email, type);
-    return {email, type};
+    const normalized = String(email || '').trim().toLowerCase();
+    const current = this.#authorizedUsers.get(normalized);
+    this.#authorizedUsers.set(normalized, {type, user_id: current?.user_id ?? null});
+    return {email: normalized, type};
   }
 
   removeAuthorizedUser(email) {
-    this.#authorizedUsers.delete(email);
-    return {email};
+    const normalized = String(email || '').trim().toLowerCase();
+    this.#authorizedUsers.delete(normalized);
+    return {email: normalized};
   }
 
   recordSelection(expression, usedAt) {

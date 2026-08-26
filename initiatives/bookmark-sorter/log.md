@@ -389,6 +389,37 @@ All 59 application tests and 20 browser tests passed, including the new chooser
 state, file-drop, and narrow-phone checks. The Sites application production
 build also passed.
 
+## 2026-08-26 — Add the public sign-in and authorized-user gate
+
+Kept the test Site public to reach and added the two-stage application boundary
+chosen by the user. A request missing either Sites identity field now receives
+a polite Sign in with ChatGPT page; a complete signed-in identity outside
+`authorized_user` receives a polite not-yet-authorized page naming the email to
+add. The API returns `401 authentication_required` and `403
+authorization_required` for the same states before creating a user or personal
+collection.
+
+Added an optional Site-specific `user_id` to `authorized_user`, including a
+unique partial index and deployable migration. The first successful email match
+links that id, after which either value can admit the account. Collection
+ownership remains on the opaque Sites id, and the matched row's `admin` type
+continues to gate administrator operations.
+
+Reconciled the user README, objectives, specification, plan, test plan,
+decision record, work documentation, and end-user test procedure with the
+public-entry policy. The historical owner-only deployment entries remain as
+history; current documentation now distinguishes public reachability from
+private owner-scoped bookmark data.
+
+All 61 application tests and 22 browser tests passed, including anonymous,
+unauthorized, linked-id, responsive sign-in, and alternate-account recovery
+coverage. The Sites application production build passed. Public test Site
+version 28 deployed successfully at 2026-08-26 07:31:51 UTC. An anonymous live
+request received the sign-in page and API `401`; the signed-in authorized
+account reached its existing collections and Admin surface. Production was not
+changed.
+
 ## 2026-08-26 — Release
 
-Released to production — ChatGPT Site, version 1, `da4fc8b`. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+Released to production — ChatGPT Site, version 1, `da4fc8b`.
+<https://bookmark-sorter.ken-novak.chatgpt.site/> See `releases.md`.

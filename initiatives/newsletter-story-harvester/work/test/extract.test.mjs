@@ -74,6 +74,9 @@ test('long-form yields exactly one story, and no citation becomes one', async ()
   assert.equal(report.links_in_document > 25, true, 'the fixture should be citation-dense');
   assert.equal(records[0].url, 'https://slowboring.example.com/p/the-shortage-is-permits');
   assert.equal(records[0].source_anchor, 'document');
+  assert.equal(records[0].text_is_summary, false);
+  assert.match(records[0].text, /^The argument I want to make is narrow:/);
+  assert.match(records[0].text, /which is the one thing nobody has been willing to do \(study 25\)\.$/);
   assert.ok(!document.links
     .filter((l) => l.href.includes('citations.example.org'))
     .some((l) => records.some((r) => r.url === l.href)), 'a citation became a story');
@@ -93,14 +96,60 @@ test('a long-form column with no URL of its own is still a story', async () => {
 
 // ------------------------------------------------------------ the record
 
-test('text_is_summary is true on long-form and false on the verbatim shapes', async () => {
-  const column = await run('long-form-citations', 'long-form');
+test('legacy recordings retain their shape defaults for text_is_summary', async () => {
+  const legacyColumn = await extractIssue(
+    issueFor('long-form-citations', 'long-form'),
+    {model: stubModel(JSON.stringify([{link_index: 0, title: 'Legacy column', text: 'A legacy summary.', story_date: null}])), now: NOW}
+  );
   const list = await run('link-list-typical', 'link-list');
   const digest = await run('annotated-digest-typical', 'annotated-digest');
 
-  assert.equal(column.records[0].text_is_summary, true);
+  assert.equal(legacyColumn.records[0].text_is_summary, true);
   assert.ok(list.records.every((r) => r.text_is_summary === false));
   assert.ok(digest.records.every((r) => r.text_is_summary === false));
+});
+
+test('a short long-form story keeps its complete original text', async () => {
+  const complete = 'The whole short column, copied without modification.';
+  const reply = JSON.stringify([{
+    link_index: 0,
+    title: 'A short column',
+    text: complete,
+    text_is_summary: false,
+    story_date: null
+  }]);
+  const {records} = await extractIssue({
+    id: 'short-column',
+    html: `<article><h1><a href="https://publisher.test/short">A short column</a></h1><p>${complete}</p></article>`,
+    source: 'short-column',
+    issue_date: '2026-01-12',
+    shape: 'long-form'
+  }, {model: stubModel(reply), now: NOW});
+
+  assert.equal(records.length, 1);
+  assert.equal(records[0].text, complete);
+  assert.equal(records[0].text_is_summary, false);
+});
+
+test('verbatim text over 3000 characters is refused until it is summarized', async () => {
+  const complete = 'x'.repeat(3001);
+  const reply = JSON.stringify([{
+    link_index: 0,
+    title: 'A long column',
+    text: complete,
+    text_is_summary: false,
+    story_date: null
+  }]);
+  const {records, report} = await extractIssue({
+    id: 'long-column',
+    html: `<article><h1><a href="https://publisher.test/long">A long column</a></h1><p>${complete}</p></article>`,
+    source: 'long-column',
+    issue_date: '2026-01-12',
+    shape: 'long-form'
+  }, {model: stubModel(reply), now: NOW});
+
+  assert.equal(records.length, 0);
+  assert.equal(report.refused_by_reason['verbatim text over limit'], 1);
 });
 
 test('extraction never invents text on a verbatim shape', async () => {

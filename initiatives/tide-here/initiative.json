@@ -4,6 +4,21 @@
   "stage": "refining",
   "value": "medium",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "static",
+      "source": "initiatives/tide-here/work",
+      "test": {
+        "slug": "tide-here-test",
+        "url": "https://tide-here-test.ken-novak.chatgpt.site",
+        "access": "private",
+        "deployed_at": "2026-08-26T06:35:12Z",
+        "version": 1,
+        "commit": "41627c9ba883143fd2de6357266d9a07b29a1323"
+      }
+    }
+  ],
   "todo": [
     {
       "id": "refining-readme",

@@ -58,7 +58,8 @@ export class D1BookmarkStore {
 
   async canEditTemplates() {
     if (Boolean((await this.user())?.can_edit_templates)) return true;
-    return this.ownerEmail ? await this.authorizedUserType(this.ownerEmail) === 'admin' : false;
+    if (this.ownerId === null || !this.ownerEmail) return false;
+    return (await this.authorizeIdentity({id: this.ownerId, email: this.ownerEmail}))?.type === 'admin';
   }
 
   async ownedCollection(id) {
@@ -246,6 +247,27 @@ export class D1BookmarkStore {
       'SELECT type FROM authorized_user WHERE email = ? LIMIT 1',
     ).bind(normalized).first();
     return user?.type ?? null;
+  }
+
+  async authorizeIdentity(identity) {
+    const id = String(identity?.id || '').trim();
+    const email = String(identity?.email || '').trim().toLowerCase();
+    if (!id || !email) return null;
+    const findUser = () => this.db.prepare(
+      `SELECT email, type, user_id FROM authorized_user
+       WHERE email = ? OR user_id = ?
+       ORDER BY CASE WHEN user_id = ? THEN 0 ELSE 1 END
+       LIMIT 1`,
+    ).bind(email, id, id).first();
+    const user = await findUser();
+    if (!user) return null;
+    if (user.email === email && !user.user_id) {
+      await this.db.prepare(
+        'UPDATE authorized_user SET user_id = ? WHERE email = ? AND user_id IS NULL',
+      ).bind(id, email).run();
+      return {...user, user_id: id};
+    }
+    return user;
   }
 
   async addAuthorizedUser(email, type) {

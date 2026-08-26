@@ -79,6 +79,7 @@ test('the whole inventory is validated before any message body is read', async (
     ...inventory,
     sources: [...inventory.sources, {
       key: 'unknown-shape',
+      slug: 'unknown-shape',
       name: 'Unknown Shape',
       match: [{ type: 'from', value: 'unknown@example.test' }],
       shape: 'looks-newsletterish'
@@ -140,6 +141,24 @@ test('a whole fixture run records every matched message, including the empty one
 
   const serialised = JSON.stringify(stored.runs[0]);
   assert.doesNotMatch(serialised, /<html|<body|subject|digest\+other@/i, 'mail content reached the run record');
+});
+
+test('the inventory slug, not its internal key, is written as the story source', async () => {
+  const configured = {
+    id: 'slug-test',
+    sources: [{...inventory.sources[1], key: 'private-config-row', slug: 'energy-notes'}]
+  };
+  const result = await runHarvest({
+    inventory: configured,
+    range: FIRST_RANGE,
+    source: source(),
+    model,
+    store: emptyStore(),
+    now: NOW
+  });
+  assert.ok(result.store.stories.length > 0);
+  assert.ok(result.store.stories.every(story => story.source === 'energy-notes'));
+  assert.deepEqual(result.run.inventory.sources, ['energy-notes']);
 });
 
 test('two runs over the same range produce the same set of ids', async () => {

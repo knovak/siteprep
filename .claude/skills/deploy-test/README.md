@@ -20,9 +20,16 @@ have to go looking for the other one.
 
 | Kind | Test deployment |
 | --- | --- |
-| `chatgpt-site`, `build: static` | Deploys the folder through [`deploy-to-chatgpt-sites`](../deploy-to-chatgpt-sites/) to a private `<slug>-test` Site |
+| `chatgpt-site`, `build: static` | Deploys the folder through [`deploy-to-chatgpt-sites`](../deploy-to-chatgpt-sites/) to a `<slug>-test` Site |
 | `chatgpt-site`, `build: sites-app` | Builds and deploys the project through the Sites hosting workflow |
 | `demo` | Nothing to deploy — a demo's test environment is its branch preview, which appears once the branch is pushed |
+
+## Access
+
+Either environment can be private or public — that's your call. The first time
+an environment is deployed the skill tells you it will be private unless you say
+otherwise, and takes your answer. After that the Site keeps the access it has;
+changing it is its own request, not something a refresh does behind your back.
 
 ## What it will not do
 
