@@ -88,3 +88,7 @@ Added a user-facing README covering the public Site, NOAA/CHS coverage, coast-lo
 ## 2026-08-23 — Propose optional improvements as a pull request, from better documentation to suggested features
 
 Proposed five optional refinements with expected value, likely size, safety boundaries, and evidence: browser location, a geographic coast chooser, local pins, inline help, and another official provider adapter.
+
+## 2026-08-26 — Revise documentation and forecast disclosures
+
+Updated the user guide for the current Show selection and opt-in Show here workflow, separated the current test and production Site addresses, and replaced the completed browser-location proposal with still-open options. Moved Prediction source details below the safety notice and added a collapsed Debug record containing the local-history control and the What leaves this device explanation.

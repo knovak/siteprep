@@ -35,8 +35,6 @@ button.danger:hover { background: #81392e; }
 button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
 .fixture-note, .location-note { color: var(--muted); font-size: .82rem; }
 .location-note { margin: .55rem .45rem 0; }
-.local-tools { display: grid; gap: .85rem; max-width: 760px; margin-top: 2rem; }
-.local-tools > button { justify-self: start; }
 .privacy-copy { margin: 0; padding: .9rem 1rem; border-left: 4px solid var(--aqua-dark); border-radius: .4rem .85rem .85rem .4rem; color: var(--muted); background: rgba(255, 255, 255, .72); font-size: .84rem; line-height: 1.55; }
 .privacy-copy strong { color: var(--ink); }
 .privacy-copy a { color: var(--aqua-dark); }
@@ -102,9 +100,12 @@ dd { margin: .32rem 0 0; font-size: 1.08rem; font-weight: 780; overflow-wrap: an
 .astronomy-details summary { cursor: pointer; font-size: .78rem; font-weight: 780; line-height: 1.4; }
 .astronomy-content { padding-top: .7rem; }
 .empty { color: var(--muted); font-size: .82rem; }
-.source-details { margin-top: 1rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 1rem; background: white; }
-.source-details summary { cursor: pointer; font-weight: 760; }
+.source-details, .debug-record { margin-top: 1rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 1rem; background: white; }
+.source-details summary, .debug-record summary { cursor: pointer; font-weight: 760; }
 .source-details p { margin-bottom: 0; color: var(--muted); line-height: 1.5; }
+.debug-record { max-width: 760px; }
+.debug-record-content { display: grid; gap: .85rem; padding-top: 1rem; }
+.debug-record-content > button { justify-self: start; }
 .safety-line { margin: 1.2rem 0 0; padding: 1rem; border-radius: .85rem; color: #634f1d; background: #fff4cf; font-weight: 720; text-align: center; }
 [hidden] { display: none !important; }
 @media (max-width: 900px) {
