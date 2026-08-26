@@ -4,6 +4,13 @@
   "stage": "refining",
   "value": "medium",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "static",
+      "source": "initiatives/tide-here/work"
+    }
+  ],
   "todo": [
     {
       "id": "refining-readme",
