@@ -27,6 +27,7 @@ async function installPile(page) {
     proposalRevision: 0,
     selectionDelays: new Map(),
     history: [],
+    savedSelections: [{id: 'saved-reading', name: 'Reading queue', expression: 'folder:Reading/*', count: 834}],
     authorizedUsers: [
       {email: 'julie.duffield@gmail.com', type: 'user'},
       {email: 'krnovak@gmail.com', type: 'admin'},
@@ -62,7 +63,7 @@ async function installPile(page) {
       return route.fulfill({json: {collection_id: collectionId, collection_total: collectionItems.length, collection_backlog: backlog, total: collectionItems.length, backlog, captures: {total: collectionItems.length, metadata_images: collectionId === 'pile' ? 3334 : 0, screenshot_images: 0, gaps: collectionId === 'pile' ? 6666 : 0, queued: collectionId === 'pile' ? 6666 : 0, duplicate_distribution: collectionId === 'pile' ? [12, 7, 4] : []}, items: collectionItems.slice(offset, offset + limit)}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/selections') {
-      return route.fulfill({json: {selections: []}});
+      return route.fulfill({json: {selections: backend.savedSelections}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/selection-history') {
       return route.fulfill({json: {selections: backend.history}});
@@ -275,6 +276,79 @@ test('Select remembers query strings in reverse recent order', async ({page}) =>
   await page.getByLabel('Previous selections').selectOption('site:first.example');
   await page.getByRole('button', {name: 'Open previous'}).click();
   await expect(page.getByLabel('Selection expression')).toHaveValue('site:first.example');
+});
+
+test('Open choice buttons show whether a proposal, saved selection, or previous selection is chosen', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#selector > summary').click();
+
+  for (const [selectLabel, buttonName, option] of [
+    ['Automatic proposals', 'Open proposal', 'src:browser-export'],
+    ['Saved selections', 'Open saved', 'saved-reading'],
+  ]) {
+    const select = page.getByLabel(selectLabel);
+    const button = page.getByRole('button', {name: buttonName});
+    await expect(button).toHaveCSS('color', 'rgb(17, 17, 17)');
+    await expect(button).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(button).toHaveAttribute('data-selection-ready', 'false');
+    await select.selectOption(option);
+    await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
+    await expect(button).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+    await expect(button).toHaveAttribute('data-selection-ready', 'true');
+    await select.selectOption('');
+    await expect(button).toHaveCSS('color', 'rgb(17, 17, 17)');
+    await expect(button).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  }
+
+  await page.getByLabel('Selection expression').fill('site:first.example');
+  await page.getByRole('button', {name: 'Open selection'}).click();
+  const previous = page.getByLabel('Previous selections');
+  const openPrevious = page.getByRole('button', {name: 'Open previous'});
+  await expect(openPrevious).toHaveCSS('color', 'rgb(17, 17, 17)');
+  await expect(openPrevious).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await previous.selectOption('site:first.example');
+  await expect(openPrevious).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(openPrevious).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+});
+
+test('Import accepts a file dropped beside the file chooser', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#importer > summary').click();
+
+  const dropZone = page.locator('#import-drop-zone');
+  await expect(dropZone).toContainText('Drop a file here');
+  const positions = await page.locator('.import-file-picker').evaluate(picker => {
+    const input = picker.querySelector('#bookmark-file').getBoundingClientRect();
+    const drop = picker.querySelector('#import-drop-zone').getBoundingClientRect();
+    return {inputTop: input.top, inputBottom: input.bottom, dropTop: drop.top, dropBottom: drop.bottom, dropLeft: drop.left, inputLeft: input.left};
+  });
+  expect(positions.dropLeft).toBeGreaterThan(positions.inputLeft);
+  expect(Math.min(positions.inputBottom, positions.dropBottom) - Math.max(positions.inputTop, positions.dropTop)).toBeGreaterThan(20);
+
+  const dataTransfer = await page.evaluateHandle(() => {
+    const transfer = new DataTransfer();
+    transfer.items.add(new File(['<!doctype html><title>Bookmarks</title>'], 'dragged-bookmarks.html', {type: 'text/html'}));
+    return transfer;
+  });
+  await dropZone.dispatchEvent('dragenter', {dataTransfer});
+  await expect(dropZone).toHaveAttribute('data-drag-active', 'true');
+  await dropZone.dispatchEvent('drop', {dataTransfer});
+  await expect(dropZone).not.toHaveAttribute('data-drag-active', 'true');
+  await expect(page.locator('#import-drop-copy')).toHaveText('dragged-bookmarks.html ready to import');
+  await expect.poll(() => page.locator('#bookmark-file').evaluate(input => input.files[0]?.name)).toBe('dragged-bookmarks.html');
+
+  await page.setViewportSize({width: 390, height: 844});
+  const phoneDrop = await dropZone.boundingBox();
+  expect(phoneDrop.x).toBeGreaterThanOrEqual(0);
+  expect(phoneDrop.x + phoneDrop.width).toBeLessThanOrEqual(390);
+  expect(phoneDrop.height).toBeGreaterThanOrEqual(40);
+
+  await page.getByRole('button', {name: 'Import file'}).click();
+  await expect(page.locator('#import-status')).toHaveText('Imported 1 new; merged 0.');
 });
 
 test('page layout dropdown redraws the wide grid immediately', async ({page}) => {

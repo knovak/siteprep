@@ -367,3 +367,24 @@ beside the verdict toolbar. Added per-user recent selection history and an
 Admin menu for sittings, captures, and advisory authorized-user add/remove/list
 operations; the new authorized-user table is deliberately not an access gate
 in this version.
+
+## 2026-08-25 — Clarify selection targets and add drag-and-drop import
+
+Made Open proposal, Open saved, and Open previous black on white until their
+paired chooser has a real value, then white on blue. Added a keyboard-accessible
+drop target beside the existing file input; a dropped HTML or Sorter JSON file
+enters the same import form, shows its name, and still waits for the explicit
+Import file action.
+
+Reconciled the initiative documents with the shipped refining-stage product:
+selectable wide layouts, paged untriaged versus confirmed whole-selection
+sweeps, per-user selection history, multiple private collections, approved
+Sites/R2 use, and the actual server-gated Admin role. The earlier entry's claim
+that `authorized_user` remained advisory is superseded by the merged
+implementation and the 2026-08-25 decision. Expanded the user README with the
+feature inventory, cautions, workflows, selection grammar, backup/restore,
+administration, and troubleshooting guidance.
+
+All 59 application tests and 20 browser tests passed, including the new chooser
+state, file-drop, and narrow-phone checks. The Sites application production
+build also passed.

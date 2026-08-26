@@ -120,9 +120,13 @@ selection, and export operations.
   collection bar switches among the owner's personal pile and demo copies.
   Import, Select, and Export share one equal-width collapsed row; opening one
   gives it the available width and closes the other two. Import contains both
-  file loading and demo-template copying, with an inline success or parser-error
-  result after each attempt. Select contains expression, proposal,
-  saved-selection, tagging, and per-user recent-query controls.
+  file loading and demo-template copying, with a keyboard-operable drop target
+  beside the ordinary file input and an inline success or parser-error result
+  after each attempt. A drop selects one file but leaves the explicit form
+  submission in place. Select contains expression, proposal, saved-selection,
+  tagging, and per-user recent-query controls. The Open action beside proposal,
+  saved, and recent choosers is black on white at the placeholder and white on
+  blue after a real value is selected.
   Export downloads the whole collection or open selection as
   `bookmark-sorter-<collection-name>.json` and can erase the
   current collection after confirmation while preserving the collection and
@@ -267,11 +271,11 @@ the data-handling boundary.
 - `POST /api/tag` unions tags onto the marked set or current selection and logs
   only the tags it added, so one undo removes those additions and preserves
   everything that existed before the action.
-- `POST /api/selection/verdict` implements mark-then-sweep. A current visible
-  selection never confirms, including a tested 3,000-item sweep. An
-  entire-selection request returns `409` with its count until the caller
-  confirms; the split Sweep control uses that path for the current open
-  expression.
+- `POST /api/selection/verdict` applies one verdict to the entire open
+  expression. An unconfirmed request returns `409` with its count; the split
+  Sweep control confirms that count before retrying. The default visible-page
+  sweep instead uses `/api/verdict` with only the untriaged item ids currently
+  on screen and never needs an unbounded-set confirmation.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
 - `GET /api/export` streams the active collection or its `expression` subset as
@@ -353,14 +357,15 @@ Run the focused browser checks with the installed workspace Playwright binary:
   --config initiatives/bookmark-sorter/work/test/grid.playwright.config.mjs
 ```
 
-Those three checks prove the DOM remains bounded at all four layout variants,
-that keyboard verdicts, marked groups, undo, backlog, and rate work without a
-navigation or full grid replacement, and that stored captures render while the
-pass-2 queue remains inert until its button is pressed.
+The browser suite proves the DOM remains bounded at all layout variants; the
+control-center accordion, file drop target, chooser readiness states, exports,
+Admin controls, and narrow-phone layout remain usable; keyboard verdicts,
+marked groups, undo, backlog, and rate work without a navigation or full grid
+replacement; and stored captures render while the pass-2 queue remains inert.
 
 The blind rate and selection-sitting observations are optional and accrue from
 ordinary use. Metadata coverage and the image-hash duplicate distribution are
 read after pass 1 catches up on the real collection. Automated fixtures verify
 all instruments and paths but cannot manufacture those baselines. The duplicate
-threshold therefore remains the documented
-starting value of 30 until the capture result is recorded in `decisions.md`.
+real-pile measurement recorded in `decisions.md` kept the duplicate threshold
+at 30 after the largest repeated image group measured 11.
