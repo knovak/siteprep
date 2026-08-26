@@ -72,7 +72,7 @@ get_demo_description() {
   local demo_name="$2"
   local demo_title="$3"
 
-  if [ "$demo_name" = "migration_map" ]; then
+  if [ "$demo_name" = "world_migration_atlas" ]; then
     echo 'Open the World Migration Atlas demo. <a href="https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&amp;ouid=111064312747417346604&amp;rtpof=true&amp;sd=true">Tutorial Slideshow</a> · <a href="https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk">Tutorial as PDF</a>.'
     return
   fi
