@@ -36,6 +36,15 @@ function publishedClusters(store, selected) {
   return clusters;
 }
 
+function reviewSources(sources) {
+  if (!Array.isArray(sources)) return [];
+  return sources.map((source) => ({
+    name: String(source?.name || '').trim(),
+    slug: String(source?.slug || '').trim(),
+    search: String(source?.search || '').trim()
+  })).filter((source) => source.name && source.slug && source.search);
+}
+
 /**
  * @param store                the durable store
  * @param options.title        page heading
@@ -45,11 +54,13 @@ function publishedClusters(store, selected) {
  *                             purpose: a page nobody can judge on is a page
  *                             meant to leave this machine, so publishing cannot
  *                             be half-done by forgetting a second flag.
+ * @param options.sources      safe source help: name, slug, Gmail search string
  */
 export function reviewPageHtml(store, {
   title = 'Newsletter story review',
   include = null,
-  judgeable = true
+  judgeable = true,
+  sources = []
 } = {}) {
   if (!store || !Array.isArray(store.stories) || !store.store_id) {
     throw new Error('review page: a store with store_id and stories is required');
@@ -66,6 +77,7 @@ export function reviewPageHtml(store, {
     ? {
         ...structuredClone(store),
         stories: structuredClone(selected),
+        review_sources: reviewSources(sources),
         vocabularies: {...store.vocabularies, verdict: verdicts}
       }
     : {
@@ -106,6 +118,7 @@ export function reviewPageHtml(store, {
     summary { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; padding: 16px 18px; cursor: pointer; }
     summary::-webkit-details-marker { display: none; }
     .title { font-size: 1.05rem; font-weight: 760; color: #17264a; }
+    .title.story-link, .cluster-member .story-link { color: #1745a1; text-decoration-thickness: .08em; text-underline-offset: .14em; }
     .meta { margin-top: 4px; color: #657087; font-size: .85rem; }
     .verdict { align-self: center; border-radius: 999px; padding: 5px 9px; background: #eef2fa; color: #4f5e7a; font-size: .78rem; font-weight: 800; }
     .verdict.unjudged { background: #fff3df; color: #8b4d00; }
@@ -124,6 +137,16 @@ export function reviewPageHtml(store, {
     .verdict-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
     .verdict-buttons button { border: 1px solid #c9d2e4; border-radius: 9px; padding: 7px 10px; background: #fff; }
     .verdict-buttons button[aria-pressed="true"] { color: white; background: #2149a4; border-color: #2149a4; }
+    dialog { width: min(720px, calc(100% - 32px)); border: 0; border-radius: 16px; padding: 0; color: #172033; box-shadow: 0 24px 70px rgba(23, 32, 51, .28); }
+    dialog::backdrop { background: rgba(23, 32, 51, .45); }
+    .help-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-bottom: 1px solid #e2e7f0; }
+    .help-head h2 { margin: 0; color: #193b8f; font-size: 1.25rem; }
+    .help-close { border: 1px solid #c9d2e4; border-radius: 9px; padding: 6px 10px; background: white; }
+    .source-help { display: grid; gap: 12px; padding: 20px; margin: 0; }
+    .source-help div { padding: 12px; border: 1px solid #dce3f0; border-radius: 10px; background: #f8faff; }
+    .source-help dt { font-weight: 800; color: #17264a; }
+    .source-help dd { margin: 4px 0 0; }
+    .source-help code { white-space: pre-wrap; overflow-wrap: anywhere; }
     footer { width: min(1120px, calc(100% - 40px)); margin: -55px auto 30px; color: #758096; font-size: .8rem; }
     @media (max-width: 850px) { .toolbar { grid-template-columns: 1fr 1fr; } .headline { align-items: flex-start; flex-direction: column; gap: 4px; } }
     @media (max-width: 520px) { .toolbar { grid-template-columns: 1fr; } main { width: min(100% - 20px, 1120px); } summary { grid-template-columns: 1fr; } }
@@ -152,9 +175,17 @@ export function reviewPageHtml(store, {
       </label>
       <button class="tool-button" id="verdict-rest">Judge visible unjudged</button>
       <button class="tool-button" id="undo" disabled>Undo</button>
+      <button class="tool-button" id="help">Help</button>
       <button class="tool-button primary" id="export">Export verdicts</button>` : ''}
     </div>
   </header>
+  ${judgeable ? `<dialog id="help-dialog" aria-labelledby="help-title">
+    <div class="help-head">
+      <h2 id="help-title">Newsletter sources</h2>
+      <button class="help-close" id="help-close" type="button">Close</button>
+    </div>
+    <dl class="source-help" id="source-help"></dl>
+  </dialog>` : ''}
   <main id="stories"></main>
   <footer>${judgeable
     ? `Self-contained review for store <strong>${escapeHtml(store.store_id)}</strong>. The store is never written by this page.`
@@ -167,6 +198,8 @@ export function reviewPageHtml(store, {
     const stories = store.stories.map((story) => Object.assign({}, story, { tags: Array.from(story.tags || []) }));
     const byId = new Map(stories.map(story => [story.id, story]));
     const clusters = Object.values(store.clusters || {});
+    const reviewSources = Array.from(store.review_sources || []);
+    const sourcesBySlug = new Map(reviewSources.map(source => [source.slug, source]));
     const verdicts = Array.from(new Set(store.vocabularies.verdict || []));
     const state = { filter: '', sort: 'story-date', undo: [] };
     const root = document.getElementById('stories');
@@ -179,6 +212,15 @@ export function reviewPageHtml(store, {
     ` : ''}
 
     function dateOf(story) { return story.story_date || story.issue_date || ''; }
+    function sourceLabel(slug) { return sourcesBySlug.get(slug)?.name || slug || 'unknown source'; }
+    function tagLabel(tag) {
+      const [prefix, ...rest] = String(tag).split(':');
+      const slug = rest.join(':');
+      const value = slug.replaceAll('-', ' ');
+      if (prefix === 'theme') return 'Theme: ' + value;
+      if (prefix === 'source') return 'Source: ' + sourceLabel(slug);
+      return tag;
+    }
     function visible(story) { return !state.filter || story.tags.includes(state.filter); }
     function rows() {
       const claimed = new Set();
@@ -253,28 +295,37 @@ export function reviewPageHtml(store, {
       return node;
     }
 
+    function storyTitle(story, className = 'title', fallbackTag = 'div') {
+      const label = story.title || '(untitled)';
+      if (!/^https?:\\/\\//i.test(story.url || '')) return text(fallbackTag, className, label);
+      const link = text('a', (className + ' story-link').trim(), label);
+      link.href = story.url;
+      link.target = '_blank';
+      link.rel = 'noreferrer';
+      link.addEventListener('click', event => event.stopPropagation());
+      return link;
+    }
+
     function storyCard(story) {
       const details = document.createElement('details');
       details.className = 'story';
+      details.open = true;
       details.dataset.id = story.id;
       details.dataset.source = story.source || '';
       details.dataset.tags = JSON.stringify(story.tags);
       details.dataset.verdict = story.verdict || '';
       const summary = document.createElement('summary');
       const heading = document.createElement('div');
-      heading.append(text('div', 'title', story.title || '(untitled)'));
-      heading.append(text('div', 'meta', (story.source || 'unknown source') + ' · ' + dateOf(story)));
+      heading.append(storyTitle(story));
+      heading.append(text('div', 'meta', sourceLabel(story.source) + ' · ' + dateOf(story)));
       summary.append(heading);
       summary.append(text('span', 'verdict' + (story.verdict === null ? ' unjudged' : ''), story.verdict || 'unjudged'));
       details.append(summary);
       const body = document.createElement('div'); body.className = 'body';
       body.append(text('p', 'story-text', story.text || '(No text)'));
       if (story.text_is_summary) body.append(text('p', 'summary-note', 'This text is a harvester summary.'));
-      if (/^https?:\\/\\//i.test(story.url || '')) {
-        const link = text('a', 'story-link', 'Open story'); link.href = story.url; link.target = '_blank'; link.rel = 'noreferrer'; body.append(link);
-      }
       const tags = document.createElement('div'); tags.className = 'tags';
-      for (const tag of story.tags) tags.append(text('span', 'tag', tag));
+      for (const tag of story.tags) tags.append(text('span', 'tag', tagLabel(tag)));
       body.append(tags);
       ${judgeable ? `
       const controls = document.createElement('div'); controls.className = 'verdict-buttons'; controls.setAttribute('aria-label', 'Verdict');
@@ -303,19 +354,16 @@ export function reviewPageHtml(store, {
 
     function clusterMember(story) {
       const member = document.createElement('article'); member.className = 'cluster-member'; member.dataset.id = story.id;
-      member.append(text('h3', '', story.title || '(untitled)'));
-      member.append(text('div', 'meta', (story.source || 'unknown source') + ' · ' + dateOf(story)));
+      const heading = document.createElement('h3'); heading.append(storyTitle(story, '', 'span')); member.append(heading);
+      member.append(text('div', 'meta', sourceLabel(story.source) + ' · ' + dateOf(story)));
       member.append(text('p', 'story-text', story.text || '(No text)'));
-      if (/^https?:\\/\\//i.test(story.url || '')) {
-        const link = text('a', 'story-link', 'Open story'); link.href = story.url; link.target = '_blank'; link.rel = 'noreferrer'; member.append(link);
-      }
       ${judgeable ? 'member.append(verdictControls([story]));' : ''}
       return member;
     }
 
     function clusterCard(row) {
       const {cluster, members} = row;
-      const details = document.createElement('details'); details.className = 'story cluster'; details.dataset.id = cluster.tag;
+      const details = document.createElement('details'); details.className = 'story cluster'; details.open = true; details.dataset.id = cluster.tag;
       details.dataset.source = rowSource(row);
       details.dataset.tags = JSON.stringify(Array.from(new Set(members.flatMap(story => story.tags))));
       const sharedVerdict = verdicts.find(verdict => members.every(story => story.verdict === verdict)) || '';
@@ -348,7 +396,7 @@ export function reviewPageHtml(store, {
     }
 
     for (const tag of Array.from(new Set(stories.flatMap(story => story.tags))).sort()) {
-      const option = document.createElement('option'); option.value = tag; option.textContent = tag; filter.append(option);
+      const option = document.createElement('option'); option.value = tag; option.textContent = tagLabel(tag); filter.append(option);
     }
     ${judgeable ? `
     for (const verdict of verdicts) {
@@ -360,6 +408,19 @@ export function reviewPageHtml(store, {
     ${judgeable ? `
     document.getElementById('verdict-rest').addEventListener('click', () => setVerdicts(stories.filter(story => visible(story) && story.verdict === null), sweepVerdict.value));
     undo.addEventListener('click', undoLast);
+    const helpDialog = document.getElementById('help-dialog');
+    const sourceHelp = document.getElementById('source-help');
+    for (const source of reviewSources) {
+      const row = document.createElement('div');
+      const term = text('dt', '', source.name + ' (' + source.slug + ')');
+      const detail = document.createElement('dd');
+      detail.append(text('code', '', source.search));
+      row.append(term, detail);
+      sourceHelp.append(row);
+    }
+    if (!reviewSources.length) sourceHelp.append(text('div', '', 'No sources were supplied to this review page.'));
+    document.getElementById('help').addEventListener('click', () => helpDialog.showModal());
+    document.getElementById('help-close').addEventListener('click', () => helpDialog.close());
     document.getElementById('export').addEventListener('click', downloadExport);
     window.reviewPage = { getExport, undo: undoLast, verdictRest: verdict => setVerdicts(stories.filter(story => visible(story) && story.verdict === null), verdict) };
     ` : ''}

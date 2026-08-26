@@ -7,7 +7,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  CONTRACTS, SHAPES, contractFor, chromeReason, anchorFor, bandVerdict, isLoudCase
+  CONTRACTS, SHAPES, FULL_TEXT_CHARACTER_LIMIT, contractFor, chromeReason, anchorFor, bandVerdict, isLoudCase
 } from '../src/contracts.mjs';
 import { parseFindings, buildRequest, recordedModel } from '../src/model.mjs';
 import { readDocument } from '../src/html.mjs';
@@ -23,10 +23,12 @@ test('the bands are the ones §3.1 states', () => {
   assert.deepEqual(CONTRACTS['long-form'].band, { min: 1, max: 1 });
 });
 
-test('text_is_summary is true on long-form only', () => {
-  assert.equal(CONTRACTS['long-form'].text_is_summary, true);
-  assert.equal(CONTRACTS['link-list'].text_is_summary, false);
-  assert.equal(CONTRACTS['annotated-digest'].text_is_summary, false);
+test('every shape uses the same 3000-character full-text threshold', () => {
+  assert.equal(FULL_TEXT_CHARACTER_LIMIT, 3000);
+  assert.ok(SHAPES.every(shape => CONTRACTS[shape].summary_threshold === 3000));
+  assert.equal(CONTRACTS['long-form'].default_text_is_summary, true);
+  assert.equal(CONTRACTS['link-list'].default_text_is_summary, false);
+  assert.equal(CONTRACTS['annotated-digest'].default_text_is_summary, false);
 });
 
 test('a yield outside the band is named, with its direction', () => {
@@ -71,6 +73,8 @@ test('the request numbers the links the same way the document does', () => {
   const request = buildRequest(CONTRACTS['link-list'], document);
   assert.match(request, /0\. One -> https:\/\/a\.example\/1/);
   assert.match(request, /1\. Two -> https:\/\/a\.example\/2/);
+  assert.match(request, /3000 characters/);
+  assert.match(request, /text_is_summary/);
 });
 
 test('a reply that is nearly right is refused, not accepted', () => {
@@ -84,6 +88,10 @@ test('a reply that is nearly right is refused, not accepted', () => {
     () => parseFindings('[{"link_index":"first","title":"a","text":"b"}]', { shape: 'link-list' }),
     /non-integer link_index/
   );
+  assert.throws(
+    () => parseFindings('[{"link_index":0,"title":"a","text":"b","text_is_summary":"false"}]', { shape: 'link-list' }),
+    /non-boolean text_is_summary/
+  );
 });
 
 test('a reply may arrive as a bare list or under findings', () => {
@@ -91,6 +99,7 @@ test('a reply may arrive as a bare list or under findings', () => {
   const wrapped = parseFindings('{"findings":[{"link_index":0,"title":"a","text":"b"}]}', { shape: 'link-list' });
   assert.deepEqual(bare, wrapped);
   assert.equal(bare[0].story_date, null);
+  assert.equal(bare[0].text_is_summary, false);
 });
 
 test('the long-form prompt and live-shaped recording agree on an array of one finding', async () => {

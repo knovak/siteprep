@@ -95,13 +95,17 @@ export function parseFindings(raw, { shape } = {}) {
     if (index !== null && index !== undefined && !Number.isInteger(index)) {
       throw new Error(`finding ${position} in the ${shape} reply has a non-integer link_index`);
     }
+    if (finding.text_is_summary !== undefined && typeof finding.text_is_summary !== 'boolean') {
+      throw new Error(`finding ${position} in the ${shape} reply has a non-boolean text_is_summary`);
+    }
     return {
       link_index: index ?? null,
       title: String(finding.title ?? '').trim(),
       text: String(finding.text ?? '').trim(),
+      text_is_summary: finding.text_is_summary ?? (shape === 'long-form'),
       story_date: finding.story_date ?? null
     };
   });
 }
 
-const FINDING_KEYS = new Set(['link_index', 'title', 'text', 'story_date']);
+const FINDING_KEYS = new Set(['link_index', 'title', 'text', 'text_is_summary', 'story_date']);

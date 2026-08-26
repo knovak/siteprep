@@ -9,7 +9,7 @@ import { loadStore, saveStore } from './store.mjs';
 import { extractIssue, summariseRun } from './extract.mjs';
 import { mergeRecords, recordRun } from './merge.mjs';
 import { uniqueTags } from './identity.mjs';
-import { actualFromMatchesEntry, matchersFor } from './source-contract.mjs';
+import { actualFromMatchesEntry, matchersFor, sourceSlug } from './source-contract.mjs';
 import { contractFor } from './contracts.mjs';
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -45,7 +45,7 @@ export async function runHarvest({ inventory, range, source, model, store, tagge
   const at = now || new Date().toISOString();
   const issueReports = [];
   const sourceDocs = [];
-  const issuesPerSource = Object.fromEntries(entries.map((entry) => [entry.key, 0]));
+  const issuesPerSource = Object.fromEntries(entries.map((entry) => [entry.slug, 0]));
   const resolvedBySource = {};
   const attributed = new Map();
   let unattributed = 0;
@@ -85,7 +85,7 @@ export async function runHarvest({ inventory, range, source, model, store, tagge
       const issue = {
         id: message.id,
         html,
-        source: entry.key,
+        source: entry.slug,
         issue_date: message.issue_date,
         shape: entry.shape,
         unwrap: entry.unwrap || undefined
@@ -102,7 +102,7 @@ export async function runHarvest({ inventory, range, source, model, store, tagge
         const proposed = await proposeTags({
           record: structuredClone(record),
           issue: { id: issue.id, source: issue.source, issue_date: issue.issue_date, shape: extracted.report.extracted_shape },
-          inventory: { key: entry.key, name: entry.name }
+          inventory: { key: entry.key, slug: entry.slug, name: entry.name }
         });
         if (!Array.isArray(proposed)) throw new Error(`harvest: tagger must return an array for ${record.id}`);
         record.tags = uniqueTags([...record.tags, ...proposed]);
@@ -110,10 +110,10 @@ export async function runHarvest({ inventory, range, source, model, store, tagge
 
       accumulateMerge(merged, mergeRecords(store, extracted.records, { mode: 'harvest', now: at }));
       issueReports.push(extracted.report);
-      issuesPerSource[entry.key] += 1;
+      issuesPerSource[entry.slug] += 1;
       sourceDocs.push({
         source_doc: message.id,
-        source: entry.key,
+        source: entry.slug,
         issue_date: message.issue_date,
         shape: extracted.report.extracted_shape,
         stories: extracted.records.length,
@@ -154,7 +154,7 @@ export async function runHarvest({ inventory, range, source, model, store, tagge
   };
   const inventoryRecord = {
     id: inventory.id || null,
-    sources: entries.map((entry) => entry.key)
+    sources: entries.map((entry) => entry.slug)
   };
   const run = recordRun(store, {
     kind: 'harvest',
@@ -184,10 +184,14 @@ function validateInventory(inventory) {
     throw new Error('harvest: inventory.sources must be a non-empty array');
   }
   const keys = new Set();
+  const slugs = new Set();
   for (const entry of entries) {
-    if (!entry?.key || !entry.name || !entry.shape) throw new Error('harvest: every inventory source needs key, name and shape');
+    if (!entry?.key || !entry.name || !entry.shape) throw new Error('harvest: every inventory source needs key, slug, name and shape');
     if (keys.has(entry.key)) throw new Error(`harvest: duplicate inventory key ${entry.key}`);
     keys.add(entry.key);
+    entry.slug = sourceSlug(entry);
+    if (slugs.has(entry.slug)) throw new Error(`harvest: duplicate inventory slug ${entry.slug}`);
+    slugs.add(entry.slug);
   }
   return entries;
 }
