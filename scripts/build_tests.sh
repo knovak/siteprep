@@ -244,6 +244,16 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
       fail "BUILD-18 initiatives index does not link ${initiative}"
     fi
     pass "BUILD-18 initiative page generated and linked for ${initiative}"
+
+    if [ -f "$ROOT_DIR/initiatives/${initiative}/README.md" ]; then
+      if [ ! -f "$OUTPUT_DIR/initiatives/${initiative}/README.html" ]; then
+        fail "BUILD-18 README not rendered for ${initiative}"
+      fi
+      if ! grep -q 'href="./README.html"' "$OUTPUT_DIR/initiatives/${initiative}/index.html"; then
+        fail "BUILD-18 initiative page does not list README for ${initiative}"
+      fi
+      pass "BUILD-18 initiative README rendered and linked for ${initiative}"
+    fi
   done < <(node "$ROOT_DIR/scripts/initiatives.mjs" list)
 
   # Source markdown stays the single source of truth; the build renders it.

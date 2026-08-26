@@ -13,6 +13,7 @@ initiatives/
   sweep.json               # optional sweep configuration
   <slug>/
     initiative.json        # required - stage, value, outputs, deployments, todo
+    README.md              # optional guide, always rendered and listed when present
     wish.md                # the goal in the user's own words
     background.md          # optional research done before objectives
     objectives.md decisions.md spec.md plan.md test-plan.md log.md notes.md
@@ -58,6 +59,7 @@ indexes use, so page furniture stays defined in one place.
 ```text
 gh-pages/initiatives/index.html              # the TOC
 gh-pages/initiatives/<slug>/index.html       # overview
+gh-pages/initiatives/<slug>/README.html      # rendered when README.md is present
 gh-pages/initiatives/<slug>/wish.html        # one page per source .md
 ```
 
@@ -65,6 +67,10 @@ The overview page is derived entirely from `initiative.json` and the files
 present - purpose, status, what's next, what's blocked, outputs, and links to
 the documents - so displayed status cannot drift from recorded state. An
 `overview.md`, if present, is rendered and appended.
+
+An initiative `README.md`, if present, is always included in the rendered
+documents and listed as **README** on the initiative overview page. It does not
+depend on the initiative's lifecycle stage.
 
 The root index gains an Initiatives card, and `shared/nav_bar/` includes an
 Initiatives button, so the collection is reachable the same way decks and demos
