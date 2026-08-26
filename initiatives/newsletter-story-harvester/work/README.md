@@ -52,7 +52,7 @@ all three. Node 18 or later, for the built-in test runner.
 | File | What it is | Specified in |
 |---|---|---|
 | `src/review-page.mjs` | Pure store-to-HTML generator with embedded data, CSS, verdict state and export | `spec.md` §§8–9 |
-| `generate-review-page.mjs` | CLI that writes one disposable review file from a store | `plan.md` phase 4 |
+| `generate-review-page.mjs` | CLI that writes one disposable review file from a store and can embed the private inventory's source-name, slug, and Gmail-search help | `plan.md` phase 4 |
 | `build-fixture-store.mjs` | Reproducibly builds the committed 74-story fixture store from phase 3 inputs | `test-plan.md` §4.4 |
 | `fixtures/store-fixture.json` | Offline review input, including one unknown verdict to pin round-tripping | `test-plan.md` §4.4 |
 | `test/review-page.test.mjs` | Offline Playwright checks for every automated Phase 4 row | `test-plan.md` §4.4 |
@@ -173,8 +173,12 @@ Generate a review file:
 ```bash
 node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
   initiatives/newsletter-story-harvester/work/fixtures/store-fixture.json \
-  /tmp/newsletter-review.html
+  /tmp/newsletter-review.html \
+  --inventory initiatives/newsletter-story-harvester/work/fixtures/inventory-fixture.json
 ```
+
+The inventory option belongs only to the private, judgeable review file. The
+published page never embeds source search configuration.
 
 Publish the kept and emphasised stories from a judged store:
 

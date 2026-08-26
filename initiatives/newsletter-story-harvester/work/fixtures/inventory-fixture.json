@@ -3,6 +3,7 @@
   "sources": [
     {
       "key": "better-news",
+      "slug": "better-news",
       "name": "Better News Fixture",
       "match": [
         { "type": "from", "value": "digest@better.test" },
@@ -14,6 +15,7 @@
     },
     {
       "key": "energy-notes",
+      "slug": "energy-notes",
       "name": "Energy Notes Fixture",
       "match": [{ "type": "from", "value": "notes@energy.test" }],
       "shape": "annotated-digest",
@@ -21,6 +23,7 @@
     },
     {
       "key": "permit-column",
+      "slug": "permit-column",
       "name": "Permit Column Fixture",
       "match": [{ "type": "from", "value": "column@permits.test" }],
       "shape": "long-form",

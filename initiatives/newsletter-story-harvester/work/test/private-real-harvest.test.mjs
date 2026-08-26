@@ -19,6 +19,7 @@ test('the live handoff exposes a body only to the model turn and persists only s
     id: 'private-test',
     sources: [{
       key: 'column',
+      slug: 'column',
       name: 'Column',
       match: [{type: 'from', value: 'writer@example.test'}],
       shape: 'long-form',

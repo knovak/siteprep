@@ -82,9 +82,14 @@ export async function extractIssue(issue, { overrideShape, model, harvester = 'h
       continue;
     }
 
-    // The strongest check in the suite (`test-plan.md` §5), and it is only
-    // possible because §3.1 says the blurb is copied rather than paraphrased.
-    if (contract.verbatim && !appearsIn(document, finding.text)) {
+    // Full text is the default through 3000 characters. A verbatim result must
+    // actually occur in the issue, and a result over the limit must be marked
+    // as a summary rather than quietly shipping a long copy.
+    if (!finding.text_is_summary && finding.text.length > contract.summary_threshold) {
+      refuse('verbatim text over limit', `${finding.text.length} characters`);
+      continue;
+    }
+    if (!finding.text_is_summary && !appearsIn(document, finding.text)) {
       refuse('text not in the issue', truncateForReport(finding.title));
       continue;
     }
@@ -104,7 +109,7 @@ export async function extractIssue(issue, { overrideShape, model, harvester = 'h
       url_key: resolved.url_key,
       title: finding.title || link?.text || '',
       text: finding.text,
-      text_is_summary: contract.text_is_summary,
+      text_is_summary: finding.text_is_summary,
       source: issue.source,
       harvester,
       issue_date: issue.issue_date,

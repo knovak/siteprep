@@ -161,8 +161,8 @@ decides what the harvester asks for and what it checks.
 | Named in the wish | Future Crunch, Fix the News, Americans of Conscience | Stanford energy, Yale | Yglesias, Roberts, other Substack columns |
 | **One story is** | One link with its sentence or two | One item with its paragraph | **The whole column** |
 | Expected per issue | 10–60 | 3–15 | 1 |
-| `text` | The blurb verbatim | The paragraph verbatim | A summary the harvester writes |
-| `text_is_summary` | `false` | `false` | `true` |
+| `text` | Complete verbatim story text through 3,000 characters; summary only above the limit | Complete verbatim item text through 3,000 characters; summary only above the limit | Complete verbatim column through 3,000 characters; summary only above the limit |
+| `text_is_summary` | Per finding: `false` for copied text, `true` for a summary | Per finding | Per finding |
 | `url` | The link, unwrapped | The link, unwrapped | The column's own URL, or `null` where it exists only as an email |
 | `source_anchor` | Position of the link in the document | Heading path, else position | The document itself |
 | The failure to watch | A section heading harvested as a story | One item split into three by its paragraphs | Thirty citations harvested as stories |
@@ -172,9 +172,10 @@ Three rules that hold across all of them:
 - **Links inside a long-form story are never stories.** They are citations to an
   argument. If one is worth keeping on its own it is a bookmark, not a story,
   and this initiative is not where it goes.
-- **Extraction never invents text.** On the two verbatim shapes the blurb is
-  copied, not paraphrased; a harvester that improves the prose has destroyed the
-  reader's ability to judge whether the source was worth reading.
+- **Extraction never invents short text.** Through 3,000 characters, the entire
+  story text is copied, not paraphrased; a harvester that improves or shortens
+  it has destroyed the reader's ability to judge whether the source was worth
+  reading. Above that limit the finding is explicitly marked as a summary.
 - **A story with no link is still a story.** Long-form is the ordinary case, and
   `story-record.md` §3 already gives it an identity that does not need a URL.
 
@@ -234,7 +235,8 @@ One entry per newsletter:
 
 | Field | What it is |
 |---|---|
-| `key` | Stable identifier, written to `source` on every record. Never a display name, which changes |
+| `key` | Stable private configuration-row identifier. It is not displayed and need not be meaningful to a reader |
+| `slug` | Stable lowercase hyphenated source identifier, written to `source` on every record and shown beside the source name |
 | `name` | What to show a reader |
 | `match` | One matcher or a list of matcher groups. Groups are a **union**; conditions inside `{ "all": [...] }` are an **intersection**. A condition is a from-address or from-token, Gmail label, or subject pattern. The union is one search, not several merged (phase 0). A `from` condition is a **pre-filter**: §5.1 checks the actual From value before attribution because Gmail may over-match |
 | `shape` | `link-list`, `annotated-digest` or `long-form` — the §3 declaration |
@@ -416,6 +418,7 @@ What it does, against O5 and O7:
 | `verdict-rest(v)` | Apply a verdict to everything visible that has not been judged individually |
 | `undo()` | Reverses the last action, including a `verdict-rest`, as one action |
 | `export()` | Produces the verdict file (§9) |
+| `help()` | Lists each source's display name, slug, and configured Gmail search string |
 
 Two properties every one of these keeps, because they are what a later
 refinement could quietly break: **each applies to a set rather than to a click
@@ -426,12 +429,16 @@ it: naming the four keepers out of fifty is quick, judging fifty is not, so the
 cheap action is per-item and the sweep is one gesture. It is the single most
 important thing on the page for O7.
 
-The backlog count — stories with no verdict — is shown at all times. O7 asks
+Stories start expanded so the text and linked title are available without a
+click; the title itself is the outbound link, rather than a second “Open story”
+row. The backlog count — stories with no verdict — is shown at all times. O7 asks
 that the system be able to say how large it is, and a number nobody is looking
 at will not be believed later.
 
 **Nothing is only in the page.** Close it without exporting and the only loss is
 the verdicts given in that sitting, which is the cost §9 exists to keep small.
+Source-search help is present only on the private judgeable review page. It is
+not included in the provenance-safe published page.
 
 ## 9. Verdicts, back into the store
 

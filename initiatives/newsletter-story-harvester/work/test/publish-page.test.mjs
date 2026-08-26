@@ -12,6 +12,7 @@ import {applyTaggingPass} from '../../../../.claude/skills/tag-newsletter-storie
 const fixturePath = new URL('../fixtures/store-fixture.json', import.meta.url).pathname;
 const cliPath = new URL('../publish-page.mjs', import.meta.url).pathname;
 const base = JSON.parse(readFileSync(fixturePath, 'utf8'));
+base.stories[0].tags = [...base.stories[0].tags, 'theme:clean-energy'];
 const taggingProposal = JSON.parse(readFileSync(new URL('../fixtures/tagging-proposal.json', import.meta.url), 'utf8'));
 
 // A judged store, derived rather than committed: a second 74-story fixture would
@@ -95,7 +96,7 @@ test('the published file has no way to judge anything', async () => {
     assert.doesNotMatch(html, pattern, `${pattern} is judging machinery and must not ship`);
   }
   const {page} = await openPublished();
-  for (const selector of ['#export', '#undo', '#verdict-rest', '#sweep-verdict', '#backlog', '.verdict-buttons']) {
+  for (const selector of ['#export', '#undo', '#help', '#help-dialog', '#verdict-rest', '#sweep-verdict', '#backlog', '.verdict-buttons']) {
     assert.equal(await page.locator(selector).count(), 0, `${selector} must not be present`);
   }
   assert.equal(await page.evaluate(() => typeof window.reviewPage), 'undefined');
@@ -146,7 +147,7 @@ test('it is the review renderer with two arguments changed, not a second rendere
     const page = await browser.newPage();
     await page.goto(`file://${file}`);
     const card = page.locator(`.story[data-id="${sample.id}"]`);
-    await card.locator('summary').click();
+    assert.equal(await card.getAttribute('open'), '');
     const shape = {
       title: await card.locator('.title').textContent(),
       meta: await card.locator('.meta').first().textContent(),
@@ -174,7 +175,7 @@ test('a cluster publishes as one entry, with withheld members left out', async (
   const {page, errors} = await openPublished(file);
   const cluster = page.locator('.story.cluster');
   assert.equal(await cluster.count(), 1);
-  await cluster.locator(':scope > summary').click();
+  assert.equal(await cluster.getAttribute('open'), '');
   assert.equal(await cluster.locator('.cluster-member').count(), publishedMembers.length);
   assert.equal(await cluster.locator('.cluster-member .verdict-buttons').count(), 0);
   assert.ok((await cluster.locator('.cluster-paraphrase').textContent()).length > 0);
@@ -192,7 +193,7 @@ test('sorting and filtering survive publication, because a theme is how a page i
   await page.locator('#sort').selectOption('source');
   const sources = await page.locator('.story').evaluateAll(nodes => nodes.map(node => node.dataset.source));
   assert.deepEqual(sources, [...sources].sort());
-  const tag = 'theme:energy-notes';
+  const tag = 'theme:clean-energy';
   await page.locator('#filter').selectOption(tag);
   const tags = await page.locator('.story').evaluateAll(nodes => nodes.map(node => JSON.parse(node.dataset.tags)));
   assert.ok(tags.length > 0 && tags.every(values => values.includes(tag)));

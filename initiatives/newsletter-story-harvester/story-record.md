@@ -21,9 +21,9 @@ could read.
 | `url` | string, nullable | The story's target, after unwrapping (§4). Null for a long-form column that *is* the story |
 | `url_key` | string, nullable | Normalised form of `url`, used for matching. Never shown |
 | `title` | string | What the story is called. From the link text, the heading, or the subject for a whole-issue story |
-| `text` | string | The blurb **as written**, or a summary where the source is long-form. Objective 2 asks for the story's own text, not a pointer to it |
+| `text` | string | The complete story text **as written** when it is at most 3,000 characters; only longer material may be summarised. Objective 2 asks for the story's own text, not a pointer to it |
 | `text_is_summary` | boolean | Whether `text` was written by a harvester or by the source. A reader judging a story deserves to know which |
-| `source` | string | Which newsletter — or other source (§6) — it came from, by stable key rather than display name |
+| `source` | string | Which newsletter — or other source (§6) — it came from, by its explicit stable inventory slug rather than an internal key or display name |
 | `harvester` | string | Which skill produced this record (§6). Provenance for the extraction itself, not just the material |
 | `issue_date` | date | The date of the issue it arrived in |
 | `story_date` | date, nullable | The story's own date where it differs from the issue's. The wish asks for this directly: it is the difference between *"this was in last week's issue"* and *"this happened last week"* |
@@ -43,9 +43,12 @@ to run repeatedly while it is still wrong.
 
 ### 1.1 Themes are tags
 
-There is no separate theme field and no theme table. **A theme is a tag**, by the
-convention `theme:<name>`, held in the same set as everything else worth
-selecting on — the source, the shape, an error, or whatever a reader invents.
+There is no separate theme field and no theme table. **A theme is a subject
+tag**, by the convention `theme:<name>`, held in the same set as everything else
+worth selecting on — an error, an audience, or whatever a reader invents. The
+newsletter is not a theme: its explicit inventory slug is stored in `source`,
+and a `source:<slug>` tag is legal only when a workflow has a separate reason to
+add one.
 
 Three reasons this is the right structure rather than merely a cheaper one:
 

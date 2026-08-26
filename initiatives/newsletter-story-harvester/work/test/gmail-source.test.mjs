@@ -4,7 +4,7 @@ import { chmodSync, lstatSync, mkdtempSync, readFileSync, symlinkSync } from 'no
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { gmailMessageSource, gmailQueryFor, readableBody } from '../src/gmail-source.mjs';
+import { gmailMessageSource, gmailQueryFor, gmailSearchString, readableBody } from '../src/gmail-source.mjs';
 import { loadPrivateInventory, validatePrivateInventory, writePrivateInventory } from '../src/private-inventory.mjs';
 import { recordedModel } from '../src/model.mjs';
 import { runHarvest } from '../src/run.mjs';
@@ -15,6 +15,7 @@ const inventory = JSON.parse(readFileSync(`${FIXTURES}inventory-fixture.json`, '
 const mailbox = JSON.parse(readFileSync(`${FIXTURES}mailbox-fixture.json`, 'utf8'));
 
 test('Gmail query syntax preserves matcher union, intersection, and the half-open range', () => {
+  assert.equal(gmailSearchString(inventory.sources[0]), '{from:digest@better.test label:fixture-newsletters}');
   assert.equal(gmailQueryFor(inventory.sources[0], { after: '2026-01-01', before: '2026-02-01' }), '{from:digest@better.test label:fixture-newsletters} after:2026/01/01 before:2026/02/01');
   assert.equal(gmailQueryFor({
     key: 'extra',
@@ -114,5 +115,7 @@ test('private inventory validation pins shapes, matcher groups, lookbacks, and u
   assert.equal(validatePrivateInventory(inventory), inventory);
   assert.throws(() => validatePrivateInventory({ sources: [{ ...inventory.sources[0], lookback_days: 0 }] }), /positive integer/);
   assert.throws(() => validatePrivateInventory({ sources: [inventory.sources[0], inventory.sources[0]] }), /duplicate key/);
+  assert.throws(() => validatePrivateInventory({ sources: [{ ...inventory.sources[0], slug: 'Not a slug' }] }), /lowercase hyphenated slug/);
+  assert.throws(() => validatePrivateInventory({ sources: [inventory.sources[0], { ...inventory.sources[1], slug: inventory.sources[0].slug }] }), /duplicate slug/);
   assert.throws(() => validatePrivateInventory({ sources: [{ ...inventory.sources[0], shape: 'guess' }] }), /supported shape/);
 });

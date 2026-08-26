@@ -47,8 +47,9 @@ whether that was done correctly is itself something that can be wrong.
    produces the same stories from the same issues.
 
 2. **An email becomes stories, not links.** Each story carries its own text —
-   the blurb as written, or a summary where the source is long-form — along with
-   its link, the newsletter it came from, and the issue date. Where a story's own
+   the complete original text without modification through 3,000 characters,
+   and a summary only when the original is longer — along with its link, the
+   newsletter it came from, and the issue date. Where a story's own
    date differs from the issue date, that date survives too; the wish asks for
    this directly, and it is the difference between "this was in last week's
    issue" and "this happened last week".
@@ -61,8 +62,8 @@ whether that was done correctly is itself something that can be wrong.
    Automatic grouping is what makes the volume tractable; being able to move a
    story to the right theme is what stops one bad call poisoning the page.
 
-5. **A theme can be judged in one sitting.** Its stories are presented so that
-   they can be expanded and collapsed rather than scrolled through, and reordered
+5. **A theme can be judged in one sitting.** Its stories start expanded, remain
+   collapsible when wanted, and can be reordered
    — by date at minimum, and by whatever else turns out to sort usefully.
 
 6. **Closely related stories can be read as one.** Where several stories cover
