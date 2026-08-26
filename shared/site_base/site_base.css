@@ -65,6 +65,13 @@ footer {
   margin: 0 0 1rem;
 }
 
+/* The one-line answer to "is production current?" under a deployment's URLs. */
+.card-content p.deployment-status {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
 .meta-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

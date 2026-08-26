@@ -15,7 +15,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, cpSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, cpSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
@@ -26,6 +26,10 @@ const FIXTURES = join(ROOT, 'tests', 'fixtures', 'initiatives');
 const SITE = 'tests/fixtures/site';
 const APP = 'tests/fixtures/site-app';
 const DEMO_SOURCE = 'tests/fixtures/demo-source';
+// Release history is read from git, so the tests that exercise it need a source
+// with more than one commit behind it. The fixture directories were added in a
+// single commit; this one has real history and is not going away.
+const HISTORIED_SOURCE = 'initiatives/repo-guide/work/guide/out';
 
 const staticSite = (extra = {}) => ({ kind: 'chatgpt-site', build: 'static', source: SITE, ...extra });
 
@@ -456,4 +460,177 @@ test('an environment with nothing deployed still gets a row', () => {
   })]));
 
   assert.match(page, /Production — <em>not released yet<\/em>/);
+});
+
+// --------------------------------------------------- release state and history
+
+/** The oldest commit touching a path - a release far enough behind to have changes. */
+function firstCommitFor(path) {
+  const out = execFileSync('git', ['log', '--format=%H', '--', path], {
+    cwd: ROOT, encoding: 'utf8'
+  }).trim().split('\n').filter(Boolean);
+  return out[out.length - 1];
+}
+
+const historiedDemo = (prod) => ({
+  kind: 'demo',
+  source: HISTORIED_SOURCE,
+  destination: 'Fixture History Demo',
+  root_html: 'description.html',
+  ...(prod ? { prod } : {})
+});
+
+test('an initiative never released says so rather than guessing', () => {
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([staticSite()])));
+
+  assert.equal(plan.release.released, false);
+  assert.equal(plan.release.summary, 'not released yet');
+  assert.deepEqual(plan.release.changes, []);
+});
+
+test('a deployment on test but never released is distinguished from one never deployed', () => {
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([staticSite({
+      test: { slug: 'healthy-test', url: 'https://healthy-test.example.chatgpt.site/' }
+    })])));
+
+  assert.equal(plan.release.summary, 'on test, never released');
+});
+
+test('production released at the current source commit reads as current', () => {
+  const head = firstCommitFor(SITE);
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([staticSite({
+      prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: head }
+    })])));
+
+  assert.equal(plan.release.summary, 'production is current');
+  assert.equal(plan.release.unreleased, 0);
+});
+
+test('an older release reports how much is unreleased, and what it is', () => {
+  const old = firstCommitFor(HISTORIED_SOURCE);
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })])));
+
+  assert.equal(plan.release.released, true);
+  assert.equal(plan.release.known, true);
+  assert.ok(plan.release.unreleased >= 1, 'commits have landed since that release');
+  assert.equal(plan.release.changes.length, plan.release.unreleased);
+  assert.match(plan.release.summary, /commit\(s\) unreleased/);
+});
+
+test('a release whose commit is unknown degrades to a statement rather than a wrong count', () => {
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([staticSite({
+      prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/' }
+    })])));
+
+  assert.equal(plan.release.known, false);
+  assert.match(plan.release.summary, /released, but the released commit is unknown/);
+});
+
+test('test being ahead of production is reported', () => {
+  const old = firstCommitFor(HISTORIED_SOURCE);
+  const head = execFileSync('git', ['log', '-1', '--format=%H', '--', HISTORIED_SOURCE], {
+    cwd: ROOT, encoding: 'utf8'
+  }).trim();
+
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([{
+      kind: 'chatgpt-site',
+      build: 'static',
+      source: SITE,
+      test: { slug: 'healthy-test', url: 'https://healthy-test.example.chatgpt.site/', commit: head },
+      prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: old }
+    }])));
+
+  assert.equal(plan.release.test_ahead, true);
+});
+
+test('a release writes a history entry; a test deploy writes none', () => {
+  const dir = scratch([staticSite()]);
+
+  run(['deployments', 'healthy', 'record', '--env', 'test',
+    '--site-slug', 'healthy-test', '--url', 'https://healthy-test.example.chatgpt.site/'], dir);
+  assert.equal(existsSync(join(dir, 'healthy', 'releases.md')), false,
+    'the hundreds of test deploys before a release are not worth a durable record');
+
+  const result = JSON.parse(run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
+    '--access', 'public', '--version', '4', '--json'], dir));
+
+  assert.equal(result.history, 'releases.md');
+  const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
+  assert.match(history, /^# Releases/);
+  assert.match(history, /ChatGPT Site — version 4/);
+  assert.match(history, /https:\/\/healthy\.example\.chatgpt\.site\//);
+  assert.match(history, /Released `[0-9a-f]{7}`/);
+  // The one test observation worth keeping: where test stood at release time.
+  assert.match(history, /test last deployed \d{4}-\d{2}-\d{2}/);
+});
+
+test('a release summarizes what changed since the previous one', () => {
+  const old = firstCommitFor(HISTORIED_SOURCE);
+  const dir = scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]);
+
+  const result = JSON.parse(run(
+    ['deployments', 'healthy', 'record', '--env', 'prod', '--json'], dir));
+
+  assert.ok(result.changes.length >= 1);
+  const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
+  assert.match(history, /Changes since the previous release:/);
+  assert.match(history, /commit\(s\) since the previous release/);
+  for (const change of result.changes.slice(0, 3)) {
+    assert.ok(history.includes(`- ${change}`), `history should list "${change}"`);
+  }
+});
+
+test('a second release keeps the first, newest first', () => {
+  const dir = scratch([staticSite()]);
+  const record = () => run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
+    '--access', 'public'], dir);
+
+  run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
+    '--access', 'public', '--version', '1', '--deployed-at', '2026-01-01T00:00:00Z'], dir);
+  run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
+    '--access', 'public', '--version', '2', '--deployed-at', '2026-02-02T00:00:00Z'], dir);
+
+  const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
+  assert.ok(history.includes('version 1'), 'the earlier release survives');
+  assert.ok(history.includes('version 2'));
+  assert.ok(history.indexOf('version 2') < history.indexOf('version 1'), 'newest first');
+  assert.equal(history.match(/^# Releases/gm).length, 1, 'one header, not one per release');
+});
+
+test('the digest reports unreleased work without treating it as work to pick up', () => {
+  const old = firstCommitFor(HISTORIED_SOURCE);
+  const digest = JSON.parse(run(['digest', '--json'],
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })])));
+
+  const entry = digest.unreleased.find((u) => u.slug === 'healthy');
+  assert.ok(entry, 'the initiative appears under unreleased work');
+  assert.equal(entry.kind, 'demo');
+  assert.ok(entry.commits >= 1);
+  assert.ok(entry.latest, 'names the most recent unreleased change');
+
+  const text = run(['digest'], scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })]));
+  assert.match(text, /## Unreleased work/);
+});
+
+test('the overview page states whether production is current', () => {
+  const head = firstCommitFor(SITE);
+  const current = run(['page', 'healthy'], scratch([staticSite({
+    prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: head }
+  })]));
+  assert.match(current, /class="deployment-status">production is current</);
+
+  const behind = run(['page', 'healthy'], scratch([
+    historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE) })
+  ]));
+  assert.match(behind, /class="deployment-status">\d+ commit\(s\) unreleased</);
 });
