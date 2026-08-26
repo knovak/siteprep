@@ -423,3 +423,7 @@ changed.
 
 Released to production — ChatGPT Site, version 1, `da4fc8b`.
 <https://bookmark-sorter.ken-novak.chatgpt.site/> See `releases.md`.
+
+## 2026-08-26 — Release
+
+Released to production — ChatGPT Site, version 2, `a943830`. 2 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
