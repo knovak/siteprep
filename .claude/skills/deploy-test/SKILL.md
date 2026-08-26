@@ -36,14 +36,26 @@ Hand the plan's `source` to `$deploy-to-chatgpt-sites`, which owns every
 mechanical guarantee — the isolated workspace, the build, the smoke check, and
 leaving the source repository untouched. Pass it `mode` from the plan, and:
 
-- for `new`: `private` access and the plan's `site_slug`, which is
-  `<slug>-test` so the URL says which environment it is;
+- for `new`: the access the user confirmed (see below) and the plan's
+  `site_slug`, which is `<slug>-test` so the URL says which environment it is;
 - for `replacement`: the existing Site identified by the plan's `site_url`.
   Never resolve a replacement target by title, and never let it resolve to the
   production Site.
 
-A `new` test Site is always private. Do not make a test Site public; a Site the
-user wants the world to see is a release.
+### Access is the user's call, and private is the default
+
+A test Site may be private or public — some work needs showing to people who
+cannot sign in, and that is the user's decision, not this skill's.
+
+When the plan says `confirm_access: true`, this is the first deploy of that
+environment: tell the user it will be **private** unless they say otherwise, and
+take their answer. Deploy private if they don't care or don't answer. Never
+deploy public without being told to, in so many words.
+
+When `confirm_access` is `false` the Site already exists with a recorded access
+level: keep it exactly as it is. If that access is `public`, say so before
+deploying, so nobody refreshes a world-readable Site by accident. Changing an
+existing Site's access is its own request, not a side effect of a deploy.
 
 ### `kind: chatgpt-site`, `build: sites-app`
 
@@ -126,6 +138,8 @@ entry — nothing else about the initiative moves.
 
 - Deploying to production, under any wording short of running
   `$release-initiative`.
+- Making any Site public without being told to, in so many words.
+- Changing an existing Site's access as a side effect of refreshing it.
 - Running `$deploy-demo`, which writes production.
 - Deploying with an engine other than the one the plan names.
 - Recording a test Site whose slug or URL matches the production Site. `record`

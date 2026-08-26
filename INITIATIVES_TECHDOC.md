@@ -198,6 +198,15 @@ was the reason it had no home under the first version of this schema.
 A production Site is a **separate Site** from the test one: its own database,
 its own storage, starting empty. Test data does not travel with a release.
 
+**Access belongs to the user, and defaults to private.** Either environment may
+be private or public. `plan` reports `access` - the recorded level, or `private`
+as the default - and `confirm_access`, true when that environment has never been
+deployed and the default has therefore not been agreed to. The skills tell the
+user it will be private unless they say otherwise and take their answer; a
+replacement keeps the access the Site already has, so refreshing a preview can
+never quietly change who can see it. `record` also defaults to `private` when no
+access is passed, so nothing becomes public by omission.
+
 ### Two environments, everywhere
 
 `test` is overwritten as often as the work needs it, by whichever agent is doing

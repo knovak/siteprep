@@ -39,10 +39,15 @@ Then check the rest yourself, before deploying anything:
 1. Read the plan's `release` block and show the user what this release carries -
    `summary`, and `changes` when it has them - before deploying. If it reads
    `production is current`, say so and ask whether they still want to redeploy.
-2. For a ChatGPT Site with `mode: new`, ask whether the production Site should
-   be `public` or `private`. Never infer public access. There is no default.
-3. For a ChatGPT Site with `mode: replacement`, keep the existing access exactly
-   as it is. If that access is public, say so before deploying.
+2. For a ChatGPT Site where the plan says `confirm_access: true`, this is the
+   first release to that environment: tell the user it will be **private**
+   unless they say otherwise, and take their answer. Release private if they
+   don't care or don't answer. Never make a Site public without being told to,
+   in so many words.
+3. For a ChatGPT Site where `confirm_access` is `false`, keep the existing
+   access exactly as it is. If that access is public, say so before deploying.
+   Changing an existing Site's access is its own request, not a side effect of a
+   release.
 
 ## Deploy with the engine the plan names
 
@@ -58,7 +63,7 @@ Site.
 
 Pass the plan's `source` and `mode`, and:
 
-- for `new`: the access the user chose, and the plan's `site_slug` — the
+- for `new`: the access the user confirmed, and the plan's `site_slug` — the
   initiative slug with nothing appended, because a production URL says nothing
   about an environment;
 - for `replacement`: the existing Site identified by the plan's `site_url`.
@@ -157,5 +162,6 @@ Two things are worth your judgement afterwards:
 - Releasing without an explicit request from a person in this conversation.
 - Releasing past a non-zero exit from `deployments <slug> plan --env prod`.
 - Releasing past a failed build, test, or smoke check.
-- Making a production Site public without being told to.
+- Making any Site public without being told to, in so many words.
+- Changing an existing Site's access as a side effect of a release.
 - Recording a production Site whose slug or URL matches the test Site.
