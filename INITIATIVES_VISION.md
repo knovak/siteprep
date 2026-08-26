@@ -94,7 +94,7 @@ Nothing about existing decks or demos changes, and no migration is required.
 
 ### 3.1 A published output may not depend on initiative-internal code
 
-Point 3 above has a hazard hiding in it. If `demos/migration_map/` loads
+Point 3 above has a hazard hiding in it. If `demos/world_migration_atlas/` loads
 `initiatives/migration-atlas/lib/basemap/`, then a published demo depends on code that
 is still being actively developed — and an ordinary edit inside the initiative silently
 changes a published artifact, with no PR that appears to touch `demos/` at all.
@@ -308,7 +308,7 @@ per directory. Humans read the markdown; the job reads this.
   "value": "high",
   "staleness_days": 21,
   "outputs": [
-    { "kind": "demo",       "path": "demos/migration_map",     "status": "published" },
+    { "kind": "demo",       "path": "demos/world_migration_atlas",     "status": "published" },
     { "kind": "capability", "path": "initiatives/migration-atlas/lib/basemap", "status": "internal" }
   ],
   "todo": [
@@ -802,7 +802,7 @@ Three tiers of risk, and how each is handled:
 | Paths | Conflict risk | Rule |
 |---|---|---|
 | `initiatives/<NAME>/**` | **None** — single owner by construction | Freely writable |
-| Declared `outputs[]` (e.g. `demos/migration_map/`) | None *if* ownership is exclusive | Writable, and §9 enforces that no two initiatives declare the same output path |
+| Declared `outputs[]` (e.g. `demos/world_migration_atlas/`) | None *if* ownership is exclusive | Writable, and §9 enforces that no two initiatives declare the same output path |
 | `shared/`, `scripts/`, `.github/` | **Real** — many initiatives may want to touch these | `protected_paths`: excluded from unattended work; such an item is escalated to the digest instead |
 
 The second row is the wrinkle in "limit each PR to `initiatives/NAME/`": once an output
@@ -1447,7 +1447,7 @@ initiatives TOC nearly free to add.
 **Shared page shell, per-collection entry content.** Each TOC keeps its own intro text
 and builds its own entries; only the surrounding page is unified. Unifying the entries
 too is blocked by something concrete: `get_demo_description()` currently **hardcodes
-full descriptions with links for `migration_map` and `SBDC Night Sky`** as literal HTML
+full descriptions with links for `world_migration_atlas` and `SBDC Night Sky`** as literal HTML
 strings inside `build.sh`, because those demos need stable tutorial, version, and
 code-folder links that no generic rule can produce.
 

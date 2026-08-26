@@ -7,16 +7,16 @@ The build now treats `demos/` as a second static web-content source alongside `d
 Each immediate subdirectory of `demos/` is published as a standalone demo directory. The build does not transform those demo files; it copies the directory tree into `gh-pages/demos/` so a source path like:
 
 ```text
-demos/migration_map/index.html
+demos/world_migration_atlas/index.html
 ```
 
 is published as:
 
 ```text
-gh-pages/demos/migration_map/index.html
+gh-pages/demos/world_migration_atlas/index.html
 ```
 
-and is available on GitHub Pages under `/siteprep/demos/migration_map/`.
+and is available on GitHub Pages under `/siteprep/demos/world_migration_atlas/`.
 
 Use `.claude/skills/deploy-demo/` to create or replace a demo from a complete
 folder elsewhere in the repository. Its helper copies the source tree and adds
@@ -49,7 +49,7 @@ that do not occur there are listed beneath the description.
 - a display title from `demo.json` when present, otherwise from the demo's `index.html` `<title>`, falling back to a titleized directory name
 - a description from `demo.json` when present, otherwise from the first non-heading, non-empty line of the demo's `README.md`, falling back to a generic demo description
 - optional local or web links from `demo.json` when metadata is present
-- curated descriptions for special demos that need stable tutorial/version/code-folder links (`migration_map` and `SBDC Night Sky`)
+- curated descriptions for special demos that need stable tutorial/version/code-folder links (`world_migration_atlas` and `SBDC Night Sky`)
 - an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file; when a formatted `prompts.html` is also present, the main link opens that page and a parenthetical "text" link opens the original text file
 
 
