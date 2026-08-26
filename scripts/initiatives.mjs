@@ -26,6 +26,11 @@
  *                       refuses to leave a non-dormant initiative with nothing to do
  *   check-scope <slug> --files <path>...   or --files-from <file>
  *                       fail if a change reaches outside the initiative's write scope
+ *   deployments <slug> [--json]        every deployment, both environment URLs each
+ *   deployments <slug> plan --env test|prod [--kind <kind>]
+ *                       what a deployment would do; exits 1 if the release gate blocks it
+ *   deployments <slug> record --env test|prod [--kind <kind>] ...
+ *                       record a completed deployment
  *   list                print one slug per line
  *   toc                 print the TOC page body
  *   page <slug>         print an initiative's overview page body
@@ -222,6 +227,7 @@ function validate() {
   const warnings = [];
   const records = loadAll();
   const outputOwners = new Map();
+  const targetOwners = new Map();
 
   const sweep = loadSweepConfig();
   if (sweep.error) {
@@ -287,6 +293,10 @@ function validate() {
       }
       errors.push(...checkOutputIndependence(slug, output.path));
     }
+
+    const deployed = checkDeployments(slug, data, targetOwners);
+    errors.push(...deployed.errors);
+    warnings.push(...deployed.warnings);
 
     const ids = new Set((data.todo || []).map((item) => item.id));
     let actionable = 0;
@@ -382,6 +392,647 @@ function checkOutputIndependence(slug, outputPath) {
     }
   }
   return problems;
+}
+
+// ------------------------------------------------------------ deployments
+
+/*
+ * How an initiative reaches the world.
+ *
+ * Most initiatives are not deployed at all, and an initiative may develop for
+ * months before it is - so `deployments` is absent by default, added when there
+ * is something to publish, and may change kind late without anything else in
+ * the initiative moving. It is a list because nothing stops an initiative from
+ * having both a demo and a Site.
+ *
+ * Each entry names a `kind`. The kind decides which environments exist, which
+ * of them are recorded rather than derived, what a source directory has to
+ * contain, and which skill does the deploying. Adding a new deployment scheme
+ * means adding a KINDS entry and a skill - not touching the validator, the
+ * plan, the record, or the page.
+ *
+ * Two environments, everywhere: `test` is overwritten as often as the work
+ * needs it, by whichever agent is doing the work; `prod` moves only when a
+ * person runs the release skill. A kind that cannot deploy its test
+ * environment still has one - a demo's is the branch preview, which appears
+ * from the push rather than from a deployment.
+ */
+
+export const DEPLOY_ENVIRONMENTS = ['test', 'prod'];
+
+/** Site access is never inferred - a Site is owner-only unless someone said otherwise. */
+export const SITE_ACCESS = ['private', 'public'];
+
+/**
+ * How a ChatGPT Site is built. `static` is a folder of files the platform
+ * serves as-is. `sites-app` is a project that builds itself and brings its own
+ * `.openai/hosting.json`, bindings and migrations - Bookmark Sorter's shape,
+ * which the static-folder engine cannot deploy.
+ */
+export const CHATGPT_SITE_BUILDS = ['static', 'sites-app'];
+
+const KINDS = {
+  'chatgpt-site': {
+    label: 'ChatGPT Site',
+    keys: ['kind', 'source', 'build', 'test', 'prod'],
+    envKeys: ['slug', 'url', 'access', 'deployed_at', 'version', 'commit'],
+    /** Environments stored in the record; the rest are derived at read time. */
+    recorded: ['test', 'prod'],
+    // A static folder is what `deploy-to-chatgpt-sites` exists for. A
+    // sites-app builds itself and brings its own bindings and migrations, so
+    // it goes through the platform's own Sites build and hosting workflow -
+    // which is why Bookmark Sorter could never use the static-folder skill.
+    engine: (entry) => (entry.build === 'sites-app' ? 'sites-hosting' : 'deploy-to-chatgpt-sites'),
+    /** What makes two entries the same target, for cross-initiative ownership. */
+    identity: (entry, env) => [entry[env]?.slug, entry[env]?.url].filter(Boolean)
+  },
+  demo: {
+    label: 'Demo',
+    keys: ['kind', 'source', 'destination', 'root_html', 'prod'],
+    envKeys: ['deployed_at', 'commit'],
+    // A demo has no test Site to write: its test environment is the branch
+    // preview, which exists because the branch was pushed.
+    recorded: ['prod'],
+    engine: () => 'deploy-demo',
+    identity: (entry) => (entry.destination ? [`demos/${entry.destination}`] : [])
+  }
+};
+
+export const DEPLOYMENT_KINDS = Object.keys(KINDS);
+
+/** Human labels, exported so the page renderer needs no access to KINDS itself. */
+export const DEPLOYMENT_LABELS = Object.fromEntries(
+  Object.entries(KINDS).map(([kind, spec]) => [kind, spec.label])
+);
+
+/** ChatGPT Sites slugs: lowercase, digits, single interior hyphens. */
+const SITE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+// ------------------------------------------------------- git and page URLs
+
+function git(gitArgs) {
+  return execFileSync('git', gitArgs, {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']
+  }).trim();
+}
+
+/**
+ * What git knows about the directory being published.
+ *
+ * A release records the commit its files came from, which is only meaningful if
+ * those files were committed - so `dirty` is what the release gate refuses on.
+ * It is scoped to the source directory: unrelated edits elsewhere in the
+ * repository are none of this release's business.
+ */
+function sourceStatus(relPath) {
+  let commit = null;
+  let dirty = [];
+  try {
+    commit = git(['log', '-1', '--format=%H', '--', relPath]) || null;
+  } catch { /* not a repository, or no history for this path */ }
+  try {
+    const out = git(['status', '--porcelain=v1', '-uall', '--', relPath]);
+    dirty = out ? out.split('\n').map((line) => line.slice(3).trim()).filter(Boolean) : [];
+  } catch { /* not a repository */ }
+  return { commit, dirty };
+}
+
+/** The current branch, and the directory gh-pages.yml publishes it to. */
+function currentBranch() {
+  try {
+    return git(['rev-parse', '--abbrev-ref', 'HEAD']) || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The GitHub Pages base URL, derived from the origin remote rather than
+ * written down - a fork or a rename should not need this file edited.
+ */
+function pagesBase() {
+  let url;
+  try {
+    url = git(['remote', 'get-url', 'origin']);
+  } catch {
+    return null;
+  }
+  const match = /(?:github\.com[/:])([^/]+)\/([^/]+?)(?:\.git)?$/.exec(url || '');
+  if (!match) return null;
+  return `https://${match[1]}.github.io/${match[2]}/`;
+}
+
+// ------------------------------------------------------------ reading them
+
+function deploymentList(data) {
+  const list = data && data.deployments;
+  return Array.isArray(list) ? list : [];
+}
+
+function environmentEntry(entry, env) {
+  const value = entry && entry[env];
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
+}
+
+/**
+ * Both URLs for one deployment, always both keys.
+ *
+ * A ChatGPT Site's URLs are recorded when it is deployed. A demo's are computed
+ * from its destination: production is the published path, and test is the same
+ * path under this branch's preview. On `main` the preview *is* production,
+ * which the caller is told rather than left to infer.
+ */
+export function deploymentUrls(entry) {
+  const urls = { test: null, prod: null };
+  if (!entry || typeof entry !== 'object') return urls;
+
+  if (entry.kind === 'demo') {
+    const base = pagesBase();
+    if (!base || !entry.destination) return urls;
+    const path = `demos/${encodeURIComponent(entry.destination)}/`;
+    const branch = currentBranch();
+    urls.prod = `${base}${path}`;
+    urls.test = (!branch || branch === 'main')
+      ? urls.prod
+      : `${base}branch/${branch.replace(/\//g, '-')}/${path}`;
+    return urls;
+  }
+
+  for (const env of DEPLOY_ENVIRONMENTS) {
+    urls[env] = environmentEntry(entry, env)?.url || null;
+  }
+  return urls;
+}
+
+/** Whether an environment has actually been deployed, as opposed to merely addressable. */
+function isDeployed(entry, env) {
+  if (!entry) return false;
+  if (entry.kind === 'demo' && env === 'test') {
+    // The preview exists once the branch is pushed; there is nothing to record.
+    return Boolean(deploymentUrls(entry).test);
+  }
+  return Boolean(environmentEntry(entry, env));
+}
+
+/**
+ * Pick the deployment a command is about.
+ *
+ * One deployment needs no `--kind`. Several do, because guessing which one a
+ * release meant is exactly the mistake this whole arrangement exists to
+ * prevent.
+ */
+function selectDeployment(slug, list, kind) {
+  if (!list.length) {
+    throw new Error(`${slug}: no deployments - this initiative is not deployed anywhere`);
+  }
+  if (!kind) {
+    if (list.length === 1) return list[0];
+    throw new Error(
+      `${slug}: ${list.length} deployments - name one with --kind `
+      + `(${list.map((entry) => entry.kind).join(', ')})`
+    );
+  }
+  const matches = list.filter((entry) => entry.kind === kind);
+  if (!matches.length) throw new Error(`${slug}: no "${kind}" deployment`);
+  if (matches.length > 1) throw new Error(`${slug}: more than one "${kind}" deployment`);
+  return matches[0];
+}
+
+// --------------------------------------------------------------- validation
+
+/**
+ * Validate one initiative's deployments.
+ *
+ * The rule here that is a safety property rather than tidiness is that the two
+ * environments may never resolve to the same target: that is the difference
+ * between a routine test deploy and silently overwriting production.
+ */
+function checkDeployments(slug, data, targetOwners) {
+  const errors = [];
+  const warnings = [];
+
+  // The narrow `sites` block this replaced. Erroring rather than ignoring it
+  // means a record left half-migrated cannot quietly stop being deployed.
+  if (data.sites !== undefined) {
+    errors.push(`${slug}: "sites" was replaced by "deployments" - move it to a deployments entry with kind "chatgpt-site"`);
+  }
+
+  if (data.deployments === undefined) return { errors, warnings };
+
+  if (!Array.isArray(data.deployments)) {
+    errors.push(`${slug}: deployments must be a list`);
+    return { errors, warnings };
+  }
+
+  const seenKinds = new Set();
+
+  for (const [index, entry] of data.deployments.entries()) {
+    const at = `deployments[${index}]`;
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+      errors.push(`${slug}: ${at} must be an object`);
+      continue;
+    }
+
+    const kind = KINDS[entry.kind];
+    if (!kind) {
+      errors.push(`${slug}: ${at} has unknown kind "${entry.kind}" - one of ${DEPLOYMENT_KINDS.join(', ')}`);
+      continue;
+    }
+    if (seenKinds.has(entry.kind)) {
+      errors.push(`${slug}: two "${entry.kind}" deployments - one target of each kind per initiative`);
+    }
+    seenKinds.add(entry.kind);
+
+    for (const key of Object.keys(entry)) {
+      if (!kind.keys.includes(key)) {
+        errors.push(`${slug}: ${at} has unknown key "${key}" for a ${entry.kind} deployment`);
+      }
+    }
+
+    errors.push(...checkDeploymentSource(slug, at, entry));
+    if (entry.kind === 'chatgpt-site') {
+      const checked = checkSiteEnvironments(slug, at, entry, targetOwners);
+      errors.push(...checked.errors);
+      warnings.push(...checked.warnings);
+    } else {
+      errors.push(...checkDemoTarget(slug, at, entry, targetOwners));
+    }
+
+    // An environment the kind does not record cannot be written down.
+    for (const env of DEPLOY_ENVIRONMENTS) {
+      if (entry[env] !== undefined && !kind.recorded.includes(env)) {
+        errors.push(
+          `${slug}: ${at} records a "${env}" environment, but a ${entry.kind}'s ${env} `
+          + 'environment is derived rather than deployed'
+        );
+      }
+    }
+  }
+
+  return { errors, warnings };
+}
+
+/** What each kind needs to find in its source directory before it can deploy. */
+function checkDeploymentSource(slug, at, entry) {
+  const errors = [];
+  if (!entry.source) {
+    errors.push(`${slug}: ${at} needs a "source" directory to publish`);
+    return errors;
+  }
+  if (String(entry.source).includes('..')) {
+    errors.push(`${slug}: ${at} source escapes the repo: ${entry.source}`);
+    return errors;
+  }
+  const abs = join(ROOT, entry.source);
+  if (!existsSync(abs)) {
+    errors.push(`${slug}: ${at} source does not exist: ${entry.source}`);
+    return errors;
+  }
+
+  if (entry.kind === 'chatgpt-site') {
+    const build = entry.build || 'static';
+    if (!CHATGPT_SITE_BUILDS.includes(build)) {
+      errors.push(`${slug}: ${at} build must be one of ${CHATGPT_SITE_BUILDS.join(', ')}`);
+    } else if (build === 'static') {
+      if (!existsSync(join(abs, 'index.html'))) {
+        errors.push(`${slug}: ${at} is a static Site but ${entry.source} has no index.html`);
+      }
+    } else if (!existsSync(join(abs, 'package.json'))) {
+      errors.push(`${slug}: ${at} is a sites-app but ${entry.source} has no package.json to build`);
+    }
+    return errors;
+  }
+
+  // A demo needs an entry page, either index.html or a named root_html.
+  const root = entry.root_html || 'index.html';
+  if (String(root).includes('..')) {
+    errors.push(`${slug}: ${at} root_html escapes the source: ${root}`);
+  } else if (!existsSync(join(abs, root))) {
+    errors.push(`${slug}: ${at} root page does not exist: ${entry.source}/${root}`);
+  }
+  return errors;
+}
+
+function checkSiteEnvironments(slug, at, entry, targetOwners) {
+  const errors = [];
+  const warnings = [];
+  const envKeys = KINDS['chatgpt-site'].envKeys;
+
+  for (const env of DEPLOY_ENVIRONMENTS) {
+    const value = entry[env];
+    if (value === undefined) continue;
+    const record = environmentEntry(entry, env);
+    if (!record) {
+      errors.push(`${slug}: ${at}.${env} must be an object`);
+      continue;
+    }
+
+    for (const key of Object.keys(record)) {
+      if (!envKeys.includes(key)) {
+        errors.push(`${slug}: ${at}.${env} has unknown key "${key}"`);
+      }
+    }
+    if (!record.slug) {
+      errors.push(`${slug}: ${at}.${env} has no slug`);
+    } else if (!SITE_SLUG.test(record.slug)) {
+      errors.push(`${slug}: ${at}.${env} slug is not a valid Site slug: ${record.slug}`);
+    }
+    if (!record.url) {
+      errors.push(`${slug}: ${at}.${env} has no url`);
+    } else if (!/^https:\/\/[^\s]+$/.test(record.url)) {
+      errors.push(`${slug}: ${at}.${env} url is not an https URL: ${record.url}`);
+    }
+    if (record.access !== undefined && !SITE_ACCESS.includes(record.access)) {
+      errors.push(`${slug}: ${at}.${env} access must be one of ${SITE_ACCESS.join(', ')}`);
+    }
+
+    errors.push(...claimTargets(slug, env, KINDS['chatgpt-site'].identity(entry, env), targetOwners));
+  }
+
+  const test = environmentEntry(entry, 'test');
+  const prod = environmentEntry(entry, 'prod');
+  if (test && prod) {
+    if (test.slug && test.slug === prod.slug) {
+      errors.push(`${slug}: ${at} test and prod are the same Site (${test.slug}) - a test deploy would overwrite production`);
+    }
+    if (test.url && test.url === prod.url) {
+      errors.push(`${slug}: ${at} test and prod have the same URL (${test.url}) - a test deploy would overwrite production`);
+    }
+  }
+
+  // Naming is a convention rather than a safety property, so it warns. New
+  // Sites are named `<slug>-test` and `<slug>` by the skills.
+  if (test?.slug && test.slug === slug) {
+    warnings.push(`${slug}: test Site slug "${test.slug}" is the bare initiative slug, so its URL reads like production - "${slug}-test" is the convention`);
+  }
+  if (prod?.slug && /(^|-)test(-|$)/.test(prod.slug)) {
+    warnings.push(`${slug}: production Site slug "${prod.slug}" says "test"`);
+  }
+
+  return { errors, warnings };
+}
+
+function checkDemoTarget(slug, at, entry, targetOwners) {
+  const errors = [];
+  if (!entry.destination) {
+    errors.push(`${slug}: ${at} needs a "destination" folder name under demos/`);
+  } else if (entry.destination.includes('/') || entry.destination.includes('..')) {
+    errors.push(`${slug}: ${at} destination must be one folder name, not a path: ${entry.destination}`);
+  } else {
+    errors.push(...claimTargets(slug, 'prod', KINDS.demo.identity(entry), targetOwners));
+  }
+
+  const record = environmentEntry(entry, 'prod');
+  if (entry.prod !== undefined && !record) {
+    errors.push(`${slug}: ${at}.prod must be an object`);
+  } else if (record) {
+    for (const key of Object.keys(record)) {
+      if (!KINDS.demo.envKeys.includes(key)) {
+        errors.push(`${slug}: ${at}.prod has unknown key "${key}"`);
+      }
+    }
+    // A recorded demo release must actually be in the tree.
+    if (!existsSync(join(ROOT, 'demos', entry.destination || ''))) {
+      errors.push(`${slug}: ${at} is recorded as released but demos/${entry.destination} does not exist`);
+    }
+  }
+  return errors;
+}
+
+/**
+ * Exclusive target ownership, for the same reason outputs[] has it: two
+ * initiatives deploying to one target would overwrite each other.
+ */
+function claimTargets(slug, env, targets, targetOwners) {
+  const errors = [];
+  for (const target of targets) {
+    if (targetOwners.has(target)) {
+      errors.push(`${slug}: deployment target ${target} is already declared by ${targetOwners.get(target)}`);
+    } else {
+      targetOwners.set(target, `${slug} (${env})`);
+    }
+  }
+  return errors;
+}
+
+// -------------------------------------------------------------------- plan
+
+function countStaticFiles(abs) {
+  let files = 0;
+  const walk = (dir) => {
+    for (const dirent of readdirSync(dir, { withFileTypes: true })) {
+      if (['.git', '.openai', 'node_modules', '.wrangler', 'dist'].includes(dirent.name)) continue;
+      if (dirent.isDirectory()) walk(join(dir, dirent.name));
+      else files += 1;
+    }
+  };
+  walk(abs);
+  return files;
+}
+
+/**
+ * Everything a deploy skill needs before it touches anything: which target to
+ * write, whether it exists yet, what the other environment is, and - for a
+ * release - whether the source is committed.
+ *
+ * Deriving it here rather than in the skill means the release gate is code. A
+ * prompt can be talked out of refusing; `deployments plan --env prod` exits
+ * non-zero.
+ */
+export function deploymentPlan(slug, env, { kind } = {}) {
+  if (!DEPLOY_ENVIRONMENTS.includes(env)) {
+    throw new Error(env
+      ? `unknown environment "${env}" - use ${DEPLOY_ENVIRONMENTS.join(' or ')}`
+      : `--env ${DEPLOY_ENVIRONMENTS.join('|')} is required`);
+  }
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+
+  const entry = selectDeployment(slug, deploymentList(record.data), kind);
+  const spec = KINDS[entry.kind];
+  if (!spec) throw new Error(`${slug}: unknown deployment kind "${entry.kind}"`);
+
+  const sourceErrors = checkDeploymentSource(slug, `the ${entry.kind} deployment`, entry);
+  if (sourceErrors.length) throw new Error(sourceErrors[0]);
+
+  const abs = join(ROOT, entry.source);
+  const status = sourceStatus(entry.source);
+  const existing = environmentEntry(entry, env);
+  const urls = deploymentUrls(entry);
+  const blockers = [];
+
+  // Production is released from committed files only. Test is not: the whole
+  // point of a test environment is to look at work in progress.
+  if (env === 'prod' && status.dirty.length) {
+    blockers.push(`${status.dirty.length} uncommitted change(s) under ${entry.source}`);
+  }
+  if (env === 'prod' && !status.commit) {
+    blockers.push(`${entry.source} has never been committed`);
+  }
+
+  const plan = {
+    slug,
+    kind: entry.kind,
+    label: spec.label,
+    environment: env,
+    engine: spec.engine(entry),
+    deployable: spec.recorded.includes(env),
+    mode: existing ? 'replacement' : 'new',
+    source: entry.source,
+    source_files: countStaticFiles(abs),
+    source_commit: status.commit,
+    uncommitted: status.dirty,
+    urls,
+    deployed: { test: isDeployed(entry, 'test'), prod: isDeployed(entry, 'prod') },
+    blockers,
+    ready: blockers.length === 0
+  };
+
+  if (entry.kind === 'chatgpt-site') {
+    plan.build = entry.build || 'static';
+    plan.site_slug = existing?.slug || (env === 'test' ? `${slug}-test` : slug);
+    plan.site_url = existing?.url || null;
+    plan.access = existing?.access || (env === 'test' ? 'private' : null);
+    plan.last_version = existing?.version ?? null;
+  } else {
+    plan.destination = entry.destination;
+    plan.root_html = entry.root_html || 'index.html';
+    plan.branch = currentBranch();
+  }
+  plan.last_deployed_at = existing?.deployed_at || null;
+  plan.last_commit = existing?.commit || null;
+
+  // A derived environment has nothing to deploy; say what makes it appear.
+  if (!plan.deployable) {
+    plan.note = plan.branch === 'main'
+      ? 'a demo has no separate preview on main - main publishes straight to production'
+      : `a demo's test environment is its branch preview, published by pushing ${plan.branch || 'this branch'}`;
+  }
+
+  return plan;
+}
+
+// ------------------------------------------------------------------ record
+
+/**
+ * Record a completed deployment.
+ *
+ * The skills write through this rather than editing initiative.json, for the
+ * same reason `add` and `complete` exist: the fields a model forgets by hand -
+ * the timestamp, the commit, the environment it actually wrote - are exactly
+ * the ones the validator and the overview page depend on.
+ */
+export function recordDeployment(slug, env, {
+  kind, siteSlug, url, access, version, commit, deployedAt
+} = {}) {
+  if (!DEPLOY_ENVIRONMENTS.includes(env)) {
+    throw new Error(env
+      ? `unknown environment "${env}" - use ${DEPLOY_ENVIRONMENTS.join(' or ')}`
+      : `--env ${DEPLOY_ENVIRONMENTS.join('|')} is required`);
+  }
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+
+  const data = record.data;
+  const entry = selectDeployment(slug, deploymentList(data), kind);
+  const spec = KINDS[entry.kind];
+  if (!spec) throw new Error(`${slug}: unknown deployment kind "${entry.kind}"`);
+  if (!spec.recorded.includes(env)) {
+    throw new Error(
+      `${slug}: a ${entry.kind}'s ${env} environment is derived rather than deployed - nothing to record`
+    );
+  }
+
+  const previous = environmentEntry(entry, env) || {};
+  const stamp = deployedAt || new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const sourceCommit = commit || sourceStatus(entry.source).commit;
+  let written;
+
+  if (entry.kind === 'chatgpt-site') {
+    if (!siteSlug) throw new Error(`${slug}: recording a Site deployment needs --site-slug`);
+    if (!SITE_SLUG.test(siteSlug)) throw new Error(`${slug}: not a valid Site slug: ${siteSlug}`);
+    if (!url) throw new Error(`${slug}: recording a Site deployment needs --url`);
+    if (!/^https:\/\/[^\s]+$/.test(url)) throw new Error(`${slug}: not an https URL: ${url}`);
+    if (access !== undefined && !SITE_ACCESS.includes(access)) {
+      throw new Error(`${slug}: access must be one of ${SITE_ACCESS.join(', ')}`);
+    }
+
+    // The check the whole two-environment arrangement rests on.
+    const other = environmentEntry(entry, env === 'test' ? 'prod' : 'test');
+    if (other && (other.slug === siteSlug || other.url === url)) {
+      throw new Error(
+        `${slug}: ${siteSlug} is already the ${env === 'test' ? 'production' : 'test'} Site `
+        + '- recording it here would point both environments at one Site'
+      );
+    }
+
+    written = {
+      slug: siteSlug,
+      url,
+      // Never inferred upward: an environment stays owner-only unless told otherwise.
+      access: access || previous.access || 'private',
+      deployed_at: stamp
+    };
+    if (version !== undefined && version !== null && version !== '') {
+      if (!Number.isFinite(Number(version))) {
+        throw new Error(`${slug}: version must be a number, got "${version}"`);
+      }
+      written.version = Number(version);
+    } else if (previous.version !== undefined) {
+      written.version = previous.version;
+    }
+  } else {
+    // A demo's URL comes from its destination, so there is nothing to pass in
+    // and nothing that can drift out of step with demos/.
+    if (url || siteSlug) {
+      throw new Error(`${slug}: a demo's URL comes from its destination - do not pass --url or --site-slug`);
+    }
+    written = { deployed_at: stamp };
+  }
+
+  if (sourceCommit) written.commit = sourceCommit;
+  entry[env] = written;
+
+  writeFileSync(
+    join(record.dir, 'initiative.json'),
+    `${JSON.stringify(data, null, 2)}\n`
+  );
+
+  return {
+    slug, kind: entry.kind, environment: env, entry: written, urls: deploymentUrls(entry)
+  };
+}
+
+// --------------------------------------------------------------- reporting
+
+/** Every deployment, both environments each, as the skills report them. */
+export function formatDeployments(slug, data) {
+  const list = deploymentList(data);
+  const lines = [slug];
+  if (!list.length) {
+    lines.push('  not deployed anywhere');
+    return lines.join('\n');
+  }
+
+  for (const entry of list) {
+    const spec = KINDS[entry.kind] || { label: entry.kind };
+    lines.push(`  ${spec.label} (${entry.kind}) from ${entry.source || '(no source)'}`);
+    const urls = deploymentUrls(entry);
+    for (const env of DEPLOY_ENVIRONMENTS) {
+      const stored = environmentEntry(entry, env);
+      const detail = stored ? [
+        stored.access,
+        stored.version !== undefined ? `v${stored.version}` : null,
+        stored.deployed_at,
+        stored.commit ? stored.commit.slice(0, 7) : null
+      ].filter(Boolean).join(', ') : '';
+      const where = urls[env]
+        ? `${urls[env]}${detail ? `  (${detail})` : ''}`
+        : (env === 'test' ? 'not deployed yet' : 'not released yet');
+      lines.push(`    ${env.padEnd(5)} ${where}`);
+    }
+  }
+  return lines.join('\n');
 }
 
 // ----------------------------------------------------------------- digest
@@ -1297,6 +1948,39 @@ function renderPage(slug) {
       }).join('\n')}\n      </ul>`));
   }
 
+  // Every deployment, both environments each - a pair is only useful if you can
+  // see at a glance which one is ahead, and a row is never simply missing.
+  const deployments = (data.deployments || []).filter(
+    (entry) => entry && typeof entry === 'object'
+  );
+  if (deployments.length) {
+    parts.push(card('Deployments', 'initiative-deployments',
+      deployments.map((entry) => {
+        const urls = deploymentUrls(entry);
+        const rows = DEPLOY_ENVIRONMENTS.map((env) => {
+          const label = env === 'test' ? 'Test' : 'Production';
+          const stored = entry[env] && typeof entry[env] === 'object' ? entry[env] : null;
+          if (!urls[env]) {
+            return `        <li>${label} — <em>${env === 'test' ? 'not deployed yet' : 'not released yet'}</em></li>`;
+          }
+          const detail = [
+            stored?.access,
+            stored?.version !== undefined ? `version ${stored.version}` : null,
+            stored?.deployed_at ? `deployed ${String(stored.deployed_at).slice(0, 10)}` : null,
+            // On main the preview is production, so say that rather than
+            // showing one URL twice under two labels with no explanation.
+            !stored && env === 'test'
+              ? (urls.test === urls.prod ? 'published from main' : 'branch preview')
+              : null
+          ].filter(Boolean).join(', ');
+          return `        <li>${label} — <a href="${escapeHtml(urls[env])}">${escapeHtml(urls[env])}</a>`
+            + `${detail ? ` <em>(${escapeHtml(detail)})</em>` : ''}</li>`;
+        }).join('\n');
+        const heading = escapeHtml(DEPLOYMENT_LABELS[entry.kind] || entry.kind || 'Deployment');
+        return `      <p><strong>${heading}</strong></p>\n      <ul>\n${rows}\n      </ul>`;
+      }).join('\n')));
+  }
+
   const outputs = data.outputs || [];
   if (outputs.length) {
     parts.push(card('Outputs', 'initiative-outputs',
@@ -1449,6 +2133,75 @@ if (RUN_AS_CLI) switch (command) {
     console.log(`INITIATIVE PASS: ${files.filter((f) => f.trim()).length} changed file(s) within scope for ${slug}`);
     break;
   }
+  case 'deployments': {
+    const [slug, sub] = args;
+    const json = args.includes('--json');
+    const flag = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
+
+    if (!slug) {
+      console.error('usage: initiatives.mjs deployments <slug> [--json]\n'
+        + '       initiatives.mjs deployments <slug> plan --env test|prod [--kind <kind>] [--json]\n'
+        + '       initiatives.mjs deployments <slug> record --env test|prod [--kind <kind>]\n'
+        + '         ChatGPT Site: --site-slug <slug> --url <https://...> [--access private|public] [--version n]\n'
+        + '         demo:         (no target arguments - the URL comes from the destination)\n'
+        + '         both:         [--commit <sha>]');
+      process.exit(2);
+    }
+
+    try {
+      if (sub === 'plan') {
+        const plan = deploymentPlan(slug, flag('--env'), { kind: flag('--kind') });
+        console.log(json ? JSON.stringify(plan, null, 2) : [
+          `${plan.slug} ${plan.environment}: ${plan.deployable ? `${plan.mode} ` : ''}`
+            + `${plan.label} deployment of ${plan.source} (${plan.source_files} file(s))`,
+          `  engine: ${plan.engine}`,
+          ...(plan.note ? [`  note:   ${plan.note}`] : []),
+          `  test:   ${plan.urls.test || 'not deployed yet'}`,
+          `  prod:   ${plan.urls.prod || 'not released yet'}`,
+          ...plan.blockers.map((blocker) => `  BLOCKED: ${blocker}`)
+        ].join('\n'));
+        // The release gate is code, not a prompt: a caller that ignores this
+        // exit code has to do so deliberately.
+        if (!plan.ready) process.exit(1);
+        break;
+      }
+
+      if (sub === 'record') {
+        const result = recordDeployment(slug, flag('--env'), {
+          kind: flag('--kind'),
+          siteSlug: flag('--site-slug'),
+          url: flag('--url'),
+          access: flag('--access'),
+          version: flag('--version'),
+          commit: flag('--commit'),
+          deployedAt: flag('--deployed-at')
+        });
+        console.log(json ? JSON.stringify(result, null, 2) : [
+          `recorded ${result.slug} ${result.kind} ${result.environment}`,
+          `  test: ${result.urls.test || 'not deployed yet'}`,
+          `  prod: ${result.urls.prod || 'not released yet'}`
+        ].join('\n'));
+        break;
+      }
+
+      const record = loadInitiative(slug);
+      if (record.error) throw new Error(`${slug}: ${record.error}`);
+      console.log(json
+        ? JSON.stringify({
+          slug,
+          deployments: (record.data.deployments || []).map((entry) => ({
+            kind: entry.kind,
+            source: entry.source || null,
+            urls: deploymentUrls(entry)
+          }))
+        }, null, 2)
+        : formatDeployments(slug, record.data));
+    } catch (err) {
+      console.error(`INITIATIVE FAIL: ${err.message}`);
+      process.exit(1);
+    }
+    break;
+  }
   case 'list':
     console.log(listSlugs().join('\n'));
     break;
@@ -1476,6 +2229,6 @@ if (RUN_AS_CLI) switch (command) {
     break;
   }
   default:
-    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|list|toc|page|docs|doc|title');
+    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|deployments|list|toc|page|docs|doc|title');
     process.exit(2);
 }

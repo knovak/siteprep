@@ -254,7 +254,7 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
 
   # BUILD-19: The sweep survey. Deterministic, so it is unit-testable against
   # fixtures rather than against whatever work happens to be in flight.
-  for suite in initiatives-digest initiatives-sweep; do
+  for suite in initiatives-digest initiatives-sweep initiatives-deployments; do
     if ! node --test "$ROOT_DIR/tests/${suite}.test.mjs" > /dev/null 2>&1; then
       node --test "$ROOT_DIR/tests/${suite}.test.mjs" || true
       fail "BUILD-19 ${suite} tests failed"

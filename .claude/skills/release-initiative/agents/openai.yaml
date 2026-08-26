@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Initiative"
+  short_description: "Release an initiative to its production deployment"
+  default_prompt: "Use $release-initiative to release this initiative's committed source to its production deployment."

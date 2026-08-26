@@ -8,6 +8,17 @@ description: Copy a complete folder from elsewhere in the SitePrep repository in
 Copy the source tree without editing it, then add `demo.json` in the destination
 as the build's source of truth for the Demo TOC entry.
 
+## Where this fits
+
+This is a deployment engine: it copies a folder into `demos/` and registers it.
+Copying into `demos/` **is** the production release for a demo - the demo goes
+live when the branch merges and Pages publishes - so for a folder that belongs
+to an initiative, do not call this directly. `$release-initiative` decides when
+production moves and calls this; `$deploy-test` never does.
+
+Called directly for material outside `initiatives/`, this skill is the whole
+job and there is nothing above it.
+
 ## Required inputs
 
 Resolve these before changing files:
