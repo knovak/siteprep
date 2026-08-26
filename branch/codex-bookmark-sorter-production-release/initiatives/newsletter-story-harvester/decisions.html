@@ -303,6 +303,18 @@
 <ul><li><strong>Note: the published file is mode 0644, deliberately.</strong> Every other artefact</li></ul>
 <p>  touching a real store is 0600. This one exists to be shared, which is the   whole reason nothing of the mailbox is allowed into it.</p>
 <ul><li><strong>Unchanged:</strong> where such a page is hosted stays out of scope, per §12.</li></ul>
+<h3>2026-08-25 — Source slugs are not themes, and private review explains them</h3>
+<p><strong>A theme describes what a story is about. Each inventory entry now also names an explicit source slug beside the Gmail search configuration.</strong></p>
+<p>The review page exposed the problem by showing <code>theme:permit-column</code>: the value identified a fixture newsletter, not a subject, and meant nothing to a reader. The source already needs stable identity, but neither its private configuration key nor its display name is the right lasting vocabulary.</p>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Consequence</th></tr></thead><tbody><tr><td>Keep treating each source as a <code>theme:</code> tag</td><td>Conflates subject grouping with provenance and produces labels readers cannot interpret</td></tr><tr><td>Use the private inventory key as the source value</td><td>Avoids another field, but turns an implementation identifier into lasting record data</td></tr><tr><td><strong>Add an explicit slug beside the Gmail search — chosen</strong></td><td>Gives each source a stable, readable value while keeping its name and private matching rules independently editable</td></tr></tbody></table></div>
+<ul><li><strong>Settled:</strong> <code>source</code> on a harvested story is the inventory slug. The private</li></ul>
+<p>  key remains an internal configuration identifier.</p>
+<ul><li><strong>Settled:</strong> fixture generation no longer invents a <code>theme:</code> tag from the</li></ul>
+<p>  source. Themes remain optional subject tags proposed or added separately.</p>
+<ul><li><strong>Settled:</strong> the private review page has Help listing each configured source&#39;s</li></ul>
+<p>  name, slug, and exact Gmail search string. The published page withholds that   configuration along with its other private provenance.</p>
+<ul><li><strong>Unchanged:</strong> this does not establish or constrain the vocabulary of subject</li></ul>
+<p>  themes.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="codex/bookmark-sorter-production-release" data-root="../../">
