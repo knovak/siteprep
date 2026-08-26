@@ -31,10 +31,11 @@ function d1ChunkSize(requestedSize, reservedParameters = 0) {
 }
 
 export class D1BookmarkStore {
-  constructor(db, {ownerId = null, batchSize = 100, idFactory = () => crypto.randomUUID()} = {}) {
+  constructor(db, {ownerId = null, ownerEmail = null, batchSize = 100, idFactory = () => crypto.randomUUID()} = {}) {
     if (!db?.prepare || !db?.batch) throw new TypeError('A D1 database binding is required');
     this.db = db;
     this.ownerId = ownerId;
+    this.ownerEmail = String(ownerEmail || '').trim().toLowerCase() || null;
     this.batchSize = batchSize;
     this.idFactory = idFactory;
   }
@@ -56,7 +57,8 @@ export class D1BookmarkStore {
   }
 
   async canEditTemplates() {
-    return Boolean((await this.user())?.can_edit_templates);
+    if (Boolean((await this.user())?.can_edit_templates)) return true;
+    return this.ownerEmail ? await this.authorizedUserType(this.ownerEmail) === 'admin' : false;
   }
 
   async ownedCollection(id) {
@@ -217,6 +219,65 @@ export class D1BookmarkStore {
       'DELETE FROM collections WHERE id = ? AND owner_id = ? AND kind = \'demo-copy\'',
     ).bind(id, this.ownerId).run();
     return collection;
+  }
+
+  async eraseCollection(id) {
+    const collection = await this.assertCollectionWritable(id);
+    const erasedItems = await this.countItems(id);
+    await this.db.batch([
+      this.db.prepare('DELETE FROM selections WHERE collection_id = ?').bind(id),
+      this.db.prepare('DELETE FROM triage_sessions WHERE collection_id = ?').bind(id),
+      this.db.prepare('DELETE FROM items WHERE collection_id = ?').bind(id),
+    ]);
+    return {collection, erased_items: erasedItems};
+  }
+
+  async listAuthorizedUsers() {
+    const result = await this.db.prepare(
+      'SELECT email, type FROM authorized_user ORDER BY email',
+    ).all();
+    return result.results ?? [];
+  }
+
+  async authorizedUserType(email) {
+    const normalized = String(email || '').trim().toLowerCase();
+    if (!normalized) return null;
+    const user = await this.db.prepare(
+      'SELECT type FROM authorized_user WHERE email = ? LIMIT 1',
+    ).bind(normalized).first();
+    return user?.type ?? null;
+  }
+
+  async addAuthorizedUser(email, type) {
+    await this.db.prepare(
+      `INSERT INTO authorized_user (email, type) VALUES (?, ?)
+       ON CONFLICT(email) DO UPDATE SET type = excluded.type`,
+    ).bind(email, type).run();
+    return {email, type};
+  }
+
+  async removeAuthorizedUser(email) {
+    await this.db.prepare('DELETE FROM authorized_user WHERE email = ?').bind(email).run();
+    return {email};
+  }
+
+  async recordSelection(expression, usedAt) {
+    if (this.ownerId === null || !expression) return null;
+    await this.ensureUser();
+    await this.db.prepare(
+      `INSERT INTO selection_history (owner_id, expression, used_at) VALUES (?, ?, ?)
+       ON CONFLICT(owner_id, expression) DO UPDATE SET used_at = excluded.used_at`,
+    ).bind(this.ownerId, expression, usedAt).run();
+    return {expression, used_at: usedAt};
+  }
+
+  async listSelectionHistory() {
+    if (this.ownerId === null) return [];
+    const result = await this.db.prepare(
+      `SELECT expression, used_at FROM selection_history
+       WHERE owner_id = ? ORDER BY used_at DESC, expression`,
+    ).bind(this.ownerId).all();
+    return result.results ?? [];
   }
 
   async collectionHasUrlKey(collectionId, urlKey) {
@@ -677,6 +738,45 @@ export class D1BookmarkStore {
     ).bind(sessionId, collectionId).first();
     if (!session) throw new Error(`Unknown session: ${sessionId}`);
     return {...session, items_judged: Number(session.items_judged), elapsed_ms: session.elapsed_ms === null ? null : Number(session.elapsed_ms)};
+  }
+
+  async latestSession(collectionId, {openOnly = false} = {}) {
+    await this.assertCollectionReadable(collectionId);
+    const session = await this.db.prepare(
+      `SELECT id, collection_id, started_at, ended_at, items_judged, elapsed_ms
+       FROM triage_sessions
+       WHERE collection_id = ?${openOnly ? ' AND ended_at IS NULL' : ''}
+       ORDER BY CASE WHEN ended_at IS NULL THEN 0 ELSE 1 END, started_at DESC, id DESC
+       LIMIT 1`,
+    ).bind(collectionId).first();
+    return session
+      ? {...session, items_judged: Number(session.items_judged), elapsed_ms: session.elapsed_ms === null ? null : Number(session.elapsed_ms)}
+      : null;
+  }
+
+  async sittingReport(collectionId, sessionId = null) {
+    await this.assertCollectionReadable(collectionId);
+    const session = sessionId
+      ? await this.getSession(collectionId, sessionId)
+      : await this.latestSession(collectionId);
+    if (!session) return {collection_id: collectionId, session: null, actions: []};
+    const result = await this.db.prepare(
+      `SELECT id, action_kind, payload_json, created_at, undone_at
+       FROM triage_actions
+       WHERE collection_id = ? AND session_id = ?
+       ORDER BY created_at, id`,
+    ).bind(collectionId, session.id).all();
+    return {
+      collection_id: collectionId,
+      session,
+      actions: (result.results ?? []).map(action => ({
+        id: action.id,
+        action_kind: action.action_kind,
+        payload: JSON.parse(action.payload_json),
+        created_at: action.created_at,
+        undone_at: action.undone_at,
+      })),
+    };
   }
 
   async applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {

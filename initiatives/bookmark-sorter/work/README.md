@@ -33,6 +33,10 @@ selection, and export operations.
 - `migrations/0006_private_collections.sql` extends the collection kind check for
   additional empty private collections while preserving the one automatic
   personal pile per owner.
+- `migrations/0007_authorized_users_history.sql` creates the `authorized_user`
+  list and per-owner recent selection history. The two supplied example users
+  are seeded. A signed-in email must have type `admin` for the Admin menu and
+  its user-management, capture, and end-sitting operations to be available.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -69,26 +73,38 @@ selection, and export operations.
   list reserve parameter slots for fixed values such as `collection_id`, so no
   statement exceeds D1's 100-bound-parameter limit.
 - `src/site-identity.mjs` reads the stable
-  `oai-authenticated-user-id` supplied by ChatGPT Sites. Email and the optional
-  encoded full name are display-only; neither participates in ownership.
+  `oai-authenticated-user-id` supplied by ChatGPT Sites. That id remains the
+  sole collection-ownership key. The normalized email is consulted only for
+  the separate `authorized_user` admin role; the optional encoded full name is
+  display-only.
 - `src/memory-store.mjs` is the deterministic test adapter, indexed by
   `(collection_id, url_key)` so the generated 10,000-item sizing run exercises
   the same identity rule without quadratic test behavior.
 - `src/worker.mjs` exposes the upload, capture and triage API. Uploads are capped
   at 20 MB; reads are bounded; capture bytes are served only from R2; verdict
-  and undo writes return the authoritative backlog and sitting totals. The same
+  and undo writes return the authoritative backlog and sitting totals. An
+  unfinished sitting is resumed instead of duplicated after a reload, and the
+  admin-only sitting read returns its durable session row plus parsed action log
+  for on-screen review or JSON export. The same
   surface now evaluates, saves, tags and sweeps selections. Every API route
   requires Sites identity, resolves the active collection server-side, and
   rejects another owner's collection even when its id is supplied directly.
   Collection operations list templates, create an empty private collection,
-  take or refresh a private copy, rename a collection, delete a copy, and allow
-  template creation only for users whose D1 capability is set.
+  take or refresh a private copy, rename or erase a collection, delete a copy,
+  and allow template creation for administrators or users whose legacy D1
+  capability is set. The
+  same API records each signed-in user's distinct selection expressions by
+  most-recent use. Admin-only routes expose the authorized-user list editor;
+  hiding the menu is backed by the same server-side role check.
 - `src/pile-page.mjs` renders the self-contained grid. Its Page layout selector
   offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
-  and single-card phone layouts. Three-row grids cap captures at 30% of the
-  card height and reserve two title lines so tags and verdicts retain readable
-  space. Only the visible cells plus
+  and single-card phone layouts; while one of those automatic layouts is active,
+  the inapplicable Page layout label and selector are hidden. Three-row grids
+  cap captures at 30% of the card height; the dense 3×12 layout reduces captures
+  to 18%. It lets the title flex through all available space between the site
+  line and the bottom tags, hiding notes so title text gets that space. Only the
+  visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
   never HTML strings. Bookmark titles show up to five lines and link to the
   saved URL in a new tab; each card also has a keyboard-accessible URL-copy
@@ -101,28 +117,46 @@ selection, and export operations.
   verdict patches the affected cards in place rather than navigating or
   rebuilding the grid. The visible-page sweep changes only untriaged cards and
   advances to the next page; Previous and Next page without writing. A
-  collection bar switches among the owner's personal
-  pile and demo copies, and exposes template-copy operations without putting
-  identity or authorization state in the page. Adjacent Import and Export
-  sections accept either browser HTML or the app's JSON and download the whole
-  collection or the currently open selection. The portable JSON carries URLs,
-  notes, tags, and verdicts, but no captures.
+  collection bar switches among the owner's personal pile and demo copies.
+  Import, Select, and Export share one equal-width collapsed row; opening one
+  gives it the available width and closes the other two. Import contains both
+  file loading and demo-template copying, with an inline success or parser-error
+  result after each attempt. Select contains expression, proposal,
+  saved-selection, tagging, and per-user recent-query controls.
+  Export downloads the whole collection or open selection as
+  `bookmark-sorter-<collection-name>.json` and can erase the
+  current collection after confirmation while preserving the collection and
+  shared captures. Start/End sitting and Show sitting sit together under Admin;
+  Show sitting displays the latest durable session and its action log and exports
+  `bookmark-sorter/sitting-v1` JSON. Add, remove, and display functions for
+  `authorized_user` follow, with both capture actions below the displayed user
+  list and the inline Create template form. The menu is rendered only for an
+  admin email, and that role also grants server-side template write access. Its
+  fixed panel is positioned
+  below the Admin summary so the summary remains available to collapse it.
+  The verdict selector and split Sweep control remain visible beside the
+  triage actions: its default sweeps untriaged cards on the visible page, while
+  `Sweep all selected` confirms and applies to the entire open selection.
+  Previous/Next remain beside them. The portable JSON carries URLs, notes,
+  tags, and verdicts, but no captures.
 
 ## D1 binding
 
 Apply `migrations/0001_core.sql`, `migrations/0002_triage.sql`,
 `migrations/0003_captures.sql`, `migrations/0004_selections.sql`, then
-`migrations/0005_identity_collections.sql` and `migrations/0006_private_collections.sql`.
+`migrations/0005_identity_collections.sql`, `migrations/0006_private_collections.sql`,
+and `migrations/0007_authorized_users_history.sql`.
 Bind that database to the Worker as
 `DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies
 `oai-authenticated-user-id`; the Worker rejects an API request without it and
 constructs `D1BookmarkStore` with that stable id as `ownerId`. The first request
-creates the app-user row and one private personal collection. Grant template
-editing by setting `app_users.can_edit_templates = 1` through an administrative
-D1 change; it is never accepted from a browser request or identity header.
+creates the app-user row and one private personal collection. An email with
+`type = 'admin'` in `authorized_user` can create and edit templates; the legacy
+`app_users.can_edit_templates = 1` capability remains supported. Neither path
+trusts a client flag.
 
 Template rows are readable across owners and writable only by their owner when
-that owner has the capability. A copied template is a new `demo-copy` owned by
+that owner has either permission. A copied template is a new `demo-copy` owned by
 the current user, with `template_id` and `copied_at` recorded. Items, tags,
 verdicts, and saved selections copy once; later template edits do not sync into
 the copy. Taking a fresh copy creates another collection with a distinct name.
@@ -186,13 +220,19 @@ the data-handling boundary.
 - `GET /api/collections` returns the current user's collections, all readable
   demo templates, and the server-derived template-edit capability.
 - `POST /api/collections` performs empty `create`, `copy-template`, `fresh-copy`,
-  `rename`, `delete-copy`, or capability-gated `create-template`. The current collection
+  `rename`, confirmed `erase`, `delete-copy`, or admin-gated `create-template`. The current collection
   travels in `x-bookmark-collection-id`; every data method checks it again in
   D1 rather than trusting the header.
-- `POST /api/session` starts or ends a sitting. A sitting records its start,
-  end, elapsed milliseconds, and number of records whose verdict changed.
-- `POST /api/verdict` applies `keeper`, `junk`, `archive`, or
-  `needs-more-time` to the focused record or current marked set. Sending the
+- `POST /api/session` starts or ends a sitting. Starting reuses an unfinished
+  sitting for that collection. A sitting records its start, end, elapsed
+  milliseconds, and number of records whose verdict changed.
+- `GET /api/session` is admin-only and returns the latest sitting plus every
+  verdict or tag action, including undone actions, for display and
+  `bookmark-sorter/sitting-v1` JSON export.
+- `POST /api/verdict` applies the internal values `keeper`, `junk`, `archive`,
+  or `needs-more-time` to the focused record or current marked set. The
+  interface displays those first and last values as **Keep** and **Needs-time**.
+  Sending the
   existing verdict is a no-op and does not inflate the sitting rate.
 - `POST /api/undo` reverses the last still-active action in that sitting as one
   operation.
@@ -204,10 +244,19 @@ the data-handling boundary.
   `image:none`, `image:failed`, and `image:present` select by stored picture state.
 - `GET|POST /api/selections` lists and saves named expressions. Saving parses
   the expression first; malformed input is an error, never an empty set.
-- `GET /api/proposals` recomputes source, exact-tag, folder, site, image,
-  verdict, and near-title groups as ordinary pre-filled selections. The five
-  verdict expressions are always present, including zero-count values. The
-  interface groups source, tag, folder, site, image, and verdict in that order,
+- `GET|POST /api/selection-history` lists the signed-in user's distinct query
+  strings by most-recent use and records a successfully opened expression.
+  History is user-scoped rather than collection-scoped and persists in D1.
+- `GET|POST /api/authorized-users` displays, adds, updates, or removes rows in
+  `authorized_user`. Both routes require the current signed-in email to have
+  type `admin`; the same check gates Admin rendering, capture operations, and
+  ending a sitting.
+- `GET /api/proposals` recomputes source, exact-tag, verdict, folder, site,
+  image, and near-title groups as ordinary pre-filled selections. The five
+  individual verdict expressions and the combined **not junk** and
+  **untriaged or needs-time** expressions are always present, including
+  zero-count individual values. The interface groups source, tag, verdict,
+  folder, site, and image in that order,
   with title last for the retained near-title feature, and alphabetizes each
   group. Folder and tag groups therefore change on the request after tags
   change; no proposal cache can go stale. The page explicitly reloads proposals
@@ -219,12 +268,15 @@ the data-handling boundary.
   only the tags it added, so one undo removes those additions and preserves
   everything that existed before the action.
 - `POST /api/selection/verdict` implements mark-then-sweep. A current visible
-  selection never confirms, including a tested 3,000-item sweep. An unopened
-  saved selection returns `409` with its count until the caller confirms.
+  selection never confirms, including a tested 3,000-item sweep. An
+  entire-selection request returns `409` with its count until the caller
+  confirms; the split Sweep control uses that path for the current open
+  expression.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
 - `GET /api/export` streams the active collection or its `expression` subset as
-  an importable `bookmark-sorter/v1` JSON text file. The page exposes both
+  an importable `bookmark-sorter/v1` JSON text file named from the collection.
+  The page exposes both
   scopes in its Export section; the neighboring Import section recognizes that
   JSON as well as browser bookmark HTML.
 - `POST /api/captures/pass-one?limit=20` processes one bounded batch of items

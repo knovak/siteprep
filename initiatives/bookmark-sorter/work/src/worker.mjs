@@ -9,6 +9,21 @@ import {readSiteIdentity} from './site-identity.mjs';
 
 const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const COLLECTION_HEADER = 'x-bookmark-collection-id';
+const AUTHORIZED_USER_TYPES = new Set(['admin', 'user']);
+
+function exportFilename(name) {
+  const part = String(name || 'collection').normalize('NFKC').trim()
+    .replace(/[^\p{L}\p{N}._-]+/gu, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 100) || 'collection';
+  return `bookmark-sorter-${part}.json`;
+}
+
+function attachmentHeader(filename) {
+  const ascii = filename.replace(/[^\x20-\x7e]/g, '_').replace(/["\\]/g, '_');
+  return `attachment; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+}
 
 function json(value, status = 200) {
   return Response.json(value, {status, headers: {'cache-control': 'no-store'}});
@@ -34,8 +49,21 @@ async function selectedItems(store, collectionId, expression) {
   return evaluateSelection(items, expression, {collectionId});
 }
 
+function authorizedUserInput(body) {
+  const email = String(body.email || '').trim().toLowerCase();
+  const type = String(body.type || 'user').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address');
+  if (!AUTHORIZED_USER_TYPES.has(type)) throw new Error('User type must be admin or user');
+  return {email, type};
+}
+
+async function identityIsAdmin(store, identity) {
+  if (!identity?.email) return false;
+  return await store.authorizedUserType(identity.email) === 'admin';
+}
+
 export function createPileApp({
-  storeFactory = (env, identity) => new D1BookmarkStore(env.DB, {ownerId: identity.id}),
+  storeFactory = (env, identity) => new D1BookmarkStore(env.DB, {ownerId: identity.id, ownerEmail: identity.email}),
   identityFromRequest = readSiteIdentity,
   transformImage = null,
   vendorCapture = null,
@@ -53,14 +81,16 @@ export function createPileApp({
   return {
     async fetch(request, env = {}, context = {}) {
       const url = new URL(request.url);
+      const identity = identityFromRequest(request);
       if (request.method === 'GET' && url.pathname === '/') {
-        return new Response(renderPilePage(), {headers: {'content-type': 'text/html; charset=utf-8'}});
+        const store = identity?.id ? storeFactory(env, identity) : null;
+        const isAdmin = store ? await identityIsAdmin(store, identity) : false;
+        return new Response(renderPilePage({isAdmin}), {headers: {'content-type': 'text/html; charset=utf-8'}});
       }
 
       if (!url.pathname.startsWith('/api/')) return new Response('Not found', {status: 404});
 
       try {
-        const identity = identityFromRequest(request);
         if (!identity?.id) return json({error: 'Sign in with ChatGPT to continue'}, 401);
         const store = storeFactory(env, identity);
         const capture = captureFactory(env, store);
@@ -72,14 +102,15 @@ export function createPileApp({
         });
 
         if (request.method === 'GET' && url.pathname === '/api/collections') {
-          const [collections, templates, canEditTemplates] = await Promise.all([
+          const [collections, templates, canEditTemplates, isAdmin] = await Promise.all([
             store.listCollections(),
             store.listTemplates(),
             store.canEditTemplates(),
+            identityIsAdmin(store, identity),
           ]);
           return json({
             active_collection_id: request.headers.get(COLLECTION_HEADER) || personal.id,
-            can_edit_templates: canEditTemplates,
+            can_edit_templates: canEditTemplates || isAdmin,
             collections,
             templates,
           });
@@ -109,7 +140,11 @@ export function createPileApp({
             });
           } else if (body.action === 'delete-copy') {
             collection = await store.deleteDemoCopy(body.collection_id);
+          } else if (body.action === 'erase') {
+            const result = await store.eraseCollection(body.collection_id);
+            return json({action: body.action, ...result});
           } else if (body.action === 'create-template') {
+            if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
             collection = await store.ensureCollection({
               id: idFactory('collection'), name: body.name || 'New demo', kind: 'demo-template', createdAt: at,
             });
@@ -117,6 +152,20 @@ export function createPileApp({
             throw new Error('Unsupported collection action');
           }
           return json({action: body.action, collection});
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/authorized-users') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
+          return json({users: await store.listAuthorizedUsers()});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/authorized-users') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
+          const body = await requestJson(request);
+          const {email, type} = authorizedUserInput(body);
+          if (body.action === 'add') return json({user: await store.addAuthorizedUser(email, type)}, 201);
+          if (body.action === 'remove') return json({user: await store.removeAuthorizedUser(email)});
+          throw new Error('Unsupported authorized-user action');
         }
 
         const collectionId = url.searchParams.get('collection_id')
@@ -168,6 +217,18 @@ export function createPileApp({
           return json({selections: await store.listSelections(collectionId)});
         }
 
+        if (request.method === 'GET' && url.pathname === '/api/selection-history') {
+          return json({selections: await store.listSelectionHistory()});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/selection-history') {
+          const body = await requestJson(request);
+          const expression = String(body.expression || '').trim();
+          if (!expression) throw new Error('Selection expression is required');
+          compileSelection(wrapUiSelection(collectionId, expression));
+          return json(await store.recordSelection(expression, now().toISOString()), 201);
+        }
+
         if (request.method === 'POST' && url.pathname === '/api/selections') {
           const body = await requestJson(request);
           const name = String(body.name || '').trim();
@@ -193,10 +254,12 @@ export function createPileApp({
             expression: url.searchParams.get('expression') || '',
             exportedAt: now().toISOString(),
           });
+          const collection = await store.ownedCollection(collectionId);
+          if (!collection) throw new Error(`Unknown collection: ${collectionId}`);
           return new Response(`${JSON.stringify(document, null, 2)}\n`, {
             headers: {
               'content-type': 'application/json; charset=utf-8',
-              'content-disposition': 'attachment; filename="bookmark-sorter-export.json"',
+              'content-disposition': attachmentHeader(exportFilename(collection.name)),
               'cache-control': 'no-store',
             },
           });
@@ -280,12 +343,14 @@ export function createPileApp({
         }
 
         if (request.method === 'POST' && url.pathname === '/api/captures/gaps') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const body = await requestJson(request);
           return json(await capture.processGaps({limit: body.limit, collectionId}));
         }
 
         if (request.method === 'POST' && url.pathname === '/api/captures/pass-one') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
           if (!capture) return json({error: 'Capture storage is not configured'}, 503);
           const retry = url.searchParams.get('retry') === '1';
           const candidates = await store[retry ? 'listRetryableCaptureItems' : 'listUncapturedItems'](collectionId, {
@@ -297,9 +362,16 @@ export function createPileApp({
           }));
         }
 
+        if (request.method === 'GET' && url.pathname === '/api/session') {
+          if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
+          return json(await store.sittingReport(collectionId, url.searchParams.get('session_id')));
+        }
+
         if (request.method === 'POST' && url.pathname === '/api/session') {
           const body = await requestJson(request);
           if (body.action === 'start') {
+            const existing = await store.latestSession(collectionId, {openOnly: true});
+            if (existing) return json(existing);
             const session = await store.startSession(collectionId, {
               id: idFactory('session'),
               startedAt: now().toISOString(),
@@ -307,6 +379,7 @@ export function createPileApp({
             return json(session, 201);
           }
           if (body.action === 'finish') {
+            if (!await identityIsAdmin(store, identity)) return json({error: 'Admin access required'}, 403);
             if (!body.session_id) throw new Error('Session id is required');
             return json(await store.finishSession(collectionId, {
               sessionId: body.session_id,

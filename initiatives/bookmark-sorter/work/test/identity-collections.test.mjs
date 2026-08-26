@@ -61,7 +61,7 @@ class SqliteD1 {
 
 async function identityDatabase() {
   const database = new DatabaseSync(':memory:');
-  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql']) {
+  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql', '0007_authorized_users_history.sql']) {
     database.exec(await readFile(`${workRoot}migrations/${migration}`, 'utf8'));
   }
   return {database, d1: new SqliteD1(database)};
@@ -126,6 +126,60 @@ test('two authenticated API sessions cannot address each other’s collection', 
     assert.equal(response.status, 400);
     assert.match((await response.json()).error, /Unknown collection/);
   }
+  database.close();
+});
+
+test('D1 keeps selection history owner-scoped and resolves the global authorized-user role', async () => {
+  const {d1} = await identityDatabase();
+  const first = new D1BookmarkStore(d1, {ownerId: 'user-a'});
+  const second = new D1BookmarkStore(d1, {ownerId: 'user-b'});
+  await first.ensureUser();
+  await second.ensureUser();
+  await first.recordSelection('site:first.example', '2026-08-19T00:00:00Z');
+  await first.recordSelection('folder:Reading/*', '2026-08-19T00:01:00Z');
+  await first.recordSelection('site:first.example', '2026-08-19T00:02:00Z');
+  assert.deepEqual((await first.listSelectionHistory()).map(row => row.expression), [
+    'site:first.example',
+    'folder:Reading/*',
+  ]);
+  assert.deepEqual(await second.listSelectionHistory(), []);
+
+  assert.deepEqual((await first.listAuthorizedUsers()).map(user => ({...user})), [
+    {email: 'julie.duffield@gmail.com', type: 'user'},
+    {email: 'krnovak@gmail.com', type: 'admin'},
+  ]);
+  assert.equal(await first.authorizedUserType('KRNOVAK@GMAIL.COM'), 'admin');
+  assert.equal(await first.authorizedUserType('julie.duffield@gmail.com'), 'user');
+  assert.equal(await first.authorizedUserType('missing@example.com'), null);
+  await first.addAuthorizedUser('reader@example.com', 'user');
+  assert.equal((await second.listAuthorizedUsers()).at(-1).email, 'reader@example.com');
+  await second.removeAuthorizedUser('reader@example.com');
+  assert.equal((await first.listAuthorizedUsers()).some(user => user.email === 'reader@example.com'), false);
+});
+
+test('D1 resumes and reports the latest durable sitting with its action details', async () => {
+  const {database, d1} = await identityDatabase();
+  const store = new D1BookmarkStore(d1, {ownerId: 'user-a'});
+  await store.ensurePersonalCollection({id: 'personal-a', createdAt: '2026-08-19T00:00:00Z'});
+  await ingestBookmarkHtml({
+    store, collectionId: 'personal-a', html: await fixture('export-small.html'), source: 'test', ingestedAt: '2026-08-19T00:00:00Z',
+  });
+  const session = await store.startSession('personal-a', {id: 'sitting-a', startedAt: '2026-08-19T01:00:00Z'});
+  const item = (await store.listAllItems('personal-a'))[0];
+  await store.applyVerdict('personal-a', {
+    itemIds: [item.id], verdict: 'keeper', at: '2026-08-19T01:01:00Z', sessionId: session.id, actionId: 'action-a',
+  });
+
+  assert.equal((await store.latestSession('personal-a', {openOnly: true})).id, session.id);
+  const report = await store.sittingReport('personal-a');
+  assert.equal(report.session.items_judged, 1);
+  assert.equal(report.actions.length, 1);
+  assert.equal(report.actions[0].payload.verdict, 'keeper');
+  assert.equal(report.actions[0].payload.changes.length, 1);
+
+  await store.finishSession('personal-a', {sessionId: session.id, endedAt: '2026-08-19T01:02:00Z'});
+  assert.equal(await store.latestSession('personal-a', {openOnly: true}), null);
+  assert.equal((await store.sittingReport('personal-a')).session.elapsed_ms, 120_000);
   database.close();
 });
 

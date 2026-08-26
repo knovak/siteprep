@@ -356,3 +356,14 @@ preserving the compact tablet and phone layouts.
 Capped each capture at 30% of its card in a three-row grid and reserved two
 title lines, preventing large images from squeezing the bookmark text, tags,
 and verdict out of view.
+
+## 2026-08-24 — Consolidate import, selection, export, and administration controls
+
+Replaced the always-visible selection block with mutually exclusive Import,
+Select, and Export panels that share one collapsed row and give the open panel
+the available width. Moved demo-template copying into Import, added confirmed
+collection erasure to Export, and moved Apply to entire selection plus paging
+beside the verdict toolbar. Added per-user recent selection history and an
+Admin menu for sittings, captures, and advisory authorized-user add/remove/list
+operations; the new authorized-user table is deliberately not an access gate
+in this version.

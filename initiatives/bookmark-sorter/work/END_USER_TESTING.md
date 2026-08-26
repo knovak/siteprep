@@ -2,7 +2,9 @@
 
 ## What this test Site is
 
-This is a private, signed-in test of the real bookmark-sorter application. It
+This is a public test of the real bookmark-sorter application. Bookmark data is
+still private per signed-in ChatGPT user; anonymous visitors can see the shell
+but cannot create collections or import data. It
 stores bookmark records, tags, verdicts, selections, and sitting measurements in
 ChatGPT Sites D1. The first test version deliberately did not provision R2. The
 user accepted the Sites storage limits and authorised the capture bucket on
@@ -18,35 +20,45 @@ verdicts, and notes; it never contains capture images.
 
 1. Open the private Site while signed in with ChatGPT.
 2. Export bookmarks from the browser you want to test, then choose that HTML file
-   under **Import bookmarks**. Give the source a short name such as
+   under **Import**. Give the source a short name such as
    `chrome-export` or `safari-export`.
 3. Confirm that the total count looks plausible. Re-importing the same file
    should not increase it.
 4. Work however you actually would. Use the on-screen buttons or `K`, `J`, `A`,
    and `N`; Space marks exceptions and `U` undoes the last whole action.
-5. End the sitting. The items judged, elapsed time, and items-per-minute rate
-   are recorded automatically, so noting them down is optional — see `notes.md`
-   for what they are eventually for.
+5. If your email is listed as an administrator, open **Admin** and end the
+   sitting. The items judged, elapsed time, and items-per-minute rate are
+   recorded automatically. **Show sitting** displays the latest sitting and its
+   verdict/tag actions; **Export sitting data** downloads the same durable record
+   as `bookmark-sorter/sitting-v1` JSON. An unfinished sitting resumes after a
+   reload. Non-admin users do not see this menu.
+6. Administrators can also enter a name under **Admin → Create template**. The
+   new empty template becomes the current collection; import the desired HTML
+   or Sorter JSON into it. Other users can then use **Import → Demo templates →
+   Load a copy**.
 
 ## Selection sitting
 
 1. Open a selection such as `folder:Reading/*`, `site:example.com`, or a
    combination such as `folder:Reading/* and not topic:rust`.
-2. Mark the exceptions, choose the verdict for the rest, and use **Sweep
-   unmarked**.
-3. Try one saved selection without opening it first. It should show the affected
-   count and ask before applying a verdict. A selection that is already open
-   should sweep without that extra confirmation.
-4. Optionally note how many confirmations interrupted the sitting. Sweeps you
+2. Choose a verdict and use **Sweep untriaged** to change only untriaged cards
+   on the visible page and advance. Use the arrow on that control to switch to
+   **Sweep all selected** when every item in the current open selection should
+   receive the verdict.
+3. **Sweep all selected** should show the affected count and ask for
+   confirmation before applying the verdict.
+4. Under **Select → Automatic proposals**, confirm that the Verdict group appears
+   above Folder and includes **not junk** and **untriaged or needs-time**.
+5. Optionally note how many confirmations interrupted the sitting. Sweeps you
    immediately undo are recorded automatically; confirmations are not. Neither
    is required — see `notes.md`.
 
 ## Backup before replacing the Site
 
-Open **Export bookmarks**, choose **Current collection**, and
-download the `bookmark-sorter/v1` JSON backup. The same section can export the
+Open **Export**, choose **Current collection**, and download the
+`bookmark-sorter-<collection-name>.json` `bookmark-sorter/v1` backup. The same section can export the
 open selection instead. Keep that file until the next Site version has been
-opened and the backup has been imported through **Import bookmarks**, or the
+opened and the backup has been imported through **Import**, or the
 existing D1 data has been confirmed intact.
 
 ## Not covered by this first deployment

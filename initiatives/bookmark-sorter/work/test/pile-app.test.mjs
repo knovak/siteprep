@@ -24,7 +24,7 @@ class AppStore extends MemoryBookmarkStore {
 
 const createTestApp = options => createPileApp({
   ...options,
-  identityFromRequest: options?.identityFromRequest || (() => ({id: 'test-user'})),
+  identityFromRequest: options?.identityFromRequest || (() => ({id: 'test-user', email: 'krnovak@gmail.com'})),
   personalCollectionIdFactory: options?.personalCollectionIdFactory || (() => 'pile'),
 });
 
@@ -45,8 +45,8 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /navigator\.clipboard\.writeText\(item\.url\)/);
   assert.match(html, /id="help-toggle"/);
   assert.match(html, /Sweep untriaged/);
-  assert.match(html, /id="capture-gaps" type="button" disabled/);
-  assert.match(html, /id="capture-pass-one" type="button" disabled/);
+  assert.match(html, /id="capture-gaps" class="admin-capture" type="button" disabled/);
+  assert.match(html, /id="capture-pass-one" class="admin-capture" type="button" disabled/);
   assert.match(html, /api\/captures\/pass-one\?limit=20/);
   assert.match(html, /id="previous-page"/);
   assert.match(html, /id="next-page"/);
@@ -54,6 +54,13 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="new-collection" type="button">New</);
   assert.match(html, /id="exporter"/);
   assert.match(html, /id="export-scope"/);
+  assert.match(html, /id="selector"/);
+  assert.match(html, /id="previous-selections"/);
+  assert.match(html, /id="erase-collection"/);
+  assert.match(html, /id="admin-menu"/);
+  assert.match(html, />Load a copy</);
+  assert.match(html, /id="sweep-mode"/);
+  assert.match(html, />Sweep all selected</);
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
@@ -96,6 +103,11 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
   }));
   const session = await start.json();
+  const resumed = await app.fetch(new Request('https://pile.test/api/session', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
+  }));
+  assert.equal(resumed.status, 200);
+  assert.equal((await resumed.json()).id, session.id, 'an unfinished sitting resumes rather than being duplicated');
   const listed = await (await app.fetch(new Request('https://pile.test/api/items?limit=10'))).json();
   const ids = listed.items.map(item => item.id);
 
@@ -122,12 +134,20 @@ test('verdicts update the backlog and a marked-set action undoes as one step', a
   assert.equal(undoResult.changes.length, 1);
   assert.equal(undoResult.session.items_judged, 2);
 
+  const activeReport = await (await app.fetch(new Request('https://pile.test/api/session'))).json();
+  assert.equal(activeReport.session.id, session.id);
+  assert.equal(activeReport.actions.length, 2);
+  assert.equal(activeReport.actions[0].payload.verdict, 'keeper');
+  assert.ok(activeReport.actions[1].undone_at);
+
   const finished = await app.fetch(new Request('https://pile.test/api/session', {
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'finish', session_id: session.id}),
   }));
   const finishResult = await finished.json();
   assert.equal(finishResult.items_judged, 2);
   assert.ok(finishResult.elapsed_ms > 0);
+  const savedReport = await (await app.fetch(new Request('https://pile.test/api/session'))).json();
+  assert.equal(savedReport.session.ended_at, finishResult.ended_at);
 });
 
 test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms only unopened sets', async () => {
@@ -204,6 +224,68 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   assert.equal((await (await app.fetch(new Request('https://pile.test/api/selection?expression=verdict%3Auntriaged'))).json()).total, 1);
 });
 
+test('selection history persists recent expressions and only administrators can edit authorized users', async () => {
+  const store = new AppStore();
+  let tick = 0;
+  const app = createTestApp({
+    storeFactory: () => store,
+    now: () => new Date(Date.UTC(2026, 7, 18, 12, tick++)),
+  });
+
+  for (const expression of ['site:first.example', 'folder:Reading/*', 'site:first.example']) {
+    const response = await app.fetch(new Request('https://pile.test/api/selection-history', {
+      method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({expression}),
+    }));
+    assert.equal(response.status, 201);
+  }
+  const history = await (await app.fetch(new Request('https://pile.test/api/selection-history'))).json();
+  assert.deepEqual(history.selections.map(row => row.expression), ['site:first.example', 'folder:Reading/*']);
+
+  const initial = await (await app.fetch(new Request('https://pile.test/api/authorized-users'))).json();
+  assert.deepEqual(initial.users, [
+    {email: 'julie.duffield@gmail.com', type: 'user'},
+    {email: 'krnovak@gmail.com', type: 'admin'},
+  ]);
+  const adminCollections = await (await app.fetch(new Request('https://pile.test/api/collections'))).json();
+  assert.equal(adminCollections.can_edit_templates, true, 'admin permission includes template editing');
+  const createdTemplate = await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'create-template', name: 'Admin starter'}),
+  }));
+  assert.equal(createdTemplate.status, 200);
+  assert.equal((await createdTemplate.json()).collection.kind, 'demo-template');
+  const added = await (await app.fetch(new Request('https://pile.test/api/authorized-users', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'add', email: 'New.Reader@Example.com', type: 'user'}),
+  }))).json();
+  assert.deepEqual(added.user, {email: 'new.reader@example.com', type: 'user'});
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/collections'))).json()).collections.length, 2);
+  await app.fetch(new Request('https://pile.test/api/authorized-users', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'remove', email: 'new.reader@example.com'}),
+  }));
+  assert.equal((await (await app.fetch(new Request('https://pile.test/api/authorized-users'))).json()).users.length, 2);
+
+  const readerApp = createTestApp({
+    storeFactory: () => store,
+    identityFromRequest: () => ({id: 'reader-user', email: 'julie.duffield@gmail.com'}),
+  });
+  const readerPage = await (await readerApp.fetch(new Request('https://pile.test/'))).text();
+  assert.doesNotMatch(readerPage, /id="admin-menu"/);
+  const denied = await readerApp.fetch(new Request('https://pile.test/api/authorized-users'));
+  assert.equal(denied.status, 403);
+  assert.deepEqual(await denied.json(), {error: 'Admin access required'});
+  const sittingDenied = await readerApp.fetch(new Request('https://pile.test/api/session'));
+  assert.equal(sittingDenied.status, 403);
+  assert.deepEqual(await sittingDenied.json(), {error: 'Admin access required'});
+  const templateDenied = await readerApp.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'create-template', name: 'Not allowed'}),
+  }));
+  assert.equal(templateDenied.status, 403);
+  assert.deepEqual(await templateDenied.json(), {error: 'Admin access required'});
+});
+
 test('portable API exports a selection, imports JSON, and reviews proposed tags before acceptance', async () => {
   const store = new AppStore();
   let sequence = 0;
@@ -219,7 +301,7 @@ test('portable API exports a selection, imports JSON, and reviews proposed tags 
 
   const exported = await app.fetch(new Request('https://pile.test/api/export?expression=site%3Aexample.com'));
   assert.equal(exported.status, 200);
-  assert.match(exported.headers.get('content-disposition'), /bookmark-sorter-export\.json/);
+  assert.match(exported.headers.get('content-disposition'), /bookmark-sorter-My-bookmarks\.json/);
   const document = await exported.json();
   assert.equal(document.selection, 'site:example.com');
   assert.equal(document.items.length, 2);
@@ -262,6 +344,26 @@ test('portable API exports a selection, imports JSON, and reviews proposed tags 
   assert.equal(accepted.status, 200);
   assert.equal((await accepted.json()).result.changes.length, 2);
   assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('cluster:example-guides')).length, 2);
+});
+
+test('a new signed-in user gets a personal collection before importing another user export', async () => {
+  const store = new AppStore();
+  const app = createTestApp({
+    storeFactory: () => store,
+    identityFromRequest: () => ({id: 'brand-new-user', email: 'new.user@example.com'}),
+    personalCollectionIdFactory: () => 'new-user-personal',
+    now: () => new Date('2026-08-25T00:00:00Z'),
+  });
+  const document = JSON.parse(await fixture('export-v1.json'));
+  document.collection = 'another-users-collection';
+  const form = new FormData();
+  form.append('source', 'ignored-for-json');
+  form.append('file', new Blob([JSON.stringify(document)], {type: 'application/json'}), 'bookmark-sorter-Other-person.json');
+  const response = await app.fetch(new Request('https://pile.test/api/import', {method: 'POST', body: form}));
+  assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), {parsed: 1, added: 1, merged: 0, total: 1});
+  const collections = await (await app.fetch(new Request('https://pile.test/api/collections'))).json();
+  assert.deepEqual(collections.collections.map(row => [row.id, row.item_count]), [['new-user-personal', 1]]);
 });
 
 test('a visible sweep across several thousand items never gains a count-based confirmation', async () => {
@@ -337,6 +439,14 @@ test('collection API creates empty private collections and manages template copi
     body: JSON.stringify({action: 'rename', collection_id: fresh.collection.id, name: 'My clean demo'}),
   }))).json();
   assert.equal(renamed.collection.name, 'My clean demo');
+
+  const erased = await (await app.fetch(new Request('https://pile.test/api/collections', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({action: 'erase', collection_id: fresh.collection.id}),
+  }))).json();
+  assert.equal(erased.erased_items, 1);
+  assert.equal(store.countItems(fresh.collection.id), 0);
+  assert.equal(store.hasCollection(fresh.collection.id), true);
 
   const deleted = await app.fetch(new Request('https://pile.test/api/collections', {
     method: 'POST', headers: {'content-type': 'application/json'},

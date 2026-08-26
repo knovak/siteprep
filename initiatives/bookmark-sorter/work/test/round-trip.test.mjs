@@ -111,6 +111,30 @@ test('portable imports simplify Google redirect URLs before storing them', async
   assert.equal(item.url_key, item.url);
 });
 
+test('an exported legacy bookmark remains importable with a non-web URL or missing verdict date', async () => {
+  const store = new MemoryBookmarkStore();
+  store.createCollection({id: 'destination', name: 'Destination'});
+  const result = await importExportDocument({
+    store,
+    collectionId: 'destination',
+    importedAt: '2026-08-25T00:00:00Z',
+    document: {
+      format: 'bookmark-sorter/v1',
+      exported_at: '2026-08-24T23:00:00Z',
+      collection: 'another-users-collection',
+      selection: '',
+      items: [{
+        url: 'file:///tmp/offline-reference.html', title: 'Offline reference', note: null,
+        added_at: null, tags: ['src:legacy-export'], verdict: 'keeper', verdict_at: null,
+      }],
+    },
+  });
+  assert.deepEqual(result, {parsed: 1, added: 1, merged: 0, total: 1});
+  const [item] = store.listAllItems('destination');
+  assert.equal(item.url, 'file:///tmp/offline-reference.html');
+  assert.equal(item.verdict_at, '2026-08-24T23:00:00Z');
+});
+
 test('proposal loading is read-only, URL-matched, grouped per tag, and acceptance uses the additive undo path', async () => {
   const store = await sourceStore();
   const before = store.listAllItems('source');

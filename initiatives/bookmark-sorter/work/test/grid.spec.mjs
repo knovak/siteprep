@@ -26,6 +26,12 @@ async function installPile(page) {
     requests: [],
     proposalRevision: 0,
     selectionDelays: new Map(),
+    history: [],
+    authorizedUsers: [
+      {email: 'julie.duffield@gmail.com', type: 'user'},
+      {email: 'krnovak@gmail.com', type: 'admin'},
+    ],
+    templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
   };
   backend.collections.push(backend.collection);
   await page.route('https://pile.test/**', async route => {
@@ -34,7 +40,7 @@ async function installPile(page) {
     const requestCollectionId = request.headers()['x-bookmark-collection-id'] || '';
     backend.requests.push({method: request.method(), path: url.pathname, collectionId: requestCollectionId});
     if (request.method() === 'GET' && url.pathname === '/') {
-      return route.fulfill({contentType: 'text/html', body: renderPilePage()});
+      return route.fulfill({contentType: 'text/html', body: renderPilePage({isAdmin: true})});
     }
     if (request.method() === 'GET' && url.pathname === '/api/collections') {
       return route.fulfill({json: {
@@ -42,7 +48,7 @@ async function installPile(page) {
         collections: backend.collections.map(collection => ({
           ...collection, item_count: collection.id === 'pile' ? backend.items.length : 0,
         })),
-        templates: [{id: 'starter', name: 'Starter pile', kind: 'demo-template', item_count: 12}],
+        templates: backend.templates,
       }});
     }
     if (request.method() === 'GET' && (url.pathname === '/api/items' || url.pathname === '/api/selection')) {
@@ -58,6 +64,12 @@ async function installPile(page) {
     if (request.method() === 'GET' && url.pathname === '/api/selections') {
       return route.fulfill({json: {selections: []}});
     }
+    if (request.method() === 'GET' && url.pathname === '/api/selection-history') {
+      return route.fulfill({json: {selections: backend.history}});
+    }
+    if (request.method() === 'GET' && url.pathname === '/api/authorized-users') {
+      return route.fulfill({json: {users: backend.authorizedUsers}});
+    }
     if (request.method() === 'GET' && url.pathname === '/api/proposals') {
       const source = requestCollectionId === 'other' ? 'other-source' : 'browser-export';
       return route.fulfill({json: {proposals: [
@@ -70,8 +82,21 @@ async function installPile(page) {
         {id: 'verdict:junk', kind: 'verdict', name: 'junk', expression: 'verdict:junk', count: 0},
         {id: 'verdict:keep', kind: 'verdict', name: 'keep', expression: 'verdict:keep', count: 0},
         {id: 'verdict:needs-time', kind: 'verdict', name: 'needs-time', expression: 'verdict:needs-time', count: 0},
+        {id: 'verdict:not-junk', kind: 'verdict', name: 'not junk', expression: 'not verdict:junk', count: 10_000},
         {id: 'verdict:untriaged', kind: 'verdict', name: 'untriaged', expression: 'verdict:untriaged', count: 10_000},
+        {id: 'verdict:untriaged-or-needs-time', kind: 'verdict', name: 'untriaged or needs-time', expression: 'verdict:untriaged or verdict:needs-time', count: 10_000},
       ]}});
+    }
+    if (request.method() === 'GET' && url.pathname === '/api/session') {
+      return route.fulfill({json: {
+        collection_id: requestCollectionId || 'pile',
+        session: backend.session,
+        actions: backend.actions.map((changes, index) => ({
+          id: `action-${index + 1}`, action_kind: 'verdict',
+          payload: {changes, verdict: backend.items.find(item => item.id === changes[0]?.item_id)?.verdict || 'keeper'},
+          created_at: new Date(Date.now() - (backend.actions.length - index) * 1000).toISOString(), undone_at: null,
+        })),
+      }});
     }
     if (request.method() === 'POST' && url.pathname === '/api/import') {
       backend.proposalRevision += 1;
@@ -88,8 +113,54 @@ async function installPile(page) {
       backend.collections.push(collection);
       return route.fulfill({status: 201, json: {collection: {...collection, item_count: 0}}});
     }
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'create-template') {
+      const collection = {id: 'template-new', name: body.name.trim(), kind: 'demo-template'};
+      backend.collections.push(collection);
+      backend.templates.push({...collection, item_count: 0});
+      return route.fulfill({json: {collection: {...collection, item_count: 0}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'erase') {
+      const erasedItems = backend.items.length;
+      backend.items = [];
+      return route.fulfill({json: {collection: backend.collection, erased_items: erasedItems}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/selection-history') {
+      backend.history = backend.history.filter(row => row.expression !== body.expression);
+      backend.history.unshift({expression: body.expression, used_at: new Date().toISOString()});
+      return route.fulfill({status: 201, json: backend.history[0]});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/authorized-users') {
+      const email = body.email.trim().toLowerCase();
+      if (body.action === 'add') {
+        backend.authorizedUsers = backend.authorizedUsers.filter(user => user.email !== email);
+        const user = {email, type: body.type};
+        backend.authorizedUsers.push(user);
+        backend.authorizedUsers.sort((left, right) => left.email.localeCompare(right.email));
+        return route.fulfill({status: 201, json: {user}});
+      }
+      backend.authorizedUsers = backend.authorizedUsers.filter(user => user.email !== email);
+      return route.fulfill({json: {user: {email}}});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/selection/verdict') {
+      const matches = backend.items;
+      if (!body.confirmed) return route.fulfill({status: 409, json: {confirmation_required: true, count: matches.length}});
+      const changes = [];
+      for (const item of matches) {
+        if (item.verdict === body.verdict) continue;
+        changes.push({item_id: item.id, verdict: body.verdict, verdict_at: new Date().toISOString()});
+        Object.assign(item, {verdict: body.verdict, verdict_at: new Date().toISOString()});
+      }
+      backend.actions.push(changes);
+      backend.session.items_judged += changes.length;
+      return route.fulfill({json: {
+        changes,
+        backlog: backend.items.filter(item => !item.verdict).length,
+        session: backend.session,
+      }});
+    }
     if (request.method() === 'POST' && url.pathname === '/api/session') {
       if (body.action === 'start') {
+        if (backend.session && !backend.session.ended_at) return route.fulfill({json: backend.session});
         backend.session = {
           id: 'session-1', collection_id: 'pile', started_at: new Date(Date.now() - 60_000).toISOString(),
           ended_at: null, items_judged: 0, elapsed_ms: null,
@@ -149,11 +220,61 @@ test('10,000 items keep a bounded DOM at each responsive layout', async ({page})
 
   await expectLayout(page, {width: 1600, height: 900, visible: 16, cards: 24, columns: 8, rows: 2});
   await expectLayout(page, {width: 1000, height: 900, visible: 12, cards: 16, columns: 4, rows: 3});
-  await expect(page.getByLabel('Page layout')).toBeDisabled();
+  await expect(page.locator('.layout-picker')).toBeHidden();
   await expectLayout(page, {width: 820, height: 1100, visible: 9, cards: 12, columns: 3, rows: 3});
+  await expect(page.locator('.layout-picker')).toBeHidden();
   await expectLayout(page, {width: 390, height: 844, visible: 1, cards: 3, columns: 1, rows: 1});
   await expect.poll(() => page.locator('#grid').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(550);
   await expect.poll(() => page.locator('.footer-line').evaluate(element => element.getBoundingClientRect().bottom)).toBeGreaterThan(820);
+});
+
+test('Import, Select, and Export share the row and only one expands at a time', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await expect(page.locator('#count')).toHaveText('10,000');
+
+  const panels = page.locator('.file-tools > details');
+  await expect(panels).toHaveCount(3);
+  const collapsedWidths = await panels.evaluateAll(rows => rows.map(row => row.getBoundingClientRect().width));
+  expect(Math.max(...collapsedWidths) - Math.min(...collapsedWidths)).toBeLessThan(2);
+
+  await page.locator('#importer > summary').click();
+  await expect(page.locator('#importer')).toHaveAttribute('open', '');
+  await expect(page.locator('#selector')).not.toHaveAttribute('open', '');
+  const importWidths = await panels.evaluateAll(rows => rows.map(row => row.getBoundingClientRect().width));
+  expect(importWidths[0]).toBeGreaterThan(importWidths[1] * 3);
+
+  await page.locator('#selector > summary').click();
+  await expect(page.locator('#selector')).toHaveAttribute('open', '');
+  await expect(page.locator('#importer')).not.toHaveAttribute('open', '');
+  const selectWidths = await panels.evaluateAll(rows => rows.map(row => row.getBoundingClientRect().width));
+  expect(selectWidths[1]).toBeGreaterThan(selectWidths[0] * 3);
+
+  await page.locator('#exporter > summary').click();
+  await expect(page.locator('#exporter')).toHaveAttribute('open', '');
+  await expect(page.locator('#selector')).not.toHaveAttribute('open', '');
+  await page.locator('#exporter > summary').click();
+  await expect(page.locator('.file-tools > details[open]')).toHaveCount(0);
+});
+
+test('Select remembers query strings in reverse recent order', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#selector > summary').click();
+
+  await page.getByLabel('Selection expression').fill('site:first.example');
+  await page.getByRole('button', {name: 'Open selection'}).click();
+  await expect(page.getByLabel('Previous selections')).toContainText('site:first.example');
+  await page.getByLabel('Selection expression').fill('folder:Reading/*');
+  await page.getByRole('button', {name: 'Open selection'}).click();
+  await expect(page.getByLabel('Previous selections')).toContainText('folder:Reading/*');
+  const history = await page.getByLabel('Previous selections').locator('option').allTextContents();
+  expect(history).toEqual(['Previous selections', 'folder:Reading/*', 'site:first.example']);
+  await page.getByLabel('Previous selections').selectOption('site:first.example');
+  await page.getByRole('button', {name: 'Open previous'}).click();
+  await expect(page.getByLabel('Selection expression')).toHaveValue('site:first.example');
 });
 
 test('page layout dropdown redraws the wide grid immediately', async ({page}) => {
@@ -194,6 +315,26 @@ test('three-row layouts reserve most of each card for readable bookmark text', a
   expect(metrics.captureRatio).toBeLessThan(0.32);
   expect(metrics.titleHeight).toBeGreaterThan(20);
   expect(metrics.titleBottom).toBeLessThan(metrics.cardBottom);
+
+  await page.getByLabel('Page layout').selectOption('3x12');
+  await expectLayout(page, {width: 1600, height: 900, visible: 36, cards: 48, columns: 12, rows: 3});
+  const compactMetrics = await page.locator('[data-item-id="item-1"]').evaluate(card => {
+    const capture = card.querySelector('.capture').getBoundingClientRect();
+    const title = card.querySelector('h2');
+    const tags = card.querySelector('.tags').getBoundingClientRect();
+    const bounds = card.getBoundingClientRect();
+    return {
+      captureRatio: capture.height / bounds.height,
+      titleHeight: title.getBoundingClientRect().height,
+      lineClamp: getComputedStyle(title).webkitLineClamp,
+      titleBottom: title.getBoundingClientRect().bottom,
+      tagsTop: tags.top,
+    };
+  });
+  expect(compactMetrics.captureRatio).toBeLessThan(0.2);
+  expect(compactMetrics.titleHeight).toBeGreaterThan(80);
+  expect(compactMetrics.lineClamp).toBe('none');
+  expect(compactMetrics.tagsTop - compactMetrics.titleBottom).toBeLessThan(5);
 });
 
 test('keyboard verdicts, marked groups, atomic undo, and sitting rate work without navigation', async ({page}) => {
@@ -208,6 +349,10 @@ test('keyboard verdicts, marked groups, atomic undo, and sitting rate work witho
   await page.keyboard.press('k');
   await expect(page.locator('#backlog')).toHaveText('9,999');
   await expect(page.locator('[data-item-id="item-1"]')).toHaveAttribute('data-verdict', 'keeper');
+  await expect(page.locator('[data-item-id="item-1"] .verdict-label')).toHaveText('Keep');
+  await expect(page.locator('button[data-verdict="needs-more-time"]')).toHaveText(/Needs-time/);
+  await expect(page.locator('body')).not.toContainText('Keeper');
+  await expect(page.locator('body')).not.toContainText('Needs more time');
   expect(await originalCard.evaluate(card => card.isConnected)).toBe(true);
   await expect(page.locator('[data-item-id="item-2"]')).toHaveClass(/focused/);
 
@@ -348,16 +493,82 @@ test('New creates a named empty collection without a browser prompt', async ({pa
   expect(backend.collections.at(-1)).toEqual({id: 'collection-new', name: 'Research queue', kind: 'private'});
 });
 
+test('Admin contains sitting, capture, and authorized-user controls', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+
+  await expect(page.locator('.toolbar #session, .toolbar #capture-pass-one, .toolbar #capture-gaps')).toHaveCount(0);
+  await page.locator('#importer > summary').click();
+  await expect(page.locator('#importer').getByRole('button', {name: 'Create template'})).toHaveCount(0);
+  await page.locator('#importer > summary').click();
+  await page.locator('#admin-menu > summary').click();
+  const adminPosition = await page.locator('#admin-menu').evaluate(menu => {
+    const summary = menu.querySelector('summary').getBoundingClientRect();
+    const panel = menu.querySelector('.admin-menu-content').getBoundingClientRect();
+    return {summaryBottom: summary.bottom, panelTop: panel.top};
+  });
+  expect(adminPosition.panelTop).toBeGreaterThan(adminPosition.summaryBottom);
+  await expect(page.locator('#session')).toBeVisible();
+  await expect(page.locator('#capture-pass-one')).toBeVisible();
+  await expect(page.locator('#capture-gaps')).toBeVisible();
+  await page.getByRole('button', {name: 'Display users'}).click();
+  await expect(page.locator('#authorized-users')).toContainText('krnovak@gmail.com — admin');
+  const adminOrder = await page.locator('.admin-menu-content').evaluate(panel => ({
+    users: [...panel.children].indexOf(panel.querySelector('#authorized-users')),
+    metadata: [...panel.children].indexOf(panel.querySelector('#capture-pass-one')),
+    gaps: [...panel.children].indexOf(panel.querySelector('#capture-gaps')),
+  }));
+  expect(adminOrder.metadata).toBeGreaterThan(adminOrder.users);
+  expect(adminOrder.gaps).toBeGreaterThan(adminOrder.users);
+
+  await page.getByLabel('Template name').fill('Research starter');
+  await page.getByRole('button', {name: 'Create template'}).click();
+  await expect(page.getByLabel('Current collection')).toHaveValue('template-new');
+  await expect(page.locator('#collection-kind')).toHaveText('demo template');
+  await expect(page.locator('#status')).toHaveText('Demo template “Research starter” created and selected.');
+
+  await page.getByRole('button', {name: 'Show sitting'}).click();
+  await expect(page.locator('#sitting-report')).toBeVisible();
+  await expect(page.locator('#sitting-summary')).toContainText('In progress');
+  await expect(page.locator('#sitting-summary')).toContainText('Items judged');
+  const sittingDownload = page.waitForEvent('download');
+  await page.getByRole('button', {name: 'Export sitting data'}).click();
+  expect((await sittingDownload).suggestedFilename()).toBe('bookmark-sorter-sitting.json');
+  await expect(page.locator('#status')).toHaveText('Exported the displayed sitting data.');
+
+  await page.locator('#add-user-email').fill('New.Reader@Example.com');
+  await page.locator('#add-user-type').selectOption('user');
+  await page.getByRole('button', {name: 'Add user'}).click();
+  await expect(page.locator('#authorized-users')).toContainText('new.reader@example.com — user');
+  await page.locator('#remove-user-email').fill('new.reader@example.com');
+  const removeUser = page.getByRole('button', {name: 'Remove user'});
+  await expect(removeUser).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await removeUser.click();
+  await expect(page.locator('#authorized-users')).not.toContainText('new.reader@example.com');
+  expect(backend.authorizedUsers).toHaveLength(2);
+
+  await page.setViewportSize({width: 430, height: 932});
+  const phonePosition = await page.locator('#admin-menu').evaluate(menu => {
+    const summary = menu.querySelector('summary').getBoundingClientRect();
+    const panel = menu.querySelector('.admin-menu-content').getBoundingClientRect();
+    return {summaryTop: summary.top, summaryBottom: summary.bottom, panelTop: panel.top, viewportHeight: innerHeight};
+  });
+  expect(phonePosition.summaryTop).toBeGreaterThanOrEqual(0);
+  expect(phonePosition.summaryBottom).toBeLessThan(phonePosition.viewportHeight);
+  expect(phonePosition.panelTop).toBeGreaterThan(phonePosition.summaryBottom);
+});
+
 test('Automatic proposals are grouped in the requested order without Same labels', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   await installPile(page);
   await page.goto('https://pile.test/');
   await expect(page.locator('#proposals optgroup')).toHaveCount(6);
   const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
-  expect(labels).toEqual(['src', 'tag', 'folder', 'site', 'image', 'verdict']);
-  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(5);
+  expect(labels).toEqual(['src', 'tag', 'verdict', 'folder', 'site', 'image']);
+  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(7);
   const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
-  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'untriaged (10,000)']);
+  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'not junk (10,000)', 'untriaged (10,000)', 'untriaged or needs-time (10,000)']);
   await expect(page.locator('#proposals')).not.toContainText('Same ');
 });
 
@@ -378,6 +589,7 @@ test('Automatic proposals refresh after choosing a collection and completing an 
   });
   await page.getByRole('button', {name: 'Import file'}).click();
   await expect(page.locator('#status')).toHaveText('Imported 1 new; merged 0.');
+  await expect(page.locator('#import-status')).toHaveText('Imported 1 new; merged 0.');
   await expect(page.locator('#proposals option[value="src:other-source"]')).toHaveText('other-source (2)');
 
   await page.getByLabel('Current collection').selectOption('pile');
@@ -398,13 +610,15 @@ test('Export downloads either the collection or the current selection as importa
 
   await page.locator('#exporter summary').click();
   await expect(page.locator('#export-scope option').first()).toHaveText('Current collection (10,000)');
+  await page.locator('#selector > summary').click();
   await page.getByLabel('Selection expression').fill('site:example0.com');
   await page.getByRole('button', {name: 'Open selection'}).click();
+  await page.locator('#exporter > summary').click();
   await page.getByLabel('Export scope').selectOption('selection');
   const selectionDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Export file'}).click();
   const selectionFile = await selectionDownload;
-  expect(selectionFile.suggestedFilename()).toBe('bookmark-sorter-export.json');
+  expect(selectionFile.suggestedFilename()).toBe('bookmark-sorter-My-bookmarks.json');
   const selectionUrl = new URL(selectionFile.url());
   expect(selectionUrl.pathname).toBe('/api/export');
   expect(selectionUrl.searchParams.get('collection_id')).toBe('pile');
@@ -415,7 +629,7 @@ test('Export downloads either the collection or the current selection as importa
   const collectionDownload = page.waitForEvent('download');
   await page.getByRole('button', {name: 'Export file'}).click();
   const collectionFile = await collectionDownload;
-  expect(collectionFile.suggestedFilename()).toBe('bookmark-sorter-export.json');
+  expect(collectionFile.suggestedFilename()).toBe('bookmark-sorter-My-bookmarks.json');
   const collectionUrl = new URL(collectionFile.url());
   expect(collectionUrl.pathname).toBe('/api/export');
   expect(collectionUrl.searchParams.get('collection_id')).toBe('pile');
@@ -424,12 +638,30 @@ test('Export downloads either the collection or the current selection as importa
   await expect(page.locator('#bookmark-file')).toHaveAttribute('accept', /\.json/);
 });
 
+test('Export erases the current collection only after confirmation', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#exporter > summary').click();
+
+  let prompt = '';
+  page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.accept(); });
+  await page.getByRole('button', {name: 'Erase current collection'}).click();
+  await expect(page.locator('#count')).toHaveText('0');
+  expect(prompt).toContain('Erase all 10,000 bookmarks in “My bookmarks”?');
+  await expect(page.locator('#status')).toHaveText('Erased 10,000 bookmarks from “My bookmarks”.');
+  await expect(page.getByLabel('Current collection')).toContainText('My bookmarks');
+});
+
 test('sweep changes only visible untriaged cards, advances, and paging is read-only', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   const backend = await installPile(page);
   backend.items[0].verdict = 'keeper';
   await page.goto('https://pile.test/');
 
+  await expect(page.locator('.toolbar #sweep-verdict')).toHaveCount(1);
+  await expect(page.locator('#selector #sweep-verdict')).toHaveCount(0);
+  await expect(page.locator('#sweep-rest')).toHaveText('Sweep untriaged');
   await page.locator('#sweep-rest').click();
   await expect(page.locator('#position')).toContainText('17–32 of 10,000');
   expect(backend.items[0].verdict).toBe('keeper');
@@ -442,4 +674,21 @@ test('sweep changes only visible untriaged cards, advances, and paging is read-o
   await page.locator('#next-page').click();
   await expect(page.locator('#position')).toContainText('17–32 of 10,000');
   expect(backend.items.filter(item => item.verdict).length).toBe(judgedAfterSweep);
+});
+
+test('sweep scope dropdown switches the action to the entire current selection', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.items = backend.items.slice(0, 4);
+  await page.goto('https://pile.test/');
+
+  await page.getByLabel('Sweep mode').selectOption('selection');
+  await expect(page.locator('#sweep-rest')).toHaveText('Sweep all selected');
+  let prompt = '';
+  page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.accept(); });
+  await page.locator('#sweep-rest').click();
+
+  await expect(page.locator('#status')).toHaveText('Applied the verdict to all 4 items in the current selection.');
+  expect(prompt).toContain('Apply Junk to all 4 items in the current selection?');
+  expect(backend.items.every(item => item.verdict === 'junk')).toBe(true);
 });
