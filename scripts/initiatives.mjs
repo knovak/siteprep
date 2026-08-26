@@ -894,7 +894,11 @@ export function deploymentPlan(slug, env, { kind } = {}) {
     plan.build = entry.build || 'static';
     plan.site_slug = existing?.slug || (env === 'test' ? `${slug}-test` : slug);
     plan.site_url = existing?.url || null;
-    plan.access = existing?.access || (env === 'test' ? 'private' : null);
+    // Both environments can be public or private; private is the default and
+    // the user confirms it. A replacement keeps whatever the Site already has,
+    // so only a first deploy of an environment needs asking.
+    plan.access = existing?.access || 'private';
+    plan.confirm_access = !existing?.access;
     plan.last_version = existing?.version ?? null;
   } else {
     plan.destination = entry.destination;
