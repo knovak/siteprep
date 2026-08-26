@@ -127,6 +127,7 @@ export const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal', '
 export const PROPOSABLE_BLOCKERS = new Set(['human']);
 
 const DOCUMENTS = [
+  ['README.md', 'README'],
   ['wish.md', 'Wish'],
   ['background.md', 'Background'],
   ['objectives.md', 'Objectives'],
