@@ -88,7 +88,7 @@
 <p><strong>Leaves out:</strong> nothing much — this phase is small precisely because §4&#39;s merge, §8&#39;s selection and phase 4&#39;s <code>tag-apply</code> already exist. That it is small is the payoff for the order.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.5 — the round trip, which is the test that makes O7 mean something.</p>
 <h4>Phase 6 — Identity, collections, and demo copies</h4>
-<p><strong>Produces:</strong> sign-in from the host, <code>owner_id</code>, the personal, private, demo-template, and demo-copy collection kinds, the retained <code>can_edit_templates</code> capability, and the five operations of §10.1 — create or edit a template, list templates, take a copy, take a <em>fresh</em> copy, delete a copy — plus the collection menu the wish&#39;s amendment asks for. Refinement later added the email-based Admin role without changing opaque-id collection ownership.</p>
+<p><strong>Produces:</strong> sign-in from the host, <code>owner_id</code>, the personal, private, demo-template, and demo-copy collection kinds, the retained <code>can_edit_templates</code> capability, and the five operations of §10.1 — create or edit a template, list templates, take a copy, take a <em>fresh</em> copy, delete a copy — plus the collection menu the wish&#39;s amendment asks for. Refinement later added the email-based Admin role without changing opaque-id collection ownership. A later refinement made the public Site&#39;s entry boundary explicit: Sign in with ChatGPT followed by an <code>authorized_user</code> email-or-linked-id gate.</p>
 <p><strong>Leaves out:</strong> every part of the general sharing scheme. No reader lists, no ACLs, no revocation (§10.2).</p>
 <p><strong>Conditional on one of phase 0&#39;s rows.</strong> Templates are listed and copied across owners, so if phase 0 finds no cross-owner read, three of the five operations above do not exist and a maintainer seeds each tester by hand instead. The phase still happens — isolation, <code>owner_id</code> and sign-in are the bulk of it — but two rows of its exit test are struck rather than failed. Phase 0 says this in one line; it is repeated here because this is the phase that would otherwise be reported as incomplete for doing exactly what the finding required.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.6, whose central case is two users: a tester takes a copy, triages it, and can reach nothing of anyone else&#39;s.</p>
@@ -107,10 +107,12 @@
 <ul><li>typed, automatic, saved, and recent selection entry routes, with recent</li></ul>
 <p>  expressions stored per signed-in user;</p>
 <ul><li>visible-page Sweep untriaged and a separate confirmed Sweep all selected;</li><li>an Admin role backed by <code>authorized_user</code>, with server-gated sitting, capture,</li></ul>
-<p>  user-list, and template controls; and</p>
+<p>  user-list, and template controls;</p>
+<ul><li>a public entry page with polite sign-in and not-yet-authorized states, backed</li></ul>
+<p>  by the same server-side allowlist on every API route;</p>
 <ul><li>a file drop target beside the Import chooser plus readiness styling for the</li></ul>
 <p>  Automatic proposal, Saved selection, and Previous selection Open actions.</p>
-<p>Each refinement adds browser-level regression coverage in <code>test-plan.md</code> §7, updates the user README, and appends a log entry. It does not reopen the phase-7 vendor decision or broaden Site access.</p>
+<p>Each refinement adds browser-level regression coverage in <code>test-plan.md</code> §7, updates the user README, and appends a log entry. It does not reopen the phase-7 vendor decision; Site access changes remain explicit user decisions.</p>
 <h3>4. What each phase leaves behind</h3>
 <p>Every phase ends with three things, and the third is the one that is easy to skip:</p>
 <ul><li>the exit test passing;</li><li>a <code>log.md</code> entry saying what happened;</li><li>**a <code>decisions.md</code> entry for anything the phase settled that the spec had left</li></ul>

@@ -72,8 +72,8 @@
 <p>  there is a measured baseline to argue from. Setting it now would be a guess   dressed as a requirement.</p>
 <ul><li>After a full pass, the keepers can be exported and opened somewhere else.</li><li><strong>A collection survives a round trip.</strong> Exported and re-imported, it comes back</li></ul>
 <p>  with the same items, tags and verdicts — this is the test objective 7 actually   makes, and the one a download-only export would pass without meaning anything.</p>
-<ul><li><strong>A tester can be handed something to use.</strong> They sign in, receive a seeded</li></ul>
-<p>  demo collection of their own, and triage it without touching anybody else&#39;s.</p>
+<ul><li><strong>A tester can be handed something to use.</strong> They open the public Site, sign</li></ul>
+<p>  in with ChatGPT, pass the administrator-managed allowlist, receive a seeded   demo collection of their own, and triage it without touching anybody else&#39;s.</p>
 <h3>Decisions this raised, and where they landed</h3>
 <p>Drafting these surfaced five questions the wish does not settle. All five are now answered, in <code>decisions.md</code> — the reasoning lives there, and this list is only a map to it. Nothing here is still waiting on the user.</p>
 <ol><li><strong>How big is the real pile?</strong> 5,000–10,000 items. Big enough that clustering</li></ol>
@@ -82,11 +82,11 @@
 <p>   Chosen for objectives 3 and 4 — the screen-filling grid across three form    factors — at the known cost of being the weakest option for the two    extensions above. Host capability was proved on 2026-08-18 and the intended    Sites costs and limits were approved on 2026-08-19.</p>
 <ol><li><strong>Where do page snapshots come from?</strong> Captured at ingestion: anonymous Open</li></ol>
 <p>   Graph metadata, downscaled and cached by URL, never refreshed on view. A paid    screenshot API remains the designed fallback for gaps, but no vendor is    approved and that pass is switched off.</p>
-<ol><li><strong>How are collections identified and protected?</strong> Signed-in accounts, with</li></ol>
-<p>   collections owned and private by default.</p>
+<ol><li><strong>How are collections identified and protected?</strong> The Site is public to</li></ol>
+<p>   reach, but the application requires both ChatGPT sign-in and an    <code>authorized_user</code> match. Collections remain owned and private by default.</p>
 <ol><li><strong>What makes a collection non-personal?</strong> Nothing does, for now — demo</li></ol>
 <p>   collections are seeded per-user copies, and general sharing is held back as    above.</p>
-<p>The host now supplies the identity objective 8 assumes, and the app&#39;s own <code>bookmark-sorter/v1</code> export supplies objective 7. Collection ownership uses the opaque signed-in user id; email is consulted separately for the Admin role. A future host change must preserve both boundaries rather than treating the old presumption as still open.</p>
+<p>The host now supplies the identity objective 8 assumes, and the app&#39;s own <code>bookmark-sorter/v1</code> export supplies objective 7. Collection ownership uses the opaque signed-in user id. Email and a Site-specific linked user id are the application allowlist keys; the <code>admin</code> type adds the Admin role. A future host change must preserve both boundaries rather than treating the old presumption as still open.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
