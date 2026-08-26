@@ -92,3 +92,7 @@ Proposed five optional refinements with expected value, likely size, safety boun
 ## 2026-08-26 — Revise documentation and forecast disclosures
 
 Updated the user guide for the current Show selection and opt-in Show here workflow, separated the current test and production Site addresses, and replaced the completed browser-location proposal with still-open options. Moved Prediction source details below the safety notice and added a collapsed Debug record containing the local-history control and the What leaves this device explanation.
+
+## 2026-08-26 — Release
+
+Released to production — ChatGPT Site, version 4, `4ec23b4`. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
