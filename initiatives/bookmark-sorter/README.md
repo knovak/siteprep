@@ -6,8 +6,11 @@ keeps the saved URL, title, folder path, note, tags, and verdict for each
 bookmark. It can also open reusable groups of bookmarks so one decision can be
 applied to a page, a marked set, or a whole selection.
 
-The current validation Site is public to reach, but bookmark data remains behind
+The production Site is public to reach, but bookmark data remains behind
 ChatGPT sign-in and the Bookmark Sorter allowlist:
+<https://bookmark-sorter.ken-novak.chatgpt.site/>.
+
+Pre-release testing uses the separate public test Site:
 <https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/>.
 
 ## Access and sign-in

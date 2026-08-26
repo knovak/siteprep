@@ -214,6 +214,9 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
   the allowlist to `/` and every `/api/*` route. An authorized request uses the
   opaque id for ownership and creates one private personal collection on first
   API use.
+- Test and production are separate Sites with separate D1 databases and R2
+  buckets. Releasing replaces the production Site version without copying test
+  data into it.
 - With R2 absent, importing and triage work normally but pass-1 metadata capture
   and capture-gap processing are disabled. That was the first deployment. The
   user accepted the Sites storage limits and authorised the bucket on 2026-08-20
@@ -230,7 +233,7 @@ npm run build
 ```
 
 The root repository build remains a separate validation step for generated
-initiative pages. See `END_USER_TESTING.md` for the private test procedure and
+initiative pages. See `END_USER_TESTING.md` for the public-entry test procedure and
 the data-handling boundary.
 
 ## Triage API and interaction

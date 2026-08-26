@@ -418,3 +418,8 @@ version 28 deployed successfully at 2026-08-26 07:31:51 UTC. An anonymous live
 request received the sign-in page and API `401`; the signed-in authorized
 account reached its existing collections and Admin surface. Production was not
 changed.
+
+## 2026-08-26 — Release
+
+Released to production — ChatGPT Site, version 1, `da4fc8b`.
+<https://bookmark-sorter.ken-novak.chatgpt.site/> See `releases.md`.
