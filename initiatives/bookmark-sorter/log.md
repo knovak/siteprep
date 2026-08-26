@@ -388,3 +388,7 @@ administration, and troubleshooting guidance.
 All 59 application tests and 20 browser tests passed, including the new chooser
 state, file-drop, and narrow-phone checks. The Sites application production
 build also passed.
+
+## 2026-08-26 — Release
+
+Released to production — ChatGPT Site, version 1, `da4fc8b`. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.

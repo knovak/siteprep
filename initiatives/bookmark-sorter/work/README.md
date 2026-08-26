@@ -182,11 +182,16 @@ The list endpoint accepts `limit` and `offset`; `limit` is clamped to 500. The
 response always includes the total collection count so the page does not have
 to load all 10,000 records to prove the pile landed.
 
-## ChatGPT Sites test deployment
+## ChatGPT Sites deployments
 
 The deployment surface is this `work/` directory, not the initiative directory.
 It uses the full Sites build and hosting workflow rather than the
 static-folder-only `deploy-to-chatgpt-sites` skill.
+
+Test and production are separate Sites with separate D1 databases and R2
+buckets. A production release starts empty; test collections and captures do
+not move with it. Replacing a later version of the same Site preserves that
+environment's own bindings and data.
 
 - `.openai/hosting.json` declares D1 as `DB` and R2 as `CAPTURES`. The first
   test deployment intentionally left R2 `null`; the user approved the storage
@@ -196,9 +201,10 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
   same tables, constraints, and query indexes on a fresh D1 database.
 - `worker/index.ts` passes `/` and `/api/*` to the existing application and
   leaves the framework-owned image and sign-in routes to Sites.
-- A private Site supplies the stable `oai-authenticated-user-id` header. The app
-  uses that opaque value for ownership and creates one private personal
-  collection on first API use.
+- Sites supplies the stable `oai-authenticated-user-id` header for signed-in
+  requests. The app uses that opaque value for ownership and creates one
+  private personal collection on first API use. Public Site access exposes the
+  shell, not another user's collections or API access.
 - With R2 absent, importing and triage work normally but pass-1 metadata capture
   and capture-gap processing are disabled. That was the first deployment. The
   user accepted the Sites storage limits and authorised the bucket on 2026-08-20
@@ -215,8 +221,8 @@ npm run build
 ```
 
 The root repository build remains a separate validation step for generated
-initiative pages. See `END_USER_TESTING.md` for the private test procedure and
-the data-handling boundary.
+initiative pages. See `END_USER_TESTING.md` for the test procedure and the
+data-handling boundary.
 
 ## Triage API and interaction
 

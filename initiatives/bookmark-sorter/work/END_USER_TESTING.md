@@ -2,11 +2,13 @@
 
 ## What this test Site is
 
-This is an owner-only test of the real bookmark-sorter application. It stores
-bookmark records, tags, verdicts, selections, selection history, and sitting
-measurements in ChatGPT Sites D1. R2 is provisioned as `CAPTURES`; pass 1 fetches
-metadata anonymously and stores only fixed-size derivatives. The paid screenshot
-fallback remains off.
+This is a public test of the real bookmark-sorter application. Anyone with the
+link can open the shell, but collection and API actions require a signed-in
+ChatGPT identity and remain private to that user. It stores bookmark records,
+tags, verdicts, selections, selection history, and sitting measurements in
+ChatGPT Sites D1. R2 is provisioned as `CAPTURES`; pass 1 fetches metadata
+anonymously and stores only fixed-size derivatives. The paid screenshot fallback
+remains off.
 
 Do not upload a bookmark export unless its URLs and folder names are acceptable
 to store in the test Site. The application export contains items, URLs, tags,
@@ -14,7 +16,7 @@ verdicts, and notes; it never contains capture images.
 
 ## First sitting
 
-1. Open the private Site while signed in with ChatGPT.
+1. Open the test Site while signed in with ChatGPT.
 2. Export bookmarks from the browser you want to test, open **Import**, then
    choose that HTML file or drop it onto **Drop a file here** beside the chooser.
    Give the source a short name such as `chrome-export` or `safari-export`, then
@@ -66,5 +68,5 @@ existing D1 data has been confirmed intact.
 - The paid screenshot fallback (pass 2), which remains switched off. Enabling R2
   turns on pass 1 only — the anonymous, no-JavaScript metadata fetch. A paid
   vendor remains a separate authorization.
-- A public multi-tester audience. The Site is owner-only; broader access should
-  be enabled only after its audience is approved explicitly.
+- Anonymous bookmark use. Public access exposes the shell, but collections,
+  imports, exports, and administrative actions still require signed-in identity.

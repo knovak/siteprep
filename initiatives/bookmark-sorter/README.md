@@ -1,12 +1,16 @@
 # Interactive Bookmark Sorter
 
-Interactive Bookmark Sorter is a private, signed-in workspace for turning a
-large browser-bookmark export into a pile that can be reviewed quickly. It
-keeps the saved URL, title, folder path, note, tags, and verdict for each
-bookmark. It can also open reusable groups of bookmarks so one decision can be
-applied to a page, a marked set, or a whole selection.
+Interactive Bookmark Sorter is a signed-in workspace for turning a large
+browser-bookmark export into a pile that can be reviewed quickly. It keeps the
+saved URL, title, folder path, note, tags, and verdict for each bookmark. It can
+also open reusable groups of bookmarks so one decision can be applied to a
+page, a marked set, or a whole selection.
 
-The current validation Site is owner-only:
+The production Site is public to anyone with its link, while bookmark
+collections and actions remain scoped to the signed-in ChatGPT user:
+<https://bookmark-sorter.ken-novak.chatgpt.site/>.
+
+Pre-release testing continues on the separate public test Site:
 <https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/>.
 
 ## What it can do
@@ -333,18 +337,20 @@ the backup.
 - **Page layout is absent:** the window is using an automatic tablet or phone
   layout. Widen the window to use the explicit layout menu.
 
-## Deploying a private copy
+## Deploying or replacing a copy
 
 This is a full-stack ChatGPT Sites application, not a static HTML folder. Its
 source is `initiatives/bookmark-sorter/work/`; the Worker supplies the page and
 `/api/*`, D1 stores collections and decisions, and R2 stores fixed-size capture
 derivatives when enabled.
 
-Deploy through the existing Sites project so the Site URL, privacy setting, D1
+Deploy through the existing Sites project so the Site URL, access setting, D1
 database, and R2 bucket are preserved. Do not use a static-folder publisher:
 that would omit the API, identity, collections, and import/export behavior. Do
-not broaden Site access without explicit approval.
+not broaden Site access without explicit approval. Test and production are
+separate Sites with separate databases and capture buckets; a production
+release starts empty and does not copy test data.
 
 For implementation and validation details see
-[`work/README.md`](work/README.md). For the current private test procedure and
+[`work/README.md`](work/README.md). For the current test procedure and
 deployment cautions see [`work/END_USER_TESTING.md`](work/END_USER_TESTING.md).
