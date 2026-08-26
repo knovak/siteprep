@@ -37,11 +37,22 @@ test('a forecast keeps tides visible and folds coast and astronomy details', asy
   await expect(page.getByText('What is the coast doing here?', { exact: true })).toHaveCount(0);
   await expect(page.getByText(/Tide Here checks the coast before it shows a prediction station/i)).toHaveCount(0);
   const outputOrder = await page.evaluate(() => {
-    const result = document.querySelector('#result');
-    const localTools = document.querySelector('.local-tools');
-    return Boolean(result.compareDocumentPosition(localTools) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const safety = document.querySelector('.safety-line');
+    const source = document.querySelector('.source-details');
+    const debug = document.querySelector('.debug-record');
+    return {
+      safetyBeforeSource: Boolean(safety.compareDocumentPosition(source) & Node.DOCUMENT_POSITION_FOLLOWING),
+      sourceBeforeDebug: Boolean(source.compareDocumentPosition(debug) & Node.DOCUMENT_POSITION_FOLLOWING)
+    };
   });
-  expect(outputOrder).toBe(true);
+  expect(outputOrder).toEqual({ safetyBeforeSource: true, sourceBeforeDebug: true });
+  const sourceDetails = page.locator('.source-details');
+  const debugRecord = page.locator('.debug-record');
+  await expect(sourceDetails).not.toHaveAttribute('open', '');
+  await expect(debugRecord).not.toHaveAttribute('open', '');
+  await expect(page.getByRole('button', { name: /Show local history/ })).toBeHidden();
+  await expect(page.getByText(/What leaves this device:/i)).toBeHidden();
+  await debugRecord.locator('summary').click();
   await expect(page.getByRole('button', { name: /Show local history/ })).toBeVisible();
   await expect(page.getByText(/What leaves this device:/i)).toBeVisible();
   if (testInfo.project.name === 'desktop') {
@@ -137,6 +148,7 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   const requests = [];
   page.on('request', (request) => requests.push(`${request.url()} ${request.postData() || ''}`));
   await page.goto(pagePath);
+  await page.locator('.debug-record summary').click();
   await expect(page.getByText(/go directly to the configured Nominatim geocoder/i)).toBeVisible();
   await expect(page.getByText(/history stays in this browser until you clear it/i)).toBeVisible();
 

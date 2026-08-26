@@ -60,17 +60,20 @@
       </details>
       <div id="warnings" class="warnings"></div>
       <div id="day-cards" class="day-cards" aria-label="Five-day tide, sun, and moon forecast"></div>
+      <p class="safety-line">Predictions are informational and are not for navigation or safety decisions.</p>
       <details class="source-details">
         <summary>Prediction source details</summary>
         <p id="source-copy"></p>
       </details>
-      <p class="safety-line">Predictions are informational and are not for navigation or safety decisions.</p>
     </section>
 
-    <section class="local-tools" aria-label="Local history and privacy">
-      <button id="show-history" type="button" class="secondary">Show local history</button>
-      <p class="privacy-copy"><strong>What leaves this device:</strong> Show here asks your browser for coordinates; browser and operating-system location handling is outside Tide Here. Those coordinates—or a place or coordinates you submit—go directly to the configured Nominatim geocoder. Tide Here then requests prediction-station lists, chosen station details, and the five-day time range directly from NOAA and CHS as needed. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
-    </section>
+    <details class="debug-record">
+      <summary>Debug record</summary>
+      <div class="debug-record-content">
+        <button id="show-history" type="button" class="secondary">Show local history</button>
+        <p class="privacy-copy"><strong>What leaves this device:</strong> Show here asks your browser for coordinates; browser and operating-system location handling is outside Tide Here. Those coordinates—or a place or coordinates you submit—go directly to the configured Nominatim geocoder. Tide Here then requests prediction-station lists, chosen station details, and the five-day time range directly from NOAA and CHS as needed. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
+      </div>
+    </details>
 
     <section id="history-panel" class="history-panel" tabindex="-1" aria-labelledby="history-title" hidden>
       <div class="history-heading">

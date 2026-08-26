@@ -38,8 +38,10 @@ The normal page uses the configured Nominatim, NOAA, and CHS adapters directly.
 It loads the complete NOAA and CHS prediction-station catalogues on the first
 uncached search, then loads metadata only for the selected station so matching
 and civil-time formatting are not limited to the recorded validation places.
-The history control and the visible `What leaves this device` disclosure sit
-after the state, chooser, and forecast display.
+The safety notice precedes the collapsed **Prediction source details**
+disclosure. A separate collapsed **Debug record** disclosure follows the
+forecast and contains the local-history control and the visible-on-open
+`What leaves this device` explanation.
 `?fixture=1` selects the committed validation catalogue and recorded provider
 responses, fixes the clock, and makes browser tests deterministic without
 network access. Phase 7 extends this page with its device-local history,
