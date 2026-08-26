@@ -11,8 +11,10 @@ import { forecastViewModel, statePresentation } from './src/page-view.mjs';
 const $ = (selector) => document.querySelector(selector);
 const fixtureMode = new URLSearchParams(location.search).get('fixture') === '1';
 const forcedState = new URLSearchParams(location.search).get('state');
-const fixedNow = new Date('2026-08-20T12:00:00.000Z');
+const fixedNow = new Date('2026-08-20T13:00:00.000Z');
 const now = () => fixtureMode ? fixedNow : new Date();
+const LOCATION_PERMISSION_DENIED = 'location-permission-denied';
+const LOCATION_UNAVAILABLE = 'location-unavailable';
 
 async function json(path) {
   const response = await fetch(path);
@@ -284,15 +286,15 @@ function downloadHistory() {
   $('#history-status').textContent = 'History downloaded. It was not sent anywhere.';
 }
 
-function eventGroup(title, entries) {
+function eventGroup(entries) {
   const section = document.createElement('section');
   section.className = 'event-group';
-  section.append(textNode('h3', title));
   const list = document.createElement('ul');
   if (!entries.length) list.append(textNode('li', 'No tide event in this recorded window', 'empty'));
   for (const entry of entries) {
     const item = document.createElement('li');
-    item.append(textNode('strong', `${entry.type} · ${entry.time}`), textNode('span', entry.height, 'height'));
+    item.className = entry.isPast ? 'past' : 'future';
+    item.append(textNode('span', `${entry.type} · ${entry.time}`, 'tide-label'), textNode('span', entry.height, 'height'));
     list.append(item);
   }
   section.append(list);
@@ -323,7 +325,7 @@ function dayCard(day, index) {
   article.className = `day-card${index === 0 ? ' current' : ''}`;
   article.dataset.date = day.date;
   article.append(textNode('h2', `${index === 0 ? 'Today · ' : ''}${day.label}`));
-  article.append(eventGroup('Tides', day.tides), astronomyGroup(day));
+  article.append(eventGroup(day.tides), astronomyGroup(day));
   return article;
 }
 
@@ -336,7 +338,7 @@ function forceNoEvent(forecast) {
 }
 
 function showForecast(forecast) {
-  const model = forecastViewModel(forceNoEvent(forecast));
+  const model = forecastViewModel(forceNoEvent(forecast), now());
   $('#entered-name').textContent = model.entered;
   $('#resolved-name').textContent = model.resolved;
   $('#coast-name').textContent = model.coast;
@@ -391,13 +393,45 @@ async function submit() {
   }
 }
 
+function browserPosition() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(Object.freeze({ code: 0 }));
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: false,
+      maximumAge: 300_000,
+      timeout: 10_000
+    });
+  });
+}
+
+async function showHere() {
+  const button = $('#show-here');
+  button.disabled = true;
+  button.textContent = 'Finding you…';
+  try {
+    const position = await browserPosition();
+    const { latitude, longitude } = position.coords || {};
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw Object.freeze({ code: 0 });
+    $('#place').value = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+    await submit();
+  } catch (error) {
+    showState(error?.code === 1 ? LOCATION_PERMISSION_DENIED : LOCATION_UNAVAILABLE);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Show here';
+  }
+}
+
 $('#place-form').addEventListener('submit', (event) => {
   event.preventDefault();
   void submit();
 });
+$('#show-here').addEventListener('click', () => { void showHere(); });
 $('#state-action').addEventListener('click', () => {
   const code = $('#state-panel').dataset.code;
-  if ([INVALID_INPUT, PLACE_NOT_FOUND, 'coverage-unavailable'].includes(code)) {
+  if ([LOCATION_PERMISSION_DENIED, LOCATION_UNAVAILABLE].includes(code)) {
+    void showHere();
+  } else if ([INVALID_INPUT, PLACE_NOT_FOUND, 'coverage-unavailable'].includes(code)) {
     $('#place').focus();
     if (code !== INVALID_INPUT) $('#place').select();
   } else {

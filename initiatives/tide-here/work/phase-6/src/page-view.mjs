@@ -9,12 +9,20 @@ const STATE_ACTIONS = Object.freeze({
   'coast-choice-required': 'Choose a coast below',
   'tides-unavailable': 'Retry tide predictions',
   'astronomy-unavailable': 'Retry sun and moon',
-  'no-event': 'No retry needed'
+  'no-event': 'No retry needed',
+  'location-permission-denied': 'Try location again',
+  'location-unavailable': 'Try location again'
+});
+
+const PAGE_FAILURE_MESSAGES = Object.freeze({
+  ...FAILURE_MESSAGES,
+  'location-permission-denied': 'Location access was not allowed. Allow location for this Site, then choose Show here again.',
+  'location-unavailable': 'Your browser could not provide a location. Try Show here again, or enter a place or coordinates.'
 });
 
 export function statePresentation(code) {
-  if (!FAILURE_MESSAGES[code] || !STATE_ACTIONS[code]) throw new RangeError(`Unknown page state: ${code}`);
-  return Object.freeze({ code, message: FAILURE_MESSAGES[code], action: STATE_ACTIONS[code] });
+  if (!PAGE_FAILURE_MESSAGES[code] || !STATE_ACTIONS[code]) throw new RangeError(`Unknown page state: ${code}`);
+  return Object.freeze({ code, message: PAGE_FAILURE_MESSAGES[code], action: STATE_ACTIONS[code] });
 }
 
 export function formatCoastTime(instant, timeZone) {
@@ -48,14 +56,17 @@ function astronomyEvent(day, name, timeZone) {
   });
 }
 
-export function dayViewModel(day, timeZone) {
+export function dayViewModel(day, timeZone, currentInstant = new Date()) {
+  const currentTime = new Date(currentInstant).getTime();
+  if (!Number.isFinite(currentTime)) throw new RangeError(`Invalid current instant: ${currentInstant}`);
   return Object.freeze({
     date: day.date,
     label: coastDateLabel(day.date),
     tides: Object.freeze(day.tides.map((event) => Object.freeze({
       type: event.type === 'high' ? 'High tide' : 'Low tide',
       time: formatCoastTime(event.at, timeZone),
-      height: `${event.height.toFixed(2)} ${event.unit}`
+      height: `${event.height.toFixed(2)} ${event.unit}`,
+      isPast: new Date(event.at).getTime() < currentTime
     }))),
     sunrise: astronomyEvent(day, 'sunrise', timeZone),
     sunset: astronomyEvent(day, 'sunset', timeZone),
@@ -65,7 +76,7 @@ export function dayViewModel(day, timeZone) {
   });
 }
 
-export function forecastViewModel(forecast) {
+export function forecastViewModel(forecast, currentInstant = new Date()) {
   if (!forecast?.input?.display || !forecast?.place?.name || !forecast?.coast?.name || !forecast?.station?.name || !forecast?.timeZone) {
     throw new TypeError('A complete normalized forecast is required');
   }
@@ -79,6 +90,6 @@ export function forecastViewModel(forecast) {
     datum: forecast.station.datum,
     timeZone: forecast.timeZone,
     warnings: Object.freeze(forecast.warnings.map((warning) => statePresentation(warning.code))),
-    days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone)))
+    days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone, currentInstant)))
   });
 }
