@@ -70,6 +70,13 @@ export function renderPilePage({isAdmin = false} = {}) {
     input, .file-tools form select, .file-tools form button { min-height: 40px; border: 1px solid #b9c2d3; border-radius: 9px; padding: 8px 10px; background: white; }
     .file-tools form button { border-color: #234fc4; color: white; background: #234fc4; font-weight: 760; }
     .file-tools form .danger { border-color: #a63b32; background: #a63b32; }
+    #import-form { grid-template-columns: minmax(360px, 1.4fr) minmax(160px, .35fr) auto; }
+    .import-file-picker { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(150px, .65fr); gap: 8px; align-items: end; }
+    .drop-zone { min-height: 40px; display: grid; place-content: center; border: 2px dashed #9eabc2; border-radius: 9px; padding: 5px 10px; color: #29406e; background: #f7f9fd; cursor: pointer; text-align: center; }
+    .drop-zone strong { font-size: .78rem; }
+    .drop-zone span { color: #687188; font-size: .68rem; }
+    .drop-zone[data-drag-active="true"] { border-color: #234fc4; color: #173b9c; background: #eaf0ff; box-shadow: inset 0 0 0 1px #234fc4; }
+    .drop-zone:focus-visible { outline: 2px solid #315fd2; outline-offset: 2px; }
     #export-form { grid-template-columns: minmax(180px, .8fr) minmax(220px, 1fr) auto auto; }
     .file-field { display: grid; gap: 4px; }
     .portable-copy { align-self: center; margin: 0; color: #687188; font-size: .76rem; }
@@ -83,6 +90,8 @@ export function renderPilePage({isAdmin = false} = {}) {
     .selection-panel button { color: #29406e; font-weight: 740; }
     .selection-panel button:disabled { opacity: .45; cursor: not-allowed; }
     .selection-panel .primary { border-color: #234fc4; color: white; background: #234fc4; }
+    .selection-panel .choice-action { color: #111; background: white; }
+    .selection-panel .choice-action[data-selection-ready="true"] { border-color: #234fc4; color: white; background: #234fc4; }
     #selection-summary { grid-column: 3 / 5; overflow: hidden; color: #5f6b82; font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
     .page-controls { flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .toolbar { grid-row: 4; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding-bottom: 1px; }
@@ -173,7 +182,8 @@ export function renderPilePage({isAdmin = false} = {}) {
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
       .selection-panel button { flex-basis: auto; }
       .page-controls { display: flex; }
-      .file-tools form, #export-form { grid-template-columns: 1fr; }
+      .file-tools form, #import-form, #export-form { grid-template-columns: 1fr; }
+      .import-file-picker { grid-template-columns: 1fr; }
       .template-tools { grid-template-columns: minmax(150px, 1fr) auto; overflow-x: auto; }
       .admin-menu-content { top: 118px; max-height: calc(100dvh - 130px); }
       .admin-user-form { grid-template-columns: minmax(0, 1fr) 92px; }
@@ -213,6 +223,8 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
+        <li><strong>Import</strong> accepts bookmark HTML or Sorter JSON through Choose File or the neighboring drop target. Dropping selects the file; Import file starts the write.</li>
+        <li><strong>Open proposal / saved / previous</strong> is black on white until its chooser has a target, then white on blue.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, demo-template creation, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
@@ -281,7 +293,13 @@ export function renderPilePage({isAdmin = false} = {}) {
       <details id="importer">
         <summary>Import</summary>
         <form id="import-form">
-          <label>Bookmark HTML or Sorter JSON<input id="bookmark-file" name="file" type="file" accept=".html,.json,text/html,application/json" required></label>
+          <div class="import-file-picker">
+            <label>Bookmark HTML or Sorter JSON<input id="bookmark-file" name="file" type="file" accept=".html,.json,text/html,application/json" required></label>
+            <div id="import-drop-zone" class="drop-zone" role="button" tabindex="0" aria-controls="bookmark-file">
+              <strong>Drop a file here</strong>
+              <span id="import-drop-copy" aria-live="polite">HTML or Sorter JSON</span>
+            </div>
+          </div>
           <label>Source tag (HTML only)<input id="source" name="source" value="browser-export" pattern="[a-z0-9][a-z0-9-]*" required></label>
           <button type="submit">Import file</button>
         </form>
@@ -299,13 +317,13 @@ export function renderPilePage({isAdmin = false} = {}) {
           <input id="selection-name" aria-label="Saved selection name" placeholder="Selection name">
           <button id="save-selection" type="button">Save</button>
           <select id="proposals" aria-label="Automatic proposals"><option value="">Automatic proposals</option></select>
-          <button id="open-proposal" type="button">Open proposal</button>
+          <button id="open-proposal" class="choice-action" data-selection-ready="false" type="button">Open proposal</button>
           <input id="tag-input" aria-label="Tags to apply" placeholder="tag-one, tag-two">
           <button id="tag-selection" type="button">Tag selection</button>
           <select id="saved-selections" aria-label="Saved selections"><option value="">Saved selections</option></select>
-          <button id="open-saved" type="button">Open saved</button>
+          <button id="open-saved" class="choice-action" data-selection-ready="false" type="button">Open saved</button>
           <select id="previous-selections" aria-label="Previous selections"><option value="">Previous selections</option></select>
-          <button id="open-previous" type="button">Open previous</button>
+          <button id="open-previous" class="choice-action" data-selection-ready="false" type="button">Open previous</button>
           <span id="selection-summary">All items</span>
         </section>
       </details>
@@ -376,7 +394,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       helpToggle: document.querySelector('#help-toggle'), helpPanel: document.querySelector('#help-panel'), helpClose: document.querySelector('#help-close'), tagPopover: document.querySelector('#tag-popover'),
       pageLayout: document.querySelector('#page-layout'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
-      importStatus: document.querySelector('#import-status'),
+      importStatus: document.querySelector('#import-status'), bookmarkFile: document.querySelector('#bookmark-file'), importDropZone: document.querySelector('#import-drop-zone'), importDropCopy: document.querySelector('#import-drop-copy'),
     };
     const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
@@ -640,6 +658,26 @@ export function renderPilePage({isAdmin = false} = {}) {
       for (const row of state.history) elements.previousSelections.append(new Option(row.expression, row.expression));
     }
 
+    function updateSelectionActionStates() {
+      for (const [select, button] of [
+        [elements.proposals, elements.openProposal],
+        [elements.savedSelections, elements.openSaved],
+        [elements.previousSelections, elements.openPrevious],
+      ]) button.dataset.selectionReady = String(Boolean(select.value));
+    }
+
+    function updateImportFileLabel() {
+      const file = elements.bookmarkFile.files?.[0];
+      elements.importDropCopy.textContent = file ? file.name + ' ready to import' : 'HTML or Sorter JSON';
+    }
+
+    function useDroppedImportFile(file) {
+      const transfer = new DataTransfer();
+      transfer.items.add(file);
+      elements.bookmarkFile.files = transfer.files;
+      updateImportFileLabel();
+    }
+
     function currentCollection() {
       return state.collections.find(collection => collection.id === state.collectionId) || null;
     }
@@ -737,6 +775,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       fillSelect(elements.savedSelections, state.saved, 'Saved selections');
       fillProposalSelect(state.proposals);
       fillHistorySelect();
+      updateSelectionActionStates();
     }
 
     async function saveCurrentSelection() {
@@ -746,6 +785,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       elements.selectionName.value = '';
       await loadSelectionTools();
       elements.savedSelections.value = saved.id;
+      updateSelectionActionStates();
     }
 
     async function tagCurrentSelection() {
@@ -1000,6 +1040,25 @@ export function renderPilePage({isAdmin = false} = {}) {
         await Promise.all([loadWindow(0), loadSelectionTools()]);
       } catch (error) { elements.status.textContent = error.message; elements.importStatus.classList.add('error'); elements.importStatus.textContent = 'Import failed: ' + error.message; } finally { button.disabled = false; }
     });
+    elements.bookmarkFile.addEventListener('change', updateImportFileLabel);
+    elements.importDropZone.addEventListener('click', () => elements.bookmarkFile.click());
+    elements.importDropZone.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault(); elements.bookmarkFile.click();
+    });
+    for (const eventName of ['dragenter', 'dragover']) elements.importDropZone.addEventListener(eventName, event => {
+      event.preventDefault();
+      if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+      elements.importDropZone.dataset.dragActive = 'true';
+    });
+    elements.importDropZone.addEventListener('dragleave', event => {
+      if (!elements.importDropZone.contains(event.relatedTarget)) delete elements.importDropZone.dataset.dragActive;
+    });
+    elements.importDropZone.addEventListener('drop', event => {
+      event.preventDefault(); delete elements.importDropZone.dataset.dragActive;
+      const file = event.dataTransfer?.files?.[0];
+      if (file) useDroppedImportFile(file);
+    });
     elements.exportForm.addEventListener('submit', event => {
       event.preventDefault();
       if (!state.collectionId) return;
@@ -1080,6 +1139,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       const selected = state.proposals.find(row => row.id === elements.proposals.value);
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
+    for (const select of [elements.proposals, elements.savedSelections, elements.previousSelections]) select.addEventListener('change', updateSelectionActionStates);
     elements.tagSelection.addEventListener('click', () => tagCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
     elements.sweepMode.addEventListener('change', updateSweepMode);
     elements.sweepRest.addEventListener('click', () => {

@@ -38,9 +38,9 @@ number and quietly renumbering them would invalidate that record.
    can always say how large it is.
 
 3. **Triage is fast enough to do in a sitting.** A screenful of items can be
-   judged without leaving the keyboard or scrolling away, and a full screen is
-   presented at a time — roughly 8×2 on a wide display, fewer on a tablet, a
-   carousel on a phone.
+   judged without leaving the keyboard or scrolling away. A wide display offers
+   several densities, from nine larger cards to thirty-six compact cards;
+   tablet layouts adapt automatically, and a phone presents one card at a time.
 
 4. **Seeing an item does not require remembering it.** Each item shows enough —
    a page snapshot, its title, its tags — to be judged on sight. This is what
@@ -48,8 +48,9 @@ number and quietly renumbering them would invalidate that record.
 
 5. **Related items can be judged together.** Items can be gathered into clusters
    automatically, or by the user selecting on tags — a boolean expression, or a
-   pattern match. Judging fifty near-identical links as one group is the
-   difference between an afternoon and a month.
+   pattern match. Useful expressions can be saved by name or reopened from the
+   signed-in user's recent history. Judging fifty near-identical links as one
+   group is the difference between an afternoon and a month.
 
 6. **Tagging is part of triage, not a separate chore.** Tags can be added during
    a pass, at the same speed as the verdicts, and items can be tagged by topic,
@@ -66,11 +67,11 @@ number and quietly renumbering them would invalidate that record.
 
 8. **Items live in a collection, and a collection has an owner.** More than one
    person may use this, so the work is always happening *in* a named collection
-   that can be chosen, imported into, and exported from. A collection is private
-   to its owner, and a tester who needs something to look at receives their own
-   copy of a demo collection rather than sharing anyone's. Everything above is
-   scoped by this: a verdict, a tag, and a backlog count all belong to one
-   collection.
+   that can be chosen, imported into, and exported from. A person may keep
+   several private collections. A tester who needs something to look at receives
+   their own copy of a demo template rather than sharing anyone's collection.
+   Everything above is scoped by this: a verdict, a tag, and a backlog count all
+   belong to one collection.
 
 ## Explicitly not the first version
 
@@ -125,21 +126,23 @@ only a map to it. Nothing here is still waiting on the user.
 1. **How big is the real pile?** 5,000–10,000 items. Big enough that clustering
    (objective 5) is the mechanism rather than a convenience, and that anything
    slow and per-item is an afternoon of work, not a detail.
-2. **Where does this run?** A web app, most likely hosted on an OpenAI site with
-   its database. Chosen for objectives 3 and 4 — the screen-filling grid across
-   three form factors — at the known cost of being the weakest option for the
-   two extensions above.
-3. **Where do page snapshots come from?** Captured at ingestion: Open Graph
-   metadata for the majority, a paid screenshot API for the items where that
-   produces nothing or a shared site banner. Anonymous, downscaled, cached by
-   URL, never refreshed on view.
+2. **Where does this run?** A web app on ChatGPT Sites with D1 and optional R2.
+   Chosen for objectives 3 and 4 — the screen-filling grid across three form
+   factors — at the known cost of being the weakest option for the two
+   extensions above. Host capability was proved on 2026-08-18 and the intended
+   Sites costs and limits were approved on 2026-08-19.
+3. **Where do page snapshots come from?** Captured at ingestion: anonymous Open
+   Graph metadata, downscaled and cached by URL, never refreshed on view. A paid
+   screenshot API remains the designed fallback for gaps, but no vendor is
+   approved and that pass is switched off.
 4. **How are collections identified and protected?** Signed-in accounts, with
    collections owned and private by default.
 5. **What makes a collection non-personal?** Nothing does, for now — demo
    collections are seeded per-user copies, and general sharing is held back as
    above.
 
-What remains is a constraint rather than a question, and it belongs to the spec:
-whether the OpenAI surface chosen can actually supply the identity objective 8
-assumes, and let the data back out for objective 7. Both were settled *on the
-presumption* of that host, so both follow it if it changes.
+The host now supplies the identity objective 8 assumes, and the app's own
+`bookmark-sorter/v1` export supplies objective 7. Collection ownership uses the
+opaque signed-in user id; email is consulted separately for the Admin role. A
+future host change must preserve both boundaries rather than treating the old
+presumption as still open.

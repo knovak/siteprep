@@ -83,7 +83,10 @@ Rules carried from the decision, all binding on §6:
 
 **Input:** a browser bookmark export (Netscape bookmark HTML, which Chrome,
 Safari, Firefox and Edge all produce) and a previously exported JSON file (§9).
-Both land in the *current* collection.
+Both land in the *current* collection. The visible Import panel accepts either
+through the file chooser or a drag-and-drop target beside it; dropping chooses
+the file and the explicit Import action submits it. The source name applies to
+HTML imports only.
 
 Parsing an export yields, per item: title, URL, `add_date` where the file
 carries it, the enclosing folder path, and the `<DD>` description where one is
@@ -114,10 +117,10 @@ because it is what the user actually saved.
 
 ## 5. Data model
 
-Six things. Written as a relational sketch; the host's database decides the
-literal form (§10).
+Core records, written as a relational sketch. The deployed schema also carries
+the indexes and constraints required by the operations below (§10).
 
-- **collection** — `id`, `name`, `owner_id`, `kind` (`personal` |
+- **collection** — `id`, `name`, `owner_id`, `kind` (`personal` | `private` |
   `demo-template` | `demo-copy`), `template_id` (for a copy, which template it
   came from), `copied_at`, `created_at`. §10 says what the kinds do.
 - **item** — `id`, `collection_id`, `url` (as saved), `url_key` (normalised,
@@ -134,10 +137,21 @@ literal form (§10).
   over tags and a hierarchy would need a second query language.
 - **selection** — `id`, `name`, `collection_id` (null means cross-collection,
   §8), `expression`. A *saved* selection; §8 is the function that evaluates one.
+- **selection history** — `(owner_id, expression)`, `used_at`. Recent expressions
+  belong to the signed-in user rather than a collection, are de-duplicated, and
+  are ordered newest first.
 - **capture** — keyed by `url_key`, **not** by item: `image_ref`, `source`
   (`og` | `screenshot` | `none`), `captured_at`, `image_hash`, `state`.
-- **user** — supplied by the host (§10), referenced by `owner_id`, plus one
-  app-level capability: `can_edit_templates` (§10).
+- **capture queue** — one optional pass-2 job per `url_key`, with its reason,
+  state, attempt count and last error.
+- **triage session and action** — a collection-scoped sitting plus its append-only
+  verdict and tag actions. An action has an optional `undone_at`, which is what
+  lets a set operation reverse as one step.
+- **app user** — the host's opaque `owner_id`, plus the retained legacy
+  `can_edit_templates` capability.
+- **authorized user** — normalized email and type (`admin` | `user`). Email is
+  not an ownership key; the `admin` type gates the Admin surface and APIs and
+  grants template-edit permission (§10).
 
 **Two structural constraints, both from decisions rather than taste:**
 
@@ -275,13 +289,22 @@ keyboard.
 
 | Form factor | Layout |
 |---|---|
-| Widescreen | 8×2 grid, 16 items |
+| Widescreen | User-selectable 3×3, 2×6, 2×8 (default), or 3×12 grid |
 | Tablet | 4×3 or 3×3, depending on orientation |
-| Phone | Carousel, one item at a time |
+| Phone | One item at a time, with horizontal swipe navigation |
 
 The grid is **virtualised**: only the visible screenful plus a small buffer
 exists in the DOM. Ten thousand cells with images rendered naively is not
-something to attempt, and this follows directly from the size finding.
+something to attempt, and this follows directly from the size finding. Changing
+the wide-screen density redraws the current window immediately; tablet and phone
+layouts stay automatic so cards remain readable. Three-row layouts reserve more
+card height for text, and the 3×12 view gives its compact cards as much title
+space as possible.
+
+Above the grid, Import, Select, and Export are mutually exclusive panels in one
+row. None or exactly one may be open, and the open panel receives most of the
+available width. Collection and Admin controls stay separate because they set
+the scope and authority for those three operations.
 
 **Interaction is specified as functions, not as keys.** The keys below are a
 first cut and are expected to be refined — very likely toward more pointer-driven
@@ -296,7 +319,8 @@ section changing.
 | `focus(direction)` | the grid | arrows |
 | `mark(item)` | one item, toggling | `space`, or a click on the item |
 | `tag-apply(tags)` | the focused item, or the marked set | `t` |
-| `verdict-rest(v)` | the current selection **minus** the marked set (§7.1) | — |
+| `sweep-untriaged(v)` | untriaged items on the visible page (§7.1) | — |
+| `sweep-all-selected(v)` | every item in the open selection, after confirmation (§7.1, §8.3) | — |
 | `undo()` | the last function applied | `u` |
 | `advance()` | the grid | `⏎` |
 
@@ -308,26 +332,32 @@ undoable as one action. A pointer refinement that keeps both is a free change.
 a verdict that cannot be taken back makes the user slow down to avoid them —
 which costs more than the mistakes would have.
 
-### 7.1 Mark the exceptions, then sweep the rest
+### 7.1 Mark the exceptions, then sweep what remains untriaged
 
-The flow that makes a large selection finishable, and the reason `verdict-rest`
-exists as a function of its own:
+Selections are paged rather than placed into an unbounded DOM. The default
+workflow operates on what the user can see:
 
-1. Display every member of a selection (§8), not a screenful at a time.
-2. Mark the exceptions — one click per item, no keyboard, no dialogue. Typically
-   a handful out of dozens.
-3. Apply a verdict to **everything that was not marked**.
+1. Review one visible page of the current collection or selection.
+2. Mark the exceptions that share a verdict and apply that verdict to the marked
+   set as one action.
+3. Choose the common verdict and use `sweep-untriaged` on the visible page. It
+   changes only cards that still have no verdict, clears the marks, and advances
+   one page.
 
-The asymmetry is the point. In a selection of fifty near-identical links, naming
-the four worth keeping is quick and judging all fifty is not, so the cheap action
-should be the one done per item and the sweep should be the single gesture. Two
-consequences for the implementation:
+The asymmetry is still the point. In a page of near-identical links, naming the
+few worth keeping is quick; once they have been judged, the untriaged sweep can
+dispose of the remainder in one gesture without overwriting those exceptions.
+The selected verdict is not privileged — the exceptions can be keepers, junk,
+archive, or needs-time.
 
-- **The marked set is a selection too**, so the same three steps also run
-  inverted — mark the keepers, then junk the rest, or mark the junk and keep the
-  rest. Nothing in the flow privileges a particular verdict.
-- **`undo` reverses the sweep as one action**, not item by item. A sweep across
-  fifty items that could only be unwound fifty times is a sweep nobody will risk.
+The neighboring split control exposes a deliberately broader
+`sweep-all-selected` mode. It applies one verdict to every item matched by the
+open expression, including items on pages that are not visible, and therefore
+shows the full count for confirmation first (§8.3).
+
+**`undo` reverses every set action as one action**, not item by item. A sweep or
+marked-set verdict that could only be unwound repeatedly is one nobody will
+risk.
 
 **Tagging is part of the pass** (O6): the tag field autocompletes over tags
 already in the collection, applies to the current selection, and returns focus to
@@ -368,6 +398,16 @@ same words as the interface: `verdict:keep`, `verdict:junk`,
 `verdict:archive`, `verdict:needs-time`, and `verdict:untriaged`. These values
 are derived from the item verdict; they are not stored in the ordinary tag
 table and therefore cannot drift when a verdict changes.
+
+**The visible Select panel has four entry routes into that evaluator:** a typed
+expression, an automatic proposal, a named saved selection, and the signed-in
+user's recent expression history. Opening any route records the expression in
+history, newest first, without duplicates. Automatic proposals are grouped from
+the current collection's source, exact tags, verdicts, folders, sites, image
+state, and normalized titles. Proposal, saved-selection, and history choosers
+all retain a placeholder option; their adjacent Open action is black on white
+until a real option is chosen and white on blue afterward, so the intended
+target is visible before the action runs.
 
 ### 8.1 Scope: one collection by default, all of them for administration
 
@@ -413,32 +453,28 @@ this way:
 ### 8.3 Judging a selection as one
 
 Selecting a group and applying a verdict applies it to every item in the group,
-with `undo` reversing the whole thing as one action. §7.1's mark-then-sweep is
-the same operation with an exception set, and it is the common case in practice.
-Judging fifty near-identical links as one group is the difference between an
-afternoon and a month.
+with `undo` reversing the whole thing as one action. §7.1 applies the same set
+semantics at two bounded scopes: a marked set and the untriaged items on the
+visible page. The explicit Sweep all selected mode is the unbounded form.
+Judging fifty near-identical links as a few page actions rather than fifty
+isolated decisions is the difference between an afternoon and a month.
 
-**Confirmation is asked for the unbounded action, not the large one**
-(`decisions.md`, 2026-08-17). An earlier draft of this section confirmed above a
-count — "say 25 items" — which fires on nearly every sweep §7.1 describes, and a
-confirmation that always fires is one people learn to dismiss without reading.
-The rule instead:
+**Confirmation is asked for the unbounded action, not the large visible one**
+(`decisions.md`, 2026-08-17). An earlier draft confirmed above a count — "say 25
+items" — which fires on nearly every useful group operation and becomes a
+dialogue people dismiss without reading. The current rule instead:
 
-- **No confirmation for a verdict swept across the selection currently on
-  screen**, whatever its size. §7.1 displays every member and the selection's
-  count is always visible (§7.1, *Progress is always visible*), so the size of
-  the action is in front of the user at the moment they take it — and `undo`
-  reverses it as one action, which is the recovery a confirmation exists to
-  provide.
-- **Confirm, showing the count, when the set is not the one being looked at** —
-  a saved selection invoked from a menu, an expression applied without opening
-  its result, or any administrative path (§8.1). Here the size is genuinely
-  unknown to the user, and no amount of `undo` helps somebody who did not know
-  what they were about to do.
+- **No confirmation for a verdict on the focused bookmark, a marked set, or the
+  untriaged cards on the visible page.** The affected records are in front of
+  the user, and `undo` reverses the action as one step.
+- **Confirm, showing the count, for Sweep all selected.** A selection may span
+  many virtual pages, so most affected records are not visible even though the
+  expression is open. The broader mode is an explicit choice beside the default
+  page sweep and never inherits the visible-page assumption.
 
 The discriminator is therefore **visibility, not cardinality**. It costs one
-question in the case that deserves one and none in the case §7.1 exists to make
-fast.
+question when the action reaches beyond the visible page and none in the path
+§7.1 exists to make fast.
 
 **What would change this:** a sweep turning out to be regretted often enough
 that `undo` is not sufficient recovery — which would be an argument for a
@@ -488,6 +524,11 @@ O7 is a round trip, not a download. An export is JSON:
   §4's and do not change; what changes is that a full 10,000-item document goes
   through the same path as a small one. Whether either side needs chunking is a
   question for phase 0 rather than an assumption here.
+- **The visible Export panel names the scope before download.** Current
+  collection emits every item; Current selection supplies the open expression.
+  The file is named from the collection. The same visible Import panel accepts
+  the result through its chooser or drop target, so portability is an ordinary
+  user workflow rather than an undocumented API capability.
 
 Because the capture store is URL-keyed and global, a re-import gets its pictures
 back from cache rather than paying the API again.
@@ -526,8 +567,18 @@ What the destination gets, and what it does not:
 Collections are owned and **private by default** (O8). Identity comes from the
 host — the decision presumed an OpenAI surface where user IDs are built in.
 
-**The menu** the wish's amendment asks for: choose collection, import bookmarks,
-import from an export file, export (taking a selection, §8).
+**The collection and file controls** the wish's amendment asks for: choose,
+create, or rename a private collection; import bookmark HTML or an export file;
+copy a demo template; export the collection or current selection; and erase the
+current collection only after confirmation. Import, Select, and Export are the
+mutually exclusive row specified in §7.
+
+The separate **Admin** surface is rendered only when the normalized signed-in
+email has `type = admin` in `authorized_user`. The same server-side check gates
+user-list changes, sitting inspection/end, capture actions, and template
+creation. The table may also contain `type = user`; that row records an allowed
+user without granting Admin. Ownership continues to use the host's opaque id,
+never email.
 
 ### 10.1 Demo collections: a template, and copies of it
 
@@ -549,7 +600,7 @@ improve while people are using copies of it.
 
 | Operation | Who | What happens |
 |---|---|---|
-| Create or edit a template | a user with `can_edit_templates` | Ordinary editing, in a collection of kind `demo-template`. Seeded like any other collection — including by importing an export from a personal one (§9.1) |
+| Create or edit a template | an administrator, or a user with the retained legacy `can_edit_templates` capability | Ordinary editing, in a collection of kind `demo-template`. Seeded like any other collection — including by importing an export from a personal one (§9.1) |
 | List templates | any signed-in user | Templates are the one thing visible across owners |
 | Take a copy | any signed-in user | New `demo-copy`, owned by them, `template_id` and `copied_at` recorded, name defaulting to the template's and editable |
 | Take a *fresh* copy | any signed-in user | The same operation again. A dirtied copy is not repaired in place; a second copy is made, and the name must differ from the first, which is why the name is editable at copy time |
@@ -558,8 +609,10 @@ improve while people are using copies of it.
 **What this requires us to know.** Exactly three things beyond a personal
 collection, which is the point of writing it out:
 
-1. **About the user** — one capability, `can_edit_templates`. Not a role system:
-   a single boolean separating "can publish a demo" from "can use one".
+1. **About the user** — the host's opaque owner id, plus a normalized email used
+   only to look up `authorized_user`. Administrator status grants template
+   editing and the Admin operations above; the older `can_edit_templates`
+   boolean remains supported for template editing only.
 2. **About the collection** — its `kind`, and for a copy, `template_id` and
    `copied_at`. Enough to answer "where did this come from" and "is this stale
    relative to its template", without any syncing machinery.
@@ -599,7 +652,7 @@ should resolve:
 | A server-side secret store, and a server-side place to call from | §6 pass 2 | The screenshot API key cannot be held safely, so pass 2 stays switched off and gap items keep no image. Everything else still works | **Pass.** A 43-character secret was read only in server code, an outbound call from that code succeeded, and the response exposed only presence and length, never the value |
 | Read access across owners for one collection kind | §10.1 | Templates cannot be listed or copied, and a demo has to be seeded per tester by a maintainer instead | **Pass by construction.** The app inserted two rows owned by a synthetic template owner and could return them when its own query requested cross-owner data. The host imposed no row-level barrier, so `demo-template` access can remain an explicit application rule |
 | Control over layout density | O3 | The 8×2 grid degrades; triage speed is the first casualty | **Pass on the deciding layout.** Sixteen 300 px cells rendered as 8×2 at a 2,600×1,200 viewport with no horizontal page scroll. Tablet and phone behavior remain phase 2 product tests |
-| Metered storage and usage | All phases; R2 in §6 | A limit that binds at the real pile changes the host, while an unacceptable price needs the user's authority | **Open cost decision, not a failed capability.** 10,003 D1 rows with about 1,616,053 bytes of item payload succeeded. The runtime and [Sites help](https://help.openai.com/en/articles/20001339) describe plan-specific limits but do not expose exact quotas here, so the few-hundred-MB R2 estimate still needs comparison with the workspace's Sites limits |
+| Metered storage and usage | All phases; R2 in §6 | A limit that binds at the real pile changes the host, while an unacceptable price needs the user's authority | **Approved 2026-08-19 for this build.** The user accepted the Sites costs and plan-specific limits for the intended 10,000-item pile, D1 state, and up to a few hundred MB of derived captures. That approval does not include a paid screenshot vendor |
 
 Anything that fails this table is a reason to revisit §2 before building, not
 after.
@@ -645,20 +698,15 @@ now would be a guess dressed as a requirement. This spec keeps that and specifie
 
 ## 13. Open for the plan
 
-- **Where the screenshot API key lives**, which §6 makes the gate on pass 2. It
-  is the first thing to sequence: the pipeline is built and tested with the
-  vendor call stubbed, and shipping it is a configuration change once the answer
-  exists.
-- Whether ChatGPT Sites' plan-specific metering is acceptable at the target size;
-  the capability rows in §10 otherwise passed the phase 0 probe.
-- Whether pass 2 proves valuable enough to revisit the current no-vendor
-  decision, and whether target-URL logging is acceptable if it does.
-- Whether a user may hold several collections of their own. The wish's "one per
-  user" implies not; the "choose collection" menu has to render either way, and
-  §5 does not prevent it.
-- What seeds the demo collection, and where that content lives.
-- Whether the app's own cheap cluster proposals (§8.2) are computed at ingestion
-  or on demand. It is the one place in §8 where cost and freshness pull against
-  each other.
-- What a skill hands back in §8.2 — a list of proposed tags, or tags already
-  attached to item ids — and how the user accepts or discards them.
+- Whether pass 2 ever proves valuable enough to reopen the current no-vendor
+  decision, accept target-URL logging, and authorize its separate cost. Its
+  server-only key custody and explicit switch are already settled.
+- The throughput target in §12, which remains intentionally unset until the
+  optional sitting data is used directly.
+- Anything explicitly held out of this version: general sharing, harvesting
+  open tabs, and pushing selected subsets back into a browser.
+
+The earlier questions about the Sites host and cost, multiple private
+collections, demo seeding mechanics, proposal timing, and the proposals-file
+shape were settled during phases 0–6 and are recorded in `decisions.md` and
+`plan.md` rather than left open here.

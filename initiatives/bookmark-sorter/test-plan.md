@@ -27,7 +27,7 @@ pass conditions, alongside the ordinary kind.
 |---|---|---|
 | **Unit** | The pure functions: `url_key` normalisation, the Netscape parser, the merge rules, the §8 expression evaluator, the gap rules of §6 | All are total functions of their input, all are where a silent wrong answer is possible, and none needs a browser |
 | **Integration** | Import → store → grid; capture pipeline against a fixture web server; export → import round trip | The seams where a rule stated in one place is enforced in another |
-| **Browser-driven** | The grid at three layouts, keyboard and pointer triage, `undo`, mark-then-sweep, the collection menu | O3 and O4 are claims about a screen, so they cannot be checked below one |
+| **Browser-driven** | The selectable wide grids and automatic tablet/phone layouts, keyboard and pointer triage, `undo`, page and whole-selection sweeps, file controls, and the collection menu | O3 and O4 are claims about a screen, so they cannot be checked below one |
 | **Measured** | Triage rate per session, capture coverage, duplicate-image distribution, backlog count | Numbers that decide things (`plan.md` §4) rather than numbers that pass or fail |
 | **Manual, once per phase** | A sitting with a real pile | The failure this whole initiative is about — "organised but never read" — is not detectable by any automated test |
 
@@ -97,9 +97,9 @@ ceiling rather than a capability.
   a place that can read it. Failing this switches pass 2 off and nothing else.
 
 **Observed 2026-08-18:** all three sharp pass conditions succeeded on ChatGPT
-Sites. The other §10 capability rows also passed at the host level; the exact
-plan-specific metering limit remains a `cost:` decision and the two-user
-isolation attack remains the phase 6 product test. Measurements are in
+Sites. The other §10 capability rows also passed at the host level; the user
+approved the plan-specific costs and limits on 2026-08-19, and the two-user
+isolation attack became the phase 6 product test. Measurements are in
 `host-spike.md` §6 and the filled table is in `spec.md` §10.
 
 ### 4.1 — The pile lands
@@ -119,7 +119,7 @@ isolation attack remains the phase 6 product test. Measurements are in
 | Test | Pass condition | Protects |
 |---|---|---|
 | Virtualisation | With 10,000 items loaded, the DOM holds a screenful plus buffer, not the pile | §7 |
-| Three layouts | 8×2 on a wide viewport, 4×3 or 3×3 on a tablet, one-at-a-time carousel on a phone | O3 |
+| Selectable and responsive layouts | 3×3, 2×6, 2×8, and 3×12 all redraw a wide viewport; tablet chooses 4×3 or 3×3 automatically; phone shows one card at a time | O3 |
 | Verdicts | Each of the four lands on the focused item and on the marked set | O2 |
 | `undo` | Reverses the last function as one action, including a verdict applied to a set | §7 |
 | Backlog count | Untriaged count for the collection is correct after every action | O2 |
@@ -161,9 +161,9 @@ sweep a verdict across the result).
 | Scope wrapping | Every selection made through the UI is wrapped `collection:<current> and ( … )`; no user-typed expression can reach another collection's items | §8.1, O8 |
 | One evaluator | The administrative unwrapped path and the UI path are the same function with a different argument | §8.1 |
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
-| **No confirmation on the visible sweep** | A verdict swept across the selection on screen asks nothing, at any size — including a sweep across several thousand | §8.3, O3 |
-| Confirmation on the unbounded path | A verdict applied to a saved selection from a menu, or to an expression whose result was never opened, asks first and shows the count | §8.3 |
-| Mark then sweep | `verdict-rest` applies to the selection minus the marked set; the inverted form (mark the keepers, sweep the rest) behaves identically | §7.1 |
+| **No confirmation on the visible page sweep** | Sweep untriaged changes only untriaged cards on the visible page, asks nothing, and advances one page | §8.3, O3 |
+| Confirmation on the unbounded path | Sweep all selected asks first, shows the full selection count, and changes items across virtual pages only after confirmation | §8.3 |
+| Mark then sweep | A verdict applies to the marked exceptions as one action; the following untriaged page sweep does not overwrite them | §7.1 |
 | **`undo` reverses a sweep as one action** | Fifty items swept and one undo restores all fifty | §7.1 |
 | Saved selection | Round-trips through storage and re-evaluates to the same set | §5 |
 | Cheap proposals: same site | Grouping `export-large.html` by host produces the expected groups, and each arrives as a selection the ordinary path can act on — not as a separate object | §8.2, O5 |
@@ -240,7 +240,7 @@ guarding against.
 | The export is the app's own streamed document, never a host or database dump | A platform export turns up later, looks free and complete, and O7 quietly becomes a vendor's format — which strands every archive already taken and gives back the host-independence §10's table was rewritten to gain |
 | Pass 2 runs only when the user asks for it | An automatic driver is added because pressing the button is tedious, and what pass 2 costs stops being visible at the moment it is paid — which is the measurement the manual action exists to take, not an inconvenience to design around |
 | `undo` reverses a set operation as one action | A refactor makes undo per-item and nobody risks a sweep again |
-| A sweep across the visible selection asks nothing, at any size | A confirmation is added back "for safety" on a count, the single gesture becomes two, and people learn to dismiss it without reading — which is the state §8.3 was changed to escape |
+| A sweep across the visible page asks nothing; Sweep all selected confirms its full count | Page triage gains a repetitive dialogue, or an action reaching hidden pages loses the one confirmation that exposes its scope |
 | A tag is a free string with nothing marking its origin | A controlled vocabulary or a `source` column is added and §8.2's skills become a schema change |
 | Nothing joins through the user to reach an item | Sharing becomes a retrofit rather than an addition |
 | An `err:` tag is written only inside the collection whose capture failed | The capture store is global, so the obvious implementation tags every item with that `url_key` everywhere — a cross-collection write that no single-collection test can see |
@@ -260,3 +260,22 @@ guarding against.
 - **Anything held out of the first version** — tab harvesting, pushing subsets
   into a browser, general sharing. The one thing tested on their behalf is the
   export format, which is what §11 says makes them cheap later.
+
+## 7. Refinement regression tests
+
+The phase exits above prove the architecture. Refinement adds browser checks for
+the user-facing controls that now sit on top of it:
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Import/Select/Export accordion | The three collapsed panels have equal width; none or exactly one opens; the open panel receives most of the row | Current control-center layout |
+| File chooser and drop target | A chooser-selected or dropped HTML/JSON file enters the same form; a drop displays the file name but does not import until Import file is chosen | Explicit import intent |
+| Selection chooser readiness | Open proposal, Open saved, and Open previous are black on white with their placeholder selected and white on blue after a real value is chosen | Visible target state |
+| Selection history | Successfully opened expressions persist per user, newest first and without duplicates; selecting a previous expression opens it through the ordinary evaluator | Recent-selection workflow |
+| Export scopes | Current collection and Current selection produce importable `bookmark-sorter/v1` downloads named from the collection | O7 user workflow |
+| Confirmed erasure | Erase current collection writes only after confirmation, leaves the collection present, and reports the erased count | Destructive-action boundary |
+| Admin authorization | The menu is absent for a non-admin; its APIs also reject the request server-side; an administrator can manage the user list, sittings, captures, and templates | Authority is not CSS |
+| Narrow phone controls | The one-card grid, accordion panels, drop target, and Admin summary remain reachable at a narrow-phone viewport | O3 and mobile usability |
+
+Visible changes also receive a post-build screenshot so spacing, colors, and the
+drop target are reviewed as presentation rather than inferred from DOM tests.

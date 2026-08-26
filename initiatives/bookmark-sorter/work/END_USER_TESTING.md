@@ -2,15 +2,11 @@
 
 ## What this test Site is
 
-This is a public test of the real bookmark-sorter application. Bookmark data is
-still private per signed-in ChatGPT user; anonymous visitors can see the shell
-but cannot create collections or import data. It
-stores bookmark records, tags, verdicts, selections, and sitting measurements in
-ChatGPT Sites D1. The first test version deliberately did not provision R2. The
-user accepted the Sites storage limits and authorised the capture bucket on
-2026-08-20 (`decisions.md`), so the next Site version provisions R2 as
-`CAPTURES` and pass 1 fetches and stores page pictures. Until that version is
-deployed, the running Site still has no captures.
+This is an owner-only test of the real bookmark-sorter application. It stores
+bookmark records, tags, verdicts, selections, selection history, and sitting
+measurements in ChatGPT Sites D1. R2 is provisioned as `CAPTURES`; pass 1 fetches
+metadata anonymously and stores only fixed-size derivatives. The paid screenshot
+fallback remains off.
 
 Do not upload a bookmark export unless its URLs and folder names are acceptable
 to store in the test Site. The application export contains items, URLs, tags,
@@ -19,9 +15,10 @@ verdicts, and notes; it never contains capture images.
 ## First sitting
 
 1. Open the private Site while signed in with ChatGPT.
-2. Export bookmarks from the browser you want to test, then choose that HTML file
-   under **Import**. Give the source a short name such as
-   `chrome-export` or `safari-export`.
+2. Export bookmarks from the browser you want to test, open **Import**, then
+   choose that HTML file or drop it onto **Drop a file here** beside the chooser.
+   Give the source a short name such as `chrome-export` or `safari-export`, then
+   choose **Import file**. Dropping selects the file and does not submit it.
 3. Confirm that the total count looks plausible. Re-importing the same file
    should not increase it.
 4. Work however you actually would. Use the on-screen buttons or `K`, `J`, `A`,
@@ -49,7 +46,10 @@ verdicts, and notes; it never contains capture images.
    confirmation before applying the verdict.
 4. Under **Select → Automatic proposals**, confirm that the Verdict group appears
    above Folder and includes **not junk** and **untriaged or needs-time**.
-5. Optionally note how many confirmations interrupted the sitting. Sweeps you
+5. With no proposal, saved selection, or previous selection chosen, confirm its
+   Open action is black on white. Choose an option and confirm only the paired
+   Open action changes to white on blue.
+6. Optionally note how many confirmations interrupted the sitting. Sweeps you
    immediately undo are recorded automatically; confirmations are not. Neither
    is required — see `notes.md`.
 
@@ -61,13 +61,10 @@ open selection instead. Keep that file until the next Site version has been
 opened and the backup has been imported through **Import**, or the
 existing D1 data has been confirmed intact.
 
-## Not covered by this first deployment
+## Not covered by this test
 
-- Page metadata and image capture, until the R2-enabled Site version replaces
-  this one. Authorised on 2026-08-20; not yet deployed.
 - The paid screenshot fallback (pass 2), which remains switched off. Enabling R2
-  turns on pass 1 only — the anonymous, no-JavaScript metadata fetch. The paid
-  vendor is a separate authorisation and is unchanged.
-- A public multi-tester audience. The first Site is owner-only; broader access
-  should be enabled only after its audience and the Sites metering limits are
-  accepted explicitly.
+  turns on pass 1 only — the anonymous, no-JavaScript metadata fetch. A paid
+  vendor remains a separate authorization.
+- A public multi-tester audience. The Site is owner-only; broader access should
+  be enabled only after its audience is approved explicitly.
