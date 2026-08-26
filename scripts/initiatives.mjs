@@ -1136,7 +1136,9 @@ function appendReleaseHistory(dir, slug, entry, env, written, state) {
   if (facts.length) lines.push(`${facts.join(' · ')}.`, '');
 
   if (state.changes.length) {
-    lines.push('Changes since the previous release:', '');
+    // Naming the source makes the scope self-evident: these are the commits
+    // that touched *this* directory, not everything that landed in the repo.
+    lines.push(`Changes since the previous release, in \`${entry.source}\`:`, '');
     // Enough to see what shipped, not a changelog nobody reads.
     for (const change of state.changes.slice(0, 20)) lines.push(`- ${change}`);
     if (state.changes.length > 20) {
@@ -1144,6 +1146,8 @@ function appendReleaseHistory(dir, slug, entry, env, written, state) {
     }
     lines.push('');
   }
+
+  appendReleaseLogLine(dir, label, written, url, state);
 
   try {
     // Newest first, so the current release is the first thing on the page.
@@ -1153,10 +1157,41 @@ function appendReleaseHistory(dir, slug, entry, env, written, state) {
       ? existing.slice(existing.indexOf('\n## ') === -1 ? existing.length : existing.indexOf('\n## ') + 1)
       : '';
     writeFileSync(path, `${header}\n${lines.join('\n')}\n${body}`.replace(/\n{3,}$/, '\n\n'));
-    return 'releases.md';
+    return 'releases.md and log.md';
   } catch {
     return null;
   }
+}
+
+/**
+ * One line in the initiative's narrative log, alongside its other notable
+ * moments. `releases.md` is the detailed history; the log is where someone
+ * reading the initiative's story finds out a release happened at all.
+ *
+ * Best-effort like the rest: a failed write costs the breadcrumb, not the
+ * release.
+ */
+function appendReleaseLogLine(dir, label, written, url, state) {
+  const path = join(dir, 'log.md');
+  const detail = [
+    label,
+    written.version !== undefined ? `version ${written.version}` : null,
+    written.commit ? `\`${written.commit.slice(0, 7)}\`` : null
+  ].filter(Boolean).join(', ');
+
+  const body = [
+    `Released to production — ${detail}.`,
+    state.known && state.unreleased
+      ? ` ${state.unreleased} commit(s) since the previous release.`
+      : '',
+    url ? ` <${url}>` : '',
+    ' See releases.md.'
+  ].join('');
+
+  try {
+    const existing = existsSync(path) ? readFileSync(path, 'utf8').trimEnd() : '# Log';
+    writeFileSync(path, `${existing}\n\n## ${String(written.deployed_at).slice(0, 10)} — Release\n\n${body}\n`);
+  } catch { /* the breadcrumb is not worth failing a release over */ }
 }
 
 // --------------------------------------------------------------- reporting

@@ -567,7 +567,7 @@ test('a release writes a history entry; a test deploy writes none', () => {
     '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
     '--access', 'public', '--version', '4', '--json'], dir));
 
-  assert.equal(result.history, 'releases.md');
+  assert.match(result.history, /releases\.md/);
   const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
   assert.match(history, /^# Releases/);
   assert.match(history, /ChatGPT Site — version 4/);
@@ -586,11 +586,84 @@ test('a release summarizes what changed since the previous one', () => {
 
   assert.ok(result.changes.length >= 1);
   const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
-  assert.match(history, /Changes since the previous release:/);
+  assert.match(history, /Changes since the previous release, in `/);
   assert.match(history, /commit\(s\) since the previous release/);
   for (const change of result.changes.slice(0, 3)) {
     assert.ok(history.includes(`- ${change}`), `history should list "${change}"`);
   }
+});
+
+test('a release leaves a breadcrumb in the narrative log too', () => {
+  const dir = scratch([staticSite()]);
+
+  run(['deployments', 'healthy', 'record', '--env', 'test',
+    '--site-slug', 'healthy-test', '--url', 'https://healthy-test.example.chatgpt.site/'], dir);
+  assert.equal(existsSync(join(dir, 'healthy', 'log.md')), false, 'a test deploy is not log-worthy');
+
+  const result = JSON.parse(run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
+    '--access', 'public', '--version', '4', '--json'], dir));
+
+  assert.match(result.history, /log\.md/);
+  const log = readFileSync(join(dir, 'healthy', 'log.md'), 'utf8');
+  assert.match(log, /^# Log/);
+  assert.match(log, /## \d{4}-\d{2}-\d{2} — Release/);
+  assert.match(log, /Released to production — ChatGPT Site, version 4/);
+  assert.match(log, /See releases\.md\./);
+});
+
+test('a release appends to an existing log rather than replacing it', () => {
+  const dir = scratch([staticSite()]);
+  const path = join(dir, 'healthy', 'log.md');
+  writeFileSync(path, '# Log\n\n## 2026-01-01 — Something earlier\n\nA thing that happened.\n');
+
+  run(['deployments', 'healthy', 'record', '--env', 'prod',
+    '--site-slug', 'healthy', '--url', 'https://healthy.example.chatgpt.site/',
+    '--access', 'public'], dir);
+
+  const log = readFileSync(path, 'utf8');
+  assert.match(log, /Something earlier/, 'the existing log survives');
+  assert.match(log, /— Release/);
+  assert.ok(log.indexOf('Something earlier') < log.indexOf('— Release'), 'the log reads forwards');
+  assert.equal(log.match(/^# Log/gm).length, 1);
+});
+
+test('the change list covers only the deployment source, not the whole repository', () => {
+  const old = firstCommitFor(HISTORIED_SOURCE);
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: old })])));
+
+  const inRange = (args) => execFileSync('git', ['log', '--format=%s', `${old}..HEAD`, ...args], {
+    cwd: ROOT, encoding: 'utf8'
+  }).trim().split('\n').filter(Boolean);
+
+  const everything = inRange([]);
+  const scoped = inRange(['--', HISTORIED_SOURCE]);
+
+  assert.deepEqual(plan.release.changes, scoped, 'exactly the commits that touched this source');
+  assert.ok(scoped.length < everything.length,
+    'the fixture range must contain unrelated commits for this test to mean anything');
+
+  // The concrete worry: a deck edit, a demo edit, or another initiative's work
+  // has no business in this initiative's release notes.
+  const elsewhere = inRange(['--', 'decks', 'demos', 'initiatives/bookmark-sorter'])
+    .filter((subject) => !scoped.includes(subject));
+  assert.ok(elsewhere.length, 'the range must contain commits touching other areas');
+  for (const subject of elsewhere) {
+    assert.ok(!plan.release.changes.includes(subject),
+      `"${subject}" touched another area and must not appear here`);
+  }
+});
+
+test('the release entry names the source it summarizes', () => {
+  const dir = scratch([historiedDemo({
+    deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE)
+  })]);
+  run(['deployments', 'healthy', 'record', '--env', 'prod'], dir);
+
+  const history = readFileSync(join(dir, 'healthy', 'releases.md'), 'utf8');
+  assert.ok(history.includes(`in \`${HISTORIED_SOURCE}\``),
+    'the entry says which directory these changes are from');
 });
 
 test('a second release keeps the first, newest first', () => {

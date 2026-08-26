@@ -122,24 +122,35 @@ Both URLs, every time.
 
 ### The release history writes itself
 
-`record --env prod` appends an entry to `initiatives/<slug>/releases.md`,
-creating that file on the first release. The entry carries the date, the kind,
-the version, the URL, the released commit, the commits since the previous
-release, and where the test environment stood at that moment. **Do not write
-that file by hand** — the same reason `add` and `complete` exist applies here.
+`record --env prod` writes two records, and **neither should be written by
+hand** — the same reason `add` and `complete` exist applies here:
 
-The change list comes from commit subjects touching the source directory. It is
-best-effort: a release made before this existed, or a rewritten history, gives
-an entry without a change list rather than a wrong one. Never invent a change
-list to fill the gap, and never hold up a release because the history is thin.
+- `initiatives/<slug>/releases.md` — the detailed history, newest first, created
+  on the first release. Each entry carries the date, the kind, the version, the
+  URL, the released commit, the commits since the previous release, and where
+  the test environment stood at that moment.
+- `initiatives/<slug>/log.md` — a one-line breadcrumb under a `— Release`
+  heading, so someone reading the initiative's story sees that a release
+  happened and where the detail lives.
+
+The change list is commit subjects from `git log` **scoped to this deployment's
+source directory**, so work on a deck, a demo, or another initiative never
+appears in this initiative's release notes. A commit that touched the source
+*and* other things does appear, with its own subject — which is accurate about
+the source having changed, even when the subject is broader than this release.
+
+It is best-effort: a release made before this existed, or a rewritten history,
+gives an entry without a change list rather than a wrong one. Never invent a
+change list to fill the gap, and never hold up a release because the history is
+thin.
 
 Two things are worth your judgement afterwards:
 
 - if the commit subjects do not say what actually changed for a *user* of the
   site, add one plain sentence above the list saying what they will notice;
-- if `releases.md` was not updated (the `record` output says so), mention it in
-  the receipt and carry on. A missing history entry never invalidates a
-  release that actually happened.
+- if the history was not updated (the `record` output names the files it
+  wrote), mention it in the receipt and carry on. A missing record never
+  invalidates a release that actually happened.
 
 ## Refuse
 
