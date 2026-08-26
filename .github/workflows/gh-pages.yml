@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # The build reads git history, not just the tree: initiative "last
+          # activity" comes from `git log`, and a deployment's release currency
+          # comes from comparing the released commit with the source's latest.
+          # A depth-1 checkout answers both wrongly, so fetch the lot.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

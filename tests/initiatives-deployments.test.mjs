@@ -29,6 +29,12 @@ const DEMO_SOURCE = 'tests/fixtures/demo-source';
 // Release history is read from git, so the tests that exercise it need a source
 // with more than one commit behind it. The fixture directories were added in a
 // single commit; this one has real history and is not going away.
+//
+// These tests therefore need the repository's real history: in a shallow clone
+// (`git clone --depth 1`, or an `actions/checkout` without `fetch-depth: 0`)
+// `git log` reports one commit for every path and they fail. That is the
+// checkout's problem, not the test's - the build workflow fetches full history
+// for the same reason.
 const HISTORIED_SOURCE = 'initiatives/repo-guide/work/guide/out';
 
 const staticSite = (extra = {}) => ({ kind: 'chatgpt-site', build: 'static', source: SITE, ...extra });
