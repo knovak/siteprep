@@ -20,25 +20,25 @@ test('deck opens offline and supports complete keyboard navigation', async ({pag
   await page.goto(pathToFileURL(outputPath).href);
 
   const slides = page.locator('.slide');
-  await expect(slides).toHaveCount(17);
+  await expect(slides).toHaveCount(18);
   await expect(slides.nth(0)).toBeVisible();
   await expect(slides.nth(1)).toBeHidden();
-  await expect(page.locator('#progress')).toHaveText('1 / 17');
+  await expect(page.locator('#progress')).toHaveText('1 / 18');
 
   await page.keyboard.press('ArrowRight');
   await expect(slides.nth(1)).toBeVisible();
-  await expect(page.locator('#progress')).toHaveText('2 / 17');
+  await expect(page.locator('#progress')).toHaveText('2 / 18');
   await page.keyboard.press('End');
-  await expect(slides.nth(16)).toBeVisible();
-  await expect(page.locator('#progress')).toHaveText('17 / 17');
+  await expect(slides.nth(17)).toBeVisible();
+  await expect(page.locator('#progress')).toHaveText('18 / 18');
   await page.keyboard.press('Home');
   await expect(slides.nth(0)).toBeVisible();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('#progress')).toHaveText('1 / 17');
+  await expect(page.locator('#progress')).toHaveText('1 / 18');
   await page.keyboard.press('PageDown');
-  await expect(page.locator('#progress')).toHaveText('2 / 17');
+  await expect(page.locator('#progress')).toHaveText('2 / 18');
   await page.keyboard.press('PageUp');
-  await expect(page.locator('#progress')).toHaveText('1 / 17');
+  await expect(page.locator('#progress')).toHaveText('1 / 18');
 
   const sha = await page.locator('body').getAttribute('data-source-sha');
   expect(sha).toMatch(/^[a-f0-9]{7,40}$/);

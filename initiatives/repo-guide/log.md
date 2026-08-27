@@ -173,3 +173,15 @@ In the simulator, the stage now takes the active phase's orange on exactly the
 steps where it moved - badge and lifecycle track together - derived by comparing
 adjacent steps, so a move back down the lifecycle reads the same stepping either
 way.
+
+## 2026-08-27 — Say what the two deployment kinds actually are
+
+The kinds rendered as two bare chips - "ChatGPT Site" and "Demo" - which named
+them without telling a reader what either one is. Replaced in both renderings
+with prose saying what each kind is for, that the skills handle both, and that
+more kinds may follow. On the deck it becomes a slide of its own rather than a
+tail on the enforcement slide, which would have run past the copy limit.
+
+The kinds fact stays live: the `deployment-environments` figure still resolves
+it, so the section is not the only thing standing between a new kind and the
+guide noticing.
