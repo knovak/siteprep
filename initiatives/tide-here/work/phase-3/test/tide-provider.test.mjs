@@ -13,12 +13,12 @@ import {
 } from '../src/tide-provider.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const initiativeDirectory = resolve(phaseDirectory, '../..');
-const readJson = async (path) => JSON.parse(await readFile(resolve(initiativeDirectory, path), 'utf8'));
-const config = await readJson('work/phase-2/data/provider-config.json');
-const evidence = await readJson('work/phase-0/evidence.json');
-const noaaPayload = await readJson('work/phase-0/fixtures/noaa-seattle-hilo.json');
-const chsPayload = await readJson('work/phase-0/fixtures/chs-halifax-hilo.json');
+const workDirectory = resolve(phaseDirectory, '..');
+const readJson = async (path) => JSON.parse(await readFile(resolve(workDirectory, path), 'utf8'));
+const config = await readJson('phase-2/data/provider-config.json');
+const evidence = await readJson('phase-0/evidence.json');
+const noaaPayload = await readJson('phase-0/fixtures/noaa-seattle-hilo.json');
+const chsPayload = await readJson('phase-0/fixtures/chs-halifax-hilo.json');
 
 const context = {
   input: { display: 'recorded fixture' },
