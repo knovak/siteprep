@@ -7,7 +7,7 @@
   "deployments": [
     {
       "kind": "chatgpt-site",
-      "build": "static",
+      "build": "sites-app",
       "source": "initiatives/tide-here/work",
       "test": {
         "slug": "tide-here-test",
@@ -38,11 +38,11 @@
       "blocked_by": "data:licensed machine-readable Australian annual predictions, confirmed reuse terms, and required attribution"
     },
     {
-      "id": "prepare-global-tides-stage-4",
-      "title": "Prepare the Stage 4 FES2022 ingestion harness and held-out validation set",
+      "id": "review-global-tides-stage-5",
+      "title": "Review the initialized Stage 5 test deployment and choose the next refinement",
       "state": "actionable",
-      "value": "high",
-      "effort": "medium",
+      "value": "medium",
+      "effort": "small",
       "advances_stage": false
     }
   ]

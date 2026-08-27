@@ -308,3 +308,34 @@ These tests complete the adapter implementation gate. Official Stage 3
 activation additionally requires the licensed annual artifact and comparison
 against its source table; the synthetic fixture is not evidence of Australian
 prediction accuracy.
+
+### 7.4 — FES-shaped global fallback implementation
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Reproducible preparation | The source extract exactly regenerates the committed tile index and objects | Offline preparation drift |
+| Complete inventory | Missing, altered, duplicate, or undeclared tile objects fail size and checksum validation before initialization | Partial uploads |
+| FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source, licence metadata, and at least 34 constituents per point | Data and legal boundary |
+| Atomic initialization | Australian and fallback artifacts are ready before the Stage 4 registry pointer is written; repeating `/init` writes nothing | Rollback safety |
+| Provider priority | U.S., Canada, and Australia select their national provider before the fallback | Source quality |
+| Indexed lookup | Brest, Galway, and Cape Town load separate candidate tiles and return normalized metre events | Runtime tile seam |
+| Land or missing data | A location outside initialized coastal tiles returns `coverage-unavailable` | No invented coverage |
+| Approximate warning | Every fallback response says approximate and excludes weather and storm surge; the fixture additionally says it is not FES2022 | User safety |
+| Engine comparison | The Brest point remains within six minutes and five centimetres of the independent PyFES example | Runtime feasibility |
+
+These tests prove the production code path, not FES2022 accuracy. Licensed
+atlas ingestion and held-out national-port comparisons remain required before
+the fallback may be marked active.
+
+### 7.5 — Hosted test deployment
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
+| Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
+| Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
+| Health | Live `/health` names provider registry `stage-4-v1` and both stored dataset versions | Operability |
+| Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
+| Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
+| Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the Australian fixture, and returns the approximate fallback fixture | Deployment integration |
+| Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |

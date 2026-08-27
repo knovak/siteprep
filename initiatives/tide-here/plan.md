@@ -451,6 +451,13 @@ downloads, decompresses, or derives FES data in the request path.
 any result derived from FES is labelled approximate and remains separate from
 weather and storm-surge effects.
 
+**Status, 2026-08-27:** the preparation, inventory, initialization, lookup,
+failure, normalized forecast, and warning path is implemented in
+`work/phase-12`. A three-tile non-FES fixture exercises the complete path and
+the Brest point preserves the Stage 1 engine comparison. Production activation
+and regime-specific accuracy tolerances remain blocked on licensed FES2022
+atlas files and held-out official-port comparisons.
+
 #### Stage 5 — Test deployment
 
 **Produces:** a private test deployment with R2 bindings, the initializer token,
@@ -463,6 +470,12 @@ is exercised. A second call must report no changes.
 
 **Exit:** U.S., Canadian, Australian, and fallback locations work at the real
 HTTPS URL, and failure or denial leaves the current public version untouched.
+
+**Status, 2026-08-27:** the Sites app, R2 binding, protected initializer,
+privacy-safe operational logging, static-page staging, and live smoke harness
+are implemented in `work/phase-13`. Deployment evidence is recorded there
+after the public test Site is initialized and checked; production remains
+untouched.
 
 #### Stage 6 — Production release
 

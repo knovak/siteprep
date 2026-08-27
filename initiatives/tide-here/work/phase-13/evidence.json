@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": null,
+  "stage": "global-coverage-stage-5",
+  "deployment": null,
+  "hosting": {
+    "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
+    "r2Binding": "TIDE_DATA",
+    "d1Binding": null,
+    "initializerTokenConfigured": false,
+    "initialized": false,
+    "repeatInitializationWrites": null
+  },
+  "liveChecks": null,
+  "tests": {
+    "stageTestsPassed": 5,
+    "stageTestsFailed": 0,
+    "allTideNodeTestsPassed": null
+  },
+  "productionActivation": {
+    "ready": false,
+    "blockedBy": [
+      "Licensed Australian annual predictions and reuse terms",
+      "Licensed FES2022 atlas files and held-out official-port comparisons"
+    ]
+  }
+}
