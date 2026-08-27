@@ -158,6 +158,7 @@ const service = new TideHereService({
 function hideOutput() {
   $('#state-panel').hidden = true;
   $('#chooser').hidden = true;
+  $('#chooser').removeAttribute('open');
   $('#result').hidden = true;
 }
 
@@ -204,10 +205,17 @@ function renderMap(resolution) {
   }));
 }
 
-function showChooser(resolution) {
-  showState(COAST_CHOICE_REQUIRED, { focus: false, actionable: false });
-  $('#chooser-place').textContent = `Resolved place: ${resolution.place.name}`;
-  $('#candidate-list').replaceChildren(...resolution.candidates.map((candidate) => {
+function sameStation(first, second) {
+  return first?.id === second?.id && first?.provider === second?.provider;
+}
+
+function showAlternativeCoasts(resolution, selectedStation) {
+  const nearestIsSelected = sameStation(resolution.candidates[0], selectedStation);
+  $('#chooser-place').textContent = nearestIsSelected
+    ? `Showing the closest coast to ${resolution.place.name}. Choose a different coast if it fits your location better.`
+    : `Showing ${selectedStation.name} for ${resolution.place.name}. Choose a different coast if it fits your location better.`;
+  const alternatives = resolution.candidates.filter((candidate) => !sameStation(candidate, selectedStation));
+  $('#candidate-list').replaceChildren(...alternatives.map((candidate) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'candidate';
@@ -222,8 +230,8 @@ function showChooser(resolution) {
     return button;
   }));
   renderMap(resolution);
+  $('#chooser').removeAttribute('open');
   $('#chooser').hidden = false;
-  $('#candidate-list button')?.focus();
 }
 
 function textNode(tag, text, className = '') {
@@ -354,7 +362,6 @@ function showForecast(forecast) {
     return box;
   }));
   $('#day-cards').replaceChildren(...model.days.map(dayCard));
-  $('#chooser').hidden = true;
   $('#result').hidden = false;
   if (model.warnings.length) showState(model.warnings[0].code, { focus: false });
   else if (forcedState === 'no-event') showState('no-event', { focus: false, actionable: false });
@@ -379,13 +386,14 @@ async function loadForecast(resolution, station = null) {
   history.append(result);
   updateHistoryCount();
   showForecast(result);
+  if (resolution.code === COAST_CHOICE_REQUIRED) showAlternativeCoasts(resolution, detailedStation);
 }
 
 async function submit() {
   hideOutput();
   try {
     const resolution = await service.resolve($('#place').value);
-    if (resolution.code === COAST_CHOICE_REQUIRED) return showChooser(resolution);
+    if (resolution.code === COAST_CHOICE_REQUIRED) return await loadForecast(resolution, resolution.candidates[0]);
     if (!resolution.ok) return showState(resolution.code);
     return await loadForecast(resolution);
   } catch {

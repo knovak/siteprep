@@ -36,9 +36,9 @@ and the station we chose to ask.
 | **Unit** | The §5 day model: zone lookup, the five local dates, local-day UTC bounds, placing an instant in a row, the per-instant offset. Great-circle distance and the three-outcome match of §3.2 | Total functions of their input, and every place a wrong answer is silent rather than loud |
 | **Contract** | A **recorded provider response** in, a §7 response out: NOAA and CHS adapters, datum and station kind, the §8 code each provider failure maps to | This is each adapter with the network held still. Deterministic, fast, and gates every change |
 | **Live provider** | One real request per provider: reachable, CORS, licence headers, contract unchanged | Whether the recordings still describe reality. Deliberately **not** in the gating suite (§2.1) |
-| **Integration** | `resolve` → chooser → `forecast`; adapter failures composed into partial results | The seams where a rule stated in one place is enforced in another |
-| **Browser-driven** | The page: five cards, stacking, focus, form errors, chooser, every §8 state, history view | O2, O6, and O7 are claims about a screen, so they cannot be checked below one |
-| **Manual, once** | One look at a real phone at a real HTTPS URL, and one look at a real estuary's chooser | "Compact and cheerful" and "is this the right coast" are judgements, and no automated test makes them |
+| **Integration** | `resolve` → closest forecast or alternative selection → `forecast`; adapter failures composed into partial results | The seams where a rule stated in one place is enforced in another |
+| **Browser-driven** | The page: five cards, stacking, focus, form errors, closest-first alternatives, every §8 state, history view | O2, O6, and O7 are claims about a screen, so they cannot be checked below one |
+| **Manual, once** | One look at a real phone at a real HTTPS URL, and one look at a real estuary's closest result and alternatives | "Compact and cheerful" and "is this the right coast" are judgements, and no automated test makes them |
 
 **Every row except the last two runs with no network at all.** That is a property
 of `plan.md` §2's adapters rather than of this document: nothing above an adapter
@@ -173,7 +173,7 @@ committed.
 | **The geocoder is switchable** | Changing only the provider configuration routes `resolve` to a different service, with no bundle change | §3.1, `plan.md` §7 |
 | Eight codes, eight states | Each §8 code is produced by its own condition and by no other; `place-not-found` and `geocoder-unavailable` never substitute for each other | O6, §8 |
 | **Partial stays partial** | A tide failure preserves place, coast, and astronomy; an astronomy failure preserves the tide table | O6, §8 |
-| The chooser does not repeat work | Choosing a coast after `coast-choice-required` re-runs neither geocoding nor the catalogue fetch | §6.1 |
+| Alternative selection does not repeat work | Choosing another coast after `coast-choice-required` re-runs neither geocoding nor the catalogue fetch | §6.1 |
 | Every result carries the line | "Informational and not for navigation or safety decisions" is present on every successful and partial result | O6 |
 
 ### 4.6 — The page
@@ -187,9 +187,9 @@ committed.
 | Browser location is explicit | **Show here** requests one location only after a click, feeds coordinates through the manual coordinate path, and never watches or requests on load | O7, O8, §9 |
 | Location fallback | Permission denial, timeout, unavailable coordinates, or a missing geolocation API leaves the manual selection untouched and gives a readable retry path | O7, O8, §9 |
 | **Narrow screens stack** | At a phone width, days stack; nothing is horizontally clipped and the page does not scroll sideways | O7, §7 |
-| Chooser | The ambiguous fixture renders up to three candidates with distance and a map, and no tide rows appear before a choice | O2, §3.2 |
-| Every §8 state renders | Each of the eight codes has a distinct, readable message and the retry action §8 specifies | O6, §8 |
-| Keyboard and focus | Form, errors, chooser, and retry are reachable and visibly focused by keyboard alone | O7, §7 |
+| Alternative coasts | The ambiguous fixture immediately renders five days for its nearest candidate; a closed **Alternative coasts** disclosure appears below the result and reveals the other candidates, distances, and map | O2, §3.2 |
+| Every §8 state renders | Each blocking or partial code has a distinct, readable treatment; `coast-choice-required` produces closest-first results with a manual override | O6, §8 |
+| Keyboard and focus | Form, errors, alternative coasts, and retry are reachable and visibly focused by keyboard alone | O7, §7 |
 | Labels, not bare icons | Sun, moon, and tide marks accompany text labels rather than replacing them | O7, §7 |
 | Heights are secondary | Tide type and local time lead; height states its datum and unit in source details | O3, §7 |
 
