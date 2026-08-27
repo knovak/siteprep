@@ -16,6 +16,14 @@
         "deployed_at": "2026-08-26T22:31:39Z",
         "version": 3,
         "commit": "851dd12dd45b6e6b207778c7f5f0a7918b6a131e"
+      },
+      "prod": {
+        "slug": "tide-here-five-coast-local-days",
+        "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
+        "access": "public",
+        "deployed_at": "2026-08-27T00:14:39Z",
+        "version": 5,
+        "commit": "60fdfcca0aca7aeb3531a9949f2d5fa19f4a2d7a"
       }
     }
   ],
