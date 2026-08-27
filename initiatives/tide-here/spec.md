@@ -103,13 +103,13 @@ than inventing a name.
 
 ### 3.2 Coastal relevance
 
-“Nearest seafront” is represented by a **coastal match**, not by silently
-taking the first station after sorting by straight-line distance.
+“Nearest seafront” is represented by a **coastal match**, not by treating the
+first station after sorting by straight-line distance as unambiguously correct.
 
 1. Maintain cached catalogues of active NOAA and CHS prediction stations, normalized to provider, country, station id, name, latitude/longitude, jurisdiction, datum, and reference/subordinate kind where the provider supplies it.
 2. Rank candidates by great-circle distance to the resolved input.
 3. Automatically accept a candidate only when it is within 25 km and is clearly closer than the next candidate (no more than 60% of the next distance).
-4. Otherwise return up to three candidates with station name, jurisdiction, distance, and a small map. The user must choose one before events are shown.
+4. Otherwise return up to three candidates with station name, jurisdiction, distance, and a small map. The page immediately shows events for the closest candidate, then offers the others in a collapsed **Alternative coasts** control below the result.
 5. Refuse the match when the closest candidate is over 150 km away. The result may name that coverage is unavailable, but it must not call the station the user’s coast.
 
 The selected station name is the first version’s standard coastal-place name;
@@ -117,8 +117,8 @@ the response labels it **Coast** and separately labels the precise **Prediction
 station**, provider, country, and id. If a subordinate station is backed by a
 reference station, that relationship is shown in source details. This is intentionally
 conservative. Distances cannot prove that a station across an island, inlet, or
-watershed is relevant, so the ambiguous case costs one explicit choice (O2,
-O6).
+watershed is relevant, so the ambiguous case keeps an explicit override close
+to the result without delaying the nearest forecast (O2, O6).
 
 The 25 km, 60%, and 150 km values are configuration, not hidden facts. The test
 plan must challenge them with islands, estuaries, inland places, and the
@@ -252,7 +252,7 @@ The page uses machine-readable codes and user-facing safe summaries:
 | `place-not-found` | Geocoder found no match | Edit and retry |
 | `geocoder-unavailable` | Provider timeout, throttle, or error | Retry later; do not call it not found |
 | `coverage-unavailable` | No configured NOAA or CHS prediction candidate within 150 km | Explain first-version coverage and name the supported countries |
-| `coast-choice-required` | Candidate is not unambiguous | Show candidate names, distances, map, and explicit choice |
+| `coast-choice-required` | Candidate is not unambiguous | Forecast with the nearest candidate; show the other candidates, distances, and map in collapsed **Alternative coasts** below the result |
 | `tides-unavailable` | Selected station returned no valid prediction | Preserve place and station; show no tide rows and retry guidance |
 | `astronomy-unavailable` | Calculation failed | Preserve tide result; mark astronomy unavailable |
 | `no-event` | A valid day has no rise or set | Show “does not rise” or “does not set”, not an error |

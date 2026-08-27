@@ -74,3 +74,33 @@ request, or bulk lookup.
   accept/ask/refuse outcome is evidence to reopen the thresholds.
 - This does not authorize public access, choose the final domain, or add a
   third-country provider.
+
+## 2026-08-26 — What should happen when several coasts are plausible?
+
+**Show the closest forecast immediately and offer the other candidates below
+it in a collapsed Alternative coasts section.**
+
+The person should always see the closest results. When the coastal matcher
+finds several plausible candidates, the page should not stop and require a
+choice before showing predictions. It should select the nearest candidate,
+display that forecast, and let the person expand **Alternative coasts** below
+the results to choose a different one.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A — Require a coast choice before forecasting** | Avoids making a silent judgement when distance cannot capture islands, inlets, or watersheds | Blocks the most likely result and adds friction before any useful information appears |
+| **B — Loosen the ambiguity thresholds** | Makes more matches look unambiguous | Hides useful uncertainty and changes the reviewed matcher without better geographic evidence |
+| **C — Show the closest forecast, with alternatives below** *(chosen)* | Gives an immediate useful result while preserving a clear manual override | The closest station is only a distance-based default and may not represent the best local water body |
+
+### What this settles, and what it does not
+
+- The 25 km, 60%, and 150 km matcher thresholds remain unchanged.
+- `coast-choice-required` remains an internal resolution state with ranked
+  candidates, but it no longer renders as a blocking page state.
+- The nearest candidate is used only as the initial forecast. Choosing an
+  alternative still reuses the existing resolution without another geocoder or
+  catalogue request.
+- This does not establish that straight-line distance identifies the most
+  relevant side of an island, inlet, estuary, or international boundary.

@@ -6,7 +6,7 @@ const STATE_ACTIONS = Object.freeze({
   'place-not-found': 'Edit and try again',
   'geocoder-unavailable': 'Retry place lookup',
   'coverage-unavailable': 'Try a U.S. or Canadian coast',
-  'coast-choice-required': 'Choose a coast below',
+  'coast-choice-required': 'Review alternative coasts',
   'tides-unavailable': 'Retry tide predictions',
   'astronomy-unavailable': 'Retry sun and moon',
   'no-event': 'No retry needed',

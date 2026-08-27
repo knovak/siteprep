@@ -13,9 +13,9 @@
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-26T18:49:39Z",
-        "version": 2,
-        "commit": "4ec23b42fdf610d90c1ea32d88e26001688f3b5b"
+        "deployed_at": "2026-08-26T22:31:39Z",
+        "version": 3,
+        "commit": "851dd12dd45b6e6b207778c7f5f0a7918b6a131e"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
@@ -29,13 +29,13 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement",
-      "title": "Choose an optional improvement, request another proposal round, or declare the initiative dormant",
+      "id": "choose-next-refinement-after-alternative-coasts",
+      "title": "Choose another optional improvement, request another proposal round, or declare the initiative dormant",
       "state": "blocked",
       "value": "medium",
       "effort": "small",
       "advances_stage": false,
-      "blocked_by": "human:choose an optional improvement, request another proposal round, or declare the initiative dormant"
+      "blocked_by": "human:choose another optional improvement, request another proposal round, or declare the initiative dormant"
     }
   ]
 }

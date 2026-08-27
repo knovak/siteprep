@@ -96,3 +96,7 @@ Updated the user guide for the current Show selection and opt-in Show here workf
 ## 2026-08-26 — Release
 
 Released to production — ChatGPT Site, version 4, `4ec23b4`. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
+
+## 2026-08-26 — Choose an optional improvement, request another proposal round, or declare the initiative dormant
+
+Chose closest-first ambiguous results with a collapsed Alternative coasts override; implementation is in this pull request.
