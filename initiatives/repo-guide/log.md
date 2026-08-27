@@ -146,3 +146,14 @@ Passed. The simulator accurately explains the sweep and the whole lifecycle, and
 ## 2026-08-20 — Link the generated guide into the site so a newcomer can find it
 
 Done by a different route than the item was written for. The guide is published by hand into demos/ with the deploy-demo skill rather than linked into protected site navigation, so no permission was needed. The user will re-release when something significant changes. With no work remaining and no next round wanted, the initiative is declared dormant rather than left quiet.
+
+## 2026-08-27 — Cover test and production deployments in the guide
+
+Added a tenth section, "Getting the work in front of someone", with its own
+`deployment-environments` figure and two slides, so the guide describes the two
+environments every deployment has and which of them a person has to ask for. Two
+fact keys were registered for it - `deployments.environments` and
+`deployments.kinds` - and the figure draws its lane labels from the two
+deployment skills, so a rename fails generation rather than leaving the diagram
+describing something that no longer exists. Regenerated all three artifacts; the
+released copy under `demos/` is unchanged and awaits a deliberate release.

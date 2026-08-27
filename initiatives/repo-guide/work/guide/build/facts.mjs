@@ -373,6 +373,21 @@ export async function createFactRegistry(sourceConfig) {
       const module = await loadModule();
       return normaliseSet(readExport(module, 'PROPOSABLE_BLOCKERS', sources.initiativesModule), 'PROPOSABLE_BLOCKERS');
     })
+    .register('deployments.environments', moduleLabel, async () => {
+      const module = await loadModule();
+      return assertUniqueStrings(
+        readExport(module, 'DEPLOY_ENVIRONMENTS', sources.initiativesModule),
+        'DEPLOY_ENVIRONMENTS'
+      );
+    })
+    .register('deployments.kinds', moduleLabel, async () => {
+      const module = await loadModule();
+      const labels = assertObject(
+        readExport(module, 'DEPLOYMENT_LABELS', sources.initiativesModule),
+        'DEPLOYMENT_LABELS'
+      );
+      return assertUniqueStrings(Object.values(labels), 'DEPLOYMENT_LABELS values');
+    })
     .register('sweep.phases', sourceLabel(sources.root, sources.sweepConfig), async () => {
       const sweep = await loadSweep();
       return assertUniqueStrings(sweep.phases, 'sweep.phases');

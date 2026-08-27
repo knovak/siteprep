@@ -12,6 +12,9 @@ export const HUMAN_BLOCKERS = new Set([
 ]);
 export const PROPOSABLE_BLOCKERS = new Set(['person']);
 
+export const DEPLOY_ENVIRONMENTS = ['preview', 'live'];
+export const DEPLOYMENT_LABELS = { folder: 'Folder', widget: 'Widget' };
+
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   process.stdout.write('fixture CLI should not run during import\n');
 }

@@ -103,6 +103,11 @@ The same four skills the sweep uses are also how this work is done by hand:
 
 Together they cover starting work, settling what it is blocked on, iterating on it under review, and finishing it.
 
+Two further skills publish what an initiative builds - see Deployments below:
+
+- **`deploy-test`** - refreshes an initiative's test deployment. Any agent may run it, as often as the work needs.
+- **`release-initiative`** - writes the production deployment. Only a person asks for this, in their own words.
+
 ### Terminology
 
 Use these names, mirroring the Demos vocabulary above:
@@ -110,9 +115,12 @@ Use these names, mirroring the Demos vocabulary above:
 - **Initiative collection**: the `initiatives/` directory and its generated index.
 - **Initiative**: one immediate subdirectory of `initiatives/`.
 - **Initiative index page**: an initiative's own `index.html` overview.
-- **Initiative document**: a markdown file in an initiative - `wish.md`, `objectives.md`, `decisions.md`, `spec.md`, `plan.md`, `test-plan.md`, `overview.md`, `log.md`.
+- **Initiative document**: a markdown file in an initiative - `wish.md`, `objectives.md`, `decisions.md`, `spec.md`, `plan.md`, `test-plan.md`, `overview.md`, `log.md`, `releases.md`.
 - **Initiative capability**: a script or library an initiative develops, under its `lib/` or `prompts/`. A skill an initiative develops normally lives in `.claude/skills/` instead - see the Skills section - and stays under the initiative's `skills/` only when it is deliberately meant for that initiative alone.
 - **Initiative output**: a deck, demo, or external deployment an initiative produced.
+- **Initiative deployment**: one publishing target declared in `deployments[]`, with a test environment and a production environment.
+- **Deployment kind**: what a deployment publishes to - a ChatGPT Site, or a demo under `demos/`. The kind decides which environments exist and which engine deploys it.
+- **Test environment**: the disposable copy any agent may overwrite. **Production environment**: the copy only a release writes.
 
 Do not call an initiative a "deck" or a "demo", and do not apply deck or section conventions to content under an initiative's `work/` directory until it graduates.
 
@@ -120,7 +128,7 @@ Do not call an initiative a "deck" or a "demo", and do not apply deck or section
 
 ```
 initiatives/<initiative-name>/
-  initiative.json    # required - stage, value, outputs, todo list
+  initiative.json    # required - stage, value, outputs, deployments, todo list
   wish.md            # required - the original goal, in the user's own words
   objectives.md      # what "done" would mean
   decisions.md       # questions that were open, and how they were settled
@@ -129,6 +137,7 @@ initiatives/<initiative-name>/
   test-plan.md       # how we know it works
   overview.md        # optional hand-written narrative
   log.md             # append-only record of what happened
+  releases.md        # written by a production release, never by hand
   prompts/ notes/ work/ lib/
   skills/           # only for a skill deliberately scoped to this initiative
 ```
@@ -167,6 +176,51 @@ Output under development lives in the initiative's `work/`. It is not published 
 Most capability does not graduate with it. `lib/` and `prompts/` stay in the initiative, which is what makes revisiting cheap. A library that becomes useful to other initiatives or decks graduates a second time, into `shared/`.
 
 **Skills are the exception: they belong in `.claude/skills/` from the start.** A skill is invoked by name by a user working interactively, and a skill nothing discovers cannot be invoked at all - so filing one under an initiative is a deliberate choice meaning "for this initiative alone", not the default. See the Skills section above. A skill already sitting in an initiative's `skills/` that turns out to be generally useful moves to `.claude/skills/`; keeping its scripts with it and repointing their relative imports is the whole of that move.
+
+### Deployments
+
+An initiative that has something to publish declares it in `deployments[]` in
+`initiative.json`. Most initiatives never do, and one may develop for months
+before it does, so the block is absent by default and added when there is
+something to show.
+
+**Every deployment has two environments.** `test` is the disposable copy, and
+`prod` is the released one. That asymmetry is the point of the arrangement:
+
+- **`deploy-test` writes `test`, and any agent may run it** whenever the user
+  wants to look at the work - "deploy the test site", "let me see it" - as often
+  as a session needs. It is not a milestone and it records no history.
+- **`release-initiative` writes `prod`, and only a person asks for it**, in their
+  own words. A todo item, a schedule, a sweep, or a document saying a release is
+  due is a reason to *tell the user*, never a reason to release. When you are
+  unsure which was asked for, ask, and default to the test deployment.
+
+Both skills read the plan first - `node scripts/initiatives.mjs deployments
+<slug> plan --env test|prod` - and deploy with the engine the plan names.
+`deploy-to-chatgpt-sites` and `deploy-demo` are those engines: each writes
+exactly the target it is handed and has no opinion about environments. Do not
+call an engine directly to reach production; copying a folder into `demos/` *is*
+a production release.
+
+Rules that hold whatever the kind:
+
+- **A release comes from committed files.** `plan --env prod` exits non-zero when
+  the source directory has uncommitted changes or was never committed. Report the
+  blockers and stop - do not deploy around a non-zero exit.
+- **A Site is private unless the user says otherwise.** Either environment may be
+  public, but that is the user's decision in so many words, and a replacement
+  keeps whatever access the Site already has.
+- **`test` and `prod` may never resolve to the same target.** Site slugs follow
+  `<slug>-test` and `<slug>` so the URL itself says which one you are looking at.
+- **`deployed_at`, `version` and `commit` are written by the skills**, through
+  `deployments <slug> record`, never by hand. A production release also appends
+  to `releases.md` and adds one line to `log.md`.
+- **A demo has no test deployment to write.** Its test environment is the branch
+  preview that GitHub Pages publishes for the pushed branch, and both its URLs
+  are derived from the destination rather than recorded.
+
+`INITIATIVES_TECHDOC.md` has the schema, the validation rules, the subcommands,
+and the release-history behaviour.
 
 ## New decks and sections
 When adding a deck or section, it will usually refer to an area, such as a country, region, or city. Make sure the new page has:

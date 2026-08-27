@@ -278,6 +278,75 @@ function blockerTriage(facts) {
   };
 }
 
+
+// The two environments every deployment has, split by who may write them. The
+// environment names and the kinds come from the repository; the plain-language
+// headings fall back to the raw name, so a new environment still renders.
+const ENVIRONMENT_HEADINGS = {test: 'Test', prod: 'Production'};
+
+function deploymentEnvironments(facts) {
+  const environments = facts['deployments.environments'];
+  const kinds = facts['deployments.kinds'];
+  const [testName, prodName] = environments;
+  const lanes = [
+    {
+      name: testName,
+      variant: 'auto',
+      eyebrow: 'Written by any agent',
+      lines: [
+        'Refreshed whenever you want a look',
+        'Overwritten as often as needed',
+        'Keeps no history, marks nothing',
+      ],
+      skill: facts['skills.deploy-test'].name,
+    },
+    {
+      name: prodName,
+      variant: 'wait',
+      eyebrow: 'Written by a person',
+      lines: [
+        'Moves only when a person asks',
+        'Refuses an uncommitted source',
+        'Records the commit it shipped',
+      ],
+      skill: facts['skills.release-initiative'].name,
+    },
+  ];
+
+  const width = 720;
+  const laneWidth = 310;
+  const rightX = width - laneWidth;
+  const bodyTop = 86;
+  const lineHeight = 24;
+  const skillTop = bodyTop + lanes[0].lines.length * lineHeight + 4;
+  const laneHeight = skillTop + CHIP_HEIGHT + 18;
+  const height = laneHeight + 52;
+
+  const lane = (x, {name, variant, eyebrow, lines, skill}) => `
+    ${panel(x, 0, laneWidth, laneHeight, {variant})}
+    ${text(x + 18, 30, eyebrow, {variant: 'eyebrow'})}
+    ${text(x + 18, 58, ENVIRONMENT_HEADINGS[name] ?? name, {variant: 'heading'})}
+    ${lines.map((line, index) => `
+      <circle class="fig-dot fig-dot--${variant === 'wait' ? 'person' : 'agent'}" cx="${x + 24}" cy="${bodyTop + index * lineHeight - 4}" r="3.5"></circle>
+      ${text(x + 38, bodyTop + index * lineHeight, line)}`).join('')}
+    ${chip(x + 18, skillTop, skill, {variant: variant === 'wait' ? 'wait' : 'phase'})}`;
+
+  return {
+    uses: ['deployments.environments', 'deployments.kinds', 'skills.deploy-test', 'skills.release-initiative'],
+    html: svg({
+      width,
+      height,
+      title: `Every deployment has a ${testName} environment any agent may overwrite and a ${prodName} environment only a person releases. Both exist for every kind: ${kinds.join(' and ')}.`,
+      body: `${ARROW_DEFS}
+        ${lane(0, lanes[0])}
+        ${lane(rightX, lanes[1])}
+        ${arrow(laneWidth + 10, laneHeight / 2, rightX - 10, laneHeight / 2, {variant: 'person'})}
+        ${text(width / 2, laneHeight / 2 - 12, 'release', {variant: 'edge', anchor: 'middle'})}
+        ${text(0, height - 22, 'Both environments exist for every kind of deployment, whatever it publishes to.', {variant: 'caption'})}`,
+    }),
+  };
+}
+
 // What a fork carries away, and what it leaves behind.
 function forkBoundary(facts) {
   const protectedPaths = facts['sweep.protected_paths'];
@@ -365,6 +434,7 @@ export const FIGURES = {
   'division-of-labor': divisionOfLabour,
   'sweep-run': sweepRun,
   'blocker-triage': blockerTriage,
+  'deployment-environments': deploymentEnvironments,
   'fork-boundary': forkBoundary,
 };
 
