@@ -105,6 +105,9 @@
 <h3>2026-08-27 — Cover the whole record, and show the stage moving</h3>
 <p>The lifecycle section described only the documents the stage gates, so the wish, the decisions, the test plan and the log were missing from both renderings. Two things were wrong underneath it: <code>STAGE_DOCUMENTS</code> never expected <code>test-plan.md</code>, though the design has required it at that stage since the beginning, and nothing exposed the documents a stage does not gate. Fixed the first, exported <code>DOCUMENTS</code> for the second, and added a <code>documents</code> block view pairing each rendered page title with its file. The section gained a paragraph and a third slide.</p>
 <p>In the simulator, the stage now takes the active phase&#39;s orange on exactly the steps where it moved - badge and lifecycle track together - derived by comparing adjacent steps, so a move back down the lifecycle reads the same stepping either way.</p>
+<h3>2026-08-27 — Say what the two deployment kinds actually are</h3>
+<p>The kinds rendered as two bare chips - &quot;ChatGPT Site&quot; and &quot;Demo&quot; - which named them without telling a reader what either one is. Replaced in both renderings with prose saying what each kind is for, that the skills handle both, and that more kinds may follow. On the deck it becomes a slide of its own rather than a tail on the enforcement slide, which would have run past the copy limit.</p>
+<p>The kinds fact stays live: the <code>deployment-environments</code> figure still resolves it, so the section is not the only thing standing between a new kind and the guide noticing.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="claude/initiative-process-docs-e5y84m" data-root="../../">
