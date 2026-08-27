@@ -45,7 +45,7 @@ if (!baseUrl || !token) {
     },
     station: {id: station.id},
     timeZone: station.timeZone,
-    rows: fiveLocalDays('2026-01-15T00:00:00Z', station.timeZone),
+    rows: fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone),
   });
   const fesRows = fiveLocalDays('2025-06-01T10:00:00Z', 'Europe/Paris');
   const fes = await postForecast({

@@ -13,7 +13,7 @@ test('the offline importer reproduces the committed prepared artifact exactly', 
   const imported = importAustralianAnnualSource(australiaSourceSample);
   assert.deepEqual(imported, australiaPreparedSample);
   assert.equal(imported.stations.length, 3);
-  assert.equal(imported.events.length, 60);
+  assert.equal(imported.events.length, 4380);
   assert.equal(imported.dataset.isOfficial, false);
   assert.match(imported.dataset.attribution, /Synthetic Tide Here test fixture/);
 });
@@ -21,9 +21,9 @@ test('the offline importer reproduces the committed prepared artifact exactly', 
 test('local source times become UTC using each Australian port IANA zone', () => {
   const imported = importAustralianAnnualSource(australiaSourceSample);
   const eventAt = stationId => imported.events.find(event => event.stationId === stationId).at;
-  assert.equal(eventAt('au-sydney-sample'), '2026-01-14T15:20:00.000Z');
-  assert.equal(eventAt('au-darwin-sample'), '2026-01-14T16:10:00.000Z');
-  assert.equal(eventAt('au-fremantle-sample'), '2026-01-14T19:10:00.000Z');
+  assert.equal(eventAt('au-sydney-sample'), '2025-12-31T14:50:00.000Z');
+  assert.equal(eventAt('au-darwin-sample'), '2025-12-31T16:10:00.000Z');
+  assert.equal(eventAt('au-fremantle-sample'), '2025-12-31T19:10:00.000Z');
 });
 
 test('a source UTC offset must agree with the port time zone on that date', () => {
@@ -57,6 +57,7 @@ test('duplicate predictions and events outside the declared annual year are reje
   assert.throws(() => importAustralianAnnualSource(wrongYear), /does not match the source year/);
 
   const outsideCoverage = structuredClone(australiaSourceSample);
+  outsideCoverage.metadata.coverageEnd = '2026-01-31';
   outsideCoverage.ports[0].predictions[0].date = '2026-02-15';
   assert.throws(() => importAustralianAnnualSource(outsideCoverage), /outside the declared coverage/);
 });

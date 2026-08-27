@@ -13,7 +13,7 @@ function harness() {
   const store = new MemoryObjectStore();
   const app = createStageThreeApp({
     storeFactory: () => store,
-    now: () => new Date('2026-08-27T05:30:00Z'),
+    now: () => new Date('2026-08-27T23:15:00Z'),
   });
   return {app, store};
 }
@@ -24,7 +24,7 @@ async function initialize(app) {
   return response.json();
 }
 
-async function forecast(app, station, rows = fiveLocalDays('2026-01-15T00:00:00Z', station.timeZone)) {
+async function forecast(app, station, rows = fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone)) {
   return app.fetch(new Request('http://localhost/forecast', {
     method: 'POST',
     headers: {'content-type': 'application/json'},
@@ -44,7 +44,7 @@ async function forecast(app, station, rows = fiveLocalDays('2026-01-15T00:00:00Z
 
 test('Stage 3 initializes both datasets and activates its registry last without repeat writes', async () => {
   const store = new MemoryObjectStore();
-  const first = await initializeStageThree(store, {now: () => new Date('2026-08-27T05:30:00Z')});
+  const first = await initializeStageThree(store, {now: () => new Date('2026-08-27T23:15:00Z')});
   assert.equal(store.writeLog.at(-1), ACTIVE_REGISTRY_KEY);
   assert.equal(first.harmonic.created.length, 3);
   assert.equal(first.australia.created.length, 3);
@@ -69,9 +69,9 @@ test('health and the stored station catalogue name the exact Stage 3 data', asyn
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v1'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v2'});
   const australia = health.providers.find(provider => provider.id === 'australia-standard-ports');
-  assert.deepEqual(australia.dataset, {id: 'australia-standard-ports-sample', version: '2026-sample-v1'});
+  assert.deepEqual(australia.dataset, {id: 'australia-standard-ports-sample', version: '2026-sample-v2'});
   assert.equal(australia.status, 'fixture');
 
   const catalogueResponse = await app.fetch(new Request(
@@ -99,7 +99,9 @@ test('Sydney, Darwin and Fremantle return five source-matching local days in the
     assert.equal(result.sources[0].official, false);
     assert.equal(result.sources[0].dataClass, 'test-fixture');
     assert.equal(result.warnings[0].code, 'fixture-data');
-    const sourceFirst = australiaPreparedSample.events.find(event => event.stationId === station.id);
+    const sourceFirst = australiaPreparedSample.events.find(event => (
+      event.stationId === station.id && event.localDate === result.days[0].date
+    ));
     const resultFirst = result.days.flatMap(day => day.tides)[0];
     assert.deepEqual(
       [resultFirst.type, resultFirst.at, resultFirst.localTime, resultFirst.height],
@@ -108,15 +110,11 @@ test('Sydney, Darwin and Fremantle return five source-matching local days in the
   }
 });
 
-test('dates outside the loaded year and fixture coverage fail explicitly', async () => {
+test('dates outside the loaded year fail explicitly', async () => {
   const {app} = harness();
   await initialize(app);
   const station = australiaPreparedSample.stations[0];
   const outsideYear = await forecast(app, station, fiveLocalDays('2027-01-15T00:00:00Z', station.timeZone));
   assert.equal(outsideYear.status, 422);
   assert.equal((await outsideYear.json()).code, 'dataset-year-unavailable');
-
-  const outsideFixture = await forecast(app, station, fiveLocalDays('2026-02-01T00:00:00Z', station.timeZone));
-  assert.equal(outsideFixture.status, 422);
-  assert.equal((await outsideFixture.json()).code, 'dataset-date-unavailable');
 });

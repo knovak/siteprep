@@ -1,8 +1,9 @@
 # Phase 11: global coverage Stage 3
 
 Stage 3 implements the Australian Standard Ports preparation, storage,
-catalogue, and forecast path. It extends the Stage 2 provider gateway and does
-not change or deploy the current Tide Here page.
+catalogue, and forecast path. It extends the Stage 2 provider gateway. The
+Phase 6 page now consumes this path on the test Site through its stored-provider
+client while NOAA and CHS remain direct browser providers.
 
 ## What is complete
 
@@ -31,9 +32,10 @@ is added to the gateway.
 
 ## Fixture and production boundary
 
-The committed artifact is synthetic. It contains five days for sample entries
-named Sydney (Fort Denison), Darwin, and Fremantle so time-zone conversion and
-the complete stored-data path can be tested. It contains no Bureau of
+The committed artifact is synthetic. It contains a complete 2026 calendar year
+for sample entries named Sydney (Fort Denison), Darwin, and Fremantle so the
+current test Site, time-zone conversion, daylight-saving offsets, and complete
+stored-data path can be tested without expiring after five days. It contains no Bureau of
 Meteorology or Australian Hydrographic Office prediction values and cannot be
 selected by production provider selection. Every response says `fixture-data`.
 
@@ -63,5 +65,5 @@ request opens an SFTP connection or parses a publisher file.
 node --test initiatives/tide-here/work/phase-11/test/*.test.mjs
 ```
 
-There is still no `.openai/hosting.json`; R2 binding and deployment remain
-Stage 5 work.
+The R2 binding, protected initialization, and test deployment are documented in
+`../phase-13/README.md`.

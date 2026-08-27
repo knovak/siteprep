@@ -344,3 +344,18 @@ the fallback may be marked active.
 version 4. Initialization activated `stage-4-v1`; the repeat call wrote zero
 objects; 101 Tide Node tests passed in both the working tree and isolated Site
 source; the production Site was not changed.
+
+### 7.6 — Australian browser integration
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Combined coastal match | Sydney selects the stored Sydney test port while existing U.S. and Canadian fixtures still select their direct providers | Provider routing |
+| Stored request boundary | Only the selected Australian station, five coast-local rows, and forecast context go to the Site gateway | Request scope |
+| Coast-local rendering | The page shows five days in `Australia/Sydney` and retains browser-side astronomy | O3, O4, O5 |
+| Fixture disclosure | Both the result warning and prediction-source details say the Australian values are synthetic and non-official | Truthful coverage |
+| Partial failure | A failed stored-provider request retains place, coast, station, five day rows, and astronomy with `tides-unavailable` | O6 |
+| Privacy copy | The page says Australian test-port requests reach the Tide Here test service and that its operational logs exclude submitted names and coordinates | O8 |
+| Full-year fixture | The committed three-port fixture covers every date in 2026 with explicit IANA-zone offsets, including Sydney daylight-saving changes | Stable testability |
+
+Official Australian activation remains governed by §7.3's licence, attribution,
+source-comparison, and production-selection gates.

@@ -10,7 +10,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Tide Here home"><span aria-hidden="true">≈</span> Tide Here</a>
-    <p>Five coast-local days · NOAA and CHS prediction stations</p>
+    <p>Five coast-local days · U.S., Canada, and Australian test ports</p>
   </header>
 
   <main id="top">
@@ -18,7 +18,7 @@
       <form id="place-form" novalidate>
         <label for="place">Place or coordinates</label>
         <div class="search-row">
-          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, or 47.61, -122.33" autocomplete="off">
+          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, Sydney, or coordinates" autocomplete="off">
           <button id="show-selection" type="submit">Show selection</button>
           <button id="show-here" type="button" aria-describedby="location-note">Show here</button>
         </div>
@@ -72,7 +72,7 @@
       <summary>Debug record</summary>
       <div class="debug-record-content">
         <button id="show-history" type="button" class="secondary">Show local history</button>
-        <p class="privacy-copy"><strong>What leaves this device:</strong> Show here asks your browser for coordinates; browser and operating-system location handling is outside Tide Here. Those coordinates—or a place or coordinates you submit—go directly to the configured Nominatim geocoder. Tide Here then requests prediction-station lists, chosen station details, and the five-day time range directly from NOAA and CHS as needed. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
+        <p class="privacy-copy"><strong>What leaves this device:</strong> Show here asks your browser for coordinates; browser and operating-system location handling is outside Tide Here. Those coordinates—or a place or coordinates you submit—go directly to the configured Nominatim geocoder. U.S. and Canadian requests then go directly to NOAA or CHS. Australian test-port requests go to this Tide Here test service, whose operational logs exclude submitted names and coordinates. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
       </div>
     </details>
 

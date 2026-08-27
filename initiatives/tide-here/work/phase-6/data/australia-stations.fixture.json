@@ -1,0 +1,50 @@
+{
+  "provider": "australia-standard-ports",
+  "stations": [
+    {
+      "provider": "australia-standard-ports",
+      "country": "AU",
+      "id": "au-darwin-sample",
+      "code": "au-darwin-sample",
+      "name": "Darwin sample",
+      "latitude": -12.472,
+      "longitude": 130.846,
+      "jurisdiction": "AU-NT",
+      "timeZone": "Australia/Darwin",
+      "datum": "Chart datum (fixture label)",
+      "kind": "reference",
+      "referenceStationId": null,
+      "active": true
+    },
+    {
+      "provider": "australia-standard-ports",
+      "country": "AU",
+      "id": "au-fremantle-sample",
+      "code": "au-fremantle-sample",
+      "name": "Fremantle sample",
+      "latitude": -32.055,
+      "longitude": 115.744,
+      "jurisdiction": "AU-WA",
+      "timeZone": "Australia/Perth",
+      "datum": "Chart datum (fixture label)",
+      "kind": "reference",
+      "referenceStationId": null,
+      "active": true
+    },
+    {
+      "provider": "australia-standard-ports",
+      "country": "AU",
+      "id": "au-sydney-sample",
+      "code": "au-sydney-sample",
+      "name": "Sydney (Fort Denison) sample",
+      "latitude": -33.855,
+      "longitude": 151.225,
+      "jurisdiction": "AU-NSW",
+      "timeZone": "Australia/Sydney",
+      "datum": "Chart datum (fixture label)",
+      "kind": "reference",
+      "referenceStationId": null,
+      "active": true
+    }
+  ]
+}

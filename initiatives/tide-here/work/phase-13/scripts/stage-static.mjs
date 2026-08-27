@@ -23,6 +23,7 @@ const directories = [
   'phase-4/vendor',
   'phase-5/data',
   'phase-5/src',
+  'phase-6/data',
   'phase-6/src',
   'phase-7/src',
 ];

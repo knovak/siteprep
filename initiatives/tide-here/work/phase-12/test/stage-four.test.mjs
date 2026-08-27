@@ -73,7 +73,7 @@ test('health exposes the exact Australian and FES fixture versions', async () =>
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v1'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v2'});
   assert.deepEqual(
     health.providers.find(provider => provider.id === 'fes2022').dataset,
     {id: 'fes-shaped-global-sample', version: '2026-08-27'},
@@ -138,7 +138,7 @@ test('the Australian stored adapter remains available beside the fallback', asyn
     },
     station: {id: station.id},
     timeZone: station.timeZone,
-    rows: fiveLocalDays('2026-01-15T00:00:00Z', station.timeZone),
+    rows: fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone),
   });
   assert.equal(response.status, 200);
   assert.equal((await response.json()).station.provider, 'australia-standard-ports');

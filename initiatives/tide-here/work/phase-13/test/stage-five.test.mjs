@@ -39,7 +39,7 @@ test('hosted Stage 5 initialization is protected, exact and idempotent', async (
   assert.equal(second.status, 200);
   assert.equal(store.writeLog.length, writes);
   const health = await (await app.fetch(new Request('https://tide.example/health'), env)).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v1'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v2'});
 });
 
 test('operational logs contain route outcomes but never submitted locations', async () => {
