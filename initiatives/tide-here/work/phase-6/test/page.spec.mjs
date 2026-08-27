@@ -288,6 +288,7 @@ test('Sydney uses the stored Australian test port and keeps its fixture warning 
     });
   });
   await page.goto(`${pagePath}&place=Sydney`);
+  await expect(page.locator('#fixture-note')).toContainText(/Australian test-port predictions still come from this Tide Here test service/i);
   await expect(page.locator('#result')).toBeVisible();
   await expect(page.locator('#coast-name')).toContainText('Sydney');
   await expect(page.locator('#station-kind')).toContainText('Australian test port');
