@@ -104,3 +104,7 @@ Chose closest-first ambiguous results with a collapsed Alternative coasts overri
 ## 2026-08-27 — Release
 
 Released to production — ChatGPT Site, version 5, `60fdfcc`. 2 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
+
+## 2026-08-27 — Choose another optional improvement, request another proposal round, or declare the initiative dormant
+
+Recommended concise in-page coverage and alternative-coast help as the smallest evidence-aligned follow-up after shipping closest-first alternatives.

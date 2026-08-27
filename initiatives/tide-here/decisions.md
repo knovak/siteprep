@@ -104,3 +104,47 @@ the results to choose a different one.
   catalogue request.
 - This does not establish that straight-line distance identifies the most
   relevant side of an island, inlet, estuary, or international boundary.
+
+## 2026-08-27 — What should be the next refinement after Alternative coasts?
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A — Replace the schematic alternatives view with a geographic coast map** | Adds land, channel, island, and border context to the newly shipped Alternative coasts control | Medium-sized; adds map data or tile-request privacy and attribution work; no observed case yet shows that the current candidate list is hard to interpret |
+| **B — Pin a few places on this device** | Makes repeat visits faster and remains local-only | Adds another local-data lifecycle without evidence that repeated entry is the main friction |
+| **C — Add concise coverage and Alternative coasts help on the page** | Explains the U.S./Canadian boundary, closest-first behavior, and manual override at the point of use; small and directly complements the shipped refinement | Adds copy to an already compact page and must stay synchronized with the README and live behavior |
+| **D — Add another official tide-provider adapter** | Expands usefulness beyond U.S. and Canadian coasts and exercises the provider registry | Large; requires a selected country plus fresh evidence for licensing, attribution, CORS, station semantics, and reliable five-day high/low access |
+| **E — Request another proposal round** | Leaves room for new usage evidence or a new idea | Produces no user-visible improvement now |
+| **F — Declare the initiative dormant** | Recognizes that the first-version objectives and the selected Alternative coasts refinement are shipped | Only the user may declare dormancy, and first-time visitors still have little explanation of coverage and closest-first behavior |
+
+### Recommendation
+
+**Recommendation: choose C — add concise coverage and Alternative coasts help
+on the page.** It is the smallest remaining option tied to visible current
+behavior: Alternative coasts now exists, while its coverage boundary and
+closest-first default are explained mainly in the README rather than at the
+moment someone encounters them. The help should stay collapsed so it does not
+displace the forecast on a phone.
+
+### What would change the answer
+
+- A real island, inlet, estuary, or border case where the candidate list is
+  hard to interpret would favor A.
+- Evidence that people repeatedly re-enter the same places would favor B.
+- A concrete need outside U.S. and Canadian coverage, paired with a viable
+  official feed, would favor D.
+- Materially different usage evidence or a new idea would justify E.
+- If the live page already feels complete and no refinement is wanted, F is
+  correct.
+
+### What this settles, and what it does not
+
+- Merging this proposal makes `inline-coverage-help` actionable; it does not
+  implement the help.
+- The implementation should explain current behavior, not change the 25 km,
+  60%, or 150 km matcher thresholds or the closest-first selection.
+- The page should keep the forecast prominent at phone widths and use wording
+  consistent with the user-facing README and privacy disclosure.
+- Disagreement is one line: comment `Choose A`, `Choose B`, `Choose D`,
+  `Choose E`, or `Choose F` and the proposal can be revised to that option.
