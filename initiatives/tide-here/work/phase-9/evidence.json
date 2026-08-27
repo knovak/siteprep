@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-27T04:43:21Z",
+  "stage": "global-coverage-stage-1",
+  "deployment": null,
+  "storage": {
+    "adapter": "R2-compatible object store",
+    "firstInitializationWrites": 3,
+    "repeatedInitializationWrites": 0,
+    "activationWriteIsLast": true,
+    "hostedInitializerRequiresToken": true,
+    "versionedObjectsAreImmutable": true
+  },
+  "forecast": {
+    "datasetId": "ticon3-brest-pyfes-example",
+    "datasetVersion": "2026-08-26",
+    "dataClass": "test-fixture",
+    "isFes2022": false,
+    "engine": "@neaps/tide-predictor 0.11.0",
+    "nodeCorrections": "schureman",
+    "rangeStart": "2025-06-01T00:00:00Z",
+    "rangeDays": 5,
+    "eventCount": 19
+  },
+  "pyfesComparison": {
+    "sourceUrl": "https://cnes.github.io/aviso-fes/auto_examples/ex_constituents_prediction.html",
+    "comparedEvents": 10,
+    "timeToleranceMinutes": 6,
+    "heightToleranceCm": 5,
+    "maxTimeDifferenceMinutes": 5.393033333333333,
+    "maxHeightDifferenceCm": 3.6776431013907143,
+    "passed": true
+  },
+  "tests": {
+    "passed": 12,
+    "failed": 0
+  },
+  "limitations": [
+    "The committed fixture contains TICON-3 Brest constituents, not FES2022 data.",
+    "No AVISO data was downloaded, processed, redistributed, or deployed.",
+    "Production accuracy remains a Stage 4 gate against licensed FES tiles and held-out official ports."
+  ]
+}

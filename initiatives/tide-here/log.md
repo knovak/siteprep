@@ -96,3 +96,14 @@ Updated the user guide for the current Show selection and opt-in Show here workf
 ## 2026-08-26 — Choose an optional improvement, request another proposal round, or declare the initiative dormant
 
 Chose closest-first ambiguous results with a collapsed Alternative coasts override; implementation is in this pull request.
+
+## 2026-08-26 — Plan global tide coverage and complete its Stage 1 feasibility spike
+
+Added the U.S./Canada, Australian Standard Ports, and FES2022 refinement plan,
+with a protected idempotent `/init` and version health check at every
+data-bearing stage. Implemented the first R2-shaped storage boundary, immutable
+versioned dataset manifests, activate-last initialization, nearest harmonic
+point lookup, and five-day high/low calculation. The committed data is plainly
+identified as a non-FES TICON-3 Brest fixture. Twelve focused tests pass, and
+the first five highs and lows remain within six minutes and five centimetres of
+the results published in the official PyFES example. Nothing was deployed.

@@ -257,3 +257,22 @@ accident:
   limit that matters is the one we owe Nominatim, and that is §4.5's row.
 - **"Compact and cheerful."** §2's manual row, once. A test that claimed to
   measure it would be measuring something else.
+
+## 7. Global tide coverage refinement
+
+### 7.1 — Storage and harmonic feasibility spike
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Protected initializer | Hosted `POST /init` is rejected without the configured token; loopback development can initialize without a secret | `plan.md` §8.1 |
+| Idempotent initialization | The first call writes the tile, dataset manifest, and active pointer; the second call performs no writes | Stored-data repeatability |
+| Activate last | The active pointer is the final write, so an incomplete import never becomes current | Rollback and partial-upload safety |
+| Health before and after | `/health` is not ready before initialization and names the exact active dataset afterwards | Operability |
+| Missing or distant point | A missing tile or a request beyond the fixture's declared radius fails explicitly | No invented coverage |
+| Five-day extremes | A five-day request returns ordered, finite high/low events from the stored constituent tile | Runtime feasibility |
+| Independent PyFES comparison | The first five highs and lows for the official Brest example are within 6 minutes and 5 cm of the published PyFES results | Engine feasibility, not FES accuracy |
+| Fixture truthfulness | Responses and manifests say the committed tile is TICON-3 test data, not FES2022 | Provenance |
+
+The comparison tolerance includes PyFES's published ten-minute sampling. It is
+only a gate for continuing to a real FES ingest. Production tolerances are a
+stage-4 decision made against licensed FES tiles and held-out official ports.
