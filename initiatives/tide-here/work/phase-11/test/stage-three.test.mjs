@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
+import {matchCoast} from '../../phase-2/src/coastal-match.mjs';
 import {MemoryObjectStore} from '../../phase-9/src/object-store.mjs';
 import {ACTIVE_REGISTRY_KEY, selectProvider} from '../../phase-10/src/provider-registry.mjs';
 import {australiaPreparedSample} from '../fixtures/australia-prepared-sample.mjs';
@@ -69,9 +70,9 @@ test('health and the stored station catalogue name the exact Stage 3 data', asyn
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v2'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v3'});
   const australia = health.providers.find(provider => provider.id === 'australia-standard-ports');
-  assert.deepEqual(australia.dataset, {id: 'australia-standard-ports-sample', version: '2026-sample-v2'});
+  assert.deepEqual(australia.dataset, {id: 'australia-standard-ports-sample', version: '2026-sample-v3'});
   assert.equal(australia.status, 'fixture');
 
   const catalogueResponse = await app.fetch(new Request(
@@ -79,12 +80,17 @@ test('health and the stored station catalogue name the exact Stage 3 data', asyn
   ));
   assert.equal(catalogueResponse.status, 200);
   const catalogue = await catalogueResponse.json();
-  assert.deepEqual(catalogue.stations.map(station => station.timeZone).sort(), [
-    'Australia/Darwin', 'Australia/Perth', 'Australia/Sydney',
+  assert.equal(catalogue.stations.length, 23);
+  assert.deepEqual([...new Set(catalogue.stations.map(station => station.jurisdiction))].sort(), [
+    'AU-NSW', 'AU-NT', 'AU-QLD', 'AU-SA', 'AU-TAS', 'AU-VIC', 'AU-WA',
+  ]);
+  assert.deepEqual([...new Set(catalogue.stations.map(station => station.timeZone))].sort(), [
+    'Australia/Adelaide', 'Australia/Brisbane', 'Australia/Darwin', 'Australia/Hobart',
+    'Australia/Melbourne', 'Australia/Perth', 'Australia/Sydney',
   ]);
 });
 
-test('Sydney, Darwin and Fremantle return five source-matching local days in the normalized shape', async () => {
+test('all 23 Australian coastal samples return five source-matching local days in the normalized shape', async () => {
   const {app} = harness();
   await initialize(app);
   for (const station of australiaPreparedSample.stations) {
@@ -107,6 +113,27 @@ test('Sydney, Darwin and Fremantle return five source-matching local days in the
       [resultFirst.type, resultFirst.at, resultFirst.localTime, resultFirst.height],
       [sourceFirst.type, sourceFirst.at, sourceFirst.sourceLocalTime, sourceFirst.height],
     );
+  }
+});
+
+test('major coastal-city searches resolve around the Australian mainland and Tasmania', () => {
+  const places = [
+    ['Brisbane', -27.4698, 153.0251, 'au-brisbane-sample'],
+    ['Cairns', -16.9186, 145.7781, 'au-cairns-sample'],
+    ['Sydney', -33.8688, 151.2093, 'au-sydney-sample'],
+    ['Melbourne', -37.8136, 144.9631, 'au-melbourne-sample'],
+    ['Hobart', -42.8821, 147.3272, 'au-hobart-sample'],
+    ['Adelaide', -34.9285, 138.6007, 'au-adelaide-sample'],
+    ['Perth', -31.9523, 115.8613, 'au-fremantle-sample'],
+    ['Broome', -17.9614, 122.2359, 'au-broome-sample'],
+    ['Darwin', -12.4634, 130.8456, 'au-darwin-sample'],
+    ['Weipa', -12.6493, 141.8536, 'au-weipa-sample'],
+  ];
+  const config = {automaticKm: 25, clarityRatio: 0.6, maximumKm: 150, maxChoices: 3};
+  for (const [name, latitude, longitude, expectedId] of places) {
+    const match = matchCoast({latitude, longitude}, australiaPreparedSample.stations, config);
+    assert.notEqual(match.status, 'coverage-unavailable', name);
+    assert.equal(match.station?.id ?? match.candidates[0]?.id, expectedId, name);
   }
 });
 

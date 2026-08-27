@@ -35,18 +35,21 @@ if (!baseUrl || !token) {
   }
 
   const catalogue = await request('/stations?provider=australia-standard-ports');
-  const station = catalogue.stations[0];
-  const australia = await postForecast({
-    provider: 'australia-standard-ports',
-    context: {
-      input: {display: station.name},
-      place: {name: station.name, lat: station.latitude, lon: station.longitude},
-      coast: {name: station.name, distanceKm: 0},
-    },
-    station: {id: station.id},
-    timeZone: station.timeZone,
-    rows: fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone),
-  });
+  let australianEvents = 0;
+  for (const station of catalogue.stations) {
+    const australia = await postForecast({
+      provider: 'australia-standard-ports',
+      context: {
+        input: {display: station.name},
+        place: {name: station.name, lat: station.latitude, lon: station.longitude},
+        coast: {name: station.name, distanceKm: 0},
+      },
+      station: {id: station.id},
+      timeZone: station.timeZone,
+      rows: fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone),
+    });
+    australianEvents += australia.days.flatMap(day => day.tides).length;
+  }
   const fesRows = fiveLocalDays('2025-06-01T10:00:00Z', 'Europe/Paris');
   const fes = await postForecast({
     provider: 'fes2022',
@@ -74,7 +77,8 @@ if (!baseUrl || !token) {
     repeatInitializationWrites: writeCount(second),
     registry: health.registry,
     providers: providers.providers.map(provider => `${provider.id}:${provider.status}`),
-    australianEvents: australia.days.flatMap(day => day.tides).length,
+    australianStations: catalogue.stations.length,
+    australianEvents,
     fallbackEvents: fes.days.flatMap(day => day.tides).length,
     fallbackWarnings: fes.warnings.map(warning => warning.code),
     page: 'ok',

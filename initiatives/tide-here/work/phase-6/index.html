@@ -10,7 +10,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Tide Here home"><span aria-hidden="true">≈</span> Tide Here</a>
-    <p>Five coast-local days · U.S., Canada, and Australian test ports</p>
+    <p>Five coast-local days · U.S., Canada, and major Australian coasts</p>
   </header>
 
   <main id="top">
@@ -18,7 +18,7 @@
       <form id="place-form" novalidate>
         <label for="place">Place or coordinates</label>
         <div class="search-row">
-          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, Sydney, or coordinates" autocomplete="off">
+          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, Brisbane, or coordinates" autocomplete="off">
           <button id="show-selection" type="submit">Show selection</button>
           <button id="show-here" type="button" aria-describedby="location-note">Show here</button>
         </div>
@@ -42,6 +42,7 @@
             <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
           </dl>
           <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
+          <p id="fixture-location-notice" class="fixture-location-notice" hidden></p>
         </div>
       </details>
       <div id="warnings" class="warnings"></div>

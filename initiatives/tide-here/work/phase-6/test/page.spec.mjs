@@ -246,7 +246,7 @@ test('location denial leaves the manual selection untouched', async ({ page }) =
   await expect(page.locator('#state-panel')).toContainText(/allow location for this Site/i);
 });
 
-test('Sydney uses the stored Australian test port and keeps its fixture warning visible', async ({ page }) => {
+test('Brisbane uses a stored Australian test port and keeps its fixture notice inside the location dropdown', async ({ page }) => {
   await page.route('**/forecast', async (route) => {
     const request = route.request().postDataJSON();
     expect(request.provider).toBe('australia-standard-ports');
@@ -254,7 +254,7 @@ test('Sydney uses the stored Australian test port and keeps its fixture warning 
       provider: request.provider,
       country: 'AU',
       id: request.station.id,
-      name: 'Sydney (Fort Denison) sample',
+      name: 'Brisbane sample',
       kind: 'reference',
       datum: 'Chart datum (fixture label)',
       referenceStationId: null,
@@ -287,17 +287,24 @@ test('Sydney uses the stored Australian test port and keeps its fixture warning 
       }),
     });
   });
-  await page.goto(`${pagePath}&place=Sydney`);
+  await page.goto(`${pagePath}&place=Brisbane`);
   await expect(page.locator('#fixture-note')).toContainText(/Australian test-port predictions still come from this Tide Here test service/i);
   await expect(page.locator('#result')).toBeVisible();
-  await expect(page.locator('#coast-name')).toContainText('Sydney');
+  await expect(page.locator('#coast-name')).toContainText('Brisbane');
   await expect(page.locator('#station-kind')).toContainText('Australian test port');
-  await expect(page.locator('#zone-name')).toHaveText('Australia/Sydney');
+  await expect(page.locator('#zone-name')).toHaveText('Australia/Brisbane');
   await expect(page.locator('.day-card')).toHaveCount(5);
   await expect(page.locator('.event-group li')).toHaveCount(20);
-  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'fixture-data');
-  await expect(page.locator('#state-panel')).toContainText(/synthetic fixture data, not official tide predictions/i);
-  await expect(page.locator('#state-action')).toBeHidden();
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await expect(page.locator('#warnings [data-code="fixture-data"]')).toHaveCount(0);
+  const identity = page.locator('.identity-card');
+  const fixtureNotice = page.locator('#fixture-location-notice');
+  await expect(identity).not.toHaveAttribute('open', '');
+  await expect(fixtureNotice).toBeHidden();
+  await identity.locator('summary').click();
+  await expect(fixtureNotice).toBeVisible();
+  await expect(fixtureNotice).toHaveText('Australian test-port results use synthetic fixture data, not official tide predictions.');
+  await expect(identity.locator('.identity-details #fixture-location-notice')).toHaveCount(1);
   await page.locator('.source-details summary').click();
   await expect(page.locator('#source-copy')).toContainText(/Australian test port synthetic fixture/i);
   await page.locator('.debug-record summary').click();

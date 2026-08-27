@@ -83,6 +83,7 @@ function fixturePlace(input) {
   if (key === 'denver') return { name: 'Denver, Colorado, United States', lat: 39.7392, lon: -104.9903 };
   if (key === 'bainbridge') return { name: 'Bainbridge Island, Washington, United States', lat: 47.60835, lon: -122.5125 };
   if (key === 'halifax') return { name: 'Halifax, Nova Scotia, Canada', lat: 44.648618, lon: -63.5859487 };
+  if (key === 'brisbane') return { name: 'Brisbane, Queensland, Australia', lat: -27.4698, lon: 153.0251 };
   if (key === 'sydney') return { name: 'Sydney, New South Wales, Australia', lat: -33.8688, lon: 151.2093 };
   return { name: 'Seattle, Washington, United States', lat: 47.6062, lon: -122.3321 };
 }
@@ -376,7 +377,12 @@ function showForecast(forecast) {
     ? `${model.provider} synthetic fixture`
     : `${model.provider} predictions`;
   $('#source-copy').textContent = `${sourceLead} · ${model.stationKind} station · heights in metres relative to ${model.datum}. Times are formatted explicitly in ${model.timeZone}.`;
-  $('#warnings').replaceChildren(...model.warnings.map((warning) => {
+  const fixtureWarning = model.warnings.find((warning) => warning.code === 'fixture-data');
+  const locationNotice = $('#fixture-location-notice');
+  locationNotice.textContent = fixtureWarning?.message ?? '';
+  locationNotice.hidden = !fixtureWarning;
+  const externalWarnings = model.warnings.filter((warning) => warning.code !== 'fixture-data');
+  $('#warnings').replaceChildren(...externalWarnings.map((warning) => {
     const box = document.createElement('div');
     box.className = 'warning';
     box.dataset.code = warning.code;
@@ -385,9 +391,9 @@ function showForecast(forecast) {
   }));
   $('#day-cards').replaceChildren(...model.days.map(dayCard));
   $('#result').hidden = false;
-  if (model.warnings.length) showState(model.warnings[0].code, {
+  if (externalWarnings.length) showState(externalWarnings[0].code, {
     focus: false,
-    actionable: model.warnings[0].code !== 'fixture-data'
+    actionable: true
   });
   else if (forcedState === 'no-event') showState('no-event', { focus: false, actionable: false });
   else $('#state-panel').hidden = true;

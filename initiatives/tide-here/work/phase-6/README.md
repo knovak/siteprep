@@ -42,13 +42,20 @@ port is sent through `src/stored-tide-client.mjs` to the Site's `/forecast`
 gateway; U.S. and Canadian forecasts remain direct browser requests. The
 Australian response is enriched with sun and moon events in the browser just
 like the existing adapters, uses the port's IANA zone, and is visibly labelled
-as synthetic fixture data rather than an official prediction.
+as synthetic fixture data rather than an official prediction. That disclosure
+is inside the collapsed selected-location card, alongside the entered place,
+resolved place, station, and time zone; it is not repeated as a page-level
+status or warning card.
 
 The page loads the complete NOAA and CHS prediction-station catalogues on the
 first uncached search, then loads metadata only for the selected station so
 matching and civil-time formatting are not limited to the recorded validation
-places. The Australian test catalogue currently contains Sydney (Fort Denison),
-Darwin, and Fremantle sample ports.
+places. The Australian test catalogue currently contains 23 samples around the
+major coastal regions of Queensland, New South Wales, Victoria, Tasmania,
+South Australia, Western Australia, and the Northern Territory: Brisbane,
+Cairns, Townsville, Mackay, Gladstone, Coffs Harbour, Sydney, Melbourne,
+Hobart, Adelaide, Port Lincoln, Ceduna, Esperance, Albany, Fremantle,
+Geraldton, Carnarvon, Dampier, Port Hedland, Broome, Darwin, Gove, and Weipa.
 The safety notice precedes the collapsed **Prediction source details**
 disclosure. When the match is ambiguous, **Alternative coasts** follows the
 forecast and starts collapsed. A separate collapsed **Debug record** disclosure
@@ -78,6 +85,7 @@ all eight service states, focus movement, text labels, datum details, safety
 line, and serious accessibility findings. A separate viewport matrix covers widths from 320 to
 1600 pixels and fails on horizontal clipping, an unexpected card count, or the
 first two tide days not fitting in the Pro Max viewport. It also verifies that
-Sydney selects the stored Australian provider, preserves `Australia/Sydney`,
-shows five tide days, discloses the synthetic-data warning, and accurately
-describes the Australian server privacy boundary.
+Brisbane selects the stored Australian provider, preserves
+`Australia/Brisbane`, shows five tide days, keeps the synthetic-data disclosure
+inside the selected-location card, and accurately describes the Australian
+server privacy boundary.

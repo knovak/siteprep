@@ -33,11 +33,16 @@ is added to the gateway.
 ## Fixture and production boundary
 
 The committed artifact is synthetic. It contains a complete 2026 calendar year
-for sample entries named Sydney (Fort Denison), Darwin, and Fremantle so the
-current test Site, time-zone conversion, daylight-saving offsets, and complete
-stored-data path can be tested without expiring after five days. It contains no Bureau of
-Meteorology or Australian Hydrographic Office prediction values and cannot be
-selected by production provider selection. Every response says `fixture-data`.
+for 23 samples around the major coastal regions of every Australian coastal
+state and the Northern Territory: Brisbane, Cairns, Townsville, Mackay,
+Gladstone, Coffs Harbour, Sydney, Melbourne, Hobart, Adelaide, Port Lincoln,
+Ceduna, Esperance, Albany, Fremantle, Geraldton, Carnarvon, Dampier, Port
+Hedland, Broome, Darwin, Gove, and Weipa. This lets the current test Site,
+time-zone conversion, daylight-saving offsets, nationwide coastal matching,
+and complete stored-data path be tested without expiring after five days. It
+contains no Bureau of Meteorology or Australian Hydrographic Office prediction
+values and cannot be selected by production provider selection. Every response
+says `fixture-data`.
 
 This completes the Stage 3 implementation path, but not official Australian
 activation. That requires a licensed machine-readable annual source, confirmed

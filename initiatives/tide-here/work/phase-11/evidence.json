@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-27T23:15:00Z",
+  "checkedAt": "2026-08-27T23:49:00Z",
   "stage": "global-coverage-stage-3",
   "deployment": null,
   "implementation": {
@@ -14,24 +14,28 @@
   },
   "fixture": {
     "datasetId": "australia-standard-ports-sample",
-    "datasetVersion": "2026-sample-v2",
+    "datasetVersion": "2026-sample-v3",
     "year": 2026,
     "coverageStart": "2026-01-01",
     "coverageEnd": "2026-12-31",
-    "ports": 3,
-    "events": 4380,
+    "ports": 23,
+    "events": 33580,
     "timeZones": [
-      "Australia/Sydney",
+      "Australia/Adelaide",
+      "Australia/Brisbane",
       "Australia/Darwin",
-      "Australia/Perth"
+      "Australia/Hobart",
+      "Australia/Melbourne",
+      "Australia/Perth",
+      "Australia/Sydney"
     ],
     "dataClass": "test-fixture",
     "official": false
   },
   "tests": {
-    "stageTestsPassed": 10,
+    "stageTestsPassed": 11,
     "stageTestsFailed": 0,
-    "stagesOneThroughThreePassed": 32
+    "stagesOneThroughThreePassed": 33
   },
   "productionActivation": {
     "ready": false,

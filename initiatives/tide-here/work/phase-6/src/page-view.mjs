@@ -5,7 +5,7 @@ const STATE_ACTIONS = Object.freeze({
   'invalid-input': 'Edit the entry',
   'place-not-found': 'Edit and try again',
   'geocoder-unavailable': 'Retry place lookup',
-  'coverage-unavailable': 'Try a U.S. or Canadian coast',
+  'coverage-unavailable': 'Try another supported coast',
   'coast-choice-required': 'Review alternative coasts',
   'tides-unavailable': 'Retry tide predictions',
   'astronomy-unavailable': 'Retry sun and moon',

@@ -12,8 +12,8 @@ import {
 test('the offline importer reproduces the committed prepared artifact exactly', () => {
   const imported = importAustralianAnnualSource(australiaSourceSample);
   assert.deepEqual(imported, australiaPreparedSample);
-  assert.equal(imported.stations.length, 3);
-  assert.equal(imported.events.length, 4380);
+  assert.equal(imported.stations.length, 23);
+  assert.equal(imported.events.length, 33580);
   assert.equal(imported.dataset.isOfficial, false);
   assert.match(imported.dataset.attribution, /Synthetic Tide Here test fixture/);
 });
@@ -21,14 +21,16 @@ test('the offline importer reproduces the committed prepared artifact exactly', 
 test('local source times become UTC using each Australian port IANA zone', () => {
   const imported = importAustralianAnnualSource(australiaSourceSample);
   const eventAt = stationId => imported.events.find(event => event.stationId === stationId).at;
+  assert.equal(eventAt('au-brisbane-sample'), '2025-12-31T15:50:00.000Z');
   assert.equal(eventAt('au-sydney-sample'), '2025-12-31T14:50:00.000Z');
   assert.equal(eventAt('au-darwin-sample'), '2025-12-31T16:10:00.000Z');
   assert.equal(eventAt('au-fremantle-sample'), '2025-12-31T19:10:00.000Z');
+  assert.equal(eventAt('au-adelaide-sample'), '2025-12-31T15:05:00.000Z');
 });
 
 test('a source UTC offset must agree with the port time zone on that date', () => {
   const source = structuredClone(australiaSourceSample);
-  source.ports[0].predictions[0].utcOffset = '+10:00';
+  source.ports.find(port => port.id === 'au-sydney-sample').predictions[0].utcOffset = '+10:00';
   assert.throws(() => importAustralianAnnualSource(source), /does not match Australia\/Sydney/);
 });
 

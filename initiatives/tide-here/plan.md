@@ -432,10 +432,11 @@ year/version only after validation succeeds.
 outside the loaded year fail explicitly rather than falling through silently.
 
 **Status, 2026-08-27:** the implementation path is complete in
-`work/phase-11` against a plainly synthetic three-port fixture. Official
-activation remains blocked on a licensed machine-readable annual source,
-confirmed reuse terms, and source-table comparison. No Bureau or AHO prediction
-values were copied or scraped.
+`work/phase-11` against a plainly synthetic 23-port fixture spanning the major
+coastal regions of every Australian coastal state and the Northern Territory.
+Official activation remains blocked on a licensed machine-readable annual
+source, confirmed reuse terms, and source-table comparison. No Bureau or AHO
+prediction values were copied or scraped.
 
 #### Stage 4 — FES2022 global fallback
 

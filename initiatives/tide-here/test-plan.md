@@ -296,11 +296,12 @@ stage-4 decision made against licensed FES tiles and held-out official ports.
 |---|---|---|
 | Offline import is reproducible | Importing the source fixture exactly reproduces the committed prepared artifact | Preparation drift |
 | Licence metadata gate | A non-fixture source or prepared artifact without source and licence metadata is rejected | Legal/data boundary |
-| Port-local conversion | Sydney, Darwin and Fremantle local source times become the expected UTC instants, and each explicit source offset must match its IANA zone on that date | O5 |
+| Port-local conversion | Brisbane, Sydney, Darwin, Fremantle, and Adelaide local source times become the expected UTC instants, and each explicit source offset must match its IANA zone on that date | O5 |
 | Data quality | Duplicate events, wrong-year events, invalid ports, zones, types and heights are rejected | Silent bad imports |
 | Stored initialization | The Australian artifact and manifest are immutable and checksum-valid; the Stage 3 registry activates last; repeat writes are zero | Deployment safety |
-| Catalogue | The stored catalogue returns all three normalized standard-port fixtures and their zones | Provider seam |
-| Forecast contract | Each fixture port returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
+| Catalogue | The stored catalogue returns 23 normalized coastal fixtures across all Australian coastal states and the Northern Territory, with seven IANA zones | Provider seam |
+| Coastal-region routing | Representative searches around the mainland and Tasmania resolve to a configured coastal sample within the supported radius | Nationwide test coverage |
+| Forecast contract | Each of the 23 fixture ports returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
 | Explicit date failure | A request outside the loaded year returns `dataset-year-unavailable` | No silent fallback |
 | Fixture cannot become production | Australian selection requires fixture opt-in until a licensed annual artifact changes the registry status | Truthful coverage |
 
@@ -349,13 +350,13 @@ source; the production Site was not changed.
 
 | Test | Pass condition | Protects |
 |---|---|---|
-| Combined coastal match | Sydney selects the stored Sydney test port while existing U.S. and Canadian fixtures still select their direct providers | Provider routing |
+| Combined coastal match | Brisbane and representative major coastal-city searches select stored Australian test ports while existing U.S. and Canadian fixtures still select their direct providers | Provider routing |
 | Stored request boundary | Only the selected Australian station, five coast-local rows, and forecast context go to the Site gateway | Request scope |
-| Coast-local rendering | The page shows five days in `Australia/Sydney` and retains browser-side astronomy | O3, O4, O5 |
-| Fixture disclosure | Both the result warning and prediction-source details say the Australian values are synthetic and non-official | Truthful coverage |
+| Coast-local rendering | The page shows five days in the selected port's IANA zone and retains browser-side astronomy | O3, O4, O5 |
+| Fixture disclosure | The selected-location dropdown and prediction-source details say the Australian values are synthetic and non-official; no duplicate page-level warning appears | Truthful coverage |
 | Partial failure | A failed stored-provider request retains place, coast, station, five day rows, and astronomy with `tides-unavailable` | O6 |
 | Privacy copy | The page says Australian test-port requests reach the Tide Here test service and that its operational logs exclude submitted names and coordinates | O8 |
-| Full-year fixture | The committed three-port fixture covers every date in 2026 with explicit IANA-zone offsets, including Sydney daylight-saving changes | Stable testability |
+| Full-year fixture | The committed 23-port fixture covers every date in 2026 with explicit IANA-zone offsets across all seven configured zones, including daylight-saving changes | Stable testability |
 
 Official Australian activation remains governed by §7.3's licence, attribution,
 source-comparison, and production-selection gates.
