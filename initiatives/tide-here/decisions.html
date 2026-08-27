@@ -67,6 +67,18 @@
 <p>  accept/ask/refuse outcome is evidence to reopen the thresholds.</p>
 <ul><li>This does not authorize public access, choose the final domain, or add a</li></ul>
 <p>  third-country provider.</p>
+<h3>2026-08-26 — What should happen when several coasts are plausible?</h3>
+<p><strong>Show the closest forecast immediately and offer the other candidates below it in a collapsed Alternative coasts section.</strong></p>
+<p>The person should always see the closest results. When the coastal matcher finds several plausible candidates, the page should not stop and require a choice before showing predictions. It should select the nearest candidate, display that forecast, and let the person expand <strong>Alternative coasts</strong> below the results to choose a different one.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Require a coast choice before forecasting</strong></td><td>Avoids making a silent judgement when distance cannot capture islands, inlets, or watersheds</td><td>Blocks the most likely result and adds friction before any useful information appears</td></tr><tr><td><strong>B — Loosen the ambiguity thresholds</strong></td><td>Makes more matches look unambiguous</td><td>Hides useful uncertainty and changes the reviewed matcher without better geographic evidence</td></tr><tr><td><strong>C — Show the closest forecast, with alternatives below</strong> <em>(chosen)</em></td><td>Gives an immediate useful result while preserving a clear manual override</td><td>The closest station is only a distance-based default and may not represent the best local water body</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The 25 km, 60%, and 150 km matcher thresholds remain unchanged.</li><li><code>coast-choice-required</code> remains an internal resolution state with ranked</li></ul>
+<p>  candidates, but it no longer renders as a blocking page state.</p>
+<ul><li>The nearest candidate is used only as the initial forecast. Choosing an</li></ul>
+<p>  alternative still reuses the existing resolution without another geocoder or   catalogue request.</p>
+<ul><li>This does not establish that straight-line distance identifies the most</li></ul>
+<p>  relevant side of an island, inlet, estuary, or international boundary.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
