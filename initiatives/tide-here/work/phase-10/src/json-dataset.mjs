@@ -128,6 +128,13 @@ export async function verifyDatasetVersion(store, reference) {
 export async function loadDatasetObject(store, reference, name) {
   const verified = await verifyDatasetVersion(store, reference);
   if (!verified.ready) return verified;
+  return loadVerifiedDatasetObject(store, verified, name);
+}
+
+export async function loadVerifiedDatasetObject(store, verified, name) {
+  if (!verified?.ready || !verified.manifest) {
+    return {ready: false, reason: 'dataset-not-verified', reference: verified?.reference, object: name};
+  }
   const entry = verified.manifest.objects?.find(object => object.name === name);
   if (!entry) return {ready: false, reason: 'dataset-object-not-declared', reference, object: name};
   const object = await store.get(entry.key);

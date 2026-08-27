@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-27T18:00:00Z",
+  "stage": "global-coverage-stage-4",
+  "deployment": null,
+  "implementation": {
+    "offlinePreparer": true,
+    "tileIndex": true,
+    "inventorySizesAndChecksums": true,
+    "immutableStoredTiles": true,
+    "landAndMissingCoverageFailure": true,
+    "normalizedApproximateForecast": true,
+    "protectedIdempotentInitializer": true,
+    "activationWriteIsLast": true
+  },
+  "fixture": {
+    "datasetId": "fes-shaped-global-sample",
+    "datasetVersion": "2026-08-27",
+    "tiles": 3,
+    "points": 3,
+    "dataClass": "test-fixture",
+    "isFes2022": false
+  },
+  "accuracy": {
+    "engineFeasibilityPassed": true,
+    "fes2022AccuracyEstablished": false,
+    "blockedBy": "Licensed FES2022 atlas files and credentials plus held-out official-port comparisons"
+  },
+  "tests": {
+    "stageTestsPassed": 11,
+    "stageTestsFailed": 0,
+    "stagesOneThroughFourPassed": 43
+  }
+}

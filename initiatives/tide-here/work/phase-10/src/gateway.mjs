@@ -30,6 +30,7 @@ function publicProviders(registry) {
 
 function errorStatus(error) {
   if (error.code === 'provider-not-found') return 404;
+  if (error.code === 'coverage-unavailable') return 404;
   if (error.code === 'direct-provider-required' || error.code === 'provider-not-ready') return 409;
   if (error.code === 'dataset-year-unavailable' || error.code === 'dataset-date-unavailable') return 422;
   if (error.code?.includes('unavailable') || error.code?.includes('mismatch')) return 503;
