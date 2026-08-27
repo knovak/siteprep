@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-27T05:50:00Z",
+  "stage": "global-coverage-stage-3",
+  "deployment": null,
+  "implementation": {
+    "offlineImporter": true,
+    "immutableStoredArtifact": true,
+    "stationCatalogue": true,
+    "normalizedForecastAdapter": true,
+    "protectedIdempotentInitializer": true,
+    "activationWriteIsLast": true,
+    "repeatInitializationWrites": 0
+  },
+  "fixture": {
+    "datasetId": "australia-standard-ports-sample",
+    "datasetVersion": "2026-sample-v1",
+    "year": 2026,
+    "coverageStart": "2026-01-15",
+    "coverageEnd": "2026-01-19",
+    "ports": 3,
+    "events": 60,
+    "timeZones": [
+      "Australia/Sydney",
+      "Australia/Darwin",
+      "Australia/Perth"
+    ],
+    "dataClass": "test-fixture",
+    "official": false
+  },
+  "tests": {
+    "stageTestsPassed": 10,
+    "stageTestsFailed": 0,
+    "stagesOneThroughThreePassed": 32
+  },
+  "productionActivation": {
+    "ready": false,
+    "blockedBy": "Licensed machine-readable Australian annual predictions, confirmed reuse terms, and official source comparisons",
+    "publicWebsiteScraped": false
+  }
+}

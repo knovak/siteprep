@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-27T05:50:00Z",
+  "stage": "global-coverage-stage-2",
+  "deployment": null,
+  "registry": {
+    "id": "tide-here-providers",
+    "version": "stage-2-v1",
+    "providers": {
+      "noaa": "active-browser-direct",
+      "chs": "active-browser-direct",
+      "australia-standard-ports": "planned-server-stored",
+      "fes2022": "fixture-server-stored"
+    },
+    "referencedDatasetsVerifiedBeforeActivation": true,
+    "activationWriteIsLast": true,
+    "repeatInitializationWrites": 0
+  },
+  "compatibility": {
+    "topLevelForecastShapeUnchanged": true,
+    "noaaAndChsRemainBrowserDirect": true,
+    "newNationalSourceRequiresGatewayBranch": false
+  },
+  "tests": {
+    "stageTestsPassed": 10,
+    "stageTestsFailed": 0,
+    "stagesOneAndTwoPassed": 22
+  }
+}

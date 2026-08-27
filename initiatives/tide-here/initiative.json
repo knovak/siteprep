@@ -21,13 +21,21 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement-after-alternative-coasts",
-      "title": "Choose another optional improvement, request another proposal round, or declare the initiative dormant",
+      "id": "activate-australian-standard-ports",
+      "title": "Activate the Stage 3 adapter with licensed annual Australian Standard Ports data",
       "state": "blocked",
-      "value": "medium",
-      "effort": "small",
+      "value": "high",
+      "effort": "medium",
       "advances_stage": false,
-      "blocked_by": "human:choose another optional improvement, request another proposal round, or declare the initiative dormant"
+      "blocked_by": "data:licensed machine-readable Australian annual predictions, confirmed reuse terms, and required attribution"
+    },
+    {
+      "id": "prepare-global-tides-stage-4",
+      "title": "Prepare the Stage 4 FES2022 ingestion harness and held-out validation set",
+      "state": "actionable",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": false
     }
   ]
 }

@@ -99,7 +99,7 @@ export async function initializeDataset(store, fixture, {now = () => new Date()}
     datasetManifest = {
       schema: 'tide-here/dataset-manifest/v1',
       dataset: fixture.dataset,
-      initializedAt: now().toISOString(),
+      preparedAt: fixture.dataset.preparedAt,
       tile: {key: tileKey, sha256: tileChecksum},
     };
   }

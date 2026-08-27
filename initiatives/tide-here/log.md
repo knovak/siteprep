@@ -107,3 +107,20 @@ point lookup, and five-day high/low calculation. The committed data is plainly
 identified as a non-FES TICON-3 Brest fixture. Twelve focused tests pass, and
 the first five highs and lows remain within six minutes and five centimetres of
 the results published in the official PyFES example. Nothing was deployed.
+
+## 2026-08-26 — Complete global coverage Stage 2 and the Stage 3 implementation path
+
+Added a versioned provider registry and shared stored-provider gateway. NOAA and
+CHS remain active direct-browser providers; Australian Standard Ports and the
+global fallback are registry descriptors rather than gateway branches, so a
+future Korean, Irish, or other national source can be added through the same
+contract. Registry initialization verifies every referenced dataset and writes
+its active pointer last.
+
+Added the offline Australian annual-source importer, immutable artifact
+storage, stored station catalogue, and normalized five-day adapter. Sydney,
+Darwin, and Fremantle fixtures exercise three IANA zones and explicit year/date
+coverage errors. The fixture is synthetic, cannot be selected in production,
+and contains no Bureau or Australian Hydrographic Office prediction values.
+Official activation remains blocked on licensed machine-readable annual data,
+confirmed reuse terms, and source comparisons. Nothing was deployed.

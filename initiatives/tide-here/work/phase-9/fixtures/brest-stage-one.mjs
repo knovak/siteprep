@@ -46,6 +46,7 @@ export const stageOneFixture = Object.freeze({
   dataset: {
     id: 'ticon3-brest-pyfes-example',
     version: '2026-08-26',
+    preparedAt: '2026-08-26T12:00:00.000Z',
     displayName: 'Brest TICON-3 Stage 1 fixture',
     dataClass: 'test-fixture',
     model: 'TICON-3 observed gauge constituents',

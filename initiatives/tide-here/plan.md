@@ -413,6 +413,10 @@ are present and checksum-valid.
 **Exit:** provider selection is configuration-driven, and existing U.S. and
 Canadian fixture, live, time-zone, and partial-result tests still pass.
 
+**Status, 2026-08-27:** implemented in `work/phase-10`. The registry and shared
+stored-provider gateway are complete; NOAA and CHS remain browser-direct, and a
+future national descriptor can be added without changing the gateway.
+
 #### Stage 3 — Australian Standard Ports
 
 **Produces:** an offline importer for the licensed annual Australian table, a
@@ -426,6 +430,12 @@ year/version only after validation succeeds.
 
 **Exit:** several Australian ports and time zones match the source table; dates
 outside the loaded year fail explicitly rather than falling through silently.
+
+**Status, 2026-08-27:** the implementation path is complete in
+`work/phase-11` against a plainly synthetic three-port fixture. Official
+activation remains blocked on a licensed machine-readable annual source,
+confirmed reuse terms, and source-table comparison. No Bureau or AHO prediction
+values were copied or scraped.
 
 #### Stage 4 — FES2022 global fallback
 

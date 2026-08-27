@@ -24,11 +24,15 @@ export function closestPoint(points, input) {
   return closest;
 }
 
-export function forecastFromTile(tileDocument, {latitude, longitude, start, days = 5}) {
+export function forecastFromTile(tileDocument, {latitude, longitude, start, end = null, days = 5}) {
   const startDate = new Date(start);
+  const requestedEndDate = end === null ? null : new Date(end);
   if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) throw new Error('Invalid latitude');
   if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) throw new Error('Invalid longitude');
   if (!Number.isFinite(startDate.getTime())) throw new Error('Invalid start instant');
+  if (requestedEndDate && (!Number.isFinite(requestedEndDate.getTime()) || requestedEndDate <= startDate)) {
+    throw new Error('Invalid end instant');
+  }
   if (!Number.isInteger(days) || days < 1 || days > 7) throw new Error('Days must be an integer from 1 to 7');
 
   const match = closestPoint(tileDocument.tile.points, {latitude, longitude});
@@ -38,7 +42,7 @@ export function forecastFromTile(tileDocument, {latitude, longitude, start, days
     throw error;
   }
 
-  const endDate = new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000);
+  const endDate = requestedEndDate ?? new Date(startDate.getTime() + days * 24 * 60 * 60 * 1000);
   const predictor = createTidePredictor(match.point.constituents, {
     nodeCorrections: 'schureman',
   });

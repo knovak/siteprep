@@ -276,3 +276,35 @@ accident:
 The comparison tolerance includes PyFES's published ten-minute sampling. It is
 only a gate for continuing to a real FES ingest. Production tolerances are a
 stage-4 decision made against licensed FES tiles and held-out official ports.
+
+### 7.2 — Provider registry and server boundary
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Registry validation | Provider ids are unique; status, execution, priority, coverage and stored-data requirements are valid | Extensibility |
+| Dataset references | Every non-planned stored provider points to a present checksum-valid dataset before activation | No dangling providers |
+| Registry activates last | Dataset initialization completes before the provider-registry active pointer changes | Atomic configuration |
+| Production selection | U.S. selects NOAA, Canada selects CHS, and fixture/planned providers are not selected without an explicit test opt-in | Existing coverage |
+| New national descriptor | A Korean test descriptor becomes selectable without a gateway code change | Future national sources |
+| Direct providers stay direct | Calling the server forecast route for NOAA or CHS returns `direct-provider-required` | Current browser boundary |
+| Stored response shape | The harmonic fixture returns the same eight top-level normalized forecast fields as NOAA and CHS | Adapter contract |
+| Idempotent `/init` | Repeating Stage 2 initialization performs no writes | Repeatable deployment |
+
+### 7.3 — Australian Standard Ports implementation
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Offline import is reproducible | Importing the source fixture exactly reproduces the committed prepared artifact | Preparation drift |
+| Licence metadata gate | A non-fixture source or prepared artifact without source and licence metadata is rejected | Legal/data boundary |
+| Port-local conversion | Sydney, Darwin and Fremantle local source times become the expected UTC instants, and each explicit source offset must match its IANA zone on that date | O5 |
+| Data quality | Duplicate events, wrong-year events, invalid ports, zones, types and heights are rejected | Silent bad imports |
+| Stored initialization | The Australian artifact and manifest are immutable and checksum-valid; the Stage 3 registry activates last; repeat writes are zero | Deployment safety |
+| Catalogue | The stored catalogue returns all three normalized standard-port fixtures and their zones | Provider seam |
+| Forecast contract | Each fixture port returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
+| Explicit date failure | A request outside the loaded year returns `dataset-year-unavailable`; a gap outside artifact coverage returns `dataset-date-unavailable` | No silent fallback |
+| Fixture cannot become production | Australian selection requires fixture opt-in until a licensed annual artifact changes the registry status | Truthful coverage |
+
+These tests complete the adapter implementation gate. Official Stage 3
+activation additionally requires the licensed annual artifact and comparison
+against its source table; the synthetic fixture is not evidence of Australian
+prediction accuracy.
