@@ -19,12 +19,12 @@ test('description opens offline with provenance, all sections, and resolvable so
   page.on('request', request => { if (/^https?:/i.test(request.url())) networkRequests.push(request.url()); });
   await page.goto(pathToFileURL(outputPath).href);
 
-  await expect(page.locator('main section')).toHaveCount(9);
+  await expect(page.locator('main section')).toHaveCount(10);
   await expect(page.locator('main section').first()).toHaveAttribute('id', 'repository');
   await expect(page.locator('main section').last()).toHaveAttribute('id', 'sources');
   await expect(page.locator('[data-audience="forker"]')).toHaveCount(1);
   await expect(page.locator('[data-audience="contributor"]')).toHaveCount(2);
-  await expect(page.locator('section .audience')).toHaveCount(9);
+  await expect(page.locator('section .audience')).toHaveCount(10);
 
   const footer = page.locator('footer');
   const sha = await footer.getAttribute('data-source-sha');
