@@ -42,6 +42,8 @@ An initiative holds three kinds of thing:
 - **A demo** — code that runs as a published example in `demos/`.
 - **Code that executes elsewhere** — AWS, a ChatGPT GPT/site, or any environment
   outside this repo. The initiative holds the source and a pointer to where it runs.
+  Anything published this way is declared as a *deployment* (§8.7), which gives it a
+  disposable test copy and a released production copy rather than a single live URL.
 - **Capability applied to existing content** — a skill, script, or library that gets
   embedded into a demo, or that *operates upon* decks (e.g. an auditor that checks
   every deck's map markers, or a generator that rebuilds a section).
@@ -139,6 +141,7 @@ initiatives/
     plan.md            # how it gets built, in steps
     test-plan.md       # how we know it works
     log.md             # append-only record of what happened and when
+    releases.md        # written by a production release, never by hand (§8.7)
     prompts/           # reusable prompts for ongoing work on this initiative
     notes/             # research, references, dead ends
     work/              # in-progress output, pre-graduation
@@ -1280,6 +1283,137 @@ It also argues for keeping the generated pages **out of the repo** (§7.6): they
 already visible per-branch without being committed, so committing them would add merge
 conflicts and buy nothing.
 
+### 8.7 Deployments — a test copy anyone may overwrite, a production copy only a person releases
+
+Publishing an initiative's own pages (§8.1–8.6) is one thing; publishing what an
+initiative *builds* is another, and it arrived later. A ChatGPT Site, a demo, a folder
+of generated HTML — these are outputs that live somewhere a reader can reach, and the
+question they raise is not *how* to copy files but *who is allowed to*, and *when*.
+
+**The answer is two environments for every deployment, and two skills above them.**
+
+```json
+"deployments": [
+  {
+    "kind": "chatgpt-site",
+    "build": "static",
+    "source": "initiatives/tide-here/work/site",
+    "test": { "slug": "tide-here-test", "url": "…", "access": "private" },
+    "prod": { "slug": "tide-here", "url": "…", "access": "public" }
+  }
+]
+```
+
+`deployments` is absent by default. Most initiatives publish nothing, and one that
+eventually does will have developed for months first, so the block appears when there
+is something to show rather than at birth. It is a list because nothing stops an
+initiative from having both a Site and a demo.
+
+#### Why two environments rather than one live URL
+
+One live URL per output forces a single act to serve two purposes that want opposite
+treatment. Showing work in progress should be cheap enough to do mid-sentence — a
+preview you have to think about is a preview you skip, and work nobody looks at until
+the end is work that goes wrong at the end. Publishing to readers should be the
+opposite: rare, considered, and attributable to a commit. Collapse them and one of the
+two loses; usually previews stop happening, and when they don't, a release happens by
+accident.
+
+So the environments are split by *who may write them*:
+
+| | Written by | How often | Records |
+|---|---|---|---|
+| **test** | whichever agent is doing the work | as often as the work needs | nothing |
+| **prod** | a person, asking for it in their own words | rarely, deliberately | a dated release entry |
+
+Refreshing a preview is meant to be thoughtless. Releasing is meant to be an act. Every
+other rule here exists to keep those two from collapsing back into each other.
+
+#### The asymmetry has to be enforced, not merely stated
+
+A prompt can be talked out of refusing; an exit code cannot. Three mechanisms carry
+this:
+
+- **`plan --env prod` exits non-zero** when the deployment's source directory has
+  uncommitted changes, or has never been committed at all. Production is released from
+  committed files, so the commit recorded against a release is a reference you can
+  return to. The check is scoped to the deployment's own `source` — uncommitted work
+  elsewhere in the repository is none of a release's business.
+- **`test` and `prod` may never resolve to the same target.** That is a validation
+  error, and `record` refuses it too, so the rule holds whether the pair was written by
+  a deployment or by hand. The naming convention — `<slug>-test` and `<slug>` — means
+  the URL itself says which environment you are looking at.
+- **The decision is split from the mechanism.** `deploy-test` and `release-initiative`
+  decide *which environment* is written; `deploy-to-chatgpt-sites` and `deploy-demo` are
+  engines that deploy exactly the target they are handed and have no opinion about
+  environments. An agent refreshing a preview reaches for the skill that cannot reach
+  production, and "release this" is a thing the user has to say.
+
+That last point is why `deploy-test` never calls `deploy-demo`: copying a folder into
+`demos/` *is* the production release, so there is nothing for a test deploy to do there.
+
+#### A kind decides what is possible, and a demo proves the point
+
+The first version of this described one thing only: a static folder deployed to ChatGPT
+Sites, under a `sites` block. That had the two environments already, but it left a full
+Sites project — one that brings its own hosting manifest, bindings and migrations, and
+builds itself — with nowhere to live, and said nothing at all about demos. So `sites`
+became `deployments`, a list, each entry naming a **kind**.
+
+A kind decides which environments exist, which of them are stored rather than derived,
+what the source directory must contain, and which engine deploys it. Adding a new
+deployment scheme is a kind entry plus a skill — not an edit to the validator, the plan,
+the record, or the overview page. A leftover `sites` block is a validation error rather
+than an ignored key, so a half-migrated record cannot quietly stop being deployed.
+
+A demo has no test copy to write. Its test environment is the branch preview §8.6
+already gives away for free, which exists because the branch was pushed. So a demo's
+URLs are *derived* from its destination — production is `demos/<destination>/`, test is
+the same path under the branch preview — and recording a test entry on one is an error.
+Deriving them means a demo's link cannot drift out of step with what is actually under
+`demos/`.
+
+This is also the case that keeps the schema honest. A kind need not support both
+environments, and pretending otherwise would have forced either a fake test deploy for
+demos or a second, parallel mechanism for them.
+
+#### Access defaults to private, and never changes by accident
+
+Either environment may be private or public — some work needs showing to people who
+cannot sign in, and that is the user's call. So the default is `private`, the skills say
+so before the first deploy of an environment and take the user's answer, and a
+replacement keeps whatever access the Site already has. Changing access is its own
+request, never a side effect of a deploy. `record` also defaults to private when none is
+passed, so nothing becomes public by omission.
+
+#### What a release leaves behind
+
+Two questions are worth answering from git rather than from memory: *is production the
+latest?* and *what shipped, and when?*
+
+The first is derived — the commit recorded against production compared with the source
+directory's current commit — and appears as a one-line summary on the overview page and
+in every plan. The second is written at release time into `releases.md`, newest first,
+with a one-line pointer appended to `log.md` so the narrative record shows that a
+release happened.
+
+**Test deploys write no history, and that is deliberate.** A release is worth a durable
+record; the dozens of preview pushes before it are not. The one thing worth keeping
+about the test environment is where it stood at the moment of a release, so that is what
+the release entry captures.
+
+All of it is best-effort and none of it can block a release: a deployment made before
+this existed, a rewritten history, or a source moved to a new path degrades to
+"unknown", never to a wrong answer.
+
+#### The sweep reports releases and never performs one
+
+Unreleased work appears in the digest (§7.1) and stops there. Releasing is a person's
+decision, and a sweep that appended to `releases.md` on every run would turn a list of
+releases into churn. This is the same rule as §7.7's "never merges", applied to the
+other end of the pipeline: the automation may do the work and may say the work is ready,
+but the act that makes something public belongs to a person.
+
 ## 9. Validation
 
 Extend `scripts/build_tests.sh`, in the spirit of the existing demos checks — but split
@@ -1354,6 +1488,10 @@ A terminology block, parallel to the existing Demos one:
 - **Initiative document** — a markdown file in an initiative (`wish.md`, `spec.md`, …).
 - **Initiative capability** — a skill, script, or library developed by an initiative.
 - **Initiative output** — a deck, demo, or external deployment an initiative produced.
+- **Initiative deployment** — one publishing target declared in `deployments[]`, with a
+  test environment and a production environment (§8.7).
+- **Deployment kind** — what a deployment publishes to; it decides which environments
+  exist and which engine deploys it.
 - **Sweep** — one scheduled run of the job. **Digest** — its survey output.
 
 Plus the mirror of the existing rule: do not call an initiative a "deck" or a "demo",

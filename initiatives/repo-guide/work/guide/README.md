@@ -3,7 +3,7 @@
 This directory contains the on-request generator described by the Repo Guide
 specification. Phase 1 provides the fact resolver and its command-line entry
 point. Phase 2 adds the strict section reader, token substitution, and the three
-narrative honesty checks. Phase 3 adds all nine authored sections, the
+narrative honesty checks. Phase 3 adds the first nine authored sections, the
 self-contained description renderer, provenance, and its isolated browser
 harness. Phase 4 adds separately authored slide text, a self-contained HTML
 deck, strict slide-count and copy-length gates, and keyboard navigation. Phase
@@ -178,9 +178,16 @@ generation returns a report diagnostic when another walkthrough may be due;
 unrelated commits do not advance the comparison. There is no separate metadata
 configuration file.
 
-The description contains nine sections. Per-section composed words, resolved
+The description contains ten sections. Per-section composed words, resolved
 inline tokens, and block counts are reported by generation; the reasoning behind
 the scalar/structured split is recorded in `decisions.md` under 2026-08-19.
+
+The deployment section reads two more keys off the same lifecycle module -
+`deployments.environments` and `deployments.kinds`, from `DEPLOY_ENVIRONMENTS`
+and the values of `DEPLOYMENT_LABELS` - and the `deployment-environments` figure
+draws the two lanes from them plus the names of the two deployment skills. That
+last dependency is deliberate: renaming either skill fails generation rather
+than leaving a diagram quietly describing a procedure that no longer exists.
 
 Fact keys are registered once with a source label. Registering the same key a
 second time fails before any source is read. Dynamic collections use one key per

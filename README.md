@@ -37,9 +37,19 @@ review comments on its own pull requests, proposes answers to open questions, an
 the todo lists - opening a pull request for everything and merging nothing. What it is
 allowed to do is set by `phases` in `initiatives/sweep.json`.
 
+An initiative with something to publish declares it in `deployments[]`, and every
+deployment has **two environments**. The test environment is disposable: `deploy-test`
+overwrites it whenever someone wants to look at the work, as often as a session needs.
+The production environment moves only when a person asks for a release, and
+`release-initiative` is the only thing that writes it - from committed files, recording
+the commit, the version, and an entry in the initiative's `releases.md`. A deployment is
+either a ChatGPT Site or a demo under `demos/`, and the kind decides which engine
+(`deploy-to-chatgpt-sites` or `deploy-demo`) does the work.
+
 See `INITIATIVES_VISION.md` for the full design, `INITIATIVES_TECHDOC.md` for what the
-build actually does, `initiatives/sweep-setup.md` for how the sweep is scheduled and
-switched on, and the Initiatives section of `AGENTS.md` for the working conventions.
+build actually does - including the deployment schema, the release gate, and the release
+history - `initiatives/sweep-setup.md` for how the sweep is scheduled and switched on,
+and the Initiatives section of `AGENTS.md` for the working conventions.
 
 ### Deck asset convention
 
