@@ -204,6 +204,131 @@ class DeployDemoTest(unittest.TestCase):
         self.assertFalse((destination / ".hidden-config").exists())
         self.assertEqual(json.loads((destination / "demo.json").read_text())["root"], "index.html")
 
+    def test_replacement_preserves_fields_the_helper_does_not_author(self):
+        """A redeploy must not demote a demo or cut its link to its initiative.
+
+        `initiative` and `featured` are read by the Demo TOC and written by
+        nobody's flag, so a replacement that rewrites demo.json wholly used to
+        drop both without a word.
+        """
+        initiative_dir = self.test_repo / "initiatives" / "repo-guide"
+        initiative_dir.mkdir(parents=True)
+        (initiative_dir / "initiative.json").write_text("{}")
+
+        source = self.test_repo / "source"
+        source.mkdir()
+        (source / "index.html").write_text("<!doctype html><title>Guide</title>")
+
+        self.deploy(
+            source,
+            "--destination",
+            "Guide",
+            "--title",
+            "Guide",
+            "--description",
+            "The first publication.",
+        )
+        destination = self.test_repo / "demos" / "Guide"
+
+        # Set by hand, the way an initiative-backed demo gets these today.
+        manifest = json.loads((destination / "demo.json").read_text())
+        self.assertNotIn("initiative", manifest)
+        self.assertNotIn("featured", manifest)
+        manifest["initiative"] = "repo-guide"
+        manifest["featured"] = True
+        (destination / "demo.json").write_text(json.dumps(manifest))
+
+        replacement = self.test_repo / "replacement"
+        replacement.mkdir()
+        (replacement / "index.html").write_text("<!doctype html><title>Guide v2</title>")
+        result = self.deploy(
+            replacement,
+            "--destination",
+            "Guide",
+            "--title",
+            "Guide",
+            "--description",
+            "The second publication.",
+        )
+
+        replaced = json.loads((destination / "demo.json").read_text())
+        self.assertEqual(replaced["initiative"], "repo-guide")
+        self.assertTrue(replaced["featured"])
+        self.assertEqual(replaced["description"], "The second publication.")
+        # Carrying a field silently is how the loss went unnoticed for a release.
+        self.assertIn("initiative", result.stdout)
+        self.assertIn("featured", result.stdout)
+        # The build still accepts what was carried across.
+        self.assertEqual(self.metadata("html-field", destination, "Guide", "title"), "Guide")
+
+    def test_a_new_demo_gains_neither_field(self):
+        source = self.test_repo / "source"
+        source.mkdir()
+        (source / "index.html").write_text("<!doctype html><title>Fresh</title>")
+
+        self.deploy(
+            source,
+            "--destination",
+            "Fresh",
+            "--title",
+            "Fresh",
+            "--description",
+            "Nothing to carry.",
+        )
+
+        manifest = json.loads((self.test_repo / "demos/Fresh/demo.json").read_text())
+        self.assertEqual(list(manifest), ["title", "description", "root", "links"])
+
+    def test_an_unreadable_manifest_is_reported_rather_than_fatal(self):
+        """Redeploying is how a broken manifest gets fixed, so it must not block.
+
+        The one thing that must not happen is losing a field without saying so.
+        """
+        source = self.test_repo / "source"
+        source.mkdir()
+        (source / "index.html").write_text("<!doctype html><title>Broken</title>")
+        broken = self.test_repo / "demos" / "Broken"
+        broken.mkdir()
+        (broken / "demo.json").write_text("{ not json at all")
+
+        result = self.deploy(
+            source,
+            "--destination",
+            "Broken",
+            "--title",
+            "Broken",
+            "--description",
+            "Replaced over a broken manifest.",
+        )
+
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("cannot read the existing demo.json", result.stderr)
+        manifest = json.loads((broken / "demo.json").read_text())
+        self.assertEqual(manifest["description"], "Replaced over a broken manifest.")
+
+    def test_a_field_the_build_would_reject_is_not_carried(self):
+        source = self.test_repo / "source"
+        source.mkdir()
+        (source / "index.html").write_text("<!doctype html><title>Odd</title>")
+        odd = self.test_repo / "demos" / "Odd"
+        odd.mkdir()
+        (odd / "demo.json").write_text(
+            json.dumps({"title": "Odd", "description": "Odd.", "root": "index.html", "featured": "yes"})
+        )
+
+        result = self.deploy(
+            source,
+            "--destination",
+            "Odd",
+            "--title",
+            "Odd",
+            "--description",
+            "Replaced.",
+        )
+
+        self.assertIn("featured is not true or false", result.stderr)
+        self.assertNotIn("featured", json.loads((odd / "demo.json").read_text()))
+
     def test_requires_root_html_and_existing_local_links_before_copying(self):
         source = self.test_repo / "source"
         (source / "pages").mkdir(parents=True)

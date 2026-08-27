@@ -72,6 +72,61 @@ def validate_local_target(source: Path, target: str, label: str) -> str:
     return target
 
 
+# Fields the Demo TOC reads but this helper does not author. A replacement
+# rewrites demo.json wholly, so without carrying these across, every redeploy of
+# a demo would silently drop it out of the featured position and cut its link
+# back to the initiative that made it - which is exactly what happened to the
+# Repo Guide on 2026-08-27.
+CARRIED_FIELDS = ("initiative", "featured")
+
+
+def carried_metadata(destination: Path) -> dict:
+    """Read the fields a replacement must preserve from the demo it replaces.
+
+    Never fatal. A demo.json that cannot be read is reported and skipped rather
+    than blocking the deploy: a redeploy is how someone fixes a broken manifest,
+    and refusing to run would leave them with no way out. What must not happen is
+    losing a field without saying so, which is why every skip prints.
+    """
+    manifest_path = destination / "demo.json"
+    if not manifest_path.is_file():
+        return {}
+
+    try:
+        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        print(
+            f"deploy-demo: cannot read the existing demo.json ({error}); "
+            f"not carrying {', '.join(CARRIED_FIELDS)}",
+            file=sys.stderr,
+        )
+        return {}
+
+    if not isinstance(existing, dict):
+        print(
+            "deploy-demo: the existing demo.json is not an object; "
+            f"not carrying {', '.join(CARRIED_FIELDS)}",
+            file=sys.stderr,
+        )
+        return {}
+
+    carried = {}
+    for field in CARRIED_FIELDS:
+        if field not in existing:
+            continue
+        value = existing[field]
+        # Carrying a value the build would reject turns one broken demo into a
+        # broken deploy, so each is checked the way demo_metadata.mjs checks it.
+        if field == "featured" and not isinstance(value, bool):
+            print("deploy-demo: existing featured is not true or false; not carrying it", file=sys.stderr)
+            continue
+        if field == "initiative" and not (isinstance(value, str) and value.strip()):
+            print("deploy-demo: existing initiative is not a name; not carrying it", file=sys.stderr)
+            continue
+        carried[field] = value.strip() if isinstance(value, str) else value
+    return carried
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", required=True, help="source directory inside the repository")
@@ -146,9 +201,11 @@ def main() -> int:
         seen_labels.add(label)
         links.append({"label": label, "href": validate_local_target(source, target, label)})
 
+    carried = carried_metadata(destination)
     manifest = {
         "title": title,
         "description": description,
+        **carried,
         "root": root_html.as_posix(),
         "links": links,
     }
@@ -182,6 +239,9 @@ def main() -> int:
     print(f"{action} {destination}")
     print(f"Root HTML: {root_html.as_posix()}")
     print(f"Demo TOC links: {len(links)}")
+    for field in CARRIED_FIELDS:
+        if field in carried:
+            print(f"Carried over from the replaced demo: {field} = {json.dumps(carried[field])}")
     return 0
 
 

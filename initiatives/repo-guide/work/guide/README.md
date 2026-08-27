@@ -240,7 +240,11 @@ npm run build
 ```
 
 The helper replaces the destination wholly, so a file that a later version of
-the guide stopped generating does not survive the release. That matters: the
+the guide stopped generating does not survive the release. Its `demo.json` is
+rewritten from those arguments too, but the guide's `initiative` and `featured`
+fields are carried over from the copy being replaced and named in the output -
+they were dropped by hand-repair on the 2026-08-27 release, before the helper
+did that. That matters: the
 first release (2026-08-19) carried a portable-document panel that was removed
 from the generator hours afterwards, and the released copy kept showing it —
 along with an orphaned `pdf-dating-preview.html` nothing linked to — because

@@ -185,3 +185,7 @@ tail on the enforcement slide, which would have run past the copy limit.
 The kinds fact stays live: the `deployment-environments` figure still resolves
 it, so the section is not the only thing standing between a new kind and the
 guide noticing.
+
+## 2026-08-27 — Release
+
+Released to production — Demo, `74c16d0`. 2 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/> See releases.md.

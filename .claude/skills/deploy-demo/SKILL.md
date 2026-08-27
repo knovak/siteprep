@@ -62,6 +62,14 @@ for each link. The helper validates all inputs before staging a complete copy,
 then creates or replaces `demos/<destination_name>` and writes its `demo.json`.
 It preserves nested folders, dotfiles, file metadata, and symlinks.
 
+A replacement rewrites `demo.json` wholly from the arguments above, so the two
+fields the Demo TOC reads but no flag sets - `initiative` and `featured` - are
+**carried across from the demo being replaced** and reported in the output. Set
+either by editing `demo.json` once; every later redeploy keeps it. An existing
+manifest that cannot be read, or a value the build would reject, is reported on
+stderr and skipped rather than blocking the deploy - so check the output for a
+line naming a field that was not carried.
+
 4. Inspect the resulting destination. Confirm that every source path is present
    and that no files from an earlier destination remain. `demo.json` is the only
    expected extra or replaced file.
@@ -77,6 +85,9 @@ It preserves nested folders, dotfiles, file metadata, and symlinks.
 ## Guardrails
 
 - Replace the destination as a whole; never merge trees or leave stale files.
+- Never hand-restore `initiative` or `featured` after a deploy without first
+  reading the output: the helper carries them, and a line saying one was not
+  carried is naming a problem rather than asking for a repair.
 - Never accept a destination outside `demos/` or below another demo folder.
 - Never remove or rename files in the source.
 - Never invent a root HTML file, title, description, or link label.
