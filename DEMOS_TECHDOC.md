@@ -49,6 +49,13 @@ activity. A manifest may set `featured` to `true` to place an entry before the
 reverse-chronological list. This keeps the Guide to Initiatives first while the
 remaining entries respond automatically to later initiative or demo work.
 
+Neither field has a flag on the deploy helper, and a replacement rewrites
+`demo.json` wholly - so the helper reads both out of the demo it is replacing
+and carries them into the new manifest, naming each one it carried in its
+output. Without that, every redeploy would quietly demote a featured demo and
+cut its link to the initiative that produced it. Set either field by editing
+`demo.json` once; redeploys keep it from then on.
+
 ## Demos index
 
 `scripts/build.sh` generates `gh-pages/demos/index.html`. The index lists every immediate subdirectory of `demos/` with:
