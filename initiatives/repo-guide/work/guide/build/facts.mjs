@@ -373,6 +373,30 @@ export async function createFactRegistry(sourceConfig) {
       const module = await loadModule();
       return normaliseSet(readExport(module, 'PROPOSABLE_BLOCKERS', sources.initiativesModule), 'PROPOSABLE_BLOCKERS');
     })
+    .register('documents.record', moduleLabel, async () => {
+      const module = await loadModule();
+      const documents = assertArray(
+        readExport(module, 'DOCUMENTS', sources.initiativesModule),
+        'DOCUMENTS'
+      );
+      const records = documents.map((entry) => {
+        if (!Array.isArray(entry) || entry.length !== 2) {
+          throw new Error('DOCUMENTS entries must be [file, title] pairs');
+        }
+        return { file: entry[0], title: entry[1] };
+      });
+      assertUniqueStrings(records.map(({ file }) => file), 'DOCUMENTS files');
+      assertUniqueStrings(records.map(({ title }) => title), 'DOCUMENTS titles');
+      return records;
+    })
+    .register('documents.titles', moduleLabel, async () => {
+      const module = await loadModule();
+      const documents = assertArray(
+        readExport(module, 'DOCUMENTS', sources.initiativesModule),
+        'DOCUMENTS'
+      );
+      return assertUniqueStrings(documents.map((entry) => entry?.[1]), 'DOCUMENTS titles');
+    })
     .register('deployments.environments', moduleLabel, async () => {
       const module = await loadModule();
       return assertUniqueStrings(
