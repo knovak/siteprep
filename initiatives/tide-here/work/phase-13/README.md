@@ -39,12 +39,14 @@ official Australian or FES2022 accuracy and must not be promoted to production.
 
 ## Recorded test deployment
 
-Version 4 was published to the existing public test Site on 2026-08-27:
+Version 6 was published to the existing public test Site on 2026-08-27:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v1`, Australian fixture `2026-sample-v1`, and
+activated registry `stage-4-v2`, Australian fixture `2026-sample-v2`, and
 fallback fixture `2026-08-27`. A second initialization wrote zero objects. The
 live smoke check passed for the NOAA and CHS catalogues, Australian and fallback
-forecasts, and the browser page; the post-check Worker error log was empty.
+forecasts, and the browser page. A live Sydney check selected the stored Fort
+Denison test port, rendered five days in `Australia/Sydney`, and retained the
+synthetic-data warning; the post-check log contained no Worker execution errors.
 
 The production Site was not changed.
 

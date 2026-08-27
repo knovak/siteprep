@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-27T08:00:39Z",
+  "checkedAt": "2026-08-27T23:28:11Z",
   "stage": "global-coverage-stage-5",
   "deployment": {
     "url": "https://tide-here-test.ken-novak.chatgpt.site",
     "access": "public",
-    "version": 4,
-    "deployedAt": "2026-08-27T08:00:39Z",
-    "siteSourceCommit": "bfc904a993e9a42a53b78c85adf778a6cda2f3f3",
-    "sourceCommit": "eb9297b337feaf491665b99104d6e3ea930c2cc0",
-    "archiveFiles": 73,
-    "archiveBytes": 1331200
+    "version": 6,
+    "deployedAt": "2026-08-27T23:28:11Z",
+    "siteSourceCommit": "2e1c513c2a9cff39e96b53d87dc59958b32555a8",
+    "sourceCommit": "3d7b6f86fb468f3e3fc97e2630e90474007c94e4",
+    "archiveFiles": 75,
+    "archiveBytes": 2068480
   },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
@@ -21,8 +21,8 @@
     "repeatInitializationWrites": 0
   },
   "liveChecks": {
-    "registry": "tide-here-providers/stage-4-v1",
-    "australianDataset": "australia-standard-ports-sample/2026-sample-v1",
+    "registry": "tide-here-providers/stage-4-v2",
+    "australianDataset": "australia-standard-ports-sample/2026-sample-v2",
     "fallbackDataset": "fes-shaped-global-sample/2026-08-27",
     "noaaCatalogue": "passed",
     "chsCatalogue": "passed",
@@ -33,12 +33,13 @@
       "fixture-data"
     ],
     "browserPage": "passed",
+    "australianBrowserSydney": "passed",
     "workerErrorEvents": 0
   },
   "tests": {
     "stageTestsPassed": 5,
     "stageTestsFailed": 0,
-    "allTideNodeTestsPassed": 101
+    "allTideNodeTestsPassed": 105
   },
   "productionActivation": {
     "ready": false,

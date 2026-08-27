@@ -13,9 +13,9 @@
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-27T08:00:39Z",
-        "version": 4,
-        "commit": "eb9297b337feaf491665b99104d6e3ea930c2cc0"
+        "deployed_at": "2026-08-27T23:28:11Z",
+        "version": 6,
+        "commit": "3d7b6f86fb468f3e3fc97e2630e90474007c94e4"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
@@ -39,7 +39,7 @@
     },
     {
       "id": "review-global-tides-stage-5",
-      "title": "Review the initialized Stage 5 test deployment and choose the next refinement",
+      "title": "Review the Australian test-port browser flow and choose the next refinement",
       "state": "actionable",
       "value": "medium",
       "effort": "small",

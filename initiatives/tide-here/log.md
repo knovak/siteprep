@@ -149,3 +149,18 @@ initialized registry `stage-4-v1`, confirmed a repeat initialization wrote zero
 objects, and passed live checks for NOAA, CHS, Australian fixture, fallback
 fixture, and the browser page. The post-check Worker error log was empty.
 Production was not changed.
+
+## 2026-08-27 — Enable Australian test-port forecasts in the browser
+
+Connected the Phase 6 page to the stored Australian provider without changing
+the direct NOAA and CHS paths. Sydney, Darwin, and Fremantle now participate in
+the normal nearest-coast match on the test Site and render five coast-local days
+through the existing normalized forecast view. Extended the plainly synthetic
+Australian fixture across all of 2026, including Sydney daylight-saving
+offsets, so current test requests do not expire after a five-day sample window.
+
+All 105 Tide Node tests and the 19 applicable browser checks passed. Published
+public test Site version 6, initialized registry `stage-4-v2`, and confirmed a
+second initialization wrote zero objects. Live checks returned 20 Australian
+events for five days and kept the synthetic, non-official warning visible. The
+post-check log contained no Worker execution errors. Production was not changed.

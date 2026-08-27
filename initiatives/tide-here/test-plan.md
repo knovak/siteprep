@@ -301,7 +301,7 @@ stage-4 decision made against licensed FES tiles and held-out official ports.
 | Stored initialization | The Australian artifact and manifest are immutable and checksum-valid; the Stage 3 registry activates last; repeat writes are zero | Deployment safety |
 | Catalogue | The stored catalogue returns all three normalized standard-port fixtures and their zones | Provider seam |
 | Forecast contract | Each fixture port returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
-| Explicit date failure | A request outside the loaded year returns `dataset-year-unavailable`; a gap outside artifact coverage returns `dataset-date-unavailable` | No silent fallback |
+| Explicit date failure | A request outside the loaded year returns `dataset-year-unavailable` | No silent fallback |
 | Fixture cannot become production | Australian selection requires fixture opt-in until a licensed annual artifact changes the registry status | Truthful coverage |
 
 These tests complete the adapter implementation gate. Official Stage 3
@@ -334,15 +334,15 @@ the fallback may be marked active.
 | Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
 | Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
 | Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
-| Health | Live `/health` names provider registry `stage-4-v1` and both stored dataset versions | Operability |
+| Health | Live `/health` names provider registry `stage-4-v2` and both stored dataset versions | Operability |
 | Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
 | Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
 | Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the Australian fixture, and returns the approximate fallback fixture | Deployment integration |
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
 
 **Recorded result, 2026-08-27:** all eight checks passed on public test Site
-version 4. Initialization activated `stage-4-v1`; the repeat call wrote zero
-objects; 101 Tide Node tests passed in both the working tree and isolated Site
+version 6. Initialization activated `stage-4-v2`; the repeat call wrote zero
+objects; 105 Tide Node tests passed in both the working tree and isolated Site
 source; the production Site was not changed.
 
 ### 7.6 — Australian browser integration
@@ -359,3 +359,8 @@ source; the production Site was not changed.
 
 Official Australian activation remains governed by §7.3's licence, attribution,
 source-comparison, and production-selection gates.
+
+**Recorded result, 2026-08-27:** all seven checks passed on public test Site
+version 6. Sydney selected the stored Fort Denison test port, returned 20 tide
+events across five `Australia/Sydney` days, and displayed the synthetic,
+non-official fixture warning. The production Site was not changed.
