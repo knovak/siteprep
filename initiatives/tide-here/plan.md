@@ -460,7 +460,7 @@ atlas files and held-out official-port comparisons.
 
 #### Stage 5 — Test deployment
 
-**Produces:** a private test deployment with R2 bindings, the initializer token,
+**Produces:** a separate test deployment with R2 bindings, the initializer token,
 operational logs that exclude submitted locations, and live checks covering all
 three source families.
 
@@ -471,11 +471,12 @@ is exercised. A second call must report no changes.
 **Exit:** U.S., Canadian, Australian, and fallback locations work at the real
 HTTPS URL, and failure or denial leaves the current public version untouched.
 
-**Status, 2026-08-27:** the Sites app, R2 binding, protected initializer,
-privacy-safe operational logging, static-page staging, and live smoke harness
-are implemented in `work/phase-13`. Deployment evidence is recorded there
-after the public test Site is initialized and checked; production remains
-untouched.
+**Status, 2026-08-27:** complete on public test Site version 4 at
+<https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
+activated the exact Stage 4 registry and datasets; a second call wrote zero
+objects. The live source-family and browser-page smoke checks passed, and the
+post-check Worker error log was empty. Evidence is recorded in `work/phase-13`;
+production remains untouched.
 
 #### Stage 6 — Production release
 

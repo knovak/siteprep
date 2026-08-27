@@ -339,3 +339,8 @@ the fallback may be marked active.
 | Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
 | Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the Australian fixture, and returns the approximate fallback fixture | Deployment integration |
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
+
+**Recorded result, 2026-08-27:** all eight checks passed on public test Site
+version 4. Initialization activated `stage-4-v1`; the repeat call wrote zero
+objects; 101 Tide Node tests passed in both the working tree and isolated Site
+source; the production Site was not changed.

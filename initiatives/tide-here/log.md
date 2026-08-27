@@ -132,3 +132,20 @@ confirmed reuse terms, and source comparisons. Nothing was deployed.
 ## 2026-08-27 — Release
 
 Released to production — ChatGPT Site, version 5, `60fdfcc`. 2 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
+
+## 2026-08-27 — Complete global coverage Stages 4 and 5
+
+Implemented the production-shaped global fallback preparation, tile inventory,
+indexed lookup, stored adapter, approximate-result warnings, and explicit
+land/missing-data failures. The complete code path is exercised by a plainly
+identified three-tile non-FES fixture; licensed FES2022 activation and held-out
+official-port comparisons remain required.
+
+Packaged the Stage 4 gateway as a Sites app with one R2 binding, a protected
+`/init`, privacy-safe operational logs, and an explicit static publication
+allowlist. All 101 Tide Node tests passed in the repository and in an isolated
+copy of the exact deployable source. Published public test Site version 4,
+initialized registry `stage-4-v1`, confirmed a repeat initialization wrote zero
+objects, and passed live checks for NOAA, CHS, Australian fixture, fallback
+fixture, and the browser page. The post-check Worker error log was empty.
+Production was not changed.

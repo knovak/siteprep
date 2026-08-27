@@ -1,21 +1,44 @@
 {
   "schemaVersion": 1,
-  "checkedAt": null,
+  "checkedAt": "2026-08-27T08:00:39Z",
   "stage": "global-coverage-stage-5",
-  "deployment": null,
+  "deployment": {
+    "url": "https://tide-here-test.ken-novak.chatgpt.site",
+    "access": "public",
+    "version": 4,
+    "deployedAt": "2026-08-27T08:00:39Z",
+    "siteSourceCommit": "bfc904a993e9a42a53b78c85adf778a6cda2f3f3",
+    "sourceCommit": "eb9297b337feaf491665b99104d6e3ea930c2cc0",
+    "archiveFiles": 73,
+    "archiveBytes": 1331200
+  },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
     "r2Binding": "TIDE_DATA",
     "d1Binding": null,
-    "initializerTokenConfigured": false,
-    "initialized": false,
-    "repeatInitializationWrites": null
+    "initializerTokenConfigured": true,
+    "initialized": true,
+    "repeatInitializationWrites": 0
   },
-  "liveChecks": null,
+  "liveChecks": {
+    "registry": "tide-here-providers/stage-4-v1",
+    "australianDataset": "australia-standard-ports-sample/2026-sample-v1",
+    "fallbackDataset": "fes-shaped-global-sample/2026-08-27",
+    "noaaCatalogue": "passed",
+    "chsCatalogue": "passed",
+    "australianFixtureEvents": 20,
+    "fallbackFixtureEvents": 19,
+    "fallbackWarnings": [
+      "approximate-fallback",
+      "fixture-data"
+    ],
+    "browserPage": "passed",
+    "workerErrorEvents": 0
+  },
   "tests": {
     "stageTestsPassed": 5,
     "stageTestsFailed": 0,
-    "allTideNodeTestsPassed": null
+    "allTideNodeTestsPassed": 101
   },
   "productionActivation": {
     "ready": false,
