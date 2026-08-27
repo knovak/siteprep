@@ -136,7 +136,11 @@ unrelated deck from publishing.
 
 - a non-dormant initiative with nothing actionable
 - an initiative past its staleness threshold
-- a document expected at the current stage that is missing
+- a document expected at the current stage that is missing - `objectives.md`,
+  `spec.md`, `plan.md` and `test-plan.md`, each from the stage that adds it.
+  `wish.md` has its own check because it is required at every stage;
+  `decisions.md`, `log.md`, `releases.md` and `notes.md` are gated by nothing,
+  so their absence says nothing
 - an item blocked on a human decision
 - a test Site slug that is the bare initiative slug, or a production Site slug
   that says "test"

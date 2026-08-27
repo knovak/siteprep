@@ -99,13 +99,21 @@ export const REFINING_ENTRY_ITEMS = [
   }
 ];
 
-/** Documents expected once a stage is reached, used for warnings only. */
+/**
+ * Documents expected once a stage is reached, used for warnings only.
+ *
+ * This is the *incremental* record - what each stage adds. `wish.md` is not
+ * here because it is required at every stage and has its own check below;
+ * `decisions.md` and `log.md` are not here because they are not tied to a
+ * stage at all - they appear when there is a question to settle or something
+ * to record. `DOCUMENTS` is the full set an initiative can carry.
+ */
 export const STAGE_DOCUMENTS = {
   shaped: ['objectives.md'],
   specified: ['objectives.md', 'spec.md'],
-  planned: ['objectives.md', 'spec.md', 'plan.md'],
-  building: ['objectives.md', 'spec.md', 'plan.md'],
-  refining: ['objectives.md', 'spec.md', 'plan.md']
+  planned: ['objectives.md', 'spec.md', 'plan.md', 'test-plan.md'],
+  building: ['objectives.md', 'spec.md', 'plan.md', 'test-plan.md'],
+  refining: ['objectives.md', 'spec.md', 'plan.md', 'test-plan.md']
 };
 
 export const BLOCKER_PREFIXES = [
@@ -126,7 +134,13 @@ export const HUMAN_BLOCKERS = new Set(['human', 'permission', 'cost', 'legal', '
  */
 export const PROPOSABLE_BLOCKERS = new Set(['human']);
 
-const DOCUMENTS = [
+/**
+ * Every document an initiative can carry, in the order they are rendered and
+ * listed. Exported because it is the whole record, not just the part the
+ * lifecycle gates: the wish the work started from, the decisions that settled
+ * what it is, the plans, what shipped, and the log of what happened.
+ */
+export const DOCUMENTS = [
   ['README.md', 'README'],
   ['wish.md', 'Wish'],
   ['background.md', 'Background'],

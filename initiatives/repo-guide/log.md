@@ -157,3 +157,19 @@ fact keys were registered for it - `deployments.environments` and
 deployment skills, so a rename fails generation rather than leaving the diagram
 describing something that no longer exists. Regenerated all three artifacts; the
 released copy under `demos/` is unchanged and awaits a deliberate release.
+
+## 2026-08-27 — Cover the whole record, and show the stage moving
+
+The lifecycle section described only the documents the stage gates, so the wish,
+the decisions, the test plan and the log were missing from both renderings. Two
+things were wrong underneath it: `STAGE_DOCUMENTS` never expected
+`test-plan.md`, though the design has required it at that stage since the
+beginning, and nothing exposed the documents a stage does not gate. Fixed the
+first, exported `DOCUMENTS` for the second, and added a `documents` block view
+pairing each rendered page title with its file. The section gained a paragraph
+and a third slide.
+
+In the simulator, the stage now takes the active phase's orange on exactly the
+steps where it moved - badge and lifecycle track together - derived by comparing
+adjacent steps, so a move back down the lifecycle reads the same stepping either
+way.

@@ -412,6 +412,7 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
     .stage { flex: 1 0 max-content; min-width: 82px; padding: 7px 9px; border: 1px solid #cfd7e6; border-radius: 999px; color: #6a7488; background: #f8faff; font-size: .72rem; font-weight: 780; text-align: center; transition: background 320ms ease, color 320ms ease, border-color 320ms ease, box-shadow 320ms ease; }
     .stage.complete { color: #23664b; border-color: #8fc5ae; background: #e8f5ee; }
     .stage.current { color: white; border-color: var(--blue); background: var(--blue); box-shadow: 0 5px 14px #285abb3d; }
+    .stage.current[data-changed="true"] { border-color: var(--orange); background: var(--orange); box-shadow: 0 5px 16px #ef6a3a4d; }
     .simulator { min-height: 560px; display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); border: 1px solid #d5ddeb; border-radius: 24px; overflow: hidden; background: white; box-shadow: 0 22px 60px #2231531f; }
     .story { display: flex; flex-direction: column; padding: 38px; color: white; background: linear-gradient(145deg, #132b59, #254f9d 72%, #315fb8); }
     .story .eyebrow { color: #bfcdf0; }
@@ -422,7 +423,12 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
     .changes li::before { content: '→'; color: #ff9b76; font-weight: 900; }
     .board { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 16px; padding: 28px 30px; background: #f8f9fc; }
     .board-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-    .stage-badge { padding: 6px 10px; border-radius: 999px; color: #254f9d; background: #e6edff; font-size: .75rem; font-weight: 850; text-transform: uppercase; }
+    .stage-badge { padding: 6px 10px; border-radius: 999px; color: #254f9d; background: #e6edff; font-size: .75rem; font-weight: 850; text-transform: uppercase; transition: background 320ms ease, color 320ms ease; }
+    /* The stage is the one thing on the board with no card of its own to pulse,
+       so a move used to be announced only in the prose. It now takes the same
+       orange the active sweep phase uses, on exactly the steps where it moved. */
+    .stage-badge[data-changed="true"] { color: white; background: var(--orange); animation: pulse-stage 900ms ease-out; }
+    @keyframes pulse-stage { 0% { box-shadow: 0 0 0 0 #ef6a3a66; } 70% { box-shadow: 0 0 0 12px #ef6a3a00; } 100% { box-shadow: 0 0 0 0 #ef6a3a00; } }
     h3 { margin: 0; color: #25365b; font-size: .95rem; }
     .muted { color: #7c869c; font-size: .78rem; font-weight: 700; }
     #items { display: grid; align-content: start; gap: 9px; }
@@ -527,13 +533,31 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
         return element;
       }
 
-      function renderStages(stage) {
+      function renderStages(stage, changed) {
         const currentIndex = data.vocabulary.stages.indexOf(stage);
         elements['stage-track'].replaceChildren(...data.vocabulary.stages.map((value, index) => {
           const item = node('span', 'stage ' + (index < currentIndex ? 'complete' : index === currentIndex ? 'current' : 'future'), value);
           item.dataset.stage = value;
+          if (index === currentIndex && changed) item.dataset.changed = 'true';
           return item;
         }));
+      }
+
+      // A step's stage either differs from the one before it or does not, so
+      // the highlight is a property of where you are rather than of how you
+      // got there: stepping back onto a move shows it the same way stepping
+      // forward onto it did.
+      function stageChangedAt(index) {
+        const previous = data.steps[index - 1];
+        return Boolean(previous) && previous.stage !== data.steps[index].stage;
+      }
+
+      function renderStageBadge(stage, changed, {animate}) {
+        elements['current-stage'].textContent = stage;
+        elements['current-stage'].removeAttribute('data-changed');
+        if (!changed) return;
+        if (animate) void elements['current-stage'].offsetWidth;
+        elements['current-stage'].dataset.changed = 'true';
       }
 
       function buildItem(item) {
@@ -654,11 +678,13 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
         const state = data.steps[current];
         document.body.dataset.step = state.id;
         document.body.dataset.stage = state.stage;
-        renderStages(state.stage);
+        const stageChanged = stageChangedAt(current);
+        document.body.dataset.stageChanged = String(stageChanged);
+        renderStages(state.stage, stageChanged);
         elements['step-eyebrow'].textContent = state.eyebrow;
         elements['step-title'].textContent = state.title;
         elements.narrative.textContent = state.narrative;
-        elements['current-stage'].textContent = state.stage;
+        renderStageBadge(state.stage, stageChanged, {animate});
         elements.changes.replaceChildren(...state.changes.map(value => node('li', '', value)));
         renderDocuments(state.documents);
         renderItems(state.items, {animate});

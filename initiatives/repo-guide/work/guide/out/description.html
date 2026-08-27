@@ -103,6 +103,11 @@
 .fact-cards h4 { margin: 0 0 5px; color: var(--fig-ink); font-size: .95em; font-weight: 800; }
 .fact-cards p { margin: 0; color: var(--fig-muted); font-size: .84em; line-height: 1.45; overflow-wrap: anywhere; }
 .fact-card-meta { margin-top: 6px !important; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .74em !important; }
+.fact-documents { width: 100%; border-collapse: collapse; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; font-size: .9em; }
+.fact-documents th { padding: 9px 14px; background: var(--fig-fill); color: var(--fig-muted); font-size: .82em; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+.fact-documents td { padding: 8px 14px; border-top: 1px solid var(--fig-line); background: var(--fig-surface); }
+.fact-documents td:first-child { font-weight: 750; }
+.fact-documents code { padding: 0; background: none; border: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; color: var(--fig-muted); }
 .fact-initiatives { width: 100%; border-collapse: collapse; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; font-size: .9em; }
 .fact-initiatives th { padding: 9px 14px; background: var(--fig-fill); color: var(--fig-muted); font-size: .82em; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
 .fact-initiatives td { padding: 9px 14px; border-top: 1px solid var(--fig-line); background: var(--fig-surface); }
@@ -143,7 +148,7 @@
   </g>
       <text class="fig-text fig-text--heading" x="512" y="34" text-anchor="start">Initiatives</text>
       <text class="fig-text fig-text--body" x="512" y="66" text-anchor="start">Durable units of intent that</text><text class="fig-text fig-text--body" x="512" y="86" text-anchor="start">keep the wish, the reasoning,</text><text class="fig-text fig-text--body" x="512" y="106" text-anchor="start">and the next move.</text><text class="fig-text fig-text--caption" x="0" y="174" text-anchor="start">The working instructions keep the three vocabularies apart on purpose.</text></svg></figure>
-<p>Initiatives are where the software gets made, and what it gets made for is usually a deck or a demo. Here&#39;s the pattern I built this around: an idea shows up half-formed, I work on it for an afternoon, and then it waits — sometimes for months. That only works because of the record. It holds the original intent, the reasoning that came after it, and the next useful move, all in one place, so picking the work back up costs a read instead of an evening spent reconstructing what I was thinking. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">The working conventions are authoritative here</a>, and <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">the design and its reasoning live in the vision document</a>.</p>
+<p>Initiatives are where the software gets made, and what it gets made for is usually a deck or a demo. Here&#39;s the pattern I built this around: an idea shows up half-formed, I work on it for an afternoon, and then it waits — sometimes for months. That only works because of the record. It holds the original intent, the reasoning that came after it, and the next useful move, all in one place, so picking the work back up costs a read instead of an evening spent reconstructing what I was thinking. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">The working conventions are authoritative here</a>, and <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">the design and its reasoning live in the vision document</a>.</p>
 <p>Here&#39;s what happens to be live in this copy:</p>
 <div class="fact-block" data-fact-block="initiatives.live" data-fact-view="initiatives"><table class="fact-initiatives"><thead><tr><th>Initiative</th><th>Stage</th></tr></thead><tbody><tr data-fact-key="body-movement-visual-twin"><td>Body Movement Visual Twin</td><td><span class="fact-stage">building</span></td></tr><tr data-fact-key="bookmark-sorter"><td>Interactive Bookmark Sorter</td><td><span class="fact-stage">refining</span></td></tr><tr data-fact-key="educational-global-maps"><td>Educational Global Maps</td><td><span class="fact-stage">wish</span></td></tr><tr data-fact-key="newsletter-story-harvester"><td>Newsletter Story Harvester</td><td><span class="fact-stage">refining</span></td></tr><tr data-fact-key="repo-guide"><td>Repo Guide</td><td><span class="fact-stage">dormant</span></td></tr><tr data-fact-key="tide-here"><td>Tide Here</td><td><span class="fact-stage">refining</span></td></tr></tbody></table></div>
 <p>This is a snapshot of initiatives as of the last revision of this document.</p>
@@ -154,7 +159,7 @@
       <div class="section-copy">
         <h2>The initiative lifecycle</h2>
         <p>An initiative is a durable unit of intent. No expiry date, no owner it has to be handed off to, no obligation to finish. What it accumulates instead is reasoning.</p>
-<figure class="figure" data-figure="lifecycle-flow"><svg class="figure-svg figure-svg--wide" viewBox="0 0 791 156" width="791" height="156" role="img" aria-label="The lifecycle in order, with the documents each stage expects: wish, shaped, specified, planned, building, refining, dormant, archived" preserveAspectRatio="xMidYMid meet"><title>The lifecycle in order, with the documents each stage expects: wish, shaped, specified, planned, building, refining, dormant, archived</title><defs><marker id="fig-arrowhead-lifecycle-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-chip fig-chip--stage" data-figure-label="wish">
+<figure class="figure" data-figure="lifecycle-flow"><svg class="figure-svg figure-svg--wide" viewBox="0 0 791 176" width="791" height="176" role="img" aria-label="The lifecycle in order, with the documents each stage expects: wish, shaped, specified, planned, building, refining, dormant, archived" preserveAspectRatio="xMidYMid meet"><title>The lifecycle in order, with the documents each stage expects: wish, shaped, specified, planned, building, refining, dormant, archived</title><defs><marker id="fig-arrowhead-lifecycle-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-chip fig-chip--stage" data-figure-label="wish">
     <rect x="4" y="18" width="84" height="30" rx="15"></rect>
     <text x="46" y="33" dominant-baseline="central" text-anchor="middle">wish</text>
   </g><line class="fig-rail" x1="88" y1="33" x2="103" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="shaped">
@@ -190,6 +195,10 @@
       <g class="fig-doc">
         <rect x="307" y="108" width="84" height="14" rx="3"></rect>
         <text x="349" y="115" dominant-baseline="central" text-anchor="middle">plan.md</text>
+      </g>
+      <g class="fig-doc">
+        <rect x="307" y="128" width="84" height="14" rx="3"></rect>
+        <text x="349" y="135" dominant-baseline="central" text-anchor="middle">test-plan.md</text>
       </g><line class="fig-rail" x1="391" y1="33" x2="406" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="building">
     <rect x="406" y="18" width="84" height="30" rx="15"></rect>
     <text x="448" y="33" dominant-baseline="central" text-anchor="middle">building</text>
@@ -205,6 +214,10 @@
       <g class="fig-doc">
         <rect x="406" y="108" width="84" height="14" rx="3"></rect>
         <text x="448" y="115" dominant-baseline="central" text-anchor="middle">plan.md</text>
+      </g>
+      <g class="fig-doc">
+        <rect x="406" y="128" width="84" height="14" rx="3"></rect>
+        <text x="448" y="135" dominant-baseline="central" text-anchor="middle">test-plan.md</text>
       </g><line class="fig-rail" x1="490" y1="33" x2="505" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="refining">
     <rect x="505" y="18" width="84" height="30" rx="15"></rect>
     <text x="547" y="33" dominant-baseline="central" text-anchor="middle">refining</text>
@@ -220,13 +233,17 @@
       <g class="fig-doc">
         <rect x="505" y="108" width="84" height="14" rx="3"></rect>
         <text x="547" y="115" dominant-baseline="central" text-anchor="middle">plan.md</text>
+      </g>
+      <g class="fig-doc">
+        <rect x="505" y="128" width="84" height="14" rx="3"></rect>
+        <text x="547" y="135" dominant-baseline="central" text-anchor="middle">test-plan.md</text>
       </g><line class="fig-rail" x1="589" y1="33" x2="604" y2="33"></line><g class="fig-chip fig-chip--quiet" data-figure-label="dormant">
     <rect x="604" y="18" width="84" height="30" rx="15"></rect>
     <text x="646" y="33" dominant-baseline="central" text-anchor="middle">dormant</text>
   </g><line class="fig-rail" x1="688" y1="33" x2="703" y2="33"></line><g class="fig-chip fig-chip--quiet" data-figure-label="archived">
     <rect x="703" y="18" width="84" height="30" rx="15"></rect>
     <text x="745" y="33" dominant-baseline="central" text-anchor="middle">archived</text>
-  </g><text class="fig-text fig-text--caption" x="4" y="148" text-anchor="start">A document shows up when the stage reaches it, and not before.</text></svg></figure>
+  </g><text class="fig-text fig-text--caption" x="4" y="168" text-anchor="start">A document shows up when the stage reaches it, and not before.</text></svg></figure>
 <p>Movement runs both ways: an initiative that hits a bad assumption moves back, and one nobody needs right now goes quiet without anyone declaring it dead.</p>
 <p>Each move records one more piece of the thinking. First the person&#39;s own words, untouched. Then a statement of what done would mean. Then a chosen shape, with the alternatives that lost written down next to it. Then an order for the work and the tests that would show it works.</p>
 <div class="fact-block" data-fact-block="lifecycle.stage_documents" data-fact-view="stack"><dl class="fact-stack"><div data-fact-key="shaped">
@@ -237,15 +254,17 @@
       <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li></ul></dd>
     </div><div data-fact-key="planned">
       <dt>planned</dt>
-      <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li></ul></dd>
+      <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li><li data-fact-value="test-plan.md">test-plan.md</li></ul></dd>
     </div><div data-fact-key="building">
       <dt>building</dt>
-      <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li></ul></dd>
+      <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li><li data-fact-value="test-plan.md">test-plan.md</li></ul></dd>
     </div><div data-fact-key="refining">
       <dt>refining</dt>
-      <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li></ul></dd>
+      <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li><li data-fact-value="test-plan.md">test-plan.md</li></ul></dd>
     </div></dl></div>
-<p><a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">The lifecycle rules and vocabulary are authoritative in the working instructions</a>, and <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the technical document explains what validates and renders them</a>.</p>
+<p>Those are only the part of the record the lifecycle gates. Several more documents fill in around them, and none of them waits for a stage to arrive. The goal in the person&#39;s own words is fixed the moment the initiative merges, amended in place afterwards rather than rewritten. The decisions file holds the questions the work got stuck on and how each was settled, dated and appended, so a settled argument does not get had again in November. The log says what happened and when — routine entries a decision would be buried among, which is why the two are separate files. Notes keep the maybes nobody has committed to, and a release writes its own record.</p>
+<div class="fact-block" data-fact-block="documents.record" data-fact-view="documents"><table class="fact-documents"><thead><tr><th>Document</th><th>File</th></tr></thead><tbody><tr data-fact-key="README.md"><td>README</td><td><code>README.md</code></td></tr><tr data-fact-key="wish.md"><td>Wish</td><td><code>wish.md</code></td></tr><tr data-fact-key="background.md"><td>Background</td><td><code>background.md</code></td></tr><tr data-fact-key="objectives.md"><td>Objectives</td><td><code>objectives.md</code></td></tr><tr data-fact-key="decisions.md"><td>Decisions</td><td><code>decisions.md</code></td></tr><tr data-fact-key="spec.md"><td>Specification</td><td><code>spec.md</code></td></tr><tr data-fact-key="plan.md"><td>Implementation plan</td><td><code>plan.md</code></td></tr><tr data-fact-key="test-plan.md"><td>Test plan</td><td><code>test-plan.md</code></td></tr><tr data-fact-key="releases.md"><td>Releases</td><td><code>releases.md</code></td></tr><tr data-fact-key="log.md"><td>Log</td><td><code>log.md</code></td></tr><tr data-fact-key="notes.md"><td>Notes</td><td><code>notes.md</code></td></tr></tbody></table></div>
+<p><a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">The lifecycle rules and vocabulary are authoritative in the working instructions</a>, and <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the technical document explains what validates and renders them</a>.</p>
       </div>
     </section>
     <section id="supplies" data-audience="contributor">
@@ -309,7 +328,7 @@
         <text class="fig-text fig-text--caption" x="0" y="282" text-anchor="start">The amber labels sit there waiting until a person answers.</text></svg></figure>
 <p>Three things only a person can put into the record. What you actually want, which no amount of reading the repository will reveal. Facts that live outside it — what a file contains, what something costs, what a service will allow. And permission for anything that spends money, grants access, or commits to a policy.</p>
 <p>Everything downstream of that is structure, and the agents supply it. They turn a want into testable outcomes, weigh the alternatives and write down the ones they rejected, put the work in order, cut it into increments small enough to review, and answer the comments that come back. The one thing they never do is decide their own work is finished. A pull request is a proposal; merging it is somebody else&#39;s act.</p>
-<p>When you answer a question the work is stuck on, an agent records it in <code>decisions.md</code> and unblocks the item. Your answer lands in the decision record along with what it settles and what it leaves open, so the next contributor inherits the reasoning and not just the conclusion. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">The working vocabulary and write rules are here</a>; <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">the longer reasoning is here</a>.</p>
+<p>When you answer a question the work is stuck on, an agent records it in <code>decisions.md</code> and unblocks the item. Your answer lands in the decision record along with what it settles and what it leaves open, so the next contributor inherits the reasoning and not just the conclusion. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">The working vocabulary and write rules are here</a>; <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">the longer reasoning is here</a>.</p>
       </div>
     </section>
     <section id="sweep" data-audience="both">
@@ -365,7 +384,7 @@
 <div class="fact-block" data-fact-block="sweep.budget" data-fact-view="table"><dl class="fact-table"><div data-fact-key="items_per_run"><dt>Current items per run</dt><dd>4</dd></div><div data-fact-key="max_items_per_initiative"><dt>Max items per initiative</dt><dd>2</dd></div><div data-fact-key="max_open_prs"><dt>Max open PRs</dt><dd>8</dd></div><div data-fact-key="max_effort"><dt>Max effort</dt><dd>large</dd></div></dl></div>
 <p>A short list of things a run may never do, whatever it finds:</p>
 <div class="fact-block" data-fact-block="sweep.rules" data-fact-view="list"><ul class="fact-list"><li>Never merge your own pull request, and never resolve a review thread.</li><li>Never treat your own comments, or another bot&#39;s, as something to respond to.</li><li>Never create an initiative, and never invent or edit a wish.</li><li>Never declare an initiative dormant. Running out of work is not the same as being finished, and only the user can say which one it is.</li><li>Never repair a malformed initiative.json — skip that initiative and report it.</li><li>Never settle a human-class blocker unilaterally. A human: question may be proposed as a pull request the user merges or redirects; everything else goes in the digest, as multiple choice wherever the options can be enumerated.</li><li>Never propose an answer to a data:, permission:, cost: or legal: blocker — those need a fact only the user has, or their authority.</li><li>If there is no actionable work anywhere, do nothing and say so.</li></ul></div>
-<p>The first one matters most. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">Read the exact prompt used by both manual and scheduled runs</a>.</p>
+<p>The first one matters most. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">Read the exact prompt used by both manual and scheduled runs</a>.</p>
       </div>
     </section>
     <section id="person-required" data-audience="contributor">
@@ -426,7 +445,7 @@
         <text class="fig-text fig-text--caption" x="0" y="334" text-anchor="start">An agent may propose alternatives for items labeled &quot;human&quot;.</text></svg></figure>
 <p>An agent will act on items labeled &quot;human&quot; by generating alternatives and making a proposal.</p>
 <p>The rest can&#39;t be helped that way, for different reasons. A fact the agent can&#39;t observe has to come from somebody who can see it. Spending, access, and policy stay with whoever actually holds that authority. Guessing at any of them produces a confident answer with nothing behind it, which is worse than an item that sits there visibly waiting.</p>
-<p>Even a proposed answer stays blocked until its pull request merges, so nothing becomes true just because an agent suggested it. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">The precise sweep rules are authoritative here</a>, and <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">the working instructions explain how a recorded answer unblocks later work</a>.</p>
+<p>Even a proposed answer stays blocked until its pull request merges, so nothing becomes true just because an agent suggested it. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">The precise sweep rules are authoritative here</a>, and <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">the working instructions explain how a recorded answer unblocks later work</a>.</p>
       </div>
     </section>
     <section id="decks" data-audience="both">
@@ -435,7 +454,7 @@
         <h2>Decks, briefly</h2>
         <p>A deck is published site content — a top-level collection with pages or sections under it. Changing one is ordinary web work, with a few house rules that exist because the shared components assume them.</p>
 <p>Keep ordinary topic content inside the page&#39;s content card. Reach for the shared libraries instead of rolling your own maps, galleries, collapsible topics, or footers. Preserve every URL you were given, exactly as given. New travel content carries the place facts that were asked for, locations written for a visitor rather than a resident, and a map.</p>
-<p>Then build. After the last source change, run <code>bash scripts/build.sh</code> and capture anything visibly different with the repository&#39;s screenshot command. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">The working conventions define the content requirements</a>; <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">the build document gives the reproducible commands</a>.</p>
+<p>Then build. After the last source change, run <code>bash scripts/build.sh</code> and capture anything visibly different with the repository&#39;s screenshot command. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">The working conventions define the content requirements</a>; <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">the build document gives the reproducible commands</a>.</p>
       </div>
     </section>
     <section id="demos" data-audience="both">
@@ -444,7 +463,7 @@
         <h2>Demos, briefly</h2>
         <p>A demo is a self-contained example living under the demo collection. It owns its pages, its assets, and optionally the prompt history that produced it.</p>
 <p>The build carries a demo rather than interpreting it: it copies the source without rewriting anything, and generates one table-of-contents entry per immediate demo directory out of that demo&#39;s own short description. Check it visually with <code>playwright screenshot</code> once the final build has run.</p>
-<p>Demo language stays distinct from deck and section language because the two have different publishing structures. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">The concise publishing contract is in the demos technical document</a>, with <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">shared working rules in the repository instructions</a>.</p>
+<p>Demo language stays distinct from deck and section language because the two have different publishing structures. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">The concise publishing contract is in the demos technical document</a>, with <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">shared working rules in the repository instructions</a>.</p>
       </div>
     </section>
     <section id="deployments" data-audience="both">
@@ -497,7 +516,7 @@
 <p>That distinction is enforced rather than requested. A release reads from committed files and refuses a source folder with uncommitted changes, so the recorded commit is something you can go back to. And the procedure an agent reaches for to refresh a preview has no way to reach the released copy at all — a stronger guarantee than an instruction, which can be argued with.</p>
 <p>What a deployment publishes to is its kind:</p>
 <div class="fact-block" data-fact-block="deployments.kinds" data-fact-view="chips"><ul class="fact-chips"><li data-fact-value="ChatGPT Site">ChatGPT Site</li><li data-fact-value="Demo">Demo</li></ul></div>
-<p>The kind decides which environments exist, what the source folder has to contain, and which engine does the copying, so another way of publishing means describing one more kind rather than rewriting any of the above. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">The working rules are in the instructions</a>; <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the schema, the release gate, and the release history are in the technical document</a>.</p>
+<p>The kind decides which environments exist, what the source folder has to contain, and which engine does the copying, so another way of publishing means describing one more kind rather than rewriting any of the above. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">The working rules are in the instructions</a>; <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the schema, the release gate, and the release history are in the technical document</a>.</p>
       </div>
     </section>
     <section id="portability" data-audience="forker">
@@ -619,7 +638,7 @@
       <h4>update-deck-events</h4>
       <p>Refresh the Events topic of every current or future deck page that has a date range, by searching for festivals, fairs, religious celebrations, concerts, and theater happening in that place during that window and reconciling them against the events already on the page and on its reject page.</p>
     </article></div></div>
-<p>The decks, demos, and initiative histories already here belong to this repository and need to be copied only when they also belong in the fork. <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">The vision document explains which mechanism is essential and why</a>; <a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the technical document explains how it is wired</a>.</p>
+<p>The decks, demos, and initiative histories already here belong to this repository and need to be copied only when they also belong in the fork. <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">The vision document explains which mechanism is essential and why</a>; <a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the technical document explains how it is wired</a>.</p>
       </div>
     </section>
     <section id="sources" data-audience="both">
@@ -627,14 +646,14 @@
       <div class="section-copy">
         <h2>Where the real answers are</h2>
         <p>The words that drive the agents are in these files:</p>
-<ul><li><a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/AGENTS.md" data-source-path="AGENTS.md">AGENTS.md</a> for working conventions, write scope, content vocabulary, and required verification.</li><li><a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">INITIATIVES_VISION.md</a> for the lifecycle design and the reasoning behind it.</li><li><a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">INITIATIVES_TECHDOC.md</a> for executable lifecycle behavior, validation, rendering, and sweep mechanics.</li><li><a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">BUILD_TECHDOC.md</a> for dependency setup, the site build, browser provisioning, and screenshots.</li><li><a href="https://github.com/knovak/siteprep/blob/60fdfcca0aca/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">DEMOS_TECHDOC.md</a> for the small, specific contract that publishes a demo.</li></ul>
+<ul><li><a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/AGENTS.md" data-source-path="AGENTS.md">AGENTS.md</a> for working conventions, write scope, content vocabulary, and required verification.</li><li><a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">INITIATIVES_VISION.md</a> for the lifecycle design and the reasoning behind it.</li><li><a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">INITIATIVES_TECHDOC.md</a> for executable lifecycle behavior, validation, rendering, and sweep mechanics.</li><li><a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">BUILD_TECHDOC.md</a> for dependency setup, the site build, browser provisioning, and screenshots.</li><li><a href="https://github.com/knovak/siteprep/blob/77ad440c4e3a/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">DEMOS_TECHDOC.md</a> for the small, specific contract that publishes a demo.</li></ul>
 <p>Every link is pinned to the commit named in the footer of this document, so that it matches this description. You may also prefer to look at the &quot;main&quot; branch for the current version of the linked files.</p>
       </div>
     </section>
   </main>
-  <footer data-generated-date="2026-08-27" data-source-sha="60fdfcca0aca">
+  <footer data-generated-date="2026-08-27" data-source-sha="77ad440c4e3a">
     Generated <strong>2026-08-27</strong> from source commit
-    <a href="https://github.com/knovak/siteprep/tree/60fdfcca0aca"><strong>60fdfcca0aca</strong></a>.
+    <a href="https://github.com/knovak/siteprep/tree/77ad440c4e3a"><strong>77ad440c4e3a</strong></a>.
     The explanation was written by hand and dated; every value it links to comes from that commit.
   </footer>
 </body>

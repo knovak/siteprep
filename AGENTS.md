@@ -153,12 +153,19 @@ Only `initiative.json` and `wish.md` exist when an initiative is created. The ov
 | `wish` | `wish.md` | Draft `objectives.md` |
 | `shaped` | + `objectives.md` | Draft `spec.md`, including alternatives considered |
 | `specified` | + `spec.md` | Draft `plan.md` and `test-plan.md` |
-| `planned` | + `plan.md` | Critique the plan, then build the first increment in `work/` |
+| `planned` | + `plan.md`, `test-plan.md` | Critique the plan, then build the first increment in `work/` |
 | `building` | `work/` has content | Next plan step, or graduate the output |
 | `refining` | output has graduated | Work the todo list |
 | `dormant` | nothing actionable, by choice | Nothing - this is a resting state |
 
 Stages may regress; `archived` may not.
+
+**The stage gates only part of the record.** `wish.md` is required at every
+stage, and `decisions.md`, `log.md`, `releases.md` and `notes.md` are tied to
+nothing: they appear when there is a question to settle, something to record, a
+release to note, or a maybe worth keeping. Only the stage-gated documents above
+produce a "missing at this stage" warning; the rest are checked by their own
+rules or not at all.
 
 ### Rules that matter when editing an initiative
 

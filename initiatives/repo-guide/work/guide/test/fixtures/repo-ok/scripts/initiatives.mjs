@@ -12,6 +12,7 @@ export const HUMAN_BLOCKERS = new Set([
 ]);
 export const PROPOSABLE_BLOCKERS = new Set(['person']);
 
+export const DOCUMENTS = [['shape.md', 'Shape'], ['record.md', 'Record']];
 export const DEPLOY_ENVIRONMENTS = ['preview', 'live'];
 export const DEPLOYMENT_LABELS = { folder: 'Folder', widget: 'Widget' };
 

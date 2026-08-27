@@ -19,7 +19,7 @@ function syntheticSlides(count, overrides = {}) {
   }));
 }
 
-test('deck generation writes sixteen ordered slides and their section mapping', async () => {
+test('deck generation writes seventeen ordered slides and their section mapping', async () => {
   const outputPath = join(mkdtempSync(join(tmpdir(), 'repo-guide-deck-')), 'deck.html');
   const report = await generateDeck({
     root,
@@ -30,10 +30,10 @@ test('deck generation writes sixteen ordered slides and their section mapping', 
   });
   const html = readFileSync(outputPath, 'utf8');
 
-  assert.equal(report.slides, 16);
+  assert.equal(report.slides, 17);
   assert.deepEqual(report.slides_per_section, {
     repository: 2,
-    lifecycle: 2,
+    lifecycle: 3,
     supplies: 2,
     sweep: 2,
     'person-required': 1,
@@ -43,14 +43,14 @@ test('deck generation writes sixteen ordered slides and their section mapping', 
     portability: 2,
     sources: 1,
   });
-  assert.equal([...html.matchAll(/<article class="slide/g)].length, 16);
+  assert.equal([...html.matchAll(/<article class="slide/g)].length, 17);
   assert.deepEqual([...html.matchAll(/data-section-id="([^"]+)"/g)].map(match => match[1]), [
-    'repository', 'repository', 'lifecycle', 'lifecycle', 'supplies', 'supplies',
+    'repository', 'repository', 'lifecycle', 'lifecycle', 'lifecycle', 'supplies', 'supplies',
     'sweep', 'sweep', 'person-required', 'decks', 'demos', 'deployments', 'deployments',
     'portability', 'portability', 'sources',
   ]);
   assert.match(html, /data-source-sha="abcdef123456"/);
-  assert.equal([...html.matchAll(/<span>Ken Novak<\/span>/g)].length, 16);
+  assert.equal([...html.matchAll(/<span>Ken Novak<\/span>/g)].length, 17);
   assert.match(html, /#frame:has\(\.title-slide:not\(\[hidden\]\)\) #controls/);
   assert.doesNotMatch(html, /[ \t]+$/m);
   assert.doesNotMatch(html, /<script[^>]+src=|<link[^>]+stylesheet|\bfetch\s*\(/i);

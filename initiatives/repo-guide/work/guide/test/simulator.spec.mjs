@@ -71,6 +71,60 @@ test('simulator opens offline, walks the whole lifecycle, and comes back', async
   expect(networkRequests).toEqual([]);
 });
 
+test('the stage stands out on exactly the steps where it moved, in both directions', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  const count = await stepCount(page);
+
+  // Walk forward recording the stage and whether the badge was flagged, then
+  // walk back and demand the same answers: the highlight is a property of the
+  // step, not of the direction you arrived from.
+  const badge = page.locator('#current-stage');
+  const forward = [];
+  for (let step = 1; step <= count; step += 1) {
+    forward.push({
+      stage: await badge.textContent(),
+      changed: await badge.getAttribute('data-changed'),
+      track: await page.locator('#stage-track .stage.current').getAttribute('data-changed'),
+    });
+    if (step === count) break;
+    await page.locator('#step').click();
+    await page.evaluate(() => window.simulatorState.settle());
+  }
+
+  // The first step is where the walk-through starts, so nothing has moved yet.
+  expect(forward[0].changed).toBeNull();
+  for (let step = 1; step < count; step += 1) {
+    const moved = forward[step].stage !== forward[step - 1].stage;
+    expect(forward[step].changed).toBe(moved ? 'true' : null);
+    expect(forward[step].track).toBe(moved ? 'true' : null);
+  }
+
+  // Moving backwards through the lifecycle is a supported move and gets the
+  // same treatment as advancing; a run that never moved back would pass the
+  // rule above trivially.
+  expect(forward.some((entry, index) => index > 0
+    && entry.changed === 'true'
+    && forward.slice(0, index).some(earlier => earlier.stage === entry.stage))).toBe(true);
+
+  for (let step = count - 1; step >= 1; step -= 1) {
+    await page.locator('#back').click();
+    await page.evaluate(() => window.simulatorState.settle());
+    expect(await badge.getAttribute('data-changed')).toBe(forward[step - 1].changed);
+  }
+
+  // The orange is the one the active sweep phase already uses, so a reader
+  // learns one colour rather than two.
+  await page.locator('#step').click();
+  await page.evaluate(() => window.simulatorState.settle());
+  const orange = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--orange').trim());
+  expect(orange).toBe('#ef6a3a');
+  // The badge transitions into the colour, so poll rather than reading the
+  // frame the click happened on.
+  await expect
+    .poll(() => badge.evaluate(node => getComputedStyle(node).backgroundColor))
+    .toBe('rgb(239, 106, 58)');
+});
+
 test('an item that survives a step is the same element, and a finished one leaves', async ({page}) => {
   await page.goto(pathToFileURL(outputPath).href);
 

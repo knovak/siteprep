@@ -16,7 +16,7 @@ import {renderFigure} from './figures.mjs';
 
 export const BLOCK_DIRECTIVE = /^@(fact|figure)\s+([A-Za-z0-9_.*-]+)(?:\s+as\s+([a-z-]+))?\s*$/;
 
-const VIEWS = new Set(['rail', 'chips', 'table', 'stack', 'cards', 'list', 'initiatives', 'paths']);
+const VIEWS = new Set(['rail', 'chips', 'table', 'stack', 'cards', 'list', 'initiatives', 'documents', 'paths']);
 
 export function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, character => ({
@@ -202,6 +202,15 @@ function initiatives(rows) {
     .join('')}</tbody></table>`;
 }
 
+// The documents an initiative can carry: what a reader sees the page called,
+// next to the file it is written in. Both halves matter - the title is how the
+// published record is navigated, the filename is what someone editing opens.
+function documents(records) {
+  return `<table class="fact-documents"><thead><tr><th>Document</th><th>File</th></tr></thead><tbody>${records
+    .map(record => `<tr data-fact-key="${escapeHtml(record.file)}"><td>${escapeHtml(record.title)}</td><td><code>${escapeHtml(record.file)}</code></td></tr>`)
+    .join('')}</tbody></table>`;
+}
+
 function renderView(view, keys, facts, target) {
   if (view === 'cards') {
     const records = keys.length > 1 || target.endsWith('.*')
@@ -217,6 +226,13 @@ function renderView(view, keys, facts, target) {
   if (keys.length > 1) throw new Error(`A glob block only supports the cards view: ${target}`);
   const value = pathValue(facts, target);
 
+  if (view === 'documents') {
+    if (!Array.isArray(value)) throw new Error(`The documents view needs a list: ${target}`);
+    if (value.some(record => !record || typeof record !== 'object' || !record.file || !record.title)) {
+      throw new Error(`The documents view needs file and title on every record: ${target}`);
+    }
+    return documents(value);
+  }
   if (view === 'initiatives') {
     if (!Array.isArray(value)) throw new Error(`The initiatives view needs a list: ${target}`);
     if (value.length === 0) return '<p class="fact-empty">No initiatives are live in this copy of the repository.</p>';
@@ -297,6 +313,11 @@ export const BLOCK_CSS = `
 .fact-cards h4 { margin: 0 0 5px; color: var(--fig-ink); font-size: .95em; font-weight: 800; }
 .fact-cards p { margin: 0; color: var(--fig-muted); font-size: .84em; line-height: 1.45; overflow-wrap: anywhere; }
 .fact-card-meta { margin-top: 6px !important; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .74em !important; }
+.fact-documents { width: 100%; border-collapse: collapse; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; font-size: .9em; }
+.fact-documents th { padding: 9px 14px; background: var(--fig-fill); color: var(--fig-muted); font-size: .82em; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+.fact-documents td { padding: 8px 14px; border-top: 1px solid var(--fig-line); background: var(--fig-surface); }
+.fact-documents td:first-child { font-weight: 750; }
+.fact-documents code { padding: 0; background: none; border: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; color: var(--fig-muted); }
 .fact-initiatives { width: 100%; border-collapse: collapse; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; font-size: .9em; }
 .fact-initiatives th { padding: 9px 14px; background: var(--fig-fill); color: var(--fig-muted); font-size: .82em; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
 .fact-initiatives td { padding: 9px 14px; border-top: 1px solid var(--fig-line); background: var(--fig-surface); }
