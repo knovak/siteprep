@@ -29,13 +29,14 @@ recorded commit is something you can go back to. And the procedure an agent
 reaches for to refresh a preview has no way to reach the released copy at all —
 a stronger guarantee than an instruction, which can be argued with.
 
-What a deployment publishes to is its kind:
+Test and production deployments are supported for two kinds of websites:
 
-@fact deployments.kinds as chips
+- ChatGPT Sites, which are full websites with backend services, storage, and a database
+- Demo sites, which are for a folder of simple static web pages, stored under this repo's demos folder
 
-The kind decides which environments exist, what the source folder has to
-contain, and which engine does the copying, so another way of publishing means
-describing one more kind rather than rewriting any of the above.
+Deployments are managed by skills that know how to handle both kinds. In future,
+additional kinds of sites may be supported.
+
 [The working rules are in the instructions](source:AGENTS.md); [the schema, the
 release gate, and the release history are in the technical
 document](source:INITIATIVES_TECHDOC.md).
@@ -56,7 +57,15 @@ releasing deliberate.
 It reads from committed files and refuses a source folder with uncommitted
 changes, so the recorded commit is something to go back to. The two environments
 may never point at the same place, and the procedure that refreshes a preview
-cannot reach the released copy at all. Both of them exist for whatever kind of
-thing the deployment publishes to:
+cannot reach the released copy at all.
 
-@fact deployments.kinds as chips
+---
+## Two kinds of website, one process
+
+Test and production deployments are supported for two kinds of websites:
+
+- ChatGPT Sites, which are full websites with backend services, storage, and a database
+- Demo sites, which are for a folder of simple static web pages, stored under this repo's demos folder
+
+Deployments are managed by skills that know how to handle both kinds. In future,
+additional kinds of sites may be supported.

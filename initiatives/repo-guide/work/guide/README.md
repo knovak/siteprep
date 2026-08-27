@@ -120,8 +120,11 @@ line:
 @figure lifecycle-flow
 ```
 
-Views are `rail`, `chips`, `paths`, `table`, `stack`, `list`, `cards`, and
-`initiatives`; omitting `as <view>` picks one from the value's shape. A
+Views are `rail`, `chips`, `paths`, `table`, `stack`, `list`, `cards`,
+`documents`, and `initiatives`; omitting `as <view>` picks one from the value's
+shape. The `documents` view pairs each document's rendered page title with the
+file it lives in, which is the mapping between what a reader clicks on the
+published site and what an editor opens in the repository. A
 `prefix.*` glob resolves a whole registered collection and only supports
 `cards`. A block cites every fact it resolves, so putting a value in a table
 discharges the `uncited-fact` warning the same way a sentence would — which is
@@ -172,6 +175,13 @@ Its browser harness steps forward and back across every state, checks the budget
 and cascade moments, interrupts and resumes Play, and refuses network
 dependencies.
 
+The stage the simulator is showing takes the same orange as the active sweep
+phase on exactly the steps where it moved, badge and lifecycle track together.
+That flag is derived by comparing a step with the one before it rather than
+recorded against the step, so stepping backwards onto a move highlights it the
+same way stepping forwards onto it did - including the one deliberate move back
+down the lifecycle, which its test demands the walk-through still contains.
+
 `build/dating.mjs` records the last complete human simulator walkthrough and
 compares it only with the lifecycle and sweep-phase sources. Simulator
 generation returns a report diagnostic when another walkthrough may be due;
@@ -181,6 +191,13 @@ configuration file.
 The description contains ten sections. Per-section composed words, resolved
 inline tokens, and block counts are reported by generation; the reasoning behind
 the scalar/structured split is recorded in `decisions.md` under 2026-08-19.
+
+The lifecycle section reads two views of one more key. `documents.record` is
+the whole set of documents an initiative can carry, read from the module's
+`DOCUMENTS` export; `documents.titles` is the same source projected to its
+titles, because eleven table rows do not fit a slide and eleven chips do. The
+stage map beside it stays the *incremental* record - what each stage adds - so
+the two blocks answer different questions rather than repeating one.
 
 The deployment section reads two more keys off the same lifecycle module -
 `deployments.environments` and `deployments.kinds`, from `DEPLOY_ENVIRONMENTS`
