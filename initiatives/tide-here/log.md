@@ -100,3 +100,7 @@ Released to production — ChatGPT Site, version 4, `4ec23b4`. <https://tide-her
 ## 2026-08-26 — Choose an optional improvement, request another proposal round, or declare the initiative dormant
 
 Chose closest-first ambiguous results with a collapsed Alternative coasts override; implementation is in this pull request.
+
+## 2026-08-27 — Release
+
+Released to production — ChatGPT Site, version 5, `60fdfcc`. 2 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
