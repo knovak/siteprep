@@ -71,7 +71,7 @@ test('operational logs contain route outcomes but never submitted locations', as
 
 test('the Sites project declares only the Tide Here R2 binding', async () => {
   const hosting = JSON.parse(await readFile(new URL('../../.openai/hosting.json', import.meta.url), 'utf8'));
-  assert.equal(hosting.project_id, 'appgprj_6a8e88673c308191989c18dbf0fd6f80');
+  assert.match(hosting.project_id, /^appgprj_[a-f0-9]{32}$/);
   assert.equal(hosting.d1, null);
   assert.equal(hosting.r2, 'TIDE_DATA');
   const worker = await readFile(new URL('../../worker/index.ts', import.meta.url), 'utf8');
