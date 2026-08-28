@@ -336,22 +336,23 @@ the fallback may be marked active.
 | Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
 | Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
 | Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
-| Health | Live `/health` names provider registry `stage-4-v2` and both stored dataset versions | Operability |
+| Health | Live `/health` names provider registry `stage-4-v4` and both stored dataset versions | Operability |
 | Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
 | Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
-| Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the Australian fixture, and returns the approximate fallback fixture | Deployment integration |
+| Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the licensed Australian source, and returns the approximate fallback fixture | Deployment integration |
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
 
-**Recorded result, 2026-08-27:** all eight checks passed on public test Site
-version 6. Initialization activated `stage-4-v2`; the repeat call wrote zero
-objects; 105 Tide Node tests passed in both the working tree and isolated Site
-source; the production Site was not changed.
+**Recorded result, 2026-08-28 UTC:** all eight checks passed on public test Site
+version 8. Initialization activated `stage-4-v4`; the repeat call wrote zero
+objects; 111 Tide Node tests passed in both the working tree and isolated Site
+source, and 21 applicable browser tests passed. The production Site was not
+changed.
 
 ### 7.6 — Australian browser integration
 
 | Test | Pass condition | Protects |
 |---|---|---|
-| Combined coastal match | Brisbane and representative major coastal-city searches select stored Australian test ports while existing U.S. and Canadian fixtures still select their direct providers | Provider routing |
+| Combined coastal match | Brisbane and representative major coastal-city searches select stored Australian reference ports while existing U.S. and Canadian fixtures still select their direct providers | Provider routing |
 | Stored request boundary | Only the selected Australian station, five coast-local rows, and forecast context go to the Site gateway | Request scope |
 | Coast-local rendering | The page shows five days in the selected port's IANA zone and retains browser-side astronomy | O3, O4, O5 |
 | Source disclosure | Licensed results show the Bureau attribution, disclaimer, dataset version, and selected annual-table PDF; only the synthetic browser fixture shows the exact non-official notice inside the location dropdown | Provenance |
@@ -362,7 +363,8 @@ source; the production Site was not changed.
 Australian activation remains governed by §7.3's licence, attribution,
 source-comparison, and annual-renewal gates.
 
-**Recorded result, 2026-08-27:** all seven checks passed on public test Site
-version 6. Sydney selected the stored Fort Denison test port, returned 20 tide
-events across five `Australia/Sydney` days, and displayed the synthetic,
-non-official fixture warning. The production Site was not changed.
+**Recorded result, 2026-08-28 UTC:** all seven checks passed on public test Site
+version 8. Brisbane, Cairns, Sydney, Melbourne, Hobart, Adelaide, Perth, Broome,
+and Darwin selected licensed reference ports and rendered five local days with
+the selected Bureau PDF, attribution, and disclaimer. Licensed results did not
+display the synthetic fixture notice. The production Site was not changed.

@@ -164,3 +164,7 @@ public test Site version 6, initialized registry `stage-4-v2`, and confirmed a
 second initialization wrote zero objects. Live checks returned 20 Australian
 events for five days and kept the synthetic, non-official warning visible. The
 post-check log contained no Worker execution errors. Production was not changed.
+
+## 2026-08-28 — Activate the Stage 3 adapter with licensed annual Australian Standard Ports data
+
+Activated licensed Bureau of Meteorology 2026 annual tide data for 23 major reference ports across every Australian coastal state and the Northern Territory. Public test version 8 initializes the stored dataset idempotently, exposes source attribution and disclaimers, and passed representative-coast live checks; production remains unchanged.

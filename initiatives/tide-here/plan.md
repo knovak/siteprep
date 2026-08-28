@@ -474,11 +474,14 @@ is exercised. A second call must report no changes.
 **Exit:** U.S., Canadian, Australian, and fallback locations work at the real
 HTTPS URL, and failure or denial leaves the current public version untouched.
 
-**Status, 2026-08-27:** complete on public test Site version 4 at
+**Status, 2026-08-28 UTC:** complete on public test Site version 8 at
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated the exact Stage 4 registry and datasets; a second call wrote zero
-objects. The live source-family and browser-page smoke checks passed, and the
-post-check Worker error log was empty. Evidence is recorded in `work/phase-13`;
+activated registry `stage-4-v4`, the licensed 23-port Bureau 2026 dataset, and
+the explicitly non-FES fallback fixture; a second call wrote zero objects. The
+live source-family checks and representative browser searches across every
+Australian coastal state and the Northern Territory passed with source
+attribution and no synthetic-data notice on licensed results. The post-check
+Worker execution-error count was zero. Evidence is recorded in `work/phase-13`;
 production remains untouched.
 
 #### Stage 6 — Production release

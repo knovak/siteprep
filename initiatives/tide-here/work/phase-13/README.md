@@ -14,10 +14,11 @@ environment from the current public production Site.
 - `/init`, `/health`, `/providers`, `/stations`, and `/forecast` are handled by
   the Stage 4 gateway. The page continues to call NOAA and CHS directly, loads
   the stored Australian station catalogue, and uses `/forecast` only when an
-  Australian test port is selected.
+  Australian reference port is selected.
 - Hosted `POST /init` requires the `INIT_TOKEN` secret. Initialization writes
   prepared data already included in the tested source to R2, verifies the exact
-  Australian and fallback versions, and activates the provider registry last.
+  licensed Australian and fallback versions, and activates the provider
+  registry last.
 - Operational logs contain only route, method, status, provider id, and elapsed
   time. They exclude URLs, request bodies, submitted names, coordinates, coast
   names, and station ids.
@@ -30,23 +31,28 @@ project without changing its public access. It configures `INIT_TOKEN`, calls
 writes, and runs HTTPS checks for:
 
 - the browser page and live NOAA and CHS catalogues;
-- stored Australian Standard Ports catalogue and forecast fixture;
+- the stored licensed Australian catalogue and forecasts;
 - the indexed approximate fallback fixture and its safety warnings.
 
-The Australian and fallback data remain fixtures. This deployment validates
-storage, routing, initialization, and failure behavior; it is not evidence of
-official Australian or FES2022 accuracy and must not be promoted to production.
+The Australian dataset is the normalized output of 23 Bureau of Meteorology
+2026 annual tide-table PDFs and carries the source attribution, disclaimer, and
+per-port PDF URL into the browser. The fallback data remains a plainly labelled
+non-FES fixture. This deployment validates the licensed Australian path and the
+fallback storage boundary; it is not evidence of FES2022 accuracy and does not
+authorize a production release.
 
 ## Recorded test deployment
 
-Version 6 was published to the existing public test Site on 2026-08-27:
+Version 8 was published to the existing public test Site on 2026-08-28 UTC:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v2`, Australian fixture `2026-sample-v2`, and
-fallback fixture `2026-08-27`. A second initialization wrote zero objects. The
-live smoke check passed for the NOAA and CHS catalogues, Australian and fallback
-forecasts, and the browser page. A live Sydney check selected the stored Fort
-Denison test port, rendered five days in `Australia/Sydney`, and retained the
-synthetic-data warning; the post-check log contained no Worker execution errors.
+activated registry `stage-4-v4`, Australian dataset `2026-bom-v1`, and fallback
+fixture `2026-08-27`. A second initialization wrote zero objects. Live storage
+checks found 23 Australian stations and returned 449 Australian events across
+the full catalogue. Browser checks for Brisbane, Cairns, Sydney, Melbourne,
+Hobart, Adelaide, Perth, Broome, and Darwin rendered five local days, linked the
+selected Bureau PDF, showed the Bureau attribution and disclaimer, and did not
+show the synthetic fixture notice. The post-check log contained no Worker
+execution errors.
 
 The production Site was not changed.
 
