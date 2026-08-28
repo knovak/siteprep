@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Repo Guide</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Repo Guide</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Repo Guide</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<p>Questions this initiative was waiting on, and how they were settled. Newest at the bottom. Written so a later reader — including a later version of us — does not re-argue something already decided.</p>
+<h3>2026-08-17 — What is authoritative, and how does the guide stay true to it?</h3>
+<p><strong>Generate the guide&#39;s process content from the repository&#39;s own sources, and date the outputs.</strong></p>
+<p>The user&#39;s words, answering on review: <em>&quot;generate the guide&#39;s process content from the repository&#39;s own sources. Also: Date the outputs to allow a manual double-check that it&#39;s current.&quot;</em></p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>Generate from the repository&#39;s own sources</strong> <em>(chosen)</em></td><td>The guide cannot disagree with the repository, because it is not a second copy. Drift stops being a risk to manage</td><td>The largest build of the three, and generation only reaches what is actually derivable — narrative and explanation are not</td></tr><tr><td><strong>Hand-write, assert the claims by test</strong></td><td>Cheap to write, and a test failing is a loud signal</td><td>Only pins the claims somebody thought to assert; the ones nobody wrote a test for drift silently</td></tr><tr><td><strong>Accept drift, date the material</strong></td><td>Costs nothing</td><td>Objectives 2, 3 and 6 acquire a shelf life, and a reader has no way to know they have passed it</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>This initiative is a build, not a piece of writing.</strong> That was the open half</li></ul>
+<p>  of the question, and it is now answered: <code>draft-spec</code> is unblocked and is a   spec for a generator.</p>
+<ul><li><strong>The dating is not the third option arriving through the back door.</strong> The</li></ul>
+<p>  user took generation <em>and</em> the dating that belonged to accepting drift, which   is a stronger position than either: generation is not assumed to be total, and   a date is what lets a person check the part it did not reach. Read as a   statement about trust rather than about freshness, it says the generated   guide is expected to have hand-written material around it.</p>
+<ul><li><strong>Left open:</strong> which repository source is authoritative for a given claim.</li></ul>
+<p>  There are five candidates — <code>AGENTS.md</code>, the two vision and techdoc files, and   the initiatives data itself — and they overlap. The spec has to choose per   claim, and that is the real work this decision creates.</p>
+<ul><li><strong>Left open:</strong> how much of the guide is generated versus written. &quot;The process</li></ul>
+<p>  content&quot; is the user&#39;s phrase and it is narrower than &quot;the guide&quot;.</p>
+<ul><li><strong>Makes decidable:</strong> whether the deck and the description share a source, which</li></ul>
+<p>  <code>objectives.md</code> said followed from this one. If the process content is   generated, sharing a source is the cheap default rather than a choice.</p>
+<h3>2026-08-17 — How faithful does the lifecycle simulator have to be?</h3>
+<p><strong>Animate an abstract lifecycle for now</strong>, with an upgrade to the real <code>initiative.json</code> held open.</p>
+<p>The user&#39;s words: <em>&quot;animate an abstract lifecycle for now. we might upgrade to the real json if the animation is not adequate&quot;</em>.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>An abstract lifecycle that moves</strong> <em>(chosen)</em></td><td>A diagram that could be finished in a day, and enough to make the stages legible — which is what objective 4 actually asks for</td><td>Nothing stops it teaching something false, because nothing connects it to the rules it depicts</td></tr><tr><td><strong>Driven by the real <code>initiative.json</code> shapes and sweep rules</strong></td><td>Cannot quietly diverge from the thing it explains</td><td>A substantially larger build, and one that is hard to justify before anyone has said the simple version is not enough</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>The trigger for the upgrade is the user&#39;s, and it is a judgement:</strong> *&quot;if the</li></ul>
+<p>  animation is not adequate&quot;*. Not a metric, and not something the spec should   convert into one. It stays a live option rather than a rejected one.</p>
+<ul><li><strong>The cost, stated so it is not a surprise:</strong> the simulator is now the one</li></ul>
+<p>  deliverable outside decision 1&#39;s guarantee. Generated process content cannot   disagree with the repository; a hand-drawn animation can, and will, the first   time a stage changes. That is the case the dating requirement is carrying.</p>
+<ul><li><strong>Left open:</strong> how much of the lifecycle the animation covers. &quot;Abstract&quot; says</li></ul>
+<p>  it need not read the data; it does not say whether it shows one initiative   moving, several, or a sweep run.</p>
+<h3>2026-08-17 — Where do the PDFs come from?</h3>
+<p><strong>Made by hand and pushed to Google Drive.</strong> Not built in the pipeline, and not committed here.</p>
+<p>Raised in <code>objectives.md</code> for the spec rather than as a blocker, and answered before the spec was written. The user&#39;s words: <em>&quot;I may have to make the PDFs by hand and push them up to google drive. I&#39;m ok with that.&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>The repository-wide precedent is not tested after all.</strong> The question was</li></ul>
+<p>  awkward because a PDF is both generated and binary, and this repository   commits nothing generated. Putting them outside the repository entirely   sidesteps it rather than arguing it, and no invariant has to bend.</p>
+<ul><li><strong>It contradicts a sentence in <code>objectives.md</code> as first drafted</strong>, and the</li></ul>
+<p>  objective has been corrected in the same change: objective 8 said the PDFs   were &quot;renderings of the same source, not separate documents maintained beside   it&quot;. Hand-made PDFs on Drive <em>are</em> separate documents maintained beside it.   What survives is the outcome the objective was for — that the material can be   handed to someone who will not clone anything.</p>
+<ul><li><strong>They are now the part of the guide most likely to be wrong</strong>, being the only</li></ul>
+<p>  deliverable that is neither generated nor in the repository. This is precisely   what decision 1&#39;s dating requirement is for, and it applies to them most of   all.</p>
+<ul><li><strong>Left open:</strong> how often they are refreshed, and whether anything reminds</li></ul>
+<p>  anybody to. &quot;I&#39;m ok with that&quot; accepts the staleness; it does not say how much.</p>
+<h3>2026-08-18 — Can <code>build.sh</code> authoritatively name the content areas?</h3>
+<p><strong>No. Drop <code>structure.content_areas</code> from the fact set rather than infer it.</strong></p>
+<p>The live file has no array, function or other single construct that declares a content area. Decks are copied unconditionally, demos and initiatives are each guarded separately, and <code>shared/</code>, <code>shared_assets/</code> and <code>pwa/</code> are copied by similar-looking commands without being content areas. Reading directory names from those commands would therefore be a classification invented by the reader, not a fact read from the build.</p>
+<h4>What the probe established</h4>
+<ul><li><strong>Can it be read today?</strong> Not from one authoritative construct. A reader can</li></ul>
+<p>  find plausible directory names, but cannot tell content from assets without   reimplementing the script&#39;s intent.</p>
+<ul><li><strong>What shape would it assume?</strong> Any proposed shape would be an accidental</li></ul>
+<p>  combination of <code>cp</code>, <code>if</code> and index-card markup scattered through the file.</p>
+<ul><li><strong>What happens on an unfamiliar shape?</strong> There is no honest failure boundary:</li></ul>
+<p>  a new content area could use different commands and be silently omitted while   the reader still returned a plausible list.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The <code>structure.content_areas</code> row and the sentence that cited it are removed</li></ul>
+<p>  from <code>spec.md</code>.</p>
+<ul><li>The guide may still explain decks, demos and initiatives in composed prose.</li></ul>
+<p>  It just cannot present that list as generated from <code>build.sh</code>.</p>
+<ul><li>If the build later gains a declarative content-area registry, the fact can be</li></ul>
+<p>  restored against that registry without changing this decision&#39;s standard.</p>
+<h3>2026-08-18 — Can workflow triggers and job names be read without YAML?</h3>
+<p><strong>Yes, through a deliberately narrow block reader.</strong></p>
+<p>All four current workflows use block-form top-level <code>on:</code> and <code>jobs:</code> keys. The probe read only direct children indented by two spaces and found:</p>
+<ul><li><code>cleanup-pr-preview.yml</code>: <code>delete</code>; job <code>cleanup</code></li><li><code>gh-pages.yml</code>: <code>push</code>, <code>workflow_dispatch</code>; jobs <code>build</code>, <code>deploy</code></li><li><code>initiatives-digest.yml</code>: <code>schedule</code>, <code>workflow_dispatch</code>; job <code>digest</code></li><li><code>sweep-scope.yml</code>: <code>pull_request</code>; job <code>scope</code></li></ul>
+<h4>What the reader is allowed to assume</h4>
+<ul><li>The top-level keys are exactly <code>on:</code> and <code>jobs:</code> in block form.</li><li>Trigger and job identifiers are unquoted YAML keys made from letters, digits,</li></ul>
+<p>  <code>_</code> and <code>-</code>, indented by exactly two spaces.</p>
+<ul><li>Nested configuration is ignored only after its direct parent has been</li></ul>
+<p>  identified; a top-level key ends the block.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>An inline trigger such as <code>on: [push]</code>, a quoted key, a missing block or an</li></ul>
+<p>  unexpected direct-child line is an error. The odd-file probe replaced the   block with <code>on: [push]</code> and failed with <code>missing on: block</code>; it did not return   an empty trigger list.</p>
+<ul><li>This is not a YAML parser and must not grow into one. If a workflow adopts a</li></ul>
+<p>  valid YAML shape outside this subset, generation fails until the reader is   deliberately extended or <code>workflows.*</code> is dropped.</p>
+<ul><li>Values below the trigger and job keys are not facts this reader may expose.</li></ul>
+<h3>2026-08-18 — Can skill frontmatter be delimited reliably?</h3>
+<p><strong>Yes, for a strict frontmatter subset that includes folded multiline descriptions.</strong></p>
+<p>The probe read every current <code>.claude/skills/*/SKILL.md</code> from an opening <code>---</code> through the next exact <code>---</code>, requiring one <code>name</code> and one <code>description</code>. It also read a synthetic folded description (<code>description: &gt;-</code> followed by indented lines) as one value.</p>
+<h4>What the reader is allowed to assume</h4>
+<ul><li>Frontmatter begins on line one and ends at the next line that is exactly</li></ul>
+<p>  <code>---</code>.</p>
+<ul><li><code>name</code> is a non-empty inline scalar.</li><li><code>description</code> is either a non-empty inline scalar or a <code>&gt;</code>/<code>|</code> block scalar</li></ul>
+<p>  whose content lines are indented by two spaces.</p>
+<ul><li>Unknown frontmatter fields or scalar shapes are errors rather than ignored</li></ul>
+<p>  metadata.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>A deliberately odd file with no closing delimiter failed with `missing</li></ul>
+<p>  closing delimiter`; no body text was mistaken for metadata.</p>
+<ul><li>The reader does not promise general YAML support. Quoted scalars, anchors or</li></ul>
+<p>  another indentation style require a deliberate extension or cause generation   to fail.</p>
+<ul><li>Only <code>name</code> and <code>description</code> are guide facts. Skill instructions remain</li></ul>
+<p>  prose, not generated process data.</p>
+<h3>2026-08-18 — Can phase summaries and sweep rules be read from the prompt?</h3>
+<p><strong>Yes, by binding the reader to the prompt&#39;s heading and list contract and to the configured phase set.</strong></p>
+<p>The live probe found four <code>## Phase n — title</code> headings and seven bullets under the exact <code>## Rules</code> heading. For each phase it captured the first non-empty paragraph after the heading; for rules it joined indented continuation lines to their preceding bullet.</p>
+<h4>What the reader is allowed to assume</h4>
+<ul><li>Phase headings are exactly level two and use <code>Phase &lt;number&gt; — &lt;title&gt;</code>.</li><li>The expected phase numbers come from the configured sweep phase set; every</li></ul>
+<p>  expected heading must appear once, in order.</p>
+<ul><li>The phase summary is the first non-empty paragraph before the next heading.</li><li>Rules are top-level bullets under an exact level-two <code>Rules</code> heading, with</li></ul>
+<p>  only indented continuation lines permitted.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>Renaming <code>## Phase 2 — ...</code> to <code>## Review — ...</code> in the odd-file probe failed</li></ul>
+<p>  with <code>phase headings were 1,3,4, expected 1,2,3,4</code>; the reader did not silently   publish three summaries.</p>
+<ul><li>A missing first paragraph, missing <code>Rules</code> heading, empty rules list or</li></ul>
+<p>  unexpected line in that list is likewise an error.</p>
+<ul><li>The captured text is quoted. The guide may explain it separately, but may not</li></ul>
+<p>  paraphrase the prompt and call the paraphrase generated.</p>
+<h3>2026-08-18 — Phase 3: the first description baseline and its source links</h3>
+<p>The description is one self-contained HTML file with inline styling and no runtime data load. An authoritative Markdown link uses the explicit <code>source:&lt;repository-path&gt;</code> form. Generation first proves that path exists in the working tree, then renders a GitHub blob link pinned to the same short commit SHA shown in the footer. The browser harness checks both halves: the local file exists, and the outgoing URL contains that SHA.</p>
+<p>This makes a broken source reference a generation error while keeping a copy of the guide useful away from the checkout. Ordinary prose cannot accidentally become an authoritative link merely because it looks like a path.</p>
+<h4>Composed prose against resolved facts</h4>
+<p>The first complete description measured:</p>
+<div class="table-scroll"><table><thead><tr><th>Section</th><th>Composed words</th><th>Resolved tokens</th></tr></thead><tbody><tr><td>What this repository is</td><td>132</td><td>1</td></tr><tr><td>The initiative lifecycle</td><td>122</td><td>2</td></tr><tr><td>Who supplies what</td><td>152</td><td>3</td></tr><tr><td>How work gets picked up</td><td>100</td><td>5</td></tr><tr><td>When a person is required</td><td>129</td><td>3</td></tr><tr><td>Decks, briefly</td><td>95</td><td>1</td></tr><tr><td>Demos, briefly</td><td>96</td><td>1</td></tr><tr><td>Taking this elsewhere</td><td>123</td><td>7</td></tr><tr><td>Where the real answers are</td><td>127</td><td>0</td></tr><tr><td><strong>Total</strong></td><td><strong>1,076</strong></td><td><strong>23</strong></td></tr></tbody></table></div>
+<p>That is about 47 authored words per resolved token. It is a baseline, not a threshold. The last section intentionally has no fact token: its facts are the six explicit, SHA-pinned source links rather than values substituted into prose.</p>
+<h4>What the honesty checks found on the first real draft</h4>
+<ul><li>The bare-stage warning fired twice, both on the ordinary-English word</li></ul>
+<p>  &quot;wish&quot;. Both occurrences genuinely describe the first lifecycle record and   were kept after review; the warning did its job without becoming a false   build failure.</p>
+<ul><li>The backticked-stage, stage-list, and budget-literal error rules fired zero</li></ul>
+<p>  times.</p>
+<ul><li>The blocker rule initially matched ordinary words and paths because the live</li></ul>
+<p>  constants contain namespace names without their colon. That was a real false   positive in the check, not in the prose. The rule now looks for namespace   notation; its existing colon-shaped fixture still pins the intended error.</p>
+<ul><li>One uncited-fact warning remains for the preview-cleanup workflow. The guide</li></ul>
+<p>  cites the workflows that explain generation, deployment, and sweep behavior;   the cleanup job adds no newcomer-facing process fact.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> nine sections render in objective order and audience is always a</li></ul>
+<p>  visible hint, never a filter.</p>
+<ul><li><strong>Settled:</strong> the generated copy opens from <code>file://</code> with zero console errors,</li></ul>
+<p>  failed requests, or network requests, and every authoritative link resolves   locally at generation time.</p>
+<ul><li><strong>Not settled:</strong> whether the explanation works for a newcomer. That manual</li></ul>
+<p>  test cannot be replaced by the browser harness and remains a separate data   blocker.</p>
+<ul><li><strong>Next:</strong> the same section records can gain separately authored slide text;</li></ul>
+<p>  the description renderer does not need to change for phase 4.</p>
+<h3>2026-08-18 — Phase 4: an ordered slide list, a 90-word ceiling, and the first deck baseline</h3>
+<p>The specification&#39;s nine fixed sections and ten-slide floor cannot both hold if each section has exactly one slide. The plan proposed an ordered slide list; phase 4 makes its text format explicit: the first <code>---</code> after frontmatter still separates page text from slide text, and each later <code>---</code> starts another slide for that same section. Slide copy remains in the section file, while layout and navigation remain in the renderer, so a later PowerPoint rendering can consume the same records.</p>
+<p>The first deck contains <strong>13 slides</strong>:</p>
+<div class="table-scroll"><table><thead><tr><th>Section</th><th>Slides</th></tr></thead><tbody><tr><td>What this repository is</td><td>2</td></tr><tr><td>The initiative lifecycle</td><td>2</td></tr><tr><td>Who supplies what</td><td>2</td></tr><tr><td>How work gets picked up</td><td>2</td></tr><tr><td>When a person is required</td><td>1</td></tr><tr><td>Decks, briefly</td><td>1</td></tr><tr><td>Demos, briefly</td><td>1</td></tr><tr><td>Taking this elsewhere</td><td>1</td></tr><tr><td>Where the real answers are</td><td>1</td></tr></tbody></table></div>
+<p>The split follows the learning progression rather than equal allocation. The opening section establishes the repository and the initiative idea separately; the lifecycle, division of labour, and sweep each need two claims. The brief content-area sections stay brief by requirement, and the source section closes by handing the reader back to the authoritative files.</p>
+<h4>The length limit the specification left open</h4>
+<p><strong>Ninety visible words per rendered slide.</strong> The deck is intended to stand on its own in a ten-minute presentation, so a tiny caption limit would make it depend on expert narration. Ninety is still a hard ceiling: with the title and body counted together, it prevents a section&#39;s page prose from being poured onto one screen. The first deck sits below the ceiling on every slide. A separate guard rejects any slide body that is a prefix of its page text, which pins the stronger rule that slide copy is authored rather than truncated.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> the deck is one self-contained HTML file with inline styling and</li></ul>
+<p>  script, no network dependency, SHA-pinned source links, and forward, back,   first, and last keyboard navigation.</p>
+<ul><li><strong>Settled:</strong> generation counts rendered slides, not marked sections, and</li></ul>
+<p>  fails outside the configured 10–20 range or above the 90-word ceiling.</p>
+<ul><li><strong>Measured:</strong> the first mapping is 13 slides across nine sections, as recorded</li></ul>
+<p>  above. All 13 rendered without horizontal, vertical, or copy overflow at a   16:9 presentation viewport.</p>
+<ul><li><strong>Not settled:</strong> whether somebody unfamiliar with the material can present it</li></ul>
+<p>  end to end in ten minutes. That is observed evidence and remains a separate   data blocker rather than a browser assertion.</p>
+<ul><li><strong>Unaffected:</strong> the description renderer. It still consumes only page text;</li></ul>
+<p>  the ordered slide list is additional source, not a fork of the description.</p>
+<h3>2026-08-18 — Phase 5: fixed choreography, selective facts, and six visible states</h3>
+<p>The simulator keeps the six-step abstract choreography settled in the specification and derives only the vocabulary that can drift: lifecycle stages, the proposable blocker class, configured sweep phases, and the per-run item budget.</p>
+<h4>The derived boundary</h4>
+<p>The fact registry now supports resolving a named subset. Simulator generation asks for exactly four keys and never resolves <code>initiatives.live</code>, so it neither opens nor embeds any <code>initiative.json</code>. That is stronger than reading a real initiative and discarding its details: generation still succeeds when the initiatives directory is absent, while an inconsistent lifecycle constant still fails as drift.</p>
+<p>The fixed sequence uses the first three derived lifecycle stages for wish, shaping, and the post-merge advance; draws the complete derived stage track; uses the first derived proposable blocker class; displays every configured sweep phase; and reads the displayed budget from <code>items_per_run</code>. No stage name, blocker namespace, phase name, or budget number is typed into the animation.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> one self-contained HTML file presents all six states with Back,</li></ul>
+<p>  Step, and interruptible Play controls. Step 4 visibly passes an item over at   the budget boundary; step 6 removes completed work, unblocks its dependent,   and advances the stage.</p>
+<ul><li><strong>Settled:</strong> Play visits the exact same six states as manual stepping. It does</li></ul>
+<p>  not introduce a second choreography.</p>
+<ul><li><strong>Settled:</strong> the browser harness opens the file offline, walks both directions,</li></ul>
+<p>  checks harmless boundary actions, interrupts and resumes Play, verifies the   budget and cascade states, and reports no network or console failures.</p>
+<ul><li><strong>Not settled:</strong> whether the abstract animation is adequate to teach the</li></ul>
+<p>  lifecycle. The user&#39;s earlier decision keeps a real-JSON upgrade open if a   person watches this version and finds it inadequate, so that walkthrough   remains a separate data blocker.</p>
+<h3>2026-08-19 — Output quality: structure renders as structure, and the simulator simulates</h3>
+<p>The first complete set of outputs was reviewed and rejected on two grounds: the wording read as stilted, and the simulator was not appealing. Both turned out to have single mechanical causes rather than being matters of taste, and both are fixed at the cause.</p>
+<h4>Why the prose read like a machine</h4>
+<p><code>sections.mjs</code> flattened <em>any</em> fact into a sentence — arrays joined with <code>; </code>, objects rendered <code>key: value; key: value</code>. Because a token could expand into a scalar, a list, a map, or a whole multi-sentence skill description, every sentence carrying one had to be phrased to survive any of those, which forces one frame: plural noun phrase, copula, dumped value.</p>
+<blockquote><p>The current budget is items_per_run: 4; max_items_per_initiative: 2; max_open_prs: 8; max_effort: large.</p></blockquote>
+<p>Three lint rules made it worse rather than better. <code>literal-budget</code> bans any integer matching a budget value and <code>literal-stage-<em></code> ban naming stages, so an author is </em>forbidden* from writing the plain sentence and must reach for a token; and <code>uncited-fact</code> requires every registered fact to appear somewhere, which turns the prose into a quota to be discharged. That is why the portability section had crammed three entire skill descriptions — trigger phrases and parenthetical examples included — into a single sentence.</p>
+<p>So the register was not a drafting failure. It was the price being paid for objective 9&#39;s generation guarantee, and it was being paid in the wrong currency.</p>
+<h4>What replaced it</h4>
+<p>Facts are split by shape and rendered accordingly.</p>
+<ul><li><strong>Scalars stay inline.</strong> <code>{{sweep.budget.items_per_run}}</code> inside &quot;a run</li></ul>
+<p>  handles at most 4 items&quot; reads as English and always did.</p>
+<ul><li><strong>Structured values become blocks.</strong> A section names <code>@fact &lt;key&gt; [as &lt;view&gt;]</code></li></ul>
+<p>  or <code>@figure &lt;name&gt;</code> on its own line and the value arrives as a rail, a table,   a chip row, a list, or a set of cards. <code>build/blocks.mjs</code> owns the views.</p>
+<ul><li><strong>Inlining a structured value is now an error</strong> (<code>structured-inline</code>), the way</li></ul>
+<p>  a literal stage name already was. That single lint flip is what forces the   prose to be prose: the old frame is no longer expressible.</p>
+<ul><li><strong>A block cites its facts</strong>, so structure discharges <code>uncited-fact</code> and the</li></ul>
+<p>  quota stops pushing values into sentences that do not want them. A <code>prefix.*</code>   glob lets one block cite a whole registered collection.</p>
+<ul><li><strong><code>skills.&lt;name&gt;.summary</code></strong> is a new derived fact: the first sentence of a</li></ul>
+<p>  skill&#39;s own description. A card shows the summary; the full description with   its trigger phrases is still available and is no longer inlined anywhere.</p>
+<p>Objective 9 is unaffected. Every value still resolves from the repository at generation; only its presentation changed. The guarantee is now paid for in layout, which is where it belongs.</p>
+<h4>Why the simulator was not appealing</h4>
+<p>It was a slideshow of six states. <code>show()</code> called <code>replaceChildren</code> on the item list every step, so an item that persisted across a step was a <em>different DOM element with the same words</em>. Nothing ever visibly happened to anything, which is why each step read as a new screen rather than as a consequence — and why the left-hand &quot;changes&quot; list existed at all: it was narrating what the picture failed to show. It also stopped three stages into an eight-stage lifecycle.</p>
+<h4>What replaced it</h4>
+<ul><li><strong>Items are keyed and the DOM is reconciled.</strong> An item that survives a step is</li></ul>
+<p>  the same element: it recolours in place, slides when a neighbour leaves, and   collapses out of the list when it merges. A browser test tags live nodes and   asserts the tags survive a step, which is precisely what the old renderer   could not do.</p>
+<ul><li><strong>The interesting moments are choreographed, not presented finished.</strong> The</li></ul>
+<p>  sweep step runs its phases in sequence with the budget meter filling, and the   passed-over item greys at the moment the allowance runs out. Steps expose   <code>settle()</code> so tests need not wait on wall time.</p>
+<ul><li><strong>The whole lifecycle is covered</strong> — fourteen steps reaching every derived</li></ul>
+<p>  stage, including one deliberate backward move when an assumption breaks, and   the quiet stages at the end.</p>
+<ul><li><strong>The record accumulates.</strong> <code>stage_documents</code> says what a stage <em>expects</em>, and</li></ul>
+<p>  the quiet stages expect nothing new; showing the record empty out at the end   would have contradicted the reason it is kept. Documents now only ever grow.</p>
+<ul><li><strong>Play is paced to be readable</strong> — derived from narrative length rather than a</li></ul>
+<p>  flat 700ms — and the Step button names what is about to happen.</p>
+<h4>Graphics</h4>
+<p>Six fact-derived inline SVG figures (<code>build/figures.mjs</code>) now appear in both the description and the deck: the lifecycle rail with its accumulating documents, the division of labour, one sweep run and its allowance, blocker triage, the fork boundary, and the three content areas. They are pure functions of resolved facts and declare the keys they consume, so a diagram cannot drift from the repository — the same guarantee the prose has. Deck slides now take their layout from what they carry, so a diagram slide, a data slide, and a statement slide no longer look identical.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> no output flattens a structured value into prose; a browser</li></ul>
+<p>  assertion fails the description if any paragraph does.</p>
+<ul><li><strong>Settled:</strong> the simulator reconciles rather than replaces, covers all eight</li></ul>
+<p>  derived stages, and its record never shrinks.</p>
+<ul><li><strong>Settled:</strong> slides are no longer one shape repeated, and no slide overflows</li></ul>
+<p>  its frame at a 16:9 viewport.</p>
+<ul><li><strong>Not settled:</strong> whether a newcomer finds the result adequate. The three</li></ul>
+<p>  observation blockers on <code>initiative.json</code> are unchanged and still need people   rather than assertions — this work makes them worth running, it does not   answer them.</p>
+<ul><li><strong>Unaffected:</strong> the abstract-versus-real-JSON decision of 2026-08-17. The</li></ul>
+<p>  simulator still reads no initiative data; it covers more of the lifecycle   abstractly, which is a different axis from fidelity.</p>
+<h3>2026-08-19 — Keep the latest generated guide in the repository</h3>
+<p><strong>Commit the three files under <code>guide/out/</code> and keep the latest successful generation there from now on.</strong></p>
+<p>The user&#39;s words: <em>&quot;commit the &#39;out&#39; folder. and make a PR. (in future, we shall keep the contents of the latest generation of the guide in the folder.)&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> <code>description.html</code>, <code>deck.html</code>, and <code>simulator.html</code> are tracked</li></ul>
+<p>  derived artifacts. A guide source change includes any regenerated outputs in   the same commit after all three offline browser checks pass.</p>
+<ul><li><strong>Settled:</strong> the generator skill no longer proves that <code>out/</code> is ignored or</li></ul>
+<p>  clean. It reports the tracked artifacts that changed and includes them in the   resulting change set.</p>
+<ul><li><strong>Unchanged:</strong> generation remains on request rather than part of every site</li></ul>
+<p>  build. Tracking the latest copy does not add a workflow or build hook.</p>
+<ul><li><strong>Still open:</strong> tracking the files makes them available in the repository but</li></ul>
+<p>  does not link them into the published site. The existing <code>link-the-guide</code>   permission blocker remains the route to satisfying that part of O1.</p>
+<h3>2026-08-19 — Skills are discoverable by default, so <code>generate-guide</code> is installed</h3>
+<p><strong><code>generate-guide</code> moved from this initiative&#39;s <code>skills/</code> to <code>.claude/skills/generate-guide/</code>, as part of a repository-wide change to how skills are organized.</strong></p>
+<p>The user&#39;s words: <em>&quot;skills are graduated by default, and are in an initiative only if explicitly meant for just that initiative... the reason is that most skills are meant for direct invocation by an interactive user.&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li><strong>Settled:</strong> the skill is installed where Claude Code and Codex discover it.</li></ul>
+<p>  Phase 7 of <code>plan.md</code> no longer &quot;leaves out installing it&quot;.</p>
+<ul><li><strong>Settled:</strong> the <code>link-the-guide</code> item&#39;s permission blocker narrows to the</li></ul>
+<p>  site-navigation half. Installing the skill is no longer part of it.</p>
+<ul><li><strong>Unchanged:</strong> the guide&#39;s generated artifacts are still not linked into the</li></ul>
+<p>  published site, which is what <code>link-the-guide</code> still needs permission for.</p>
+<ul><li><strong>Note:</strong> the skill runs <code>initiatives/repo-guide/work/guide/build/cli.mjs</code>,</li></ul>
+<p>  so a repo-wide skill now depends on this initiative&#39;s code. That is allowed —   the rule against depending on <code>initiatives/</code> covers <em>published outputs</em>, which   are served silently to readers; a skill is invoked deliberately by someone who   sees it fail. Moving or renaming that CLI now breaks the skill, so keep them   in step.</p>
+<h3>2026-08-19 — Are portable document copies part of the current Repo Guide?</h3>
+<p><strong>No. They are removed from the current scope.</strong></p>
+<p>The user&#39;s words: <em>&quot;Remove all mentions of PDF, we won&#39;t need them at this time. And you can remove the json file that keeps info about PDF.&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The current deliverables are the self-contained web description, slide deck,</li></ul>
+<p>  and simulator. No portable-document links, metadata, refresh dates, panels,   tests, or active todo item remain.</p>
+<ul><li>The metadata configuration file is removed. The simulator&#39;s independent</li></ul>
+<p>  watched-date check remains in code and needs no configuration file.</p>
+<ul><li>Prior decision and log entries remain as the append-only history of what was</li></ul>
+<p>  once planned. This decision supersedes them for all current work.</p>
+<ul><li>A portable-document format could be reconsidered later, but there is no</li></ul>
+<p>  current requirement or placeholder for it.</p>
+<h3>2026-08-20 — Did the three newcomer tests pass, and how does the guide get linked into the site?</h3>
+<p><strong>Yes to all three tests. And the guide is published by hand to <code>demos/</code>, not linked into site navigation.</strong></p>
+<p>The user&#39;s words, on the three testing items: <em>&quot;Yes to all these.&quot;</em> On linking: <em>&quot;I have done a manual release to demos, with a skill for the purpose. I will continue to do manual releases when I think something significant has changed. So that is done.&quot;</em></p>
+<h4>What this settles</h4>
+<ul><li><strong>The phase 3 newcomer reading test passed</strong> — someone unfamiliar with the</li></ul>
+<p>  repository can read the description and identify a live stage and its next   move.</p>
+<ul><li><strong>The phase 4 ten-minute presentation test passed</strong> — someone unfamiliar with</li></ul>
+<p>  the material can present the deck end to end inside ten minutes.</p>
+<ul><li><strong>The simulator walkthrough passed</strong> — it accurately explains the sweep and</li></ul>
+<p>  the whole lifecycle, and the abstract treatment of the lifecycle is adequate.</p>
+<ul><li><strong>Publication is manual and already done.</strong> <code>link-the-guide</code> asked for</li></ul>
+<p>  permission to write into protected site navigation and build paths. That   permission is not granted and is no longer needed: the <code>deploy-demo</code> skill   copies the built guide into <code>demos/</code>, and the user runs it when something   significant has changed. The item is complete by a different route than the   one it was written for.</p>
+<h4>What this leaves open</h4>
+<ul><li><strong>Refresh is a human trigger, not a schedule.</strong> Nothing detects that the</li></ul>
+<p>  guide has drifted from the repository it describes; the user decides when a   change is significant enough to re-release. If the guide is later found stale   in a way that matters, the answer is a staleness check, not automation of the   release.</p>
+<ul><li><strong>The generated artifacts are still absent from site navigation.</strong> A reader</li></ul>
+<p>  who does not know the demo exists will not stumble onto it. That is accepted   for now rather than solved.</p>
+<h4>Consequence</h4>
+<p>With these four items closed the initiative has no remaining work, and the user has declared it <strong>dormant</strong> rather than seeding another round — the §5.1 distinction made explicitly instead of by neglect.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/tide-here/review-global-tides-stage-5" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
