@@ -90,6 +90,29 @@
 <p>  shown by the product still have to be recorded and verified by the   implementation.</p>
 <ul><li>This does not authorize a Tide Here production release; the current work</li></ul>
 <p>  remains on the public test Site until separately promoted.</p>
+<h3>2026-08-28 — What should follow the nationwide Australian test?</h3>
+<p><strong>Expand the licensed Bureau Standard Port catalogue before a production release or further FES2022 work.</strong></p>
+<p>The 23-port dataset proves the annual-table pipeline and gives every Australian coastal state and the Northern Territory at least one tested reference port. It does not yet justify calling the coverage nationwide: the existing 150 km relevance guard correctly refuses several populated or strategically distinct coasts between those ports.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Release the current 23-port catalogue</strong></td><td>The active test dataset is official, attributed, checksum-verified, and healthy across all configured ports</td><td>It would turn a deliberately bounded major-port test into the production coverage promise while known coastal gaps remain</td></tr><tr><td><strong>B — Add the remaining useful Bureau Standard Ports and a national gap matrix</strong> <em>(chosen)</em></td><td>Uses the same approved annual-table terms, importer, storage contract, and exact-source checks; closes known gaps with official predictions instead of guessing</td><td>Requires a larger annual acquisition and verification set, and does not remove the need for a separate yearly renewal process</td></tr><tr><td><strong>C — Increase the 150 km maximum match distance</strong></td><td>Makes more place searches appear covered without adding data</td><td>Can attach a distant port across islands, headlands, bays, or different tide regimes; it weakens the reviewed coast-relevance safeguard</td></tr><tr><td><strong>D — Prioritize the FES2022 fallback</strong></td><td>Would eventually cover coasts that have no national table</td><td>Licensed atlas files and held-out official-port comparisons are still unavailable, and approximate model output is a worse next step where exact Bureau tables already exist</td></tr></tbody></table></div>
+<h4>Evidence</h4>
+<ul><li>On public test Site version 8, registry <code>stage-4-v4</code> served all 23 configured</li></ul>
+<p>  Australian ports from <code>2026-bom-v1</code>: a fresh live pass returned 447 events   across five days with no failed port, warning, approximate result, or missing   official source.</p>
+<ul><li>The recorded browser matrix passed Brisbane, Cairns, Sydney, Melbourne,</li></ul>
+<p>  Hobart, Adelaide, Perth, Broome, and Darwin, covering every coastal state and   the Northern Territory at a representative-city level.</p>
+<ul><li>Fresh browser searches for Eden, Devonport, Cooktown, and Thursday Island</li></ul>
+<p>  returned <code>coverage-unavailable</code>; the guard refused them rather than silently   naming a distant configured port.</p>
+<ul><li>The Bureau&#39;s current 2026 tables include [Eden and other additional New South</li></ul>
+<p>  Wales Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/nsw_tide_tables.shtml),   <a href="https://www.bom.gov.au/oceanography/projects/ntc/tas_tide_tables.shtml">Devonport and other Tasmanian Standard Ports</a>,   <a href="https://www.bom.gov.au/oceanography/projects/ntc/qld_tide_tables.shtml">Thursday Island and other Queensland Standard Ports</a>,   and <a href="https://www.bom.gov.au/oceanography/projects/ntc/vic_tide_tables.shtml">six Victorian Standard Ports beyond Melbourne</a>.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The 25 km / 60% / 150 km matcher thresholds remain unchanged. Coverage grows</li></ul>
+<p>  by adding official stations, not by relabelling distant predictions as local.</p>
+<ul><li>The next increment expands Standard Ports first and records a repeatable</li></ul>
+<p>  representative-place gap matrix before and after the catalogue change.</p>
+<ul><li>Secondary Port corrections remain a later parser and modelling decision; they</li></ul>
+<p>  are not assumed to have the same independent daily-table contract.</p>
+<ul><li>This does not authorize a production release, supply licensed FES2022 files,</li></ul>
+<p>  or settle the 2027 annual-data renewal procedure.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
