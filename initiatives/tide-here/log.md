@@ -168,3 +168,7 @@ post-check log contained no Worker execution errors. Production was not changed.
 ## 2026-08-28 — Activate the Stage 3 adapter with licensed annual Australian Standard Ports data
 
 Activated licensed Bureau of Meteorology 2026 annual tide data for 23 major reference ports across every Australian coastal state and the Northern Territory. Public test version 8 initializes the stored dataset idempotently, exposes source attribution and disclaimers, and passed representative-coast live checks; production remains unchanged.
+
+## 2026-08-28 — Review nationwide Australian coastal test coverage and choose the next refinement
+
+Verified all 23 official ports live, documented known coastal gaps, kept the 150 km guard, and selected Standard Port expansion as the next refinement.
