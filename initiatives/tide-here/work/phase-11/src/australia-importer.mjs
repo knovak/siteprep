@@ -2,6 +2,32 @@ import {describeInstant} from '../../phase-1/src/day-model.mjs';
 
 const DATA_CLASSES = new Set(['test-fixture', 'licensed-source']);
 
+function validateSourceFiles(sourceFiles, expectedPorts = null) {
+  if (!Array.isArray(sourceFiles) || sourceFiles.length === 0) {
+    throw new Error('Licensed Australian source data requires source files');
+  }
+  const seen = new Set();
+  for (const file of sourceFiles) {
+    if (!file?.portId || seen.has(file.portId)
+        || !/^https:\/\//.test(file.url)
+        || !/^[0-9a-f]{64}$/.test(file.sha256)
+        || !Number.isInteger(file.bytes) || file.bytes <= 0
+        || !Number.isInteger(file.predictions) || file.predictions <= 0) {
+      throw new Error(`Invalid Australian source-file integrity record: ${file?.portId ?? ''}`);
+    }
+    seen.add(file.portId);
+    if (expectedPorts) {
+      const expected = expectedPorts.get(file.portId);
+      if (!expected || expected.sourceUrl !== file.url || expected.predictions !== file.predictions) {
+        throw new Error(`Australian source-file record does not match port: ${file.portId}`);
+      }
+    }
+  }
+  if (expectedPorts && (seen.size !== expectedPorts.size || [...expectedPorts.keys()].some(id => !seen.has(id)))) {
+    throw new Error('Australian source-file records do not cover every port');
+  }
+}
+
 function finiteCoordinate(value, minimum, maximum, label) {
   const number = Number(value);
   if (!Number.isFinite(number) || number < minimum || number > maximum) throw new Error(`Invalid ${label}`);
@@ -37,8 +63,11 @@ function validateMetadata(metadata) {
     throw new Error('Australian source coverage dates are invalid');
   }
   if (!DATA_CLASSES.has(metadata.dataClass)) throw new Error('Australian source data class is invalid');
-  if (metadata.dataClass !== 'test-fixture' && !metadata.sourceUrl) {
-    throw new Error('Licensed Australian source data requires a source URL');
+  if (metadata.dataClass !== 'test-fixture') {
+    for (const field of ['sourceUrl', 'licenceUrl', 'disclaimer']) {
+      if (!metadata[field]) throw new Error(`Licensed Australian source data requires ${field}`);
+    }
+    validateSourceFiles(metadata.sourceFiles);
   }
 }
 
@@ -57,6 +86,9 @@ export function importAustralianAnnualSource(source) {
     if (!port.id || ids.has(port.id)) throw new Error(`Australian port id is missing or duplicated: ${port.id ?? ''}`);
     ids.add(port.id);
     if (!port.name || !port.state || !port.timeZone || !port.datum) throw new Error(`Australian port metadata is incomplete: ${port.id}`);
+    if (source.metadata.dataClass !== 'test-fixture' && !port.sourceUrl) {
+      throw new Error(`Licensed Australian port requires a source URL: ${port.id}`);
+    }
     try {
       new Intl.DateTimeFormat('en-AU', {timeZone: port.timeZone}).format(0);
     } catch {
@@ -76,6 +108,7 @@ export function importAustralianAnnualSource(source) {
       kind: 'reference',
       referenceStationId: null,
       active: true,
+      ...(port.sourceUrl ? {sourceUrl: port.sourceUrl} : {}),
     };
     stations.push(station);
     if (!Array.isArray(port.predictions) || port.predictions.length === 0) throw new Error(`Australian port has no predictions: ${port.id}`);
@@ -106,6 +139,13 @@ export function importAustralianAnnualSource(source) {
     }
   }
 
+  if (source.metadata.dataClass !== 'test-fixture') {
+    validateSourceFiles(source.metadata.sourceFiles, new Map(source.ports.map(port => [port.id, {
+      sourceUrl: port.sourceUrl,
+      predictions: port.predictions.length,
+    }])));
+  }
+
   stations.sort((left, right) => left.id.localeCompare(right.id));
   events.sort((left, right) => left.stationId.localeCompare(right.stationId) || Date.parse(left.at) - Date.parse(right.at));
   const metadata = source.metadata;
@@ -125,6 +165,9 @@ export function importAustralianAnnualSource(source) {
       attribution: metadata.attribution,
       licenceReference: metadata.licenceReference,
       isOfficial: metadata.dataClass === 'licensed-source',
+      ...(metadata.licenceUrl ? {licenceUrl: metadata.licenceUrl} : {}),
+      ...(metadata.disclaimer ? {disclaimer: metadata.disclaimer} : {}),
+      ...(metadata.sourceFiles ? {sourceFiles: metadata.sourceFiles.map(file => ({...file}))} : {}),
     },
     stations,
     events,
@@ -147,8 +190,14 @@ export function validatePreparedAustralianDataset(prepared) {
     if (!dataset?.[field]) throw new Error(`Prepared Australian data is missing ${field}`);
   }
   if (!DATA_CLASSES.has(dataset.dataClass)) throw new Error('Prepared Australian data class is invalid');
-  if (dataset.dataClass !== 'test-fixture' && !dataset.sourceUrl) {
-    throw new Error('Prepared licensed Australian data requires a source URL');
+  if (dataset.dataClass !== 'test-fixture') {
+    for (const field of ['sourceUrl', 'licenceUrl', 'disclaimer']) {
+      if (!dataset[field]) throw new Error(`Prepared licensed Australian data requires ${field}`);
+    }
+    validateSourceFiles(dataset.sourceFiles, new Map(prepared.stations.map(station => [station.id, {
+      sourceUrl: station.sourceUrl,
+      predictions: prepared.events.filter(event => event.stationId === station.id).length,
+    }])));
   }
   if (!Number.isInteger(dataset.year) || !dataset.coverageStart || !dataset.coverageEnd) {
     throw new Error('Prepared Australian data needs year coverage');

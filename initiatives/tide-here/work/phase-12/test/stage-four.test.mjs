@@ -6,10 +6,12 @@ import {pyfesBrestReference} from '../../phase-9/fixtures/brest-stage-one.mjs';
 import {MemoryObjectStore} from '../../phase-9/src/object-store.mjs';
 import {compareWithPyfes} from '../../phase-9/src/reference-comparison.mjs';
 import {ACTIVE_REGISTRY_KEY, selectProvider} from '../../phase-10/src/provider-registry.mjs';
-import {australiaPreparedSample} from '../../phase-11/fixtures/australia-prepared-sample.mjs';
+import {loadAustraliaPreparedOfficial} from '../../phase-11/fixtures/australia-prepared-official.mjs';
 import {stageFourProviderRegistry} from '../fixtures/provider-registry.mjs';
 import {initializeStageFour} from '../src/stage-four.mjs';
 import {createStageFourApp} from '../src/worker.mjs';
+
+const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
 
 function harness() {
   const store = new MemoryObjectStore();
@@ -73,7 +75,7 @@ test('health exposes the exact Australian and FES fixture versions', async () =>
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v3'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v4'});
   assert.deepEqual(
     health.providers.find(provider => provider.id === 'fes2022').dataset,
     {id: 'fes-shaped-global-sample', version: '2026-08-27'},
@@ -128,7 +130,7 @@ test('land or missing tile coverage fails explicitly', async () => {
 test('the Australian stored adapter remains available beside the fallback', async () => {
   const {app} = harness();
   await initialize(app);
-  const station = australiaPreparedSample.stations[0];
+  const station = australiaPreparedOfficial.stations[0];
   const response = await postForecast(app, {
     provider: 'australia-standard-ports',
     context: {

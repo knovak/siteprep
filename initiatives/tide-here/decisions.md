@@ -104,3 +104,22 @@ the results to choose a different one.
   catalogue request.
 - This does not establish that straight-line distance identifies the most
   relevant side of an island, inlet, estuary, or international boundary.
+
+## 2026-08-27 — May licensed Australian annual tide data be activated?
+
+**Yes. Licensed annual data and its reuse terms are approved for Australian
+activation; replace the synthetic fixture with real functionality.**
+
+### What this settles, and what it does not
+
+- The licensing and reuse-authorization blocker is settled for the Australian
+  annual tide data.
+- The Australian provider may be marked active once the real annual artifact,
+  required attribution and disclaimer, source checks, and live initialization
+  all pass.
+- Synthetic Australian values must not be presented as the activated result.
+- The exact official source files, their integrity records, and the attribution
+  shown by the product still have to be recorded and verified by the
+  implementation.
+- This does not authorize a Tide Here production release; the current work
+  remains on the public test Site until separately promoted.

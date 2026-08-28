@@ -54,7 +54,7 @@ export async function forecastAustralianStandardPort({store, request, descriptor
     throw error;
   }
   if (request.rows.some(row => row.date < dataset.dataset.coverageStart || row.date > dataset.dataset.coverageEnd)) {
-    const error = new Error(`Australian fixture coverage is ${dataset.dataset.coverageStart} through ${dataset.dataset.coverageEnd}`);
+    const error = new Error(`Australian prediction coverage is ${dataset.dataset.coverageStart} through ${dataset.dataset.coverageEnd}`);
     error.code = 'dataset-date-unavailable';
     throw error;
   }
@@ -115,10 +115,11 @@ export async function forecastAustralianStandardPort({store, request, descriptor
       stationKind: station.kind,
       referenceStationId: station.referenceStationId,
       datum: station.datum,
-      sourceUrl: dataset.dataset.sourceUrl,
-      licenceUrl: null,
+      sourceUrl: station.sourceUrl ?? dataset.dataset.sourceUrl,
+      licenceUrl: dataset.dataset.licenceUrl ?? null,
       licenceReference: dataset.dataset.licenceReference,
       attribution: dataset.dataset.attribution,
+      disclaimer: dataset.dataset.disclaimer ?? null,
       retrievedAt: dataset.dataset.preparedAt,
       datasetVersion: dataset.dataset.version,
       dataClass: dataset.dataset.dataClass,

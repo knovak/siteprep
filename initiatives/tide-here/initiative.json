@@ -31,11 +31,10 @@
     {
       "id": "activate-australian-standard-ports",
       "title": "Activate the Stage 3 adapter with licensed annual Australian Standard Ports data",
-      "state": "blocked",
+      "state": "actionable",
       "value": "high",
       "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "data:licensed machine-readable Australian annual predictions, confirmed reuse terms, and required attribution"
+      "advances_stage": false
     },
     {
       "id": "review-global-tides-stage-5",

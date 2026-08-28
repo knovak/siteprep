@@ -1,9 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-27T23:49:00Z",
+  "checkedAt": "2026-08-28T00:11:30Z",
   "stage": "global-coverage-stage-3",
   "deployment": null,
   "implementation": {
+    "annualPdfAcquisition": true,
     "offlineImporter": true,
     "immutableStoredArtifact": true,
     "stationCatalogue": true,
@@ -12,14 +13,17 @@
     "activationWriteIsLast": true,
     "repeatInitializationWrites": 0
   },
-  "fixture": {
-    "datasetId": "australia-standard-ports-sample",
-    "datasetVersion": "2026-sample-v3",
+  "source": {
+    "publisher": "Bureau of Meteorology",
+    "datasetId": "australia-bom-annual-tides",
+    "datasetVersion": "2026-bom-v1",
     "year": 2026,
     "coverageStart": "2026-01-01",
     "coverageEnd": "2026-12-31",
+    "sourceFiles": 23,
+    "sourceChecksumsRecorded": 23,
     "ports": 23,
-    "events": 33580,
+    "events": 31046,
     "timeZones": [
       "Australia/Adelaide",
       "Australia/Brisbane",
@@ -29,17 +33,29 @@
       "Australia/Perth",
       "Australia/Sydney"
     ],
-    "dataClass": "test-fixture",
-    "official": false
+    "dataClass": "licensed-source",
+    "official": true,
+    "attributionRecorded": true,
+    "disclaimerRecorded": true
+  },
+  "verification": {
+    "exactSourceArtifactReproduction": true,
+    "allMonthPdfParsing": true,
+    "heldOutPorts": 8,
+    "heldOutDate": "2026-08-27",
+    "allPortsFiveDayForecast": true
   },
   "tests": {
-    "stageTestsPassed": 11,
+    "stageTestsPassed": 15,
     "stageTestsFailed": 0,
-    "stagesOneThroughThreePassed": 33
+    "stagesOneThroughThreePassed": 37,
+    "allTideNodeTestsPassed": 111,
+    "browserTestsPassed": 21,
+    "browserTestsSkipped": 1
   },
-  "productionActivation": {
-    "ready": false,
-    "blockedBy": "Licensed machine-readable Australian annual predictions, confirmed reuse terms, and official source comparisons",
-    "publicWebsiteScraped": false
+  "activation": {
+    "readyForTestInitialization": true,
+    "registry": "tide-here-providers/stage-3-v4",
+    "productionReleaseAuthorized": false
   }
 }

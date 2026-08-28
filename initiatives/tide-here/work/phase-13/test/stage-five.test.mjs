@@ -39,7 +39,7 @@ test('hosted Stage 5 initialization is protected, exact and idempotent', async (
   assert.equal(second.status, 200);
   assert.equal(store.writeLog.length, writes);
   const health = await (await app.fetch(new Request('https://tide.example/health'), env)).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v3'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v4'});
 });
 
 test('operational logs contain route outcomes but never submitted locations', async () => {
@@ -93,6 +93,9 @@ test('the live smoke script covers initialization and all three source families'
   assert.match(script, /const second = await initialize/);
   assert.match(script, /\['noaa', 'chs'\]/);
   assert.match(script, /australia-standard-ports/);
+  assert.match(script, /catalogue[.]stations[.]length !== 23/);
   assert.match(script, /for \(const station of catalogue[.]stations\)/);
+  assert.match(script, /!australia[.]sources\[0\][.]official/);
+  assert.match(script, /bom[.]gov[.]au\/ntc\/IDO59001/);
   assert.match(script, /provider: 'fes2022'/);
 });

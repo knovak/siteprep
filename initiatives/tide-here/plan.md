@@ -354,8 +354,8 @@ built. The refinement adds three tide-source families behind one provider
 registry:
 
 - NOAA CO-OPS and CHS IWLS continue to supply the United States and Canada;
-- an annual Australian Standard Ports adapter supplies official daily high/low
-  predictions after a licensed machine-readable source is obtained; and
+- an annual Australian Standard Ports adapter supplies licensed Bureau daily
+  high/low predictions; and
 - a clearly labelled FES2022 harmonic fallback covers other coasts.
 
 The refinement introduces server-side storage because neither licensed annual
@@ -431,12 +431,14 @@ year/version only after validation succeeds.
 **Exit:** several Australian ports and time zones match the source table; dates
 outside the loaded year fail explicitly rather than falling through silently.
 
-**Status, 2026-08-27:** the implementation path is complete in
-`work/phase-11` against a plainly synthetic 23-port fixture spanning the major
+**Status, 2026-08-27:** active implementation is complete in `work/phase-11`
+using 23 Bureau of Meteorology 2026 annual tide-table PDFs spanning the major
 coastal regions of every Australian coastal state and the Northern Territory.
-Official activation remains blocked on a licensed machine-readable annual
-source, confirmed reuse terms, and source-table comparison. No Bureau or AHO
-prediction values were copied or scraped.
+The offline job records each PDF checksum, reconstructs 31,046 daily extrema,
+applies port-local IANA offsets, and reproduces the committed artifact exactly.
+The licensed artifact, source attribution, required disclaimer, and held-out
+table comparisons pass before registry `stage-3-v4` is activated. The earlier
+synthetic artifact remains only as a deterministic test boundary.
 
 #### Stage 4 — FES2022 global fallback
 

@@ -13,7 +13,7 @@ const providers = stageThreeProviderRegistry.providers.map(provider => (
 
 export const stageFourProviderRegistry = Object.freeze({
   ...stageThreeProviderRegistry,
-  version: 'stage-4-v3',
-  preparedAt: '2026-08-27T23:41:00.000Z',
+  version: 'stage-4-v4',
+  preparedAt: '2026-08-28T00:06:00.000Z',
   providers,
 });

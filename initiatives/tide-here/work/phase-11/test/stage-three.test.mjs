@@ -5,10 +5,12 @@ import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
 import {matchCoast} from '../../phase-2/src/coastal-match.mjs';
 import {MemoryObjectStore} from '../../phase-9/src/object-store.mjs';
 import {ACTIVE_REGISTRY_KEY, selectProvider} from '../../phase-10/src/provider-registry.mjs';
-import {australiaPreparedSample} from '../fixtures/australia-prepared-sample.mjs';
+import {loadAustraliaPreparedOfficial} from '../fixtures/australia-prepared-official.mjs';
 import {stageThreeProviderRegistry} from '../fixtures/provider-registry.mjs';
 import {initializeStageThree} from '../src/stage-three.mjs';
 import {createStageThreeApp} from '../src/worker.mjs';
+
+const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
 
 function harness() {
   const store = new MemoryObjectStore();
@@ -58,22 +60,18 @@ test('Stage 3 initializes both datasets and activates its registry last without 
   assert.equal(second.registry.unchanged.length, 2);
 });
 
-test('Australian fixture selection remains explicit until licensed data replaces it', () => {
-  assert.equal(selectProvider(stageThreeProviderRegistry, {countryCode: 'AU'}), null);
-  assert.equal(
-    selectProvider(stageThreeProviderRegistry, {countryCode: 'AU', includeFixtures: true}).id,
-    'australia-standard-ports',
-  );
+test('licensed Australian annual data is active without a fixture opt-in', () => {
+  assert.equal(selectProvider(stageThreeProviderRegistry, {countryCode: 'AU'}).id, 'australia-standard-ports');
 });
 
 test('health and the stored station catalogue name the exact Stage 3 data', async () => {
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v3'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v4'});
   const australia = health.providers.find(provider => provider.id === 'australia-standard-ports');
-  assert.deepEqual(australia.dataset, {id: 'australia-standard-ports-sample', version: '2026-sample-v3'});
-  assert.equal(australia.status, 'fixture');
+  assert.deepEqual(australia.dataset, {id: 'australia-bom-annual-tides', version: '2026-bom-v1'});
+  assert.equal(australia.status, 'active');
 
   const catalogueResponse = await app.fetch(new Request(
     'http://localhost/stations?provider=australia-standard-ports',
@@ -90,10 +88,10 @@ test('health and the stored station catalogue name the exact Stage 3 data', asyn
   ]);
 });
 
-test('all 23 Australian coastal samples return five source-matching local days in the normalized shape', async () => {
+test('all 23 licensed Australian ports return five source-matching local days in the normalized shape', async () => {
   const {app} = harness();
   await initialize(app);
-  for (const station of australiaPreparedSample.stations) {
+  for (const station of australiaPreparedOfficial.stations) {
     const response = await forecast(app, station);
     assert.equal(response.status, 200, station.id);
     const result = await response.json();
@@ -101,11 +99,18 @@ test('all 23 Australian coastal samples return five source-matching local days i
     assert.equal(result.station.id, station.id);
     assert.equal(result.timeZone, station.timeZone);
     assert.equal(result.days.length, 5);
-    assert.equal(result.days.flatMap(day => day.tides).length, 20);
-    assert.equal(result.sources[0].official, false);
-    assert.equal(result.sources[0].dataClass, 'test-fixture');
-    assert.equal(result.warnings[0].code, 'fixture-data');
-    const sourceFirst = australiaPreparedSample.events.find(event => (
+    const expectedEvents = australiaPreparedOfficial.events.filter(event => (
+      event.stationId === station.id
+      && event.localDate >= result.days[0].date
+      && event.localDate <= result.days.at(-1).date
+    ));
+    assert.equal(result.days.flatMap(day => day.tides).length, expectedEvents.length);
+    assert.ok(expectedEvents.length > 0);
+    assert.equal(result.sources[0].official, true);
+    assert.equal(result.sources[0].dataClass, 'licensed-source');
+    assert.match(result.sources[0].attribution, /Bureau of Meteorology/);
+    assert.equal(result.warnings.length, 0);
+    const sourceFirst = australiaPreparedOfficial.events.find(event => (
       event.stationId === station.id && event.localDate === result.days[0].date
     ));
     const resultFirst = result.days.flatMap(day => day.tides)[0];
@@ -118,20 +123,20 @@ test('all 23 Australian coastal samples return five source-matching local days i
 
 test('major coastal-city searches resolve around the Australian mainland and Tasmania', () => {
   const places = [
-    ['Brisbane', -27.4698, 153.0251, 'au-brisbane-sample'],
-    ['Cairns', -16.9186, 145.7781, 'au-cairns-sample'],
-    ['Sydney', -33.8688, 151.2093, 'au-sydney-sample'],
-    ['Melbourne', -37.8136, 144.9631, 'au-melbourne-sample'],
-    ['Hobart', -42.8821, 147.3272, 'au-hobart-sample'],
-    ['Adelaide', -34.9285, 138.6007, 'au-adelaide-sample'],
-    ['Perth', -31.9523, 115.8613, 'au-fremantle-sample'],
-    ['Broome', -17.9614, 122.2359, 'au-broome-sample'],
-    ['Darwin', -12.4634, 130.8456, 'au-darwin-sample'],
-    ['Weipa', -12.6493, 141.8536, 'au-weipa-sample'],
+    ['Brisbane', -27.4698, 153.0251, 'au-qld-brisbane-bar'],
+    ['Cairns', -16.9186, 145.7781, 'au-qld-cairns'],
+    ['Sydney', -33.8688, 151.2093, 'au-nsw-sydney'],
+    ['Melbourne', -37.8136, 144.9631, 'au-vic-melbourne'],
+    ['Hobart', -42.8821, 147.3272, 'au-tas-hobart'],
+    ['Adelaide', -34.9285, 138.6007, 'au-sa-port-adelaide'],
+    ['Perth', -31.9523, 115.8613, 'au-wa-fremantle'],
+    ['Broome', -17.9614, 122.2359, 'au-wa-broome'],
+    ['Darwin', -12.4634, 130.8456, 'au-nt-darwin'],
+    ['Weipa', -12.6493, 141.8536, 'au-qld-weipa'],
   ];
   const config = {automaticKm: 25, clarityRatio: 0.6, maximumKm: 150, maxChoices: 3};
   for (const [name, latitude, longitude, expectedId] of places) {
-    const match = matchCoast({latitude, longitude}, australiaPreparedSample.stations, config);
+    const match = matchCoast({latitude, longitude}, australiaPreparedOfficial.stations, config);
     assert.notEqual(match.status, 'coverage-unavailable', name);
     assert.equal(match.station?.id ?? match.candidates[0]?.id, expectedId, name);
   }
@@ -140,7 +145,7 @@ test('major coastal-city searches resolve around the Australian mainland and Tas
 test('dates outside the loaded year fail explicitly', async () => {
   const {app} = harness();
   await initialize(app);
-  const station = australiaPreparedSample.stations[0];
+  const station = australiaPreparedOfficial.stations[0];
   const outsideYear = await forecast(app, station, fiveLocalDays('2027-01-15T00:00:00Z', station.timeZone));
   assert.equal(outsideYear.status, 422);
   assert.equal((await outsideYear.json()).code, 'dataset-year-unavailable');

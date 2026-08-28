@@ -29,7 +29,8 @@ const PROVIDER_LABELS = Object.freeze({
   fes2022: 'Approximate global model'
 });
 
-export function providerLabel(provider) {
+export function providerLabel(provider, {official = false} = {}) {
+  if (provider === 'australia-standard-ports') return official ? 'Bureau of Meteorology' : 'Australian test port';
   return PROVIDER_LABELS[provider] || String(provider || '').toUpperCase();
 }
 
@@ -100,7 +101,7 @@ export function forecastViewModel(forecast, currentInstant = new Date()) {
     coast: forecast.coast.name,
     station: forecast.station.name,
     stationKind: forecast.station.kind,
-    provider: providerLabel(forecast.station.provider),
+    provider: providerLabel(forecast.station.provider, {official: predictionSource?.official === true}),
     providerId: forecast.station.provider,
     datum: forecast.station.datum,
     source: predictionSource ? Object.freeze({...predictionSource}) : null,

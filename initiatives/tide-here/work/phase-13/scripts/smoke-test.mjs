@@ -35,6 +35,7 @@ if (!baseUrl || !token) {
   }
 
   const catalogue = await request('/stations?provider=australia-standard-ports');
+  if (catalogue.stations.length !== 23) throw new Error(`Australian catalogue has ${catalogue.stations.length} stations, expected 23`);
   let australianEvents = 0;
   for (const station of catalogue.stations) {
     const australia = await postForecast({
@@ -48,6 +49,13 @@ if (!baseUrl || !token) {
       timeZone: station.timeZone,
       rows: fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone),
     });
+    if (australia.warnings.length !== 0) throw new Error(`${station.id} returned an unexpected warning`);
+    if (australia.sources.length !== 1 || !australia.sources[0].official || australia.sources[0].approximate) {
+      throw new Error(`${station.id} did not return one official, exact Bureau source`);
+    }
+    if (!australia.sources[0].sourceUrl.includes('bom.gov.au/ntc/IDO59001/')) {
+      throw new Error(`${station.id} did not return its Bureau annual-table PDF`);
+    }
     australianEvents += australia.days.flatMap(day => day.tides).length;
   }
   const fesRows = fiveLocalDays('2025-06-01T10:00:00Z', 'Europe/Paris');

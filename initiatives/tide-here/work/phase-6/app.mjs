@@ -30,7 +30,7 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
   json('../phase-1/data/time-zones.fixture.geojson'),
   json('../phase-0/fixtures/noaa-seattle-hilo.json'),
   json('../phase-0/fixtures/chs-halifax-hilo.json'),
-  json('./data/australia-stations.fixture.json')
+  json('./data/australia-stations.json')
 ]);
 
 const fixtureStations = normalizeStationCatalogues(catalogueFixture, providerConfig);
@@ -377,6 +377,13 @@ function showForecast(forecast) {
     ? `${model.provider} synthetic fixture`
     : `${model.provider} predictions`;
   $('#source-copy').textContent = `${sourceLead} · ${model.stationKind} station · heights in metres relative to ${model.datum}. Times are formatted explicitly in ${model.timeZone}.`;
+  $('#source-attribution').textContent = model.source?.attribution ?? '';
+  $('#source-attribution').hidden = !model.source?.attribution;
+  $('#source-disclaimer').textContent = model.source?.disclaimer ?? '';
+  $('#source-disclaimer').hidden = !model.source?.disclaimer;
+  const sourceLink = $('#source-link');
+  sourceLink.href = model.source?.sourceUrl ?? '';
+  sourceLink.hidden = !model.source?.sourceUrl;
   const fixtureWarning = model.warnings.find((warning) => warning.code === 'fixture-data');
   const locationNotice = $('#fixture-location-notice');
   locationNotice.textContent = fixtureWarning?.message ?? '';
