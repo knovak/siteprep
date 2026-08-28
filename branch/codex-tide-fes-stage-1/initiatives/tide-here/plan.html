@@ -124,8 +124,8 @@
 <p><strong>A five-day static page invites being trusted for more than it is.</strong> Every result ends with the informational line, and O6 makes it a first-class requirement rather than a disclaimer, precisely because the page is friendly and the temptation is to read it as authoritative.</p>
 <h3>8. Global tide coverage refinement</h3>
 <p>The first version above remains the deployed product while this refinement is built. The refinement adds three tide-source families behind one provider registry:</p>
-<ul><li>NOAA CO-OPS and CHS IWLS continue to supply the United States and Canada;</li><li>an annual Australian Standard Ports adapter supplies official daily high/low</li></ul>
-<p>  predictions after a licensed machine-readable source is obtained; and</p>
+<ul><li>NOAA CO-OPS and CHS IWLS continue to supply the United States and Canada;</li><li>an annual Australian Standard Ports adapter supplies licensed Bureau daily</li></ul>
+<p>  high/low predictions; and</p>
 <ul><li>a clearly labelled FES2022 harmonic fallback covers other coasts.</li></ul>
 <p>The refinement introduces server-side storage because neither licensed annual files nor FES grids belong in a browser bundle. Large, versioned artifacts live in R2-compatible object storage. D1 is not added unless a later stage proves a need for relational or searchable metadata; an object manifest is enough to select an active immutable dataset.</p>
 <h4>8.1 Initialization is a route, not an undocumented deployment step</h4>
@@ -146,7 +146,7 @@
 <p><strong>Produces:</strong> an offline importer for the licensed annual Australian table, a normalized immutable artifact, station catalogue entries, attribution and datum metadata, and the Australian provider adapter. The importer is the only component that understands the source-file format.</p>
 <p><strong>Initialization:</strong> <code>/init</code> verifies the prepared Australian artifact and its licence metadata, stores any missing versioned objects, and activates its exact year/version only after validation succeeds.</p>
 <p><strong>Exit:</strong> several Australian ports and time zones match the source table; dates outside the loaded year fail explicitly rather than falling through silently.</p>
-<p><strong>Status, 2026-08-27:</strong> the implementation path is complete in <code>work/phase-11</code> against a plainly synthetic 23-port fixture spanning the major coastal regions of every Australian coastal state and the Northern Territory. Official activation remains blocked on a licensed machine-readable annual source, confirmed reuse terms, and source-table comparison. No Bureau or AHO prediction values were copied or scraped.</p>
+<p><strong>Status, 2026-08-27:</strong> active implementation is complete in <code>work/phase-11</code> using 23 Bureau of Meteorology 2026 annual tide-table PDFs spanning the major coastal regions of every Australian coastal state and the Northern Territory. The offline job records each PDF checksum, reconstructs 31,046 daily extrema, applies port-local IANA offsets, and reproduces the committed artifact exactly. The licensed artifact, source attribution, required disclaimer, and held-out table comparisons pass before registry <code>stage-3-v4</code> is activated. The earlier synthetic artifact remains only as a deterministic test boundary.</p>
 <h5>Stage 4 — FES2022 global fallback</h5>
 <p><strong>Produces:</strong> the credentialed offline FES/PyFES preparation job, coastal tile index, production constituent tiles, land/missing-data handling, fallback adapter, provenance, and accuracy comparisons against held-out official ports.</p>
 <p><strong>Initialization:</strong> <code>/init</code> checks the complete tile inventory, sizes and checksums, and atomically activates one prepared FES dataset version. It never downloads, decompresses, or derives FES data in the request path.</p>
