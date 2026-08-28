@@ -29,11 +29,11 @@
   ],
   "todo": [
     {
-      "id": "review-global-tides-stage-5",
-      "title": "Review nationwide Australian coastal test coverage and choose the next refinement",
+      "id": "expand-australian-standard-port-coverage",
+      "title": "Expand licensed Australian Standard Port coverage and add a representative gap matrix",
       "state": "actionable",
       "value": "medium",
-      "effort": "small",
+      "effort": "medium",
       "advances_stage": false
     }
   ]

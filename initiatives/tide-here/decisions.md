@@ -123,3 +123,52 @@ activation; replace the synthetic fixture with real functionality.**
   implementation.
 - This does not authorize a Tide Here production release; the current work
   remains on the public test Site until separately promoted.
+
+## 2026-08-28 — What should follow the nationwide Australian test?
+
+**Expand the licensed Bureau Standard Port catalogue before a production
+release or further FES2022 work.**
+
+The 23-port dataset proves the annual-table pipeline and gives every Australian
+coastal state and the Northern Territory at least one tested reference port. It
+does not yet justify calling the coverage nationwide: the existing 150 km
+relevance guard correctly refuses several populated or strategically distinct
+coasts between those ports.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **A — Release the current 23-port catalogue** | The active test dataset is official, attributed, checksum-verified, and healthy across all configured ports | It would turn a deliberately bounded major-port test into the production coverage promise while known coastal gaps remain |
+| **B — Add the remaining useful Bureau Standard Ports and a national gap matrix** *(chosen)* | Uses the same approved annual-table terms, importer, storage contract, and exact-source checks; closes known gaps with official predictions instead of guessing | Requires a larger annual acquisition and verification set, and does not remove the need for a separate yearly renewal process |
+| **C — Increase the 150 km maximum match distance** | Makes more place searches appear covered without adding data | Can attach a distant port across islands, headlands, bays, or different tide regimes; it weakens the reviewed coast-relevance safeguard |
+| **D — Prioritize the FES2022 fallback** | Would eventually cover coasts that have no national table | Licensed atlas files and held-out official-port comparisons are still unavailable, and approximate model output is a worse next step where exact Bureau tables already exist |
+
+### Evidence
+
+- On public test Site version 8, registry `stage-4-v4` served all 23 configured
+  Australian ports from `2026-bom-v1`: a fresh live pass returned 447 events
+  across five days with no failed port, warning, approximate result, or missing
+  official source.
+- The recorded browser matrix passed Brisbane, Cairns, Sydney, Melbourne,
+  Hobart, Adelaide, Perth, Broome, and Darwin, covering every coastal state and
+  the Northern Territory at a representative-city level.
+- Fresh browser searches for Eden, Devonport, Cooktown, and Thursday Island
+  returned `coverage-unavailable`; the guard refused them rather than silently
+  naming a distant configured port.
+- The Bureau's current 2026 tables include [Eden and other additional New South
+  Wales Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/nsw_tide_tables.shtml),
+  [Devonport and other Tasmanian Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/tas_tide_tables.shtml),
+  [Thursday Island and other Queensland Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/qld_tide_tables.shtml),
+  and [six Victorian Standard Ports beyond Melbourne](https://www.bom.gov.au/oceanography/projects/ntc/vic_tide_tables.shtml).
+
+### What this settles, and what it does not
+
+- The 25 km / 60% / 150 km matcher thresholds remain unchanged. Coverage grows
+  by adding official stations, not by relabelling distant predictions as local.
+- The next increment expands Standard Ports first and records a repeatable
+  representative-place gap matrix before and after the catalogue change.
+- Secondary Port corrections remain a later parser and modelling decision; they
+  are not assumed to have the same independent daily-table contract.
+- This does not authorize a production release, supply licensed FES2022 files,
+  or settle the 2027 annual-data renewal procedure.
