@@ -257,3 +257,114 @@ accident:
   limit that matters is the one we owe Nominatim, and that is §4.5's row.
 - **"Compact and cheerful."** §2's manual row, once. A test that claimed to
   measure it would be measuring something else.
+
+## 7. Global tide coverage refinement
+
+### 7.1 — Storage and harmonic feasibility spike
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Protected initializer | Hosted `POST /init` is rejected without the configured token; loopback development can initialize without a secret | `plan.md` §8.1 |
+| Idempotent initialization | The first call writes the tile, dataset manifest, and active pointer; the second call performs no writes | Stored-data repeatability |
+| Activate last | The active pointer is the final write, so an incomplete import never becomes current | Rollback and partial-upload safety |
+| Health before and after | `/health` is not ready before initialization and names the exact active dataset afterwards | Operability |
+| Missing or distant point | A missing tile or a request beyond the fixture's declared radius fails explicitly | No invented coverage |
+| Five-day extremes | A five-day request returns ordered, finite high/low events from the stored constituent tile | Runtime feasibility |
+| Independent PyFES comparison | The first five highs and lows for the official Brest example are within 6 minutes and 5 cm of the published PyFES results | Engine feasibility, not FES accuracy |
+| Fixture truthfulness | Responses and manifests say the committed tile is TICON-3 test data, not FES2022 | Provenance |
+
+The comparison tolerance includes PyFES's published ten-minute sampling. It is
+only a gate for continuing to a real FES ingest. Production tolerances are a
+stage-4 decision made against licensed FES tiles and held-out official ports.
+
+### 7.2 — Provider registry and server boundary
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Registry validation | Provider ids are unique; status, execution, priority, coverage and stored-data requirements are valid | Extensibility |
+| Dataset references | Every non-planned stored provider points to a present checksum-valid dataset before activation | No dangling providers |
+| Registry activates last | Dataset initialization completes before the provider-registry active pointer changes | Atomic configuration |
+| Production selection | U.S. selects NOAA, Canada selects CHS, and fixture/planned providers are not selected without an explicit test opt-in | Existing coverage |
+| New national descriptor | A Korean test descriptor becomes selectable without a gateway code change | Future national sources |
+| Direct providers stay direct | Calling the server forecast route for NOAA or CHS returns `direct-provider-required` | Current browser boundary |
+| Stored response shape | The harmonic fixture returns the same eight top-level normalized forecast fields as NOAA and CHS | Adapter contract |
+| Idempotent `/init` | Repeating Stage 2 initialization performs no writes | Repeatable deployment |
+
+### 7.3 — Australian Standard Ports implementation
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Offline import is reproducible | Importing the checksum-recorded compressed Bureau source exactly reproduces the committed prepared artifact | Preparation drift |
+| PDF reconstruction | Positioned text from all 12 monthly table layouts reconstructs complete days and alternating high/low extrema; invalid or incomplete layouts fail | Source-parser drift |
+| Licence metadata gate | A licensed source or prepared artifact without source URL, per-file integrity, attribution, disclaimer, and licence metadata is rejected | Legal/data boundary |
+| Port-local conversion | Brisbane, Sydney, Darwin, Fremantle, and Adelaide local source times become the expected UTC instants, and each explicit source offset must match its IANA zone on that date | O5 |
+| Data quality | Duplicate events, wrong-year events, invalid ports, zones, types and heights are rejected | Silent bad imports |
+| Stored initialization | The Australian artifact and manifest are immutable and checksum-valid; the Stage 3 registry activates last; repeat writes are zero | Deployment safety |
+| Catalogue | The stored catalogue returns 23 normalized Bureau reference ports across all Australian coastal states and the Northern Territory, with seven IANA zones | Provider seam |
+| Coastal-region routing | Representative searches around the mainland and Tasmania resolve to a configured reference port within the supported radius | Nationwide major-coast coverage |
+| Forecast contract | Each of the 23 licensed ports returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
+| Held-out table values | Brisbane, Sydney, Melbourne, Hobart, Port Adelaide, Fremantle, Broome, and Darwin values for 2026-08-27 match independently transcribed PDF times, extrema, and heights | Parser and preparation accuracy |
+| Explicit date failure | A request outside the loaded year returns `dataset-year-unavailable` | No silent fallback |
+| Fixture separation | The synthetic artifact remains test-only; initialized selection returns the licensed dataset without fixture opt-in and identifies its Bureau PDF | Truthful coverage |
+
+These tests complete the licensed Stage 3 activation gate. The synthetic
+fixture still proves failure and disclosure behavior, but is not evidence of
+Australian prediction accuracy.
+
+### 7.4 — FES-shaped global fallback implementation
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Reproducible preparation | The source extract exactly regenerates the committed tile index and objects | Offline preparation drift |
+| Complete inventory | Missing, altered, duplicate, or undeclared tile objects fail size and checksum validation before initialization | Partial uploads |
+| FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source, licence metadata, and at least 34 constituents per point | Data and legal boundary |
+| Atomic initialization | Australian and fallback artifacts are ready before the Stage 4 registry pointer is written; repeating `/init` writes nothing | Rollback safety |
+| Provider priority | U.S., Canada, and Australia select their national provider before the fallback | Source quality |
+| Indexed lookup | Brest, Galway, and Cape Town load separate candidate tiles and return normalized metre events | Runtime tile seam |
+| Land or missing data | A location outside initialized coastal tiles returns `coverage-unavailable` | No invented coverage |
+| Approximate warning | Every fallback response says approximate and excludes weather and storm surge; the fixture additionally says it is not FES2022 | User safety |
+| Engine comparison | The Brest point remains within six minutes and five centimetres of the independent PyFES example | Runtime feasibility |
+
+These tests prove the production code path, not FES2022 accuracy. Licensed
+atlas ingestion and held-out national-port comparisons remain required before
+the fallback may be marked active.
+
+### 7.5 — Hosted test deployment
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
+| Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
+| Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
+| Health | Live `/health` names provider registry `stage-4-v4` and both stored dataset versions | Operability |
+| Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
+| Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
+| Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the licensed Australian source, and returns the approximate fallback fixture | Deployment integration |
+| Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
+
+**Recorded result, 2026-08-28 UTC:** all eight checks passed on public test Site
+version 8. Initialization activated `stage-4-v4`; the repeat call wrote zero
+objects; 111 Tide Node tests passed in both the working tree and isolated Site
+source, and 21 applicable browser tests passed. The production Site was not
+changed.
+
+### 7.6 — Australian browser integration
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Combined coastal match | Brisbane and representative major coastal-city searches select stored Australian reference ports while existing U.S. and Canadian fixtures still select their direct providers | Provider routing |
+| Stored request boundary | Only the selected Australian station, five coast-local rows, and forecast context go to the Site gateway | Request scope |
+| Coast-local rendering | The page shows five days in the selected port's IANA zone and retains browser-side astronomy | O3, O4, O5 |
+| Source disclosure | Licensed results show the Bureau attribution, disclaimer, dataset version, and selected annual-table PDF; only the synthetic browser fixture shows the exact non-official notice inside the location dropdown | Provenance |
+| Partial failure | A failed stored-provider request retains place, coast, station, five day rows, and astronomy with `tides-unavailable` | O6 |
+| Privacy copy | The page says Australian tide-port requests reach the Tide Here service and that its operational logs exclude submitted names and coordinates | O8 |
+| Full-year source | The committed licensed 23-port artifact covers every date in 2026 with explicit IANA-zone offsets across all seven configured zones, including daylight-saving changes | Stable annual operation |
+
+Australian activation remains governed by §7.3's licence, attribution,
+source-comparison, and annual-renewal gates.
+
+**Recorded result, 2026-08-28 UTC:** all seven checks passed on public test Site
+version 8. Brisbane, Cairns, Sydney, Melbourne, Hobart, Adelaide, Perth, Broome,
+and Darwin selected licensed reference ports and rendered five local days with
+the selected Bureau PDF, attribution, and disclaimer. Licensed results did not
+display the synthetic fixture notice. The production Site was not changed.

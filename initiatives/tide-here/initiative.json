@@ -7,15 +7,15 @@
   "deployments": [
     {
       "kind": "chatgpt-site",
-      "build": "static",
+      "build": "sites-app",
       "source": "initiatives/tide-here/work",
       "test": {
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-26T22:31:39Z",
-        "version": 3,
-        "commit": "851dd12dd45b6e6b207778c7f5f0a7918b6a131e"
+        "deployed_at": "2026-08-28T00:18:18Z",
+        "version": 8,
+        "commit": "946737c668ea59d6e640564dadc68fc2a2972dff"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
@@ -29,13 +29,12 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement-after-alternative-coasts",
-      "title": "Choose another optional improvement, request another proposal round, or declare the initiative dormant",
-      "state": "blocked",
+      "id": "review-global-tides-stage-5",
+      "title": "Review nationwide Australian coastal test coverage and choose the next refinement",
+      "state": "actionable",
       "value": "medium",
       "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose another optional improvement, request another proposal round, or declare the initiative dormant"
+      "advances_stage": false
     }
   ]
 }

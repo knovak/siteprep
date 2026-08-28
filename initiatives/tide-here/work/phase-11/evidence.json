@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-28T00:11:30Z",
+  "stage": "global-coverage-stage-3",
+  "deployment": null,
+  "implementation": {
+    "annualPdfAcquisition": true,
+    "offlineImporter": true,
+    "immutableStoredArtifact": true,
+    "stationCatalogue": true,
+    "normalizedForecastAdapter": true,
+    "protectedIdempotentInitializer": true,
+    "activationWriteIsLast": true,
+    "repeatInitializationWrites": 0
+  },
+  "source": {
+    "publisher": "Bureau of Meteorology",
+    "datasetId": "australia-bom-annual-tides",
+    "datasetVersion": "2026-bom-v1",
+    "year": 2026,
+    "coverageStart": "2026-01-01",
+    "coverageEnd": "2026-12-31",
+    "sourceFiles": 23,
+    "sourceChecksumsRecorded": 23,
+    "ports": 23,
+    "events": 31046,
+    "timeZones": [
+      "Australia/Adelaide",
+      "Australia/Brisbane",
+      "Australia/Darwin",
+      "Australia/Hobart",
+      "Australia/Melbourne",
+      "Australia/Perth",
+      "Australia/Sydney"
+    ],
+    "dataClass": "licensed-source",
+    "official": true,
+    "attributionRecorded": true,
+    "disclaimerRecorded": true
+  },
+  "verification": {
+    "exactSourceArtifactReproduction": true,
+    "allMonthPdfParsing": true,
+    "heldOutPorts": 8,
+    "heldOutDate": "2026-08-27",
+    "allPortsFiveDayForecast": true
+  },
+  "tests": {
+    "stageTestsPassed": 15,
+    "stageTestsFailed": 0,
+    "stagesOneThroughThreePassed": 37,
+    "allTideNodeTestsPassed": 111,
+    "browserTestsPassed": 21,
+    "browserTestsSkipped": 1
+  },
+  "activation": {
+    "readyForTestInitialization": true,
+    "registry": "tide-here-providers/stage-3-v4",
+    "productionReleaseAuthorized": false
+  }
+}

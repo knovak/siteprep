@@ -18,13 +18,13 @@ import {
 } from '../src/resolve-forecast.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const initiativeDirectory = resolve(phaseDirectory, '../..');
-const readJson = async (path) => JSON.parse(await readFile(resolve(initiativeDirectory, path), 'utf8'));
-const geocoderConfig = await readJson('work/phase-5/data/geocoder-config.json');
-const providerConfig = await readJson('work/phase-2/data/provider-config.json');
-const catalogueFixture = await readJson('work/phase-2/data/catalogue-slices.fixture.json');
-const noaaPayload = await readJson('work/phase-0/fixtures/noaa-seattle-hilo.json');
-const chsPayload = await readJson('work/phase-0/fixtures/chs-halifax-hilo.json');
+const workDirectory = resolve(phaseDirectory, '..');
+const readJson = async (path) => JSON.parse(await readFile(resolve(workDirectory, path), 'utf8'));
+const geocoderConfig = await readJson('phase-5/data/geocoder-config.json');
+const providerConfig = await readJson('phase-2/data/provider-config.json');
+const catalogueFixture = await readJson('phase-2/data/catalogue-slices.fixture.json');
+const noaaPayload = await readJson('phase-0/fixtures/noaa-seattle-hilo.json');
+const chsPayload = await readJson('phase-0/fixtures/chs-halifax-hilo.json');
 const stations = normalizeStationCatalogues(catalogueFixture, providerConfig);
 const fixedNow = new Date('2026-08-21T18:00:00.000Z');
 

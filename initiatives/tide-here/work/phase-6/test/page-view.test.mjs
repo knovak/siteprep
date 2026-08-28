@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 
-import { dayViewModel, forecastViewModel, formatCoastTime, statePresentation } from '../src/page-view.mjs';
+import {loadAustraliaPreparedOfficial} from '../../phase-11/fixtures/australia-prepared-official.mjs';
+import { dayViewModel, forecastViewModel, formatCoastTime, providerLabel, statePresentation } from '../src/page-view.mjs';
+
+const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
 
 const day = {
   date: '2026-08-20',
@@ -40,10 +44,23 @@ test('the page vocabulary gives every state a distinct message', () => {
   const codes = [
     'invalid-input', 'place-not-found', 'geocoder-unavailable', 'coverage-unavailable',
     'coast-choice-required', 'tides-unavailable', 'astronomy-unavailable', 'no-event',
-    'location-permission-denied', 'location-unavailable'
+    'fixture-data', 'location-permission-denied', 'location-unavailable'
   ];
   const states = codes.map(statePresentation);
-  assert.equal(new Set(states.map((state) => state.message)).size, 10);
+  assert.equal(new Set(states.map((state) => state.message)).size, 11);
+});
+
+test('provider labels distinguish the Australian test path from official sources', () => {
+  assert.equal(providerLabel('noaa'), 'NOAA');
+  assert.equal(providerLabel('chs'), 'CHS');
+  assert.equal(providerLabel('australia-standard-ports'), 'Australian test port');
+  assert.equal(providerLabel('australia-standard-ports', {official: true}), 'Bureau of Meteorology');
+});
+
+test('the browser catalogue exactly matches the initialized Australian station artifact', async () => {
+  const catalogue = JSON.parse(await readFile(new URL('../data/australia-stations.json', import.meta.url), 'utf8'));
+  assert.equal(catalogue.provider, 'australia-standard-ports');
+  assert.deepEqual(catalogue.stations, australiaPreparedOfficial.stations);
 });
 
 test('the forecast view keeps all three names, station, zone, and five equal-shape days', () => {

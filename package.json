@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Interactive Web Deck System - Static Site Generator",
   "private": true,
+  "dependencies": {
+    "@neaps/tide-predictor": "0.11.0"
+  },
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",

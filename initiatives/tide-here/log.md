@@ -101,6 +101,70 @@ Released to production — ChatGPT Site, version 4, `4ec23b4`. <https://tide-her
 
 Chose closest-first ambiguous results with a collapsed Alternative coasts override; implementation is in this pull request.
 
+## 2026-08-26 — Plan global tide coverage and complete its Stage 1 feasibility spike
+
+Added the U.S./Canada, Australian Standard Ports, and FES2022 refinement plan,
+with a protected idempotent `/init` and version health check at every
+data-bearing stage. Implemented the first R2-shaped storage boundary, immutable
+versioned dataset manifests, activate-last initialization, nearest harmonic
+point lookup, and five-day high/low calculation. The committed data is plainly
+identified as a non-FES TICON-3 Brest fixture. Twelve focused tests pass, and
+the first five highs and lows remain within six minutes and five centimetres of
+the results published in the official PyFES example. Nothing was deployed.
+
+## 2026-08-26 — Complete global coverage Stage 2 and the Stage 3 implementation path
+
+Added a versioned provider registry and shared stored-provider gateway. NOAA and
+CHS remain active direct-browser providers; Australian Standard Ports and the
+global fallback are registry descriptors rather than gateway branches, so a
+future Korean, Irish, or other national source can be added through the same
+contract. Registry initialization verifies every referenced dataset and writes
+its active pointer last.
+
+Added the offline Australian annual-source importer, immutable artifact
+storage, stored station catalogue, and normalized five-day adapter. Sydney,
+Darwin, and Fremantle fixtures exercise three IANA zones and explicit year/date
+coverage errors. The fixture is synthetic, cannot be selected in production,
+and contains no Bureau or Australian Hydrographic Office prediction values.
+Official activation remains blocked on licensed machine-readable annual data,
+confirmed reuse terms, and source comparisons. Nothing was deployed.
+
 ## 2026-08-27 — Release
 
 Released to production — ChatGPT Site, version 5, `60fdfcc`. 2 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
+
+## 2026-08-27 — Complete global coverage Stages 4 and 5
+
+Implemented the production-shaped global fallback preparation, tile inventory,
+indexed lookup, stored adapter, approximate-result warnings, and explicit
+land/missing-data failures. The complete code path is exercised by a plainly
+identified three-tile non-FES fixture; licensed FES2022 activation and held-out
+official-port comparisons remain required.
+
+Packaged the Stage 4 gateway as a Sites app with one R2 binding, a protected
+`/init`, privacy-safe operational logs, and an explicit static publication
+allowlist. All 101 Tide Node tests passed in the repository and in an isolated
+copy of the exact deployable source. Published public test Site version 4,
+initialized registry `stage-4-v1`, confirmed a repeat initialization wrote zero
+objects, and passed live checks for NOAA, CHS, Australian fixture, fallback
+fixture, and the browser page. The post-check Worker error log was empty.
+Production was not changed.
+
+## 2026-08-27 — Enable Australian test-port forecasts in the browser
+
+Connected the Phase 6 page to the stored Australian provider without changing
+the direct NOAA and CHS paths. Sydney, Darwin, and Fremantle now participate in
+the normal nearest-coast match on the test Site and render five coast-local days
+through the existing normalized forecast view. Extended the plainly synthetic
+Australian fixture across all of 2026, including Sydney daylight-saving
+offsets, so current test requests do not expire after a five-day sample window.
+
+All 105 Tide Node tests and the 19 applicable browser checks passed. Published
+public test Site version 6, initialized registry `stage-4-v2`, and confirmed a
+second initialization wrote zero objects. Live checks returned 20 Australian
+events for five days and kept the synthetic, non-official warning visible. The
+post-check log contained no Worker execution errors. Production was not changed.
+
+## 2026-08-28 — Activate the Stage 3 adapter with licensed annual Australian Standard Ports data
+
+Activated licensed Bureau of Meteorology 2026 annual tide data for 23 major reference ports across every Australian coastal state and the Northern Territory. Public test version 8 initializes the stored dataset idempotently, exposes source attribution and disclaimers, and passed representative-coast live checks; production remains unchanged.

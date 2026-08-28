@@ -5,20 +5,34 @@ const STATE_ACTIONS = Object.freeze({
   'invalid-input': 'Edit the entry',
   'place-not-found': 'Edit and try again',
   'geocoder-unavailable': 'Retry place lookup',
-  'coverage-unavailable': 'Try a U.S. or Canadian coast',
+  'coverage-unavailable': 'Try another supported coast',
   'coast-choice-required': 'Review alternative coasts',
   'tides-unavailable': 'Retry tide predictions',
   'astronomy-unavailable': 'Retry sun and moon',
   'no-event': 'No retry needed',
+  'fixture-data': 'Test data only',
   'location-permission-denied': 'Try location again',
   'location-unavailable': 'Try location again'
 });
 
 const PAGE_FAILURE_MESSAGES = Object.freeze({
   ...FAILURE_MESSAGES,
+  'fixture-data': 'Australian test-port results use synthetic fixture data, not official tide predictions.',
   'location-permission-denied': 'Location access was not allowed. Allow location for this Site, then choose Show here again.',
   'location-unavailable': 'Your browser could not provide a location. Try Show here again, or enter a place or coordinates.'
 });
+
+const PROVIDER_LABELS = Object.freeze({
+  noaa: 'NOAA',
+  chs: 'CHS',
+  'australia-standard-ports': 'Australian test port',
+  fes2022: 'Approximate global model'
+});
+
+export function providerLabel(provider, {official = false} = {}) {
+  if (provider === 'australia-standard-ports') return official ? 'Bureau of Meteorology' : 'Australian test port';
+  return PROVIDER_LABELS[provider] || String(provider || '').toUpperCase();
+}
 
 export function statePresentation(code) {
   if (!PAGE_FAILURE_MESSAGES[code] || !STATE_ACTIONS[code]) throw new RangeError(`Unknown page state: ${code}`);
@@ -80,14 +94,17 @@ export function forecastViewModel(forecast, currentInstant = new Date()) {
   if (!forecast?.input?.display || !forecast?.place?.name || !forecast?.coast?.name || !forecast?.station?.name || !forecast?.timeZone) {
     throw new TypeError('A complete normalized forecast is required');
   }
+  const predictionSource = forecast.sources?.find((source) => source.provider === forecast.station.provider) ?? null;
   return Object.freeze({
     entered: forecast.input.display,
     resolved: forecast.place.name,
     coast: forecast.coast.name,
     station: forecast.station.name,
     stationKind: forecast.station.kind,
-    provider: forecast.station.provider.toUpperCase(),
+    provider: providerLabel(forecast.station.provider, {official: predictionSource?.official === true}),
+    providerId: forecast.station.provider,
     datum: forecast.station.datum,
+    source: predictionSource ? Object.freeze({...predictionSource}) : null,
     timeZone: forecast.timeZone,
     warnings: Object.freeze(forecast.warnings.map((warning) => statePresentation(warning.code))),
     days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone, currentInstant)))
