@@ -60,9 +60,26 @@ test('forward lookup makes one attributed request and reuses a hashed 24-hour ca
   const second = await geocoder.resolve('  seattle,   wa  ');
   assert.equal(calls.length, 1);
   assert.equal(new URL(calls[0]).searchParams.get('q'), 'Seattle, WA');
+  assert.equal(new URL(calls[0]).searchParams.get('limit'), '5');
   assert.equal(first.source.attribution, geocoderConfig.attribution);
   assert.equal(second.cache, 'hit');
   assert.ok([...storage.values.keys()].every((key) => !/seattle/i.test(key)));
+});
+
+test('forward lookup prefers a settlement point over a broad administrative boundary', async () => {
+  const geocoder = new Geocoder({
+    config: geocoderConfig,
+    fetchImpl: response([
+      {display_name: 'Cooktown administrative area', lat: '-15.3718125', lon: '144.9028573', category: 'boundary', type: 'administrative'},
+      {display_name: 'Cooktown, Queensland, Australia', lat: '-15.4726622', lon: '145.2534218', category: 'place', type: 'town'},
+    ]),
+  });
+  const result = await geocoder.resolve('cooktown,qld');
+  assert.deepEqual(result.place, {
+    name: 'Cooktown, Queensland, Australia',
+    lat: -15.4726622,
+    lon: 145.2534218,
+  });
 });
 
 test('coordinate lookup reverses once and an empty reverse result preserves coordinates', async () => {
@@ -152,7 +169,7 @@ test('coverage refusal never names a distant station as the coast', async () => 
   assert.deepEqual(resolution.supportedCountries, ['CA', 'US']);
 });
 
-test('the model resolver is consulted only after official catalogue coverage declines', async () => {
+test('a confident official match wins before the model resolver is consulted', async () => {
   let fallbackCalls = 0;
   const fallback = {
     station: {
@@ -170,6 +187,23 @@ test('the model resolver is consulted only after official catalogue coverage dec
   assert.equal(declined.station.provider, 'fes2022');
   assert.equal(declined.coast.name, 'Fixture model point');
   assert.equal(fallbackCalls, 1);
+});
+
+test('a nearby model point becomes primary when official choices are ambiguous', async () => {
+  const fallback = {
+    station: {
+      provider: 'fes2022', id: 'fes-bainbridge-fixture', name: 'Fixture model point', kind: 'model-point',
+      latitude: 47.6262, longitude: -122.5212, timeZone: 'America/Los_Angeles', datum: 'model datum',
+    },
+    coast: {name: 'Fixture model point', distanceKm: 1},
+  };
+  const tideHere = service({resolveFallback: async () => fallback});
+  const resolution = await tideHere.resolve('Bainbridge');
+  assert.equal(resolution.ok, true);
+  assert.equal(resolution.station.provider, 'fes2022');
+  assert.ok(resolution.candidates.length > 0);
+  assert.notEqual(resolution.candidates[0].provider, 'fes2022');
+  assert.equal(tideHere.chosenStation(resolution, resolution.candidates[0]).station.id, resolution.candidates[0].id);
 });
 
 test('choosing an ambiguous coast repeats neither geocoding nor catalogue work', async () => {

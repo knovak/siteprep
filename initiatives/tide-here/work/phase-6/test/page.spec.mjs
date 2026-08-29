@@ -415,9 +415,68 @@ test('a declined official coast can render an attributed approximate FES2022 res
   await page.goto(`${pagePath}&place=53.27,-9.05`);
   await expect(page.locator('#result')).toBeVisible();
   await expect(page.locator('#station-kind')).toContainText('FES2022 approximate model');
-  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'approximate-fallback');
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await expect(page.locator('#warnings [data-code="approximate-fallback"]')).toHaveCount(0);
+  await expect(page.locator('.safety-line')).toContainText(/not for navigation or safety decisions/i);
   await page.locator('.source-details summary').click();
   await expect(page.locator('#source-attribution')).toContainText(/CNES.*LEGOS.*NOVELTIS.*CLS/);
   await expect(page.locator('#source-link')).toHaveAttribute('href', /doi[.]org\/10[.]24400/);
   await expect(page.locator('#licence-link')).toHaveAttribute('href', /License_Aviso[.]pdf/);
+});
+
+test('Cooktown text uses FES2022 before distant official alternatives without a duplicate banner', async ({page}) => {
+  const station = {
+    provider: 'fes2022', country: 'AU', id: 'fes2022-cooktown', name: 'FES2022 near Cooktown',
+    kind: 'model-point', latitude: -15.4667, longitude: 145.2833, timeZone: 'Australia/Brisbane',
+    datum: 'FES2022 mean sea level harmonic datum', referenceStationId: null,
+  };
+  await page.route('**/resolve', async route => {
+    expect(route.request().postDataJSON()).toEqual({provider: 'fes2022', latitude: -15.4726622, longitude: 145.2534218});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({provider: 'fes2022', station, coast: {name: station.name, distanceKm: 0}}),
+    });
+  });
+  await page.route('**/forecast', async route => {
+    const request = route.request().postDataJSON();
+    expect(request.provider).toBe('fes2022');
+    expect(request.station).toMatchObject({id: 'fes2022-cooktown', latitude: -15.4667, longitude: 145.2833});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        input: request.context.input,
+        place: request.context.place,
+        coast: request.context.coast,
+        station,
+        timeZone: station.timeZone,
+        days: request.rows.map(row => ({
+          date: row.date,
+          tides: [
+            {type: 'low', at: new Date(Date.parse(row.startUtc) + 2 * 60 * 60 * 1000).toISOString(), height: 0.42, unit: 'm'},
+            {type: 'high', at: new Date(Date.parse(row.startUtc) + 8 * 60 * 60 * 1000).toISOString(), height: 2.26, unit: 'm'},
+          ],
+          sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null,
+        })),
+        sources: [{
+          provider: 'fes2022', dataClass: 'licensed-source', official: false, approximate: true,
+          attribution: 'FES2022 funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here.',
+          disclaimer: 'Interpolated and transformed model output; not for navigation.',
+          sourceUrl: 'https://doi.org/10.24400/527896/A01-2024.004',
+          licenceUrl: 'https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf',
+        }],
+        warnings: [{code: 'approximate-fallback', message: 'Approximate model; weather and storm surge are not included.'}],
+      }),
+    });
+  });
+  await page.goto(`${pagePath}&place=cooktown,qld`);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#coast-name')).toContainText('FES2022 near Cooktown');
+  await expect(page.locator('#station-kind')).toContainText('FES2022 approximate model');
+  await expect(page.locator('#chooser')).toBeVisible();
+  await expect(page.locator('#chooser')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await expect(page.locator('#warnings [data-code="approximate-fallback"]')).toHaveCount(0);
+  await expect(page.locator('.safety-line')).toContainText(/not for navigation or safety decisions/i);
 });

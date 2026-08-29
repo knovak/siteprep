@@ -84,6 +84,7 @@ function fixturePlace(input) {
   if (key === 'bainbridge') return { name: 'Bainbridge Island, Washington, United States', lat: 47.60835, lon: -122.5125 };
   if (key === 'halifax') return { name: 'Halifax, Nova Scotia, Canada', lat: 44.648618, lon: -63.5859487 };
   if (key === 'brisbane') return { name: 'Brisbane, Queensland, Australia', lat: -27.4698, lon: 153.0251 };
+  if (key === 'cooktown,qld') return { name: 'Cooktown, Queensland, Australia', lat: -15.4726622, lon: 145.2534218 };
   if (key === 'sydney') return { name: 'Sydney, New South Wales, Australia', lat: -33.8688, lon: 151.2093 };
   return { name: 'Seattle, Washington, United States', lat: 47.6062, lon: -122.3321 };
 }
@@ -396,7 +397,7 @@ function showForecast(forecast) {
   const locationNotice = $('#fixture-location-notice');
   locationNotice.textContent = fixtureWarning?.message ?? '';
   locationNotice.hidden = !fixtureWarning;
-  const externalWarnings = model.warnings.filter((warning) => warning.code !== 'fixture-data');
+  const externalWarnings = model.warnings.filter((warning) => !['fixture-data', 'approximate-fallback'].includes(warning.code));
   $('#warnings').replaceChildren(...externalWarnings.map((warning) => {
     const box = document.createElement('div');
     box.className = 'warning';
@@ -427,12 +428,12 @@ async function loadForecast(resolution, station = null) {
     now: now()
   };
   const cached = forcedState ? null : await forecastCache.read(cacheContext);
-  const result = cached || await service.forecast(preparedResolution, resolution.ok ? null : detailedStation);
+  const result = cached || await service.forecast(preparedResolution, station ? detailedStation : null);
   if (!cached && !forcedState) await forecastCache.write(cacheContext, result);
   history.append(result);
   updateHistoryCount();
   showForecast(result);
-  if (resolution.code === COAST_CHOICE_REQUIRED) showAlternativeCoasts(resolution, detailedStation);
+  if (resolution.candidates.length) showAlternativeCoasts(resolution, detailedStation);
 }
 
 async function submit() {

@@ -311,7 +311,7 @@ These tests complete the licensed Stage 3 activation gate. The synthetic
 fixture still proves failure and disclosure behavior, but is not evidence of
 Australian prediction accuracy.
 
-### 7.4 — FES-shaped global fallback implementation
+### 7.4 — Licensed FES2022 global fallback implementation
 
 | Test | Pass condition | Protects |
 |---|---|---|
@@ -319,8 +319,8 @@ Australian prediction accuracy.
 | Complete inventory | Missing, altered, duplicate, or undeclared tile objects fail size and checksum validation before initialization | Partial uploads |
 | FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source-file integrity, licence metadata, a nonzero PyFES quality flag with matching interpolation/extrapolation disclosure, a 0.01 cm constituent round-trip, and all 34 constituents per point | Data and legal boundary |
 | Atomic initialization | Australian and fallback artifacts are ready before the Stage 4 registry pointer is written; repeating `/init` writes nothing | Rollback safety |
-| Provider priority | U.S., Canada, and Australia select their national provider before the fallback | Source quality |
-| Indexed lookup | Maroochydore, Bundaberg, Brest, Galway, and Cape Town load only their candidate tiles and return normalized metre events | Runtime tile seam |
+| Provider priority | A confident national-provider match wins without consulting FES; a nearby FES point becomes primary when official choices are unavailable, distant, or ambiguous, while named official alternatives remain selectable | Source quality |
+| Indexed lookup | Maroochydore, Bundaberg, Cooktown, Brest, Galway, Gibraltar, and Cape Town load only their candidate tiles and return normalized metre events | Runtime tile seam |
 | Land or missing data | A location outside initialized coastal tiles returns `coverage-unavailable` | No invented coverage |
 | Approximate warning | Every fallback response says approximate and excludes weather and storm surge; the fixture additionally says it is not FES2022 | User safety |
 | Extraction round-trip | Every licensed point reproduces PyFES atlas prediction from its rounded extracted constituents to within 0.01 cm | Phase, units, and constituent conversion |
@@ -339,10 +339,11 @@ the model.
 thresholds. Maroochydore/Mooloolaba paired 20 extrema with p90/maximum timing
 differences of 11.256/12.525 minutes and a 0.039 m maximum height residual.
 Bundaberg paired 20 extrema with p90/maximum timing differences of
-19.399/20.710 minutes and a 0.111 m maximum height residual. The five extracted
+19.399/20.710 minutes and a 0.111 m maximum height residual. The seven extracted
 points all contain 34 constituents; their worst PyFES round-trip error is
-0.000004 cm. PyFES reports each selected coastal result as bounded native-mesh
-extrapolation using 30–39 nodes, and the committed point metadata discloses it.
+0.000004 cm. PyFES reports direct six-node native-mesh interpolation at
+Cooktown and bounded extrapolation using 30–39 nodes at the other six points;
+the committed point metadata discloses each method.
 
 ### 7.5 — Hosted test deployment
 

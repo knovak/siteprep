@@ -87,7 +87,7 @@ export class TideHereService {
       place: geocoded.place,
       geocoderSource: geocoded.source
     };
-    if (match.status === COVERAGE_UNAVAILABLE) {
+    if ([COVERAGE_UNAVAILABLE, COAST_CHOICE_REQUIRED].includes(match.status)) {
       const fallback = await this.resolveFallback?.({
         input: geocoded.input,
         place: geocoded.place,
@@ -100,9 +100,11 @@ export class TideHereService {
           code: null,
           station: fallback.station,
           coast: fallback.coast,
-          candidates: [],
+          candidates: match.status === COAST_CHOICE_REQUIRED ? match.candidates : [],
         });
       }
+    }
+    if (match.status === COVERAGE_UNAVAILABLE) {
       return freezeResolution({
         ...common,
         ok: false,
@@ -126,12 +128,13 @@ export class TideHereService {
   }
 
   chosenStation(resolution, selected) {
-    if (resolution.ok && resolution.station) return { station: resolution.station, coast: resolution.coast };
-    if (resolution.code !== COAST_CHOICE_REQUIRED) return null;
-    const station = resolution.candidates.find((candidate) => (
+    const selectedCandidate = resolution.candidates?.find((candidate) => (
       candidate.id === selected?.id && candidate.provider === selected?.provider
     ));
-    return station ? { station, coast: coastForStation(station, station.distanceKm) } : null;
+    if (selectedCandidate) return { station: selectedCandidate, coast: coastForStation(selectedCandidate, selectedCandidate.distanceKm) };
+    if (resolution.ok && resolution.station) return { station: resolution.station, coast: resolution.coast };
+    if (resolution.code !== COAST_CHOICE_REQUIRED) return null;
+    return null;
   }
 
   async forecast(resolution, selectedStation = null) {

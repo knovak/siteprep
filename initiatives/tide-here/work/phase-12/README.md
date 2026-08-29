@@ -2,8 +2,8 @@
 
 Stage 4 implements the offline FES2022 preparation contract, versioned tile
 inventory, checksum and size gates, stored lookup, approximate forecast adapter,
-and the model-point resolver used by the Tide Here page after official catalogue
-coverage declines.
+and the model-point resolver used by the Tide Here page when official catalogue
+coverage declines or only distant, ambiguous official choices are available.
 
 ## What is complete
 
@@ -20,8 +20,8 @@ coverage declines.
   approximate and not for navigation.
 - `POST /resolve` selects the nearest initialized model point only for the
   active FES descriptor. The runtime dataset contains validated points near
-  Maroochydore, Bundaberg, Brest, Galway, and Cape Town, each with a 20 km
-  maximum selection radius.
+  Maroochydore, Bundaberg, Cooktown, Brest, Galway, Gibraltar, and Cape Town,
+  each with a 20 km maximum selection radius.
 - NOAA, CHS, and Australian national providers still outrank the global
   fallback. Other future national sources still require only a registry entry
   and adapter, not a gateway branch.
@@ -30,7 +30,7 @@ coverage declines.
 
 The active runtime artifact is a small adapted extract from the FES2022b native
 non-structured ocean-tide atlas. It contains 34 native-mesh harmonic constants
-at each of five reviewed water points—not the source grid—and records the
+at each of seven reviewed water points—not the source grid—and records the
 source file's exact 3,953,139,340-byte size and SHA-256 digest. The original
 NetCDF is neither committed nor served. The earlier TICON-3-derived artifact
 remains a deterministic test fixture and is never selected by the active
@@ -63,8 +63,9 @@ python3 -m venv /tmp/tide-here-fes
   --output /tmp/fes2022-source-extract.json
 ```
 
-The extraction plan contains the user-supplied Maroochydore coordinates,
-Bundaberg, and three independent model-path locations. Each geographic tile is
+The extraction plan contains the user-supplied Maroochydore and Cooktown
+coordinates, Bundaberg, the reported Gibraltar gap, and three independent
+model-path locations. Each geographic tile is
 loaded with a bounded mesh window. The extractor converts the complex PyFES
 native-mesh result to amplitude and Greenwich phase, records its signed quality
 and method, and round-trips each rounded 34-constituent point through PyFES. A point fails
@@ -72,11 +73,11 @@ preparation if the reconstructed prediction differs from the atlas path by more
 than 0.01 cm. The extractor marks the result as modified material and hashes the
 original atlas without copying it into the repository.
 
-For these five shoreline and harbour coordinates PyFES reports bounded
-extrapolation using 30–39 mesh points; none is presented as ordinary
-interpolation. The configured atlas extrapolation distance is 20 km, the same as
-the runtime point-selection guard. The official-port comparisons below are what
-permit this deliberately narrow use.
+At Cooktown, PyFES reports direct native-mesh interpolation using six mesh
+points. At the other six shoreline and harbour coordinates it reports bounded
+extrapolation using 30–39 mesh points. The configured atlas extrapolation
+distance is 20 km, the same as the runtime point-selection guard. The
+official-port comparisons below are what permit this deliberately narrow use.
 
 The output uses `tide-here/fes-source-extract/v1`. Run the fixed official-port
 comparison before generating the committed module, then prepare both a review

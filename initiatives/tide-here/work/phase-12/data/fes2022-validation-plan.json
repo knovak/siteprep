@@ -2,10 +2,10 @@
   "schema": "tide-here/fes-extraction-plan/v1",
   "dataset": {
     "id": "fes2022b-native-validation",
-    "version": "2026-02-03",
+    "version": "2026-02-03-r2",
     "schema": "tide-here/fes-prepared-dataset/v1",
     "preparedAt": "2026-08-29T00:00:00.000Z",
-    "displayName": "FES2022b native-grid validation points",
+    "displayName": "FES2022b native-grid coastal points",
     "dataClass": "licensed-source",
     "model": "FES2022b native non-structured ocean tide atlas",
     "isFes2022": true,
@@ -13,7 +13,7 @@
     "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
     "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
     "licenceReference": "AVISO License, Issue 20 (August 2026): https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
-    "disclaimer": "Transformed FES2022b model output; the selected coastal points use bounded native-mesh extrapolation. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
+    "disclaimer": "Transformed FES2022b model output; the selected coastal points use native-mesh interpolation or bounded extrapolation. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
     "engine": "PyFES 2026.5.2 native-grid interpolation/extrapolation; Tide Here runtime uses @neaps/tide-predictor 0.11.0 with Schureman nodal corrections"
   },
   "tiles": [
@@ -76,6 +76,36 @@
           "latitude": -33.92,
           "longitude": 18.42,
           "timeZone": "Africa/Johannesburg",
+          "maximumDistanceKm": 20
+        }
+      ]
+    },
+    {
+      "id": "australia-north-east",
+      "bounds": {"south": -15.8, "west": 144.9, "north": -15.1, "east": 145.6},
+      "points": [
+        {
+          "id": "fes2022-cooktown",
+          "name": "FES2022 near Cooktown",
+          "country": "AU",
+          "latitude": -15.4667,
+          "longitude": 145.2833,
+          "timeZone": "Australia/Brisbane",
+          "maximumDistanceKm": 20
+        }
+      ]
+    },
+    {
+      "id": "gibraltar-strait",
+      "bounds": {"south": 35.8, "west": -5.7, "north": 36.4, "east": -5.0},
+      "points": [
+        {
+          "id": "fes2022-gibraltar",
+          "name": "FES2022 near Gibraltar",
+          "country": "GI",
+          "latitude": 36.1285933,
+          "longitude": -5.3474761,
+          "timeZone": "Europe/Gibraltar",
           "maximumDistanceKm": 20
         }
       ]

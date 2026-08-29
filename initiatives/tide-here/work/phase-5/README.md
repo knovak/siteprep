@@ -17,6 +17,12 @@ lookups are cached for 24 hours under SHA-256 keys, the OpenStreetMap
 attribution and licence travel with the result, and changing `data/geocoder-config.json`
 switches endpoints without changing the application module. An empty reverse
 lookup preserves the submitted coordinates instead of inventing a name.
+For text searches, the adapter requests up to five ranked candidates but still
+makes only one network request. When the top result is a broad administrative
+boundary and Nominatim also returns a city, town, village, hamlet, or
+municipality point, Tide Here uses that settlement point for coastal matching.
+This prevents a locality such as Cooktown from being represented by the center
+of its much larger administrative boundary.
 
 The configuration and behaviour were checked on 2026-08-21 against the current
 official Nominatim usage policy and Nominatim 5.3.2 search/reverse documentation.
@@ -34,6 +40,13 @@ partial forecast, and a valid no-rise/no-set day stays `no-event` rather than
 becoming an error. Every adapter returns normalized data; provider payload
 fields do not cross the seam.
 
+When a model fallback resolver is configured, the service consults it after
+official coverage is refused or the official match is too distant or ambiguous
+to accept automatically. A nearby model point becomes the primary result in
+that case while the named official candidates remain available as explicit
+alternatives. A confident automatic official match still wins without calling
+the fallback resolver.
+
 ## Verification
 
 From the repository root:
@@ -43,7 +56,8 @@ node --test initiatives/tide-here/work/phase-{1,2,3,4,5}/test/*.test.mjs
 ```
 
 The Phase 5 suite covers text and coordinate parity, original-input
-preservation, one request per submit, one-per-second serialization, hashed
+preservation, settlement-over-boundary selection, one request per submit,
+one-per-second serialization, hashed
 24-hour caching, configuration-only provider switching, reverse fallback,
-not-found versus unavailable, accept/ask/refuse composition, chooser reuse,
+not-found versus unavailable, official-first and model-first composition, chooser reuse,
 all eight codes, and tide/astronomy partial-result isolation.

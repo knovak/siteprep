@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-29T16:00:00Z",
+  "checkedAt": "2026-08-29T20:56:20Z",
   "stage": "global-coverage-stage-4",
   "deployment": null,
   "implementation": {
@@ -15,17 +15,17 @@
     "activationWriteIsLast": true
   },
   "licensedExtract": {
-    "registry": "tide-here-providers/stage-4-v6",
+    "registry": "tide-here-providers/stage-4-v7",
     "datasetId": "fes2022b-native-validation",
-    "datasetVersion": "2026-02-03",
-    "tiles": 3,
-    "points": 5,
+    "datasetVersion": "2026-02-03-r2",
+    "tiles": 5,
+    "points": 7,
     "constituentsPerPoint": 34,
     "dataClass": "licensed-source",
     "isFes2022": true,
     "maximumSelectionDistanceKm": 20,
-    "meshMethod": "bounded extrapolation",
-    "meshSampleCounts": [30, 33, 39],
+    "meshMethod": "native-mesh interpolation or bounded extrapolation",
+    "meshSampleCounts": [6, 30, 33, 39],
     "sourceFile": {
       "name": "FES2022b_OceanTide_NSgrid.nc",
       "bytes": 3953139340,
@@ -52,9 +52,9 @@
     }
   },
   "tests": {
-    "allTideNodeTestsPassed": 121,
+    "allTideNodeTestsPassed": 124,
     "allTideNodeTestsFailed": 0,
-    "browserTestsPassed": 23,
+    "browserTestsPassed": 25,
     "browserTestsSkipped": 1
   }
 }

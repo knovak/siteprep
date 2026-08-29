@@ -83,7 +83,8 @@ recorded fixtures. It checks the folded coast identity, always-visible tides,
 past/future emphasis in coast time, the two search actions and their permission
 fallback, moonrise-labelled astronomy disclosures, five equal desktop cards,
 content-sized phone cards, explicit zone, closest-first alternatives and map,
-all eight service states, the approximate-model warning, focus movement, text
+all eight service states, the approximate-model label without a duplicate
+banner, focus movement, text
 labels, datum details, safety line, and serious accessibility findings. A
 separate viewport matrix covers widths from 320 to 1600 pixels and fails on
 horizontal clipping, an unexpected card count, or the
@@ -93,6 +94,7 @@ Australian boundaries: the deterministic Brisbane fixture preserves
 selected-location card, while a recorded licensed response is labelled
 **Bureau of Meteorology**, links the selected annual PDF, shows the attribution
 and disclaimer, and contains no fixture notice.
-It also verifies that a declined official match can resolve an active FES2022
-model point, submits the model coordinates to the stored forecast route, and
-shows both the DOI and AVISO licence.
+It also verifies that a declined or ambiguous official match can resolve an
+active FES2022 model point, submits the model coordinates to the stored forecast
+route, preserves official alternatives, and shows both the DOI and AVISO
+licence.

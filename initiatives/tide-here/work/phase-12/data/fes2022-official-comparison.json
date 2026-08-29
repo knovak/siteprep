@@ -3,7 +3,7 @@
   "checkedAt": "2026-08-29T00:00:00.000Z",
   "model": {
     "id": "fes2022b-native-validation",
-    "version": "2026-02-03",
+    "version": "2026-02-03-r2",
     "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
     "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf"
   },

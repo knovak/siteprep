@@ -18,17 +18,18 @@ test('offline preparation exactly reproduces the committed tile inventory', asyn
   assert.ok(prepared.tileIndex.inventory.every(entry => entry.bytes > 0 && /^[a-f0-9]{64}$/.test(entry.sha256)));
 });
 
-test('the committed licensed extract prepares three tiles and five 34-constituent points', async () => {
+test('the committed licensed extract prepares five tiles and seven 34-constituent points', async () => {
   const prepared = await prepareFesDataset(fesSourceOfficial);
   const points = Object.values(prepared.tiles).flatMap(tile => tile.tile.points);
   assert.equal(prepared.dataset.dataClass, 'licensed-source');
   assert.equal(prepared.dataset.isFes2022, true);
-  assert.equal(prepared.tileIndex.inventory.length, 3);
-  assert.equal(points.length, 5);
+  assert.equal(prepared.tileIndex.inventory.length, 5);
+  assert.equal(points.length, 7);
   assert.ok(points.every(point => point.constituents.length === 34));
   assert.ok(points.every(point => point.constituentRoundTripMaxErrorCm <= 0.01));
-  assert.ok(points.every(point => point.interpolationMethod === 'extrapolated'));
-  assert.deepEqual([...new Set(points.map(point => Math.abs(point.interpolationQuality)))].sort((a, b) => a - b), [30, 33, 39]);
+  assert.equal(points.find(point => point.id === 'fes2022-cooktown').interpolationMethod, 'interpolated');
+  assert.ok(points.filter(point => point.id !== 'fes2022-cooktown').every(point => point.interpolationMethod === 'extrapolated'));
+  assert.deepEqual([...new Set(points.map(point => Math.abs(point.interpolationQuality)))].sort((a, b) => a - b), [6, 30, 33, 39]);
   assert.deepEqual(prepared.dataset.sourceFiles, [{
     name: 'FES2022b_OceanTide_NSgrid.nc',
     bytes: 3953139340,

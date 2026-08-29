@@ -15,9 +15,11 @@ environment from the current public production Site.
   handled by the Stage 4 gateway. The page continues to call NOAA and CHS
   directly, loads the stored Australian station catalogue, and uses `/forecast`
   when an Australian reference port or active FES2022 model point is selected.
-  The page calls `POST /resolve` only after official catalogue coverage
-  declines; coordinates stay in its request body, and the route serves only
-  points within the active sparse FES2022 dataset's declared radius.
+  The page calls `POST /resolve` after official catalogue coverage declines or
+  only distant, ambiguous official choices remain; coordinates stay in its
+  request body, and the route serves only points within the active sparse
+  FES2022 dataset's declared radius. A nearby model result remains approximate
+  while the official choices stay available as explicit alternatives.
 - Hosted `POST /init` requires the `INIT_TOKEN` secret. Initialization writes
   prepared data already included in the tested source to R2, verifies the exact
   licensed Australian and fallback versions, and activates the provider

@@ -85,6 +85,31 @@ if (!baseUrl || !token) {
       || !fes.sources[0].licenceUrl.includes('License_Aviso.pdf')) {
     throw new Error('FES2022 result did not carry its licensed approximate provenance');
   }
+  const reportedGaps = [];
+  for (const location of [
+    {name: 'Cooktown', latitude: -15.4667, longitude: 145.2833, stationId: 'fes2022-cooktown'},
+    {name: 'Gibraltar', latitude: 36.1285933, longitude: -5.3474761, stationId: 'fes2022-gibraltar'},
+  ]) {
+    const resolution = await request('/resolve', {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({provider: 'fes2022', latitude: location.latitude, longitude: location.longitude}),
+    });
+    if (resolution.station.id !== location.stationId) throw new Error(`FES2022 ${location.name} point did not resolve`);
+    const forecast = await postForecast({
+      provider: 'fes2022',
+      context: {
+        input: {display: location.name},
+        place: {name: location.name, lat: location.latitude, lon: location.longitude},
+        coast: resolution.coast,
+      },
+      station: resolution.station,
+      timeZone: resolution.station.timeZone,
+      rows: fiveLocalDays('2026-08-27T12:00:00Z', resolution.station.timeZone),
+    });
+    if (!forecast.days.flatMap(day => day.tides).length) throw new Error(`FES2022 ${location.name} returned no tides`);
+    reportedGaps.push({name: location.name, station: resolution.station.id, events: forecast.days.flatMap(day => day.tides).length});
+  }
   const page = await fetch(`${baseUrl}/phase-6/index.html`);
   if (!page.ok || !(await page.text()).includes('Tide Here')) throw new Error('Tide Here page smoke check failed');
 
@@ -105,6 +130,7 @@ if (!baseUrl || !token) {
     fallbackPoint: modelPoint.station.id,
     fallbackEvents: fes.days.flatMap(day => day.tides).length,
     fallbackWarnings: fes.warnings.map(warning => warning.code),
+    reportedGaps,
     page: 'ok',
   }, null, 2));
 }

@@ -60,13 +60,13 @@ test('Stage 4 initializes complete inventories and activates the registry last w
   const first = await initializeStageFour(store, {now: () => new Date('2026-08-27T18:00:00Z')});
   assert.equal(store.writeLog.at(-1), ACTIVE_REGISTRY_KEY);
   assert.equal(first.australia.created.length, 3);
-  assert.equal(first.fes.created.length, 6);
+  assert.equal(first.fes.created.length, 8);
   assert.equal(first.registry.created.length, 2);
   const writes = store.writeLog.length;
   const second = await initializeStageFour(store, {now: () => new Date('2026-08-27T19:00:00Z')});
   assert.equal(store.writeLog.length, writes);
   assert.equal(second.australia.unchanged.length, 3);
-  assert.equal(second.fes.unchanged.length, 6);
+  assert.equal(second.fes.unchanged.length, 8);
   assert.equal(second.registry.unchanged.length, 2);
 });
 
@@ -97,10 +97,10 @@ test('health exposes the exact Australian and licensed FES2022 versions', async 
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v6'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v7'});
   assert.deepEqual(
     health.providers.find(provider => provider.id === 'fes2022').dataset,
-    {id: 'fes2022b-native-validation', version: '2026-02-03'},
+    {id: 'fes2022b-native-validation', version: '2026-02-03-r2'},
   );
 });
 
@@ -141,6 +141,23 @@ test('the active resolver selects the nearest initialized FES2022 water point', 
   assert.equal((await response.json()).station.id, 'fes2022-brest');
 });
 
+test('the active resolver covers the reported Cooktown and Gibraltar gaps', async () => {
+  const {app} = harness();
+  await initialize(app);
+  for (const location of [
+    {latitude: -15.4667, longitude: 145.2833, stationId: 'fes2022-cooktown'},
+    {latitude: 36.1285933, longitude: -5.3474761, stationId: 'fes2022-gibraltar'},
+  ]) {
+    const response = await app.fetch(new Request('http://localhost/resolve', {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({provider: 'fes2022', latitude: location.latitude, longitude: location.longitude}),
+    }));
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).station.id, location.stationId);
+  }
+});
+
 test('Maroochydore and Bundaberg pass the fixed official-port comparison gates', () => {
   assert.equal(officialComparison.passed, true);
   assert.deepEqual(
@@ -156,12 +173,14 @@ test('Maroochydore and Bundaberg pass the fixed official-port comparison gates',
   );
 });
 
-test('separate initialized tiles serve Ireland and South Africa model points', async () => {
+test('separate initialized tiles serve Ireland, South Africa, Cooktown, and Gibraltar model points', async () => {
   const {app} = harness();
   await initialize(app);
   for (const location of [
     {latitude: 53.27, longitude: -9.05, timeZone: 'Europe/Dublin'},
     {latitude: -33.92, longitude: 18.42, timeZone: 'Africa/Johannesburg'},
+    {latitude: -15.4667, longitude: 145.2833, timeZone: 'Australia/Brisbane'},
+    {latitude: 36.1285933, longitude: -5.3474761, timeZone: 'Europe/Gibraltar'},
   ]) {
     const response = await postForecast(app, fesRequest(location));
     assert.equal(response.status, 200);
