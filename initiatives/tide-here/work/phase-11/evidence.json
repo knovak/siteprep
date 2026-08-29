@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-28T00:11:30Z",
+  "checkedAt": "2026-08-29T01:20:58Z",
   "stage": "global-coverage-stage-3",
   "deployment": null,
   "implementation": {
@@ -16,14 +16,14 @@
   "source": {
     "publisher": "Bureau of Meteorology",
     "datasetId": "australia-bom-annual-tides",
-    "datasetVersion": "2026-bom-v1",
+    "datasetVersion": "2026-bom-v2",
     "year": 2026,
     "coverageStart": "2026-01-01",
     "coverageEnd": "2026-12-31",
-    "sourceFiles": 23,
-    "sourceChecksumsRecorded": 23,
-    "ports": 23,
-    "events": 31046,
+    "sourceFiles": 76,
+    "sourceChecksumsRecorded": 76,
+    "ports": 76,
+    "events": 103597,
     "timeZones": [
       "Australia/Adelaide",
       "Australia/Brisbane",
@@ -31,7 +31,10 @@
       "Australia/Hobart",
       "Australia/Melbourne",
       "Australia/Perth",
-      "Australia/Sydney"
+      "Australia/Sydney",
+      "Indian/Christmas",
+      "Indian/Cocos",
+      "Pacific/Norfolk"
     ],
     "dataClass": "licensed-source",
     "official": true,
@@ -41,21 +44,32 @@
   "verification": {
     "exactSourceArtifactReproduction": true,
     "allMonthPdfParsing": true,
+    "roundedEqualHeightInference": true,
+    "datumLayoutCautionNormalized": true,
     "heldOutPorts": 8,
     "heldOutDate": "2026-08-27",
-    "allPortsFiveDayForecast": true
+    "allPortsFiveDayForecast": true,
+    "coverageMatrix": {
+      "places": 16,
+      "baselinePorts": 23,
+      "expandedPorts": 76,
+      "baselineCoverageUnavailable": 14,
+      "expandedCoverageUnavailable": 0,
+      "expandedAccepted": 15,
+      "expandedChoiceRequired": 1
+    }
   },
   "tests": {
-    "stageTestsPassed": 15,
+    "stageTestsPassed": 17,
     "stageTestsFailed": 0,
-    "stagesOneThroughThreePassed": 37,
-    "allTideNodeTestsPassed": 111,
+    "stagesOneThroughThreePassed": 39,
+    "allTideNodeTestsPassed": 113,
     "browserTestsPassed": 21,
     "browserTestsSkipped": 1
   },
   "activation": {
     "readyForTestInitialization": true,
-    "registry": "tide-here-providers/stage-3-v4",
+    "registry": "tide-here-providers/stage-3-v5",
     "productionReleaseAuthorized": false
   }
 }

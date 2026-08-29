@@ -15,6 +15,10 @@ import {
 const officialSource = JSON.parse(gunzipSync(await readFile(
   new URL('../data/bom-annual-2026.source.json.gz', import.meta.url),
 )));
+const officialManifest = JSON.parse(await readFile(
+  new URL('../data/bom-annual-2026.manifest.json', import.meta.url),
+  'utf8',
+));
 const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
 
 test('the offline importer still reproduces the synthetic boundary fixture exactly', () => {
@@ -29,11 +33,13 @@ test('the offline importer still reproduces the synthetic boundary fixture exact
 test('the checksum-recorded Bureau source reproduces the licensed artifact exactly', () => {
   const imported = importAustralianAnnualSource(officialSource);
   assert.deepEqual(imported, australiaPreparedOfficial);
-  assert.equal(imported.stations.length, 23);
-  assert.equal(imported.events.length, 31046);
+  assert.equal(imported.stations.length, 76);
+  assert.equal(imported.events.length, 103597);
   assert.equal(imported.dataset.isOfficial, true);
   assert.equal(imported.dataset.dataClass, 'licensed-source');
-  assert.equal(imported.dataset.sourceFiles.length, 23);
+  assert.equal(imported.dataset.sourceFiles.length, 76);
+  assert.equal(officialManifest.datasetVersion, imported.dataset.version);
+  assert.deepEqual(officialManifest.sourceFiles, imported.dataset.sourceFiles);
   assert.match(imported.dataset.attribution, /Commonwealth of Australia.*Bureau of Meteorology/);
   assert.match(imported.dataset.disclaimer, /Bureau makes no representation/);
 });

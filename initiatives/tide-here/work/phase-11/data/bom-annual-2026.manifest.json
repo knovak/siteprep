@@ -1,14 +1,43 @@
 {
   "schema": "tide-here/bom-annual-source-manifest/v1",
-  "preparedAt": "2026-08-28T00:05:00.000Z",
+  "preparedAt": "2026-08-29T01:20:58.000Z",
   "year": 2026,
+  "datasetVersion": "2026-bom-v2",
   "sourceUrl": "https://www.bom.gov.au/oceanography/projects/ntc/tide_tables.shtml",
   "sourceFiles": [
+    {
+      "portId": "au-qld-abbot-point",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP001.pdf",
+      "sha256": "0096694aac5ff6b4f8572efeb78067fd8feec783eae8109d1e26a28173bfbc19",
+      "bytes": 49033,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-booby-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP026.pdf",
+      "sha256": "ba410db04a6374af8591e9c93b8b2d756bcadb5b9d68f6ae94a2c86b6c22ed2b",
+      "bytes": 49130,
+      "predictions": 1407
+    },
     {
       "portId": "au-qld-brisbane-bar",
       "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP003.pdf",
       "sha256": "8c97addd73d6b6c32c0ba080b884ae6624c3cb651df1d00b7a00709a751ca004",
       "bytes": 48829,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-bugatti-reef",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP004.pdf",
+      "sha256": "aff153a4715d9fcc3813f28112dadb97af65dc18d71c842c50f92d03ea022f4e",
+      "bytes": 49031,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-bundaberg",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP005.pdf",
+      "sha256": "365fcdd7e54657de706a3c9b3f967e9fea47b97e6124d5079608fd859443e173",
+      "bytes": 49029,
       "predictions": 1411
     },
     {
@@ -19,11 +48,46 @@
       "predictions": 1411
     },
     {
-      "portId": "au-qld-townsville",
-      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP033.pdf",
-      "sha256": "2893be773c4594155081213a41b12847a688137b769cddfcaafe0329a65a0746",
-      "bytes": 49092,
-      "predictions": 1409
+      "portId": "au-qld-gladstone",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP008.pdf",
+      "sha256": "da8a39fe5f3f041f9ac06ded4f03a6621a29b45b3cac1779071eee28638c3af8",
+      "bytes": 49089,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-goods-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP027.pdf",
+      "sha256": "27aef341d45e547c3e02c4c4ff7d43b6323504e0b7e714be60f874106e34dd62",
+      "bytes": 48872,
+      "predictions": 1343
+    },
+    {
+      "portId": "au-qld-hay-point",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP012.pdf",
+      "sha256": "cfa7efe1697d7d5f240da5111eb391f4b562dd9762fbd7b6104ebb0ecfd2a9fe",
+      "bytes": 49292,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-karumba",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP013.pdf",
+      "sha256": "4b1c547dfc6545f7df3f39b7c8cf4ceb142b983b300cb07d7b93f1fee2014c3b",
+      "bytes": 46136,
+      "predictions": 782
+    },
+    {
+      "portId": "au-qld-leggatt-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP014.pdf",
+      "sha256": "e17139e5c93d46c5ad17064496e0101f7faae2fb52706f5311f6deb27030fb48",
+      "bytes": 48918,
+      "predictions": 1385
+    },
+    {
+      "portId": "au-qld-lucinda-offshore",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP017.pdf",
+      "sha256": "93a251cfb6d6747c9ef6c90f9c3702897c4fda9f21e3ab4c8f0d8b98dceff825",
+      "bytes": 49151,
+      "predictions": 1397
     },
     {
       "portId": "au-qld-mackay-outer-harbour",
@@ -33,11 +97,74 @@
       "predictions": 1411
     },
     {
-      "portId": "au-qld-gladstone",
-      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP008.pdf",
-      "sha256": "da8a39fe5f3f041f9ac06ded4f03a6621a29b45b3cac1779071eee28638c3af8",
-      "bytes": 49089,
+      "portId": "au-qld-mooloolaba",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP019.pdf",
+      "sha256": "5d798ec3bb7684e43dfb8d88bf473ef05857cfdc959ee205f61453178f4f71e3",
+      "bytes": 48734,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-qld-mourilyan-harbour",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP020.pdf",
+      "sha256": "aba6710373d99d56aea411e385086a5adc9f5db16a3694705ecc67939db8857d",
+      "bytes": 48990,
+      "predictions": 1393
+    },
+    {
+      "portId": "au-qld-port-alma",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP022.pdf",
+      "sha256": "37c792fe55bd2cb749835d193e1ab204756a09372522c391de05a87b5eb7aa4c",
+      "bytes": 49243,
       "predictions": 1411
+    },
+    {
+      "portId": "au-qld-port-douglas",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP023.pdf",
+      "sha256": "07104e504c914ec2129dca866c9e8e2be5a443f2d5b8ec11f64bc0ac18abae4f",
+      "bytes": 48982,
+      "predictions": 1401
+    },
+    {
+      "portId": "au-qld-shute-harbour",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP025.pdf",
+      "sha256": "c1bce986a5869e3f0415384a7ebeabe14aa47518c32465ec0213c28df25a8fd8",
+      "bytes": 49102,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-thursday-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP030.pdf",
+      "sha256": "e65373514cc36ebf8bc3aa4587b3d465d7f2758c6d72b450115dd998e18eb88f",
+      "bytes": 49065,
+      "predictions": 1416
+    },
+    {
+      "portId": "au-qld-townsville",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP033.pdf",
+      "sha256": "2893be773c4594155081213a41b12847a688137b769cddfcaafe0329a65a0746",
+      "bytes": 49092,
+      "predictions": 1409
+    },
+    {
+      "portId": "au-qld-twin-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP032.pdf",
+      "sha256": "7f21a68dddbd17f330573a57e3060bcd41fa223eb3e943abd3e3befe5fd2e42d",
+      "bytes": 49009,
+      "predictions": 1404
+    },
+    {
+      "portId": "au-qld-urangan",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP034.pdf",
+      "sha256": "ce630c5b515d44670441f02c5e194e93e3ede0bcaaabb8a77c3d286acc2be729",
+      "bytes": 49018,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-qld-waddy-point",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP035.pdf",
+      "sha256": "c5c3962f0e3ac28784f1e347d329b4fbb7b6be1b4e91f3ee728179275b4e9708",
+      "bytes": 48823,
+      "predictions": 1410
     },
     {
       "portId": "au-qld-weipa",
@@ -45,6 +172,27 @@
       "sha256": "2885cf32ff450d03152490cefd505ff8c07bc7b3aa8648fd14e8339bc4de40c5",
       "bytes": 48255,
       "predictions": 1205
+    },
+    {
+      "portId": "au-nsw-eden",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_NSW_TP002.pdf",
+      "sha256": "d063d4060b4321d921d475637605afefd780acfc71703b5cd94a34527af51f99",
+      "bytes": 48804,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-nsw-newcastle",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_NSW_TP004.pdf",
+      "sha256": "c2548e4ff986757794ef197d04d89a6868a2c53412ca991842ab7959e8c382cc",
+      "bytes": 48801,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-nsw-port-kembla",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_NSW_TP006.pdf",
+      "sha256": "477281cdefec6e7f8ee6b331952e91a98fa4ca6c9dfeb57afe79541b5cf3ed05",
+      "bytes": 48821,
+      "predictions": 1411
     },
     {
       "portId": "au-nsw-yamba",
@@ -61,11 +209,67 @@
       "predictions": 1411
     },
     {
+      "portId": "au-nsw-norfolk-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_NSW_TP005.pdf",
+      "sha256": "97ca632888dc54187725948eef0bad4475cfcb7117c9b0dd604468c92833f7c1",
+      "bytes": 48662,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-vic-geelong",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP005.pdf",
+      "sha256": "2945a426a7ec46cbc5fb05402642588e9f705596442318128f736bc9e7157137",
+      "bytes": 48457,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-vic-lakes-entrance",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP001.pdf",
+      "sha256": "3e95237e6c839801ec25bc89a6a8fdbbb28a5ccf656fc11ec05702a7aaf15427",
+      "bytes": 48700,
+      "predictions": 1413
+    },
+    {
       "portId": "au-vic-melbourne",
       "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP003.pdf",
       "sha256": "c547ac6f33ffca24f03f31eec32edb0bb95128c11403cb67898a84cf1fa90494",
       "bytes": 48412,
       "predictions": 1411
+    },
+    {
+      "portId": "au-vic-portland",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP011.pdf",
+      "sha256": "237ba6b066c345b1b09330215201edb297d61bbb320fcaf6843bf72bea9447b4",
+      "bytes": 48033,
+      "predictions": 1266
+    },
+    {
+      "portId": "au-vic-port-phillip-heads",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP009.pdf",
+      "sha256": "2db4d78778412d7c497c314842eae873bcb9e59225cba535a33f736c7379d1bf",
+      "bytes": 48693,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-vic-port-welshpool",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP010.pdf",
+      "sha256": "a39b13eefa5c9e57d942fb1115e477c964c40f09a8bac7d249cc3dba25b3390a",
+      "bytes": 48928,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-vic-western-port",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_VIC_TP013.pdf",
+      "sha256": "dc3cf8450cbe1bdd7864f3b1feb46ac8d5c27a21029fdf08fd4d3b64d2cfa34a",
+      "bytes": 49067,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-tas-burnie",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_TAS_TP001.pdf",
+      "sha256": "9e7d723927995253c3fcf79ce4a51c9fb38f7c3f27d2732afc54a5c93e7133c4",
+      "bytes": 48842,
+      "predictions": 1410
     },
     {
       "portId": "au-tas-hobart",
@@ -75,11 +279,39 @@
       "predictions": 1386
     },
     {
+      "portId": "au-tas-low-head",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_TAS_TP004.pdf",
+      "sha256": "746ae815705d03549d9298b5f9b8817b1ea268eef8fcc9ad39ad4a8a551103f9",
+      "bytes": 48842,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-tas-devonport",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_TAS_TP005.pdf",
+      "sha256": "ca29d17a7a508bd2342eb592d215858c67b80dd973b89c4ac9d353ae5292fa70",
+      "bytes": 48851,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-tas-stanley",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_TAS_TP008.pdf",
+      "sha256": "add85854a387292643a7929ef5d72d4ee3aca33ce1ad7c896cdc5b42ec405c34",
+      "bytes": 48788,
+      "predictions": 1410
+    },
+    {
       "portId": "au-sa-port-adelaide",
       "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP001.pdf",
       "sha256": "faabaa442e043c535a4d87359af58083f30067c267fd4d83fe03561e73c0dbe0",
       "bytes": 49090,
       "predictions": 1425
+    },
+    {
+      "portId": "au-sa-port-giles",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP002.pdf",
+      "sha256": "34fefde5fb8aaaa0c8e3e8561ea315e8698d851373623ff813e56f39407ff46a",
+      "bytes": 49013,
+      "predictions": 1421
     },
     {
       "portId": "au-sa-port-lincoln",
@@ -89,11 +321,39 @@
       "predictions": 1355
     },
     {
+      "portId": "au-sa-port-pirie",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP004.pdf",
+      "sha256": "ae5275cba9df7ec7d995d7b39df48dd699cb7cdfb0f08355b233d55bce1b537a",
+      "bytes": 48878,
+      "predictions": 1374
+    },
+    {
       "portId": "au-sa-thevenard",
       "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP005.pdf",
       "sha256": "5c3a86a8628893777f1b27efa0129327401194a17a789075c1496bfad901a4d0",
       "bytes": 49013,
       "predictions": 1450
+    },
+    {
+      "portId": "au-sa-victor-harbor",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP006.pdf",
+      "sha256": "859febe7f1ecf94917310972f731cb7dbce7dc4226a526495f0e437b6cd631b2",
+      "bytes": 48447,
+      "predictions": 1345
+    },
+    {
+      "portId": "au-sa-wallaroo",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP007.pdf",
+      "sha256": "3a6f6679a5f33558741e8e25813a6101be6ff158ad7e387b22badb147fe0f73c",
+      "bytes": 47514,
+      "predictions": 1094
+    },
+    {
+      "portId": "au-sa-whyalla",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_SA_TP008.pdf",
+      "sha256": "0e902fe5de045d95d458c705f56e1831d05a8b2c84acfd97ccf592fc4f1e94d6",
+      "bytes": 48811,
+      "predictions": 1362
     },
     {
       "portId": "au-wa-esperance",
@@ -110,6 +370,83 @@
       "predictions": 1104
     },
     {
+      "portId": "au-wa-broome",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP004.pdf",
+      "sha256": "da42f5dab9abcd7c9ac1305ea85f919c629e3b6bbe09e659b0cf44c85ba0e82c",
+      "bytes": 49625,
+      "predictions": 1415
+    },
+    {
+      "portId": "au-wa-bunbury",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP005.pdf",
+      "sha256": "47aff773f44746dd609b81125a46873356bab6ca1a39e7306c3e70d2f9e9ddeb",
+      "bytes": 47828,
+      "predictions": 1212
+    },
+    {
+      "portId": "au-wa-cape-domett",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP032.pdf",
+      "sha256": "737e3f0352acbab30ffaca31a3e10fa139044be905b2d525ba5c689290cee8ca",
+      "bytes": 49489,
+      "predictions": 1409
+    },
+    {
+      "portId": "au-wa-cape-voltaire",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP007.pdf",
+      "sha256": "88cb8534ff9ebeeccaf450e8f70c9d7c4bbfb4c5801e1ddc8586b4e40d67c2e5",
+      "bytes": 49590,
+      "predictions": 1419
+    },
+    {
+      "portId": "au-wa-carnarvon",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP008.pdf",
+      "sha256": "618b4caf92d3a530525469536a53c3513347b6e4e04e2f720d15f1477143809e",
+      "bytes": 48664,
+      "predictions": 1369
+    },
+    {
+      "portId": "au-wa-christmas-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP009.pdf",
+      "sha256": "68441cc9c74eef859eef6cd580309bcae3603e68485d94b38bc4f8944a0a962f",
+      "bytes": 48804,
+      "predictions": 1403
+    },
+    {
+      "portId": "au-wa-cocos-islands",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP010.pdf",
+      "sha256": "a5ba973c22b6b303e266534f639cfa36b2da02ebb14ecc1b565ae7f2f96d1398",
+      "bytes": 48632,
+      "predictions": 1411
+    },
+    {
+      "portId": "au-wa-dampier",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP011.pdf",
+      "sha256": "869a5376874b28b1d007c7e56de33c9c074ba21f96e735297aca739edde3cbd7",
+      "bytes": 49300,
+      "predictions": 1409
+    },
+    {
+      "portId": "au-wa-denham",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP012.pdf",
+      "sha256": "de7d4e9b5a595011247ae8e7043c047fc203283573454950677716d8b6ae24a9",
+      "bytes": 48004,
+      "predictions": 1238
+    },
+    {
+      "portId": "au-wa-derby",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP043.pdf",
+      "sha256": "83a7ab60a916ac0dde5c5b343a6ba3795abc9650c76b73f9754202297b9bbf90",
+      "bytes": 49466,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-wa-exmouth",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP014.pdf",
+      "sha256": "7110a3ab7bff8a29f58ca50de5572dfa95db311367efb896c346ad37145814d8",
+      "bytes": 48902,
+      "predictions": 1403
+    },
+    {
       "portId": "au-wa-fremantle",
       "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP015.pdf",
       "sha256": "4e27297b016e379b265bede95af512446669a14bbf85521dd4d4a6d344b62c9e",
@@ -124,18 +461,11 @@
       "predictions": 1124
     },
     {
-      "portId": "au-wa-carnarvon",
-      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP008.pdf",
-      "sha256": "618b4caf92d3a530525469536a53c3513347b6e4e04e2f720d15f1477143809e",
-      "bytes": 48664,
-      "predictions": 1369
-    },
-    {
-      "portId": "au-wa-dampier",
-      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP011.pdf",
-      "sha256": "869a5376874b28b1d007c7e56de33c9c074ba21f96e735297aca739edde3cbd7",
-      "bytes": 49300,
-      "predictions": 1409
+      "portId": "au-wa-onslow",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP018.pdf",
+      "sha256": "51e121119ebb4b6d5d62286e935247bef79e52acc36b38089bf8b5771f6a7b07",
+      "bytes": 48969,
+      "predictions": 1407
     },
     {
       "portId": "au-wa-port-hedland",
@@ -145,11 +475,46 @@
       "predictions": 1417
     },
     {
-      "portId": "au-wa-broome",
-      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP004.pdf",
-      "sha256": "da42f5dab9abcd7c9ac1305ea85f919c629e3b6bbe09e659b0cf44c85ba0e82c",
-      "bytes": 49625,
-      "predictions": 1415
+      "portId": "au-wa-port-walcott",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP021.pdf",
+      "sha256": "73536bf7099b324176c9a099fe16299a7e4f25b492cbdad679acddf979610d10",
+      "bytes": 49347,
+      "predictions": 1409
+    },
+    {
+      "portId": "au-wa-tanker-mooring",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP002.pdf",
+      "sha256": "4494143d1c76a42d37ac0f1eff3d4fc535204f0ec59e6198d03ad9b4fdd211fb",
+      "bytes": 49239,
+      "predictions": 1409
+    },
+    {
+      "portId": "au-wa-thevenard-island",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP022.pdf",
+      "sha256": "a1b05ef4a62312629e70b8df11c082878c9558b888b73ac338fe30efc5529d0c",
+      "bytes": 48978,
+      "predictions": 1407
+    },
+    {
+      "portId": "au-wa-wapet-landing",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP003.pdf",
+      "sha256": "e1f9ff90a412a320ec686917640d7b982eaacbc9076255b264aa1b3bd0a273b3",
+      "bytes": 49120,
+      "predictions": 1405
+    },
+    {
+      "portId": "au-wa-wyndham",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP023.pdf",
+      "sha256": "d641792643dcff2a5691b979ffe707bf6ce2d1f335dc73b2009e1436370b6313",
+      "bytes": 49399,
+      "predictions": 1410
+    },
+    {
+      "portId": "au-wa-yampi-sound",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_WA_TP024.pdf",
+      "sha256": "63773e8681bf1aec34441a74c8a30a9c8fb1c2b71fa5a45a03e6b42f81bdf307",
+      "bytes": 49661,
+      "predictions": 1411
     },
     {
       "portId": "au-nt-darwin",
@@ -164,6 +529,13 @@
       "sha256": "54e52ff184e10d4807f0c564fbf5b5329a8181ec1a954c4f9c9e73c0da6d133e",
       "bytes": 49100,
       "predictions": 1410
+    },
+    {
+      "portId": "au-nt-milner-bay",
+      "url": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_NT_TP003.pdf",
+      "sha256": "6885b0dfe2241d7debe67f08270e6345d18cc7ed894a57aa8e8115c97996eb1c",
+      "bytes": 46978,
+      "predictions": 963
     }
   ]
 }

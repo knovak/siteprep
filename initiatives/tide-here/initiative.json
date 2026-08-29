@@ -29,12 +29,13 @@
   ],
   "todo": [
     {
-      "id": "expand-australian-standard-port-coverage",
-      "title": "Expand licensed Australian Standard Port coverage and add a representative gap matrix",
-      "state": "actionable",
+      "id": "deploy-and-verify-expanded-australian-coverage",
+      "title": "Deploy and verify the expanded Standard Port catalogue on the existing public test Site",
+      "state": "blocked",
       "value": "medium",
       "effort": "medium",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "permission:deploy the expanded catalogue to the existing public Tide Here test Site"
     }
   ]
 }

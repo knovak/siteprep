@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import {test} from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
@@ -11,6 +12,9 @@ import {initializeStageThree} from '../src/stage-three.mjs';
 import {createStageThreeApp} from '../src/worker.mjs';
 
 const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
+const gapMatrix = JSON.parse(await readFile(
+  new URL('../data/australia-coverage-gap-matrix-2026.json', import.meta.url),
+));
 
 function harness() {
   const store = new MemoryObjectStore();
@@ -68,9 +72,9 @@ test('health and the stored station catalogue name the exact Stage 3 data', asyn
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v4'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-3-v5'});
   const australia = health.providers.find(provider => provider.id === 'australia-standard-ports');
-  assert.deepEqual(australia.dataset, {id: 'australia-bom-annual-tides', version: '2026-bom-v1'});
+  assert.deepEqual(australia.dataset, {id: 'australia-bom-annual-tides', version: '2026-bom-v2'});
   assert.equal(australia.status, 'active');
 
   const catalogueResponse = await app.fetch(new Request(
@@ -78,17 +82,18 @@ test('health and the stored station catalogue name the exact Stage 3 data', asyn
   ));
   assert.equal(catalogueResponse.status, 200);
   const catalogue = await catalogueResponse.json();
-  assert.equal(catalogue.stations.length, 23);
+  assert.equal(catalogue.stations.length, 76);
   assert.deepEqual([...new Set(catalogue.stations.map(station => station.jurisdiction))].sort(), [
     'AU-NSW', 'AU-NT', 'AU-QLD', 'AU-SA', 'AU-TAS', 'AU-VIC', 'AU-WA',
   ]);
   assert.deepEqual([...new Set(catalogue.stations.map(station => station.timeZone))].sort(), [
     'Australia/Adelaide', 'Australia/Brisbane', 'Australia/Darwin', 'Australia/Hobart',
-    'Australia/Melbourne', 'Australia/Perth', 'Australia/Sydney',
+    'Australia/Melbourne', 'Australia/Perth', 'Australia/Sydney', 'Indian/Christmas',
+    'Indian/Cocos', 'Pacific/Norfolk',
   ]);
 });
 
-test('all 23 licensed Australian ports return five source-matching local days in the normalized shape', async () => {
+test('all 76 licensed Australian ports return five source-matching local days in the normalized shape', async () => {
   const {app} = harness();
   await initialize(app);
   for (const station of australiaPreparedOfficial.stations) {
@@ -139,6 +144,29 @@ test('major coastal-city searches resolve around the Australian mainland and Tas
     const match = matchCoast({latitude, longitude}, australiaPreparedOfficial.stations, config);
     assert.notEqual(match.status, 'coverage-unavailable', name);
     assert.equal(match.station?.id ?? match.candidates[0]?.id, expectedId, name);
+  }
+});
+
+test('the representative gap matrix reproduces the 23-port baseline and expanded catalogue outcomes', () => {
+  assert.equal(gapMatrix.schema, 'tide-here/australia-coverage-gap-matrix/v1');
+  assert.equal(gapMatrix.baselineDatasetVersion, '2026-bom-v1');
+  assert.equal(gapMatrix.expandedDatasetVersion, australiaPreparedOfficial.dataset.version);
+  const baselineIds = new Set(gapMatrix.baselineStationIds);
+  const baselineStations = australiaPreparedOfficial.stations.filter(station => baselineIds.has(station.id));
+  assert.equal(baselineStations.length, 23);
+
+  const summarize = (place, stations) => {
+    const match = matchCoast(place, stations, gapMatrix.matcher);
+    return {
+      status: match.status,
+      stationId: match.station?.id ?? match.candidates[0]?.id ?? null,
+      distanceKm: match.coast?.distanceKm ?? match.candidates[0]?.distanceKm ?? match.nearestDistanceKm,
+    };
+  };
+  for (const place of gapMatrix.places) {
+    const coordinates = {latitude: place.latitude, longitude: place.longitude};
+    assert.deepEqual(summarize(coordinates, baselineStations), place.before, `${place.name} before`);
+    assert.deepEqual(summarize(coordinates, australiaPreparedOfficial.stations), place.after, `${place.name} after`);
   }
 });
 

@@ -431,13 +431,15 @@ year/version only after validation succeeds.
 **Exit:** several Australian ports and time zones match the source table; dates
 outside the loaded year fail explicitly rather than falling through silently.
 
-**Status, 2026-08-27:** active implementation is complete in `work/phase-11`
-using 23 Bureau of Meteorology 2026 annual tide-table PDFs spanning the major
-coastal regions of every Australian coastal state and the Northern Territory.
-The offline job records each PDF checksum, reconstructs 31,046 daily extrema,
-applies port-local IANA offsets, and reproduces the committed artifact exactly.
-The licensed artifact, source attribution, required disclaimer, and held-out
-table comparisons pass before registry `stage-3-v4` is activated. The earlier
+**Status, 2026-08-29:** active implementation is complete in `work/phase-11`
+using all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
+territory indexes. The offline job records each PDF checksum, reconstructs
+103,597 daily extrema across 10 IANA zones, applies port-local offsets, and
+reproduces the committed artifact exactly. A 16-place before/after matrix proves
+that all representative gaps are now within the unchanged 150 km guard. The
+licensed artifact, source attribution, required disclaimer, rounded-height
+parser case, and held-out table comparisons pass before registry `stage-3-v5`
+is activated. Secondary Port corrections remain out of scope, and the earlier
 synthetic artifact remains only as a deterministic test boundary.
 
 #### Stage 4 — FES2022 global fallback

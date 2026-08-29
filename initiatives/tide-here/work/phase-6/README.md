@@ -48,12 +48,10 @@ link to the selected port's annual-table PDF.
 The page loads the complete NOAA and CHS prediction-station catalogues on the
 first uncached search, then loads metadata only for the selected station so
 matching and civil-time formatting are not limited to the recorded validation
-places. The Australian catalogue contains 23 reference ports around the major
-coastal regions of Queensland, New South Wales, Victoria, Tasmania, South
-Australia, Western Australia, and the Northern Territory: Brisbane, Cairns,
-Townsville, Mackay, Gladstone, Yamba, Sydney, Melbourne, Hobart, Adelaide, Port
-Lincoln, Thevenard, Esperance, Albany, Fremantle, Geraldton, Carnarvon, Dampier,
-Port Hedland, Broome, Darwin, Gove, and Weipa.
+places. The prepared Australian catalogue contains all 76 Standard Ports in the
+Bureau's 2026 state and territory indexes across 10 IANA zones. The deterministic
+browser fixture remains a bounded 23-port synthetic catalogue so its disclosure
+and failure tests stay independent of the licensed artifact.
 The safety notice precedes the collapsed **Prediction source details**
 disclosure. When the match is ambiguous, **Alternative coasts** follows the
 forecast and starts collapsed. A separate collapsed **Debug record** disclosure

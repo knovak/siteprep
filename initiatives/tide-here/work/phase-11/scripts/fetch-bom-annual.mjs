@@ -19,6 +19,9 @@ if (!selectionPath || !sourceOutputPath || !manifestOutputPath) {
   if (selection.schema !== 'tide-here/bom-annual-port-selection/v1' || !Array.isArray(selection.ports)) {
     throw new Error('Unsupported Bureau annual port selection');
   }
+  if (!/^\d{4}-bom-v\d+$/.test(selection.datasetVersion ?? '')) {
+    throw new Error('Bureau annual port selection requires an immutable datasetVersion');
+  }
   const temporaryDirectory = await mkdtemp(join(tmpdir(), 'tide-here-bom-'));
   try {
     const sourceFiles = [];
@@ -63,7 +66,7 @@ if (!selectionPath || !sourceOutputPath || !manifestOutputPath) {
       schema: 'tide-here/australia-standard-ports-source/v1',
       metadata: {
         datasetId: 'australia-bom-annual-tides',
-        datasetVersion: `${selection.year}-bom-v1`,
+        datasetVersion: selection.datasetVersion,
         sourceYear: selection.year,
         coverageStart: `${selection.year}-01-01`,
         coverageEnd: `${selection.year}-12-31`,
@@ -83,6 +86,7 @@ if (!selectionPath || !sourceOutputPath || !manifestOutputPath) {
       schema: 'tide-here/bom-annual-source-manifest/v1',
       preparedAt: selection.preparedAt,
       year: selection.year,
+      datasetVersion: selection.datasetVersion,
       sourceUrl: selection.sourceUrl,
       sourceFiles,
     };

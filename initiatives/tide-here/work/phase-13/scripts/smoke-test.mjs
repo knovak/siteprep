@@ -35,7 +35,7 @@ if (!baseUrl || !token) {
   }
 
   const catalogue = await request('/stations?provider=australia-standard-ports');
-  if (catalogue.stations.length !== 23) throw new Error(`Australian catalogue has ${catalogue.stations.length} stations, expected 23`);
+  if (catalogue.stations.length !== 76) throw new Error(`Australian catalogue has ${catalogue.stations.length} stations, expected 76`);
   let australianEvents = 0;
   for (const station of catalogue.stations) {
     const australia = await postForecast({
