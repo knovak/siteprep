@@ -11,3 +11,7 @@ Specified a private administrator-operated first version with immutable entity v
 ## 2026-08-28 — Add collection, hosting, storage, export, and tag requirements
 
 Added selectable user-owned collections with explicit import destinations and confirmed erasure, an early publicly reachable login-gated Site with admin and user authorization, an R2-compatible blob-store boundary, web/admin/scheduled export channels, and a collection tag inventory with use measurements.
+
+## 2026-08-29 — Draft plan.md and test-plan.md
+
+Drafted the phased build plan and matching test plan, choosing the first host and adapters, collection and authorization rules, relationship registry, assessment scales, rights-safe fixtures, package limits, performance budgets, scheduled-export policy, and the evidence needed before revisiting distribution.
