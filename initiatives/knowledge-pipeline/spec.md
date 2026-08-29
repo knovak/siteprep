@@ -2,29 +2,34 @@
 
 ## Summary
 
-Knowledge Pipeline is a private, administrator-operated web application that
+Knowledge Pipeline is a publicly reachable but login-gated web application that
 turns retained sources into tagged and assessed records, topic-specific mini
 narratives, human-maintained standing documents, and a reference archive.
-Every durable source or derived artifact is a versioned entity. Typed
-relationships connect pairs of entities, and an append-only activity record
-shows how AI, people, imports, and application code produced each version and
-relationship.
+Users work in one selected collection at a time and can switch collections
+without leaving the application. Every durable source or derived artifact is a
+versioned entity. Typed relationships connect pairs of entities, and an
+append-only activity record shows how AI, people, imports, and application code
+produced each version and relationship.
 
-The first version proves the complete five-stage loop for one administrator and
-one knowledge space. It includes import and export in every stage from the first
-increment, not as a later backup feature. An administrator can export a work
-packet, ask an LLM to propose tags, assessments, assignments, relationships, or
-narratives, inspect the returned file, and import accepted changes. A later
-skill plus ChatGPT app uses the same package, validation, proposal, and commit
-contracts rather than gaining a less auditable path into the database.
+The first version proves the complete five-stage loop for one administrator,
+one knowledge space, and multiple independently selectable collections. A
+simple allowlist supports administrator and user roles for early testing while
+keeping every collection private to its owner unless an administrator performs
+an explicit audited action. Import and export exist in every stage from the
+first increment, not as later backup features. An administrator can export a
+work packet, ask an LLM to propose tags, assessments, assignments,
+relationships, or narratives, inspect the returned file, and import accepted
+changes. A later skill plus ChatGPT app uses the same package, validation,
+proposal, export, and commit contracts rather than gaining a less auditable
+path into the database.
 
 The first deployment is intentionally not a decision about how other people
 will eventually receive the system. A shared multi-user service, a
 self-maintained kit per user, several maintainer-operated single-user sites,
 and a package of skills and ChatGPT apps remain viable distribution choices.
-The code carries workspace, actor, storage, authentication, and package
-boundaries from the start while implementing only the single-administrator
-experience needed to learn which choice is justified.
+The code carries knowledge-space, collection, actor, storage, authentication,
+and package boundaries from the start while implementing only the simple
+authorized-user experience needed to learn which choice is justified.
 
 ## Product principles
 
@@ -41,6 +46,9 @@ experience needed to learn which choice is justified.
 - **Import and export are ordinary work.** Backup, upgrades, LLM round trips,
   moving a subset between people, and future deployment changes use the same
   visible, tested interchange boundary.
+- **A collection is the working boundary.** Imports, stage queues, tag
+  measurements, selections, and ordinary exports apply to the collection the
+  user can see as selected. Switching collections never blends their records.
 - **AI proposes; a person remains accountable.** AI may begin every stage and
   prepare a standing-document change, but it cannot silently promote evidence,
   publish a standing-document revision, or archive the narratives it used.
@@ -56,10 +64,21 @@ experience needed to learn which choice is justified.
 ### Primary user: the administrator-curator
 
 One signed-in administrator owns a knowledge space, operates all five stage
-views, reviews AI proposals, authors or approves standing-document revisions,
-and controls import, export, backup, and restoration. The application records
-the administrator as an actor even when there is only one person; ownership is
-not inferred from a global singleton or hard-coded identity.
+views in a selected collection, reviews AI proposals, authors or approves
+standing-document revisions, manages the authorization allowlist, and controls
+import, export, backup, restoration, and export schedules. The application
+records the administrator as an actor even when there is only one person;
+ownership is not inferred from a global singleton or hard-coded identity.
+
+### Supported user: an authorized curator
+
+An allowlisted user can sign in, create and select their own collections, run
+the five-stage workflow, inspect collection tag use, and import or export
+material permitted by their role. Users cannot administer the allowlist,
+operate another person's collection, or create automated administrative
+exports. The first test may have only the administrator account; retaining the
+user role from the start makes adding a tester an authorization change rather
+than a new product architecture.
 
 ### Supported contributor: an LLM working through files
 
@@ -73,16 +92,17 @@ change merely by producing valid JSON.
 
 ### Later contributors
 
-A skill may prepare or interpret a work packet, and a ChatGPT app may fetch it
-and submit a proposal through authenticated application actions. Other people
-may eventually operate in the same knowledge space or in separate copies. The
-first version records enough actor, workspace, and provenance information for
-those paths but does not build invitations, concurrent editing, billing,
-organization administration, or cross-user permissions.
+A skill may prepare or interpret a work packet, and a ChatGPT app may fetch it,
+request an export, and submit a proposal through authenticated application
+actions. Other people may eventually operate in the same knowledge space or in
+separate copies. The first version records enough actor, collection, and
+provenance information for those paths but does not build invitations,
+concurrent editing, billing, organization administration, collection sharing,
+or cross-user collaboration.
 
 ### Deliberately not the first version
 
-- a public knowledge portal or public submission inbox;
+- a publicly readable knowledge portal or public submission inbox;
 - unattended crawling or continuous mailbox synchronization;
 - autonomous acceptance of LLM proposals;
 - real-time collaborative editing;
@@ -96,14 +116,17 @@ organization administration, or cross-user permissions.
 
 | Option | Strengths | Weaknesses |
 |---|---|---|
-| **Private web application with an administrator file round trip** *(chosen)* | One durable store and one review surface exercise the complete loop; a relationship table is natural; backup and upgrades can use built-in packages; later authenticated actions can call the same service boundary | Requires hosting, authentication, schema migrations, and an administration interface before every stage is automated |
+| **Publicly reachable, login-gated web application with an administrator file round trip** *(chosen)* | One durable store and one review surface exercise the complete loop; early testing does not depend on a local machine; a relationship table is natural; backup and upgrades can use built-in packages; later authenticated actions can call the same service boundary | Requires hosting, authentication, authorization, schema migrations, and an administration interface before every stage is automated |
 | **Skills and files only** | Fastest way to try LLM prompts; no host or database; inherently portable | Every reader must fold files into current state; relationship integrity, selective acceptance, concurrent proposals, and standing-document approval become conventions rather than enforced behavior |
 | **Desktop application** | Local-first privacy and direct filesystem access; a user-owned SQLite file is straightforward | Distribution and upgrades become operating-system work; browser and ChatGPT app integration need a second boundary; remote use and later collaboration are harder |
 | **Multi-user hosted service immediately** | Exercises sharing and collaboration from day one | Forces tenancy, roles, invitations, conflict handling, support, and cost choices before the single-curator loop has proved useful |
 
-The chosen option is a first implementation, not a distribution verdict. Its
-replaceable boundaries are specified below so that learning from real use can
-change the topology without changing the knowledge model.
+The chosen option is a first implementation, not a distribution verdict. A
+login-gated test Site can be the first deployed increment or an early plan
+increment, but using one hosted Site for testing does not decide whether later
+users share a service or receive separate deployments. Its replaceable
+boundaries are specified below so that learning from real use can change the
+topology without changing the knowledge model.
 
 ## The deferred distribution decision
 
@@ -121,9 +144,10 @@ upgrade reliability, sharing semantics, cost, offline or self-host needs, and
 how much support users actually want. It must not be made merely because the
 first host happens to make one topology convenient.
 
-Five constraints keep all four options open:
+Six constraints keep all four options open:
 
-1. Every durable row is scoped by a stable knowledge-space id.
+1. Every content and workflow row is scoped by a stable knowledge-space id and
+   collection id.
 2. Every accepted change names an actor, including human, LLM, skill, import,
    and system actors.
 3. Authentication and storage sit behind application interfaces; core logic
@@ -132,6 +156,49 @@ Five constraints keep all four options open:
    platform dump.
 5. No URL, administrator identity, secret, or single-deployment assumption is
    embedded in an entity or portable package.
+6. Collection ownership and authorization are application data, not facts
+   inferred from which database or deployment contains the rows.
+
+## Collections as the working boundary
+
+A knowledge space is an authorization and administration boundary. A
+**collection** is the unit a person works in. A collection record has a stable
+id, knowledge-space id, name, owner actor, creation time, optional description,
+and lifecycle state. Content entities, semantic relationships, tag
+assignments, stage events, and ordinary activity records all carry a collection
+id.
+
+The interface keeps the current collection visibly selected. Changing the
+selector immediately reloads the five stage queues, topic and document views,
+tag inventory, counts, saved working scope, and import/export destination for
+the newly selected collection. It does not sign in again, rebuild data, or
+blend results across collections. A stored per-user preference may reopen the
+last collection, but the visible selector is authoritative.
+
+Users can create a named empty collection and begin importing or authoring into
+it immediately. Every import preview names the destination collection, and
+commit refuses if the active collection changed after preview. An import never
+chooses a collection from an untrusted file without showing and confirming the
+mapping.
+
+Users can erase a collection they own only after a confirmation that names the
+collection, shows its entity and asset-reference counts, states that the action
+is not an archive, lists active export schedules and app-managed retained
+backups, and offers a final export. Erasure disables those schedules and deletes
+their app-managed backup objects unless the user explicitly retains a named
+final export; it warns that previously downloaded or externally delivered
+copies cannot be recalled. Erasure is the explicit exception to ordinary
+append-only retention: it hard-deletes collection-scoped content,
+relationships, activities, receipts, and private asset references. The system
+retains only a minimal administrative deletion receipt containing actor, time,
+collection id, and aggregate counts, with no source content. Shared blobs are
+deleted only when no authorized collection or explicitly retained backup
+references them.
+
+Cross-collection search, relationships, bulk editing, and shared collections
+are not first-version user features. An administrator may perform an explicit
+cross-collection backup, export, or deletion operation, and every such action
+names all affected collections in its preview and receipt.
 
 ## Canonical model: entities, versions, relationships, and activities
 
@@ -151,14 +218,16 @@ without pretending that every operational record is a knowledge entity.
 
 An **entity** is the stable identity of something the pipeline retains. An
 **entity version** is one immutable state of that thing. The entity row contains
-only its id, knowledge-space id, type, creation identity, and a current-version
-pointer maintained as a transactional convenience. Meaningful content belongs
-to versions.
+only its id, knowledge-space id, collection id, type, creation identity, and a
+current-version pointer maintained as a transactional convenience. Meaningful
+content belongs to versions.
 
 Updating an entity creates a new version linked to its predecessor. It does not
-edit the earlier version. Deleting user-visible material creates a withdrawal
-or archive state; it does not erase the audit history. A current-version pointer
-can be rebuilt from the version chain and is never the sole record of history.
+edit the earlier version. Ordinary removal creates a withdrawal or archive
+state and does not erase audit history. Confirmed whole-collection erasure is
+the separately specified privacy and administration exception. A
+current-version pointer can be rebuilt from the version chain and is never the
+sole record of history.
 
 First-version entity types:
 
@@ -204,9 +273,10 @@ and external id, plus the importing activity. This is how a newsletter story
 id, a Bookmark Sorter URL identity, a DOI, and a later provider id can point to
 one local entity without becoming its database primary key.
 
-Aliases are unique within a knowledge space and namespace. A collision between
-plainly different records is reported and skipped; import never chooses a
-winner silently.
+Aliases are unique within a collection and namespace. The same external record
+may be imported independently into two collections. A collision between plainly
+different records inside one collection is reported and skipped; import never
+chooses a winner silently.
 
 ## Typed relationships between entity pairs
 
@@ -228,6 +298,9 @@ relationship is symmetric, its display inverse, and whether more than one
 accepted assertion of that type is allowed. Unknown imported types are retained
 as proposed namespaced extensions until an administrator maps or approves them;
 they never become accepted relationships merely because the JSON parsed.
+First-version accepted relationships have endpoints in the same collection.
+Importing a package into another collection remaps both endpoints together
+rather than creating a hidden cross-collection edge.
 
 The initial registry includes:
 
@@ -348,6 +421,28 @@ aliased, deprecated, split, or replaced without rewriting historical
 assignments. A migration creates reviewed replacement proposals and a visible
 impact report.
 
+### Collection tag inventory and use
+
+Every collection has a tag inventory available from the main interface, not
+only from an export or administration query. For each distinct accepted tag it
+shows:
+
+- the number of current entities carrying the tag, counted once per entity;
+- the percentage of the current collection's current, non-withdrawn,
+  tag-eligible entities carrying it;
+- counts by entity type and pipeline stage;
+- active and archived counts separately;
+- proposed-but-not-accepted assignment count separately; and
+- vocabulary status or replacement when one exists.
+
+Historical entity versions and repeated provenance records do not inflate the
+primary use count. A user can sort by name, count, or percentage, search the tag
+set, inspect the underlying matching entities, and apply a tag as the current
+collection filter. Switching collections refreshes the inventory immediately.
+The inventory and its denominator are timestamped in exports so a scheduled
+report can be compared with a later one without implying that tag use is
+permanent.
+
 ## Assessment and promotion
 
 AI may propose assessments of relevance, source quality, novelty, importance,
@@ -449,6 +544,8 @@ creates a stage event and retains the earlier disposition.
 Every stage view includes visible **Import** and **Export** controls from its
 first usable version. A persistent administration surface also provides a full
 backup export, package validation, import history, receipts, and restoration.
+The active collection is always the default and visible destination; changing
+it after preview invalidates an uncommitted import.
 
 | Stage | AI-first proposal | Human action | Stage export and import |
 |---|---|---|---|
@@ -458,9 +555,36 @@ backup export, package validation, import history, receipts, and restoration.
 | **Topic assignment** | Topic links, typed source relationships, mini narratives, and sequence suggestions | Review topic-specific interpretation, evidence links, conflict, and ordering | Export a topic work packet; import many assignments, relationships, and narratives in one reviewable proposal |
 | **Topic integration** | Comparison entities, urgency dimensions, archive candidates, and proposed document changes | Author or approve document revisions and accept archive dispositions | Export comparison and document packets; import narrative, relationship, comparison, and patch proposals, but never AI-only approval |
 
-Export is selection-based. The current queue, a topic, a tag expression, an
-activity, an import batch, an archive slice, or the complete knowledge space are
-different scopes of the same function, and the scope is recorded in the file.
+Export is selection-based. The current collection, current queue, a topic, a
+tag expression, an activity, an import batch, an archive slice, or an
+administrator-selected set of collections are different scopes of the same
+function, and the scope is recorded in the file.
+
+## Export channels and scheduling
+
+The same export service supports three visible callers:
+
+1. **Web interface.** An authorized user can download the current collection or
+   current selection. The interface names the scope, record count, asset
+   completeness, target format, and estimated size before starting. An
+   administrator can additionally choose a full knowledge-space backup.
+2. **Authenticated administrator action.** A skill or ChatGPT app can carry out
+   an explicit LLM command such as “export the Energy collection.” It resolves
+   the named collection, previews the same scope and permission checks, then
+   invokes the same export service. The result is a short-lived authenticated
+   download or a configured private backup object, not source data copied into
+   the chat.
+3. **Scheduled administrative export.** An administrator can create, view,
+   pause, run, or remove a schedule that records collection scope, selection or
+   full-backup scope, target format, private destination, retention policy, and
+   notification policy. A scheduled run acts as a named service actor and
+   writes the same activity and receipt as an interactive export.
+
+An LLM command and a schedule are authorization and orchestration layers, not
+alternate serializers. They cannot request a collection the actor may not
+export, skip asset-rights checks, write to an unapproved destination, or produce
+an unreceipted file. Failed scheduled exports preserve the previous successful
+backup and report the failure; they never replace it with a partial artifact.
 
 ## Canonical portable package
 
@@ -483,9 +607,17 @@ The canonical interchange is versioned JSON:
         "id": "personal",
         "schema_version": 1
       },
+      "collections": [
+        {
+          "id": "energy",
+          "name": "Energy",
+          "origin_id": null
+        }
+      ],
       "actors": [],
       "scope": {
         "kind": "topic",
+        "collection_ids": ["energy"],
         "expression": "topic:energy and stage:assignment"
       },
       "entities": [],
@@ -498,12 +630,14 @@ The canonical interchange is versioned JSON:
       "warnings": []
     }
 
-The package contains logical ids and versions, not database row numbers. A
-subset includes the actors, endpoint versions, vocabulary terms, tag
-assignments, activities, stage events, receipts, and asset manifests needed to
-understand its included state and relationships. If permissions or scope omit a
-dependency, the package carries a typed external reference and a warning rather
-than a dangling id or invented substitute.
+The package contains logical ids and versions, not database row numbers. An
+ordinary package has one collection descriptor; an administrative backup may
+have several, all named in scope. A subset includes the actors, endpoint
+versions, vocabulary terms, tag assignments, activities, stage events,
+receipts, and asset manifests needed to understand its included state and
+relationships. If permissions or scope omit a dependency, the package carries
+a typed external reference and a warning rather than a dangling id or invented
+substitute.
 
 Assets are listed by checksum, media type, size, rights status, and location.
 Small permitted text may be embedded. Larger permitted bodies may travel in a
@@ -519,9 +653,9 @@ Four package uses share this envelope:
 2. **Selection or work packet** contains a bounded accepted view for review or
    LLM work.
 3. **Proposal** adds a proposal block with proposing actor, process and model,
-   time, base package id and hash, target knowledge-space id, and idempotent
-   operations such as create entity, create version, assert relationship, or
-   propose disposition.
+   time, base package id and hash, target knowledge-space and collection ids,
+   and idempotent operations such as create entity, create version, assert
+   relationship, or propose disposition.
 4. **Receipt** records validation results, accepted and rejected operation ids,
    conflicts, created versions, reviewer, and committed time.
 
@@ -535,11 +669,12 @@ Every import follows validate, preview, commit, and receipt:
 
 1. Parse untrusted input with size, depth, URL, text, and asset limits.
 2. Validate the schema, ids, endpoint closure, hashes, actor and process
-   declarations, relationship constraints, and target knowledge space.
+   declarations, relationship constraints, target knowledge space, and
+   destination collection.
 3. Show counts and representative details for adds, exact matches, proposed
    versions, relationships, conflicts, ignored fields, and unavailable assets.
-4. Let the administrator accept the permitted whole package or selected
-   proposal operations.
+4. Let the authorized user accept the permitted whole package or selected
+   proposal operations within the destination collection.
 5. Commit transactionally and emit an exportable receipt. A failed commit
    changes nothing.
 
@@ -560,13 +695,15 @@ Merge rules:
   shown. Supported older versions migrate through tested adapters and retain
   the source package and migration receipt.
 
-A package addressed to the same knowledge-space id is a restore or merge and
-preserves local ids. A package intentionally copied into another knowledge
-space remaps internal ids, records origin aliases, rewrites relationships
-consistently, and emits an id map. A proposal package cannot be copied this way;
-it is refused if its target or base hash differs. This distinction supports
-backup and multi-person file sharing without confusing a copy with
-synchronization.
+A package addressed to the same knowledge-space and collection ids is a restore
+or merge and preserves local ids. A package intentionally copied into another
+collection or knowledge space remaps internal ids, records origin aliases,
+rewrites relationships consistently, and emits an id map. The destination must
+be selected and confirmed; an incoming collection name is descriptive. A
+proposal package cannot be copied this way: it is refused if its target
+collection or base hash differs. This distinction supports backup,
+collection-to-collection copying, and multi-person file sharing without
+confusing a copy with synchronization.
 
 ## Compatibility with Bookmark Sorter and Newsletter Story Harvester
 
@@ -589,10 +726,12 @@ inside the narrower formats.
 
 ### Bookmark Sorter
 
-The importer accepts **bookmark-sorter/v1** directly. Each item becomes or
-matches a source entity using URL identity; title, note, added_at, tags,
-verdict, verdict_at, collection, selection, exported_at, and the original item
-payload are preserved. Existing accepted source content is not overwritten.
+The importer accepts **bookmark-sorter/v1** directly into the visibly selected
+destination collection. Each item becomes or matches a source entity using URL
+identity; title, note, added_at, tags, verdict, verdict_at, collection,
+selection, exported_at, and the original item payload are preserved. The
+incoming collection field describes its origin and never silently switches the
+user's destination. Existing accepted source content is not overwritten.
 
 A source-only selection can export bookmark-sorter/v1 with the same field names
 and tag semantics. Only Bookmark Sorter-supported verdict values are emitted as
@@ -606,13 +745,14 @@ an accepted ordinary export.
 
 ### Newsletter Story Harvester
 
-The importer accepts the Newsletter Story Harvester version 1 store shape:
-version, store_id, stories, sources, harvesters, and runs. Story ids become
-external aliases; URL, url_key, title, text, text_is_summary, source,
-harvester, issue and story dates, shape, source document and anchor, tags,
-verdict, verdict_at, harvested_at, and merged_from are preserved. Store runs
-become import or harvest activities, and merged_from identities become aliases
-or proposed dependency relationships as appropriate.
+The importer accepts the Newsletter Story Harvester version 1 store shape into
+the visibly selected destination collection: version, store_id, stories,
+sources, harvesters, and runs. Story ids become external aliases; URL, url_key,
+title, text, text_is_summary, source, harvester, issue and story dates, shape,
+source document and anchor, tags, verdict, verdict_at, harvested_at, and
+merged_from are preserved. Store runs become import or harvest activities, and
+merged_from identities become aliases or proposed dependency relationships as
+appropriate.
 
 Records that originated in a newsletter store can export a compatible version
 1 store or subset while retaining their original fields. A compatible verdict
@@ -632,7 +772,8 @@ approximations.
 
 The first workflow is intentionally simple:
 
-1. The administrator chooses a stage selection and exports an LLM work packet.
+1. The administrator chooses a collection and stage selection and exports an
+   LLM work packet.
 2. The LLM returns a knowledge-pipeline/v1 proposal file whose base id and hash
    identify that packet.
 3. The administrator uploads it through the website, inspects proposed changes
@@ -648,8 +789,8 @@ The later skill plus ChatGPT app combination preserves that boundary:
 
 - the skill owns repeatable reasoning instructions and creates bounded
   proposals;
-- the ChatGPT app owns authenticated read, validate, preview, and commit
-  actions against one knowledge space;
+- the ChatGPT app owns authenticated read, export, validate, preview, and
+  commit actions against one permitted collection;
 - actions return structured receipts rather than conversational assurances;
 - commit requires explicit administrator confirmation or a later, separately
   specified narrow delegation;
@@ -673,30 +814,81 @@ the app an easier interface rather than a new source of truth.
 | **Graph database** | Pair relationships and traversals are native | Adds a specialized operational dependency before traversal scale demands it; backup and per-user kits become harder |
 
 The first store uses portable SQL concepts and a repository interface. Its
-conceptual tables are knowledge spaces, actors, entities, entity versions,
-external aliases, relationships, activities, stage events, tag assignments,
-assets, imports, exports, operations, and receipts. Source bodies and large
-assets use a replaceable asset store addressed by checksum.
+conceptual tables are knowledge spaces, authorized users, actors, collections,
+entities, entity versions, external aliases, relationships, activities, stage
+events, tag assignments, assets, collection-asset references, imports, exports,
+export schedules, operations, and receipts.
+
+### Blob and object storage
+
+Images, source attachments, retained files, generated previews, ZIP packages,
+and scheduled backup artifacts do not belong in relational rows. They use a
+replaceable private blob-store adapter; an R2 bucket is the reference candidate
+for a hosted first test because it matches the D1/R2 pattern already exercised
+by Bookmark Sorter.
+
+Blobs are addressed by checksum and carry media type, size, creation activity,
+rights and redistribution status, and collection references in the relational
+store. Reusing the same permitted blob across two collections does not store it
+twice. Authorization is checked through a collection reference before issuing
+a short-lived read, and bucket URLs are never public source identifiers.
+Confirmed collection erasure removes its references; a background
+garbage-collection activity deletes an object only after proving that no
+collection, backup-retention rule, or in-progress export still references it.
+
+The blob adapter exists even if the first fixture is metadata-only. If the
+first test retains an image or object, the hosted test provisions the bucket
+before accepting that record; it does not fall back to base64 database fields
+or a public directory. A deployment without blob storage remains honest by
+accepting metadata-only sources and refusing retained-object writes.
 
 Core services receive storage, asset, clock, identity, and authorization
 adapters. They do not import a hosting vendor binding. The first deployment may
-use a SQLite-compatible hosted database and blob storage, but acceptance tests
-also exercise the core repository against local SQLite. Schema migrations run
-through the application and are preceded by a canonical backup export.
+use a SQLite-compatible hosted database and R2-compatible blob storage, but
+acceptance tests also exercise the core repository against local SQLite and a
+local blob adapter. Schema migrations run through the application and are
+preceded by a canonical backup export.
+
+### First hosted test and authorization
+
+The first deployable test, or an early plan increment before real source
+ingestion, is a Site on a stable public URL that requires sign-in. Publicly
+reachable describes the login surface, not the data: anonymous requests receive
+HTTP 401 with the sign-in surface, and signed-in identities absent from the
+allowlist receive HTTP 403 before any collection metadata is returned.
+
+The simple authorization record follows the useful Bookmark Sorter boundary:
+normalized email, role of admin or user, optional linked stable Site user id,
+creation actor, and creation time. On first successful sign-in the stable user
+id links to the allowlist record. Administrators manage the allowlist, system
+configuration, schedules, and explicit cross-collection operations. Users own
+and operate only their collections. Authorization is enforced server-side on
+every API and blob request; hiding an Admin control is not security.
+
+This login-gated test does not commit the initiative to one later multi-user
+service. The same application can run with one allowlisted administrator per
+deployment, several isolated users on one test Site, or a different
+authentication adapter.
 
 ### Application surfaces
 
 The web application provides:
 
+- an always-visible collection selector plus create-empty and confirmed
+  erase-collection actions;
 - stage queues with proposal and accepted-state distinctions;
 - entity history and backward provenance navigation;
 - a relationship table and graph neighborhood for one entity;
 - topic narrative sequences and comparison views;
+- a searchable and sortable collection tag inventory with use counts and
+  percentages;
 - a standing-document editor or upload path with explicit approval;
 - archive and reopening controls;
-- import and export in every stage;
+- import and export in every stage, plus current-collection and
+  current-selection downloads;
 - administration for backups, migration status, imports, receipts, actor
-  identities, and failed operations; and
+  identities, authorized users, export schedules, blob use, and failed
+  operations; and
 - an internal service boundary that later authenticated app actions can call.
 
 The relationship graph is an inspection aid, not the only navigation model.
@@ -705,10 +897,11 @@ is clearer linearly.
 
 ## Security, privacy, and rights
 
-- The first site is private and requires administrator authentication. It is
-  never made public as a deployment shortcut.
-- Authorization checks the knowledge-space scope on every read and write, even
-  with one administrator.
+- The first Site is publicly reachable but all knowledge, collection, export,
+  administration, API, and blob routes require authentication and allowlist
+  authorization. No collection is publicly readable by default.
+- Authorization checks knowledge-space, collection ownership, and role on every
+  read and write, even with one administrator.
 - Proposal files and source documents are untrusted input. HTML is sanitized,
   executable content is never run, archive paths cannot escape their package,
   and imports enforce declared limits before allocation or extraction.
@@ -720,6 +913,9 @@ is clearer linearly.
 - Export previews distinguish complete backup, metadata-only transfer, and
   incomplete package. A green download button cannot imply that every linked
   source body traveled.
+- Scheduled and administrator-command exports write only to configured private
+  destinations, use bounded short-lived download links, and retain a
+  collection-scoped receipt.
 - Audit data that contains private prompt inputs follows the same knowledge
   space and export scope. A receipt may record hashes and bounded rationale
   without copying an entire private conversation.
@@ -730,14 +926,20 @@ The system distinguishes and reports at least:
 
 - malformed or unsupported package version;
 - package addressed to another knowledge space;
+- destination collection changed after import preview;
+- collection absent, erased, owned by another user, or outside the actor's role;
 - stale proposal based on an older entity version or work-packet hash;
 - duplicate package or operation, treated as a no-op;
 - conflicting external identity or content hash;
 - unknown or invalid relationship type or endpoint pair;
 - dangling entity, version, activity, or asset reference;
 - source body unavailable, expired, restricted, or checksum-mismatched;
+- blob-store unavailable, unauthorized, or missing a referenced object;
 - proposed standing-document approval without a human actor;
 - archive request without an accepted disposition;
+- collection erasure without the named confirmation and final summary;
+- scheduled export with an unauthorized scope or destination, or a partial
+  artifact that cannot replace the last successful backup;
 - partial subset whose omitted dependencies make an operation unsafe;
 - import or migration that exceeds configured size or time limits; and
 - transaction failure, leaving accepted state unchanged.
@@ -750,14 +952,15 @@ message disappears. A retry uses the same idempotency identity.
 The first version is acceptable when:
 
 1. A representative browser-save or direct source, a bookmark-sorter/v1 file,
-   and a Newsletter Story Harvester version 1 store import into one source
-   inventory with their origin fields, tags, verdicts, and provenance intact.
+   and a Newsletter Story Harvester version 1 store import into the visibly
+   selected collection with their origin fields, tags, verdicts, and provenance
+   intact.
 2. Reimporting each input changes nothing, and exporting then restoring the
-   complete knowledge space reproduces every entity version, relationship,
-   activity, archive disposition, and permitted asset hash.
+   complete collection or knowledge space reproduces every entity version,
+   relationship, activity, archive disposition, and permitted asset hash.
 3. Every stage can export its current selection and import a reviewed proposal
-   through the visible interface; no stage depends on a hidden database script
-   for its normal round trip.
+   into the selected collection through the visible interface; no stage depends
+   on a hidden database script for its normal round trip.
 4. One source is assigned to multiple topics without duplication, contributes
    to different topic-specific narratives, and remains one traceable source
    identity.
@@ -783,9 +986,9 @@ The first version is acceptable when:
     becomes current.
 11. Narratives archive only with incorporated, rejected, deferred, or
     superseded dispositions and can later be found and reopened.
-12. A subset copied into a second knowledge space remaps ids, preserves origin
-    aliases and pair relationships, and emits an understandable receipt without
-    granting access back to the source space.
+12. A subset copied into a second collection or knowledge space remaps ids,
+    preserves origin aliases and pair relationships, and emits an understandable
+    receipt without granting access back to the source collection or space.
 13. A source-only compatibility export can be read by Bookmark Sorter, and
     newsletter-origin records and a verdict sitting can round-trip through the
     Newsletter Story Harvester fixtures with any unrepresentable
@@ -796,15 +999,46 @@ The first version is acceptable when:
 15. The complete site remains operable without an LLM, skill, ChatGPT app, or
     live source body: those improve contribution but are not custody of the
     knowledge.
+16. A user creates two empty collections, imports different material into each,
+    switches between them without reauthentication, and sees every queue,
+    topic, tag count, selection, and export destination change to the selected
+    collection without cross-contamination.
+17. Erasing a collection requires named confirmation, shows counts and a final
+    export option, disables its schedules, handles retained backup objects
+    explicitly, removes its content, retains only the minimal deletion receipt,
+    and deletes a shared blob only after its last permitted reference is gone.
+18. The first hosted test is reachable at its public URL, presents sign-in to an
+    anonymous visitor, refuses a signed-in non-allowlisted identity, permits a
+    user to access only their collections, and exposes authorization and
+    schedule administration only to an administrator.
+19. An image or other binary object is written through the blob adapter,
+    checksum-reused where permitted, exported or referenced according to its
+    rights, restored, and refused when the caller lacks the collection
+    reference.
+20. The same collection export can be initiated from the web interface and an
+    authenticated administrator action. A scheduled export produces the same
+    logical package and receipt, and a failed run leaves the last successful
+    backup intact.
+21. The tag inventory lists every accepted tag in the selected collection with
+    correct unique-entity count, percentage, type and stage breakdown, active
+    and archived counts, and separate proposed count; switching collections
+    refreshes all measurements.
 
 ## Open for the plan
 
 The plan must choose:
 
-- the first private host, authentication adapter, SQLite-compatible store, and
-  asset store;
+- the first login-gated public host, authentication adapter,
+  SQLite-compatible store, and R2-compatible blob adapter;
+- the exact allowlist administration and user-id-linking flow, plus anonymous,
+  unauthorized, user, and administrator test accounts;
+- collection naming limits, default selection, switch-performance budget,
+  erase confirmation, and large-collection deletion behavior;
+- scheduled-export destinations, credentials, retention, encryption,
+  notifications, and failure-retry policy;
 - a representative data size and performance budget for source lists,
-  relationship neighborhoods, full backup, restore, and large proposal review;
+  relationship neighborhoods, tag-use measurement, collection switching, full
+  backup, restore, and large proposal review;
 - the first controlled actor-category and social-value terms;
 - the initial relationship registry's exact domain, range, inverse, and
   cardinality rules;
