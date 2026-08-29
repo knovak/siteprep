@@ -176,3 +176,7 @@ Verified all 23 official ports live, documented known coastal gaps, kept the 150
 ## 2026-08-29 — Expand licensed Australian Standard Port coverage and add a representative gap matrix
 
 Expanded the licensed 2026 Bureau catalogue from 23 to all 76 listed Standard Ports, regenerated the immutable 2026-bom-v2 artifact with 103,597 extrema across 10 IANA zones, and added a repeatable 16-place before/after gap matrix while preserving the 25 km / 60% / 150 km matcher thresholds.
+
+## 2026-08-29 — Reconcile coverage and deployment documentation
+
+Replaced the superseded inline-help proposal with current user guidance: distinguished the production and test provider reach, documented the 23-port live versus 76-port pending Australian catalogues, and described the Sites gateway and privacy boundary. Updated the optional improvement menu without changing the permission-blocked test deployment item.

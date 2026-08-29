@@ -6,16 +6,22 @@ It names the resolved place, the chosen coast and the official prediction
 station. When several nearby coasts are plausible, it shows the closest
 station first and keeps the other candidates available for review.
 
-The two current Sites are separate deployments:
+The two current Sites are public, separate deployments on different releases:
 
 - **Test:** [tide-here-test.ken-novak.chatgpt.site](https://tide-here-test.ken-novak.chatgpt.site)
+  version 8 combines direct NOAA and CHS forecasts with licensed Bureau of
+  Meteorology forecasts for 23 Australian Standard Ports. The committed source
+  now contains all 76 Standard Ports in the Bureau's 2026 state and territory
+  indexes, but that expanded catalogue has not been deployed.
 - **Production:** [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site)
+  version 5 remains the direct-browser NOAA and CHS release and does not yet
+  include Australian forecasts.
 
-Both are currently public. The test Site can contain work that has not been
-released to production yet. Tide Here supports official NOAA prediction
-stations in the United States and its territories and Canadian Hydrographic
-Service stations in Canada. A place outside that coverage receives a coverage
-message rather than a prediction borrowed from a distant coast.
+NOAA prediction stations cover the United States and its territories, and
+Canadian Hydrographic Service stations cover Canada. Australian reach depends
+on the Standard Ports active in the test Site's stored catalogue. A place
+outside the active deployment's configured coverage receives a coverage message
+rather than a prediction borrowed from a distant coast.
 
 ## Use the Site
 
@@ -48,9 +54,17 @@ browser and operating system handle that permission and return coordinates to
 the page; a denied or unavailable location leaves the manual entry available.
 Coordinates from **Show here**, or a place or coordinates submitted manually,
 go directly from the browser to the configured Nominatim geocoder. The browser
-then requests station lists, chosen-station details and tide predictions
-directly from NOAA or CHS. There is no Tide Here application server, account,
-analytics service or cloud history.
+requests NOAA and CHS station data and forecasts directly from those providers.
+
+On the test Site, the browser also loads the Australian station catalogue from
+Tide Here. When an Australian Standard Port is selected, it sends the original
+display value, resolved place and coast context, selected port, time zone and
+five-day bounds to the Site's `/forecast` gateway. The gateway reads the
+versioned Bureau dataset from its object store. Its operational logs contain
+only route, method, status, provider and elapsed time—not request bodies, place
+names, coordinates or station identifiers. Tide Here has no account, analytics
+service or cloud forecast history, and the object store contains provider data
+rather than user history.
 
 Up to 100 successful or partial forecast responses are kept in this browser.
 Open **Debug record**, then choose **Show local history** to inspect them,
@@ -60,14 +74,22 @@ history when finished.
 
 ## Run and verify locally
 
-Install the repository dependencies once, then run the deterministic unit and
-browser suites from the repository root:
+Install the repository dependencies and run the repository build from the root:
 
 ```sh
 npm ci
-node --test initiatives/tide-here/work/phase-{1,2,3,4,5,6,7}/test/*.test.mjs
-./node_modules/.bin/playwright test --config initiatives/tide-here/work/phase-6/playwright.config.mjs
 npm run build
+```
+
+Then verify the current Tide Here Sites app and its deterministic browser page:
+
+```sh
+cd initiatives/tide-here/work
+npm ci
+npm test
+npm run build
+cd ../../..
+./node_modules/.bin/playwright test --config initiatives/tide-here/work/phase-6/playwright.config.mjs
 ```
 
 If Chromium has not already been provisioned, run `npm run setup:browsers`
@@ -85,12 +107,13 @@ from the gating suite because provider availability and CORS can change.
 
 ## Deploy
 
-Tide Here is a host-neutral static application with no build-time secret,
-function or database. Its deployment configuration is in
-[`initiative.json`](initiative.json), with `initiatives/tide-here/work` as the
-source. That complete directory must be deployed because the page imports
-runtime files across the `phase-0` through `phase-7` directories. The source's
-root `index.html` redirects to the Phase 6 page.
+The current Tide Here source is a ChatGPT Sites app. Its
+[`initiative.json`](initiative.json) deployment record points to
+`initiatives/tide-here/work`, while [`.openai/hosting.json`](work/.openai/hosting.json)
+binds the object store used for immutable provider registries and tide datasets.
+The browser still calls NOAA and CHS directly; the Site serves the Australian
+catalogue and forecasts. A protected initializer loads and verifies the exact
+stored data before activating a registry.
 
 Use the repository's `deploy-test` skill to refresh the test Site. Use
 `release-initiative` only when a person explicitly asks to release the committed
@@ -98,13 +121,17 @@ source to production. Test and production are separate Sites, and replacing
 either one preserves its URL and access setting. Merging a source or
 documentation pull request does not deploy either Site.
 
-After deployment, verify the root redirect, one NOAA result such as Half Moon
-Bay, one CHS result such as Vancouver, an ambiguous result with its closest
-forecast and collapsed alternatives, the coast and astronomy disclosures, the
+After a test deployment, verify the root page, registry health, one NOAA result
+such as Half Moon Bay, one CHS result such as Vancouver, and representative
+Australian results with the Bureau source, disclaimer and dataset version.
+Also verify an ambiguous result with its closest forecast and collapsed
+alternatives, the coast and astronomy disclosures, the
 safety/source/alternatives/debug order, the privacy/history controls, and a
 430×932 phone viewport without horizontal overflow.
 
 For the implementation contract and alternatives, see [`spec.md`](spec.md).
+For the current Sites app, stored-provider boundary and recorded test version,
+see [`work/phase-13/README.md`](work/phase-13/README.md).
 For the earlier production-deployment evidence, see
 [`work/phase-8/README.md`](work/phase-8/README.md) and
 [`work/phase-8/evidence.json`](work/phase-8/evidence.json).
