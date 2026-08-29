@@ -1,0 +1,445 @@
+{
+  "schema": "tide-here/fes-official-comparison/v1",
+  "checkedAt": "2026-08-29T00:00:00.000Z",
+  "model": {
+    "id": "fes2022b-native-validation",
+    "version": "2026-02-03",
+    "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
+    "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf"
+  },
+  "passed": true,
+  "comparisons": [
+    {
+      "id": "maroochydore-to-mooloolaba",
+      "window": {
+        "start": "2026-08-26T14:00:00.000Z",
+        "end": "2026-08-31T14:00:00.000Z"
+      },
+      "modelPoint": {
+        "id": "fes2022-maroochydore",
+        "name": "FES2022 near Maroochydore",
+        "latitude": -26.66008,
+        "longitude": 153.09953
+      },
+      "officialPort": {
+        "id": "au-qld-mooloolaba",
+        "name": "Mooloolaba",
+        "sourceUrl": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP019.pdf"
+      },
+      "thresholds": {
+        "minimumPairs": 16,
+        "pairingWindowMinutes": 180,
+        "p90TimeDifferenceMinutes": 30,
+        "maximumTimeDifferenceMinutes": 45,
+        "maximumHeightResidualM": 0.35
+      },
+      "metrics": {
+        "pairedEvents": 20,
+        "datumOffsetM": 0.968076,
+        "p90TimeDifferenceMinutes": 11.2556,
+        "maximumTimeDifferenceMinutes": 12.524867,
+        "p90HeightResidualM": 0.036154,
+        "maximumHeightResidualM": 0.039004
+      },
+      "passed": true,
+      "events": [
+        {
+          "type": "low",
+          "modelAt": "2026-08-26T15:37:36.384Z",
+          "officialAt": "2026-08-26T15:45:00.000Z",
+          "timeDifferenceMinutes": 7.3936,
+          "modelHeightM": -0.602513,
+          "officialHeightM": 0.4,
+          "heightResidualM": 0.034436
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-26T21:21:34.111Z",
+          "officialAt": "2026-08-26T21:23:00.000Z",
+          "timeDifferenceMinutes": 1.431483,
+          "modelHeightM": 0.385116,
+          "officialHeightM": 1.38,
+          "heightResidualM": 0.026808
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-27T03:07:28.508Z",
+          "officialAt": "2026-08-27T03:20:00.000Z",
+          "timeDifferenceMinutes": 12.524867,
+          "modelHeightM": -0.681249,
+          "officialHeightM": 0.25,
+          "heightResidualM": 0.036828
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-27T09:41:27.602Z",
+          "officialAt": "2026-08-27T09:53:00.000Z",
+          "timeDifferenceMinutes": 11.539967,
+          "modelHeightM": 0.895566,
+          "officialHeightM": 1.85,
+          "heightResidualM": 0.013643
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-27T16:05:56.306Z",
+          "officialAt": "2026-08-27T16:14:00.000Z",
+          "timeDifferenceMinutes": 8.061567,
+          "modelHeightM": -0.655412,
+          "officialHeightM": 0.33,
+          "heightResidualM": 0.017336
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-27T21:55:05.836Z",
+          "officialAt": "2026-08-27T21:59:00.000Z",
+          "timeDifferenceMinutes": 3.902733,
+          "modelHeightM": 0.464332,
+          "officialHeightM": 1.46,
+          "heightResidualM": 0.027591
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-28T03:43:44.664Z",
+          "officialAt": "2026-08-28T03:55:00.000Z",
+          "timeDifferenceMinutes": 11.2556,
+          "modelHeightM": -0.711922,
+          "officialHeightM": 0.22,
+          "heightResidualM": 0.036154
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-28T10:13:10.162Z",
+          "officialAt": "2026-08-28T10:23:00.000Z",
+          "timeDifferenceMinutes": 9.830633,
+          "modelHeightM": 0.901984,
+          "officialHeightM": 1.86,
+          "heightResidualM": 0.01006
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-28T16:34:21.686Z",
+          "officialAt": "2026-08-28T16:43:00.000Z",
+          "timeDifferenceMinutes": 8.638567,
+          "modelHeightM": -0.690386,
+          "officialHeightM": 0.28,
+          "heightResidualM": 0.002309
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-28T22:28:54.619Z",
+          "officialAt": "2026-08-28T22:34:00.000Z",
+          "timeDifferenceMinutes": 5.089683,
+          "modelHeightM": 0.532297,
+          "officialHeightM": 1.53,
+          "heightResidualM": 0.029627
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-29T04:20:20.606Z",
+          "officialAt": "2026-08-29T04:31:00.000Z",
+          "timeDifferenceMinutes": 10.656567,
+          "modelHeightM": -0.714928,
+          "officialHeightM": 0.23,
+          "heightResidualM": 0.023148
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-29T10:45:05.003Z",
+          "officialAt": "2026-08-29T10:54:00.000Z",
+          "timeDifferenceMinutes": 8.916617,
+          "modelHeightM": 0.872169,
+          "officialHeightM": 1.84,
+          "heightResidualM": 0.000245
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-29T17:03:28.685Z",
+          "officialAt": "2026-08-29T17:14:00.000Z",
+          "timeDifferenceMinutes": 10.521917,
+          "modelHeightM": -0.707972,
+          "officialHeightM": 0.24,
+          "heightResidualM": 0.020104
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-29T23:04:18.239Z",
+          "officialAt": "2026-08-29T23:13:00.000Z",
+          "timeDifferenceMinutes": 8.696017,
+          "modelHeightM": 0.585672,
+          "officialHeightM": 1.58,
+          "heightResidualM": 0.026252
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-30T04:58:33.432Z",
+          "officialAt": "2026-08-30T05:09:00.000Z",
+          "timeDifferenceMinutes": 10.4428,
+          "modelHeightM": -0.6858,
+          "officialHeightM": 0.27,
+          "heightResidualM": 0.012276
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-30T11:17:57.156Z",
+          "officialAt": "2026-08-30T11:25:00.000Z",
+          "timeDifferenceMinutes": 7.0474,
+          "modelHeightM": 0.804794,
+          "officialHeightM": 1.77,
+          "heightResidualM": 0.002871
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-30T17:34:03.017Z",
+          "officialAt": "2026-08-30T17:45:00.000Z",
+          "timeDifferenceMinutes": 10.949717,
+          "modelHeightM": -0.709073,
+          "officialHeightM": 0.22,
+          "heightResidualM": 0.039004
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-30T23:42:38.570Z",
+          "officialAt": "2026-08-30T23:53:00.000Z",
+          "timeDifferenceMinutes": 10.357167,
+          "modelHeightM": 0.620966,
+          "officialHeightM": 1.62,
+          "heightResidualM": 0.030958
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-31T05:39:55.934Z",
+          "officialAt": "2026-08-31T05:50:00.000Z",
+          "timeDifferenceMinutes": 10.067767,
+          "modelHeightM": -0.622799,
+          "officialHeightM": 0.35,
+          "heightResidualM": 0.004722
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-31T11:52:41.886Z",
+          "officialAt": "2026-08-31T11:58:00.000Z",
+          "timeDifferenceMinutes": 5.3019,
+          "modelHeightM": 0.701678,
+          "officialHeightM": 1.67,
+          "heightResidualM": 0.000245
+        }
+      ]
+    },
+    {
+      "id": "bundaberg-to-bundaberg",
+      "window": {
+        "start": "2026-08-26T14:00:00.000Z",
+        "end": "2026-08-31T14:00:00.000Z"
+      },
+      "modelPoint": {
+        "id": "fes2022-bundaberg",
+        "name": "FES2022 near Bundaberg",
+        "latitude": -24.7666666667,
+        "longitude": 152.3666666667
+      },
+      "officialPort": {
+        "id": "au-qld-bundaberg",
+        "name": "Bundaberg",
+        "sourceUrl": "https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP005.pdf"
+      },
+      "thresholds": {
+        "minimumPairs": 16,
+        "pairingWindowMinutes": 180,
+        "p90TimeDifferenceMinutes": 45,
+        "maximumTimeDifferenceMinutes": 75,
+        "maximumHeightResidualM": 0.5
+      },
+      "metrics": {
+        "pairedEvents": 20,
+        "datumOffsetM": 1.719556,
+        "p90TimeDifferenceMinutes": 19.398167,
+        "maximumTimeDifferenceMinutes": 20.709317,
+        "p90HeightResidualM": 0.098621,
+        "maximumHeightResidualM": 0.110398
+      },
+      "passed": true,
+      "events": [
+        {
+          "type": "low",
+          "modelAt": "2026-08-26T15:56:20.106Z",
+          "officialAt": "2026-08-26T16:13:00.000Z",
+          "timeDifferenceMinutes": 16.6649,
+          "modelHeightM": -0.964094,
+          "officialHeightM": 0.72,
+          "heightResidualM": 0.035462
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-26T21:41:50.623Z",
+          "officialAt": "2026-08-26T21:56:00.000Z",
+          "timeDifferenceMinutes": 14.156283,
+          "modelHeightM": 0.746059,
+          "officialHeightM": 2.56,
+          "heightResidualM": 0.094385
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-27T03:38:50.247Z",
+          "officialAt": "2026-08-27T03:50:00.000Z",
+          "timeDifferenceMinutes": 11.16255,
+          "modelHeightM": -1.092134,
+          "officialHeightM": 0.59,
+          "heightResidualM": 0.037423
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-27T10:01:48.890Z",
+          "officialAt": "2026-08-27T10:17:00.000Z",
+          "timeDifferenceMinutes": 15.185167,
+          "modelHeightM": 1.354982,
+          "officialHeightM": 3.11,
+          "heightResidualM": 0.035462
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-27T16:24:57.767Z",
+          "officialAt": "2026-08-27T16:43:00.000Z",
+          "timeDifferenceMinutes": 18.037217,
+          "modelHeightM": -1.041695,
+          "officialHeightM": 0.63,
+          "heightResidualM": 0.047861
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-27T22:15:00.515Z",
+          "officialAt": "2026-08-27T22:30:00.000Z",
+          "timeDifferenceMinutes": 14.991417,
+          "modelHeightM": 0.852344,
+          "officialHeightM": 2.66,
+          "heightResidualM": 0.0881
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-28T04:12:41.759Z",
+          "officialAt": "2026-08-28T04:25:00.000Z",
+          "timeDifferenceMinutes": 12.304017,
+          "modelHeightM": -1.135132,
+          "officialHeightM": 0.53,
+          "heightResidualM": 0.054425
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-28T10:33:21.898Z",
+          "officialAt": "2026-08-28T10:47:00.000Z",
+          "timeDifferenceMinutes": 13.635033,
+          "modelHeightM": 1.369003,
+          "officialHeightM": 3.14,
+          "heightResidualM": 0.05144
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-28T16:53:36.110Z",
+          "officialAt": "2026-08-28T17:13:00.000Z",
+          "timeDifferenceMinutes": 19.398167,
+          "modelHeightM": -1.088032,
+          "officialHeightM": 0.57,
+          "heightResidualM": 0.061525
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-28T22:48:27.465Z",
+          "officialAt": "2026-08-28T23:04:00.000Z",
+          "timeDifferenceMinutes": 15.54225,
+          "modelHeightM": 0.931822,
+          "officialHeightM": 2.75,
+          "heightResidualM": 0.098621
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-29T04:46:48.963Z",
+          "officialAt": "2026-08-29T05:00:00.000Z",
+          "timeDifferenceMinutes": 13.18395,
+          "modelHeightM": -1.13273,
+          "officialHeightM": 0.53,
+          "heightResidualM": 0.056826
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-29T11:05:09.916Z",
+          "officialAt": "2026-08-29T11:16:00.000Z",
+          "timeDifferenceMinutes": 10.834733,
+          "modelHeightM": 1.327821,
+          "officialHeightM": 3.11,
+          "heightResidualM": 0.062622
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-29T17:22:46.521Z",
+          "officialAt": "2026-08-29T17:43:00.000Z",
+          "timeDifferenceMinutes": 20.22465,
+          "modelHeightM": -1.103659,
+          "officialHeightM": 0.53,
+          "heightResidualM": 0.085898
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-29T23:23:21.064Z",
+          "officialAt": "2026-08-29T23:41:00.000Z",
+          "timeDifferenceMinutes": 17.648933,
+          "modelHeightM": 0.980046,
+          "officialHeightM": 2.81,
+          "heightResidualM": 0.110398
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-30T05:22:24.182Z",
+          "officialAt": "2026-08-30T05:37:00.000Z",
+          "timeDifferenceMinutes": 14.596967,
+          "modelHeightM": -1.079629,
+          "officialHeightM": 0.57,
+          "heightResidualM": 0.069927
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-30T11:37:57.293Z",
+          "officialAt": "2026-08-30T11:47:00.000Z",
+          "timeDifferenceMinutes": 9.045117,
+          "modelHeightM": 1.230057,
+          "officialHeightM": 3.02,
+          "heightResidualM": 0.070386
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-30T17:53:17.441Z",
+          "officialAt": "2026-08-30T18:14:00.000Z",
+          "timeDifferenceMinutes": 20.709317,
+          "modelHeightM": -1.089517,
+          "officialHeightM": 0.54,
+          "heightResidualM": 0.09004
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-31T00:01:09.329Z",
+          "officialAt": "2026-08-31T00:18:00.000Z",
+          "timeDifferenceMinutes": 16.844517,
+          "modelHeightM": 0.992751,
+          "officialHeightM": 2.82,
+          "heightResidualM": 0.107693
+        },
+        {
+          "type": "low",
+          "modelAt": "2026-08-31T06:01:04.300Z",
+          "officialAt": "2026-08-31T06:16:00.000Z",
+          "timeDifferenceMinutes": 14.928333,
+          "modelHeightM": -0.973716,
+          "officialHeightM": 0.68,
+          "heightResidualM": 0.065841
+        },
+        {
+          "type": "high",
+          "modelAt": "2026-08-31T12:12:49.528Z",
+          "officialAt": "2026-08-31T12:20:00.000Z",
+          "timeDifferenceMinutes": 7.174533,
+          "modelHeightM": 1.078073,
+          "officialHeightM": 2.86,
+          "heightResidualM": 0.062371
+        }
+      ]
+    }
+  ]
+}

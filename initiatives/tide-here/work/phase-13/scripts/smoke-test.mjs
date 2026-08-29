@@ -58,18 +58,33 @@ if (!baseUrl || !token) {
     }
     australianEvents += australia.days.flatMap(day => day.tides).length;
   }
-  const fesRows = fiveLocalDays('2025-06-01T10:00:00Z', 'Europe/Paris');
+  const modelPoint = await request('/resolve', {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({provider: 'fes2022', latitude: 53.27, longitude: -9.05}),
+  });
+  if (modelPoint.station.id !== 'fes2022-galway') throw new Error('FES2022 Galway point did not resolve');
+  const fesRows = fiveLocalDays('2026-08-27T12:00:00Z', modelPoint.station.timeZone);
   const fes = await postForecast({
     provider: 'fes2022',
     context: {
-      input: {display: 'Brest fixture'},
-      place: {name: 'Brest fixture', lat: 48.383, lon: -4.495},
-      coast: {name: 'Brest Stage 4 validation point', distanceKm: 0},
+      input: {display: 'Galway'},
+      place: {name: 'Galway, Ireland', lat: 53.27, lon: -9.05},
+      coast: modelPoint.coast,
     },
-    station: {id: 'requested-model-point', latitude: 48.383, longitude: -4.495},
-    timeZone: 'Europe/Paris',
+    station: modelPoint.station,
+    timeZone: modelPoint.station.timeZone,
     rows: fesRows,
   });
+  if (fes.warnings.length !== 1 || fes.warnings[0].code !== 'approximate-fallback') {
+    throw new Error('FES2022 result did not return only the approximate safety warning');
+  }
+  if (fes.sources.length !== 1 || fes.sources[0].dataClass !== 'licensed-source'
+      || fes.sources[0].official || !fes.sources[0].approximate
+      || !fes.sources[0].sourceUrl.includes('doi.org/10.24400/527896/A01-2024.004')
+      || !fes.sources[0].licenceUrl.includes('License_Aviso.pdf')) {
+    throw new Error('FES2022 result did not carry its licensed approximate provenance');
+  }
   const page = await fetch(`${baseUrl}/phase-6/index.html`);
   if (!page.ok || !(await page.text()).includes('Tide Here')) throw new Error('Tide Here page smoke check failed');
 
@@ -87,6 +102,7 @@ if (!baseUrl || !token) {
     providers: providers.providers.map(provider => `${provider.id}:${provider.status}`),
     australianStations: catalogue.stations.length,
     australianEvents,
+    fallbackPoint: modelPoint.station.id,
     fallbackEvents: fes.days.flatMap(day => day.tides).length,
     fallbackWarnings: fes.warnings.map(warning => warning.code),
     page: 'ok',

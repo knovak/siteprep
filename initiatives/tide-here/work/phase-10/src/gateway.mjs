@@ -40,6 +40,7 @@ function errorStatus(error) {
 export function createProviderGatewayApp({
   initialize,
   forecastAdapters = {},
+  stationResolvers = {},
   stationCatalogues = {},
   storeFactory = env => new R2ObjectStore(env.TIDE_DATA),
   now = () => new Date(),
@@ -89,6 +90,26 @@ export function createProviderGatewayApp({
           const catalogue = stationCatalogues[providerId];
           if (!catalogue) return json({error: 'Station catalogue is not served here', code: 'provider-not-ready'}, 409);
           return json({provider: providerId, stations: await catalogue({store, descriptor})});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/resolve') {
+          const body = await requestJson(request);
+          const providerId = body.provider;
+          const descriptor = providerById(active.registry, providerId);
+          if (!descriptor) return json({error: 'Unknown provider', code: 'provider-not-found'}, 404);
+          if (descriptor.status !== 'active') {
+            return json({error: `${descriptor.name} is not active`, code: 'provider-not-ready'}, 409);
+          }
+          const resolver = stationResolvers[providerId];
+          if (!resolver) return json({error: 'Location resolver is not served here', code: 'provider-not-ready'}, 409);
+          return json(await resolver({
+            store,
+            descriptor,
+            request: {
+              latitude: body.latitude,
+              longitude: body.longitude,
+            },
+          }));
         }
 
         if (request.method === 'POST' && url.pathname === '/forecast') {

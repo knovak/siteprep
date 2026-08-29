@@ -44,10 +44,10 @@ test('the page vocabulary gives every state a distinct message', () => {
   const codes = [
     'invalid-input', 'place-not-found', 'geocoder-unavailable', 'coverage-unavailable',
     'coast-choice-required', 'tides-unavailable', 'astronomy-unavailable', 'no-event',
-    'fixture-data', 'location-permission-denied', 'location-unavailable'
+    'fixture-data', 'approximate-fallback', 'location-permission-denied', 'location-unavailable'
   ];
   const states = codes.map(statePresentation);
-  assert.equal(new Set(states.map((state) => state.message)).size, 11);
+  assert.equal(new Set(states.map((state) => state.message)).size, 12);
 });
 
 test('provider labels distinguish the Australian test path from official sources', () => {
@@ -55,6 +55,7 @@ test('provider labels distinguish the Australian test path from official sources
   assert.equal(providerLabel('chs'), 'CHS');
   assert.equal(providerLabel('australia-standard-ports'), 'Australian test port');
   assert.equal(providerLabel('australia-standard-ports', {official: true}), 'Bureau of Meteorology');
+  assert.equal(providerLabel('fes2022'), 'FES2022 approximate model');
 });
 
 test('the browser catalogue exactly matches the initialized Australian station artifact', async () => {

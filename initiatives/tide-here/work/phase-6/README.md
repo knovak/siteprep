@@ -39,11 +39,14 @@ The normal page uses the configured Nominatim, NOAA, and CHS adapters directly.
 It also loads the Site's stored Australian Standard Ports catalogue and includes
 those stations in the same coastal match. A selected Australian port is sent
 through `src/stored-tide-client.mjs` to the Site's `/forecast` gateway; U.S. and
-Canadian forecasts remain direct browser requests. The Australian response is
-enriched with sun and moon events in the browser just like the existing
-adapters and uses the port's IANA zone. Prediction source details show the
-Bureau of Meteorology attribution, required disclaimer, dataset version, and a
-link to the selected port's annual-table PDF.
+Canadian forecasts remain direct browser requests. Only when the official
+catalogue declines coverage does the page ask the gateway's `/resolve` route for
+an active FES2022 model point. A fixture descriptor cannot resolve through that
+public route. An accepted model point uses the same stored-client forecast
+contract and is always labelled approximate and not for navigation. Australian
+and model responses are enriched with sun and moon events in the browser using
+the selected point's IANA zone. Prediction source details show the provider's
+attribution, disclaimer, source and licence links.
 
 The page loads the complete NOAA and CHS prediction-station catalogues on the
 first uncached search, then loads metadata only for the selected station so
@@ -80,12 +83,16 @@ recorded fixtures. It checks the folded coast identity, always-visible tides,
 past/future emphasis in coast time, the two search actions and their permission
 fallback, moonrise-labelled astronomy disclosures, five equal desktop cards,
 content-sized phone cards, explicit zone, closest-first alternatives and map,
-all eight service states, focus movement, text labels, datum details, safety
-line, and serious accessibility findings. A separate viewport matrix covers widths from 320 to
-1600 pixels and fails on horizontal clipping, an unexpected card count, or the
+all eight service states, the approximate-model warning, focus movement, text
+labels, datum details, safety line, and serious accessibility findings. A
+separate viewport matrix covers widths from 320 to 1600 pixels and fails on
+horizontal clipping, an unexpected card count, or the
 first two tide days not fitting in the Pro Max viewport. It verifies both
 Australian boundaries: the deterministic Brisbane fixture preserves
 `Australia/Brisbane` and keeps its synthetic-data disclosure inside the
 selected-location card, while a recorded licensed response is labelled
 **Bureau of Meteorology**, links the selected annual PDF, shows the attribution
 and disclaimer, and contains no fixture notice.
+It also verifies that a declined official match can resolve an active FES2022
+model point, submits the model coordinates to the stored forecast route, and
+shows both the DOI and AVISO licence.

@@ -188,3 +188,15 @@ Released to production — ChatGPT Site, version 6, `31abfbb`. 3 commit(s) since
 ## 2026-08-29 — Authorize Australian coverage deployments to test and production
 
 Recorded the user's standing permission to deploy expanded Australian coverage to Tide Here's existing public test and production Sites now and in the future. The test deployment-and-verification item remains actionable; committed-source checks, live verification, public access preservation, data and reuse approval, and separate authorization for new Sites, FES2022, or matcher changes still apply.
+
+## 2026-08-29 — Activate the validated FES2022 fallback in source
+
+Extracted five sparse 34-constituent water points from the licensed FES2022b
+native grid with pinned PyFES, source-file checksum provenance, and sub-0.01 cm
+constituent round trips. Recorded PyFES's bounded native-mesh extrapolation
+method and 30–39-node quality flags explicitly. The pre-declared
+Maroochydore/Mooloolaba and Bundaberg official-port comparison gates both
+passed across 20 paired extrema, so
+registry `stage-4-v6` now activates the approximate fallback after official
+coverage declines. Added body-only model-point resolution, source and licence
+disclosure, privacy-safe logging, and browser coverage. Nothing was deployed.

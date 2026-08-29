@@ -1,0 +1,84 @@
+{
+  "schema": "tide-here/fes-extraction-plan/v1",
+  "dataset": {
+    "id": "fes2022b-native-validation",
+    "version": "2026-02-03",
+    "schema": "tide-here/fes-prepared-dataset/v1",
+    "preparedAt": "2026-08-29T00:00:00.000Z",
+    "displayName": "FES2022b native-grid validation points",
+    "dataClass": "licensed-source",
+    "model": "FES2022b native non-structured ocean tide atlas",
+    "isFes2022": true,
+    "attribution": "FES2022 Tide product funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here into native-mesh harmonic points.",
+    "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
+    "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+    "licenceReference": "AVISO License, Issue 20 (August 2026): https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+    "disclaimer": "Transformed FES2022b model output; the selected coastal points use bounded native-mesh extrapolation. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
+    "engine": "PyFES 2026.5.2 native-grid interpolation/extrapolation; Tide Here runtime uses @neaps/tide-predictor 0.11.0 with Schureman nodal corrections"
+  },
+  "tiles": [
+    {
+      "id": "australia-east-validation",
+      "bounds": {"south": -27.0, "west": 152.1, "north": -24.5, "east": 153.4},
+      "points": [
+        {
+          "id": "fes2022-maroochydore",
+          "name": "FES2022 near Maroochydore",
+          "country": "AU",
+          "latitude": -26.66008,
+          "longitude": 153.09953,
+          "timeZone": "Australia/Brisbane",
+          "maximumDistanceKm": 20
+        },
+        {
+          "id": "fes2022-bundaberg",
+          "name": "FES2022 near Bundaberg",
+          "country": "AU",
+          "latitude": -24.7666666667,
+          "longitude": 152.3666666667,
+          "timeZone": "Australia/Brisbane",
+          "maximumDistanceKm": 20
+        }
+      ]
+    },
+    {
+      "id": "europe-west-validation",
+      "bounds": {"south": 48.2, "west": -9.5, "north": 53.6, "east": -4.2},
+      "points": [
+        {
+          "id": "fes2022-brest",
+          "name": "FES2022 near Brest",
+          "country": "FR",
+          "latitude": 48.383,
+          "longitude": -4.495,
+          "timeZone": "Europe/Paris",
+          "maximumDistanceKm": 20
+        },
+        {
+          "id": "fes2022-galway",
+          "name": "FES2022 near Galway",
+          "country": "IE",
+          "latitude": 53.27,
+          "longitude": -9.05,
+          "timeZone": "Europe/Dublin",
+          "maximumDistanceKm": 20
+        }
+      ]
+    },
+    {
+      "id": "south-africa-validation",
+      "bounds": {"south": -34.2, "west": 18.1, "north": -33.6, "east": 18.8},
+      "points": [
+        {
+          "id": "fes2022-cape-town",
+          "name": "FES2022 near Cape Town",
+          "country": "ZA",
+          "latitude": -33.92,
+          "longitude": 18.42,
+          "timeZone": "Africa/Johannesburg",
+          "maximumDistanceKm": 20
+        }
+      ]
+    }
+  ]
+}

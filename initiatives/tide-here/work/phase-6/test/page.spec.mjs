@@ -94,7 +94,7 @@ test('the seven blocking or partial states have their own readable page treatmen
     ['invalid-input', /place name or decimal coordinates/i],
     ['place-not-found', /was not found/i],
     ['geocoder-unavailable', /place lookup is unavailable/i],
-    ['coverage-unavailable', /U\.S\., Canadian, and Australian test coasts/i],
+    ['coverage-unavailable', /configured official ports and validated FES2022 model points/i],
     ['tides-unavailable', /tide predictions are unavailable/i],
     ['astronomy-unavailable', /sun and moon calculations are unavailable/i],
     ['no-event', /does not rise or set/i]
@@ -309,7 +309,7 @@ test('Brisbane uses a stored Australian test port and keeps its fixture notice i
   await page.locator('.source-details summary').click();
   await expect(page.locator('#source-copy')).toContainText(/Australian test port synthetic fixture/i);
   await page.locator('.debug-record summary').click();
-  await expect(page.getByText(/Australian tide-port requests go to this Tide Here service/i)).toBeVisible();
+  await expect(page.getByText(/Australian tide-port requests and available FES2022 model lookups go to this Tide Here service/i)).toBeVisible();
 });
 
 test('licensed Brisbane results identify the Bureau source and need no fixture notice', async ({ page }) => {
@@ -366,4 +366,58 @@ test('licensed Brisbane results identify the Bureau source and need no fixture n
   await expect(page.locator('#source-attribution')).toContainText(/Commonwealth of Australia.*Bureau of Meteorology/);
   await expect(page.locator('#source-disclaimer')).toContainText(/no representation and gives no warranty/i);
   await expect(page.locator('#source-link')).toHaveAttribute('href', /IDO59001_2026_QLD_TP003[.]pdf/);
+});
+
+test('a declined official coast can render an attributed approximate FES2022 result', async ({page}) => {
+  const station = {
+    provider: 'fes2022', country: 'IE', id: 'fes2022-galway', name: 'FES2022 near Galway',
+    kind: 'model-point', latitude: 53.27, longitude: -9.05, timeZone: 'Europe/Dublin',
+    datum: 'FES2022 mean sea level harmonic datum', referenceStationId: null,
+  };
+  await page.route('**/resolve', async route => {
+    expect(route.request().method()).toBe('POST');
+    expect(route.request().postDataJSON()).toEqual({provider: 'fes2022', latitude: 53.27, longitude: -9.05});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({provider: 'fes2022', station, coast: {name: station.name, distanceKm: 0}}),
+    });
+  });
+  await page.route('**/forecast', async route => {
+    const request = route.request().postDataJSON();
+    expect(request.provider).toBe('fes2022');
+    expect(request.station).toMatchObject({latitude: 53.27, longitude: -9.05});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        input: request.context.input,
+        place: request.context.place,
+        coast: request.context.coast,
+        station,
+        timeZone: station.timeZone,
+        days: request.rows.map(row => ({
+          date: row.date,
+          tides: [{type: 'high', at: new Date(Date.parse(row.startUtc) + 6 * 60 * 60 * 1000).toISOString(), height: 1.2, unit: 'm'}],
+          sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null,
+        })),
+        sources: [{
+          provider: 'fes2022', dataClass: 'licensed-source', official: false, approximate: true,
+          attribution: 'FES2022 funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here.',
+          disclaimer: 'Interpolated and transformed model output; not for navigation.',
+          sourceUrl: 'https://doi.org/10.24400/527896/A01-2024.004',
+          licenceUrl: 'https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf',
+        }],
+        warnings: [{code: 'approximate-fallback', message: 'Approximate model; weather and storm surge are not included.'}],
+      }),
+    });
+  });
+  await page.goto(`${pagePath}&place=53.27,-9.05`);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#station-kind')).toContainText('FES2022 approximate model');
+  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'approximate-fallback');
+  await page.locator('.source-details summary').click();
+  await expect(page.locator('#source-attribution')).toContainText(/CNES.*LEGOS.*NOVELTIS.*CLS/);
+  await expect(page.locator('#source-link')).toHaveAttribute('href', /doi[.]org\/10[.]24400/);
+  await expect(page.locator('#licence-link')).toHaveAttribute('href', /License_Aviso[.]pdf/);
 });

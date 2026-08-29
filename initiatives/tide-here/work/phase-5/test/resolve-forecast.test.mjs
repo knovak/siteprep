@@ -115,7 +115,7 @@ function fixtureGeocoder() {
   };
 }
 
-function service({ geocoder = fixtureGeocoder(), getStations = async () => stations, tideFetch = response(chsPayload), astronomy = new Astronomy({ now: () => fixedNow }) } = {}) {
+function service({ geocoder = fixtureGeocoder(), getStations = async () => stations, tideFetch = response(chsPayload), astronomy = new Astronomy({ now: () => fixedNow }), resolveFallback = null } = {}) {
   return new TideHereService({
     geocoder,
     getStations,
@@ -123,6 +123,7 @@ function service({ geocoder = fixtureGeocoder(), getStations = async () => stati
     timeZoneLookup: async (_latitude, longitude) => longitude < -100 ? 'America/Los_Angeles' : 'America/Halifax',
     tideProvider: new TideProvider({ config: providerConfig, fetchImpl: tideFetch, now: () => fixedNow }),
     astronomy,
+    resolveFallback,
     now: () => fixedNow
   });
 }
@@ -149,6 +150,26 @@ test('coverage refusal never names a distant station as the coast', async () => 
   assert.equal(resolution.code, COVERAGE_UNAVAILABLE);
   assert.equal(Object.hasOwn(resolution, 'coast'), false);
   assert.deepEqual(resolution.supportedCountries, ['CA', 'US']);
+});
+
+test('the model resolver is consulted only after official catalogue coverage declines', async () => {
+  let fallbackCalls = 0;
+  const fallback = {
+    station: {
+      provider: 'fes2022', id: 'fes-denver-fixture', name: 'Fixture model point', kind: 'model-point',
+      latitude: 39.74, longitude: -104.99, timeZone: 'America/Denver', datum: 'model datum',
+    },
+    coast: {name: 'Fixture model point', distanceKm: 1},
+  };
+  const tideHere = service({
+    resolveFallback: async () => { fallbackCalls += 1; return fallback; },
+  });
+  const covered = await tideHere.resolve('Halifax');
+  const declined = await tideHere.resolve('Denver');
+  assert.equal(covered.station.provider, 'chs');
+  assert.equal(declined.station.provider, 'fes2022');
+  assert.equal(declined.coast.name, 'Fixture model point');
+  assert.equal(fallbackCalls, 1);
 });
 
 test('choosing an ambiguous coast repeats neither geocoding nor catalogue work', async () => {

@@ -39,11 +39,17 @@ test('hosted Stage 5 initialization is protected, exact and idempotent', async (
   assert.equal(second.status, 200);
   assert.equal(store.writeLog.length, writes);
   const health = await (await app.fetch(new Request('https://tide.example/health'), env)).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v5'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v6'});
 });
 
 test('operational logs contain route outcomes but never submitted locations', async () => {
   const {app, logs} = harness();
+  const resolution = await app.fetch(new Request('http://localhost/resolve', {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({provider: 'fes2022', latitude: 48.383, longitude: -4.495}),
+  }));
+  assert.equal(resolution.status, 503);
   const response = await app.fetch(new Request('http://localhost/forecast', {
     method: 'POST',
     headers: {'content-type': 'application/json'},
@@ -60,13 +66,13 @@ test('operational logs contain route outcomes but never submitted locations', as
     }),
   }));
   assert.equal(response.status, 503);
-  assert.equal(logs.length, 1);
-  const log = JSON.parse(logs[0]);
+  assert.equal(logs.length, 2);
+  const log = JSON.parse(logs[1]);
   assert.deepEqual(
     {event: log.event, route: log.route, method: log.method, status: log.status, provider: log.provider},
     {event: 'tide-here-request', route: '/forecast', method: 'POST', status: 503, provider: 'fes2022'},
   );
-  assert.doesNotMatch(logs[0], /SECRET|48[.]383|-4[.]495/);
+  assert.doesNotMatch(logs.join('\n'), /SECRET|48[.]383|-4[.]495/);
 });
 
 test('the Sites project declares only the Tide Here R2 binding', async () => {
@@ -97,5 +103,8 @@ test('the live smoke script covers initialization and all three source families'
   assert.match(script, /for \(const station of catalogue[.]stations\)/);
   assert.match(script, /!australia[.]sources\[0\][.]official/);
   assert.match(script, /bom[.]gov[.]au\/ntc\/IDO59001/);
+  assert.match(script, /request\('\/resolve'/);
+  assert.match(script, /fes2022-galway/);
+  assert.match(script, /licensed-source/);
   assert.match(script, /provider: 'fes2022'/);
 });

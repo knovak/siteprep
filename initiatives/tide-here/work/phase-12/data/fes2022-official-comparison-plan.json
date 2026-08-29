@@ -1,0 +1,31 @@
+{
+  "schema": "tide-here/fes-official-comparison-plan/v1",
+  "checkedAt": "2026-08-29T00:00:00.000Z",
+  "windowStart": "2026-08-27T12:00:00.000Z",
+  "cases": [
+    {
+      "id": "maroochydore-to-mooloolaba",
+      "modelPointId": "fes2022-maroochydore",
+      "officialStationId": "au-qld-mooloolaba",
+      "thresholds": {
+        "minimumPairs": 16,
+        "pairingWindowMinutes": 180,
+        "p90TimeDifferenceMinutes": 30,
+        "maximumTimeDifferenceMinutes": 45,
+        "maximumHeightResidualM": 0.35
+      }
+    },
+    {
+      "id": "bundaberg-to-bundaberg",
+      "modelPointId": "fes2022-bundaberg",
+      "officialStationId": "au-qld-bundaberg",
+      "thresholds": {
+        "minimumPairs": 16,
+        "pairingWindowMinutes": 180,
+        "p90TimeDifferenceMinutes": 45,
+        "maximumTimeDifferenceMinutes": 75,
+        "maximumHeightResidualM": 0.5
+      }
+    }
+  ]
+}

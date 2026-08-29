@@ -7,7 +7,7 @@ import { Geocoder, GEOCODER_UNAVAILABLE, INVALID_INPUT, PLACE_NOT_FOUND, parsePl
 import { COAST_CHOICE_REQUIRED, TideHereService } from '../phase-5/src/resolve-forecast.mjs';
 import { ForecastCache, LocalHistory } from '../phase-7/src/local-data.mjs';
 import { forecastViewModel, providerLabel, statePresentation } from './src/page-view.mjs';
-import { AUSTRALIAN_PROVIDER_ID, StoredTideClient } from './src/stored-tide-client.mjs';
+import { AUSTRALIAN_PROVIDER_ID, FES_PROVIDER_ID, StoredTideClient } from './src/stored-tide-client.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const fixtureMode = new URLSearchParams(location.search).get('fixture') === '1';
@@ -147,11 +147,15 @@ const storedTideClient = new StoredTideClient({
   fetchImpl: fetch.bind(globalThis),
   stationFixtures: fixtureMode ? australiaCatalogueFixture.stations : null,
 });
+const fesTideClient = new StoredTideClient({
+  provider: FES_PROVIDER_ID,
+  fetchImpl: fetch.bind(globalThis),
+});
 const tideProvider = {
   forecast(request) {
-    return request.station.provider === AUSTRALIAN_PROVIDER_ID
-      ? storedTideClient.forecast(request)
-      : directTideProvider.forecast(request);
+    if (request.station.provider === AUSTRALIAN_PROVIDER_ID) return storedTideClient.forecast(request);
+    if (request.station.provider === FES_PROVIDER_ID) return fesTideClient.forecast(request);
+    return directTideProvider.forecast(request);
   }
 };
 const service = new TideHereService({
@@ -169,6 +173,7 @@ const service = new TideHereService({
     return [...direct, ...australian];
   },
   matchConfig: providerConfig.match,
+  resolveFallback: ({place}) => fesTideClient.resolve({latitude: place.lat, longitude: place.lon}),
   timeZoneLookup: async (_latitude, _longitude, station) => (await stationDetails(station)).timeZone,
   tideProvider,
   astronomy,
@@ -384,6 +389,9 @@ function showForecast(forecast) {
   const sourceLink = $('#source-link');
   sourceLink.href = model.source?.sourceUrl ?? '';
   sourceLink.hidden = !model.source?.sourceUrl;
+  const licenceLink = $('#licence-link');
+  licenceLink.href = model.source?.licenceUrl ?? '';
+  licenceLink.hidden = !model.source?.licenceUrl;
   const fixtureWarning = model.warnings.find((warning) => warning.code === 'fixture-data');
   const locationNotice = $('#fixture-location-notice');
   locationNotice.textContent = fixtureWarning?.message ?? '';

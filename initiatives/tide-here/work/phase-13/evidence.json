@@ -60,12 +60,25 @@
     "browserTestsSkipped": 1,
     "productionDependencyAuditHighVulnerabilities": 0
   },
+  "pendingSource": {
+    "deployed": false,
+    "registry": "tide-here-providers/stage-4-v6",
+    "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
+    "fallbackDataset": "fes2022b-native-validation/2026-02-03",
+    "fallbackDataClass": "licensed-source",
+    "fallbackOfficialComparisonsPassed": true,
+    "allTideNodeTestsPassed": 121,
+    "browserTestsPassed": 23,
+    "browserTestsSkipped": 1
+  },
   "productionActivation": {
     "ready": false,
     "australianProviderReady": true,
+    "fesProviderSourceReady": true,
     "productionReleaseAuthorized": false,
     "blockedBy": [
-      "Licensed FES2022 atlas files and held-out official-port comparisons"
+      "Test deployment and live verification of the pending source",
+      "Production release authorization"
     ]
   }
 }

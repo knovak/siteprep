@@ -317,17 +317,32 @@ Australian prediction accuracy.
 |---|---|---|
 | Reproducible preparation | The source extract exactly regenerates the committed tile index and objects | Offline preparation drift |
 | Complete inventory | Missing, altered, duplicate, or undeclared tile objects fail size and checksum validation before initialization | Partial uploads |
-| FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source, licence metadata, and at least 34 constituents per point | Data and legal boundary |
+| FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source-file integrity, licence metadata, a nonzero PyFES quality flag with matching interpolation/extrapolation disclosure, a 0.01 cm constituent round-trip, and all 34 constituents per point | Data and legal boundary |
 | Atomic initialization | Australian and fallback artifacts are ready before the Stage 4 registry pointer is written; repeating `/init` writes nothing | Rollback safety |
 | Provider priority | U.S., Canada, and Australia select their national provider before the fallback | Source quality |
-| Indexed lookup | Brest, Galway, and Cape Town load separate candidate tiles and return normalized metre events | Runtime tile seam |
+| Indexed lookup | Maroochydore, Bundaberg, Brest, Galway, and Cape Town load only their candidate tiles and return normalized metre events | Runtime tile seam |
 | Land or missing data | A location outside initialized coastal tiles returns `coverage-unavailable` | No invented coverage |
 | Approximate warning | Every fallback response says approximate and excludes weather and storm surge; the fixture additionally says it is not FES2022 | User safety |
-| Engine comparison | The Brest point remains within six minutes and five centimetres of the independent PyFES example | Runtime feasibility |
+| Extraction round-trip | Every licensed point reproduces PyFES atlas prediction from its rounded extracted constituents to within 0.01 cm | Phase, units, and constituent conversion |
+| Official priority examples | Maroochydore resolves to Mooloolaba and Bundaberg resolves to its Bureau port before the fallback resolver is consulted | Source quality at the requested Australian examples |
+| Maroochydore/Mooloolaba comparison | At least 16 same-type extrema pair over five days; p90 timing is at most 30 minutes, maximum timing at most 45 minutes, and the maximum height residual after one constant MSL-to-LAT offset is at most 0.35 m | Open-coast model timing and shape |
+| Bundaberg comparison | At least 16 same-type extrema pair over five days; p90 timing is at most 45 minutes, maximum timing at most 75 minutes, and the maximum height residual after one constant MSL-to-LAT offset is at most 0.50 m | River-mouth model timing and shape |
 
-These tests prove the production code path, not FES2022 accuracy. Licensed
-atlas ingestion and held-out national-port comparisons remain required before
-the fallback may be marked active.
+The comparison tolerances are fixed in
+`work/phase-12/data/fes2022-official-comparison-plan.json` before the official
+results are inspected. A failure blocks activation rather than widening the
+threshold in response to the result. FES remains an approximate harmonic model
+even after both comparisons pass because weather and storm surge are outside
+the model.
+
+**Recorded result, 2026-08-29:** both gates passed without changing their
+thresholds. Maroochydore/Mooloolaba paired 20 extrema with p90/maximum timing
+differences of 11.256/12.525 minutes and a 0.039 m maximum height residual.
+Bundaberg paired 20 extrema with p90/maximum timing differences of
+19.399/20.710 minutes and a 0.111 m maximum height residual. The five extracted
+points all contain 34 constituents; their worst PyFES round-trip error is
+0.000004 cm. PyFES reports each selected coastal result as bounded native-mesh
+extrapolation using 30–39 nodes, and the committed point metadata discloses it.
 
 ### 7.5 — Hosted test deployment
 

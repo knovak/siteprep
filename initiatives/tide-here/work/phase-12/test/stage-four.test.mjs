@@ -1,17 +1,22 @@
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import {test} from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
-import {pyfesBrestReference} from '../../phase-9/fixtures/brest-stage-one.mjs';
+import {matchCoast} from '../../phase-2/src/coastal-match.mjs';
 import {MemoryObjectStore} from '../../phase-9/src/object-store.mjs';
-import {compareWithPyfes} from '../../phase-9/src/reference-comparison.mjs';
 import {ACTIVE_REGISTRY_KEY, selectProvider} from '../../phase-10/src/provider-registry.mjs';
 import {loadAustraliaPreparedOfficial} from '../../phase-11/fixtures/australia-prepared-official.mjs';
 import {stageFourProviderRegistry} from '../fixtures/provider-registry.mjs';
+import {resolveFesModelPoint} from '../src/fes-provider.mjs';
 import {initializeStageFour} from '../src/stage-four.mjs';
 import {createStageFourApp} from '../src/worker.mjs';
 
 const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
+const officialComparison = JSON.parse(await readFile(
+  new URL('../data/fes2022-official-comparison.json', import.meta.url),
+  'utf8',
+));
 
 function harness() {
   const store = new MemoryObjectStore();
@@ -71,14 +76,31 @@ test('national providers still outrank the Stage 4 fallback', () => {
   assert.equal(selectProvider(stageFourProviderRegistry, {countryCode: 'IE', includeFixtures: true}).id, 'fes2022');
 });
 
-test('health exposes the exact Australian and FES fixture versions', async () => {
+test('Maroochydore and Bundaberg still resolve to official Bureau ports before fallback', () => {
+  const stations = australiaPreparedOfficial.stations.map(station => ({
+    ...station,
+    provider: 'australia-standard-ports',
+  }));
+  const config = {automaticKm: 25, clarityRatio: 0.6, maximumKm: 150, maxChoices: 3};
+  const cases = [
+    {place: {latitude: -26.66008, longitude: 153.09953}, stationId: 'au-qld-mooloolaba'},
+    {place: {latitude: -24.8661, longitude: 152.3489}, stationId: 'au-qld-bundaberg'},
+  ];
+  for (const item of cases) {
+    const match = matchCoast(item.place, stations, config);
+    assert.equal(match.status, 'accepted');
+    assert.equal(match.station.id, item.stationId);
+  }
+});
+
+test('health exposes the exact Australian and licensed FES2022 versions', async () => {
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v5'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v6'});
   assert.deepEqual(
     health.providers.find(provider => provider.id === 'fes2022').dataset,
-    {id: 'fes-shaped-global-sample', version: '2026-08-27'},
+    {id: 'fes2022b-native-validation', version: '2026-02-03'},
   );
 });
 
@@ -94,16 +116,44 @@ test('the FES fallback returns normalized approximate five-day tides', async () 
   assert.ok(forecast.days.flatMap(day => day.tides).every(event => event.unit === 'm'));
   assert.equal(forecast.sources[0].approximate, true);
   assert.equal(forecast.sources[0].official, false);
-  assert.deepEqual(forecast.warnings.map(warning => warning.code), ['approximate-fallback', 'fixture-data']);
+  assert.equal(forecast.sources[0].dataClass, 'licensed-source');
+  assert.match(forecast.sources[0].sourceUrl, /10[.]24400\/527896\/A01-2024[.]004/);
+  assert.match(forecast.sources[0].licenceUrl, /License_Aviso[.]pdf/);
+  assert.deepEqual(forecast.warnings.map(warning => warning.code), ['approximate-fallback']);
 });
 
-test('the Brest runtime remains within the independent PyFES feasibility tolerance', async () => {
-  const {app} = harness();
+test('the active resolver selects the nearest initialized FES2022 water point', async () => {
+  const {app, store} = harness();
   await initialize(app);
-  const forecast = await (await postForecast(app, fesRequest())).json();
-  const events = forecast.days.flatMap(day => day.tides).map(event => ({...event, height: event.height * 100}));
-  const comparison = compareWithPyfes(events, pyfesBrestReference);
-  assert.equal(comparison.passed, true, JSON.stringify(comparison, null, 2));
+  const direct = await resolveFesModelPoint({
+    store,
+    descriptor: stageFourProviderRegistry.providers.find(provider => provider.id === 'fes2022'),
+    request: {latitude: 48.383, longitude: -4.495},
+  });
+  assert.equal(direct.station.id, 'fes2022-brest');
+  assert.equal(direct.station.timeZone, 'Europe/Paris');
+  const response = await app.fetch(new Request('http://localhost/resolve', {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({provider: 'fes2022', latitude: 48.383, longitude: -4.495}),
+  }));
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).station.id, 'fes2022-brest');
+});
+
+test('Maroochydore and Bundaberg pass the fixed official-port comparison gates', () => {
+  assert.equal(officialComparison.passed, true);
+  assert.deepEqual(
+    officialComparison.comparisons.map(comparison => ({
+      id: comparison.id,
+      pairs: comparison.metrics.pairedEvents,
+      passed: comparison.passed,
+    })),
+    [
+      {id: 'maroochydore-to-mooloolaba', pairs: 20, passed: true},
+      {id: 'bundaberg-to-bundaberg', pairs: 20, passed: true},
+    ],
+  );
 });
 
 test('separate initialized tiles serve Ireland and South Africa model points', async () => {

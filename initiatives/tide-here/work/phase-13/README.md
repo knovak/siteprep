@@ -11,10 +11,13 @@ environment from the current public production Site.
 - The build stages only the browser files needed by the current page. Tests,
   initiative records, source fixtures, and preparation tools are not public
   assets.
-- `/init`, `/health`, `/providers`, `/stations`, and `/forecast` are handled by
-  the Stage 4 gateway. The page continues to call NOAA and CHS directly, loads
-  the stored Australian station catalogue, and uses `/forecast` only when an
-  Australian reference port is selected.
+- `/init`, `/health`, `/providers`, `/stations`, `/resolve`, and `/forecast` are
+  handled by the Stage 4 gateway. The page continues to call NOAA and CHS
+  directly, loads the stored Australian station catalogue, and uses `/forecast`
+  when an Australian reference port or active FES2022 model point is selected.
+  The page calls `POST /resolve` only after official catalogue coverage
+  declines; coordinates stay in its request body, and the route serves only
+  points within the active sparse FES2022 dataset's declared radius.
 - Hosted `POST /init` requires the `INIT_TOKEN` secret. Initialization writes
   prepared data already included in the tested source to R2, verifies the exact
   licensed Australian and fallback versions, and activates the provider
@@ -32,20 +35,23 @@ writes, and runs HTTPS checks for:
 
 - the browser page and live NOAA and CHS catalogues;
 - the stored licensed Australian catalogue and forecasts;
-- the indexed approximate fallback fixture and its safety warnings.
+- the indexed approximate FES2022 fallback, source/licence disclosure, and
+  safety warnings.
 
 The source prepared for the next test deployment contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
-territory indexes. It carries the source attribution, disclaimer, and per-port
-PDF URL into the browser. The fallback data remains a plainly labelled non-FES
-fixture. This deployment path validates the licensed Australian path and the
-fallback storage boundary; it is not evidence of FES2022 accuracy and does not
-authorize a production release.
+territory indexes plus five validated FES2022b harmonic points. It carries each
+source's attribution, disclaimer, version, and source/licence links into the
+browser. The FES points passed the fixed Maroochydore/Mooloolaba and Bundaberg
+official-port gates; they remain approximate model results and do not include
+weather or storm surge. These local gates do not authorize a production
+release.
 
-The expanded `2026-bom-v2` artifact and `stage-4-v5` registry are locally
-verified but have not been deployed. The recorded test deployment below remains
-version 8 with the earlier 23-port `2026-bom-v1` artifact until a separate test
-deployment is requested.
+The expanded `2026-bom-v2` artifact, FES2022b extract `2026-02-03`, and
+`stage-4-v6` registry are locally verified but have not been deployed. The
+recorded test deployment below remains version 8 with the earlier 23-port
+`2026-bom-v1` artifact and fallback fixture until a separate test deployment is
+requested.
 
 ## Recorded test deployment
 

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
-import {StoredTideClient} from '../src/stored-tide-client.mjs';
+import {FES_PROVIDER_ID, StoredTideClient} from '../src/stored-tide-client.mjs';
 
 const station = {
   provider: 'australia-standard-ports',
@@ -78,6 +78,52 @@ test('an Australian forecast sends only the selected stored-provider request', a
     station: {id: station.id},
     timeZone: station.timeZone,
     rows,
+  });
+});
+
+test('a model client resolves a server-stored water point and submits its coordinates', async () => {
+  const modelStation = {
+    provider: FES_PROVIDER_ID,
+    country: null,
+    id: 'fes-model-point',
+    name: 'FES2022 model point',
+    latitude: -26.66,
+    longitude: 153.1,
+    timeZone: 'Australia/Brisbane',
+    datum: 'FES2022 mean sea level',
+    kind: 'model-point',
+    referenceStationId: null,
+  };
+  let submitted;
+  const client = new StoredTideClient({
+    provider: FES_PROVIDER_ID,
+    fetchImpl: async (url, options = {}) => {
+      if (url === '/resolve') {
+        assert.equal(options.method, 'POST');
+        assert.deepEqual(JSON.parse(options.body), {
+          provider: FES_PROVIDER_ID,
+          latitude: -26.66008,
+          longitude: 153.09953,
+        });
+        return response({provider: FES_PROVIDER_ID, station: modelStation, coast: {name: modelStation.name, distanceKm: 0.2}});
+      }
+      submitted = JSON.parse(options.body);
+      return response({
+        input: {display: context.input.display}, place: context.place, coast: context.coast,
+        station: modelStation, timeZone: modelStation.timeZone,
+        days: rows.map((row) => ({...row, tides: [], sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null})),
+        sources: [], warnings: [],
+      });
+    },
+  });
+  const resolved = await client.resolve({latitude: -26.66008, longitude: 153.09953});
+  assert.equal(resolved.station.id, modelStation.id);
+  await client.forecast({context, station: modelStation, timeZone: modelStation.timeZone, rows});
+  assert.deepEqual(submitted.station, {
+    id: modelStation.id,
+    latitude: modelStation.latitude,
+    longitude: modelStation.longitude,
+    country: null,
   });
 });
 
