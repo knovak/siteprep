@@ -172,3 +172,21 @@ coasts between those ports.
   are not assumed to have the same independent daily-table contract.
 - This does not authorize a production release, supply licensed FES2022 files,
   or settle the 2027 annual-data renewal procedure.
+
+## 2026-08-29 — May the expanded Australian catalogue be deployed to the public test Site?
+
+**Yes. Deploy the expanded Australian coverage to Tide Here's existing public
+test Site.**
+
+### What this settles, and what it does not
+
+- The 76-port 2026 Bureau Standard Port catalogue may replace the current
+  Australian dataset on `https://tide-here-test.ken-novak.chatgpt.site` for
+  live verification.
+- The deployment must preserve the existing public access setting and use the
+  test deployment recorded in `initiative.json`; it does not authorize a new
+  Site or a change in audience.
+- The deployment and representative-place checks still have to be completed
+  and recorded before the todo item is closed.
+- This permission does not authorize a production release, activate FES2022,
+  change the matcher thresholds, or settle the 2027 annual-data renewal.

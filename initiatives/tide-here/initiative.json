@@ -31,11 +31,10 @@
     {
       "id": "deploy-and-verify-expanded-australian-coverage",
       "title": "Deploy and verify the expanded Standard Port catalogue on the existing public test Site",
-      "state": "blocked",
+      "state": "actionable",
       "value": "medium",
       "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "permission:deploy the expanded catalogue to the existing public Tide Here test Site"
+      "advances_stage": false
     }
   ]
 }
