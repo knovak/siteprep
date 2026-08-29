@@ -38,7 +38,7 @@ writes, and runs HTTPS checks for:
 - the indexed approximate FES2022 fallback, source/licence disclosure, and
   safety warnings.
 
-The source prepared for the next test deployment contains the normalized output
+Test version 9 contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
 territory indexes plus five validated FES2022b harmonic points. It carries each
 source's attribution, disclaimer, version, and source/licence links into the
@@ -48,23 +48,23 @@ weather or storm surge. These local gates do not authorize a production
 release.
 
 The expanded `2026-bom-v2` artifact, FES2022b extract `2026-02-03`, and
-`stage-4-v6` registry are locally verified but have not been deployed. The
-recorded test deployment below remains version 8 with the earlier 23-port
-`2026-bom-v1` artifact and fallback fixture until a separate test deployment is
+`stage-4-v6` registry are active on the test Site. Production remains on its
+previous committed source and registry until a separate production release is
 requested.
 
 ## Recorded test deployment
 
-Version 8 was published to the existing public test Site on 2026-08-28 UTC:
+Version 9 was published to the existing public test Site on 2026-08-29 UTC:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v4`, Australian dataset `2026-bom-v1`, and fallback
-fixture `2026-08-27`. A second initialization wrote zero objects. Live storage
-checks found 23 Australian stations and returned 449 Australian events across
-the full catalogue. Browser checks for Brisbane, Cairns, Sydney, Melbourne,
-Hobart, Adelaide, Perth, Broome, and Darwin rendered five local days, linked the
-selected Bureau PDF, showed the Bureau attribution and disclaimer, and did not
-show the synthetic fixture notice. The post-check log contained no Worker
-execution errors.
+activated registry `stage-4-v6`, Australian dataset `2026-bom-v2`, and licensed
+FES2022b extract `2026-02-03`. A second initialization wrote zero objects. Live
+storage checks found all 76 Australian stations and returned 1,470 Australian
+events across five local days per station. Maroochydore and Bundaberg each
+returned 20 fallback extrema with only the `approximate-fallback` warning and
+licensed-source provenance. NOAA, CHS, the hosted page, and the Galway fallback
+also passed the live smoke sweep. Worker logs contained no execution failures;
+the observed non-2xx responses were the smoke test's expected direct-provider
+refusals, two deliberate official-resolver probes, and missing favicon requests.
 
 The production Site was not changed.
 

@@ -13,9 +13,9 @@
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-28T00:18:18Z",
-        "version": 8,
-        "commit": "946737c668ea59d6e640564dadc68fc2a2972dff"
+        "deployed_at": "2026-08-29T19:13:50Z",
+        "version": 9,
+        "commit": "f1cdbea1dde64580d1924a1afdfc5764b7fdcad5"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
@@ -29,11 +29,11 @@
   ],
   "todo": [
     {
-      "id": "deploy-and-verify-expanded-australian-coverage",
-      "title": "Deploy and verify the expanded Standard Port catalogue on the existing public test Site",
+      "id": "review-fes2022-test-deployment",
+      "title": "Review the FES2022 fallback and version 9 test deployment before any production release",
       "state": "actionable",
-      "value": "medium",
-      "effort": "medium",
+      "value": "high",
+      "effort": "low",
       "advances_stage": false
     }
   ]

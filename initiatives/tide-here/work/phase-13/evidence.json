@@ -1,67 +1,61 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-28T00:20:27Z",
+  "checkedAt": "2026-08-29T19:14:10Z",
   "stage": "global-coverage-stage-5",
   "deployment": {
     "url": "https://tide-here-test.ken-novak.chatgpt.site",
     "access": "public",
-    "version": 8,
-    "deployedAt": "2026-08-28T00:18:18Z",
-    "siteSourceCommit": "b5a787691c22447a0a44dc368a252ecc9782e52e",
-    "sourceCommit": "946737c668ea59d6e640564dadc68fc2a2972dff",
-    "archiveFiles": 75,
-    "archiveBytes": 1658880,
-    "archiveSha256": "0da6485adbcdde0c4b1f56058bb02499002a94813f9b7c3e7998c313437a523f"
+    "version": 9,
+    "deployedAt": "2026-08-29T19:08:23Z",
+    "siteSourceCommit": "ddf5a134acd18f0d51bb611e911af6b664db65e8",
+    "sourceCommit": "f1cdbea1dde64580d1924a1afdfc5764b7fdcad5",
+    "archiveFiles": 78,
+    "archiveBytes": 2437120,
+    "archiveSha256": "7fe7ac5f887c782e04812dc5f9ecba533c95154b52978137838d40e9ff340cc4"
   },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
     "r2Binding": "TIDE_DATA",
     "d1Binding": null,
     "initializerTokenConfigured": true,
-    "initializerEnvironmentRevision": 4,
+    "initializerEnvironmentRevision": 5,
     "initialized": true,
     "repeatInitializationWrites": 0
   },
   "liveChecks": {
-    "registry": "tide-here-providers/stage-4-v4",
-    "australianDataset": "australia-bom-annual-tides/2026-bom-v1",
-    "fallbackDataset": "fes-shaped-global-sample/2026-08-27",
+    "registry": "tide-here-providers/stage-4-v6",
+    "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
+    "fallbackDataset": "fes2022b-native-validation/2026-02-03",
     "noaaCatalogue": "passed",
     "chsCatalogue": "passed",
-    "australianStations": 23,
-    "australianCatalogueEvents": 449,
-    "fallbackFixtureEvents": 19,
+    "australianStations": 76,
+    "australianCatalogueEvents": 1470,
+    "fallbackGalwayEvents": 19,
+    "fallbackMaroochydoreEvents": 20,
+    "fallbackBundabergEvents": 20,
     "fallbackWarnings": [
-      "approximate-fallback",
-      "fixture-data"
+      "approximate-fallback"
     ],
     "browserPage": "passed",
-    "australianBrowserCities": [
-      "Brisbane",
-      "Cairns",
-      "Sydney",
-      "Melbourne",
-      "Hobart",
-      "Adelaide",
-      "Perth",
-      "Broome",
-      "Darwin"
+    "fallbackPlaces": [
+      "Galway",
+      "Maroochydore",
+      "Bundaberg"
     ],
     "sourceAttributionAndDisclaimer": "passed",
-    "syntheticFixtureNoticeAbsentForLicensedResults": true,
+    "fallbackLicensedSourceProvenance": true,
     "unauthorizedInitializerStatus": 403,
     "workerExecutionErrors": 0
   },
   "tests": {
-    "stageTestsPassed": 15,
-    "stageTestsFailed": 0,
-    "allTideNodeTestsPassed": 111,
-    "browserTestsPassed": 21,
+    "allTideNodeTestsPassed": 121,
+    "allTideNodeTestsFailed": 0,
+    "browserTestsPassed": 23,
     "browserTestsSkipped": 1,
     "productionDependencyAuditHighVulnerabilities": 0
   },
-  "pendingSource": {
-    "deployed": false,
+  "deployedSource": {
+    "deployed": true,
     "registry": "tide-here-providers/stage-4-v6",
     "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
     "fallbackDataset": "fes2022b-native-validation/2026-02-03",
@@ -77,7 +71,6 @@
     "fesProviderSourceReady": true,
     "productionReleaseAuthorized": false,
     "blockedBy": [
-      "Test deployment and live verification of the pending source",
       "Production release authorization"
     ]
   }

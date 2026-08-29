@@ -200,3 +200,12 @@ passed across 20 paired extrema, so
 registry `stage-4-v6` now activates the approximate fallback after official
 coverage declines. Added body-only model-point resolution, source and licence
 disclosure, privacy-safe logging, and browser coverage. Nothing was deployed.
+
+## 2026-08-29 — Deploy and verify the FES2022 fallback on the test Site
+
+Published version 9 to the existing public test Site without changing its
+access. Initialized registry `stage-4-v6`, all 76 Australian Standard Ports,
+and the licensed FES2022b extract; a repeat initialization wrote zero objects.
+The live sweep returned 1,470 Australian extrema, passed NOAA and CHS discovery,
+and produced 20 approximate licensed-source fallback extrema apiece for
+Maroochydore and Bundaberg. Production was not changed.
