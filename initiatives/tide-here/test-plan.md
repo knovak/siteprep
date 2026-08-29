@@ -295,14 +295,14 @@ stage-4 decision made against licensed FES tiles and held-out official ports.
 | Test | Pass condition | Protects |
 |---|---|---|
 | Offline import is reproducible | Importing the checksum-recorded compressed Bureau source exactly reproduces the committed prepared artifact | Preparation drift |
-| PDF reconstruction | Positioned text from all 12 monthly table layouts reconstructs complete days and alternating high/low extrema; invalid or incomplete layouts fail | Source-parser drift |
+| PDF reconstruction | Positioned text from all 12 monthly table layouts reconstructs complete days and alternating high/low extrema, including adjacent values that round equally and datum lines with inline cautions; invalid or incomplete layouts fail | Source-parser drift |
 | Licence metadata gate | A licensed source or prepared artifact without source URL, per-file integrity, attribution, disclaimer, and licence metadata is rejected | Legal/data boundary |
 | Port-local conversion | Brisbane, Sydney, Darwin, Fremantle, and Adelaide local source times become the expected UTC instants, and each explicit source offset must match its IANA zone on that date | O5 |
 | Data quality | Duplicate events, wrong-year events, invalid ports, zones, types and heights are rejected | Silent bad imports |
 | Stored initialization | The Australian artifact and manifest are immutable and checksum-valid; the Stage 3 registry activates last; repeat writes are zero | Deployment safety |
-| Catalogue | The stored catalogue returns 23 normalized Bureau reference ports across all Australian coastal states and the Northern Territory, with seven IANA zones | Provider seam |
-| Coastal-region routing | Representative searches around the mainland and Tasmania resolve to a configured reference port within the supported radius | Nationwide major-coast coverage |
-| Forecast contract | Each of the 23 licensed ports returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
+| Catalogue | The stored catalogue returns all 76 Standard Ports in the Bureau's 2026 state and territory indexes across 10 IANA zones | Provider seam |
+| Coastal-region routing | The committed 16-place matrix reproduces the former 23-port outcomes and proves the expanded catalogue covers every representative place within the unchanged 150 km guard | Nationwide Standard Port coverage |
+| Forecast contract | Each of the 76 licensed ports returns five rows and source-matching high/low time, type and height in the existing normalized shape | Adapter contract |
 | Held-out table values | Brisbane, Sydney, Melbourne, Hobart, Port Adelaide, Fremantle, Broome, and Darwin values for 2026-08-27 match independently transcribed PDF times, extrema, and heights | Parser and preparation accuracy |
 | Explicit date failure | A request outside the loaded year returns `dataset-year-unavailable` | No silent fallback |
 | Fixture separation | The synthetic artifact remains test-only; initialized selection returns the licensed dataset without fixture opt-in and identifies its Bureau PDF | Truthful coverage |
@@ -358,7 +358,7 @@ changed.
 | Source disclosure | Licensed results show the Bureau attribution, disclaimer, dataset version, and selected annual-table PDF; only the synthetic browser fixture shows the exact non-official notice inside the location dropdown | Provenance |
 | Partial failure | A failed stored-provider request retains place, coast, station, five day rows, and astronomy with `tides-unavailable` | O6 |
 | Privacy copy | The page says Australian tide-port requests reach the Tide Here service and that its operational logs exclude submitted names and coordinates | O8 |
-| Full-year source | The committed licensed 23-port artifact covers every date in 2026 with explicit IANA-zone offsets across all seven configured zones, including daylight-saving changes | Stable annual operation |
+| Full-year source | The committed licensed 76-port artifact covers every date in 2026 with explicit IANA-zone offsets across all 10 configured zones, including daylight-saving changes | Stable annual operation |
 
 Australian activation remains governed by §7.3's licence, attribution,
 source-comparison, and annual-renewal gates.

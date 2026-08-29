@@ -75,7 +75,7 @@ test('health exposes the exact Australian and FES fixture versions', async () =>
   const {app} = harness();
   await initialize(app);
   const health = await (await app.fetch(new Request('http://localhost/health'))).json();
-  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v4'});
+  assert.deepEqual(health.registry, {id: 'tide-here-providers', version: 'stage-4-v5'});
   assert.deepEqual(
     health.providers.find(provider => provider.id === 'fes2022').dataset,
     {id: 'fes-shaped-global-sample', version: '2026-08-27'},

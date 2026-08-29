@@ -34,12 +34,18 @@ writes, and runs HTTPS checks for:
 - the stored licensed Australian catalogue and forecasts;
 - the indexed approximate fallback fixture and its safety warnings.
 
-The Australian dataset is the normalized output of 23 Bureau of Meteorology
-2026 annual tide-table PDFs and carries the source attribution, disclaimer, and
-per-port PDF URL into the browser. The fallback data remains a plainly labelled
-non-FES fixture. This deployment validates the licensed Australian path and the
+The source prepared for the next test deployment contains the normalized output
+of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
+territory indexes. It carries the source attribution, disclaimer, and per-port
+PDF URL into the browser. The fallback data remains a plainly labelled non-FES
+fixture. This deployment path validates the licensed Australian path and the
 fallback storage boundary; it is not evidence of FES2022 accuracy and does not
 authorize a production release.
+
+The expanded `2026-bom-v2` artifact and `stage-4-v5` registry are locally
+verified but have not been deployed. The recorded test deployment below remains
+version 8 with the earlier 23-port `2026-bom-v1` artifact until a separate test
+deployment is requested.
 
 ## Recorded test deployment
 

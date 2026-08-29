@@ -5,7 +5,7 @@ import {importAustralianAnnualSource} from '../src/australia-importer.mjs';
 
 const sourcePath = process.argv[2];
 if (!sourcePath) {
-  console.error('Usage: node prepare-australia.mjs <source.json|source.json.gz> [--module]');
+  console.error('Usage: node prepare-australia.mjs <source.json|source.json.gz> [--module|--catalogue]');
   process.exitCode = 2;
 } else {
   const bytes = await readFile(sourcePath);
@@ -35,6 +35,11 @@ if (!sourcePath) {
     console.log('  preparedPromise ??= readCompressedSource().then(source => Object.freeze(importAustralianAnnualSource(source)));');
     console.log('  return preparedPromise;');
     console.log('}');
+  } else if (process.argv.includes('--catalogue')) {
+    console.log(JSON.stringify({
+      provider: 'australia-standard-ports',
+      stations: prepared.stations,
+    }, null, 2));
   } else {
     console.log(JSON.stringify(prepared, null, 2));
   }

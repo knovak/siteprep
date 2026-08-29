@@ -40,7 +40,14 @@ function inferTypes(predictions) {
   const sorted = predictions.toSorted((left, right) => (
     left.date.localeCompare(right.date) || left.time.localeCompare(right.time)
   ));
-  let type = sorted[0].heightM < sorted[1].heightM ? 'low' : 'high';
+  const firstUnequalPair = sorted.findIndex((prediction, index) => (
+    index < sorted.length - 1 && prediction.heightM !== sorted[index + 1].heightM
+  ));
+  if (firstUnequalPair < 0) throw new Error('Bureau annual table has no distinguishable high and low predictions');
+  const pairType = sorted[firstUnequalPair].heightM < sorted[firstUnequalPair + 1].heightM ? 'low' : 'high';
+  let type = firstUnequalPair % 2 === 0
+    ? pairType
+    : pairType === 'high' ? 'low' : 'high';
   const typed = sorted.map(prediction => {
     const value = {...prediction, type};
     type = type === 'high' ? 'low' : 'high';
@@ -74,7 +81,7 @@ export function parseBomCoordinates(text) {
 export function parseBomDatum(text) {
   const value = text.match(/Datum of Predictions is\s+([^\r\n]+)/i)?.[1]?.trim();
   if (!value) throw new Error('Bureau annual table datum was not found');
-  return value === 'Lowest Astronomical Tide' ? 'Lowest Astronomical Tide (LAT)' : value;
+  return value.startsWith('Lowest Astronomical Tide') ? 'Lowest Astronomical Tide (LAT)' : value;
 }
 
 export function parseBomAnnualBbox(bboxXml, year) {
