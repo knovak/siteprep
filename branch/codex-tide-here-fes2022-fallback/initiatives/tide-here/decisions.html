@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Tide Here</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Tide Here</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Tide Here</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<h3>2026-08-20 — Should the first version retain a local location history?</h3>
+<p><strong>Keep explicit local history and revise O8.</strong></p>
+<p>Review chose Option B. The first version intentionally keeps the complete normalized response for up to the 100 most recent successful or partial forecasts in this browser. The history is user-visible, downloadable, clearable, and never transmitted by the application.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Remove durable history from version 1</strong></td><td>Matches the original O8 literally; reduces sensitive browser state and Phase 7 scope; caches can remain short-lived and disposable</td><td>Loses the readable diagnostic record and download that motivated the specification</td></tr><tr><td><strong>B — Keep explicit local history and revise O8</strong></td><td>Preserves the diagnostic and usage artifact; makes local, user-controlled retention an intentional product promise</td><td>Adds sensitive-state lifecycle, disclosure, and no-transmission work</td></tr><tr><td><strong>C — Export on demand without retaining</strong></td><td>Gives a diagnostic artifact when requested while keeping no history between sessions</td><td>Cannot show a multi-session history and requires export at the time of interest</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>O8 now makes the 100-entry local history, its visible controls, and its</li></ul>
+<p>  no-transmission boundary explicit first-version outcomes.</p>
+<ul><li>Phase 7 may implement the history described by <code>spec.md</code> and <code>plan.md</code>; its</li></ul>
+<p>  privacy tests remain exit criteria, not optional polish.</p>
+<ul><li>This does not permit application analytics, cloud synchronization, or hidden</li></ul>
+<p>  location storage.</p>
+<ul><li>Automatic browser location remains a later version and still requires an</li></ul>
+<p>  explicit permission request with manual fallback.</p>
+<h3>2026-08-22 — Which host and coastal thresholds should the first live validation use?</h3>
+<p><strong>Use an owner-only ChatGPT Site and keep 25 km / 60% / 150 km unchanged.</strong></p>
+<p>The first live version is deployed privately at <a href="https://tide-here-five-coast-local-days.ken-novak.chatgpt.site">Tide Here — five coast-local days</a>. It is a temporary validation host, not a final public address or a decision about the later custom domain.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Keep 25 km / 60% / 150 km</strong> <em>(chosen)</em></td><td>Accepts clear Seattle and Halifax matches, asks at the Bainbridge and U.S.–Canada boundary ambiguities, and refuses Denver rather than naming a distant coast</td><td>The small validation catalogue cannot establish that the values generalize to every coastline</td></tr><tr><td><strong>B — Loosen automatic acceptance</strong></td><td>Fewer chooser interactions near a coast</td><td>Would turn the deliberately ambiguous island and border cases into more confident claims without evidence that the nearest station is relevant</td></tr><tr><td><strong>C — Tighten automatic or maximum distance</strong></td><td>More conservative about station relevance</td><td>Would add friction to clear matches or refuse useful coverage without a failing real-coast case to justify it</td></tr></tbody></table></div>
+<h4>Evidence</h4>
+<ul><li>Seattle resolved 0.706 km from NOAA station 9447130, at 5.2% of the next</li></ul>
+<p>  candidate&#39;s distance, and was accepted.</p>
+<ul><li>Halifax resolved 1.187 km from CHS station 00490, at 0.2% of the next</li></ul>
+<p>  candidate&#39;s distance, and was accepted.</p>
+<ul><li>Bainbridge&#39;s first two subordinate stations were both 1.309 km away, so the</li></ul>
+<p>  chooser remained mandatory.</p>
+<ul><li>The border input kept NOAA and CHS choices at 1.855 km and 1.964 km rather</li></ul>
+<p>  than selecting across the boundary.</p>
+<ul><li>Denver&#39;s nearest prediction station was 1,641 km away and correctly returned</li></ul>
+<p>  <code>coverage-unavailable</code>.</p>
+<p>The live browser check returned readable HTTP 200 responses from Nominatim, NOAA CO-OPS, and CHS, then rendered five days for Seattle and Halifax. The current <a href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim usage policy</a> still fits this private single-user page: requests are directly triggered by a submit, serialized to at most one per second, cached for 24 hours, attributed, and switchable by configuration; the page has no autocomplete, periodic request, or bulk lookup.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The configured thresholds remain the reviewed first-version values.</li><li>ChatGPT Sites is the private host for this validation round.</li><li>A larger station catalogue or a real coastline that produces a wrong</li></ul>
+<p>  accept/ask/refuse outcome is evidence to reopen the thresholds.</p>
+<ul><li>This does not authorize public access, choose the final domain, or add a</li></ul>
+<p>  third-country provider.</p>
+<h3>2026-08-26 — What should happen when several coasts are plausible?</h3>
+<p><strong>Show the closest forecast immediately and offer the other candidates below it in a collapsed Alternative coasts section.</strong></p>
+<p>The person should always see the closest results. When the coastal matcher finds several plausible candidates, the page should not stop and require a choice before showing predictions. It should select the nearest candidate, display that forecast, and let the person expand <strong>Alternative coasts</strong> below the results to choose a different one.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Require a coast choice before forecasting</strong></td><td>Avoids making a silent judgement when distance cannot capture islands, inlets, or watersheds</td><td>Blocks the most likely result and adds friction before any useful information appears</td></tr><tr><td><strong>B — Loosen the ambiguity thresholds</strong></td><td>Makes more matches look unambiguous</td><td>Hides useful uncertainty and changes the reviewed matcher without better geographic evidence</td></tr><tr><td><strong>C — Show the closest forecast, with alternatives below</strong> <em>(chosen)</em></td><td>Gives an immediate useful result while preserving a clear manual override</td><td>The closest station is only a distance-based default and may not represent the best local water body</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The 25 km, 60%, and 150 km matcher thresholds remain unchanged.</li><li><code>coast-choice-required</code> remains an internal resolution state with ranked</li></ul>
+<p>  candidates, but it no longer renders as a blocking page state.</p>
+<ul><li>The nearest candidate is used only as the initial forecast. Choosing an</li></ul>
+<p>  alternative still reuses the existing resolution without another geocoder or   catalogue request.</p>
+<ul><li>This does not establish that straight-line distance identifies the most</li></ul>
+<p>  relevant side of an island, inlet, estuary, or international boundary.</p>
+<h3>2026-08-27 — May licensed Australian annual tide data be activated?</h3>
+<p><strong>Yes. Licensed annual data and its reuse terms are approved for Australian activation; replace the synthetic fixture with real functionality.</strong></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The licensing and reuse-authorization blocker is settled for the Australian</li></ul>
+<p>  annual tide data.</p>
+<ul><li>The Australian provider may be marked active once the real annual artifact,</li></ul>
+<p>  required attribution and disclaimer, source checks, and live initialization   all pass.</p>
+<ul><li>Synthetic Australian values must not be presented as the activated result.</li><li>The exact official source files, their integrity records, and the attribution</li></ul>
+<p>  shown by the product still have to be recorded and verified by the   implementation.</p>
+<ul><li>This does not authorize a Tide Here production release; the current work</li></ul>
+<p>  remains on the public test Site until separately promoted.</p>
+<h3>2026-08-28 — What should follow the nationwide Australian test?</h3>
+<p><strong>Expand the licensed Bureau Standard Port catalogue before a production release or further FES2022 work.</strong></p>
+<p>The 23-port dataset proves the annual-table pipeline and gives every Australian coastal state and the Northern Territory at least one tested reference port. It does not yet justify calling the coverage nationwide: the existing 150 km relevance guard correctly refuses several populated or strategically distinct coasts between those ports.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>A — Release the current 23-port catalogue</strong></td><td>The active test dataset is official, attributed, checksum-verified, and healthy across all configured ports</td><td>It would turn a deliberately bounded major-port test into the production coverage promise while known coastal gaps remain</td></tr><tr><td><strong>B — Add the remaining useful Bureau Standard Ports and a national gap matrix</strong> <em>(chosen)</em></td><td>Uses the same approved annual-table terms, importer, storage contract, and exact-source checks; closes known gaps with official predictions instead of guessing</td><td>Requires a larger annual acquisition and verification set, and does not remove the need for a separate yearly renewal process</td></tr><tr><td><strong>C — Increase the 150 km maximum match distance</strong></td><td>Makes more place searches appear covered without adding data</td><td>Can attach a distant port across islands, headlands, bays, or different tide regimes; it weakens the reviewed coast-relevance safeguard</td></tr><tr><td><strong>D — Prioritize the FES2022 fallback</strong></td><td>Would eventually cover coasts that have no national table</td><td>Licensed atlas files and held-out official-port comparisons are still unavailable, and approximate model output is a worse next step where exact Bureau tables already exist</td></tr></tbody></table></div>
+<h4>Evidence</h4>
+<ul><li>On public test Site version 8, registry <code>stage-4-v4</code> served all 23 configured</li></ul>
+<p>  Australian ports from <code>2026-bom-v1</code>: a fresh live pass returned 447 events   across five days with no failed port, warning, approximate result, or missing   official source.</p>
+<ul><li>The recorded browser matrix passed Brisbane, Cairns, Sydney, Melbourne,</li></ul>
+<p>  Hobart, Adelaide, Perth, Broome, and Darwin, covering every coastal state and   the Northern Territory at a representative-city level.</p>
+<ul><li>Fresh browser searches for Eden, Devonport, Cooktown, and Thursday Island</li></ul>
+<p>  returned <code>coverage-unavailable</code>; the guard refused them rather than silently   naming a distant configured port.</p>
+<ul><li>The Bureau&#39;s current 2026 tables include [Eden and other additional New South</li></ul>
+<p>  Wales Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/nsw_tide_tables.shtml),   <a href="https://www.bom.gov.au/oceanography/projects/ntc/tas_tide_tables.shtml">Devonport and other Tasmanian Standard Ports</a>,   <a href="https://www.bom.gov.au/oceanography/projects/ntc/qld_tide_tables.shtml">Thursday Island and other Queensland Standard Ports</a>,   and <a href="https://www.bom.gov.au/oceanography/projects/ntc/vic_tide_tables.shtml">six Victorian Standard Ports beyond Melbourne</a>.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The 25 km / 60% / 150 km matcher thresholds remain unchanged. Coverage grows</li></ul>
+<p>  by adding official stations, not by relabelling distant predictions as local.</p>
+<ul><li>The next increment expands Standard Ports first and records a repeatable</li></ul>
+<p>  representative-place gap matrix before and after the catalogue change.</p>
+<ul><li>Secondary Port corrections remain a later parser and modelling decision; they</li></ul>
+<p>  are not assumed to have the same independent daily-table contract.</p>
+<ul><li>This does not authorize a production release, supply licensed FES2022 files,</li></ul>
+<p>  or settle the 2027 annual-data renewal procedure.</p>
+<h3>2026-08-29 — Where may expanded Australian coverage be deployed?</h3>
+<p><strong>Deploy expanded Australian coverage to Tide Here&#39;s existing public test and production Sites, now and in the future.</strong></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The 76-port 2026 Bureau Standard Port catalogue may replace the current</li></ul>
+<p>  Australian dataset on <code>https://tide-here-test.ken-novak.chatgpt.site</code> for   live verification and on   <code>https://tide-here-five-coast-local-days.ken-novak.chatgpt.site</code> for   production use.</p>
+<ul><li>This is standing deployment permission: future Australian coverage</li></ul>
+<p>  expansions and refreshes may be deployed to both recorded Sites without   asking for deployment permission again.</p>
+<ul><li>Every deployment must still use committed source, preserve the Sites&#39; public</li></ul>
+<p>  access settings, pass the applicable build and deployment checks, initialize   stored data safely, and complete live verification. Permission is not a   waiver of release gates.</p>
+<ul><li>The current actionable todo remains the test deployment and its</li></ul>
+<p>  representative-place checks. A production deployment is authorized when a   separately scoped release task is run; this decision alone does not mark   either deployment complete.</p>
+<ul><li>This permission does not authorize a new Site, an audience or access change,</li></ul>
+<p>  unapproved data or reuse terms, FES2022 activation, or matcher-threshold   changes. Those remain separate decisions even when a later deployment is   already authorized.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/tide-here-fes2022-fallback" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
