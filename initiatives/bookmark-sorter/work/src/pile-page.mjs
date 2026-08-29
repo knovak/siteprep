@@ -810,7 +810,7 @@ export function renderPilePage({isAdmin = false} = {}) {
 
     async function changeTagsOnCurrentSelection() {
       await startSession();
-      const tags = elements.tagInput.value.split(/[\s,]+/).filter(Boolean);
+      const tags = elements.tagInput.value.split(/[\\s,]+/).filter(Boolean);
       const mode = elements.tagMode.value === 'remove' ? 'remove' : 'apply';
       const body = {session_id: state.session.id, tags, expression: state.expression, mode};
       if (state.marked.size) body.item_ids = [...state.marked];

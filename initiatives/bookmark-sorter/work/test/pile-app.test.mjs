@@ -66,6 +66,7 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, />Tag items</);
   assert.match(html, />Untag items</);
   assert.match(html, /data-tag-ready="false"/);
+  assert.match(html, /tagInput\.value\.split\(\/\[\\s,\]\+\/\)/);
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);

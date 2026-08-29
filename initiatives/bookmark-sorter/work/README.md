@@ -300,7 +300,9 @@ collection creation.
   the marked set or current selection. It logs only the tags actually added or
   removed, so one undo reverses exactly that action and preserves everything
   else. The split action is black on white while its tag field is empty and
-  white on blue when entered text makes it ready.
+  white on blue when entered text makes it ready. The client separates entered
+  tags only on commas or whitespace, preserving punctuation such as hyphens
+  inside a tag.
 - `POST /api/selection/verdict` applies one verdict to the entire open
   expression. An unconfirmed request returns `409` with its count; the split
   Sweep control confirms that count before retrying. The default visible-page

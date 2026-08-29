@@ -818,7 +818,7 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(17, 17, 17)');
   await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  await page.locator('#tag-input').fill('topic:temporary');
+  await page.locator('#tag-input').fill('test-tag');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
   await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(255, 255, 255)');
   await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
@@ -828,18 +828,19 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await expect(page.locator('#status')).toHaveText('Added tags to 4 items as one action.');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
   await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  expect(backend.items.every(item => item.tags.includes('topic:temporary'))).toBe(true);
+  expect(backend.items.every(item => item.tags.includes('test-tag'))).toBe(true);
+  expect(backend.items.every(item => !item.tags.includes('te') && !item.tags.includes('t-tag'))).toBe(true);
 
   await page.getByLabel('Tag mode').selectOption('remove');
   await expect(page.locator('#tag-selection')).toHaveText('Untag items');
   await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to remove');
-  await page.locator('#tag-input').fill('topic:temporary');
+  await page.locator('#tag-input').fill('test-tag');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Removed tags from 4 items as one action.');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
   await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  expect(backend.items.every(item => !item.tags.includes('topic:temporary'))).toBe(true);
+  expect(backend.items.every(item => !item.tags.includes('test-tag'))).toBe(true);
 
   await page.getByLabel('Tag mode').selectOption('apply');
   await expect(page.locator('#tag-selection')).toHaveText('Tag items');

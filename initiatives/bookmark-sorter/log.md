@@ -447,3 +447,9 @@ white-on-blue ready state, and moved `err:` Automatic proposals out of Tag into
 a dedicated Errors section after Verdict. Errors now include each exact error
 plus **any error** for `err:*`. Added a Full documentation link to Help and
 recorded the Safari and Chrome synced-tab import workflows in the user README.
+
+Fixed the generated-page tag parser after live testing showed `test-tag`
+becoming `te` and `t-tag`. The outer HTML template had consumed the whitespace
+regex's backslash, leaving the browser to split on the letter `s`. Escaped the
+backslash for the generated script and added exact browser and rendered-page
+regression coverage for the hyphenated tag.
