@@ -1,17 +1,26 @@
 {
   "title": "Knowledge pipeline",
   "summary": "A staged, auditable pipeline for turning collected sources into curated topic documents.",
-  "stage": "specified",
+  "stage": "planned",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-plan-and-test-plan",
-      "title": "Draft plan.md and test-plan.md",
+      "id": "critique-plan",
+      "title": "Critique plan.md and test-plan.md, and improve them before building starts",
       "state": "actionable",
       "value": "high",
-      "effort": "medium",
-      "advances_stage": true
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "phase-0-portable-custody-core",
+      "title": "Phase 0 - build and verify the portable custody core",
+      "state": "blocked",
+      "value": "high",
+      "effort": "large",
+      "advances_stage": true,
+      "blocked_by": "todo:critique-plan"
     }
   ]
 }
