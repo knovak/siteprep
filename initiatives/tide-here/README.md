@@ -9,10 +9,10 @@ station first and keeps the other candidates available for review.
 The two current Sites are public, separate deployments on different releases:
 
 - **Test:** [tide-here-test.ken-novak.chatgpt.site](https://tide-here-test.ken-novak.chatgpt.site)
-  version 8 combines direct NOAA and CHS forecasts with licensed Bureau of
-  Meteorology forecasts for 23 Australian Standard Ports. The committed source
-  now contains all 76 Standard Ports in the Bureau's 2026 state and territory
-  indexes, but that expanded catalogue has not been deployed.
+  version 10 combines direct NOAA and CHS forecasts with licensed Bureau of
+  Meteorology forecasts for all 76 Australian Standard Ports and seven sparse,
+  validated FES2022 model points. Cooktown and Gibraltar are included in the
+  active FES2022 fallback.
 - **Production:** [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site)
   version 6 combines direct NOAA and CHS forecasts with the licensed 76-port
   Bureau catalogue. It does not yet include the locally validated FES2022
@@ -60,10 +60,12 @@ requests NOAA and CHS station data and forecasts directly from those providers.
 The browser also loads the Australian station catalogue from Tide Here. When an
 Australian Standard Port is selected, it sends the original display value,
 resolved place and coast context, selected port, time zone and five-day bounds
-to the Site's `/forecast` gateway. If official coverage declines and an active
-FES2022 artifact is available, the browser sends the coordinates in the body of
-a `POST /resolve` request and then sends the selected model point through the
-same forecast gateway. Coordinates are not placed in a URL. The
+to the Site's `/forecast` gateway. If official coverage declines or only
+distant, ambiguous official choices remain and an active FES2022 artifact is
+available, the browser sends the coordinates in the body of a `POST /resolve`
+request and then sends the selected model point through the same forecast
+gateway. The official choices remain available as alternatives. Coordinates
+are not placed in a URL. The
 gateway reads versioned provider data from its object store. Its operational
 logs contain only route, method, status, provider and elapsed time—not request
 bodies, place names, coordinates or station identifiers. Tide Here has no

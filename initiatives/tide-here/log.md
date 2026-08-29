@@ -209,3 +209,18 @@ and the licensed FES2022b extract; a repeat initialization wrote zero objects.
 The live sweep returned 1,470 Australian extrema, passed NOAA and CHS discovery,
 and produced 20 approximate licensed-source fallback extrema apiece for
 Maroochydore and Bundaberg. Production was not changed.
+
+## 2026-08-29 — Extend FES2022 coverage to Cooktown and Gibraltar
+
+Added validated 34-constituent FES2022 points for Cooktown and Gibraltar,
+expanded the active sparse extract to seven points, and taught text geocoding to
+prefer a settlement over a broad administrative boundary. A nearby FES point
+now takes precedence when official ports are distant or ambiguous, while those
+official choices remain available as alternatives. Removed the duplicate
+standalone FES fallback banner; provider, approximation, and safety words remain
+inside the result and source details.
+
+Published version 10 to the existing public test Site without changing its
+access. Initialized registry `stage-4-v7`; a repeat initialization wrote zero
+objects. The live sweep returned all 76 Australian Standard Ports and 20 FES
+extrema apiece for Cooktown and Gibraltar. Production was not changed.

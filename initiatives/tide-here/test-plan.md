@@ -352,17 +352,18 @@ the committed point metadata discloses each method.
 | Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
 | Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
 | Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
-| Health | Live `/health` names provider registry `stage-4-v4` and both stored dataset versions | Operability |
+| Health | Live `/health` names provider registry `stage-4-v7` and both stored dataset versions | Operability |
 | Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
 | Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
 | Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the licensed Australian source, and returns the approximate fallback fixture | Deployment integration |
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
 
-**Recorded result, 2026-08-28 UTC:** all eight checks passed on public test Site
-version 8. Initialization activated `stage-4-v4`; the repeat call wrote zero
-objects; 111 Tide Node tests passed in both the working tree and isolated Site
-source, and 21 applicable browser tests passed. The production Site was not
-changed.
+**Recorded result, 2026-08-29 UTC:** all eight checks passed on public test Site
+version 10. Initialization activated `stage-4-v7`; the repeat call wrote zero
+objects; 124 Tide Node tests passed in both the working tree and isolated Site
+source, and 25 applicable browser tests passed with one intentional skip. The
+live sweep returned all 76 Australian Standard Ports and FES2022 results for
+Galway, Cooktown, and Gibraltar. The production Site was not changed.
 
 ### 7.6 — Australian browser integration
 

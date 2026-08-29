@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-29T19:14:10Z",
+  "checkedAt": "2026-08-29T21:05:02Z",
   "stage": "global-coverage-stage-5",
   "deployment": {
     "url": "https://tide-here-test.ken-novak.chatgpt.site",
     "access": "public",
-    "version": 9,
-    "deployedAt": "2026-08-29T19:08:23Z",
-    "siteSourceCommit": "ddf5a134acd18f0d51bb611e911af6b664db65e8",
-    "sourceCommit": "f1cdbea1dde64580d1924a1afdfc5764b7fdcad5",
+    "version": 10,
+    "deployedAt": "2026-08-29T20:59:36.810292Z",
+    "siteSourceCommit": "cfe4871a439112f00c7a2c723423fa8a3b0d99bc",
+    "sourceCommit": "cbb2da04f0dbbacfa6e6c6d9deed034a67027778",
     "archiveFiles": 78,
-    "archiveBytes": 2437120,
-    "archiveSha256": "7fe7ac5f887c782e04812dc5f9ecba533c95154b52978137838d40e9ff340cc4"
+    "archiveBytes": 2447360,
+    "archiveSha256": "e93847ed2f31d98316e5be8bd2bc6b8cc97b145205d5ac70e000118d0b5ee34d"
   },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
@@ -23,24 +23,24 @@
     "repeatInitializationWrites": 0
   },
   "liveChecks": {
-    "registry": "tide-here-providers/stage-4-v6",
+    "registry": "tide-here-providers/stage-4-v7",
     "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
-    "fallbackDataset": "fes2022b-native-validation/2026-02-03",
+    "fallbackDataset": "fes2022b-native-validation/2026-02-03-r2",
     "noaaCatalogue": "passed",
     "chsCatalogue": "passed",
     "australianStations": 76,
     "australianCatalogueEvents": 1470,
     "fallbackGalwayEvents": 19,
-    "fallbackMaroochydoreEvents": 20,
-    "fallbackBundabergEvents": 20,
+    "fallbackCooktownEvents": 20,
+    "fallbackGibraltarEvents": 20,
     "fallbackWarnings": [
       "approximate-fallback"
     ],
     "browserPage": "passed",
     "fallbackPlaces": [
       "Galway",
-      "Maroochydore",
-      "Bundaberg"
+      "Cooktown",
+      "Gibraltar"
     ],
     "sourceAttributionAndDisclaimer": "passed",
     "fallbackLicensedSourceProvenance": true,
@@ -48,21 +48,21 @@
     "workerExecutionErrors": 0
   },
   "tests": {
-    "allTideNodeTestsPassed": 121,
+    "allTideNodeTestsPassed": 124,
     "allTideNodeTestsFailed": 0,
-    "browserTestsPassed": 23,
+    "browserTestsPassed": 25,
     "browserTestsSkipped": 1,
     "productionDependencyAuditHighVulnerabilities": 0
   },
   "deployedSource": {
     "deployed": true,
-    "registry": "tide-here-providers/stage-4-v6",
+    "registry": "tide-here-providers/stage-4-v7",
     "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
-    "fallbackDataset": "fes2022b-native-validation/2026-02-03",
+    "fallbackDataset": "fes2022b-native-validation/2026-02-03-r2",
     "fallbackDataClass": "licensed-source",
     "fallbackOfficialComparisonsPassed": true,
-    "allTideNodeTestsPassed": 121,
-    "browserTestsPassed": 23,
+    "allTideNodeTestsPassed": 124,
+    "browserTestsPassed": 25,
     "browserTestsSkipped": 1
   },
   "productionActivation": {
