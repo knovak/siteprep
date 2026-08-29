@@ -582,6 +582,40 @@ export class MemoryBookmarkStore {
     };
   }
 
+  removeTags(collectionId, {itemIds, tags, at, sessionId, actionId}) {
+    const session = this.session(collectionId, sessionId);
+    if (session.ended_at) throw new Error('The sitting has ended');
+    const wanted = [...new Set(tags.map(tag => String(tag).trim()).filter(Boolean))];
+    if (!wanted.length) throw new Error('Choose at least one tag');
+    const changes = [];
+    for (const id of [...new Set(itemIds)]) {
+      const item = this.#items.get(id);
+      if (!item || item.collection_id !== collectionId) throw new Error(`Unknown item in collection: ${id}`);
+      const stored = this.#tags.get(id);
+      const removed = wanted.filter(tag => stored.has(tag));
+      if (!removed.length) continue;
+      for (const tag of removed) stored.delete(tag);
+      changes.push({item_id: id, tags: removed});
+    }
+    if (changes.length) {
+      this.#actions.push({
+        id: actionId,
+        collection_id: collectionId,
+        session_id: sessionId,
+        action_kind: 'tag-remove',
+        payload: {changes},
+        created_at: at,
+        undone_at: null,
+      });
+    }
+    return {
+      kind: 'tag-remove',
+      changes: changes.map(change => ({item_id: change.item_id, removed_tags: [...change.tags]})),
+      backlog: this.countUntriagedItems(collectionId),
+      session: structuredClone(session),
+    };
+  }
+
   undoLast(collectionId, {sessionId, at}) {
     const session = this.session(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
@@ -599,6 +633,10 @@ export class MemoryBookmarkStore {
         const tags = this.#tags.get(change.item_id);
         for (const tag of change.tags) tags.delete(tag);
         restored.push({item_id: change.item_id, removed_tags: [...change.tags]});
+      } else if (action.action_kind === 'tag-remove') {
+        const tags = this.#tags.get(change.item_id);
+        for (const tag of change.tags) tags.add(tag);
+        restored.push({item_id: change.item_id, added_tags: [...change.tags]});
       } else {
         this.#items.set(change.item_id, {...item, verdict: change.verdict, verdict_at: change.verdict_at});
         restored.push({...change});

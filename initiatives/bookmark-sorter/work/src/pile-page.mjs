@@ -92,6 +92,14 @@ export function renderPilePage({isAdmin = false} = {}) {
     .selection-panel .primary { border-color: #234fc4; color: white; background: #234fc4; }
     .selection-panel .choice-action { color: #111; background: white; }
     .selection-panel .choice-action[data-selection-ready="true"] { border-color: #234fc4; color: white; background: #234fc4; }
+    .tag-control { min-width: 0; display: flex; align-items: stretch; }
+    .selection-panel .tag-control #tag-selection { flex: 1 1 auto; border-color: #b9c2d3; border-radius: 8px 0 0 8px; color: #111; background: white; }
+    .selection-panel .tag-control #tag-selection[data-tag-ready="true"] { border-color: #234fc4; color: white; background: #234fc4; }
+    .tag-mode-picker { position: relative; flex: 0 0 38px; min-height: 36px; display: grid; place-items: center; border: 1px solid #b9c2d3; border-left-color: #9eabc2; border-radius: 0 8px 8px 0; color: #111; background: white; cursor: pointer; }
+    .tag-mode-picker[data-tag-ready="true"] { border-color: #234fc4; border-left-color: #173b9c; color: white; background: #234fc4; }
+    .tag-mode-picker select { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; opacity: 0; border: 0; padding: 0; cursor: pointer; }
+    .tag-mode-picker:has(select:focus-visible) { outline: 2px solid #9bb4f4; outline-offset: 2px; }
+    .tag-mode-picker span { pointer-events: none; font-size: 1.05rem; }
     #selection-summary { grid-column: 3 / 5; overflow: hidden; color: #5f6b82; font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
     .page-controls { flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .toolbar { grid-row: 4; display: flex; align-items: center; gap: 7px; min-width: 0; overflow-x: auto; padding-bottom: 1px; }
@@ -164,6 +172,8 @@ export function renderPilePage({isAdmin = false} = {}) {
     .help-panel p, .help-panel li { color: #4d5870; font-size: .83rem; }
     .help-panel ul { margin: 6px 0; padding-left: 20px; }
     .help-panel code { border-radius: 4px; padding: 1px 4px; color: #243c72; background: #edf2ff; font-size: .78rem; }
+    .help-documentation { margin: 16px 0 0; }
+    .help-documentation a { color: #234fc4; font-weight: 760; text-underline-offset: 3px; }
     @media (max-width: 1100px) { :root { --columns: 4; --rows: 3; } .layout-picker { display: none; } .bookmark-card h2 { font-size: .98rem; } }
     @media (max-width: 1100px) and (orientation: portrait) { :root { --columns: 3; --rows: 3; } }
     @media (max-width: 640px) {
@@ -222,7 +232,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page. Use its arrow to choose <strong>Sweep all selected</strong>, which applies the verdict to the entire open selection after showing a confirmation count.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
-        <li><strong>Tag selection</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked.</li>
+        <li><strong>Tag items</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked. Use its arrow to choose <strong>Untag items</strong> and remove the entered tags from the same set.</li>
         <li><strong>Import</strong> accepts bookmark HTML or Sorter JSON through Choose File or the neighboring drop target. Dropping selects the file; Import file starts the write.</li>
         <li><strong>Open proposal / saved / previous</strong> is black on white until its chooser has a target, then white on blue.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
@@ -243,6 +253,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder names used by Automatic proposals.</li>
         <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses.</li>
       </ul>
+      <p class="help-documentation"><a href="https://knovak.github.io/siteprep/initiatives/bookmark-sorter/README.html" target="_blank" rel="noopener noreferrer">Full documentation</a></p>
     </aside>
     <aside id="tag-popover" class="tag-popover" role="note" aria-label="All tags" hidden></aside>
     <section class="collection-bar" aria-label="Collections">
@@ -310,7 +321,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         </div>
       </details>
       <details id="selector">
-        <summary>Select</summary>
+        <summary>Select and tag</summary>
         <section class="selection-panel" aria-label="Selection tools">
           <input id="selection-expression" aria-label="Selection expression" placeholder="folder:reading/* and not topic:rust">
           <button id="open-selection" class="primary" type="button">Open selection</button>
@@ -318,8 +329,17 @@ export function renderPilePage({isAdmin = false} = {}) {
           <button id="save-selection" type="button">Save</button>
           <select id="proposals" aria-label="Automatic proposals"><option value="">Automatic proposals</option></select>
           <button id="open-proposal" class="choice-action" data-selection-ready="false" type="button">Open proposal</button>
-          <input id="tag-input" aria-label="Tags to apply" placeholder="tag-one, tag-two">
-          <button id="tag-selection" type="button">Tag selection</button>
+          <input id="tag-input" aria-label="Tags to add" placeholder="tag-one, tag-two">
+          <div class="tag-control">
+            <button id="tag-selection" data-tag-ready="false" type="button">Tag items</button>
+            <label class="tag-mode-picker" data-tag-ready="false" title="Choose tag action">
+              <span aria-hidden="true">▾</span>
+              <select id="tag-mode" aria-label="Tag mode">
+                <option value="apply">Tag items</option>
+                <option value="remove">Untag items</option>
+              </select>
+            </label>
+          </div>
           <select id="saved-selections" aria-label="Saved selections"><option value="">Saved selections</option></select>
           <button id="open-saved" class="choice-action" data-selection-ready="false" type="button">Open saved</button>
           <select id="previous-selections" aria-label="Previous selections"><option value="">Previous selections</option></select>
@@ -380,7 +400,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       savedSelections: document.querySelector('#saved-selections'), openSaved: document.querySelector('#open-saved'),
       previousSelections: document.querySelector('#previous-selections'), openPrevious: document.querySelector('#open-previous'),
       proposals: document.querySelector('#proposals'), openProposal: document.querySelector('#open-proposal'),
-      tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'),
+      tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'), tagMode: document.querySelector('#tag-mode'), tagModePicker: document.querySelector('.tag-mode-picker'),
       sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'), sweepMode: document.querySelector('#sweep-mode'),
       selectionSummary: document.querySelector('#selection-summary'),
       collectionSelect: document.querySelector('#collection-select'), collectionKind: document.querySelector('#collection-kind'),
@@ -641,11 +661,11 @@ export function renderPilePage({isAdmin = false} = {}) {
 
     function fillProposalSelect(rows) {
       elements.proposals.replaceChildren(new Option('Automatic proposals', ''));
-      for (const kind of ['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title']) {
+      for (const kind of ['src', 'tag', 'verdict', 'error', 'folder', 'site', 'image', 'title']) {
         const matches = rows.filter(row => row.kind === kind);
         if (!matches.length) continue;
         const group = document.createElement('optgroup');
-        group.label = kind;
+        group.label = kind === 'error' ? 'errors' : kind;
         for (const row of matches) group.append(new Option(
           row.name + ' (' + row.count.toLocaleString() + ')', row.id,
         ));
@@ -788,14 +808,31 @@ export function renderPilePage({isAdmin = false} = {}) {
       updateSelectionActionStates();
     }
 
-    async function tagCurrentSelection() {
+    async function changeTagsOnCurrentSelection() {
       await startSession();
-      const tags = elements.tagInput.value.split(/[\s,]+/).filter(Boolean);
-      const body = {session_id: state.session.id, tags, expression: state.expression};
+      const tags = elements.tagInput.value.split(/[\\s,]+/).filter(Boolean);
+      const mode = elements.tagMode.value === 'remove' ? 'remove' : 'apply';
+      const body = {session_id: state.session.id, tags, expression: state.expression, mode};
       if (state.marked.size) body.item_ids = [...state.marked];
       const data = await api('/api/tag', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
-      elements.status.textContent = 'Added tags to ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' as one action.';
-      elements.tagInput.value = ''; clearMarks(); await loadWindow(state.offset); await loadSelectionTools();
+      const verb = mode === 'remove' ? 'Removed tags from ' : 'Added tags to ';
+      elements.status.textContent = verb + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' as one action.';
+      elements.tagInput.value = ''; updateTagActionState(); clearMarks(); await loadWindow(state.offset); await loadSelectionTools();
+    }
+
+    function updateTagActionState() {
+      const ready = Boolean(elements.tagInput.value.trim());
+      elements.tagSelection.dataset.tagReady = String(ready);
+      elements.tagModePicker.dataset.tagReady = String(ready);
+    }
+
+    function updateTagMode() {
+      const removing = elements.tagMode.value === 'remove';
+      elements.tagSelection.textContent = removing ? 'Untag items' : 'Tag items';
+      elements.tagSelection.title = removing
+        ? 'Remove the entered tags from marked items or the current selection'
+        : 'Add the entered tags to marked items or the current selection';
+      elements.tagInput.setAttribute('aria-label', removing ? 'Tags to remove' : 'Tags to add');
     }
 
     async function sweepCurrentPage() {
@@ -890,7 +927,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       const data = await api('/api/undo', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id})});
       state.backlog = data.backlog; state.session = data.session;
       elements.status.textContent = data.changes.length ? 'Undid the last action as one step.' : 'Nothing to undo.';
-      if (data.kind === 'tag-apply') await loadWindow(state.offset);
+      if (data.kind === 'tag-apply' || data.kind === 'tag-remove') await loadWindow(state.offset);
       else { patchChanges(data.changes); await refreshSelectionCounts(); }
     }
     async function toggleSession() {
@@ -992,7 +1029,9 @@ export function renderPilePage({isAdmin = false} = {}) {
         const changes = Array.isArray(action.payload?.changes) ? action.payload.changes.length : 0;
         const kind = action.action_kind === 'tag-apply'
           ? 'Tagged ' + changes.toLocaleString()
-          : verdictText(action.payload?.verdict) + ' for ' + changes.toLocaleString();
+          : action.action_kind === 'tag-remove'
+            ? 'Untagged ' + changes.toLocaleString()
+            : verdictText(action.payload?.verdict) + ' for ' + changes.toLocaleString();
         addText(elements.sittingActions, 'li', '', new Date(action.created_at).toLocaleString() + ' — ' + kind + (action.undone_at ? ' (undone)' : ''));
       }
       if (!report.actions.length) addText(elements.sittingActions, 'li', '', 'No actions recorded yet.');
@@ -1140,7 +1179,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
     for (const select of [elements.proposals, elements.savedSelections, elements.previousSelections]) select.addEventListener('change', updateSelectionActionStates);
-    elements.tagSelection.addEventListener('click', () => tagCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
+    elements.tagInput.addEventListener('input', updateTagActionState);
+    elements.tagSelection.addEventListener('click', () => changeTagsOnCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
+    elements.tagMode.addEventListener('change', updateTagMode);
     elements.sweepMode.addEventListener('change', updateSweepMode);
     elements.sweepRest.addEventListener('click', () => {
       const action = elements.sweepMode.value === 'selection' ? sweepEntireSelection : sweepCurrentPage;

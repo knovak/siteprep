@@ -81,6 +81,12 @@ test('the generated deployment migration creates the complete final schema', asy
     "INSERT INTO collections (id, name, owner_id, kind, created_at) VALUES ('private', 'Research queue', 'tester', 'private', '2026-08-19T00:00:02Z')",
   );
   assert.equal(database.prepare("SELECT COUNT(*) AS count FROM items WHERE collection_id = 'private'").get().count, 0);
+  database.exec(
+    "INSERT INTO triage_sessions (id, collection_id, started_at) VALUES ('session', 'pile', '2026-08-19T00:00:03Z')",
+  );
+  database.exec(
+    "INSERT INTO triage_actions (id, collection_id, session_id, action_kind, payload_json, created_at) VALUES ('untag', 'pile', 'session', 'tag-remove', '{\"changes\":[]}', '2026-08-19T00:00:04Z')",
+  );
 });
 
 test('the generated collection migration preserves an existing pile and its items', async () => {

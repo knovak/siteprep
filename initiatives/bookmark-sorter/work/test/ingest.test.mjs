@@ -125,6 +125,14 @@ test('the selection migration stores title keys and makes tag actions undoable',
   assert.match(sql, /PRAGMA optimize/);
 });
 
+test('the tag-removal migration permits undoable untag actions', async () => {
+  const sql = await readFile(fileURLToPath(new URL('../migrations/0009_tag_removal.sql', import.meta.url)), 'utf8');
+  assert.match(sql, /'verdict', 'tag-apply', 'tag-remove'/);
+  assert.match(sql, /INSERT INTO triage_actions_next/);
+  assert.match(sql, /idx_triage_actions_session_active/);
+  assert.match(sql, /PRAGMA optimize/);
+});
+
 test('the identity migration pins one personal pile and the collection menu indexes', async () => {
   const sql = await readFile(fileURLToPath(new URL('../migrations/0005_identity_collections.sql', import.meta.url)), 'utf8');
   assert.match(sql, /CREATE UNIQUE INDEX idx_collections_owner_personal/);

@@ -86,6 +86,9 @@ async function installPile(page) {
         {id: 'verdict:not-junk', kind: 'verdict', name: 'not junk', expression: 'not verdict:junk', count: 10_000},
         {id: 'verdict:untriaged', kind: 'verdict', name: 'untriaged', expression: 'verdict:untriaged', count: 10_000},
         {id: 'verdict:untriaged-or-needs-time', kind: 'verdict', name: 'untriaged or needs-time', expression: 'verdict:untriaged or verdict:needs-time', count: 10_000},
+        {id: 'error:any', kind: 'error', name: 'any error', expression: 'err:*', count: 3},
+        {id: 'error:err:404', kind: 'error', name: 'err:404', expression: 'tag-key:err%3A404', count: 2},
+        {id: 'error:err:timeout', kind: 'error', name: 'err:timeout', expression: 'tag-key:err%3Atimeout', count: 1},
       ]}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/session') {
@@ -184,6 +187,32 @@ async function installPile(page) {
       backend.session.items_judged += changes.length;
       return route.fulfill({json: {
         changes: changes.map(change => ({item_id: change.item_id, verdict: body.verdict, verdict_at: new Date().toISOString()})),
+        backlog: backend.items.filter(item => !item.verdict).length,
+        session: backend.session,
+      }});
+    }
+    if (request.method() === 'POST' && url.pathname === '/api/tag') {
+      const mode = body.mode === 'remove' ? 'remove' : 'apply';
+      const itemIds = Array.isArray(body.item_ids) && body.item_ids.length
+        ? body.item_ids
+        : backend.items.map(item => item.id);
+      const requestedTags = [...new Set(body.tags || [])];
+      const changes = [];
+      for (const itemId of itemIds) {
+        const item = backend.items.find(candidate => candidate.id === itemId);
+        if (!item) continue;
+        const changedTags = requestedTags.filter(tag => mode === 'remove' ? item.tags.includes(tag) : !item.tags.includes(tag));
+        if (!changedTags.length) continue;
+        item.tags = mode === 'remove'
+          ? item.tags.filter(tag => !changedTags.includes(tag))
+          : [...item.tags, ...changedTags];
+        changes.push(mode === 'remove'
+          ? {item_id: itemId, removed_tags: changedTags}
+          : {item_id: itemId, added_tags: changedTags});
+      }
+      return route.fulfill({json: {
+        kind: mode === 'remove' ? 'tag-remove' : 'tag-apply',
+        changes,
         backlog: backend.items.filter(item => !item.verdict).length,
         session: backend.session,
       }});
@@ -503,6 +532,10 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('exact folder names');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
   await expect(page.locator('#help-panel')).toContainText('image:present');
+  const documentation = page.getByRole('link', {name: 'Full documentation'});
+  await expect(documentation).toHaveAttribute('href', 'https://knovak.github.io/siteprep/initiatives/bookmark-sorter/README.html');
+  await expect(documentation).toHaveAttribute('target', '_blank');
+  await expect(documentation).toHaveAttribute('rel', 'noopener noreferrer');
   await page.keyboard.press('Escape');
   await expect(page.locator('#help-panel')).toBeHidden();
 
@@ -637,12 +670,15 @@ test('Automatic proposals are grouped in the requested order without Same labels
   await page.setViewportSize({width: 1600, height: 900});
   await installPile(page);
   await page.goto('https://pile.test/');
-  await expect(page.locator('#proposals optgroup')).toHaveCount(6);
+  await expect(page.locator('#proposals optgroup')).toHaveCount(7);
   const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
-  expect(labels).toEqual(['src', 'tag', 'verdict', 'folder', 'site', 'image']);
+  expect(labels).toEqual(['src', 'tag', 'verdict', 'errors', 'folder', 'site', 'image']);
   await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(7);
   const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
   expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'not junk (10,000)', 'untriaged (10,000)', 'untriaged or needs-time (10,000)']);
+  const errorLabels = await page.locator('#proposals optgroup[label="errors"] option').allTextContents();
+  expect(errorLabels).toEqual(['any error (3)', 'err:404 (2)', 'err:timeout (1)']);
+  await expect(page.locator('#proposals optgroup[label="tag"]')).not.toContainText('err:');
   await expect(page.locator('#proposals')).not.toContainText('Same ');
 });
 
@@ -765,4 +801,47 @@ test('sweep scope dropdown switches the action to the entire current selection',
   await expect(page.locator('#status')).toHaveText('Applied the verdict to all 4 items in the current selection.');
   expect(prompt).toContain('Apply Junk to all 4 items in the current selection?');
   expect(backend.items.every(item => item.verdict === 'junk')).toBe(true);
+});
+
+test('tag dropdown toggles between adding and removing tags from the current selection', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.items = backend.items.slice(0, 4);
+  await page.goto('https://pile.test/');
+  await page.locator('#selector > summary').click();
+
+  await expect(page.locator('#selector > summary')).toHaveText('Select and tag');
+  await expect(page.locator('#tag-selection')).toHaveText('Tag items');
+  await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to add');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(17, 17, 17)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(17, 17, 17)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await page.locator('#tag-input').fill('test-tag');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+  await page.locator('#tag-selection').click();
+  await expect(page.locator('#status')).toHaveText('Added tags to 4 items as one action.');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  expect(backend.items.every(item => item.tags.includes('test-tag'))).toBe(true);
+  expect(backend.items.every(item => !item.tags.includes('te') && !item.tags.includes('t-tag'))).toBe(true);
+
+  await page.getByLabel('Tag mode').selectOption('remove');
+  await expect(page.locator('#tag-selection')).toHaveText('Untag items');
+  await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to remove');
+  await page.locator('#tag-input').fill('test-tag');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
+  await page.locator('#tag-selection').click();
+  await expect(page.locator('#status')).toHaveText('Removed tags from 4 items as one action.');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  expect(backend.items.every(item => !item.tags.includes('test-tag'))).toBe(true);
+
+  await page.getByLabel('Tag mode').selectOption('apply');
+  await expect(page.locator('#tag-selection')).toHaveText('Tag items');
 });

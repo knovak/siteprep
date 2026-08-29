@@ -13,9 +13,9 @@
         "slug": "bookmark-sorter-end-user-test",
         "url": "https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/",
         "access": "public",
-        "deployed_at": "2026-08-26T07:33:30Z",
-        "version": 28,
-        "commit": "c7a37a3656f99b2ed51c79fe0782c5f5e179cf92"
+        "deployed_at": "2026-08-29T20:34:45Z",
+        "version": 30,
+        "commit": "5f21b12736a5dec880f77262fcfad6d9416c9b28"
       },
       "prod": {
         "slug": "bookmark-sorter",

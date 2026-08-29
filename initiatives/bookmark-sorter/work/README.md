@@ -41,6 +41,8 @@ selection, and export operations.
 - `migrations/0008_authorized_user_identity.sql` adds the optional Site user id
   link. The first authorized email match stores that Site-specific id, and a
   unique partial index permits later admission by either value.
+- `migrations/0009_tag_removal.sql` adds undoable tag-removal actions while
+  preserving existing verdict and tag-addition history.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -160,7 +162,8 @@ Apply `migrations/0001_core.sql`, `migrations/0002_triage.sql`,
 `migrations/0003_captures.sql`, `migrations/0004_selections.sql`, then
 `migrations/0005_identity_collections.sql`, `migrations/0006_private_collections.sql`,
 `migrations/0007_authorized_users_history.sql`, and
-`migrations/0008_authorized_user_identity.sql`.
+`migrations/0008_authorized_user_identity.sql`, then
+`migrations/0009_tag_removal.sql`.
 Bind that database to the Worker as
 `DB` and the capture bucket as `CAPTURES`. ChatGPT Sites supplies the opaque id
 and email after Sign in with ChatGPT. Missing either produces the sign-in page
@@ -204,7 +207,7 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
 - `.openai/hosting.json` declares D1 as `DB` and R2 as `CAPTURES`. The first
   test deployment intentionally left R2 `null`; the user approved the storage
   limits on 2026-08-20, so later versions keep the capture binding declared.
-- `db/schema.ts` is the deployable final form of migrations 0001–0008. The
+- `db/schema.ts` is the deployable final form of migrations 0001–0009. The
   generated `drizzle/` migration is packaged with a Site version and creates the
   same tables, constraints, and query indexes on a fresh D1 database.
 - `worker/index.ts` passes `/` and `/api/*` to the existing application and
@@ -278,12 +281,14 @@ collection creation.
   `authorized_user`. Both routes require the matched row to have type `admin`;
   the same check gates Admin rendering, capture operations, and ending a
   sitting.
-- `GET /api/proposals` recomputes source, exact-tag, verdict, folder, site,
-  image, and near-title groups as ordinary pre-filled selections. The five
+- `GET /api/proposals` recomputes source, exact-tag, verdict, capture-error,
+  folder, site, image, and near-title groups as ordinary pre-filled selections.
+  `err:` tags are excluded from the ordinary tag group and instead appear in
+  the error group, along with an **any error** proposal using `err:*`. The five
   individual verdict expressions and the combined **not junk** and
   **untriaged or needs-time** expressions are always present, including
   zero-count individual values. The interface groups source, tag, verdict,
-  folder, site, and image in that order,
+  errors, folder, site, and image in that order,
   with title last for the retained near-title feature, and alphabetizes each
   group. Folder and tag groups therefore change on the request after tags
   change; no proposal cache can go stale. The page explicitly reloads proposals
@@ -291,9 +296,13 @@ collection creation.
   if the user has already switched collections again. Card-window requests use
   the same collection guard, so a slower response cannot replace the newly
   selected collection's grid.
-- `POST /api/tag` unions tags onto the marked set or current selection and logs
-  only the tags it added, so one undo removes those additions and preserves
-  everything that existed before the action.
+- `POST /api/tag` accepts `mode: "apply"` (the default) or `mode: "remove"` for
+  the marked set or current selection. It logs only the tags actually added or
+  removed, so one undo reverses exactly that action and preserves everything
+  else. The split action is black on white while its tag field is empty and
+  white on blue when entered text makes it ready. The client separates entered
+  tags only on commas or whitespace, preserving punctuation such as hyphens
+  inside a tag.
 - `POST /api/selection/verdict` applies one verdict to the entire open
   expression. An unconfirmed request returns `409` with its count; the split
   Sweep control confirms that count before retrying. The default visible-page

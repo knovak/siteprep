@@ -904,6 +904,57 @@ export class D1BookmarkStore {
     };
   }
 
+  async removeTags(collectionId, {itemIds, tags, at, sessionId, actionId}) {
+    await this.assertCollectionWritable(collectionId);
+    const session = await this.getSession(collectionId, sessionId);
+    if (session.ended_at) throw new Error('The sitting has ended');
+    const ids = [...new Set(itemIds)];
+    const wanted = [...new Set(tags.map(tag => String(tag).trim()).filter(Boolean))];
+    if (!ids.length) throw new Error('At least one item is required');
+    if (!wanted.length) throw new Error('Choose at least one tag');
+
+    const found = new Set();
+    const existing = new Map(ids.map(id => [id, new Set()]));
+    for (const batch of chunks(ids, this.batchSize)) {
+      const placeholders = batch.map(() => '?').join(', ');
+      const rows = await this.db.prepare(
+        `SELECT i.id, t.tag FROM items i LEFT JOIN tags t ON t.item_id = i.id
+         WHERE i.collection_id = ? AND i.id IN (${placeholders})`,
+      ).bind(collectionId, ...batch).all();
+      for (const row of rows.results ?? []) {
+        found.add(row.id);
+        if (row.tag !== null && row.tag !== undefined) existing.get(row.id).add(row.tag);
+      }
+    }
+    for (const id of ids) if (!found.has(id)) throw new Error(`Unknown item in collection: ${id}`);
+
+    const changes = ids.map(id => ({item_id: id, tags: wanted.filter(tag => existing.get(id).has(tag))})).filter(change => change.tags.length);
+    if (changes.length) {
+      const statements = [];
+      for (const tag of wanted) {
+        for (const batch of chunks(changes.filter(change => change.tags.includes(tag)).map(change => change.item_id), this.batchSize)) {
+          if (!batch.length) continue;
+          const placeholders = batch.map(() => '?').join(', ');
+          statements.push(this.db.prepare(
+            `DELETE FROM tags WHERE tag = ? AND item_id IN (${placeholders})`,
+          ).bind(tag, ...batch));
+        }
+      }
+      statements.push(this.db.prepare(
+        `INSERT INTO triage_actions
+         (id, collection_id, session_id, action_kind, payload_json, created_at, undone_at)
+         VALUES (?, ?, ?, 'tag-remove', ?, ?, NULL)`,
+      ).bind(actionId, collectionId, sessionId, JSON.stringify({changes}), at));
+      await this.db.batch(statements);
+    }
+    return {
+      kind: 'tag-remove',
+      changes: changes.map(change => ({item_id: change.item_id, removed_tags: change.tags})),
+      backlog: await this.countUntriagedItems(collectionId),
+      session: await this.getSession(collectionId, sessionId),
+    };
+  }
+
   async undoLast(collectionId, {sessionId, at}) {
     await this.assertCollectionWritable(collectionId);
     const session = await this.getSession(collectionId, sessionId);
@@ -920,9 +971,14 @@ export class D1BookmarkStore {
       ? changes.flatMap(change => change.tags.map(tag => this.db.prepare(
         'DELETE FROM tags WHERE item_id = ? AND tag = ?',
       ).bind(change.item_id, tag)))
-      : changes.map(change => this.db.prepare(
-        'UPDATE items SET verdict = ?, verdict_at = ? WHERE id = ? AND collection_id = ?',
-      ).bind(change.verdict, change.verdict_at, change.item_id, collectionId));
+      : action.action_kind === 'tag-remove'
+        ? changes.flatMap(change => change.tags.map(tag => this.db.prepare(
+          `INSERT OR IGNORE INTO tags (item_id, tag)
+           SELECT id, ? FROM items WHERE collection_id = ? AND id = ?`,
+        ).bind(tag, collectionId, change.item_id)))
+        : changes.map(change => this.db.prepare(
+          'UPDATE items SET verdict = ?, verdict_at = ? WHERE id = ? AND collection_id = ?',
+        ).bind(change.verdict, change.verdict_at, change.item_id, collectionId));
     statements.push(this.db.prepare(
       'UPDATE triage_actions SET undone_at = ? WHERE id = ? AND collection_id = ?',
     ).bind(at, action.id, collectionId));
@@ -938,7 +994,9 @@ export class D1BookmarkStore {
       kind: action.action_kind,
       changes: action.action_kind === 'tag-apply'
         ? changes.map(change => ({item_id: change.item_id, removed_tags: change.tags}))
-        : changes,
+        : action.action_kind === 'tag-remove'
+          ? changes.map(change => ({item_id: change.item_id, added_tags: change.tags}))
+          : changes,
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };

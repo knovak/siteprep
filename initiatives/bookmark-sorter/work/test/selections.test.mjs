@@ -5,9 +5,9 @@ import {MemoryBookmarkStore} from '../src/memory-store.mjs';
 import {compileSelection, evaluateSelection, normaliseTitle, proposeSelections, wrapUiSelection} from '../src/selections.mjs';
 
 const items = [
-  {id: 'a', collection_id: 'alpha', url: 'https://news.test/one', title: 'Rust: A Guide!', title_key: normaliseTitle('Rust: A Guide!'), tags: ['topic:rust', 'src:safari', 'folder:reading/rust']},
-  {id: 'b', collection_id: 'alpha', url: 'https://news.test/two', title: 'Rust — A Guide', title_key: normaliseTitle('Rust — A Guide'), tags: ['topic:rust', 'saved:later', 'src:safari', 'folder:reading/rust']},
-  {id: 'c', collection_id: 'alpha', url: 'https://other.test/three', title: 'Gardens', title_key: normaliseTitle('Gardens'), tags: ['topic:garden', 'saved:later', 'src:firefox', 'folder:reading/garden']},
+  {id: 'a', collection_id: 'alpha', url: 'https://news.test/one', title: 'Rust: A Guide!', title_key: normaliseTitle('Rust: A Guide!'), tags: ['topic:rust', 'src:safari', 'folder:reading/rust', 'err:404']},
+  {id: 'b', collection_id: 'alpha', url: 'https://news.test/two', title: 'Rust — A Guide', title_key: normaliseTitle('Rust — A Guide'), tags: ['topic:rust', 'saved:later', 'src:safari', 'folder:reading/rust', 'err:404']},
+  {id: 'c', collection_id: 'alpha', url: 'https://other.test/three', title: 'Gardens', title_key: normaliseTitle('Gardens'), tags: ['topic:garden', 'saved:later', 'src:firefox', 'folder:reading/garden', 'err:timeout']},
   {id: 'd', collection_id: 'beta', url: 'https://news.test/four', title: 'Rust A Guide', title_key: normaliseTitle('Rust A Guide'), tags: ['topic:rust', 'src:firefox', 'folder:reading/rust']},
 ];
 
@@ -63,6 +63,7 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   const tag = first.find(proposal => proposal.id === 'tag:topic:rust');
   const image = first.find(proposal => proposal.id === 'image:none');
   const verdicts = first.filter(proposal => proposal.kind === 'verdict');
+  const errors = first.filter(proposal => proposal.kind === 'error');
   assert.equal(site.count, 3);
   assert.equal(title.count, 3);
   assert.equal(folder.count, 3);
@@ -72,12 +73,18 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   assert.deepEqual(verdicts.map(proposal => [proposal.name, proposal.count]), [
     ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['not junk', 4], ['untriaged', 4], ['untriaged or needs-time', 4],
   ]);
-  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title']);
+  assert.deepEqual(errors.map(proposal => [proposal.name, proposal.count]), [
+    ['any error', 3], ['err:404', 2], ['err:timeout', 1],
+  ]);
+  assert.equal(first.some(proposal => proposal.kind === 'tag' && proposal.name.startsWith('err:')), false);
+  assert.deepEqual([...new Set(first.map(proposal => proposal.kind))], ['src', 'tag', 'verdict', 'error', 'folder', 'site', 'image', 'title']);
   assert.ok(first.every(proposal => !proposal.name.startsWith('Same ')));
   assert.deepEqual(evaluateSelection(items, site.expression).map(item => item.id), ['a', 'b', 'd']);
   assert.deepEqual(evaluateSelection(items, tag.expression).map(item => item.id), ['a', 'b', 'd']);
   assert.deepEqual(evaluateSelection(items, verdicts.at(-1).expression).map(item => item.id), ['a', 'b', 'c', 'd']);
   assert.deepEqual(evaluateSelection(items, verdicts.find(proposal => proposal.name === 'not junk').expression).map(item => item.id), ['a', 'b', 'c', 'd']);
+  assert.deepEqual(evaluateSelection(items, errors.find(proposal => proposal.name === 'any error').expression).map(item => item.id), ['a', 'b', 'c']);
+  assert.deepEqual(evaluateSelection(items, errors.find(proposal => proposal.name === 'err:404').expression).map(item => item.id), ['a', 'b']);
 
   const changed = structuredClone(items);
   changed[1].tags = ['topic:rust', 'saved:later', 'folder:reading/changed'];
@@ -108,6 +115,14 @@ test('saved selections, additive tags, mark-then-sweep, and one-action undo shar
   const tagUndo = store.undoLast('pile', {sessionId: session.id, at: '2026-08-18T12:02:00Z'});
   assert.equal(tagUndo.kind, 'tag-apply');
   assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('cluster:large')).length, 0);
+  assert.ok(store.listAllItems('pile').every(item => item.tags.includes('existing')));
+
+  const untagged = store.removeTags('pile', {itemIds: selected.map(item => item.id), tags: ['existing', 'missing'], at: '2026-08-18T12:02:30Z', sessionId: session.id, actionId: 'tag-remove-1'});
+  assert.equal(untagged.kind, 'tag-remove');
+  assert.equal(untagged.changes.length, 40);
+  assert.ok(selected.every(item => !store.listAllItems('pile').find(candidate => candidate.id === item.id).tags.includes('existing')));
+  const untagUndo = store.undoLast('pile', {sessionId: session.id, at: '2026-08-18T12:02:45Z'});
+  assert.equal(untagUndo.kind, 'tag-remove');
   assert.ok(store.listAllItems('pile').every(item => item.tags.includes('existing')));
 
   const marked = new Set(selected.slice(0, 4).map(item => item.id));

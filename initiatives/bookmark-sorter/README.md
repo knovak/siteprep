@@ -185,7 +185,7 @@ the deployed version.
 
 ## Finding and grouping bookmarks
 
-Open **Select** to use any of four routes:
+Open **Select and tag** to use any of four routes:
 
 1. Type an expression and choose **Open selection**.
 2. Choose an **Automatic proposal**, then choose **Open proposal**.
@@ -202,10 +202,15 @@ in **Previous selections** for the signed-in user, newest first. History is
 deduplicated and follows the user across collections. To make a reusable named
 selection, open an expression, enter a selection name, and choose **Save**.
 
-Enter comma- or space-separated tags in **Tags to apply** and choose **Tag
-selection** to add them to the marked set, or to the current open selection when
-nothing is marked. Imported and existing tags are preserved; tagging adds
-rather than replaces.
+Enter comma- or space-separated tags and choose **Tag items** to add them to the
+marked set, or to the current open selection when nothing is marked. Use the
+attached arrow to switch the same button to **Untag items** and remove those
+tags from that set. Both actions are recorded as one step, so **Undo** reverses
+the whole tag or untag operation. Adding preserves every existing tag that was
+not entered; removing preserves every tag that was not entered.
+
+The Tag/Untag control is black on white while the tag field is empty. It turns
+white on blue after text is entered, showing that the action is ready.
 
 ### Selection expressions
 
@@ -234,9 +239,11 @@ Useful generated or synthetic values include:
   `verdict:needs-time`, or `verdict:untriaged`.
 
 Automatic proposals group the current collection by source, exact tag,
-verdict, folder, site, image state, and near-identical title. They are computed
-from current collection data, so imports and tag changes can change the offered
-groups.
+verdict, capture error, folder, site, image state, and near-identical title.
+Capture errors have their own section after Verdict, with one proposal for
+every `err:` tag and an **any error** proposal for `err:*`; they do not also
+appear among ordinary tags. Proposals are computed from current collection
+data, so imports and tag changes can change the offered groups.
 
 ## Collections and demo templates
 
@@ -411,3 +418,38 @@ file with the tags you just created.
 ```
 
 Save the resulting file, then use the app's **Import** command to add the tags.
+
+## Importing lists of open tabs
+
+To collect all the tabs open in Safari on other devices, the method that worked
+was a read-only snapshot of Safari’s iCloud Tabs database.
+
+1. ChatGPT opened Safari’s Start Page and confirmed the two synced device
+   groups: Ken 11 and Ken iPad 8g.
+2. Safari stores their synced tabs in:
+   `~/Library/Containers/com.apple.Safari/Data/Library/Safari/CloudTabs.db`
+3. macOS blocked direct terminal access, so ChatGPT used Finder to copy that
+   database into a temporary folder.
+4. ChatGPT opened the copy as an immutable SQLite database and joined:
+   - `cloud_tabs` for each title, full URL, and tab position;
+   - `cloud_tab_devices` for the device name.
+5. ChatGPT converted those rows into `bookmark-sorter/v1`, using the device
+   name as each bookmark’s tag.
+6. ChatGPT validated the JSON with Bookmark Sorter’s importer, then deleted the
+   temporary database copy.
+
+It worked because Safari’s database contained the complete URLs and device
+attribution, while the visible Start Page often exposed only titles and
+domains.
+
+For Chrome, navigate to the list of tabs on other devices. Click into a single
+device’s list, then use Select All and Copy. Paste the result into any document.
+One good approach is to paste it into a Google Doc, then use Select All and
+Copy as Markdown. Paste that Markdown directly into ChatGPT and ask ChatGPT to
+convert it to Bookmark Sorter’s importer JSON format.
+
+Before conversion, confirm that the copied Markdown contains a full link
+destination for every tab. Chrome’s copied synced-tab text can sometimes retain
+titles or domains while omitting hidden URLs; when that happens, recover the
+links from a native browser source or snapshot before treating the import as
+complete.

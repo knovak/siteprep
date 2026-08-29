@@ -217,11 +217,16 @@ class FakeD1Database {
         }
       } else if (statement.sql.startsWith('INSERT INTO triage_actions')) {
         const [id, collection_id, session_id, payload_json, created_at] = statement.values;
-        const action_kind = statement.sql.includes("'tag-apply'") ? 'tag-apply' : 'verdict';
+        const action_kind = statement.sql.includes("'tag-apply'") ? 'tag-apply' : statement.sql.includes("'tag-remove'") ? 'tag-remove' : 'verdict';
         this.actions.set(id, {id, collection_id, session_id, action_kind, payload_json, created_at, undone_at: null});
       } else if (statement.sql.startsWith('DELETE FROM tags')) {
-        const [itemId, tag] = statement.values;
-        this.tags.get(itemId).delete(tag);
+        if (statement.sql.includes('item_id IN')) {
+          const [tag, ...itemIds] = statement.values;
+          for (const itemId of itemIds) this.tags.get(itemId).delete(tag);
+        } else {
+          const [itemId, tag] = statement.values;
+          this.tags.get(itemId).delete(tag);
+        }
       } else if (statement.sql.startsWith('UPDATE triage_sessions SET items_judged = items_judged +')) {
         const [amount, id, collection_id] = statement.values;
         const session = this.sessions.get(id);
@@ -342,6 +347,17 @@ test('D1 saved selections and additive tag actions round-trip and undo only thei
   const undone = await store.undoLast('pile', {sessionId: session.id, at: '2026-08-18T12:02:00Z'});
   assert.equal(undone.kind, 'tag-apply');
   assert.ok((await store.listItems('pile')).every(item => !item.tags.includes('cluster:examples')));
+  assert.ok((await store.listItems('pile')).every(item => item.tags.includes('src:chrome-export')));
+
+  const removed = await store.removeTags('pile', {
+    itemIds: items.slice(0, 2).map(item => item.id), tags: ['src:chrome-export', 'missing'],
+    at: '2026-08-18T12:03:00Z', sessionId: session.id, actionId: 'untag-action',
+  });
+  assert.equal(removed.kind, 'tag-remove');
+  assert.equal(removed.changes.length, 2);
+  assert.ok((await store.listItems('pile')).slice(0, 2).every(item => !item.tags.includes('src:chrome-export')));
+  const removalUndo = await store.undoLast('pile', {sessionId: session.id, at: '2026-08-18T12:04:00Z'});
+  assert.equal(removalUndo.kind, 'tag-remove');
   assert.ok((await store.listItems('pile')).every(item => item.tags.includes('src:chrome-export')));
 });
 

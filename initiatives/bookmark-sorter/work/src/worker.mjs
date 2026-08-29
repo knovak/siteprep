@@ -451,11 +451,14 @@ export function createPileApp({
         if (request.method === 'POST' && url.pathname === '/api/tag') {
           const body = await requestJson(request);
           if (!body.session_id) throw new Error('Session id is required');
+          const mode = String(body.mode || 'apply');
+          if (mode !== 'apply' && mode !== 'remove') throw new Error(`Unsupported tag mode: ${mode}`);
           const tags = Array.isArray(body.tags) ? body.tags : String(body.tags || '').split(/[\s,]+/);
           const items = Array.isArray(body.item_ids) && body.item_ids.length
             ? body.item_ids
             : (await selectedItems(store, collectionId, String(body.expression || ''))).map(item => item.id);
-          return json(await store.applyTags(collectionId, {
+          const updateTags = mode === 'remove' ? store.removeTags.bind(store) : store.applyTags.bind(store);
+          return json(await updateTags(collectionId, {
             itemIds: items,
             tags,
             at: now().toISOString(),
