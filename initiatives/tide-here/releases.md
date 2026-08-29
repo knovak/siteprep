@@ -3,6 +3,18 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-08-29 — ChatGPT Site — version 6
+
+<https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>
+
+Released `31abfbb` · 3 commit(s) since the previous release · test last deployed 2026-08-28 at `946737c`.
+
+Changes since the previous release, in `initiatives/tide-here/work`:
+
+- Expand Australian Standard Port coverage (#361)
+- Make Tide Here Sites test environment-independent (#358)
+- Build Tide Here global coverage and activate licensed Australian tides (#350)
+
 ## 2026-08-27 — ChatGPT Site — version 5
 
 <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>

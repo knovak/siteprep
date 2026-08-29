@@ -180,3 +180,7 @@ Expanded the licensed 2026 Bureau catalogue from 23 to all 76 listed Standard Po
 ## 2026-08-29 — Reconcile coverage and deployment documentation
 
 Replaced the superseded inline-help proposal with current user guidance: distinguished the production and test provider reach, documented the 23-port live versus 76-port pending Australian catalogues, and described the Sites gateway and privacy boundary. Updated the optional improvement menu without changing the permission-blocked test deployment item.
+
+## 2026-08-29 — Release
+
+Released to production — ChatGPT Site, version 6, `31abfbb`. 3 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
