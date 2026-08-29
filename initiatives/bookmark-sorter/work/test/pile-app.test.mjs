@@ -61,6 +61,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, />Load a copy</);
   assert.match(html, /id="sweep-mode"/);
   assert.match(html, />Sweep all selected</);
+  assert.match(html, /id="tag-mode"/);
+  assert.match(html, />Tag items</);
+  assert.match(html, />Untag items</);
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
@@ -197,6 +200,19 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   }))).json();
   assert.equal(tagUndo.kind, 'tag-apply');
   assert.ok(store.listAllItems('pile').every(item => !item.tags.includes('cluster:example')));
+
+  const untagged = await (await app.fetch(new Request('https://pile.test/api/tag', {
+    method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({session_id: session.id, expression: 'site:example.com', tags: ['src:chrome-export'], mode: 'remove'}),
+  }))).json();
+  assert.equal(untagged.kind, 'tag-remove');
+  assert.equal(untagged.changes.length, 2);
+  assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('src:chrome-export')).length, 1);
+  const untagUndo = await (await app.fetch(new Request('https://pile.test/api/undo', {
+    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: session.id}),
+  }))).json();
+  assert.equal(untagUndo.kind, 'tag-remove');
+  assert.ok(store.listAllItems('pile').every(item => item.tags.includes('src:chrome-export')));
 
   const visible = await app.fetch(new Request('https://pile.test/api/selection/verdict', {
     method: 'POST', headers: {'content-type': 'application/json'},

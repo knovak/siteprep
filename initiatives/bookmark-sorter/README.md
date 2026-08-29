@@ -202,10 +202,12 @@ in **Previous selections** for the signed-in user, newest first. History is
 deduplicated and follows the user across collections. To make a reusable named
 selection, open an expression, enter a selection name, and choose **Save**.
 
-Enter comma- or space-separated tags in **Tags to apply** and choose **Tag
-selection** to add them to the marked set, or to the current open selection when
-nothing is marked. Imported and existing tags are preserved; tagging adds
-rather than replaces.
+Enter comma- or space-separated tags and choose **Tag items** to add them to the
+marked set, or to the current open selection when nothing is marked. Use the
+attached arrow to switch the same button to **Untag items** and remove those
+tags from that set. Both actions are recorded as one step, so **Undo** reverses
+the whole tag or untag operation. Adding preserves every existing tag that was
+not entered; removing preserves every tag that was not entered.
 
 ### Selection expressions
 

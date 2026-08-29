@@ -123,7 +123,7 @@ export const triageActions = sqliteTable("triage_actions", {
   createdAt: text("created_at").notNull(),
   undoneAt: text("undone_at"),
 }, table => [
-  check("triage_actions_kind_check", sql`${table.actionKind} in ('verdict', 'tag-apply')`),
+  check("triage_actions_kind_check", sql`${table.actionKind} in ('verdict', 'tag-apply', 'tag-remove')`),
   index("idx_triage_actions_session_active").on(table.sessionId, table.createdAt).where(sql`${table.undoneAt} is null`),
 ]);
 

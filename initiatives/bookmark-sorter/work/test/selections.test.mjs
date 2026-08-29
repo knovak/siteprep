@@ -110,6 +110,14 @@ test('saved selections, additive tags, mark-then-sweep, and one-action undo shar
   assert.equal(store.listAllItems('pile').filter(item => item.tags.includes('cluster:large')).length, 0);
   assert.ok(store.listAllItems('pile').every(item => item.tags.includes('existing')));
 
+  const untagged = store.removeTags('pile', {itemIds: selected.map(item => item.id), tags: ['existing', 'missing'], at: '2026-08-18T12:02:30Z', sessionId: session.id, actionId: 'tag-remove-1'});
+  assert.equal(untagged.kind, 'tag-remove');
+  assert.equal(untagged.changes.length, 40);
+  assert.ok(selected.every(item => !store.listAllItems('pile').find(candidate => candidate.id === item.id).tags.includes('existing')));
+  const untagUndo = store.undoLast('pile', {sessionId: session.id, at: '2026-08-18T12:02:45Z'});
+  assert.equal(untagUndo.kind, 'tag-remove');
+  assert.ok(store.listAllItems('pile').every(item => item.tags.includes('existing')));
+
   const marked = new Set(selected.slice(0, 4).map(item => item.id));
   const rest = selected.filter(item => !marked.has(item.id));
   const swept = store.applyVerdict('pile', {itemIds: rest.map(item => item.id), verdict: 'junk', at: '2026-08-18T12:03:00Z', sessionId: session.id, actionId: 'sweep-1'});

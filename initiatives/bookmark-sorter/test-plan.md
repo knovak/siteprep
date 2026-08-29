@@ -161,6 +161,7 @@ sweep a verdict across the result).
 | Scope wrapping | Every selection made through the UI is wrapped `collection:<current> and ( … )`; no user-typed expression can reach another collection's items | §8.1, O8 |
 | One evaluator | The administrative unwrapped path and the UI path are the same function with a different argument | §8.1 |
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
+| `tag-remove` on a selection | Removes only the named tags from every member that has them; one undo restores exactly those removals | O6 |
 | **No confirmation on the visible page sweep** | Sweep untriaged changes only untriaged cards on the visible page, asks nothing, and advances one page | §8.3, O3 |
 | Confirmation on the unbounded path | Sweep all selected asks first, shows the full selection count, and changes items across virtual pages only after confirmation | §8.3 |
 | Mark then sweep | A verdict applies to the marked exceptions as one action; the following untriaged page sweep does not overwrite them | §7.1 |

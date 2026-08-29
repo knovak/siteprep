@@ -188,6 +188,32 @@ async function installPile(page) {
         session: backend.session,
       }});
     }
+    if (request.method() === 'POST' && url.pathname === '/api/tag') {
+      const mode = body.mode === 'remove' ? 'remove' : 'apply';
+      const itemIds = Array.isArray(body.item_ids) && body.item_ids.length
+        ? body.item_ids
+        : backend.items.map(item => item.id);
+      const requestedTags = [...new Set(body.tags || [])];
+      const changes = [];
+      for (const itemId of itemIds) {
+        const item = backend.items.find(candidate => candidate.id === itemId);
+        if (!item) continue;
+        const changedTags = requestedTags.filter(tag => mode === 'remove' ? item.tags.includes(tag) : !item.tags.includes(tag));
+        if (!changedTags.length) continue;
+        item.tags = mode === 'remove'
+          ? item.tags.filter(tag => !changedTags.includes(tag))
+          : [...item.tags, ...changedTags];
+        changes.push(mode === 'remove'
+          ? {item_id: itemId, removed_tags: changedTags}
+          : {item_id: itemId, added_tags: changedTags});
+      }
+      return route.fulfill({json: {
+        kind: mode === 'remove' ? 'tag-remove' : 'tag-apply',
+        changes,
+        backlog: backend.items.filter(item => !item.verdict).length,
+        session: backend.session,
+      }});
+    }
     if (request.method() === 'POST' && url.pathname === '/api/undo') {
       const changes = backend.actions.pop() || [];
       for (const change of changes) Object.assign(backend.items.find(item => item.id === change.item_id), {verdict: change.verdict, verdict_at: change.verdict_at});
@@ -765,4 +791,30 @@ test('sweep scope dropdown switches the action to the entire current selection',
   await expect(page.locator('#status')).toHaveText('Applied the verdict to all 4 items in the current selection.');
   expect(prompt).toContain('Apply Junk to all 4 items in the current selection?');
   expect(backend.items.every(item => item.verdict === 'junk')).toBe(true);
+});
+
+test('tag dropdown toggles between adding and removing tags from the current selection', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  backend.items = backend.items.slice(0, 4);
+  await page.goto('https://pile.test/');
+  await page.locator('#selector > summary').click();
+
+  await expect(page.locator('#tag-selection')).toHaveText('Tag items');
+  await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to add');
+  await page.locator('#tag-input').fill('topic:temporary');
+  await page.locator('#tag-selection').click();
+  await expect(page.locator('#status')).toHaveText('Added tags to 4 items as one action.');
+  expect(backend.items.every(item => item.tags.includes('topic:temporary'))).toBe(true);
+
+  await page.getByLabel('Tag mode').selectOption('remove');
+  await expect(page.locator('#tag-selection')).toHaveText('Untag items');
+  await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to remove');
+  await page.locator('#tag-input').fill('topic:temporary');
+  await page.locator('#tag-selection').click();
+  await expect(page.locator('#status')).toHaveText('Removed tags from 4 items as one action.');
+  expect(backend.items.every(item => !item.tags.includes('topic:temporary'))).toBe(true);
+
+  await page.getByLabel('Tag mode').selectOption('apply');
+  await expect(page.locator('#tag-selection')).toHaveText('Tag items');
 });

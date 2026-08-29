@@ -427,3 +427,16 @@ Released to production — ChatGPT Site, version 1, `da4fc8b`.
 ## 2026-08-26 — Release
 
 Released to production — ChatGPT Site, version 2, `a943830`. 2 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+## 2026-08-29 — Add undoable tag removal
+
+Changed the Select panel's tag action into a split control modeled on Sweep.
+It defaults to **Tag items** and its attached menu switches the same button to
+**Untag items**. Both modes act on marked cards, or on the entire open
+selection when nothing is marked.
+
+Added a distinct `tag-remove` action to the memory and D1 stores, migrations,
+sitting report, and Undo path. A removal records only tags actually present on
+each item, and Undo restores exactly those tags without disturbing unrelated
+tags. Updated the user and technical documentation plus API, storage,
+migration, and browser coverage.
