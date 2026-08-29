@@ -22,7 +22,7 @@ export const FAILURE_MESSAGES = Object.freeze({
   [INVALID_INPUT]: 'Enter a place name or decimal coordinates such as 47.61, -122.33.',
   [PLACE_NOT_FOUND]: 'That place was not found. Check the spelling or enter coordinates.',
   [GEOCODER_UNAVAILABLE]: 'Place lookup is unavailable. Try again later.',
-  [COVERAGE_UNAVAILABLE]: 'First-version tide coverage is available for configured U.S. and Canadian coasts.',
+  [COVERAGE_UNAVAILABLE]: 'Tide coverage is available for configured U.S., Canadian, and Australian test coasts.',
   [COAST_CHOICE_REQUIRED]: 'The closest coast is shown first; alternative coasts are available below the results.',
   [TIDES_UNAVAILABLE]: 'Tide predictions are unavailable; place and astronomy details remain available.',
   [ASTRONOMY_UNAVAILABLE]: 'Sun and moon calculations are unavailable; tide predictions remain available.',

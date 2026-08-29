@@ -105,46 +105,70 @@ the results to choose a different one.
 - This does not establish that straight-line distance identifies the most
   relevant side of an island, inlet, estuary, or international boundary.
 
-## 2026-08-27 — What should be the next refinement after Alternative coasts?
+## 2026-08-27 — May licensed Australian annual tide data be activated?
+
+**Yes. Licensed annual data and its reuse terms are approved for Australian
+activation; replace the synthetic fixture with real functionality.**
+
+### What this settles, and what it does not
+
+- The licensing and reuse-authorization blocker is settled for the Australian
+  annual tide data.
+- The Australian provider may be marked active once the real annual artifact,
+  required attribution and disclaimer, source checks, and live initialization
+  all pass.
+- Synthetic Australian values must not be presented as the activated result.
+- The exact official source files, their integrity records, and the attribution
+  shown by the product still have to be recorded and verified by the
+  implementation.
+- This does not authorize a Tide Here production release; the current work
+  remains on the public test Site until separately promoted.
+
+## 2026-08-28 — What should follow the nationwide Australian test?
+
+**Expand the licensed Bureau Standard Port catalogue before a production
+release or further FES2022 work.**
+
+The 23-port dataset proves the annual-table pipeline and gives every Australian
+coastal state and the Northern Territory at least one tested reference port. It
+does not yet justify calling the coverage nationwide: the existing 150 km
+relevance guard correctly refuses several populated or strategically distinct
+coasts between those ports.
 
 ### Alternatives considered
 
 | Option | Strengths | Weaknesses |
 |---|---|---|
-| **A — Replace the schematic alternatives view with a geographic coast map** | Adds land, channel, island, and border context to the newly shipped Alternative coasts control | Medium-sized; adds map data or tile-request privacy and attribution work; no observed case yet shows that the current candidate list is hard to interpret |
-| **B — Pin a few places on this device** | Makes repeat visits faster and remains local-only | Adds another local-data lifecycle without evidence that repeated entry is the main friction |
-| **C — Add concise coverage and Alternative coasts help on the page** | Explains the U.S./Canadian boundary, closest-first behavior, and manual override at the point of use; small and directly complements the shipped refinement | Adds copy to an already compact page and must stay synchronized with the README and live behavior |
-| **D — Add another official tide-provider adapter** | Expands usefulness beyond U.S. and Canadian coasts and exercises the provider registry | Large; requires a selected country plus fresh evidence for licensing, attribution, CORS, station semantics, and reliable five-day high/low access |
-| **E — Request another proposal round** | Leaves room for new usage evidence or a new idea | Produces no user-visible improvement now |
-| **F — Declare the initiative dormant** | Recognizes that the first-version objectives and the selected Alternative coasts refinement are shipped | Only the user may declare dormancy, and first-time visitors still have little explanation of coverage and closest-first behavior |
+| **A — Release the current 23-port catalogue** | The active test dataset is official, attributed, checksum-verified, and healthy across all configured ports | It would turn a deliberately bounded major-port test into the production coverage promise while known coastal gaps remain |
+| **B — Add the remaining useful Bureau Standard Ports and a national gap matrix** *(chosen)* | Uses the same approved annual-table terms, importer, storage contract, and exact-source checks; closes known gaps with official predictions instead of guessing | Requires a larger annual acquisition and verification set, and does not remove the need for a separate yearly renewal process |
+| **C — Increase the 150 km maximum match distance** | Makes more place searches appear covered without adding data | Can attach a distant port across islands, headlands, bays, or different tide regimes; it weakens the reviewed coast-relevance safeguard |
+| **D — Prioritize the FES2022 fallback** | Would eventually cover coasts that have no national table | Licensed atlas files and held-out official-port comparisons are still unavailable, and approximate model output is a worse next step where exact Bureau tables already exist |
 
-### Recommendation
+### Evidence
 
-**Recommendation: choose C — add concise coverage and Alternative coasts help
-on the page.** It is the smallest remaining option tied to visible current
-behavior: Alternative coasts now exists, while its coverage boundary and
-closest-first default are explained mainly in the README rather than at the
-moment someone encounters them. The help should stay collapsed so it does not
-displace the forecast on a phone.
-
-### What would change the answer
-
-- A real island, inlet, estuary, or border case where the candidate list is
-  hard to interpret would favor A.
-- Evidence that people repeatedly re-enter the same places would favor B.
-- A concrete need outside U.S. and Canadian coverage, paired with a viable
-  official feed, would favor D.
-- Materially different usage evidence or a new idea would justify E.
-- If the live page already feels complete and no refinement is wanted, F is
-  correct.
+- On public test Site version 8, registry `stage-4-v4` served all 23 configured
+  Australian ports from `2026-bom-v1`: a fresh live pass returned 447 events
+  across five days with no failed port, warning, approximate result, or missing
+  official source.
+- The recorded browser matrix passed Brisbane, Cairns, Sydney, Melbourne,
+  Hobart, Adelaide, Perth, Broome, and Darwin, covering every coastal state and
+  the Northern Territory at a representative-city level.
+- Fresh browser searches for Eden, Devonport, Cooktown, and Thursday Island
+  returned `coverage-unavailable`; the guard refused them rather than silently
+  naming a distant configured port.
+- The Bureau's current 2026 tables include [Eden and other additional New South
+  Wales Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/nsw_tide_tables.shtml),
+  [Devonport and other Tasmanian Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/tas_tide_tables.shtml),
+  [Thursday Island and other Queensland Standard Ports](https://www.bom.gov.au/oceanography/projects/ntc/qld_tide_tables.shtml),
+  and [six Victorian Standard Ports beyond Melbourne](https://www.bom.gov.au/oceanography/projects/ntc/vic_tide_tables.shtml).
 
 ### What this settles, and what it does not
 
-- Merging this proposal makes `inline-coverage-help` actionable; it does not
-  implement the help.
-- The implementation should explain current behavior, not change the 25 km,
-  60%, or 150 km matcher thresholds or the closest-first selection.
-- The page should keep the forecast prominent at phone widths and use wording
-  consistent with the user-facing README and privacy disclosure.
-- Disagreement is one line: comment `Choose A`, `Choose B`, `Choose D`,
-  `Choose E`, or `Choose F` and the proposal can be revised to that option.
+- The 25 km / 60% / 150 km matcher thresholds remain unchanged. Coverage grows
+  by adding official stations, not by relabelling distant predictions as local.
+- The next increment expands Standard Ports first and records a repeatable
+  representative-place gap matrix before and after the catalogue change.
+- Secondary Port corrections remain a later parser and modelling decision; they
+  are not assumed to have the same independent daily-table contract.
+- This does not authorize a production release, supply licensed FES2022 files,
+  or settle the 2027 annual-data renewal procedure.

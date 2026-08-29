@@ -346,3 +346,157 @@ in phase 1 so that "when was this last updated" has an answer.
 result ends with the informational line, and O6 makes it a first-class
 requirement rather than a disclaimer, precisely because the page is friendly and
 the temptation is to read it as authoritative.
+
+## 8. Global tide coverage refinement
+
+The first version above remains the deployed product while this refinement is
+built. The refinement adds three tide-source families behind one provider
+registry:
+
+- NOAA CO-OPS and CHS IWLS continue to supply the United States and Canada;
+- an annual Australian Standard Ports adapter supplies licensed Bureau daily
+  high/low predictions; and
+- a clearly labelled FES2022 harmonic fallback covers other coasts.
+
+The refinement introduces server-side storage because neither licensed annual
+files nor FES grids belong in a browser bundle. Large, versioned artifacts live
+in R2-compatible object storage. D1 is not added unless a later stage proves a
+need for relational or searchable metadata; an object manifest is enough to
+select an active immutable dataset.
+
+### 8.1 Initialization is a route, not an undocumented deployment step
+
+Every stage that introduces or changes stored data includes a `POST /init`
+entry point. It is version-pinned, idempotent, and safe to repeat: versioned
+objects are written or verified first and a small active-manifest pointer is
+changed last. `GET /health` reports the active version. A hosted `/init` requires
+an `INIT_TOKEN`; only a loopback development request may run without one.
+
+`/init` does not contact SFTP or another upstream data service. Downloading,
+licence review, decompression, FES/PyFES processing, checksums, and generation of
+deployment artifacts happen in a separate preparation job. Initialization only
+loads or activates an exact prepared artifact. This keeps a user request from
+waiting on a multi-gigabyte transfer and makes rollback a manifest change rather
+than a fresh download.
+
+### 8.2 Refinement stages
+
+#### Stage 1 — Storage and harmonic feasibility spike
+
+**Produces:** the R2-shaped object-store adapter, protected and idempotent
+`POST /init`, public `GET /health`, a small versioned harmonic tile, nearest-point
+lookup, five-day high/low calculation, and a comparison against published PyFES
+results.
+
+The committed tile is deliberately a non-FES fixture: observed Brest TICON-3
+constituents published in the official PyFES example. This lets the storage and
+runtime boundary be tested without redistributing FES2022 or pretending that
+AVISO credentials are available. Passing this stage proves the shape and
+runtime calculation, not global accuracy.
+
+**Initialization:** `/init` writes the immutable fixture tile and its dataset
+manifest, then activates that exact checksum. Repeating it performs no writes.
+
+**Exit:** `test-plan.md` §7.1.
+
+#### Stage 2 — Provider registry and server boundary
+
+**Produces:** one provider registry with NOAA, CHS, Australian Standard Ports,
+and FES capability descriptors; a server endpoint for stored providers; and the
+existing normalized forecast response unchanged above the adapters. NOAA and
+CHS remain direct, official live sources.
+
+**Initialization:** `/init` validates the provider registry schema and the
+storage schema version and activates only a registry whose referenced datasets
+are present and checksum-valid.
+
+**Exit:** provider selection is configuration-driven, and existing U.S. and
+Canadian fixture, live, time-zone, and partial-result tests still pass.
+
+**Status, 2026-08-27:** implemented in `work/phase-10`. The registry and shared
+stored-provider gateway are complete; NOAA and CHS remain browser-direct, and a
+future national descriptor can be added without changing the gateway.
+
+#### Stage 3 — Australian Standard Ports
+
+**Produces:** an offline importer for the licensed annual Australian table, a
+normalized immutable artifact, station catalogue entries, attribution and datum
+metadata, and the Australian provider adapter. The importer is the only
+component that understands the source-file format.
+
+**Initialization:** `/init` verifies the prepared Australian artifact and its
+licence metadata, stores any missing versioned objects, and activates its exact
+year/version only after validation succeeds.
+
+**Exit:** several Australian ports and time zones match the source table; dates
+outside the loaded year fail explicitly rather than falling through silently.
+
+**Status, 2026-08-29:** active implementation is complete in `work/phase-11`
+using all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
+territory indexes. The offline job records each PDF checksum, reconstructs
+103,597 daily extrema across 10 IANA zones, applies port-local offsets, and
+reproduces the committed artifact exactly. A 16-place before/after matrix proves
+that all representative gaps are now within the unchanged 150 km guard. The
+licensed artifact, source attribution, required disclaimer, rounded-height
+parser case, and held-out table comparisons pass before registry `stage-3-v5`
+is activated. Secondary Port corrections remain out of scope, and the earlier
+synthetic artifact remains only as a deterministic test boundary.
+
+#### Stage 4 — FES2022 global fallback
+
+**Produces:** the credentialed offline FES/PyFES preparation job, coastal tile
+index, production constituent tiles, land/missing-data handling, fallback
+adapter, provenance, and accuracy comparisons against held-out official ports.
+
+**Initialization:** `/init` checks the complete tile inventory, sizes and
+checksums, and atomically activates one prepared FES dataset version. It never
+downloads, decompresses, or derives FES data in the request path.
+
+**Exit:** the held-out comparison establishes written tolerances by tide regime;
+any result derived from FES is labelled approximate and remains separate from
+weather and storm-surge effects.
+
+**Status, 2026-08-27:** the preparation, inventory, initialization, lookup,
+failure, normalized forecast, and warning path is implemented in
+`work/phase-12`. A three-tile non-FES fixture exercises the complete path and
+the Brest point preserves the Stage 1 engine comparison. Production activation
+and regime-specific accuracy tolerances remain blocked on licensed FES2022
+atlas files and held-out official-port comparisons.
+
+#### Stage 5 — Test deployment
+
+**Produces:** a separate test deployment with R2 bindings, the initializer token,
+operational logs that exclude submitted locations, and live checks covering all
+three source families.
+
+**Initialization:** deployment calls the protected `/init` with the exact
+artifact versions tested in stages 3 and 4, then checks `/health` before traffic
+is exercised. A second call must report no changes.
+
+**Exit:** U.S., Canadian, Australian, and fallback locations work at the real
+HTTPS URL, and failure or denial leaves the current public version untouched.
+
+**Status, 2026-08-28 UTC:** complete on public test Site version 8 at
+<https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
+activated registry `stage-4-v4`, the licensed 23-port Bureau 2026 dataset, and
+the explicitly non-FES fallback fixture; a second call wrote zero objects. The
+live source-family checks and representative browser searches across every
+Australian coastal state and the Northern Territory passed with source
+attribution and no synthetic-data notice on licensed results. The post-check
+Worker execution-error count was zero. Evidence is recorded in `work/phase-13`;
+production remains untouched.
+
+#### Stage 6 — Production release
+
+**Produces:** the committed, reviewed source released to production, monitoring
+for active dataset versions and upstream freshness, a rollback procedure, and a
+dated release record.
+
+**Initialization:** production `/init` accepts only the test-validated manifest
+versions and remains token-protected. Release verifies `/health`, makes one
+request per source family, and retains the preceding active manifests for
+rollback.
+
+**Exit:** the production site reports the intended versions, attribution is
+visible, the live checks pass, and no user request can trigger an upstream file
+download or mutate stored data.

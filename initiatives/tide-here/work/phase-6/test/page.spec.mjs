@@ -94,7 +94,7 @@ test('the seven blocking or partial states have their own readable page treatmen
     ['invalid-input', /place name or decimal coordinates/i],
     ['place-not-found', /was not found/i],
     ['geocoder-unavailable', /place lookup is unavailable/i],
-    ['coverage-unavailable', /U\.S\. and Canadian coasts/i],
+    ['coverage-unavailable', /U\.S\., Canadian, and Australian test coasts/i],
     ['tides-unavailable', /tide predictions are unavailable/i],
     ['astronomy-unavailable', /sun and moon calculations are unavailable/i],
     ['no-event', /does not rise or set/i]
@@ -166,6 +166,7 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   const requests = [];
   page.on('request', (request) => requests.push(`${request.url()} ${request.postData() || ''}`));
   await page.goto(pagePath);
+  await expect(page.locator('#entered-name')).toHaveText('Seattle');
   await page.locator('.debug-record summary').click();
   await expect(page.getByText(/go directly to the configured Nominatim geocoder/i)).toBeVisible();
   await expect(page.getByText(/history stays in this browser until you clear it/i)).toBeVisible();
@@ -238,9 +239,131 @@ test('location denial leaves the manual selection untouched', async ({ page }) =
     });
   });
   await page.goto(pagePath);
+  await expect(page.locator('#result')).toBeVisible();
   await page.locator('#place').fill('Halifax');
   await page.getByRole('button', { name: 'Show here' }).click();
   await expect(page.locator('#place')).toHaveValue('Halifax');
   await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'location-permission-denied');
   await expect(page.locator('#state-panel')).toContainText(/allow location for this Site/i);
+});
+
+test('Brisbane uses a stored Australian test port and keeps its fixture notice inside the location dropdown', async ({ page }) => {
+  await page.route('**/forecast', async (route) => {
+    const request = route.request().postDataJSON();
+    expect(request.provider).toBe('australia-standard-ports');
+    const station = {
+      provider: request.provider,
+      country: 'AU',
+      id: request.station.id,
+      name: 'Brisbane sample',
+      kind: 'reference',
+      datum: 'Chart datum (fixture label)',
+      referenceStationId: null,
+    };
+    const days = request.rows.map((row) => ({
+      date: row.date,
+      tides: [2, 8, 14, 20].map((hour, index) => ({
+        type: index % 2 === 0 ? 'low' : 'high',
+        at: new Date(Date.parse(row.startUtc) + hour * 60 * 60 * 1000).toISOString(),
+        height: index % 2 === 0 ? 0.45 : 1.62,
+        unit: 'm',
+      })),
+      sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null,
+    }));
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        input: request.context.input,
+        place: request.context.place,
+        coast: request.context.coast,
+        station,
+        timeZone: request.timeZone,
+        days,
+        sources: [{provider: request.provider, dataClass: 'test-fixture', official: false}],
+        warnings: [{
+          code: 'fixture-data',
+          message: 'Synthetic Stage 3 fixture only; no Bureau or Australian Hydrographic Office predictions are included.',
+        }],
+      }),
+    });
+  });
+  await page.goto(`${pagePath}&place=Brisbane`);
+  await expect(page.locator('#fixture-note')).toContainText(/Australian fixture predictions still come from this Tide Here test service/i);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#coast-name')).toContainText('Brisbane');
+  await expect(page.locator('#station-kind')).toContainText('Australian test port');
+  await expect(page.locator('#zone-name')).toHaveText('Australia/Brisbane');
+  await expect(page.locator('.day-card')).toHaveCount(5);
+  await expect(page.locator('.event-group li')).toHaveCount(20);
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await expect(page.locator('#warnings [data-code="fixture-data"]')).toHaveCount(0);
+  const identity = page.locator('.identity-card');
+  const fixtureNotice = page.locator('#fixture-location-notice');
+  await expect(identity).not.toHaveAttribute('open', '');
+  await expect(fixtureNotice).toBeHidden();
+  await identity.locator('summary').click();
+  await expect(fixtureNotice).toBeVisible();
+  await expect(fixtureNotice).toHaveText('Australian test-port results use synthetic fixture data, not official tide predictions.');
+  await expect(identity.locator('.identity-details #fixture-location-notice')).toHaveCount(1);
+  await page.locator('.source-details summary').click();
+  await expect(page.locator('#source-copy')).toContainText(/Australian test port synthetic fixture/i);
+  await page.locator('.debug-record summary').click();
+  await expect(page.getByText(/Australian tide-port requests go to this Tide Here service/i)).toBeVisible();
+});
+
+test('licensed Brisbane results identify the Bureau source and need no fixture notice', async ({ page }) => {
+  await page.route('**/forecast', async (route) => {
+    const request = route.request().postDataJSON();
+    const station = {
+      provider: request.provider,
+      country: 'AU',
+      id: request.station.id,
+      name: 'Brisbane Bar',
+      kind: 'reference',
+      datum: 'Lowest Astronomical Tide (LAT)',
+      referenceStationId: null,
+    };
+    const days = request.rows.map((row) => ({
+      date: row.date,
+      tides: [2, 8, 14, 20].map((hour, index) => ({
+        type: index % 2 === 0 ? 'low' : 'high',
+        at: new Date(Date.parse(row.startUtc) + hour * 60 * 60 * 1000).toISOString(),
+        height: index % 2 === 0 ? 0.45 : 1.62,
+        unit: 'm',
+      })),
+      sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null,
+    }));
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        input: request.context.input,
+        place: request.context.place,
+        coast: request.context.coast,
+        station,
+        timeZone: request.timeZone,
+        days,
+        sources: [{
+          provider: request.provider,
+          dataClass: 'licensed-source',
+          official: true,
+          attribution: '© Commonwealth of Australia 2025, Bureau of Meteorology.',
+          disclaimer: 'The Bureau makes no representation and gives no warranty for this modified product.',
+          sourceUrl: 'https://www.bom.gov.au/ntc/IDO59001/IDO59001_2026_QLD_TP003.pdf',
+        }],
+        warnings: [],
+      }),
+    });
+  });
+  await page.goto(`${pagePath}&place=Brisbane`);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#coast-name')).toContainText('Brisbane Bar');
+  await expect(page.locator('#station-kind')).toContainText('Bureau of Meteorology');
+  await expect(page.locator('#fixture-location-notice')).toBeHidden();
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await page.locator('.source-details summary').click();
+  await expect(page.locator('#source-attribution')).toContainText(/Commonwealth of Australia.*Bureau of Meteorology/);
+  await expect(page.locator('#source-disclaimer')).toContainText(/no representation and gives no warranty/i);
+  await expect(page.locator('#source-link')).toHaveAttribute('href', /IDO59001_2026_QLD_TP003[.]pdf/);
 });

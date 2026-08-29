@@ -80,6 +80,7 @@ dt { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .
 dd { margin: .32rem 0 0; font-size: 1.08rem; font-weight: 780; overflow-wrap: anywhere; }
 .station-line { margin: 1.2rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); }
 .station-line strong { color: var(--ink); }
+.fixture-location-notice { margin: 1rem 0 0; padding: .85rem 1rem; border-left: 4px solid var(--coral); border-radius: .4rem .85rem .85rem .4rem; color: var(--muted); background: #fff3ee; font-size: .86rem; font-weight: 680; line-height: 1.45; }
 .warnings { display: grid; gap: .65rem; margin: 1rem 0; }
 .warning { padding: .9rem 1rem; border-radius: .9rem; border-left: 4px solid var(--coral); background: #fff3ee; }
 .warning strong, .warning span { display: block; }
@@ -105,6 +106,8 @@ dd { margin: .32rem 0 0; font-size: 1.08rem; font-weight: 780; overflow-wrap: an
 .source-details, .debug-record { margin-top: 1rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 1rem; background: white; }
 .source-details summary, .debug-record summary { cursor: pointer; font-weight: 760; }
 .source-details p { margin-bottom: 0; color: var(--muted); line-height: 1.5; }
+.source-details a { color: var(--aqua-dark); font-weight: 720; }
+.source-legal { font-size: .82rem; }
 .debug-record { max-width: 760px; }
 .debug-record-content { display: grid; gap: .85rem; padding-top: 1rem; }
 .debug-record-content > button { justify-self: start; }

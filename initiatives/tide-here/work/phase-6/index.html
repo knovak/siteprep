@@ -10,7 +10,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Tide Here home"><span aria-hidden="true">≈</span> Tide Here</a>
-    <p>Five coast-local days · NOAA and CHS prediction stations</p>
+    <p>Five coast-local days · U.S., Canada, and major Australian coasts</p>
   </header>
 
   <main id="top">
@@ -18,13 +18,13 @@
       <form id="place-form" novalidate>
         <label for="place">Place or coordinates</label>
         <div class="search-row">
-          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, or 47.61, -122.33" autocomplete="off">
+          <input id="place" name="place" placeholder="Half Moon Bay, Vancouver, Brisbane, or coordinates" autocomplete="off">
           <button id="show-selection" type="submit">Show selection</button>
           <button id="show-here" type="button" aria-describedby="location-note">Show here</button>
         </div>
         <p id="location-note" class="location-note">Show here asks your browser for location permission.</p>
       </form>
-      <p id="fixture-note" class="fixture-note" hidden>Recorded validation data is active. No provider request will leave this page.</p>
+      <p id="fixture-note" class="fixture-note" hidden>Recorded validation places are active. Australian fixture predictions still come from this Tide Here test service.</p>
     </section>
 
     <section id="state-panel" class="state-panel" tabindex="-1" aria-live="polite" hidden>
@@ -42,6 +42,7 @@
             <div><dt>Resolved place</dt><dd id="resolved-name"></dd></div>
           </dl>
           <p class="station-line"><strong id="station-name"></strong> · <span id="station-kind"></span> · <span id="zone-name"></span></p>
+          <p id="fixture-location-notice" class="fixture-location-notice" hidden></p>
         </div>
       </details>
       <div id="warnings" class="warnings"></div>
@@ -50,6 +51,9 @@
       <details class="source-details">
         <summary>Prediction source details</summary>
         <p id="source-copy"></p>
+        <p id="source-attribution" class="source-legal" hidden></p>
+        <p id="source-disclaimer" class="source-legal" hidden></p>
+        <p><a id="source-link" href="" target="_blank" rel="noreferrer" hidden>View the annual source table and conditions of use</a></p>
       </details>
     </section>
 
@@ -72,7 +76,7 @@
       <summary>Debug record</summary>
       <div class="debug-record-content">
         <button id="show-history" type="button" class="secondary">Show local history</button>
-        <p class="privacy-copy"><strong>What leaves this device:</strong> Show here asks your browser for coordinates; browser and operating-system location handling is outside Tide Here. Those coordinates—or a place or coordinates you submit—go directly to the configured Nominatim geocoder. Tide Here then requests prediction-station lists, chosen station details, and the five-day time range directly from NOAA and CHS as needed. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
+        <p class="privacy-copy"><strong>What leaves this device:</strong> Show here asks your browser for coordinates; browser and operating-system location handling is outside Tide Here. Those coordinates—or a place or coordinates you submit—go directly to the configured Nominatim geocoder. U.S. and Canadian requests then go directly to NOAA or CHS. Australian tide-port requests go to this Tide Here service, whose operational logs exclude submitted names and coordinates. Your readable forecast history stays in this browser until you clear it; Tide Here never sends that history or analytics. Geocoding data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>.</p>
       </div>
     </details>
 

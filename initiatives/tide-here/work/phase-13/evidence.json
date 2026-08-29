@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-28T00:20:27Z",
+  "stage": "global-coverage-stage-5",
+  "deployment": {
+    "url": "https://tide-here-test.ken-novak.chatgpt.site",
+    "access": "public",
+    "version": 8,
+    "deployedAt": "2026-08-28T00:18:18Z",
+    "siteSourceCommit": "b5a787691c22447a0a44dc368a252ecc9782e52e",
+    "sourceCommit": "946737c668ea59d6e640564dadc68fc2a2972dff",
+    "archiveFiles": 75,
+    "archiveBytes": 1658880,
+    "archiveSha256": "0da6485adbcdde0c4b1f56058bb02499002a94813f9b7c3e7998c313437a523f"
+  },
+  "hosting": {
+    "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
+    "r2Binding": "TIDE_DATA",
+    "d1Binding": null,
+    "initializerTokenConfigured": true,
+    "initializerEnvironmentRevision": 4,
+    "initialized": true,
+    "repeatInitializationWrites": 0
+  },
+  "liveChecks": {
+    "registry": "tide-here-providers/stage-4-v4",
+    "australianDataset": "australia-bom-annual-tides/2026-bom-v1",
+    "fallbackDataset": "fes-shaped-global-sample/2026-08-27",
+    "noaaCatalogue": "passed",
+    "chsCatalogue": "passed",
+    "australianStations": 23,
+    "australianCatalogueEvents": 449,
+    "fallbackFixtureEvents": 19,
+    "fallbackWarnings": [
+      "approximate-fallback",
+      "fixture-data"
+    ],
+    "browserPage": "passed",
+    "australianBrowserCities": [
+      "Brisbane",
+      "Cairns",
+      "Sydney",
+      "Melbourne",
+      "Hobart",
+      "Adelaide",
+      "Perth",
+      "Broome",
+      "Darwin"
+    ],
+    "sourceAttributionAndDisclaimer": "passed",
+    "syntheticFixtureNoticeAbsentForLicensedResults": true,
+    "unauthorizedInitializerStatus": 403,
+    "workerExecutionErrors": 0
+  },
+  "tests": {
+    "stageTestsPassed": 15,
+    "stageTestsFailed": 0,
+    "allTideNodeTestsPassed": 111,
+    "browserTestsPassed": 21,
+    "browserTestsSkipped": 1,
+    "productionDependencyAuditHighVulnerabilities": 0
+  },
+  "productionActivation": {
+    "ready": false,
+    "australianProviderReady": true,
+    "productionReleaseAuthorized": false,
+    "blockedBy": [
+      "Licensed FES2022 atlas files and held-out official-port comparisons"
+    ]
+  }
+}
