@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-29T21:05:02Z",
+  "checkedAt": "2026-08-29T22:03:54Z",
   "stage": "global-coverage-stage-5",
   "deployment": {
     "url": "https://tide-here-test.ken-novak.chatgpt.site",
     "access": "public",
-    "version": 10,
-    "deployedAt": "2026-08-29T20:59:36.810292Z",
-    "siteSourceCommit": "cfe4871a439112f00c7a2c723423fa8a3b0d99bc",
-    "sourceCommit": "cbb2da04f0dbbacfa6e6c6d9deed034a67027778",
+    "version": 11,
+    "deployedAt": "2026-08-29T21:59:13.348544Z",
+    "siteSourceCommit": "df58fe0f1471651e6b8a8f1439f746b8c82bc846",
+    "sourceCommit": "c895ce08463f31daa68159d8447803b7154ed812",
     "archiveFiles": 78,
     "archiveBytes": 2447360,
-    "archiveSha256": "e93847ed2f31d98316e5be8bd2bc6b8cc97b145205d5ac70e000118d0b5ee34d"
+    "archiveSha256": "571cf4eeba7905ab3e597b277b8e1f6f3eae90c408f7c02ed8234bdd5a036ffa"
   },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
@@ -37,6 +37,9 @@
       "approximate-fallback"
     ],
     "browserPage": "passed",
+    "fixtureCachesIsolated": true,
+    "manualSearchLeavesFixtureMode": true,
+    "niceCoverageState": "coverage-unavailable",
     "fallbackPlaces": [
       "Galway",
       "Cooktown",
@@ -50,7 +53,7 @@
   "tests": {
     "allTideNodeTestsPassed": 124,
     "allTideNodeTestsFailed": 0,
-    "browserTestsPassed": 25,
+    "browserTestsPassed": 29,
     "browserTestsSkipped": 1,
     "productionDependencyAuditHighVulnerabilities": 0
   },
@@ -62,7 +65,7 @@
     "fallbackDataClass": "licensed-source",
     "fallbackOfficialComparisonsPassed": true,
     "allTideNodeTestsPassed": 124,
-    "browserTestsPassed": 25,
+    "browserTestsPassed": 29,
     "browserTestsSkipped": 1
   },
   "productionActivation": {

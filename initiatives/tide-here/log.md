@@ -224,3 +224,21 @@ Published version 10 to the existing public test Site without changing its
 access. Initialized registry `stage-4-v7`; a repeat initialization wrote zero
 objects. The live sweep returned all 76 Australian Standard Ports and 20 FES
 extrema apiece for Cooktown and Gibraltar. Production was not changed.
+
+## 2026-08-29 — Isolate recorded validation pages from normal searches
+
+Fixed the shared Cooktown validation URL so it cannot trap later manual entries
+in fixture mode or reuse recorded Seattle station data. Validation catalogues,
+forecasts, and history now use tab-scoped storage; opening a validation page
+also removes legacy fixture cache entries from the normal disposable cache.
+Unknown fixture names fail explicitly. A manual search from a recorded-place
+URL returns to the clean normal page, carries the entry without putting it in
+the URL, and clears the old result before resolving.
+
+Published public test Site version 11 without changing access. A live
+`nice,france` search from the former Cooktown fixture URL returned to the normal
+page and showed `coverage-unavailable`, never Cooktown or Seattle. The 124 Node
+tests, 29 browser checks with one intentional skip, 76-port live sweep, NOAA,
+CHS, Cooktown, Gibraltar, and Worker error check all passed. Reserved
+`../siteprep-data/tide-here/fes2022/` as the durable local location for any
+future full-atlas download. Production was not changed.

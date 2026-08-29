@@ -40,7 +40,7 @@ writes, and runs HTTPS checks for:
 - the indexed approximate FES2022 fallback, source/licence disclosure, and
   safety warnings.
 
-Test version 10 contains the normalized output
+Test version 11 contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
 territory indexes plus seven validated FES2022b harmonic points. It carries each
 source's attribution, disclaimer, version, and source/licence links into the
@@ -56,7 +56,7 @@ requested.
 
 ## Recorded test deployment
 
-Version 10 was published to the existing public test Site on 2026-08-29 UTC:
+Version 11 was published to the existing public test Site on 2026-08-29 UTC:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
 activated registry `stage-4-v7`, Australian dataset `2026-bom-v2`, and licensed
 FES2022b extract `2026-02-03-r2`. A second initialization wrote zero objects. Live
@@ -66,7 +66,12 @@ events across five local days per station. Cooktown and Gibraltar each returned
 licensed-source provenance. The live browser showed the FES2022 source and
 safety copy inside the result while omitting a duplicate standalone fallback
 banner. NOAA, CHS, the hosted page, and the Galway fallback also passed the live
-smoke sweep. Worker logs contained no execution failures.
+smoke sweep. Recorded validation pages now use tab-scoped caches, unknown
+fixture names cannot silently become Seattle, and a manual search from an
+explicit fixture URL returns to the normal page without putting the entry in
+the URL. A live `nice,france` check from the former Cooktown fixture URL removed
+the fixture parameters, hid the Cooktown result, and returned the correct
+coverage state. Worker logs contained no execution failures.
 
 The production Site was not changed.
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-29T20:56:20Z",
+  "checkedAt": "2026-08-29T22:03:54Z",
   "stage": "global-coverage-stage-4",
   "deployment": null,
   "implementation": {
@@ -54,7 +54,7 @@
   "tests": {
     "allTideNodeTestsPassed": 124,
     "allTideNodeTestsFailed": 0,
-    "browserTestsPassed": 25,
+    "browserTestsPassed": 29,
     "browserTestsSkipped": 1
   }
 }

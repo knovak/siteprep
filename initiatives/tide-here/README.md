@@ -9,7 +9,7 @@ station first and keeps the other candidates available for review.
 The two current Sites are public, separate deployments on different releases:
 
 - **Test:** [tide-here-test.ken-novak.chatgpt.site](https://tide-here-test.ken-novak.chatgpt.site)
-  version 10 combines direct NOAA and CHS forecasts with licensed Bureau of
+  version 11 combines direct NOAA and CHS forecasts with licensed Bureau of
   Meteorology forecasts for all 76 Australian Standard Ports and seven sparse,
   validated FES2022 model points. Cooktown and Gibraltar are included in the
   active FES2022 fallback.
@@ -23,6 +23,16 @@ Canadian Hydrographic Service stations cover Canada. Australian reach depends
 on the Standard Ports active in the test Site's stored catalogue. A place
 outside the active deployment's configured coverage receives a coverage message
 rather than a prediction borrowed from a distant coast.
+
+## Where the tide data lives
+
+The Sites app has no database. Its `TIDE_DATA` object-store binding holds the
+active versioned Bureau catalogue and the seven small derived FES2022 harmonic
+points. The repository also contains those prepared source artifacts so the
+protected initializer can reproduce the object store exactly. The original
+3.95-GB FES2022 NetCDF is neither in the Site nor in Git. If it is downloaded
+again, it is retained outside the repository at
+`../siteprep-data/tide-here/fes2022/FES2022b_OceanTide_NSgrid.nc` for reuse.
 
 ## Use the Site
 

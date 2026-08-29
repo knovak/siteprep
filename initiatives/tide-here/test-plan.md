@@ -359,11 +359,13 @@ the committed point metadata discloses each method.
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
 
 **Recorded result, 2026-08-29 UTC:** all eight checks passed on public test Site
-version 10. Initialization activated `stage-4-v7`; the repeat call wrote zero
+version 11. Initialization activated `stage-4-v7`; the repeat call wrote zero
 objects; 124 Tide Node tests passed in both the working tree and isolated Site
-source, and 25 applicable browser tests passed with one intentional skip. The
+source, and 29 applicable browser tests passed with one intentional skip. The
 live sweep returned all 76 Australian Standard Ports and FES2022 results for
-Galway, Cooktown, and Gibraltar. The production Site was not changed.
+Galway, Cooktown, and Gibraltar. A live Nice search from the former Cooktown
+validation URL left fixture mode and returned the honest coverage state without
+showing Cooktown or Seattle. The production Site was not changed.
 
 ### 7.6 — Australian browser integration
 
