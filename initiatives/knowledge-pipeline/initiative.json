@@ -1,13 +1,13 @@
 {
   "title": "Knowledge pipeline",
   "summary": "A staged, auditable pipeline for turning collected sources into curated topic documents.",
-  "stage": "shaped",
+  "stage": "specified",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-spec",
-      "title": "Draft spec.md, including alternatives considered",
+      "id": "draft-plan-and-test-plan",
+      "title": "Draft plan.md and test-plan.md",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
