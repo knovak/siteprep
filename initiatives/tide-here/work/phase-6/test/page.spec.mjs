@@ -171,7 +171,7 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   await expect(page.getByText(/go directly to the configured Nominatim geocoder/i)).toBeVisible();
   await expect(page.getByText(/history stays in this browser until you clear it/i)).toBeVisible();
 
-  const marker = 'Harbor Secret 90817';
+  const marker = 'Halifax';
   await page.locator('#place').fill(marker);
   await page.getByRole('button', { name: 'Show selection' }).click();
   await expect(page.locator('#entered-name')).toHaveText(marker);
@@ -190,14 +190,14 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   for await (const chunk of stream) downloaded += chunk;
   expect(JSON.parse(downloaded).at(-1).response.input.display).toBe(marker);
 
-  const keysBeforeClear = await page.evaluate(() => Object.keys(localStorage));
+  const keysBeforeClear = await page.evaluate(() => Object.keys(sessionStorage));
   expect(keysBeforeClear).toContain('tide-here.history.v1');
   expect(keysBeforeClear).toContain('tide-here.station-catalogue.v2');
   expect(keysBeforeClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
   await page.getByRole('button', { name: 'Clear local history' }).click();
   await expect(page.getByText(/history cleared.*caches were left alone/i)).toBeVisible();
   await expect(page.getByText('No local forecast history yet.')).toBeVisible();
-  const keysAfterClear = await page.evaluate(() => Object.keys(localStorage));
+  const keysAfterClear = await page.evaluate(() => Object.keys(sessionStorage));
   expect(keysAfterClear).not.toContain('tide-here.history.v1');
   expect(keysAfterClear).toContain('tide-here.station-catalogue.v2');
   expect(keysAfterClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
@@ -206,6 +206,40 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   await page.waitForTimeout(300);
   expect(requests).toHaveLength(requestCount);
   expect(requests.some((request) => request.includes(marker))).toBe(false);
+});
+
+test('a shared recorded-place URL cannot trap later manual searches in fixture data', async ({ page }) => {
+  await page.route('https://nominatim.openstreetmap.org/search**', async route => {
+    expect(new URL(route.request().url()).searchParams.get('q')).toBe('nice,france');
+    await route.fulfill({status: 200, contentType: 'application/json', body: '[]'});
+  });
+  await page.goto(`${pagePath}&place=Seattle`);
+  await expect(page.locator('#coast-name')).toContainText('SEATTLE');
+  await page.locator('#place').fill('nice,france');
+  await page.getByRole('button', {name: 'Show selection'}).click();
+  await expect(page).toHaveURL(/phase-6\/index[.]html$/);
+  await expect(page.locator('#place')).toHaveValue('nice,france');
+  await expect(page.locator('#fixture-note')).toBeHidden();
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'place-not-found');
+});
+
+test('recorded validation caches stay out of normal local storage', async ({page}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('tide-here.station-catalogue.v2', 'legacy fixture catalogue');
+    localStorage.setItem('tide-here.forecast-index.v1', '["tide-here.forecast.v1.legacy"]');
+    localStorage.setItem('tide-here.forecast.v1.legacy', 'legacy fixture forecast');
+    localStorage.setItem('tide-here.history.v1', '[]');
+  });
+  await page.goto(pagePath);
+  await expect(page.locator('#fixture-note')).toBeVisible();
+  const storage = await page.evaluate(() => ({
+    local: Object.keys(localStorage),
+    session: Object.keys(sessionStorage),
+  }));
+  expect(storage.local).toEqual(['tide-here.history.v1']);
+  expect(storage.session).toContain('tide-here.station-catalogue.v2');
+  expect(storage.session).toContain('tide-here.forecast-index.v1');
 });
 
 test('Show here requests browser location only after a click and uses the coordinate path', async ({ page }) => {
@@ -223,6 +257,7 @@ test('Show here requests browser location only after a click and uses the coordi
     Object.defineProperty(window, 'locationRequestCount', { get: () => calls });
   });
   await page.goto(pagePath);
+  await expect(page.locator('#fixture-note')).toBeVisible();
   await expect(page.getByText(/asks your browser for location permission/i)).toBeVisible();
   expect(await page.evaluate(() => window.locationRequestCount)).toBe(0);
   await page.getByRole('button', { name: 'Show here' }).click();

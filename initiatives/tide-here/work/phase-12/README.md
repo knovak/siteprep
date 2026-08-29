@@ -53,6 +53,13 @@ The 3.95-GB native-grid download and NetCDF extraction happen outside the Site
 runtime. Create an isolated Python environment with the pinned official PyFES
 package, then extract the reviewed points through the native LGP2 mesh:
 
+The current full atlas is not retained. If it must be downloaded again, keep
+the verified file outside Git at
+`../siteprep-data/tide-here/fes2022/FES2022b_OceanTide_NSgrid.nc` rather than in
+`/tmp`; record the exact checksum beside it and reuse that file for later point
+extractions. Only derived reviewed points belong in the repository or Site
+storage.
+
 ```sh
 python3 -m venv /tmp/tide-here-fes
 /tmp/tide-here-fes/bin/pip install -r initiatives/tide-here/work/phase-12/data/requirements-fes2022.txt

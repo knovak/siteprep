@@ -10,12 +10,20 @@ import { forecastViewModel, providerLabel, statePresentation } from './src/page-
 import { AUSTRALIAN_PROVIDER_ID, FES_PROVIDER_ID, StoredTideClient } from './src/stored-tide-client.mjs';
 
 const $ = (selector) => document.querySelector(selector);
-const fixtureMode = new URLSearchParams(location.search).get('fixture') === '1';
-const forcedState = new URLSearchParams(location.search).get('state');
+const searchParams = new URLSearchParams(location.search);
+const fixtureMode = searchParams.get('fixture') === '1';
+const fixturePlaceParam = searchParams.get('place');
+const forcedState = searchParams.get('state');
 const fixedNow = new Date('2026-08-20T13:00:00.000Z');
 const now = () => fixtureMode ? fixedNow : new Date();
 const LOCATION_PERMISSION_DENIED = 'location-permission-denied';
 const LOCATION_UNAVAILABLE = 'location-unavailable';
+const PENDING_NORMAL_PLACE_KEY = 'tide-here.pending-normal-place.v1';
+const LEGACY_FIXTURE_CACHE_KEYS = Object.freeze([
+  'tide-here.station-catalogue.v2',
+  'tide-here.forecast-index.v1'
+]);
+const LEGACY_FIXTURE_CACHE_PREFIXES = Object.freeze(['tide-here.forecast.v1.']);
 
 async function json(path) {
   const response = await fetch(path);
@@ -34,8 +42,16 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
 ]);
 
 const fixtureStations = normalizeStationCatalogues(catalogueFixture, providerConfig);
-const history = new LocalHistory({ storage: localStorage, now });
-const forecastCache = new ForecastCache({ storage: localStorage, now });
+if (fixtureMode) {
+  for (const key of LEGACY_FIXTURE_CACHE_KEYS) localStorage.removeItem(key);
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const key = localStorage.key(index);
+    if (key && LEGACY_FIXTURE_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix))) localStorage.removeItem(key);
+  }
+}
+const runtimeStorage = fixtureMode ? sessionStorage : localStorage;
+const history = new LocalHistory({ storage: runtimeStorage, now });
+const forecastCache = new ForecastCache({ storage: runtimeStorage, now });
 const stationDetailPromises = new Map();
 
 async function stationDetails(station) {
@@ -49,7 +65,7 @@ async function stationDetails(station) {
   const key = `${station.provider}:${station.id}`;
   if (!stationDetailPromises.has(key)) {
     stationDetailPromises.set(key, readThroughStationDetails({
-      storage: localStorage,
+      storage: runtimeStorage,
       station,
       now: now().getTime(),
       ttlMs: providerConfig.catalogueCacheTtlMs,
@@ -86,7 +102,8 @@ function fixturePlace(input) {
   if (key === 'brisbane') return { name: 'Brisbane, Queensland, Australia', lat: -27.4698, lon: 153.0251 };
   if (key === 'cooktown,qld') return { name: 'Cooktown, Queensland, Australia', lat: -15.4726622, lon: 145.2534218 };
   if (key === 'sydney') return { name: 'Sydney, New South Wales, Australia', lat: -33.8688, lon: 151.2093 };
-  return { name: 'Seattle, Washington, United States', lat: 47.6062, lon: -122.3321 };
+  if (key === 'seattle') return { name: 'Seattle, Washington, United States', lat: 47.6062, lon: -122.3321 };
+  return { code: PLACE_NOT_FOUND };
 }
 
 const fixtureGeocoder = {
@@ -135,7 +152,7 @@ const unavailableAstronomy = {
 
 const geocoder = fixtureMode
   ? fixtureGeocoder
-  : new Geocoder({ config: geocoderConfig, fetchImpl: fetch.bind(globalThis), storage: localStorage });
+  : new Geocoder({ config: geocoderConfig, fetchImpl: fetch.bind(globalThis), storage: runtimeStorage });
 const astronomy = forcedState === 'astronomy-unavailable'
   ? unavailableAstronomy
   : new Astronomy({ now });
@@ -163,7 +180,7 @@ const service = new TideHereService({
   geocoder,
   getStations: async () => {
     const direct = (await readThroughStationCatalogue({
-      storage: localStorage,
+      storage: runtimeStorage,
       now: now().getTime(),
       ttlMs: providerConfig.catalogueCacheTtlMs,
       fetchCatalogue: fixtureMode
@@ -448,6 +465,14 @@ async function submit() {
   }
 }
 
+function continueOnNormalPage(input) {
+  sessionStorage.setItem(PENDING_NORMAL_PLACE_KEY, input);
+  const normalUrl = new URL(location.href);
+  normalUrl.search = '';
+  normalUrl.hash = '';
+  location.replace(normalUrl);
+}
+
 function browserPosition() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) return reject(Object.freeze({ code: 0 }));
@@ -479,6 +504,7 @@ async function showHere() {
 
 $('#place-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  if (fixtureMode && fixturePlaceParam !== null) return continueOnNormalPage($('#place').value);
   void submit();
 });
 $('#show-here').addEventListener('click', () => { void showHere(); });
@@ -516,6 +542,13 @@ if (fixtureMode) {
     'astronomy-unavailable': 'Seattle',
     'no-event': 'Seattle'
   };
-  $('#place').value = new URLSearchParams(location.search).get('place') ?? inputs[forcedState] ?? 'Seattle';
-  $('#place-form').requestSubmit();
+  $('#place').value = fixturePlaceParam ?? inputs[forcedState] ?? 'Seattle';
+  void submit();
+} else {
+  const pendingPlace = sessionStorage.getItem(PENDING_NORMAL_PLACE_KEY);
+  if (pendingPlace !== null) {
+    sessionStorage.removeItem(PENDING_NORMAL_PLACE_KEY);
+    $('#place').value = pendingPlace;
+    void submit();
+  }
 }

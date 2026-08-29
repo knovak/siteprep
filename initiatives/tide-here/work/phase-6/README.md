@@ -65,6 +65,12 @@ responses, fixes the clock, and makes browser tests deterministic without
 network access. Its synthetic Australian response is deliberately retained as
 a disclosure test: the exact synthetic-data notice appears only inside the
 opened selected-location card and never appears for the licensed Bureau data.
+Fixture catalogues and forecasts use tab-scoped session storage so they cannot
+replace the normal page's disposable provider caches. A shared validation URL
+with an explicit recorded `place` may render that one fixture, but the next
+manual **Show selection** returns to the clean normal page and carries the entry
+without putting it in the URL. Unknown fixture names fail explicitly instead of
+silently resolving to Seattle.
 Phase 7 extends this page with its device-local history,
 disposable cache tiers, download and clear controls, and privacy statement; its
 implementation and additional checks are documented in `../phase-7/README.md`.
@@ -97,4 +103,6 @@ and disclaimer, and contains no fixture notice.
 It also verifies that a declined or ambiguous official match can resolve an
 active FES2022 model point, submits the model coordinates to the stored forecast
 route, preserves official alternatives, and shows both the DOI and AVISO
-licence.
+licence. Validation-link checks prove that a later manual search leaves fixture
+mode, hides the old result, uses the normal geocoder, and cannot leak fixture
+catalogue or forecast caches into normal local storage.
