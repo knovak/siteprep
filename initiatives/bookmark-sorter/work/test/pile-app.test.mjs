@@ -55,6 +55,7 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="exporter"/);
   assert.match(html, /id="export-scope"/);
   assert.match(html, /id="selector"/);
+  assert.match(html, />Select and tag</);
   assert.match(html, /id="previous-selections"/);
   assert.match(html, /id="erase-collection"/);
   assert.match(html, /id="admin-menu"/);
@@ -64,11 +65,13 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /id="tag-mode"/);
   assert.match(html, />Tag items</);
   assert.match(html, />Untag items</);
+  assert.match(html, /data-tag-ready="false"/);
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
   assert.match(html, /can be used as a suffix to match any trailing characters/);
   assert.match(html, /exact folder names used by Automatic proposals/);
+  assert.match(html, /href="https:\/\/knovak\.github\.io\/siteprep\/initiatives\/bookmark-sorter\/README\.html"[^>]*>Full documentation<\/a>/);
   assert.doesNotMatch(html, /prompt\('Collection name'/);
   assert.match(html, /textContent = text/);
   assert.doesNotMatch(html, /innerHTML/);

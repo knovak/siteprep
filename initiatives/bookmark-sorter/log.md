@@ -440,3 +440,10 @@ sitting report, and Undo path. A removal records only tags actually present on
 each item, and Undo restores exactly those tags without disturbing unrelated
 tags. Updated the user and technical documentation plus API, storage,
 migration, and browser coverage.
+
+Refined the same control before review: renamed the top-level panel **Select and
+tag**, made Tag/Untag use the chooser controls' black-on-white empty state and
+white-on-blue ready state, and moved `err:` Automatic proposals out of Tag into
+a dedicated Errors section after Verdict. Errors now include each exact error
+plus **any error** for `err:*`. Added a Full documentation link to Help and
+recorded the Safari and Chrome synced-tab import workflows in the user README.

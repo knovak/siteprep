@@ -75,8 +75,9 @@ export function proposeSelections(items, {minimum = 2} = {}) {
       .filter(tag => tag.startsWith('src:'))
       .map(tag => tag.slice(4)), key => `src:${key}`),
     ...groupProposalValues(items, 'tag', item => (item.tags || [])
-      .filter(tag => !tag.startsWith('src:') && !tag.startsWith('folder:')), key => `tag-key:${encodeURIComponent(key)}`),
+      .filter(tag => !tag.startsWith('src:') && !tag.startsWith('folder:') && !tag.startsWith('err:')), key => `tag-key:${encodeURIComponent(key)}`),
     ...verdictProposals(items),
+    ...errorProposals(items),
     ...groupProposalValues(items, 'folder', item => (item.tags || [])
       .filter(tag => tag.startsWith('folder:'))
       .map(tag => tag.slice(7)), key => `folder-key:${encodeURIComponent(key)}`),
@@ -84,13 +85,26 @@ export function proposeSelections(items, {minimum = 2} = {}) {
     ...groupProposalValues(items, 'image', item => [selectionImage(item.capture)]),
     ...groupProposalValues(items, 'title', item => [item.title_key || normaliseTitle(item.title)]),
   ];
-  const includeSingleton = new Set(['src', 'tag', 'folder', 'image']);
-  const kindOrder = new Map(['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title'].map((kind, index) => [kind, index]));
+  const includeSingleton = new Set(['src', 'tag', 'error', 'folder', 'image']);
+  const kindOrder = new Map(['src', 'tag', 'verdict', 'error', 'folder', 'site', 'image', 'title'].map((kind, index) => [kind, index]));
   return proposals
-    .filter(proposal => proposal.kind === 'verdict'
+    .filter(proposal => proposal.kind === 'verdict' || proposal.id === 'error:any'
       || proposal.count >= (includeSingleton.has(proposal.kind) ? 1 : minimum))
     .sort((left, right) => kindOrder.get(left.kind) - kindOrder.get(right.kind)
       || left.name.localeCompare(right.name));
+}
+
+function errorProposals(items) {
+  const proposals = groupProposalValues(items, 'error', item => (item.tags || [])
+    .filter(tag => tag.startsWith('err:')), key => `tag-key:${encodeURIComponent(key)}`);
+  return [{
+    id: 'error:any',
+    kind: 'error',
+    key: 'any',
+    name: 'any error',
+    expression: 'err:*',
+    count: items.filter(item => (item.tags || []).some(tag => tag.startsWith('err:'))).length,
+  }, ...proposals];
 }
 
 function verdictProposals(items) {

@@ -272,6 +272,8 @@ the user-facing controls that now sit on top of it:
 | Import/Select/Export accordion | The three collapsed panels have equal width; none or exactly one opens; the open panel receives most of the row | Current control-center layout |
 | File chooser and drop target | A chooser-selected or dropped HTML/JSON file enters the same form; a drop displays the file name but does not import until Import file is chosen | Explicit import intent |
 | Selection chooser readiness | Open proposal, Open saved, and Open previous are black on white with their placeholder selected and white on blue after a real value is chosen | Visible target state |
+| Tag action readiness | Tag/Untag is black on white with an empty tag field and white on blue when text is present; either action returns to the empty state after it completes | Visible action state |
+| Error proposals | `err:` tags appear only in an Errors group immediately after Verdict; the group includes every specific error plus **any error** for `err:*` | Clear capture-failure selection |
 | Selection history | Successfully opened expressions persist per user, newest first and without duplicates; selecting a previous expression opens it through the ordinary evaluator | Recent-selection workflow |
 | Export scopes | Current collection and Current selection produce importable `bookmark-sorter/v1` downloads named from the collection | O7 user workflow |
 | Confirmed erasure | Erase current collection writes only after confirmation, leaves the collection present, and reports the erased count | Destructive-action boundary |

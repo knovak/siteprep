@@ -93,8 +93,10 @@ export function renderPilePage({isAdmin = false} = {}) {
     .selection-panel .choice-action { color: #111; background: white; }
     .selection-panel .choice-action[data-selection-ready="true"] { border-color: #234fc4; color: white; background: #234fc4; }
     .tag-control { min-width: 0; display: flex; align-items: stretch; }
-    .selection-panel .tag-control #tag-selection { flex: 1 1 auto; border-color: #234fc4; border-radius: 8px 0 0 8px; color: white; background: #234fc4; }
-    .tag-mode-picker { position: relative; flex: 0 0 38px; min-height: 36px; display: grid; place-items: center; border: 1px solid #234fc4; border-left-color: #173b9c; border-radius: 0 8px 8px 0; color: white; background: #234fc4; cursor: pointer; }
+    .selection-panel .tag-control #tag-selection { flex: 1 1 auto; border-color: #b9c2d3; border-radius: 8px 0 0 8px; color: #111; background: white; }
+    .selection-panel .tag-control #tag-selection[data-tag-ready="true"] { border-color: #234fc4; color: white; background: #234fc4; }
+    .tag-mode-picker { position: relative; flex: 0 0 38px; min-height: 36px; display: grid; place-items: center; border: 1px solid #b9c2d3; border-left-color: #9eabc2; border-radius: 0 8px 8px 0; color: #111; background: white; cursor: pointer; }
+    .tag-mode-picker[data-tag-ready="true"] { border-color: #234fc4; border-left-color: #173b9c; color: white; background: #234fc4; }
     .tag-mode-picker select { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; opacity: 0; border: 0; padding: 0; cursor: pointer; }
     .tag-mode-picker:has(select:focus-visible) { outline: 2px solid #9bb4f4; outline-offset: 2px; }
     .tag-mode-picker span { pointer-events: none; font-size: 1.05rem; }
@@ -170,6 +172,8 @@ export function renderPilePage({isAdmin = false} = {}) {
     .help-panel p, .help-panel li { color: #4d5870; font-size: .83rem; }
     .help-panel ul { margin: 6px 0; padding-left: 20px; }
     .help-panel code { border-radius: 4px; padding: 1px 4px; color: #243c72; background: #edf2ff; font-size: .78rem; }
+    .help-documentation { margin: 16px 0 0; }
+    .help-documentation a { color: #234fc4; font-weight: 760; text-underline-offset: 3px; }
     @media (max-width: 1100px) { :root { --columns: 4; --rows: 3; } .layout-picker { display: none; } .bookmark-card h2 { font-size: .98rem; } }
     @media (max-width: 1100px) and (orientation: portrait) { :root { --columns: 3; --rows: 3; } }
     @media (max-width: 640px) {
@@ -249,6 +253,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder names used by Automatic proposals.</li>
         <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses.</li>
       </ul>
+      <p class="help-documentation"><a href="https://knovak.github.io/siteprep/initiatives/bookmark-sorter/README.html" target="_blank" rel="noopener noreferrer">Full documentation</a></p>
     </aside>
     <aside id="tag-popover" class="tag-popover" role="note" aria-label="All tags" hidden></aside>
     <section class="collection-bar" aria-label="Collections">
@@ -316,7 +321,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         </div>
       </details>
       <details id="selector">
-        <summary>Select</summary>
+        <summary>Select and tag</summary>
         <section class="selection-panel" aria-label="Selection tools">
           <input id="selection-expression" aria-label="Selection expression" placeholder="folder:reading/* and not topic:rust">
           <button id="open-selection" class="primary" type="button">Open selection</button>
@@ -326,8 +331,8 @@ export function renderPilePage({isAdmin = false} = {}) {
           <button id="open-proposal" class="choice-action" data-selection-ready="false" type="button">Open proposal</button>
           <input id="tag-input" aria-label="Tags to add" placeholder="tag-one, tag-two">
           <div class="tag-control">
-            <button id="tag-selection" type="button">Tag items</button>
-            <label class="tag-mode-picker" title="Choose tag action">
+            <button id="tag-selection" data-tag-ready="false" type="button">Tag items</button>
+            <label class="tag-mode-picker" data-tag-ready="false" title="Choose tag action">
               <span aria-hidden="true">▾</span>
               <select id="tag-mode" aria-label="Tag mode">
                 <option value="apply">Tag items</option>
@@ -395,7 +400,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       savedSelections: document.querySelector('#saved-selections'), openSaved: document.querySelector('#open-saved'),
       previousSelections: document.querySelector('#previous-selections'), openPrevious: document.querySelector('#open-previous'),
       proposals: document.querySelector('#proposals'), openProposal: document.querySelector('#open-proposal'),
-      tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'), tagMode: document.querySelector('#tag-mode'),
+      tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'), tagMode: document.querySelector('#tag-mode'), tagModePicker: document.querySelector('.tag-mode-picker'),
       sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'), sweepMode: document.querySelector('#sweep-mode'),
       selectionSummary: document.querySelector('#selection-summary'),
       collectionSelect: document.querySelector('#collection-select'), collectionKind: document.querySelector('#collection-kind'),
@@ -656,11 +661,11 @@ export function renderPilePage({isAdmin = false} = {}) {
 
     function fillProposalSelect(rows) {
       elements.proposals.replaceChildren(new Option('Automatic proposals', ''));
-      for (const kind of ['src', 'tag', 'verdict', 'folder', 'site', 'image', 'title']) {
+      for (const kind of ['src', 'tag', 'verdict', 'error', 'folder', 'site', 'image', 'title']) {
         const matches = rows.filter(row => row.kind === kind);
         if (!matches.length) continue;
         const group = document.createElement('optgroup');
-        group.label = kind;
+        group.label = kind === 'error' ? 'errors' : kind;
         for (const row of matches) group.append(new Option(
           row.name + ' (' + row.count.toLocaleString() + ')', row.id,
         ));
@@ -812,7 +817,13 @@ export function renderPilePage({isAdmin = false} = {}) {
       const data = await api('/api/tag', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)});
       const verb = mode === 'remove' ? 'Removed tags from ' : 'Added tags to ';
       elements.status.textContent = verb + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' as one action.';
-      elements.tagInput.value = ''; clearMarks(); await loadWindow(state.offset); await loadSelectionTools();
+      elements.tagInput.value = ''; updateTagActionState(); clearMarks(); await loadWindow(state.offset); await loadSelectionTools();
+    }
+
+    function updateTagActionState() {
+      const ready = Boolean(elements.tagInput.value.trim());
+      elements.tagSelection.dataset.tagReady = String(ready);
+      elements.tagModePicker.dataset.tagReady = String(ready);
     }
 
     function updateTagMode() {
@@ -1168,6 +1179,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
     for (const select of [elements.proposals, elements.savedSelections, elements.previousSelections]) select.addEventListener('change', updateSelectionActionStates);
+    elements.tagInput.addEventListener('input', updateTagActionState);
     elements.tagSelection.addEventListener('click', () => changeTagsOnCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
     elements.tagMode.addEventListener('change', updateTagMode);
     elements.sweepMode.addEventListener('change', updateSweepMode);

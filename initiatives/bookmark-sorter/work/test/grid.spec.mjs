@@ -86,6 +86,9 @@ async function installPile(page) {
         {id: 'verdict:not-junk', kind: 'verdict', name: 'not junk', expression: 'not verdict:junk', count: 10_000},
         {id: 'verdict:untriaged', kind: 'verdict', name: 'untriaged', expression: 'verdict:untriaged', count: 10_000},
         {id: 'verdict:untriaged-or-needs-time', kind: 'verdict', name: 'untriaged or needs-time', expression: 'verdict:untriaged or verdict:needs-time', count: 10_000},
+        {id: 'error:any', kind: 'error', name: 'any error', expression: 'err:*', count: 3},
+        {id: 'error:err:404', kind: 'error', name: 'err:404', expression: 'tag-key:err%3A404', count: 2},
+        {id: 'error:err:timeout', kind: 'error', name: 'err:timeout', expression: 'tag-key:err%3Atimeout', count: 1},
       ]}});
     }
     if (request.method() === 'GET' && url.pathname === '/api/session') {
@@ -529,6 +532,10 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('exact folder names');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
   await expect(page.locator('#help-panel')).toContainText('image:present');
+  const documentation = page.getByRole('link', {name: 'Full documentation'});
+  await expect(documentation).toHaveAttribute('href', 'https://knovak.github.io/siteprep/initiatives/bookmark-sorter/README.html');
+  await expect(documentation).toHaveAttribute('target', '_blank');
+  await expect(documentation).toHaveAttribute('rel', 'noopener noreferrer');
   await page.keyboard.press('Escape');
   await expect(page.locator('#help-panel')).toBeHidden();
 
@@ -663,12 +670,15 @@ test('Automatic proposals are grouped in the requested order without Same labels
   await page.setViewportSize({width: 1600, height: 900});
   await installPile(page);
   await page.goto('https://pile.test/');
-  await expect(page.locator('#proposals optgroup')).toHaveCount(6);
+  await expect(page.locator('#proposals optgroup')).toHaveCount(7);
   const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
-  expect(labels).toEqual(['src', 'tag', 'verdict', 'folder', 'site', 'image']);
+  expect(labels).toEqual(['src', 'tag', 'verdict', 'errors', 'folder', 'site', 'image']);
   await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(7);
   const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
   expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'not junk (10,000)', 'untriaged (10,000)', 'untriaged or needs-time (10,000)']);
+  const errorLabels = await page.locator('#proposals optgroup[label="errors"] option').allTextContents();
+  expect(errorLabels).toEqual(['any error (3)', 'err:404 (2)', 'err:timeout (1)']);
+  await expect(page.locator('#proposals optgroup[label="tag"]')).not.toContainText('err:');
   await expect(page.locator('#proposals')).not.toContainText('Same ');
 });
 
@@ -800,19 +810,35 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await page.goto('https://pile.test/');
   await page.locator('#selector > summary').click();
 
+  await expect(page.locator('#selector > summary')).toHaveText('Select and tag');
   await expect(page.locator('#tag-selection')).toHaveText('Tag items');
   await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to add');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(17, 17, 17)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(17, 17, 17)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   await page.locator('#tag-input').fill('topic:temporary');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Added tags to 4 items as one action.');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   expect(backend.items.every(item => item.tags.includes('topic:temporary'))).toBe(true);
 
   await page.getByLabel('Tag mode').selectOption('remove');
   await expect(page.locator('#tag-selection')).toHaveText('Untag items');
   await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to remove');
   await page.locator('#tag-input').fill('topic:temporary');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Removed tags from 4 items as one action.');
+  await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
   expect(backend.items.every(item => !item.tags.includes('topic:temporary'))).toBe(true);
 
   await page.getByLabel('Tag mode').selectOption('apply');

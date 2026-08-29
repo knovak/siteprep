@@ -281,12 +281,14 @@ collection creation.
   `authorized_user`. Both routes require the matched row to have type `admin`;
   the same check gates Admin rendering, capture operations, and ending a
   sitting.
-- `GET /api/proposals` recomputes source, exact-tag, verdict, folder, site,
-  image, and near-title groups as ordinary pre-filled selections. The five
+- `GET /api/proposals` recomputes source, exact-tag, verdict, capture-error,
+  folder, site, image, and near-title groups as ordinary pre-filled selections.
+  `err:` tags are excluded from the ordinary tag group and instead appear in
+  the error group, along with an **any error** proposal using `err:*`. The five
   individual verdict expressions and the combined **not junk** and
   **untriaged or needs-time** expressions are always present, including
   zero-count individual values. The interface groups source, tag, verdict,
-  folder, site, and image in that order,
+  errors, folder, site, and image in that order,
   with title last for the retained near-title feature, and alphabetizes each
   group. Folder and tag groups therefore change on the request after tags
   change; no proposal cache can go stale. The page explicitly reloads proposals
@@ -297,7 +299,8 @@ collection creation.
 - `POST /api/tag` accepts `mode: "apply"` (the default) or `mode: "remove"` for
   the marked set or current selection. It logs only the tags actually added or
   removed, so one undo reverses exactly that action and preserves everything
-  else.
+  else. The split action is black on white while its tag field is empty and
+  white on blue when entered text makes it ready.
 - `POST /api/selection/verdict` applies one verdict to the entire open
   expression. An unconfirmed request returns `409` with its count; the split
   Sweep control confirms that count before retrying. The default visible-page
