@@ -18,12 +18,17 @@ import { dirname, resolve, join } from 'node:path';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SCRIPT = join(ROOT, 'scripts', 'initiatives.mjs');
 const FIXTURES = join(ROOT, 'tests', 'fixtures', 'initiatives');
+const FIXTURE_NOW = '2026-08-20T00:00:00Z';
 
 function run(args, initiativesDir = FIXTURES) {
   return execFileSync('node', [SCRIPT, ...args], {
     cwd: ROOT,
     encoding: 'utf8',
-    env: { ...process.env, INITIATIVES_DIR: initiativesDir }
+    env: {
+      ...process.env,
+      INITIATIVES_DIR: initiativesDir,
+      INITIATIVES_NOW: FIXTURE_NOW
+    }
   });
 }
 
@@ -115,5 +120,5 @@ test('says so plainly when nothing needs attention', () => {
 test('a malformed sweep.json is an error, not a crash', () => {
   const digest = JSON.parse(run(['digest', '--json']));
   assert.deepEqual(digest.errors, [], 'the fixtures are valid');
-  assert.equal(typeof digest.generated, 'string');
+  assert.equal(digest.generated, '2026-08-20');
 });

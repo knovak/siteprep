@@ -376,6 +376,10 @@ that can check rather than guessed at.
 `INITIATIVES_DIR` overrides which directory is read, which is how the tests run
 against fixtures instead of live work.
 
+`INITIATIVES_NOW` overrides the digest's current date for deterministic tests.
+The fixture suite pins it so committed fixture activity does not become stale as
+the wall clock advances. Normal runs leave it unset and use the actual time.
+
 ### Configuration and the prompt
 
 `initiatives/sweep.json` holds the run configuration; `phases` controls what a

@@ -217,11 +217,11 @@ function lastActivity(relPath) {
   }
 }
 
-function daysSince(iso) {
+function daysSince(iso, now = Date.now()) {
   if (!iso) return null;
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return null;
-  return Math.floor((Date.now() - then) / 86400000);
+  return Math.floor((now - then) / 86400000);
 }
 
 function relativeDays(days) {
@@ -1263,6 +1263,13 @@ export function formatDeployments(slug, data) {
  * check rather than guessed at here.
  */
 function buildDigest() {
+  const now = process.env.INITIATIVES_NOW
+    ? new Date(process.env.INITIATIVES_NOW)
+    : new Date();
+  if (Number.isNaN(now.getTime())) {
+    throw new Error('INITIATIVES_NOW must be a valid date or timestamp');
+  }
+
   const { records, errors, warnings } = validate();
   const sweep = loadSweepConfig().config;
   const globalStaleness = Number.isFinite(sweep.staleness_days)
@@ -1274,7 +1281,7 @@ function buildDigest() {
   );
 
   const digest = {
-    generated: new Date().toISOString().slice(0, 10),
+    generated: now.toISOString().slice(0, 10),
     total: records.length,
     unreadable: [],
     decisions: [],
@@ -1299,7 +1306,7 @@ function buildDigest() {
     const todo = data.todo || [];
     const actionable = todo.filter((item) => item.state === 'actionable');
     const blocked = todo.filter((item) => item.state === 'blocked');
-    const age = daysSince(record.lastActivity);
+    const age = daysSince(record.lastActivity, now.getTime());
     const threshold = Number.isFinite(data.staleness_days)
       ? data.staleness_days
       : globalStaleness;
@@ -1322,7 +1329,7 @@ function buildDigest() {
         });
       } else if (prefix === 'schedule') {
         const due = new Date(detail);
-        if (!Number.isNaN(due.getTime()) && due.getTime() <= Date.now()) {
+        if (!Number.isNaN(due.getTime()) && due.getTime() <= now.getTime()) {
           digest.readyToUnblock.push({ ...entry, reason: `scheduled date ${detail} has passed` });
         }
       } else if (prefix === 'review') {
