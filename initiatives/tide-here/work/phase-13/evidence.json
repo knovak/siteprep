@@ -1,51 +1,44 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-28T00:20:27Z",
+  "checkedAt": "2026-08-30T01:49:46Z",
   "stage": "global-coverage-stage-5",
   "deployment": {
     "url": "https://tide-here-test.ken-novak.chatgpt.site",
     "access": "public",
-    "version": 8,
-    "deployedAt": "2026-08-28T00:18:18Z",
-    "siteSourceCommit": "b5a787691c22447a0a44dc368a252ecc9782e52e",
-    "sourceCommit": "946737c668ea59d6e640564dadc68fc2a2972dff",
+    "version": 13,
+    "deployedAt": "2026-08-30T01:42:42Z",
+    "siteSourceCommit": "af7fb2ffb9c8256a12ea12f7778bfc15858659f3",
+    "sourceCommit": "2ebe9798cbb64ad072671d65a78fba7d17219b85",
     "archiveFiles": 75,
-    "archiveBytes": 1658880,
-    "archiveSha256": "0da6485adbcdde0c4b1f56058bb02499002a94813f9b7c3e7998c313437a523f"
+    "archiveBytes": 2426880,
+    "archiveSha256": "3a9356adfd084789d26fa8b4539cb47f37d6bff1aae68148e4a4753a2da0f3a1"
   },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
     "r2Binding": "TIDE_DATA",
     "d1Binding": null,
     "initializerTokenConfigured": true,
-    "initializerEnvironmentRevision": 4,
+    "initializerEnvironmentRevision": 6,
     "initialized": true,
     "repeatInitializationWrites": 0
   },
   "liveChecks": {
-    "registry": "tide-here-providers/stage-4-v4",
-    "australianDataset": "australia-bom-annual-tides/2026-bom-v1",
+    "registry": "tide-here-providers/stage-4-v5",
+    "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
     "fallbackDataset": "fes-shaped-global-sample/2026-08-27",
     "noaaCatalogue": "passed",
     "chsCatalogue": "passed",
-    "australianStations": 23,
-    "australianCatalogueEvents": 449,
+    "australianStations": 76,
+    "australianCatalogueEvents": 1470,
     "fallbackFixtureEvents": 19,
     "fallbackWarnings": [
       "approximate-fallback",
       "fixture-data"
     ],
     "browserPage": "passed",
-    "australianBrowserCities": [
-      "Brisbane",
-      "Cairns",
-      "Sydney",
-      "Melbourne",
-      "Hobart",
-      "Adelaide",
-      "Perth",
-      "Broome",
-      "Darwin"
+    "australianBrowserLocations": [
+      "Port Douglas",
+      "Cocos Islands"
     ],
     "sourceAttributionAndDisclaimer": "passed",
     "syntheticFixtureNoticeAbsentForLicensedResults": true,
@@ -53,17 +46,16 @@
     "workerExecutionErrors": 0
   },
   "tests": {
-    "stageTestsPassed": 15,
+    "stageTestsPassed": 33,
     "stageTestsFailed": 0,
-    "allTideNodeTestsPassed": 111,
+    "allTideNodeTestsPassed": 114,
     "browserTestsPassed": 21,
     "browserTestsSkipped": 1,
     "productionDependencyAuditHighVulnerabilities": 0
   },
-  "productionActivation": {
+  "globalFallbackActivation": {
     "ready": false,
-    "australianProviderReady": true,
-    "productionReleaseAuthorized": false,
+    "licensedFes2022Ready": false,
     "blockedBy": [
       "Licensed FES2022 atlas files and held-out official-port comparisons"
     ]

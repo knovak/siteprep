@@ -34,33 +34,33 @@ writes, and runs HTTPS checks for:
 - the stored licensed Australian catalogue and forecasts;
 - the indexed approximate fallback fixture and its safety warnings.
 
-The source prepared for the next test deployment contains the normalized output
+The deployed test source contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
 territory indexes. It carries the source attribution, disclaimer, and per-port
 PDF URL into the browser. The fallback data remains a plainly labelled non-FES
 fixture. This deployment path validates the licensed Australian path and the
 fallback storage boundary; it is not evidence of FES2022 accuracy and does not
-authorize a production release.
+activate FES2022 or change the production Site.
 
-The expanded `2026-bom-v2` artifact and `stage-4-v5` registry are locally
-verified but have not been deployed. The recorded test deployment below remains
-version 8 with the earlier 23-port `2026-bom-v1` artifact until a separate test
-deployment is requested.
+The expanded `2026-bom-v2` artifact and `stage-4-v5` registry are active on the
+test Site. Direct NOAA/CHS station catalogues and the stored Australian
+catalogue are separate availability boundaries in the browser: either can fail
+without masking healthy coverage from the other.
 
 ## Recorded test deployment
 
-Version 8 was published to the existing public test Site on 2026-08-28 UTC:
+Version 13 was published to the existing public test Site on 2026-08-30 UTC:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v4`, Australian dataset `2026-bom-v1`, and fallback
+activated registry `stage-4-v5`, Australian dataset `2026-bom-v2`, and fallback
 fixture `2026-08-27`. A second initialization wrote zero objects. Live storage
-checks found 23 Australian stations and returned 449 Australian events across
-the full catalogue. Browser checks for Brisbane, Cairns, Sydney, Melbourne,
-Hobart, Adelaide, Perth, Broome, and Darwin rendered five local days, linked the
-selected Bureau PDF, showed the Bureau attribution and disclaimer, and did not
-show the synthetic fixture notice. The post-check log contained no Worker
-execution errors.
+checks found 76 Australian stations and returned 1,470 Australian events across
+the full catalogue. Browser checks for Port Douglas and remote Cocos Islands
+rendered five local days, linked the selected Bureau PDF, showed the Bureau
+attribution and disclaimer, and did not show the synthetic fixture notice. The
+post-check log contained no Worker execution errors.
 
-The production Site was not changed.
+The production Site was not changed. Its existing version 6 already serves the
+same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.
 
 ## Local verification
 
