@@ -85,7 +85,7 @@ These tests continue running after the phase that first introduces them.
 | Collection scope is mandatory | Every content query and write requires a knowledge-space and collection scope; omitting either is refused, not interpreted as all |
 | Authorization is server-side | Changing a hidden control, URL, body id, relationship endpoint, asset key, or export scope cannot reach another user's collection |
 | AI proposes only | An LLM or skill actor cannot accept a promotion, make a standing document current, archive a narrative, erase a collection, or administer users |
-| Import is transactional | Any failure before commit changes nothing; any commit produces a receipt whose created hashes match the durable records |
+| Import is transactionally visible | Any failure before commit changes nothing; no reader observes a partial accepted commit; retry after failure or restart produces one receipt whose created hashes match the durable records |
 | Reimport is a no-op | Replaying a package or operation changes no version pointer, timestamp, tag, relationship, or receipt except recording the safe duplicate attempt |
 | Subsets never delete | Records absent from an import remain untouched |
 | Cross-collection references are explicit | Ordinary imports refuse them; an administrative copy remaps all included endpoints and reports omissions |
@@ -103,6 +103,7 @@ These tests continue running after the phase that first introduces them.
 | Database independence | The same repository contract and logical round trip pass on two independently created local SQLite databases without relying on row ids or file copies |
 | Idempotent replay | Reimport the package and every proposal operation twice; current state and counts are unchanged after the first accepted commit |
 | Merge versus copy | Same collection ids preserve local ids; an explicit copy remaps ids, aliases, and both relationship endpoints and emits the exact id map |
+| Explicit import intent | Preview pins restore/merge/copy mode plus target knowledge space and collection; incoming ids or names never select the mode or destination, and changing either invalidates commit |
 | Stale proposal | Change one base entity after export; proposal preview names the stale operation and commit cannot accept it silently |
 | Unknown extension | A namespaced extension round-trips; an unknown top-level field is warned and excluded from trusted canonical state |
 | Endpoint closure | A relationship whose endpoint version is absent is warned as an external reference in a safe subset and refused when an operation requires that endpoint |
@@ -117,13 +118,16 @@ These tests continue running after the phase that first introduces them.
 | Test | Pass condition |
 |---|---|
 | Anonymous entry | The public URL presents sign-in; data and API routes return 401 before a database or blob read |
+| Deployment access gate | The recorded Site access is public only after explicit permission; public access exposes no knowledge or object route without application authentication and authorization |
 | Unlisted identity | A complete signed-in identity absent from `authorized_user` sees the not-authorized state; APIs return 403 and create nothing |
+| Trusted identity context | Client-supplied lookalike identity headers are ignored; incomplete or conflicting trusted identity is refused before storage; deployed tests accept no test-only identity override |
+| Administrator bootstrap | Deployment seeds exactly one intended administrator allowlist row; no public route self-enrolls, and bootstrap or recovery use is logged without granting collection access to another identity |
 | First identity link | An allowlisted email links one stable Site user id once; a different id cannot claim the row and email is not used as collection ownership |
 | User isolation | User A cannot list, count, open, mutate, export, erase, infer, or fetch an asset from User B's collection, including by guessed ids |
 | Administrator boundary | User routes reject allowlist, schedule, migration, and cross-collection actions; administrator previews name every affected collection |
 | Create and select | Names obey the length, trimming, control-character, and case-folded uniqueness rules; empty state remains honest until creation |
 | Switch invalidation | Switching collections updates all visible scope and invalidates an import preview and form submission opened against the previous collection |
-| Hosted/local parity | Repository and blob contract suites pass against D1/R2 and local SQLite/filesystem adapters |
+| Hosted/local parity | Repository and blob contract suites pass against D1/R2 and local SQLite/filesystem adapters, including injected mid-commit failure, restart, invisible staging state, and exactly one receipt on retry |
 | Private blob read | A valid collection reference yields a bounded authorized response; an object key, another collection, or a raw R2 URL does not |
 | Empty backup | Before any source intake, current-collection export and restore work and carry the collection, actor, configuration, and receipt records |
 | Erase preview | Confirmation names the collection, counts, schedules, backups, and final-export option; cancel is byte-for-byte no change |
@@ -197,9 +201,10 @@ These tests continue running after the phase that first introduces them.
 |---|---|
 | Three export callers | Web, authenticated admin action, and deterministic schedule trigger produce the same logical package and equivalent receipt for the same scope |
 | Hosted scheduled run | With explicit permission and credentialing, a real due schedule creates an encrypted private R2 package and a service-actor receipt; without permission it is visibly inactive, never simulated as successful |
+| Trigger authentication | Valid run-due capability executes only due schedules in its scope; expired, replayed, altered-body, wrong-scope, and general-user credentials are refused before schedule lookup, and no credential appears in prompt, URL, log, activity, or receipt |
 | Retry and preservation | Fail the destination three times; attempts follow 1/5/20-minute policy, final failure notifies, and the last successful package remains intact |
 | Retention | Fourteen daily and six monthly successes survive according to timestamp; failed and partial artifacts never count as a retained success |
-| Encryption boundary | R2 holds no plaintext bundle; loss of the Site-held key prevents restore with a useful error, and the key appears nowhere in exports or receipts |
+| Encryption and recovery boundary | R2 holds no plaintext bundle; a fresh deployment restores with the recorded operator recovery key but not the original Site key, while wrong keys, tampered envelope metadata, and retired key versions fail safely; no wrapping key appears in exports or receipts |
 | Full restore | Restore the scale fixture into a fresh store within 10 minutes; counts, hashes, version chains, relationships, receipts, archive states, and permitted asset references match |
 | Pre-migration recovery | Take a canonical backup, migrate, restore the older package through its tested adapter, and compare logical exports rather than database files |
 | Cross-space copy | Copy a bounded subset, remap every internal id and endpoint, preserve origin aliases, omit unauthorized dependencies with warnings, and grant no access back to the source |
@@ -223,7 +228,8 @@ This exit is a witnessed sitting, not only a green suite.
   conversation.
 - The same bounded export is initiated through the web and administrator
   action; if the schedule was authorized, its next due run is compared too. A
-  disposable deployment restores from the resulting package.
+  disposable deployment with no original Site key restores from the resulting
+  encrypted package using the recorded operator recovery procedure.
 - Disable the model contributor, any skill or ChatGPT app, and remote source
   bodies. All accepted knowledge, administration, export, restore, document,
   and archive functions remain usable.

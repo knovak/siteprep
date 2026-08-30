@@ -41,6 +41,15 @@ SQLite-compatible store, and a private Sites R2 binding as the blob adapter.
 This reuses the host and authorization boundary already exercised by Bookmark
 Sorter without making those vendor bindings part of the domain model.
 
+The Site's access setting and the application's data access are separate
+boundaries. Phase 1 needs a public-access test Site so anonymous, unlisted,
+user, and administrator behavior can all be exercised, but making that Site
+public requires the user's explicit permission at deployment time. Without
+that permission, an owner-only preview may be used for assembly but Phase 1
+does not exit. Public access exposes only the sign-in and refusal surfaces;
+every knowledge, collection, API, export, administration, and blob route stays
+login- and allowlist-gated.
+
 The Site adapter reads `oai-authenticated-user-id` and
 `oai-authenticated-user-email`. Both must be present. A normalized email first
 matches an `authorized_user` record, then links the stable Site user id to that
@@ -49,11 +58,23 @@ collections are owned by internal actor ids rather than by email or a header.
 Anonymous requests receive 401, signed-in but unlisted identities receive 403,
 and neither path opens a storage transaction.
 
+Only identity values supplied by the trusted Site request context count. The
+adapter ignores client-forwarded lookalike headers and refuses incomplete or
+conflicting identity. The first administrator is a single deployment-seeded
+allowlist row, not public self-enrollment; once linked to a stable Site user id,
+changing the seed or presenting the same email under another id cannot claim
+that actor. Administrator recovery is a separately authenticated operator
+procedure whose use is logged, never an alternate web login path.
+
 Core services receive repository, blob, identity, authorization, clock, id,
 and export-trigger adapters. CI and local recovery use SQLite plus a private
 filesystem blob adapter. Hosted code imports no D1 or R2 binding outside the
 adapter layer. SQL migrations use portable SQLite features and run against
-both implementations.
+both implementations. The repository contract includes the all-or-nothing
+accepted-commit guarantee, including durable receipt creation. If hosted D1
+cannot provide the same primitive as local SQLite, its adapter must implement a
+staged, crash-resumable commit protocol; it may not weaken the core contract or
+expose partly accepted state.
 
 ### 2.2 Accounts and allowlist administration
 
@@ -96,13 +117,27 @@ service call test the same path before that permission is requested. The
 adapter may later be replaced by another scheduler without changing a schedule
 or receipt.
 
+The trigger uses a dedicated run-due capability, not a human session or general
+administrator credential. Requests bind a timestamp, nonce, body hash, and
+idempotency key to that capability; expired, replayed, altered, or wrong-scope
+requests are refused before schedule lookup. Credential material lives only in
+the Site secret binding and the scheduler environment's secret store — never
+in the heartbeat prompt, URL, repository, activity, or receipt. If the
+scheduler cannot supply that boundary, the hosted trigger remains inactive and
+Phase 6 records the limitation rather than embedding a bearer secret in prose.
+
 Scheduled artifacts go to private R2 keys under the knowledge space and
 schedule id. The initial policy keeps 14 daily and 6 monthly successful
 packages. The manifest and permitted assets are encrypted as one AES-256-GCM
-bundle with a Site-held key; R2's own encryption is defense in depth rather
-than the portable guarantee. A run retries after 1, 5, and 20 minutes, records
-every attempt, notifies only after the final failure, and never replaces the
-last successful package with a partial result.
+bundle using a fresh data key and authenticated envelope metadata. A versioned
+Site-held key wraps that data key for routine restore, and a separately held
+operator recovery key wraps the same data key for disaster recovery; R2's own
+encryption is defense in depth rather than the portable guarantee. The
+operator's key-custody location and rotation procedure must be recorded before
+scheduled exports are enabled. Neither wrapping key enters the package or its
+receipt. A run retries after 1, 5, and 20 minutes, records every attempt,
+notifies only after the final failure, and never replaces the last successful
+package with a partial result.
 
 ### 2.5 Initial vocabularies
 
@@ -209,6 +244,14 @@ package validator, streaming exporter, transactional importer, activities,
 receipts, and restore command. Use the 18-source fixture, but do not yet build a
 harvest UI or model call.
 
+Build this large phase as four reversible checkpoints: (1) envelope schemas,
+limits, canonical hashing, and a minimum one-source fixture; (2) immutable
+versions, activities, the repository contract, transactional commit, and
+receipts; (3) relationships, merge/copy preview, canonical export, restore, and
+migration rehearsal on the 18-source fixture; then (4) hostile-package and
+scale tests. Each checkpoint leaves an executable round trip. Do not build all
+five workflow screens or a generic graph query layer to make the fixture pass.
+
 The core must distinguish merge from copy, preserve unknown namespaced
 extensions, reject stale proposals, and make same-package reimport a no-op.
 Before the phase exits, a fresh database restores from the package, all hashes
@@ -219,12 +262,14 @@ pre-migration package has itself been restored in a disposable store.
 
 ### Phase 1 — Login-gated Site and collection shell
 
-Deploy the empty application to a private test configuration at its stable
-public URL. Add the Site identity adapter, application allowlist, admin and user
-roles, D1 repository adapter, private R2 adapter, collection create/select,
-the two-phase erase workflow, package administration, and current-collection
-backup/restore. Import/export controls appear in the empty Harvest view and
-administration before representative data is accepted.
+With explicit permission for the already specified access level, deploy the
+empty application to a public-access test Site at its stable URL while keeping
+all data routes login- and allowlist-gated. Add the Site identity adapter,
+application allowlist, admin and user roles, D1 repository adapter, private R2
+adapter, collection create/select, the two-phase erase workflow, package
+administration, and current-collection backup/restore. Import/export controls
+appear in the empty Harvest view and administration before representative data
+is accepted.
 
 This phase proves 401, 403, stable-id linking, user isolation, administrator
 scope, D1/local parity, blob authorization, and collection switching. It does
@@ -297,6 +342,12 @@ external trigger adapter, retry behavior, large erasure, and performance
 instrumentation. With explicit user permission, create the Codex heartbeat
 that exercises the hosted trigger; without that permission the tested adapter
 remains ready and the hosted schedule is correctly reported as not active.
+
+Before enabling a schedule, record where the operator recovery key is held and
+prove the run-due credential can be stored without appearing in the automation
+prompt or logs. Restore one encrypted artifact into a fresh deployment using
+only the package, its authenticated envelope, and the operator recovery key;
+the original Site-held key must not be required for disaster recovery.
 
 Run the scale fixture against local SQLite and the hosted adapter. Tune indexes,
 streaming, and pagination without changing package semantics. Restore a
