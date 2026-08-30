@@ -7,7 +7,7 @@ import { Geocoder, GEOCODER_UNAVAILABLE, INVALID_INPUT, PLACE_NOT_FOUND, parsePl
 import { COAST_CHOICE_REQUIRED, TideHereService } from '../phase-5/src/resolve-forecast.mjs';
 import { ForecastCache, LocalHistory } from '../phase-7/src/local-data.mjs';
 import { forecastViewModel, providerLabel, statePresentation } from './src/page-view.mjs';
-import { AUSTRALIAN_PROVIDER_ID, StoredTideClient } from './src/stored-tide-client.mjs';
+import { AUSTRALIAN_PROVIDER_ID, loadAvailableStations, StoredTideClient } from './src/stored-tide-client.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const fixtureMode = new URLSearchParams(location.search).get('fixture') === '1';
@@ -156,18 +156,17 @@ const tideProvider = {
 };
 const service = new TideHereService({
   geocoder,
-  getStations: async () => {
-    const direct = (await readThroughStationCatalogue({
+  getStations: () => loadAvailableStations({
+    direct: async () => (await readThroughStationCatalogue({
       storage: localStorage,
       now: now().getTime(),
       ttlMs: providerConfig.catalogueCacheTtlMs,
       fetchCatalogue: fixtureMode
         ? async () => fixtureStations
         : () => fetchStationCatalogues({ config: providerConfig, fetchImpl: fetch.bind(globalThis) })
-    })).stations;
-    const australian = await storedTideClient.stations().catch(() => []);
-    return [...direct, ...australian];
-  },
+    })).stations,
+    stored: () => storedTideClient.stations()
+  }),
   matchConfig: providerConfig.match,
   timeZoneLookup: async (_latitude, _longitude, station) => (await stationDetails(station)).timeZone,
   tideProvider,

@@ -1,5 +1,21 @@
 export const AUSTRALIAN_PROVIDER_ID = 'australia-standard-ports';
 
+export async function loadAvailableStations({direct, stored}) {
+  if (typeof direct !== 'function' || typeof stored !== 'function') {
+    throw new TypeError('Station loading requires direct and stored provider functions');
+  }
+  const [directResult, storedResult] = await Promise.allSettled([direct(), stored()]);
+  const directStations = directResult.status === 'fulfilled' && Array.isArray(directResult.value)
+    ? directResult.value
+    : [];
+  const storedStations = storedResult.status === 'fulfilled' && Array.isArray(storedResult.value)
+    ? storedResult.value
+    : [];
+  const stations = [...directStations, ...storedStations];
+  if (!stations.length) throw new Error('No tide station catalogue is available');
+  return Object.freeze(stations);
+}
+
 function emptyDays(rows) {
   return rows.map((row) => ({
     date: row.date,
