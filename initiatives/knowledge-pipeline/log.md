@@ -19,3 +19,7 @@ Drafted the phased build plan and matching test plan, choosing the first host an
 ## 2026-08-30 — Critique plan.md and test-plan.md, and improve them before building starts
 
 Critiqued the pre-build plan, added executable Phase 0 checkpoints, and strengthened access permission, identity trust, hosted atomicity, scheduler credential, and encrypted-recovery gates.
+
+## 2026-08-31 — Respond to critique review
+
+Removed application-managed export encryption and the dedicated scheduler capability, aligned scheduled runs with the existing administrator boundary and idempotent operation ids, and recorded standing permission for public Knowledge Pipeline Site deployments.

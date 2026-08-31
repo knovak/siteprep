@@ -15,10 +15,10 @@ strong enough to make Phase 0 useful engineering rather than schema theater.
 
 **Phase 0 is ready to begin with the checkpoint and atomicity corrections now
 written into the plan.** Later phases are not authorized merely because they
-are described. Phase 1 still needs explicit permission before creating a
-public-access test Site, and Phase 6 still needs explicit permission plus a
-credential and recovery-key arrangement that keeps secrets out of automation
-prose.
+are described. Standing permission now covers public Knowledge Pipeline Site
+deployments once their phase gates pass. Phase 6 still needs explicit permission
+to create a heartbeat automation, but it does not need a special scheduler
+credential or an application-managed recovery key.
 
 ## 2. What should not be lost
 
@@ -47,11 +47,11 @@ Phase 1 called the same deployment a “private test configuration.” A Site-le
 owner-only deployment cannot prove the multi-identity boundary, while a public
 Site without application authorization would expose private data.
 
-`plan.md` now separates those controls: the test Site is public-access only
-after explicit permission, while every data and administrative route remains
-login- and allowlist-gated. An owner-only preview can prove assembly but cannot
-exit Phase 1. `test-plan.md` now makes the access authorization itself part of
-the evidence.
+`plan.md` now separates those controls: the recorded standing permission allows
+the test and production Sites to be public, while every data and administrative
+route remains login- and allowlist-gated. Deployment still waits for the phase's
+build and authorization checks, but no later run needs to ask again merely to
+make the Site public. `test-plan.md` makes both boundaries part of the evidence.
 
 ### 3.2 The identity flow had no hostile-header or administrator-bootstrap case
 
@@ -81,33 +81,32 @@ prove the D1 adapter in Phase 1 before representative intake. A hosted adapter
 may use a staging journal when it cannot use one native transaction, but no
 reader may observe partial accepted state and retry must produce one receipt.
 
-### 3.4 A Site-only encryption key was not portable recovery
+### 3.4 Application-managed export encryption was unnecessary
 
-The old Phase 6 test considered “loss of the Site-held key prevents restore” a
-passing encryption result. That proves confidentiality, but it also proves the
-scheduled backup cannot recover from loss of the deployment that held the key.
-It conflicts with the objective that custody survive a hosted product.
+The proposed wrapping keys added a recovery dependency that the objectives do
+not require. Canonical packages already carry hashes and checksums for integrity,
+and scheduled packages live in private R2 behind the application's administrator
+authorization. Adding a Site key plus an operator recovery key would make
+ordinary import and disaster recovery harder without improving portability.
 
-The plan now uses a fresh artifact data key wrapped both by a versioned Site key
-and a separately held operator recovery key. The exact operator custody and
-rotation procedure must be recorded before schedules are enabled. The test is a
-fresh-deployment restore using the recovery key, followed by wrong-key,
-tampered-envelope, and retired-key refusals. Keys remain outside packages,
-receipts, logs, and repository state.
+The plan now uses the same canonical package format for manual and scheduled
+exports, with no application-generated, Site-held, or operator-held encryption
+key. A fresh deployment restores from the package through the ordinary
+administrator path, and tampering is detected by the package manifest. Any
+storage-provider encryption is an implementation detail outside the pipeline.
 
-### 3.5 The heartbeat named authentication without defining a safe credential
+### 3.5 The heartbeat did not need a separate scheduler credential
 
-“Narrow authenticated action” did not say how the scheduler avoids carrying a
-general administrator bearer token in a user-visible prompt, URL, log, or
-receipt. A schedule that can export private knowledge needs a smaller authority
-than a human session and replay protection of its own.
+A scheduled job can use the same administrator authorization as the existing
+manual “run due exports” action. A dedicated capability, signing secret, and
+second secret-store contract would create an extra role without granting a
+meaningfully narrower operation.
 
-The trigger contract now binds timestamp, nonce, body hash, scope, and
-idempotency identity to a dedicated run-due capability. The Site and scheduler
-must each have an appropriate secret store before the live heartbeat is
-enabled. If they do not, the deterministic adapter remains testable and the
-hosted schedule remains visibly inactive; the plan does not smuggle a secret
-into prose to make the feature look complete.
+The plan now keeps one administrator action for both callers. The action chooses
+due schedules server-side and assigns deterministic operation ids, so retries or
+replays cannot widen the scope or create duplicate accepted packages. Creating a
+heartbeat still requires explicit permission, but it does not mint another
+pipeline role, token, or key.
 
 ### 3.6 Phase 0 was one large noun list rather than an executable sequence
 
@@ -123,16 +122,17 @@ workflow screen or generalized graph query language prematurely.
 | Phase | Readiness | Condition |
 |---|---|---|
 | 0 — Portable custody core | **Ready** | Keep each checkpoint executable and preserve the adapter-independent commit contract |
-| 1 — Login-gated Site | **Permission and live-contract gate** | Obtain explicit public-access permission; prove trusted identity, bootstrap, D1 atomicity, and R2 authorization before intake |
+| 1 — Login-gated Site | **Ready after Phase 0** | Standing public-deployment permission is recorded; prove trusted identity, bootstrap, D1 atomicity, and R2 authorization before intake |
 | 2–5 — Five-stage loop | **Ready after prior exits** | Do not weaken custody, collection scope, or human authority for UI convenience |
-| 6 — Recovery and scheduling | **Credential and key-custody gate** | Record recovery-key custody; keep trigger secrets out of prompt/logs; obtain permission for the heartbeat |
+| 6 — Recovery and scheduling | **Automation-permission gate** | Use the existing administrator boundary; prove idempotent scheduled runs and private-storage recovery; obtain permission for the heartbeat |
 | 7 — Representative use | **Ready after recovery** | Restore a fresh deployment and record witnessed human evidence before revisiting distribution |
 
 ## 5. Recommendation
 
 Begin Phase 0 and stop at each of its four checkpoints long enough to run the
-matching round trip and failure cases. Do not provision the public test Site or
-the heartbeat as an incidental implementation step: each has an explicit
-permission boundary, and the latter also has a credential and disaster-recovery
-boundary to prove. No additional product feature is needed before the custody
-core; the improvements here make its existing promise testable.
+matching round trip and failure cases. The standing decision permits the public
+Site when Phase 1 reaches its deployment gate. Do not create the heartbeat as an
+incidental implementation step: it still needs explicit permission, and its
+administrator-scoped, idempotent execution and private-storage recovery must be
+proved first. No additional product feature is needed before the custody core;
+the improvements here make its existing promise testable.

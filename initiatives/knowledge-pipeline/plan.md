@@ -42,13 +42,12 @@ This reuses the host and authorization boundary already exercised by Bookmark
 Sorter without making those vendor bindings part of the domain model.
 
 The Site's access setting and the application's data access are separate
-boundaries. Phase 1 needs a public-access test Site so anonymous, unlisted,
-user, and administrator behavior can all be exercised, but making that Site
-public requires the user's explicit permission at deployment time. Without
-that permission, an owner-only preview may be used for assembly but Phase 1
-does not exit. Public access exposes only the sign-in and refusal surfaces;
-every knowledge, collection, API, export, administration, and blob route stays
-login- and allowlist-gated.
+boundaries. The standing decision in `decisions.md` authorizes public test and
+production Sites for this initiative, so deployment does not pause to ask for
+that access level again. Phase 1 uses a public-access test Site so anonymous,
+unlisted, user, and administrator behavior can all be exercised. Public access
+exposes only the sign-in and refusal surfaces; every knowledge, collection,
+API, export, administration, and blob route stays login- and allowlist-gated.
 
 The Site adapter reads `oai-authenticated-user-id` and
 `oai-authenticated-user-email`. Both must be present. A normalized email first
@@ -110,34 +109,30 @@ request-driven and deletes only after a fresh reference and retention check.
 ### 2.4 Scheduled exports
 
 All exports use one service. The first scheduled trigger adapter is a **Codex
-heartbeat automation** that invokes a narrow authenticated “run due exports”
-administrator action; creating and credentialing that automation requires the
-user's explicit permission in Phase 6. A deterministic clock and direct
+heartbeat automation** that invokes the same authenticated “run due exports”
+administrator action available to a person; creating that automation requires
+the user's explicit permission in Phase 6. A deterministic clock and direct
 service call test the same path before that permission is requested. The
 adapter may later be replaced by another scheduler without changing a schedule
 or receipt.
 
-The trigger uses a dedicated run-due capability, not a human session or general
-administrator credential. Requests bind a timestamp, nonce, body hash, and
-idempotency key to that capability; expired, replayed, altered, or wrong-scope
-requests are refused before schedule lookup. Credential material lives only in
-the Site secret binding and the scheduler environment's secret store — never
-in the heartbeat prompt, URL, repository, activity, or receipt. If the
-scheduler cannot supply that boundary, the hosted trigger remains inactive and
-Phase 6 records the limitation rather than embedding a bearer secret in prose.
+The scheduled caller runs as an administrator; the pipeline does not add a
+service role, dedicated capability, signing secret, or second credential model.
+The action determines which schedules are due from stored state rather than
+accepting arbitrary collection or destination scope, and deterministic
+operation ids make repeated calls safe. Ordinary application authentication
+and allowlist checks apply, and no authentication material belongs in the
+heartbeat prompt, URL, repository, activity, package, or receipt.
 
 Scheduled artifacts go to private R2 keys under the knowledge space and
 schedule id. The initial policy keeps 14 daily and 6 monthly successful
-packages. The manifest and permitted assets are encrypted as one AES-256-GCM
-bundle using a fresh data key and authenticated envelope metadata. A versioned
-Site-held key wraps that data key for routine restore, and a separately held
-operator recovery key wraps the same data key for disaster recovery; R2's own
-encryption is defense in depth rather than the portable guarantee. The
-operator's key-custody location and rotation procedure must be recorded before
-scheduled exports are enabled. Neither wrapping key enters the package or its
-receipt. A run retries after 1, 5, and 20 minutes, records every attempt,
-notifies only after the final failure, and never replaces the last successful
-package with a partial result.
+packages. Scheduled and manual exports use the same canonical package format;
+the application generates and manages no encryption key. Package manifests,
+asset hashes, and storage metadata detect corruption, while authenticated
+administrator routes control backup listing, download, and restore. A run
+retries after 1, 5, and 20 minutes, records every attempt, notifies only after
+the final failure, and never replaces the last successful package with a
+partial result.
 
 ### 2.5 Initial vocabularies
 
@@ -262,7 +257,7 @@ pre-migration package has itself been restored in a disposable store.
 
 ### Phase 1 — Login-gated Site and collection shell
 
-With explicit permission for the already specified access level, deploy the
+Under the standing public-deployment permission in `decisions.md`, deploy the
 empty application to a public-access test Site at its stable URL while keeping
 all data routes login- and allowlist-gated. Add the Site identity adapter,
 application allowlist, admin and user roles, D1 repository adapter, private R2
@@ -337,17 +332,17 @@ reopened narratives remain visible.
 ### Phase 6 — Recovery, scheduling, and scale
 
 Complete collection and knowledge-space backup, cross-collection copy with id
-remapping, migrations, encrypted R2 retention, schedule administration, the
+remapping, migrations, private R2 retention, schedule administration, the
 external trigger adapter, retry behavior, large erasure, and performance
 instrumentation. With explicit user permission, create the Codex heartbeat
 that exercises the hosted trigger; without that permission the tested adapter
 remains ready and the hosted schedule is correctly reported as not active.
 
-Before enabling a schedule, record where the operator recovery key is held and
-prove the run-due credential can be stored without appearing in the automation
-prompt or logs. Restore one encrypted artifact into a fresh deployment using
-only the package, its authenticated envelope, and the operator recovery key;
-the original Site-held key must not be required for disaster recovery.
+Before enabling a schedule, prove the administrator action can be invoked
+without putting authentication material in the automation prompt or logs and
+that a repeated invocation is idempotent. Restore one private R2 artifact into a
+fresh deployment through the ordinary administrator path; no key or secret from
+the original Site may be required to interpret the canonical package.
 
 Run the scale fixture against local SQLite and the hosted adapter. Tune indexes,
 streaming, and pagination without changing package semantics. Restore a

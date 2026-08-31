@@ -90,7 +90,7 @@ These tests continue running after the phase that first introduces them.
 | Subsets never delete | Records absent from an import remain untouched |
 | Cross-collection references are explicit | Ordinary imports refuse them; an administrative copy remaps all included endpoints and reports omissions |
 | Rights remain visible | Missing or restricted bodies survive as references and cannot enter a shareable asset bundle without an allowed redistribution state |
-| Secrets never export | Site bindings, headers, cookies, tokens, encryption keys, and private object URLs appear in no entity, activity payload, package, or receipt |
+| Secrets never export | Site bindings, headers, cookies, tokens, and private object URLs appear in no entity, activity payload, package, or receipt |
 | Unknowns are not invented away | Unknown tags, assessment values, relationship extensions, unavailable bodies, and no-document topics remain visible states |
 
 ## 4. Phase exit tests
@@ -118,7 +118,7 @@ These tests continue running after the phase that first introduces them.
 | Test | Pass condition |
 |---|---|
 | Anonymous entry | The public URL presents sign-in; data and API routes return 401 before a database or blob read |
-| Deployment access gate | The recorded Site access is public only after explicit permission; public access exposes no knowledge or object route without application authentication and authorization |
+| Deployment access gate | The Site is public under the recorded standing permission; public access exposes no knowledge or object route without application authentication and authorization |
 | Unlisted identity | A complete signed-in identity absent from `authorized_user` sees the not-authorized state; APIs return 403 and create nothing |
 | Trusted identity context | Client-supplied lookalike identity headers are ignored; incomplete or conflicting trusted identity is refused before storage; deployed tests accept no test-only identity override |
 | Administrator bootstrap | Deployment seeds exactly one intended administrator allowlist row; no public route self-enrolls, and bootstrap or recovery use is logged without granting collection access to another identity |
@@ -200,11 +200,11 @@ These tests continue running after the phase that first introduces them.
 | Test | Pass condition |
 |---|---|
 | Three export callers | Web, authenticated admin action, and deterministic schedule trigger produce the same logical package and equivalent receipt for the same scope |
-| Hosted scheduled run | With explicit permission and credentialing, a real due schedule creates an encrypted private R2 package and a service-actor receipt; without permission it is visibly inactive, never simulated as successful |
-| Trigger authentication | Valid run-due capability executes only due schedules in its scope; expired, replayed, altered-body, wrong-scope, and general-user credentials are refused before schedule lookup, and no credential appears in prompt, URL, log, activity, or receipt |
+| Hosted scheduled run | With explicit automation permission, a real administrator-scoped due-schedule call creates a private R2 package and receipt; without permission it is visibly inactive, never simulated as successful |
+| Scheduled administrator boundary | The scheduled caller passes the ordinary administrator check, a normal user is refused, due scope is derived server-side, and repeated calls create at most one accepted package per due operation; no authentication material appears in prompt, URL, log, activity, package, or receipt |
 | Retry and preservation | Fail the destination three times; attempts follow 1/5/20-minute policy, final failure notifies, and the last successful package remains intact |
 | Retention | Fourteen daily and six monthly successes survive according to timestamp; failed and partial artifacts never count as a retained success |
-| Encryption and recovery boundary | R2 holds no plaintext bundle; a fresh deployment restores with the recorded operator recovery key but not the original Site key, while wrong keys, tampered envelope metadata, and retired key versions fail safely; no wrapping key appears in exports or receipts |
+| Private-storage and recovery boundary | No R2 package or object is publicly addressable; a fresh deployment restores the unchanged canonical package through an authorized administrator path, tampered manifests or assets fail safely, and no key or secret from the original Site is required |
 | Full restore | Restore the scale fixture into a fresh store within 10 minutes; counts, hashes, version chains, relationships, receipts, archive states, and permitted asset references match |
 | Pre-migration recovery | Take a canonical backup, migrate, restore the older package through its tested adapter, and compare logical exports rather than database files |
 | Cross-space copy | Copy a bounded subset, remap every internal id and endpoint, preserve origin aliases, omit unauthorized dependencies with warnings, and grant no access back to the source |
@@ -228,8 +228,8 @@ This exit is a witnessed sitting, not only a green suite.
   conversation.
 - The same bounded export is initiated through the web and administrator
   action; if the schedule was authorized, its next due run is compared too. A
-  disposable deployment with no original Site key restores from the resulting
-  encrypted package using the recorded operator recovery procedure.
+  disposable deployment restores from the resulting canonical package without
+  any key or secret from the original Site.
 - Disable the model contributor, any skill or ChatGPT app, and remote source
   bodies. All accepted knowledge, administration, export, restore, document,
   and archive functions remain usable.

@@ -1034,7 +1034,7 @@ The plan must choose:
   unauthorized, user, and administrator test accounts;
 - collection naming limits, default selection, switch-performance budget,
   erase confirmation, and large-collection deletion behavior;
-- scheduled-export destinations, credentials, retention, encryption,
+- scheduled-export destinations, administrator authorization, retention,
   notifications, and failure-retry policy;
 - a representative data size and performance budget for source lists,
   relationship neighborhoods, tag-use measurement, collection switching, full
