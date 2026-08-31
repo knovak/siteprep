@@ -397,7 +397,7 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
   mkdir -p "$OUTPUT_DIR/initiatives"
 
   toc_page_open "$OUTPUT_DIR/initiatives/index.html" "SitePrep Initiatives" "Initiatives Index" "../" "initiatives" \
-'      <p>Bodies of work in progress, each with its own goal, documents, and next steps.</p>
+'      <p>Bodies of work in progress, each with its own goal, documents, and next steps. Read the <a href="https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/description.html">overview</a> or <a href="https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/deck.html">slideshow</a> for more.</p>
       <p><a href="../index.html">Return to SitePrep home</a></p>'
   node "$ROOT_DIR/scripts/initiatives.mjs" toc >> "$OUTPUT_DIR/initiatives/index.html"
   toc_page_close "$OUTPUT_DIR/initiatives/index.html"
