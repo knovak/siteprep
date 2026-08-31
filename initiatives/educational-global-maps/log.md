@@ -7,3 +7,7 @@ Drafted outcome-focused objectives for an extensible multi-resolution data catal
 ## 2026-08-27 — Draft spec.md, including alternatives considered
 
 Specified a hybrid versioned catalogue, source-aware geography, capability-based projection renderer, fixed population cartogram, relay-backed controller, and sphere-export boundary with alternatives and acceptance criteria.
+
+## 2026-08-31 — Draft plan.md and test-plan.md
+
+Drafted an eight-phase build plan and matching test plan for contracts, contributor preparation, projection rendering, layered time and flows, portable scenes, detached control, teaching validation, and spherical export.
