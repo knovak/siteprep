@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>README — Tide Here</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>README — Tide Here</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Tide Here</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">README</h2>
+    </div>
+    <div class="card-content">
+<h2>Tide Here</h2>
+<p>Tide Here shows five coast-local days of high and low tides, sunrise and sunset, moonrise and moonset, and moon phase for a place or latitude/longitude. It names the resolved place, the chosen coast and the official prediction station. When several nearby coasts are plausible, it shows the closest station first and keeps the other candidates available for review.</p>
+<p>The two current Sites are public, separate deployments on different releases:</p>
+<ul><li><strong>Test:</strong> <a href="https://tide-here-test.ken-novak.chatgpt.site">tide-here-test.ken-novak.chatgpt.site</a></li></ul>
+<p>  version 11 combines direct NOAA and CHS forecasts with licensed Bureau of   Meteorology forecasts for all 76 Australian Standard Ports and seven sparse,   validated FES2022 model points. Cooktown and Gibraltar are included in the   active FES2022 fallback.</p>
+<ul><li><strong>Production:</strong> <a href="https://tide-here-five-coast-local-days.ken-novak.chatgpt.site">tide-here-five-coast-local-days.ken-novak.chatgpt.site</a></li></ul>
+<p>  version 6 combines direct NOAA and CHS forecasts with the licensed 76-port   Bureau catalogue. It does not yet include the locally validated FES2022   fallback in this source change.</p>
+<p>NOAA prediction stations cover the United States and its territories, and Canadian Hydrographic Service stations cover Canada. Australian reach depends on the Standard Ports active in the test Site&#39;s stored catalogue. A place outside the active deployment&#39;s configured coverage receives a coverage message rather than a prediction borrowed from a distant coast.</p>
+<h3>Where the tide data lives</h3>
+<p>The Sites app has no database. Its <code>TIDE_DATA</code> object-store binding holds the active versioned Bureau catalogue and the seven small derived FES2022 harmonic points. The repository also contains those prepared source artifacts so the protected initializer can reproduce the object store exactly. The original 3.95-GB FES2022 NetCDF is neither in the Site nor in Git. If it is downloaded again, it is retained outside the repository at <code>../siteprep-data/tide-here/fes2022/FES2022b_OceanTide_NSgrid.nc</code> for reuse.</p>
+<h3>Use the Site</h3>
+<ol><li>Enter a place such as <code>Half Moon Bay</code> or <code>Vancouver</code>, or decimal coordinates</li></ol>
+<p>   such as <code>47.61, -122.33</code>, then choose <strong>Show selection</strong>. Or choose <strong>Show    here</strong> and approve the browser&#39;s one-time location request to use the    device&#39;s current coordinates.</p>
+<ol><li>If several nearby coasts are plausible, Tide Here immediately shows the</li></ol>
+<p>   closest result. Open <strong>Alternative coasts</strong> below the forecast to choose a    different named prediction station.</p>
+<ol><li>Read each day&#39;s high and low tides. Past tide labels are lighter than the</li></ol>
+<p>   upcoming tides. Open the day&#39;s <strong>Sun and moon</strong> row for sunrise, sunset,    moonrise, moonset and phase.</p>
+<ol><li>Open the coast name for the original entry, resolved place, station and time</li></ol>
+<p>   zone.</p>
+<ol><li>Below the safety notice, open <strong>Prediction source details</strong> for the provider,</li></ol>
+<p>   station type, units and datum. <strong>Alternative coasts</strong>, when needed, appears    after the results and before <strong>Debug record</strong>. Open <strong>Debug record</strong> for    local history and a description of what leaves the device.</p>
+<p>All headings and events use the selected coast&#39;s civil time zone, including when the five-day range crosses a daylight-saving change. Heights are metres relative to the datum named in the source details. Predictions are informational and are not for navigation or safety decisions.</p>
+<h3>Local history and privacy</h3>
+<p>Tide Here requests browser location only after <strong>Show here</strong> is chosen. The browser and operating system handle that permission and return coordinates to the page; a denied or unavailable location leaves the manual entry available. Coordinates from <strong>Show here</strong>, or a place or coordinates submitted manually, go directly from the browser to the configured Nominatim geocoder. The browser requests NOAA and CHS station data and forecasts directly from those providers.</p>
+<p>The browser also loads the Australian station catalogue from Tide Here. When an Australian Standard Port is selected, it sends the original display value, resolved place and coast context, selected port, time zone and five-day bounds to the Site&#39;s <code>/forecast</code> gateway. If official coverage declines or only distant, ambiguous official choices remain and an active FES2022 artifact is available, the browser sends the coordinates in the body of a <code>POST /resolve</code> request and then sends the selected model point through the same forecast gateway. The official choices remain available as alternatives. Coordinates are not placed in a URL. The gateway reads versioned provider data from its object store. Its operational logs contain only route, method, status, provider and elapsed time—not request bodies, place names, coordinates or station identifiers. Tide Here has no account, analytics service or cloud forecast history, and the object store contains provider data rather than user history.</p>
+<p>Up to 100 successful or partial forecast responses are kept in this browser. Open <strong>Debug record</strong>, then choose <strong>Show local history</strong> to inspect them, download them as JSON or clear them. Clearing the readable history leaves short-lived provider caches alone. On a public or shared device, clear the history when finished.</p>
+<h3>Run and verify locally</h3>
+<p>Install the repository dependencies and run the repository build from the root:</p>
+<pre><code>npm ci
+npm run build</code></pre>
+<p>Then verify the current Tide Here Sites app and its deterministic browser page:</p>
+<pre><code>cd initiatives/tide-here/work
+npm ci
+npm test
+npm run build
+cd ../../..
+./node_modules/.bin/playwright test --config initiatives/tide-here/work/phase-6/playwright.config.mjs</code></pre>
+<p>If Chromium has not already been provisioned, run <code>npm run setup:browsers</code> before the Playwright command. To inspect the page without live provider calls, serve the repository root and open the fixture URL:</p>
+<pre><code>python3 -m http.server 4179 --bind 127.0.0.1</code></pre>
+<p>&lt;http://127.0.0.1:4179/initiatives/tide-here/work/phase-6/index.html?fixture=1&gt;</p>
+<p>Remove <code>?fixture=1</code> for a live provider smoke test. Live checks are separate from the gating suite because provider availability and CORS can change.</p>
+<h3>Deploy</h3>
+<p>The current Tide Here source is a ChatGPT Sites app. Its <a href="initiative.json"><code>initiative.json</code></a> deployment record points to <code>initiatives/tide-here/work</code>, while <a href="work/.openai/hosting.json"><code>.openai/hosting.json</code></a> binds the object store used for immutable provider registries and tide datasets. The browser still calls NOAA and CHS directly; the Site serves the Australian catalogue and forecasts plus active FES2022 model-point resolution and forecasts. A protected initializer loads and verifies the exact stored data before activating a registry.</p>
+<p>Use the repository&#39;s <code>deploy-test</code> skill to refresh the test Site. Use <code>release-initiative</code> only when a person explicitly asks to release the committed source to production. Test and production are separate Sites, and replacing either one preserves its URL and access setting. Merging a source or documentation pull request does not deploy either Site.</p>
+<p>After a test deployment, verify the root page, registry health, one NOAA result such as Half Moon Bay, one CHS result such as Vancouver, and representative Australian results with the Bureau source, disclaimer and dataset version. Also verify an ambiguous result with its closest forecast and collapsed alternatives, the coast and astronomy disclosures, the safety/source/alternatives/debug order, the privacy/history controls, and a 430×932 phone viewport without horizontal overflow.</p>
+<p>For the implementation contract and alternatives, see <a href="spec.md"><code>spec.md</code></a>. For the current Sites app, stored-provider boundary and recorded test version, see <a href="work/phase-13/README.md"><code>work/phase-13/README.md</code></a>. For the earlier production-deployment evidence, see <a href="work/phase-8/README.md"><code>work/phase-8/README.md</code></a> and <a href="work/phase-8/evidence.json"><code>work/phase-8/evidence.json</code></a>.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/add-initiative-guide-links" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
