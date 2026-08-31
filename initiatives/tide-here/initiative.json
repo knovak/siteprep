@@ -13,9 +13,9 @@
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-29T22:03:54Z",
-        "version": 11,
-        "commit": "c895ce08463f31daa68159d8447803b7154ed812"
+        "deployed_at": "2026-08-30T01:42:42Z",
+        "version": 13,
+        "commit": "2ebe9798cbb64ad072671d65a78fba7d17219b85"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
@@ -30,7 +30,7 @@
   "todo": [
     {
       "id": "review-fes2022-test-deployment",
-      "title": "Review the FES2022 fallback and version 11 test deployment before any production release",
+      "title": "Review the FES2022 fallback source and recorded version 11 validation before any production release",
       "state": "actionable",
       "value": "high",
       "effort": "low",

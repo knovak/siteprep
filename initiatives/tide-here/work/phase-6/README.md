@@ -48,6 +48,13 @@ and model responses are enriched with sun and moon events in the browser using
 the selected point's IANA zone. Prediction source details show the provider's
 attribution, disclaimer, source and licence links.
 
+The direct NOAA/CHS catalogue and the stored Australian catalogue are separate
+availability boundaries. If one source cannot load, matching continues with
+the stations from the other; the page reports total catalogue failure only when
+neither source supplies any station. This keeps a temporary direct-provider
+failure from masking healthy Australian forecasts, and likewise keeps a stored
+gateway failure from disabling U.S. and Canadian matching.
+
 The page loads the complete NOAA and CHS prediction-station catalogues on the
 first uncached search, then loads metadata only for the selected station so
 matching and civil-time formatting are not limited to the recorded validation

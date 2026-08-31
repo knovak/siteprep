@@ -1,79 +1,116 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-29T22:03:54Z",
+  "checkedAt": "2026-08-30T01:49:46Z",
   "stage": "global-coverage-stage-5",
   "deployment": {
     "url": "https://tide-here-test.ken-novak.chatgpt.site",
     "access": "public",
-    "version": 11,
-    "deployedAt": "2026-08-29T21:59:13.348544Z",
-    "siteSourceCommit": "df58fe0f1471651e6b8a8f1439f746b8c82bc846",
-    "sourceCommit": "c895ce08463f31daa68159d8447803b7154ed812",
-    "archiveFiles": 78,
-    "archiveBytes": 2447360,
-    "archiveSha256": "571cf4eeba7905ab3e597b277b8e1f6f3eae90c408f7c02ed8234bdd5a036ffa"
+    "version": 13,
+    "deployedAt": "2026-08-30T01:42:42Z",
+    "siteSourceCommit": "af7fb2ffb9c8256a12ea12f7778bfc15858659f3",
+    "sourceCommit": "2ebe9798cbb64ad072671d65a78fba7d17219b85",
+    "archiveFiles": 75,
+    "archiveBytes": 2426880,
+    "archiveSha256": "3a9356adfd084789d26fa8b4539cb47f37d6bff1aae68148e4a4753a2da0f3a1"
   },
   "hosting": {
     "projectId": "appgprj_6a8e88673c308191989c18dbf0fd6f80",
     "r2Binding": "TIDE_DATA",
     "d1Binding": null,
     "initializerTokenConfigured": true,
-    "initializerEnvironmentRevision": 5,
+    "initializerEnvironmentRevision": 6,
     "initialized": true,
     "repeatInitializationWrites": 0
   },
   "liveChecks": {
-    "registry": "tide-here-providers/stage-4-v7",
+    "registry": "tide-here-providers/stage-4-v5",
     "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
-    "fallbackDataset": "fes2022b-native-validation/2026-02-03-r2",
+    "fallbackDataset": "fes-shaped-global-sample/2026-08-27",
     "noaaCatalogue": "passed",
     "chsCatalogue": "passed",
     "australianStations": 76,
     "australianCatalogueEvents": 1470,
-    "fallbackGalwayEvents": 19,
-    "fallbackCooktownEvents": 20,
-    "fallbackGibraltarEvents": 20,
+    "fallbackFixtureEvents": 19,
     "fallbackWarnings": [
-      "approximate-fallback"
+      "approximate-fallback",
+      "fixture-data"
     ],
     "browserPage": "passed",
-    "fixtureCachesIsolated": true,
-    "manualSearchLeavesFixtureMode": true,
-    "niceCoverageState": "coverage-unavailable",
-    "fallbackPlaces": [
-      "Galway",
-      "Cooktown",
-      "Gibraltar"
+    "australianBrowserLocations": [
+      "Port Douglas",
+      "Cocos Islands"
     ],
     "sourceAttributionAndDisclaimer": "passed",
-    "fallbackLicensedSourceProvenance": true,
+    "syntheticFixtureNoticeAbsentForLicensedResults": true,
     "unauthorizedInitializerStatus": 403,
     "workerExecutionErrors": 0
   },
   "tests": {
-    "allTideNodeTestsPassed": 124,
-    "allTideNodeTestsFailed": 0,
-    "browserTestsPassed": 29,
+    "stageTestsPassed": 33,
+    "stageTestsFailed": 0,
+    "allTideNodeTestsPassed": 114,
+    "browserTestsPassed": 21,
     "browserTestsSkipped": 1,
     "productionDependencyAuditHighVulnerabilities": 0
   },
-  "deployedSource": {
-    "deployed": true,
-    "registry": "tide-here-providers/stage-4-v7",
-    "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
-    "fallbackDataset": "fes2022b-native-validation/2026-02-03-r2",
-    "fallbackDataClass": "licensed-source",
-    "fallbackOfficialComparisonsPassed": true,
-    "allTideNodeTestsPassed": 124,
-    "browserTestsPassed": 29,
-    "browserTestsSkipped": 1
+  "historicalFesDeployment": {
+    "supersededByVersion": 13,
+    "deployment": {
+      "version": 11,
+      "deployedAt": "2026-08-29T21:59:13.348544Z",
+      "siteSourceCommit": "df58fe0f1471651e6b8a8f1439f746b8c82bc846",
+      "sourceCommit": "c895ce08463f31daa68159d8447803b7154ed812",
+      "archiveFiles": 78,
+      "archiveBytes": 2447360,
+      "archiveSha256": "571cf4eeba7905ab3e597b277b8e1f6f3eae90c408f7c02ed8234bdd5a036ffa"
+    },
+    "initializerEnvironmentRevision": 5,
+    "repeatInitializationWrites": 0,
+    "liveChecks": {
+      "registry": "tide-here-providers/stage-4-v7",
+      "australianDataset": "australia-bom-annual-tides/2026-bom-v2",
+      "fallbackDataset": "fes2022b-native-validation/2026-02-03-r2",
+      "noaaCatalogue": "passed",
+      "chsCatalogue": "passed",
+      "australianStations": 76,
+      "australianCatalogueEvents": 1470,
+      "fallbackGalwayEvents": 19,
+      "fallbackCooktownEvents": 20,
+      "fallbackGibraltarEvents": 20,
+      "fallbackWarnings": [
+        "approximate-fallback"
+      ],
+      "browserPage": "passed",
+      "fixtureCachesIsolated": true,
+      "manualSearchLeavesFixtureMode": true,
+      "niceCoverageState": "coverage-unavailable",
+      "fallbackPlaces": [
+        "Galway",
+        "Cooktown",
+        "Gibraltar"
+      ],
+      "sourceAttributionAndDisclaimer": "passed",
+      "fallbackLicensedSourceProvenance": true,
+      "unauthorizedInitializerStatus": 403,
+      "workerExecutionErrors": 0
+    },
+    "tests": {
+      "allTideNodeTestsPassed": 124,
+      "allTideNodeTestsFailed": 0,
+      "browserTestsPassed": 29,
+      "browserTestsSkipped": 1,
+      "productionDependencyAuditHighVulnerabilities": 0
+    }
   },
   "productionActivation": {
     "ready": false,
     "australianProviderReady": true,
     "fesProviderSourceReady": true,
+    "fesProviderOnCurrentTest": false,
+    "fallbackOfficialComparisonsPassed": true,
     "productionReleaseAuthorized": false,
     "blockedBy": [
+      "Review and redeploy the current FES2022 source on test",
       "Production release authorization"
     ]
   }

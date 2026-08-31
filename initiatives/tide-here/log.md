@@ -242,3 +242,11 @@ tests, 29 browser checks with one intentional skip, 76-port live sweep, NOAA,
 CHS, Cooktown, Gibraltar, and Worker error check all passed. Reserved
 `../siteprep-data/tide-here/fes2022/` as the durable local location for any
 future full-atlas download. Production was not changed.
+
+## 2026-08-30 — Deploy and verify the expanded Standard Port catalogue on the existing public test Site
+
+Published existing public test Site version 13 with registry stage-4-v5 and all 76 licensed 2026 Standard Ports; protected initialization was idempotent, 1,470 catalogue events and both Port Douglas and Cocos Islands browser forecasts passed, and production was unchanged.
+
+## 2026-08-30 — Reconcile FES2022 source with the newer test deployment
+
+Merged the independent direct/stored catalogue loading from the version 13 Australian coverage release with the FES2022 provider, body-only resolver, and validation-fixture isolation. Kept version 13 as the current public test deployment because it superseded the recorded version 11 FES2022 deployment at the same URL; version 11 remains historical validation evidence, and no Site was deployed by this conflict resolution.

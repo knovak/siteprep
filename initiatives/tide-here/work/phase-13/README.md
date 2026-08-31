@@ -40,40 +40,52 @@ writes, and runs HTTPS checks for:
 - the indexed approximate FES2022 fallback, source/licence disclosure, and
   safety warnings.
 
-Test version 11 contains the normalized output
+The current test deployment contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
-territory indexes plus seven validated FES2022b harmonic points. It carries each
-source's attribution, disclaimer, version, and source/licence links into the
-browser. The FES points passed the fixed Maroochydore/Mooloolaba and Bundaberg
-official-port gates; they remain approximate model results and do not include
-weather or storm surge. Cooktown and Gibraltar extend the validated sparse
-coverage. These local gates do not authorize a production release.
+territory indexes. It carries the source attribution, disclaimer, and per-port
+PDF URL into the browser. The fallback data remains a plainly labelled non-FES
+fixture. This deployment path validates the licensed Australian path and the
+fallback storage boundary; it is not evidence of FES2022 accuracy and does not
+activate FES2022 or change the production Site.
 
-The expanded `2026-bom-v2` artifact, FES2022b extract `2026-02-03-r2`, and
-`stage-4-v7` registry are active on the test Site. Production remains on its
-previous committed source and registry until a separate production release is
-requested.
+The expanded `2026-bom-v2` artifact and `stage-4-v5` registry are active on the
+test Site. Direct NOAA/CHS station catalogues and the stored Australian
+catalogue are separate availability boundaries in the browser: either can fail
+without masking healthy coverage from the other.
 
 ## Recorded test deployment
 
-Version 11 was published to the existing public test Site on 2026-08-29 UTC:
+Version 13 was published to the existing public test Site on 2026-08-30 UTC:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v7`, Australian dataset `2026-bom-v2`, and licensed
-FES2022b extract `2026-02-03-r2`. A second initialization wrote zero objects. Live
-storage checks found all 76 Australian stations and returned 1,470 Australian
-events across five local days per station. Cooktown and Gibraltar each returned
-20 fallback extrema with only the `approximate-fallback` service warning and
-licensed-source provenance. The live browser showed the FES2022 source and
-safety copy inside the result while omitting a duplicate standalone fallback
-banner. NOAA, CHS, the hosted page, and the Galway fallback also passed the live
-smoke sweep. Recorded validation pages now use tab-scoped caches, unknown
-fixture names cannot silently become Seattle, and a manual search from an
-explicit fixture URL returns to the normal page without putting the entry in
-the URL. A live `nice,france` check from the former Cooktown fixture URL removed
-the fixture parameters, hid the Cooktown result, and returned the correct
-coverage state. Worker logs contained no execution failures.
+activated registry `stage-4-v5`, Australian dataset `2026-bom-v2`, and fallback
+fixture `2026-08-27`. A second initialization wrote zero objects. Live storage
+checks found 76 Australian stations and returned 1,470 Australian events across
+the full catalogue. Browser checks for Port Douglas and remote Cocos Islands
+rendered five local days, linked the selected Bureau PDF, showed the Bureau
+attribution and disclaimer, and did not show the synthetic fixture notice. The
+post-check log contained no Worker execution errors.
 
-The production Site was not changed.
+## Recorded FES2022 validation deployment
+
+Version 11 was published to the same public test Site on 2026-08-29 UTC before
+version 13 superseded it. It activated registry `stage-4-v7`, Australian dataset
+`2026-bom-v2`, and licensed FES2022b extract `2026-02-03-r2`. A second
+initialization wrote zero objects. The FES points passed the fixed
+Maroochydore/Mooloolaba and Bundaberg official-port gates; Cooktown and
+Gibraltar each returned 20 fallback extrema with licensed-source provenance and
+the `approximate-fallback` warning. NOAA, CHS, the 76-port Australian catalogue,
+the hosted page, and the Galway fallback also passed. The browser showed the
+FES2022 source and safety copy without a duplicate banner, fixture caches stayed
+tab-scoped, unknown fixture names did not become Seattle, and a manual
+`nice,france` search left fixture mode and returned the honest
+`coverage-unavailable` state. Worker logs contained no execution failures.
+
+That version 11 evidence remains the validation record for the FES2022 source
+in this branch, but FES2022 is not active on the current version 13 test Site.
+Review and a new test deployment are required before any production release.
+
+The production Site was not changed. Its existing version 6 already serves the
+same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.
 
 ## Local verification
 
