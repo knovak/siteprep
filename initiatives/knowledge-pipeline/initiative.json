@@ -6,21 +6,12 @@
   "outputs": [],
   "todo": [
     {
-      "id": "critique-plan",
-      "title": "Critique plan.md and test-plan.md, and improve them before building starts",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
       "id": "phase-0-portable-custody-core",
       "title": "Phase 0 - build and verify the portable custody core",
-      "state": "blocked",
+      "state": "actionable",
       "value": "high",
       "effort": "large",
-      "advances_stage": true,
-      "blocked_by": "todo:critique-plan"
+      "advances_stage": true
     }
   ]
 }
