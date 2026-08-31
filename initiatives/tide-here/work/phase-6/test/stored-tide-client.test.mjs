@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
-import {StoredTideClient} from '../src/stored-tide-client.mjs';
+import {loadAvailableStations, StoredTideClient} from '../src/stored-tide-client.mjs';
 
 const station = {
   provider: 'australia-standard-ports',
@@ -49,6 +49,26 @@ test('the Australian catalogue is normalized once and keeps its IANA zone', asyn
     provider: 'australia-standard-ports',
     timeZone: 'Australia/Sydney',
   }]);
+});
+
+test('direct and stored station catalogues fail independently', async () => {
+  const direct = [{provider: 'noaa', id: '9447130'}];
+  const stored = [station];
+  assert.deepEqual(await loadAvailableStations({
+    direct: async () => { throw new Error('direct unavailable'); },
+    stored: async () => stored,
+  }), stored);
+  assert.deepEqual(await loadAvailableStations({
+    direct: async () => direct,
+    stored: async () => { throw new Error('stored unavailable'); },
+  }), direct);
+  await assert.rejects(
+    loadAvailableStations({
+      direct: async () => { throw new Error('direct unavailable'); },
+      stored: async () => { throw new Error('stored unavailable'); },
+    }),
+    /No tide station catalogue/
+  );
 });
 
 test('an Australian forecast sends only the selected stored-provider request', async () => {

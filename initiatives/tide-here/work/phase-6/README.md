@@ -45,6 +45,13 @@ adapters and uses the port's IANA zone. Prediction source details show the
 Bureau of Meteorology attribution, required disclaimer, dataset version, and a
 link to the selected port's annual-table PDF.
 
+The direct NOAA/CHS catalogue and the stored Australian catalogue are separate
+availability boundaries. If one source cannot load, matching continues with
+the stations from the other; the page reports total catalogue failure only when
+neither source supplies any station. This keeps a temporary direct-provider
+failure from masking healthy Australian forecasts, and likewise keeps a stored
+gateway failure from disabling U.S. and Canadian matching.
+
 The page loads the complete NOAA and CHS prediction-station catalogues on the
 first uncached search, then loads metadata only for the selected station so
 matching and civil-time formatting are not limited to the recorded validation

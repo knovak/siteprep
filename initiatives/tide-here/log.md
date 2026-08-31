@@ -188,3 +188,7 @@ Released to production — ChatGPT Site, version 6, `31abfbb`. 3 commit(s) since
 ## 2026-08-29 — Authorize Australian coverage deployments to test and production
 
 Recorded the user's standing permission to deploy expanded Australian coverage to Tide Here's existing public test and production Sites now and in the future. The test deployment-and-verification item remains actionable; committed-source checks, live verification, public access preservation, data and reuse approval, and separate authorization for new Sites, FES2022, or matcher changes still apply.
+
+## 2026-08-30 — Deploy and verify the expanded Standard Port catalogue on the existing public test Site
+
+Published existing public test Site version 13 with registry stage-4-v5 and all 76 licensed 2026 Standard Ports; protected initialization was idempotent, 1,470 catalogue events and both Port Douglas and Cocos Islands browser forecasts passed, and production was unchanged.
