@@ -105,12 +105,13 @@
 <div class="table-scroll"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td>Arrow keys</td><td>Move focus between visible cards</td></tr><tr><td>Space</td><td>Mark or unmark the focused card</td></tr><tr><td><code>K</code></td><td>Keep</td></tr><tr><td><code>J</code></td><td>Junk</td></tr><tr><td><code>A</code></td><td>Archive</td></tr><tr><td><code>N</code></td><td>Needs-time</td></tr><tr><td><code>U</code></td><td>Undo the last whole action</td></tr><tr><td>Enter</td><td>Advance focus</td></tr></tbody></table></div>
 <p>Keyboard verdict shortcuts do not fire while typing in an input or select control. The on-page <strong>Help</strong> panel is the authoritative shortcut reference for the deployed version.</p>
 <h3>Finding and grouping bookmarks</h3>
-<p>Open <strong>Select</strong> to use any of four routes:</p>
+<p>Open <strong>Select and tag</strong> to use any of four routes:</p>
 <ol><li>Type an expression and choose <strong>Open selection</strong>.</li><li>Choose an <strong>Automatic proposal</strong>, then choose <strong>Open proposal</strong>.</li><li>Choose a named <strong>Saved selection</strong>, then choose <strong>Open saved</strong>.</li><li>Choose a recent query from <strong>Previous selections</strong>, then choose **Open</li></ol>
 <p>   previous**.</p>
 <p>The three chooser actions provide a visual check before opening anything. With no proposal or selection chosen, its <strong>Open…</strong> control is black on white. After one is chosen, that control is white on blue.</p>
 <p>Opening a selection makes it the visible working set and records its expression in <strong>Previous selections</strong> for the signed-in user, newest first. History is deduplicated and follows the user across collections. To make a reusable named selection, open an expression, enter a selection name, and choose <strong>Save</strong>.</p>
-<p>Enter comma- or space-separated tags in <strong>Tags to apply</strong> and choose <strong>Tag selection</strong> to add them to the marked set, or to the current open selection when nothing is marked. Imported and existing tags are preserved; tagging adds rather than replaces.</p>
+<p>Enter comma- or space-separated tags and choose <strong>Tag items</strong> to add them to the marked set, or to the current open selection when nothing is marked. Use the attached arrow to switch the same button to <strong>Untag items</strong> and remove those tags from that set. Both actions are recorded as one step, so <strong>Undo</strong> reverses the whole tag or untag operation. Adding preserves every existing tag that was not entered; removing preserves every tag that was not entered.</p>
+<p>The Tag/Untag control is black on white while the tag field is empty. It turns white on blue after text is entered, showing that the action is ready.</p>
 <h4>Selection expressions</h4>
 <p>Expressions support <code>and</code>, <code>or</code>, <code>not</code>, parentheses, and a trailing <code>*</code> wildcard. Operators are evaluated with <code>not</code> before <code>and</code>, and <code>and</code> before <code>or</code>. Ordinary user tags are written directly; there is no <code>tag:</code> prefix.</p>
 <p>Examples:</p>
@@ -118,7 +119,7 @@
 <p>Useful generated or synthetic values include:</p>
 <ul><li><code>src:&lt;source&gt;</code> — the source name attached during HTML import;</li><li><code>in:&lt;yyyy-mm-dd&gt;</code> — the import date;</li><li><code>folder:&lt;path&gt;</code> — the browser folder path;</li><li><code>site:&lt;host&gt;</code> — the saved URL&#39;s host;</li><li><code>title:&lt;normalized-title&gt;</code> — a title key, with <code>*</code> useful for prefixes;</li><li><code>image:none</code>, <code>image:failed</code>, or <code>image:present</code>; and</li><li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>,</li></ul>
 <p>  <code>verdict:needs-time</code>, or <code>verdict:untriaged</code>.</p>
-<p>Automatic proposals group the current collection by source, exact tag, verdict, folder, site, image state, and near-identical title. They are computed from current collection data, so imports and tag changes can change the offered groups.</p>
+<p>Automatic proposals group the current collection by source, exact tag, verdict, capture error, folder, site, image state, and near-identical title. Capture errors have their own section after Verdict, with one proposal for every <code>err:</code> tag and an <strong>any error</strong> proposal for <code>err:*</code>; they do not also appear among ordinary tags. Proposals are computed from current collection data, so imports and tag changes can change the offered groups.</p>
 <h3>Collections and demo templates</h3>
 <p>Every authorized signed-in user receives a personal collection and may create more private collections with <strong>New</strong>. <strong>Rename</strong> edits the current collection name inline. Switching collections clears the open expression and loads that collection&#39;s counts, cards, saved selections, and proposals.</p>
 <p><strong>Import → Demo templates → Load a copy</strong> creates a new private demo copy. It is independent of the template: later template changes do not alter the copy. A demo copy can be refreshed by taking another fresh copy, and can be deleted without removing the shared capture cache.</p>
@@ -187,6 +188,23 @@ would apply.</code></pre>
 to understand how to save tags as an importable file. Produce an importable
 file with the tags you just created.</code></pre>
 <p>Save the resulting file, then use the app&#39;s <strong>Import</strong> command to add the tags.</p>
+<h3>Importing lists of open tabs</h3>
+<p>To collect all the tabs open in Safari on other devices, the method that worked was a read-only snapshot of Safari’s iCloud Tabs database.</p>
+<ol><li>ChatGPT opened Safari’s Start Page and confirmed the two synced device</li></ol>
+<p>   groups: Ken 11 and Ken iPad 8g.</p>
+<ol><li>Safari stores their synced tabs in:</li></ol>
+<p>   <code>~/Library/Containers/com.apple.Safari/Data/Library/Safari/CloudTabs.db</code></p>
+<ol><li>macOS blocked direct terminal access, so ChatGPT used Finder to copy that</li></ol>
+<p>   database into a temporary folder.</p>
+<ol><li>ChatGPT opened the copy as an immutable SQLite database and joined:</li></ol>
+<ul><li><code>cloud_tabs</code> for each title, full URL, and tab position;</li><li><code>cloud_tab_devices</code> for the device name.</li></ul>
+<ol><li>ChatGPT converted those rows into <code>bookmark-sorter/v1</code>, using the device</li></ol>
+<p>   name as each bookmark’s tag.</p>
+<ol><li>ChatGPT validated the JSON with Bookmark Sorter’s importer, then deleted the</li></ol>
+<p>   temporary database copy.</p>
+<p>It worked because Safari’s database contained the complete URLs and device attribution, while the visible Start Page often exposed only titles and domains.</p>
+<p>For Chrome, navigate to the list of tabs on other devices. Click into a single device’s list, then use Select All and Copy. Paste the result into any document. One good approach is to paste it into a Google Doc, then use Select All and Copy as Markdown. Paste that Markdown directly into ChatGPT and ask ChatGPT to convert it to Bookmark Sorter’s importer JSON format.</p>
+<p>Before conversion, confirm that the copied Markdown contains a full link destination for every tab. Chrome’s copied synced-tab text can sometimes retain titles or domains while omitting hidden URLs; when that happens, recover the links from a native browser source or snapshot before treating the import as complete.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
