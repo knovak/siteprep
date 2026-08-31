@@ -1,10 +1,10 @@
 import {createStageFourApp} from '../../phase-12/src/worker.mjs';
 
-const API_PATHS = new Set(['/init', '/health', '/providers', '/stations', '/forecast']);
+const API_PATHS = new Set(['/init', '/health', '/providers', '/stations', '/resolve', '/forecast']);
 
 async function providerForLog(request, pathname) {
   if (pathname === '/stations') return new URL(request.url).searchParams.get('provider');
-  if (pathname !== '/forecast') return null;
+  if (pathname !== '/resolve' && pathname !== '/forecast') return null;
   try {
     const value = await request.clone().json();
     return typeof value?.provider === 'string' ? value.provider : null;

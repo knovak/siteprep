@@ -1,5 +1,5 @@
 import {placeInstantInRow} from '../../phase-1/src/day-model.mjs';
-import {forecastFromTile} from '../../phase-9/src/forecast.mjs';
+import {closestPoint, forecastFromTile} from '../../phase-9/src/forecast.mjs';
 import {
   loadVerifiedDatasetObject,
   verifyDatasetVersion,
@@ -81,6 +81,47 @@ async function loadCandidateTiles(store, descriptor, latitude, longitude) {
   return {dataset: verified.manifest.dataset, tiles};
 }
 
+function requestedCoordinates(request) {
+  const latitude = Number(request?.latitude);
+  const longitude = Number(request?.longitude);
+  if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90
+      || !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+    throw new Error('FES resolution requires valid coordinates');
+  }
+  return {latitude, longitude};
+}
+
+export async function resolveFesModelPoint({store, request, descriptor}) {
+  const coordinates = requestedCoordinates(request);
+  const loaded = await loadCandidateTiles(store, descriptor, coordinates.latitude, coordinates.longitude);
+  const match = closestPoint(loaded.tiles.flatMap(tile => tile.tile.points), coordinates);
+  if (!match) {
+    const error = new Error('No initialized FES water point covers this location');
+    error.code = 'coverage-unavailable';
+    throw error;
+  }
+  const point = match.point;
+  return {
+    provider: descriptor.id,
+    station: {
+      provider: descriptor.id,
+      country: point.country ?? null,
+      id: point.id,
+      name: point.name,
+      kind: 'model-point',
+      latitude: point.latitude,
+      longitude: point.longitude,
+      timeZone: point.timeZone,
+      datum: point.datum,
+      referenceStationId: null,
+    },
+    coast: {
+      name: point.name,
+      distanceKm: match.distanceKm,
+    },
+  };
+}
+
 export async function forecastFesFallback({store, request, descriptor}) {
   const {start, end} = requestParts(request);
   const loaded = await loadCandidateTiles(
@@ -149,8 +190,9 @@ export async function forecastFesFallback({store, request, descriptor}) {
       referenceStationId: null,
       datum: raw.point.datum,
       sourceUrl: raw.dataset.sourceUrl,
-      licenceUrl: null,
+      licenceUrl: raw.dataset.licenceUrl ?? null,
       licenceReference: raw.dataset.licenceReference,
+      disclaimer: raw.dataset.disclaimer ?? null,
       attribution: raw.dataset.attribution,
       retrievedAt: raw.dataset.preparedAt,
       datasetVersion: raw.dataset.version,

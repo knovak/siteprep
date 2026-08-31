@@ -456,12 +456,18 @@ downloads, decompresses, or derives FES data in the request path.
 any result derived from FES is labelled approximate and remains separate from
 weather and storm-surge effects.
 
-**Status, 2026-08-27:** the preparation, inventory, initialization, lookup,
-failure, normalized forecast, and warning path is implemented in
-`work/phase-12`. A three-tile non-FES fixture exercises the complete path and
-the Brest point preserves the Stage 1 engine comparison. Production activation
-and regime-specific accuracy tolerances remain blocked on licensed FES2022
-atlas files and held-out official-port comparisons.
+**Status, 2026-08-29:** complete locally in `work/phase-12`. A credentialed
+offline PyFES job extracted five 34-constituent water points from the FES2022b
+native grid, recorded the 3,953,139,340-byte source checksum, and round-tripped
+every rounded point to within 0.000004 cm of the atlas path. The pre-declared
+Maroochydore/Mooloolaba and Bundaberg comparison gates both passed across 20
+paired extrema. PyFES identifies the five selected coastal results as bounded
+native-mesh extrapolations using 30–39 nodes, which the source metadata records
+explicitly. Registry `stage-4-v6` therefore activates the licensed sparse
+extract, while official national providers retain priority. This source was
+validated on public test Site version 11 on 2026-08-29; version 13 subsequently
+superseded that deployment with the `stage-4-v5` non-FES fixture, so the FES2022
+source is not active on the current test Site.
 
 #### Stage 5 — Test deployment
 
@@ -476,15 +482,16 @@ is exercised. A second call must report no changes.
 **Exit:** U.S., Canadian, Australian, and fallback locations work at the real
 HTTPS URL, and failure or denial leaves the current public version untouched.
 
-**Status, 2026-08-28 UTC:** complete on public test Site version 8 at
+**Status, 2026-08-30 UTC:** complete on public test Site version 13 at
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v4`, the licensed 23-port Bureau 2026 dataset, and
+activated registry `stage-4-v5`, the licensed 76-port Bureau 2026 dataset, and
 the explicitly non-FES fallback fixture; a second call wrote zero objects. The
-live source-family checks and representative browser searches across every
-Australian coastal state and the Northern Territory passed with source
-attribution and no synthetic-data notice on licensed results. The post-check
-Worker execution-error count was zero. Evidence is recorded in `work/phase-13`;
-production remains untouched.
+live source-family checks passed across all 76 Australian ports, and browser
+searches for Port Douglas and remote Cocos Islands passed with source attribution
+and no synthetic-data notice on licensed results. The post-check Worker
+execution-error count was zero. Evidence is recorded in `work/phase-13`;
+production remains untouched at version 6, which already serves the same
+`stage-4-v5` registry and 76-port `2026-bom-v2` dataset.
 
 #### Stage 6 — Production release
 

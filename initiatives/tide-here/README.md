@@ -9,19 +9,30 @@ station first and keeps the other candidates available for review.
 The two current Sites are public, separate deployments on different releases:
 
 - **Test:** [tide-here-test.ken-novak.chatgpt.site](https://tide-here-test.ken-novak.chatgpt.site)
-  version 8 combines direct NOAA and CHS forecasts with licensed Bureau of
-  Meteorology forecasts for 23 Australian Standard Ports. The committed source
-  now contains all 76 Standard Ports in the Bureau's 2026 state and territory
-  indexes, but that expanded catalogue has not been deployed.
+  version 11 combines direct NOAA and CHS forecasts with licensed Bureau of
+  Meteorology forecasts for all 76 Australian Standard Ports and seven sparse,
+  validated FES2022 model points. Cooktown and Gibraltar are included in the
+  active FES2022 fallback.
 - **Production:** [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site)
-  version 5 remains the direct-browser NOAA and CHS release and does not yet
-  include Australian forecasts.
+  version 6 combines direct NOAA and CHS forecasts with the licensed 76-port
+  Bureau catalogue. It does not yet include the locally validated FES2022
+  fallback in this source change.
 
 NOAA prediction stations cover the United States and its territories, and
 Canadian Hydrographic Service stations cover Canada. Australian reach depends
 on the Standard Ports active in the test Site's stored catalogue. A place
 outside the active deployment's configured coverage receives a coverage message
 rather than a prediction borrowed from a distant coast.
+
+## Where the tide data lives
+
+The Sites app has no database. Its `TIDE_DATA` object-store binding holds the
+active versioned Bureau catalogue and the seven small derived FES2022 harmonic
+points. The repository also contains those prepared source artifacts so the
+protected initializer can reproduce the object store exactly. The original
+3.95-GB FES2022 NetCDF is neither in the Site nor in Git. If it is downloaded
+again, it is retained outside the repository at
+`../siteprep-data/tide-here/fes2022/FES2022b_OceanTide_NSgrid.nc` for reuse.
 
 ## Use the Site
 
@@ -56,15 +67,20 @@ Coordinates from **Show here**, or a place or coordinates submitted manually,
 go directly from the browser to the configured Nominatim geocoder. The browser
 requests NOAA and CHS station data and forecasts directly from those providers.
 
-On the test Site, the browser also loads the Australian station catalogue from
-Tide Here. When an Australian Standard Port is selected, it sends the original
-display value, resolved place and coast context, selected port, time zone and
-five-day bounds to the Site's `/forecast` gateway. The gateway reads the
-versioned Bureau dataset from its object store. Its operational logs contain
-only route, method, status, provider and elapsed time—not request bodies, place
-names, coordinates or station identifiers. Tide Here has no account, analytics
-service or cloud forecast history, and the object store contains provider data
-rather than user history.
+The browser also loads the Australian station catalogue from Tide Here. When an
+Australian Standard Port is selected, it sends the original display value,
+resolved place and coast context, selected port, time zone and five-day bounds
+to the Site's `/forecast` gateway. If official coverage declines or only
+distant, ambiguous official choices remain and an active FES2022 artifact is
+available, the browser sends the coordinates in the body of a `POST /resolve`
+request and then sends the selected model point through the same forecast
+gateway. The official choices remain available as alternatives. Coordinates
+are not placed in a URL. The
+gateway reads versioned provider data from its object store. Its operational
+logs contain only route, method, status, provider and elapsed time—not request
+bodies, place names, coordinates or station identifiers. Tide Here has no
+account, analytics service or cloud forecast history, and the object store
+contains provider data rather than user history.
 
 Up to 100 successful or partial forecast responses are kept in this browser.
 Open **Debug record**, then choose **Show local history** to inspect them,
@@ -112,8 +128,9 @@ The current Tide Here source is a ChatGPT Sites app. Its
 `initiatives/tide-here/work`, while [`.openai/hosting.json`](work/.openai/hosting.json)
 binds the object store used for immutable provider registries and tide datasets.
 The browser still calls NOAA and CHS directly; the Site serves the Australian
-catalogue and forecasts. A protected initializer loads and verifies the exact
-stored data before activating a registry.
+catalogue and forecasts plus active FES2022 model-point resolution and
+forecasts. A protected initializer loads and verifies the exact stored data
+before activating a registry.
 
 Use the repository's `deploy-test` skill to refresh the test Site. Use
 `release-initiative` only when a person explicitly asks to release the committed

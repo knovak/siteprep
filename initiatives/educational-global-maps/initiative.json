@@ -1,13 +1,13 @@
 {
   "title": "Educational Global Maps",
   "summary": "A knowledge base and extensible platform for educational global map data and visualizations.",
-  "stage": "shaped",
+  "stage": "specified",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-spec",
-      "title": "Draft spec.md, including alternatives considered",
+      "id": "draft-plan-and-test-plan",
+      "title": "Draft plan.md and test-plan.md",
       "state": "actionable",
       "value": "high",
       "effort": "medium",

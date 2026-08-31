@@ -58,18 +58,58 @@ if (!baseUrl || !token) {
     }
     australianEvents += australia.days.flatMap(day => day.tides).length;
   }
-  const fesRows = fiveLocalDays('2025-06-01T10:00:00Z', 'Europe/Paris');
+  const modelPoint = await request('/resolve', {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({provider: 'fes2022', latitude: 53.27, longitude: -9.05}),
+  });
+  if (modelPoint.station.id !== 'fes2022-galway') throw new Error('FES2022 Galway point did not resolve');
+  const fesRows = fiveLocalDays('2026-08-27T12:00:00Z', modelPoint.station.timeZone);
   const fes = await postForecast({
     provider: 'fes2022',
     context: {
-      input: {display: 'Brest fixture'},
-      place: {name: 'Brest fixture', lat: 48.383, lon: -4.495},
-      coast: {name: 'Brest Stage 4 validation point', distanceKm: 0},
+      input: {display: 'Galway'},
+      place: {name: 'Galway, Ireland', lat: 53.27, lon: -9.05},
+      coast: modelPoint.coast,
     },
-    station: {id: 'requested-model-point', latitude: 48.383, longitude: -4.495},
-    timeZone: 'Europe/Paris',
+    station: modelPoint.station,
+    timeZone: modelPoint.station.timeZone,
     rows: fesRows,
   });
+  if (fes.warnings.length !== 1 || fes.warnings[0].code !== 'approximate-fallback') {
+    throw new Error('FES2022 result did not return only the approximate safety warning');
+  }
+  if (fes.sources.length !== 1 || fes.sources[0].dataClass !== 'licensed-source'
+      || fes.sources[0].official || !fes.sources[0].approximate
+      || !fes.sources[0].sourceUrl.includes('doi.org/10.24400/527896/A01-2024.004')
+      || !fes.sources[0].licenceUrl.includes('License_Aviso.pdf')) {
+    throw new Error('FES2022 result did not carry its licensed approximate provenance');
+  }
+  const reportedGaps = [];
+  for (const location of [
+    {name: 'Cooktown', latitude: -15.4667, longitude: 145.2833, stationId: 'fes2022-cooktown'},
+    {name: 'Gibraltar', latitude: 36.1285933, longitude: -5.3474761, stationId: 'fes2022-gibraltar'},
+  ]) {
+    const resolution = await request('/resolve', {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({provider: 'fes2022', latitude: location.latitude, longitude: location.longitude}),
+    });
+    if (resolution.station.id !== location.stationId) throw new Error(`FES2022 ${location.name} point did not resolve`);
+    const forecast = await postForecast({
+      provider: 'fes2022',
+      context: {
+        input: {display: location.name},
+        place: {name: location.name, lat: location.latitude, lon: location.longitude},
+        coast: resolution.coast,
+      },
+      station: resolution.station,
+      timeZone: resolution.station.timeZone,
+      rows: fiveLocalDays('2026-08-27T12:00:00Z', resolution.station.timeZone),
+    });
+    if (!forecast.days.flatMap(day => day.tides).length) throw new Error(`FES2022 ${location.name} returned no tides`);
+    reportedGaps.push({name: location.name, station: resolution.station.id, events: forecast.days.flatMap(day => day.tides).length});
+  }
   const page = await fetch(`${baseUrl}/phase-6/index.html`);
   if (!page.ok || !(await page.text()).includes('Tide Here')) throw new Error('Tide Here page smoke check failed');
 
@@ -87,8 +127,10 @@ if (!baseUrl || !token) {
     providers: providers.providers.map(provider => `${provider.id}:${provider.status}`),
     australianStations: catalogue.stations.length,
     australianEvents,
+    fallbackPoint: modelPoint.station.id,
     fallbackEvents: fes.days.flatMap(day => day.tides).length,
     fallbackWarnings: fes.warnings.map(warning => warning.code),
+    reportedGaps,
     page: 'ok',
   }, null, 2));
 }

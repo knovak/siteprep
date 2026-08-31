@@ -94,7 +94,7 @@ test('the seven blocking or partial states have their own readable page treatmen
     ['invalid-input', /place name or decimal coordinates/i],
     ['place-not-found', /was not found/i],
     ['geocoder-unavailable', /place lookup is unavailable/i],
-    ['coverage-unavailable', /U\.S\., Canadian, and Australian test coasts/i],
+    ['coverage-unavailable', /configured official ports and validated FES2022 model points/i],
     ['tides-unavailable', /tide predictions are unavailable/i],
     ['astronomy-unavailable', /sun and moon calculations are unavailable/i],
     ['no-event', /does not rise or set/i]
@@ -171,7 +171,7 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   await expect(page.getByText(/go directly to the configured Nominatim geocoder/i)).toBeVisible();
   await expect(page.getByText(/history stays in this browser until you clear it/i)).toBeVisible();
 
-  const marker = 'Harbor Secret 90817';
+  const marker = 'Halifax';
   await page.locator('#place').fill(marker);
   await page.getByRole('button', { name: 'Show selection' }).click();
   await expect(page.locator('#entered-name')).toHaveText(marker);
@@ -190,14 +190,14 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   for await (const chunk of stream) downloaded += chunk;
   expect(JSON.parse(downloaded).at(-1).response.input.display).toBe(marker);
 
-  const keysBeforeClear = await page.evaluate(() => Object.keys(localStorage));
+  const keysBeforeClear = await page.evaluate(() => Object.keys(sessionStorage));
   expect(keysBeforeClear).toContain('tide-here.history.v1');
   expect(keysBeforeClear).toContain('tide-here.station-catalogue.v2');
   expect(keysBeforeClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
   await page.getByRole('button', { name: 'Clear local history' }).click();
   await expect(page.getByText(/history cleared.*caches were left alone/i)).toBeVisible();
   await expect(page.getByText('No local forecast history yet.')).toBeVisible();
-  const keysAfterClear = await page.evaluate(() => Object.keys(localStorage));
+  const keysAfterClear = await page.evaluate(() => Object.keys(sessionStorage));
   expect(keysAfterClear).not.toContain('tide-here.history.v1');
   expect(keysAfterClear).toContain('tide-here.station-catalogue.v2');
   expect(keysAfterClear.some((key) => key.startsWith('tide-here.forecast.v1.'))).toBe(true);
@@ -206,6 +206,40 @@ test('local history is visible, downloadable, clearable, and never transmitted',
   await page.waitForTimeout(300);
   expect(requests).toHaveLength(requestCount);
   expect(requests.some((request) => request.includes(marker))).toBe(false);
+});
+
+test('a shared recorded-place URL cannot trap later manual searches in fixture data', async ({ page }) => {
+  await page.route('https://nominatim.openstreetmap.org/search**', async route => {
+    expect(new URL(route.request().url()).searchParams.get('q')).toBe('nice,france');
+    await route.fulfill({status: 200, contentType: 'application/json', body: '[]'});
+  });
+  await page.goto(`${pagePath}&place=Seattle`);
+  await expect(page.locator('#coast-name')).toContainText('SEATTLE');
+  await page.locator('#place').fill('nice,france');
+  await page.getByRole('button', {name: 'Show selection'}).click();
+  await expect(page).toHaveURL(/phase-6\/index[.]html$/);
+  await expect(page.locator('#place')).toHaveValue('nice,france');
+  await expect(page.locator('#fixture-note')).toBeHidden();
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'place-not-found');
+});
+
+test('recorded validation caches stay out of normal local storage', async ({page}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('tide-here.station-catalogue.v2', 'legacy fixture catalogue');
+    localStorage.setItem('tide-here.forecast-index.v1', '["tide-here.forecast.v1.legacy"]');
+    localStorage.setItem('tide-here.forecast.v1.legacy', 'legacy fixture forecast');
+    localStorage.setItem('tide-here.history.v1', '[]');
+  });
+  await page.goto(pagePath);
+  await expect(page.locator('#fixture-note')).toBeVisible();
+  const storage = await page.evaluate(() => ({
+    local: Object.keys(localStorage),
+    session: Object.keys(sessionStorage),
+  }));
+  expect(storage.local).toEqual(['tide-here.history.v1']);
+  expect(storage.session).toContain('tide-here.station-catalogue.v2');
+  expect(storage.session).toContain('tide-here.forecast-index.v1');
 });
 
 test('Show here requests browser location only after a click and uses the coordinate path', async ({ page }) => {
@@ -223,6 +257,7 @@ test('Show here requests browser location only after a click and uses the coordi
     Object.defineProperty(window, 'locationRequestCount', { get: () => calls });
   });
   await page.goto(pagePath);
+  await expect(page.locator('#fixture-note')).toBeVisible();
   await expect(page.getByText(/asks your browser for location permission/i)).toBeVisible();
   expect(await page.evaluate(() => window.locationRequestCount)).toBe(0);
   await page.getByRole('button', { name: 'Show here' }).click();
@@ -309,7 +344,7 @@ test('Brisbane uses a stored Australian test port and keeps its fixture notice i
   await page.locator('.source-details summary').click();
   await expect(page.locator('#source-copy')).toContainText(/Australian test port synthetic fixture/i);
   await page.locator('.debug-record summary').click();
-  await expect(page.getByText(/Australian tide-port requests go to this Tide Here service/i)).toBeVisible();
+  await expect(page.getByText(/Australian tide-port requests and available FES2022 model lookups go to this Tide Here service/i)).toBeVisible();
 });
 
 test('licensed Brisbane results identify the Bureau source and need no fixture notice', async ({ page }) => {
@@ -366,4 +401,117 @@ test('licensed Brisbane results identify the Bureau source and need no fixture n
   await expect(page.locator('#source-attribution')).toContainText(/Commonwealth of Australia.*Bureau of Meteorology/);
   await expect(page.locator('#source-disclaimer')).toContainText(/no representation and gives no warranty/i);
   await expect(page.locator('#source-link')).toHaveAttribute('href', /IDO59001_2026_QLD_TP003[.]pdf/);
+});
+
+test('a declined official coast can render an attributed approximate FES2022 result', async ({page}) => {
+  const station = {
+    provider: 'fes2022', country: 'IE', id: 'fes2022-galway', name: 'FES2022 near Galway',
+    kind: 'model-point', latitude: 53.27, longitude: -9.05, timeZone: 'Europe/Dublin',
+    datum: 'FES2022 mean sea level harmonic datum', referenceStationId: null,
+  };
+  await page.route('**/resolve', async route => {
+    expect(route.request().method()).toBe('POST');
+    expect(route.request().postDataJSON()).toEqual({provider: 'fes2022', latitude: 53.27, longitude: -9.05});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({provider: 'fes2022', station, coast: {name: station.name, distanceKm: 0}}),
+    });
+  });
+  await page.route('**/forecast', async route => {
+    const request = route.request().postDataJSON();
+    expect(request.provider).toBe('fes2022');
+    expect(request.station).toMatchObject({latitude: 53.27, longitude: -9.05});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        input: request.context.input,
+        place: request.context.place,
+        coast: request.context.coast,
+        station,
+        timeZone: station.timeZone,
+        days: request.rows.map(row => ({
+          date: row.date,
+          tides: [{type: 'high', at: new Date(Date.parse(row.startUtc) + 6 * 60 * 60 * 1000).toISOString(), height: 1.2, unit: 'm'}],
+          sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null,
+        })),
+        sources: [{
+          provider: 'fes2022', dataClass: 'licensed-source', official: false, approximate: true,
+          attribution: 'FES2022 funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here.',
+          disclaimer: 'Interpolated and transformed model output; not for navigation.',
+          sourceUrl: 'https://doi.org/10.24400/527896/A01-2024.004',
+          licenceUrl: 'https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf',
+        }],
+        warnings: [{code: 'approximate-fallback', message: 'Approximate model; weather and storm surge are not included.'}],
+      }),
+    });
+  });
+  await page.goto(`${pagePath}&place=53.27,-9.05`);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#station-kind')).toContainText('FES2022 approximate model');
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await expect(page.locator('#warnings [data-code="approximate-fallback"]')).toHaveCount(0);
+  await expect(page.locator('.safety-line')).toContainText(/not for navigation or safety decisions/i);
+  await page.locator('.source-details summary').click();
+  await expect(page.locator('#source-attribution')).toContainText(/CNES.*LEGOS.*NOVELTIS.*CLS/);
+  await expect(page.locator('#source-link')).toHaveAttribute('href', /doi[.]org\/10[.]24400/);
+  await expect(page.locator('#licence-link')).toHaveAttribute('href', /License_Aviso[.]pdf/);
+});
+
+test('Cooktown text uses FES2022 before distant official alternatives without a duplicate banner', async ({page}) => {
+  const station = {
+    provider: 'fes2022', country: 'AU', id: 'fes2022-cooktown', name: 'FES2022 near Cooktown',
+    kind: 'model-point', latitude: -15.4667, longitude: 145.2833, timeZone: 'Australia/Brisbane',
+    datum: 'FES2022 mean sea level harmonic datum', referenceStationId: null,
+  };
+  await page.route('**/resolve', async route => {
+    expect(route.request().postDataJSON()).toEqual({provider: 'fes2022', latitude: -15.4726622, longitude: 145.2534218});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({provider: 'fes2022', station, coast: {name: station.name, distanceKm: 0}}),
+    });
+  });
+  await page.route('**/forecast', async route => {
+    const request = route.request().postDataJSON();
+    expect(request.provider).toBe('fes2022');
+    expect(request.station).toMatchObject({id: 'fes2022-cooktown', latitude: -15.4667, longitude: 145.2833});
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        input: request.context.input,
+        place: request.context.place,
+        coast: request.context.coast,
+        station,
+        timeZone: station.timeZone,
+        days: request.rows.map(row => ({
+          date: row.date,
+          tides: [
+            {type: 'low', at: new Date(Date.parse(row.startUtc) + 2 * 60 * 60 * 1000).toISOString(), height: 0.42, unit: 'm'},
+            {type: 'high', at: new Date(Date.parse(row.startUtc) + 8 * 60 * 60 * 1000).toISOString(), height: 2.26, unit: 'm'},
+          ],
+          sunrise: [], sunset: [], moonrise: [], moonset: [], moonPhase: null,
+        })),
+        sources: [{
+          provider: 'fes2022', dataClass: 'licensed-source', official: false, approximate: true,
+          attribution: 'FES2022 funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here.',
+          disclaimer: 'Interpolated and transformed model output; not for navigation.',
+          sourceUrl: 'https://doi.org/10.24400/527896/A01-2024.004',
+          licenceUrl: 'https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf',
+        }],
+        warnings: [{code: 'approximate-fallback', message: 'Approximate model; weather and storm surge are not included.'}],
+      }),
+    });
+  });
+  await page.goto(`${pagePath}&place=cooktown,qld`);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#coast-name')).toContainText('FES2022 near Cooktown');
+  await expect(page.locator('#station-kind')).toContainText('FES2022 approximate model');
+  await expect(page.locator('#chooser')).toBeVisible();
+  await expect(page.locator('#chooser')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#state-panel')).toBeHidden();
+  await expect(page.locator('#warnings [data-code="approximate-fallback"]')).toHaveCount(0);
+  await expect(page.locator('.safety-line')).toContainText(/not for navigation or safety decisions/i);
 });

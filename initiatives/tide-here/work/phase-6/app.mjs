@@ -7,15 +7,23 @@ import { Geocoder, GEOCODER_UNAVAILABLE, INVALID_INPUT, PLACE_NOT_FOUND, parsePl
 import { COAST_CHOICE_REQUIRED, TideHereService } from '../phase-5/src/resolve-forecast.mjs';
 import { ForecastCache, LocalHistory } from '../phase-7/src/local-data.mjs';
 import { forecastViewModel, providerLabel, statePresentation } from './src/page-view.mjs';
-import { AUSTRALIAN_PROVIDER_ID, StoredTideClient } from './src/stored-tide-client.mjs';
+import { AUSTRALIAN_PROVIDER_ID, FES_PROVIDER_ID, loadAvailableStations, StoredTideClient } from './src/stored-tide-client.mjs';
 
 const $ = (selector) => document.querySelector(selector);
-const fixtureMode = new URLSearchParams(location.search).get('fixture') === '1';
-const forcedState = new URLSearchParams(location.search).get('state');
+const searchParams = new URLSearchParams(location.search);
+const fixtureMode = searchParams.get('fixture') === '1';
+const fixturePlaceParam = searchParams.get('place');
+const forcedState = searchParams.get('state');
 const fixedNow = new Date('2026-08-20T13:00:00.000Z');
 const now = () => fixtureMode ? fixedNow : new Date();
 const LOCATION_PERMISSION_DENIED = 'location-permission-denied';
 const LOCATION_UNAVAILABLE = 'location-unavailable';
+const PENDING_NORMAL_PLACE_KEY = 'tide-here.pending-normal-place.v1';
+const LEGACY_FIXTURE_CACHE_KEYS = Object.freeze([
+  'tide-here.station-catalogue.v2',
+  'tide-here.forecast-index.v1'
+]);
+const LEGACY_FIXTURE_CACHE_PREFIXES = Object.freeze(['tide-here.forecast.v1.']);
 
 async function json(path) {
   const response = await fetch(path);
@@ -34,8 +42,16 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
 ]);
 
 const fixtureStations = normalizeStationCatalogues(catalogueFixture, providerConfig);
-const history = new LocalHistory({ storage: localStorage, now });
-const forecastCache = new ForecastCache({ storage: localStorage, now });
+if (fixtureMode) {
+  for (const key of LEGACY_FIXTURE_CACHE_KEYS) localStorage.removeItem(key);
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const key = localStorage.key(index);
+    if (key && LEGACY_FIXTURE_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix))) localStorage.removeItem(key);
+  }
+}
+const runtimeStorage = fixtureMode ? sessionStorage : localStorage;
+const history = new LocalHistory({ storage: runtimeStorage, now });
+const forecastCache = new ForecastCache({ storage: runtimeStorage, now });
 const stationDetailPromises = new Map();
 
 async function stationDetails(station) {
@@ -49,7 +65,7 @@ async function stationDetails(station) {
   const key = `${station.provider}:${station.id}`;
   if (!stationDetailPromises.has(key)) {
     stationDetailPromises.set(key, readThroughStationDetails({
-      storage: localStorage,
+      storage: runtimeStorage,
       station,
       now: now().getTime(),
       ttlMs: providerConfig.catalogueCacheTtlMs,
@@ -84,8 +100,10 @@ function fixturePlace(input) {
   if (key === 'bainbridge') return { name: 'Bainbridge Island, Washington, United States', lat: 47.60835, lon: -122.5125 };
   if (key === 'halifax') return { name: 'Halifax, Nova Scotia, Canada', lat: 44.648618, lon: -63.5859487 };
   if (key === 'brisbane') return { name: 'Brisbane, Queensland, Australia', lat: -27.4698, lon: 153.0251 };
+  if (key === 'cooktown,qld') return { name: 'Cooktown, Queensland, Australia', lat: -15.4726622, lon: 145.2534218 };
   if (key === 'sydney') return { name: 'Sydney, New South Wales, Australia', lat: -33.8688, lon: 151.2093 };
-  return { name: 'Seattle, Washington, United States', lat: 47.6062, lon: -122.3321 };
+  if (key === 'seattle') return { name: 'Seattle, Washington, United States', lat: 47.6062, lon: -122.3321 };
+  return { code: PLACE_NOT_FOUND };
 }
 
 const fixtureGeocoder = {
@@ -134,7 +152,7 @@ const unavailableAstronomy = {
 
 const geocoder = fixtureMode
   ? fixtureGeocoder
-  : new Geocoder({ config: geocoderConfig, fetchImpl: fetch.bind(globalThis), storage: localStorage });
+  : new Geocoder({ config: geocoderConfig, fetchImpl: fetch.bind(globalThis), storage: runtimeStorage });
 const astronomy = forcedState === 'astronomy-unavailable'
   ? unavailableAstronomy
   : new Astronomy({ now });
@@ -147,28 +165,32 @@ const storedTideClient = new StoredTideClient({
   fetchImpl: fetch.bind(globalThis),
   stationFixtures: fixtureMode ? australiaCatalogueFixture.stations : null,
 });
+const fesTideClient = new StoredTideClient({
+  provider: FES_PROVIDER_ID,
+  fetchImpl: fetch.bind(globalThis),
+});
 const tideProvider = {
   forecast(request) {
-    return request.station.provider === AUSTRALIAN_PROVIDER_ID
-      ? storedTideClient.forecast(request)
-      : directTideProvider.forecast(request);
+    if (request.station.provider === AUSTRALIAN_PROVIDER_ID) return storedTideClient.forecast(request);
+    if (request.station.provider === FES_PROVIDER_ID) return fesTideClient.forecast(request);
+    return directTideProvider.forecast(request);
   }
 };
 const service = new TideHereService({
   geocoder,
-  getStations: async () => {
-    const direct = (await readThroughStationCatalogue({
-      storage: localStorage,
+  getStations: () => loadAvailableStations({
+    direct: async () => (await readThroughStationCatalogue({
+      storage: runtimeStorage,
       now: now().getTime(),
       ttlMs: providerConfig.catalogueCacheTtlMs,
       fetchCatalogue: fixtureMode
         ? async () => fixtureStations
         : () => fetchStationCatalogues({ config: providerConfig, fetchImpl: fetch.bind(globalThis) })
-    })).stations;
-    const australian = await storedTideClient.stations().catch(() => []);
-    return [...direct, ...australian];
-  },
+    })).stations,
+    stored: () => storedTideClient.stations()
+  }),
   matchConfig: providerConfig.match,
+  resolveFallback: ({place}) => fesTideClient.resolve({latitude: place.lat, longitude: place.lon}),
   timeZoneLookup: async (_latitude, _longitude, station) => (await stationDetails(station)).timeZone,
   tideProvider,
   astronomy,
@@ -384,11 +406,14 @@ function showForecast(forecast) {
   const sourceLink = $('#source-link');
   sourceLink.href = model.source?.sourceUrl ?? '';
   sourceLink.hidden = !model.source?.sourceUrl;
+  const licenceLink = $('#licence-link');
+  licenceLink.href = model.source?.licenceUrl ?? '';
+  licenceLink.hidden = !model.source?.licenceUrl;
   const fixtureWarning = model.warnings.find((warning) => warning.code === 'fixture-data');
   const locationNotice = $('#fixture-location-notice');
   locationNotice.textContent = fixtureWarning?.message ?? '';
   locationNotice.hidden = !fixtureWarning;
-  const externalWarnings = model.warnings.filter((warning) => warning.code !== 'fixture-data');
+  const externalWarnings = model.warnings.filter((warning) => !['fixture-data', 'approximate-fallback'].includes(warning.code));
   $('#warnings').replaceChildren(...externalWarnings.map((warning) => {
     const box = document.createElement('div');
     box.className = 'warning';
@@ -419,12 +444,12 @@ async function loadForecast(resolution, station = null) {
     now: now()
   };
   const cached = forcedState ? null : await forecastCache.read(cacheContext);
-  const result = cached || await service.forecast(preparedResolution, resolution.ok ? null : detailedStation);
+  const result = cached || await service.forecast(preparedResolution, station ? detailedStation : null);
   if (!cached && !forcedState) await forecastCache.write(cacheContext, result);
   history.append(result);
   updateHistoryCount();
   showForecast(result);
-  if (resolution.code === COAST_CHOICE_REQUIRED) showAlternativeCoasts(resolution, detailedStation);
+  if (resolution.candidates.length) showAlternativeCoasts(resolution, detailedStation);
 }
 
 async function submit() {
@@ -437,6 +462,14 @@ async function submit() {
   } catch {
     return showState(TIDES_UNAVAILABLE);
   }
+}
+
+function continueOnNormalPage(input) {
+  sessionStorage.setItem(PENDING_NORMAL_PLACE_KEY, input);
+  const normalUrl = new URL(location.href);
+  normalUrl.search = '';
+  normalUrl.hash = '';
+  location.replace(normalUrl);
 }
 
 function browserPosition() {
@@ -470,6 +503,7 @@ async function showHere() {
 
 $('#place-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  if (fixtureMode && fixturePlaceParam !== null) return continueOnNormalPage($('#place').value);
   void submit();
 });
 $('#show-here').addEventListener('click', () => { void showHere(); });
@@ -507,6 +541,13 @@ if (fixtureMode) {
     'astronomy-unavailable': 'Seattle',
     'no-event': 'Seattle'
   };
-  $('#place').value = new URLSearchParams(location.search).get('place') ?? inputs[forcedState] ?? 'Seattle';
-  $('#place-form').requestSubmit();
+  $('#place').value = fixturePlaceParam ?? inputs[forcedState] ?? 'Seattle';
+  void submit();
+} else {
+  const pendingPlace = sessionStorage.getItem(PENDING_NORMAL_PLACE_KEY);
+  if (pendingPlace !== null) {
+    sessionStorage.removeItem(PENDING_NORMAL_PLACE_KEY);
+    $('#place').value = pendingPlace;
+    void submit();
+  }
 }

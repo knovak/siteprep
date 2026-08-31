@@ -22,7 +22,7 @@ export const FAILURE_MESSAGES = Object.freeze({
   [INVALID_INPUT]: 'Enter a place name or decimal coordinates such as 47.61, -122.33.',
   [PLACE_NOT_FOUND]: 'That place was not found. Check the spelling or enter coordinates.',
   [GEOCODER_UNAVAILABLE]: 'Place lookup is unavailable. Try again later.',
-  [COVERAGE_UNAVAILABLE]: 'Tide coverage is available for configured U.S., Canadian, and Australian test coasts.',
+  [COVERAGE_UNAVAILABLE]: 'Tide coverage is available only near configured official ports and validated FES2022 model points.',
   [COAST_CHOICE_REQUIRED]: 'The closest coast is shown first; alternative coasts are available below the results.',
   [TIDES_UNAVAILABLE]: 'Tide predictions are unavailable; place and astronomy details remain available.',
   [ASTRONOMY_UNAVAILABLE]: 'Sun and moon calculations are unavailable; tide predictions remain available.',
@@ -57,12 +57,15 @@ function sourceAwareForecast(forecast, geocoderSource) {
 }
 
 export class TideHereService {
-  constructor({ geocoder, getStations, matchConfig, timeZoneLookup, tideProvider, astronomy, now = () => new Date() }) {
+  constructor({ geocoder, getStations, matchConfig, timeZoneLookup, tideProvider, astronomy, resolveFallback = null, now = () => new Date() }) {
     if (typeof geocoder?.resolve !== 'function') throw new TypeError('TideHereService requires a Geocoder');
     if (typeof getStations !== 'function') throw new TypeError('TideHereService requires a station catalogue');
     if (typeof timeZoneLookup !== 'function') throw new TypeError('TideHereService requires a time-zone lookup');
     if (typeof tideProvider?.forecast !== 'function' || typeof astronomy?.enrich !== 'function') {
       throw new TypeError('TideHereService requires tide and astronomy adapters');
+    }
+    if (resolveFallback !== null && typeof resolveFallback !== 'function') {
+      throw new TypeError('TideHereService fallback resolver must be a function');
     }
     this.geocoder = geocoder;
     this.getStations = getStations;
@@ -70,6 +73,7 @@ export class TideHereService {
     this.timeZoneLookup = timeZoneLookup;
     this.tideProvider = tideProvider;
     this.astronomy = astronomy;
+    this.resolveFallback = resolveFallback;
     this.now = now;
   }
 
@@ -83,6 +87,23 @@ export class TideHereService {
       place: geocoded.place,
       geocoderSource: geocoded.source
     };
+    if ([COVERAGE_UNAVAILABLE, COAST_CHOICE_REQUIRED].includes(match.status)) {
+      const fallback = await this.resolveFallback?.({
+        input: geocoded.input,
+        place: geocoded.place,
+        geocoderSource: geocoded.source,
+      });
+      if (fallback?.station && fallback?.coast) {
+        return freezeResolution({
+          ...common,
+          ok: true,
+          code: null,
+          station: fallback.station,
+          coast: fallback.coast,
+          candidates: match.status === COAST_CHOICE_REQUIRED ? match.candidates : [],
+        });
+      }
+    }
     if (match.status === COVERAGE_UNAVAILABLE) {
       return freezeResolution({
         ...common,
@@ -107,12 +128,13 @@ export class TideHereService {
   }
 
   chosenStation(resolution, selected) {
-    if (resolution.ok && resolution.station) return { station: resolution.station, coast: resolution.coast };
-    if (resolution.code !== COAST_CHOICE_REQUIRED) return null;
-    const station = resolution.candidates.find((candidate) => (
+    const selectedCandidate = resolution.candidates?.find((candidate) => (
       candidate.id === selected?.id && candidate.provider === selected?.provider
     ));
-    return station ? { station, coast: coastForStation(station, station.distanceKm) } : null;
+    if (selectedCandidate) return { station: selectedCandidate, coast: coastForStation(selectedCandidate, selectedCandidate.distanceKm) };
+    if (resolution.ok && resolution.station) return { station: resolution.station, coast: resolution.coast };
+    if (resolution.code !== COAST_CHOICE_REQUIRED) return null;
+    return null;
   }
 
   async forecast(resolution, selectedStation = null) {

@@ -1,0 +1,47 @@
+engine: darwin
+tide:
+  lgp:
+    amplitude: "{constituent}_amplitude"
+    constituents:
+      - 2N2
+      - Eps2
+      - J1
+      - K1
+      - K2
+      - L2
+      - Lambda2
+      - M2
+      - M3
+      - M4
+      - M6
+      - M8
+      - MKS2
+      - MN4
+      - MS4
+      - MSf
+      - Mf
+      - Mm
+      - Msqm
+      - Mtm
+      - Mu2
+      - N2
+      - N4
+      - Nu2
+      - O1
+      - P1
+      - Q1
+      - R2
+      - S1
+      - S2
+      - S4
+      - Sa
+      - Ssa
+      - T2
+    codes: lgp2
+    latitude: lat
+    longitude: lon
+    max_distance: 20000
+    path: "${FES2022_NS_GRID}"
+    phase: "{constituent}_phase"
+    triangle: triangle
+    type: lgp2
