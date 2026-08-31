@@ -11,6 +11,7 @@ const STATE_ACTIONS = Object.freeze({
   'astronomy-unavailable': 'Retry sun and moon',
   'no-event': 'No retry needed',
   'fixture-data': 'Test data only',
+  'approximate-fallback': 'Use as an estimate only',
   'location-permission-denied': 'Try location again',
   'location-unavailable': 'Try location again'
 });
@@ -18,6 +19,7 @@ const STATE_ACTIONS = Object.freeze({
 const PAGE_FAILURE_MESSAGES = Object.freeze({
   ...FAILURE_MESSAGES,
   'fixture-data': 'Australian test-port results use synthetic fixture data, not official tide predictions.',
+  'approximate-fallback': 'FES2022 is an approximate harmonic model; weather and storm surge are not included.',
   'location-permission-denied': 'Location access was not allowed. Allow location for this Site, then choose Show here again.',
   'location-unavailable': 'Your browser could not provide a location. Try Show here again, or enter a place or coordinates.'
 });
@@ -26,7 +28,7 @@ const PROVIDER_LABELS = Object.freeze({
   noaa: 'NOAA',
   chs: 'CHS',
   'australia-standard-ports': 'Australian test port',
-  fes2022: 'Approximate global model'
+  fes2022: 'FES2022 approximate model'
 });
 
 export function providerLabel(provider, {official = false} = {}) {

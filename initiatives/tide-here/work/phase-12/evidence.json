@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-08-27T18:00:00Z",
+  "checkedAt": "2026-08-29T22:03:54Z",
   "stage": "global-coverage-stage-4",
   "deployment": null,
   "implementation": {
@@ -10,25 +10,51 @@
     "immutableStoredTiles": true,
     "landAndMissingCoverageFailure": true,
     "normalizedApproximateForecast": true,
+    "bodyOnlyModelPointResolution": true,
     "protectedIdempotentInitializer": true,
     "activationWriteIsLast": true
   },
-  "fixture": {
-    "datasetId": "fes-shaped-global-sample",
-    "datasetVersion": "2026-08-27",
-    "tiles": 3,
-    "points": 3,
-    "dataClass": "test-fixture",
-    "isFes2022": false
+  "licensedExtract": {
+    "registry": "tide-here-providers/stage-4-v7",
+    "datasetId": "fes2022b-native-validation",
+    "datasetVersion": "2026-02-03-r2",
+    "tiles": 5,
+    "points": 7,
+    "constituentsPerPoint": 34,
+    "dataClass": "licensed-source",
+    "isFes2022": true,
+    "maximumSelectionDistanceKm": 20,
+    "meshMethod": "native-mesh interpolation or bounded extrapolation",
+    "meshSampleCounts": [6, 30, 33, 39],
+    "sourceFile": {
+      "name": "FES2022b_OceanTide_NSgrid.nc",
+      "bytes": 3953139340,
+      "sha256": "6479dbd9acdfb63405ff15de1265154c4659b1f7112b8dfb1cabef945a481a23"
+    },
+    "maximumConstituentRoundTripErrorCm": 0.000004
   },
-  "accuracy": {
-    "engineFeasibilityPassed": true,
-    "fes2022AccuracyEstablished": false,
-    "blockedBy": "Licensed FES2022 atlas files and credentials plus held-out official-port comparisons"
+  "officialComparisons": {
+    "passed": true,
+    "thresholdsFixedBeforeResults": true,
+    "maroochydoreToMooloolaba": {
+      "pairedEvents": 20,
+      "p90TimeDifferenceMinutes": 11.2556,
+      "maximumTimeDifferenceMinutes": 12.524867,
+      "maximumHeightResidualM": 0.039004,
+      "passed": true
+    },
+    "bundabergToBundaberg": {
+      "pairedEvents": 20,
+      "p90TimeDifferenceMinutes": 19.398167,
+      "maximumTimeDifferenceMinutes": 20.709317,
+      "maximumHeightResidualM": 0.110398,
+      "passed": true
+    }
   },
   "tests": {
-    "stageTestsPassed": 11,
-    "stageTestsFailed": 0,
-    "stagesOneThroughFourPassed": 43
+    "allTideNodeTestsPassed": 124,
+    "allTideNodeTestsFailed": 0,
+    "browserTestsPassed": 29,
+    "browserTestsSkipped": 1
   }
 }

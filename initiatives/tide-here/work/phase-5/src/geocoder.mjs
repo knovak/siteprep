@@ -1,6 +1,7 @@
 export const INVALID_INPUT = 'invalid-input';
 export const PLACE_NOT_FOUND = 'place-not-found';
 export const GEOCODER_UNAVAILABLE = 'geocoder-unavailable';
+const SETTLEMENT_TYPES = new Set(['city', 'town', 'village', 'hamlet', 'municipality']);
 
 function numericCoordinates(input) {
   const match = /^\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*,\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*$/.exec(input);
@@ -48,6 +49,16 @@ function normalizedPlace(value, fallbackName) {
     lat: latitude,
     lon: longitude
   });
+}
+
+function preferredForwardResult(values) {
+  if (!Array.isArray(values) || values.length === 0) return null;
+  const first = values[0];
+  const category = first?.category ?? first?.class;
+  if (category !== 'boundary') return first;
+  return values.find((value) => (
+    (value?.category ?? value?.class) === 'place' && SETTLEMENT_TYPES.has(value?.type)
+  )) ?? first;
 }
 
 function source(config, retrievedAt) {
@@ -125,13 +136,13 @@ export class Geocoder {
       url.searchParams.set('addressdetails', '1');
       if (parsed.kind === 'text') {
         url.searchParams.set('q', parsed.query);
-        url.searchParams.set('limit', '1');
+        url.searchParams.set('limit', '5');
       } else {
         url.searchParams.set('lat', String(parsed.latitude));
         url.searchParams.set('lon', String(parsed.longitude));
       }
       const payload = await this.request(url);
-      const value = parsed.kind === 'text' ? payload?.[0] : payload;
+      const value = parsed.kind === 'text' ? preferredForwardResult(payload) : payload;
       const fallback = parsed.kind === 'text'
         ? parsed.query
         : `${parsed.latitude.toFixed(5)}, ${parsed.longitude.toFixed(5)}`;

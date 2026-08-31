@@ -189,6 +189,64 @@ Released to production — ChatGPT Site, version 6, `31abfbb`. 3 commit(s) since
 
 Recorded the user's standing permission to deploy expanded Australian coverage to Tide Here's existing public test and production Sites now and in the future. The test deployment-and-verification item remains actionable; committed-source checks, live verification, public access preservation, data and reuse approval, and separate authorization for new Sites, FES2022, or matcher changes still apply.
 
+## 2026-08-29 — Activate the validated FES2022 fallback in source
+
+Extracted five sparse 34-constituent water points from the licensed FES2022b
+native grid with pinned PyFES, source-file checksum provenance, and sub-0.01 cm
+constituent round trips. Recorded PyFES's bounded native-mesh extrapolation
+method and 30–39-node quality flags explicitly. The pre-declared
+Maroochydore/Mooloolaba and Bundaberg official-port comparison gates both
+passed across 20 paired extrema, so
+registry `stage-4-v6` now activates the approximate fallback after official
+coverage declines. Added body-only model-point resolution, source and licence
+disclosure, privacy-safe logging, and browser coverage. Nothing was deployed.
+
+## 2026-08-29 — Deploy and verify the FES2022 fallback on the test Site
+
+Published version 9 to the existing public test Site without changing its
+access. Initialized registry `stage-4-v6`, all 76 Australian Standard Ports,
+and the licensed FES2022b extract; a repeat initialization wrote zero objects.
+The live sweep returned 1,470 Australian extrema, passed NOAA and CHS discovery,
+and produced 20 approximate licensed-source fallback extrema apiece for
+Maroochydore and Bundaberg. Production was not changed.
+
+## 2026-08-29 — Extend FES2022 coverage to Cooktown and Gibraltar
+
+Added validated 34-constituent FES2022 points for Cooktown and Gibraltar,
+expanded the active sparse extract to seven points, and taught text geocoding to
+prefer a settlement over a broad administrative boundary. A nearby FES point
+now takes precedence when official ports are distant or ambiguous, while those
+official choices remain available as alternatives. Removed the duplicate
+standalone FES fallback banner; provider, approximation, and safety words remain
+inside the result and source details.
+
+Published version 10 to the existing public test Site without changing its
+access. Initialized registry `stage-4-v7`; a repeat initialization wrote zero
+objects. The live sweep returned all 76 Australian Standard Ports and 20 FES
+extrema apiece for Cooktown and Gibraltar. Production was not changed.
+
+## 2026-08-29 — Isolate recorded validation pages from normal searches
+
+Fixed the shared Cooktown validation URL so it cannot trap later manual entries
+in fixture mode or reuse recorded Seattle station data. Validation catalogues,
+forecasts, and history now use tab-scoped storage; opening a validation page
+also removes legacy fixture cache entries from the normal disposable cache.
+Unknown fixture names fail explicitly. A manual search from a recorded-place
+URL returns to the clean normal page, carries the entry without putting it in
+the URL, and clears the old result before resolving.
+
+Published public test Site version 11 without changing access. A live
+`nice,france` search from the former Cooktown fixture URL returned to the normal
+page and showed `coverage-unavailable`, never Cooktown or Seattle. The 124 Node
+tests, 29 browser checks with one intentional skip, 76-port live sweep, NOAA,
+CHS, Cooktown, Gibraltar, and Worker error check all passed. Reserved
+`../siteprep-data/tide-here/fes2022/` as the durable local location for any
+future full-atlas download. Production was not changed.
+
 ## 2026-08-30 — Deploy and verify the expanded Standard Port catalogue on the existing public test Site
 
 Published existing public test Site version 13 with registry stage-4-v5 and all 76 licensed 2026 Standard Ports; protected initialization was idempotent, 1,470 catalogue events and both Port Douglas and Cocos Islands browser forecasts passed, and production was unchanged.
+
+## 2026-08-30 — Reconcile FES2022 source with the newer test deployment
+
+Merged the independent direct/stored catalogue loading from the version 13 Australian coverage release with the FES2022 provider, body-only resolver, and validation-fixture isolation. Kept version 13 as the current public test deployment because it superseded the recorded version 11 FES2022 deployment at the same URL; version 11 remains historical validation evidence, and no Site was deployed by this conflict resolution.

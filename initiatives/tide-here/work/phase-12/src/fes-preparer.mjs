@@ -17,8 +17,14 @@ function validateDataset(dataset) {
   if (!Number.isFinite(Date.parse(dataset.preparedAt))) throw new Error('FES source preparedAt is invalid');
   if (typeof dataset.isFes2022 !== 'boolean') throw new Error('FES source must declare whether it is FES2022');
   if (dataset.dataClass === 'licensed-source') {
-    if (!dataset.isFes2022 || !/FES2022/i.test(dataset.model) || !dataset.sourceUrl) {
-      throw new Error('A licensed production source must identify FES2022 and its source URL');
+    if (!dataset.isFes2022 || !/FES2022/i.test(dataset.model) || !dataset.sourceUrl
+        || !dataset.licenceUrl || !dataset.disclaimer) {
+      throw new Error('A licensed production source must identify FES2022, its source, licence and disclaimer');
+    }
+    if (!Array.isArray(dataset.sourceFiles) || dataset.sourceFiles.length === 0
+        || dataset.sourceFiles.some(file => !file?.name || !Number.isInteger(file.bytes) || file.bytes <= 0
+          || !/^[a-f0-9]{64}$/.test(file.sha256))) {
+      throw new Error('A licensed production source must record exact source file checksums');
     }
   } else if (dataset.isFes2022) {
     throw new Error('A test fixture cannot identify itself as FES2022');
@@ -49,6 +55,19 @@ function validatePoint(point, tileId, dataClass) {
   }
   const constituents = point.constituents;
   const minimum = dataClass === 'licensed-source' ? 34 : 4;
+  if (dataClass === 'licensed-source' && (!Number.isInteger(point.interpolationQuality) || point.interpolationQuality === 0)) {
+    throw new Error(`FES point ${point.id} requires a nonzero PyFES interpolation quality`);
+  }
+  if (dataClass === 'licensed-source') {
+    const expectedMethod = point.interpolationQuality > 0 ? 'interpolated' : 'extrapolated';
+    if (point.interpolationMethod !== expectedMethod) {
+      throw new Error(`FES point ${point.id} must disclose its PyFES interpolation method`);
+    }
+  }
+  if (dataClass === 'licensed-source' && (!Number.isFinite(point.constituentRoundTripMaxErrorCm)
+      || point.constituentRoundTripMaxErrorCm < 0 || point.constituentRoundTripMaxErrorCm > 0.01)) {
+    throw new Error(`FES point ${point.id} requires a passing PyFES constituent round-trip`);
+  }
   if (!Array.isArray(constituents) || constituents.length < minimum) {
     throw new Error(`FES point ${point.id} requires at least ${minimum} constituents`);
   }

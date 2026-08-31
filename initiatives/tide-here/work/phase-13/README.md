@@ -11,10 +11,15 @@ environment from the current public production Site.
 - The build stages only the browser files needed by the current page. Tests,
   initiative records, source fixtures, and preparation tools are not public
   assets.
-- `/init`, `/health`, `/providers`, `/stations`, and `/forecast` are handled by
-  the Stage 4 gateway. The page continues to call NOAA and CHS directly, loads
-  the stored Australian station catalogue, and uses `/forecast` only when an
-  Australian reference port is selected.
+- `/init`, `/health`, `/providers`, `/stations`, `/resolve`, and `/forecast` are
+  handled by the Stage 4 gateway. The page continues to call NOAA and CHS
+  directly, loads the stored Australian station catalogue, and uses `/forecast`
+  when an Australian reference port or active FES2022 model point is selected.
+  The page calls `POST /resolve` after official catalogue coverage declines or
+  only distant, ambiguous official choices remain; coordinates stay in its
+  request body, and the route serves only points within the active sparse
+  FES2022 dataset's declared radius. A nearby model result remains approximate
+  while the official choices stay available as explicit alternatives.
 - Hosted `POST /init` requires the `INIT_TOKEN` secret. Initialization writes
   prepared data already included in the tested source to R2, verifies the exact
   licensed Australian and fallback versions, and activates the provider
@@ -32,9 +37,10 @@ writes, and runs HTTPS checks for:
 
 - the browser page and live NOAA and CHS catalogues;
 - the stored licensed Australian catalogue and forecasts;
-- the indexed approximate fallback fixture and its safety warnings.
+- the indexed approximate FES2022 fallback, source/licence disclosure, and
+  safety warnings.
 
-The deployed test source contains the normalized output
+The current test deployment contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
 territory indexes. It carries the source attribution, disclaimer, and per-port
 PDF URL into the browser. The fallback data remains a plainly labelled non-FES
@@ -58,6 +64,25 @@ the full catalogue. Browser checks for Port Douglas and remote Cocos Islands
 rendered five local days, linked the selected Bureau PDF, showed the Bureau
 attribution and disclaimer, and did not show the synthetic fixture notice. The
 post-check log contained no Worker execution errors.
+
+## Recorded FES2022 validation deployment
+
+Version 11 was published to the same public test Site on 2026-08-29 UTC before
+version 13 superseded it. It activated registry `stage-4-v7`, Australian dataset
+`2026-bom-v2`, and licensed FES2022b extract `2026-02-03-r2`. A second
+initialization wrote zero objects. The FES points passed the fixed
+Maroochydore/Mooloolaba and Bundaberg official-port gates; Cooktown and
+Gibraltar each returned 20 fallback extrema with licensed-source provenance and
+the `approximate-fallback` warning. NOAA, CHS, the 76-port Australian catalogue,
+the hosted page, and the Galway fallback also passed. The browser showed the
+FES2022 source and safety copy without a duplicate banner, fixture caches stayed
+tab-scoped, unknown fixture names did not become Seattle, and a manual
+`nice,france` search left fixture mode and returned the honest
+`coverage-unavailable` state. Worker logs contained no execution failures.
+
+That version 11 evidence remains the validation record for the FES2022 source
+in this branch, but FES2022 is not active on the current version 13 test Site.
+Review and a new test deployment are required before any production release.
 
 The production Site was not changed. Its existing version 6 already serves the
 same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.

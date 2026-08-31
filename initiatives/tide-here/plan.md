@@ -456,12 +456,18 @@ downloads, decompresses, or derives FES data in the request path.
 any result derived from FES is labelled approximate and remains separate from
 weather and storm-surge effects.
 
-**Status, 2026-08-27:** the preparation, inventory, initialization, lookup,
-failure, normalized forecast, and warning path is implemented in
-`work/phase-12`. A three-tile non-FES fixture exercises the complete path and
-the Brest point preserves the Stage 1 engine comparison. Production activation
-and regime-specific accuracy tolerances remain blocked on licensed FES2022
-atlas files and held-out official-port comparisons.
+**Status, 2026-08-29:** complete locally in `work/phase-12`. A credentialed
+offline PyFES job extracted five 34-constituent water points from the FES2022b
+native grid, recorded the 3,953,139,340-byte source checksum, and round-tripped
+every rounded point to within 0.000004 cm of the atlas path. The pre-declared
+Maroochydore/Mooloolaba and Bundaberg comparison gates both passed across 20
+paired extrema. PyFES identifies the five selected coastal results as bounded
+native-mesh extrapolations using 30–39 nodes, which the source metadata records
+explicitly. Registry `stage-4-v6` therefore activates the licensed sparse
+extract, while official national providers retain priority. This source was
+validated on public test Site version 11 on 2026-08-29; version 13 subsequently
+superseded that deployment with the `stage-4-v5` non-FES fixture, so the FES2022
+source is not active on the current test Site.
 
 #### Stage 5 — Test deployment
 

@@ -1,4 +1,5 @@
 export const AUSTRALIAN_PROVIDER_ID = 'australia-standard-ports';
+export const FES_PROVIDER_ID = 'fes2022';
 
 export async function loadAvailableStations({direct, stored}) {
   if (typeof direct !== 'function' || typeof stored !== 'function') {
@@ -62,7 +63,7 @@ function unavailableForecast({context, station, timeZone, rows}) {
     sources: Object.freeze([]),
     warnings: Object.freeze([Object.freeze({
       code: 'tides-unavailable',
-      message: 'Stored Australian test predictions are unavailable.',
+      message: 'Stored tide predictions are unavailable.',
     })]),
   });
 }
@@ -124,6 +125,34 @@ export class StoredTideClient {
     return this.stationPromise;
   }
 
+  async resolve({latitude, longitude}) {
+    try {
+      const value = await this.fetchJson('/resolve', {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({
+          provider: this.provider,
+          latitude,
+          longitude,
+        }),
+      });
+      if (value?.provider !== this.provider || !value.station || !value.coast) {
+        throw new Error('Stored tide service returned an invalid location resolution');
+      }
+      const station = normalizedStation(value.station, this.provider);
+      const distanceKm = Number(value.coast.distanceKm);
+      if (!value.coast.name || !Number.isFinite(distanceKm) || distanceKm < 0) {
+        throw new Error('Stored tide service returned an invalid model coast');
+      }
+      return Object.freeze({
+        station,
+        coast: Object.freeze({...value.coast, distanceKm}),
+      });
+    } catch {
+      return null;
+    }
+  }
+
   async forecast({context, station, timeZone, rows}) {
     try {
       const value = await this.fetchJson('/forecast', {
@@ -132,7 +161,9 @@ export class StoredTideClient {
         body: JSON.stringify({
           provider: this.provider,
           context,
-          station: {id: station.id},
+          station: this.provider === FES_PROVIDER_ID
+            ? {id: station.id, latitude: station.latitude, longitude: station.longitude, country: station.country ?? null}
+            : {id: station.id},
           timeZone,
           rows,
         }),

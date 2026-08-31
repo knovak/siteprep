@@ -29,13 +29,12 @@
   ],
   "todo": [
     {
-      "id": "activate-licensed-fes2022-fallback",
-      "title": "Activate the licensed FES2022 fallback after validation",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "large",
-      "advances_stage": false,
-      "blocked_by": "data:complete licensed FES2022 atlas files and held-out official-port comparisons"
+      "id": "review-fes2022-test-deployment",
+      "title": "Review the FES2022 fallback source and recorded version 11 validation before any production release",
+      "state": "actionable",
+      "value": "high",
+      "effort": "low",
+      "advances_stage": false
     }
   ]
 }

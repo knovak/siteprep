@@ -311,23 +311,39 @@ These tests complete the licensed Stage 3 activation gate. The synthetic
 fixture still proves failure and disclosure behavior, but is not evidence of
 Australian prediction accuracy.
 
-### 7.4 — FES-shaped global fallback implementation
+### 7.4 — Licensed FES2022 global fallback implementation
 
 | Test | Pass condition | Protects |
 |---|---|---|
 | Reproducible preparation | The source extract exactly regenerates the committed tile index and objects | Offline preparation drift |
 | Complete inventory | Missing, altered, duplicate, or undeclared tile objects fail size and checksum validation before initialization | Partial uploads |
-| FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source, licence metadata, and at least 34 constituents per point | Data and legal boundary |
+| FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source-file integrity, licence metadata, a nonzero PyFES quality flag with matching interpolation/extrapolation disclosure, a 0.01 cm constituent round-trip, and all 34 constituents per point | Data and legal boundary |
 | Atomic initialization | Australian and fallback artifacts are ready before the Stage 4 registry pointer is written; repeating `/init` writes nothing | Rollback safety |
-| Provider priority | U.S., Canada, and Australia select their national provider before the fallback | Source quality |
-| Indexed lookup | Brest, Galway, and Cape Town load separate candidate tiles and return normalized metre events | Runtime tile seam |
+| Provider priority | A confident national-provider match wins without consulting FES; a nearby FES point becomes primary when official choices are unavailable, distant, or ambiguous, while named official alternatives remain selectable | Source quality |
+| Indexed lookup | Maroochydore, Bundaberg, Cooktown, Brest, Galway, Gibraltar, and Cape Town load only their candidate tiles and return normalized metre events | Runtime tile seam |
 | Land or missing data | A location outside initialized coastal tiles returns `coverage-unavailable` | No invented coverage |
 | Approximate warning | Every fallback response says approximate and excludes weather and storm surge; the fixture additionally says it is not FES2022 | User safety |
-| Engine comparison | The Brest point remains within six minutes and five centimetres of the independent PyFES example | Runtime feasibility |
+| Extraction round-trip | Every licensed point reproduces PyFES atlas prediction from its rounded extracted constituents to within 0.01 cm | Phase, units, and constituent conversion |
+| Official priority examples | Maroochydore resolves to Mooloolaba and Bundaberg resolves to its Bureau port before the fallback resolver is consulted | Source quality at the requested Australian examples |
+| Maroochydore/Mooloolaba comparison | At least 16 same-type extrema pair over five days; p90 timing is at most 30 minutes, maximum timing at most 45 minutes, and the maximum height residual after one constant MSL-to-LAT offset is at most 0.35 m | Open-coast model timing and shape |
+| Bundaberg comparison | At least 16 same-type extrema pair over five days; p90 timing is at most 45 minutes, maximum timing at most 75 minutes, and the maximum height residual after one constant MSL-to-LAT offset is at most 0.50 m | River-mouth model timing and shape |
 
-These tests prove the production code path, not FES2022 accuracy. Licensed
-atlas ingestion and held-out national-port comparisons remain required before
-the fallback may be marked active.
+The comparison tolerances are fixed in
+`work/phase-12/data/fes2022-official-comparison-plan.json` before the official
+results are inspected. A failure blocks activation rather than widening the
+threshold in response to the result. FES remains an approximate harmonic model
+even after both comparisons pass because weather and storm surge are outside
+the model.
+
+**Recorded result, 2026-08-29:** both gates passed without changing their
+thresholds. Maroochydore/Mooloolaba paired 20 extrema with p90/maximum timing
+differences of 11.256/12.525 minutes and a 0.039 m maximum height residual.
+Bundaberg paired 20 extrema with p90/maximum timing differences of
+19.399/20.710 minutes and a 0.111 m maximum height residual. The seven extracted
+points all contain 34 constituents; their worst PyFES round-trip error is
+0.000004 cm. PyFES reports direct six-node native-mesh interpolation at
+Cooktown and bounded extrapolation using 30–39 nodes at the other six points;
+the committed point metadata discloses each method.
 
 ### 7.5 — Hosted test deployment
 
@@ -336,17 +352,20 @@ the fallback may be marked active.
 | Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
 | Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
 | Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
-| Health | Live `/health` names provider registry `stage-4-v4` and both stored dataset versions | Operability |
+| Health | Live `/health` names provider registry `stage-4-v7` and both stored dataset versions | Operability |
 | Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
 | Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
 | Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the licensed Australian source, and returns the approximate fallback fixture | Deployment integration |
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
 
-**Recorded result, 2026-08-28 UTC:** all eight checks passed on public test Site
-version 8. Initialization activated `stage-4-v4`; the repeat call wrote zero
-objects; 111 Tide Node tests passed in both the working tree and isolated Site
-source, and 21 applicable browser tests passed. The production Site was not
-changed.
+**Recorded result, 2026-08-29 UTC:** all eight checks passed on public test Site
+version 11. Initialization activated `stage-4-v7`; the repeat call wrote zero
+objects; 124 Tide Node tests passed in both the working tree and isolated Site
+source, and 29 applicable browser tests passed with one intentional skip. The
+live sweep returned all 76 Australian Standard Ports and FES2022 results for
+Galway, Cooktown, and Gibraltar. A live Nice search from the former Cooktown
+validation URL left fixture mode and returned the honest coverage state without
+showing Cooktown or Seattle. The production Site was not changed.
 
 ### 7.6 — Australian browser integration
 

@@ -1,6 +1,6 @@
 import {createProviderGatewayApp} from '../../phase-10/src/gateway.mjs';
 import {australianStationCatalogue, forecastAustralianStandardPort} from '../../phase-11/src/australia-provider.mjs';
-import {forecastFesFallback} from './fes-provider.mjs';
+import {forecastFesFallback, resolveFesModelPoint} from './fes-provider.mjs';
 import {initializeStageFour} from './stage-four.mjs';
 
 export function createStageFourApp(options = {}) {
@@ -9,6 +9,9 @@ export function createStageFourApp(options = {}) {
     forecastAdapters: {
       fes2022: forecastFesFallback,
       'australia-standard-ports': forecastAustralianStandardPort,
+    },
+    stationResolvers: {
+      fes2022: resolveFesModelPoint,
     },
     stationCatalogues: {
       'australia-standard-ports': australianStationCatalogue,
