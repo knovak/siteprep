@@ -1,0 +1,14 @@
+{
+  "format": "knowledge-pipeline/v0",
+  "scope": {
+    "knowledgeSpaceId": "space:community-evidence",
+    "collectionId": "collection:legacy-heat"
+  },
+  "items": [
+    {
+      "id": "legacy-1",
+      "title": "Project-authored legacy fixture",
+      "url": "https://example.invalid/legacy/1"
+    }
+  ]
+}

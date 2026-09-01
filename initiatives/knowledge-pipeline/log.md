@@ -23,3 +23,7 @@ Critiqued the pre-build plan, added executable Phase 0 checkpoints, and strength
 ## 2026-08-31 — Respond to critique review
 
 Removed application-managed export encryption and the dedicated scheduler capability, aligned scheduled runs with the existing administrator boundary and idempotent operation ids, and recorded standing permission for public Knowledge Pipeline Site deployments.
+
+## 2026-09-01 — Phase 0 - build and verify the portable custody core
+
+Built and verified the Phase 0 portable custody core: canonical v1 schemas and hashes, immutable SQLite custody with transactional receipts, restore/merge/copy package flows, hostile ZIP and checksum gates, v0 migration with backup proof, and fixed end-to-end and scale fixtures.

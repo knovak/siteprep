@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knowledge-pipeline/v1/relationship",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "fromEntityId", "toEntityId", "state", "createdAt", "createdBy", "activityId", "contentHash"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "type": {"type": "string", "minLength": 1},
+    "fromEntityId": {"type": "string", "minLength": 1},
+    "toEntityId": {"type": "string", "minLength": 1},
+    "fromVersionId": {"type": ["string", "null"]},
+    "toVersionId": {"type": ["string", "null"]},
+    "state": {"enum": ["proposed", "accepted", "disputed", "rejected", "retracted"]},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "createdBy": {"type": "string", "minLength": 1},
+    "activityId": {"type": "string", "minLength": 1},
+    "contentHash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}
