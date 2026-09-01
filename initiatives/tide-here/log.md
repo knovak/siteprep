@@ -250,3 +250,23 @@ Published existing public test Site version 13 with registry stage-4-v5 and all 
 ## 2026-08-30 — Reconcile FES2022 source with the newer test deployment
 
 Merged the independent direct/stored catalogue loading from the version 13 Australian coverage release with the FES2022 provider, body-only resolver, and validation-fixture isolation. Kept version 13 as the current public test deployment because it superseded the recorded version 11 FES2022 deployment at the same URL; version 11 remains historical validation evidence, and no Site was deployed by this conflict resolution.
+
+## 2026-09-01 — Deploy and verify global coastal FES2022 coverage on the test Site
+
+Retained the verified 3.95-GB FES2022b atlas outside Git and extracted a
+resumable 146,330,220-byte package with 376 non-empty tiles and 65,203 coastal
+points. Every retained point carries 34 constituents and passed a PyFES
+round-trip with a maximum observed error of 0.000013 cm; 1,512 undefined planned
+samples were omitted and recorded.
+
+Published version 14 to the existing public test Site without changing its
+access or the production Site. Uploaded and checksum-verified all 377 derived
+objects in private R2 storage before activating registry
+`stage-4-global-2026-08-29-global-coast-r1`. A repeated protected initialization
+wrote zero objects. The live sweep returned all 76 Australian Standard Ports
+and 1,470 official events, plus successful FES forecasts for Galway, Cooktown,
+Gibraltar, Nice, and Amsterdam. Browser checks kept Maroochydore/Mooloolaba and
+Bundaberg on official Bureau data, showed no Seattle/Cooktown fixture leakage,
+and showed no duplicate FES fallback banner. The post-check Worker log had no
+execution failures; the only non-2xx entries were expected favicon requests and
+the smoke test's direct-provider boundary checks.
