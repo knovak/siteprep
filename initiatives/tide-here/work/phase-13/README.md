@@ -84,6 +84,20 @@ That version 11 evidence remains the validation record for the FES2022 source
 in this branch, but FES2022 is not active on the current version 13 test Site.
 Review and a new test deployment are required before any production release.
 
+## FES2022 pre-production review
+
+The 2026-09-01 [source and evidence review](fes2022-production-review.md)
+confirmed that the current branch preserves the exact FES source and comparison
+blobs exercised by version 11, that the fixed comparison still regenerates
+without a diff, and that the current AVISO product and licence references fit
+the transformed seven-point tide-height boundary and its disclosure. The local
+suite and production build pass.
+
+The review does not make the fallback production-ready. Version 13 superseded
+version 11 and does not activate FES2022, so the current FES-capable source must
+be separately authorized, deployed, initialized, and live-checked on the
+existing public test Site before any explicit production release request.
+
 The production Site was not changed. Its existing version 6 already serves the
 same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.
 

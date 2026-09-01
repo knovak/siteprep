@@ -29,12 +29,13 @@
   ],
   "todo": [
     {
-      "id": "review-fes2022-test-deployment",
-      "title": "Review the FES2022 fallback source and recorded version 11 validation before any production release",
-      "state": "actionable",
+      "id": "redeploy-and-verify-fes2022-on-test",
+      "title": "Deploy and verify the reconciled FES2022 source on the existing public test Site",
+      "state": "blocked",
       "value": "high",
-      "effort": "low",
-      "advances_stage": false
+      "effort": "medium",
+      "advances_stage": false,
+      "blocked_by": "permission:authorize deployment of the current licensed FES2022 source to Tide Here's existing public test Site"
     }
   ]
 }
