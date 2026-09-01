@@ -1,6 +1,15 @@
 import {createStageFourApp} from '../../phase-12/src/worker.mjs';
 
-const API_PATHS = new Set(['/init', '/health', '/providers', '/stations', '/resolve', '/forecast']);
+const API_PATHS = new Set([
+  '/init',
+  '/import/object',
+  '/import/activate',
+  '/health',
+  '/providers',
+  '/stations',
+  '/resolve',
+  '/forecast',
+]);
 
 async function providerForLog(request, pathname) {
   if (pathname === '/stations') return new URL(request.url).searchParams.get('provider');

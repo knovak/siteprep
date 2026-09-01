@@ -102,10 +102,16 @@
       "productionDependencyAuditHighVulnerabilities": 0
     }
   },
-  "fesSourceReview": {
+  "historicalSparseFesSourceReview": {
     "reviewedAt": "2026-09-01T01:36:01Z",
-    "result": "passed-for-new-test-deployment",
+    "result": "passed-for-test-deployment-at-time-of-review",
     "reviewedSourceCommit": "7bcb79a444cab6e70b289dafa841a0a6bcc822b3",
+    "supersededBy": {
+      "globalDataset": "fes2022b-global-coast/2026-08-29-global-coast-r1",
+      "testVersion": 14,
+      "testRepublishVersion": 15,
+      "productionVersion": 7
+    },
     "officialProduct": {
       "url": "https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
       "doi": "https://doi.org/10.24400/527896/A01-2024.004",
@@ -124,9 +130,9 @@
     "sourceIntegrity": {
       "historicalVersion11SourceCommit": "c895ce08463f31daa68159d8447803b7154ed812",
       "sourceBlobAtVersion11": "f4e15b31518eb6b59927c6d59b107529101ca44f",
-      "currentSourceBlob": "f4e15b31518eb6b59927c6d59b107529101ca44f",
+      "sourceBlobAtReview": "f4e15b31518eb6b59927c6d59b107529101ca44f",
       "comparisonBlobAtVersion11": "ae3e2043ff95902917258b5b8e582193fc05d17e",
-      "currentComparisonBlob": "ae3e2043ff95902917258b5b8e582193fc05d17e",
+      "comparisonBlobAtReview": "ae3e2043ff95902917258b5b8e582193fc05d17e",
       "sourceModuleSha256": "a10fe2e9a6d2e3967a47245f569c0059372ffe03da80fddf623367b164410afb",
       "comparisonSha256": "4ac55558ecd9b948768db2b95067a26e0ecd5ee799952609b20f55f533472eb4",
       "atlasBytes": 3953139340,
@@ -144,10 +150,9 @@
       "productionDependencyAuditVulnerabilities": 0
     },
     "limitations": [
-      "Historical version 11 evidence is not a live-current deployment check",
-      "Current public test version 13 does not activate FES2022",
-      "A new FES2022 test deployment requires permission",
-      "Production release requires separate explicit authorization"
+      "The review covered the seven-point sparse dataset used by version 11",
+      "The review preceded the global dataset's test version 14 and production version 7 deployments",
+      "Retained for source, licence, and fixed-comparison provenance rather than current deployment state"
     ]
   },
   "productionActivation": {
@@ -156,10 +161,9 @@
     "fesProviderSourceReady": true,
     "fesProviderOnCurrentTest": false,
     "fallbackOfficialComparisonsPassed": true,
-    "sourceReviewPassed": true,
     "productionReleaseAuthorized": false,
     "blockedBy": [
-      "Permission to deploy and verify the current FES2022 source on test",
+      "Review and redeploy the current FES2022 source on test",
       "Production release authorization"
     ]
   }

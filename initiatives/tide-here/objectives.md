@@ -12,10 +12,10 @@ the tide, sun, and moon doing near this place over the next five days?*
    place whose tide information is being shown.
 
 2. **“Nearest seafront” means a relevant coast, not merely the closest station
-   in a straight line.** The result distinguishes the resolved place, the
-   seafront, and the prediction station or source. Islands, estuaries, and
-   inland locations must not silently produce a plausible but inappropriate
-   tide table.
+   or model point in a straight line.** The result distinguishes the resolved
+   place, the seafront, and the prediction station or model source. Islands,
+   estuaries, and inland locations must not silently produce a plausible but
+   inappropriate tide table.
 
 3. **Five days of high and low tides are readable at a glance.** For each of
    the next five local calendar days, every available high and low prediction
@@ -43,21 +43,22 @@ the tide, sun, and moon doing near this place over the next five days?*
    depend on owning the eventual `tidehere.info`-style domain. Its visual tone
    should feel compact and cheerful without making the data harder to scan.
 
-8. **Location privacy is proportional to the first version.** A typed place or
-   coordinates are used only to resolve and display this result. The page does
-   not request browser location. It retains at most 100 successful or partial
+8. **Location privacy is proportional to the product.** A typed place,
+   coordinates, or one location fix requested only after **Show here** is
+   chosen is used only to resolve and display this result. The page never asks
+   on load or watches location. It retains at most 100 successful or partial
    forecast records only in this browser, provides explicit view, download,
    and clear controls, and never transmits that history through the
-   application. It does not imply that a public geocoder or tide service is
-   private.
+   application. It does not imply that a public geocoder, tide service, or the
+   Tide Here stored-provider gateway is private.
 
-## Explicitly not the first version
+## Originally outside the first version
 
-The wish names automatic browser location as version 2. It remains a later
-improvement: the browser may ask for the current location on a secure origin,
-use it by default when permission is granted, and always leave the manual form
-available as an override. Permission denied or unavailable must fall back to
-the same first-version form.
+The wish named automatic browser location as version 2. It has since been
+delivered as the explicit **Show here** action: the browser asks only after the
+click, uses the returned coordinates through the manual-coordinate path, and
+always leaves the form available. Permission denied or unavailable falls back
+to the same manual form.
 
 A custom domain is also later. So are navigation, flood, fishing, or surf-safety
 recommendations; historical tide analysis; and a general weather forecast.

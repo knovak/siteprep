@@ -78,6 +78,34 @@ test('forecast cache keys are hashed and expire when the coast-local hour change
   assert.deepEqual(JSON.parse(storage.getItem(FORECAST_CACHE_INDEX_KEY)), [key]);
 });
 
+test('forecast cache never stores tide-service failures and removes old failed entries', async () => {
+  const storage = memoryStorage();
+  const now = new Date('2026-08-22T08:30:00.000Z');
+  const cache = new ForecastCache({ storage, now: () => now });
+  const context = {
+    input: 'Cooktown, QLD',
+    station: { provider: 'fes2022', id: 'fes2022-cooktown' },
+    timeZone: 'Australia/Brisbane'
+  };
+  const unavailable = {
+    ...forecast('Cooktown, QLD'),
+    station: { provider: 'fes2022', id: 'fes2022-cooktown', name: 'FES2022 near Cooktown' },
+    timeZone: 'Australia/Brisbane',
+    warnings: [{ code: 'tides-unavailable', message: 'Stored tide predictions are unavailable.' }]
+  };
+  const key = await cache.key(context);
+
+  await cache.write(context, unavailable);
+  assert.equal(storage.getItem(key), null);
+  assert.equal(await cache.read(context), null);
+
+  storage.setItem(key, JSON.stringify({ hour: cache.contextHour(context), result: unavailable }));
+  storage.setItem(FORECAST_CACHE_INDEX_KEY, JSON.stringify([key]));
+  assert.equal(await cache.read(context), null);
+  assert.equal(storage.getItem(key), null);
+  assert.deepEqual(JSON.parse(storage.getItem(FORECAST_CACHE_INDEX_KEY)), []);
+});
+
 test('coast-hour keys follow the selected coast rather than the device zone', () => {
   const instant = '2026-11-01T08:30:00.000Z';
   assert.equal(coastHour(instant, 'America/Los_Angeles'), '2026-11-01T01');

@@ -24,13 +24,20 @@ Every stored-provider descriptor that is not merely planned must reference a
 present, checksum-valid dataset. The route is idempotent and uses the same
 loopback-or-`INIT_TOKEN` protection as Stage 1.
 
-- `GET /health` verifies the registry and every referenced dataset.
+- `GET /health` verifies the registry and every referenced dataset. Small
+  datasets are checked object by object. A large imported indexed dataset may
+  declare `manifest-and-selected-objects`: activation verifies the complete
+  inventory once, while ordinary requests verify the immutable manifest, tile
+  index, and only the selected tile objects.
 - `GET /providers` returns the current client-safe descriptors.
 - `POST /forecast` is the common stored-provider boundary. Calling it for NOAA
   or CHS returns `direct-provider-required`; the current browser adapters remain
   authoritative for those providers.
 - `GET /stations?provider=...` is reserved for stored national catalogues added
   in Stage 3 and later.
+- Protected `POST /import/object` and `POST /import/activate` routes let a
+  preparation host resume immutable derived-data uploads without putting the
+  licensed source atlas or its credentials in the Site or repository.
 
 `src/gateway.mjs` is the reusable route layer. Future national sources supply a
 registry descriptor, stored forecast adapter, optional station catalogue, and

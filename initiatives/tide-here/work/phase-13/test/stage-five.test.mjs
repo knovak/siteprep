@@ -107,6 +107,10 @@ test('the live smoke script covers initialization and all three source families'
   assert.match(script, /fes2022-galway/);
   assert.match(script, /fes2022-cooktown/);
   assert.match(script, /fes2022-gibraltar/);
+  assert.match(script, /fes2022b-global-coast/);
+  assert.match(script, /Nice/);
+  assert.match(script, /Amsterdam/);
+  assert.match(script, /Europe\/Amsterdam/);
   assert.match(script, /licensed-source/);
   assert.match(script, /provider: 'fes2022'/);
 });

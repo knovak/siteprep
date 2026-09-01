@@ -124,6 +124,7 @@ test('a model client resolves a server-stored water point and submits its coordi
           provider: FES_PROVIDER_ID,
           latitude: -26.66008,
           longitude: 153.09953,
+          displayName: 'Maroochydore, Queensland',
         });
         return response({provider: FES_PROVIDER_ID, station: modelStation, coast: {name: modelStation.name, distanceKm: 0.2}});
       }
@@ -136,7 +137,11 @@ test('a model client resolves a server-stored water point and submits its coordi
       });
     },
   });
-  const resolved = await client.resolve({latitude: -26.66008, longitude: 153.09953});
+  const resolved = await client.resolve({
+    latitude: -26.66008,
+    longitude: 153.09953,
+    name: 'Maroochydore, Queensland',
+  });
   assert.equal(resolved.station.id, modelStation.id);
   await client.forecast({context, station: modelStation, timeZone: modelStation.timeZone, rows});
   assert.deepEqual(submitted.station, {

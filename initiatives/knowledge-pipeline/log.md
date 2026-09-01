@@ -23,3 +23,11 @@ Critiqued the pre-build plan, added executable Phase 0 checkpoints, and strength
 ## 2026-08-31 — Respond to critique review
 
 Removed application-managed export encryption and the dedicated scheduler capability, aligned scheduled runs with the existing administrator boundary and idempotent operation ids, and recorded standing permission for public Knowledge Pipeline Site deployments.
+
+## 2026-09-01 — Phase 0 - build and verify the portable custody core
+
+Built and verified the Phase 0 portable custody core: canonical v1 schemas and hashes, immutable SQLite custody with transactional receipts, restore/merge/copy package flows, hostile ZIP and checksum gates, v0 migration with backup proof, and fixed end-to-end and scale fixtures.
+
+## 2026-09-01 — Phase 1 - build the login-gated Site and collection shell
+
+Built and deployed the public test gate and authenticated collection shell with Sites identity and allowlist enforcement, D1/R2 adapters, collection create/select/erase, backup/restore, and admin controls. Local contract tests passed 8/8, the Site build passed, live anonymous access returned the gate at 200, and protected data, backup, and admin routes returned identity.required at 401.

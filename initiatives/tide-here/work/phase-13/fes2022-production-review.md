@@ -1,29 +1,28 @@
-# FES2022 pre-production source and evidence review
+# Historical sparse FES2022 source and pre-production evidence review
 
-Reviewed 2026-09-01 before any production release. This is a source,
-licence-boundary, code-reconciliation, and historical-evidence review. It is
-not a new deployment, a live-current test, or production authorization.
+Reviewed 2026-09-01 at 01:36 UTC, before the later global test deployment and
+production release. This is the dated source, licence-boundary,
+code-reconciliation, and historical-evidence review for the seven-point sparse
+dataset used by test version 11. The current deployment record is in
+[README.md](README.md).
 
 ## Verdict
 
-**The committed FES2022b source and its recorded version 11 validation are
-suitable for a new test deployment. They are not sufficient for a production
-release.** The current merged source preserves the exact licensed harmonic
-extract and official-port comparison that version 11 exercised. The upstream
-product and current licence references support sharing this small transformed
+**At the time of review, the committed sparse FES2022b source and its recorded
+version 11 validation were suitable for a new test deployment but were not
+sufficient for production.** The merged source preserved the exact licensed
+harmonic extract and official-port comparison that version 11 exercised. The
+upstream product and licence references supported sharing the transformed
 tide-height extract with the recorded attribution, licence link, modification
 notice, and disclaimer. Local preparation, comparison, runtime, privacy, and
-build checks pass.
+build checks passed.
 
-The missing evidence is environmental: version 13 superseded version 11 at the
-same public test URL and runs registry `stage-4-v5` with the non-FES fallback
-fixture. The current FES-capable `stage-4-v7` source has therefore not been
-initialized and live-checked after its reconciliation with the newer direct and
-stored catalogue-loading changes. A fresh test deployment must be separately
-authorized, preserve public access, initialize idempotently, and repeat the
-FES, national-provider, browser, isolation, and Worker-log checks before a
-production release can even be considered. Production itself remains a
-separate explicit release decision.
+Later on 2026-09-01, the separately prepared 65,203-point global coastal package
+completed the environmental gates: test version 14 activated and verified it,
+version 15 republished the merged source, and production version 7 passed the
+same protected import, initialization, provider, browser, and Worker checks.
+This review remains useful for the source/licence boundary and the sparse
+fixture's fixed comparison; it is not evidence for the global package by itself.
 
 ## Source and licence boundary
 
@@ -43,9 +42,11 @@ restriction is for current fields, not the tide-height product used here. Its
 restriction on mass operational redistribution applies to the original,
 unmodified AVISO product and expressly does not restrict adapted material. It
 requires source/producer attribution, a product citation, a licence link, and
-an indication of modification. Tide Here publishes seven transformed harmonic
-points rather than the original 3.95 GB NetCDF and carries those notices in the
-source record and forecast response. The checked PDF SHA-256 was
+an indication of modification. At the time of this review, Tide Here published
+seven transformed harmonic points rather than the original 3.95 GB NetCDF and
+carried those notices in the source record and forecast response. The later
+global package likewise retains derived harmonic points rather than
+redistributing the original atlas. The checked PDF SHA-256 was
 `dba741dfcbd79ee9852591d0c0713ea35afa7be912447254751e6425d9a144f1`.
 
 This is an engineering review of the recorded licence boundary, not legal
@@ -54,10 +55,10 @@ to redistribute the original atlas would reopen it.
 
 ## Integrity and reconciliation
 
-- The current committed `fes-source-official.mjs` Git blob is
+- The still-committed sparse `fes-source-official.mjs` Git blob is
   `f4e15b31518eb6b59927c6d59b107529101ca44f`, exactly the blob at historical
   version 11 source commit `c895ce08463f31daa68159d8447803b7154ed812`.
-- The current committed official-comparison Git blob is
+- The still-committed official-comparison Git blob is
   `ae3e2043ff95902917258b5b8e582193fc05d17e`, also exactly the historical
   version 11 blob.
 - The source module SHA-256 is
@@ -70,10 +71,10 @@ to redistribute the original atlas would reopen it.
   It contains seven water points, all 34 constituents, explicit interpolation
   or bounded-extrapolation quality, a maximum 0.000004 cm constituent
   round-trip error, and a 20 km runtime selection guard.
-- The merge since version 11 changes direct/stored catalogue availability and
-  validation-fixture isolation, but does not change the FES source or fixed
-  comparison. The packaged Stage 5 server still imports the Stage 4 worker,
-  whose current registry activates `stage-4-v7` and FES dataset
+- The merge reviewed before the global package changed direct/stored catalogue
+  availability and validation-fixture isolation, but did not change the sparse
+  FES source or fixed comparison. Its Stage 4 fixture registry activates
+  `stage-4-v7` and FES dataset
   `fes2022b-native-validation/2026-02-03-r2`.
 
 ## Accuracy and historical live evidence
@@ -96,11 +97,12 @@ safety copy, kept fixture caches tab-scoped, left fixture mode for a manual Nice
 search, returned honest unavailable coverage there, rejected an unauthorized
 initializer with 403, and recorded no Worker execution errors.
 
-Those checks establish that the exact source worked in the historical hosted
-environment. They do not establish that the current merged package is live,
-because version 13 now occupies that Site with FES inactive.
+Those checks established that the exact sparse source worked in the historical
+hosted environment. They did not establish that the then-current merged package
+was live, because version 13 occupied the Site with FES inactive. The later
+global deployment supplied separate current-environment evidence.
 
-## Current verification
+## Verification performed during the review
 
 - Regenerated fixed official-port comparison: exact match, both cases passed.
 - Tide Node suite: 125 passed, 0 failed.
@@ -111,15 +113,18 @@ because version 13 now occupies that Site with FES inactive.
   body-only point resolution, privacy-safe logs, and static publication
   allowlist remain covered by the passing suite.
 
-## Gates that remain
+## Subsequent resolution
 
-1. Obtain permission to deploy the current FES2022 source to Tide Here's
-   existing public test Site. The standing Australian-coverage authorization
-   explicitly does not cover FES2022.
-2. Deploy committed source without changing access; initialize `stage-4-v7`;
-   prove a zero-write repeat; rerun NOAA, CHS, all 76 Australian ports, Galway,
-   Cooktown, Gibraltar, browser disclosure/isolation, unauthorized initializer,
-   and Worker-error checks; record the new version and source/archive hashes.
-3. Only after that current evidence passes, request an explicit production
-   release. A production release must not be inferred from this review or from
-   the earlier test deployment.
+The remaining gates recorded by this review were completed later on
+2026-09-01 by the global coastal work:
+
+1. Public test version 14 imported and activated the global package, and the
+   protected repeat initialization wrote zero objects.
+2. The live test sweep passed NOAA, CHS, all 76 Australian ports, Galway,
+   Cooktown, Gibraltar, Nice, Amsterdam, browser disclosure and isolation, and
+   Worker-log checks; version 15 then republished the merged source.
+3. Production version 7 was separately authorized and passed the same package,
+   initialization, and live checks in its separate private R2 environment.
+
+See [README.md](README.md) and the initiative's `releases.md` for the current
+deployment record.

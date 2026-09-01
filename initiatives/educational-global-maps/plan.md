@@ -27,6 +27,35 @@ The build follows five rules:
    the application first. Creating a public Site or any relay deployment needs
    the user's permission at that phase.
 
+### 1.1 Pre-build critique and corrections
+
+The first draft had the right dependency order but left Phase 0 large enough
+that identity, storage, bundle safety, and scene behavior could fail only after
+they had become entangled. It also described a valid import without defining
+the stronger property that a failed import cannot partly change accepted state.
+Before implementation, the plan therefore makes four corrections:
+
+1. **Phase 0 is checkpointed.** Contract envelopes and canonical identity land
+   before an object repository; the repository lands before bundle I/O; scene
+   state and compatibility land only after exact-reference restore works.
+2. **Acceptance is transactional.** Validation, limits, reference closure, and
+   checksums are completed in a staging area before one atomic commit makes new
+   immutable objects visible. A failure leaves the accepted inventory byte-for-
+   byte and logically unchanged.
+3. **Canonicalization and paths are hostile boundaries.** Duplicate JSON keys,
+   Unicode normalization or case-folding collisions, platform-reserved names,
+   archive links, decompression expansion, and ambiguous numeric or time forms
+   are refused by named limits and stable findings rather than delegated to the
+   host filesystem or whichever parser happens to run first.
+4. **Version change is exercised immediately.** Phase 0 includes one supported
+   old-version fixture and a pure old-to-current migration. Migration emits a
+   new immutable object and receipt; unsupported future versions remain
+   unchanged and produce a specific finding.
+
+These corrections keep the first increment reviewable without weakening its
+portable-custody promise. UI, providers, projections, live networking, and
+spherical packaging remain outside Phase 0.
+
 ## 2. Implementation choices
 
 ### 2.1 Packages and layout
@@ -73,6 +102,19 @@ The validation library is shared by preparation commands and the browser. It
 returns structured findings with object path, severity, stable code, and a
 human explanation. Warnings never rewrite input. Acceptance writes a new
 revision report containing the validator and adapter versions.
+
+Phase 0 must publish the canonicalization profile as test vectors, including
+object-key ordering, UTF-8 and Unicode normalization policy, supported numeric
+forms, timestamp precision, and the treatment of absent versus explicit null
+values. Duplicate member names are rejected before ordinary JSON parsing can
+discard them. Content identities include an algorithm prefix so a later digest
+change is an explicit migration rather than an invisible reinterpretation.
+
+Each schema has an explicit compatibility policy. Signed canonical objects do
+not silently retain unknown fields; a supported older version is migrated by a
+pure function into a new object with a receipt naming source and target
+identities. An unsupported future version is readable only as bounded metadata
+for an error report and cannot enter the accepted repository.
 
 ### 2.3 Reference data and geography
 
@@ -129,6 +171,15 @@ Bundle import validates into a new in-memory candidate before replacing any
 accepted local scene. Unknown future schema versions, checksum failures,
 missing required assets, and unsafe paths are refused. Export and restore must
 work without the original application host for every bundled asset.
+
+The importer treats archive structure as untrusted before extraction. It caps
+entry count, per-entry bytes, total expanded bytes, compression ratio, path
+depth, and manifest size; rejects absolute paths, traversal, links and special
+files; and detects normalized, case-folded, and platform-reserved path
+collisions. Bytes are written only to a fresh staging directory. The complete
+candidate inventory, references, rights rules, and checksums are validated
+there before one atomic repository commit; cleanup failure is reported without
+making staged objects accepted.
 
 ### 2.6 Display-controller protocol and relay
 
@@ -198,6 +249,26 @@ an empty temporary directory, and compares the canonical inventory.
 Do not build the catalogue UI, D3 renderer, relay, or provider adapters yet.
 The phase exits with hostile-path, future-version, checksum, idempotent restore,
 and unknown-field behavior proved against the minimum fixture.
+
+Deliver Phase 0 through four independently reviewable checkpoints:
+
+1. **Envelope, schemas, findings, and identity:** versioned schema envelopes,
+   canonicalization test vectors, duplicate-key detection, stable findings, and
+   content identities for the minimum objects.
+2. **Immutable repository and reference closure:** write-once object storage,
+   exact references, one old-to-current migration with receipt, restricted-
+   asset metadata, and inventory comparison.
+3. **Transactional bundle round trip:** deterministic export plus bounded
+   staged import, atomic acceptance, idempotent restore, and hostile-archive
+   refusal with the accepted inventory unchanged.
+4. **Portable scene core:** the pure reducer, intent validation, compatibility
+   result shape, synthetic profile fixtures, and a one-scene bundle whose
+   restored logical inventory and state sequence match the source.
+
+Each checkpoint includes its fixtures, commands, tests, and work-area techdoc.
+The branch may proceed to the next checkpoint only when the prior checkpoint's
+stable findings and invariants are recorded; later checkpoints may extend a
+schema only through the version policy already proved in checkpoint 1.
 
 **Lifecycle:** completing this phase advances the initiative from `planned` to
 `building`.

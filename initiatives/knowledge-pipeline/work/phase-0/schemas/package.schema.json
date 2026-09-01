@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knowledge-pipeline/v1/package",
+  "title": "Knowledge Pipeline canonical package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "packageId", "createdAt", "scope", "records", "assets"],
+  "properties": {
+    "format": {"const": "knowledge-pipeline/v1"},
+    "packageId": {"type": "string", "minLength": 1},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "scope": {"$ref": "#/$defs/scope"},
+    "records": {"type": "object"},
+    "assets": {"type": "array"},
+    "extensions": {"type": "object"}
+  },
+  "$defs": {
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["knowledgeSpaceId", "collectionId"],
+      "properties": {
+        "knowledgeSpaceId": {"type": "string", "minLength": 1},
+        "collectionId": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

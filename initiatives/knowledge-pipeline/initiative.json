@@ -1,17 +1,32 @@
 {
   "title": "Knowledge pipeline",
   "summary": "A staged, auditable pipeline for turning collected sources into curated topic documents.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "sites-app",
+      "source": "initiatives/knowledge-pipeline/work/phase-1-site",
+      "test": {
+        "slug": "knowledge-pipeline-test",
+        "url": "https://knowledge-pipeline-test.ken-novak.chatgpt.site",
+        "access": "public",
+        "deployed_at": "2026-09-01T10:47:18Z",
+        "version": 1,
+        "commit": "ee571e82ea4aafffe2a53b2aae5671f6910350a4"
+      }
+    }
+  ],
   "todo": [
     {
-      "id": "phase-0-portable-custody-core",
-      "title": "Phase 0 - build and verify the portable custody core",
+      "id": "phase-2-harvest-native-adapters-and-tag-inventory",
+      "title": "Phase 2 - build harvest, native adapters, and the tag inventory",
       "state": "actionable",
       "value": "high",
       "effort": "large",
-      "advances_stage": true
+      "advances_stage": false
     }
   ]
 }

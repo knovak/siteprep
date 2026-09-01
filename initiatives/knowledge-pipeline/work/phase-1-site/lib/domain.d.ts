@@ -1,0 +1,12 @@
+export type Identity = {userId: string; email: string};
+export function canonicalJson(value: unknown): string;
+export function sha256(value: string | Uint8Array): Promise<string>;
+export function normalizeEmail(value: unknown): string;
+export function normalizeCollectionName(value: unknown): {ok: boolean; code: string | null; name: string; normalized: string};
+export function authorizationDecision(identity: Identity | null, allowlistRecord: any): {status: number; code: string};
+export function selectionToken(actorId: string, collectionId: string, selectionRevision: number, collectionRevision: number): string;
+export function erasePreview(collection: any, counts: any, selectionRevision: number): any;
+export function confirmErase(preview: any, submitted: any): {ok: boolean; code: string | null};
+export function makeEmptyBackup(input: any): Promise<any>;
+export function validateEmptyBackup(pkg: any, expectedCollectionId: string): string[];
+export function privateBlobKey(actorId: string, collectionId: string, kind: string, id: string): string;

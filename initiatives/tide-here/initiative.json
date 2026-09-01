@@ -13,29 +13,28 @@
         "slug": "tide-here-test",
         "url": "https://tide-here-test.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-30T01:42:42Z",
-        "version": 13,
-        "commit": "2ebe9798cbb64ad072671d65a78fba7d17219b85"
+        "deployed_at": "2026-09-01T05:33:45Z",
+        "version": 15,
+        "commit": "424926d10f85266929c2ced9b04a16f2eed84a6e"
       },
       "prod": {
         "slug": "tide-here-five-coast-local-days",
         "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
         "access": "public",
-        "deployed_at": "2026-08-29T03:50:50Z",
-        "version": 6,
-        "commit": "31abfbb534b8b3327b8e4a71c0e872b17c52291a"
+        "deployed_at": "2026-09-01T05:33:45Z",
+        "version": 7,
+        "commit": "424926d10f85266929c2ced9b04a16f2eed84a6e"
       }
     }
   ],
   "todo": [
     {
-      "id": "redeploy-and-verify-fes2022-on-test",
-      "title": "Deploy and verify the reconciled FES2022 source on the existing public test Site",
-      "state": "blocked",
+      "id": "review-fes2022-test-deployment",
+      "title": "Review the global FES2022 fallback source and recorded version 14 validation before any production release",
+      "state": "actionable",
       "value": "high",
-      "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "permission:authorize deployment of the current licensed FES2022 source to Tide Here's existing public test Site"
+      "effort": "low",
+      "advances_stage": false
     }
   ]
 }
