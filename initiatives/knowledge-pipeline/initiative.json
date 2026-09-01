@@ -4,10 +4,25 @@
   "stage": "building",
   "value": "medium",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "sites-app",
+      "source": "initiatives/knowledge-pipeline/work/phase-1-site",
+      "test": {
+        "slug": "knowledge-pipeline-test",
+        "url": "https://knowledge-pipeline-test.ken-novak.chatgpt.site",
+        "access": "public",
+        "deployed_at": "2026-09-01T10:47:18Z",
+        "version": 1,
+        "commit": "ee571e82ea4aafffe2a53b2aae5671f6910350a4"
+      }
+    }
+  ],
   "todo": [
     {
-      "id": "phase-1-login-gated-site-and-collection-shell",
-      "title": "Phase 1 - build the login-gated Site and collection shell",
+      "id": "phase-2-harvest-native-adapters-and-tag-inventory",
+      "title": "Phase 2 - build harvest, native adapters, and the tag inventory",
       "state": "actionable",
       "value": "high",
       "effort": "large",
