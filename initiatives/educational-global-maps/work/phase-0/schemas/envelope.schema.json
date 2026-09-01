@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://siteprep.local/educational-global-maps/envelope-v1.schema.json",
+  "title": "Educational Global Maps canonical envelope",
+  "type": "object",
+  "required": ["schema", "id", "content"],
+  "properties": {
+    "schema": {"type": "string", "pattern": "^educational-global-maps/[a-z-]+/v1$"},
+    "id": {"type": "string", "pattern": "^[a-z-]+:[a-z0-9][a-z0-9._:-]*$"},
+    "content": {"type": "object"}
+  },
+  "additionalProperties": false
+}

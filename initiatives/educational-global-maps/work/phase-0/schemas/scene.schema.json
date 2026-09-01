@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://siteprep.local/educational-global-maps/scene-v1.schema.json",
+  "title": "Educational Global Maps scene v1 content",
+  "type": "object",
+  "required": ["title", "period", "projection", "camera", "layers", "citations", "intentRevision"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1},
+    "period": {"type": "string"},
+    "projection": {"enum": ["equal-earth", "airocean", "population-cartogram"]},
+    "camera": {"type": "object"},
+    "layers": {"type": "array"},
+    "citations": {"type": "array"},
+    "intentRevision": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": false
+}
