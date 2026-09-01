@@ -251,6 +251,14 @@ Published existing public test Site version 13 with registry stage-4-v5 and all 
 
 Merged the independent direct/stored catalogue loading from the version 13 Australian coverage release with the FES2022 provider, body-only resolver, and validation-fixture isolation. Kept version 13 as the current public test deployment because it superseded the recorded version 11 FES2022 deployment at the same URL; version 11 remains historical validation evidence, and no Site was deployed by this conflict resolution.
 
+## 2026-09-01 — Review the sparse FES2022 source and version 11 evidence
+
+Reviewed the preserved seven-point FES2022 source, AVISO product and licence
+boundary, fixed official-port comparisons, version 11 historical live evidence,
+and reconciled runtime. The review passed the sparse source for a new test
+deployment at that time; the later global deployment and production release
+superseded its remaining gates while retaining it as historical evidence.
+
 ## 2026-09-01 — Deploy and verify global coastal FES2022 coverage on the test Site
 
 Retained the verified 3.95-GB FES2022b atlas outside Git and extracted a

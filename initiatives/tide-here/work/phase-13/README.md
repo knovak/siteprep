@@ -130,6 +130,13 @@ That version 11 evidence remains the validation record for the original sparse
 FES2022 source. Version 14 superseded it with global coastal coverage; version
 15 republishes the merged source now shared with production version 7.
 
+The dated [sparse source and pre-production evidence review](fes2022-production-review.md)
+records the AVISO product and licence boundary, exact source and comparison
+blobs, fixed official-port results, and local verification that were checked
+before the global package was deployed. Its test and production gates were
+subsequently completed by versions 14, 15, and 7; it is historical evidence,
+not the current deployment record.
+
 ## Global FES import
 
 After the retained atlas has produced a package, import it without copying the

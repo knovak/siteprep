@@ -102,6 +102,59 @@
       "productionDependencyAuditHighVulnerabilities": 0
     }
   },
+  "historicalSparseFesSourceReview": {
+    "reviewedAt": "2026-09-01T01:36:01Z",
+    "result": "passed-for-test-deployment-at-time-of-review",
+    "reviewedSourceCommit": "7bcb79a444cab6e70b289dafa841a0a6bcc822b3",
+    "supersededBy": {
+      "globalDataset": "fes2022b-global-coast/2026-08-29-global-coast-r1",
+      "testVersion": 14,
+      "testRepublishVersion": 15,
+      "productionVersion": 7
+    },
+    "officialProduct": {
+      "url": "https://www.aviso.altimetry.fr/en/data/products/auxiliary-products/global-tide-fes.html",
+      "doi": "https://doi.org/10.24400/527896/A01-2024.004",
+      "model": "FES2022b ocean tide elevations on the native non-structured grid",
+      "constituents": 34,
+      "officialPredictionEngine": "PyFES",
+      "checkedAt": "2026-09-01T01:34:09Z"
+    },
+    "licence": {
+      "url": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+      "issue": 20,
+      "effectiveDate": "2026-08-10",
+      "pdfSha256": "dba741dfcbd79ee9852591d0c0713ea35afa7be912447254751e6425d9a144f1",
+      "boundary": "adapted tide-height harmonic points with attribution, product citation, licence link, modification notice, and disclaimer; no original atlas redistribution"
+    },
+    "sourceIntegrity": {
+      "historicalVersion11SourceCommit": "c895ce08463f31daa68159d8447803b7154ed812",
+      "sourceBlobAtVersion11": "f4e15b31518eb6b59927c6d59b107529101ca44f",
+      "sourceBlobAtReview": "f4e15b31518eb6b59927c6d59b107529101ca44f",
+      "comparisonBlobAtVersion11": "ae3e2043ff95902917258b5b8e582193fc05d17e",
+      "comparisonBlobAtReview": "ae3e2043ff95902917258b5b8e582193fc05d17e",
+      "sourceModuleSha256": "a10fe2e9a6d2e3967a47245f569c0059372ffe03da80fddf623367b164410afb",
+      "comparisonSha256": "4ac55558ecd9b948768db2b95067a26e0ecd5ee799952609b20f55f533472eb4",
+      "atlasBytes": 3953139340,
+      "atlasSha256": "6479dbd9acdfb63405ff15de1265154c4659b1f7112b8dfb1cabef945a481a23",
+      "points": 7,
+      "constituentsPerPoint": 34,
+      "maximumConstituentRoundTripErrorCm": 0.000004
+    },
+    "verification": {
+      "comparisonRegeneratedWithoutDiff": true,
+      "officialComparisonsPassed": true,
+      "allTideNodeTestsPassed": 125,
+      "allTideNodeTestsFailed": 0,
+      "productionBuild": "passed",
+      "productionDependencyAuditVulnerabilities": 0
+    },
+    "limitations": [
+      "The review covered the seven-point sparse dataset used by version 11",
+      "The review preceded the global dataset's test version 14 and production version 7 deployments",
+      "Retained for source, licence, and fixed-comparison provenance rather than current deployment state"
+    ]
+  },
   "productionActivation": {
     "ready": false,
     "australianProviderReady": true,
