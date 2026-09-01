@@ -4,10 +4,17 @@
   "stage": "building",
   "value": "medium",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "sites-app",
+      "source": "initiatives/knowledge-pipeline/work/phase-1-site"
+    }
+  ],
   "todo": [
     {
-      "id": "phase-1-login-gated-site-and-collection-shell",
-      "title": "Phase 1 - build the login-gated Site and collection shell",
+      "id": "phase-2-harvest-native-adapters-and-tag-inventory",
+      "title": "Phase 2 - build harvest, native adapters, and the tag inventory",
       "state": "actionable",
       "value": "high",
       "effort": "large",
