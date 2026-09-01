@@ -35,16 +35,7 @@
 <h3>1. Build order and boundaries</h3>
 <p>Work begins under <code>initiatives/educational-global-maps/work/</code>. It stays there until a complete output graduates to a demo or another declared output. The catalogue, preparation tools, renderer, scene format, and display-controller protocol must not depend on the eventual publication host.</p>
 <p>The build follows five rules:</p>
-<ol><li><strong>Contracts before catalog size.</strong> A small deterministic fixture must export,</li></ol>
-<p>   restore, validate, and render before hundreds of descriptors are generated.</p>
-<ol><li><strong>One-device use before a relay.</strong> Every scene and control works in one</li></ol>
-<p>   browser before two-device synchronization is introduced.</p>
-<ol><li><strong>Projection compatibility before projection spectacle.</strong> The renderer must</li></ol>
-<p>   explain and refuse an incompatible layer before adding more projections.</p>
-<ol><li><strong>Recorded source inputs before live convenience.</strong> Provider adapters use</li></ol>
-<p>   recorded, rights-safe fixtures in CI; a live refresh is an explicit operation    that creates a new immutable revision.</p>
-<ol><li><strong>Public deployment is a separate gate.</strong> Local and packaged builds can prove</li></ol>
-<p>   the application first. Creating a public Site or any relay deployment needs    the user&#39;s permission at that phase.</p>
+<ol><li><strong>Contracts before catalog size.</strong> A small deterministic fixture must export, restore, validate, and render before hundreds of descriptors are generated.</li><li><strong>One-device use before a relay.</strong> Every scene and control works in one browser before two-device synchronization is introduced.</li><li><strong>Projection compatibility before projection spectacle.</strong> The renderer must explain and refuse an incompatible layer before adding more projections.</li><li><strong>Recorded source inputs before live convenience.</strong> Provider adapters use recorded, rights-safe fixtures in CI; a live refresh is an explicit operation that creates a new immutable revision.</li><li><strong>Public deployment is a separate gate.</strong> Local and packaged builds can prove the application first. Creating a public Site or any relay deployment needs the user&#39;s permission at that phase.</li></ol>
 <h3>2. Implementation choices</h3>
 <h4>2.1 Packages and layout</h4>
 <p>The reference implementation is a static browser application plus Node-based preparation and validation commands. Browser code uses standards-based ES modules. Dependencies are pinned through the repository lockfile; D3 geographic modules and TopoJSON supply the first projection and geometry path. The build must emit a self-contained static directory that can run on an ordinary HTTP server without a provider-specific SDK.</p>
@@ -57,14 +48,7 @@
 <p>The validation library is shared by preparation commands and the browser. It returns structured findings with object path, severity, stable code, and a human explanation. Warnings never rewrite input. Acceptance writes a new revision report containing the validator and adapter versions.</p>
 <h4>2.3 Reference data and geography</h4>
 <p>Begin with generated fixtures whose rights and edge cases are unambiguous, then add a recorded reference suite from more than one provider:</p>
-<ul><li>a country-level time series from an Our World in Data distribution whose</li></ul>
-<p>  underlying reuse terms permit the recorded snapshot;</p>
-<ul><li>a US Census-derived Data Commons series at a supplied subnational and city</li></ul>
-<p>  level, with both Data Commons and original-source provenance retained;</p>
-<ul><li>a public-domain NOAA or NASA raster-frame sample with its original source and</li></ul>
-<p>  processing notes; and</p>
-<ul><li>a synthetic origin-destination series designed to exercise direction, zero,</li></ul>
-<p>  missing, suppressed, and changing flows.</p>
+<ul><li>a country-level time series from an Our World in Data distribution whose underlying reuse terms permit the recorded snapshot;</li><li>a US Census-derived Data Commons series at a supplied subnational and city level, with both Data Commons and original-source provenance retained;</li><li>a public-domain NOAA or NASA raster-frame sample with its original source and processing notes; and</li><li>a synthetic origin-destination series designed to exercise direction, zero, missing, suppressed, and changing flows.</li></ul>
 <p>Source and redistribution terms are verified before any real artifact is committed. If a candidate&#39;s terms do not permit the fixture, substitute another source with the same data profile rather than weakening the rights contract. Provider ids and labels remain source-aware. Crosswalks are separate reviewed artifacts and never rely on place-name equality alone.</p>
 <p>The first geography suite contains a versioned world-country geometry, one provider-supplied subnational set, a city point set, and the fixed country-level population cartogram geometry selected by the specification. Historical values shown on current boundaries carry that assumption in the revision and scene.</p>
 <h4>2.4 Rendering and composition</h4>
@@ -82,16 +66,7 @@
 <h4>2.8 Representative scale and budgets</h4>
 <p>The deterministic scale suite contains 500 descriptors, 300,000 place-time observations, 25,000 flow observations with no more than 5,000 visible in one frame, 50,000 points with no more than 10,000 visible in one frame, 24 raster frames, and the reference geography suite. Tests record the machine, browser, build mode, and fixture version.</p>
 <p>On a production build in current Chromium on the repository&#39;s reference machine:</p>
-<ul><li>catalogue metadata becomes searchable within 2 seconds and a warmed filter</li></ul>
-<p>  updates within 100 ms at p95;</p>
-<ul><li>a 250-feature country scalar scene paints within 500 ms;</li><li>an accepted time or projection change produces its first updated frame within</li></ul>
-<p>  150 ms at p95, with no sustained animation frame over 50 ms;</p>
-<ul><li>pan and zoom remain responsive at 4K with the representative visible mark</li></ul>
-<p>  counts;</p>
-<ul><li>a controller intent appears on the display within 250 ms at p95 on the test</li></ul>
-<p>  relay, and reconnect reaches a consistent snapshot within 3 seconds; and</p>
-<ul><li>the representative portable bundle restores with peak application memory</li></ul>
-<p>  below 256 MiB and without loading all catalogue artifacts at startup.</p>
+<ul><li>catalogue metadata becomes searchable within 2 seconds and a warmed filter updates within 100 ms at p95;</li><li>a 250-feature country scalar scene paints within 500 ms;</li><li>an accepted time or projection change produces its first updated frame within 150 ms at p95, with no sustained animation frame over 50 ms;</li><li>pan and zoom remain responsive at 4K with the representative visible mark counts;</li><li>a controller intent appears on the display within 250 ms at p95 on the test relay, and reconnect reaches a consistent snapshot within 3 seconds; and</li><li>the representative portable bundle restores with peak application memory below 256 MiB and without loading all catalogue artifacts at startup.</li></ul>
 <p>Budgets are release gates for the reference fixtures, not promises that every provider payload or school network has the same performance.</p>
 <h3>3. Phases</h3>
 <h4>Phase 0 — Contracts, fixtures, and portable scene core</h4>
