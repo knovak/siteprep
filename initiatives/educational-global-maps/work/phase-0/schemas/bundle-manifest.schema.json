@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://siteprep.local/educational-global-maps/bundle-manifest-v1.schema.json",
+  "title": "Educational Global Maps portable bundle manifest",
+  "type": "object",
+  "required": ["format", "bundleId", "createdAt", "rootScene", "objects", "assets"],
+  "properties": {
+    "format": {"const": "educational-global-maps/bundle/v1"},
+    "bundleId": {"type": "string"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "rootScene": {"type": "string"},
+    "objects": {"type": "array"},
+    "assets": {"type": "array"}
+  },
+  "additionalProperties": false
+}

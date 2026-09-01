@@ -15,3 +15,7 @@ Drafted an eight-phase build plan and matching test plan for contracts, contribu
 ## 2026-09-01 — Critique plan.md and test-plan.md, and improve them before building starts
 
 Critiqued the build and test plans; split Phase 0 into identity, repository, transactional bundle, and scene-core checkpoints, and added deterministic migration, canonicalization, hostile archive, path-collision, and atomic import proof.
+
+## 2026-09-01 — Phase 0 - build contracts, fixtures, and the portable scene core
+
+Built the four-checkpoint portable scene core with strict canonical contracts, immutable atomic storage, bounded ZIP round trips, migration, synthetic scalar/flow/point/raster fixtures, and a revisioned compatibility-aware reducer; all 9 phase tests and the independent round-trip command pass.

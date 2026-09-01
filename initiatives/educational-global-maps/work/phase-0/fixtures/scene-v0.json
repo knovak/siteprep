@@ -1,0 +1,11 @@
+{
+  "schema": "educational-global-maps/scene/v0",
+  "id": "scene:minimum-v0",
+  "content": {
+    "title": "Minimum global change scene",
+    "period": "2025",
+    "projection": "equal-earth",
+    "layers": ["layer:scalar-v1"],
+    "citations": ["citation:synthetic-v1"]
+  }
+}

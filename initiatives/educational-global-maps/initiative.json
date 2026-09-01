@@ -1,17 +1,17 @@
 {
   "title": "Educational Global Maps",
   "summary": "A knowledge base and extensible platform for educational global map data and visualizations.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "phase-0-contracts-fixtures-and-portable-scene-core",
-      "title": "Phase 0 - build contracts, fixtures, and the portable scene core",
+      "id": "phase-1-catalogue-and-contribution-pipeline",
+      "title": "Phase 1 - build the catalogue and contribution pipeline",
       "state": "actionable",
       "value": "high",
       "effort": "large",
-      "advances_stage": true
+      "advances_stage": false
     }
   ]
 }
