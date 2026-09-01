@@ -41,6 +41,8 @@ contract test.
 | Time | Instant, interval, year, month, irregular cadence, estimated, interpolated, suppressed, zero, and unavailable values | Alignment and disclosure |
 | Rights | Redistributable, metadata-only, restricted, attribution-required, and expired live references | Bundle and citation behavior |
 | Hostile | Invalid JSON, unknown schema, duplicate ids, non-finite values, checksum mismatch, unsafe paths, oversized metadata, script/HTML strings, and arbitrary URLs | Refusal and injection boundaries |
+| Canonical | Reordered keys, duplicate keys, Unicode normalization pairs, case-folded path pairs, signed zero, exponent forms, timestamp offsets, absent/null fields, and one supported old schema | Stable identity, collision refusal, and migration behavior |
+| Archive limits | Excess entries, deep paths, platform-reserved names, links, sparse or high-ratio payloads, per-entry overflow, and total expansion overflow | Bounded staged import with no accepted-state change |
 | Multi-provider | Recorded rights-safe OWID, Data Commons/original-source, and NOAA or NASA samples plus synthetic flows | Real provenance and adapter behavior |
 | Catalogue scale | 500 descriptors without loading their artifacts | Search and startup budget |
 | Render scale | 300,000 scalar observations, 25,000 flows, 50,000 points, 24 raster frames, and representative geography | Rendering, memory, and bundle budgets |
@@ -75,14 +77,24 @@ fixture only through review.
 | Test | Pass condition |
 |---|---|
 | Schema examples | Every canonical object has one valid minimum example and targeted invalid examples with stable finding codes and paths |
-| Canonical identity | Reordered equivalent metadata produces the same canonical bytes and SHA-256; a semantic change produces a different version identity |
+| Canonical identity | Published test vectors prove the key-order, UTF-8, Unicode, number, timestamp, absent/null, and algorithm-prefix rules; reordered equivalent metadata has the same identity and a semantic change has a different one |
+| Duplicate and ambiguous input | Duplicate JSON members, unsupported numeric forms, normalization collisions, case-folded path collisions, and platform-reserved paths are refused before an object or file is accepted |
 | Reference closure | A valid scene resolves exact descriptor, revision, geography, crosswalk, and artifact references; a missing or mutable reference is refused |
 | Minimum round trip | Validate, export, restore into an empty directory, re-export, and compare the logical inventory and checksums |
 | Idempotent restore | Restoring the same bundle twice creates no second object or changed timestamp in accepted state |
-| Future version | An unsupported schema names the object and version it cannot read and changes nothing |
-| Hostile bundle | Absolute paths, `..`, symlinks, duplicate ids, oversized metadata, unknown required fields, and checksum mismatches are refused before accepted files change |
+| Version migration | A supported old object migrates to a new immutable identity with a deterministic receipt; the source remains unchanged and repeating migration returns the same target |
+| Future version | An unsupported schema names the object and version it cannot read, exposes only bounded error metadata, and changes nothing |
+| Hostile bundle | Absolute paths, `..`, links, special files, normalized or case-folded collisions, duplicate ids, oversized metadata, archive-limit violations, unknown required fields, and checksum mismatches are refused before accepted files change |
+| Atomic import | Failure at every validation and commit fault point leaves the accepted files and logical inventory identical to the pre-import snapshot; staged remnants are never discoverable as accepted objects |
 | Restricted asset | A restricted artifact becomes a referenced inventory item with its limitation and never enters the bundle |
 | Pure scene state | A deterministic sequence of accepted intents produces the expected scene snapshot; stale and duplicate intents do not alter it |
+
+The Phase 0 suite is reported in the same four checkpoints as `plan.md`:
+identity, repository, bundle, and scene core. Every checkpoint records fixture
+versions, stable finding codes, test counts, and the exact validation command.
+The bundle checkpoint also records configured entry/byte/ratio/depth limits and
+fault-injection coverage, so a passing round trip cannot hide an unbounded or
+partially mutating failure path.
 
 ### 4.1 — Catalogue and contribution pipeline
 
