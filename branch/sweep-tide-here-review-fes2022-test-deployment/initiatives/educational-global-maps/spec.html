@@ -33,26 +33,10 @@
 <h2>Specification</h2>
 <h3>Summary</h3>
 <p>Educational Global Maps is a browser-based catalogue, map composer, and presentation system for cited geographic time series. It separates four things that must evolve independently:</p>
-<ol><li><strong>dataset descriptors</strong> explain what a source offers and under what terms;</li><li><strong>prepared dataset revisions</strong> pin the actual data, geography, and</li></ol>
-<p>   transformation used in a view;</p>
-<ol><li><strong>scenes</strong> describe reproducible layers, time, projection, legends, and</li></ol>
-<p>   educational framing; and</p>
-<ol><li><strong>presentation sessions</strong> synchronize a large display with a controller</li></ol>
-<p>   without making either device the permanent home of the content.</p>
+<ol><li><strong>dataset descriptors</strong> explain what a source offers and under what terms;</li><li><strong>prepared dataset revisions</strong> pin the actual data, geography, and transformation used in a view;</li><li><strong>scenes</strong> describe reproducible layers, time, projection, legends, and educational framing; and</li><li><strong>presentation sessions</strong> synchronize a large display with a controller without making either device the permanent home of the content.</li></ol>
 <p>The first version optimizes for a teacher-led explanation on a conventional 4K display, controlled from a laptop or phone. The same catalogue and scenes also support unguided public exploration. A contributor can add a representative dataset without changing renderer code. Direct operation of spherical hardware is deferred in favor of a portable export boundary.</p>
 <h3>Product principles</h3>
-<ul><li><strong>The citation travels with the picture.</strong> A map is incomplete without its</li></ul>
-<p>  measure, unit, time, source revision, licence, missing-data treatment, and   relevant caveat.</p>
-<ul><li><strong>Preparation is not invisible cleanup.</strong> Interpolation, aggregation,</li></ul>
-<p>  boundary matching, and editorial exclusions are versioned transformations.</p>
-<ul><li><strong>Compatibility is proved, not assumed.</strong> A layer or projection combination</li></ul>
-<p>  that cannot preserve meaning is refused with an explanation.</p>
-<ul><li><strong>The display teaches; the controller operates.</strong> The large screen retains</li></ul>
-<p>  the title, map, essential legend, date, and source identity while detailed   controls and notes may stay on the personal device.</p>
-<ul><li><strong>Uneven geography remains visible.</strong> Source-specific administrative levels</li></ul>
-<p>  and historical boundaries are not forced into a fictional universal   hierarchy.</p>
-<ul><li><strong>A prepared view can outlive its provider and host.</strong> Reproducible scenes and</li></ul>
-<p>  permitted data snapshots can be exported rather than depending on live   embeds.</p>
+<ul><li><strong>The citation travels with the picture.</strong> A map is incomplete without its measure, unit, time, source revision, licence, missing-data treatment, and relevant caveat.</li><li><strong>Preparation is not invisible cleanup.</strong> Interpolation, aggregation, boundary matching, and editorial exclusions are versioned transformations.</li><li><strong>Compatibility is proved, not assumed.</strong> A layer or projection combination that cannot preserve meaning is refused with an explanation.</li><li><strong>The display teaches; the controller operates.</strong> The large screen retains the title, map, essential legend, date, and source identity while detailed controls and notes may stay on the personal device.</li><li><strong>Uneven geography remains visible.</strong> Source-specific administrative levels and historical boundaries are not forced into a fictional universal hierarchy.</li><li><strong>A prepared view can outlive its provider and host.</strong> Reproducible scenes and permitted data snapshots can be exported rather than depending on live embeds.</li></ul>
 <h3>First-version users and setting</h3>
 <h4>Primary: teacher-led presentation</h4>
 <p>A teacher selects or prepares a scene, opens it on a classroom display, joins the session from another device, and controls time, visible layers, projection, pan, and zoom. The teacher can reveal definitions, sources, limitations, and discussion prompts without placing the full authoring interface on the display.</p>
@@ -97,16 +81,7 @@
 <p>Validation checks schema, identifiers, time ordering, units, finite values, duplicate keys, missing-value codes, geometry references, crosswalk coverage, licence fields, checksums, and claimed render capabilities. It warns about suspicious gaps and outliers but does not silently repair them. Deliberate interpolation or aggregation is a named transformation with parameters and evidence.</p>
 <h3>Composition and time alignment</h3>
 <p>A single layer may be rendered directly from one prepared revision. Multiple layers require a compatibility decision covering geography, time, units, semantics, and projection.</p>
-<ul><li>A scene declares whether time is an instant, interval, calendar period, or</li></ul>
-<p>  nearest available observation.</p>
-<ul><li>Each layer shows the actual source period used at the current scene time.</li><li>Forward filling, interpolation, aggregation, and normalization are off by</li></ul>
-<p>  default and must be named in the prepared revision or scene.</p>
-<ul><li>Layers with different cadences may coexist when their actual periods remain</li></ul>
-<p>  visible; the interface must not imply simultaneous measurement.</p>
-<ul><li>Mathematical combinations require compatible units and an explicit formula.</li></ul>
-<p>  Visual layering alone does not imply correlation or causation.</p>
-<ul><li>Missing data uses an encoding distinct from zero and from values outside the</li></ul>
-<p>  selected range.</p>
+<ul><li>A scene declares whether time is an instant, interval, calendar period, or nearest available observation.</li><li>Each layer shows the actual source period used at the current scene time.</li><li>Forward filling, interpolation, aggregation, and normalization are off by default and must be named in the prepared revision or scene.</li><li>Layers with different cadences may coexist when their actual periods remain visible; the interface must not imply simultaneous measurement.</li><li>Mathematical combinations require compatible units and an explicit formula. Visual layering alone does not imply correlation or causation.</li><li>Missing data uses an encoding distinct from zero and from values outside the selected range.</li></ul>
 <p>Animation emphasizes trend and movement. Exact value inspection remains available while paused, because animation is not assumed to improve every map-reading task.</p>
 <h3>Rendering and projections</h3>
 <p>The first renderer is a capability-based vector scene renderer using projected GeoJSON and scalable browser graphics. A D3 geographic projection layer is the reference path because it supports conventional, interrupted, and Airocean geometry through one explicit projection boundary. Canvas is the default mark surface at larger feature counts; SVG or accessible HTML may supply labels, focus targets, legends, and small scenes. A later WebGL layer may implement the same scene contract without changing catalogue or scene objects.</p>
@@ -125,16 +100,7 @@
 <p>Every scene has a stable share link and a portable export. A shared link may point to a newer application, but the scene continues to name immutable data revisions.</p>
 <h3>Display and controller</h3>
 <p>The display and controller are two browser views over the same session-state contract. The first transport is a small, self-hostable secure relay. The display creates a session and shows a QR code plus a short join URL; the controller joins with the random session secret. The relay forwards validated state messages and does not need dataset contents or accounts.</p>
-<ul><li>The display is authoritative for the accepted revision number and sends a</li></ul>
-<p>  snapshot when a controller joins or reconnects.</p>
-<ul><li>The controller sends typed intents such as set time, toggle layer, select</li></ul>
-<p>  projection, pan, zoom, or move to presentation stop. It cannot send markup or   executable code.</p>
-<ul><li>Both views show connection state. On interruption the display keeps the last</li></ul>
-<p>  valid scene, the controller stops claiming success, and either may retry.</p>
-<ul><li>A single-browser mode exposes the same controls locally for independent use,</li></ul>
-<p>  testing, and rooms where a second device is unavailable.</p>
-<ul><li>Sessions expire after inactivity and can be ended from either device. Join</li></ul>
-<p>  secrets are not analytics identifiers and are not retained in scene exports.</p>
+<ul><li>The display is authoritative for the accepted revision number and sends a snapshot when a controller joins or reconnects.</li><li>The controller sends typed intents such as set time, toggle layer, select projection, pan, zoom, or move to presentation stop. It cannot send markup or executable code.</li><li>Both views show connection state. On interruption the display keeps the last valid scene, the controller stops claiming success, and either may retry.</li><li>A single-browser mode exposes the same controls locally for independent use, testing, and rooms where a second device is unavailable.</li><li>Sessions expire after inactivity and can be ended from either device. Join secrets are not analytics identifiers and are not retained in scene exports.</li></ul>
 <p>Internet access is a first-version requirement for a two-device session and for live provider assets. A prepared exported scene remains viewable on one device when all permitted assets are bundled. A local-network relay is a compatible future transport, not an undocumented promise that every classroom firewall will permit peer-to-peer discovery.</p>
 <h3>Large-display and controller presentation</h3>
 <p>At widths up to 4K, the display prioritizes the map and keeps the following legible at presentation distance: title, current period, essential legend, missing-data key, active source names, and a visible cue for definitions and caveats. Detailed metadata, layer configuration, presenter notes, and the full citation record can remain on the controller, but the display always offers a readable source-and-method view of its own.</p>
@@ -178,31 +144,9 @@
 <p><strong>Chosen:</strong> teacher-led presentation as the primary acceptance setting.</p>
 <h3>First-version acceptance boundary</h3>
 <p>The first version is complete when it can demonstrate all of the following without undocumented manual edits:</p>
-<ul><li>search and inspect a catalogue of hundreds of descriptors while loading data</li></ul>
-<p>  only for a chosen revision;</p>
-<ul><li>prepare and validate representative scalar place-time-series, flow, point,</li></ul>
-<p>  and raster-frame entries from more than one provider and across the place   levels actually supplied;</p>
-<ul><li>let a contributor add one representative dataset and example scene through</li></ul>
-<p>  the documented contract without editing core rendering code;</p>
-<ul><li>build a single-layer view, a compatible layered view, and a flow-over-field</li></ul>
-<p>  view with explicit time alignment, missing data, units, and citations;</p>
-<ul><li>switch a compatible vector scene among the conventional, Airocean, and fixed</li></ul>
-<p>  population-cartogram views while refusing incompatible layers clearly;</p>
-<ul><li>save, share, upgrade, and export a scene without silently changing its pinned</li></ul>
-<p>  dataset revisions;</p>
-<ul><li>control time, layers, projection, pan, zoom, selection, and presentation stops</li></ul>
-<p>  from a phone or laptop while the 4K display retains the map, title, essential   legend, period, and source identity;</p>
-<ul><li>recover coherently from a dropped controller connection and continue in</li></ul>
-<p>  single-device mode;</p>
-<ul><li>render an exported scene with bundled permitted assets without the original</li></ul>
-<p>  hosted map service; and</p>
-<ul><li>produce and inspect the spherical export proof, including its conversion</li></ul>
-<p>  report, without requiring a permanent sphere installation.</p>
+<ul><li>search and inspect a catalogue of hundreds of descriptors while loading data only for a chosen revision;</li><li>prepare and validate representative scalar place-time-series, flow, point, and raster-frame entries from more than one provider and across the place levels actually supplied;</li><li>let a contributor add one representative dataset and example scene through the documented contract without editing core rendering code;</li><li>build a single-layer view, a compatible layered view, and a flow-over-field view with explicit time alignment, missing data, units, and citations;</li><li>switch a compatible vector scene among the conventional, Airocean, and fixed population-cartogram views while refusing incompatible layers clearly;</li><li>save, share, upgrade, and export a scene without silently changing its pinned dataset revisions;</li><li>control time, layers, projection, pan, zoom, selection, and presentation stops from a phone or laptop while the 4K display retains the map, title, essential legend, period, and source identity;</li><li>recover coherently from a dropped controller connection and continue in single-device mode;</li><li>render an exported scene with bundled permitted assets without the original hosted map service; and</li><li>produce and inspect the spherical export proof, including its conversion report, without requiring a permanent sphere installation.</li></ul>
 <h3>Deferred</h3>
-<ul><li>universal provider coverage or centralized hosting of every source;</li><li>a complete global historical-boundary ontology;</li><li>arbitrary formulas or arbitrary contributor code in the browser;</li><li>real-time multi-author collaboration, accounts, grading, or publishing feeds;</li><li>guaranteed offline two-device discovery on every classroom network;</li><li>direct sphere hardware control;</li><li>variable-driven cartograms or subnational cartograms without validated</li></ul>
-<p>  geometry; and</p>
-<ul><li>decision-grade use of educational source products where their own terms or</li></ul>
-<p>  methods do not support it.</p>
+<ul><li>universal provider coverage or centralized hosting of every source;</li><li>a complete global historical-boundary ontology;</li><li>arbitrary formulas or arbitrary contributor code in the browser;</li><li>real-time multi-author collaboration, accounts, grading, or publishing feeds;</li><li>guaranteed offline two-device discovery on every classroom network;</li><li>direct sphere hardware control;</li><li>variable-driven cartograms or subnational cartograms without validated geometry; and</li><li>decision-grade use of educational source products where their own terms or methods do not support it.</li></ul>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/tide-here/review-fes2022-test-deployment" data-root="../../">

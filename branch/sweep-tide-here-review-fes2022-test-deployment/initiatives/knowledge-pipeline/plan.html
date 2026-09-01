@@ -34,16 +34,7 @@
 <p>This plan builds the Knowledge Pipeline as a sequence of custody-preserving vertical slices. The first useful increment is not an AI classifier or a full five-stage screen. It is a source record that can be written, exported, restored, audited, and refused safely. Every later phase adds judgement or synthesis without creating a second way to bypass that boundary.</p>
 <h3>1. What decides the order</h3>
 <p>The phases follow five rules.</p>
-<ol><li><strong>Portability precedes population.</strong> The canonical package, repository</li></ol>
-<p>   contract, migration path, and restore test exist before the first durable    source is accepted. A database that cannot yet produce its own logical    backup is not ready to hold the user&#39;s evidence.</p>
-<ol><li><strong>Authorization precedes representative data.</strong> The public URL, Site</li></ol>
-<p>   identity, application allowlist, collection ownership, and server-side    authorization checks are exercised while the store is still disposable.</p>
-<ol><li><strong>One accepted change path serves every stage.</strong> Direct UI work, native</li></ol>
-<p>   imports, LLM proposal files, later app actions, and scheduled operations all    end in the same validate, preview, commit, activity, and receipt services.</p>
-<ol><li><strong>The full loop grows around one deliberately small fixture collection.</strong></li></ol>
-<p>   Harvest, tagging, promotion, topic assignment, integration, and archival are    proved on traceable material before larger source sets or more AI automation    are invited in.</p>
-<ol><li><strong>Human authority is structural.</strong> No phase may make AI-only promotion,</li></ol>
-<p>   standing-document approval, archive disposition, collection erasure, or    cross-collection administration possible, even temporarily.</p>
+<ol><li><strong>Portability precedes population.</strong> The canonical package, repository contract, migration path, and restore test exist before the first durable source is accepted. A database that cannot yet produce its own logical backup is not ready to hold the user&#39;s evidence.</li><li><strong>Authorization precedes representative data.</strong> The public URL, Site identity, application allowlist, collection ownership, and server-side authorization checks are exercised while the store is still disposable.</li><li><strong>One accepted change path serves every stage.</strong> Direct UI work, native imports, LLM proposal files, later app actions, and scheduled operations all end in the same validate, preview, commit, activity, and receipt services.</li><li><strong>The full loop grows around one deliberately small fixture collection.</strong> Harvest, tagging, promotion, topic assignment, integration, and archival are proved on traceable material before larger source sets or more AI automation are invited in.</li><li><strong>Human authority is structural.</strong> No phase may make AI-only promotion, standing-document approval, archive disposition, collection erasure, or cross-collection administration possible, even temporarily.</li></ol>
 <p>A phase exits only when the matching section of <code>test-plan.md</code> passes and its measured or manual evidence is recorded in <code>log.md</code> or <code>decisions.md</code>.</p>
 <h3>2. Choices the specification left to the plan</h3>
 <h4>2.1 First host, identity, and storage</h4>
@@ -74,14 +65,7 @@
 <h4>2.8 Representative fixture and performance budget</h4>
 <p>The first end-to-end collection is <strong>Community heat resilience</strong>. Its material is project-authored fixture text plus metadata-only remote references and the existing Bookmark Sorter and Newsletter Story Harvester test shapes; no copyrighted source body is copied merely to make the fixture realistic. It contains 18 sources, one duplicate pair, one syndicated chain, one update, one contradiction, one source assigned to two topics, a <code>community-heat-resilience</code> topic with a project-authored standing document, and a <code>cooling-access</code> topic with none. That is enough to exercise every first-version entity and relationship without presenting fixture conclusions as real advice.</p>
 <p>The scale fixture has three collections and, in the largest, 10,000 current entities, 50,000 retained versions, 100,000 semantic relationships, 1,000 distinct accepted tags, 2,000 proposed operations, and 2 GiB of referenced assets represented by small local stubs. On the hosted test or an equivalent resource profile:</p>
-<ul><li>collection shell appears within 1 second and first useful state within 2</li></ul>
-<p>  seconds at p95;</p>
-<ul><li>a 100-row source or queue page, a 1,000-edge relationship neighborhood, and</li></ul>
-<p>  the tag inventory each appear within 2 seconds at p95;</p>
-<ul><li>a 2,000-operation proposal validates and previews within 5 seconds;</li><li>a full logical manifest streams with at most 64 MiB application memory and</li></ul>
-<p>  completes within 60 seconds, excluding asset transfer; and</p>
-<ul><li>a full restore completes within 10 minutes and reports progress without</li></ul>
-<p>  exposing a partly accepted collection.</p>
+<ul><li>collection shell appears within 1 second and first useful state within 2 seconds at p95;</li><li>a 100-row source or queue page, a 1,000-edge relationship neighborhood, and the tag inventory each appear within 2 seconds at p95;</li><li>a 2,000-operation proposal validates and previews within 5 seconds;</li><li>a full logical manifest streams with at most 64 MiB application memory and completes within 60 seconds, excluding asset transfer; and</li><li>a full restore completes within 10 minutes and reports progress without exposing a partly accepted collection.</li></ul>
 <p>These are first-version budgets, not promises for all future sizes. Exceeding one produces a measured decision before pagination, indexing, or deployment topology is changed.</p>
 <h4>2.9 Package safety and migration</h4>
 <p><code>knowledge-pipeline/v1</code> has JSON Schemas for envelopes, logical records, proposal operations, and receipts. Initial configurable limits are a 25 MiB JSON manifest, 250 MiB uploaded bundle, 100,000 operations, nesting depth 32, and 1 MiB of text in one entity version. ZIP entries are streamed, normalized, checked against traversal and expansion limits, and verified against SHA-256 manifest hashes before preview.</p>
@@ -122,9 +106,7 @@
 <p>Record operational time, storage, review effort, isolation findings, recovery steps, scheduling reliability, and whether any real need for sharing or self-hosting appeared. Compare that evidence against the four deferred distribution topologies in <code>spec.md</code>; do not choose one merely because the first deployment used Sites.</p>
 <p><strong>Exit:</strong> <code>test-plan.md</code> §4.7. A successful exit moves the initiative to refining; it does not publish data or settle the later distribution decision by itself.</p>
 <h3>4. Work intentionally left out</h3>
-<ul><li>unattended web crawling or mailbox synchronization;</li><li>public collections, invitations, organization administration, or concurrent</li></ul>
-<p>  document editing;</p>
-<ul><li>autonomous acceptance of model proposals or standing-document publication;</li><li>cross-collection semantic search and relationships;</li><li>portable package signatures before a cross-maintainer trust boundary exists;</li><li>a generalized graph query language; and</li><li>a production distribution choice unsupported by representative-use evidence.</li></ul>
+<ul><li>unattended web crawling or mailbox synchronization;</li><li>public collections, invitations, organization administration, or concurrent document editing;</li><li>autonomous acceptance of model proposals or standing-document publication;</li><li>cross-collection semantic search and relationships;</li><li>portable package signatures before a cross-maintainer trust boundary exists;</li><li>a generalized graph query language; and</li><li>a production distribution choice unsupported by representative-use evidence.</li></ul>
 <p>These are later choices. The first version carries boundaries that make them possible without pretending to have built or authorized them.</p>
     </div>
   </main>
