@@ -24,6 +24,11 @@ environment from the current public production Site.
   prepared data already included in the tested source to R2, verifies the exact
   licensed Australian and fallback versions, and activates the provider
   registry last.
+- `POST /import/object` and `POST /import/activate` use the same secret. The
+  resumable host-side importer verifies each local and remote SHA-256, activates
+  the complete immutable inventory, then switches the provider registry. A
+  later `/init` preserves an already-active global FES dataset instead of
+  silently downgrading it to the seven-point validation extract.
 - Operational logs contain only route, method, status, provider id, and elapsed
   time. They exclude URLs, request bodies, submitted names, coordinates, coast
   names, and station ids.
@@ -43,17 +48,36 @@ writes, and runs HTTPS checks for:
 The current test deployment contains the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
 territory indexes. It carries the source attribution, disclaimer, and per-port
-PDF URL into the browser. The fallback data remains a plainly labelled non-FES
-fixture. This deployment path validates the licensed Australian path and the
-fallback storage boundary; it is not evidence of FES2022 accuracy and does not
-activate FES2022 or change the production Site.
+PDF URL into the browser. It also activates the licensed global coastal
+FES2022b package as the approximate fallback after configured official coverage
+declines. The production Site is unchanged.
 
-The expanded `2026-bom-v2` artifact and `stage-4-v5` registry are active on the
-test Site. Direct NOAA/CHS station catalogues and the stored Australian
-catalogue are separate availability boundaries in the browser: either can fail
-without masking healthy coverage from the other.
+The expanded `2026-bom-v2` artifact and
+`stage-4-global-2026-08-29-global-coast-r1` registry are active on the test
+Site. Direct NOAA/CHS station catalogues, the stored Australian catalogue, and
+the FES tile inventory are separate availability boundaries in the browser:
+one can fail without masking healthy coverage from the others.
 
-## Recorded test deployment
+## Recorded global FES2022 test deployment
+
+Version 14 was published to the existing public test Site on 2026-09-01 UTC:
+<https://tide-here-test.ken-novak.chatgpt.site>. The protected importer uploaded
+and verified all 377 immutable package objects, then activated dataset
+`fes2022b-global-coast` version `2026-08-29-global-coast-r1`; a later protected
+initialization preserved that dataset and wrote zero objects. The live sweep
+returned 1,470 official Australian events across all 76 ports and 19–20 FES
+events for Galway, Cooktown, Gibraltar, Nice, and Amsterdam. NOAA, CHS, and the
+hosted page also passed.
+
+Browser checks showed FES2022 results for Nice, Amsterdam, and Cooktown,
+official Mooloolaba for the supplied Maroochydore coordinates, and official
+Bundaberg for `bundaberg,qld`. None reused Seattle or Cooktown for another
+search, and FES results showed no duplicate standalone fallback banner. The
+post-check Worker log contained no execution failures; its non-2xx entries were
+only expected favicon requests and the smoke test's direct-provider boundary
+checks.
+
+## Recorded Australian catalogue deployment
 
 Version 13 was published to the existing public test Site on 2026-08-30 UTC:
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
@@ -80,9 +104,26 @@ tab-scoped, unknown fixture names did not become Seattle, and a manual
 `nice,france` search left fixture mode and returned the honest
 `coverage-unavailable` state. Worker logs contained no execution failures.
 
-That version 11 evidence remains the validation record for the FES2022 source
-in this branch, but FES2022 is not active on the current version 13 test Site.
-Review and a new test deployment are required before any production release.
+That version 11 evidence remains the validation record for the original sparse
+FES2022 source. Version 14 supersedes it with global coastal coverage and is the
+current test deployment. Review is still required before any production
+release.
+
+## Global FES import
+
+After the retained atlas has produced a package, import it without copying the
+package into `site-public` or the Git repository:
+
+```sh
+INIT_TOKEN=<secret> node phase-13/scripts/import-fes-dataset.mjs \
+  ../../../../siteprep-data/tide-here/fes2022/global-coast-r1 \
+  https://tide-here-test.ken-novak.chatgpt.site
+```
+
+The original 3.95-GB atlas and the resumable derived package remain in the
+local `siteprep-data` folder. The deployed Site stores the derived immutable
+tile JSON and manifests in its private `TIDE_DATA` R2 binding; it uses neither
+a database nor publicly downloadable static data files.
 
 The production Site was not changed. Its existing version 6 already serves the
 same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.

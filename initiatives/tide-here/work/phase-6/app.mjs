@@ -190,7 +190,11 @@ const service = new TideHereService({
     stored: () => storedTideClient.stations()
   }),
   matchConfig: providerConfig.match,
-  resolveFallback: ({place}) => fesTideClient.resolve({latitude: place.lat, longitude: place.lon}),
+  resolveFallback: ({place}) => fesTideClient.resolve({
+    latitude: place.lat,
+    longitude: place.lon,
+    name: place.name,
+  }),
   timeZoneLookup: async (_latitude, _longitude, station) => (await stationDetails(station)).timeZone,
   tideProvider,
   astronomy,

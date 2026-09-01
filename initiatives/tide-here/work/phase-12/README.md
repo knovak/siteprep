@@ -53,32 +53,81 @@ The 3.95-GB native-grid download and NetCDF extraction happen outside the Site
 runtime. Create an isolated Python environment with the pinned official PyFES
 package, then extract the reviewed points through the native LGP2 mesh:
 
-The current full atlas is not retained. If it must be downloaded again, keep
-the verified file outside Git at
+Keep the verified full atlas outside Git at
 `../siteprep-data/tide-here/fes2022/FES2022b_OceanTide_NSgrid.nc` rather than in
-`/tmp`; record the exact checksum beside it and reuse that file for later point
-extractions. Only derived reviewed points belong in the repository or Site
-storage.
+`/tmp`; the resumable helper in that directory records and enforces the exact
+size and checksum so later point extractions reuse the same download. The
+licensed NetCDF never becomes a public Site asset. Only derived harmonic tiles
+are uploaded to the Site's private R2 binding.
+
+For global coastline coverage, `scripts/build-coastal-plan.py` samples retained
+Natural Earth major- and minor-island coastlines at a fixed interval, assigns
+current/future IANA zones from the retained Timezone Boundary Builder ocean
+dataset, groups points into geographic extraction tiles, and records every
+source checksum in the plan. The sources and generated plan stay outside Git;
+the script is deterministic for the same inputs and arguments. A typical plan
+uses 15 km sampling, a 40 km place-to-model selection limit, and 10-degree
+extraction tiles:
 
 ```sh
-python3 -m venv /tmp/tide-here-fes
-/tmp/tide-here-fes/bin/pip install -r initiatives/tide-here/work/phase-12/data/requirements-fes2022.txt
-/tmp/tide-here-fes/bin/python initiatives/tide-here/work/phase-12/scripts/extract-fes2022.py \
+../siteprep-data/tide-here/python-env/bin/python \
+  initiatives/tide-here/work/phase-12/scripts/build-coastal-plan.py \
+  --coastline ../siteprep-data/tide-here/coastline/ne_10m_coastline.geojson \
+  --coastline ../siteprep-data/tide-here/coastline/ne_10m_minor_islands_coastline.geojson \
+  --time-zones ../siteprep-data/tide-here/coastline/combined-with-oceans-2026c.json \
+  --spacing-km 15 --maximum-distance-km 40 --tile-degrees 10 \
+  --prepared-at 2026-08-29T00:00:00.000Z \
+  --version 2026-08-29-global-coast-r1 \
+  --output ../siteprep-data/tide-here/fes2022/fes2022-global-coastal-plan.json
+```
+
+```sh
+/opt/homebrew/bin/python3.11 -m venv ../siteprep-data/tide-here/python-env
+../siteprep-data/tide-here/python-env/bin/pip install \
+  -r initiatives/tide-here/work/phase-12/data/requirements-fes2022.txt
+../siteprep-data/tide-here/python-env/bin/python \
+  initiatives/tide-here/work/phase-12/scripts/extract-fes2022.py \
   initiatives/tide-here/work/phase-12/data/fes2022-validation-plan.json \
   initiatives/tide-here/work/phase-12/data/fes2022b-native.yaml \
   /path/to/FES2022b_OceanTide_NSgrid.nc \
   --output /tmp/fes2022-source-extract.json
 ```
 
+The same pinned environment includes Shapely only for the offline spatial
+index used while assigning the retained IANA ocean time zones. It is not a Site
+runtime dependency. Once the global plan and atlas are ready,
+`scripts/extract-fes2022-global.py` writes resumable, checksum-addressed tile
+files and an upload package outside Git:
+
+```sh
+../siteprep-data/tide-here/python-env/bin/python \
+  initiatives/tide-here/work/phase-12/scripts/extract-fes2022-global.py \
+  ../siteprep-data/tide-here/fes2022/fes2022-global-coastal-plan.json \
+  initiatives/tide-here/work/phase-12/data/fes2022b-native.yaml \
+  ../siteprep-data/tide-here/fes2022/FES2022b_OceanTide_NSgrid.nc \
+  --output-directory ../siteprep-data/tide-here/fes2022/global-coast-r1
+```
+
+The extractor can be restarted without redoing completed tiles. Undefined
+shoreline samples are omitted and recorded; the package must still contain at
+least 1,000 points before the protected importer will activate it.
+
 The extraction plan contains the user-supplied Maroochydore and Cooktown
 coordinates, Bundaberg, the reported Gibraltar gap, and three independent
-model-path locations. Each geographic tile is
-loaded with a bounded mesh window. The extractor converts the complex PyFES
-native-mesh result to amplitude and Greenwich phase, records its signed quality
-and method, and round-trips each rounded 34-constituent point through PyFES. A point fails
-preparation if the reconstructed prediction differs from the atlas path by more
-than 0.01 cm. The extractor marks the result as modified material and hashes the
-original atlas without copying it into the repository.
+model-path locations. The extractor verifies and loads the atlas once, reuses
+that model across geographic tiles, and batches each tile's atlas-path
+validation. It converts the complex PyFES native-mesh result to amplitude and
+Greenwich phase, records its signed quality and method, and round-trips every
+rounded 34-constituent point through PyFES. A point fails preparation if the
+reconstructed prediction differs from the atlas path by more than 0.01 cm. The
+extractor marks the result as modified material and hashes the original atlas
+without copying it into the repository.
+
+The retained `2026-08-29-global-coast-r1` package contains 376 non-empty tiles
+and 65,203 coastal points. It omits and records 1,512 undefined planned samples;
+every retained point has 34 constituents, and the observed maximum round-trip
+error is 0.000013 cm. The upload inventory contains 377 checksum-addressed
+objects totalling 146,330,220 bytes.
 
 At Cooktown, PyFES reports direct native-mesh interpolation using six mesh
 points. At the other six shoreline and harbour coordinates it reports bounded
@@ -100,11 +149,12 @@ node initiatives/tide-here/work/phase-12/scripts/prepare-fes.mjs \
   --source-module initiatives/tide-here/work/phase-12/fixtures/fes-source-official.mjs
 ```
 
-Only the small adapted harmonic-point module and comparison evidence are
-committed after the comparison passes. The original AVISO NetCDF is never
-committed or served. `/init` never opens SFTP, downloads an atlas, decompresses
-files, or runs PyFES. Ordinary forecast requests only read initialized R2
-objects.
+Only the small validation module and comparison evidence are committed. The
+larger derived global package stays beside the retained source outside Git and
+is uploaded by the protected importer in Phase 13. The original AVISO NetCDF is
+never committed or served. `/init` never opens SFTP, downloads an atlas,
+decompresses files, or runs PyFES. Ordinary forecast requests only read
+checksum-verified R2 objects.
 
 The committed source identifies the FES2022 product DOI and AVISO licence,
 attributes CNES, LEGOS, NOVELTIS, and CLS, labels the constants as transformed

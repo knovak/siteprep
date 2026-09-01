@@ -125,7 +125,7 @@ export class StoredTideClient {
     return this.stationPromise;
   }
 
-  async resolve({latitude, longitude}) {
+  async resolve({latitude, longitude, name = null}) {
     try {
       const value = await this.fetchJson('/resolve', {
         method: 'POST',
@@ -134,6 +134,7 @@ export class StoredTideClient {
           provider: this.provider,
           latitude,
           longitude,
+          ...(typeof name === 'string' && name.trim() ? {displayName: name.trim()} : {}),
         }),
       });
       if (value?.provider !== this.provider || !value.station || !value.coast) {

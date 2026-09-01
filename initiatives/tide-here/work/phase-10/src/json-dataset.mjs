@@ -49,6 +49,22 @@ function validateBundle(bundle) {
   }
 }
 
+function validateDatasetIdentity(dataset) {
+  if (!dataset?.id || !dataset?.version || !dataset?.schema || !dataset?.preparedAt) {
+    throw new Error('Dataset id, version, schema and preparedAt are required');
+  }
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(dataset.id)
+      || !/^[a-z0-9][a-z0-9.-]*$/.test(dataset.version)) {
+    throw new Error('Dataset id and version must be safe storage identifiers');
+  }
+  return dataset;
+}
+
+function validateObjectName(name) {
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(name ?? '')) throw new Error('Dataset object name is invalid');
+  return name;
+}
+
 export async function initializeJsonDataset(store, bundle, {now = () => new Date()} = {}) {
   validateBundle(bundle);
   const result = {created: [], updated: [], unchanged: []};
@@ -93,7 +109,80 @@ export async function initializeJsonDataset(store, bundle, {now = () => new Date
   return {...result, dataset: active.dataset, manifestKey, activeKey};
 }
 
-export async function verifyDatasetVersion(store, reference) {
+export async function importJsonDatasetObject(store, {
+  dataset,
+  name,
+  body,
+  checksum,
+}) {
+  validateDatasetIdentity(dataset);
+  validateObjectName(name);
+  if (typeof body !== 'string' || !/^[a-f0-9]{64}$/.test(checksum ?? '')) {
+    throw new Error('Imported dataset object body and SHA-256 are required');
+  }
+  const actual = await sha256(body);
+  if (actual !== checksum) throw new Error(`Imported dataset object checksum does not match ${name}`);
+  const result = {created: [], updated: [], unchanged: []};
+  const key = `tide-data/datasets/${dataset.id}/${dataset.version}/${name}.json`;
+  await putImmutable(store, key, body, checksum, result);
+  return {...result, name, key, sha256: checksum};
+}
+
+export async function activateImportedJsonDataset(store, {
+  dataset,
+  objects,
+}, {now = () => new Date()} = {}) {
+  validateDatasetIdentity(dataset);
+  if (!Array.isArray(objects) || objects.length === 0) throw new Error('Imported dataset inventory is required');
+  const names = new Set();
+  const prefix = `tide-data/datasets/${dataset.id}/${dataset.version}`;
+  const manifestObjects = [];
+  for (const object of objects) {
+    const name = validateObjectName(object?.name);
+    if (names.has(name) || !/^[a-f0-9]{64}$/.test(object?.sha256 ?? '')) {
+      throw new Error('Imported dataset inventory is duplicated or invalid');
+    }
+    names.add(name);
+    const key = `${prefix}/${name}.json`;
+    const stored = await store.get(key);
+    if (!stored || await sha256(stored.body) !== object.sha256) {
+      throw new Error(`Imported dataset object is missing or invalid: ${name}`);
+    }
+    manifestObjects.push({name, key, sha256: object.sha256});
+  }
+  const result = {created: [], updated: [], unchanged: []};
+  const manifest = {
+    schema: 'tide-here/dataset-manifest/v1',
+    dataset,
+    preparedAt: dataset.preparedAt,
+    objects: manifestObjects,
+  };
+  const manifestKey = datasetManifestKey(dataset);
+  const manifestBody = JSON.stringify(manifest);
+  const manifestChecksum = await sha256(manifestBody);
+  await putImmutable(store, manifestKey, manifestBody, manifestChecksum, result);
+
+  const activeKey = datasetActiveKey(dataset.id);
+  const existingActive = await store.get(activeKey);
+  const existingValue = existingActive ? parseObject(existingActive.body) : null;
+  const matches = existingValue
+    && existingValue.schema === 'tide-here/active-dataset/v1'
+    && existingValue.manifest?.key === manifestKey
+    && existingValue.manifest?.sha256 === manifestChecksum;
+  const active = matches ? existingValue : {
+    schema: 'tide-here/active-dataset/v1',
+    dataset: {id: dataset.id, version: dataset.version},
+    activatedAt: now().toISOString(),
+    manifest: {key: manifestKey, sha256: manifestChecksum},
+  };
+  const activeBody = JSON.stringify(active);
+  await putPointer(store, activeKey, activeBody, await sha256(activeBody), result);
+  return {...result, dataset: active.dataset, manifestKey, activeKey};
+}
+
+export async function verifyDatasetVersion(store, reference, {
+  verifyObjects = reference?.verification !== 'manifest-and-selected-objects',
+} = {}) {
   const manifestKey = datasetManifestKey(reference);
   const manifestObject = await store.get(manifestKey);
   if (!manifestObject) return {ready: false, reason: 'dataset-manifest-missing', reference};
@@ -109,11 +198,13 @@ export async function verifyDatasetVersion(store, reference) {
     ? manifest.objects
     : manifest.tile ? [{name: 'tile', ...manifest.tile}] : [];
   if (entries.length === 0) return {ready: false, reason: 'dataset-objects-missing', reference};
-  for (const entry of entries) {
-    const object = await store.get(entry.key);
-    if (!object) return {ready: false, reason: 'dataset-object-missing', reference, object: entry.name};
-    if (await sha256(object.body) !== entry.sha256) {
-      return {ready: false, reason: 'dataset-object-checksum-mismatch', reference, object: entry.name};
+  if (verifyObjects) {
+    for (const entry of entries) {
+      const object = await store.get(entry.key);
+      if (!object) return {ready: false, reason: 'dataset-object-missing', reference, object: entry.name};
+      if (await sha256(object.body) !== entry.sha256) {
+        return {ready: false, reason: 'dataset-object-checksum-mismatch', reference, object: entry.name};
+      }
     }
   }
   return {
@@ -136,10 +227,14 @@ export async function loadVerifiedDatasetObject(store, verified, name) {
     return {ready: false, reason: 'dataset-not-verified', reference: verified?.reference, object: name};
   }
   const entry = verified.manifest.objects?.find(object => object.name === name);
-  if (!entry) return {ready: false, reason: 'dataset-object-not-declared', reference, object: name};
+  if (!entry) return {ready: false, reason: 'dataset-object-not-declared', reference: verified.reference, object: name};
   const object = await store.get(entry.key);
+  if (!object) return {ready: false, reason: 'dataset-object-missing', reference: verified.reference, object: name};
+  if (await sha256(object.body) !== entry.sha256) {
+    return {ready: false, reason: 'dataset-object-checksum-mismatch', reference: verified.reference, object: name};
+  }
   const value = parseObject(object.body);
   return value
     ? {...verified, value, object: entry}
-    : {ready: false, reason: 'dataset-object-invalid', reference, object: name};
+    : {ready: false, reason: 'dataset-object-invalid', reference: verified.reference, object: name};
 }

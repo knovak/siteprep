@@ -135,10 +135,17 @@ test('the active resolver selects the nearest initialized FES2022 water point', 
   const response = await app.fetch(new Request('http://localhost/resolve', {
     method: 'POST',
     headers: {'content-type': 'application/json'},
-    body: JSON.stringify({provider: 'fes2022', latitude: 48.383, longitude: -4.495}),
+    body: JSON.stringify({
+      provider: 'fes2022',
+      latitude: 48.383,
+      longitude: -4.495,
+      displayName: 'Brest, France',
+    }),
   }));
   assert.equal(response.status, 200);
-  assert.equal((await response.json()).station.id, 'fes2022-brest');
+  const resolved = await response.json();
+  assert.equal(resolved.station.id, 'fes2022-brest');
+  assert.equal(resolved.station.name, 'FES2022 near Brest, France');
 });
 
 test('the active resolver covers the reported Cooktown and Gibraltar gaps', async () => {
