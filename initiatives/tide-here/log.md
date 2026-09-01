@@ -270,3 +270,20 @@ Bundaberg on official Bureau data, showed no Seattle/Cooktown fixture leakage,
 and showed no duplicate FES fallback banner. The post-check Worker log had no
 execution failures; the only non-2xx entries were expected favicon requests and
 the smoke test's direct-provider boundary checks.
+
+## 2026-09-01 — Release
+
+Released to production — ChatGPT Site, version 7, `424926d`. 3 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
+
+## 2026-09-01 — Reconcile FES2022 documentation after the production release
+
+Reviewed every Markdown file under the Tide Here initiative. Updated the
+current guide, objectives, specification, plan, test plan, browser/privacy
+notes, FES preparation contract, and Sites deployment record to distinguish
+historical sparse validation from the active 65,203-point global package.
+Documented official-source priority, 15 km coastal sampling, the 40 km runtime
+selection limit, separate private test/production R2 stores, model-point and
+time-zone identity, mean-sea-level height interpretation, absent weather and
+storm-surge effects, and the approximate/not-for-navigation boundary. Dated
+phase and release evidence remains unchanged where it records a historical
+state.
