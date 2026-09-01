@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log — Repo Guide</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Log — Repo Guide</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Repo Guide</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Log</h2>
+    </div>
+    <div class="card-content">
+<h2>Log</h2>
+<h3>2026-08-17 — Draft objectives.md - what &quot;done&quot; would mean</h3>
+<p>Drafted objectives.md from the wish: nine outcomes, arranged around the initiative lifecycle as the wish&#39;s central theme, with the two readers it names - a forker and a contributor - asking the same question from opposite sides.</p>
+<p>The finding that shapes the rest: this repository already explains itself in five files totalling well over 100 KB, so the guide is not filling a vacuum. The gap is an entry point, not information - and the naive reading of the wish&#39;s five artefacts makes each a fresh retelling of the lifecycle, which is six copies of every rule and five that will be wrong first. Two of the five are renderings rather than documents, leaving three things genuinely written.</p>
+<p>Drift is therefore recorded as an objective in its own right rather than a caveat: the process is edited by the very mechanism the guide describes, so a guide that is merely accurate today has a shelf life.</p>
+<p>Two questions the wish does not settle are recorded as blocked items rather than answered: what is authoritative and how the guide stays true to it, and how faithful the simulator has to be. Two more are left to the spec - where the PDFs come from, given that this repository does not commit generated files, and whether the deck and the description share a source.</p>
+<h3>2026-08-17 — Decide what is authoritative, and how the guide stays true to it</h3>
+<p>Answered on review of #227: generate the guide&#39;s process content from the repository&#39;s own sources, and date the outputs so a manual double-check can tell whether they are current. Recorded in decisions.md.</p>
+<p>The dating is not the third option arriving through the back door - the user took generation and the dating that belonged to accepting drift, which says generation is not assumed to be total and a date is what covers the part it does not reach. Unblocks draft-spec, which is now a spec for a generator. Leaves open which repository source is authoritative for a given claim, which is the real work this creates.</p>
+<h3>2026-08-17 — Decide how faithful the lifecycle simulator has to be</h3>
+<p>Answered on review of #227: animate an abstract lifecycle for now, with an upgrade to the real initiative.json held open if the animation turns out not to be adequate. Recorded in decisions.md.</p>
+<p>The trigger for the upgrade is the user&#39;s judgement and is deliberately not converted into a metric. The cost recorded with it: the simulator is the one deliverable outside the generation guarantee, so it is the case the dating requirement is carrying.</p>
+<h3>2026-08-17 — Draft spec.md - how the description, deck, PDFs, and simulator are built</h3>
+<p>spec.md drafted: one generated fact set, hand-written narrative that cites it by token, and four renderings of one source. Settles the two questions decisions.md left open - authority per claim, and where the generated/written line falls - and names the protected-path change publication needs.</p>
+<h3>2026-08-18 — Review round on the spec: generated on request, self-contained, and delivery out of scope</h3>
+<p>Seven comments, and three of them changed the shape of the thing rather than its wording.</p>
+<p>The guide is now produced <strong>on request by a skill</strong>, not by the site build. That removes the build.sh hook, and with it the arrangement where a fact-extraction failure sat in the path of an unrelated deck&#39;s deploy - the guide&#39;s correctness now gates the guide only. The cost, recorded rather than absorbed: nothing prompts a regeneration, so an artefact in circulation can be stale, which makes the dating requirement load-bearing instead of a nicety.</p>
+<p>Each artefact is a <strong>single self-contained HTML file</strong> - styling, script and data inline, no origin needed. That is what makes deployment a later choice rather than a prerequisite, and it is why the deck cannot share the site&#39;s assets by reference.</p>
+<p><strong>Delivery is out of scope</strong>, on the user&#39;s instruction. This leaves objective 1 - a newcomer finding the entry point without being told where it is - unmet by what is specified, since a file in guide/out/ is reachable by nobody. Recorded in a section of its own rather than quietly reworded, with the two ways it can go, because amending an objective is the user&#39;s call.</p>
+<p>A vocabulary correction, which was worth more than it looked: the spec said &quot;hand-written&quot; and &quot;hand-drawn&quot; where it meant &quot;not derived from a source&quot;. Nothing here is written by hand - it is all authored by an agent. The distinction that matters is where a sentence gets its truth, so the words are now <strong>derived</strong> and <strong>composed</strong>, defined once in §1.</p>
+<p>The protected-path change shrank from three edits to one: five <code>export</code> keywords in scripts/initiatives.mjs, drafted as its own pull request because a sweep branch cannot touch scripts/.</p>
+<h3>2026-08-18 — The enabling change, drafted and found to be bigger than stated</h3>
+<p>Asked for on review: draft the protected-path change the spec says it needs. Doing it turned up something the spec had asserted without checking.</p>
+<p>The spec said the change was &quot;a one-line <code>export</code> on each&quot; of five constants in scripts/initiatives.mjs. It is not. That module&#39;s CLI dispatch is top-level, so importing it fell through the switch to <code>default:</code> and called process.exit(2) - the importing process died before it saw a value. Exporting alone would have produced a generator failing in a way that looks like the generator&#39;s fault. The dispatch now sits behind a run-as-a-program guard, with a test pinning the guard line, because an ordinary refactor could drop it with every other test staying green.</p>
+<p>§3.3 records the correction rather than quietly fixing the sentence, and draws the general lesson: &quot;just add an export&quot; was a guess about somebody else&#39;s file and it was wrong on first contact. The other extraction targets - workflow YAML, skill frontmatter, build.sh&#39;s content areas - have had no such contact yet.</p>
+<h3>2026-08-18 — The enabling change merged; the spec&#39;s prerequisite is gone</h3>
+<p>#235 merged during the review round, so §9.3 is rewritten from a thing plan.md has to sequence around into a thing already done. The five constants are importable and the CLI dispatch is guarded, both with tests.</p>
+<p>The practical effect is worth stating once: <strong>no protected-path work is left in this initiative&#39;s build.</strong> Everything remaining lives inside guide/ plus the tests/ path §9.5 asks it to declare, so it can be built end to end by a sweep rather than waiting on a hand-landed change.</p>
+<h3>2026-08-18 — O1 answered, and a PowerPoint deck recorded as a future objective</h3>
+<p>Objective 1 stays as written, and delivery becomes its own item at the end of the backlog: link-the-guide. It is blocked on a permission: blocker rather than left actionable, because linking the guide needs the nav entry and build.sh line that §9.3 removed from the build - both protected paths no sweep can write, however far down the list the item sits.</p>
+<p>The cost is stated in §11 rather than discovered later: that item shows in every digest under &quot;waiting on you&quot; from now until it lands. That is a standing reminder, which is what was asked for, and the price of encoding the dependency truthfully.</p>
+<p>A .pptx deck is recorded in objectives.md under &quot;explicitly not the first version&quot;, with what would decide it - whether the recipient needs to <em>edit</em> the slides or merely open them, since that changes how much layout has to survive conversion. spec.md §6 notes the constraint it puts on the first version: keep slide text as text in the section files, so a PowerPoint rendering is a third rendering of one source rather than a second deck to keep in step.</p>
+<h3>2026-08-18 — link-the-guide re-pointed so it stays quiet until the guide exists</h3>
+<p>Asked for on review. A permission: blocker described the item most literally - linking the guide needs protected-path changes only the user can land - but it also put a request nobody could act on into every digest from now until the guide is built, which is how a digest teaches people to skim it.</p>
+<p>So the item is blocked on todo:draft-plan instead, and re-pointing it is now part of what draft-plan delivers: completing draft-plan clears that blocker automatically, so an item not re-pointed at the last build item in the same change becomes actionable, and a sweep picking it up would fail the write-scope check. Safe, but confusing. The instruction is in the draft-plan item&#39;s own title as well as spec §11, because a requirement living only in a spec section is one a future run may not read.</p>
+<p>Verified: the digest no longer lists repo-guide under &quot;waiting on you&quot;.</p>
+<h3>2026-08-18 — Draft plan.md and test-plan.md - build order, how the generator is tested, and re-point link-the-guide at the last build item</h3>
+<p>Eight phases and their exit tests. The ordering rule that shapes everything is the lesson §3.3 already paid for: what has never touched a real file goes first, so phase 0 is an afternoon spent proving the four text-derived extractions - build.sh&#39;s content areas, the workflow YAML, the skill frontmatter, and the two keys read out of sweep-prompt.md - can be read honestly or must be dropped.</p>
+<p>Then the machinery before the prose. The fact set and §4&#39;s honesty checks come before a word of narrative, because the third check constrains how every sentence in the guide may be phrased and finding that out after nine sections are drafted means drafting them twice.</p>
+<p>The plan&#39;s claim is stronger than §9.3&#39;s: the whole build fits inside initiatives/repo-guide/, no outputs are declared, and nothing waits on the user until delivery. Two decisions had to go differently for that to hold, and both are better on their own terms.</p>
+<p>Drafting found three places the spec cannot be followed as written. §9.5&#39;s instruction to put the browser checks in tests/ and declare that path fails validation - a declared output may not reference anything under initiatives/, and every check here must open one - and would also run them on every unrelated pull request against artefacts that are generated on request and never committed, reinstating in the test suite the coupling §9.1 removed from the build. §5.2&#39;s nine sections cannot render §6&#39;s ten-slide floor, so a section carries an ordered list of slide texts and the check counts rendered slides. And §4&#39;s literal ban is unwritable for stage names: wish, shaped, planned and building are ordinary English words a guide about a lifecycle made of them cannot avoid, so the error tier is backticks and a run of three, and a bare occurrence warns.</p>
+<p>The eight build items are recorded as a chained todo list, and link-the-guide is re-pointed at the last of them - package-skill - as §11 requires, so it stays quiet until there is a guide to link.</p>
+<h3>2026-08-18 — Phase 0 - prove the four text-derived extractions reach, or drop them</h3>
+<p>Probed all four text-derived fact targets against live and malformed shapes; kept strict readers for workflows, skill frontmatter and the sweep prompt, and dropped build.sh content areas because no authoritative construct declares them.</p>
+<h3>2026-08-18 — Phase 1 - the fact set: one source per key, an unresolvable key is an error, and the drift test</h3>
+<p>Built the Phase 1 fact registry and CLI. Twenty live fact keys now resolve from exactly one source; strict readers fail on unsupported workflow, skill-frontmatter, and sweep-prompt shapes; fourteen miniature-repository tests cover imports, missing exports, duplicate sources, shallow live initiatives, and stage drift.</p>
+<h3>2026-08-18 — Phase 2 - the section format, token substitution, and the three honesty checks</h3>
+<p>Built the strict section frontmatter and page/slide reader, token substitution, structured diagnostics, and the three honesty checks. Added fixtures for unknown tokens, uncited facts, literal stages, budget numbers, blocker prefixes, and missing slide text; all 22 Phase 1 and Phase 2 tests pass.</p>
+<h3>2026-08-18 — Phase 3 - the nine sections, the description renderer, the provenance footer, and the browser harness</h3>
+<p>Completed phase 3 with nine ordered source sections, a self-contained SHA-pinned description renderer, per-section composed/token metrics, and an isolated file:// Playwright harness. The 23 Node tests and offline browser check pass; the first baseline is 1,076 composed words to 23 resolved tokens. Kept the non-automatable newcomer reading row as a separate data blocker and unblocked the deck phase.</p>
+<h3>2026-08-18 — Phase 4 - the deck: slide text, the length check, and keyboard navigation</h3>
+<p>Built the 13-slide self-contained HTML deck with ordered slide text, 10–20 and 90-word gates, SHA-pinned sources, offline browser checks, and full keyboard navigation; all 13 slides render without overflow.</p>
+<h3>2026-08-18 — Phase 5 - the simulator: six steps, Step/Back/Play, vocabulary from the fact set</h3>
+<p>Built the six-step abstract lifecycle simulator as one self-contained HTML file. Its stages, proposable blocker class, sweep phases, and item budget resolve from four selected fact keys; it never reads initiative.json. Node tests and the offline browser harness cover Step/Back boundaries, budget pass-over, merge cascade, interruptible Play, derived vocabulary, and drift failure. Added the manual adequacy walkthrough as a data blocker and unblocked PDF dating.</p>
+<h3>2026-08-19 — Phase 6 - PDF links, refresh dates, and the possibly-stale comparison</h3>
+<p>Built strict PDF-link configuration, fact-source commit dating, visible possibly-stale warnings, and simulator watched-date diagnostics; no current guide PDFs were identifiable on Drive, so the config remains empty until their links and refresh dates are supplied.</p>
+<h3>2026-08-19 — Phase 7 - package the generator as a skill that generates and then checks</h3>
+<p>Packaged the Repo Guide generator as a skill that generates all three artifacts, runs their offline browser checks, reports fact failures, and verifies its outputs remain ignored; re-pointed delivery to its real permission boundary.</p>
+<h3>2026-08-19 — Output quality: register, structure, and a simulator that simulates</h3>
+<p>Reviewed the generated outputs and traced both complaints to single causes. The stilted register came from <code>sections.mjs</code> flattening any fact into a sentence, which forced every fact-bearing sentence into one copula frame; structured values now render as blocks — rails, tables, chip rows, cards — and inlining one is an error. The simulator was not appealing because it replaced its item list every step, so nothing visibly happened; items are now keyed and reconciled, the sweep&#39;s budget spends over time, and the walk-through covers all eight stages including a backward move. Added six fact-derived SVG figures shared by the description and the deck, and gave slides layouts that follow what they carry. Rewrote all nine sections against the new rules.</p>
+<h3>2026-08-19 — Add the hand-made description and deck PDF links with their refresh dates</h3>
+<p>Removed portable-document copies from the current Repo Guide scope, deleted their metadata configuration, and kept simulator review dating without a config file.</p>
+<h3>2026-08-20 — Have someone unfamiliar with the repository read the description and report whether they can identify a live stage and its next move</h3>
+<p>Passed. A newcomer reading the description could identify a live stage and its next move. Recorded in decisions.md 2026-08-20.</p>
+<h3>2026-08-20 — Have someone unfamiliar with the material present the deck end to end and report whether it fits ten minutes</h3>
+<p>Passed. Someone unfamiliar with the material presented the deck end to end within ten minutes. Recorded in decisions.md 2026-08-20.</p>
+<h3>2026-08-20 — Have someone watch and step through the simulator and report whether the abstract lifecycle is adequate</h3>
+<p>Passed. The simulator accurately explains the sweep and the whole lifecycle, and the abstract treatment is adequate. Recorded in decisions.md 2026-08-20.</p>
+<h3>2026-08-20 — Link the generated guide into the site so a newcomer can find it</h3>
+<p>Done by a different route than the item was written for. The guide is published by hand into demos/ with the deploy-demo skill rather than linked into protected site navigation, so no permission was needed. The user will re-release when something significant changes. With no work remaining and no next round wanted, the initiative is declared dormant rather than left quiet.</p>
+<h3>2026-08-27 — Cover test and production deployments in the guide</h3>
+<p>Added a tenth section, &quot;Getting the work in front of someone&quot;, with its own <code>deployment-environments</code> figure and two slides, so the guide describes the two environments every deployment has and which of them a person has to ask for. Two fact keys were registered for it - <code>deployments.environments</code> and <code>deployments.kinds</code> - and the figure draws its lane labels from the two deployment skills, so a rename fails generation rather than leaving the diagram describing something that no longer exists. Regenerated all three artifacts; the released copy under <code>demos/</code> is unchanged and awaits a deliberate release.</p>
+<h3>2026-08-27 — Cover the whole record, and show the stage moving</h3>
+<p>The lifecycle section described only the documents the stage gates, so the wish, the decisions, the test plan and the log were missing from both renderings. Two things were wrong underneath it: <code>STAGE_DOCUMENTS</code> never expected <code>test-plan.md</code>, though the design has required it at that stage since the beginning, and nothing exposed the documents a stage does not gate. Fixed the first, exported <code>DOCUMENTS</code> for the second, and added a <code>documents</code> block view pairing each rendered page title with its file. The section gained a paragraph and a third slide.</p>
+<p>In the simulator, the stage now takes the active phase&#39;s orange on exactly the steps where it moved - badge and lifecycle track together - derived by comparing adjacent steps, so a move back down the lifecycle reads the same stepping either way.</p>
+<h3>2026-08-27 — Say what the two deployment kinds actually are</h3>
+<p>The kinds rendered as two bare chips - &quot;ChatGPT Site&quot; and &quot;Demo&quot; - which named them without telling a reader what either one is. Replaced in both renderings with prose saying what each kind is for, that the skills handle both, and that more kinds may follow. On the deck it becomes a slide of its own rather than a tail on the enforcement slide, which would have run past the copy limit.</p>
+<p>The kinds fact stays live: the <code>deployment-environments</code> figure still resolves it, so the section is not the only thing standing between a new kind and the guide noticing.</p>
+<h3>2026-08-27 — Release</h3>
+<p>Released to production — Demo, <code>74c16d0</code>. 2 commit(s) since the previous release. &lt;https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/&gt; See releases.md.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/knowledge-pipeline/phase-0-portable-custody-core" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
