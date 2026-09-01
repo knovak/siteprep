@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knowledge-pipeline/v1/entity-version",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "entityId", "schemaVersion", "createdAt", "createdBy", "activityId", "state", "content", "contentHash"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "entityId": {"type": "string", "minLength": 1},
+    "schemaVersion": {"const": 1},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "createdBy": {"type": "string", "minLength": 1},
+    "activityId": {"type": "string", "minLength": 1},
+    "previousVersionId": {"type": ["string", "null"]},
+    "state": {"enum": ["proposed", "accepted", "withdrawn", "archived", "disputed"]},
+    "content": {"type": "object"},
+    "extensions": {"type": "object"},
+    "contentHash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

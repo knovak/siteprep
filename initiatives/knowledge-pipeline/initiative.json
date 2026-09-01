@@ -1,17 +1,17 @@
 {
   "title": "Knowledge pipeline",
   "summary": "A staged, auditable pipeline for turning collected sources into curated topic documents.",
-  "stage": "planned",
+  "stage": "building",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "phase-0-portable-custody-core",
-      "title": "Phase 0 - build and verify the portable custody core",
+      "id": "phase-1-login-gated-site-and-collection-shell",
+      "title": "Phase 1 - build the login-gated Site and collection shell",
       "state": "actionable",
       "value": "high",
       "effort": "large",
-      "advances_stage": true
+      "advances_stage": false
     }
   ]
 }
