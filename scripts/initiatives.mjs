@@ -1966,20 +1966,92 @@ function escapeHtml(value) {
  * unrendered page. The source of truth is still the .md file, so this stays
  * reversible.
  *
- * Supported: headings, paragraphs, lists, fenced code, blockquotes, tables,
- * horizontal rules, links, bold, italic, inline code.
+ * Supported: headings, paragraphs, lists, fenced and indented code,
+ * blockquotes, tables, horizontal rules, links, bold, italic, inline code.
  */
-function renderMarkdown(source) {
+export function renderMarkdown(source) {
   const lines = source.replace(/\r\n/g, '\n').split('\n');
   const out = [];
   let index = 0;
 
   const inline = (text) => escapeHtml(text)
     .replace(/`([^`]+)`/g, (_, code) => `<code>${code}</code>`)
+    .replace(/&lt;(https?:\/\/[^\s&]+(?:&amp;[^\s&]+)*)&gt;/g, (_, href) =>
+      `<a href="${href}">${href}</a>`)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>')
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, href) =>
       `<a href="${href}">${label}</a>`);
+
+  const listMarker = (value) => {
+    const match = value.match(/^(\s*)([-*+]|\d+[.)])(\s+)(.*)$/);
+    if (!match) return null;
+    return {
+      indent: match[1].length,
+      ordered: /^\d/.test(match[2]),
+      start: /^\d/.test(match[2]) ? Number.parseInt(match[2], 10) : null,
+      contentIndent: match[1].length + match[2].length + match[3].length,
+      content: match[4]
+    };
+  };
+
+  const leadingIndent = (value) => (value.match(/^\s*/) || [''])[0].length;
+
+  const renderList = () => {
+    const first = listMarker(lines[index]);
+    const items = [];
+    let loose = false;
+
+    while (index < lines.length) {
+      const marker = listMarker(lines[index]);
+      if (!marker || marker.indent !== first.indent || marker.ordered !== first.ordered) break;
+
+      const itemLines = [marker.content];
+      index += 1;
+
+      while (index < lines.length) {
+        const nextMarker = listMarker(lines[index]);
+        if (nextMarker && nextMarker.indent === first.indent
+          && nextMarker.ordered === first.ordered) break;
+
+        if (!lines[index].trim()) {
+          let next = index + 1;
+          while (next < lines.length && !lines[next].trim()) next += 1;
+          const afterBlank = listMarker(lines[next] || '');
+
+          if (afterBlank && afterBlank.indent === first.indent
+            && afterBlank.ordered === first.ordered) {
+            loose = true;
+            index = next;
+            break;
+          }
+          if (next < lines.length && leadingIndent(lines[next]) > first.indent) {
+            loose = true;
+            itemLines.push('');
+            index += 1;
+            continue;
+          }
+          break;
+        }
+
+        const indent = leadingIndent(lines[index]);
+        if (indent <= first.indent) break;
+        itemLines.push(lines[index].slice(Math.min(marker.contentIndent, indent)));
+        index += 1;
+      }
+
+      items.push(itemLines);
+    }
+
+    const tag = first.ordered ? 'ol' : 'ul';
+    const start = first.ordered && first.start !== 1 ? ` start="${first.start}"` : '';
+    const body = items.map((itemLines) => {
+      let rendered = renderMarkdown(itemLines.join('\n'));
+      if (!loose) rendered = rendered.replace(/^<p>([\s\S]*?)<\/p>(?=\n|$)/, '$1');
+      return `<li>${rendered}</li>`;
+    }).join('');
+    return `<${tag}${start}>${body}</${tag}>`;
+  };
 
   while (index < lines.length) {
     const line = lines[index];
@@ -1994,6 +2066,26 @@ function renderMarkdown(source) {
         index += 1;
       }
       index += 1;
+      out.push(`<pre><code>${escapeHtml(code.join('\n'))}</code></pre>`);
+      continue;
+    }
+
+    if (/^( {4}|\t)/.test(line)) {
+      const code = [];
+      while (index < lines.length) {
+        if (/^( {4}|\t)/.test(lines[index])) {
+          code.push(lines[index].replace(/^( {4}|\t)/, ''));
+          index += 1;
+          continue;
+        }
+        if (!lines[index].trim()) {
+          code.push('');
+          index += 1;
+          continue;
+        }
+        break;
+      }
+      while (code.at(-1) === '') code.pop();
       out.push(`<pre><code>${escapeHtml(code.join('\n'))}</code></pre>`);
       continue;
     }
@@ -2042,18 +2134,8 @@ function renderMarkdown(source) {
       continue;
     }
 
-    const bullet = /^\s*[-*+]\s+/;
-    const numbered = /^\s*\d+[.)]\s+/;
-    if (bullet.test(line) || numbered.test(line)) {
-      const ordered = numbered.test(line) && !bullet.test(line);
-      const pattern = ordered ? numbered : bullet;
-      const items = [];
-      while (index < lines.length && pattern.test(lines[index])) {
-        items.push(lines[index].replace(pattern, ''));
-        index += 1;
-      }
-      const tag = ordered ? 'ol' : 'ul';
-      out.push(`<${tag}>${items.map((item) => `<li>${inline(item)}</li>`).join('')}</${tag}>`);
+    if (listMarker(line)) {
+      out.push(renderList());
       continue;
     }
 
@@ -2061,7 +2143,7 @@ function renderMarkdown(source) {
     while (index < lines.length && lines[index].trim()
       && !lines[index].startsWith('```')
       && !/^#{1,6}\s/.test(lines[index])
-      && !bullet.test(lines[index]) && !numbered.test(lines[index])
+      && !listMarker(lines[index])
       && !lines[index].trimStart().startsWith('>')) {
       paragraph.push(lines[index]);
       index += 1;

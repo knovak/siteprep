@@ -79,8 +79,10 @@ are.
 ## Markdown rendering
 
 Documents are rendered to HTML **at build time**, by a small renderer inside
-`initiatives.mjs`. Supported: headings, paragraphs, lists, fenced code,
-blockquotes, tables, horizontal rules, links, bold, italic, inline code.
+`initiatives.mjs`. Supported: headings, paragraphs, lists, fenced and indented
+code, blockquotes, tables, horizontal rules, links, bold, italic, inline code.
+Wrapped list-item lines remain in their item, indented child lists remain
+nested, and standard angle-bracket URL autolinks render as links.
 
 The design recommended a client-side widget, with build-time rendering as the
 runner-up "if the build already grows a markdown dependency for another reason".
@@ -534,9 +536,10 @@ shallow clone would report every initiative as touched today.
 - every initiative has an overview page, and is linked from the index
 - no raw `.md` is published under `initiatives/` - documents are rendered
 
-`tests/initiatives-digest.test.mjs` covers the survey, and
+`tests/initiatives-rendering.test.mjs` covers wrapped and nested lists, code
+blocks, and URL autolinks. `tests/initiatives-digest.test.mjs` covers the survey, and
 `tests/initiatives-sweep.test.mjs` covers selection, proposal selection,
-completion, and the scope check - both against fixtures in
+completion, and the scope check - the latter two against fixtures in
 `tests/fixtures/initiatives/`, using `node:test`. The completion tests copy the
 fixtures to a temporary directory, since they mutate state.
 
