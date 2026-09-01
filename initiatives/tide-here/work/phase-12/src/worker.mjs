@@ -1,11 +1,13 @@
 import {createProviderGatewayApp} from '../../phase-10/src/gateway.mjs';
 import {australianStationCatalogue, forecastAustralianStandardPort} from '../../phase-11/src/australia-provider.mjs';
 import {forecastFesFallback, resolveFesModelPoint} from './fes-provider.mjs';
+import {importFesDataset} from './fes-importer.mjs';
 import {initializeStageFour} from './stage-four.mjs';
 
 export function createStageFourApp(options = {}) {
   return createProviderGatewayApp({
     initialize: initializeStageFour,
+    importDataset: importFesDataset,
     forecastAdapters: {
       fes2022: forecastFesFallback,
       'australia-standard-ports': forecastAustralianStandardPort,

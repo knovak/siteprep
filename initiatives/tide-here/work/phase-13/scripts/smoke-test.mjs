@@ -25,6 +25,8 @@ if (!baseUrl || !token) {
   const second = await initialize();
   const health = await request('/health');
   const providers = await request('/providers');
+  const fesDescriptor = health.providers.find(provider => provider.id === 'fes2022');
+  const globalFes = fesDescriptor?.dataset?.id?.startsWith('fes2022b-global-coast');
 
   for (const provider of ['noaa', 'chs']) {
     const descriptor = providers.providers.find(item => item.id === provider);
@@ -61,9 +63,16 @@ if (!baseUrl || !token) {
   const modelPoint = await request('/resolve', {
     method: 'POST',
     headers: {'content-type': 'application/json'},
-    body: JSON.stringify({provider: 'fes2022', latitude: 53.27, longitude: -9.05}),
+    body: JSON.stringify({
+      provider: 'fes2022',
+      latitude: 53.27,
+      longitude: -9.05,
+      displayName: 'Galway, Ireland',
+    }),
   });
-  if (modelPoint.station.id !== 'fes2022-galway') throw new Error('FES2022 Galway point did not resolve');
+  if (globalFes ? !modelPoint.station.id.startsWith('fes2022-coast-') : modelPoint.station.id !== 'fes2022-galway') {
+    throw new Error('FES2022 Galway point did not resolve from the active dataset');
+  }
   const fesRows = fiveLocalDays('2026-08-27T12:00:00Z', modelPoint.station.timeZone);
   const fes = await postForecast({
     provider: 'fes2022',
@@ -86,16 +95,35 @@ if (!baseUrl || !token) {
     throw new Error('FES2022 result did not carry its licensed approximate provenance');
   }
   const reportedGaps = [];
-  for (const location of [
+  const coverageChecks = [
     {name: 'Cooktown', latitude: -15.4667, longitude: 145.2833, stationId: 'fes2022-cooktown'},
     {name: 'Gibraltar', latitude: 36.1285933, longitude: -5.3474761, stationId: 'fes2022-gibraltar'},
-  ]) {
+    ...(globalFes ? [
+      {name: 'Nice', latitude: 43.7102, longitude: 7.2620, timeZone: 'Europe/Paris'},
+      {name: 'Amsterdam', latitude: 52.3676, longitude: 4.9041, timeZone: 'Europe/Amsterdam'},
+    ] : []),
+  ];
+  for (const location of coverageChecks) {
     const resolution = await request('/resolve', {
       method: 'POST',
       headers: {'content-type': 'application/json'},
-      body: JSON.stringify({provider: 'fes2022', latitude: location.latitude, longitude: location.longitude}),
+      body: JSON.stringify({
+        provider: 'fes2022',
+        latitude: location.latitude,
+        longitude: location.longitude,
+        displayName: location.name,
+      }),
     });
-    if (resolution.station.id !== location.stationId) throw new Error(`FES2022 ${location.name} point did not resolve`);
+    if (globalFes) {
+      if (!resolution.station.id.startsWith('fes2022-coast-') || resolution.coast.distanceKm > 40) {
+        throw new Error(`Global FES2022 ${location.name} point did not resolve within 40 km`);
+      }
+      if (location.timeZone && resolution.station.timeZone !== location.timeZone) {
+        throw new Error(`Global FES2022 ${location.name} returned ${resolution.station.timeZone}`);
+      }
+    } else if (resolution.station.id !== location.stationId) {
+      throw new Error(`FES2022 ${location.name} validation point did not resolve`);
+    }
     const forecast = await postForecast({
       provider: 'fes2022',
       context: {
@@ -128,6 +156,7 @@ if (!baseUrl || !token) {
     australianStations: catalogue.stations.length,
     australianEvents,
     fallbackPoint: modelPoint.station.id,
+    fallbackDataset: fesDescriptor.dataset,
     fallbackEvents: fes.days.flatMap(day => day.tides).length,
     fallbackWarnings: fes.warnings.map(warning => warning.code),
     reportedGaps,

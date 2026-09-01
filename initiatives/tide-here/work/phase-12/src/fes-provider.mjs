@@ -101,13 +101,17 @@ export async function resolveFesModelPoint({store, request, descriptor}) {
     throw error;
   }
   const point = match.point;
+  const displayName = typeof request.displayName === 'string'
+    ? request.displayName.trim().replace(/\s+/g, ' ').slice(0, 120)
+    : '';
+  const resultName = displayName ? `FES2022 near ${displayName}` : point.name;
   return {
     provider: descriptor.id,
     station: {
       provider: descriptor.id,
       country: point.country ?? null,
       id: point.id,
-      name: point.name,
+      name: resultName,
       kind: 'model-point',
       latitude: point.latitude,
       longitude: point.longitude,
@@ -116,7 +120,7 @@ export async function resolveFesModelPoint({store, request, descriptor}) {
       referenceStationId: null,
     },
     coast: {
-      name: point.name,
+      name: resultName,
       distanceKm: match.distanceKm,
     },
   };
@@ -174,7 +178,7 @@ export async function forecastFesFallback({store, request, descriptor}) {
       provider: descriptor.id,
       country: request.station.country ?? null,
       id: raw.point.id,
-      name: raw.point.name,
+      name: request.context.coast.name,
       kind: 'model-point',
       datum: raw.point.datum,
       referenceStationId: null,

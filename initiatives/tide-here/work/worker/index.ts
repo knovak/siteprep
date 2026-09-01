@@ -14,7 +14,16 @@ interface ExecutionContext {
   passThroughOnException(): void;
 }
 
-const API_PATHS = new Set(["/init", "/health", "/providers", "/stations", "/resolve", "/forecast"]);
+const API_PATHS = new Set([
+  "/init",
+  "/import/object",
+  "/import/activate",
+  "/health",
+  "/providers",
+  "/stations",
+  "/resolve",
+  "/forecast",
+]);
 
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {

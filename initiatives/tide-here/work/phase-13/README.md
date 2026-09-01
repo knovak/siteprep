@@ -24,6 +24,11 @@ environment from the current public production Site.
   prepared data already included in the tested source to R2, verifies the exact
   licensed Australian and fallback versions, and activates the provider
   registry last.
+- `POST /import/object` and `POST /import/activate` use the same secret. The
+  resumable host-side importer verifies each local and remote SHA-256, activates
+  the complete immutable inventory, then switches the provider registry. A
+  later `/init` preserves an already-active global FES dataset instead of
+  silently downgrading it to the seven-point validation extract.
 - Operational logs contain only route, method, status, provider id, and elapsed
   time. They exclude URLs, request bodies, submitted names, coordinates, coast
   names, and station ids.
@@ -83,6 +88,22 @@ tab-scoped, unknown fixture names did not become Seattle, and a manual
 That version 11 evidence remains the validation record for the FES2022 source
 in this branch, but FES2022 is not active on the current version 13 test Site.
 Review and a new test deployment are required before any production release.
+
+## Global FES import
+
+After the retained atlas has produced a package, import it without copying the
+package into `site-public` or the Git repository:
+
+```sh
+INIT_TOKEN=<secret> node phase-13/scripts/import-fes-dataset.mjs \
+  ../../../../siteprep-data/tide-here/fes2022/global-coast-r1 \
+  https://tide-here-test.ken-novak.chatgpt.site
+```
+
+The original 3.95-GB atlas and the resumable derived package remain in the
+local `siteprep-data` folder. The deployed Site stores the derived immutable
+tile JSON and manifests in its private `TIDE_DATA` R2 binding; it uses neither
+a database nor publicly downloadable static data files.
 
 The production Site was not changed. Its existing version 6 already serves the
 same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.

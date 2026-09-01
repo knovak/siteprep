@@ -34,6 +34,11 @@ function completeForecast(response) {
   );
 }
 
+function cacheableForecast(response) {
+  return completeForecast(response)
+    && !response.warnings.some((warning) => warning?.code === 'tides-unavailable');
+}
+
 export class LocalHistory {
   constructor({ storage, now = () => new Date() }) {
     this.storage = requireStorage(storage);
@@ -117,7 +122,13 @@ export class ForecastCache {
     const key = await this.key(context);
     try {
       const cached = JSON.parse(this.storage.getItem(key));
-      if (cached?.hour === this.contextHour(context) && completeForecast(cached.result)) return cached.result;
+      if (cached?.hour === this.contextHour(context) && cacheableForecast(cached.result)) return cached.result;
+      if (completeForecast(cached?.result) && !cacheableForecast(cached.result)) {
+        this.storage.removeItem(key);
+        const remaining = parseArray(this.storage.getItem(FORECAST_CACHE_INDEX_KEY))
+          .filter((cachedKey) => cachedKey !== key);
+        this.storage.setItem(FORECAST_CACHE_INDEX_KEY, JSON.stringify(remaining));
+      }
     } catch {
       // A malformed or missing cache value is a miss.
     }
@@ -127,6 +138,13 @@ export class ForecastCache {
   async write(context, result) {
     if (!completeForecast(result)) throw new TypeError('Forecast cache accepts a complete normalized forecast');
     const key = await this.key(context);
+    if (!cacheableForecast(result)) {
+      this.storage.removeItem(key);
+      const remaining = parseArray(this.storage.getItem(FORECAST_CACHE_INDEX_KEY))
+        .filter((cachedKey) => cachedKey !== key);
+      this.storage.setItem(FORECAST_CACHE_INDEX_KEY, JSON.stringify(remaining));
+      return result;
+    }
     for (const oldKey of parseArray(this.storage.getItem(FORECAST_CACHE_INDEX_KEY))) {
       if (oldKey !== key && String(oldKey).startsWith(FORECAST_CACHE_PREFIX)) this.storage.removeItem(oldKey);
     }
