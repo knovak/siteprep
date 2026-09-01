@@ -19,10 +19,14 @@ request, so the retry action cannot replay a stale service failure.
 
 The page says exactly what leaves the browser: a typed place goes directly to
 the configured geocoder; prediction-station lists, chosen-station details, and
-the selected time range go directly to NOAA and CHS as needed. History remains
-on the device until the user clears it. The disclosure and history button are
-below the data display. There is no application analytics, service-worker
-refresh, periodic request, or history upload.
+the selected time range go directly to NOAA and CHS as needed. The stored
+Australian catalogue comes from Tide Here; selected Australian ports and FES
+model points use body-only requests to the Tide Here gateway. Its operational
+logs exclude submitted place names, coordinates, coasts, and station/model
+identifiers. History remains on the device until the user clears it. The
+disclosure and history button are below the data display. There is no
+application analytics, service-worker refresh, periodic request, or history
+upload.
 
 ## Verification
 

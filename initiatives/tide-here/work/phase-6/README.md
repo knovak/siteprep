@@ -48,6 +48,15 @@ and model responses are enriched with sun and moon events in the browser using
 the selected point's IANA zone. Prediction source details show the provider's
 attribution, disclaimer, source and licence links.
 
+An FES result is labelled **FES2022 near** the resolved place; it does not call
+the sampled model point an official station. FES heights are converted from
+centimetres to metres around the model mean-sea-level harmonic datum, not chart
+datum or lowest astronomical tide. They describe astronomical harmonic extrema,
+not observed water level, and exclude weather, storm surge, river flow, waves,
+and local harbour effects. The source/location disclosure and the general
+safety notice carry those facts; the page deliberately does not repeat them in
+a second fallback banner.
+
 The direct NOAA/CHS catalogue and the stored Australian catalogue are separate
 availability boundaries. If one source cannot load, matching continues with
 the stations from the other; the page reports total catalogue failure only when

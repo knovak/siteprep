@@ -19,22 +19,41 @@ coverage declines or only distant, ambiguous official choices are available.
   centimetres to the normalized metre contract, and labels every result
   approximate and not for navigation.
 - `POST /resolve` selects the nearest initialized model point only for the
-  active FES descriptor. The runtime dataset contains validated points near
-  Maroochydore, Bundaberg, Cooktown, Brest, Galway, Gibraltar, and Cape Town,
-  each with a 20 km maximum selection radius.
+  active FES descriptor. The active global runtime dataset contains 65,203
+  sampled coastal points in 376 non-empty 10-degree tiles. Its plan uses
+  approximately 15 km coastal spacing and a 40 km maximum place-to-point
+  selection distance. The seven reviewed locations remain a committed
+  validation extract, not the limit of deployed coverage.
 - NOAA, CHS, and Australian national providers still outrank the global
   fallback. Other future national sources still require only a registry entry
   and adapter, not a gateway branch.
 
 ## Licensed-data boundary
 
-The active runtime artifact is a small adapted extract from the FES2022b native
-non-structured ocean-tide atlas. It contains 34 native-mesh harmonic constants
-at each of seven reviewed water points—not the source grid—and records the
-source file's exact 3,953,139,340-byte size and SHA-256 digest. The original
-NetCDF is neither committed nor served. The earlier TICON-3-derived artifact
-remains a deterministic test fixture and is never selected by the active
-registry.
+The active runtime artifact is a 146,330,220-byte adapted coastal extract from
+the FES2022b native non-structured ocean-tide atlas. It contains 34 native-mesh
+harmonic constants at each of 65,203 reviewed water points—not the source
+grid—and records the source file's exact 3,953,139,340-byte size and SHA-256
+digest. The original NetCDF is neither committed nor served. The seven-point
+FES extract remains a validation fixture, and the earlier TICON-3-derived
+artifact remains a deterministic non-FES fixture; neither defines deployed
+global coverage.
+
+## Interpreting the runtime output
+
+The runtime calculates astronomical harmonic extrema and converts FES heights
+from centimetres to metres. Those heights are relative to the FES model's mean-
+sea-level harmonic datum. They are not chart datum, lowest astronomical tide,
+depth, clearance, or an observed water level, and absolute values from another
+provider cannot be compared without establishing the datum offset. The selected
+point's IANA zone controls the five local day rows and displayed event times.
+
+The result identifies a sampled model point near the geocoded place rather than
+an official station. It is suitable only as an approximate tide-pattern and
+timing estimate. Weather, atmospheric pressure, storm surge, river discharge,
+waves, and local harbour effects are outside FES and may materially move actual
+levels and times. Every FES response therefore keeps `approximate-fallback`,
+source/licence details, and the not-for-navigation-or-safety warning.
 
 The preparer accepts a production artifact only when its metadata identifies a
 licensed source, FES2022, source and licence URLs, attribution, a disclaimer,
@@ -130,10 +149,12 @@ error is 0.000013 cm. The upload inventory contains 377 checksum-addressed
 objects totalling 146,330,220 bytes.
 
 At Cooktown, PyFES reports direct native-mesh interpolation using six mesh
-points. At the other six shoreline and harbour coordinates it reports bounded
-extrapolation using 30–39 mesh points. The configured atlas extrapolation
-distance is 20 km, the same as the runtime point-selection guard. The
-official-port comparisons below are what permit this deliberately narrow use.
+points. At the other six shoreline and harbour validation coordinates it
+reports bounded extrapolation using 30–39 mesh points. The configured PyFES
+native-mesh extrapolation distance is 20 km; this is an atlas extraction rule,
+not the global package's separate 40 km place-to-sampled-point runtime
+selection limit. The official-port comparisons below are what permit this
+deliberately narrow model use.
 
 The output uses `tide-here/fes-source-extract/v1`. Run the fixed official-port
 comparison before generating the committed module, then prepare both a review

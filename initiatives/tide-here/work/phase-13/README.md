@@ -1,8 +1,9 @@
 # Phase 13: global coverage Stage 5
 
 Stage 5 packages the Tide Here browser page together with the Stage 4 server
-gateway as a ChatGPT Sites app. The existing public test Site remains a separate
-environment from the current public production Site.
+gateway as a ChatGPT Sites app. The public test and production Sites run the
+same merged application source but remain separate environments, source
+repositories, secrets, deployments, and R2 object stores.
 
 ## Runtime shape
 
@@ -17,8 +18,8 @@ environment from the current public production Site.
   when an Australian reference port or active FES2022 model point is selected.
   The page calls `POST /resolve` after official catalogue coverage declines or
   only distant, ambiguous official choices remain; coordinates stay in its
-  request body, and the route serves only points within the active sparse
-  FES2022 dataset's declared radius. A nearby model result remains approximate
+  request body, and the route serves only points within the active global
+  FES2022 dataset's 40 km selection limit. A nearby model result remains approximate
   while the official choices stay available as explicit alternatives.
 - Hosted `POST /init` requires the `INIT_TOKEN` secret. Initialization writes
   prepared data already included in the tested source to R2, verifies the exact
@@ -35,9 +36,10 @@ environment from the current public production Site.
 
 ## Deployment and initialization
 
-The test workflow builds and publishes the existing `tide-here-test` Sites
-project without changing its public access. It configures `INIT_TOKEN`, calls
-`POST /init`, verifies `/health`, calls `/init` again to prove zero repeat
+Each environment workflow builds and publishes its existing Sites project
+without changing public access. It configures that environment's `INIT_TOKEN`,
+imports or verifies the global package in that environment's private R2 store,
+calls `POST /init`, verifies `/health`, calls `/init` again to prove zero repeat
 writes, and runs HTTPS checks for:
 
 - the browser page and live NOAA and CHS catalogues;
@@ -45,18 +47,38 @@ writes, and runs HTTPS checks for:
 - the indexed approximate FES2022 fallback, source/licence disclosure, and
   safety warnings.
 
-The current test deployment contains the normalized output
+Both current deployments contain the normalized output
 of all 76 Standard Port PDFs in the Bureau of Meteorology's 2026 state and
 territory indexes. It carries the source attribution, disclaimer, and per-port
 PDF URL into the browser. It also activates the licensed global coastal
 FES2022b package as the approximate fallback after configured official coverage
-declines. The production Site is unchanged.
+declines or is too distant or ambiguous.
 
 The expanded `2026-bom-v2` artifact and
 `stage-4-global-2026-08-29-global-coast-r1` registry are active on the test
-Site. Direct NOAA/CHS station catalogues, the stored Australian catalogue, and
+and production Sites. Direct NOAA/CHS station catalogues, the stored Australian catalogue, and
 the FES tile inventory are separate availability boundaries in the browser:
 one can fail without masking healthy coverage from the others.
+
+## Current deployment parity
+
+- **Test:** public Site version 15 at
+  <https://tide-here-test.ken-novak.chatgpt.site>.
+- **Production:** public Site version 7 at
+  <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>.
+- **Merged source:** initiative source commit `424926d`, carrying the global
+  FES2022 fallback, earlier FES activation/validation, and expanded Australian
+  catalogue.
+- **Active stored versions in each environment:** Australian
+  `2026-bom-v2`; FES dataset `fes2022b-global-coast` version
+  `2026-08-29-global-coast-r1`; registry
+  `stage-4-global-2026-08-29-global-coast-r1`.
+
+On 2026-09-01 UTC, both environments passed the same protected import,
+zero-write repeat initialization, NOAA, CHS, 76-port/1,470-event Australian,
+Galway, Cooktown, Gibraltar, Nice, Amsterdam, and hosted-page sweep.
+Maroochydore/Mooloolaba and Bundaberg continued to resolve to official Bureau
+data before FES.
 
 ## Recorded global FES2022 test deployment
 
@@ -105,14 +127,14 @@ tab-scoped, unknown fixture names did not become Seattle, and a manual
 `coverage-unavailable` state. Worker logs contained no execution failures.
 
 That version 11 evidence remains the validation record for the original sparse
-FES2022 source. Version 14 supersedes it with global coastal coverage and is the
-current test deployment. Review is still required before any production
-release.
+FES2022 source. Version 14 superseded it with global coastal coverage; version
+15 republishes the merged source now shared with production version 7.
 
 ## Global FES import
 
 After the retained atlas has produced a package, import it without copying the
-package into `site-public` or the Git repository:
+package into `site-public` or the Git repository. Run the importer separately
+for test and production because their R2 stores are isolated:
 
 ```sh
 INIT_TOKEN=<secret> node phase-13/scripts/import-fes-dataset.mjs \
@@ -125,8 +147,10 @@ local `siteprep-data` folder. The deployed Site stores the derived immutable
 tile JSON and manifests in its private `TIDE_DATA` R2 binding; it uses neither
 a database nor publicly downloadable static data files.
 
-The production Site was not changed. Its existing version 6 already serves the
-same `stage-4-v5` registry and 76-port `2026-bom-v2` dataset.
+Production version 7 now stores the same global package and active registry as
+test version 15. The objects are duplicated intentionally across the two
+private R2 environments; neither deployment depends on the local retained copy
+after import.
 
 ## Local verification
 

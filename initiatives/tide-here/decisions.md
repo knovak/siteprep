@@ -200,3 +200,26 @@ production Sites, now and in the future.**
   unapproved data or reuse terms, FES2022 activation, or matcher-threshold
   changes. Those remain separate decisions even when a later deployment is
   already authorized.
+
+## 2026-09-01 — May the merged validated global FES2022 fallback be deployed?
+
+**Yes. Deploy the merged FES2022-capable source and its verified global coastal
+package to Tide Here's existing public test and production Sites.**
+
+### What this settles, and what it does not
+
+- Test version 15 and production version 7 may run the same merged source,
+  preserving both existing URLs and public access settings.
+- Each Site receives its own checksum-verified copy of dataset
+  `fes2022b-global-coast/2026-08-29-global-coast-r1` in its private R2 store;
+  neither depends on a database, a public static data file, or a runtime atlas
+  download.
+- Official configured NOAA, CHS, and Bureau sources continue to outrank FES.
+  The fallback may be used only through its 40 km sampled-point selection
+  guard when official coverage declines or is too distant or ambiguous.
+- Every FES result remains an approximate harmonic estimate relative to the
+  model mean-sea-level datum, excludes weather and storm surge, and is not for
+  navigation or safety decisions.
+- This does not authorize a new Site, an access change, a different FES source
+  or licence, a wider selection limit, or removal of the official-source
+  priority and interpretation disclosures.

@@ -313,10 +313,9 @@ adds no provider.
 
 ## 6. What this plan does not decide
 
-- **Anything about version 2's browser location.** §9 establishes it needs a
-  secure context and permission-state tests but no new forecast contract,
-  because it feeds the same coordinate path. That is a reason not to plan it
-  now, not a reason it is easy.
+- **The original plan did not decide version 2's browser location.** It was
+  delivered later as **Show here** with a secure context and permission-state
+  tests, reusing the same coordinate and forecast contract.
 - **A third country's provider.** §2.1's audit is a queue, not a backlog. Adding
   one is a new adapter plus its own licence and CORS check, which is phase 0 and
   phase 3 repeated for that provider.
@@ -456,18 +455,17 @@ downloads, decompresses, or derives FES data in the request path.
 any result derived from FES is labelled approximate and remains separate from
 weather and storm-surge effects.
 
-**Status, 2026-08-29:** complete locally in `work/phase-12`. A credentialed
-offline PyFES job extracted five 34-constituent water points from the FES2022b
-native grid, recorded the 3,953,139,340-byte source checksum, and round-tripped
-every rounded point to within 0.000004 cm of the atlas path. The pre-declared
-Maroochydore/Mooloolaba and Bundaberg comparison gates both passed across 20
-paired extrema. PyFES identifies the five selected coastal results as bounded
-native-mesh extrapolations using 30–39 nodes, which the source metadata records
-explicitly. Registry `stage-4-v6` therefore activates the licensed sparse
-extract, while official national providers retain priority. This source was
-validated on public test Site version 11 on 2026-08-29; version 13 subsequently
-superseded that deployment with the `stage-4-v5` non-FES fixture, so the FES2022
-source is not active on the current test Site.
+**Status, 2026-09-01:** complete and released. The retained 3,953,139,340-byte
+FES2022b atlas was processed offline into a resumable 146,330,220-byte package
+with 376 non-empty tiles and 65,203 coastal points. Every point contains all 34
+constituents; 1,512 undefined planned samples were omitted and recorded, and
+the maximum observed PyFES round-trip error was 0.000013 cm. The global plan
+uses approximately 15 km coastal sampling, 10-degree extraction tiles, and a
+40 km runtime selection limit. The pre-declared Maroochydore/Mooloolaba and
+Bundaberg comparison gates both passed across 20 paired extrema. Registry
+`stage-4-global-2026-08-29-global-coast-r1` activates the licensed package while
+official national providers retain priority. The package is active in both
+public Sites' separate private R2 stores.
 
 #### Stage 5 — Test deployment
 
@@ -482,16 +480,13 @@ is exercised. A second call must report no changes.
 **Exit:** U.S., Canadian, Australian, and fallback locations work at the real
 HTTPS URL, and failure or denial leaves the current public version untouched.
 
-**Status, 2026-08-30 UTC:** complete on public test Site version 13 at
+**Status, 2026-09-01 UTC:** complete on public test Site version 15 at
 <https://tide-here-test.ken-novak.chatgpt.site>. The protected initializer
-activated registry `stage-4-v5`, the licensed 76-port Bureau 2026 dataset, and
-the explicitly non-FES fallback fixture; a second call wrote zero objects. The
-live source-family checks passed across all 76 Australian ports, and browser
-searches for Port Douglas and remote Cocos Islands passed with source attribution
-and no synthetic-data notice on licensed results. The post-check Worker
-execution-error count was zero. Evidence is recorded in `work/phase-13`;
-production remains untouched at version 6, which already serves the same
-`stage-4-v5` registry and 76-port `2026-bom-v2` dataset.
+preserved the licensed 76-port Bureau dataset and active global FES package; a
+repeat initialization wrote zero objects. The live sweep passed NOAA, CHS, all
+76 Australian ports and 1,470 official events, and FES results for Galway,
+Cooktown, Gibraltar, Nice, and Amsterdam. Maroochydore and Bundaberg remained on
+official Bureau sources. Evidence is recorded in `work/phase-13`.
 
 #### Stage 6 — Production release
 
@@ -507,3 +502,12 @@ rollback.
 **Exit:** the production site reports the intended versions, attribution is
 visible, the live checks pass, and no user request can trigger an upstream file
 download or mutate stored data.
+
+**Status, 2026-09-01 UTC:** complete on public production Site version 7 at
+<https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>. The same
+merged code and immutable Bureau/FES versions as test were loaded into
+production's separate R2 store. Protected import and initialization succeeded,
+a repeat initialization wrote zero objects, and the full NOAA, CHS, 76-port
+Australian, global FES, and page sweep passed. The prior active manifests remain
+versioned for rollback, and `releases.md` records the exact released source
+commit.
