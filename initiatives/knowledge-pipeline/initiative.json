@@ -21,8 +21,8 @@
   ],
   "todo": [
     {
-      "id": "phase-2-harvest-native-adapters-and-tag-inventory",
-      "title": "Phase 2 - build harvest, native adapters, and the tag inventory",
+      "id": "phase-3-tagging-assessment-promotion-and-llm-file-loop",
+      "title": "Phase 3 - build tagging, assessment, promotion, and the LLM file loop",
       "state": "actionable",
       "value": "high",
       "effort": "large",

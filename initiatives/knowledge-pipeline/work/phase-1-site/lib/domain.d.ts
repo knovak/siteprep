@@ -8,5 +8,7 @@ export function selectionToken(actorId: string, collectionId: string, selectionR
 export function erasePreview(collection: any, counts: any, selectionRevision: number): any;
 export function confirmErase(preview: any, submitted: any): {ok: boolean; code: string | null};
 export function makeEmptyBackup(input: any): Promise<any>;
+export function makeCollectionBackup(input: any): Promise<any>;
+export function validateCollectionBackup(pkg: any, expectedCollectionId: string): string[];
 export function validateEmptyBackup(pkg: any, expectedCollectionId: string): string[];
 export function privateBlobKey(actorId: string, collectionId: string, kind: string, id: string): string;

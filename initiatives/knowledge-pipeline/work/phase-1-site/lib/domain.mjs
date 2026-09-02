@@ -69,15 +69,40 @@ export function confirmErase(preview, submitted) {
   return {ok: true, code: null};
 }
 
-export async function makeEmptyBackup({collection, actor, activities, receipts, createdAt}) {
+export async function makeCollectionBackup({collection, actor, activities, receipts, sourceRecords = [], dependencyProposals = [], createdAt}) {
+  const entities = sourceRecords.map((source) => ({
+    id: source.id,
+    type: 'source',
+    canonicalKey: source.canonicalKey,
+    state: source.state,
+    currentVersionId: source.currentVersionId,
+    aliases: source.aliases,
+    createdAt: source.createdAt,
+  }));
+  const entityVersions = sourceRecords.flatMap((source) => source.versions.map((version) => ({
+    id: version.id,
+    entityId: source.id,
+    contentHash: version.contentHash,
+    content: version.content,
+    actorId: version.actorId,
+    createdAt: version.createdAt,
+  })));
   const logical = {
     format: 'knowledge-pipeline/v1',
     createdAt,
     scope: {knowledgeSpaceId: `space:${actor.id}`, collectionId: collection.id},
     records: {
-      entities: [],
-      entityVersions: [],
-      relationships: [],
+      entities,
+      entityVersions,
+      relationships: dependencyProposals.map((proposal) => ({
+        id: proposal.id,
+        type: proposal.type,
+        fromEntityId: proposal.sourceId,
+        targetNamespace: proposal.targetNamespace,
+        targetKey: proposal.targetKey,
+        state: proposal.state,
+        createdAt: proposal.createdAt,
+      })),
       activities,
       receipts,
     },
@@ -91,19 +116,47 @@ export async function makeEmptyBackup({collection, actor, activities, receipts, 
         revision: collection.revision,
       },
       'siteprep:configuration': {schemaVersion: 1, stage: 'harvest', blobBinding: 'private'},
+      'siteprep:sourceTags': sourceRecords.flatMap((source) => source.tags.map((item) => ({sourceId: source.id, ...item}))),
     },
   };
   const identity = await sha256(canonicalJson(logical));
   return {packageId: `package:${identity.slice(7, 39)}`, ...logical};
 }
 
-export function validateEmptyBackup(pkg, expectedCollectionId) {
+export async function makeEmptyBackup(input) {
+  return makeCollectionBackup({...input, sourceRecords: []});
+}
+
+export function validateCollectionBackup(pkg, expectedCollectionId) {
   const errors = [];
   if (pkg?.format !== 'knowledge-pipeline/v1') errors.push('package.version.unsupported');
   if (pkg?.scope?.collectionId !== expectedCollectionId) errors.push('package.scope.mismatch');
   for (const group of ['entities', 'entityVersions', 'relationships', 'activities', 'receipts']) {
     if (!Array.isArray(pkg?.records?.[group])) errors.push(`package.records.${group}.invalid`);
   }
+  if (!Array.isArray(pkg?.assets)) errors.push('package.assets.invalid');
+  if (!Array.isArray(pkg?.extensions?.['siteprep:sourceTags'])) errors.push('package.source_tags.invalid');
+  if (errors.length) return errors;
+  const entities = new Map(pkg.records.entities.map((item) => [item.id, item]));
+  const versions = new Map(pkg.records.entityVersions.map((item) => [item.id, item]));
+  for (const entity of entities.values()) {
+    if (entity.type !== 'source' || !entity.id || !entity.canonicalKey || !entity.currentVersionId) errors.push('package.source.invalid');
+    if (!versions.has(entity.currentVersionId)) errors.push('package.source.current_version_missing');
+  }
+  for (const version of versions.values()) {
+    if (!entities.has(version.entityId) || !version.contentHash || !version.content) errors.push('package.source_version.invalid');
+  }
+  for (const relationship of pkg.records.relationships) {
+    if (!relationship.id || !entities.has(relationship.fromEntityId) || !relationship.type || !relationship.targetNamespace || !relationship.targetKey) {
+      errors.push('package.relationship.invalid');
+    }
+  }
+  for (const item of pkg.extensions['siteprep:sourceTags']) if (!entities.has(item.sourceId)) errors.push('package.source_tag.orphan');
+  return [...new Set(errors)];
+}
+
+export function validateEmptyBackup(pkg, expectedCollectionId) {
+  const errors = validateCollectionBackup(pkg, expectedCollectionId);
   if ((pkg?.records?.entities?.length ?? 0) > 0 || (pkg?.assets?.length ?? 0) > 0) errors.push('package.not_empty');
   return errors;
 }

@@ -5,11 +5,14 @@ import {
   canonicalJson,
   confirmErase,
   erasePreview,
+  makeCollectionBackup,
   makeEmptyBackup,
   normalizeCollectionName,
   normalizeEmail,
   privateBlobKey,
   selectionToken,
+  sha256,
+  validateCollectionBackup,
   validateEmptyBackup,
 } from '../lib/domain.mjs';
 
@@ -70,10 +73,40 @@ test('backup validation and private object keys refuse scope confusion', () => {
     'package.records.relationships.invalid',
     'package.records.activities.invalid',
     'package.records.receipts.invalid',
+    'package.assets.invalid',
+    'package.source_tags.invalid',
   ]);
   assert.equal(
     privateBlobKey('actor:one', 'collection:one', 'backup', 'backup:one'),
     'private/actor:one/collection:one/backup/backup:one',
   );
   assert.throws(() => privateBlobKey('actor:one', '../other', 'backup', 'one'));
+});
+
+test('source-aware backup round-trips versions, aliases, tags, and dependency proposals', async () => {
+  const content = {
+    canonicalKey: 'https://example.org/source', aliases: [{namespace: 'url', key: 'https://example.org/source'}],
+    sourceKind: 'direct', title: 'Source', url: 'https://example.org/source', body: null,
+    bodyState: 'metadata-only', rightsState: 'metadata-only', captureState: 'metadata-only',
+    capturedAt: null, contributor: null, sourceUpdatedAt: null, externalJudgement: null,
+    tags: [{label: 'Heat', key: 'heat', status: 'accepted', type: 'user', stage: 'harvest'}],
+    dependencies: [], origin: {route: 'direct'}, metadata: {},
+  };
+  const hash = await sha256(canonicalJson(content));
+  const pkg = await makeCollectionBackup({
+    collection: {id: 'collection:one', name: 'One', ownerActorId: 'actor:one', state: 'active', revision: 2},
+    actor: {id: 'actor:one'}, activities: [], receipts: [], createdAt: '2026-09-01T00:00:00.000Z',
+    sourceRecords: [{
+      id: 'source:one', canonicalKey: content.canonicalKey, state: 'active', currentVersionId: 'version:one',
+      createdAt: '2026-09-01T00:00:00.000Z', aliases: content.aliases,
+      versions: [{id: 'version:one', contentHash: hash, content, actorId: 'actor:one', createdAt: '2026-09-01T00:00:00.000Z'}],
+      tags: [{label: 'Heat', key: 'heat', status: 'accepted', type: 'user', stage: 'harvest', createdAt: '2026-09-01T00:00:00.000Z', archivedAt: null}],
+    }],
+    dependencyProposals: [{id: 'dependency:one', sourceId: 'source:one', type: 'duplicate-of', targetNamespace: 'url', targetKey: 'https://example.org/other', state: 'proposed', createdAt: '2026-09-01T00:00:00.000Z'}],
+  });
+  assert.deepEqual(validateCollectionBackup(pkg, 'collection:one'), []);
+  assert.equal(pkg.records.entities[0].aliases[0].namespace, 'url');
+  assert.equal(pkg.records.entityVersions[0].contentHash, hash);
+  assert.equal(pkg.records.relationships[0].type, 'duplicate-of');
+  assert.equal(pkg.extensions['siteprep:sourceTags'][0].key, 'heat');
 });
