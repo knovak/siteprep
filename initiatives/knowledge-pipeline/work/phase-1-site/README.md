@@ -1,7 +1,7 @@
-# Knowledge Pipeline Phase 4 Site
+# Knowledge Pipeline Phase 5 Site
 
 This is the login-gated collection, Harvest workspace, and portable review core
-through `plan.md` Phase 4. It is a
+through `plan.md` Phase 5. It is a
 Vinext/Cloudflare Workers application intended for a public-access ChatGPT Site:
 the sign-in surface is public, while collection, administration, backup, API,
 and blob access require both ChatGPT authentication and a server-side
@@ -145,3 +145,39 @@ assertions or requiring graph rendering.
 the thirteen registry types, cycles and symmetric duplicates, a disputed update
 fork, selective human review, topic ordering, evidence closure, and a 1,000-edge
 neighborhood under the two-second query budget.
+
+## Standing documents, comparison, and archive closure
+
+`lib/documents.mjs` implements the Phase 5 integration boundary without
+weakening the human-authority rule established in earlier phases. A comparison
+names exact accepted narrative and standing-document versions, classifies every
+input as new, supporting, contradictory, redundant, or updating, and preserves
+both raw-source and dependence-adjusted cluster counts. A topic with no standing
+document records an absent baseline and does not fabricate a patch.
+
+Urgency remains five separate 0–4-or-unknown dimensions: time sensitivity,
+consequence of delay, evidence strength and independence, contradiction with
+the current document, and document age. Each dimension retains rationale and
+evidence, while the vector retains its process version; no canonical total is
+created.
+
+AI and other automated actors may create a candidate patch. Only a named human
+actor can make an immutable standing-document revision current. The approval
+receipt includes the accepted text hash, exact evidence versions, rejected
+proposal parts, unresolved disputes, actor, and time, while the predecessor
+version remains unchanged.
+
+Archive closure accepts only four dispositions. Incorporated narratives must
+link to an exact standing-document version; rejected narratives require a
+reason; deferred narratives require a revisit condition; and superseded
+narratives require an exact replacement version. Archival changes queue state,
+not custody: archived narratives remain searchable and exportable, and reopening
+adds a stage activity while preserving the earlier disposition.
+
+`fixtures/phase-5-loop.json` is the project-authored two-topic acceptance
+fixture: Community heat resilience has a standing document and all five
+comparison classes, while Cooling access has no baseline. The backward-audit
+test follows a sampled accepted document claim through its exact narrative,
+source versions, topic assignment, assessment, tag, actors, and activities.
+`test/documents.test.mjs` exercises all Phase 5 exits and the complete fixture
+loop. No live model, public deployment, or unrecorded source body is used.
