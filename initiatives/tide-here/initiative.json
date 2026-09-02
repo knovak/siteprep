@@ -29,12 +29,13 @@
   ],
   "todo": [
     {
-      "id": "review-fes2022-test-deployment",
-      "title": "Review the global FES2022 fallback source and recorded version 14 validation before any production release",
-      "state": "actionable",
-      "value": "high",
-      "effort": "low",
-      "advances_stage": false
+      "id": "choose-next-refinement-after-fes2022-release",
+      "title": "Choose the next Tide Here refinement or declare the initiative dormant",
+      "state": "blocked",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "human:choose a documented improvement, request another proposal round, or declare the initiative dormant"
     }
   ]
 }

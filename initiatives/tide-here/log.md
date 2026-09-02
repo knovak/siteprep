@@ -295,3 +295,7 @@ time-zone identity, mean-sea-level height interpretation, absent weather and
 storm-surge effects, and the approximate/not-for-navigation boundary. Dated
 phase and release evidence remains unchanged where it records a historical
 state.
+
+## 2026-09-02 — Review the global FES2022 fallback source and recorded version 14 validation before any production release
+
+Closed the lingering review item after merged PRs #382-#384 preserved the dated source and licence review, documented test versions 14/15 and production version 7, and recorded matching global-package verification in both environments.
