@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>README — Repo Guide</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>README — Repo Guide</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Repo Guide</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">README</h2>
+    </div>
+    <div class="card-content">
+<h2>SitePrep Repo Guide</h2>
+<p>The Repo Guide explains how one person and a set of AI agents share work in this repository. It follows an initiative from its first wish through shaping, planning, building, review, release, and eventual rest. The guide is generated from repository facts, so stage names, blocker classes, sweep limits, skills, and live examples come from the same sources the process uses.</p>
+<h3>Choose the version you need</h3>
+<ul><li><a href="https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/description.html">Read the guide</a> for the complete explanation, source links, and diagrams.</li><li><a href="https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/deck.html">Present the slide deck</a> for a concise walkthrough. Use the arrow keys, Page Up/Page Down, Home, End, Space, or Shift+Space to navigate.</li><li><a href="https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/simulator.html">Step through the simulator</a> to watch items, blockers, sweep choices, review, and stage changes. Use <strong>Step</strong>, <strong>Back</strong>, or <strong>Play</strong>.</li></ul>
+<p>Each version is one self-contained HTML file. It can be opened from the web, saved locally, or sent as an attachment without a server or supporting assets.</p>
+<h3>How to read the guide</h3>
+<p>Start with <strong>What this repository is</strong> if SitePrep is new to you. The numbered sidebar follows the same path as a real initiative:</p>
+<ol><li>begin with the wish and optional background research;</li><li>shape objectives and specify the result;</li><li>plan and critique the work before building;</li><li>let the sweep pick eligible work without taking decisions or authority from a person;</li><li>review and merge pull requests; and</li><li>deploy a test copy, then release only when a person asks.</li></ol>
+<p>Diagrams and data blocks are derived from the repository. Composed explanatory prose is dated and linked to its source commit in the footer. If a fact cannot be resolved or the narrative contains a stale literal where a live fact belongs, generation fails instead of producing a plausible but incomplete guide.</p>
+<h3>Regenerate it after the process changes</h3>
+<p>Ask an agent to <strong>generate the Repo Guide</strong>. The repository&#39;s <code>generate-guide</code> skill rebuilds the description, deck, and simulator and runs their Node and offline-browser checks. The generated files are kept under <code>initiatives/repo-guide/work/guide/out/</code> as the latest successful generation.</p>
+<p>For a manual run from the repository root:</p>
+<pre><code>node initiatives/repo-guide/work/guide/build/cli.mjs description
+node initiatives/repo-guide/work/guide/build/cli.mjs deck
+node initiatives/repo-guide/work/guide/build/cli.mjs simulator
+node --test initiatives/repo-guide/work/guide/test/*.test.mjs</code></pre>
+<p>Review all three files and their provenance footers before committing the regenerated outputs. The generator&#39;s technical details and individual test commands are in <a href="work/guide/README.md"><code>work/guide/README.md</code></a>.</p>
+<h3>Preview and release</h3>
+<p>Generating is not publishing. The public Demo remains unchanged until a release is requested.</p>
+<ul><li>Ask to <strong>deploy the Repo Guide test site</strong> when you want a temporary preview.</li><li>Ask to <strong>release the Repo Guide</strong> only when the committed output is ready to replace the public Demo.</li></ul>
+<p>The release replaces the complete <code>demos/Guide to Initiatives/</code> destination from the generated <code>out/</code> directory, retaining its initiative and featured-demo metadata. It does not edit production implicitly, and a successful generation does not count as release authorization.</p>
+<h3>Where to look when something is wrong</h3>
+<ul><li>Generation or fact-resolution failures: <code>work/guide/build/</code> and the exact source path named by the error.</li><li>Narrative or slide copy: <code>work/guide/content/</code>; change the shared section source rather than hand-editing generated HTML.</li><li>Browser, keyboard, overflow, or offline behavior: <code>work/guide/test/</code>.</li><li>Optional future improvements: <a href="notes.md"><code>notes.md</code></a>.</li><li>Release history and the public commit: <a href="releases.md"><code>releases.md</code></a>.</li></ul>
+<p>Never hand-edit the three files under <code>out/</code>. Change their source or renderer, regenerate, inspect the result, and commit source and output together.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/educational-global-maps/phase-4-composer-educational-scenes-and-portability" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
