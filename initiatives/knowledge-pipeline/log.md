@@ -35,3 +35,7 @@ Built and deployed the public test gate and authenticated collection shell with 
 ## 2026-09-02 — Phase 2 - build harvest, native adapters, and the tag inventory
 
 Built direct and browser-saved intake, native Bookmark Sorter and Newsletter Story Harvester adapters, immutable source custody, dependency proposals, tag inventory, receipts, and source-aware canonical backup/restore; 16 tests and the production Site build pass.
+
+## 2026-09-02 — Phase 3 - build tagging, assessment, promotion, and the LLM file loop
+
+Built the authenticated Phase 3 packet/proposal/review/receipt loop and its portable accepted records. The recorded deterministic fixture and 2,000-operation gate pass; live-model corrections remain explicitly human-blocked rather than being simulated.

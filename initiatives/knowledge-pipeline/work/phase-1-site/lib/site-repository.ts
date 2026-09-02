@@ -13,6 +13,7 @@ import {
   validateCollectionBackup,
 } from './domain.mjs';
 import { makeHarvestPreview } from './harvest.mjs';
+import {commitProposalState, makeWorkPacket, newReviewState, previewProposal} from './review.mjs';
 
 export type AuthorizedContext = {
   actorId: string;
@@ -183,6 +184,8 @@ export async function selectCollection(context: AuthorizedContext, collectionId:
       .bind(context.actorId, collectionId, at),
     db().prepare(`UPDATE import_preview SET state = 'invalidated'
       WHERE actor_id = ? AND state = 'pending'`).bind(context.actorId),
+    db().prepare(`UPDATE proposal_review SET state = 'invalidated'
+      WHERE actor_id = ? AND state = 'pending'`).bind(context.actorId),
   ]);
 }
 
@@ -203,12 +206,12 @@ export async function collectionCounts(context: AuthorizedContext, collectionId:
   };
 }
 
-async function selectedCollection(context: AuthorizedContext, collectionId: string) {
+async function selectedCollection(context: AuthorizedContext, collectionId: string): Promise<{collection: CollectionRecord; selectionRevision: number}> {
   const selected = await currentSelection(context);
   if (!selected.collection || selected.collection.id !== collectionId) {
     throw new AccessError(409, 'collection.selection.changed', 'Select the collection again before changing Harvest state');
   }
-  return selected;
+  return {collection: selected.collection, selectionRevision: selected.selectionRevision};
 }
 
 export async function previewHarvest(context: AuthorizedContext, collectionId: string, kind: string, payload: unknown) {
@@ -385,7 +388,7 @@ export async function commitHarvest(context: AuthorizedContext, collectionId: st
 export async function listHarvestSources(context: AuthorizedContext, collectionId: string, limit = 100) {
   await selectedCollection(context, collectionId);
   const bounded = Math.max(1, Math.min(100, Math.trunc(limit)));
-  const result = await db().prepare(`SELECT source_record.id, source_record.state, source_record.created_at,
+  const result = await db().prepare(`SELECT source_record.id, source_record.current_version_id, source_record.state, source_record.created_at,
       source_version.title, source_version.url, source_version.source_kind, source_version.body_state,
       source_version.rights_state, source_version.capture_state, source_version.source_updated_at,
       source_version.content_hash, source_version.content_json, source_version.created_at AS version_created_at
@@ -405,9 +408,172 @@ export async function listHarvestSources(context: AuthorizedContext, collectionI
   }
   return sources.map((source) => ({
     ...source,
+    content: JSON.parse(source.content_json),
     externalJudgement: JSON.parse(source.content_json).externalJudgement ?? null,
     tags: bySource.get(source.id) ?? [],
   }));
+}
+
+export async function createWorkPacket(context: AuthorizedContext, collectionId: string, selectedSourceIds: string[]) {
+  const selected = await selectedCollection(context, collectionId);
+  const sources = await listHarvestSources(context, collectionId, 100);
+  let packet;
+  try {
+    packet = await makeWorkPacket({
+      collection: {...selected.collection, selectionRevision: selected.selectionRevision},
+      actorId: context.actorId,
+      sources,
+      selectedSourceIds,
+      omittedDependencies: sources.filter(({id}: any) => !selectedSourceIds.includes(id)).map(({id}: any) => ({id, reason: 'not selected for this bounded packet'})),
+      maxSources: 100,
+    });
+  } catch (error) {
+    throw new AccessError(409, 'review.work_packet.invalid', String((error as Error)?.message ?? error));
+  }
+  await db().prepare(`INSERT INTO work_packet
+    (id, collection_id, actor_id, selection_revision, collection_revision, package_hash, package_json, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(packet.packageId, collectionId, context.actorId, selected.selectionRevision, selected.collection.revision, packet.packageHash, JSON.stringify(packet), packet.createdAt).run();
+  return packet;
+}
+
+export async function listWorkPackets(context: AuthorizedContext, collectionId: string, limit = 10) {
+  await selectedCollection(context, collectionId);
+  const bounded = Math.max(1, Math.min(20, Math.trunc(limit)));
+  const result = await db().prepare(`SELECT id, package_hash, package_json, created_at FROM work_packet
+    WHERE collection_id = ? AND actor_id = ? ORDER BY created_at DESC, id LIMIT ?`)
+    .bind(collectionId, context.actorId, bounded).all();
+  return (result.results as any[]).map((row) => ({...row, packet: JSON.parse(row.package_json)}));
+}
+
+export async function readWorkPacket(context: AuthorizedContext, collectionId: string, workPacketId: string) {
+  await selectedCollection(context, collectionId);
+  const row = await db().prepare(`SELECT package_json FROM work_packet
+    WHERE id = ? AND collection_id = ? AND actor_id = ?`)
+    .bind(workPacketId, collectionId, context.actorId).first<any>();
+  if (!row) throw new AccessError(404, 'review.work_packet.not_found', 'Work packet is unavailable');
+  return row.package_json as string;
+}
+
+export async function importReviewProposal(context: AuthorizedContext, collectionId: string, workPacketId: string, proposal: unknown) {
+  const selected = await selectedCollection(context, collectionId);
+  const row = await db().prepare(`SELECT package_json FROM work_packet
+    WHERE id = ? AND collection_id = ? AND actor_id = ?`)
+    .bind(workPacketId, collectionId, context.actorId).first<any>();
+  if (!row) throw new AccessError(404, 'review.work_packet.not_found', 'Work packet is unavailable');
+  const packet = JSON.parse(row.package_json);
+  const sources = await listHarvestSources(context, collectionId, 100);
+  const preview = previewProposal(packet, proposal, {
+    collectionId,
+    collectionRevision: selected.collection.revision,
+    selectionRevision: selected.selectionRevision,
+    sources,
+  });
+  if (!preview.proposalId) throw new AccessError(409, 'review.proposal.id_missing', 'Proposal id is required');
+  const id = `proposal-review:${crypto.randomUUID()}`;
+  await db().prepare(`INSERT INTO proposal_review
+    (id, collection_id, actor_id, work_packet_id, proposal_id, proposal_json, preview_json, state, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?)`)
+    .bind(id, collectionId, context.actorId, workPacketId, preview.proposalId, JSON.stringify(proposal), JSON.stringify(preview), now()).run();
+  return {id, preview};
+}
+
+export async function listReviewPreviews(context: AuthorizedContext, collectionId: string, limit = 10) {
+  await selectedCollection(context, collectionId);
+  const bounded = Math.max(1, Math.min(20, Math.trunc(limit)));
+  const result = await db().prepare(`SELECT id, proposal_id, preview_json, created_at FROM proposal_review
+    WHERE collection_id = ? AND actor_id = ? AND state = 'pending' ORDER BY created_at DESC, id LIMIT ?`)
+    .bind(collectionId, context.actorId, bounded).all();
+  return (result.results as any[]).map((row) => ({...row, preview: JSON.parse(row.preview_json)}));
+}
+
+export async function commitReviewProposal(context: AuthorizedContext, collectionId: string, reviewId: string, acceptedOperationIds: string[], rationaleEdits: Record<string, string>) {
+  const selected = await selectedCollection(context, collectionId);
+  const row = await db().prepare(`SELECT proposal_review.*, work_packet.package_json
+    FROM proposal_review JOIN work_packet ON work_packet.id = proposal_review.work_packet_id
+    WHERE proposal_review.id = ? AND proposal_review.collection_id = ? AND proposal_review.actor_id = ? AND proposal_review.state = 'pending'`)
+    .bind(reviewId, collectionId, context.actorId).first<any>();
+  if (!row) throw new AccessError(404, 'review.proposal.not_found', 'Pending proposal review is unavailable');
+  const packet = JSON.parse(row.package_json);
+  const proposal = JSON.parse(row.proposal_json);
+  const sources = await listHarvestSources(context, collectionId, 100);
+  const freshPreview = previewProposal(packet, proposal, {
+    collectionId,
+    collectionRevision: selected.collection.revision,
+    selectionRevision: selected.selectionRevision,
+    sources,
+  });
+  let result;
+  try {
+    result = await commitProposalState(newReviewState(), freshPreview, {
+      actor: {id: context.actorId, kind: 'human'},
+      acceptedOperationIds,
+      rationaleEdits,
+    });
+  } catch (error) {
+    throw new AccessError(409, 'review.proposal.commit_refused', String((error as Error)?.message ?? error));
+  }
+  const accepted = new Set(acceptedOperationIds);
+  const statements = [];
+  for (const operation of freshPreview.operations.filter(({id}: any) => accepted.has(id))) {
+    const rationale = String(rationaleEdits[operation.id] ?? operation.payload.rationale ?? '').trim();
+    statements.push(db().prepare(`INSERT INTO review_record
+      (id, collection_id, source_id, source_version_hash, kind, payload_json, rationale,
+       proposed_by_json, process_version, accepted_by_actor_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(
+        `review-record:${crypto.randomUUID()}`, collectionId, operation.sourceId ?? null,
+        operation.baseVersionHash ?? null, operation.type, JSON.stringify(operation.payload), rationale,
+        JSON.stringify(freshPreview.proposer), freshPreview.proposer?.processVersion ?? 'unknown', context.actorId, result.receipt.createdAt,
+      ));
+    if (operation.type === 'tag') statements.push(db().prepare(`INSERT OR IGNORE INTO source_tag
+      (source_id, label, tag_key, status, type, stage, created_at, archived_at)
+      VALUES (?, ?, ?, 'accepted', 'llm-review', 'tag', ?, NULL)`)
+      .bind(operation.sourceId, operation.payload.tag, String(operation.payload.tag).trim().toLocaleLowerCase('en-US'), result.receipt.createdAt));
+  }
+  const activityId = `activity:${crypto.randomUUID()}`;
+  statements.push(
+    db().prepare('UPDATE collection SET revision = revision + 1 WHERE id = ? AND owner_actor_id = ? AND state = ? AND revision = ?')
+      .bind(collectionId, context.actorId, 'active', selected.collection.revision),
+    db().prepare(`INSERT INTO activity (id, collection_id, actor_id, type, status, created_at, details_json)
+      VALUES (?, ?, ?, 'proposal-review', 'completed', ?, ?)`)
+      .bind(activityId, collectionId, context.actorId, result.receipt.createdAt, JSON.stringify({proposalId: freshPreview.proposalId, accepted: accepted.size, rejected: freshPreview.operations.length - accepted.size})),
+    db().prepare(`INSERT INTO receipt (id, collection_id, activity_id, operation_id, package_hash, mode, created_at, result_json)
+      VALUES (?, ?, ?, ?, ?, 'selective-review', ?, ?)`)
+      .bind(result.receipt.receiptId, collectionId, activityId, `proposal:${freshPreview.proposalId}`, result.receipt.receiptHash, result.receipt.createdAt, JSON.stringify(result.receipt)),
+    db().prepare("UPDATE proposal_review SET state = 'committed' WHERE id = ? AND state = 'pending'").bind(reviewId),
+  );
+  await db().batch(statements);
+  return result.receipt;
+}
+
+export async function listReviewRecords(context: AuthorizedContext, collectionId: string, limit = 50) {
+  await selectedCollection(context, collectionId);
+  const result = await db().prepare(`SELECT * FROM review_record WHERE collection_id = ?
+    ORDER BY created_at DESC, id LIMIT ?`).bind(collectionId, Math.max(1, Math.min(100, Math.trunc(limit)))).all();
+  return (result.results as any[]).map((row) => ({...row, payload: JSON.parse(row.payload_json), proposedBy: JSON.parse(row.proposed_by_json)}));
+}
+
+export async function listReviewReceipts(context: AuthorizedContext, collectionId: string, limit = 20) {
+  await selectedCollection(context, collectionId);
+  const result = await db().prepare(`SELECT receipt.id, receipt.created_at, receipt.result_json
+    FROM receipt JOIN activity ON activity.id = receipt.activity_id
+    WHERE receipt.collection_id = ? AND activity.type = 'proposal-review'
+    ORDER BY receipt.created_at DESC, receipt.id LIMIT ?`)
+    .bind(collectionId, Math.max(1, Math.min(100, Math.trunc(limit)))).all();
+  return (result.results as any[]).map((row) => ({...row, receipt: JSON.parse(row.result_json)}));
+}
+
+export async function readReviewReceipt(context: AuthorizedContext, collectionId: string, receiptId: string) {
+  await selectedCollection(context, collectionId);
+  const row = await db().prepare(`SELECT receipt.result_json FROM receipt
+    JOIN activity ON activity.id = receipt.activity_id
+    JOIN collection ON collection.id = receipt.collection_id
+    WHERE receipt.id = ? AND receipt.collection_id = ? AND collection.owner_actor_id = ?
+      AND activity.type = 'proposal-review'`)
+    .bind(receiptId, collectionId, context.actorId).first<any>();
+  if (!row) throw new AccessError(404, 'review.receipt.not_found', 'Review receipt is unavailable');
+  return row.result_json as string;
 }
 
 export async function tagInventory(context: AuthorizedContext, collectionId: string) {
@@ -476,6 +642,9 @@ export async function tombstoneAndErase(context: AuthorizedContext, collectionId
       WHERE id = ? AND owner_actor_id = ? AND state = 'active' AND revision = ?`)
       .bind(at, collectionId, context.actorId, expectedRevision),
     db().prepare("UPDATE import_preview SET state = 'invalidated' WHERE collection_id = ? AND state = 'pending'").bind(collectionId),
+    db().prepare("UPDATE proposal_review SET state = 'invalidated' WHERE collection_id = ? AND state = 'pending'").bind(collectionId),
+    db().prepare('DELETE FROM work_packet WHERE collection_id = ?').bind(collectionId),
+    db().prepare('DELETE FROM review_record WHERE collection_id = ?').bind(collectionId),
     db().prepare('DELETE FROM collection_asset_ref WHERE collection_id = ?').bind(collectionId),
     db().prepare(`INSERT INTO activity
       (id, collection_id, actor_id, type, status, created_at, details_json)
@@ -527,7 +696,7 @@ function portableReceipt(row: any) {
 }
 
 async function portableHarvestRecords(collectionId: string) {
-  const [sourceRows, versionRows, aliasRows, tagRows, dependencyRows] = await db().batch([
+  const [sourceRows, versionRows, aliasRows, tagRows, dependencyRows, reviewRows] = await db().batch([
     db().prepare(`SELECT id, canonical_key, current_version_id, state, created_at
       FROM source_record WHERE collection_id = ? ORDER BY id`).bind(collectionId),
     db().prepare(`SELECT source_version.* FROM source_version
@@ -540,6 +709,7 @@ async function portableHarvestRecords(collectionId: string) {
       WHERE source_record.collection_id = ? ORDER BY source_tag.source_id, source_tag.tag_key, source_tag.status`).bind(collectionId),
     db().prepare(`SELECT id, source_id, relation_type, target_namespace, target_key, state, created_at
       FROM dependency_proposal WHERE collection_id = ? ORDER BY id`).bind(collectionId),
+    db().prepare(`SELECT * FROM review_record WHERE collection_id = ? ORDER BY created_at, id`).bind(collectionId),
   ]);
   const versionsBySource = new Map<string, any[]>();
   for (const row of versionRows.results as any[]) {
@@ -591,6 +761,18 @@ async function portableHarvestRecords(collectionId: string) {
       targetNamespace: row.target_namespace,
       targetKey: row.target_key,
       state: row.state,
+      createdAt: row.created_at,
+    })),
+    reviewRecords: (reviewRows.results as any[]).map((row) => ({
+      id: row.id,
+      sourceId: row.source_id,
+      sourceVersionHash: row.source_version_hash,
+      kind: row.kind,
+      payload: JSON.parse(row.payload_json),
+      rationale: row.rationale,
+      proposedBy: JSON.parse(row.proposed_by_json),
+      processVersion: row.process_version,
+      acceptedByActorId: row.accepted_by_actor_id,
       createdAt: row.created_at,
     })),
   };
@@ -728,6 +910,11 @@ export async function restoreCollectionBackup(context: AuthorizedContext, collec
     (id, collection_id, source_id, relation_type, target_namespace, target_key, state, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
     .bind(relationship.id, collectionId, relationship.fromEntityId, relationship.type, relationship.targetNamespace, relationship.targetKey, relationship.state, relationship.createdAt));
+  for (const record of pkg.extensions['siteprep:reviews'] ?? []) statements.push(db().prepare(`INSERT OR IGNORE INTO review_record
+    (id, collection_id, source_id, source_version_hash, kind, payload_json, rationale,
+     proposed_by_json, process_version, accepted_by_actor_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(record.id, collectionId, record.sourceId, record.sourceVersionHash, record.kind, JSON.stringify(record.payload), record.rationale, JSON.stringify(record.proposedBy), record.processVersion, record.acceptedByActorId, record.createdAt));
   statements.push(
     db().prepare("UPDATE collection SET revision = revision + 1 WHERE id = ? AND owner_actor_id = ? AND state = 'active'")
       .bind(collectionId, context.actorId),

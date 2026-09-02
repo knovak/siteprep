@@ -1,0 +1,71 @@
+{
+  "format": "knowledge-pipeline/v1",
+  "use": "llm-proposal",
+  "proposalId": "proposal:recorded-phase-3-fixture",
+  "base": {
+    "packageId": "work-packet:3a3e545e70d4426eb7ff8b3290663c95",
+    "packageHash": "sha256:3a3e545e70d4426eb7ff8b3290663c95dea41db45a5a4f2d0243dbadb01a9383"
+  },
+  "proposer": {
+    "kind": "llm",
+    "model": "recorded-fixture-not-a-live-evaluation",
+    "processVersion": "phase-3-recorded-v1"
+  },
+  "authority": {
+    "mayCommit": false,
+    "credentials": []
+  },
+  "reviewEvidence": {
+    "status": "awaiting-human-live-evaluation",
+    "acceptedPercentage": null,
+    "corrections": [],
+    "unsupportedClaims": []
+  },
+  "operations": [
+    {
+      "id": "op:tag-cooling-access",
+      "type": "tag",
+      "sourceId": "source:one",
+      "baseVersionHash": "sha256:one",
+      "payload": {
+        "tag": "cooling-access",
+        "rationale": "The fixed fixture is explicitly about access to cooling."
+      }
+    },
+    {
+      "id": "op:assessment-cooling-access",
+      "type": "assessment",
+      "sourceId": "source:one",
+      "baseVersionHash": "sha256:one",
+      "payload": {
+        "dimensions": {
+          "relevance": {"value": 4, "unknown": false, "confidence": 0.9, "rationale": "Directly addresses the fixture scope.", "evidence": ["source:one"]},
+          "quality": {"value": null, "unknown": true, "confidence": 0.3, "rationale": "The small fixture does not establish publication quality.", "evidence": ["source:one"]},
+          "novelty": {"value": 2, "unknown": false, "confidence": 0.6, "rationale": "Adds a specific access framing.", "evidence": ["source:one"]},
+          "importance": {"value": 3, "unknown": false, "confidence": 0.7, "rationale": "Access is material to the collection scope.", "evidence": ["source:one"]},
+          "urgency": {"value": null, "unknown": true, "confidence": 0.2, "rationale": "No dated deadline is present in this fixture.", "evidence": ["source:one"]}
+        },
+        "rationale": "Five dimensions stay independently reviewable."
+      }
+    },
+    {
+      "id": "op:promotion-needs-review",
+      "type": "promotion",
+      "sourceId": "source:one",
+      "baseVersionHash": "sha256:one",
+      "payload": {
+        "disposition": "needs-review",
+        "rationale": "A person must inspect the original before promotion."
+      }
+    },
+    {
+      "id": "op:vocabulary-unknown",
+      "type": "vocabulary",
+      "payload": {
+        "change": "unknown",
+        "tag": "cooling-access",
+        "rationale": "Treat the phrase as a proposal until a person settles vocabulary status."
+      }
+    }
+  ]
+}
