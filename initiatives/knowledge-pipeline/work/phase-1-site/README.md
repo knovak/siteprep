@@ -1,7 +1,7 @@
-# Knowledge Pipeline Phase 3 Site
+# Knowledge Pipeline Phase 4 Site
 
 This is the login-gated collection, Harvest workspace, and portable review core
-through `plan.md` Phase 3. It is a
+through `plan.md` Phase 4. It is a
 Vinext/Cloudflare Workers application intended for a public-access ChatGPT Site:
 the sign-in surface is public, while collection, administration, backup, API,
 and blob access require both ChatGPT authentication and a server-side
@@ -123,3 +123,25 @@ ordinary gate. It also exercises a 2,000-operation proposal within the
 five-second preview budget. A live model run and a person's corrections remain
 a separately named human review gate; passing the recorded suite never stands
 in for that evidence.
+
+## Topics, relationships, and mini narratives
+
+`lib/topics.mjs` makes the first relationship registry executable. Its thirteen
+accepted types enforce endpoint domains and ranges, collection boundaries,
+exact-version requirements, direction, scope, cardinality, symmetric-pair
+identity, and cycle prevention. Unknown imported types remain proposed
+extensions. `latest-update` is derived from accepted update facts and disappears
+when a disputed fork makes the answer ambiguous.
+
+The same portable core assigns one retained source to several topics without
+copying it, accepts a human-edited mini narrative while retaining rejected
+relationship proposals in the review receipt, and exposes exact source-version
+evidence closure. Topic ordering changes assignment metadata and activity only;
+it never creates a narrative-text version. The relationship table and bounded
+neighborhood attach inverse display labels without manufacturing inverse
+assertions or requiring graph rendering.
+
+`test/topics.test.mjs` exercises every Phase 4 acceptance condition, including
+the thirteen registry types, cycles and symmetric duplicates, a disputed update
+fork, selective human review, topic ordering, evidence closure, and a 1,000-edge
+neighborhood under the two-second query budget.
