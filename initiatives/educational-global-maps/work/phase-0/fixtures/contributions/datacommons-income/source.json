@@ -1,0 +1,15 @@
+{
+  "source": {
+    "provider": "Data Commons",
+    "documentation": "https://docs.datacommons.org/api/rest/v2/observation.html",
+    "statisticalVariable": "Median_Income_Household",
+    "facetId": "1107922769",
+    "importName": "CensusACS5YearSurvey_SubjectTables_S1901",
+    "provenanceUrl": "https://data.census.gov/cedsci/table?q=S1901&tid=ACSST5Y2023.S1901",
+    "retrievedAt": "2026-09-02"
+  },
+  "observations": [
+    {"placeId": "country:USA", "placeLabel": "United States", "period": "2015", "value": 53889, "status": "observed"},
+    {"placeId": "state:US-CA", "placeLabel": "California", "period": "2015", "value": 61818, "status": "observed"}
+  ]
+}

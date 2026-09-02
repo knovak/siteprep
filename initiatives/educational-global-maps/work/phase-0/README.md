@@ -7,6 +7,10 @@ bounded ZIP bundle, and restored without the application or a data provider.
 It deliberately contains no catalogue UI, renderer, provider adapter, relay, or
 live network access.
 
+Phase 1 extends the same portable core with a metadata-only catalogue and a
+contribution pipeline. It still contains no browser renderer, and catalogue
+startup never fetches a provider artifact.
+
 ## Checkpoints
 
 1. **Identity.** `src/canonical.mjs`, the JSON Schemas, and the canonical test
@@ -36,12 +40,64 @@ From this directory:
 npm ci
 npm test
 npm run round-trip
+npm run contributions
 ```
 
 `round-trip` creates two independent repositories, accepts the minimum fixture,
 exports `scene.egm.zip`, restores it, re-exports it, and compares the logical
 inventories and the deterministic reducer result. The temporary repositories
 and bundle are removed afterward.
+
+## Phase 1 catalogue and contribution pipeline
+
+`src/catalogue.mjs` validates descriptor metadata, builds a deterministic
+search index, filters by topic, provider, place level, time coverage, profile,
+licence, and projection capability, and keeps detail states honest: unknown,
+explicitly absent, and known values do not collapse into one blank. The
+500-descriptor scale fixture is generated metadata only.
+
+`src/contribution.mjs` is the adapter boundary. A contribution directory names
+its descriptor, recorded source, adapter, expected findings, and example scene
+in `contribution.json`. The validator:
+
+1. validates descriptor, geography, crosswalk, scene-reference, rights, and
+   source-checksum boundaries;
+2. gives the adapter only the recorded bytes and descriptor, while refusing
+   network access;
+3. requires newline-terminated UTF-8 JSON Lines plus a revision report naming
+   the exact descriptor version; and
+4. publishes no artifact when rights are not explicitly allowed or an error
+   finding remains.
+
+An unfamiliar contributor can copy either directory under
+`fixtures/contributions/`, replace its local files and adapter, and run:
+
+```sh
+node scripts/validate-contribution.mjs path/to/contribution
+```
+
+No catalogue or renderer module is edited to add that contribution. A changed
+source checksum becomes a new candidate finding; it never mutates the earlier
+prepared revision.
+
+### Recorded reference suite
+
+The first real suite is intentionally small and reviewable:
+
+- `owid-population` records three 2023 country values from the Our World in
+  Data Population Grapher distribution and its indicator metadata, version
+  2024-07-15. Those values originate in UN World Population Prospects 2024;
+  the recorded metadata identifies CC BY 3.0 IGO and requires attribution to
+  both UN WPP and Our World in Data processing.
+- `datacommons-income` records the official Data Commons v2 Observation API
+  documentation example for 2015 median household income in the United States
+  and California. It pins the Census ACS provenance facet and the Census public
+  data citation boundary rather than treating Data Commons as the original
+  source.
+
+Both were checked 2026-09-02. The committed fixtures, not a live response, are
+the test inputs. Refreshing either source is an explicit reviewed change to its
+version, checksum, recorded bytes, and revision report.
 
 ## Canonicalization profile
 

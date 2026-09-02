@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-1-catalogue-and-contribution-pipeline",
-      "title": "Phase 1 - build the catalogue and contribution pipeline",
+      "id": "phase-2-single-device-renderer-and-projection-comparison",
+      "title": "Phase 2 - build the single-device renderer and projection comparison",
       "state": "actionable",
       "value": "high",
       "effort": "large",
