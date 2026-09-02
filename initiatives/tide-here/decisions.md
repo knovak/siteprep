@@ -223,3 +223,41 @@ package to Tide Here's existing public test and production Sites.**
 - This does not authorize a new Site, an access change, a different FES source
   or licence, a wider selection limit, or removal of the official-source
   priority and interpretation disclosures.
+
+## 2026-09-02 — What should follow the global FES2022 release?
+
+The review directed this proposal to **retain the possible future refinements
+in `notes.md` and make the initiative dormant**. The global FES2022 fallback is
+deployed to test and production, the official-source priority and model
+limitations are documented, and the remaining ideas are optional refinements
+rather than unfinished release work.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Select a refinement now** | Continues learning through a map, device-local pins, targeted help, or another official provider | Each option spends effort before recorded use identifies the important friction; the detailed candidates and reopening evidence remain in `notes.md` |
+| **Declare the initiative dormant and retain the menu** *(chosen in review)* | Stops speculative work after a complete release while preserving concrete restart points | Adds no new convenience or provider precision until evidence justifies reopening the initiative |
+
+### Recommendation
+
+**Recommendation after review: declare Tide Here dormant.** The original
+proposal recommended device-local pins as the smallest ordinary-use increment.
+The review instead chose to stop now and retain that idea with the map, help,
+and official-provider options in `notes.md`. Merging this pull request enacts
+that direction; it is not an autonomous dormancy decision by the sweep.
+
+### What would change the recommendation
+
+Any concrete new goal or evidence listed with the retained refinements can
+reopen the initiative. Dormancy does not rank those future options or prevent a
+new proposal round.
+
+### What this settles, and what it does not
+
+- Merging this proposal leaves Tide Here with no actionable todo items and sets
+  its lifecycle stage to `dormant`.
+- The possible map, pins, help, and official-provider refinements remain in
+  `notes.md`; none is selected.
+- It does not deploy either Site, change public access, or authorize a
+  production release.

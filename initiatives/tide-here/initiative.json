@@ -1,7 +1,7 @@
 {
   "title": "Tide Here",
   "summary": "A website that displays upcoming tide, moon, and sun times for the user's location.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [],
   "deployments": [
@@ -27,15 +27,5 @@
       }
     }
   ],
-  "todo": [
-    {
-      "id": "choose-next-refinement-after-fes2022-release",
-      "title": "Choose the next Tide Here refinement or declare the initiative dormant",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose a documented improvement, request another proposal round, or declare the initiative dormant"
-    }
-  ]
+  "todo": []
 }
