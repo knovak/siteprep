@@ -11,8 +11,8 @@
       "destination": "Guide to Initiatives",
       "root_html": "description.html",
       "prod": {
-        "deployed_at": "2026-08-27T07:52:10Z",
-        "commit": "74c16d06a907d33af31b3c28999cbe512e54a000"
+        "deployed_at": "2026-09-02T18:51:56Z",
+        "commit": "f60420c782234cfae1ce585aedecd11451089641"
       }
     }
   ],
