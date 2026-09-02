@@ -299,3 +299,7 @@ state.
 ## 2026-09-02 — Review the global FES2022 fallback source and recorded version 14 validation before any production release
 
 Closed the lingering review item after merged PRs #382-#384 preserved the dated source and licence review, documented test versions 14/15 and production version 7, and recorded matching global-package verification in both environments.
+
+## 2026-09-02 — Choose the next Tide Here refinement or declare the initiative dormant
+
+Proposed device-local pinned places as the smallest ordinary-use refinement after the global FES2022 release.

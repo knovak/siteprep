@@ -223,3 +223,55 @@ package to Tide Here's existing public test and production Sites.**
 - This does not authorize a new Site, an access change, a different FES source
   or licence, a wider selection limit, or removal of the official-source
   priority and interpretation disclosures.
+
+## 2026-09-02 — What should follow the global FES2022 release?
+
+This is a **proposal for the user's decision**, not a decision already made.
+The global FES2022 fallback is now deployed to test and production, the
+official-source priority and model limitations are documented, and the
+remaining menu consists of optional product refinements rather than unfinished
+release work.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Replace the relative alternatives plot with a geographic coast map** | Makes islands, channels, borders, and station placement legible when several official coasts are plausible | Medium-sized interface and coastline/tile work for a path that already shows the closest forecast and named alternatives; no recorded use yet shows that the relative plot causes a wrong choice |
+| **Pin a few places on this device** | Gives repeat visitors a direct route back to familiar coasts; small, local-only, and independent of provider coverage | Adds another local state and control whose value depends on people returning to the same places |
+| **Add more inline coverage and alternative-coast help** | Could reduce first-use uncertainty about official versus approximate results | The current result, source details, safety copy, privacy disclosure, and README already explain the provider and FES boundaries; more copy may crowd the forecast without evidence of misunderstanding |
+| **Add another official national provider** | Improves official precision and datum semantics in one more country | Large recurring licence, availability, station, and test obligation; the global FES fallback has reduced the immediate coverage gap without removing the value of future official sources |
+| **Declare the initiative dormant** | Avoids speculative refinement after a complete, released product and leaves the initiative ready to revisit when real friction appears | Adds no convenience for repeat use and gathers no new evidence about the remaining ideas |
+
+### Recommendation
+
+**Recommendation: add a small device-local pinned-places list.** Keep it
+separate from the 100-entry diagnostic history and disposable forecast caches;
+label it as device-local; provide explicit remove and clear controls; and make
+opening a pin an intentional action that triggers the normal resolution path.
+Creating, listing, or removing a pin must not contact a geocoder or tide
+provider.
+
+This is the smallest option that adds ordinary-use value after the global
+release without changing provider precedence, match thresholds, licences,
+deployment access, or the privacy boundary. It should reuse the saved display
+value rather than treating an old resolved station or model point as permanently
+correct.
+
+### What would change the recommendation
+
+- Recorded confusion or wrong choices in ambiguous official-station cases
+  would make the geographic coast map the better next increment.
+- Evidence that people misunderstand approximate FES results would move inline
+  help ahead of pins.
+- Sustained demand in one country plus verified favourable provider terms would
+  justify another official adapter.
+- Evidence that the Site is not revisited, or a preference to stop until real
+  friction appears, would make dormancy the better answer.
+
+### What this settles, and what it does not
+
+- Merging this proposal makes the pinned-places increment actionable.
+- It does not deploy either Site, change public access, or authorize a
+  production release of the future increment.
+- It does not choose synchronization, accounts, a new provider, or a geographic
+  map, and it does not make diagnostic history into a favourites list.

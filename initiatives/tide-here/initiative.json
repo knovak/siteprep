@@ -29,13 +29,12 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement-after-fes2022-release",
-      "title": "Choose the next Tide Here refinement or declare the initiative dormant",
-      "state": "blocked",
+      "id": "add-device-local-pins",
+      "title": "Add device-local pinned places without provider requests until a pin is opened",
+      "state": "actionable",
       "value": "medium",
       "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose a documented improvement, request another proposal round, or declare the initiative dormant"
+      "advances_stage": false
     }
   ]
 }
