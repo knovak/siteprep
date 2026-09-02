@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Educational Global Maps — projection comparison</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#map-title">Skip to map</a>
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Educational Global Maps · Phase 2</p>
+        <h1>One dataset. Three honest world views.</h1>
+      </div>
+      <p class="intro">Switch geometry without changing the pinned data revision, period, encoding, or citations. Pause to inspect exact values instead of reading pixels.</p>
+    </header>
+
+    <main class="workspace">
+      <aside class="control-panel" aria-label="Map controls">
+        <div class="panel-heading">
+          <span>Explore</span>
+          <span class="status-pill" id="motion-status">Paused</span>
+        </div>
+
+        <label for="dataset">Catalogue selection</label>
+        <select id="dataset"></select>
+
+        <label for="projection">Projection</label>
+        <select id="projection">
+          <option value="equal-earth">Equal Earth</option>
+          <option value="airocean">Airocean</option>
+          <option value="population-cartogram">Fixed population cartogram</option>
+        </select>
+
+        <label class="check-row" for="reference-raster">
+          <input id="reference-raster" type="checkbox">
+          <span>Add conventional-grid reference raster</span>
+        </label>
+
+        <div class="button-row" aria-label="Camera controls">
+          <button id="zoom-in" type="button">Zoom in</button>
+          <button id="zoom-out" type="button">Zoom out</button>
+          <button id="reset-view" type="button">Reset</button>
+        </div>
+
+        <button class="primary" id="pause-inspection" type="button" aria-pressed="true">Inspection paused · values enabled</button>
+
+        <div class="refusal" id="refusal" role="alert" hidden></div>
+
+        <dl class="scene-facts">
+          <div><dt>Revision</dt><dd id="revision"></dd></div>
+          <div><dt>Period</dt><dd id="period"></dd></div>
+          <div><dt>Encoding</dt><dd id="encoding"></dd></div>
+          <div><dt>Current view</dt><dd id="current-projection"></dd></div>
+        </dl>
+      </aside>
+
+      <section class="map-card" aria-labelledby="map-title">
+        <div class="map-heading">
+          <div>
+            <p class="eyebrow" id="dataset-title"></p>
+            <h2 id="map-title"></h2>
+            <p id="map-summary"></p>
+          </div>
+          <div class="selected-value" aria-live="polite">
+            <span id="selected-label"></span>
+            <strong id="selected-value"></strong>
+            <small id="selected-detail"></small>
+          </div>
+        </div>
+        <div class="canvas-wrap" id="canvas-wrap">
+          <canvas id="map" aria-label="Projected map; use the exact-value table below for a semantic equivalent"></canvas>
+        </div>
+        <p class="caveat" id="geography-caveat"></p>
+      </section>
+
+      <section class="legend-card" aria-labelledby="legend-title">
+        <h2 id="legend-title">Legend and exact values</h2>
+        <ul class="legend" id="legend"></ul>
+        <div class="table-wrap">
+          <table>
+            <caption id="table-caption"></caption>
+            <thead><tr><th scope="col">Place</th><th scope="col">Exact value</th><th scope="col">Status</th><th scope="col">Evidence note</th></tr></thead>
+            <tbody id="values"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="citation-card" aria-labelledby="citation-title">
+        <h2 id="citation-title">Sources and interpretation</h2>
+        <ul id="citations"></ul>
+        <p id="cartogram-note" hidden></p>
+      </section>
+    </main>
+    <script src="bundle.js"></script>
+  </body>
+</html>

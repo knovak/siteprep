@@ -23,3 +23,7 @@ Built the four-checkpoint portable scene core with strict canonical contracts, i
 ## 2026-09-02 — Phase 1 - build the catalogue and contribution pipeline
 
 Built the metadata-only catalogue, exact search facets, honest detail states, 500-descriptor scale suite, geography and crosswalk findings, and offline checksum/rights-gated contribution adapters with recorded OWID/UN WPP and Data Commons/Census references; 14 tests and both contribution validations pass.
+
+## 2026-09-02 — Phase 2 - build the single-device renderer and projection comparison
+
+Built the single-device Canvas reader with catalogue selection, Equal Earth and Airocean projections, a fixed population cartogram, semantic exact-value inspection, visible compatibility refusals, citations, and responsive phone/laptop/4K layouts; 23 deterministic tests and 9 browser checks pass.
