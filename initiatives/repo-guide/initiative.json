@@ -1,7 +1,7 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, and simulator explaining how people and agents work in this repository.",
-  "stage": "dormant",
+  "stage": "refining",
   "value": "high",
   "outputs": [],
   "deployments": [
@@ -16,5 +16,30 @@
       }
     }
   ],
-  "todo": []
+  "todo": [
+    {
+      "id": "refining-readme",
+      "title": "Write a user-facing README covering how to use it and how to deploy it",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "refining-improvements",
+      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    },
+    {
+      "id": "simulator-redesign",
+      "title": "Redesign the simulator to match the new guide, following the list in notes.md",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "large",
+      "advances_stage": false
+    }
+  ]
 }
