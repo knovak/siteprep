@@ -3,6 +3,25 @@
 Optional ideas nobody has committed to. Promote one with `add` when it stops
 being optional.
 
+## 2026-09-02 — Optional refinement menu
+
+These are possible later improvements, not commitments. The simulator redesign
+below is already an actionable item and is intentionally not duplicated here.
+
+| Candidate | Why it could help | Likely size | Boundary and evidence |
+|---|---|---:|---|
+| **Add a worked pull-request trail to the description** | The guide explains the lifecycle abstractly. One compact, real example linking a wish, decision, plan item, branch, review, merge, test deployment, and release would help a newcomer verify how the pieces connect. | Medium | Derive every link and state from one completed initiative; label it as an example rather than the only valid route; omit private review content; and fail generation when a referenced file or commit disappears. |
+| **Provide a downloadable guide bundle** | The three self-contained files travel independently, but a newcomer may want one obvious download containing the description, deck, simulator, and a short index. | Small | Generate the bundle from the same successful outputs, include hashes and the source commit, add no second copy of the narrative source, and keep publishing an explicit release action. |
+| **Run a dedicated accessibility review** | Keyboard navigation and overflow are tested, but the current exit suite is not a full screen-reader, contrast, zoom, or reduced-motion review across all three renderings. | Medium | Record human and automated findings separately; preserve offline operation; test at high zoom and with reduced motion; and do not call automated checks proof of screen-reader usability. |
+| **Add presenter notes to the deck** | The deck is concise enough to present quickly, but a first-time presenter has to infer transitions and the intended point of dense diagrams from the long description. | Medium | Author notes in the shared section files, keep them out of the projected frame, make them printable or separately visible to the presenter, and retain the deck's copy and overflow gates. |
+| **Show public-version freshness before release** | The artifact footers name their source commit, while checking whether the public Demo lags still requires a manual comparison. A release preview could summarize which generated files and live facts changed. | Small | Report drift without auto-publishing, distinguish source changes from live-initiative data changes, and never treat a green comparison as release authorization. |
+
+The smallest useful next step is the **public-version freshness preview**: it
+uses provenance already present in every file and makes the manual release
+decision easier without weakening it. The **worked pull-request trail** is the
+stronger teaching improvement if newcomer comprehension, rather than release
+operations, becomes the next priority.
+
 ## 2026-09-02 — How the simulator should change
 
 The description and the deck were rewritten on 2026-09-02. The simulator was
