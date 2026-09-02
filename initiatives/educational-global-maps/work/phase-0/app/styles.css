@@ -29,6 +29,7 @@ button, select {
 button { padding: .65rem .8rem; cursor: pointer; }
 button:hover, button:focus-visible, select:focus-visible { border-color: #5cc8ff; outline: 2px solid transparent; }
 button.primary { width: 100%; background: linear-gradient(135deg, #635bff, #337dde); border: 0; font-weight: 700; }
+#play-time { width: 100%; margin-top: .5rem; }
 
 .skip-link { position: absolute; left: -999px; }
 .skip-link:focus { left: 1rem; top: 1rem; z-index: 5; padding: .7rem; background: white; color: #07111f; }
@@ -72,6 +73,9 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 .status-pill { padding: .3rem .55rem; border-radius: 999px; color: #07111f; background: #7fe2ff; font-size: .72rem; }
 .check-row { display: flex; gap: .7rem; align-items: center; margin: 1rem 0; color: #cbd7eb; font-size: .86rem; line-height: 1.35; }
 .check-row input { inline-size: 1.1rem; block-size: 1.1rem; }
+.layer-fieldset { margin: 1rem 0; padding: .65rem .75rem; border: 1px solid rgba(123, 156, 208, .28); border-radius: .8rem; }
+.layer-fieldset legend { padding: 0 .35rem; color: #a8b8d6; font-size: .82rem; font-weight: 700; }
+.temporal-check { margin: .45rem 0; }
 .button-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; margin-bottom: .75rem; }
 .button-row button { font-size: .78rem; }
 .refusal { margin: 1rem 0; padding: .8rem; border: 1px solid #ff8da8; border-radius: .75rem; color: #ffdce5; background: rgba(127, 29, 58, .35); line-height: 1.4; }
@@ -102,6 +106,8 @@ tr[data-selected="true"] { background: rgba(92, 200, 255, .09); }
 .citation-card ul { margin: 0; padding-left: 1.2rem; }
 .citation-card li { margin: .45rem 0; line-height: 1.5; }
 .citation-card a { color: #7fe2ff; }
+#actual-periods { padding-left: 1.2rem; color: #cbd7eb; }
+#alignment-note { color: #91a3c3; font-size: .84rem; line-height: 1.5; }
 
 @media (max-width: 760px) {
   .masthead { grid-template-columns: 1fr; gap: 1rem; padding-top: 1.4rem; }

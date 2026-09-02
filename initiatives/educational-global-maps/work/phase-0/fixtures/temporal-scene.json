@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "sceneId": "scene:phase-3-time-and-movement",
+  "projection": "equal-earth",
+  "timeline": ["2022", "2023-06", "2024"],
+  "layers": [
+    {
+      "id": "layer:population-through-time",
+      "title": "Population field",
+      "kind": "scalar",
+      "unit": "people",
+      "revision": "fixture:population-time-v1",
+      "projections": ["equal-earth", "airocean", "population-cartogram"],
+      "defaultActive": true,
+      "alignment": {"method": "nearest", "maxDays": 370},
+      "observations": [
+        {"period": "2022", "records": [{"id": "country:FRA", "value": 65500000, "status": "measured"}, {"id": "country:DEU", "value": 83700000, "status": "measured"}, {"id": "country:UNK", "value": null, "status": "suppressed"}]},
+        {"period": "2023", "records": [{"id": "country:FRA", "value": 66438828, "status": "measured"}, {"id": "country:DEU", "value": 84548233, "status": "measured"}, {"id": "country:UNK", "value": 0, "status": "zero"}]},
+        {"period": "2024", "records": [{"id": "country:FRA", "value": 66800000, "status": "measured"}, {"id": "country:DEU", "value": null, "status": "unavailable"}, {"id": "country:UNK", "value": null, "status": "filtered"}]}
+      ]
+    },
+    {
+      "id": "layer:education-index",
+      "title": "Education access index",
+      "kind": "scalar",
+      "unit": "index points",
+      "revision": "fixture:education-index-v1",
+      "color": "#ffcc66",
+      "overlay": true,
+      "projections": ["equal-earth", "airocean", "population-cartogram"],
+      "defaultActive": true,
+      "alignment": {"method": "interpolate"},
+      "observations": [
+        {"period": "2022", "records": [{"id": "country:FRA", "value": 71, "status": "measured"}, {"id": "country:DEU", "value": 74, "status": "measured"}]},
+        {"period": "2024", "records": [{"id": "country:FRA", "value": 75, "status": "measured"}, {"id": "country:DEU", "value": 78, "status": "measured"}]}
+      ]
+    },
+    {
+      "id": "layer:learner-movement",
+      "title": "Learner movement",
+      "kind": "flow",
+      "unit": "people",
+      "revision": "fixture:learner-flow-v1",
+      "color": "#f36f9b",
+      "projections": ["equal-earth", "airocean"],
+      "defaultActive": true,
+      "alignment": {"method": "nearest", "maxDays": 400},
+      "observations": [
+        {"period": "2023-05-15", "records": [{"id": "flow:paris-berlin", "from": "country:FRA", "to": "country:DEU", "fromCoordinates": [2.35, 48.86], "toCoordinates": [13.4, 52.52], "value": 36, "status": "measured"}, {"id": "flow:london-paris", "from": "country:GBR", "to": "country:FRA", "fromCoordinates": [-0.13, 51.51], "toCoordinates": [2.35, 48.86], "value": 0, "status": "zero"}, {"id": "flow:unknown", "from": "country:UNK", "to": "country:FRA", "fromCoordinates": [28, 11], "toCoordinates": [2.35, 48.86], "value": null, "status": "missing"}]},
+        {"period": "2024-04-10", "records": [{"id": "flow:paris-berlin", "from": "country:FRA", "to": "country:DEU", "fromCoordinates": [2.35, 48.86], "toCoordinates": [13.4, 52.52], "value": 49, "status": "measured"}]}
+      ]
+    },
+    {
+      "id": "layer:temporary-centres",
+      "title": "Temporary learning centres",
+      "kind": "points",
+      "unit": "locations",
+      "revision": "fixture:temporary-centres-v1",
+      "color": "#7fe2ff",
+      "projections": ["equal-earth", "airocean"],
+      "defaultActive": true,
+      "records": [
+        {"id": "point:paris-summer", "label": "Paris summer centre", "coordinates": [2.35, 48.86], "start": "2023-05", "end": "2023-09", "value": 1, "status": "measured"},
+        {"id": "point:nairobi-2024", "label": "Nairobi 2024 centre", "coordinates": [36.82, -1.29], "start": "2024-01", "end": "2024-12", "value": 1, "status": "measured"}
+      ]
+    },
+    {
+      "id": "layer:sea-temperature-frame",
+      "title": "Sea-temperature raster frame",
+      "kind": "raster",
+      "unit": "degrees Celsius",
+      "revision": "fixture:noaa-raster-frame-v1",
+      "projections": ["equal-earth"],
+      "defaultActive": false,
+      "observations": [
+        {"period": "2023-06", "frameId": "raster:2023-06", "records": [{"id": "cell:west", "value": 17, "status": "measured", "color": "#154f73"}, {"id": "cell:central", "value": 21, "status": "measured", "color": "#287da1"}, {"id": "cell:east", "value": null, "status": "unavailable", "color": "#475569"}]}
+      ]
+    }
+  ]
+}

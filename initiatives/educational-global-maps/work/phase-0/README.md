@@ -139,6 +139,33 @@ cartogram evidence, reduced motion, and horizontal overflow. `npm test` also
 builds the browser bundle and runs the deterministic projection, model,
 compatibility, semantic, viewport, inspection, and 250-feature budget tests.
 
+## Phase 3 time, layers, flows, and raster frames
+
+`src/temporal.mjs` adds a pure temporal-composition boundary beside the Phase 2
+renderer. Every active layer exposes its actual source period and retains zero,
+missing, unavailable, suppressed, filtered, outside-range, interpolated, and
+modelled states. Exact, nearest, forward-fill, linear-interpolation, and
+sum/mean aggregation are the only named alignment methods; each transformation
+records its inputs, parameters, output status, and prepared revision. A layer
+without an exact period or declared rule is refused before it changes the
+accepted frame.
+
+`fixtures/temporal-scene.json` layers yearly population, an interpolated
+education index, irregular learner flows, time-bounded points, and a monthly
+raster frame over the existing projection fixture. The browser can select or
+play scene time, toggle every layer, inspect each actual period, and pause
+animation immediately. Reduced-motion preference prevents automatic playback.
+Flows retain direction, magnitude, zero, and missing records; points keep stable
+ids while entering and leaving declared coverage. The raster renders only on
+Equal Earth, and an attempted Airocean addition leaves the accepted time,
+layers, projection, and camera unchanged with a visible reason.
+
+The deterministic scale test accepts 25,000 flow and 50,000 point records while
+bounding one visible frame to 5,000 flows and 10,000 points. The Phase 3 browser
+tests exercise actual-period labels, temporal Canvas overlays, raster
+capability refusal, immediate pause, and reduced motion at the same three
+required viewports.
+
 ## Canonicalization profile
 
 - Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate

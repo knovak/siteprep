@@ -37,7 +37,10 @@ test('point selection and fixed cartogram keep exact, accessible evidence', asyn
   await expect(page.locator('#values tr')).toHaveCount(5);
   await expect(page.locator('#current-projection')).toHaveText('Equal Earth');
   await page.locator('#dataset').selectOption('dataset:population');
+  await page.getByLabel('Learner movement').uncheck();
+  await page.getByLabel('Temporary learning centres').uncheck();
   await page.locator('#projection').selectOption('population-cartogram');
+  await expect(page.locator('#cartogram-note')).toBeVisible();
   await expect(page.locator('#cartogram-note')).toContainText('UN World Population Prospects 2024, 2023');
   await page.getByRole('button', {name: 'Brazil'}).click();
   await expect(page.locator('#selected-label')).toHaveText('Brazil');
