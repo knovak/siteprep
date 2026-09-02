@@ -45,16 +45,20 @@ verdicts, and notes; it never contains capture images.
 
 ## Selection sitting
 
-1. Open a selection such as `folder:Reading/*`, `site:example.com`, or a
-   combination such as `folder:Reading/* and not topic:rust`.
+1. Open a normalized selection such as `folder:reading-research*`,
+   `topic:modern-art`, `src:safari-export`, or `site:example.com`. Confirm that
+   folder, tag, and source values use lowercase words separated by dashes, just
+   like `title:court-drama*`.
 2. Choose a verdict and use **Sweep untriaged** to change only untriaged cards
    on the visible page and advance. Use the arrow on that control to switch to
    **Sweep all selected** when every item in the current open selection should
    receive the verdict.
 3. **Sweep all selected** should show the affected count and ask for
    confirmation before applying the verdict.
-4. Under **Select → Automatic proposals**, confirm that the Verdict group appears
-   above Folder and includes **not junk** and **untriaged or needs-time**.
+4. Under **Select → Automatic proposals**, confirm that source, tag, and folder
+   entries use those normalized lowercase-and-dash values. Confirm that the
+   Verdict group appears above Folder and includes **not junk** and
+   **untriaged or needs-time**.
 5. With no proposal, saved selection, or previous selection chosen, confirm its
    Open action is black on white. Choose an option and confirm only the paired
    Open action changes to white on blue.

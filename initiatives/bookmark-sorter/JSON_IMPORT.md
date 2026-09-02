@@ -124,7 +124,12 @@ During import:
 Prefixes such as `topic:`, `kind:`, `folder:`, `src:`, and `in:` are naming
 conventions, not schema requirements. Unprefixed tags are valid too. When using
 tags in a selection expression, write the tag itself, such as `topic:climate`;
-there is no extra `tag:` prefix.
+there is no extra `tag:` prefix. Selection search keys do not alter the stored
+tag: they lowercase its text, replace punctuation, symbols, and whitespace with
+single dashes, and retain the first colon as the conventional prefix separator.
+For example, the stored tag `Topic:Modern Art` is selected with
+`topic:modern-art`. The exact stored spelling remains available through
+`tag-key:<percent-encoded-tag>` when that distinction matters.
 
 JSON imports do not automatically add `src:`, `in:`, or `folder:` tags. Those
 are generated when browser bookmark HTML is imported. If those tags matter for

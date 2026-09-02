@@ -75,8 +75,8 @@ async function installPile(page) {
       const source = requestCollectionId === 'other' ? 'other-source' : 'browser-export';
       return route.fulfill({json: {proposals: [
         {id: `src:${source}`, kind: 'src', name: source, expression: `src:${source}`, count: backend.proposalRevision + 1},
-        {id: 'tag:topic:later', kind: 'tag', name: 'topic:later', expression: 'tag-key:topic%3Alater', count: 2},
-        {id: 'folder:Reading/topic-0', kind: 'folder', name: 'Reading/topic-0', expression: 'folder-key:Reading%2Ftopic-0', count: 834},
+        {id: 'tag:topic:later', kind: 'tag', name: 'topic:later', expression: 'topic:later', count: 2},
+        {id: 'folder:reading-topic-0', kind: 'folder', name: 'reading-topic-0', expression: 'folder:reading-topic-0', count: 834},
         {id: 'site:example0.com', kind: 'site', name: 'example0.com', expression: 'site:example0.com', count: 271},
         {id: 'image:none', kind: 'image', name: 'none', expression: 'image:none', count: 6666},
         {id: 'verdict:archive', kind: 'verdict', name: 'archive', expression: 'verdict:archive', count: 0},
@@ -297,11 +297,11 @@ test('Select remembers query strings in reverse recent order', async ({page}) =>
   await page.getByLabel('Selection expression').fill('site:first.example');
   await page.getByRole('button', {name: 'Open selection'}).click();
   await expect(page.getByLabel('Previous selections')).toContainText('site:first.example');
-  await page.getByLabel('Selection expression').fill('folder:Reading/*');
+  await page.getByLabel('Selection expression').fill('folder:reading-topic*');
   await page.getByRole('button', {name: 'Open selection'}).click();
-  await expect(page.getByLabel('Previous selections')).toContainText('folder:Reading/*');
+  await expect(page.getByLabel('Previous selections')).toContainText('folder:reading-topic*');
   const history = await page.getByLabel('Previous selections').locator('option').allTextContents();
-  expect(history).toEqual(['Previous selections', 'folder:Reading/*', 'site:first.example']);
+  expect(history).toEqual(['Previous selections', 'folder:reading-topic*', 'site:first.example']);
   await page.getByLabel('Previous selections').selectOption('site:first.example');
   await page.getByRole('button', {name: 'Open previous'}).click();
   await expect(page.getByLabel('Selection expression')).toHaveValue('site:first.example');
@@ -525,11 +525,12 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toContainText('Sweep untriaged');
   await expect(page.locator('#help-panel')).toContainText('site:example.com');
   await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
-  await expect(page.locator('#help-panel')).toContainText('src:safari');
-  await expect(page.locator('#help-panel')).toContainText('folder:Favorites*');
+  await expect(page.locator('#help-panel')).toContainText('src:safari-export');
+  await expect(page.locator('#help-panel')).toContainText('folder:favorites-modern-art*');
+  await expect(page.locator('#help-panel')).toContainText('topic:modern-art');
   await expect(page.locator('#help-panel')).toContainText('in:2026-08-19');
-  await expect(page.locator('#help-panel')).toContainText('can be used as a suffix to match any trailing characters');
-  await expect(page.locator('#help-panel')).toContainText('exact folder names');
+  await expect(page.locator('#help-panel')).toContainText('punctuation, symbols, and spaces become a single dash');
+  await expect(page.locator('#help-panel')).toContainText('A trailing * matches any characters after the normalized text');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
   await expect(page.locator('#help-panel')).toContainText('image:present');
   const documentation = page.getByRole('link', {name: 'Full documentation'});
