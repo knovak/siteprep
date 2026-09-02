@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 
 import {MemoryBookmarkStore} from '../src/memory-store.mjs';
-import {compileSelection, evaluateSelection, normaliseTitle, proposeSelections, wrapUiSelection} from '../src/selections.mjs';
+import {compileSelection, evaluateSelection, normaliseSearchValue, normaliseTitle, proposeSelections, wrapUiSelection} from '../src/selections.mjs';
 
 const items = [
   {id: 'a', collection_id: 'alpha', url: 'https://news.test/one', title: 'Rust: A Guide!', title_key: normaliseTitle('Rust: A Guide!'), tags: ['topic:rust', 'src:safari', 'folder:reading/rust', 'err:404']},
@@ -19,6 +19,33 @@ test('selection grammar covers precedence, grouping, not, wildcards, unknown tag
   assert.deepEqual(evaluateSelection(items, 'unknown:value'), []);
   assert.throws(() => compileSelection('topic:rust and (saved:later or)'), /Expected a tag.*character/);
   assert.throws(() => compileSelection('topic:*:rust'), /wildcard.*end.*character/i);
+});
+
+test('folder, tag, and source searches share title-style normalised keys', () => {
+  const punctuationItems = [
+    {...items[0], id: 'punctuation', tags: ['Topic:Modern & Art', 'SRC:Safari & Reading', 'Folder:Reading & Research/Rust']},
+    {...items[0], id: 'spacing', tags: ['topic:Modern — Art', 'src:Safari Reading', 'folder:Reading Research Rust']},
+  ];
+  assert.equal(normaliseSearchValue('  Reading & Research/Rust  '), 'reading-research-rust');
+  assert.deepEqual(evaluateSelection(punctuationItems, 'topic:modern-art').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'src:safari-reading').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'folder:reading-research-rust').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'topic:modern*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'src:safari*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'folder:reading-research*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'tag-key:Topic%3AModern%20%26%20Art').map(item => item.id), ['punctuation']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'folder-key:Reading%20%26%20Research%2FRust').map(item => item.id), ['punctuation']);
+
+  const proposals = proposeSelections(punctuationItems);
+  assert.deepEqual(proposals.find(proposal => proposal.id === 'tag:topic:modern-art'), {
+    id: 'tag:topic:modern-art', kind: 'tag', key: 'topic:modern-art', name: 'topic:modern-art', expression: 'topic:modern-art', count: 2,
+  });
+  assert.deepEqual(proposals.find(proposal => proposal.id === 'src:safari-reading'), {
+    id: 'src:safari-reading', kind: 'src', key: 'safari-reading', name: 'safari-reading', expression: 'src:safari-reading', count: 2,
+  });
+  assert.deepEqual(proposals.find(proposal => proposal.id === 'folder:reading-research-rust'), {
+    id: 'folder:reading-research-rust', kind: 'folder', key: 'reading-research-rust', name: 'reading-research-rust', expression: 'folder:reading-research-rust', count: 2,
+  });
 });
 
 test('UI scope wrapping and administrative selection use the same evaluator', () => {
@@ -58,7 +85,7 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   const first = proposeSelections(items);
   const site = first.find(proposal => proposal.id === 'site:news.test');
   const title = first.find(proposal => proposal.id === 'title:rust-a-guide');
-  const folder = first.find(proposal => proposal.id === 'folder:reading/rust');
+  const folder = first.find(proposal => proposal.id === 'folder:reading-rust');
   const source = first.find(proposal => proposal.id === 'src:safari');
   const tag = first.find(proposal => proposal.id === 'tag:topic:rust');
   const image = first.find(proposal => proposal.id === 'image:none');
@@ -70,6 +97,9 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   assert.equal(source.count, 2);
   assert.equal(tag.count, 3);
   assert.equal(image.count, 4);
+  assert.equal(folder.expression, 'folder:reading-rust');
+  assert.equal(source.expression, 'src:safari');
+  assert.equal(tag.expression, 'topic:rust');
   assert.deepEqual(verdicts.map(proposal => [proposal.name, proposal.count]), [
     ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['not junk', 4], ['untriaged', 4], ['untriaged or needs-time', 4],
   ]);
@@ -88,8 +118,8 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
 
   const changed = structuredClone(items);
   changed[1].tags = ['topic:rust', 'saved:later', 'folder:reading/changed'];
-  assert.equal(proposeSelections(changed).some(proposal => proposal.id === 'folder:reading/rust'), true);
-  assert.equal(proposeSelections(changed).find(proposal => proposal.id === 'folder:reading/rust').count, 2);
+  assert.equal(proposeSelections(changed).some(proposal => proposal.id === 'folder:reading-rust'), true);
+  assert.equal(proposeSelections(changed).find(proposal => proposal.id === 'folder:reading-rust').count, 2);
 });
 
 test('saved selections, additive tags, mark-then-sweep, and one-action undo share the same item set', () => {

@@ -50,9 +50,10 @@ selection, and export operations.
   `spec.md` §4 and unwraps Google `/url` references before storing a bookmark.
 - `src/selections.mjs` is the one selection evaluator used by UI-scoped and
   administrative calls. It parses `and`, `or`, `not`, parentheses, bare tags,
-  and trailing wildcards; adds synthetic collection/site/title/folder/image and
-  exact-tag keys; and computes grouped source, tag, folder, site, image, and
-  near-title proposals on demand.
+  and trailing wildcards; applies the title normalization rule to source,
+  ordinary-tag, and folder search keys; retains raw and encoded exact keys for
+  compatibility; adds synthetic collection/site/title/folder/image keys; and
+  computes normalized source, tag, folder, and near-title proposals on demand.
 - `src/round-trip.mjs` owns the `bookmark-sorter/v1` boundary. It exports any
   ordinary selection without captures, imports portable records through the
   same URL-keyed merge as browser HTML, and reads proposed-tag documents into
@@ -281,8 +282,11 @@ collection creation.
   `authorized_user`. Both routes require the matched row to have type `admin`;
   the same check gates Admin rendering, capture operations, and ending a
   sitting.
-- `GET /api/proposals` recomputes source, exact-tag, verdict, capture-error,
-  folder, site, image, and near-title groups as ordinary pre-filled selections.
+- `GET /api/proposals` recomputes normalized source, tag, and folder groups plus
+  verdict, capture-error, site, image, and near-title groups as ordinary
+  pre-filled selections. Source, tag, folder, and title values use the same
+  lowercase punctuation-to-dash keys accepted by typed selections; a tag's
+  conventional prefix colon is retained.
   `err:` tags are excluded from the ordinary tag group and instead appear in
   the error group, along with an **any error** proposal using `err:*`. The five
   individual verdict expressions and the combined **not junk** and

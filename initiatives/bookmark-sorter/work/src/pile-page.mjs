@@ -240,17 +240,17 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
-      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. A <code>*</code> can be used as a suffix to match any trailing characters.</p>
+      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. Titles, folder paths, tags, and source names use lowercase search keys: punctuation, symbols, and spaces become a single dash. A tag's prefix colon remains, so <code>Topic:Modern Art</code> becomes <code>topic:modern-art</code>. A trailing <code>*</code> matches any characters after the normalized text.</p>
       <ul>
         <li><code>site:example.com</code> — items from one site.</li>
         <li><code>title:court-drama*</code> — normalized titles beginning with that text.</li>
-        <li><code>src:safari</code> — items imported with <code>safari</code> as the Source tag.</li>
-        <li><code>folder:Favorites*</code> — items whose imported bookmark folder path begins with <code>Favorites</code>.</li>
+        <li><code>src:safari-export</code> — items whose normalized Source tag is <code>safari-export</code>.</li>
+        <li><code>folder:favorites-modern-art*</code> — items whose normalized bookmark folder path begins with that text.</li>
+        <li><code>topic:modern-art</code> — items with that normalized tag; ordinary tags need no extra <code>tag:</code> prefix.</li>
         <li><code>in:2026-08-19</code> — items imported on that date.</li>
         <li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, or <code>verdict:untriaged</code> — current verdict.</li>
         <li><code>image:present</code>, <code>image:failed</code>, or <code>image:none</code> — stored picture status.</li>
         <li><code>collection:&lt;id&gt;</code> — collection scope; the interface adds the current collection automatically.</li>
-        <li><code>folder-key:&lt;encoded-folder&gt;</code> — exact folder names used by Automatic proposals.</li>
         <li>Combine terms with <code>and</code>, <code>or</code>, <code>not</code>, and parentheses.</li>
       </ul>
       <p class="help-documentation"><a href="https://knovak.github.io/siteprep/initiatives/bookmark-sorter/README.html" target="_blank" rel="noopener noreferrer">Full documentation</a></p>

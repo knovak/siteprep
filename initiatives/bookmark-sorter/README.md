@@ -219,30 +219,48 @@ white on blue after text is entered, showing that the action is ready.
 
 Expressions support `and`, `or`, `not`, parentheses, and a trailing `*`
 wildcard. Operators are evaluated with `not` before `and`, and `and` before
-`or`. Ordinary user tags are written directly; there is no `tag:` prefix.
+`or`. Ordinary user tags are written directly; there is no extra `tag:`
+prefix.
+
+Titles, source names, folder paths, and ordinary tags share one normalized
+search format. Text is lowercased, punctuation and symbols become spaces,
+repeated whitespace collapses, and the remaining spaces become dashes. For
+example, `Court — Drama` becomes `court-drama`, `Reading & Research/Rust`
+becomes `reading-research-rust`, and the tag `Topic:Modern Art` becomes
+`topic:modern-art`. The colon that separates a tag's conventional prefix from
+its value remains in the search key.
+
+Without a wildcard, the normalized key must match in full. A single trailing
+asterisk makes it a prefix search: `folder:reading-research*` matches normalized
+folder paths beginning with `reading-research`. Existing saved expressions that
+use exact stored tags or the older encoded `tag-key:` and `folder-key:` forms
+remain valid, but new Automatic proposals use the normalized format.
 
 Examples:
 
-- `folder:Reading/*`
+- `folder:reading-rust`
 - `site:example.com`
-- `folder:Reading/* and not topic:rust`
+- `folder:reading-research* and not topic:rust`
 - `(src:safari-export or src:chrome-export) and verdict:untriaged`
 - `title:court-drama*`
+- `topic:modern-art`
 - `image:none`
 
 Useful generated or synthetic values include:
 
-- `src:<source>` — the source name attached during HTML import;
+- `src:<normalized-source>` — the normalized source name attached during HTML
+  import;
 - `in:<yyyy-mm-dd>` — the import date;
-- `folder:<path>` — the browser folder path;
+- `folder:<normalized-path>` — the normalized browser folder path;
 - `site:<host>` — the saved URL's host;
 - `title:<normalized-title>` — a title key, with `*` useful for prefixes;
 - `image:none`, `image:failed`, or `image:present`; and
 - `verdict:keep`, `verdict:junk`, `verdict:archive`,
   `verdict:needs-time`, or `verdict:untriaged`.
 
-Automatic proposals group the current collection by source, exact tag,
-verdict, capture error, folder, site, image state, and near-identical title.
+Automatic proposals group the current collection by normalized source, tag,
+and folder keys, plus verdict, capture error, site, image state, and normalized
+title.
 Capture errors have their own section after Verdict, with one proposal for
 every `err:` tag and an **any error** proposal for `err:*`; they do not also
 appear among ordinary tags. Proposals are computed from current collection
@@ -318,9 +336,9 @@ collection again at the end of the sitting.
 
 ### Review one folder or site
 
-Open `folder:<path>*` or `site:<host>`, save it if it will be reused, then page
-through just that group. Use a selection-scoped export when the group needs to
-move elsewhere.
+Open `folder:<normalized-path>*` or `site:<host>`, save it if it will be reused,
+then page through just that group. Use a selection-scoped export when the group
+needs to move elsewhere.
 
 ### Separate “decide later” work
 
@@ -360,9 +378,9 @@ the backup.
   tracking parameters but deliberately preserves other query parameters.
 - **An Open button stays white:** choose a non-placeholder value in the select
   beside it. White on blue means that proposal or selection is ready to open.
-- **A selection is empty:** check spelling and case, open **Help**, and simplify
-  the expression one clause at a time. A malformed expression reports an error;
-  an unknown but valid tag returns an empty set.
+- **A selection is empty:** check the normalized lowercase-and-dash spelling,
+  open **Help**, and simplify the expression one clause at a time. A malformed
+  expression reports an error; an unknown but valid tag returns an empty set.
 - **Cards have no picture:** that is an expected capture gap, not evidence that
   the bookmark was lost. Use its title, note, tags, and saved URL.
 - **The Site asks you to sign in although ChatGPT is open elsewhere:** choose

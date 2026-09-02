@@ -70,8 +70,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /\.html,\.json,text\/html,application\/json/);
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
-  assert.match(html, /can be used as a suffix to match any trailing characters/);
-  assert.match(html, /exact folder names used by Automatic proposals/);
+  assert.match(html, /punctuation, symbols, and spaces become a single dash/);
+  assert.match(html, /A trailing <code>\*<\/code> matches any characters after the normalized text/);
+  assert.match(html, /topic:modern-art/);
   assert.match(html, /href="https:\/\/knovak\.github\.io\/siteprep\/initiatives\/bookmark-sorter\/README\.html"[^>]*>Full documentation<\/a>/);
   assert.doesNotMatch(html, /prompt\('Collection name'/);
   assert.match(html, /textContent = text/);

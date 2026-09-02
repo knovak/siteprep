@@ -460,3 +460,16 @@ Added a concise operator runbook for the existing public-entry, private-data
 deployment. It records the access, backup, smoke-test, merge-recovery, capture,
 and incident boundaries an administrator must preserve without exposing
 bookmark content or treating a Sites version replacement as a database backup.
+
+## 2026-09-02 — Normalize folder, tag, and source selection keys
+
+Extended the title search-key rule to folder paths, ordinary tags, and import
+sources: lowercase text, punctuation and symbols become spaces, whitespace
+collapses, and remaining spaces become dashes. Tag namespace colons remain
+structural. Automatic proposals now use the same normalized expressions while
+raw and encoded exact keys remain available for existing saved selections.
+
+Updated Help, the user guide, import reference, specification, test plan,
+operator test checklist, and technical documentation, with unit and browser
+coverage for punctuation variants, trailing wildcards, proposal grouping, and
+the visible explanation.

@@ -8,8 +8,8 @@ export class SelectionSyntaxError extends Error {
 
 const VERDICT_PROPOSAL_KEYS = Object.freeze(['archive', 'junk', 'keep', 'needs-time', 'untriaged']);
 
-/** A stable ingestion key for cheap near-identical-title proposals. */
-export function normaliseTitle(value) {
+/** A stable, expression-safe key shared by human-readable selection values. */
+export function normaliseSearchValue(value) {
   return String(value || '')
     .normalize('NFKD')
     .toLowerCase()
@@ -17,6 +17,24 @@ export function normaliseTitle(value) {
     .replace(/\s+/g, ' ')
     .trim()
     .replaceAll(' ', '-');
+}
+
+/** Preserve the stored title-key contract while sharing its normalisation rule. */
+export function normaliseTitle(value) {
+  return normaliseSearchValue(value);
+}
+
+function normaliseTagSearchValue(value) {
+  const source = String(value || '');
+  const separator = source.indexOf(':');
+  if (separator < 0) return normaliseSearchValue(source);
+  const prefix = normaliseSearchValue(source.slice(0, separator));
+  const suffix = normaliseSearchValue(source.slice(separator + 1));
+  return prefix && suffix ? `${prefix}:${suffix}` : normaliseSearchValue(source);
+}
+
+function hasTagPrefix(tag, prefix) {
+  return String(tag).slice(0, prefix.length + 1).toLowerCase() === `${prefix}:`;
 }
 
 export function wrapUiSelection(collectionId, expression = '') {
@@ -51,7 +69,18 @@ export function selectionTags(item) {
   if (titleKey) tags.add(`title:${titleKey}`);
   for (const tag of item.tags || []) {
     tags.add(`tag-key:${encodeURIComponent(tag)}`);
-    if (tag.startsWith('folder:')) tags.add(`folder-key:${encodeURIComponent(tag.slice(7))}`);
+    if (hasTagPrefix(tag, 'src')) {
+      const key = normaliseSearchValue(tag.slice(4));
+      if (key) tags.add(`src:${key}`);
+    } else if (hasTagPrefix(tag, 'folder')) {
+      const folder = tag.slice(7);
+      const key = normaliseSearchValue(folder);
+      if (key) tags.add(`folder:${key}`);
+      tags.add(`folder-key:${encodeURIComponent(folder)}`);
+    } else {
+      const key = normaliseTagSearchValue(tag);
+      if (key) tags.add(key);
+    }
   }
   return tags;
 }
@@ -72,15 +101,16 @@ function selectionImage(capture) {
 export function proposeSelections(items, {minimum = 2} = {}) {
   const proposals = [
     ...groupProposalValues(items, 'src', item => (item.tags || [])
-      .filter(tag => tag.startsWith('src:'))
-      .map(tag => tag.slice(4)), key => `src:${key}`),
+      .filter(tag => hasTagPrefix(tag, 'src'))
+      .map(tag => normaliseSearchValue(tag.slice(4))), key => `src:${key}`),
     ...groupProposalValues(items, 'tag', item => (item.tags || [])
-      .filter(tag => !tag.startsWith('src:') && !tag.startsWith('folder:') && !tag.startsWith('err:')), key => `tag-key:${encodeURIComponent(key)}`),
+      .filter(tag => !hasTagPrefix(tag, 'src') && !hasTagPrefix(tag, 'folder') && !tag.startsWith('err:'))
+      .map(normaliseTagSearchValue), key => key),
     ...verdictProposals(items),
     ...errorProposals(items),
     ...groupProposalValues(items, 'folder', item => (item.tags || [])
-      .filter(tag => tag.startsWith('folder:'))
-      .map(tag => tag.slice(7)), key => `folder-key:${encodeURIComponent(key)}`),
+      .filter(tag => hasTagPrefix(tag, 'folder'))
+      .map(tag => normaliseSearchValue(tag.slice(7))), key => `folder:${key}`),
     ...groupProposalValues(items, 'site', item => [siteKey(item.url)]),
     ...groupProposalValues(items, 'image', item => [selectionImage(item.capture)]),
     ...groupProposalValues(items, 'title', item => [item.title_key || normaliseTitle(item.title)]),
