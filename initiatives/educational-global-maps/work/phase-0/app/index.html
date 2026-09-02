@@ -11,8 +11,8 @@
     <a class="skip-link" href="#map-title">Skip to map</a>
     <header class="masthead">
       <div>
-        <p class="eyebrow">Educational Global Maps · Phase 4</p>
-        <h1>Teach from a scene that stays true.</h1>
+        <p class="eyebrow">Educational Global Maps · Phase 5</p>
+        <h1>Teach from a scene—control it from anywhere nearby.</h1>
       </div>
       <p class="intro">Open a prepared lesson, follow its discussion stops, and share the exact revision. Newer data is offered as a comparison—never substituted silently.</p>
     </header>
@@ -125,6 +125,24 @@
         </div>
       </section>
 
+      <section class="session-card" aria-labelledby="session-title">
+        <div>
+          <p class="eyebrow">Detached controller</p>
+          <h2 id="session-title">Move the controls off the display.</h2>
+          <p>Start a two-device session, then open the join link or scan its QR code. The display remains authoritative and usable if the controller disconnects.</p>
+          <p class="connection-status" id="session-status" aria-live="polite">Not started</p>
+          <div class="stop-controls">
+            <button class="primary" id="start-session" type="button">Start controller session</button>
+            <button id="end-session" type="button" hidden>End session</button>
+          </div>
+        </div>
+        <div class="join-card">
+          <img id="join-qr" alt="QR code for the controller join link" hidden>
+          <a id="join-url"></a>
+          <small>Join secrets use 128 bits of browser-generated randomness. Sessions expire after two inactive hours on the reference relay.</small>
+        </div>
+      </section>
+
       <section class="legend-card" aria-labelledby="legend-title">
         <h2 id="legend-title">Legend and exact values</h2>
         <ul class="legend" id="legend"></ul>
@@ -144,6 +162,45 @@
         <p id="alignment-note"></p>
         <ul id="citations"></ul>
         <p id="cartogram-note" hidden></p>
+      </section>
+    </main>
+
+    <main class="controller-shell" id="controller-app" hidden>
+      <header>
+        <p class="eyebrow">Educational Global Maps · Controller</p>
+        <h1>Presentation controls</h1>
+        <p id="controller-status" class="connection-status" aria-live="polite">Joining…</p>
+        <p id="controller-revision" class="controller-revision"></p>
+      </header>
+      <section class="controller-grid" aria-label="Detached presentation controls">
+        <label for="controller-time">Time</label>
+        <select id="controller-time"></select>
+        <label for="controller-projection">Projection</label>
+        <select id="controller-projection"></select>
+        <fieldset class="layer-fieldset">
+          <legend>Layers</legend>
+          <div id="controller-layers"></div>
+        </fieldset>
+        <label for="controller-feature">Selected place</label>
+        <select id="controller-feature"><option value="">No selection</option></select>
+        <fieldset class="layer-fieldset">
+          <legend>Pan and zoom</legend>
+          <div class="controller-buttons">
+            <button id="controller-pan-left" type="button">Pan left</button>
+            <button id="controller-pan-up" type="button">Pan up</button>
+            <button id="controller-pan-down" type="button">Pan down</button>
+            <button id="controller-pan-right" type="button">Pan right</button>
+            <button id="controller-zoom-in" type="button">Zoom in</button>
+            <button id="controller-zoom-out" type="button">Zoom out</button>
+          </div>
+        </fieldset>
+        <fieldset class="layer-fieldset">
+          <legend>Presentation stop</legend>
+          <div class="stop-controls">
+            <button id="controller-previous-stop" type="button">Previous</button>
+            <button id="controller-next-stop" type="button">Next stop</button>
+          </div>
+        </fieldset>
       </section>
     </main>
     <script src="bundle.js"></script>

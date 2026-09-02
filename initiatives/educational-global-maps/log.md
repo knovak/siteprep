@@ -35,3 +35,7 @@ Added mixed-cadence time alignment, multiple scalar layers, flows, time-filtered
 ## 2026-09-02 — Phase 4 - add composer, educational scenes, and portability
 
 Built immutable educational scene composition, pinned share links, explicit upgrade revisions, rights-aware portable bundles, offline rendering, and the Phase 4 teaching surface; 43 deterministic tests and 27 browser checks pass.
+
+## 2026-09-02 — Phase 5 - build detached controller and reference relay
+
+Built the authoritative session protocol, same-browser controller fallback, packaged WebSocket relay, QR join flow, reconnect/expiry/rate boundaries, and complete detached controls; 51 deterministic tests and 36 browser checks pass.

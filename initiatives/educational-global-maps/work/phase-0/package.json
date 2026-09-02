@@ -9,6 +9,7 @@
   "scripts": {
     "build:app": "esbuild app/app.mjs --bundle --outfile=app/bundle.js --format=iife --platform=browser --target=es2022",
     "contributions": "node scripts/validate-contribution.mjs fixtures/contributions/owid-population fixtures/contributions/datacommons-income",
+    "relay": "node scripts/reference-relay.mjs",
     "round-trip": "node scripts/round-trip.mjs",
     "test": "npm run build:app && node --test test/*.test.mjs",
     "test:browser": "npm run build:app && playwright test --config playwright.config.mjs"
@@ -18,7 +19,9 @@
     "d3-geo": "3.1.1",
     "d3-geo-polygon": "2.0.1",
     "d3-geo-projection": "4.0.0",
-    "fflate": "0.7.4"
+    "fflate": "0.7.4",
+    "qrcode": "1.5.4",
+    "ws": "8.21.3"
   },
   "devDependencies": {
     "@playwright/test": "1.57.0",

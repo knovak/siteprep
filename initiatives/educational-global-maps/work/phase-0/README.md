@@ -194,6 +194,42 @@ framing, ordered stops, pinned share address, explicit upgrade comparison, and
 portable-bundle status to the existing single-device reader. It remains a
 reader/presenter rather than placing a full authoring panel on the 4K display.
 
+## Phase 5 detached controller and reference relay
+
+`src/session.mjs` defines the transport-neutral boundary. It creates 128-bit
+join secrets, emits relay-safe snapshots containing only declarative scene
+state, and keeps the display authoritative. `InMemorySessionTransport` applies
+the same revisioned intents directly for the no-network fallback. Time, layer,
+projection, camera, selection, and presentation-stop controls all use the
+existing reducer contract; stale and duplicate base revisions cannot roll back
+accepted state.
+
+`scripts/reference-relay.mjs` packages the WebSocket reference transport. The
+relay forwards typed intents to the display and returns complete authoritative
+snapshots to joining or reconnecting controllers. It retains only the current
+scene snapshot and connection ids, never dataset artifacts, contributor
+content, or credentials. Messages are capped at 64 KiB, repeated invalid or
+stale attempts are rate-limited, and an explicit end or two hours of inactivity
+removes session state. Run it locally with:
+
+```sh
+npm run relay
+```
+
+The browser display creates a QR code and join URL. With no `relay` query
+parameter, display and controller tabs use the same-browser `BroadcastChannel`
+adapter and remain a complete fallback. A configured `ws:` or `wss:` relay URL
+uses the packaged reference relay. Disconnecting a controller never disables
+the display. The phone controller exposes time, layers, projection, pan, zoom,
+selection, and ordered presentation stops without loading dataset bodies.
+
+`test/phase-5.test.mjs` proves same-device equivalence, typed forwarding, two
+controllers, stale refusal, reconnect snapshots, expiry, explicit end,
+relay-ignorance and payload/rate limits, plus an actual WebSocket round trip.
+The Phase 5 browser tests prove QR/join creation, synchronized controller
+operations, and the disconnected display fallback. No public application or
+relay was deployed; that remains permission-gated by `plan.md`.
+
 ## Canonicalization profile
 
 - Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate

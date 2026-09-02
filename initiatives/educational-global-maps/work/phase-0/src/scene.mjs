@@ -7,6 +7,8 @@ const INTENT_FIELDS = Object.freeze({
   'set-projection': ['projection'],
   'set-camera': ['center', 'zoom'],
   'set-layers': ['layers'],
+  'select-feature': ['featureId'],
+  'set-presentation-stop': ['index'],
 });
 
 export function compatibility(scene, layersById, projection = scene.projection) {
@@ -88,6 +90,16 @@ export function applyIntent(session, intentObject, layersById) {
     const result = compatibility(candidate, layersById, candidate.projection);
     if (!result.compatible) return {status: 'refused', session: deepClone(session), findings: result.findings};
     next.scene.layers = candidate.layers;
+  } else if (intent.type === 'select-feature') {
+    if (intent.payload.featureId !== null && (typeof intent.payload.featureId !== 'string' || !intent.payload.featureId)) {
+      return refuse(session, 'intent.selection.invalid', '$.intent.content.payload.featureId', 'Selection requires a non-empty feature id or null');
+    }
+    next.scene.selectedFeature = intent.payload.featureId;
+  } else if (intent.type === 'set-presentation-stop') {
+    if (!Number.isSafeInteger(intent.payload.index) || intent.payload.index < 0) {
+      return refuse(session, 'intent.stop.invalid', '$.intent.content.payload.index', 'Presentation stop requires a non-negative integer');
+    }
+    next.scene.presentationStop = intent.payload.index;
   }
   next.acceptedRevision += 1;
   next.scene.intentRevision = next.acceptedRevision;
