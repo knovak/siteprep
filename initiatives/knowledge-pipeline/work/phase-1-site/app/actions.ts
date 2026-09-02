@@ -10,7 +10,10 @@ import {
   authorizeUser,
   createCollection,
   createCurrentBackup,
+  createWorkPacket,
+  commitReviewProposal,
   commitHarvest,
+  importReviewProposal,
   previewErase,
   previewHarvest,
   restoreCollectionBackup,
@@ -111,6 +114,39 @@ export async function previewHarvestAction(formData: FormData) {
 export async function commitHarvestAction(formData: FormData) {
   try {
     await commitHarvest(await context(), value(formData, 'collectionId'), value(formData, 'previewId'));
+    revalidatePath('/');
+  } catch (error) { failure(error); }
+}
+
+export async function createWorkPacketAction(formData: FormData) {
+  try {
+    await createWorkPacket(await context(), value(formData, 'collectionId'), formData.getAll('sourceId').map(String));
+    revalidatePath('/');
+  } catch (error) { failure(error); }
+}
+
+export async function importReviewProposalAction(formData: FormData) {
+  try {
+    await importReviewProposal(
+      await context(),
+      value(formData, 'collectionId'),
+      value(formData, 'workPacketId'),
+      JSON.parse(value(formData, 'proposalJson')),
+    );
+    revalidatePath('/');
+  } catch (error) { failure(error); }
+}
+
+export async function commitReviewProposalAction(formData: FormData) {
+  try {
+    const edits = value(formData, 'rationaleEdits').trim();
+    await commitReviewProposal(
+      await context(),
+      value(formData, 'collectionId'),
+      value(formData, 'reviewId'),
+      formData.getAll('operationId').map(String),
+      edits ? JSON.parse(edits) : {},
+    );
     revalidatePath('/');
   } catch (error) { failure(error); }
 }

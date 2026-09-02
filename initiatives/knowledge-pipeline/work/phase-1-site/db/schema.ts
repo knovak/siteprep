@@ -227,3 +227,55 @@ export const dependencyProposal = sqliteTable(
     index('idx_dependency_proposal_collection_state').on(table.collectionId, table.state),
   ],
 );
+
+export const workPacket = sqliteTable(
+  'work_packet',
+  {
+    id: text('id').primaryKey(),
+    collectionId: text('collection_id').notNull(),
+    actorId: text('actor_id').notNull(),
+    selectionRevision: integer('selection_revision').notNull(),
+    collectionRevision: integer('collection_revision').notNull(),
+    packageHash: text('package_hash').notNull(),
+    packageJson: text('package_json').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [index('idx_work_packet_collection_created').on(table.collectionId, table.createdAt)],
+);
+
+export const proposalReview = sqliteTable(
+  'proposal_review',
+  {
+    id: text('id').primaryKey(),
+    collectionId: text('collection_id').notNull(),
+    actorId: text('actor_id').notNull(),
+    workPacketId: text('work_packet_id').notNull(),
+    proposalId: text('proposal_id').notNull(),
+    proposalJson: text('proposal_json').notNull(),
+    previewJson: text('preview_json').notNull(),
+    state: text('state', {enum: ['pending', 'committed', 'invalidated']}).notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [index('idx_proposal_review_collection_state').on(table.collectionId, table.state, table.createdAt)],
+);
+
+export const reviewRecord = sqliteTable(
+  'review_record',
+  {
+    id: text('id').primaryKey(),
+    collectionId: text('collection_id').notNull(),
+    sourceId: text('source_id'),
+    sourceVersionHash: text('source_version_hash'),
+    kind: text('kind', {enum: ['tag', 'assessment', 'promotion', 'vocabulary']}).notNull(),
+    payloadJson: text('payload_json').notNull(),
+    rationale: text('rationale').notNull(),
+    proposedByJson: text('proposed_by_json').notNull(),
+    processVersion: text('process_version').notNull(),
+    acceptedByActorId: text('accepted_by_actor_id').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_review_record_collection_kind').on(table.collectionId, table.kind, table.createdAt),
+    index('idx_review_record_source').on(table.sourceId, table.createdAt),
+  ],
+);

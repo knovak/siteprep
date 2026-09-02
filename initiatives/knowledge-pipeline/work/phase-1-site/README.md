@@ -1,7 +1,7 @@
-# Knowledge Pipeline Phase 2 Site
+# Knowledge Pipeline Phase 3 Site
 
-This is the login-gated collection and Harvest workspace through `plan.md`
-Phase 2. It is a
+This is the login-gated collection, Harvest workspace, and portable review core
+through `plan.md` Phase 3. It is a
 Vinext/Cloudflare Workers application intended for a public-access ChatGPT Site:
 the sign-in surface is public, while collection, administration, backup, API,
 and blob access require both ChatGPT authentication and a server-side
@@ -56,7 +56,9 @@ are never ids.
 `lib/domain.mjs` supplies portable rules shared by the Worker and Node tests.
 Current-collection backup creates a deterministic `knowledge-pipeline/v1`
 manifest containing source versions, aliases, tags, dependency proposals,
-activities, and receipts. It stores the bounded ZIP under a private R2 key,
+accepted review records, activities, and receipts. Pending work packets and
+proposal files remain disposable review state rather than accepted knowledge.
+The service stores the bounded ZIP under a private R2 key,
 then writes the D1 backup/activity/receipt batch. A failed D1 commit removes the
 staged object. Download and restore first prove collection ownership, package
 scope, object checksum, and every source-version checksum; restore is
@@ -97,3 +99,27 @@ the hosted migration/binding boundary before Phase 1 is recorded complete.
 
 Phase 2 stops at intake and inventory. Promotion, assessment, LLM proposal
 files, and vocabulary decisions belong to Phase 3.
+
+## Review and LLM file-loop boundary
+
+`lib/review.mjs` implements the offline, credential-free bridge between accepted
+sources and a human review. A bounded work packet names its original collection,
+selection and collection revisions, accepted source-version hashes, explicit
+omissions, target ids, and zero credentials. A manually obtained LLM response
+may propose tags, five separate assessment dimensions, vocabulary changes, and
+promotion dispositions, but it cannot accept or commit any of them.
+
+Proposal preview refuses a changed destination, stale source hash, hidden
+canonical score, malformed assessment, or authority-bearing proposal. The
+commit boundary accepts an explicit subset only from a human actor, retains
+every rejected operation in the receipt, records human rationale rewrites, and
+keeps the proposer and process version. Duplicate and syndicated relationships
+are reported as both raw source count and independent clusters. Vocabulary
+impact reports preserve historical assignments across unknown, rename, alias,
+deprecate, split, and replacement decisions.
+
+`test/review.test.mjs` is the recorded deterministic model fixture for the
+ordinary gate. It also exercises a 2,000-operation proposal within the
+five-second preview budget. A live model run and a person's corrections remain
+a separately named human review gate; passing the recorded suite never stands
+in for that evidence.

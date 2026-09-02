@@ -103,10 +103,12 @@ test('source-aware backup round-trips versions, aliases, tags, and dependency pr
       tags: [{label: 'Heat', key: 'heat', status: 'accepted', type: 'user', stage: 'harvest', createdAt: '2026-09-01T00:00:00.000Z', archivedAt: null}],
     }],
     dependencyProposals: [{id: 'dependency:one', sourceId: 'source:one', type: 'duplicate-of', targetNamespace: 'url', targetKey: 'https://example.org/other', state: 'proposed', createdAt: '2026-09-01T00:00:00.000Z'}],
+    reviewRecords: [{id: 'review:one', sourceId: 'source:one', sourceVersionHash: hash, kind: 'assessment', payload: {dimensions: {}}, rationale: 'Fixture', proposedBy: {kind: 'llm'}, processVersion: 'fixture-v1', acceptedByActorId: 'actor:one', createdAt: '2026-09-01T00:00:00.000Z'}],
   });
   assert.deepEqual(validateCollectionBackup(pkg, 'collection:one'), []);
   assert.equal(pkg.records.entities[0].aliases[0].namespace, 'url');
   assert.equal(pkg.records.entityVersions[0].contentHash, hash);
   assert.equal(pkg.records.relationships[0].type, 'duplicate-of');
   assert.equal(pkg.extensions['siteprep:sourceTags'][0].key, 'heat');
+  assert.equal(pkg.extensions['siteprep:reviews'][0].acceptedByActorId, 'actor:one');
 });
