@@ -205,3 +205,17 @@ Added a user-facing guide to the description, deck, simulator, regeneration work
 ## 2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features
 
 Added a dated optional-refinement menu covering a worked PR trail, downloadable bundle, accessibility review, presenter notes, and public-version freshness without duplicating the actionable simulator redesign.
+
+## 2026-09-02 — Redesign the simulator to match the new guide
+
+Rebuilt the simulator as a white, navy-accented single-column guide with the
+description's figure palette and a sticky full-lifecycle rail. The walkthrough
+now shows the optional research fork, amber person steps and blue agent steps,
+digest lines appearing and disappearing around a question, the plan critique,
+both increments moving through branch, write-scope check, branch preview, pull
+request, and merge, two refining items, and a production release that runs only
+after the person's explicit request. The generated output remains self-contained
+and offline, and its vocabulary still resolves from the narrow fact set.
+
+This is the initiative's last actionable item. It remains on the todo list so
+the sweep does not declare the initiative dormant on the user's behalf.

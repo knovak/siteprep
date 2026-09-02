@@ -73,10 +73,19 @@ names, and the per-run budget resolve from the fact registry at generation.
 
 The walk-through covers the whole lifecycle — every derived stage, including one
 deliberate move backwards when an assumption breaks, and the quiet stages at the
-end. Items carry stable keys and the item list is *reconciled* rather than
+end. Its white, navy-accented page uses the description's figure palette. A
+sticky lifecycle rail keeps the current stage and accumulated documents visible
+throughout. Amber identifies steps you take; blue identifies agent work.
+
+The fixed story now includes the optional research fork at the wish stage, the
+plan critique before implementation, and the two items seeded when work enters
+refining. Both implementation increments visibly move from item to branch,
+write-scope check, branch preview, ready pull request, and your merge. A waiting
+question visibly adds a digest line and your answer removes it. Production is a
+separate release step: it becomes actionable only after your explicit request.
+Items still carry stable keys and the item list is *reconciled* rather than
 replaced, so an item that survives a step is the same element: it recolours in
-place, slides when a neighbour leaves, and collapses out when it merges. That is
-the difference between watching a process and paging through screenshots of one.
+place, slides when a neighbour leaves, and collapses out when it merges.
 
 Two steps choreograph their interesting moment across timed beats rather than
 presenting it finished: the sweep run spends its allowance with the meter
@@ -172,7 +181,7 @@ generated file from `file://`, refuses network dependencies, checks all
 authoritative links, exercises forward, back, first, and last keyboard
 navigation, and asserts that no slide's content overflows its fixed frame.
 
-`build/simulator.mjs` resolves only four registered fact keys rather than the
+`build/simulator.mjs` resolves only six registered fact keys rather than the
 whole repository fact set. The selective resolver is what makes the spec's
 "reads no initiative data" promise testable: an absent initiatives directory
 does not affect generation, while inconsistent lifecycle constants still fail.
@@ -181,7 +190,7 @@ and cascade moments, interrupts and resumes Play, and refuses network
 dependencies.
 
 The stage the simulator is showing takes the same orange as the active sweep
-phase on exactly the steps where it moved, badge and lifecycle track together.
+phase on exactly the steps where it moved, badge and lifecycle rail together.
 That flag is derived by comparing a step with the one before it rather than
 recorded against the step, so stepping backwards onto a move highlights it the
 same way stepping forwards onto it did - including the one deliberate move back
@@ -191,7 +200,8 @@ down the lifecycle, which its test demands the walk-through still contains.
 compares it only with the lifecycle and sweep-phase sources. Simulator
 generation returns a report diagnostic when another walkthrough may be due;
 unrelated commits do not advance the comparison. There is no separate metadata
-configuration file.
+configuration file. The redesign was walked through and visually inspected on
+2026-09-02.
 
 The description contains fourteen sections, following one initiative from
 wish to archive: what the repository is, what an initiative produces,
