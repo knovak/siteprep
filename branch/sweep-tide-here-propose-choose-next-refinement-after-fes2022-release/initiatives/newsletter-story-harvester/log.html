@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log — Newsletter Story Harvester</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Log — Newsletter Story Harvester</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Newsletter Story Harvester</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Log</h2>
+    </div>
+    <div class="card-content">
+<h2>Log</h2>
+<h3>2026-08-15 — Draft objectives.md - what &quot;done&quot; would mean</h3>
+<p>Drafted objectives.md from the wish: eight outcomes, all subordinate to getting to a short list of keepers faster than reading the newsletters would.</p>
+<p>The finding that shapes the rest: the three newsletter densities the wish names are three different extraction problems, not three sizes of one. A link list and an annotated digest both yield a story per link; a long-form Substack column does not, and the naive rule turns one column into thirty footnote-sized junk items. So the unit of harvest is a per-newsletter decision, and &#39;the long-form shape produces one story&#39; is recorded as the sharpest test that extraction works.</p>
+<p>Two questions the wish does not settle are recorded as blocked items rather than answered: whether this runs as agent skills or as a website (the wish raises it and it decides nearly everything downstream), and which newsletters are in scope with how their emails are recognised (a fact only the mailbox has).</p>
+<p>Two more are left to the spec rather than raised as blockers: how much triage machinery is shared with the bookmark sorter, whose grid and verdicts are close cousins of objectives 5 and 7, and what &#39;closely related&#39; has to mean for the paraphrase-merging in objective 6.</p>
+<h3>2026-08-15 — Proposed an answer: does this run as agent skills, or as a website?</h3>
+<p>Proposed, not decided: skills over the mailbox for the harvest, a generated page for the review. Recorded in decisions.md with the four options and what would make a different one correct.</p>
+<p>The argument is that this is two problems wearing one name. Harvesting is judgement - a long-form column has to yield one story rather than thirty footnotes - which is model work and belongs in a skill. Reviewing is throughput, and a few hundred keep-or-drop calls made by conversation is slower than reading the newsletters would have been, which is the failure objective 7 exists to prevent. A website answers the second well and pays for the first twice, plus a stored Gmail credential nothing in the wish asks for.</p>
+<p>Unblocks draft-spec if merged. Leaves the store&#39;s actual form to the spec, and leaves newsletter-inventory blocked on the user either way.</p>
+<h3>2026-08-15 — Review round on the proposal: C, with D as a standing fallback</h3>
+<p>The user answered on the pull request: C, with a note that D can be adopted if the bookmark sorter&#39;s web app ships first and its grid generalises. Rewrote the decisions.md entry from a proposal into the decision it now is, in their words, and made the fallback a section of its own rather than a line in a list of things that would change the answer - it is a route to take, not a risk to watch.</p>
+<p>The fallback carries one constraint into the spec: the store is the durable thing and the generated page is disposable, so moving review into the bookmark sorter later is a change of surface rather than a rewrite.</p>
+<h3>2026-08-15 — Draft the story record - the fields a harvested story must carry, and what makes two stories the same one</h3>
+<p>Drafted story-record.md: the fields a story carries, why the extraction shape is stored rather than inferred, the three separate senses of &#39;the same story&#39; and which two are decidable, and the link unwrapping that identity depends on.</p>
+<h3>2026-08-15 — Review round on the story record: tags, open vocabularies, many harvesters</h3>
+<p>Five review comments, all revisions, and they pull in one direction: fewer fixed schemas.</p>
+<p>Themes became tags. There is no theme field and no theme table - a theme is a tag by the convention theme:&lt;name&gt;, in the same set as anything else worth selecting on. Grouping and correcting are then the same operation, and whatever writes tags can group stories. It also matches the bookmark sorter&#39;s flat free-string tags, which matters because that app is the standing fallback for review.</p>
+<p>Verdicts became an open vocabulary, so archive or to-be-shared can be added as configuration rather than a migration. Two rules keep it honest: a story still has exactly one verdict or none, which is what makes the backlog count mean something, and a reader that does not recognise a verdict must round-trip it rather than blank it.</p>
+<p>The larger change is that the store has many producers. Any number of skills may harvest into it, so the record carries harvester alongside source, shape is open for a harvester that meets material the three shapes do not describe, and how a long-form column becomes one story is the harvesting skill&#39;s business rather than something this document prescribes. Identity is what makes that safe: url_key is the cross-source key, so the same article arriving through two different skills still merges. One rule added - a harvester never writes a verdict, because a record that arrives pre-judged shrinks the backlog objective 7 counts.</p>
+<p>Cross-newsletter merging is settled as happening at harvest: the reader never spends a decision on duplicates, and merged_from keeps it inspectable.</p>
+<h3>2026-08-15 — Draft spec.md, including alternatives considered for the runtime and for how each newsletter shape is turned into stories</h3>
+<p>Drafted spec.md: the harvest is a skill, the store is a JSON file the skill alone writes, the review page is generated and disposable, and verdicts come back as a small exported file.</p>
+<p>Both alternatives sections the item asked for are in it. The runtime one condenses the settled decision. The second is the initiative&#39;s own hard problem and was not settled anywhere: how each newsletter shape becomes stories. Chose to declare the shape per source in the inventory and let the model extract under that shape&#39;s contract - so the model does the reading but not the deciding, which is the split the objectives implied without naming. The alternatives it beats are a universal every-link-is-a-story rule, a parser per newsletter, and an unguided model; all three either make the unit decision in the wrong place or make the long-form failure invisible.</p>
+<p>The long-form failure is now observable rather than merely predicted: a contract carries an expected story count, a long-form source yielding more than one story is reported by name, and the declared shape may be overridden per issue for the author who writes a roundup some weeks.</p>
+<p>O1&#39;s repeatability is met at the level of identity rather than of text, since a model does not produce the same words twice: identity is structural, first write wins, and re-extraction is an explicit action.</p>
+<p>Also settles what the store is and where it lives (a JSON file outside this repository, since it holds a person&#39;s mailbox material), that harvests run on demand because a schedule would need the credential the runtime decision exists to avoid, what closely related means for objective 6 (a cluster is a tag, erring toward proposing because nothing is destroyed), and the three questions story-record.md left open. Records that the bookmark sorter shares data conventions with this and no code.</p>
+<h3>2026-08-15 — Review round on the spec: a diagram, a tagging skill, store import, tag alignment</h3>
+<p>Four review comments, and three of them pull in one direction: the store is the interchange point, so specify what else can arrive at it.</p>
+<p>Added a diagram of the chosen scheme (§1.1) - mailbox, inventory, harvesting skill, store, review page, published page, verdict file. Two things it is drawn to make obvious: every arrow into the store starts at a skill, and the mailbox appears once with nothing flowing back to it.</p>
+<p>Anticipated the tagging skill as §10.3 - a later pass that reads the whole store and proposes themes and clusters with a model&#39;s judgement. Named separately from the harvest because it has different information: a harvester sees one issue, a pass over the store sees everything, which is the only position from which &quot;these nine stories are one category&quot; is a judgement rather than a guess. The first version owes it a readable store, open tags, and tags that carry no origin - all of which were already there for other reasons.</p>
+<p>Specified store export and import as §7.1. Export is a copy, and the operation exists only to take a subset. Import is the harder half and the answer is that it is not a new mechanism: it is the harvest merge with records as input instead of emails, so the story-record identity rules do the work. Import never deletes, and reports what it merged.</p>
+<p>Aligned the tag format with the bookmark sorter deliberately (§13.1), as a binding table rather than a sentiment, since adopting its boolean selection language later is expected. The consequence worth having: this page&#39;s filter must be a subset of that expression language, so adding and/or/not later is reach rather than migration.</p>
+<h3>2026-08-17 — Draft plan.md and test-plan.md - the build order, and how the three extraction contracts are tested without a mailbox</h3>
+<p>Drafted plan.md and test-plan.md: nine phases and their exit tests.</p>
+<p>The ordering rule that shapes everything is that what is blocked on the user goes as late as it can. newsletter-inventory is a data: blocker and stays one, so the naive order - connect to Gmail first - is stopped on day one. The plan reaches phase 5 with no mailbox, no inventory and no real email: the store and identity, the three contracts against fixtures, a whole run over a fixture message source, the review page, and the verdict round trip. Only phase 6 needs the user, and by then everything except the real material is finished.</p>
+<p>What makes that possible is a seam: extraction takes a document rather than a message, and the fixture source is the first implementation of the interface Gmail later fills.</p>
+<p>The three contracts are tested without a mailbox by splitting the model out of the deterministic part. A contract test is a fixture issue plus a recorded model response, which gates every change; an eval is the same fixtures with a live call, scored against a recorded rubric and deliberately kept out of the gating suite, because a test that fails sometimes gets muted and muting this one would leave extraction quality unmeasured. The sharpest assertion falls out of §3.1&#39;s own rule that blurbs are copied rather than paraphrased: on the two verbatim shapes, harvested text must appear in the source document, which turns &#39;extraction never invents text&#39; from a principle into a test.</p>
+<p>Six of the seven questions §15 left are answered by reasoning; only the unwrap rules for the actual senders wait on the inventory. Two answers are worth noting. --refresh is not built, because it is already a composition of a harvest into an empty store and an import of the old one, which §7.1&#39;s merge rules make correct. And the cluster paraphrase cannot live where §10.2 suggests: §13.1 forbids per-tag metadata outright, so the plan proposes a clusters block in the store instead and flags the disagreement for the spec.</p>
+<h3>2026-08-17 — Phase 0 - prove the connector can search by sender, label and date range</h3>
+<p>Phase 0: the Gmail connector searches by sender, label and date range, and unions several matchers in one query - §14&#39;s first row answered with evidence. Three conditions carried into §4, §5.1 and §5.2: from: over-matches plus-tagged siblings, the range is half-open in local dates, and the result count is an estimate. A fourth, that Substack&#39;s redirector carries a recipient token and cannot be unwrapped by table, goes to phase 1&#39;s normalisation. No mailbox content recorded.</p>
+<h3>2026-08-17 — Phase 1 - the store, url_key unwrapping, identity, and the merge path</h3>
+<p>Phase 1: the store as one JSON file with atomic write and a kept generation, url_key unwrapping with the redirector table and the optional HEAD follow, identity for both cases, the case 2 cross-source merge, and the import path - which is the same merge with records as input. Every row of test-plan.md §4.1 has a test; 31 pass, no dependencies, no mailbox, no model.</p>
+<h3>2026-08-18 — Phase 2 - the three extraction contracts and their fixtures, against recorded responses</h3>
+<p>The three contracts, their fixtures, and the recorded-response harness that makes them deterministic.</p>
+<p>The decision the build forced, and the one worth carrying forward: the model returns a link <em>index</em>, never a URL. §3.3 requires identity to be structural, and a reply carrying hrefs puts the model one mis-copied character away from a new url_key, a new id, and a duplicate no test would catch. So html.mjs numbers the links, the prompt shows that numbering, and a finding says which link rather than what link.</p>
+<p>Three structural guards sit in the harvester rather than only in the prompt, because test-plan §3&#39;s point is that the chrome is in every issue: chrome links are refused; a link inside a heading is a section heading on link-list and an item title on annotated-digest; and a verbatim blurb that is not in the issue is refused outright. The last is stricter than §3.2&#39;s flag-never-suppress, deliberately - a count anomaly is real stories and a suspicious number, while an unverifiable blurb is text the source did not write.</p>
+<p>Writing the loud-case test found that §3.1 and §3.2 cancel out as specified. Every long-form finding takes the anchor &#39;document&#39;, so all but the first collide on identity and are refused as duplicates - the yield is 1 however many come back, and the case objectives.md calls the sharpest test can never fire. The extras now take an anchor of their own, so the band flags them and the report names the source and the issue. Recorded in decisions.md as a spec correction.</p>
+<p>The recorded replies are deliberately not idealised: they carry the sponsor block, the unsubscribe link, an invented blurb, a duplicate and an impossible index, so the tests assert the pipeline rather than the recording.</p>
+<p>Measured against the fixtures and recorded in decisions.md, with the honest caveat that §3.1&#39;s bands are kept unchanged - the fixtures are composed rather than derived, so a band fitted to them would be a band fitted to what we imagined a newsletter looks like. Phase 6 decides them.</p>
+<p>The other half of §4.2&#39;s exit, the live eval score per contract, needs a model rather than a recording and is now its own item.</p>
+<h3>2026-08-18 — Phase 2&#39;s other exit - run each contract live against the fixtures and record the score and its rubric</h3>
+<p>Ran every extraction contract live against its fixture cases with a fixed ten-point rubric: link-list 10/10, annotated-digest 10/10, long-form 4/10 operational after its singular JSON object failed the array-only parser; recorded the diagnosis and added the wire-shape fix as actionable work.</p>
+<h3>2026-08-18 — Phase 3 - a whole run over a fixture mailbox: the run loop, a source_doc for every matched message, and the run record</h3>
+<p>Built the phase 3 fixture harvest end to end: strict inventory and range resolution, two-step message source with post-search From verification, extraction and theme-tag seams, store merging, source_doc accounting for every matched message, and persisted run records. The 75-test suite covers every phase 3 exit row, including a 49-match/25-add overlapping rerun.</p>
+<h3>2026-08-18 — Establish which newsletters are in scope and how their emails are recognised</h3>
+<p>Scope set to from:yglesias for 14 days as long-form; from:fixthenews@substack.com for 28 days as annotated-digest; and from:chopwoodcarrywaterdailyactions with subject containing extra for 28 days as link-list.</p>
+<h3>2026-08-18 — Make the long-form prompt request the JSON array the strict reply parser accepts, and pin it with a live-shaped regression</h3>
+<p>Aligned the long-form request with the strict parser by asking for a JSON array containing exactly one finding. A regression now asserts that prompt text and parses the live-shaped recorded reply; all 78 harvester tests pass. Phase 4&#39;s review page is now the next actionable increment.</p>
+<h3>2026-08-18 — Phase 4 - build the self-contained review page and measure the first fixture review rate</h3>
+<p>Built the self-contained offline review-page generator, a reproducible 74-story fixture store, verdict controls, filtered verdict-rest, one-action undo, backlog, sorts, tag filters, and verdict-file export. All 86 work tests pass. Split the first review-rate baseline into an explicit human sitting rather than fabricating it from browser automation, and made the verdict importer actionable.</p>
+<h3>2026-08-18 — Propose a bounded protocol for the first human review-rate baseline</h3>
+<p>Proposed a 15-minute individual-judgment sitting after one resettable practice decision, with elapsed seconds, stories judged, rate, completion state, and the exported verdict file recorded. Reclassified the remaining blocker as <code>data:</code> because the protocol is reasoned but its numeric result can only be observed by a person.</p>
+<h3>2026-08-18 — Revise the review-rate proposal after review selected option C</h3>
+<p>Revised the proposal at the reviewer&#39;s direction to use a deterministic three-pass browser click-through. The phase-4 measurement is now actionable and is explicitly an interaction-throughput baseline, not a claim about human reading or judgment speed.</p>
+<h3>2026-08-18 — Phase 5 - import verdict files idempotently and record the round trip</h3>
+<p>Closed phase 5 with an addressed verdict/tag importer and atomic CLI: later verdict_at wins, open verdicts survive, wrong stores name both ids, untrusted story content is inert, and a canonical fingerprint makes duplicate files complete no-ops. The browser-to-store round trip and all 95 work tests pass; the recorded fixture import was 0 added, 3 matched, 0 merged, 0 conflicted, and 3 updated. Added the Gmail message-source adapter as the next actionable phase.</p>
+<h3>2026-08-18 — Measure automated verdict click-through on the fixture review page and record the interaction baseline</h3>
+<p>Recorded the newsletter-review-interaction/v1 baseline with three fresh 73-click Playwright passes. Throughput was 14.995-15.115 clicks/second, p50 state-update latency 37.43-37.53 ms, p95 38.36-38.96 ms; every pass reached zero backlog with no browser errors. Added the repeatable runner and kept the result explicitly separate from human judgment speed.</p>
+<h3>2026-08-18 — Phase 6 - implement the Gmail message-source adapter and private-inventory handoff without committing mailbox data</h3>
+<p>Built the paged, read-only Gmail message-source adapter and mode-0600 private-inventory handoff. All 101 Node tests pass. A live bounded handoff found 14, 4 and 4 messages across the three configured sources; all 22 passed post-search attribution and had readable HTML, with 3 searches, 22 reads and no writes. No mailbox body was retained. The first real extraction remains the next actionable item.</p>
+<h3>2026-08-19 — Phase 6 - run the first real extraction, record count-band flags and merge rate, and generate the private review page</h3>
+<p>Ran 22 mailbox-backed issues through the private extraction handoff: 169 accepted findings became 163 review records, 13 chrome/heading findings were refused, every count band passed, and three identities merged (1.775%). Recorded the calibration and left optional HEAD following off.</p>
+<h3>2026-08-19 — Phase 7 - build the additive, set-undoable tagging and cluster-paraphrase skill</h3>
+<p>Built the reusable tag-newsletter-stories skill with a deterministic prepare/apply/undo guardrail, additive theme and event-cluster writes, mode-preserving atomic storage, cluster paraphrases in the store, and one-entry cluster review with per-member provenance and verdicts. The skill validator, CLI rehearsal, and all 109 initiative tests pass.</p>
+<h3>2026-08-19 — Phase 8 - render the kept and emphasised stories as a provenance-safe published page</h3>
+<p>Phase 8: the review renderer now publishes with two arguments changed - include: [&#39;kept&#39;,&#39;emphasised&#39;] and judgeable: false - removing every judging control and the code behind it, and withholding provenance. A published story is assembled from an allow-list rather than by deleting two fields, and the runs block is withheld because a run record accounts for issues by source_doc. Added publish-page.mjs and nine tests covering every test-plan.md 4.8 row. 118 tests pass.</p>
+<h3>2026-08-25 — Make the private review page readable without decoding its implementation</h3>
+<p>Changed story and cluster cards to start expanded, moved outbound navigation to the story title, and removed the redundant link row. The extraction contract now requires complete, unmodified text through 3,000 characters and permits a summary only for longer material, with that choice recorded per finding.</p>
+<p>Separated source identity from subject themes: inventory entries carry explicit source slugs, fixture generation no longer manufactures source-shaped themes, and private review Help shows the configured source names, slugs, and Gmail search strings. The published page does not carry that private configuration.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/tide-here/propose-choose-next-refinement-after-fes2022-release" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
