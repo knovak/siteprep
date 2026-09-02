@@ -1,4 +1,5 @@
 import fixture from '../fixtures/renderer-scene.json';
+import temporalFixture from '../fixtures/temporal-scene.json';
 import {
   buildRenderModel,
   changeDataset,
@@ -11,6 +12,11 @@ import {
   setCamera,
   setReferenceRaster,
 } from '../src/renderer.mjs';
+import {
+  buildTemporalFrame,
+  renderTemporalOverlays,
+  temporalSnapshot,
+} from '../src/temporal.mjs';
 
 const elements = Object.fromEntries([
   'dataset', 'projection', 'reference-raster', 'zoom-in', 'zoom-out', 'reset-view',
@@ -18,6 +24,7 @@ const elements = Object.fromEntries([
   'dataset-title', 'map-title', 'map-summary', 'selected-label', 'selected-value',
   'selected-detail', 'canvas-wrap', 'map', 'geography-caveat', 'legend', 'table-caption',
   'values', 'citations', 'cartogram-note', 'motion-status',
+  'scene-time', 'temporal-layers', 'play-time', 'actual-periods', 'alignment-note',
 ].map((id) => [id, document.getElementById(id)]));
 
 const requestedProjection = new URL(window.location.href).searchParams.get('projection');
@@ -25,13 +32,64 @@ const initialProjection = fixture.datasets[0].projections.includes(requestedProj
   ? requestedProjection
   : fixture.scene.projection;
 let model = buildRenderModel(fixture, {projection: initialProjection});
+let temporalFrame = buildTemporalFrame(temporalFixture, {time: '2023-06', projection: initialProjection});
 let inspectionPaused = true;
+let animationTimer = null;
+let temporalFinding = null;
 
 for (const dataset of fixture.datasets) {
   const option = document.createElement('option');
   option.value = dataset.id;
   option.textContent = dataset.title;
   elements.dataset.append(option);
+}
+
+for (const period of temporalFixture.timeline) {
+  const option = document.createElement('option');
+  option.value = period;
+  option.textContent = period;
+  option.selected = period === temporalFrame.time;
+  elements['scene-time'].append(option);
+}
+
+for (const layer of temporalFixture.layers) {
+  const label = document.createElement('label');
+  label.className = 'check-row temporal-check';
+  const input = document.createElement('input');
+  input.type = 'checkbox';
+  input.value = layer.id;
+  input.checked = layer.defaultActive === true;
+  input.addEventListener('change', () => updateTemporal());
+  const text = document.createElement('span');
+  text.textContent = layer.title;
+  label.append(input, text);
+  elements['temporal-layers'].append(label);
+}
+
+function selectedTemporalLayers() {
+  return [...elements['temporal-layers'].querySelectorAll('input:checked')].map(({value}) => value);
+}
+
+function temporalCandidate(options = {}) {
+  return buildTemporalFrame(temporalFixture, {
+    time: options.time ?? elements['scene-time'].value,
+    projection: options.projection ?? model.projection,
+    activeLayerIds: options.activeLayerIds ?? selectedTemporalLayers(),
+  });
+}
+
+function updateTemporal(options = {}) {
+  const candidate = temporalCandidate(options);
+  if (candidate.status === 'refused') {
+    temporalFinding = candidate.findings[0];
+    for (const checkbox of elements['temporal-layers'].querySelectorAll('input')) checkbox.checked = temporalFrame.activeLayerIds.includes(checkbox.value);
+    elements['scene-time'].value = temporalFrame.time;
+  } else {
+    temporalFrame = candidate;
+    temporalFinding = null;
+  }
+  render();
+  return candidate;
 }
 
 function formatValue(record) {
@@ -91,10 +149,22 @@ function renderSemantic(snapshot) {
   }));
 }
 
+function renderTemporalFacts() {
+  const snapshot = temporalSnapshot(temporalFrame);
+  elements['actual-periods'].replaceChildren(...snapshot.layers.map((layer) => {
+    const item = document.createElement('li');
+    const transformation = layer.transformation ? ` · ${layer.transformation.method}` : '';
+    item.textContent = `${layer.title}: ${layer.actualPeriod}${transformation}`;
+    return item;
+  }));
+  elements['alignment-note'].textContent = `${snapshot.layers.length} active layers. Every label names the source period actually used; transformations remain inspectable.`;
+}
+
 function render() {
   const width = Math.max(280, Math.round(elements['canvas-wrap'].getBoundingClientRect().width));
   const height = window.innerWidth <= 600 ? 384 : window.innerWidth >= 2400 ? 928 : 528;
   model = renderCanvas(elements.map, model, {width, height});
+  renderTemporalOverlays(elements.map, model, temporalFrame);
   const snapshot = semanticSnapshot(model);
   document.body.dataset.layout = layoutForWidth(window.innerWidth).name;
   document.body.dataset.motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'reduced' : 'standard';
@@ -116,7 +186,11 @@ function render() {
   elements['cartogram-note'].textContent = `Cartogram geometry: ${fixture.cartogram.source}, ${fixture.cartogram.year}; ${fixture.cartogram.geometryVersion}.`;
   renderSelected(snapshot);
   renderSemantic(snapshot);
-  if (model.status === 'refused') {
+  renderTemporalFacts();
+  if (temporalFinding) {
+    elements.refusal.hidden = false;
+    elements.refusal.textContent = temporalFinding.message;
+  } else if (model.status === 'refused') {
     elements.refusal.hidden = false;
     elements.refusal.textContent = model.findings[0].message;
   } else {
@@ -131,9 +205,51 @@ elements.dataset.addEventListener('change', () => {
 });
 
 elements.projection.addEventListener('change', () => {
-  const changed = changeProjection(model, elements.projection.value);
+  const requested = elements.projection.value;
+  const candidate = temporalCandidate({projection: requested});
+  if (candidate.status === 'refused') {
+    temporalFinding = candidate.findings[0];
+    elements.projection.value = model.projection;
+    render();
+    return;
+  }
+  const changed = changeProjection(model, requested);
   model = changed;
+  if (changed.status === 'accepted') {
+    temporalFrame = candidate;
+    temporalFinding = null;
+  }
   render();
+});
+
+elements['scene-time'].addEventListener('change', () => updateTemporal({time: elements['scene-time'].value}));
+
+function stopAnimation() {
+  if (animationTimer) window.clearInterval(animationTimer);
+  animationTimer = null;
+  elements['play-time'].textContent = 'Play time';
+  elements['play-time'].setAttribute('aria-pressed', 'false');
+}
+
+elements['play-time'].addEventListener('click', () => {
+  if (animationTimer) {
+    stopAnimation();
+    return;
+  }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    temporalFinding = {message: 'Automatic time animation is disabled by the reduced-motion preference; choose a time directly.'};
+    render();
+    return;
+  }
+  elements['play-time'].textContent = 'Pause time';
+  elements['play-time'].setAttribute('aria-pressed', 'true');
+  animationTimer = window.setInterval(() => {
+    const index = temporalFixture.timeline.indexOf(temporalFrame.time);
+    const next = temporalFixture.timeline[(index + 1) % temporalFixture.timeline.length];
+    const candidate = updateTemporal({time: next});
+    if (candidate.status === 'accepted') elements['scene-time'].value = next;
+    else stopAnimation();
+  }, 1200);
 });
 
 elements['reference-raster'].addEventListener('change', () => {

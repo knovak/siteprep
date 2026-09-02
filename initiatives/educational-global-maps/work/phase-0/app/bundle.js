@@ -106,6 +106,88 @@
     }
   };
 
+  // fixtures/temporal-scene.json
+  var temporal_scene_default = {
+    schemaVersion: 1,
+    sceneId: "scene:phase-3-time-and-movement",
+    projection: "equal-earth",
+    timeline: ["2022", "2023-06", "2024"],
+    layers: [
+      {
+        id: "layer:population-through-time",
+        title: "Population field",
+        kind: "scalar",
+        unit: "people",
+        revision: "fixture:population-time-v1",
+        projections: ["equal-earth", "airocean", "population-cartogram"],
+        defaultActive: true,
+        alignment: { method: "nearest", maxDays: 370 },
+        observations: [
+          { period: "2022", records: [{ id: "country:FRA", value: 655e5, status: "measured" }, { id: "country:DEU", value: 837e5, status: "measured" }, { id: "country:UNK", value: null, status: "suppressed" }] },
+          { period: "2023", records: [{ id: "country:FRA", value: 66438828, status: "measured" }, { id: "country:DEU", value: 84548233, status: "measured" }, { id: "country:UNK", value: 0, status: "zero" }] },
+          { period: "2024", records: [{ id: "country:FRA", value: 668e5, status: "measured" }, { id: "country:DEU", value: null, status: "unavailable" }, { id: "country:UNK", value: null, status: "filtered" }] }
+        ]
+      },
+      {
+        id: "layer:education-index",
+        title: "Education access index",
+        kind: "scalar",
+        unit: "index points",
+        revision: "fixture:education-index-v1",
+        color: "#ffcc66",
+        overlay: true,
+        projections: ["equal-earth", "airocean", "population-cartogram"],
+        defaultActive: true,
+        alignment: { method: "interpolate" },
+        observations: [
+          { period: "2022", records: [{ id: "country:FRA", value: 71, status: "measured" }, { id: "country:DEU", value: 74, status: "measured" }] },
+          { period: "2024", records: [{ id: "country:FRA", value: 75, status: "measured" }, { id: "country:DEU", value: 78, status: "measured" }] }
+        ]
+      },
+      {
+        id: "layer:learner-movement",
+        title: "Learner movement",
+        kind: "flow",
+        unit: "people",
+        revision: "fixture:learner-flow-v1",
+        color: "#f36f9b",
+        projections: ["equal-earth", "airocean"],
+        defaultActive: true,
+        alignment: { method: "nearest", maxDays: 400 },
+        observations: [
+          { period: "2023-05-15", records: [{ id: "flow:paris-berlin", from: "country:FRA", to: "country:DEU", fromCoordinates: [2.35, 48.86], toCoordinates: [13.4, 52.52], value: 36, status: "measured" }, { id: "flow:london-paris", from: "country:GBR", to: "country:FRA", fromCoordinates: [-0.13, 51.51], toCoordinates: [2.35, 48.86], value: 0, status: "zero" }, { id: "flow:unknown", from: "country:UNK", to: "country:FRA", fromCoordinates: [28, 11], toCoordinates: [2.35, 48.86], value: null, status: "missing" }] },
+          { period: "2024-04-10", records: [{ id: "flow:paris-berlin", from: "country:FRA", to: "country:DEU", fromCoordinates: [2.35, 48.86], toCoordinates: [13.4, 52.52], value: 49, status: "measured" }] }
+        ]
+      },
+      {
+        id: "layer:temporary-centres",
+        title: "Temporary learning centres",
+        kind: "points",
+        unit: "locations",
+        revision: "fixture:temporary-centres-v1",
+        color: "#7fe2ff",
+        projections: ["equal-earth", "airocean"],
+        defaultActive: true,
+        records: [
+          { id: "point:paris-summer", label: "Paris summer centre", coordinates: [2.35, 48.86], start: "2023-05", end: "2023-09", value: 1, status: "measured" },
+          { id: "point:nairobi-2024", label: "Nairobi 2024 centre", coordinates: [36.82, -1.29], start: "2024-01", end: "2024-12", value: 1, status: "measured" }
+        ]
+      },
+      {
+        id: "layer:sea-temperature-frame",
+        title: "Sea-temperature raster frame",
+        kind: "raster",
+        unit: "degrees Celsius",
+        revision: "fixture:noaa-raster-frame-v1",
+        projections: ["equal-earth"],
+        defaultActive: false,
+        observations: [
+          { period: "2023-06", frameId: "raster:2023-06", records: [{ id: "cell:west", value: 17, status: "measured", color: "#154f73" }, { id: "cell:central", value: 21, status: "measured", color: "#287da1" }, { id: "cell:east", value: null, status: "unavailable", color: "#475569" }] }
+        ]
+      }
+    ]
+  };
+
   // node_modules/d3-array/src/fsum.js
   var Adder = class {
     constructor() {
@@ -3377,6 +3459,195 @@
     return hit ? model2.records.find(({ id }) => id === hit.id) ?? null : null;
   }
 
+  // src/temporal.mjs
+  var DAY = 864e5;
+  var STATE_ENCODINGS = Object.freeze({
+    measured: { label: "Measured", pattern: "solid" },
+    missing: { label: "Missing", pattern: "blank" },
+    zero: { label: "Reported zero", pattern: "zero-ring" },
+    unavailable: { label: "Unavailable", pattern: "diagonal" },
+    suppressed: { label: "Suppressed", pattern: "crosshatch" },
+    "outside-range": { label: "Outside coverage", pattern: "outline" },
+    filtered: { label: "Filtered", pattern: "faded" },
+    interpolated: { label: "Interpolated", pattern: "dotted" },
+    modeled: { label: "Modelled", pattern: "dashed" }
+  });
+  function copy2(value) {
+    return structuredClone(value);
+  }
+  function dateForPeriod(period) {
+    if (/^\d{4}$/u.test(period)) return /* @__PURE__ */ new Date(`${period}-07-01T00:00:00.000Z`);
+    if (/^\d{4}-\d{2}$/u.test(period)) return /* @__PURE__ */ new Date(`${period}-15T00:00:00.000Z`);
+    if (/^\d{4}-\d{2}-\d{2}$/u.test(period)) return /* @__PURE__ */ new Date(`${period}T00:00:00.000Z`);
+    throw new TypeError(`Unsupported period ${period}`);
+  }
+  function distanceDays(left, right) {
+    return Math.abs(dateForPeriod(left) - dateForPeriod(right)) / DAY;
+  }
+  function finding2(code, layer, time, message) {
+    return { code, severity: "error", layerId: layer.id, time, message };
+  }
+  function interpolateRecords(before, after, ratio) {
+    const later = new Map(after.records.map((record) => [record.id, record]));
+    return before.records.map((record) => {
+      const next = later.get(record.id);
+      if (!next || record.status !== "measured" || next.status !== "measured") {
+        return { ...copy2(record), value: null, status: next?.status ?? record.status ?? "unavailable" };
+      }
+      return {
+        ...copy2(record),
+        value: record.value + (next.value - record.value) * ratio,
+        status: "interpolated",
+        uncertainty: `Linear interpolation between ${before.period} and ${after.period}`
+      };
+    });
+  }
+  function aggregateRecords(observations, reducer) {
+    const ids = [...new Set(observations.flatMap(({ records }) => records.map(({ id }) => id)))];
+    return ids.map((id) => {
+      const inputs = observations.map(({ records }) => records.find((record) => record.id === id)).filter(Boolean);
+      if (!inputs.length || inputs.some(({ status }) => status !== "measured")) {
+        return { id, value: null, status: inputs.find(({ status }) => status !== "measured")?.status ?? "unavailable" };
+      }
+      const total = inputs.reduce((sum, { value }) => sum + value, 0);
+      return { ...copy2(inputs[0]), value: reducer === "mean" ? total / inputs.length : total, status: "modeled" };
+    });
+  }
+  function alignLayer(layer, time) {
+    if (layer.kind === "points") {
+      const records = layer.records.map((record) => {
+        const inside = dateForPeriod(record.start) <= dateForPeriod(time) && dateForPeriod(record.end) >= dateForPeriod(time);
+        return inside ? copy2(record) : { ...copy2(record), status: "outside-range" };
+      });
+      return { status: "accepted", actualPeriod: time, records, transformation: { method: "coverage-filter", inputs: [time], parameters: { inclusive: true }, outputStatus: "measured", revision: layer.revision } };
+    }
+    const exact = layer.observations.find(({ period }) => period === time);
+    if (exact) return { status: "accepted", actualPeriod: exact.period, records: copy2(exact.records), frameId: exact.frameId, transformation: null };
+    const rule = layer.alignment;
+    if (!rule) return { status: "refused", finding: finding2("time.alignment.rule_required", layer, time, `${layer.title} has no declared alignment rule for ${time}.`) };
+    const ordered = [...layer.observations].sort((a, b) => dateForPeriod(a.period) - dateForPeriod(b.period));
+    if (rule.method === "nearest") {
+      const selected = ordered.toSorted((a, b) => distanceDays(a.period, time) - distanceDays(b.period, time))[0];
+      const distance = selected ? distanceDays(selected.period, time) : Infinity;
+      if (!selected || distance > rule.maxDays) return { status: "refused", finding: finding2("time.alignment.outside_tolerance", layer, time, `${layer.title} has no period within ${rule.maxDays} days of ${time}.`) };
+      return { status: "accepted", actualPeriod: selected.period, records: copy2(selected.records), frameId: selected.frameId, transformation: { method: "nearest", inputs: [selected.period], parameters: { maxDays: rule.maxDays, distanceDays: distance }, outputStatus: "measured", revision: layer.revision } };
+    }
+    if (rule.method === "forward-fill") {
+      const selected = ordered.filter(({ period }) => dateForPeriod(period) <= dateForPeriod(time)).at(-1);
+      if (!selected || distanceDays(selected.period, time) > rule.maxDays) return { status: "refused", finding: finding2("time.alignment.outside_tolerance", layer, time, `${layer.title} cannot be forward-filled to ${time}.`) };
+      return { status: "accepted", actualPeriod: selected.period, records: copy2(selected.records), transformation: { method: "forward-fill", inputs: [selected.period], parameters: { maxDays: rule.maxDays }, outputStatus: "modeled", revision: layer.revision } };
+    }
+    if (rule.method === "interpolate") {
+      const before = ordered.filter(({ period }) => dateForPeriod(period) < dateForPeriod(time)).at(-1);
+      const after = ordered.find(({ period }) => dateForPeriod(period) > dateForPeriod(time));
+      if (!before || !after) return { status: "refused", finding: finding2("time.alignment.bounds_required", layer, time, `${layer.title} cannot interpolate ${time} without values on both sides.`) };
+      const ratio = (dateForPeriod(time) - dateForPeriod(before.period)) / (dateForPeriod(after.period) - dateForPeriod(before.period));
+      return { status: "accepted", actualPeriod: `${before.period} \u2192 ${after.period}`, records: interpolateRecords(before, after, ratio), transformation: { method: "linear-interpolation", inputs: [before.period, after.period], parameters: { ratio }, outputStatus: "interpolated", revision: layer.revision } };
+    }
+    if (rule.method === "aggregate") {
+      const inputs = ordered.filter(({ period }) => period.startsWith(time.slice(0, 4)));
+      if (!inputs.length) return { status: "refused", finding: finding2("time.alignment.inputs_missing", layer, time, `${layer.title} has no inputs to aggregate for ${time}.`) };
+      return { status: "accepted", actualPeriod: inputs.map(({ period }) => period).join(", "), records: aggregateRecords(inputs, rule.reducer), transformation: { method: `${rule.reducer}-aggregation`, inputs: inputs.map(({ period }) => period), parameters: { calendar: "UTC year" }, outputStatus: "modeled", revision: layer.revision } };
+    }
+    return { status: "refused", finding: finding2("time.alignment.method_unsupported", layer, time, `${layer.title} uses unsupported alignment ${rule.method}.`) };
+  }
+  function buildTemporalFrame(fixture, options = {}) {
+    const time = options.time ?? fixture.timeline[0];
+    const projection2 = options.projection ?? fixture.projection;
+    const activeLayerIds = options.activeLayerIds ?? fixture.layers.filter(({ defaultActive }) => defaultActive).map(({ id }) => id);
+    const layers = [];
+    for (const layerId of activeLayerIds) {
+      const layer = fixture.layers.find(({ id }) => id === layerId);
+      if (!layer) return { status: "refused", time, projection: projection2, activeLayerIds: [...activeLayerIds], layers: [], findings: [{ code: "layer.missing", severity: "error", layerId, time, message: `Unknown layer ${layerId}.` }] };
+      if (!layer.projections.includes(projection2)) return { status: "refused", time, projection: projection2, activeLayerIds: [...activeLayerIds], layers: [], findings: [finding2("layer.projection.refused", layer, time, `${layer.title} cannot render on ${projection2}.`)] };
+      const aligned = alignLayer(layer, time);
+      if (aligned.status === "refused") return { status: "refused", time, projection: projection2, activeLayerIds: [...activeLayerIds], layers: [], findings: [aligned.finding] };
+      const limit = layer.kind === "flow" ? 5e3 : layer.kind === "points" ? 1e4 : Infinity;
+      layers.push({ ...copy2(layer), ...aligned, records: aligned.records.slice(0, limit), totalRecords: aligned.records.length, visibleRecords: Math.min(aligned.records.length, limit) });
+    }
+    return { status: "accepted", time, projection: projection2, activeLayerIds: [...activeLayerIds], layers, findings: [] };
+  }
+  function stateEncoding(status) {
+    return copy2(STATE_ENCODINGS[status] ?? { label: status, pattern: "unknown" });
+  }
+  function temporalSnapshot(frame) {
+    return {
+      sceneTime: frame.time,
+      projection: frame.projection,
+      layers: frame.layers.map((layer) => ({
+        id: layer.id,
+        title: layer.title,
+        kind: layer.kind,
+        unit: layer.unit,
+        actualPeriod: layer.actualPeriod,
+        transformation: copy2(layer.transformation),
+        rows: layer.records.map((record) => ({ ...copy2(record), encoding: stateEncoding(record.status) }))
+      }))
+    };
+  }
+  function renderTemporalOverlays(canvas, baseModel, frame) {
+    if (frame.status !== "accepted" || baseModel.projection === "population-cartogram") return frame;
+    const context = canvas.getContext("2d");
+    const width = Number.parseFloat(canvas.style.width);
+    const height = Number.parseFloat(canvas.style.height);
+    const projection2 = projectionFor(baseModel.projection, width, height, baseModel.camera);
+    context.save();
+    for (const layer of frame.layers) {
+      if (layer.kind === "raster") {
+        context.globalAlpha = 0.18;
+        for (const [index, cell] of layer.records.entries()) {
+          context.fillStyle = cell.color;
+          context.fillRect(index / layer.records.length * width, 0, width / layer.records.length, height);
+        }
+      } else if (layer.kind === "flow") {
+        context.globalAlpha = 0.72;
+        for (const record of layer.records) {
+          if (record.status === "missing" || record.status === "unavailable") continue;
+          const start = projection2(record.fromCoordinates);
+          const end = projection2(record.toCoordinates);
+          if (!start || !end) continue;
+          context.beginPath();
+          context.moveTo(...start);
+          context.lineTo(...end);
+          context.strokeStyle = record.status === "zero" ? "#a8b8d6" : layer.color;
+          context.lineWidth = record.status === "zero" ? 1 : Math.max(1.5, Math.sqrt(record.value) / 2);
+          context.setLineDash(record.status === "zero" ? [3, 5] : []);
+          context.stroke();
+        }
+      } else if (layer.kind === "points") {
+        context.setLineDash([]);
+        for (const record of layer.records.filter(({ status }) => status !== "outside-range")) {
+          const point = projection2(record.coordinates);
+          if (!point) continue;
+          context.beginPath();
+          context.arc(point[0], point[1], 5, 0, Math.PI * 2);
+          context.fillStyle = layer.color;
+          context.fill();
+        }
+      } else if (layer.kind === "scalar" && layer.overlay) {
+        context.setLineDash([]);
+        for (const record of layer.records) {
+          const coordinates2 = record.coordinates ?? (() => {
+            const feature = baseModel.fixture.geography.features.find(({ id }) => id === record.id);
+            return feature ? centroid_default(feature) : null;
+          })();
+          const point = coordinates2 ? projection2(coordinates2) : null;
+          if (!point) continue;
+          context.beginPath();
+          context.arc(point[0], point[1], record.status === "interpolated" ? 9 : 7, 0, Math.PI * 2);
+          context.strokeStyle = layer.color;
+          context.lineWidth = 2.5;
+          context.setLineDash(record.status === "interpolated" ? [2, 4] : []);
+          context.stroke();
+        }
+      }
+    }
+    context.restore();
+    canvas.dataset.temporalLayers = String(frame.layers.length);
+    canvas.dataset.sceneTime = frame.time;
+    return frame;
+  }
+
   // app/app.mjs
   var elements = Object.fromEntries([
     "dataset",
@@ -3405,17 +3676,68 @@
     "values",
     "citations",
     "cartogram-note",
-    "motion-status"
+    "motion-status",
+    "scene-time",
+    "temporal-layers",
+    "play-time",
+    "actual-periods",
+    "alignment-note"
   ].map((id) => [id, document.getElementById(id)]));
   var requestedProjection = new URL(window.location.href).searchParams.get("projection");
   var initialProjection = renderer_scene_default.datasets[0].projections.includes(requestedProjection) ? requestedProjection : renderer_scene_default.scene.projection;
   var model = buildRenderModel(renderer_scene_default, { projection: initialProjection });
+  var temporalFrame = buildTemporalFrame(temporal_scene_default, { time: "2023-06", projection: initialProjection });
   var inspectionPaused = true;
+  var animationTimer = null;
+  var temporalFinding = null;
   for (const dataset of renderer_scene_default.datasets) {
     const option = document.createElement("option");
     option.value = dataset.id;
     option.textContent = dataset.title;
     elements.dataset.append(option);
+  }
+  for (const period of temporal_scene_default.timeline) {
+    const option = document.createElement("option");
+    option.value = period;
+    option.textContent = period;
+    option.selected = period === temporalFrame.time;
+    elements["scene-time"].append(option);
+  }
+  for (const layer of temporal_scene_default.layers) {
+    const label = document.createElement("label");
+    label.className = "check-row temporal-check";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.value = layer.id;
+    input.checked = layer.defaultActive === true;
+    input.addEventListener("change", () => updateTemporal());
+    const text = document.createElement("span");
+    text.textContent = layer.title;
+    label.append(input, text);
+    elements["temporal-layers"].append(label);
+  }
+  function selectedTemporalLayers() {
+    return [...elements["temporal-layers"].querySelectorAll("input:checked")].map(({ value }) => value);
+  }
+  function temporalCandidate(options = {}) {
+    return buildTemporalFrame(temporal_scene_default, {
+      time: options.time ?? elements["scene-time"].value,
+      projection: options.projection ?? model.projection,
+      activeLayerIds: options.activeLayerIds ?? selectedTemporalLayers()
+    });
+  }
+  function updateTemporal(options = {}) {
+    const candidate = temporalCandidate(options);
+    if (candidate.status === "refused") {
+      temporalFinding = candidate.findings[0];
+      for (const checkbox of elements["temporal-layers"].querySelectorAll("input")) checkbox.checked = temporalFrame.activeLayerIds.includes(checkbox.value);
+      elements["scene-time"].value = temporalFrame.time;
+    } else {
+      temporalFrame = candidate;
+      temporalFinding = null;
+    }
+    render();
+    return candidate;
   }
   function formatValue(record) {
     if (record.status !== "measured" || record.value === null) return "Not available";
@@ -3471,10 +3793,21 @@
       return item;
     }));
   }
+  function renderTemporalFacts() {
+    const snapshot = temporalSnapshot(temporalFrame);
+    elements["actual-periods"].replaceChildren(...snapshot.layers.map((layer) => {
+      const item = document.createElement("li");
+      const transformation = layer.transformation ? ` \xB7 ${layer.transformation.method}` : "";
+      item.textContent = `${layer.title}: ${layer.actualPeriod}${transformation}`;
+      return item;
+    }));
+    elements["alignment-note"].textContent = `${snapshot.layers.length} active layers. Every label names the source period actually used; transformations remain inspectable.`;
+  }
   function render() {
     const width = Math.max(280, Math.round(elements["canvas-wrap"].getBoundingClientRect().width));
     const height = window.innerWidth <= 600 ? 384 : window.innerWidth >= 2400 ? 928 : 528;
     model = renderCanvas(elements.map, model, { width, height });
+    renderTemporalOverlays(elements.map, model, temporalFrame);
     const snapshot = semanticSnapshot(model);
     document.body.dataset.layout = layoutForWidth(window.innerWidth).name;
     document.body.dataset.motion = matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduced" : "standard";
@@ -3494,7 +3827,11 @@
     elements["cartogram-note"].textContent = `Cartogram geometry: ${renderer_scene_default.cartogram.source}, ${renderer_scene_default.cartogram.year}; ${renderer_scene_default.cartogram.geometryVersion}.`;
     renderSelected(snapshot);
     renderSemantic(snapshot);
-    if (model.status === "refused") {
+    renderTemporalFacts();
+    if (temporalFinding) {
+      elements.refusal.hidden = false;
+      elements.refusal.textContent = temporalFinding.message;
+    } else if (model.status === "refused") {
       elements.refusal.hidden = false;
       elements.refusal.textContent = model.findings[0].message;
     } else {
@@ -3507,9 +3844,48 @@
     render();
   });
   elements.projection.addEventListener("change", () => {
-    const changed = changeProjection(model, elements.projection.value);
+    const requested = elements.projection.value;
+    const candidate = temporalCandidate({ projection: requested });
+    if (candidate.status === "refused") {
+      temporalFinding = candidate.findings[0];
+      elements.projection.value = model.projection;
+      render();
+      return;
+    }
+    const changed = changeProjection(model, requested);
     model = changed;
+    if (changed.status === "accepted") {
+      temporalFrame = candidate;
+      temporalFinding = null;
+    }
     render();
+  });
+  elements["scene-time"].addEventListener("change", () => updateTemporal({ time: elements["scene-time"].value }));
+  function stopAnimation() {
+    if (animationTimer) window.clearInterval(animationTimer);
+    animationTimer = null;
+    elements["play-time"].textContent = "Play time";
+    elements["play-time"].setAttribute("aria-pressed", "false");
+  }
+  elements["play-time"].addEventListener("click", () => {
+    if (animationTimer) {
+      stopAnimation();
+      return;
+    }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      temporalFinding = { message: "Automatic time animation is disabled by the reduced-motion preference; choose a time directly." };
+      render();
+      return;
+    }
+    elements["play-time"].textContent = "Pause time";
+    elements["play-time"].setAttribute("aria-pressed", "true");
+    animationTimer = window.setInterval(() => {
+      const index = temporal_scene_default.timeline.indexOf(temporalFrame.time);
+      const next = temporal_scene_default.timeline[(index + 1) % temporal_scene_default.timeline.length];
+      const candidate = updateTemporal({ time: next });
+      if (candidate.status === "accepted") elements["scene-time"].value = next;
+      else stopAnimation();
+    }, 1200);
   });
   elements["reference-raster"].addEventListener("change", () => {
     model = setReferenceRaster(model, elements["reference-raster"].checked);

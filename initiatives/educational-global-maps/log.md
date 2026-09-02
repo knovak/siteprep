@@ -27,3 +27,7 @@ Built the metadata-only catalogue, exact search facets, honest detail states, 50
 ## 2026-09-02 — Phase 2 - build the single-device renderer and projection comparison
 
 Built the single-device Canvas reader with catalogue selection, Equal Earth and Airocean projections, a fixed population cartogram, semantic exact-value inspection, visible compatibility refusals, citations, and responsive phone/laptop/4K layouts; 23 deterministic tests and 9 browser checks pass.
+
+## 2026-09-02 — Phase 3 - add time, layers, flows, and raster frames
+
+Added mixed-cadence time alignment, multiple scalar layers, flows, time-filtered points, conventional raster frames, explicit missing states, animation controls, failure containment, and scale coverage.

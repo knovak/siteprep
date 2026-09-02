@@ -11,8 +11,8 @@
     <a class="skip-link" href="#map-title">Skip to map</a>
     <header class="masthead">
       <div>
-        <p class="eyebrow">Educational Global Maps · Phase 2</p>
-        <h1>One dataset. Three honest world views.</h1>
+        <p class="eyebrow">Educational Global Maps · Phase 3</p>
+        <h1>Time and movement without false simultaneity.</h1>
       </div>
       <p class="intro">Switch geometry without changing the pinned data revision, period, encoding, or citations. Pause to inspect exact values instead of reading pixels.</p>
     </header>
@@ -33,6 +33,15 @@
           <option value="airocean">Airocean</option>
           <option value="population-cartogram">Fixed population cartogram</option>
         </select>
+
+        <label for="scene-time">Scene time</label>
+        <select id="scene-time"></select>
+        <button id="play-time" type="button" aria-pressed="false">Play time</button>
+
+        <fieldset class="layer-fieldset">
+          <legend>Temporal layers</legend>
+          <div id="temporal-layers"></div>
+        </fieldset>
 
         <label class="check-row" for="reference-raster">
           <input id="reference-raster" type="checkbox">
@@ -90,6 +99,9 @@
 
       <section class="citation-card" aria-labelledby="citation-title">
         <h2 id="citation-title">Sources and interpretation</h2>
+        <h3>Actual periods in this frame</h3>
+        <ul id="actual-periods"></ul>
+        <p id="alignment-note"></p>
         <ul id="citations"></ul>
         <p id="cartogram-note" hidden></p>
       </section>
