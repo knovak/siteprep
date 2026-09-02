@@ -7,6 +7,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "contributions": "node scripts/validate-contribution.mjs fixtures/contributions/owid-population fixtures/contributions/datacommons-income",
     "round-trip": "node scripts/round-trip.mjs",
     "test": "node --test test/*.test.mjs"
   },

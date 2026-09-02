@@ -19,3 +19,7 @@ Critiqued the build and test plans; split Phase 0 into identity, repository, tra
 ## 2026-09-01 — Phase 0 - build contracts, fixtures, and the portable scene core
 
 Built the four-checkpoint portable scene core with strict canonical contracts, immutable atomic storage, bounded ZIP round trips, migration, synthetic scalar/flow/point/raster fixtures, and a revisioned compatibility-aware reducer; all 9 phase tests and the independent round-trip command pass.
+
+## 2026-09-02 — Phase 1 - build the catalogue and contribution pipeline
+
+Built the metadata-only catalogue, exact search facets, honest detail states, 500-descriptor scale suite, geography and crosswalk findings, and offline checksum/rights-gated contribution adapters with recorded OWID/UN WPP and Data Commons/Census references; 14 tests and both contribution validations pass.

@@ -1,0 +1,16 @@
+{
+  "source": {
+    "provider": "Our World in Data",
+    "distribution": "https://ourworldindata.org/grapher/population.csv",
+    "metadata": "https://api.ourworldindata.org/v1/indicators/953903.metadata.json",
+    "datasetVersion": "2024-07-15",
+    "retrievedAt": "2026-09-02",
+    "underlyingSource": "United Nations, World Population Prospects 2024",
+    "underlyingLicense": "CC BY 3.0 IGO"
+  },
+  "observations": [
+    {"placeId": "country:FRA", "placeLabel": "France", "period": "2023", "value": 66438828, "status": "observed"},
+    {"placeId": "country:DEU", "placeLabel": "Germany", "period": "2023", "value": 84548233, "status": "observed"},
+    {"placeId": "country:GBR", "placeLabel": "United Kingdom", "period": "2023", "value": 68682965, "status": "observed"}
+  ]
+}

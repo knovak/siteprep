@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "descriptor": "descriptor.json",
+  "source": "source.json",
+  "adapter": "adapter.mjs",
+  "expectedFindings": "expected-findings.json",
+  "exampleScene": "scene.json"
+}

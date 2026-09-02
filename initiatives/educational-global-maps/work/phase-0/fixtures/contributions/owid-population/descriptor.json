@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "dataset:owid-population-2023",
+  "version": "2024-07-15",
+  "title": "Population in France, Germany, and the United Kingdom",
+  "description": "Three recorded 2023 country observations from the Our World in Data Population distribution.",
+  "topics": ["population"],
+  "provider": {"id": "our-world-in-data", "label": "Our World in Data"},
+  "placeLevels": ["country"],
+  "timeCoverage": {"start": "2023", "end": "2023"},
+  "profile": "country-time-series",
+  "measure": {
+    "name": "Population",
+    "unit": "people",
+    "definition": "Population by country on current geographical borders."
+  },
+  "distribution": {
+    "sourceUrl": "https://ourworldindata.org/grapher/population",
+    "sourceVersion": "2024-07-15",
+    "retrievedAt": "2026-09-02",
+    "access": "Recorded from the Grapher CSV and indicator metadata endpoints",
+    "checksum": "sha256:b45cbf30a08b3ec6dc5979fcbdf38d538362efd1c47d89a567a28bf23238aa29"
+  },
+  "rights": {
+    "status": "allowed",
+    "licenseId": "CC-BY-3.0-IGO",
+    "sourceUrl": "https://population.un.org/wpp/downloads/",
+    "notes": "2023 values originate in UN World Population Prospects 2024; cite both UN WPP and Our World in Data processing."
+  },
+  "projectionCapabilities": ["equal-area", "airocean", "population-cartogram"],
+  "gaps": [],
+  "transformations": ["Selected three country rows for 2023; no value transformation"],
+  "renderability": {"status": "ready", "geometry": "geography:world-countries@fixture-1"}
+}
