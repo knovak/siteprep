@@ -453,3 +453,10 @@ becoming `te` and `t-tag`. The outer HTML template had consumed the whitespace
 regex's backslash, leaving the browser to split on the letter `s`. Escaped the
 backslash for the generated script and added exact browser and rendered-page
 regression coverage for the hyphenated tag.
+
+## 2026-09-02 — Add the operator runbook
+
+Added a concise operator runbook for the existing public-entry, private-data
+deployment. It records the access, backup, smoke-test, merge-recovery, capture,
+and incident boundaries an administrator must preserve without exposing
+bookmark content or treating a Sites version replacement as a database backup.
