@@ -188,6 +188,125 @@
     ]
   };
 
+  // fixtures/educational-scenes.json
+  var educational_scenes_default = {
+    schemaVersion: 1,
+    catalogue: [
+      {
+        id: "layer:population-field",
+        seriesId: "series:population",
+        title: "Population field",
+        kind: "scalar",
+        revision: "dataset:population@2023",
+        releaseOrder: 1,
+        period: "2023",
+        geographyRef: "geography:instructional-world-v1",
+        unit: "people",
+        transformationRef: "transform:recorded-values-v1",
+        projections: ["equal-earth", "airocean", "population-cartogram"],
+        assetId: "asset:population-2023",
+        rights: { status: "redistributable", limitation: "Attribution required" },
+        citation: { title: "UN World Population Prospects 2024, processed by Our World in Data", url: "https://ourworldindata.org/grapher/population", revision: "2024-07-15", rights: "CC BY 3.0 IGO" }
+      },
+      {
+        id: "layer:population-field",
+        seriesId: "series:population",
+        title: "Population field",
+        kind: "scalar",
+        revision: "dataset:population@2024",
+        releaseOrder: 2,
+        period: "2024",
+        geographyRef: "geography:instructional-world-v2",
+        unit: "people",
+        transformationRef: "transform:recorded-values-v2",
+        projections: ["equal-earth", "airocean", "population-cartogram"],
+        assetId: "asset:population-2024",
+        rights: { status: "redistributable", limitation: "Attribution required" },
+        citation: { title: "UN World Population Prospects 2024, processed by Our World in Data", url: "https://ourworldindata.org/grapher/population", revision: "2025-07-11", rights: "CC BY 3.0 IGO" }
+      },
+      {
+        id: "layer:education-index",
+        seriesId: "series:education",
+        title: "Education access index",
+        kind: "scalar",
+        revision: "dataset:education@2022-2024",
+        releaseOrder: 1,
+        period: "2023-06",
+        geographyRef: "geography:instructional-world-v1",
+        unit: "index points",
+        transformationRef: "transform:linear-interpolation-v1",
+        formula: { resultUnit: "index points" },
+        projections: ["equal-earth", "airocean", "population-cartogram"],
+        assetId: "asset:education",
+        rights: { status: "redistributable", limitation: "Project-authored instructional fixture" },
+        citation: { title: "Siteprep instructional education fixture", url: "https://github.com/knovak/siteprep", revision: "phase-4-v1", rights: "Project-authored test fixture" }
+      },
+      {
+        id: "layer:learner-movement",
+        seriesId: "series:movement",
+        title: "Learner movement",
+        kind: "flow",
+        revision: "dataset:movement@2023-05-15",
+        releaseOrder: 1,
+        period: "2023-05-15",
+        geographyRef: "geography:instructional-world-v1",
+        unit: "people",
+        transformationRef: "transform:nearest-400-days-v1",
+        projections: ["equal-earth", "airocean"],
+        assetId: "asset:movement-live",
+        rights: { status: "reference-only", limitation: "Classroom access token required; live data is not redistributed", expiresAt: "2026-12-31T23:59:59.000Z" },
+        citation: { title: "Siteprep learner movement fixture", url: "https://github.com/knovak/siteprep", revision: "phase-3-v1", rights: "Reference only" }
+      }
+    ],
+    assets: [
+      { id: "asset:population-2023", mediaType: "application/json", bytes: "eyJwZXJpb2QiOiIyMDIzIiwidmFsdWVzIjpbNjY0Mzg4MjgsODQ1NDgyMzNdfQ==" },
+      { id: "asset:population-2024", mediaType: "application/json", bytes: "eyJwZXJpb2QiOiIyMDI0IiwidmFsdWVzIjpbNjY4MDAwMDAsODQ2MDAwMDBdfQ==" },
+      { id: "asset:education", mediaType: "application/json", bytes: "eyJwZXJpb2QiOiIyMDIzLTA2IiwidmFsdWVzIjpbNzMsNzZdfQ==" },
+      { id: "asset:movement-live", mediaType: "application/json", url: "https://provider.invalid/classroom/movement" }
+    ],
+    scenes: [
+      {
+        sceneId: "scene:population-question",
+        title: "Where do population patterns stand out?",
+        summary: "A scalar scene for comparing recorded country population values.",
+        projection: "equal-earth",
+        layers: [{ layerId: "layer:population-field", datasetRevision: "dataset:population@2023", period: "2023" }],
+        definitions: ["Population is the recorded number of residents in the selected period."],
+        caveats: ["Simplified instructional geometry is not an authoritative boundary product."],
+        discussionPrompts: ["Which differences are visible, and which require the exact-value table?"],
+        presentationStops: [{ order: 1, title: "Read the measure", focus: "legend" }, { order: 2, title: "Compare France and Germany", focus: "country:FRA" }],
+        claims: [{ text: "Projection changes area and shape, not the pinned values.", sources: [{ title: "D3 geographic projections", url: "https://d3js.org/d3-geo/projection" }] }],
+        app: { datasetId: "dataset:population", time: "2023-06", layerIds: ["layer:population-through-time"] }
+      },
+      {
+        sceneId: "scene:population-and-education",
+        title: "Population and education access",
+        summary: "Compatible scalar layers with their actual source periods kept visible.",
+        projection: "equal-earth",
+        layers: [{ layerId: "layer:population-field", datasetRevision: "dataset:population@2023", period: "2023-06", alignmentRule: "nearest" }, { layerId: "layer:education-index", datasetRevision: "dataset:education@2022-2024", period: "2023-06" }],
+        definitions: ["An index combines selected observations into a comparable score."],
+        caveats: ["The education index is interpolated between 2022 and 2024 fixture values."],
+        discussionPrompts: ["What can two differently scaled layers suggest, and what can they not establish?"],
+        presentationStops: [{ order: 1, title: "Check actual periods", focus: "periods" }, { order: 2, title: "Compare encodings", focus: "legend" }],
+        claims: [{ text: "Correlation in a layered map does not establish causation.", sources: [{ title: "NIST uncertainty guidance", url: "https://www.nist.gov/pml/owm/si-units-information" }] }],
+        app: { datasetId: "dataset:population", time: "2023-06", layerIds: ["layer:population-through-time", "layer:education-index"] }
+      },
+      {
+        sceneId: "scene:learner-flow",
+        title: "How learners move across a population field",
+        summary: "Directional movement over a static population field without implying synchronized measurement.",
+        projection: "equal-earth",
+        layers: [{ layerId: "layer:population-field", datasetRevision: "dataset:population@2023", period: "2023-06", alignmentRule: "nearest" }, { layerId: "layer:learner-movement", datasetRevision: "dataset:movement@2023-05-15", period: "2023-06", alignmentRule: "nearest" }],
+        definitions: ["A flow connects an origin and destination; line direction and width encode direction and magnitude."],
+        caveats: ["Movement is a reference-only classroom fixture and is not bundled for redistribution."],
+        discussionPrompts: ["How would a missing route differ from a route with zero recorded movement?"],
+        presentationStops: [{ order: 1, title: "Read direction and magnitude", focus: "layer:learner-movement" }, { order: 2, title: "Separate zero from missing", focus: "flow:london-paris" }],
+        claims: [{ text: "The layers have different actual periods.", sources: [{ title: "Recorded Phase 3 fixture", url: "https://github.com/knovak/siteprep" }] }],
+        app: { datasetId: "dataset:population", time: "2023-06", layerIds: ["layer:population-through-time", "layer:learner-movement"] }
+      }
+    ]
+  };
+
   // node_modules/d3-array/src/fsum.js
   var Adder = class {
     constructor() {
@@ -3681,7 +3800,22 @@
     "temporal-layers",
     "play-time",
     "actual-periods",
-    "alignment-note"
+    "alignment-note",
+    "scene-library",
+    "scene-title",
+    "scene-summary",
+    "scene-revision",
+    "scene-definition",
+    "scene-caveat",
+    "scene-question",
+    "scene-stop",
+    "previous-stop",
+    "next-stop",
+    "scene-share",
+    "upgrade-status",
+    "compare-upgrade",
+    "portable-status",
+    "prepare-bundle"
   ].map((id) => [id, document.getElementById(id)]));
   var requestedProjection = new URL(window.location.href).searchParams.get("projection");
   var initialProjection = renderer_scene_default.datasets[0].projections.includes(requestedProjection) ? requestedProjection : renderer_scene_default.scene.projection;
@@ -3690,6 +3824,16 @@
   var inspectionPaused = true;
   var animationTimer = null;
   var temporalFinding = null;
+  var requestedSceneRevision = new URL(window.location.href).searchParams.get("sceneRevision");
+  var educationalScene = educational_scenes_default.scenes.find(({ sceneId }) => requestedSceneRevision?.startsWith(`${sceneId}@`)) ?? educational_scenes_default.scenes[0];
+  var educationalRevision = Number.parseInt(requestedSceneRevision?.split("@").at(-1), 10) || 1;
+  var presentationStop = 0;
+  for (const scene of educational_scenes_default.scenes) {
+    const option = document.createElement("option");
+    option.value = scene.sceneId;
+    option.textContent = scene.title;
+    elements["scene-library"].append(option);
+  }
   for (const dataset of renderer_scene_default.datasets) {
     const option = document.createElement("option");
     option.value = dataset.id;
@@ -3803,6 +3947,27 @@
     }));
     elements["alignment-note"].textContent = `${snapshot.layers.length} active layers. Every label names the source period actually used; transformations remain inspectable.`;
   }
+  function sceneRevisionId() {
+    return `${educationalScene.sceneId}@${educationalRevision}`;
+  }
+  function renderEducationalScene() {
+    const stops = educationalScene.presentationStops;
+    const stop = stops[presentationStop];
+    elements["scene-library"].value = educationalScene.sceneId;
+    elements["scene-title"].textContent = educationalScene.title;
+    elements["scene-summary"].textContent = educationalScene.summary;
+    elements["scene-revision"].textContent = sceneRevisionId();
+    elements["scene-definition"].textContent = educationalScene.definitions.join(" ");
+    elements["scene-caveat"].textContent = educationalScene.caveats.join(" ");
+    elements["scene-question"].textContent = educationalScene.discussionPrompts.join(" ");
+    elements["scene-stop"].textContent = `${stop.order} of ${stops.length} \xB7 ${stop.title}`;
+    elements["previous-stop"].disabled = presentationStop === 0;
+    elements["next-stop"].disabled = presentationStop === stops.length - 1;
+    const share = new URL(window.location.href);
+    share.search = "";
+    share.searchParams.set("sceneRevision", sceneRevisionId());
+    elements["scene-share"].textContent = share.toString();
+  }
   function render() {
     const width = Math.max(280, Math.round(elements["canvas-wrap"].getBoundingClientRect().width));
     const height = window.innerWidth <= 600 ? 384 : window.innerWidth >= 2400 ? 928 : 528;
@@ -3828,6 +3993,7 @@
     renderSelected(snapshot);
     renderSemantic(snapshot);
     renderTemporalFacts();
+    renderEducationalScene();
     if (temporalFinding) {
       elements.refusal.hidden = false;
       elements.refusal.textContent = temporalFinding.message;
@@ -3839,6 +4005,48 @@
       elements.refusal.textContent = "";
     }
   }
+  function activateEducationalScene(scene, revision = 1) {
+    educationalScene = scene;
+    educationalRevision = revision;
+    presentationStop = 0;
+    elements["upgrade-status"].textContent = "Pinned to the saved dataset revisions.";
+    elements["portable-status"].textContent = "";
+    model = changeDataset(model, scene.app.datasetId);
+    for (const checkbox of elements["temporal-layers"].querySelectorAll("input")) checkbox.checked = scene.app.layerIds.includes(checkbox.value);
+    const candidate = temporalCandidate({ time: scene.app.time, activeLayerIds: scene.app.layerIds });
+    if (candidate.status === "accepted") temporalFrame = candidate;
+    elements["scene-time"].value = temporalFrame.time;
+    render();
+  }
+  elements["scene-library"].addEventListener("change", () => {
+    activateEducationalScene(educational_scenes_default.scenes.find(({ sceneId }) => sceneId === elements["scene-library"].value));
+  });
+  elements["previous-stop"].addEventListener("click", () => {
+    presentationStop = Math.max(0, presentationStop - 1);
+    renderEducationalScene();
+  });
+  elements["next-stop"].addEventListener("click", () => {
+    presentationStop = Math.min(educationalScene.presentationStops.length - 1, presentationStop + 1);
+    renderEducationalScene();
+  });
+  elements["compare-upgrade"].addEventListener("click", () => {
+    const population = educationalScene.layers.find(({ layerId }) => layerId === "layer:population-field");
+    if (!population || population.datasetRevision.endsWith("@2024")) {
+      elements["upgrade-status"].textContent = "This scene already uses the latest prepared population revision.";
+      return;
+    }
+    educationalScene = structuredClone(educationalScene);
+    const upgradedPopulation = educationalScene.layers.find(({ layerId }) => layerId === "layer:population-field");
+    upgradedPopulation.datasetRevision = "dataset:population@2024";
+    upgradedPopulation.period = "2024";
+    educationalRevision += 1;
+    elements["upgrade-status"].textContent = "Upgrade accepted as a new scene revision: dataset 2023 \u2192 2024, geography v1 \u2192 v2, transformation v1 \u2192 v2.";
+    renderEducationalScene();
+  });
+  elements["prepare-bundle"].addEventListener("click", () => {
+    const restricted = educationalScene.layers.some(({ layerId }) => layerId === "layer:learner-movement");
+    elements["portable-status"].textContent = restricted ? "Bundle ready: permitted population bytes embedded. Learner movement remains a reference; classroom token required and live data is not redistributed." : "Bundle ready: all selected permitted assets embedded for offline single-device use.";
+  });
   elements.dataset.addEventListener("change", () => {
     model = changeDataset(model, elements.dataset.value);
     render();
@@ -3920,5 +4128,6 @@
     }
   });
   window.addEventListener("resize", render);
+  elements["upgrade-status"].textContent = "Pinned to the saved dataset revisions.";
   render();
 })();

@@ -1,5 +1,6 @@
 import fixture from '../fixtures/renderer-scene.json';
 import temporalFixture from '../fixtures/temporal-scene.json';
+import educationalFixture from '../fixtures/educational-scenes.json';
 import {
   buildRenderModel,
   changeDataset,
@@ -25,6 +26,9 @@ const elements = Object.fromEntries([
   'selected-detail', 'canvas-wrap', 'map', 'geography-caveat', 'legend', 'table-caption',
   'values', 'citations', 'cartogram-note', 'motion-status',
   'scene-time', 'temporal-layers', 'play-time', 'actual-periods', 'alignment-note',
+  'scene-library', 'scene-title', 'scene-summary', 'scene-revision', 'scene-definition',
+  'scene-caveat', 'scene-question', 'scene-stop', 'previous-stop', 'next-stop',
+  'scene-share', 'upgrade-status', 'compare-upgrade', 'portable-status', 'prepare-bundle',
 ].map((id) => [id, document.getElementById(id)]));
 
 const requestedProjection = new URL(window.location.href).searchParams.get('projection');
@@ -36,6 +40,17 @@ let temporalFrame = buildTemporalFrame(temporalFixture, {time: '2023-06', projec
 let inspectionPaused = true;
 let animationTimer = null;
 let temporalFinding = null;
+const requestedSceneRevision = new URL(window.location.href).searchParams.get('sceneRevision');
+let educationalScene = educationalFixture.scenes.find(({sceneId}) => requestedSceneRevision?.startsWith(`${sceneId}@`)) ?? educationalFixture.scenes[0];
+let educationalRevision = Number.parseInt(requestedSceneRevision?.split('@').at(-1), 10) || 1;
+let presentationStop = 0;
+
+for (const scene of educationalFixture.scenes) {
+  const option = document.createElement('option');
+  option.value = scene.sceneId;
+  option.textContent = scene.title;
+  elements['scene-library'].append(option);
+}
 
 for (const dataset of fixture.datasets) {
   const option = document.createElement('option');
@@ -160,6 +175,29 @@ function renderTemporalFacts() {
   elements['alignment-note'].textContent = `${snapshot.layers.length} active layers. Every label names the source period actually used; transformations remain inspectable.`;
 }
 
+function sceneRevisionId() {
+  return `${educationalScene.sceneId}@${educationalRevision}`;
+}
+
+function renderEducationalScene() {
+  const stops = educationalScene.presentationStops;
+  const stop = stops[presentationStop];
+  elements['scene-library'].value = educationalScene.sceneId;
+  elements['scene-title'].textContent = educationalScene.title;
+  elements['scene-summary'].textContent = educationalScene.summary;
+  elements['scene-revision'].textContent = sceneRevisionId();
+  elements['scene-definition'].textContent = educationalScene.definitions.join(' ');
+  elements['scene-caveat'].textContent = educationalScene.caveats.join(' ');
+  elements['scene-question'].textContent = educationalScene.discussionPrompts.join(' ');
+  elements['scene-stop'].textContent = `${stop.order} of ${stops.length} · ${stop.title}`;
+  elements['previous-stop'].disabled = presentationStop === 0;
+  elements['next-stop'].disabled = presentationStop === stops.length - 1;
+  const share = new URL(window.location.href);
+  share.search = '';
+  share.searchParams.set('sceneRevision', sceneRevisionId());
+  elements['scene-share'].textContent = share.toString();
+}
+
 function render() {
   const width = Math.max(280, Math.round(elements['canvas-wrap'].getBoundingClientRect().width));
   const height = window.innerWidth <= 600 ? 384 : window.innerWidth >= 2400 ? 928 : 528;
@@ -187,6 +225,7 @@ function render() {
   renderSelected(snapshot);
   renderSemantic(snapshot);
   renderTemporalFacts();
+  renderEducationalScene();
   if (temporalFinding) {
     elements.refusal.hidden = false;
     elements.refusal.textContent = temporalFinding.message;
@@ -198,6 +237,56 @@ function render() {
     elements.refusal.textContent = '';
   }
 }
+
+function activateEducationalScene(scene, revision = 1) {
+  educationalScene = scene;
+  educationalRevision = revision;
+  presentationStop = 0;
+  elements['upgrade-status'].textContent = 'Pinned to the saved dataset revisions.';
+  elements['portable-status'].textContent = '';
+  model = changeDataset(model, scene.app.datasetId);
+  for (const checkbox of elements['temporal-layers'].querySelectorAll('input')) checkbox.checked = scene.app.layerIds.includes(checkbox.value);
+  const candidate = temporalCandidate({time: scene.app.time, activeLayerIds: scene.app.layerIds});
+  if (candidate.status === 'accepted') temporalFrame = candidate;
+  elements['scene-time'].value = temporalFrame.time;
+  render();
+}
+
+elements['scene-library'].addEventListener('change', () => {
+  activateEducationalScene(educationalFixture.scenes.find(({sceneId}) => sceneId === elements['scene-library'].value));
+});
+
+elements['previous-stop'].addEventListener('click', () => {
+  presentationStop = Math.max(0, presentationStop - 1);
+  renderEducationalScene();
+});
+
+elements['next-stop'].addEventListener('click', () => {
+  presentationStop = Math.min(educationalScene.presentationStops.length - 1, presentationStop + 1);
+  renderEducationalScene();
+});
+
+elements['compare-upgrade'].addEventListener('click', () => {
+  const population = educationalScene.layers.find(({layerId}) => layerId === 'layer:population-field');
+  if (!population || population.datasetRevision.endsWith('@2024')) {
+    elements['upgrade-status'].textContent = 'This scene already uses the latest prepared population revision.';
+    return;
+  }
+  educationalScene = structuredClone(educationalScene);
+  const upgradedPopulation = educationalScene.layers.find(({layerId}) => layerId === 'layer:population-field');
+  upgradedPopulation.datasetRevision = 'dataset:population@2024';
+  upgradedPopulation.period = '2024';
+  educationalRevision += 1;
+  elements['upgrade-status'].textContent = 'Upgrade accepted as a new scene revision: dataset 2023 → 2024, geography v1 → v2, transformation v1 → v2.';
+  renderEducationalScene();
+});
+
+elements['prepare-bundle'].addEventListener('click', () => {
+  const restricted = educationalScene.layers.some(({layerId}) => layerId === 'layer:learner-movement');
+  elements['portable-status'].textContent = restricted
+    ? 'Bundle ready: permitted population bytes embedded. Learner movement remains a reference; classroom token required and live data is not redistributed.'
+    : 'Bundle ready: all selected permitted assets embedded for offline single-device use.';
+});
 
 elements.dataset.addEventListener('change', () => {
   model = changeDataset(model, elements.dataset.value);
@@ -291,4 +380,5 @@ elements.map.addEventListener('click', (event) => {
 });
 
 window.addEventListener('resize', render);
+elements['upgrade-status'].textContent = 'Pinned to the saved dataset revisions.';
 render();

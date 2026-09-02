@@ -59,7 +59,7 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
   padding: 0 clamp(1rem, 4vw, 4rem) 4rem;
 }
 
-.control-panel, .map-card, .legend-card, .citation-card {
+.control-panel, .map-card, .scene-card, .legend-card, .citation-card {
   border: 1px solid rgba(123, 156, 208, .23);
   border-radius: 1.25rem;
   background: rgba(14, 22, 42, .88);
@@ -93,7 +93,17 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 #map { display: block; width: 100%; height: 33rem; touch-action: none; }
 .caveat { margin: .75rem 0 0; font-size: .78rem; }
 
-.legend-card, .citation-card { grid-column: 2; padding: 1rem; }
+.scene-card, .legend-card, .citation-card { grid-column: 2; padding: 1rem; }
+.scene-card-heading { display: flex; gap: 1rem; justify-content: space-between; align-items: start; }
+.scene-card-heading p { color: #a8b8d6; line-height: 1.55; }
+.revision-badge { max-width: 22rem; padding: .45rem .65rem; border: 1px solid rgba(127, 226, 255, .35); border-radius: .6rem; color: #7fe2ff; overflow-wrap: anywhere; font: 700 .72rem ui-monospace, monospace; }
+.teaching-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.teaching-grid > section { padding: 1rem; border-radius: .9rem; background: rgba(8, 15, 31, .72); }
+.teaching-grid h3 { margin: .2rem 0 .4rem; color: #ffcc66; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+.teaching-grid p { color: #cbd7eb; line-height: 1.5; }
+.stop { min-height: 3rem; font-weight: 800; }
+.stop-controls { display: flex; gap: .5rem; }
+.share-link { padding: .6rem; border-radius: .6rem; background: #050a16; color: #7fe2ff !important; overflow-wrap: anywhere; font: .72rem ui-monospace, monospace; }
 .legend { display: flex; flex-wrap: wrap; gap: .7rem 1.1rem; margin: .5rem 0 1rem; padding: 0; list-style: none; }
 .legend li { display: flex; gap: .45rem; align-items: center; color: #cbd7eb; font-size: .82rem; }
 .swatch { inline-size: .9rem; block-size: .9rem; border-radius: .25rem; }
@@ -112,7 +122,10 @@ tr[data-selected="true"] { background: rgba(92, 200, 255, .09); }
 @media (max-width: 760px) {
   .masthead { grid-template-columns: 1fr; gap: 1rem; padding-top: 1.4rem; }
   .workspace { grid-template-columns: 1fr; }
-  .control-panel, .map-card, .legend-card, .citation-card { grid-column: 1; grid-row: auto; }
+  .control-panel, .map-card, .scene-card, .legend-card, .citation-card { grid-column: 1; grid-row: auto; }
+  .scene-card-heading { display: block; }
+  .revision-badge { display: inline-block; margin-bottom: 1rem; }
+  .teaching-grid { grid-template-columns: 1fr; }
   .map-heading { display: block; }
   .selected-value { margin-bottom: .8rem; text-align: left; }
   .canvas-wrap { min-height: 24rem; }

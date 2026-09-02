@@ -31,3 +31,7 @@ Built the single-device Canvas reader with catalogue selection, Equal Earth and 
 ## 2026-09-02 — Phase 3 - add time, layers, flows, and raster frames
 
 Added mixed-cadence time alignment, multiple scalar layers, flows, time-filtered points, conventional raster frames, explicit missing states, animation controls, failure containment, and scale coverage.
+
+## 2026-09-02 — Phase 4 - add composer, educational scenes, and portability
+
+Built immutable educational scene composition, pinned share links, explicit upgrade revisions, rights-aware portable bundles, offline rendering, and the Phase 4 teaching surface; 43 deterministic tests and 27 browser checks pass.

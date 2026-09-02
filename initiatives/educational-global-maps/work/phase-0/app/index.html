@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="dark">
-    <title>Educational Global Maps — projection comparison</title>
+    <title>Educational Global Maps — teach from a pinned scene</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <a class="skip-link" href="#map-title">Skip to map</a>
     <header class="masthead">
       <div>
-        <p class="eyebrow">Educational Global Maps · Phase 3</p>
-        <h1>Time and movement without false simultaneity.</h1>
+        <p class="eyebrow">Educational Global Maps · Phase 4</p>
+        <h1>Teach from a scene that stays true.</h1>
       </div>
-      <p class="intro">Switch geometry without changing the pinned data revision, period, encoding, or citations. Pause to inspect exact values instead of reading pixels.</p>
+      <p class="intro">Open a prepared lesson, follow its discussion stops, and share the exact revision. Newer data is offered as a comparison—never substituted silently.</p>
     </header>
 
     <main class="workspace">
@@ -23,6 +23,9 @@
           <span>Explore</span>
           <span class="status-pill" id="motion-status">Paused</span>
         </div>
+
+        <label for="scene-library">Prepared educational scene</label>
+        <select id="scene-library"></select>
 
         <label for="dataset">Catalogue selection</label>
         <select id="dataset"></select>
@@ -83,6 +86,43 @@
           <canvas id="map" aria-label="Projected map; use the exact-value table below for a semantic equivalent"></canvas>
         </div>
         <p class="caveat" id="geography-caveat"></p>
+      </section>
+
+      <section class="scene-card" aria-labelledby="scene-title">
+        <div class="scene-card-heading">
+          <div>
+            <p class="eyebrow">Pinned educational scene</p>
+            <h2 id="scene-title"></h2>
+            <p id="scene-summary"></p>
+          </div>
+          <span class="revision-badge" id="scene-revision"></span>
+        </div>
+        <div class="teaching-grid">
+          <section>
+            <h3>Definition</h3>
+            <p id="scene-definition"></p>
+            <h3>Caveat</h3>
+            <p id="scene-caveat"></p>
+          </section>
+          <section>
+            <h3>Discussion prompt</h3>
+            <p id="scene-question"></p>
+            <h3>Presentation stop</h3>
+            <p class="stop" id="scene-stop"></p>
+            <div class="stop-controls">
+              <button type="button" id="previous-stop">Previous</button>
+              <button type="button" id="next-stop">Next stop</button>
+            </div>
+          </section>
+          <section>
+            <h3>Share and carry</h3>
+            <p class="share-link" id="scene-share"></p>
+            <p id="upgrade-status"></p>
+            <button type="button" id="compare-upgrade">Compare available upgrade</button>
+            <p id="portable-status"></p>
+            <button type="button" id="prepare-bundle">Prepare portable bundle</button>
+          </section>
+        </div>
       </section>
 
       <section class="legend-card" aria-labelledby="legend-title">
