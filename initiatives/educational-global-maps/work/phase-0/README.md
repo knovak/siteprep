@@ -1,0 +1,133 @@
+# Phase 0 — contracts, fixtures, and portable scene core
+
+This work area is the executable techdoc for the first Educational Global Maps
+increment. It proves that exact, cited map inputs and a declarative scene can be
+validated, stored immutably, changed through a pure reducer, exported to a
+bounded ZIP bundle, and restored without the application or a data provider.
+It deliberately contains no catalogue UI, renderer, provider adapter, relay, or
+live network access.
+
+Phase 1 extends the same portable core with a metadata-only catalogue and a
+contribution pipeline. It still contains no browser renderer, and catalogue
+startup never fetches a provider artifact.
+
+## Checkpoints
+
+1. **Identity.** `src/canonical.mjs`, the JSON Schemas, and the canonical test
+   vectors define strict JSON parsing, NFC Unicode normalization, sorted keys,
+   finite JSON numbers, UTC timestamps, absent-versus-null behavior, and
+   `sha256:` content identities. Duplicate keys, ambiguous numeric spellings,
+   normalized key collisions, and unknown required fields have stable findings.
+2. **Repository.** `src/repository.mjs` stores exact immutable object versions
+   in one canonical inventory. A candidate is fully validated in memory and a
+   temporary file before one rename makes it accepted. Repeated acceptance is a
+   no-op; a conflicting id, missing reference, future schema, or injected fault
+   leaves the accepted inventory unchanged.
+3. **Bundle.** `src/bundle.mjs` writes a deterministic stored ZIP, inspects the
+   central directory before decompression, enforces entry, byte, ratio, depth,
+   link, traversal, reserved-name, and normalized/case-folded collision limits,
+   and verifies every permitted asset. Restricted assets remain references.
+4. **Scene core.** `src/scene.mjs` validates compatibility and applies bounded,
+   revisioned intents. Stale and duplicate intents do not change state. The
+   fixture covers scalar, flow, point, and raster-frame profiles and restores
+   the same scene and intent sequence from its bundle.
+
+## Run it
+
+From this directory:
+
+```bash
+npm ci
+npm test
+npm run round-trip
+npm run contributions
+```
+
+`round-trip` creates two independent repositories, accepts the minimum fixture,
+exports `scene.egm.zip`, restores it, re-exports it, and compares the logical
+inventories and the deterministic reducer result. The temporary repositories
+and bundle are removed afterward.
+
+## Phase 1 catalogue and contribution pipeline
+
+`src/catalogue.mjs` validates descriptor metadata, builds a deterministic
+search index, filters by topic, provider, place level, time coverage, profile,
+licence, and projection capability, and keeps detail states honest: unknown,
+explicitly absent, and known values do not collapse into one blank. The
+500-descriptor scale fixture is generated metadata only.
+
+`src/contribution.mjs` is the adapter boundary. A contribution directory names
+its descriptor, recorded source, adapter, expected findings, and example scene
+in `contribution.json`. The validator:
+
+1. validates descriptor, geography, crosswalk, scene-reference, rights, and
+   source-checksum boundaries;
+2. gives the adapter only the recorded bytes and descriptor, while refusing
+   network access;
+3. requires newline-terminated UTF-8 JSON Lines plus a revision report naming
+   the exact descriptor version; and
+4. publishes no artifact when rights are not explicitly allowed or an error
+   finding remains.
+
+An unfamiliar contributor can copy either directory under
+`fixtures/contributions/`, replace its local files and adapter, and run:
+
+```sh
+node scripts/validate-contribution.mjs path/to/contribution
+```
+
+No catalogue or renderer module is edited to add that contribution. A changed
+source checksum becomes a new candidate finding; it never mutates the earlier
+prepared revision.
+
+### Recorded reference suite
+
+The first real suite is intentionally small and reviewable:
+
+- `owid-population` records three 2023 country values from the Our World in
+  Data Population Grapher distribution and its indicator metadata, version
+  2024-07-15. Those values originate in UN World Population Prospects 2024;
+  the recorded metadata identifies CC BY 3.0 IGO and requires attribution to
+  both UN WPP and Our World in Data processing.
+- `datacommons-income` records the official Data Commons v2 Observation API
+  documentation example for 2015 median household income in the United States
+  and California. It pins the Census ACS provenance facet and the Census public
+  data citation boundary rather than treating Data Commons as the original
+  source.
+
+Both were checked 2026-09-02. The committed fixtures, not a live response, are
+the test inputs. Refreshing either source is an explicit reviewed change to its
+version, checksum, recorded bytes, and revision report.
+
+## Canonicalization profile
+
+- Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate
+  members. Object keys and string values normalize to Unicode NFC; two keys
+  that collide after normalization are refused.
+- Keys sort by Unicode code point. Arrays retain order. `null` is retained and
+  is distinct from an absent field. Undefined values and non-finite numbers are
+  not portable. Signed zero canonicalizes to `0`.
+- Strict text input accepts the ordinary JSON decimal grammar but refuses
+  exponent notation and negative zero because those spellings are ambiguous at
+  this boundary. Canonical output may use the shortest JSON decimal spelling.
+- Contract timestamps use `YYYY-MM-DDTHH:mm:ss.sssZ`. Other offsets or
+  precisions are refused rather than silently rewritten.
+- Identities are `sha256:<lowercase hex>` over UTF-8 canonical JSON. The
+  algorithm prefix makes a future digest change an explicit migration.
+
+## Bundle limits
+
+`src/limits.mjs` pins 128 entries, 5 MiB per entry, 20 MiB total expanded
+bytes, a 100:1 compression ratio, path depth 12, and a 2 MiB manifest. Archive
+paths must be relative forward-slash paths and may not contain links, special
+files, platform-reserved components, dot segments, or NFC/case-folded
+collisions. Import validates in a fresh staging directory and commits only the
+canonical candidate inventory.
+
+## Version policy
+
+The schemas are closed, versioned envelopes. `scene/v0` is the one supported
+old object: migration adds the explicit `camera` and `intentRevision` fields,
+creates a new immutable `scene/v1` identity, and emits a deterministic receipt.
+The source object remains unchanged. A future version is reported only by
+bounded id/schema metadata and cannot enter the repository.

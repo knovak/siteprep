@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "dataset:datacommons-census-median-household-income-2015",
+  "version": "docs-v2-2026-08-28",
+  "title": "Median household income for the United States and California",
+  "description": "Recorded 2015 Data Commons observations retaining their Census ACS provenance facet.",
+  "topics": ["income"],
+  "provider": {"id": "data-commons", "label": "Data Commons"},
+  "placeLevels": ["country", "state"],
+  "timeCoverage": {"start": "2015", "end": "2015"},
+  "profile": "subnational-time-series",
+  "measure": {
+    "name": "Median household income",
+    "unit": "InflationAdjustedUSD_CurrentYear",
+    "definition": "Median income of households in the named geography."
+  },
+  "distribution": {
+    "sourceUrl": "https://docs.datacommons.org/api/rest/v2/observation.html",
+    "sourceVersion": "documentation example checked 2026-09-02",
+    "retrievedAt": "2026-09-02",
+    "access": "Recorded from the official v2 Observation API example",
+    "checksum": "sha256:15b83c797dfb62a3e0e62751320d9480471a1744eb4b0f5538a3bb65cd9b25e9"
+  },
+  "rights": {
+    "status": "allowed",
+    "licenseId": "US-GOVERNMENT-PUBLIC-DATA",
+    "sourceUrl": "https://www.census.gov/about/policies/citation.html",
+    "notes": "Public Census ACS table observations; retain Data Commons and Census provenance and citation."
+  },
+  "projectionCapabilities": ["equal-area", "airocean"],
+  "gaps": ["The reference records one year and two places only."],
+  "transformations": ["Selected the Census ACS facet from the documented response; no value transformation"],
+  "renderability": {"status": "ready", "geometry": "geography:us-country-state@fixture-1"}
+}

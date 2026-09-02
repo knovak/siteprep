@@ -7,3 +7,19 @@ Drafted outcome-focused objectives for an extensible multi-resolution data catal
 ## 2026-08-27 — Draft spec.md, including alternatives considered
 
 Specified a hybrid versioned catalogue, source-aware geography, capability-based projection renderer, fixed population cartogram, relay-backed controller, and sphere-export boundary with alternatives and acceptance criteria.
+
+## 2026-08-31 — Draft plan.md and test-plan.md
+
+Drafted an eight-phase build plan and matching test plan for contracts, contributor preparation, projection rendering, layered time and flows, portable scenes, detached control, teaching validation, and spherical export.
+
+## 2026-09-01 — Critique plan.md and test-plan.md, and improve them before building starts
+
+Critiqued the build and test plans; split Phase 0 into identity, repository, transactional bundle, and scene-core checkpoints, and added deterministic migration, canonicalization, hostile archive, path-collision, and atomic import proof.
+
+## 2026-09-01 — Phase 0 - build contracts, fixtures, and the portable scene core
+
+Built the four-checkpoint portable scene core with strict canonical contracts, immutable atomic storage, bounded ZIP round trips, migration, synthetic scalar/flow/point/raster fixtures, and a revisioned compatibility-aware reducer; all 9 phase tests and the independent round-trip command pass.
+
+## 2026-09-02 — Phase 1 - build the catalogue and contribution pipeline
+
+Built the metadata-only catalogue, exact search facets, honest detail states, 500-descriptor scale suite, geography and crosswalk findings, and offline checksum/rights-gated contribution adapters with recorded OWID/UN WPP and Data Commons/Census references; 14 tests and both contribution validations pass.

@@ -1,0 +1,17 @@
+{
+  "format": "knowledge-pipeline/v99",
+  "packageId": "package:unsupported-future",
+  "createdAt": "2026-08-31T18:00:00.000Z",
+  "scope": {
+    "knowledgeSpaceId": "space:community-evidence",
+    "collectionId": "collection:future"
+  },
+  "records": {
+    "entities": [],
+    "entityVersions": [],
+    "relationships": [],
+    "activities": [],
+    "receipts": []
+  },
+  "assets": []
+}

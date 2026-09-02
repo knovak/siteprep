@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "scene:owid-population-three-countries",
+  "descriptor": {"id": "dataset:owid-population-2023", "version": "2024-07-15"},
+  "period": "2023",
+  "projection": "equal-area",
+  "encoding": {"kind": "scalar-fill", "measure": "Population", "unit": "people"}
+}

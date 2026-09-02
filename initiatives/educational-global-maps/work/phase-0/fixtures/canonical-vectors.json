@@ -1,0 +1,14 @@
+{
+  "profile": "educational-global-maps/canonical/v1",
+  "equivalent": [
+    {"b": 2, "a": "Cafe\u0301", "negativeZero": 0},
+    {"negativeZero": 0, "a": "Caf\u00e9", "b": 2}
+  ],
+  "different": {"a": "Caf\u00e9", "b": 3, "negativeZero": 0},
+  "strictRefusals": [
+    {"code": "json.duplicate_key", "text": "{\"a\":1,\"a\":2}"},
+    {"code": "json.number.ambiguous", "text": "{\"a\":1e3}"},
+    {"code": "json.number.ambiguous", "text": "{\"a\":-0}"},
+    {"code": "json.key.normalization_collision", "text": "{\"Cafe\u0301\":1,\"Caf\u00e9\":2}"}
+  ]
+}

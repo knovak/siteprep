@@ -1,10 +1,12 @@
 # Spec
 
 How Tide Here is built. `objectives.md` says what “done” means; this document
-chooses the first version and the boundaries that keep its answers honest.
+chooses the original first version and the boundaries that keep its answers
+honest. The dated first-version choices remain below because later refinements
+reuse them; the current deployed extension is summarized in §1.1.
 Numbered references to **O1–O8** are the objectives.
 
-## 1. What the first version is
+## 1. What the original first version was
 
 A compact web page with a manual location form and a five-day result. A person
 enters a place name or latitude/longitude. The page resolves the input, makes
@@ -26,6 +28,32 @@ the first version free of a function, database, account, or deployment secret.
 There is no saved-place list, automatic browser-location prompt, or custom
 domain in this version (O7–O8). The local diagnostic history in §7 is deliberate
 and user-visible; it is not a saved-place feature or remote analytics.
+
+### 1.1 Current deployed extension
+
+Test version 15 and production version 7 retain the browser-direct NOAA and CHS
+adapters and add two server-stored sources behind one registry: licensed 2026
+Bureau of Meteorology predictions for all 76 Australian Standard Ports, and a
+licensed global coastal FES2022b fallback. Official configured sources always
+have precedence. FES is consulted only when official coverage declines or its
+choices are distant or ambiguous, and the official choices remain available as
+alternatives.
+
+The FES package samples retained coastlines at about 15 km intervals and limits
+selection to an initialized water point within 40 km of the resolved place. It
+contains 65,203 points in 376 non-empty tiles. Each point has all 34 harmonic
+constituents and a recorded IANA zone. Test and production keep independent
+copies of the same immutable package in private R2 object storage; neither Site
+uses a database or exposes the tiles as static files.
+
+An FES result is an approximate astronomical harmonic estimate at a sampled
+model point, not an official station observation or harbour prediction. Its
+height is converted from centimetres to metres relative to the model's mean
+sea-level harmonic datum. It is not chart datum or lowest astronomical tide,
+and absolute heights from unlike sources must not be compared without a datum
+conversion. FES excludes weather, storm surge, river flow, waves, and local
+harbour effects. Tide Here therefore labels it **FES2022 near _place_**, marks
+it approximate, and retains the not-for-navigation-or-safety warning.
 
 ## 2. Alternatives considered: tide coverage and source
 
@@ -164,7 +192,15 @@ the page includes them only when their station-local date matches a row.
 Astronomy follows the same midnight boundaries. This rule prevents a device in
 Los Angeles from moving a New York event into the wrong day (O3–O5).
 
-## 6. Static boundary and provider adapters
+## 6. Browser and stored-provider boundaries
+
+The original browser-direct choice in §6.1 still governs NOAA, CHS, Nominatim,
+astronomy, and local history. The current refinement adds a Sites gateway only
+for stored Bureau and FES data. `/stations`, `/resolve`, and `/forecast` read
+immutable versioned objects from the Site's private `TIDE_DATA` R2 binding;
+protected initialization and import routes are the only mutation boundary.
+Operational logs exclude request bodies, place names, coordinates, coasts, and
+station identifiers.
 
 ### 6.1 Why the first version is static
 
@@ -190,8 +226,8 @@ and retrieval time.
 ### 6.2 Caching and privacy
 
 - Normalised forward queries and rounded reverse coordinates may be cached in local storage for 24 hours; NOAA and CHS station metadata may be cached for seven days; forecasts may be cached until the next coast-local hour.
-- Cache keys use a one-way hash of the normalized query. There is no application server log, service worker background refresh, or periodic provider request.
-- There is no analytics event containing the input or selected station. The page explains that the submitted place is sent directly from the browser to a geocoding service and, after selection, to the named tide authority (O8).
+- Cache keys use a one-way hash of the normalized query. There is no service worker background refresh or periodic provider request. Stored-provider gateway logs contain route outcome and timing only, never request bodies or location identifiers.
+- There is no analytics event containing the input or selected station. The page explains that the submitted place is sent directly from the browser to a geocoding service; NOAA and CHS requests go directly to those authorities; selected Bureau ports and FES model points use the Tide Here gateway (O8).
 - The separately visible diagnostic history described in §7 is the only durable usage record. It stays in this browser, has explicit view/download/clear controls, and is never transmitted by the application.
 
 ## 7. Response and page shape
@@ -228,6 +264,13 @@ Five equal day cards follow; each separates tides, sun, and moon but uses one
 time format throughout. Tide heights are secondary to high/low time and state
 their datum and unit in source details.
 
+For FES2022, `station.kind` identifies a model point, `warnings` contains
+`approximate-fallback`, and source details name the FES dataset and mean-sea-
+level harmonic datum. Event heights are metres relative to that datum. The
+coast-local row and clock labels use the selected point's IANA zone. The UI
+must not rename an FES point as an official port, imply an observed water level,
+or add a second banner that duplicates the location/source disclosure.
+
 On narrow screens, days stack rather than becoming a horizontally clipped
 table. Keyboard focus, form errors, coast choices, and retry actions are visible.
 The cheerful tone comes from colour and small sun/moon/tide marks, never from
@@ -251,7 +294,7 @@ The page uses machine-readable codes and user-facing safe summaries:
 | `invalid-input` | Neither a place nor valid coordinates | Keep the input; show accepted examples |
 | `place-not-found` | Geocoder found no match | Edit and retry |
 | `geocoder-unavailable` | Provider timeout, throttle, or error | Retry later; do not call it not found |
-| `coverage-unavailable` | No configured NOAA or CHS prediction candidate within 150 km | Explain first-version coverage and name the supported countries |
+| `coverage-unavailable` | No suitable configured official station and no initialized FES water point within its declared selection distance | Explain the active coverage boundary without naming a distant station or model point as the coast |
 | `coast-choice-required` | Candidate is not unambiguous | Forecast with the nearest candidate; show the other candidates, distances, and map in collapsed **Alternative coasts** below the result |
 | `tides-unavailable` | Selected station returned no valid prediction | Preserve place and station; show no tide rows and retry guidance |
 | `astronomy-unavailable` | Calculation failed | Preserve tide result; mark astronomy unavailable |
@@ -262,24 +305,24 @@ or astronomy, and an astronomical failure does not turn into an empty tide
 table. Every result ends with: “Predictions are informational and are not for
 navigation or safety decisions” (O6).
 
-## 9. Deployment and later browser location
+## 9. Deployment and browser location
 
-The deliverable is host-neutral static HTML, CSS, JavaScript, pinned local
-libraries/data, and a small provider-configuration JSON file. It requires HTTPS
-for the eventual geolocation feature, but no function, environment secret,
-database, or custom domain. The first temporary host is whichever available
-static host can serve those files; the code must not contain its URL.
+The original deliverable was host-neutral static HTML, CSS, JavaScript, pinned
+local libraries/data, and a small provider-configuration JSON file. The current
+Sites build preserves that browser application while adding a server gateway,
+an initializer secret, and private R2 storage for stored-provider data. It
+still has no database, account, or custom domain, and the browser-facing code
+contains no hard-coded deployment URL.
 
-The eventual `tidehere.info`-style domain is a later routing change. A future
-**Use my current location** button calls
+The eventual `tidehere.info`-style domain remains a later routing change. The
+delivered **Show here** button calls
 `navigator.geolocation.getCurrentPosition` only after that explicit user
 gesture and explains the browser permission before prompting. Success feeds the
 returned coordinates into exactly the same coordinate-input, reverse-geocoding,
 coastal-match, provider, history, and display path as typed coordinates.
 Denial or timeout leaves the manual form untouched. The page never requests
-location on load, watches position, or runs in the background. This later
-feature therefore needs a secure context and permission-state tests, but no new
-forecast contract (O7–O8).
+location on load, watches position, or runs in the background. The deployed
+feature uses a secure context and the same forecast contract (O7–O8).
 
 ## 10. Validation contract
 

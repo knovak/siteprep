@@ -39,6 +39,7 @@ function errorStatus(error) {
 
 export function createProviderGatewayApp({
   initialize,
+  importDataset = null,
   forecastAdapters = {},
   stationResolvers = {},
   stationCatalogues = {},
@@ -61,6 +62,12 @@ export function createProviderGatewayApp({
           if (request.method !== 'POST') return json({error: 'Use POST /init'}, 405, {allow: 'POST'});
           if (!canInitialize(request, env)) return json({error: 'Initializer authorization required', code: 'init-forbidden'}, 403);
           return json(await initialize(store, {now}));
+        }
+        if (url.pathname === '/import/object' || url.pathname === '/import/activate') {
+          if (request.method !== 'POST') return json({error: 'Use POST for dataset imports'}, 405, {allow: 'POST'});
+          if (!canInitialize(request, env)) return json({error: 'Importer authorization required', code: 'init-forbidden'}, 403);
+          if (typeof importDataset !== 'function') return json({error: 'Dataset imports are unavailable'}, 404);
+          return json(await importDataset({request, url, store, now}));
         }
 
         const active = await loadActiveProviderRegistry(store);
@@ -108,6 +115,7 @@ export function createProviderGatewayApp({
             request: {
               latitude: body.latitude,
               longitude: body.longitude,
+              displayName: body.displayName,
             },
           }));
         }

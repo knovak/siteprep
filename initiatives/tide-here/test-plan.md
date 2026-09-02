@@ -76,7 +76,7 @@ and provider responses:
 | **An island or estuary** (Puget Sound, or a Fundy inlet) | Two stations within 25 km that are not 60% apart: the chooser's reason to exist |
 | **A U.S.–Canada border coast** (Boundary Bay area) | The nearest station and the correct jurisdiction may differ, across two providers |
 | **An inland city** (Denver) | Over 150 km: `coverage-unavailable`, not a distant table |
-| **An out-of-coverage coast** (Lisbon) | A real coast, no configured provider: the message must name coverage, not failure |
+| **A global-fallback coast** (Galway, Nice, or Lisbon) | No configured national provider: the runtime must use a nearby initialized FES point when available and otherwise name coverage, not failure |
 
 Exact station ids are whatever the catalogue returns at recording time; the
 fixture names the place and pins the response, not a guess about the id.
@@ -130,7 +130,7 @@ committed.
 | Ranking | Candidates sort by great-circle distance to the resolved input | §3.2 |
 | Accept | A candidate within 25 km and no more than 60% of the next distance is accepted, and no chooser is shown | O2, §3.2 |
 | **Ask, on the island fixture** | Two candidates within 25 km that fail the 60% rule return up to three candidates with name, jurisdiction, and distance | O2, §3.2 |
-| Refuse | Nothing within 150 km returns `coverage-unavailable`, and the response does not name a station as the user's coast | O2, O6, §3.2 |
+| Refuse or defer to fallback | No official station within 150 km declines the national match without naming a station as the user's coast; the composed resolver may then select an initialized FES point within its separate 40 km limit | O2, O6, §3.2 |
 | Border case | The nearest candidate across the U.S.–Canada fixture is returned with its own jurisdiction and provider, not the input's | §3.2 |
 | Subordinate stations | A subordinate candidate carries its reference station into source details | §3.2, §7 |
 | **The thresholds are configuration** | Changing 25/60/150 in the configuration file, with no code change, changes the outcome of the fixtures above | `plan.md` §5.1, §10 |
@@ -250,9 +250,9 @@ accident:
 - **Provider prediction accuracy.** Whether NOAA's high tide is correct is
   NOAA's contract, not ours. We test that we asked the right station and put the
   answer on the right day.
-- **Version 2's browser location.** §9 establishes it reuses the coordinate path
-  entirely. Its permission-state and secure-context tests belong to the phase
-  that builds it.
+- **Browser-location accuracy supplied by the device.** §4.6 tests the delivered
+  permission, fallback, and coordinate-path behavior. It does not test the
+  operating system's location accuracy, which is outside the application.
 - **Load and concurrency.** One user, a few requests a month. The only rate
   limit that matters is the one we owe Nominatim, and that is §4.5's row.
 - **"Compact and cheerful."** §2's manual row, once. A test that claimed to
@@ -320,9 +320,11 @@ Australian prediction accuracy.
 | FES truthfulness | A test fixture cannot set `isFes2022`; licensed activation requires FES2022 identity, source-file integrity, licence metadata, a nonzero PyFES quality flag with matching interpolation/extrapolation disclosure, a 0.01 cm constituent round-trip, and all 34 constituents per point | Data and legal boundary |
 | Atomic initialization | Australian and fallback artifacts are ready before the Stage 4 registry pointer is written; repeating `/init` writes nothing | Rollback safety |
 | Provider priority | A confident national-provider match wins without consulting FES; a nearby FES point becomes primary when official choices are unavailable, distant, or ambiguous, while named official alternatives remain selectable | Source quality |
-| Indexed lookup | Maroochydore, Bundaberg, Cooktown, Brest, Galway, Gibraltar, and Cape Town load only their candidate tiles and return normalized metre events | Runtime tile seam |
+| Indexed lookup | Representative locations across separate 10-degree tiles load only their candidate tiles; Galway, Cooktown, Gibraltar, Nice, Amsterdam, and Cape Town return normalized metre events when a point is within 40 km | Runtime tile seam |
 | Land or missing data | A location outside initialized coastal tiles returns `coverage-unavailable` | No invented coverage |
 | Approximate warning | Every fallback response says approximate and excludes weather and storm surge; the fixture additionally says it is not FES2022 | User safety |
+| Height and datum interpretation | FES extrema are converted from centimetres to metres and identified as relative to the model mean-sea-level harmonic datum, never chart datum, depth, observed level, or an official port datum | Units and user interpretation |
+| Model-point identity | The result is labelled `FES2022 near <resolved place>`, retains the selected point id and IANA zone, and does not present the sampled point as an official station | Coast and source honesty |
 | Extraction round-trip | Every licensed point reproduces PyFES atlas prediction from its rounded extracted constituents to within 0.01 cm | Phase, units, and constituent conversion |
 | Official priority examples | Maroochydore resolves to Mooloolaba and Bundaberg resolves to its Bureau port before the fallback resolver is consulted | Source quality at the requested Australian examples |
 | Maroochydore/Mooloolaba comparison | At least 16 same-type extrema pair over five days; p90 timing is at most 30 minutes, maximum timing at most 45 minutes, and the maximum height residual after one constant MSL-to-LAT offset is at most 0.35 m | Open-coast model timing and shape |
@@ -352,20 +354,21 @@ the committed point metadata discloses each method.
 | Sites binding | The existing test project declares `TIDE_DATA` R2 and no D1 binding | Minimal persistence |
 | Hosted initializer | Missing or wrong bearer token returns 403; the configured token initializes exact Stage 4 versions | Mutation boundary |
 | Repeat initialization | The second live `/init` call reports zero created or updated objects | Idempotence |
-| Health | Live `/health` names provider registry `stage-4-v7` and both stored dataset versions | Operability |
+| Health | Live `/health` names provider registry `stage-4-global-2026-08-29-global-coast-r1` and both stored dataset versions | Operability |
 | Log privacy | Logs contain route, method, status, provider, and duration but no URL, body, place, coast, station, or coordinates | Location privacy |
 | Static allowlist | The built Site contains the current UI and runtime dependencies but no initiative records, tests, or preparation tools | Publication boundary |
-| Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the licensed Australian source, and returns the approximate fallback fixture | Deployment integration |
+| Source-family smoke | The real HTTPS URL serves the page, reaches NOAA and CHS catalogues, returns the licensed Australian source, and returns the licensed approximate global FES source | Deployment integration |
 | Production isolation | Only the recorded test project changes; the production Site and release record remain unchanged | Release boundary |
 
-**Recorded result, 2026-08-29 UTC:** all eight checks passed on public test Site
-version 11. Initialization activated `stage-4-v7`; the repeat call wrote zero
-objects; 124 Tide Node tests passed in both the working tree and isolated Site
-source, and 29 applicable browser tests passed with one intentional skip. The
-live sweep returned all 76 Australian Standard Ports and FES2022 results for
-Galway, Cooktown, and Gibraltar. A live Nice search from the former Cooktown
-validation URL left fixture mode and returned the honest coverage state without
-showing Cooktown or Seattle. The production Site was not changed.
+**Recorded result, 2026-09-01 UTC:** all eight checks passed on public test Site
+version 15. The protected import preserved all 377 global package objects and
+activated `stage-4-global-2026-08-29-global-coast-r1`; the repeat initializer
+wrote zero objects. All 128 Tide Node tests and the hosted build passed. The live
+sweep returned all 76 Australian Standard Ports and 1,470 official events plus
+FES2022 results for Galway, Cooktown, Gibraltar, Nice, and Amsterdam. NOAA, CHS,
+and the page passed; Maroochydore and Bundaberg retained official-source
+priority; normal searches showed neither Seattle/Cooktown fixture leakage nor a
+duplicate FES banner.
 
 ### 7.6 — Australian browser integration
 
@@ -387,3 +390,20 @@ version 8. Brisbane, Cairns, Sydney, Melbourne, Hobart, Adelaide, Perth, Broome,
 and Darwin selected licensed reference ports and rendered five local days with
 the selected Bureau PDF, attribution, and disclaimer. Licensed results did not
 display the synthetic fixture notice. The production Site was not changed.
+
+### 7.7 — Production release of the global fallback
+
+| Test | Pass condition | Protects |
+|---|---|---|
+| Exact reviewed source | The Sites source and build archive come from merged commit `424926d` for `initiatives/tide-here/work` | Release provenance |
+| Separate stored data | Production receives and checksum-verifies its own copy of all 377 immutable FES objects before registry activation | Environment isolation |
+| Same active versions | Test and production health name `2026-bom-v2`, `fes2022b-global-coast/2026-08-29-global-coast-r1`, and registry `stage-4-global-2026-08-29-global-coast-r1` | Deployment parity |
+| Idempotent initialization | A protected initialization after import preserves the global dataset and writes zero objects | No downgrade or mutation drift |
+| Full live sweep | NOAA, CHS, all 76 Australian ports, Galway, Cooktown, Gibraltar, Nice, Amsterdam, and the browser page pass against production | End-to-end release |
+| Access and release record | The existing public URL remains public and the exact source commit, version, and release changes are recorded | Audience and audit boundary |
+
+**Recorded result, 2026-09-01 UTC:** all six checks passed on public production
+Site version 7. Production's separate R2 store received and verified the global
+package before activation. The full sweep matched test: 76 Australian ports,
+1,470 official events, 19–20 events for each representative FES location, NOAA,
+CHS, and the page all passed; repeat initialization wrote zero objects.
