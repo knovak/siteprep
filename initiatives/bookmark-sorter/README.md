@@ -13,6 +13,9 @@ ChatGPT sign-in and the Bookmark Sorter allowlist:
 Pre-release testing uses the separate public test Site:
 <https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/>.
 
+Administrators should use the [operator runbook](OPERATIONS.md) for access
+changes, release-safe backups, smoke checks, recovery, and incident handling.
+
 ## Access and sign-in
 
 Open the Site in any browser. If the Site does not receive both a ChatGPT user
