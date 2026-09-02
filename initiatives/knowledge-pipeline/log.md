@@ -43,3 +43,7 @@ Built the authenticated Phase 3 packet/proposal/review/receipt loop and its port
 ## 2026-09-02 — Review a live model proposal for the fixed fixture and record corrections, unsupported claims, accepted percentage, and process version
 
 Proposed a live-model fixture review: 75% of operations accepted unchanged, with novelty and importance corrected to unknown under process phase-3-live-review-v1.
+
+## 2026-09-02 — Phase 4 - build topics, pair relationships, and mini narratives
+
+Implemented the exact relationship registry, many-to-many topic assignments, human-reviewed mini narratives, evidence closure, topic ordering, inverse-label inspection, and the 1,000-edge query budget in the portable Site core.
