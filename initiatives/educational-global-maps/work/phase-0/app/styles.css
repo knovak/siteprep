@@ -59,7 +59,7 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
   padding: 0 clamp(1rem, 4vw, 4rem) 4rem;
 }
 
-.control-panel, .map-card, .scene-card, .legend-card, .citation-card {
+.control-panel, .map-card, .scene-card, .session-card, .legend-card, .citation-card {
   border: 1px solid rgba(123, 156, 208, .23);
   border-radius: 1.25rem;
   background: rgba(14, 22, 42, .88);
@@ -93,7 +93,7 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 #map { display: block; width: 100%; height: 33rem; touch-action: none; }
 .caveat { margin: .75rem 0 0; font-size: .78rem; }
 
-.scene-card, .legend-card, .citation-card { grid-column: 2; padding: 1rem; }
+.scene-card, .session-card, .legend-card, .citation-card { grid-column: 2; padding: 1rem; }
 .scene-card-heading { display: flex; gap: 1rem; justify-content: space-between; align-items: start; }
 .scene-card-heading p { color: #a8b8d6; line-height: 1.55; }
 .revision-badge { max-width: 22rem; padding: .45rem .65rem; border: 1px solid rgba(127, 226, 255, .35); border-radius: .6rem; color: #7fe2ff; overflow-wrap: anywhere; font: 700 .72rem ui-monospace, monospace; }
@@ -119,10 +119,27 @@ tr[data-selected="true"] { background: rgba(92, 200, 255, .09); }
 #actual-periods { padding-left: 1.2rem; color: #cbd7eb; }
 #alignment-note { color: #91a3c3; font-size: .84rem; line-height: 1.5; }
 
+.session-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 22rem); gap: 1rem; align-items: center; }
+.session-card p { max-width: 65ch; color: #a8b8d6; line-height: 1.55; }
+.connection-status { color: #7fe2ff !important; font-weight: 800; }
+.join-card { display: grid; justify-items: center; gap: .7rem; padding: 1rem; border-radius: .9rem; background: #f4f8ff; color: #07111f; }
+.join-card img { width: 180px; height: 180px; }
+.join-card a { max-width: 100%; color: #244c99; overflow-wrap: anywhere; font: 700 .72rem ui-monospace, monospace; }
+.join-card small { line-height: 1.4; }
+
+.controller-shell { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 5vw, 4rem); }
+.controller-shell h1 { margin-bottom: 1rem; font-size: clamp(2.4rem, 10vw, 4.2rem); }
+.controller-revision { color: #91a3c3; overflow-wrap: anywhere; font: .78rem ui-monospace, monospace; }
+.controller-grid { display: grid; gap: .65rem; padding: 1rem; border: 1px solid rgba(123, 156, 208, .23); border-radius: 1.25rem; background: rgba(14, 22, 42, .88); }
+.controller-grid > label { margin-top: .5rem; color: #a8b8d6; font-size: .82rem; font-weight: 700; }
+.controller-grid select { width: 100%; padding: .65rem; }
+.controller-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+
 @media (max-width: 760px) {
   .masthead { grid-template-columns: 1fr; gap: 1rem; padding-top: 1.4rem; }
   .workspace { grid-template-columns: 1fr; }
-  .control-panel, .map-card, .scene-card, .legend-card, .citation-card { grid-column: 1; grid-row: auto; }
+  .control-panel, .map-card, .scene-card, .session-card, .legend-card, .citation-card { grid-column: 1; grid-row: auto; }
+  .session-card { grid-template-columns: 1fr; }
   .scene-card-heading { display: block; }
   .revision-badge { display: inline-block; margin-bottom: 1rem; }
   .teaching-grid { grid-template-columns: 1fr; }

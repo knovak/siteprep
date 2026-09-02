@@ -1,6 +1,8 @@
 import fixture from '../fixtures/renderer-scene.json';
 import temporalFixture from '../fixtures/temporal-scene.json';
 import educationalFixture from '../fixtures/educational-scenes.json';
+import QRCode from 'qrcode';
+import {BrowserSessionLink} from './session-link.mjs';
 import {
   buildRenderModel,
   changeDataset,
@@ -29,6 +31,11 @@ const elements = Object.fromEntries([
   'scene-library', 'scene-title', 'scene-summary', 'scene-revision', 'scene-definition',
   'scene-caveat', 'scene-question', 'scene-stop', 'previous-stop', 'next-stop',
   'scene-share', 'upgrade-status', 'compare-upgrade', 'portable-status', 'prepare-bundle',
+  'start-session', 'end-session', 'session-status', 'join-url', 'join-qr',
+  'controller-app', 'controller-status', 'controller-time', 'controller-projection',
+  'controller-layers', 'controller-feature', 'controller-pan-left', 'controller-pan-right',
+  'controller-pan-up', 'controller-pan-down', 'controller-zoom-in', 'controller-zoom-out',
+  'controller-previous-stop', 'controller-next-stop', 'controller-revision',
 ].map((id) => [id, document.getElementById(id)]));
 
 const requestedProjection = new URL(window.location.href).searchParams.get('projection');
@@ -44,6 +51,14 @@ const requestedSceneRevision = new URL(window.location.href).searchParams.get('s
 let educationalScene = educationalFixture.scenes.find(({sceneId}) => requestedSceneRevision?.startsWith(`${sceneId}@`)) ?? educationalFixture.scenes[0];
 let educationalRevision = Number.parseInt(requestedSceneRevision?.split('@').at(-1), 10) || 1;
 let presentationStop = 0;
+const sessionParameters = new URL(window.location.href).searchParams;
+const controllerRole = sessionParameters.get('controller') === '1';
+let sessionLink = null;
+let sessionId = sessionParameters.get('session');
+let sessionSecret = sessionParameters.get('secret');
+let displaySessionRevision = 0;
+let lastSessionState = '';
+let controllerSnapshot = null;
 
 for (const scene of educationalFixture.scenes) {
   const option = document.createElement('option');
@@ -236,6 +251,147 @@ function render() {
     elements.refusal.hidden = true;
     elements.refusal.textContent = '';
   }
+  syncDisplaySession();
+}
+
+function displaySessionState() {
+  return {
+    period: temporalFrame.time,
+    projection: model.projection,
+    camera: structuredClone(model.camera),
+    layers: [...temporalFrame.activeLayerIds],
+    selectedFeature: model.selectedId ?? null,
+    presentationStop,
+  };
+}
+
+function displaySnapshot() {
+  return {
+    sessionId,
+    baseSceneRevision: sceneRevisionId(),
+    acceptedRevision: displaySessionRevision,
+    scene: displaySessionState(),
+  };
+}
+
+function syncDisplaySession() {
+  if (!sessionLink || controllerRole) return;
+  const state = JSON.stringify(displaySessionState());
+  if (lastSessionState && state !== lastSessionState) displaySessionRevision += 1;
+  if (state !== lastSessionState) {
+    lastSessionState = state;
+    sessionLink.publish(displaySnapshot());
+    elements['session-status'].textContent = `Ready · revision ${displaySessionRevision}`;
+  }
+}
+
+function controllerIntent(type, payload) {
+  if (!sessionLink || !controllerSnapshot) return;
+  const intentId = `intent:${crypto.randomUUID()}`;
+  sessionLink.sendIntent({
+    schema: 'educational-global-maps/intent/v1',
+    id: `${intentId}-v1`,
+    content: {intentId, sessionId, baseRevision: controllerSnapshot.acceptedRevision, type, payload},
+  });
+}
+
+function renderController(snapshot) {
+  controllerSnapshot = snapshot;
+  elements['controller-revision'].textContent = `${snapshot.baseSceneRevision} · revision ${snapshot.acceptedRevision}`;
+  elements['controller-time'].value = snapshot.scene.period;
+  elements['controller-projection'].value = snapshot.scene.projection;
+  elements['controller-feature'].value = snapshot.scene.selectedFeature ?? '';
+  for (const checkbox of elements['controller-layers'].querySelectorAll('input')) {
+    checkbox.checked = snapshot.scene.layers.includes(checkbox.value);
+  }
+}
+
+function applyControllerIntent(message) {
+  const intent = message.intent?.content;
+  if (!intent || intent.sessionId !== sessionId) return;
+  if (intent.baseRevision !== displaySessionRevision) {
+    sessionLink.publish(displaySnapshot());
+    return;
+  }
+  const payload = intent.payload;
+  if (intent.type === 'set-time') {
+    const candidate = updateTemporal({time: payload.period});
+    if (candidate.status === 'accepted') elements['scene-time'].value = payload.period;
+  } else if (intent.type === 'set-projection') {
+    const candidate = temporalCandidate({projection: payload.projection});
+    if (candidate.status === 'accepted') {
+      model = changeProjection(model, payload.projection);
+      temporalFrame = candidate;
+      temporalFinding = null;
+      render();
+    }
+  } else if (intent.type === 'set-layers') {
+    for (const checkbox of elements['temporal-layers'].querySelectorAll('input')) checkbox.checked = payload.layers.includes(checkbox.value);
+    updateTemporal({activeLayerIds: payload.layers});
+  } else if (intent.type === 'set-camera') {
+    model = setCamera(model, {center: payload.center, zoom: payload.zoom});
+    render();
+  } else if (intent.type === 'select-feature') {
+    model = selectRecord(model, payload.featureId);
+    render();
+  } else if (intent.type === 'set-presentation-stop') {
+    presentationStop = Math.min(educationalScene.presentationStops.length - 1, Math.max(0, payload.index));
+    renderEducationalScene();
+    syncDisplaySession();
+  }
+}
+
+async function startDisplaySession() {
+  sessionId = `session:${crypto.randomUUID()}`;
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  sessionSecret = [...bytes].map((value) => value.toString(16).padStart(2, '0')).join('');
+  const relayUrl = sessionParameters.get('relay');
+  const join = new URL(window.location.href);
+  join.search = '';
+  join.searchParams.set('controller', '1');
+  join.searchParams.set('session', sessionId);
+  join.searchParams.set('secret', sessionSecret);
+  if (relayUrl) join.searchParams.set('relay', relayUrl);
+  displaySessionRevision = 0;
+  lastSessionState = JSON.stringify(displaySessionState());
+  sessionLink = new BrowserSessionLink({
+    role: 'display', sessionId, secret: sessionSecret, relayUrl,
+    onMessage: applyControllerIntent,
+    onStatus: (status) => { elements['session-status'].textContent = status; },
+  });
+  sessionLink.connect(displaySnapshot());
+  elements['join-url'].href = join;
+  elements['join-url'].textContent = join.toString();
+  elements['join-qr'].src = await QRCode.toDataURL(join.toString(), {width: 180, margin: 1, color: {dark: '#07111f', light: '#ffffff'}});
+  elements['join-qr'].hidden = false;
+  elements['start-session'].hidden = true;
+  elements['end-session'].hidden = false;
+}
+
+function configureController() {
+  document.querySelector('.masthead').hidden = true;
+  document.querySelector('.workspace').hidden = true;
+  elements['controller-app'].hidden = false;
+  for (const period of temporalFixture.timeline) elements['controller-time'].append(new Option(period, period));
+  for (const projection of ['equal-earth', 'airocean', 'population-cartogram']) elements['controller-projection'].append(new Option(projection, projection));
+  for (const layer of temporalFixture.layers) {
+    const label = document.createElement('label');
+    label.className = 'check-row';
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.value = layer.id;
+    input.addEventListener('change', () => controllerIntent('set-layers', {layers: [...elements['controller-layers'].querySelectorAll('input:checked')].map(({value}) => value)}));
+    label.append(input, document.createTextNode(layer.title));
+    elements['controller-layers'].append(label);
+  }
+  for (const row of semanticSnapshot(model).rows) elements['controller-feature'].append(new Option(row.label, row.id));
+  const relayUrl = sessionParameters.get('relay');
+  sessionLink = new BrowserSessionLink({
+    role: 'controller', sessionId, secret: sessionSecret, relayUrl,
+    onMessage: (message) => { if (message.snapshot) renderController(message.snapshot); },
+    onStatus: (status) => { elements['controller-status'].textContent = status; },
+  });
+  sessionLink.connect();
 }
 
 function activateEducationalScene(scene, revision = 1) {
@@ -380,5 +536,36 @@ elements.map.addEventListener('click', (event) => {
 });
 
 window.addEventListener('resize', render);
+elements['start-session'].addEventListener('click', startDisplaySession);
+elements['end-session'].addEventListener('click', () => {
+  sessionLink?.end();
+  sessionLink = null;
+  elements['session-status'].textContent = 'Ended · display remains usable';
+  elements['end-session'].hidden = true;
+  elements['start-session'].hidden = false;
+});
+elements['controller-time'].addEventListener('change', () => controllerIntent('set-time', {period: elements['controller-time'].value}));
+elements['controller-projection'].addEventListener('change', () => controllerIntent('set-projection', {projection: elements['controller-projection'].value}));
+elements['controller-feature'].addEventListener('change', () => controllerIntent('select-feature', {featureId: elements['controller-feature'].value || null}));
+for (const [id, longitude, latitude] of [
+  ['controller-pan-left', -10, 0], ['controller-pan-right', 10, 0],
+  ['controller-pan-up', 0, 8], ['controller-pan-down', 0, -8],
+]) {
+  elements[id].addEventListener('click', () => {
+    const camera = controllerSnapshot.scene.camera;
+    controllerIntent('set-camera', {center: [camera.center[0] + longitude, camera.center[1] + latitude], zoom: camera.zoom});
+  });
+}
+elements['controller-zoom-in'].addEventListener('click', () => {
+  const camera = controllerSnapshot.scene.camera;
+  controllerIntent('set-camera', {center: camera.center, zoom: Math.min(2.5, camera.zoom * 1.2)});
+});
+elements['controller-zoom-out'].addEventListener('click', () => {
+  const camera = controllerSnapshot.scene.camera;
+  controllerIntent('set-camera', {center: camera.center, zoom: Math.max(.65, camera.zoom / 1.2)});
+});
+elements['controller-previous-stop'].addEventListener('click', () => controllerIntent('set-presentation-stop', {index: Math.max(0, controllerSnapshot.scene.presentationStop - 1)}));
+elements['controller-next-stop'].addEventListener('click', () => controllerIntent('set-presentation-stop', {index: controllerSnapshot.scene.presentationStop + 1}));
 elements['upgrade-status'].textContent = 'Pinned to the saved dataset revisions.';
 render();
+if (controllerRole) configureController();
