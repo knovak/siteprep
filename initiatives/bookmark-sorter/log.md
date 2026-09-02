@@ -470,3 +470,12 @@ Proposed five optional refinements with expected value, likely size, privacy bou
 Added exact-title search as a guarded recovery path for unreachable bookmark
 URLs, and made the proposed metadata fallback concrete with a compact text-card
 mockup and an explicit account of what it does and does not display.
+
+## 2026-09-02 — Review round: research selection spaces and title search
+
+Placed the requested selection improvements at the top of the optional menu
+after checking the shipped grammar. Recorded that title keys already normalize
+punctuation and spaces to dashes but provide only exact or trailing-wildcard
+prefix matching, while tags and folders use percent-encoded exact keys and
+treat underscores literally. Proposed backward-compatible boundaries and tests
+rather than silently changing saved selection meanings.

@@ -54,6 +54,8 @@ when behavior changes or a real support gap appears.
 
 | Candidate | Why it could help | Likely size | Boundary and evidence |
 |---|---|---:|---|
+| **Let `_` stand for either an underscore or a space in tag and folder selections** | Selection expressions split on literal spaces. The generated exact-match forms therefore percent-encode tag and folder values (`tag-key:ffox%20old`, `folder-key:Reading%20List`), while a typed `_` is currently just an underscore. Accepting `_` as a convenient two-way alias would let `tag-key:ffox_old` and `folder-key:Reading_List` match both the literal-underscore value and its space-separated counterpart without making people type `%20`. | Small–medium | Keep the existing encoded exact form authoritative and preserve old saved expressions. Apply the alias only to the value portion of `tag-key:` and `folder-key:`, not operators or collection ids; document the ambiguity when both spellings exist; and test literal underscores, spaces, `%20`, slashes, Unicode, wildcard suffixes, and saved-selection round trips. A bare ordinary tag still has no `tag:` prefix. |
+| **Add word or substring search within bookmark titles** | Title selection already exists, but it matches the normalized whole-title key: punctuation and symbols become spaces, whitespace collapses, and those spaces become dashes. A trailing wildcard makes `title:court-drama` a prefix search. `title:word` currently means an exact full normalized title, and a title expression with leading and trailing wildcards is rejected because the grammar permits one wildcard only at the end. A contains predicate would find a remembered word anywhere in a title. | Small–medium | Do not silently change the meaning of existing `title:` expressions. Choose and document an explicit backward-compatible form such as `title-contains:word` or a title-only leading wildcard; use the stored normalized title key rather than private notes or remote page text; define word boundaries and multi-word behavior; and test punctuation, case, diacritics, exact/prefix compatibility, empty queries, and large collections. |
 | **Give no-image bookmarks an honest, distinguishable metadata card** | The known blank-card population is the largest visible weakness. A locally rendered fallback based on the saved title and site could make those cards easier to scan without turning on the paid screenshot pass or implying that a page was captured. | Medium | Use only stored bookmark metadata and existing capture state; make the fallback visibly different from an image capture, keep URLs private, and do not fetch another remote asset. Re-run the 10,000-item grid, phone, duplicate-image, and no-image fixtures and compare an ordinary sitting before and after. |
 | **Add a private usage-evidence summary** | Sittings and undo records already contain the throughput and sweep-regret evidence described above, but reading raw records makes the optional measurement harder than it needs to be. A small administrator view could summarize finished sittings and immediate sweep undos without adding analytics. | Small | Compute from existing owner-scoped records, disclose exactly what is counted, exclude unfinished sittings, and add no tracking event or cross-user comparison. The summary remains evidence for a later decision, not an automatic product threshold. |
 | **Extend selections to saved text** | Tag, folder, site, and verdict expressions are strong once a pile has been organized, while a first pass may remember only a word from a title, URL, or note. A bounded text predicate would help recover those bookmarks before tagging them. | Medium | Define normalization and literal-versus-token semantics before changing the grammar; keep queries collection-scoped and indexed; preserve deterministic saved selections and exports; prove that private notes never enter logs or another user's results. |
@@ -84,8 +86,11 @@ selection, verdict, tag, and open-link controls remain in their normal places
 outside this preview area, so the fallback changes recognition rather than the
 card's behavior.
 
-The strongest next increment is the **honest metadata fallback card** because it
+The two selection improvements are first because they answer recurring input
+friction directly. Of those, **title contains search** is the clearer first
+increment: normalized title keys already exist, and a new explicit predicate can
+avoid changing saved `title:` expressions. The underscore alias is still small,
+but it needs the ambiguity rule above before implementation. The **honest
+metadata fallback card** remains the strongest visual improvement because it
 addresses the measured 503 no-image bookmarks without a new vendor, credential,
-network request, or privacy boundary. The **usage-evidence summary** is the
-smaller choice if the next decision should be guided by ordinary sitting data
-before the interface changes.
+network request, or privacy boundary.
