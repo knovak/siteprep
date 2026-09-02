@@ -193,3 +193,7 @@ Released to production — Demo, `74c16d0`. 2 commit(s) since the previous relea
 ## 2026-09-02 — Rewrite the description and deck: plain second-person prose, fourteen sections, twelve figures, documentation-style layout
 
 Started the description and deck over. Fourteen sections follow one initiative from wish to archive; twelve fact-derived figures; sidebar layout; twenty slides. The simulator is unchanged, with a change list in notes.md.
+
+## 2026-09-02 — Release
+
+Released to production — Demo, `f60420c`. 1 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/> See releases.md.

@@ -3,6 +3,16 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-09-02 — Demo
+
+<https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/>
+
+Released `f60420c` · 1 commit(s) since the previous release.
+
+Changes since the previous release, in `initiatives/repo-guide/work/guide/out`:
+
+- Rewrite the Repo Guide description and deck (#400)
+
 ## 2026-08-27 — Demo
 
 <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/>
