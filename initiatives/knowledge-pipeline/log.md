@@ -31,3 +31,7 @@ Built and verified the Phase 0 portable custody core: canonical v1 schemas and h
 ## 2026-09-01 — Phase 1 - build the login-gated Site and collection shell
 
 Built and deployed the public test gate and authenticated collection shell with Sites identity and allowlist enforcement, D1/R2 adapters, collection create/select/erase, backup/restore, and admin controls. Local contract tests passed 8/8, the Site build passed, live anonymous access returned the gate at 200, and protected data, backup, and admin routes returned identity.required at 401.
+
+## 2026-09-02 — Phase 2 - build harvest, native adapters, and the tag inventory
+
+Built direct and browser-saved intake, native Bookmark Sorter and Newsletter Story Harvester adapters, immutable source custody, dependency proposals, tag inventory, receipts, and source-aware canonical backup/restore; 16 tests and the production Site build pass.

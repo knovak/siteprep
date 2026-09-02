@@ -5,6 +5,7 @@ import {
   Boxes,
   CheckCircle2,
   DatabaseBackup,
+  FileJson2,
   FileUp,
   FolderPlus,
   LogOut,
@@ -19,10 +20,27 @@ import {
   createCollectionAction,
   restoreBackupAction,
   selectCollectionAction,
+  commitHarvestAction,
+  previewHarvestAction,
 } from './actions';
 import { buttonVariants } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AccessError, adminCollectionPreview, authorizeUser, currentSelection, listAuthorizedUsers, listBackups, listCollections } from '@/lib/site-repository';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  AccessError,
+  adminCollectionPreview,
+  authorizeUser,
+  currentSelection,
+  harvestCounts,
+  listAuthorizedUsers,
+  listBackups,
+  listCollections,
+  listHarvestPreviews,
+  listHarvestReceipts,
+  listHarvestSources,
+  tagInventory,
+} from '@/lib/site-repository';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,7 +113,7 @@ function NotAuthorized({email, code}: {email: string; code: string}) {
   return <main className="paper-grid min-h-screen bg-background px-5 py-10 text-foreground"><div className="mx-auto max-w-3xl"><Brand /><Card className="mt-16"><CardHeader><CardTitle>Signed in, but not authorized</CardTitle><CardDescription>{email} is not on this Site&apos;s application allowlist.</CardDescription></CardHeader><CardContent><p className="rounded-lg bg-muted p-4 font-mono text-xs text-muted-foreground">{code}</p><a href={chatGPTSignOutPath('/')} target="_top" className={buttonVariants({variant: 'outline', className: 'mt-5'})}><LogOut /> Sign out</a></CardContent></Card></div></main>;
 }
 
-export default async function Home({searchParams}: {searchParams: Promise<{notice?: string}>}) {
+export default async function Home({searchParams}: {searchParams: Promise<{notice?: string; tag?: string}>}) {
   const user = await getChatGPTUser();
   if (!user) return <PublicGate />;
   let context;
@@ -107,9 +125,20 @@ export default async function Home({searchParams}: {searchParams: Promise<{notic
   const selection = await currentSelection(context);
   const current = selection.collection;
   const backups = current ? await listBackups(context, current.id) : [];
+  const [counts, sources, inventory, previews, harvestReceipts] = current ? await Promise.all([
+    harvestCounts(context, current.id),
+    listHarvestSources(context, current.id),
+    tagInventory(context, current.id),
+    listHarvestPreviews(context, current.id),
+    listHarvestReceipts(context, current.id),
+  ]) : [{sources: 0, tags: 0, receipts: 0}, [], [], [], []];
   const authorizedUsers = context.role === 'admin' ? await listAuthorizedUsers(context) : [];
   const adminCollections = context.role === 'admin' ? await adminCollectionPreview(context) : [];
-  const {notice} = await searchParams;
+  const {notice, tag} = await searchParams;
+  const normalizedTagFilter = String(tag ?? '').trim().toLocaleLowerCase('en-US');
+  const visibleInventory = normalizedTagFilter
+    ? inventory.filter((item: any) => String(item.label).toLocaleLowerCase('en-US').includes(normalizedTagFilter) || String(item.tag_key).includes(normalizedTagFilter))
+    : inventory;
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -133,15 +162,48 @@ export default async function Home({searchParams}: {searchParams: Promise<{notic
           </CardContent></Card>
 
           {current ? <>
-            <div className="grid gap-3 sm:grid-cols-4">{[['Sources','0'],['Topics','0'],['Tags','0'],['Accepted receipts',String(backups.length + 1)]].map(([label,value]) => <Card key={label} size="sm"><CardContent><p className="text-2xl font-semibold">{value}</p><p className="mt-1 text-xs text-muted-foreground">{label}</p></CardContent></Card>)}</div>
-            <Card><CardHeader><CardTitle>Empty Harvest queue</CardTitle><CardDescription>Import and export already use the portable custody boundary; source intake arrives in Phase 2.</CardDescription></CardHeader><CardContent className="grid gap-5 lg:grid-cols-2">
-              <div className="rounded-xl border border-border p-4"><DatabaseBackup className="size-5 text-accent-foreground" /><h2 className="mt-3 font-semibold">Current-collection backup</h2><p className="mt-1 text-sm text-muted-foreground">Creates a private R2 package containing collection, actor, configuration, activities, and receipts.</p><form action={createBackupAction} className="mt-4"><input type="hidden" name="collectionId" value={current.id} /><button className={buttonVariants({variant:'outline'})}>Create backup</button></form></div>
-              <div className="rounded-xl border border-border p-4"><FileUp className="size-5 text-accent-foreground" /><h2 className="mt-3 font-semibold">Restore verified empty backup</h2><p className="mt-1 text-sm text-muted-foreground">A restore is collection-scoped and idempotent; another user&apos;s ids remain invisible.</p>{backups.length ? <form action={restoreBackupAction} className="mt-4 flex gap-2"><input type="hidden" name="collectionId" value={current.id} /><select name="backupId" className="h-8 min-w-0 rounded-lg border border-input bg-card px-2 text-sm">{backups.map((backup: any) => <option key={backup.id} value={backup.id}>{backup.created_at}</option>)}</select><button className={buttonVariants({variant:'outline'})}>Restore</button></form> : <p className="mt-4 text-sm text-muted-foreground">No backup yet.</p>}</div>
+            <div className="grid gap-3 sm:grid-cols-4">{[['Sources',String(counts.sources)],['Topics','0'],['Tags',String(counts.tags)],['Harvest receipts',String(counts.receipts)]].map(([label,value]) => <Card key={label} size="sm"><CardContent><p className="text-2xl font-semibold">{value}</p><p className="mt-1 text-xs text-muted-foreground">{label}</p></CardContent></Card>)}</div>
+
+            <Card><CardHeader><CardTitle>Preview source intake</CardTitle><CardDescription>Every route validates into a collection-pinned preview. Only the separate commit writes source versions, tags, activity, and a receipt.</CardDescription></CardHeader><CardContent className="grid gap-5 xl:grid-cols-2">
+              <form action={previewHarvestAction} className="space-y-3 rounded-xl border border-border p-4">
+                <input type="hidden" name="collectionId" value={current.id} />
+                <div className="flex items-center justify-between"><h2 className="font-semibold">Direct or browser-saved source</h2><FileUp className="size-4 text-accent-foreground" /></div>
+                <label className="block text-xs font-medium">Intake route<select name="kind" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-2 text-sm"><option value="direct">Direct intake</option><option value="browser-saved">Browser-saved intake</option></select></label>
+                <label className="block text-xs font-medium">Source URL<input name="url" type="url" required placeholder="https://example.org/report" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-3 text-sm" /></label>
+                <label className="block text-xs font-medium">Title<input name="title" required maxLength={300} placeholder="Source title" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-3 text-sm" /></label>
+                <label className="block text-xs font-medium">Optional retained text<textarea name="body" rows={3} placeholder="Leave blank for metadata-only intake" className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm" /></label>
+                <div className="grid gap-3 sm:grid-cols-2"><label className="block text-xs font-medium">Text status<select name="bodyForm" defaultValue="quoted" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-2 text-sm"><option value="quoted">Quoted source text</option><option value="summary">Contributor summary</option><option value="retained">Retained source body</option></select></label><label className="block text-xs font-medium">Contributor<input name="contributor" placeholder="Name or system" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-3 text-sm" /></label></div>
+                <label className="block text-xs font-medium">Captured at<input name="capturedAt" type="datetime-local" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-3 text-sm" /></label>
+                <div className="grid gap-3 sm:grid-cols-2"><label className="block text-xs font-medium">Rights<select name="rightsState" defaultValue="unknown" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-2 text-sm"><option value="cleared">Cleared</option><option value="metadata-only">Metadata only</option><option value="restricted">Restricted</option><option value="unknown">Unknown</option></select></label><label className="block text-xs font-medium">Capture<select name="captureState" defaultValue="metadata-only" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-2 text-sm"><option value="complete">Complete</option><option value="metadata-only">Metadata only</option><option value="missing">Missing</option><option value="restricted">Restricted</option></select></label></div>
+                <label className="block text-xs font-medium">Accepted tags<input name="tags" placeholder="heat, community" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-3 text-sm" /></label>
+                <button className={buttonVariants({variant:'outline'})}>Create preview</button>
+              </form>
+              <form action={previewHarvestAction} className="space-y-3 rounded-xl border border-border p-4">
+                <input type="hidden" name="collectionId" value={current.id} />
+                <div className="flex items-center justify-between"><h2 className="font-semibold">Native collection adapter</h2><FileJson2 className="size-4 text-accent-foreground" /></div>
+                <label className="block text-xs font-medium">Format<select name="kind" className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-2 text-sm"><option value="bookmark-sorter">Bookmark Sorter v1</option><option value="newsletter-story-harvester">Newsletter Story Harvester store v1</option></select></label>
+                <label className="block text-xs font-medium">Recorded JSON<textarea name="nativePayload" required rows={10} spellCheck={false} placeholder={'{"format":"bookmark-sorter/v1","items":[…]}'} className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 font-mono text-xs" /></label>
+                <p className="text-xs leading-5 text-muted-foreground">External verdicts stay attributed external judgements. Missing, restricted, and metadata-only bodies remain explicit.</p>
+                <button className={buttonVariants({variant:'outline'})}>Validate native preview</button>
+              </form>
+            </CardContent></Card>
+
+            {previews.length ? <Card><CardHeader><CardTitle>Ready to commit</CardTitle><CardDescription>These previews still name this collection and selection revision. Switching collections invalidates them.</CardDescription></CardHeader><CardContent className="space-y-3">{previews.map((preview: any) => <div key={preview.id} className="flex flex-col gap-3 rounded-xl border border-border p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-medium">{preview.kind} · {preview.counts.sources} source{preview.counts.sources === 1 ? '' : 's'}</p><p className="mt-1 text-xs text-muted-foreground">{preview.counts.tags} tags · {preview.counts.withBodies} retained bodies · {preview.counts.unknownRights} unknown rights · {preview.counts.dependencyProposals} dependency proposals · {preview.counts.nativeActivities} recorded runs</p>{preview.findings.map((item: any) => <p key={`${item.code}:${item.path}`} className="mt-1 text-xs text-amber-700">{item.code}: {item.message}</p>)}</div><form action={commitHarvestAction}><input type="hidden" name="collectionId" value={current.id} /><input type="hidden" name="previewId" value={preview.id} /><button className={buttonVariants()}>Commit with receipt</button></form></div>)}</CardContent></Card> : null}
+
+            <Card><CardHeader><CardTitle>Accepted sources</CardTitle><CardDescription>Current immutable versions in the selected collection. External judgements stay attributed and never become pipeline decisions.</CardDescription></CardHeader><CardContent>{sources.length ? <Table><TableHeader><TableRow><TableHead>Source</TableHead><TableHead>Intake</TableHead><TableHead>Custody</TableHead><TableHead>Tags</TableHead></TableRow></TableHeader><TableBody>{sources.map((source: any) => <TableRow key={source.id}><TableCell className="max-w-[360px] whitespace-normal"><p className="font-medium">{source.title}</p>{source.url ? <a href={source.url} className="mt-1 block truncate text-xs text-muted-foreground underline underline-offset-2">{source.url}</a> : <p className="mt-1 text-xs text-muted-foreground">Native record without a URL</p>}{source.externalJudgement ? <p className="mt-1 text-xs text-muted-foreground">External {source.externalJudgement.system}: {source.externalJudgement.verdict}</p> : null}</TableCell><TableCell><Badge variant="outline">{source.source_kind}</Badge></TableCell><TableCell className="space-x-1"><Badge variant={source.rights_state === 'cleared' ? 'secondary' : 'outline'}>{source.rights_state}</Badge><Badge variant="outline">{source.capture_state}</Badge><Badge variant="outline">{source.body_state}</Badge></TableCell><TableCell className="max-w-[260px] whitespace-normal">{source.tags.length ? source.tags.filter((item: any) => !item.archived_at).map((item: any) => <Badge key={`${item.label}:${item.status}`} variant={item.status === 'accepted' ? 'secondary' : 'outline'} className="mr-1 mb-1">{item.label}</Badge>) : <span className="text-xs text-muted-foreground">No tags</span>}</TableCell></TableRow>)}</TableBody></Table> : <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No accepted sources yet. Create and review a preview above.</p>}</CardContent></Card>
+
+            <Card><CardHeader><CardTitle>Tag inventory</CardTitle><CardDescription>Measurements stay separated by accepted/proposed, vocabulary status, active/archived, type, and pipeline stage.</CardDescription></CardHeader><CardContent><form method="get" className="mb-4 flex max-w-sm gap-2"><label className="sr-only" htmlFor="tag-filter">Filter tags</label><input id="tag-filter" name="tag" defaultValue={tag} placeholder="Filter tags" className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-3 text-sm" /><button className={buttonVariants({variant:'outline'})}>Filter</button></form>{inventory.length ? visibleInventory.length ? <Table><TableHeader><TableRow><TableHead>Tag</TableHead><TableHead>Status</TableHead><TableHead>Vocabulary</TableHead><TableHead>Type</TableHead><TableHead>Stage</TableHead><TableHead>Sources</TableHead><TableHead>Active / archived</TableHead></TableRow></TableHeader><TableBody>{visibleInventory.map((item: any) => <TableRow key={`${item.tag_key}:${item.status}:${item.type}:${item.stage}`}><TableCell className="font-medium">{item.label}</TableCell><TableCell>{item.status}</TableCell><TableCell>{item.vocabulary_status}</TableCell><TableCell>{item.type}</TableCell><TableCell>{item.stage}</TableCell><TableCell>{item.sources} · {Number(item.percentage).toFixed(1)}%</TableCell><TableCell>{item.active} / {item.archived}</TableCell></TableRow>)}</TableBody></Table> : <p className="text-sm text-muted-foreground">No tags match this filter.</p> : <p className="text-sm text-muted-foreground">The inventory will appear after the first accepted tagged source.</p>}</CardContent></Card>
+
+            <Card><CardHeader><CardTitle>Harvest receipts</CardTitle><CardDescription>The stage shows the same durable receipts used by collection administration.</CardDescription></CardHeader><CardContent>{harvestReceipts.length ? <Table><TableHeader><TableRow><TableHead>Created</TableHead><TableHead>Intake</TableHead><TableHead>Sources</TableHead><TableHead>Result</TableHead></TableRow></TableHeader><TableBody>{harvestReceipts.map((receipt: any) => <TableRow key={receipt.id}><TableCell>{receipt.created_at}</TableCell><TableCell>{receipt.activity.kind}</TableCell><TableCell>{receipt.activity.sources}</TableCell><TableCell>{receipt.result.created} created · {receipt.result.updated} updated</TableCell></TableRow>)}</TableBody></Table> : <p className="text-sm text-muted-foreground">No accepted Harvest receipt yet.</p>}</CardContent></Card>
+
+            <Card><CardHeader><CardTitle>Portable collection custody</CardTitle><CardDescription>Harvest import and export use the same canonical collection package boundary as administration.</CardDescription></CardHeader><CardContent className="grid gap-5 lg:grid-cols-2">
+              <div className="rounded-xl border border-border p-4"><DatabaseBackup className="size-5 text-accent-foreground" /><h2 className="mt-3 font-semibold">Current-collection backup</h2><p className="mt-1 text-sm text-muted-foreground">Creates a private R2 package containing source versions, aliases, tags, dependency proposals, activities, and receipts.</p><form action={createBackupAction} className="mt-4"><input type="hidden" name="collectionId" value={current.id} /><button className={buttonVariants({variant:'outline'})}>Create backup</button></form></div>
+              <div className="rounded-xl border border-border p-4"><FileUp className="size-5 text-accent-foreground" /><h2 className="mt-3 font-semibold">Restore verified backup</h2><p className="mt-1 text-sm text-muted-foreground">Checks package scope and source hashes before an idempotent collection-scoped restore.</p>{backups.length ? <form action={restoreBackupAction} className="mt-4 flex gap-2"><input type="hidden" name="collectionId" value={current.id} /><select name="backupId" className="h-8 min-w-0 rounded-lg border border-input bg-card px-2 text-sm">{backups.map((backup: any) => <option key={backup.id} value={backup.id}>{backup.created_at}</option>)}</select><button className={buttonVariants({variant:'outline'})}>Restore</button></form> : <p className="mt-4 text-sm text-muted-foreground">No backup yet.</p>}</div>
             </CardContent></Card>
             <div className="flex justify-end"><a href={`/collections/${encodeURIComponent(current.id)}/erase`} className={buttonVariants({variant:'destructive'})}>Erase collection…</a></div>
           </> : null}
 
-          {context.role === 'admin' ? <Card><CardHeader><CardTitle className="flex items-center gap-2"><Users className="size-4" /> Administration</CardTitle><CardDescription>User routes never expose this cross-collection scope. This preview names every affected collection.</CardDescription></CardHeader><CardContent className="space-y-5"><form action={addAuthorizedUserAction} className="grid gap-2 sm:grid-cols-[1fr_120px_auto]"><input name="email" type="email" required placeholder="curator@example.com" className="h-8 rounded-lg border border-input bg-card px-3 text-sm" /><select name="role" className="h-8 rounded-lg border border-input bg-card px-2 text-sm"><option value="user">User</option><option value="admin">Admin</option></select><button className={buttonVariants()}>Add to allowlist</button></form><div className="grid gap-4 md:grid-cols-2"><div><h2 className="text-sm font-semibold">Authorized identities</h2><ul className="mt-2 space-y-2 text-sm text-muted-foreground">{authorizedUsers.map((record: any) => <li key={record.id}>{record.normalized_email} · {record.role}{record.site_user_id ? ' · linked' : ' · awaiting first sign-in'}</li>)}</ul></div><div><h2 className="text-sm font-semibold">Cross-collection preview</h2><ul className="mt-2 space-y-2 text-sm text-muted-foreground">{adminCollections.length ? adminCollections.map((record: any) => <li key={record.id}>{record.name} · {record.owner_email} · {record.state}</li>) : <li>No collections.</li>}</ul></div></div></CardContent></Card> : null}
+          {context.role === 'admin' ? <Card><CardHeader><CardTitle className="flex items-center gap-2"><Users className="size-4" /> Administration</CardTitle><CardDescription>User routes never expose this cross-collection scope. This preview names every affected collection.</CardDescription></CardHeader><CardContent className="space-y-5"><form action={addAuthorizedUserAction} className="grid gap-2 sm:grid-cols-[1fr_120px_auto]"><input name="email" type="email" required placeholder="curator@example.com" className="h-8 rounded-lg border border-input bg-card px-3 text-sm" /><select name="role" className="h-8 rounded-lg border border-input bg-card px-2 text-sm"><option value="user">User</option><option value="admin">Admin</option></select><button className={buttonVariants()}>Add to allowlist</button></form><div className="grid gap-4 md:grid-cols-3"><div><h2 className="text-sm font-semibold">Authorized identities</h2><ul className="mt-2 space-y-2 text-sm text-muted-foreground">{authorizedUsers.map((record: any) => <li key={record.id}>{record.normalized_email} · {record.role}{record.site_user_id ? ' · linked' : ' · awaiting first sign-in'}</li>)}</ul></div><div><h2 className="text-sm font-semibold">Cross-collection preview</h2><ul className="mt-2 space-y-2 text-sm text-muted-foreground">{adminCollections.length ? adminCollections.map((record: any) => <li key={record.id}>{record.name} · {record.owner_email} · {record.state}</li>) : <li>No collections.</li>}</ul></div><div><h2 className="text-sm font-semibold">Selected collection receipts</h2><p className="mt-2 text-sm text-muted-foreground">{current ? `${harvestReceipts.length} recent Harvest receipt${harvestReceipts.length === 1 ? '' : 's'} shown above.` : 'Select a collection to inspect its receipts.'}</p></div></div></CardContent></Card> : null}
         </section>
       </div>
     </main>

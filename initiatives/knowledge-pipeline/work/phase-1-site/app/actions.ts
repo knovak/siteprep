@@ -10,8 +10,10 @@ import {
   authorizeUser,
   createCollection,
   createCurrentBackup,
+  commitHarvest,
   previewErase,
-  restoreEmptyBackup,
+  previewHarvest,
+  restoreCollectionBackup,
   selectCollection,
   tombstoneAndErase,
 } from '@/lib/site-repository';
@@ -54,7 +56,7 @@ export async function createBackupAction(formData: FormData) {
 
 export async function restoreBackupAction(formData: FormData) {
   try {
-    await restoreEmptyBackup(await context(), value(formData, 'collectionId'), value(formData, 'backupId'));
+    await restoreCollectionBackup(await context(), value(formData, 'collectionId'), value(formData, 'backupId'));
     revalidatePath('/');
   } catch (error) { failure(error); }
 }
@@ -79,6 +81,36 @@ export async function addAuthorizedUserAction(formData: FormData) {
   try {
     const role = value(formData, 'role') === 'admin' ? 'admin' : 'user';
     await addAuthorizedUser(await context(), value(formData, 'email'), role);
+    revalidatePath('/');
+  } catch (error) { failure(error); }
+}
+
+export async function previewHarvestAction(formData: FormData) {
+  try {
+    const kind = value(formData, 'kind');
+    const collectionId = value(formData, 'collectionId');
+    const payload = kind === 'direct' || kind === 'browser-saved'
+      ? {
+          url: value(formData, 'url'),
+          title: value(formData, 'title'),
+          body: value(formData, 'body') || null,
+          bodyForm: value(formData, 'bodyForm'),
+          capturedAt: value(formData, 'capturedAt') || null,
+          contributor: value(formData, 'contributor') || null,
+          rightsState: value(formData, 'rightsState'),
+          captureState: value(formData, 'captureState'),
+          tags: value(formData, 'tags').split(',').map((item) => item.trim()).filter(Boolean),
+          savedFrom: kind === 'browser-saved' ? 'browser' : null,
+        }
+      : JSON.parse(value(formData, 'nativePayload'));
+    await previewHarvest(await context(), collectionId, kind, payload);
+    revalidatePath('/');
+  } catch (error) { failure(error); }
+}
+
+export async function commitHarvestAction(formData: FormData) {
+  try {
+    await commitHarvest(await context(), value(formData, 'collectionId'), value(formData, 'previewId'));
     revalidatePath('/');
   } catch (error) { failure(error); }
 }

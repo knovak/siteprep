@@ -129,8 +129,101 @@ export const importPreview = sqliteTable(
     selectionRevision: integer('selection_revision').notNull(),
     collectionRevision: integer('collection_revision').notNull(),
     packageHash: text('package_hash').notNull(),
+    intakeKind: text('intake_kind'),
+    operationsJson: text('operations_json'),
+    findingsJson: text('findings_json'),
     state: text('state', { enum: ['pending', 'committed', 'invalidated'] }).notNull(),
     createdAt: text('created_at').notNull(),
   },
   (table) => [index('idx_import_preview_actor_state').on(table.actorId, table.state)],
+);
+
+export const sourceRecord = sqliteTable(
+  'source_record',
+  {
+    id: text('id').primaryKey(),
+    collectionId: text('collection_id').notNull(),
+    canonicalKey: text('canonical_key').notNull(),
+    currentVersionId: text('current_version_id'),
+    state: text('state', { enum: ['active', 'archived'] }).notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_source_collection_key').on(table.collectionId, table.canonicalKey),
+    index('idx_source_collection_state').on(table.collectionId, table.state),
+  ],
+);
+
+export const sourceVersion = sqliteTable(
+  'source_version',
+  {
+    id: text('id').primaryKey(),
+    sourceId: text('source_id').notNull(),
+    contentHash: text('content_hash').notNull(),
+    title: text('title').notNull(),
+    url: text('url'),
+    sourceKind: text('source_kind').notNull(),
+    bodyState: text('body_state').notNull(),
+    rightsState: text('rights_state').notNull(),
+    captureState: text('capture_state').notNull(),
+    sourceUpdatedAt: text('source_updated_at'),
+    contentJson: text('content_json').notNull(),
+    createdByActorId: text('created_by_actor_id').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_source_version_hash').on(table.sourceId, table.contentHash),
+    index('idx_source_version_created').on(table.sourceId, table.createdAt),
+  ],
+);
+
+export const externalAlias = sqliteTable(
+  'external_alias',
+  {
+    collectionId: text('collection_id').notNull(),
+    sourceId: text('source_id').notNull(),
+    namespace: text('namespace').notNull(),
+    aliasKey: text('alias_key').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_external_alias_identity').on(table.collectionId, table.namespace, table.aliasKey),
+    index('idx_external_alias_source').on(table.sourceId),
+  ],
+);
+
+export const sourceTag = sqliteTable(
+  'source_tag',
+  {
+    sourceId: text('source_id').notNull(),
+    label: text('label').notNull(),
+    tagKey: text('tag_key').notNull(),
+    status: text('status', { enum: ['accepted', 'proposed'] }).notNull(),
+    type: text('type').notNull(),
+    stage: text('stage').notNull(),
+    createdAt: text('created_at').notNull(),
+    archivedAt: text('archived_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_source_tag_identity').on(table.sourceId, table.tagKey, table.status, table.stage),
+    index('idx_source_tag_inventory').on(table.tagKey, table.status, table.stage, table.archivedAt),
+  ],
+);
+
+export const dependencyProposal = sqliteTable(
+  'dependency_proposal',
+  {
+    id: text('id').primaryKey(),
+    collectionId: text('collection_id').notNull(),
+    sourceId: text('source_id').notNull(),
+    relationType: text('relation_type').notNull(),
+    targetNamespace: text('target_namespace').notNull(),
+    targetKey: text('target_key').notNull(),
+    state: text('state', { enum: ['proposed', 'accepted', 'rejected'] }).notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_dependency_proposal_identity').on(table.sourceId, table.relationType, table.targetNamespace, table.targetKey),
+    index('idx_dependency_proposal_collection_state').on(table.collectionId, table.state),
+  ],
 );
