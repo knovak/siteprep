@@ -177,6 +177,8 @@
 <p>Added a distinct <code>tag-remove</code> action to the memory and D1 stores, migrations, sitting report, and Undo path. A removal records only tags actually present on each item, and Undo restores exactly those tags without disturbing unrelated tags. Updated the user and technical documentation plus API, storage, migration, and browser coverage.</p>
 <p>Refined the same control before review: renamed the top-level panel <strong>Select and tag</strong>, made Tag/Untag use the chooser controls&#39; black-on-white empty state and white-on-blue ready state, and moved <code>err:</code> Automatic proposals out of Tag into a dedicated Errors section after Verdict. Errors now include each exact error plus <strong>any error</strong> for <code>err:*</code>. Added a Full documentation link to Help and recorded the Safari and Chrome synced-tab import workflows in the user README.</p>
 <p>Fixed the generated-page tag parser after live testing showed <code>test-tag</code> becoming <code>te</code> and <code>t-tag</code>. The outer HTML template had consumed the whitespace regex&#39;s backslash, leaving the browser to split on the letter <code>s</code>. Escaped the backslash for the generated script and added exact browser and rendered-page regression coverage for the hyphenated tag.</p>
+<h3>2026-09-02 — Add the operator runbook</h3>
+<p>Added a concise operator runbook for the existing public-entry, private-data deployment. It records the access, backup, smoke-test, merge-recovery, capture, and incident boundaries an administrator must preserve without exposing bookmark content or treating a Sites version replacement as a database backup.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
