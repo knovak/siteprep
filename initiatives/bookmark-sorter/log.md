@@ -460,3 +460,7 @@ Added a concise operator runbook for the existing public-entry, private-data
 deployment. It records the access, backup, smoke-test, merge-recovery, capture,
 and incident boundaries an administrator must preserve without exposing
 bookmark content or treating a Sites version replacement as a database backup.
+
+## 2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Proposed five optional refinements with expected value, likely size, privacy boundaries, and evidence: honest metadata fallback cards, a private usage-evidence summary, saved-text selection, a file-based open-tabs bridge, and named private collection collaborators.
