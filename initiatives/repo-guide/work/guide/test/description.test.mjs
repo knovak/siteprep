@@ -9,7 +9,7 @@ import {generateDescription} from '../build/description.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../..');
 
-test('description generation writes ten ordered, attributed sections and metrics', async () => {
+test('description generation writes fourteen ordered sections and metrics', async () => {
   const outputPath = join(mkdtempSync(join(tmpdir(), 'repo-guide-')), 'description.html');
   const report = await generateDescription({
     root,
@@ -20,20 +20,22 @@ test('description generation writes ten ordered, attributed sections and metrics
   });
   const html = readFileSync(outputPath, 'utf8');
 
-  assert.equal(report.sections, 10);
-  assert.equal(report.metrics.length, 10);
+  assert.equal(report.sections, 14);
+  assert.equal(report.metrics.length, 14);
   assert.ok(report.metrics.every(row => row.composed_words > 0));
   assert.ok(report.metrics.reduce((sum, row) => sum + row.resolved_tokens, 0) > 0);
   assert.deepEqual([...html.matchAll(/<section id="([^"]+)"/g)].map(match => match[1]), [
-    'repository', 'lifecycle', 'supplies', 'sweep', 'person-required', 'decks', 'demos',
-    'deployments', 'portability', 'sources',
+    'repository', 'products', 'start', 'shape', 'plan', 'build', 'supplies',
+    'sweep', 'review', 'decks', 'demos', 'deployments', 'portability', 'sources',
   ]);
   assert.match(html, /data-generated-date="2026-08-18"/);
   assert.match(html, /data-source-sha="abcdef123456"/);
-  assert.match(html, /This is a snapshot of initiatives as of the last revision of this document\./);
-  assert.match(html, /Only if a phase includes an item labelled &quot;work&quot;\./);
+  assert.match(html, /<title>SitePrep Repo Guide<\/title>/);
+  assert.match(html, /This table is a snapshot as of the date in the footer\./);
   assert.match(html, /Current items per run/);
-  assert.doesNotMatch(html, /snapshot, not a backlog|Changing the label|Disagreeing is cheap/);
+  assert.equal([...html.matchAll(/<figure class="figure"/g)].length, 12, 'every figure is placed once');
+  // The prose is second person, with no first-person narrator.
+  assert.doesNotMatch(html, /\bI built\b|\bI work\b|\bHere's the pattern\b/);
   assert.doesNotMatch(html, /[ \t]+$/m);
   assert.doesNotMatch(html, /\{\{/);
 });

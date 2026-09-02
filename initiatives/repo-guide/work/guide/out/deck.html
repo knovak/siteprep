@@ -3,115 +3,120 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How work moves through this repository</title>
+  <title>SitePrep Repo Guide</title>
   <style>
     :root {
-      color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #10182d;
-      --fig-ink: #1d2b47; --fig-muted: #5d6a85; --fig-line: #cbd3e2; --fig-fill: #f0f3fa; --fig-surface: #ffffff;
-      --fig-accent: #3563c4; --fig-accent-soft: #e4ecfb; --fig-accent-ink: #1b3f8f;
-      --fig-warn: #c9871c; --fig-warn-soft: #fdf3e0; --fig-warn-ink: #7d5210;
-      --fig-go: #2f8560; --fig-go-soft: #e4f3ec; --fig-go-ink: #1b5b40;
-      --fig-doc: #e6ebf6; --fig-doc-ink: #46567a;
+      color-scheme: light; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a2233; background: #0f1830;
+      --fig-ink: #1a2233; --fig-muted: #5b6578; --fig-line: #d7dce6; --fig-fill: #f4f6fa; --fig-surface: #ffffff;
+      --fig-accent: #1e4bb8; --fig-accent-soft: #e9effc; --fig-accent-ink: #163a8f;
+      --fig-warn: #c77700; --fig-warn-soft: #fff5e5; --fig-warn-ink: #7a4a00;
+      --fig-go: #2a8c5c; --fig-go-soft: #e6f5ec; --fig-go-ink: #1c5f3f;
+      --fig-doc: #e8ecf4; --fig-doc-ink: #45536f;
     }
     * { box-sizing: border-box; }
-    body { min-width: 320px; min-height: 100vh; margin: 0; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 15% 15%, #2f4d8b 0, #172747 34%, #10182d 72%); }
+    body { min-width: 320px; min-height: 100vh; margin: 0; display: grid; place-items: center; overflow: hidden; background: #0f1830; }
     button { font: inherit; }
     #frame { width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); position: relative; }
-    #deck { position: absolute; inset: 0; overflow: hidden; background: #f5f1e8; box-shadow: 0 28px 80px #0008; }
-    .slide { position: absolute; inset: 0; background: linear-gradient(115deg, #fbf8f1 0 73%, #dfe8ff 73% 100%); }
-    .slide::after { content: ''; position: absolute; right: 0; top: 0; width: 2.2%; height: 100%; background: #ff6a3d; }
+    #deck { position: absolute; inset: 0; overflow: hidden; background: #ffffff; box-shadow: 0 28px 80px #0008; }
+    .slide { position: absolute; inset: 0; background: #ffffff; }
     .slide[hidden] { display: none; }
-    .slide-inner { height: 100%; padding: 7.5% 10% 6.5%; display: flex; flex-direction: column; }
-    .section-label { margin: 0 0 2.4%; color: #49608f; font-size: clamp(11px, 1.25vw, 20px); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    h1 { max-width: 88%; margin: 0; color: #152b56; font-size: clamp(32px, 4.05vw, 65px); line-height: 1.02; letter-spacing: -.045em; text-wrap: balance; }
-    .slide-copy { max-width: 80%; margin-top: 4.2%; color: #2c3446; font-size: clamp(17px, 1.72vw, 28px); line-height: 1.38; }
+    .slide-inner { height: 100%; padding: 0 6.5% 3.6%; display: flex; flex-direction: column; }
+    .slide-bar { display: flex; justify-content: space-between; align-items: center; margin: 0 -7.47% 3.4%; padding: 1.5% 7.47%; background: #163a8f; color: #dfe7ff; font-size: clamp(10px, 1.05vw, 17px); font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .slide-count { font-variant-numeric: tabular-nums; letter-spacing: .04em; opacity: .85; }
+    h1 { max-width: 92%; margin: 0; color: #163a8f; font-size: clamp(28px, 3.6vw, 58px); line-height: 1.06; letter-spacing: -.03em; text-wrap: balance; }
+    .slide-copy { max-width: 84%; margin-top: 3.2%; color: #263047; font-size: clamp(16px, 1.62vw, 27px); line-height: 1.42; }
     .slide-copy p { margin: 0; }
     .slide-copy p + p, .slide-copy ul + p { margin-top: .75em; }
     .slide-copy ul { margin: 0; padding-left: 1.15em; }
-    .slide-copy li + li { margin-top: .35em; }
-    a { color: #214f9d; text-underline-offset: .16em; }
-    code { padding: .08em .28em; border-radius: .22em; color: #823419; background: #ffe2d7; font-size: .88em; }
-    footer { margin-top: auto; padding-top: 2.2%; display: flex; justify-content: space-between; border-top: 1px solid #bfc9db; color: #5b6578; font-size: clamp(10px, .92vw, 15px); letter-spacing: .04em; text-transform: uppercase; }
-    .title-slide { background: linear-gradient(125deg, #132b5c 0 73%, #ff6a3d 73% 100%); }
-    .title-slide::after { display: none; }
-    .title-slide .slide-inner { justify-content: center; padding-right: 18%; }
-    .title-slide .section-label, .title-slide footer { color: #b9c9e9; border-color: #516a9a; }
-    .title-slide h1 { color: white; font-size: clamp(44px, 5.7vw, 91px); }
-    .title-slide .slide-copy { max-width: 70%; color: #e5ebf8; font-size: clamp(19px, 2vw, 32px); }
-    #controls { position: absolute; left: 0; right: 0; bottom: 1.5%; z-index: 3; display: flex; justify-content: center; align-items: center; gap: 1.1em; color: #556177; font-size: clamp(10px, .9vw, 14px); }
+    .slide-copy li + li { margin-top: .4em; }
+    a { color: #1e4bb8; text-underline-offset: .16em; }
+    code { padding: .06em .3em; border-radius: .22em; color: #163a8f; background: #e9effc; font-size: .9em; }
+    footer { margin-top: auto; padding-top: 1.8%; display: flex; justify-content: space-between; border-top: 1px solid #d7dce6; color: #5b6578; font-size: clamp(9px, .85vw, 14px); letter-spacing: .04em; text-transform: uppercase; }
+    /* The title slide is the one dark slide. */
+    .title-slide { background: linear-gradient(135deg, #0f1f4d, #163a8f 70%, #1e4bb8); }
+    .title-slide .slide-bar { background: transparent; color: #b7c6f2; }
+    .title-slide .slide-inner { justify-content: center; }
+    .title-slide h1 { max-width: 80%; color: #ffffff; font-size: clamp(42px, 6vw, 96px); }
+    .title-slide .slide-copy { max-width: 68%; color: #dfe7ff; font-size: clamp(17px, 1.85vw, 30px); }
+    .title-slide footer { border-color: #3a56a5; color: #b7c6f2; }
+    #controls { position: absolute; left: 0; right: 0; bottom: 1.2%; z-index: 3; display: flex; justify-content: center; align-items: center; gap: 1.1em; color: #5b6578; font-size: clamp(10px, .9vw, 14px); }
     #controls button { border: 0; padding: .2em .5em; color: inherit; background: transparent; font-size: clamp(22px, 2vw, 32px); font-weight: 850; line-height: .75; cursor: pointer; }
     #controls button:disabled { opacity: .3; cursor: default; }
     #progress { min-width: 5em; text-align: center; font-variant-numeric: tabular-nums; }
-    #frame:has(.title-slide:not([hidden])) #controls { color: #f7f9ff; text-shadow: 0 1px 7px #000c; }
-    #frame:has(.title-slide:not([hidden])) #controls button:disabled { opacity: .58; }
-    @media (max-aspect-ratio: 4/3) { .slide-copy { max-width: 88%; } h1 { max-width: 92%; } }
+    #frame:has(.title-slide:not([hidden])) #controls { color: #eef2ff; text-shadow: 0 1px 6px #0009; }
+    #frame:has(.title-slide:not([hidden])) #controls button:disabled { opacity: .5; }
+    @media (max-aspect-ratio: 4/3) { .slide-copy { max-width: 92%; } h1 { max-width: 96%; } }
 
     /* Layout variants. A slide's shape follows what it carries. */
-    /* A figure needs the whole stage: the decorative wedge is dropped so a
-       diagram is never cut across by it. */
-    .slide[data-layout="figure"] { background: #fbf8f1; }
-    .slide[data-layout="figure"]::after { background: #3563c4; }
-    .slide[data-layout="figure"] .slide-inner { padding: 4.6% 6% 4.6%; }
-    .slide[data-layout="figure"] h1 { max-width: 86%; font-size: clamp(25px, 3vw, 47px); }
-    .slide[data-layout="figure"] .slide-copy { max-width: 100%; margin-top: 2%; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 2%; font-size: clamp(13px, 1.32vw, 21px); }
-    .slide[data-layout="figure"] .figure { margin: 0; min-height: 0; }
+    .slide[data-layout="figure"] .slide-bar { margin-bottom: 2.2%; }
+    .slide[data-layout="figure"] h1 { font-size: clamp(24px, 2.9vw, 46px); }
+    .slide[data-layout="figure"] .slide-copy { max-width: 100%; margin-top: 1.6%; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 1.6%; font-size: clamp(13px, 1.25vw, 20px); }
+    .slide[data-layout="figure"] .figure { margin: 0; flex: 1; min-height: 0; display: flex; align-items: center; }
     .slide[data-layout="figure"] .figure-svg { max-width: 100%; max-height: 100%; }
-    .slide[data-layout="figure"] p { max-width: 80%; margin: 0; }
-    .slide[data-layout="data"] { background: linear-gradient(160deg, #fbf8f1 0 58%, #eef3ff 100%); }
-    .slide[data-layout="data"] .slide-inner { padding: 5.6% 7.5% 5%; }
-    .slide[data-layout="data"] h1 { max-width: 82%; font-size: clamp(28px, 3.5vw, 55px); }
-    .slide[data-layout="data"] .slide-copy { max-width: 100%; margin-top: 3%; font-size: clamp(15px, 1.5vw, 24px); }
-    .slide[data-layout="data"] .fact-block { margin: 3% 0 0; }
-    .slide[data-layout="data"] p + .fact-block { margin-top: 2.4%; }
-    .slide[data-layout="statement"] .slide-copy { max-width: 74%; }
+    .slide[data-layout="figure"] p { max-width: 86%; margin: 0; }
+    .slide[data-layout="data"] h1 { font-size: clamp(26px, 3.2vw, 50px); }
+    .slide[data-layout="data"] .slide-copy { max-width: 100%; margin-top: 2.4%; font-size: clamp(14px, 1.42vw, 23px); overflow: hidden; }
+    .slide[data-layout="data"] .fact-block { margin: 2.4% 0 0; }
+    .slide[data-layout="statement"] .slide-copy { max-width: 80%; margin-top: 4%; font-size: clamp(19px, 2.05vw, 33px); line-height: 1.45; }
     /* A slide is a fixed frame. However long a description grows in the
        repository, a card clamps rather than pushing the deck off the slide. */
     .slide-copy .fact-cards { grid-template-columns: repeat(auto-fit, minmax(min(200px, 45%), 1fr)); align-content: start; }
     .slide-copy .fact-cards article { overflow: hidden; }
-    .slide-copy .fact-cards p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
-    .slide[data-layout="data"] .slide-copy { overflow: hidden; }
+    .slide-copy .fact-cards p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; }
 
-.figure { margin: 26px 0; }
-.figure-svg { display: block; width: 100%; height: auto; max-width: 720px; margin: 0 auto; overflow: visible; }
+.figure { margin: 28px 0; }
+.figure-svg { display: block; width: 100%; height: auto; max-width: 800px; margin: 0 auto; overflow: visible; font-family: inherit; }
 .figure-svg--wide { max-width: 100%; }
 .fig-chip rect { fill: var(--fig-fill); stroke: var(--fig-line); stroke-width: 1; }
-.fig-chip text { fill: var(--fig-ink); font-size: 13px; font-weight: 750; }
-.fig-chip--stage rect { fill: var(--fig-accent-soft); stroke: var(--fig-accent); }
-.fig-chip--stage text { fill: var(--fig-accent-ink); }
-.fig-chip--quiet rect { fill: none; stroke: var(--fig-line); stroke-dasharray: 4 3; }
-.fig-chip--quiet text { fill: var(--fig-muted); }
-.fig-chip--phase rect { fill: var(--fig-accent-soft); stroke: var(--fig-accent); }
-.fig-chip--phase text { fill: var(--fig-accent-ink); font-size: 13.5px; }
+.fig-chip text { fill: var(--fig-ink); font-size: 13.5px; font-weight: 700; }
+.fig-chip--stage rect, .fig-chip--phase rect { fill: var(--fig-accent); stroke: var(--fig-accent); }
+.fig-chip--stage text, .fig-chip--phase text { fill: #fff; font-size: 14px; }
+.fig-chip--quiet rect { fill: var(--fig-surface); stroke: var(--fig-muted); stroke-dasharray: 4 3; }
+.fig-chip--quiet text { fill: var(--fig-muted); font-size: 14px; }
 .fig-chip--wait rect, .fig-chip--propose rect { fill: var(--fig-warn-soft); stroke: var(--fig-warn); }
-.fig-chip--wait text, .fig-chip--propose text { fill: var(--fig-warn-ink); font-size: 12px; }
-.fig-chip--propose rect { stroke-dasharray: 5 3; }
-.fig-chip--auto rect { fill: var(--fig-go-soft); stroke: var(--fig-go); }
-.fig-chip--auto text { fill: var(--fig-go-ink); font-size: 12px; }
-.fig-chip--path rect { fill: var(--fig-fill); stroke: var(--fig-line); }
-.fig-chip--path text { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; }
+.fig-chip--wait text, .fig-chip--propose text { fill: var(--fig-warn-ink); font-size: 12.5px; }
+.fig-chip--propose rect { stroke-dasharray: 5 3; stroke-width: 1.5; }
+.fig-chip--auto rect, .fig-chip--go rect { fill: var(--fig-go-soft); stroke: var(--fig-go); }
+.fig-chip--auto text, .fig-chip--go text { fill: var(--fig-go-ink); font-size: 12.5px; }
+.fig-chip--path rect { fill: var(--fig-surface); stroke: var(--fig-line); }
+.fig-chip--path text, .fig-chip--doc text { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-weight: 600; }
+.fig-chip--doc rect { fill: var(--fig-doc); stroke: none; }
+.fig-chip--doc text { fill: var(--fig-doc-ink); font-size: 11px; }
 .fig-panel rect { fill: var(--fig-fill); stroke: var(--fig-line); stroke-width: 1; }
-.fig-panel--person rect, .fig-panel--wait rect, .fig-panel--carry rect { fill: var(--fig-warn-soft); stroke: var(--fig-warn); }
-.fig-panel--agent rect, .fig-panel--auto rect { fill: var(--fig-accent-soft); stroke: var(--fig-accent); }
-.fig-panel--carry rect { fill: var(--fig-go-soft); stroke: var(--fig-go); }
-.fig-panel--leave rect { fill: var(--fig-fill); stroke: var(--fig-line); stroke-dasharray: 5 4; }
-.fig-panel--area rect { fill: var(--fig-fill); stroke: var(--fig-line); }
-.fig-text { fill: var(--fig-ink); font-size: 13.5px; }
-.fig-text--eyebrow { fill: var(--fig-muted); font-size: 10.5px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.fig-panel--surface rect { fill: var(--fig-surface); }
+.fig-panel--quiet rect { fill: var(--fig-fill); stroke: var(--fig-line); }
+.fig-panel--area rect { fill: var(--fig-surface); stroke: var(--fig-line); }
+.fig-panel--accent rect, .fig-panel--agent rect, .fig-panel--auto rect { fill: var(--fig-accent-soft); stroke: var(--fig-accent); }
+.fig-panel--person rect, .fig-panel--wait rect { fill: var(--fig-warn-soft); stroke: var(--fig-warn); }
+.fig-panel--go rect, .fig-panel--carry rect { fill: var(--fig-go-soft); stroke: var(--fig-go); }
+.fig-panel--leave rect { fill: var(--fig-surface); stroke: var(--fig-line); stroke-dasharray: 5 4; }
+.fig-text { fill: var(--fig-ink); font-size: 14px; }
+.fig-text--mono { fill: var(--fig-ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600; }
+.fig-text--eyebrow { fill: var(--fig-muted); font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .fig-text--heading { fill: var(--fig-ink); font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
-.fig-text--caption { fill: var(--fig-muted); font-size: 12px; }
-.fig-text--note { fill: var(--fig-muted); font-size: 11.5px; font-style: italic; }
-.fig-text--edge { fill: var(--fig-muted); font-size: 11.5px; font-weight: 750; letter-spacing: .04em; }
+.fig-text--heading-small { fill: var(--fig-ink); font-size: 14px; font-weight: 800; }
+.fig-text--head { fill: var(--fig-accent-ink); font-size: 13px; font-weight: 800; }
+.fig-text--muted-head { fill: var(--fig-muted); font-size: 13px; font-weight: 700; }
+.fig-text--caption { fill: var(--fig-muted); font-size: 12.5px; }
+.fig-text--note { fill: var(--fig-muted); font-size: 12.5px; }
+.fig-text--edge { fill: var(--fig-muted); font-size: 12px; font-weight: 700; letter-spacing: .03em; }
 .fig-doc rect { fill: var(--fig-doc); stroke: none; }
-.fig-doc text { fill: var(--fig-doc-ink); font-size: 10px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-.fig-rail { stroke: var(--fig-line); stroke-width: 2; }
-.fig-arrow { stroke: var(--fig-muted); stroke-width: 1.6; }
+.fig-doc text { fill: var(--fig-doc-ink); font-size: 10.5px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.fig-cell--on { fill: var(--fig-accent); opacity: .85; }
+.fig-cell--rest { fill: var(--fig-accent); opacity: .28; }
+.fig-dash { stroke: var(--fig-line); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.fig-bracket { stroke: var(--fig-muted); stroke-width: 1.5; }
+.fig-arrow { stroke: var(--fig-muted); stroke-width: 1.8; }
 .fig-arrow--person { stroke: var(--fig-warn); }
 .fig-arrow--agent { stroke: var(--fig-accent); }
+.fig-arrow--go { stroke: var(--fig-go); }
 .fig-arrow-head { fill: var(--fig-muted); }
 .fig-dot { fill: var(--fig-muted); }
-.fig-dot--person, .fig-dot--carry { fill: var(--fig-warn); }
-.fig-dot--agent { fill: var(--fig-accent); }
-.fig-slot { fill: var(--fig-accent-soft); stroke: var(--fig-accent); stroke-width: 1; }
+.fig-dot--person, .fig-dot--wait, .fig-dot--carry { fill: var(--fig-warn); }
+.fig-dot--agent, .fig-dot--auto { fill: var(--fig-accent); }
+.fig-dot--carry { fill: var(--fig-go); }
+.fig-dot--go { fill: var(--fig-go); }
+.fig-slot { fill: var(--fig-accent-soft); stroke: var(--fig-accent); stroke-width: 1.2; }
 
 .fact-block { margin: 22px 0; }
 .fact-chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
@@ -149,151 +154,162 @@
 .fact-empty { color: var(--fig-muted); font-style: italic; }
   </style>
 </head>
-<body data-generated-date="2026-08-27" data-source-sha="cec58a422b64">
+<body data-generated-date="2026-09-02" data-source-sha="44f0382ad196">
   <div id="frame">
     <main id="deck" aria-live="polite">
     <article class="slide title-slide" data-index="0" data-section-id="repository" data-audience="both" data-layout="statement"  aria-hidden="false">
       <div class="slide-inner">
-        <p class="section-label">What this repository is</p>
-        <h1>How work moves through this repository</h1>
-        <div class="slide-copy"><p>Work gets started, reviewed, parked, and picked back up here, mostly by agents. This is the tour: what the pieces are, where a person is still required, and which files to open when this deck has gone stale.</p></div>
+        <header class="slide-bar">
+          <span class="section-label">SitePrep Repo Guide</span>
+          <span class="slide-count">1 / 20</span>
+        </header>
+        <h1>SitePrep Repo Guide</h1>
+        <div class="slide-copy"><p>One person&#39;s repository, worked mostly by AI agents. This deck explains how a piece of work starts, moves through a fixed lifecycle, gets reviewed, gets published, and rests until the next version. It&#39;s written for a developer seeing the repository for the first time and deciding whether to use the same process.</p></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
     <article class="slide" data-index="1" data-section-id="repository" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">What this repository is</p>
-        <h1>The process is part of the product</h1>
-        <div class="slide-copy"><p>Three vocabularies, kept apart on purpose. Decks and demos are what gets published. Initiatives are what make unfinished work easy to resume months later.</p>
-<figure class="figure" data-figure="content-areas"><svg class="figure-svg" viewBox="0 0 720 178" width="720" height="178" role="img" aria-label="The three content areas: decks, demos, and initiatives." preserveAspectRatio="xMidYMid meet"><title>The three content areas: decks, demos, and initiatives.</title>
-      <g class="fig-panel fig-panel--area">
-    <rect x="0" y="0" width="226" height="148" rx="14"></rect>
+        <header class="slide-bar">
+          <span class="section-label">What this repository is</span>
+          <span class="slide-count">2 / 20</span>
+        </header>
+        <h1>Three kinds of content, three vocabularies</h1>
+        <div class="slide-copy"><p>Decks are static web content in collections; here they hold travel information. Demos are standalone web examples copied to the site unchanged. Initiatives are where software gets made, and where the process lives.</p>
+<figure class="figure" data-figure="repo-map"><svg class="figure-svg" viewBox="0 0 800 406" width="800" height="406" role="img" aria-label="The repository has three content areas, decks, demos, and initiatives, plus shared machinery, and is published to GitHub Pages." preserveAspectRatio="xMidYMid meet"><title>The repository has three content areas, decks, demos, and initiatives, plus shared machinery, and is published to GitHub Pages.</title><defs><marker id="fig-arrowhead-repo-map" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--area"><rect x="0" y="8" width="248" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="36" text-anchor="start">decks/</text><text class="fig-text fig-text--heading" x="16" y="60" text-anchor="start">Decks</text><text class="fig-text fig-text--body" x="16" y="84" text-anchor="start">Static web content organized</text><text class="fig-text fig-text--body" x="16" y="104" text-anchor="start">into collections. Here, travel</text><text class="fig-text fig-text--body" x="16" y="124" text-anchor="start">information: places, dates,</text><text class="fig-text fig-text--body" x="16" y="144" text-anchor="start">attractions, events, maps.</text><g class="fig-panel fig-panel--area"><rect x="276" y="8" width="248" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="292" y="36" text-anchor="start">demos/</text><text class="fig-text fig-text--heading" x="292" y="60" text-anchor="start">Demos</text><text class="fig-text fig-text--body" x="292" y="84" text-anchor="start">Standalone web examples.</text><text class="fig-text fig-text--body" x="292" y="104" text-anchor="start">Each owns its pages and</text><text class="fig-text fig-text--body" x="292" y="124" text-anchor="start">assets and is copied to the</text><text class="fig-text fig-text--body" x="292" y="144" text-anchor="start">site unchanged.</text><g class="fig-panel fig-panel--accent"><rect x="552" y="8" width="248" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="568" y="36" text-anchor="start">initiatives/</text><text class="fig-text fig-text--heading" x="568" y="60" text-anchor="start">Initiatives</text><text class="fig-text fig-text--body" x="568" y="84" text-anchor="start">Where software gets made.</text><text class="fig-text fig-text--body" x="568" y="104" text-anchor="start">A wish, a record of</text><text class="fig-text fig-text--body" x="568" y="124" text-anchor="start">documents, capability, and</text><text class="fig-text fig-text--body" x="568" y="144" text-anchor="start">pointers to what shipped.</text><g class="fig-panel fig-panel--quiet"><rect x="0" y="196" width="800" height="140" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="16" y="222" text-anchor="start">Machinery, shared by all three</text>
 
-  </g>
-      <text class="fig-text fig-text--heading" x="18" y="34" text-anchor="start">Decks</text>
-      <text class="fig-text fig-text--body" x="18" y="66" text-anchor="start">Published collections of</text><text class="fig-text fig-text--body" x="18" y="86" text-anchor="start">travel pages, built and</text><text class="fig-text fig-text--body" x="18" y="106" text-anchor="start">deployed to the site.</text>
-      <g class="fig-panel fig-panel--area">
-    <rect x="247" y="0" width="226" height="148" rx="14"></rect>
-
-  </g>
-      <text class="fig-text fig-text--heading" x="265" y="34" text-anchor="start">Demos</text>
-      <text class="fig-text fig-text--body" x="265" y="66" text-anchor="start">Standalone examples that own</text><text class="fig-text fig-text--body" x="265" y="86" text-anchor="start">their pages, assets, and</text><text class="fig-text fig-text--body" x="265" y="106" text-anchor="start">prompt history.</text>
-      <g class="fig-panel fig-panel--area">
-    <rect x="494" y="0" width="226" height="148" rx="14"></rect>
-
-  </g>
-      <text class="fig-text fig-text--heading" x="512" y="34" text-anchor="start">Initiatives</text>
-      <text class="fig-text fig-text--body" x="512" y="66" text-anchor="start">Durable units of intent that</text><text class="fig-text fig-text--body" x="512" y="86" text-anchor="start">keep the wish, the reasoning,</text><text class="fig-text fig-text--body" x="512" y="106" text-anchor="start">and the next move.</text><text class="fig-text fig-text--caption" x="0" y="174" text-anchor="start">The working instructions keep the three vocabularies apart on purpose.</text></svg></figure></div>
+      <text class="fig-text fig-text--mono" x="16" y="250" text-anchor="start">scripts/</text>
+      <text class="fig-text fig-text--body" x="190" y="250" text-anchor="start">the build and the lifecycle script</text>
+      <text class="fig-text fig-text--mono" x="16" y="274" text-anchor="start">shared/</text>
+      <text class="fig-text fig-text--body" x="190" y="274" text-anchor="start">opt-in web libraries: maps, galleries, nav</text>
+      <text class="fig-text fig-text--mono" x="16" y="298" text-anchor="start">.claude/skills/</text>
+      <text class="fig-text fig-text--body" x="190" y="298" text-anchor="start">procedures an agent runs by name</text>
+      <text class="fig-text fig-text--mono" x="16" y="322" text-anchor="start">.github/workflows/</text>
+      <text class="fig-text fig-text--body" x="190" y="322" text-anchor="start">build, publish, digest, scope check</text>
+        <line class="fig-arrow fig-arrow--plain" x1="400" y1="338" x2="400" y2="362" marker-end="url(#fig-arrowhead-repo-map)"></line>
+        <g class="fig-chip fig-chip--stage" data-figure-label="Built and published to GitHub Pages">
+    <rect x="230" y="366" width="340" height="32" rx="16"></rect>
+    <text x="400" y="382" dominant-baseline="central" text-anchor="middle">Built and published to GitHub Pages</text>
+  </g></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="2" data-section-id="lifecycle" data-audience="both" data-layout="figure" hidden aria-hidden="true">
+    <article class="slide" data-index="2" data-section-id="products" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">The initiative lifecycle</p>
-        <h1>An initiative keeps intent alive</h1>
-        <div class="slide-copy"><p>Not a project with a deadline. It&#39;s a durable unit of intent, and it can advance, move back when an assumption breaks, or rest until the next version is worth making. Nothing gets deleted on the way through.</p>
-<figure class="figure" data-figure="lifecycle-flow"><svg class="figure-svg figure-svg--wide" viewBox="0 0 791 176" width="791" height="176" role="img" aria-label="The lifecycle in order, with the documents each stage expects: wish, shaped, specified, planned, building, refining, dormant, archived" preserveAspectRatio="xMidYMid meet"><title>The lifecycle in order, with the documents each stage expects: wish, shaped, specified, planned, building, refining, dormant, archived</title><defs><marker id="fig-arrowhead-lifecycle-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-chip fig-chip--stage" data-figure-label="wish">
-    <rect x="4" y="18" width="84" height="30" rx="15"></rect>
-    <text x="46" y="33" dominant-baseline="central" text-anchor="middle">wish</text>
-  </g><line class="fig-rail" x1="88" y1="33" x2="103" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="shaped">
-    <rect x="103" y="18" width="84" height="30" rx="15"></rect>
-    <text x="145" y="33" dominant-baseline="central" text-anchor="middle">shaped</text>
+        <header class="slide-bar">
+          <span class="section-label">What an initiative produces</span>
+          <span class="slide-count">3 / 20</span>
+        </header>
+        <h1>What an initiative leaves behind</h1>
+        <div class="slide-copy"><p>A record of documents that only grows. Capability that stays in the initiative for the next version. Outputs that graduate out: a deck, a demo, a hosted site, or a skill. An initiative with no published output is still an initiative.</p>
+<figure class="figure" data-figure="initiative-products"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 404" width="800" height="404" role="img" aria-label="An initiative accumulates a record of documents (README, Wish, Background, Objectives, Decisions, Specification, Implementation plan, Test plan, Releases, Log, Notes), capability that stays, and work in progress that graduates to decks, demos, or a ChatGPT Site or Demo." preserveAspectRatio="xMidYMid meet"><title>An initiative accumulates a record of documents (README, Wish, Background, Objectives, Decisions, Specification, Implementation plan, Test plan, Releases, Log, Notes), capability that stays, and work in progress that graduates to decks, demos, or a ChatGPT Site or Demo.</title><defs><marker id="fig-arrowhead-initiative-products" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--accent"><rect x="0" y="0" width="530" height="374" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="16" y="26" text-anchor="start">One initiative</text>
+    <text class="fig-text fig-text--mono" x="150" y="26" text-anchor="start">initiatives/&lt;slug&gt;/</text><g class="fig-panel fig-panel--surface"><rect x="16" y="58" width="158" height="300" rx="10"></rect></g>
+      <text class="fig-text fig-text--eyebrow" x="28" y="80" text-anchor="start">Never shrinks</text>
+      <text class="fig-text fig-text--heading" x="28" y="102" text-anchor="start">Record</text>
+      <g class="fig-chip fig-chip--doc" data-figure-label="README">
+    <rect x="28" y="118" width="60" height="22" rx="11"></rect>
+    <text x="58" y="129" dominant-baseline="central" text-anchor="middle">README</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Wish">
+    <rect x="93" y="118" width="46" height="22" rx="11"></rect>
+    <text x="116" y="129" dominant-baseline="central" text-anchor="middle">Wish</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Background">
+    <rect x="28" y="145" width="90" height="22" rx="11"></rect>
+    <text x="73" y="156" dominant-baseline="central" text-anchor="middle">Background</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Objectives">
+    <rect x="28" y="172" width="90" height="22" rx="11"></rect>
+    <text x="73" y="183" dominant-baseline="central" text-anchor="middle">Objectives</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Decisions">
+    <rect x="28" y="199" width="83" height="22" rx="11"></rect>
+    <text x="69.5" y="210" dominant-baseline="central" text-anchor="middle">Decisions</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Specification">
+    <rect x="28" y="226" width="112" height="22" rx="11"></rect>
+    <text x="84" y="237" dominant-baseline="central" text-anchor="middle">Specification</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Implementation plan">
+    <rect x="28" y="253" width="157" height="22" rx="11"></rect>
+    <text x="106.5" y="264" dominant-baseline="central" text-anchor="middle">Implementation plan</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Test plan">
+    <rect x="28" y="280" width="83" height="22" rx="11"></rect>
+    <text x="69.5" y="291" dominant-baseline="central" text-anchor="middle">Test plan</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Releases">
+    <rect x="28" y="307" width="75" height="22" rx="11"></rect>
+    <text x="65.5" y="318" dominant-baseline="central" text-anchor="middle">Releases</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Log">
+    <rect x="108" y="307" width="38" height="22" rx="11"></rect>
+    <text x="127" y="318" dominant-baseline="central" text-anchor="middle">Log</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Notes">
+    <rect x="28" y="334" width="53" height="22" rx="11"></rect>
+    <text x="54.5" y="345" dominant-baseline="central" text-anchor="middle">Notes</text>
+  </g><g class="fig-panel fig-panel--surface"><rect x="186" y="58" width="158" height="300" rx="10"></rect></g>
+      <text class="fig-text fig-text--eyebrow" x="198" y="80" text-anchor="start">Kept for later</text>
+      <text class="fig-text fig-text--heading" x="198" y="102" text-anchor="start">Capability</text>
+      <text class="fig-text fig-text--mono" x="198" y="132" text-anchor="start">lib/</text><text class="fig-text fig-text--mono" x="198" y="156" text-anchor="start">prompts/</text><text class="fig-text fig-text--mono" x="198" y="180" text-anchor="start">scripts</text><g class="fig-panel fig-panel--surface"><rect x="356" y="58" width="158" height="300" rx="10"></rect></g>
+      <text class="fig-text fig-text--eyebrow" x="368" y="80" text-anchor="start">Graduates out</text>
+      <text class="fig-text fig-text--heading" x="368" y="102" text-anchor="start">In progress</text>
+      <text class="fig-text fig-text--body" x="368" y="132" text-anchor="start">work/</text><text class="fig-text fig-text--body" x="368" y="152" text-anchor="start"></text><text class="fig-text fig-text--body" x="368" y="172" text-anchor="start">Not published,</text><text class="fig-text fig-text--body" x="368" y="192" text-anchor="start">and not under</text><text class="fig-text fig-text--body" x="368" y="212" text-anchor="start">deck or demo</text><text class="fig-text fig-text--body" x="368" y="232" text-anchor="start">rules yet.</text><path class="fig-arrow fig-arrow--go" d="M 514 208 C 544 208, 554 20, 584 20" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--go" data-figure-label="decks/">
+    <rect x="590" y="5" width="124" height="28" rx="14"></rect>
+    <text x="652" y="19" dominant-baseline="central" text-anchor="middle">decks/</text>
   </g>
-      <g class="fig-doc">
-        <rect x="103" y="68" width="84" height="14" rx="3"></rect>
-        <text x="145" y="75" dominant-baseline="central" text-anchor="middle">objectives.md</text>
-      </g><line class="fig-rail" x1="187" y1="33" x2="202" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="specified">
-    <rect x="202" y="18" width="90" height="30" rx="15"></rect>
-    <text x="247" y="33" dominant-baseline="central" text-anchor="middle">specified</text>
+      <text class="fig-text fig-text--note" x="590" y="49" text-anchor="start">a deck graduates here</text><path class="fig-arrow fig-arrow--go" d="M 514 208 C 544 208, 554 94, 584 94" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--go" data-figure-label="demos/">
+    <rect x="590" y="79" width="124" height="28" rx="14"></rect>
+    <text x="652" y="93" dominant-baseline="central" text-anchor="middle">demos/</text>
   </g>
-      <g class="fig-doc">
-        <rect x="202" y="68" width="90" height="14" rx="3"></rect>
-        <text x="247" y="75" dominant-baseline="central" text-anchor="middle">objectives.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="202" y="88" width="90" height="14" rx="3"></rect>
-        <text x="247" y="95" dominant-baseline="central" text-anchor="middle">spec.md</text>
-      </g><line class="fig-rail" x1="292" y1="33" x2="307" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="planned">
-    <rect x="307" y="18" width="84" height="30" rx="15"></rect>
-    <text x="349" y="33" dominant-baseline="central" text-anchor="middle">planned</text>
+      <text class="fig-text fig-text--note" x="590" y="123" text-anchor="start">a demo graduates here</text><path class="fig-arrow fig-arrow--go" d="M 514 208 C 544 208, 554 168, 584 168" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--go" data-figure-label="ChatGPT Site">
+    <rect x="590" y="153" width="124" height="28" rx="14"></rect>
+    <text x="652" y="167" dominant-baseline="central" text-anchor="middle">ChatGPT Site</text>
   </g>
-      <g class="fig-doc">
-        <rect x="307" y="68" width="84" height="14" rx="3"></rect>
-        <text x="349" y="75" dominant-baseline="central" text-anchor="middle">objectives.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="307" y="88" width="84" height="14" rx="3"></rect>
-        <text x="349" y="95" dominant-baseline="central" text-anchor="middle">spec.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="307" y="108" width="84" height="14" rx="3"></rect>
-        <text x="349" y="115" dominant-baseline="central" text-anchor="middle">plan.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="307" y="128" width="84" height="14" rx="3"></rect>
-        <text x="349" y="135" dominant-baseline="central" text-anchor="middle">test-plan.md</text>
-      </g><line class="fig-rail" x1="391" y1="33" x2="406" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="building">
-    <rect x="406" y="18" width="84" height="30" rx="15"></rect>
-    <text x="448" y="33" dominant-baseline="central" text-anchor="middle">building</text>
+      <text class="fig-text fig-text--note" x="590" y="197" text-anchor="start">deployed outside the repository</text><path class="fig-arrow fig-arrow--plain" d="M 344 218 C 374 218, 554 242, 584 242" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--path" data-figure-label="shared/">
+    <rect x="590" y="227" width="124" height="28" rx="14"></rect>
+    <text x="652" y="241" dominant-baseline="central" text-anchor="middle">shared/</text>
   </g>
-      <g class="fig-doc">
-        <rect x="406" y="68" width="84" height="14" rx="3"></rect>
-        <text x="448" y="75" dominant-baseline="central" text-anchor="middle">objectives.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="406" y="88" width="84" height="14" rx="3"></rect>
-        <text x="448" y="95" dominant-baseline="central" text-anchor="middle">spec.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="406" y="108" width="84" height="14" rx="3"></rect>
-        <text x="448" y="115" dominant-baseline="central" text-anchor="middle">plan.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="406" y="128" width="84" height="14" rx="3"></rect>
-        <text x="448" y="135" dominant-baseline="central" text-anchor="middle">test-plan.md</text>
-      </g><line class="fig-rail" x1="490" y1="33" x2="505" y2="33"></line><g class="fig-chip fig-chip--stage" data-figure-label="refining">
-    <rect x="505" y="18" width="84" height="30" rx="15"></rect>
-    <text x="547" y="33" dominant-baseline="central" text-anchor="middle">refining</text>
+      <text class="fig-text fig-text--note" x="590" y="271" text-anchor="start">a library used by other work</text><path class="fig-arrow fig-arrow--plain" d="M 344 218 C 374 218, 554 316, 584 316" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--path" data-figure-label=".claude/skills/">
+    <rect x="590" y="301" width="124" height="28" rx="14"></rect>
+    <text x="652" y="315" dominant-baseline="central" text-anchor="middle">.claude/skills/</text>
   </g>
-      <g class="fig-doc">
-        <rect x="505" y="68" width="84" height="14" rx="3"></rect>
-        <text x="547" y="75" dominant-baseline="central" text-anchor="middle">objectives.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="505" y="88" width="84" height="14" rx="3"></rect>
-        <text x="547" y="95" dominant-baseline="central" text-anchor="middle">spec.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="505" y="108" width="84" height="14" rx="3"></rect>
-        <text x="547" y="115" dominant-baseline="central" text-anchor="middle">plan.md</text>
-      </g>
-      <g class="fig-doc">
-        <rect x="505" y="128" width="84" height="14" rx="3"></rect>
-        <text x="547" y="135" dominant-baseline="central" text-anchor="middle">test-plan.md</text>
-      </g><line class="fig-rail" x1="589" y1="33" x2="604" y2="33"></line><g class="fig-chip fig-chip--quiet" data-figure-label="dormant">
-    <rect x="604" y="18" width="84" height="30" rx="15"></rect>
-    <text x="646" y="33" dominant-baseline="central" text-anchor="middle">dormant</text>
-  </g><line class="fig-rail" x1="688" y1="33" x2="703" y2="33"></line><g class="fig-chip fig-chip--quiet" data-figure-label="archived">
-    <rect x="703" y="18" width="84" height="30" rx="15"></rect>
-    <text x="745" y="33" dominant-baseline="central" text-anchor="middle">archived</text>
-  </g><text class="fig-text fig-text--caption" x="4" y="168" text-anchor="start">A document shows up when the stage reaches it, and not before.</text></svg></figure></div>
+      <text class="fig-text fig-text--note" x="590" y="345" text-anchor="start">skills live here from the start</text>
+        <text class="fig-text fig-text--caption" x="0" y="398" text-anchor="start">The record and the capability stay. Outputs graduate out, and the initiative keeps a pointer to each.</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="3" data-section-id="lifecycle" data-audience="both" data-layout="data" hidden aria-hidden="true">
+    <article class="slide" data-index="3" data-section-id="start" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">The initiative lifecycle</p>
-        <h1>Each move adds to the record</h1>
-        <div class="slide-copy"><p>Each move records one more piece of the thinking: purpose, then outcomes, then a chosen shape with the alternatives that lost, then an order for making and testing it.</p>
+        <header class="slide-bar">
+          <span class="section-label">Starting an initiative</span>
+          <span class="slide-count">4 / 20</span>
+        </header>
+        <h1>An initiative starts with a wish</h1>
+        <div class="slide-copy"><p>The wish is written in your words and stays that way. A skill scaffolds the folder, asks three questions, and optionally researches prior art into a background document. The initiative arrives as a pull request; after the merge the wish is fixed, and later changes are added above it with a date.</p>
+<figure class="figure" data-figure="initiative-birth"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 194" width="800" height="194" role="img" aria-label="You describe the idea, the new-initiative skill scaffolds the folder, and merging the pull request fixes the wish at the wish stage." preserveAspectRatio="xMidYMid meet"><title>You describe the idea, the new-initiative skill scaffolds the folder, and merging the pull request fixes the wish at the wish stage.</title><defs><marker id="fig-arrowhead-initiative-birth" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--person"><rect x="0" y="0" width="188" height="140" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="28" text-anchor="start">You</text><text class="fig-text fig-text--heading" x="16" y="52" text-anchor="start">Describe it</text><text class="fig-text fig-text--body" x="16" y="76" text-anchor="start">In your own words.</text><text class="fig-text fig-text--body" x="16" y="96" text-anchor="start">A paragraph is</text><text class="fig-text fig-text--body" x="16" y="116" text-anchor="start">enough.</text><g class="fig-panel fig-panel--accent"><rect x="204" y="0" width="188" height="140" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="220" y="28" text-anchor="start">Skill</text><text class="fig-text fig-text--heading" x="220" y="52" text-anchor="start">new-initiative</text><text class="fig-text fig-text--body" x="220" y="76" text-anchor="start">Asks three questions:</text><text class="fig-text fig-text--body" x="220" y="96" text-anchor="start">value, summary, and</text><text class="fig-text fig-text--body" x="220" y="116" text-anchor="start">research or not.</text><g class="fig-panel fig-panel--surface"><rect x="408" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="424" y="28" text-anchor="start">New folder</text><text class="fig-text fig-text--heading" x="424" y="52" text-anchor="start">Two files</text><text class="fig-text fig-text--mono" x="424" y="76" text-anchor="start">initiative.json</text><text class="fig-text fig-text--mono" x="424" y="96" text-anchor="start">wish.md</text><text class="fig-text fig-text--mono" x="424" y="116" text-anchor="start">background.md</text><text class="fig-text fig-text--mono" x="424" y="136" text-anchor="start">(optional)</text><g class="fig-panel fig-panel--go"><rect x="612" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="628" y="28" text-anchor="start">Pull request</text><text class="fig-text fig-text--heading" x="628" y="52" text-anchor="start">You merge it</text><text class="fig-text fig-text--body" x="628" y="76" text-anchor="start">Stage: wish.</text><text class="fig-text fig-text--body" x="628" y="96" text-anchor="start">The wish is fixed.</text><text class="fig-text fig-text--body" x="628" y="116" text-anchor="start">One item: draft</text><text class="fig-text fig-text--body" x="628" y="136" text-anchor="start">the objectives.</text><line class="fig-arrow fig-arrow--plain" x1="192" y1="80" x2="198" y2="80" marker-end="url(#fig-arrowhead-initiative-birth)"></line><line class="fig-arrow fig-arrow--plain" x1="396" y1="80" x2="402" y2="80" marker-end="url(#fig-arrowhead-initiative-birth)"></line><line class="fig-arrow fig-arrow--plain" x1="600" y1="80" x2="606" y2="80" marker-end="url(#fig-arrowhead-initiative-birth)"></line>
+        <text class="fig-text fig-text--caption" x="0" y="188" text-anchor="start">While the pull request is open the wish can be tidied. After the merge, changes are added above it with a date.</text></svg></figure></div>
+        <footer>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
+        </footer>
+      </div>
+    </article>
+    <article class="slide" data-index="4" data-section-id="shape" data-audience="both" data-layout="data" hidden aria-hidden="true">
+      <div class="slide-inner">
+        <header class="slide-bar">
+          <span class="section-label">Shaping and specifying</span>
+          <span class="slide-count">5 / 20</span>
+        </header>
+        <h1>From a wish to a specification</h1>
+        <div class="slide-copy"><p>An agent drafts the objectives, then the specification with its alternatives. You review each pull request. Questions the work gets stuck on are answered in the decisions file, dated, with the alternatives and what stays open. The validator warns when a stage is missing a document it expects.</p>
 <div class="fact-block" data-fact-block="lifecycle.stage_documents" data-fact-view="stack"><dl class="fact-stack"><div data-fact-key="shaped">
       <dt>shaped</dt>
       <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li></ul></dd>
@@ -311,365 +327,426 @@
       <dd><ul class="fact-chips fact-chips--file"><li data-fact-value="objectives.md">objectives.md</li><li data-fact-value="spec.md">spec.md</li><li data-fact-value="plan.md">plan.md</li><li data-fact-value="test-plan.md">test-plan.md</li></ul></dd>
     </div></dl></div></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="4" data-section-id="lifecycle" data-audience="both" data-layout="data" hidden aria-hidden="true">
+    <article class="slide" data-index="5" data-section-id="plan" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">The initiative lifecycle</p>
-        <h1>The record is wider than the stages</h1>
-        <div class="slide-copy"><p>The lifecycle gates only some of it. The goal in the person&#39;s own words, the questions the work got stuck on and how each was settled, and the log of what happened are all part of the record too, and none of them waits for a stage to arrive.</p>
-<div class="fact-block" data-fact-block="documents.titles" data-fact-view="chips"><ul class="fact-chips"><li data-fact-value="README">README</li><li data-fact-value="Wish">Wish</li><li data-fact-value="Background">Background</li><li data-fact-value="Objectives">Objectives</li><li data-fact-value="Decisions">Decisions</li><li data-fact-value="Specification">Specification</li><li data-fact-value="Implementation plan">Implementation plan</li><li data-fact-value="Test plan">Test plan</li><li data-fact-value="Releases">Releases</li><li data-fact-value="Log">Log</li><li data-fact-value="Notes">Notes</li></ul></div></div>
+        <header class="slide-bar">
+          <span class="section-label">Planning, and critiquing the plan</span>
+          <span class="slide-count">6 / 20</span>
+        </header>
+        <h1>Plan, critique, then build</h1>
+        <div class="slide-copy"><p>The plan cuts the work into reviewable phases. The test plan says how you&#39;d know each phase worked. The first item after they merge is a critique of both against the objectives and specification, delivered as a revising pull request. Building starts only after the critique merges.</p>
+<figure class="figure" data-figure="plan-critique"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 194" width="800" height="194" role="img" aria-label="The plan and test plan merge at the planned stage, the first item critiques them, and building starts after the revised plan merges." preserveAspectRatio="xMidYMid meet"><title>The plan and test plan merge at the planned stage, the first item critiques them, and building starts after the revised plan merges.</title><defs><marker id="fig-arrowhead-plan-critique" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--accent"><rect x="0" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="28" text-anchor="start">Agent writes</text><text class="fig-text fig-text--heading" x="16" y="52" text-anchor="start">Plan, test plan</text><text class="fig-text fig-text--body" x="16" y="76" text-anchor="start">Phases small enough</text><text class="fig-text fig-text--body" x="16" y="96" text-anchor="start">to review one at a</text><text class="fig-text fig-text--body" x="16" y="116" text-anchor="start">time, and how each</text><text class="fig-text fig-text--body" x="16" y="136" text-anchor="start">one is checked.</text><g class="fig-panel fig-panel--go"><rect x="204" y="0" width="188" height="128" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="220" y="28" text-anchor="start">You merge</text><text class="fig-text fig-text--heading" x="220" y="52" text-anchor="start">Stage: planned</text><text class="fig-text fig-text--body" x="220" y="76" text-anchor="start">First todo item:</text><text class="fig-text fig-text--body" x="220" y="96" text-anchor="start">critique the plan.</text><g class="fig-panel fig-panel--accent"><rect x="408" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="424" y="28" text-anchor="start">Agent critiques</text><text class="fig-text fig-text--heading" x="424" y="52" text-anchor="start">The critique</text><text class="fig-text fig-text--body" x="424" y="76" text-anchor="start">Against objectives</text><text class="fig-text fig-text--body" x="424" y="96" text-anchor="start">and spec. Splits big</text><text class="fig-text fig-text--body" x="424" y="116" text-anchor="start">phases, adds missing</text><text class="fig-text fig-text--body" x="424" y="136" text-anchor="start">checks and gates.</text><g class="fig-panel fig-panel--go"><rect x="612" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="628" y="28" text-anchor="start">You merge</text><text class="fig-text fig-text--heading" x="628" y="52" text-anchor="start">Revised plan</text><text class="fig-text fig-text--body" x="628" y="76" text-anchor="start">Then the first</text><text class="fig-text fig-text--body" x="628" y="96" text-anchor="start">increment in work/,</text><text class="fig-text fig-text--body" x="628" y="116" text-anchor="start">and the stage moves</text><text class="fig-text fig-text--body" x="628" y="136" text-anchor="start">to building.</text><line class="fig-arrow fig-arrow--plain" x1="192" y1="80" x2="198" y2="80" marker-end="url(#fig-arrowhead-plan-critique)"></line><line class="fig-arrow fig-arrow--plain" x1="396" y1="80" x2="402" y2="80" marker-end="url(#fig-arrowhead-plan-critique)"></line><line class="fig-arrow fig-arrow--plain" x1="600" y1="80" x2="606" y2="80" marker-end="url(#fig-arrowhead-plan-critique)"></line>
+        <text class="fig-text fig-text--caption" x="0" y="188" text-anchor="start">The critique is a todo item with a pull request, not a comment. The log records what it changed.</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="5" data-section-id="supplies" data-audience="contributor" data-layout="figure" hidden aria-hidden="true">
+    <article class="slide" data-index="6" data-section-id="build" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Who supplies what</p>
-        <h1>People supply intent, facts, and authority</h1>
-        <div class="slide-copy"><p>Three things no amount of reading the repository will supply: what you actually want, facts that live outside it, and permission to spend, grant access, or set policy. The amber labels are how the record keeps that uncertainty visible instead of letting a guess get written down as settled fact.</p>
-<figure class="figure" data-figure="division-of-labor"><svg class="figure-svg" viewBox="0 0 720 288" width="720" height="288" role="img" aria-label="The person supplies intent, facts, and authority; the agents supply the structure. The classes that wait for a person are human, permission, cost, legal, data." preserveAspectRatio="xMidYMid meet"><title>The person supplies intent, facts, and authority; the agents supply the structure. The classes that wait for a person are human, permission, cost, legal, data.</title><defs><marker id="fig-arrowhead-division-of-labor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
-
-    <g class="fig-panel fig-panel--person">
-    <rect x="0" y="0" width="300" height="254" rx="14"></rect>
-
+        <header class="slide-bar">
+          <span class="section-label">Building, graduating, and resting</span>
+          <span class="slide-count">7 / 20</span>
+        </header>
+        <h1>The whole lifecycle</h1>
+        <div class="slide-copy"><p>Six working stages in the order the record grows, then two resting states. Each increment is one pull request; the merge completes the item, unblocks what waited on it, and writes the log. Movement runs both ways when an assumption breaks.</p>
+<figure class="figure" data-figure="lifecycle-flow"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 208" width="800" height="208" role="img" aria-label="The lifecycle in order: wish, shaped, specified, planned, building, refining, dormant, archived. Beneath each stage, the documents it adds to the record." preserveAspectRatio="xMidYMid meet"><title>The lifecycle in order: wish, shaped, specified, planned, building, refining, dormant, archived. Beneath each stage, the documents it adds to the record.</title><defs><marker id="fig-arrowhead-lifecycle-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-chip fig-chip--stage" data-figure-label="wish">
+    <rect x="0" y="64" width="88" height="34" rx="17"></rect>
+    <text x="44" y="81" dominant-baseline="central" text-anchor="middle">wish</text>
+  </g><g class="fig-doc"><rect x="0" y="120" width="88" height="17" rx="4"></rect><text x="44" y="128.5" dominant-baseline="central" text-anchor="middle">wish.md</text></g><line class="fig-arrow fig-arrow--plain" x1="90" y1="81" x2="96" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="shaped">
+    <rect x="100" y="64" width="88" height="34" rx="17"></rect>
+    <text x="144" y="81" dominant-baseline="central" text-anchor="middle">shaped</text>
   </g>
-    <text class="fig-text fig-text--eyebrow" x="18" y="30" text-anchor="start">Supplies</text>
-    <text class="fig-text fig-text--heading" x="18" y="56" text-anchor="start">The person</text>
-
-      <circle class="fig-dot fig-dot--person" cx="24" cy="72" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="76" text-anchor="start">The wish, in their own words</text>
-      <circle class="fig-dot fig-dot--person" cx="24" cy="98" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="102" text-anchor="start">Facts only they can observe</text>
-      <circle class="fig-dot fig-dot--person" cx="24" cy="124" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="128" text-anchor="start">Authority to spend or grant access</text>
-      <circle class="fig-dot fig-dot--person" cx="24" cy="150" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="154" text-anchor="start">The answer to a blocked question</text>
-
-    <g class="fig-panel fig-panel--agent">
-    <rect x="420" y="0" width="300" height="254" rx="14"></rect>
-
+      <g class="fig-doc"><rect x="100" y="120" width="88" height="17" rx="4"></rect>
+      <text x="144" y="128.5" dominant-baseline="central" text-anchor="middle">objectives.md</text></g><line class="fig-arrow fig-arrow--plain" x1="190" y1="81" x2="196" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="specified">
+    <rect x="200" y="64" width="95" height="34" rx="17"></rect>
+    <text x="247.5" y="81" dominant-baseline="central" text-anchor="middle">specified</text>
   </g>
-    <text class="fig-text fig-text--eyebrow" x="438" y="30" text-anchor="start">Supply</text>
-    <text class="fig-text fig-text--heading" x="438" y="56" text-anchor="start">The agents</text>
+      <g class="fig-doc"><rect x="200" y="120" width="95" height="17" rx="4"></rect>
+      <text x="247.5" y="128.5" dominant-baseline="central" text-anchor="middle">spec.md</text></g><line class="fig-arrow fig-arrow--plain" x1="297" y1="81" x2="303" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="planned">
+    <rect x="307" y="64" width="88" height="34" rx="17"></rect>
+    <text x="351" y="81" dominant-baseline="central" text-anchor="middle">planned</text>
+  </g>
+      <g class="fig-doc"><rect x="307" y="120" width="88" height="17" rx="4"></rect>
+      <text x="351" y="128.5" dominant-baseline="central" text-anchor="middle">plan.md</text></g>
+      <g class="fig-doc"><rect x="307" y="142" width="88" height="17" rx="4"></rect>
+      <text x="351" y="150.5" dominant-baseline="central" text-anchor="middle">test-plan.md</text></g><line class="fig-arrow fig-arrow--plain" x1="397" y1="81" x2="403" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="building">
+    <rect x="407" y="64" width="88" height="34" rx="17"></rect>
+    <text x="451" y="81" dominant-baseline="central" text-anchor="middle">building</text>
+  </g><line class="fig-arrow fig-arrow--plain" x1="497" y1="81" x2="503" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="refining">
+    <rect x="507" y="64" width="88" height="34" rx="17"></rect>
+    <text x="551" y="81" dominant-baseline="central" text-anchor="middle">refining</text>
+  </g><line class="fig-arrow fig-arrow--plain" x1="597" y1="81" x2="603" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--quiet" data-figure-label="dormant">
+    <rect x="607" y="64" width="88" height="34" rx="17"></rect>
+    <text x="651" y="81" dominant-baseline="central" text-anchor="middle">dormant</text>
+  </g><line class="fig-arrow fig-arrow--plain" x1="697" y1="81" x2="703" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--quiet" data-figure-label="archived">
+    <rect x="707" y="64" width="88" height="34" rx="17"></rect>
+    <text x="751" y="81" dominant-baseline="central" text-anchor="middle">archived</text>
+  </g><path class="fig-arrow fig-arrow--person" d="M 451 60 C 451 28, 144 28, 144 58" fill="none" marker-end="url(#fig-arrowhead-lifecycle-flow)"></path>
+       <text class="fig-text fig-text--edge" x="297.5" y="24" text-anchor="middle">moves back when an assumption breaks</text><text class="fig-text fig-text--edge" x="499" y="112" text-anchor="middle">graduates</text><line class="fig-bracket" x1="607" y1="186" x2="795" y2="186"></line>
+    <text class="fig-text fig-text--caption" x="800" y="202" text-anchor="end">resting states: nothing actionable, by your choice</text>
+        <text class="fig-text fig-text--caption" x="0" y="202" text-anchor="start">Each stage adds documents; none are removed.</text></svg></figure></div>
+        <footer>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
+        </footer>
+      </div>
+    </article>
+    <article class="slide" data-index="7" data-section-id="build" data-audience="both" data-layout="statement" hidden aria-hidden="true">
+      <div class="slide-inner">
+        <header class="slide-bar">
+          <span class="section-label">Building, graduating, and resting</span>
+          <span class="slide-count">8 / 20</span>
+        </header>
+        <h1>Graduating, refining, resting</h1>
+        <div class="slide-copy"><p>Graduation moves the output to its published home and seeds two items: a user-facing README, and a standing pull request of optional improvements. Dormant is your call and never an agent&#39;s. Archived is the only terminal stage. A working stage with an empty todo list is refused.</p></div>
+        <footer>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
+        </footer>
+      </div>
+    </article>
+    <article class="slide" data-index="8" data-section-id="supplies" data-audience="contributor" data-layout="figure" hidden aria-hidden="true">
+      <div class="slide-inner">
+        <header class="slide-bar">
+          <span class="section-label">Who supplies what</span>
+          <span class="slide-count">9 / 20</span>
+        </header>
+        <h1>What you supply, and what the agents supply</h1>
+        <div class="slide-copy"><p>You supply intent, outside facts, and authority. Agents supply the documents, the increments, the review replies, and proposed answers. They never merge.</p>
+<figure class="figure" data-figure="division-of-labor"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 321" width="800" height="321" role="img" aria-label="You supply intent, facts, authority, and the merge; the agents supply the documents, the increments, and the replies. Items labeled human, permission, cost, legal, data wait for a person." preserveAspectRatio="xMidYMid meet"><title>You supply intent, facts, authority, and the merge; the agents supply the documents, the increments, and the replies. Items labeled human, permission, cost, legal, data wait for a person.</title><defs><marker id="fig-arrowhead-division-of-labor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
 
-      <circle class="fig-dot fig-dot--agent" cx="444" cy="72" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="458" y="76" text-anchor="start">Objectives, specification, plan</text>
-      <circle class="fig-dot fig-dot--agent" cx="444" cy="98" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="458" y="102" text-anchor="start">One bounded increment at a time</text>
-      <circle class="fig-dot fig-dot--agent" cx="444" cy="124" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="458" y="128" text-anchor="start">Replies to review feedback</text>
-      <circle class="fig-dot fig-dot--agent" cx="444" cy="150" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="458" y="154" text-anchor="start">A pull request, never a merge</text>
+    <g class="fig-panel fig-panel--person"><rect x="0" y="0" width="330" height="291" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">You supply</text>
+    <text class="fig-text fig-text--heading" x="20" y="56" text-anchor="start">Intent, facts, authority</text>
+
+    <circle class="fig-dot fig-dot--person" cx="25" cy="79" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="84" text-anchor="start">What you want, in your own words</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="103" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="108" text-anchor="start">Facts only you can observe</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="127" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="132" text-anchor="start">Authority: spending, access, policy</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="151" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="156" text-anchor="start">Answers to blocked questions</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="175" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="180" text-anchor="start">The merge, every time</text>
+
+    <g class="fig-panel fig-panel--agent"><rect x="470" y="0" width="330" height="291" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="490" y="30" text-anchor="start">The agents supply</text>
+    <text class="fig-text fig-text--heading" x="490" y="56" text-anchor="start">Everything downstream</text>
+
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="79" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="84" text-anchor="start">Objectives, spec, plan, test plan</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="103" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="108" text-anchor="start">Alternatives, and the ones rejected</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="127" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="132" text-anchor="start">One reviewable increment at a time</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="151" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="156" text-anchor="start">Replies to every review comment</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="175" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="180" text-anchor="start">Proposed answers to judgment calls</text>
+        <text class="fig-text fig-text--eyebrow" x="20" y="204" text-anchor="start">Labels that wait for you</text>
         <g class="fig-chip fig-chip--wait" data-figure-label="human">
-    <rect x="18" y="184" width="54" height="24" rx="12"></rect>
-    <text x="45" y="196" dominant-baseline="central" text-anchor="middle">human</text>
+    <rect x="20" y="214" width="57" height="26" rx="13"></rect>
+    <text x="48.5" y="227" dominant-baseline="central" text-anchor="middle">human</text>
   </g><g class="fig-chip fig-chip--wait" data-figure-label="permission">
-    <rect x="78" y="184" width="90" height="24" rx="12"></rect>
-    <text x="123" y="196" dominant-baseline="central" text-anchor="middle">permission</text>
+    <rect x="84" y="214" width="94" height="26" rx="13"></rect>
+    <text x="131" y="227" dominant-baseline="central" text-anchor="middle">permission</text>
   </g><g class="fig-chip fig-chip--wait" data-figure-label="cost">
-    <rect x="174" y="184" width="47" height="24" rx="12"></rect>
-    <text x="197.5" y="196" dominant-baseline="central" text-anchor="middle">cost</text>
+    <rect x="185" y="214" width="50" height="26" rx="13"></rect>
+    <text x="210" y="227" dominant-baseline="central" text-anchor="middle">cost</text>
   </g><g class="fig-chip fig-chip--wait" data-figure-label="legal">
-    <rect x="227" y="184" width="54" height="24" rx="12"></rect>
-    <text x="254" y="196" dominant-baseline="central" text-anchor="middle">legal</text>
+    <rect x="242" y="214" width="57" height="26" rx="13"></rect>
+    <text x="270.5" y="227" dominant-baseline="central" text-anchor="middle">legal</text>
   </g><g class="fig-chip fig-chip--wait" data-figure-label="data">
-    <rect x="18" y="214" width="47" height="24" rx="12"></rect>
-    <text x="41.5" y="226" dominant-baseline="central" text-anchor="middle">data</text>
+    <rect x="20" y="247" width="50" height="26" rx="13"></rect>
+    <text x="45" y="260" dominant-baseline="central" text-anchor="middle">data</text>
   </g>
-        <line class="fig-arrow fig-arrow--person" x1="310" y1="115" x2="410" y2="115" marker-end="url(#fig-arrowhead-division-of-labor)"></line>
-        <line class="fig-arrow fig-arrow--agent" x1="410" y1="157" x2="310" y2="157" marker-end="url(#fig-arrowhead-division-of-labor)"></line>
-        <text class="fig-text fig-text--edge" x="360" y="105" text-anchor="middle">intent</text>
-        <text class="fig-text fig-text--edge" x="360" y="147" text-anchor="middle">increments</text>
-        <text class="fig-text fig-text--caption" x="0" y="282" text-anchor="start">The amber labels sit there waiting until a person answers.</text></svg></figure></div>
+        <line class="fig-arrow fig-arrow--person" x1="342" y1="129.5" x2="458" y2="129.5" marker-end="url(#fig-arrowhead-division-of-labor)"></line>
+        <line class="fig-arrow fig-arrow--agent" x1="458" y1="171.5" x2="342" y2="171.5" marker-end="url(#fig-arrowhead-division-of-labor)"></line>
+        <text class="fig-text fig-text--edge" x="400" y="119.5" text-anchor="middle">intent and answers</text>
+        <text class="fig-text fig-text--edge" x="400" y="189.5" text-anchor="middle">pull requests</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="6" data-section-id="supplies" data-audience="contributor" data-layout="statement" hidden aria-hidden="true">
+    <article class="slide" data-index="9" data-section-id="supplies" data-audience="contributor" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Who supplies what</p>
-        <h1>Agents turn that into reviewable increments</h1>
-        <div class="slide-copy"><p>They shape the outcomes, weigh alternatives and record the ones they rejected, put the work in order, cut it small enough to review, and answer what comes back. The one thing they never do is decide their own work is finished. A pull request is a proposal; merging it is somebody else&#39;s act.</p></div>
-        <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
-        </footer>
-      </div>
-    </article>
-    <article class="slide" data-index="7" data-section-id="sweep" data-audience="both" data-layout="figure" hidden aria-hidden="true">
-      <div class="slide-inner">
-        <p class="section-label">How work gets picked up</p>
-        <h1>The sweep answers PR comments before new work</h1>
-        <div class="slide-copy"><p>The run answers PR comments that are waiting before it considers opening anything new. Then it analyzes and recommends items to propose for new work. Then it works through remaining items.</p>
-<figure class="figure" data-figure="sweep-run"><svg class="figure-svg figure-svg--wide" viewBox="0 0 520 192" width="520" height="192" role="img" aria-label="A run moves through survey, then respond, then propose, then work with a budget that is currently 4 items per run." preserveAspectRatio="xMidYMid meet"><title>A run moves through survey, then respond, then propose, then work with a budget that is currently 4 items per run.</title><defs><marker id="fig-arrowhead-sweep-run" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
-        <text class="fig-text fig-text--eyebrow" x="4" y="12" text-anchor="start">Every run, in this order</text>
-        <g class="fig-chip fig-chip--phase" data-figure-label="survey">
-    <rect x="4" y="24" width="96" height="30" rx="15"></rect>
-    <text x="52" y="39" dominant-baseline="central" text-anchor="middle">survey</text>
-  </g><line class="fig-arrow fig-arrow--plain" x1="105" y1="39" x2="123" y2="39" marker-end="url(#fig-arrowhead-sweep-run)"></line><g class="fig-chip fig-chip--phase" data-figure-label="respond">
-    <rect x="130" y="24" width="96" height="30" rx="15"></rect>
-    <text x="178" y="39" dominant-baseline="central" text-anchor="middle">respond</text>
-  </g><line class="fig-arrow fig-arrow--plain" x1="231" y1="39" x2="249" y2="39" marker-end="url(#fig-arrowhead-sweep-run)"></line><g class="fig-chip fig-chip--phase" data-figure-label="propose">
-    <rect x="256" y="24" width="96" height="30" rx="15"></rect>
-    <text x="304" y="39" dominant-baseline="central" text-anchor="middle">propose</text>
-  </g><line class="fig-arrow fig-arrow--plain" x1="357" y1="39" x2="375" y2="39" marker-end="url(#fig-arrowhead-sweep-run)"></line><g class="fig-chip fig-chip--phase" data-figure-label="work">
-    <rect x="382" y="24" width="96" height="30" rx="15"></rect>
-    <text x="430" y="39" dominant-baseline="central" text-anchor="middle">work</text>
-  </g>
-        <text class="fig-text fig-text--eyebrow" x="4" y="96" text-anchor="start">The budget is currently 4 items per run</text>
+        <header class="slide-bar">
+          <span class="section-label">Who supplies what</span>
+          <span class="slide-count">10 / 20</span>
+        </header>
+        <h1>A blocked item says who can unblock it</h1>
+        <div class="slide-copy"><p>A judgment call labeled human may get a proposed answer as a pull request. A fact, a spend, an access grant, or a policy waits for you. Everything else clears when something else moves.</p>
+<figure class="figure" data-figure="blocker-triage"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 330" width="800" height="330" role="img" aria-label="human, permission, cost, legal, data wait for a person; todo, initiative, review, schedule, external, upstream clear when something else moves. Items labeled human may receive a proposed answer from an agent." preserveAspectRatio="xMidYMid meet"><title>human, permission, cost, legal, data wait for a person; todo, initiative, review, schedule, external, upstream clear when something else moves. Items labeled human may receive a proposed answer from an agent.</title><defs><marker id="fig-arrowhead-blocker-triage" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
 
-    <rect class="fig-slot" x="4" y="108" width="46" height="20" rx="5"></rect>
-    <rect class="fig-slot" x="58" y="108" width="46" height="20" rx="5"></rect>
-    <rect class="fig-slot" x="112" y="108" width="46" height="20" rx="5"></rect>
-    <rect class="fig-slot" x="166" y="108" width="46" height="20" rx="5"></rect>
-        <text class="fig-text fig-text--caption" x="4" y="154" text-anchor="start">PR comments come first, then proposals, then remaining work.</text>
-        <text class="fig-text fig-text--caption" x="4" y="174" text-anchor="start">At most 2 from any one initiative, and the run stops altogether at 8 open pull requests.</text></svg></figure></div>
+    <g class="fig-panel fig-panel--wait"><rect x="0" y="0" width="384" height="300" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">Waits on you</text>
+    <text class="fig-text fig-text--heading" x="20" y="58" text-anchor="start">You have to act</text>
+    <g class="fig-chip fig-chip--propose" data-figure-label="human">
+    <rect x="20" y="72" width="100" height="26" rx="13"></rect>
+    <text x="70" y="85" dominant-baseline="central" text-anchor="middle">human</text>
+  </g><text class="fig-text fig-text--note" x="130" y="89" text-anchor="start">a judgment call; an agent may propose</text><g class="fig-chip fig-chip--wait" data-figure-label="permission">
+    <rect x="20" y="106" width="100" height="26" rx="13"></rect>
+    <text x="70" y="119" dominant-baseline="central" text-anchor="middle">permission</text>
+  </g><text class="fig-text fig-text--note" x="130" y="123" text-anchor="start">an access grant</text><g class="fig-chip fig-chip--wait" data-figure-label="cost">
+    <rect x="20" y="140" width="100" height="26" rx="13"></rect>
+    <text x="70" y="153" dominant-baseline="central" text-anchor="middle">cost</text>
+  </g><text class="fig-text fig-text--note" x="130" y="157" text-anchor="start">money</text><g class="fig-chip fig-chip--wait" data-figure-label="legal">
+    <rect x="20" y="174" width="100" height="26" rx="13"></rect>
+    <text x="70" y="187" dominant-baseline="central" text-anchor="middle">legal</text>
+  </g><text class="fig-text fig-text--note" x="130" y="191" text-anchor="start">a policy question</text><g class="fig-chip fig-chip--wait" data-figure-label="data">
+    <rect x="20" y="208" width="100" height="26" rx="13"></rect>
+    <text x="70" y="221" dominant-baseline="central" text-anchor="middle">data</text>
+  </g><text class="fig-text fig-text--note" x="130" y="225" text-anchor="start">a fact only you have</text>
+
+    <g class="fig-panel fig-panel--auto"><rect x="416" y="0" width="384" height="300" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="436" y="30" text-anchor="start">Waits on something else</text>
+    <text class="fig-text fig-text--heading" x="436" y="58" text-anchor="start">Clears when that moves</text>
+    <g class="fig-chip fig-chip--auto" data-figure-label="todo">
+    <rect x="436" y="72" width="100" height="26" rx="13"></rect>
+    <text x="486" y="85" dominant-baseline="central" text-anchor="middle">todo</text>
+  </g><text class="fig-text fig-text--note" x="546" y="89" text-anchor="start">another item in this initiative</text><g class="fig-chip fig-chip--auto" data-figure-label="initiative">
+    <rect x="436" y="106" width="100" height="26" rx="13"></rect>
+    <text x="486" y="119" dominant-baseline="central" text-anchor="middle">initiative</text>
+  </g><text class="fig-text fig-text--note" x="546" y="123" text-anchor="start">another initiative</text><g class="fig-chip fig-chip--auto" data-figure-label="review">
+    <rect x="436" y="140" width="100" height="26" rx="13"></rect>
+    <text x="486" y="153" dominant-baseline="central" text-anchor="middle">review</text>
+  </g><text class="fig-text fig-text--note" x="546" y="157" text-anchor="start">an open pull request</text><g class="fig-chip fig-chip--auto" data-figure-label="schedule">
+    <rect x="436" y="174" width="100" height="26" rx="13"></rect>
+    <text x="486" y="187" dominant-baseline="central" text-anchor="middle">schedule</text>
+  </g><text class="fig-text fig-text--note" x="546" y="191" text-anchor="start">a date</text><g class="fig-chip fig-chip--auto" data-figure-label="external">
+    <rect x="436" y="208" width="100" height="26" rx="13"></rect>
+    <text x="486" y="221" dominant-baseline="central" text-anchor="middle">external</text>
+  </g><text class="fig-text fig-text--note" x="546" y="225" text-anchor="start">an outside service</text><g class="fig-chip fig-chip--auto" data-figure-label="upstream">
+    <rect x="436" y="242" width="100" height="26" rx="13"></rect>
+    <text x="486" y="255" dominant-baseline="central" text-anchor="middle">upstream</text>
+  </g><text class="fig-text fig-text--note" x="546" y="259" text-anchor="start">a dependency</text>
+        <text class="fig-text fig-text--caption" x="0" y="324" text-anchor="start">The dashed label is the one an agent may answer with a pull request; the others wait until you act.</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="8" data-section-id="sweep" data-audience="both" data-layout="data" hidden aria-hidden="true">
+    <article class="slide" data-index="10" data-section-id="sweep" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">How work gets picked up</p>
-        <h1>A budget limits each sweep</h1>
-        <div class="slide-copy"><p>The workload is managed thorough a &quot;budget&quot; that limits the number of work items per sweep. The budget is currently 4 items per run.</p>
+        <header class="slide-bar">
+          <span class="section-label">How work gets picked up</span>
+          <span class="slide-count">11 / 20</span>
+        </header>
+        <h1>The sweep picks up the work</h1>
+        <div class="slide-copy"><p>A scheduled run reads every initiative and opens pull requests. Four phases in a fixed order: survey, answer review comments, propose answers to open questions, start new work. One budget, spent in that order.</p>
+<figure class="figure" data-figure="sweep-run"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 282" width="800" height="282" role="img" aria-label="A run moves through survey, then respond, then propose, then work, sharing one budget of 4 items per run." preserveAspectRatio="xMidYMid meet"><title>A run moves through survey, then respond, then propose, then work, sharing one budget of 4 items per run.</title><defs><marker id="fig-arrowhead-sweep-run" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+        <text class="fig-text fig-text--eyebrow" x="0" y="16" text-anchor="start">Every run, in this order</text>
+        <g class="fig-panel fig-panel--quiet"><rect x="0" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="60" text-anchor="start">Phase 1</text><text class="fig-text fig-text--heading" x="16" y="84" text-anchor="start">survey</text><text class="fig-text fig-text--body" x="16" y="108" text-anchor="start">Read everything and</text><text class="fig-text fig-text--body" x="16" y="128" text-anchor="start">report</text><g class="fig-panel fig-panel--accent"><rect x="208" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="224" y="60" text-anchor="start">Phase 2</text><text class="fig-text fig-text--heading" x="224" y="84" text-anchor="start">respond</text><text class="fig-text fig-text--body" x="224" y="108" text-anchor="start">Answer review</text><text class="fig-text fig-text--body" x="224" y="128" text-anchor="start">comments</text><g class="fig-panel fig-panel--accent"><rect x="416" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="432" y="60" text-anchor="start">Phase 3</text><text class="fig-text fig-text--heading" x="432" y="84" text-anchor="start">propose</text><text class="fig-text fig-text--body" x="432" y="108" text-anchor="start">Propose answers to</text><text class="fig-text fig-text--body" x="432" y="128" text-anchor="start">open questions</text><g class="fig-panel fig-panel--accent"><rect x="624" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="640" y="60" text-anchor="start">Phase 4</text><text class="fig-text fig-text--heading" x="640" y="84" text-anchor="start">work</text><text class="fig-text fig-text--body" x="640" y="108" text-anchor="start">Start new items from</text><text class="fig-text fig-text--body" x="640" y="128" text-anchor="start">the todo lists</text><line class="fig-arrow fig-arrow--plain" x1="180" y1="92" x2="202" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="388" y1="92" x2="410" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="596" y1="92" x2="618" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line>
+        <text class="fig-text fig-text--eyebrow" x="0" y="190" text-anchor="start">One budget, currently 4 items per run, spent in phase order</text>
+        <rect class="fig-slot" x="0" y="204" width="56" height="22" rx="5"></rect><rect class="fig-slot" x="64" y="204" width="56" height="22" rx="5"></rect><rect class="fig-slot" x="128" y="204" width="56" height="22" rx="5"></rect><rect class="fig-slot" x="192" y="204" width="56" height="22" rx="5"></rect>
+        <text class="fig-text fig-text--caption" x="0" y="250" text-anchor="start">At most 2 from any one initiative; the run stops at 8 open pull requests.</text>
+        <text class="fig-text fig-text--caption" x="0" y="270" text-anchor="start">Every result is a pull request. Nothing is merged by a run.</text></svg></figure></div>
+        <footer>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
+        </footer>
+      </div>
+    </article>
+    <article class="slide" data-index="11" data-section-id="sweep" data-audience="both" data-layout="data" hidden aria-hidden="true">
+      <div class="slide-inner">
+        <header class="slide-bar">
+          <span class="section-label">How work gets picked up</span>
+          <span class="slide-count">12 / 20</span>
+        </header>
+        <h1>The budget, and what a run never does</h1>
+        <div class="slide-copy"><p>The budget is currently 4 items per run. Ranking is arithmetic on value and effort, so it doesn&#39;t drift. A run never merges, never creates an initiative, never edits a wish, and never declares an initiative dormant.</p>
 <div class="fact-block" data-fact-block="sweep.budget" data-fact-view="table"><dl class="fact-table"><div data-fact-key="items_per_run"><dt>Current items per run</dt><dd>4</dd></div><div data-fact-key="max_items_per_initiative"><dt>Max items per initiative</dt><dd>2</dd></div><div data-fact-key="max_open_prs"><dt>Max open PRs</dt><dd>8</dd></div><div data-fact-key="max_effort"><dt>Max effort</dt><dd>large</dd></div></dl></div></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="9" data-section-id="person-required" data-audience="contributor" data-layout="figure" hidden aria-hidden="true">
+    <article class="slide" data-index="12" data-section-id="review" data-audience="contributor" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">When a person is required</p>
-        <h1>Blocker labels decide who can act</h1>
-        <div class="slide-copy"><p>An agent will act on items labeled &quot;human&quot; by generating alternatives and making a proposal. Facts, spending, access, and policy remain blocked until a person supplies or authorizes them.</p>
-<figure class="figure" data-figure="blocker-triage"><svg class="figure-svg" viewBox="0 0 720 340" width="720" height="340" role="img" aria-label="human, permission, cost, legal, data wait for a person; todo, initiative, review, schedule, external, upstream clear when something else moves. Items labeled human may receive alternatives and a proposal from an agent." preserveAspectRatio="xMidYMid meet"><title>human, permission, cost, legal, data wait for a person; todo, initiative, review, schedule, external, upstream clear when something else moves. Items labeled human may receive alternatives and a proposal from an agent.</title><defs><marker id="fig-arrowhead-blocker-triage" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
-
-    <g class="fig-panel fig-panel--wait">
-    <rect x="0" y="0" width="344" height="306" rx="14"></rect>
-
-  </g>
-    <text class="fig-text fig-text--eyebrow" x="18" y="30" text-anchor="start">Blocked on</text>
-    <text class="fig-text fig-text--heading" x="18" y="58" text-anchor="start">A person must answer</text>
-    <g class="fig-chip fig-chip--propose" data-figure-label="human">
-    <rect x="18" y="70" width="62" height="26" rx="13"></rect>
-    <text x="49" y="83" dominant-baseline="central" text-anchor="middle">human</text>
-  </g><text class="fig-text fig-text--note" x="92" y="84" text-anchor="start">may receive a reasoned proposal</text><g class="fig-chip fig-chip--wait" data-figure-label="permission">
-    <rect x="18" y="104" width="98" height="26" rx="13"></rect>
-    <text x="67" y="117" dominant-baseline="central" text-anchor="middle">permission</text>
-  </g><g class="fig-chip fig-chip--wait" data-figure-label="cost">
-    <rect x="18" y="138" width="55" height="26" rx="13"></rect>
-    <text x="45.5" y="151" dominant-baseline="central" text-anchor="middle">cost</text>
-  </g><g class="fig-chip fig-chip--wait" data-figure-label="legal">
-    <rect x="18" y="172" width="62" height="26" rx="13"></rect>
-    <text x="49" y="185" dominant-baseline="central" text-anchor="middle">legal</text>
-  </g><g class="fig-chip fig-chip--wait" data-figure-label="data">
-    <rect x="18" y="206" width="55" height="26" rx="13"></rect>
-    <text x="45.5" y="219" dominant-baseline="central" text-anchor="middle">data</text>
-  </g>
-
-    <g class="fig-panel fig-panel--auto">
-    <rect x="376" y="0" width="344" height="306" rx="14"></rect>
-
-  </g>
-    <text class="fig-text fig-text--eyebrow" x="394" y="30" text-anchor="start">Blocked on</text>
-    <text class="fig-text fig-text--heading" x="394" y="58" text-anchor="start">Clears when something else moves</text>
-    <g class="fig-chip fig-chip--auto" data-figure-label="todo">
-    <rect x="394" y="70" width="55" height="26" rx="13"></rect>
-    <text x="421.5" y="83" dominant-baseline="central" text-anchor="middle">todo</text>
-  </g><g class="fig-chip fig-chip--auto" data-figure-label="initiative">
-    <rect x="394" y="104" width="98" height="26" rx="13"></rect>
-    <text x="443" y="117" dominant-baseline="central" text-anchor="middle">initiative</text>
-  </g><g class="fig-chip fig-chip--auto" data-figure-label="review">
-    <rect x="394" y="138" width="69" height="26" rx="13"></rect>
-    <text x="428.5" y="151" dominant-baseline="central" text-anchor="middle">review</text>
-  </g><g class="fig-chip fig-chip--auto" data-figure-label="schedule">
-    <rect x="394" y="172" width="83" height="26" rx="13"></rect>
-    <text x="435.5" y="185" dominant-baseline="central" text-anchor="middle">schedule</text>
-  </g><g class="fig-chip fig-chip--auto" data-figure-label="external">
-    <rect x="394" y="206" width="83" height="26" rx="13"></rect>
-    <text x="435.5" y="219" dominant-baseline="central" text-anchor="middle">external</text>
-  </g><g class="fig-chip fig-chip--auto" data-figure-label="upstream">
-    <rect x="394" y="240" width="83" height="26" rx="13"></rect>
-    <text x="435.5" y="253" dominant-baseline="central" text-anchor="middle">upstream</text>
-  </g>
-        <text class="fig-text fig-text--caption" x="0" y="334" text-anchor="start">An agent may propose alternatives for items labeled &quot;human&quot;.</text></svg></figure></div>
+        <header class="slide-bar">
+          <span class="section-label">Review and merge</span>
+          <span class="slide-count">13 / 20</span>
+        </header>
+        <h1>Every change is a pull request you merge</h1>
+        <div class="slide-copy"><p>One branch per item, confined to one initiative by a CI check. The rendered result is browsable per branch before merge. Comments get answered by the next sweep. A merge skill clears a green batch in one sentence and never resolves a thread for you.</p>
+<figure class="figure" data-figure="review-loop"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 228" width="800" height="228" role="img" aria-label="An agent opens a scoped pull request, CI checks its write scope, you review it, and the merge completes the item. Comments go back to the agent through respond-to-review; merge-prs merges what is green." preserveAspectRatio="xMidYMid meet"><title>An agent opens a scoped pull request, CI checks its write scope, you review it, and the merge completes the item. Comments go back to the agent through respond-to-review; merge-prs merges what is green.</title><defs><marker id="fig-arrowhead-review-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--accent"><rect x="0" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="28" text-anchor="start">Agent</text><text class="fig-text fig-text--heading" x="16" y="52" text-anchor="start">Pull request</text><text class="fig-text fig-text--body" x="16" y="76" text-anchor="start">sweep/&lt;slug&gt;/&lt;item&gt;</text><text class="fig-text fig-text--body" x="16" y="96" text-anchor="start">Writes only inside</text><text class="fig-text fig-text--body" x="16" y="116" text-anchor="start">its initiative and</text><text class="fig-text fig-text--body" x="16" y="136" text-anchor="start">declared outputs.</text><g class="fig-panel fig-panel--quiet"><rect x="204" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="220" y="28" text-anchor="start">CI</text><text class="fig-text fig-text--heading" x="220" y="52" text-anchor="start">Scope check</text><text class="fig-text fig-text--body" x="220" y="76" text-anchor="start">Fails if the diff</text><text class="fig-text fig-text--body" x="220" y="96" text-anchor="start">reaches outside.</text><text class="fig-text fig-text--body" x="220" y="116" text-anchor="start">The branch preview</text><text class="fig-text fig-text--body" x="220" y="136" text-anchor="start">is built.</text><g class="fig-panel fig-panel--person"><rect x="408" y="0" width="188" height="140" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="424" y="28" text-anchor="start">You</text><text class="fig-text fig-text--heading" x="424" y="52" text-anchor="start">Review</text><text class="fig-text fig-text--body" x="424" y="76" text-anchor="start">Read the diff or the</text><text class="fig-text fig-text--body" x="424" y="96" text-anchor="start">preview. Comment,</text><text class="fig-text fig-text--body" x="424" y="116" text-anchor="start">or merge.</text><g class="fig-panel fig-panel--go"><rect x="612" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="628" y="28" text-anchor="start">Merge</text><text class="fig-text fig-text--heading" x="628" y="52" text-anchor="start">Item completed</text><text class="fig-text fig-text--body" x="628" y="76" text-anchor="start">Removed from the</text><text class="fig-text fig-text--body" x="628" y="96" text-anchor="start">list. Dependents</text><text class="fig-text fig-text--body" x="628" y="116" text-anchor="start">unblocked. Log</text><text class="fig-text fig-text--body" x="628" y="136" text-anchor="start">entry written.</text><line class="fig-arrow fig-arrow--plain" x1="192" y1="80" x2="198" y2="80" marker-end="url(#fig-arrowhead-review-loop)"></line><line class="fig-arrow fig-arrow--plain" x1="396" y1="80" x2="402" y2="80" marker-end="url(#fig-arrowhead-review-loop)"></line><line class="fig-arrow fig-arrow--plain" x1="600" y1="80" x2="606" y2="80" marker-end="url(#fig-arrowhead-review-loop)"></line><path class="fig-arrow fig-arrow--person" d="M 502 162 C 502 198, 94 198, 94 164" fill="none" marker-end="url(#fig-arrowhead-review-loop)"></path>
+    <text class="fig-text fig-text--edge" x="298" y="214" text-anchor="middle">comments go back to the agent: the next sweep, or respond-to-review</text><text class="fig-text fig-text--edge" x="800" y="214" text-anchor="end">merge-prs merges a green batch</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="10" data-section-id="decks" data-audience="both" data-layout="statement" hidden aria-hidden="true">
+    <article class="slide" data-index="13" data-section-id="decks" data-audience="both" data-layout="statement" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Decks, briefly</p>
-        <h1>Deck changes follow the publishing contract</h1>
-        <div class="slide-copy"><p>Ordinary web work, with a few house rules the shared components assume: topic content stays inside the page&#39;s content card, and maps, galleries, collapsible topics, and footers come from the shared libraries rather than a one-off build. Every URL you were given is preserved exactly. Build with <code>bash scripts/build.sh</code> after the final source change, then screenshot anything that looks different.</p></div>
+        <header class="slide-bar">
+          <span class="section-label">Decks</span>
+          <span class="slide-count">14 / 20</span>
+        </header>
+        <h1>Decks are static content with house rules</h1>
+        <div class="slide-copy"><p>A deck is a folder of static pages with its own assets. Topic content stays in the content card; maps, galleries, and footers come from the shared libraries; every URL is preserved; every attraction and event carries a number you can quote back. Build with <code>bash scripts/build.sh</code> and screenshot what changed.</p></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="11" data-section-id="demos" data-audience="both" data-layout="statement" hidden aria-hidden="true">
+    <article class="slide" data-index="14" data-section-id="demos" data-audience="both" data-layout="statement" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Demos, briefly</p>
-        <h1>A demo stays a standalone example</h1>
-        <div class="slide-copy"><p>Self-contained: it owns its pages, its assets, and an optional prompt history. The build copies it without rewriting the source, and generates one contents entry per immediate directory. Demo language stays distinct from deck language because the two have different publishing structures.</p></div>
+        <header class="slide-bar">
+          <span class="section-label">Demos</span>
+          <span class="slide-count">15 / 20</span>
+        </header>
+        <h1>A demo is copied to the site unchanged</h1>
+        <div class="slide-copy"><p>A self-contained folder with its own pages, assets, and optional prompt history. The build copies it as it is and adds an index entry from a small manifest. A deploy skill copies a finished folder into place in one step. This guide is a demo.</p></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="12" data-section-id="deployments" data-audience="both" data-layout="figure" hidden aria-hidden="true">
+    <article class="slide" data-index="15" data-section-id="deployments" data-audience="both" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Getting the work in front of someone</p>
-        <h1>Two environments, and only one is yours to release</h1>
-        <div class="slide-copy"><p>Anything an initiative publishes gets a disposable copy any agent may overwrite whenever you want to look at the work, and a released copy that moves only when a person asks for it. Keeping them apart is what makes previewing cheap and releasing deliberate.</p>
-<figure class="figure" data-figure="deployment-environments"><svg class="figure-svg" viewBox="0 0 720 262" width="720" height="262" role="img" aria-label="Every deployment has a test environment any agent may overwrite and a prod environment only a person releases. Both exist for every kind: ChatGPT Site and Demo." preserveAspectRatio="xMidYMid meet"><title>Every deployment has a test environment any agent may overwrite and a prod environment only a person releases. Both exist for every kind: ChatGPT Site and Demo.</title><defs><marker id="fig-arrowhead-deployment-environments" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+        <header class="slide-bar">
+          <span class="section-label">Deploying to test and production</span>
+          <span class="slide-count">16 / 20</span>
+        </header>
+        <h1>Two environments, and only a person releases</h1>
+        <div class="slide-copy"><p>Test is disposable and any agent may overwrite it whenever you want a look. Production moves only when you ask, from committed files, with the commit recorded. The two can never be the same target, and the preview skill can&#39;t reach production.</p>
+<figure class="figure" data-figure="deployment-environments"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 320" width="800" height="320" role="img" aria-label="Every deployment has a test environment any agent may overwrite and a prod environment only a person releases. Both exist for every kind: ChatGPT Site and Demo." preserveAspectRatio="xMidYMid meet"><title>Every deployment has a test environment any agent may overwrite and a prod environment only a person releases. Both exist for every kind: ChatGPT Site and Demo.</title><defs><marker id="fig-arrowhead-deployment-environments" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
 
-    <g class="fig-panel fig-panel--auto">
-    <rect x="0" y="0" width="310" height="210" rx="14"></rect>
+    <g class="fig-panel fig-panel--auto"><rect x="0" y="0" width="330" height="204" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">Written by any agent, any time</text>
+    <text class="fig-text fig-text--heading" x="20" y="56" text-anchor="start">Test</text>
 
-  </g>
-    <text class="fig-text fig-text--eyebrow" x="18" y="30" text-anchor="start">Written by any agent</text>
-    <text class="fig-text fig-text--heading" x="18" y="58" text-anchor="start">Test</text>
-
-      <circle class="fig-dot fig-dot--agent" cx="24" cy="82" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="86" text-anchor="start">Refreshed whenever you want a look</text>
-      <circle class="fig-dot fig-dot--agent" cx="24" cy="106" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="110" text-anchor="start">Overwritten as often as needed</text>
-      <circle class="fig-dot fig-dot--agent" cx="24" cy="130" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="134" text-anchor="start">Keeps no history, marks nothing</text>
+    <circle class="fig-dot fig-dot--agent" cx="25" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="90" text-anchor="start">Refreshed whenever you want a look</text>
+    <circle class="fig-dot fig-dot--agent" cx="25" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="114" text-anchor="start">Overwritten as often as needed</text>
+    <circle class="fig-dot fig-dot--agent" cx="25" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="138" text-anchor="start">Keeps no history</text>
     <g class="fig-chip fig-chip--phase" data-figure-label="deploy-test">
-    <rect x="18" y="162" width="105" height="30" rx="15"></rect>
-    <text x="70.5" y="177" dominant-baseline="central" text-anchor="middle">deploy-test</text>
+    <rect x="20" y="158" width="105" height="28" rx="14"></rect>
+    <text x="72.5" y="172" dominant-baseline="central" text-anchor="middle">deploy-test</text>
   </g>
 
-    <g class="fig-panel fig-panel--wait">
-    <rect x="410" y="0" width="310" height="210" rx="14"></rect>
+    <g class="fig-panel fig-panel--wait"><rect x="470" y="0" width="330" height="204" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="490" y="30" text-anchor="start">Written only when a person asks</text>
+    <text class="fig-text fig-text--heading" x="490" y="56" text-anchor="start">Production</text>
 
-  </g>
-    <text class="fig-text fig-text--eyebrow" x="428" y="30" text-anchor="start">Written by a person</text>
-    <text class="fig-text fig-text--heading" x="428" y="58" text-anchor="start">Production</text>
-
-      <circle class="fig-dot fig-dot--person" cx="434" cy="82" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="448" y="86" text-anchor="start">Moves only when a person asks</text>
-      <circle class="fig-dot fig-dot--person" cx="434" cy="106" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="448" y="110" text-anchor="start">Refuses an uncommitted source</text>
-      <circle class="fig-dot fig-dot--person" cx="434" cy="130" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="448" y="134" text-anchor="start">Records the commit it shipped</text>
+    <circle class="fig-dot fig-dot--person" cx="495" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="90" text-anchor="start">Released from committed files only</text>
+    <circle class="fig-dot fig-dot--person" cx="495" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="114" text-anchor="start">Refuses an uncommitted source</text>
+    <circle class="fig-dot fig-dot--person" cx="495" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="138" text-anchor="start">Records the commit and a release entry</text>
     <g class="fig-chip fig-chip--wait" data-figure-label="release-initiative">
-    <rect x="428" y="162" width="155" height="30" rx="15"></rect>
-    <text x="505.5" y="177" dominant-baseline="central" text-anchor="middle">release-initiative</text>
+    <rect x="490" y="158" width="157" height="28" rx="14"></rect>
+    <text x="568.5" y="172" dominant-baseline="central" text-anchor="middle">release-initiative</text>
   </g>
-        <line class="fig-arrow fig-arrow--person" x1="320" y1="105" x2="400" y2="105" marker-end="url(#fig-arrowhead-deployment-environments)"></line>
-        <text class="fig-text fig-text--edge" x="360" y="93" text-anchor="middle">release</text>
-        <text class="fig-text fig-text--caption" x="0" y="240" text-anchor="start">Both environments exist for every kind of deployment, whatever it publishes to.</text></svg></figure></div>
+        <line class="fig-arrow fig-arrow--person" x1="342" y1="102" x2="458" y2="102" marker-end="url(#fig-arrowhead-deployment-environments)"></line>
+        <text class="fig-text fig-text--edge" x="400" y="76" text-anchor="middle">you ask for</text>
+        <text class="fig-text fig-text--edge" x="400" y="90" text-anchor="middle">a release</text>
+        <text class="fig-text fig-text--eyebrow" x="0" y="232" text-anchor="start">What each environment is, by kind</text>
+    <text class="fig-text fig-text--heading-small" x="0" y="262" text-anchor="start">ChatGPT Site</text><text class="fig-text fig-text--body" x="130" y="262" text-anchor="start">a separate test Site, private by default</text><text class="fig-text fig-text--body" x="470" y="262" text-anchor="start">the production Site, from committed files</text><text class="fig-text fig-text--heading-small" x="0" y="290" text-anchor="start">Demo</text><text class="fig-text fig-text--body" x="130" y="290" text-anchor="start">the branch preview GitHub Pages publishes</text><text class="fig-text fig-text--body" x="470" y="290" text-anchor="start">demos/ on main, live when the branch merges</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="13" data-section-id="deployments" data-audience="both" data-layout="statement" hidden aria-hidden="true">
+    <article class="slide" data-index="16" data-section-id="deployments" data-audience="both" data-layout="statement" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Getting the work in front of someone</p>
-        <h1>A release is enforced, not requested</h1>
-        <div class="slide-copy"><p>It reads from committed files and refuses a source folder with uncommitted changes, so the recorded commit is something to go back to. The two environments may never point at the same place, and the procedure that refreshes a preview cannot reach the released copy at all.</p></div>
+        <header class="slide-bar">
+          <span class="section-label">Deploying to test and production</span>
+          <span class="slide-count">17 / 20</span>
+        </header>
+        <h1>Two kinds of website</h1>
+        <div class="slide-copy"><p>A ChatGPT Site is a full hosted website; test and production are separate Sites, private by default. A demo is a static folder in this repository; its test copy is the branch preview and its production copy goes live on merge to main. A third kind is one table entry and one skill.</p></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="14" data-section-id="deployments" data-audience="both" data-layout="statement" hidden aria-hidden="true">
+    <article class="slide" data-index="17" data-section-id="portability" data-audience="forker" data-layout="figure" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Getting the work in front of someone</p>
-        <h1>Two kinds of website, one process</h1>
-        <div class="slide-copy"><p>Test and production deployments are supported for two kinds of websites:</p>
-<ul><li>ChatGPT Sites, which are full websites with backend services, storage, and a database</li><li>Demo sites, which are for a folder of simple static web pages, stored under this repo&#39;s demos folder</li></ul>
-<p>Deployments are managed by skills that know how to handle both kinds. In future, additional kinds of sites may be supported.</p></div>
-        <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
-        </footer>
-      </div>
-    </article>
-    <article class="slide" data-index="15" data-section-id="portability" data-audience="forker" data-layout="figure" hidden aria-hidden="true">
-      <div class="slide-inner">
-        <p class="section-label">Taking this elsewhere</p>
-        <h1>Fork the process without the content</h1>
-        <div class="slide-copy"><p>If what you want from this repository is the way it works rather than what it publishes, it is simple to do. Whatever the repository defends from its own automation is roughly what a fork needs to take.</p>
-<figure class="figure" data-figure="fork-boundary"><svg class="figure-svg" viewBox="0 0 720 294" width="720" height="294" role="img" aria-label="A fork carries the process-bearing files and leaves this repository&#39;s own content behind. The protected paths are shared/, scripts/, .github/." preserveAspectRatio="xMidYMid meet"><title>A fork carries the process-bearing files and leaves this repository&#39;s own content behind. The protected paths are shared/, scripts/, .github/.</title><defs><marker id="fig-arrowhead-fork-boundary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+        <header class="slide-bar">
+          <span class="section-label">Taking this elsewhere</span>
+          <span class="slide-count">18 / 20</span>
+        </header>
+        <h1>Fork the process, leave the content</h1>
+        <div class="slide-copy"><p>The process is the instruction file, one Node script and its tests, the sweep prompt and configuration, the skills, and four workflows. The protected paths in the sweep configuration are the inventory. Decks, demos, and existing initiatives stay behind.</p>
+<figure class="figure" data-figure="fork-boundary"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 328" width="800" height="328" role="img" aria-label="A fork carries the process files and leaves this repository&#39;s own content behind. The protected paths are shared/, scripts/, .github/." preserveAspectRatio="xMidYMid meet"><title>A fork carries the process files and leaves this repository&#39;s own content behind. The protected paths are shared/, scripts/, .github/.</title><defs><marker id="fig-arrowhead-fork-boundary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
 
-    <g class="fig-panel fig-panel--carry">
-    <rect x="0" y="0" width="340" height="260" rx="14"></rect>
+    <g class="fig-panel fig-panel--carry"><rect x="0" y="0" width="384" height="298" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">Take it</text>
+    <text class="fig-text fig-text--heading" x="20" y="58" text-anchor="start">The process</text>
 
-  </g>
-    <text class="fig-text fig-text--eyebrow" x="18" y="30" text-anchor="start">Take it</text>
-    <text class="fig-text fig-text--heading" x="18" y="58" text-anchor="start">Carries the process</text>
-
-      <circle class="fig-dot fig-dot--carry" cx="24" cy="80" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="84" text-anchor="start">The working instruction file</text>
-      <circle class="fig-dot fig-dot--carry" cx="24" cy="106" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="110" text-anchor="start">Lifecycle scripts and their tests</text>
-      <circle class="fig-dot fig-dot--carry" cx="24" cy="132" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="136" text-anchor="start">The sweep prompt and configuration</text>
-      <circle class="fig-dot fig-dot--carry" cx="24" cy="158" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="162" text-anchor="start">The focused skills</text>
-      <circle class="fig-dot fig-dot--carry" cx="24" cy="184" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="38" y="188" text-anchor="start">The workflows that schedule and publish</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="90" text-anchor="start">AGENTS.md, the working instructions</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="114" text-anchor="start">scripts/initiatives.mjs and its tests</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="138" text-anchor="start">The sweep prompt and sweep.json</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="157" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="162" text-anchor="start">The skills under .claude/skills/</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="181" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="186" text-anchor="start">The four workflows under .github/</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="205" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="210" text-anchor="start">The build script and shared libraries</text>
+    <text class="fig-text fig-text--eyebrow" x="20" y="248" text-anchor="start">Protected paths a sweep may never write</text>
     <g class="fig-chip fig-chip--path" data-figure-label="shared/">
-    <rect x="18" y="220" width="68" height="24" rx="12"></rect>
-    <text x="52" y="232" dominant-baseline="central" text-anchor="middle">shared/</text>
+    <rect x="20" y="256" width="72" height="26" rx="13"></rect>
+    <text x="56" y="269" dominant-baseline="central" text-anchor="middle">shared/</text>
   </g><g class="fig-chip fig-chip--path" data-figure-label="scripts/">
-    <rect x="92" y="220" width="75" height="24" rx="12"></rect>
-    <text x="129.5" y="232" dominant-baseline="central" text-anchor="middle">scripts/</text>
+    <rect x="99" y="256" width="79" height="26" rx="13"></rect>
+    <text x="138.5" y="269" dominant-baseline="central" text-anchor="middle">scripts/</text>
   </g><g class="fig-chip fig-chip--path" data-figure-label=".github/">
-    <rect x="173" y="220" width="75" height="24" rx="12"></rect>
-    <text x="210.5" y="232" dominant-baseline="central" text-anchor="middle">.github/</text>
+    <rect x="185" y="256" width="79" height="26" rx="13"></rect>
+    <text x="224.5" y="269" dominant-baseline="central" text-anchor="middle">.github/</text>
   </g>
 
-    <g class="fig-panel fig-panel--leave">
-    <rect x="380" y="0" width="340" height="260" rx="14"></rect>
+    <g class="fig-panel fig-panel--leave"><rect x="416" y="0" width="384" height="298" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="436" y="30" text-anchor="start">Leave it</text>
+    <text class="fig-text fig-text--heading" x="436" y="58" text-anchor="start">This repository’s content</text>
 
-  </g>
-    <text class="fig-text fig-text--eyebrow" x="398" y="30" text-anchor="start">Leave it</text>
-    <text class="fig-text fig-text--heading" x="398" y="58" text-anchor="start">Belongs to this repository</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="90" text-anchor="start">Published decks</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="114" text-anchor="start">Standalone demos</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="138" text-anchor="start">Existing initiatives and their histories</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="157" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="162" text-anchor="start">This guide, until you regenerate it</text>
 
-      <circle class="fig-dot fig-dot--leave" cx="404" cy="80" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="418" y="84" text-anchor="start">Published decks</text>
-      <circle class="fig-dot fig-dot--leave" cx="404" cy="106" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="418" y="110" text-anchor="start">Standalone demos</text>
-      <circle class="fig-dot fig-dot--leave" cx="404" cy="132" r="3.5"></circle>
-      <text class="fig-text fig-text--body" x="418" y="136" text-anchor="start">Existing initiative histories</text>
-
-        <text class="fig-text fig-text--caption" x="0" y="288" text-anchor="start">Protected paths are the shared machinery a sweep can’t casually rewrite.</text></svg></figure></div>
+        <text class="fig-text fig-text--caption" x="0" y="322" text-anchor="start">The initiatives folder can start empty. The first skill you run creates the first one.</text></svg></figure></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="16" data-section-id="portability" data-audience="forker" data-layout="data" hidden aria-hidden="true">
+    <article class="slide" data-index="18" data-section-id="portability" data-audience="forker" data-layout="data" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Taking this elsewhere</p>
-        <h1>What a fork actually copies</h1>
-        <div class="slide-copy"><p>Four workflows schedule, validate, and publish, and a handful of focused skills carry the procedures the agents reach for by name.</p>
+        <header class="slide-bar">
+          <span class="section-label">Taking this elsewhere</span>
+          <span class="slide-count">19 / 20</span>
+        </header>
+        <h1>What a fork carries</h1>
+        <div class="slide-copy"><p>Four workflows build and publish the site, clean up branch previews, post the digest, and enforce the sweep&#39;s write scope. The skills are one markdown file each.</p>
 <div class="fact-block" data-fact-block="workflows.*" data-fact-view="cards"><div class="fact-cards">
     <article data-fact-key="cleanup-pr-preview.yml">
       <h4>cleanup-pr-preview</h4>
@@ -692,27 +769,30 @@
       <p class="fact-card-meta">Job: scope</p>
     </article></div></div></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
-    <article class="slide" data-index="17" data-section-id="sources" data-audience="both" data-layout="statement" hidden aria-hidden="true">
+    <article class="slide" data-index="19" data-section-id="sources" data-audience="both" data-layout="statement" hidden aria-hidden="true">
       <div class="slide-inner">
-        <p class="section-label">Where the real answers are</p>
-        <h1>Use the guide to find the authoritative answer</h1>
-        <div class="slide-copy"><ul><li><a href="https://github.com/knovak/siteprep/blob/cec58a422b64/AGENTS.md" data-source-path="AGENTS.md">AGENTS.md</a> owns working conventions and verification.</li><li><a href="https://github.com/knovak/siteprep/blob/cec58a422b64/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">The vision</a> owns the lifecycle&#39;s design and reasoning.</li><li><a href="https://github.com/knovak/siteprep/blob/cec58a422b64/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">The technical document</a> owns executable behavior.</li><li><a href="https://github.com/knovak/siteprep/blob/cec58a422b64/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">The build document</a> owns the site build and screenshots.</li><li><a href="https://github.com/knovak/siteprep/blob/cec58a422b64/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">The demos document</a> owns demo publication.</li></ul>
-<p>Every link is pinned to the commit named in the footer of this document, so that it matches this description. You may also prefer to look at the &quot;main&quot; branch for the current version of the linked files.</p></div>
+        <header class="slide-bar">
+          <span class="section-label">Where the real answers are</span>
+          <span class="slide-count">20 / 20</span>
+        </header>
+        <h1>Where the real answers are</h1>
+        <div class="slide-copy"><ul><li><a href="https://github.com/knovak/siteprep/blob/44f0382ad196/AGENTS.md" data-source-path="AGENTS.md">AGENTS.md</a>: working conventions and the lifecycle table.</li><li><a href="https://github.com/knovak/siteprep/blob/44f0382ad196/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">The vision document</a>: the design and its reasoning.</li><li><a href="https://github.com/knovak/siteprep/blob/44f0382ad196/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">The technical document</a>: what the code does.</li><li><a href="https://github.com/knovak/siteprep/blob/44f0382ad196/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">The sweep prompt</a>: what a run follows.</li><li><a href="https://github.com/knovak/siteprep/blob/44f0382ad196/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">The build document</a> and <a href="https://github.com/knovak/siteprep/blob/44f0382ad196/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">the demos document</a>.</li></ul>
+<p>Every link is pinned to the commit in the footer. Names, lists, and numbers in this deck are read from the repository at generation.</p></div>
         <footer>
-          <span>Ken Novak</span>
-          <span>2026-08-27 · cec58a422b64</span>
+          <span>SitePrep Repo Guide · Ken Novak</span>
+          <span>2026-09-02 · 44f0382ad196</span>
         </footer>
       </div>
     </article>
     </main>
     <nav id="controls" aria-label="Slide navigation">
       <button id="previous" type="button" aria-label="Previous slide">←</button>
-      <span id="progress" aria-label="Slide position">1 / 18</span>
+      <span id="progress" aria-label="Slide position">1 / 20</span>
       <button id="next" type="button" aria-label="Next slide">→</button>
     </nav>
   </div>

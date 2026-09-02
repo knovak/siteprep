@@ -8,11 +8,12 @@ import {BLOCK_CSS, parseBlockDirective, renderBlock} from './blocks.mjs';
 import {resolveRepositoryFacts} from './facts.mjs';
 import {FIGURE_CSS} from './figures.mjs';
 import {compileSections, loadSections} from './sections.mjs';
+import {GUIDE_TITLE} from './description.mjs';
 
 const execFile = promisify(execFileCallback);
 const SOURCE_LINK = /\[([^\]]+)\]\(source:([^)]+)\)/g;
 export const MIN_SLIDES = 10;
-export const MAX_SLIDES = 20;
+export const MAX_SLIDES = 24;
 export const MAX_SLIDE_WORDS = 90;
 
 function escapeHtml(value) {
@@ -178,11 +179,14 @@ function deckHtml({slides, facts, generatedDate, sha, repositoryUrl}) {
   const rendered = slides.map((slide, index) => `
     <article class="slide${index === 0 ? ' title-slide' : ''}" data-index="${index}" data-section-id="${escapeHtml(slide.section_id)}" data-audience="${escapeHtml(slide.audience)}" data-layout="${escapeHtml(slide.layout)}" ${index === 0 ? '' : 'hidden'} aria-hidden="${index === 0 ? 'false' : 'true'}">
       <div class="slide-inner">
-        <p class="section-label">${escapeHtml(slide.section_title)}</p>
+        <header class="slide-bar">
+          <span class="section-label">${index === 0 ? escapeHtml(GUIDE_TITLE) : escapeHtml(slide.section_title)}</span>
+          <span class="slide-count">${index + 1} / ${slides.length}</span>
+        </header>
         <h1>${renderInline(slide.title, context)}</h1>
         <div class="slide-copy">${renderMarkdown(slide.body, context)}</div>
         <footer>
-          <span>Ken Novak</span>
+          <span>${escapeHtml(GUIDE_TITLE)} · Ken Novak</span>
           <span>${escapeHtml(generatedDate)} · ${escapeHtml(sha)}</span>
         </footer>
       </div>
@@ -192,73 +196,66 @@ function deckHtml({slides, facts, generatedDate, sha, repositoryUrl}) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How work moves through this repository</title>
+  <title>${escapeHtml(GUIDE_TITLE)}</title>
   <style>
     :root {
-      color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #10182d;
-      --fig-ink: #1d2b47; --fig-muted: #5d6a85; --fig-line: #cbd3e2; --fig-fill: #f0f3fa; --fig-surface: #ffffff;
-      --fig-accent: #3563c4; --fig-accent-soft: #e4ecfb; --fig-accent-ink: #1b3f8f;
-      --fig-warn: #c9871c; --fig-warn-soft: #fdf3e0; --fig-warn-ink: #7d5210;
-      --fig-go: #2f8560; --fig-go-soft: #e4f3ec; --fig-go-ink: #1b5b40;
-      --fig-doc: #e6ebf6; --fig-doc-ink: #46567a;
+      color-scheme: light; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a2233; background: #0f1830;
+      --fig-ink: #1a2233; --fig-muted: #5b6578; --fig-line: #d7dce6; --fig-fill: #f4f6fa; --fig-surface: #ffffff;
+      --fig-accent: #1e4bb8; --fig-accent-soft: #e9effc; --fig-accent-ink: #163a8f;
+      --fig-warn: #c77700; --fig-warn-soft: #fff5e5; --fig-warn-ink: #7a4a00;
+      --fig-go: #2a8c5c; --fig-go-soft: #e6f5ec; --fig-go-ink: #1c5f3f;
+      --fig-doc: #e8ecf4; --fig-doc-ink: #45536f;
     }
     * { box-sizing: border-box; }
-    body { min-width: 320px; min-height: 100vh; margin: 0; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 15% 15%, #2f4d8b 0, #172747 34%, #10182d 72%); }
+    body { min-width: 320px; min-height: 100vh; margin: 0; display: grid; place-items: center; overflow: hidden; background: #0f1830; }
     button { font: inherit; }
     #frame { width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); position: relative; }
-    #deck { position: absolute; inset: 0; overflow: hidden; background: #f5f1e8; box-shadow: 0 28px 80px #0008; }
-    .slide { position: absolute; inset: 0; background: linear-gradient(115deg, #fbf8f1 0 73%, #dfe8ff 73% 100%); }
-    .slide::after { content: ''; position: absolute; right: 0; top: 0; width: 2.2%; height: 100%; background: #ff6a3d; }
+    #deck { position: absolute; inset: 0; overflow: hidden; background: #ffffff; box-shadow: 0 28px 80px #0008; }
+    .slide { position: absolute; inset: 0; background: #ffffff; }
     .slide[hidden] { display: none; }
-    .slide-inner { height: 100%; padding: 7.5% 10% 6.5%; display: flex; flex-direction: column; }
-    .section-label { margin: 0 0 2.4%; color: #49608f; font-size: clamp(11px, 1.25vw, 20px); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    h1 { max-width: 88%; margin: 0; color: #152b56; font-size: clamp(32px, 4.05vw, 65px); line-height: 1.02; letter-spacing: -.045em; text-wrap: balance; }
-    .slide-copy { max-width: 80%; margin-top: 4.2%; color: #2c3446; font-size: clamp(17px, 1.72vw, 28px); line-height: 1.38; }
+    .slide-inner { height: 100%; padding: 0 6.5% 3.6%; display: flex; flex-direction: column; }
+    .slide-bar { display: flex; justify-content: space-between; align-items: center; margin: 0 -7.47% 3.4%; padding: 1.5% 7.47%; background: #163a8f; color: #dfe7ff; font-size: clamp(10px, 1.05vw, 17px); font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .slide-count { font-variant-numeric: tabular-nums; letter-spacing: .04em; opacity: .85; }
+    h1 { max-width: 92%; margin: 0; color: #163a8f; font-size: clamp(28px, 3.6vw, 58px); line-height: 1.06; letter-spacing: -.03em; text-wrap: balance; }
+    .slide-copy { max-width: 84%; margin-top: 3.2%; color: #263047; font-size: clamp(16px, 1.62vw, 27px); line-height: 1.42; }
     .slide-copy p { margin: 0; }
     .slide-copy p + p, .slide-copy ul + p { margin-top: .75em; }
     .slide-copy ul { margin: 0; padding-left: 1.15em; }
-    .slide-copy li + li { margin-top: .35em; }
-    a { color: #214f9d; text-underline-offset: .16em; }
-    code { padding: .08em .28em; border-radius: .22em; color: #823419; background: #ffe2d7; font-size: .88em; }
-    footer { margin-top: auto; padding-top: 2.2%; display: flex; justify-content: space-between; border-top: 1px solid #bfc9db; color: #5b6578; font-size: clamp(10px, .92vw, 15px); letter-spacing: .04em; text-transform: uppercase; }
-    .title-slide { background: linear-gradient(125deg, #132b5c 0 73%, #ff6a3d 73% 100%); }
-    .title-slide::after { display: none; }
-    .title-slide .slide-inner { justify-content: center; padding-right: 18%; }
-    .title-slide .section-label, .title-slide footer { color: #b9c9e9; border-color: #516a9a; }
-    .title-slide h1 { color: white; font-size: clamp(44px, 5.7vw, 91px); }
-    .title-slide .slide-copy { max-width: 70%; color: #e5ebf8; font-size: clamp(19px, 2vw, 32px); }
-    #controls { position: absolute; left: 0; right: 0; bottom: 1.5%; z-index: 3; display: flex; justify-content: center; align-items: center; gap: 1.1em; color: #556177; font-size: clamp(10px, .9vw, 14px); }
+    .slide-copy li + li { margin-top: .4em; }
+    a { color: #1e4bb8; text-underline-offset: .16em; }
+    code { padding: .06em .3em; border-radius: .22em; color: #163a8f; background: #e9effc; font-size: .9em; }
+    footer { margin-top: auto; padding-top: 1.8%; display: flex; justify-content: space-between; border-top: 1px solid #d7dce6; color: #5b6578; font-size: clamp(9px, .85vw, 14px); letter-spacing: .04em; text-transform: uppercase; }
+    /* The title slide is the one dark slide. */
+    .title-slide { background: linear-gradient(135deg, #0f1f4d, #163a8f 70%, #1e4bb8); }
+    .title-slide .slide-bar { background: transparent; color: #b7c6f2; }
+    .title-slide .slide-inner { justify-content: center; }
+    .title-slide h1 { max-width: 80%; color: #ffffff; font-size: clamp(42px, 6vw, 96px); }
+    .title-slide .slide-copy { max-width: 68%; color: #dfe7ff; font-size: clamp(17px, 1.85vw, 30px); }
+    .title-slide footer { border-color: #3a56a5; color: #b7c6f2; }
+    #controls { position: absolute; left: 0; right: 0; bottom: 1.2%; z-index: 3; display: flex; justify-content: center; align-items: center; gap: 1.1em; color: #5b6578; font-size: clamp(10px, .9vw, 14px); }
     #controls button { border: 0; padding: .2em .5em; color: inherit; background: transparent; font-size: clamp(22px, 2vw, 32px); font-weight: 850; line-height: .75; cursor: pointer; }
     #controls button:disabled { opacity: .3; cursor: default; }
     #progress { min-width: 5em; text-align: center; font-variant-numeric: tabular-nums; }
-    #frame:has(.title-slide:not([hidden])) #controls { color: #f7f9ff; text-shadow: 0 1px 7px #000c; }
-    #frame:has(.title-slide:not([hidden])) #controls button:disabled { opacity: .58; }
-    @media (max-aspect-ratio: 4/3) { .slide-copy { max-width: 88%; } h1 { max-width: 92%; } }
+    #frame:has(.title-slide:not([hidden])) #controls { color: #eef2ff; text-shadow: 0 1px 6px #0009; }
+    #frame:has(.title-slide:not([hidden])) #controls button:disabled { opacity: .5; }
+    @media (max-aspect-ratio: 4/3) { .slide-copy { max-width: 92%; } h1 { max-width: 96%; } }
 
     /* Layout variants. A slide's shape follows what it carries. */
-    /* A figure needs the whole stage: the decorative wedge is dropped so a
-       diagram is never cut across by it. */
-    .slide[data-layout="figure"] { background: #fbf8f1; }
-    .slide[data-layout="figure"]::after { background: #3563c4; }
-    .slide[data-layout="figure"] .slide-inner { padding: 4.6% 6% 4.6%; }
-    .slide[data-layout="figure"] h1 { max-width: 86%; font-size: clamp(25px, 3vw, 47px); }
-    .slide[data-layout="figure"] .slide-copy { max-width: 100%; margin-top: 2%; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 2%; font-size: clamp(13px, 1.32vw, 21px); }
-    .slide[data-layout="figure"] .figure { margin: 0; min-height: 0; }
+    .slide[data-layout="figure"] .slide-bar { margin-bottom: 2.2%; }
+    .slide[data-layout="figure"] h1 { font-size: clamp(24px, 2.9vw, 46px); }
+    .slide[data-layout="figure"] .slide-copy { max-width: 100%; margin-top: 1.6%; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 1.6%; font-size: clamp(13px, 1.25vw, 20px); }
+    .slide[data-layout="figure"] .figure { margin: 0; flex: 1; min-height: 0; display: flex; align-items: center; }
     .slide[data-layout="figure"] .figure-svg { max-width: 100%; max-height: 100%; }
-    .slide[data-layout="figure"] p { max-width: 80%; margin: 0; }
-    .slide[data-layout="data"] { background: linear-gradient(160deg, #fbf8f1 0 58%, #eef3ff 100%); }
-    .slide[data-layout="data"] .slide-inner { padding: 5.6% 7.5% 5%; }
-    .slide[data-layout="data"] h1 { max-width: 82%; font-size: clamp(28px, 3.5vw, 55px); }
-    .slide[data-layout="data"] .slide-copy { max-width: 100%; margin-top: 3%; font-size: clamp(15px, 1.5vw, 24px); }
-    .slide[data-layout="data"] .fact-block { margin: 3% 0 0; }
-    .slide[data-layout="data"] p + .fact-block { margin-top: 2.4%; }
-    .slide[data-layout="statement"] .slide-copy { max-width: 74%; }
+    .slide[data-layout="figure"] p { max-width: 86%; margin: 0; }
+    .slide[data-layout="data"] h1 { font-size: clamp(26px, 3.2vw, 50px); }
+    .slide[data-layout="data"] .slide-copy { max-width: 100%; margin-top: 2.4%; font-size: clamp(14px, 1.42vw, 23px); overflow: hidden; }
+    .slide[data-layout="data"] .fact-block { margin: 2.4% 0 0; }
+    .slide[data-layout="statement"] .slide-copy { max-width: 80%; margin-top: 4%; font-size: clamp(19px, 2.05vw, 33px); line-height: 1.45; }
     /* A slide is a fixed frame. However long a description grows in the
        repository, a card clamps rather than pushing the deck off the slide. */
     .slide-copy .fact-cards { grid-template-columns: repeat(auto-fit, minmax(min(200px, 45%), 1fr)); align-content: start; }
     .slide-copy .fact-cards article { overflow: hidden; }
-    .slide-copy .fact-cards p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
-    .slide[data-layout="data"] .slide-copy { overflow: hidden; }
+    .slide-copy .fact-cards p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; }
 ${FIGURE_CSS}${BLOCK_CSS}  </style>
 </head>
 <body data-generated-date="${escapeHtml(generatedDate)}" data-source-sha="${escapeHtml(sha)}">
