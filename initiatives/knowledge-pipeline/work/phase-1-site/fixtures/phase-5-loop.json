@@ -1,0 +1,45 @@
+{
+  "collectionId": "collection:community-heat",
+  "topics": [
+    {"id": "topic:community-heat-resilience", "title": "Community heat resilience"},
+    {"id": "topic:cooling-access", "title": "Cooling access"}
+  ],
+  "sources": [
+    {"id": "source:one", "versions": [{"versionId": "version:source:one", "activityId": "activity:source:one"}]},
+    {"id": "source:two", "versions": [{"versionId": "version:source:two", "activityId": "activity:source:two"}]},
+    {"id": "source:three", "versions": [{"versionId": "version:source:three", "activityId": "activity:source:three"}]},
+    {"id": "source:four", "versions": [{"versionId": "version:source:four", "activityId": "activity:source:four"}]},
+    {"id": "source:five", "versions": [{"versionId": "version:source:five", "activityId": "activity:source:five"}]},
+    {"id": "source:six", "versions": [{"versionId": "version:source:six", "activityId": "activity:source:six"}]}
+  ],
+  "narratives": [
+    {"id": "narrative:new", "type": "narrative", "title": "New cooling-centre evidence", "topicId": "topic:community-heat-resilience", "stage": "integration", "currentVersionId": "version:narrative:new", "versions": [{"versionId": "version:narrative:new", "state": "accepted", "text": "A new fixture observation adds a possible cooling-centre consideration.", "sourceVersionIds": ["version:source:one", "version:source:two"], "sourceClusterIds": ["cluster:one", "cluster:two"], "activityId": "activity:narrative:new"}]},
+    {"id": "narrative:support", "type": "narrative", "title": "Supporting evidence", "topicId": "topic:community-heat-resilience", "stage": "integration", "currentVersionId": "version:narrative:support", "versions": [{"versionId": "version:narrative:support", "state": "accepted", "text": "A second fixture narrative supports the existing preparedness section.", "sourceVersionIds": ["version:source:one"], "sourceClusterIds": ["cluster:one"], "activityId": "activity:narrative:support"}]},
+    {"id": "narrative:contradict", "type": "narrative", "title": "Contradictory evidence", "topicId": "topic:community-heat-resilience", "stage": "integration", "currentVersionId": "version:narrative:contradict", "versions": [{"versionId": "version:narrative:contradict", "state": "accepted", "text": "A fixture disagreement remains unresolved.", "sourceVersionIds": ["version:source:three"], "sourceClusterIds": ["cluster:three"], "activityId": "activity:narrative:contradict"}]},
+    {"id": "narrative:redundant", "type": "narrative", "title": "Syndicated repeat", "topicId": "topic:community-heat-resilience", "stage": "integration", "currentVersionId": "version:narrative:redundant", "versions": [{"versionId": "version:narrative:redundant", "state": "accepted", "text": "A syndicated fixture repeats an existing point.", "sourceVersionIds": ["version:source:four"], "sourceClusterIds": ["cluster:one"], "activityId": "activity:narrative:redundant"}]},
+    {"id": "narrative:update", "type": "narrative", "title": "Updated implementation note", "topicId": "topic:community-heat-resilience", "stage": "integration", "currentVersionId": "version:narrative:update", "versions": [{"versionId": "version:narrative:update", "state": "accepted", "text": "A fixture update changes an implementation date.", "sourceVersionIds": ["version:source:five"], "sourceClusterIds": ["cluster:four"], "activityId": "activity:narrative:update"}]},
+    {"id": "narrative:cooling", "type": "narrative", "title": "Cooling access baseline", "topicId": "topic:cooling-access", "stage": "integration", "currentVersionId": "version:narrative:cooling", "versions": [{"versionId": "version:narrative:cooling", "state": "accepted", "text": "The no-document topic has one accepted fixture narrative.", "sourceVersionIds": ["version:source:six"], "sourceClusterIds": ["cluster:five"], "activityId": "activity:narrative:cooling"}]}
+  ],
+  "documents": [
+    {"id": "document:community-heat-resilience", "type": "standing-document", "topicId": "topic:community-heat-resilience", "currentVersionId": "version:document:heat:v1", "versions": [{"versionId": "version:document:heat:v1", "state": "accepted", "text": "Project-authored fixture standing document.", "claims": [], "author": {"kind": "human", "id": "actor:fixture-author"}, "approval": {"actor": {"kind": "human", "id": "actor:fixture-author"}, "approvedAt": "2026-08-01T00:00:00.000Z", "acceptedTextHash": "sha256:fixture"}, "activityId": "activity:document:v1"}]}
+  ],
+  "relationships": [
+    {"id": "relationship:assign:new", "type": "assigned-to-topic", "fromEntityId": "narrative:new", "fromVersionId": "version:narrative:new", "toEntityId": "topic:community-heat-resilience", "state": "accepted", "activityId": "activity:assign:new"},
+    {"id": "relationship:evidence:new", "type": "evidence-for", "fromEntityId": "source:one", "fromVersionId": "version:source:one", "toEntityId": "narrative:new", "toVersionId": "version:narrative:new", "state": "accepted", "activityId": "activity:evidence:new"}
+  ],
+  "assessments": [
+    {"id": "assessment:source:one", "targetVersionId": "version:source:one", "dimensions": {"relevance": 4, "quality": 3, "novelty": 3, "importance": 3}, "activityId": "activity:assessment:one"}
+  ],
+  "tagAssignments": [
+    {"id": "tag:source:one:heat", "entityId": "source:one", "tag": "topic:heat", "state": "accepted", "activityId": "activity:tag:one"}
+  ],
+  "activities": [
+    {"id": "activity:source:one", "actor": {"kind": "human", "id": "actor:harvester"}, "type": "source-version-created"},
+    {"id": "activity:narrative:new", "actor": {"kind": "human", "id": "actor:narrative-reviewer"}, "type": "narrative-accepted"},
+    {"id": "activity:assign:new", "actor": {"kind": "human", "id": "actor:topic-reviewer"}, "type": "relationship-accepted"},
+    {"id": "activity:evidence:new", "actor": {"kind": "human", "id": "actor:evidence-reviewer"}, "type": "relationship-accepted"},
+    {"id": "activity:assessment:one", "actor": {"kind": "human", "id": "actor:assessment-reviewer"}, "type": "assessment-accepted"},
+    {"id": "activity:tag:one", "actor": {"kind": "human", "id": "actor:tag-reviewer"}, "type": "tag-accepted"},
+    {"id": "activity:document:v1", "actor": {"kind": "human", "id": "actor:fixture-author"}, "type": "standing-document-approved"}
+  ]
+}

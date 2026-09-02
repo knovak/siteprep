@@ -47,3 +47,7 @@ Proposed a live-model fixture review: 75% of operations accepted unchanged, with
 ## 2026-09-02 — Phase 4 - build topics, pair relationships, and mini narratives
 
 Implemented the exact relationship registry, many-to-many topic assignments, human-reviewed mini narratives, evidence closure, topic ordering, inverse-label inspection, and the 1,000-edge query budget in the portable Site core.
+
+## 2026-09-02 — Phase 5 - add standing documents, comparison, and archive closure
+
+Built immutable standing-document revision and comparison contracts, inspectable five-dimension urgency, human-only approval, disposition-gated archival, archive search/reopen, and backward claim audit; all 44 Site-core tests pass.
