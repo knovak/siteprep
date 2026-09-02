@@ -1,7 +1,7 @@
 {
   "title": "Tide Here",
   "summary": "A website that displays upcoming tide, moon, and sun times for the user's location.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [],
   "deployments": [
@@ -27,14 +27,5 @@
       }
     }
   ],
-  "todo": [
-    {
-      "id": "add-device-local-pins",
-      "title": "Add device-local pinned places without provider requests until a pin is opened",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false
-    }
-  ]
+  "todo": []
 }
