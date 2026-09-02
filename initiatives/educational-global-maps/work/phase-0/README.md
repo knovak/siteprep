@@ -166,6 +166,34 @@ tests exercise actual-period labels, temporal Canvas overlays, raster
 capability refusal, immediate pause, and reduced motion at the same three
 required viewports.
 
+## Phase 4 composer, educational scenes, and portability
+
+`src/composer.mjs` is the save boundary for prepared lessons. It validates the
+exact dataset revision, geography or reviewed crosswalk, unit formula, time
+alignment rule, rights state, projection support, attribution, and educational
+framing before it creates an immutable scene revision. Findings name the layer
+and a corrective action; a refused candidate never produces a revision.
+
+Definitions, caveats, discussion prompts, interpretive claims with their own
+sources, and ordered presentation stops are content-addressed with the scene.
+`sceneRevision` share links resolve that exact object even after a later dataset
+appears. Comparing an upgrade reports every changed dataset, geography, and
+transformation; accepting it saves a successor instead of changing the shared
+revision. An incompatible successor stays a reported comparison.
+
+Portable administration walks only the selected scene closure. Permitted asset
+bytes are checksum-bound into the bundle, while live or restricted assets stay
+references with their access limitation and expiry. Restore verifies bytes and
+a memory budget before accepting the scene. The generated offline document has
+no provider URL or application-host dependency and makes every omitted
+reference visible. `fixtures/educational-scenes.json` records scalar, compatible
+layered, and flow-over-field lessons plus a newer population revision.
+
+The Phase 4 browser surface adds a prepared-scene chooser, versioned teaching
+framing, ordered stops, pinned share address, explicit upgrade comparison, and
+portable-bundle status to the existing single-device reader. It remains a
+reader/presenter rather than placing a full authoring panel on the 4K display.
+
 ## Canonicalization profile
 
 - Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate

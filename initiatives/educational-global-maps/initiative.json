@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-4-composer-educational-scenes-and-portability",
-      "title": "Phase 4 - add composer, educational scenes, and portability",
+      "id": "phase-5-detached-controller-and-reference-relay",
+      "title": "Phase 5 - build detached controller and reference relay",
       "state": "actionable",
       "value": "high",
       "effort": "large",
