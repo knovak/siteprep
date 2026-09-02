@@ -99,6 +99,46 @@ Both were checked 2026-09-02. The committed fixtures, not a live response, are
 the test inputs. Refreshing either source is an explicit reviewed change to its
 version, checksum, recorded bytes, and revision report.
 
+## Phase 2 single-device renderer
+
+`src/renderer.mjs` is the capability boundary for the first browser reader. It
+uses D3's named Equal Earth projection and the `d3-geo-polygon` implementation
+of Buckminster Fuller's Airocean projection, plus one fixed project-authored
+population cartogram fixture. A projection change rebuilds geometry while
+retaining the selected dataset revision, period, encoding, citations, camera,
+and selected record. A layer that does not advertise the requested projection
+returns `renderer.projection.refused`; the accepted projection and layers stay
+unchanged.
+
+The browser surface in `app/` draws marks to Canvas and keeps a synchronized
+semantic table, exact legend classes, source links, period, units, uncertainty,
+and missing status beside it. Exact values are selected only while inspection
+is paused. The reference raster is deliberately compatible only with Equal
+Earth so the visible refusal path can be exercised without pretending a raster
+was reprojected. Pan and zoom affect session camera state, not the pinned data
+revision. `app/THIRD_PARTY_NOTICES.md` records the pinned D3 packages bundled
+with the reader and their ISC licence.
+
+`fixtures/renderer-scene.json` contains simplified project-authored country
+polygons, recorded source citations, five point fixtures, and the fixed
+cartogram cells. Its geometry is explicitly instructional rather than an
+authoritative boundary product. The cartogram names UN World Population
+Prospects 2024 and 2023 as its population basis, retains the scalar legend
+colors, and offers Equal Earth as the conventional reference.
+
+Build and verify the browser reader from this directory:
+
+```sh
+npm run build:app
+npm run test:browser
+```
+
+The browser matrix runs at 430×932, 1440×900, and 3840×2160. It checks Canvas
+rendering, semantic parity, pinned-scene preservation, the raster refusal,
+cartogram evidence, reduced motion, and horizontal overflow. `npm test` also
+builds the browser bundle and runs the deterministic projection, model,
+compatibility, semantic, viewport, inspection, and 250-feature budget tests.
+
 ## Canonicalization profile
 
 - Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate

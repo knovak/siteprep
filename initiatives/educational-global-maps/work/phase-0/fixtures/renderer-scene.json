@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "scene": {
+    "id": "scene:phase-2-projection-comparison",
+    "title": "How world views change",
+    "summary": "Compare a small, rights-safe country population fixture and a point-event fixture without changing their pinned data revisions.",
+    "period": "2023",
+    "projection": "equal-earth",
+    "camera": {"center": [0, 8], "zoom": 1, "pan": [0, 0]},
+    "selectedId": "country:FRA",
+    "citations": [
+      {
+        "id": "citation:population",
+        "label": "UN World Population Prospects 2024, processed by Our World in Data",
+        "url": "https://ourworldindata.org/grapher/population",
+        "rights": "CC BY 3.0 IGO",
+        "revision": "2024-07-15"
+      },
+      {
+        "id": "citation:fixture",
+        "label": "Siteprep Phase 2 instructional geometry and point fixture",
+        "url": "https://github.com/knovak/siteprep",
+        "rights": "Project-authored test fixture",
+        "revision": "phase-2-v1"
+      }
+    ]
+  },
+  "datasets": [
+    {
+      "id": "dataset:population",
+      "title": "Population by country",
+      "profile": "place-time-series",
+      "revision": "dataset:owid-population-2023@2024-07-15",
+      "period": "2023",
+      "measure": "Population",
+      "unit": "people",
+      "encoding": "fixed population classes",
+      "projections": ["equal-earth", "airocean", "population-cartogram"],
+      "citationIds": ["citation:population", "citation:fixture"],
+      "legend": [
+        {"id": "small", "label": "Under 70 million", "min": 0, "max": 70000000, "color": "#5cc8ff"},
+        {"id": "medium", "label": "70–150 million", "min": 70000000, "max": 150000000, "color": "#635bff"},
+        {"id": "large", "label": "More than 150 million", "min": 150000000, "max": null, "color": "#f36f9b"},
+        {"id": "missing", "label": "Missing", "status": "missing", "color": "#475569"}
+      ]
+    },
+    {
+      "id": "dataset:learning-centres",
+      "title": "Learning centres",
+      "profile": "points-events",
+      "revision": "dataset:phase-2-learning-centres@fixture-1",
+      "period": "2023",
+      "measure": "Recorded centre",
+      "unit": "location",
+      "encoding": "point symbols",
+      "projections": ["equal-earth", "airocean"],
+      "citationIds": ["citation:fixture"],
+      "legend": [
+        {"id": "observed", "label": "Recorded fixture point", "status": "measured", "color": "#ffcc66"},
+        {"id": "missing", "label": "Location unavailable", "status": "missing", "color": "#475569"}
+      ]
+    }
+  ],
+  "layers": [
+    {"id": "layer:population", "datasetId": "dataset:population", "profile": "place-time-series", "projections": ["equal-earth", "airocean", "population-cartogram"]},
+    {"id": "layer:learning-centres", "datasetId": "dataset:learning-centres", "profile": "points-events", "projections": ["equal-earth", "airocean"]},
+    {"id": "layer:reference-raster", "datasetId": "dataset:reference-raster", "profile": "raster-frame", "projections": ["equal-earth"], "title": "Conventional-grid reference raster"}
+  ],
+  "geography": {
+    "id": "geography:phase-2-instructional-world",
+    "title": "Simplified instructional country geometry",
+    "version": "phase-2-v1",
+    "caveat": "Project-authored simplified polygons are for projection behavior tests, not authoritative boundaries.",
+    "features": [
+      {"type": "Feature", "id": "country:FRA", "properties": {"label": "France", "value": 66438828, "status": "measured", "uncertainty": "Recorded fixture value"}, "geometry": {"type": "Polygon", "coordinates": [[[-5,42],[-5,51],[8,51],[8,42],[-5,42]]]}},
+      {"type": "Feature", "id": "country:DEU", "properties": {"label": "Germany", "value": 84548233, "status": "measured", "uncertainty": "Recorded fixture value"}, "geometry": {"type": "Polygon", "coordinates": [[[5,47],[5,55],[15,55],[15,47],[5,47]]]}},
+      {"type": "Feature", "id": "country:GBR", "properties": {"label": "United Kingdom", "value": 68682965, "status": "measured", "uncertainty": "Recorded fixture value"}, "geometry": {"type": "Polygon", "coordinates": [[[-8,50],[-8,59],[2,59],[2,50],[-8,50]]]}},
+      {"type": "Feature", "id": "country:BRA", "properties": {"label": "Brazil", "value": 211998573, "status": "measured", "uncertainty": "Illustrative WPP-derived fixture value"}, "geometry": {"type": "Polygon", "coordinates": [[[-74,-34],[-74,-8],[-60,12],[-35,5],[-35,-34],[-74,-34]]]}},
+      {"type": "Feature", "id": "country:AUS", "properties": {"label": "Australia", "value": 26451000, "status": "measured", "uncertainty": "Illustrative fixture value"}, "geometry": {"type": "Polygon", "coordinates": [[[113,-44],[113,-22],[129,-10],[154,-10],[154,-44],[113,-44]]]}},
+      {"type": "Feature", "id": "country:UNK", "properties": {"label": "No reported value", "value": null, "status": "missing", "uncertainty": "Missing by design"}, "geometry": {"type": "Polygon", "coordinates": [[[20,5],[20,18],[37,18],[37,5],[20,5]]]}}
+    ]
+  },
+  "points": [
+    {"id": "point:paris", "label": "Paris learning centre", "coordinates": [2.35,48.86], "value": 1, "status": "measured", "uncertainty": "Rounded city coordinate"},
+    {"id": "point:nairobi", "label": "Nairobi learning centre", "coordinates": [36.82,-1.29], "value": 1, "status": "measured", "uncertainty": "Rounded city coordinate"},
+    {"id": "point:seoul", "label": "Seoul learning centre", "coordinates": [126.98,37.57], "value": 1, "status": "measured", "uncertainty": "Rounded city coordinate"},
+    {"id": "point:lima", "label": "Lima learning centre", "coordinates": [-77.04,-12.05], "value": 1, "status": "measured", "uncertainty": "Rounded city coordinate"},
+    {"id": "point:suva", "label": "Suva learning centre", "coordinates": [178.45,-18.14], "value": 1, "status": "measured", "uncertainty": "Rounded city coordinate"}
+  ],
+  "cartogram": {
+    "id": "cartogram:population-2023-fixture",
+    "source": "UN World Population Prospects 2024",
+    "year": "2023",
+    "geometryVersion": "phase-2-fixed-v1",
+    "caveat": "Fixed instructional rectangles preserve region colors but are not calculated cartogram boundaries.",
+    "cells": [
+      {"id": "country:GBR", "x": 0.29, "y": 0.20, "width": 0.12, "height": 0.18},
+      {"id": "country:FRA", "x": 0.42, "y": 0.28, "width": 0.13, "height": 0.20},
+      {"id": "country:DEU", "x": 0.56, "y": 0.18, "width": 0.15, "height": 0.23},
+      {"id": "country:BRA", "x": 0.18, "y": 0.54, "width": 0.26, "height": 0.32},
+      {"id": "country:AUS", "x": 0.69, "y": 0.60, "width": 0.18, "height": 0.17},
+      {"id": "country:UNK", "x": 0.54, "y": 0.48, "width": 0.10, "height": 0.12}
+    ]
+  }
+}
