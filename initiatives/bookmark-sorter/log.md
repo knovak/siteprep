@@ -464,3 +464,9 @@ bookmark content or treating a Sites version replacement as a database backup.
 ## 2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features
 
 Proposed five optional refinements with expected value, likely size, privacy boundaries, and evidence: honest metadata fallback cards, a private usage-evidence summary, saved-text selection, a file-based open-tabs bridge, and named private collection collaborators.
+
+## 2026-09-02 — Revise the optional-improvements proposal after review
+
+Added exact-title search as a guarded recovery path for unreachable bookmark
+URLs, and made the proposed metadata fallback concrete with a compact text-card
+mockup and an explicit account of what it does and does not display.
