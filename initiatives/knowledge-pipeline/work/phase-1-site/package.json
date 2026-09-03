@@ -12,6 +12,7 @@
     "test": "node --test test/*.test.mjs",
     "lint": "oxlint",
     "format": "oxfmt",
+    "prepare:representative-use": "node scripts/prepare-representative-use.mjs",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

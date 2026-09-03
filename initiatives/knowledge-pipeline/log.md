@@ -55,3 +55,13 @@ Built immutable standing-document revision and comparison contracts, inspectable
 ## 2026-09-03 — Phase 6 - recovery, scheduling, and scale
 
 Added a credential-free shared export and due-schedule adapter, deterministic idempotency, 1/5/20-minute retry and 14-daily/6-monthly retention policies, knowledge-space backup, atomic verified restore, v0 migration, remapped bounded copy, resumable reference-aware erasure, cursor paging, and a 10k-entity/50k-version/100k-relationship hosted-equivalent scale fixture. All 54 Node tests and the Vinext build pass. The hosted heartbeat remains inactive because this sweep did not include explicit permission; live R2 recovery and witnessed use remain Phase 7 gates.
+
+## 2026-09-03 — Phase 7 representative-use evidence kit
+
+Added a non-overwriting evidence template and validator for the complete
+five-stage witnessed sitting, operational measurements, equivalent web/admin
+exports, disposable restore, offline continuity, collection isolation, and the
+four deferred distribution topologies. The checked record deliberately keeps
+the independent witness, measurements, package hash, and live disposable
+restore pending. Phase 7 is blocked on those human and hosted results rather
+than being declared complete from deterministic tests.

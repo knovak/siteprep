@@ -104,6 +104,34 @@ given. This local evidence does not claim a live hosted schedule, physical R2
 restore, or witnessed representative use; those remain separate deployment and
 Phase 7 gates.
 
+## Representative-use evidence boundary
+
+`lib/representative-use.mjs` defines the Phase 7 evidence contract instead of
+letting a green suite stand in for a person. It requires an independent role,
+all fourteen witnessed actions across Harvest, Tag, Promote, Integrate, and
+Archive, eight non-negative operational measurements, web/admin export
+equivalence, a disposable hosted restore, offline continuity, collection
+isolation, and either a passed schedule or an explicit record that the hosted
+schedule was not authorized.
+
+`fixtures/phase-7-representative-use.json` is the current honest record. It
+names the project-authored rights-safe fixture and all four intake forms, but
+keeps the independent witness, measurements, package hash, and disposable
+restore pending. The model, skill, app, and remote-body flags are false because
+accepted knowledge must remain usable without them. The distribution
+comparison always carries all four topologies from `spec.md` and makes no
+permanent recommendation from one bounded sitting.
+
+Prepare a new, non-overwriting witness record with:
+
+```bash
+npm run prepare:representative-use -- /path/to/new/evidence.json
+```
+
+Fill that copy during the witnessed sitting; do not replace the checked
+pending record or insert a person's unnecessary identity. `representativeUseStatus`
+refuses completion until every required observation is present.
+
 ## Harvest boundary
 
 `lib/harvest.mjs` is the common validate-and-preview boundary for direct and
