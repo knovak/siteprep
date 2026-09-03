@@ -499,3 +499,7 @@ Removed the underscore-as-space proposal because it is being implemented
 separately. Reframed selection search as one consistent `*string*` contains form
 for title, folder, tag, and source, and added an optional collapsed Help details
 section that keeps essential guidance visible.
+
+## 2026-09-03 — Choose a Bookmark Sorter improvement or declare the initiative dormant
+
+Proposed contains matching in selections as the next refinement; merging accepts the recommendation.

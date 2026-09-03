@@ -29,13 +29,12 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement-after-improvement-menu",
-      "title": "Choose a Bookmark Sorter improvement or declare the initiative dormant",
-      "state": "blocked",
+      "id": "contains-matching-selections",
+      "title": "Allow contains matching in selections",
+      "state": "actionable",
       "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose a proposed improvement from notes.md, request another proposal round, or declare the initiative dormant"
+      "effort": "medium",
+      "advances_stage": false
     }
   ]
 }
