@@ -1,0 +1,55 @@
+{
+  "schema": "knowledge-pipeline/representative-use/v1",
+  "createdAt": "2026-09-03T00:00:00.000Z",
+  "sourceSet": {
+    "name": "Community heat resilience project-authored fixture",
+    "rightsSafe": true,
+    "intakePaths": ["direct", "browser-saved", "bookmark-sorter/v1", "newsletter-story-harvester/v1"],
+    "publishesData": false
+  },
+  "independentWitness": {
+    "status": "needed",
+    "role": null,
+    "independentOfImplementation": null,
+    "actions": [
+      {"id": "import-direct", "status": "pending"},
+      {"id": "import-browser-saved", "status": "pending"},
+      {"id": "import-native-adapter", "status": "pending"},
+      {"id": "correct-tags-and-assessments", "status": "pending"},
+      {"id": "promote-and-defer", "status": "pending"},
+      {"id": "assign-one-source-to-two-topics", "status": "pending"},
+      {"id": "rewrite-narrative", "status": "pending"},
+      {"id": "trace-retained-original", "status": "pending"},
+      {"id": "review-documented-topic", "status": "pending"},
+      {"id": "review-undocumented-topic", "status": "pending"},
+      {"id": "rewrite-or-reject-document-change", "status": "pending"},
+      {"id": "approve-standing-document", "status": "pending"},
+      {"id": "archive-four-dispositions", "status": "pending"},
+      {"id": "reopen-narrative", "status": "pending"}
+    ],
+    "corrections": [],
+    "comprehensionProblems": []
+  },
+  "measurements": {
+    "sourceCount": null,
+    "assetCount": null,
+    "reviewMinutes": null,
+    "correctionCount": null,
+    "storageBytes": null,
+    "exportMilliseconds": null,
+    "restoreMilliseconds": null,
+    "operatorMinutes": null
+  },
+  "exports": {"webAndAdminEquivalent": true, "packageHash": null},
+  "recovery": {"disposableRestore": "pending-live-test", "originalSiteSecretRequired": false},
+  "schedule": {"status": "inactive-not-authorized"},
+  "offlineContinuity": {
+    "modelAvailable": false,
+    "skillAvailable": false,
+    "appAvailable": false,
+    "remoteSourceBodiesAvailable": false,
+    "acceptedKnowledgeUsable": true
+  },
+  "isolation": {"crossCollectionLeakage": false, "findings": []},
+  "distributionObservations": {"sharingRequested": null, "selfHostingRequired": null, "operatorNotes": null}
+}
