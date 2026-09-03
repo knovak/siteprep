@@ -230,3 +230,32 @@ a.tag:focus {
     flex-direction: column;
   }
 }
+
+.table-scroll {
+  margin: 0 0 1rem;
+  overflow-x: auto;
+}
+
+.table-scroll table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.table-scroll th,
+.table-scroll td {
+  padding: 0.7rem;
+  border: 1px solid #dbe3ee;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table-scroll th {
+  background: var(--primary);
+  color: #fff;
+}
+
+.table-scroll tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
