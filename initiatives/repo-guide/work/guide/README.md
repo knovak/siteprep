@@ -82,23 +82,26 @@ the walk-through never moves the next target away from the pointer.
 The visible color key separates the three contexts instead of asking color to
 carry meaning on its own. Work items use teal for ready, blue for active, violet
 for review, amber for blocked, and gray for passed over. Sweep phases are gray
-when not running, blue while running, and green when finished in the current
-sweep. Amber and blue identify person and agent steps; orange marks a stage that
-just moved, while green marks completed stages. Once the sweep step ends, its
-phase display returns to gray rather than leaving an unrelated person step
-looking like a completed sweep. A work path is labeled as milestones for the
-item named by the current step; it can cross a stage boundary and is replaced
-when the walk-through follows another item.
+when they are not involved in the step, blue for the phase acting in the step,
+and green when a phase has finished during the animated sweep. Work-producing
+agent steps highlight `work`, the review round highlights `respond`, and the
+blocker survey highlights `survey`; person-controlled steps stay gray. Amber
+and blue identify person and agent steps; orange marks a stage that just moved,
+while green marks completed stages. A work path is labeled as milestones for
+the item named by the current step; it can cross a stage boundary and is
+replaced when the walk-through follows another item.
 
-The fixed story now includes the optional research fork at the wish stage, the
-plan critique before implementation, and the two items seeded when work enters
-refining. Both implementation increments visibly move from item to branch,
-write-scope check, branch preview, ready pull request, and your merge. A waiting
-question visibly adds a digest line and your answer removes it. Production is a
-separate release step: it becomes actionable only after your explicit request.
-Items still carry stable keys and the item list is *reconciled* rather than
-replaced, so an item that survives a step is the same element: it recolours in
-place, slides when a neighbour leaves, and collapses out when it merges.
+The fixed story now includes the optional `background.md` fork at the wish
+stage, the plan critique before implementation, and the two items seeded when
+work enters refining. Redundant merge and pull-request-only screens are folded
+into their neighboring steps. Both implementation increments visibly move from
+item to branch, write-scope check, branch preview, ready pull request, and your
+merge. A waiting question visibly adds a digest line and your answer removes
+it. Production is a separate release step: it becomes actionable only after
+your explicit request. Items still carry stable keys and the item list is
+*reconciled* rather than replaced, so an item that survives a step is the same
+element: it recolours in place, slides when a neighbour leaves, and collapses
+out when it merges.
 
 Two steps choreograph their interesting moment across timed beats rather than
 presenting it finished: the sweep run spends its allowance with the meter

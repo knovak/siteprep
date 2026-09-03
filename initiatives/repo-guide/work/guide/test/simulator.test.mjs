@@ -91,8 +91,35 @@ describe('simulator choreography', () => {
   test('the recorded answer and optional closeout use second-person Guide wording', () => {
     const {steps} = buildSimulatorSteps(syntheticFacts);
     assert.match(steps.find(step => step.id === 'answer-recorded').narrative,
-      /You choose.*agent records your answer.*decisions\.md/);
+      /You make the choice.*agent records your answer.*decisions\.md/);
     assert.match(steps.at(-1).narrative, /you can archive it/i);
+  });
+
+  test('the review-directed copy and shorter sequence stay in place', () => {
+    const {steps} = buildSimulatorSteps(syntheticFacts);
+    const research = steps.find(step => step.id === 'research-choice');
+    assert.equal(research.title, 'Research first');
+    assert.ok(research.flow.includes('background.md'));
+    assert.equal(steps.find(step => step.id === 'objectives-merged').items[1].label,
+      'Choose the interaction style');
+    assert.match(steps.find(step => step.id === 'answer-recorded').items[1].detail,
+      /enables the agent to proceed/);
+    assert.equal(steps.find(step => step.id === 'outputs-registered').narrative,
+      'You merge the final increment. The initiative is now ready for refinement before going to production.');
+    assert.deepEqual(steps.find(step => step.id === 'polish-finished').items.map(item => item.key), ['release']);
+    assert.deepEqual(steps.find(step => step.id === 'release-requested').items.map(item => item.key), ['release']);
+    assert.equal(steps.find(step => step.id === 'goes-quiet').items[0].label, 'Record dormant state');
+    assert.equal(steps.find(step => step.id === 'goes-quiet').items[0].detail, 'Needs input from the user');
+    assert.ok(!steps.some(step => ['plan-merged', 'increment-one-pr', 'increment-two-pr'].includes(step.id)));
+  });
+
+  test('agent work identifies the sweep phase responsible for it', () => {
+    const {steps, vocabulary} = buildSimulatorSteps(syntheticFacts);
+    const workPhase = vocabulary.phases.at(-1);
+    for (const id of ['objectives-pr', 'assumption-breaks', 'plan-pr', 'critique-pr',
+      'increment-one-branch', 'increment-two-branch', 'polish-finished']) {
+      assert.equal(steps.find(step => step.id === id).phases[workPhase], 'active', `${id} highlights work`);
+    }
   });
 
   test('the redesigned walk-through shows the missing teaching steps', () => {
@@ -114,13 +141,12 @@ describe('simulator choreography', () => {
     assert.equal(steps.find(step => step.id === 'answer-recorded').digest.change, 'removed');
     for (const number of ['one', 'two']) {
       const branch = steps.find(step => step.id === `increment-${number}-branch`);
-      const pullRequest = steps.find(step => step.id === `increment-${number}-pr`);
       const merge = number === 'one'
         ? steps.find(step => step.id === 'increment-one-merged')
         : steps.find(step => step.id === 'outputs-registered');
       assert.ok(branch.flow.includes('write-scope check'));
       assert.ok(branch.flow.includes('branch preview'));
-      assert.ok(pullRequest.flow.includes('ready pull request'));
+      assert.ok(branch.flow.includes('ready pull request'));
       assert.ok(merge.flow.includes('you merge'));
     }
   });

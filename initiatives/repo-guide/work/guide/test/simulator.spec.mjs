@@ -161,6 +161,9 @@ test('controls stay fixed, the title condenses, and the color key explains state
   await expect(page.locator('#phase-row .phase.waiting')).toHaveCount(4);
   await expect(page.locator('#phase-row .phase.complete')).toHaveCount(0);
   await expect(page.locator('#meter .slot[data-spent="true"]')).toHaveCount(0);
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('increment-one-branch'), {animate: false}));
+  await expect(page.locator('#phase-row .phase.active')).toHaveText('work');
 });
 
 test('an item that survives a step is the same element, and a finished one leaves', async ({page}) => {
@@ -269,7 +272,7 @@ test('the digest changes and the pull-request trail is visible', async ({page}) 
   await expect(page.locator('#digest')).toContainText('Your answer removed the line');
   await expect(page.locator('#digest .digest-line')).toHaveCount(0);
 
-  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('increment-two-pr'), {animate: false}));
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('increment-two-branch'), {animate: false}));
   await expect(page.locator('#flow-section h3')).toHaveText('Current work path');
   await expect(page.locator('.flow-help')).toContainText('can cross stages');
   await expect(page.locator('#flow')).toContainText('write-scope check');

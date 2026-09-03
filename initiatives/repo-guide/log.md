@@ -228,3 +228,12 @@ tagline; and renamed the work trail with an explanation of its per-item path.
 Added a visible key for work, sweep, actor, and stage colors, separated ready
 teal from completed green, made active sweep phases blue, and returned the phase
 display to gray once a sweep is no longer running.
+
+## 2026-09-02 — Review round: tighten the simulator story and phase cues
+
+Applied the second review round to the simulator source: tightened the requested
+interaction-style and release copy, renamed the optional research artifact to
+`background.md`, and folded three redundant screens into the surrounding plan
+and pull-request steps. Work-producing agent steps now highlight the applicable
+sweep phase, while person-controlled steps keep the phase row gray. Regenerated
+the self-contained simulator and expanded its Node and browser regression checks.
