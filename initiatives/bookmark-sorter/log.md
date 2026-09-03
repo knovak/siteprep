@@ -479,3 +479,10 @@ punctuation and spaces to dashes but provide only exact or trailing-wildcard
 prefix matching, while tags and folders use percent-encoded exact keys and
 treat underscores literally. Proposed backward-compatible boundaries and tests
 rather than silently changing saved selection meanings.
+
+## 2026-09-02 — Review round: simplify the optional-improvements menu
+
+Removed the underscore-as-space proposal because it is being implemented
+separately. Reframed selection search as one consistent `*string*` contains form
+for title, folder, tag, and source, and added an optional collapsed Help details
+section that keeps essential guidance visible.
