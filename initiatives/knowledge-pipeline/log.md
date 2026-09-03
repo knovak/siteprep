@@ -51,3 +51,7 @@ Implemented the exact relationship registry, many-to-many topic assignments, hum
 ## 2026-09-02 — Phase 5 - add standing documents, comparison, and archive closure
 
 Built immutable standing-document revision and comparison contracts, inspectable five-dimension urgency, human-only approval, disposition-gated archival, archive search/reopen, and backward claim audit; all 44 Site-core tests pass.
+
+## 2026-09-03 — Phase 6 - recovery, scheduling, and scale
+
+Added a credential-free shared export and due-schedule adapter, deterministic idempotency, 1/5/20-minute retry and 14-daily/6-monthly retention policies, knowledge-space backup, atomic verified restore, v0 migration, remapped bounded copy, resumable reference-aware erasure, cursor paging, and a 10k-entity/50k-version/100k-relationship hosted-equivalent scale fixture. All 54 Node tests and the Vinext build pass. The hosted heartbeat remains inactive because this sweep did not include explicit permission; live R2 recovery and witnessed use remain Phase 7 gates.
