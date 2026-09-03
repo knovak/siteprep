@@ -21,8 +21,8 @@
   ],
   "todo": [
     {
-      "id": "phase-3-tagging-assessment-promotion-and-llm-file-loop",
-      "title": "Phase 3 - build tagging, assessment, promotion, and the LLM file loop",
+      "id": "phase-6-recovery-scheduling-and-scale",
+      "title": "Phase 6 - recovery, scheduling, and scale",
       "state": "actionable",
       "value": "high",
       "effort": "large",

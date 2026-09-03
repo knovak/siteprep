@@ -134,7 +134,11 @@ The sweep budget table labels `items_per_run` as the current limit, and the work
 phase card restates its eligibility in Guide language without changing the
 operational sweep prompt.
 
-`build/figures.mjs` holds the inline SVG figures. Each is a pure function of
+`build/figures.mjs` holds the twelve inline SVG figures: the repository map,
+what an initiative produces, how one is born, the record growing by stage, the
+plan critique, the lifecycle rail, the division of labor, blocker triage, one
+sweep run, the review loop, the two deployment environments, and the fork
+boundary. Each is a pure function of
 resolved facts and declares the keys it consumes, so a diagram cannot drift from
 the repository; each also namespaces its arrowhead marker, because several
 figures share one page. Figures carry no colours of their own — they paint with
@@ -148,7 +152,8 @@ The first `---` rule after frontmatter separates page text from slide text.
 Further `---` rules divide that slide half into an ordered list, allowing one
 section to render as several slides without forking the source. Each slide is
 separately authored, may not be a prefix of the page text, and is limited to 90
-visible words. Deck generation fails outside the 10–20 rendered-slide range.
+visible words. Deck generation fails outside the 10–24 rendered-slide range;
+the current deck renders twenty.
 
 `build/description.mjs` resolves the live facts, compiles every file under
 `content/`, verifies each authoritative source link locally, and writes one
@@ -160,9 +165,9 @@ unrelated site test suite.
 `build/deck.mjs` uses the same compiled section and fact records, then renders
 only sections marked for slides. A slide takes its layout from what it carries —
 `figure`, `data`, or `statement` — so a deck of one repeated shape is no longer
-possible. The footer names Ken Novak and keeps the generated date and source
-commit; the lower-edge navigation uses larger arrows and switches to a bright,
-shadowed treatment over the dark title slide. Its browser harness opens the
+possible. Every slide is white with a navy bar naming the section and the
+slide number; only the title slide is dark. The footer names the guide and Ken
+Novak and keeps the generated date and source commit. Its browser harness opens the
 generated file from `file://`, refuses network dependencies, checks all
 authoritative links, exercises forward, back, first, and last keyboard
 navigation, and asserts that no slide's content overflows its fixed frame.
@@ -188,7 +193,14 @@ generation returns a report diagnostic when another walkthrough may be due;
 unrelated commits do not advance the comparison. There is no separate metadata
 configuration file.
 
-The description contains ten sections. Per-section composed words, resolved
+The description contains fourteen sections, following one initiative from
+wish to archive: what the repository is, what an initiative produces,
+starting, shaping and specifying, planning and critique, building and
+resting, who supplies what, the sweep, review and merge, decks, demos,
+deployment, forking, and sources. The page is documentation-style, with a
+sticky sidebar of numbered section links, under the title "SitePrep Repo
+Guide"; the deck is white slides with a navy title bar, and only the title
+slide is dark. Per-section composed words, resolved
 inline tokens, and block counts are reported by generation; the reasoning behind
 the scalar/structured split is recorded in `decisions.md` under 2026-08-19.
 

@@ -1,0 +1,12 @@
+export const URGENCY_DIMENSIONS: readonly string[];
+export const COMPARISON_KINDS: ReadonlySet<string>;
+export const ARCHIVE_KINDS: ReadonlySet<string>;
+export function newIntegrationState(input: unknown): unknown;
+export function validateUrgencyVector(urgency: unknown): string[];
+export function createComparison(state: unknown, input: unknown): Promise<{state: unknown; comparison: unknown}>;
+export function proposeDocumentPatch(state: unknown, input: unknown): Promise<{state: unknown; proposal: unknown}>;
+export function approveDocumentPatch(state: unknown, proposalId: string, input: unknown): Promise<{state: unknown; document: unknown; version: unknown; receipt: unknown}>;
+export function archiveNarrative(state: unknown, input: unknown): Promise<{state: unknown; disposition: unknown}>;
+export function searchArchive(state: unknown, query?: string): unknown[];
+export function reopenNarrative(state: unknown, input: unknown): {state: unknown; narrative: unknown; activity: unknown};
+export function backwardAudit(state: unknown, input: {documentVersionId: string; claimId: string}): unknown;

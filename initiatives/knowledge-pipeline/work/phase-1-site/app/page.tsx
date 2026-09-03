@@ -18,6 +18,9 @@ import {
   addAuthorizedUserAction,
   createBackupAction,
   createCollectionAction,
+  createWorkPacketAction,
+  commitReviewProposalAction,
+  importReviewProposalAction,
   restoreBackupAction,
   selectCollectionAction,
   commitHarvestAction,
@@ -39,6 +42,10 @@ import {
   listHarvestPreviews,
   listHarvestReceipts,
   listHarvestSources,
+  listReviewPreviews,
+  listReviewRecords,
+  listReviewReceipts,
+  listWorkPackets,
   tagInventory,
 } from '@/lib/site-repository';
 
@@ -125,13 +132,17 @@ export default async function Home({searchParams}: {searchParams: Promise<{notic
   const selection = await currentSelection(context);
   const current = selection.collection;
   const backups = current ? await listBackups(context, current.id) : [];
-  const [counts, sources, inventory, previews, harvestReceipts] = current ? await Promise.all([
+  const [counts, sources, inventory, previews, harvestReceipts, workPackets, reviewPreviews, reviewRecords, reviewReceipts] = current ? await Promise.all([
     harvestCounts(context, current.id),
     listHarvestSources(context, current.id),
     tagInventory(context, current.id),
     listHarvestPreviews(context, current.id),
     listHarvestReceipts(context, current.id),
-  ]) : [{sources: 0, tags: 0, receipts: 0}, [], [], [], []];
+    listWorkPackets(context, current.id),
+    listReviewPreviews(context, current.id),
+    listReviewRecords(context, current.id),
+    listReviewReceipts(context, current.id),
+  ]) : [{sources: 0, tags: 0, receipts: 0}, [], [], [], [], [], [], [], []];
   const authorizedUsers = context.role === 'admin' ? await listAuthorizedUsers(context) : [];
   const adminCollections = context.role === 'admin' ? await adminCollectionPreview(context) : [];
   const {notice, tag} = await searchParams;
@@ -191,6 +202,35 @@ export default async function Home({searchParams}: {searchParams: Promise<{notic
             {previews.length ? <Card><CardHeader><CardTitle>Ready to commit</CardTitle><CardDescription>These previews still name this collection and selection revision. Switching collections invalidates them.</CardDescription></CardHeader><CardContent className="space-y-3">{previews.map((preview: any) => <div key={preview.id} className="flex flex-col gap-3 rounded-xl border border-border p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-medium">{preview.kind} · {preview.counts.sources} source{preview.counts.sources === 1 ? '' : 's'}</p><p className="mt-1 text-xs text-muted-foreground">{preview.counts.tags} tags · {preview.counts.withBodies} retained bodies · {preview.counts.unknownRights} unknown rights · {preview.counts.dependencyProposals} dependency proposals · {preview.counts.nativeActivities} recorded runs</p>{preview.findings.map((item: any) => <p key={`${item.code}:${item.path}`} className="mt-1 text-xs text-amber-700">{item.code}: {item.message}</p>)}</div><form action={commitHarvestAction}><input type="hidden" name="collectionId" value={current.id} /><input type="hidden" name="previewId" value={preview.id} /><button className={buttonVariants()}>Commit with receipt</button></form></div>)}</CardContent></Card> : null}
 
             <Card><CardHeader><CardTitle>Accepted sources</CardTitle><CardDescription>Current immutable versions in the selected collection. External judgements stay attributed and never become pipeline decisions.</CardDescription></CardHeader><CardContent>{sources.length ? <Table><TableHeader><TableRow><TableHead>Source</TableHead><TableHead>Intake</TableHead><TableHead>Custody</TableHead><TableHead>Tags</TableHead></TableRow></TableHeader><TableBody>{sources.map((source: any) => <TableRow key={source.id}><TableCell className="max-w-[360px] whitespace-normal"><p className="font-medium">{source.title}</p>{source.url ? <a href={source.url} className="mt-1 block truncate text-xs text-muted-foreground underline underline-offset-2">{source.url}</a> : <p className="mt-1 text-xs text-muted-foreground">Native record without a URL</p>}{source.externalJudgement ? <p className="mt-1 text-xs text-muted-foreground">External {source.externalJudgement.system}: {source.externalJudgement.verdict}</p> : null}</TableCell><TableCell><Badge variant="outline">{source.source_kind}</Badge></TableCell><TableCell className="space-x-1"><Badge variant={source.rights_state === 'cleared' ? 'secondary' : 'outline'}>{source.rights_state}</Badge><Badge variant="outline">{source.capture_state}</Badge><Badge variant="outline">{source.body_state}</Badge></TableCell><TableCell className="max-w-[260px] whitespace-normal">{source.tags.length ? source.tags.filter((item: any) => !item.archived_at).map((item: any) => <Badge key={`${item.label}:${item.status}`} variant={item.status === 'accepted' ? 'secondary' : 'outline'} className="mr-1 mb-1">{item.label}</Badge>) : <span className="text-xs text-muted-foreground">No tags</span>}</TableCell></TableRow>)}</TableBody></Table> : <p className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No accepted sources yet. Create and review a preview above.</p>}</CardContent></Card>
+
+            <Card><CardHeader><CardTitle>Credential-free LLM file loop</CardTitle><CardDescription>Export only the checked accepted versions. A manually obtained model file may propose; this signed-in human review is the only acceptance path.</CardDescription></CardHeader><CardContent className="grid gap-5 xl:grid-cols-2">
+              <form action={createWorkPacketAction} className="space-y-3 rounded-xl border border-border p-4">
+                <input type="hidden" name="collectionId" value={current.id} />
+                <div className="flex items-center justify-between"><h2 className="font-semibold">1. Export bounded work packet</h2><FileJson2 className="size-4 text-accent-foreground" /></div>
+                {sources.length ? <fieldset className="max-h-48 space-y-2 overflow-auto rounded-lg bg-muted/60 p-3"><legend className="sr-only">Sources to include</legend>{sources.map((source: any) => <label key={source.id} className="flex items-start gap-2 text-sm"><input type="checkbox" name="sourceId" value={source.id} defaultChecked className="mt-1" /><span><span className="font-medium">{source.title}</span><span className="block text-xs text-muted-foreground">{source.content_hash.slice(0, 24)}…</span></span></label>)}</fieldset> : <p className="text-sm text-muted-foreground">Accept at least one source before creating a packet.</p>}
+                <button disabled={!sources.length} className={buttonVariants({variant:'outline'})}>Create work packet</button>
+                {workPackets[0] ? <details className="rounded-lg border border-border p-3 text-xs"><summary className="cursor-pointer font-medium">Latest packet · {workPackets[0].packet.acceptedInputs.length} source{workPackets[0].packet.acceptedInputs.length === 1 ? '' : 's'}</summary><p className="mt-2 text-muted-foreground">{workPackets[0].id} · {workPackets[0].package_hash.slice(0, 24)}…</p><a className="mt-2 inline-block font-medium underline underline-offset-2" href={`/api/work-packets/${encodeURIComponent(workPackets[0].id)}?collection=${encodeURIComponent(current.id)}`}>Download packet JSON</a><pre className="mt-3 max-h-72 overflow-auto whitespace-pre-wrap rounded bg-muted p-3">{JSON.stringify(workPackets[0].packet, null, 2)}</pre></details> : null}
+              </form>
+              <form action={importReviewProposalAction} className="space-y-3 rounded-xl border border-border p-4">
+                <input type="hidden" name="collectionId" value={current.id} />
+                <div className="flex items-center justify-between"><h2 className="font-semibold">2. Import proposal file</h2><FileUp className="size-4 text-accent-foreground" /></div>
+                <label className="block text-xs font-medium">Work packet<select name="workPacketId" required className="mt-1 h-8 w-full rounded-lg border border-input bg-card px-2 text-sm">{workPackets.map((packet: any) => <option key={packet.id} value={packet.id}>{packet.created_at} · {packet.packet.acceptedInputs.length} sources</option>)}</select></label>
+                <label className="block text-xs font-medium">Recorded proposal JSON<textarea name="proposalJson" required disabled={!workPackets.length} rows={12} spellCheck={false} placeholder={'{"format":"knowledge-pipeline/v1","use":"llm-proposal",…}'} className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 font-mono text-xs" /></label>
+                <p className="text-xs leading-5 text-muted-foreground">Import rechecks packet hash, collection and selection revisions, every source-version hash, five separate assessment dimensions, and zero commit credentials.</p>
+                <button disabled={!workPackets.length} className={buttonVariants({variant:'outline'})}>Validate proposal preview</button>
+              </form>
+            </CardContent></Card>
+
+            {reviewPreviews.map((record: any) => <Card key={record.id}><CardHeader><CardTitle>3. Selective human review</CardTitle><CardDescription>{record.preview.proposalId} · original {record.preview.originalDestination.collectionName} · {record.preview.operations.length} proposed operations. Unchecked operations remain rejected in the receipt.</CardDescription></CardHeader><CardContent><form action={commitReviewProposalAction} className="space-y-4"><input type="hidden" name="collectionId" value={current.id} /><input type="hidden" name="reviewId" value={record.id} />
+              {record.preview.findings.length ? <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">{record.preview.findings.map((item: any, index: number) => <p key={`${item.code}:${index}`}>{item.code}: {item.message}</p>)}</div> : null}
+              <div className="max-h-80 space-y-2 overflow-auto">{record.preview.operations.map((operation: any) => <label key={operation.id} className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm"><input type="checkbox" name="operationId" value={operation.id} disabled={operation.status !== 'ready'} className="mt-1" /><span><span className="font-medium">{operation.type} · {operation.id}</span><span className="block text-xs text-muted-foreground">{operation.sourceId ?? operation.payload?.tag ?? 'vocabulary'} · {operation.status} · {operation.payload?.rationale}</span></span></label>)}</div>
+              <label className="block text-xs font-medium">Optional rationale rewrites as operation-id JSON<textarea name="rationaleEdits" rows={3} spellCheck={false} placeholder={'{"op:tag":"Human corrected rationale"}'} className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 font-mono text-xs" /></label>
+              <button disabled={!record.preview.canCommit} className={buttonVariants()}>Accept checked and export receipt</button>
+            </form></CardContent></Card>)}
+
+            <Card><CardHeader><CardTitle>Human review ledger</CardTitle><CardDescription>Accepted tags, separate assessment dimensions, vocabulary decisions, and promotion dispositions retain the proposer, process, exact source hash, human actor, rationale, and time.</CardDescription></CardHeader><CardContent>{reviewRecords.length ? <Table><TableHeader><TableRow><TableHead>Accepted</TableHead><TableHead>Kind</TableHead><TableHead>Target</TableHead><TableHead>Rationale</TableHead><TableHead>Process</TableHead></TableRow></TableHeader><TableBody>{reviewRecords.map((record: any) => <TableRow key={record.id}><TableCell>{record.created_at}</TableCell><TableCell><Badge variant="secondary">{record.kind}</Badge></TableCell><TableCell className="max-w-[220px] truncate">{record.source_id ?? record.payload?.tag ?? 'vocabulary'}</TableCell><TableCell className="max-w-[320px] whitespace-normal">{record.rationale}</TableCell><TableCell>{record.process_version}</TableCell></TableRow>)}</TableBody></Table> : <p className="text-sm text-muted-foreground">No reviewed model operation has been accepted. Recorded proposals remain proposals until a person checks operations here.</p>}</CardContent></Card>
+
+            {reviewReceipts.length ? <Card><CardHeader><CardTitle>Review receipts</CardTitle><CardDescription>Each portable receipt keeps every accepted and rejected proposal operation plus any human rationale rewrite.</CardDescription></CardHeader><CardContent className="space-y-2">{reviewReceipts.map((record: any) => <div key={record.id} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3 text-sm"><span>{record.created_at} · {record.receipt.decisions.filter((item: any) => item.outcome === 'accepted').length} accepted · {record.receipt.decisions.filter((item: any) => item.outcome === 'rejected').length} rejected</span><a className={buttonVariants({variant:'outline'})} href={`/api/review-receipts/${encodeURIComponent(record.id)}?collection=${encodeURIComponent(current.id)}`}>Download JSON</a></div>)}</CardContent></Card> : null}
 
             <Card><CardHeader><CardTitle>Tag inventory</CardTitle><CardDescription>Measurements stay separated by accepted/proposed, vocabulary status, active/archived, type, and pipeline stage.</CardDescription></CardHeader><CardContent><form method="get" className="mb-4 flex max-w-sm gap-2"><label className="sr-only" htmlFor="tag-filter">Filter tags</label><input id="tag-filter" name="tag" defaultValue={tag} placeholder="Filter tags" className="h-8 min-w-0 flex-1 rounded-lg border border-input bg-card px-3 text-sm" /><button className={buttonVariants({variant:'outline'})}>Filter</button></form>{inventory.length ? visibleInventory.length ? <Table><TableHeader><TableRow><TableHead>Tag</TableHead><TableHead>Status</TableHead><TableHead>Vocabulary</TableHead><TableHead>Type</TableHead><TableHead>Stage</TableHead><TableHead>Sources</TableHead><TableHead>Active / archived</TableHead></TableRow></TableHeader><TableBody>{visibleInventory.map((item: any) => <TableRow key={`${item.tag_key}:${item.status}:${item.type}:${item.stage}`}><TableCell className="font-medium">{item.label}</TableCell><TableCell>{item.status}</TableCell><TableCell>{item.vocabulary_status}</TableCell><TableCell>{item.type}</TableCell><TableCell>{item.stage}</TableCell><TableCell>{item.sources} · {Number(item.percentage).toFixed(1)}%</TableCell><TableCell>{item.active} / {item.archived}</TableCell></TableRow>)}</TableBody></Table> : <p className="text-sm text-muted-foreground">No tags match this filter.</p> : <p className="text-sm text-muted-foreground">The inventory will appear after the first accepted tagged source.</p>}</CardContent></Card>
 

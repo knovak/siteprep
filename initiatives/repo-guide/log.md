@@ -189,3 +189,19 @@ guide noticing.
 ## 2026-08-27 — Release
 
 Released to production — Demo, `74c16d0`. 2 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/> See releases.md.
+
+## 2026-09-02 — Rewrite the description and deck: plain second-person prose, fourteen sections, twelve figures, documentation-style layout
+
+Started the description and deck over. Fourteen sections follow one initiative from wish to archive; twelve fact-derived figures; sidebar layout; twenty slides. The simulator is unchanged, with a change list in notes.md.
+
+## 2026-09-02 — Release
+
+Released to production — Demo, `f60420c`. 1 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/> See releases.md.
+
+## 2026-09-02 — Write a user-facing README covering how to use it and how to deploy it
+
+Added a user-facing guide to the description, deck, simulator, regeneration workflow, preview/release boundary, and troubleshooting paths.
+
+## 2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Added a dated optional-refinement menu covering a worked PR trail, downloadable bundle, accessibility review, presenter notes, and public-version freshness without duplicating the actionable simulator redesign.

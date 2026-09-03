@@ -480,6 +480,19 @@ prefix matching, while tags and folders use percent-encoded exact keys and
 treat underscores literally. Proposed backward-compatible boundaries and tests
 rather than silently changing saved selection meanings.
 
+## 2026-09-02 — Normalize folder, tag, and source selection keys
+
+Extended the title search-key rule to folder paths, ordinary tags, and import
+sources: lowercase text, punctuation and symbols become spaces, whitespace
+collapses, and remaining spaces become dashes. Tag namespace colons remain
+structural. Automatic proposals now use the same normalized expressions while
+raw and encoded exact keys remain available for existing saved selections.
+
+Updated Help, the user guide, import reference, specification, test plan,
+operator test checklist, and technical documentation, with unit and browser
+coverage for punctuation variants, trailing wildcards, proposal grouping, and
+the visible explanation.
+
 ## 2026-09-02 — Review round: simplify the optional-improvements menu
 
 Removed the underscore-as-space proposal because it is being implemented

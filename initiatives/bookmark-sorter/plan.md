@@ -408,13 +408,13 @@ rediscovered when phase 6 stalls on it.
 
 ### 5.6 Cheap cluster proposals: at ingestion or on demand? — *split, along the line of what they depend on*
 
-§8.2's in-app proposals are three different computations wearing one name, and
-they answer differently:
+§8.2's in-app proposals are different computations wearing one name, and they
+answer differently:
 
 | Proposal | Depends on | When |
 |---|---|---|
 | Same site | the item's host, immutable | On demand — a group-by over an indexed column, milliseconds at 10,000 items |
-| Same folder path | a `folder:` tag, which the user may change | On demand — precomputing it would be stale the moment a tag is edited |
+| Same normalized source, tag, or folder path | current stored tags, which the user may change | On demand — normalize with the shared lowercase punctuation-to-dash rule, then group; precomputing would be stale the moment a tag is edited |
 | Near-identical titles | the item's title, immutable | **At ingestion**, as a stored normalised-title key; grouped on demand |
 
 The line is not cost, it is **what the answer is a function of**. Anything derived

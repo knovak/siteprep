@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "catalogue": [
+    {
+      "id": "layer:population-field", "seriesId": "series:population", "title": "Population field", "kind": "scalar", "revision": "dataset:population@2023", "releaseOrder": 1, "period": "2023", "geographyRef": "geography:instructional-world-v1", "unit": "people", "transformationRef": "transform:recorded-values-v1", "projections": ["equal-earth", "airocean", "population-cartogram"], "assetId": "asset:population-2023", "rights": {"status": "redistributable", "limitation": "Attribution required"}, "citation": {"title": "UN World Population Prospects 2024, processed by Our World in Data", "url": "https://ourworldindata.org/grapher/population", "revision": "2024-07-15", "rights": "CC BY 3.0 IGO"}
+    },
+    {
+      "id": "layer:population-field", "seriesId": "series:population", "title": "Population field", "kind": "scalar", "revision": "dataset:population@2024", "releaseOrder": 2, "period": "2024", "geographyRef": "geography:instructional-world-v2", "unit": "people", "transformationRef": "transform:recorded-values-v2", "projections": ["equal-earth", "airocean", "population-cartogram"], "assetId": "asset:population-2024", "rights": {"status": "redistributable", "limitation": "Attribution required"}, "citation": {"title": "UN World Population Prospects 2024, processed by Our World in Data", "url": "https://ourworldindata.org/grapher/population", "revision": "2025-07-11", "rights": "CC BY 3.0 IGO"}
+    },
+    {
+      "id": "layer:education-index", "seriesId": "series:education", "title": "Education access index", "kind": "scalar", "revision": "dataset:education@2022-2024", "releaseOrder": 1, "period": "2023-06", "geographyRef": "geography:instructional-world-v1", "unit": "index points", "transformationRef": "transform:linear-interpolation-v1", "formula": {"resultUnit": "index points"}, "projections": ["equal-earth", "airocean", "population-cartogram"], "assetId": "asset:education", "rights": {"status": "redistributable", "limitation": "Project-authored instructional fixture"}, "citation": {"title": "Siteprep instructional education fixture", "url": "https://github.com/knovak/siteprep", "revision": "phase-4-v1", "rights": "Project-authored test fixture"}
+    },
+    {
+      "id": "layer:learner-movement", "seriesId": "series:movement", "title": "Learner movement", "kind": "flow", "revision": "dataset:movement@2023-05-15", "releaseOrder": 1, "period": "2023-05-15", "geographyRef": "geography:instructional-world-v1", "unit": "people", "transformationRef": "transform:nearest-400-days-v1", "projections": ["equal-earth", "airocean"], "assetId": "asset:movement-live", "rights": {"status": "reference-only", "limitation": "Classroom access token required; live data is not redistributed", "expiresAt": "2026-12-31T23:59:59.000Z"}, "citation": {"title": "Siteprep learner movement fixture", "url": "https://github.com/knovak/siteprep", "revision": "phase-3-v1", "rights": "Reference only"}
+    }
+  ],
+  "assets": [
+    {"id": "asset:population-2023", "mediaType": "application/json", "bytes": "eyJwZXJpb2QiOiIyMDIzIiwidmFsdWVzIjpbNjY0Mzg4MjgsODQ1NDgyMzNdfQ=="},
+    {"id": "asset:population-2024", "mediaType": "application/json", "bytes": "eyJwZXJpb2QiOiIyMDI0IiwidmFsdWVzIjpbNjY4MDAwMDAsODQ2MDAwMDBdfQ=="},
+    {"id": "asset:education", "mediaType": "application/json", "bytes": "eyJwZXJpb2QiOiIyMDIzLTA2IiwidmFsdWVzIjpbNzMsNzZdfQ=="},
+    {"id": "asset:movement-live", "mediaType": "application/json", "url": "https://provider.invalid/classroom/movement"}
+  ],
+  "scenes": [
+    {
+      "sceneId": "scene:population-question", "title": "Where do population patterns stand out?", "summary": "A scalar scene for comparing recorded country population values.", "projection": "equal-earth", "layers": [{"layerId": "layer:population-field", "datasetRevision": "dataset:population@2023", "period": "2023"}],
+      "definitions": ["Population is the recorded number of residents in the selected period."], "caveats": ["Simplified instructional geometry is not an authoritative boundary product."], "discussionPrompts": ["Which differences are visible, and which require the exact-value table?"], "presentationStops": [{"order": 1, "title": "Read the measure", "focus": "legend"}, {"order": 2, "title": "Compare France and Germany", "focus": "country:FRA"}],
+      "claims": [{"text": "Projection changes area and shape, not the pinned values.", "sources": [{"title": "D3 geographic projections", "url": "https://d3js.org/d3-geo/projection"}]}],
+      "app": {"datasetId": "dataset:population", "time": "2023-06", "layerIds": ["layer:population-through-time"]}
+    },
+    {
+      "sceneId": "scene:population-and-education", "title": "Population and education access", "summary": "Compatible scalar layers with their actual source periods kept visible.", "projection": "equal-earth", "layers": [{"layerId": "layer:population-field", "datasetRevision": "dataset:population@2023", "period": "2023-06", "alignmentRule": "nearest"}, {"layerId": "layer:education-index", "datasetRevision": "dataset:education@2022-2024", "period": "2023-06"}],
+      "definitions": ["An index combines selected observations into a comparable score."], "caveats": ["The education index is interpolated between 2022 and 2024 fixture values."], "discussionPrompts": ["What can two differently scaled layers suggest, and what can they not establish?"], "presentationStops": [{"order": 1, "title": "Check actual periods", "focus": "periods"}, {"order": 2, "title": "Compare encodings", "focus": "legend"}],
+      "claims": [{"text": "Correlation in a layered map does not establish causation.", "sources": [{"title": "NIST uncertainty guidance", "url": "https://www.nist.gov/pml/owm/si-units-information"}]}],
+      "app": {"datasetId": "dataset:population", "time": "2023-06", "layerIds": ["layer:population-through-time", "layer:education-index"]}
+    },
+    {
+      "sceneId": "scene:learner-flow", "title": "How learners move across a population field", "summary": "Directional movement over a static population field without implying synchronized measurement.", "projection": "equal-earth", "layers": [{"layerId": "layer:population-field", "datasetRevision": "dataset:population@2023", "period": "2023-06", "alignmentRule": "nearest"}, {"layerId": "layer:learner-movement", "datasetRevision": "dataset:movement@2023-05-15", "period": "2023-06", "alignmentRule": "nearest"}],
+      "definitions": ["A flow connects an origin and destination; line direction and width encode direction and magnitude."], "caveats": ["Movement is a reference-only classroom fixture and is not bundled for redistribution."], "discussionPrompts": ["How would a missing route differ from a route with zero recorded movement?"], "presentationStops": [{"order": 1, "title": "Read direction and magnitude", "focus": "layer:learner-movement"}, {"order": 2, "title": "Separate zero from missing", "focus": "flow:london-paris"}],
+      "claims": [{"text": "The layers have different actual periods.", "sources": [{"title": "Recorded Phase 3 fixture", "url": "https://github.com/knovak/siteprep"}]}],
+      "app": {"datasetId": "dataset:population", "time": "2023-06", "layerIds": ["layer:population-through-time", "layer:learner-movement"]}
+    }
+  ]
+}

@@ -69,7 +69,7 @@ export function confirmErase(preview, submitted) {
   return {ok: true, code: null};
 }
 
-export async function makeCollectionBackup({collection, actor, activities, receipts, sourceRecords = [], dependencyProposals = [], createdAt}) {
+export async function makeCollectionBackup({collection, actor, activities, receipts, sourceRecords = [], dependencyProposals = [], reviewRecords = [], createdAt}) {
   const entities = sourceRecords.map((source) => ({
     id: source.id,
     type: 'source',
@@ -117,6 +117,7 @@ export async function makeCollectionBackup({collection, actor, activities, recei
       },
       'siteprep:configuration': {schemaVersion: 1, stage: 'harvest', blobBinding: 'private'},
       'siteprep:sourceTags': sourceRecords.flatMap((source) => source.tags.map((item) => ({sourceId: source.id, ...item}))),
+      'siteprep:reviews': reviewRecords,
     },
   };
   const identity = await sha256(canonicalJson(logical));
@@ -136,6 +137,7 @@ export function validateCollectionBackup(pkg, expectedCollectionId) {
   }
   if (!Array.isArray(pkg?.assets)) errors.push('package.assets.invalid');
   if (!Array.isArray(pkg?.extensions?.['siteprep:sourceTags'])) errors.push('package.source_tags.invalid');
+  if (pkg?.extensions?.['siteprep:reviews'] !== undefined && !Array.isArray(pkg.extensions['siteprep:reviews'])) errors.push('package.reviews.invalid');
   if (errors.length) return errors;
   const entities = new Map(pkg.records.entities.map((item) => [item.id, item]));
   const versions = new Map(pkg.records.entityVersions.map((item) => [item.id, item]));
@@ -152,6 +154,9 @@ export function validateCollectionBackup(pkg, expectedCollectionId) {
     }
   }
   for (const item of pkg.extensions['siteprep:sourceTags']) if (!entities.has(item.sourceId)) errors.push('package.source_tag.orphan');
+  for (const item of pkg.extensions['siteprep:reviews'] ?? []) {
+    if (!item.id || !['tag', 'assessment', 'promotion', 'vocabulary'].includes(item.kind) || (item.sourceId && !entities.has(item.sourceId))) errors.push('package.review.invalid');
+  }
   return [...new Set(errors)];
 }
 

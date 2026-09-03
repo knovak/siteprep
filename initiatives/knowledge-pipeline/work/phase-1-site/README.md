@@ -1,7 +1,7 @@
-# Knowledge Pipeline Phase 2 Site
+# Knowledge Pipeline Phase 5 Site
 
-This is the login-gated collection and Harvest workspace through `plan.md`
-Phase 2. It is a
+This is the login-gated collection, Harvest workspace, and portable review core
+through `plan.md` Phase 5. It is a
 Vinext/Cloudflare Workers application intended for a public-access ChatGPT Site:
 the sign-in surface is public, while collection, administration, backup, API,
 and blob access require both ChatGPT authentication and a server-side
@@ -56,7 +56,9 @@ are never ids.
 `lib/domain.mjs` supplies portable rules shared by the Worker and Node tests.
 Current-collection backup creates a deterministic `knowledge-pipeline/v1`
 manifest containing source versions, aliases, tags, dependency proposals,
-activities, and receipts. It stores the bounded ZIP under a private R2 key,
+accepted review records, activities, and receipts. Pending work packets and
+proposal files remain disposable review state rather than accepted knowledge.
+The service stores the bounded ZIP under a private R2 key,
 then writes the D1 backup/activity/receipt batch. A failed D1 commit removes the
 staged object. Download and restore first prove collection ownership, package
 scope, object checksum, and every source-version checksum; restore is
@@ -97,3 +99,85 @@ the hosted migration/binding boundary before Phase 1 is recorded complete.
 
 Phase 2 stops at intake and inventory. Promotion, assessment, LLM proposal
 files, and vocabulary decisions belong to Phase 3.
+
+## Review and LLM file-loop boundary
+
+`lib/review.mjs` implements the offline, credential-free bridge between accepted
+sources and a human review. A bounded work packet names its original collection,
+selection and collection revisions, accepted source-version hashes, explicit
+omissions, target ids, and zero credentials. A manually obtained LLM response
+may propose tags, five separate assessment dimensions, vocabulary changes, and
+promotion dispositions, but it cannot accept or commit any of them.
+
+Proposal preview refuses a changed destination, stale source hash, hidden
+canonical score, malformed assessment, or authority-bearing proposal. The
+commit boundary accepts an explicit subset only from a human actor, retains
+every rejected operation in the receipt, records human rationale rewrites, and
+keeps the proposer and process version. Duplicate and syndicated relationships
+are reported as both raw source count and independent clusters. Vocabulary
+impact reports preserve historical assignments across unknown, rename, alias,
+deprecate, split, and replacement decisions.
+
+`test/review.test.mjs` is the recorded deterministic model fixture for the
+ordinary gate. It also exercises a 2,000-operation proposal within the
+five-second preview budget. A live model run and a person's corrections remain
+a separately named human review gate; passing the recorded suite never stands
+in for that evidence.
+
+## Topics, relationships, and mini narratives
+
+`lib/topics.mjs` makes the first relationship registry executable. Its thirteen
+accepted types enforce endpoint domains and ranges, collection boundaries,
+exact-version requirements, direction, scope, cardinality, symmetric-pair
+identity, and cycle prevention. Unknown imported types remain proposed
+extensions. `latest-update` is derived from accepted update facts and disappears
+when a disputed fork makes the answer ambiguous.
+
+The same portable core assigns one retained source to several topics without
+copying it, accepts a human-edited mini narrative while retaining rejected
+relationship proposals in the review receipt, and exposes exact source-version
+evidence closure. Topic ordering changes assignment metadata and activity only;
+it never creates a narrative-text version. The relationship table and bounded
+neighborhood attach inverse display labels without manufacturing inverse
+assertions or requiring graph rendering.
+
+`test/topics.test.mjs` exercises every Phase 4 acceptance condition, including
+the thirteen registry types, cycles and symmetric duplicates, a disputed update
+fork, selective human review, topic ordering, evidence closure, and a 1,000-edge
+neighborhood under the two-second query budget.
+
+## Standing documents, comparison, and archive closure
+
+`lib/documents.mjs` implements the Phase 5 integration boundary without
+weakening the human-authority rule established in earlier phases. A comparison
+names exact accepted narrative and standing-document versions, classifies every
+input as new, supporting, contradictory, redundant, or updating, and preserves
+both raw-source and dependence-adjusted cluster counts. A topic with no standing
+document records an absent baseline and does not fabricate a patch.
+
+Urgency remains five separate 0–4-or-unknown dimensions: time sensitivity,
+consequence of delay, evidence strength and independence, contradiction with
+the current document, and document age. Each dimension retains rationale and
+evidence, while the vector retains its process version; no canonical total is
+created.
+
+AI and other automated actors may create a candidate patch. Only a named human
+actor can make an immutable standing-document revision current. The approval
+receipt includes the accepted text hash, exact evidence versions, rejected
+proposal parts, unresolved disputes, actor, and time, while the predecessor
+version remains unchanged.
+
+Archive closure accepts only four dispositions. Incorporated narratives must
+link to an exact standing-document version; rejected narratives require a
+reason; deferred narratives require a revisit condition; and superseded
+narratives require an exact replacement version. Archival changes queue state,
+not custody: archived narratives remain searchable and exportable, and reopening
+adds a stage activity while preserving the earlier disposition.
+
+`fixtures/phase-5-loop.json` is the project-authored two-topic acceptance
+fixture: Community heat resilience has a standing document and all five
+comparison classes, while Cooling access has no baseline. The backward-audit
+test follows a sampled accepted document claim through its exact narrative,
+source versions, topic assignment, assessment, tag, actors, and activities.
+`test/documents.test.mjs` exercises all Phase 5 exits and the complete fixture
+loop. No live model, public deployment, or unrecorded source body is used.

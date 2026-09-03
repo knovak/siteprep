@@ -160,6 +160,8 @@ sweep a verdict across the result).
 |---|---|---|
 | Scope wrapping | Every selection made through the UI is wrapped `collection:<current> and ( … )`; no user-typed expression can reach another collection's items | §8.1, O8 |
 | One evaluator | The administrative unwrapped path and the UI path are the same function with a different argument | §8.1 |
+| Normalized search keys | Titles, sources, folders, and ordinary tags lowercase text, turn punctuation, symbols, and whitespace into single dashes, and preserve a tag's prefix colon | §8 |
+| Normalized proposal expressions | Automatic source, tag, folder, and title proposals use the same normalized keys accepted by typed selections; punctuation variants group together | §8.2, O5 |
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
 | `tag-remove` on a selection | Removes only the named tags from every member that has them; one undo restores exactly those removals | O6 |
 | **No confirmation on the visible page sweep** | Sweep untriaged changes only untriaged cards on the visible page, asks nothing, and advances one page | §8.3, O3 |
@@ -168,7 +170,7 @@ sweep a verdict across the result).
 | **`undo` reverses a sweep as one action** | Fifty items swept and one undo restores all fifty | §7.1 |
 | Saved selection | Round-trips through storage and re-evaluates to the same set | §5 |
 | Cheap proposals: same site | Grouping `export-large.html` by host produces the expected groups, and each arrives as a selection the ordinary path can act on — not as a separate object | §8.2, O5 |
-| Cheap proposals: same folder path | Editing a `folder:` tag changes the proposal on the next request; nothing stale is served | §8.2, `plan.md` §5.6 |
+| Cheap proposals: same normalized folder path | Editing a `folder:` tag changes the normalized proposal on the next request; nothing stale is served | §8.2, `plan.md` §5.6 |
 | Cheap proposals: near-identical titles | The normalised-title key is written at ingestion, and grouping on it still happens on demand — a title key exists for every item imported in phase 1 | §8.2, `plan.md` §5.6 |
 | **Measured: how often confirmation fires** | Over the phase's real sitting, how many times §8.3's confirmation interrupted anything, recorded in `decisions.md`. A rule that never fires and one that always fires are both findings — the first says the unbounded path is not used, the second says the discriminator is wrong | §8.3, `plan.md` §6 |
 | **Measured: sweeps regretted** | How often a sweep is followed immediately by `undo`. This is the number that would reopen §8.3 — it is the evidence that `undo` is not sufficient recovery on the visible path | §8.3 |

@@ -1,7 +1,7 @@
 {
   "title": "Tide Here",
   "summary": "A website that displays upcoming tide, moon, and sun times for the user's location.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [],
   "deployments": [
@@ -27,14 +27,5 @@
       }
     }
   ],
-  "todo": [
-    {
-      "id": "review-fes2022-test-deployment",
-      "title": "Review the global FES2022 fallback source and recorded version 14 validation before any production release",
-      "state": "actionable",
-      "value": "high",
-      "effort": "low",
-      "advances_stage": false
-    }
-  ]
+  "todo": []
 }

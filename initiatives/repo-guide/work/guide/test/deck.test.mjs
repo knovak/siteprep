@@ -19,7 +19,7 @@ function syntheticSlides(count, overrides = {}) {
   }));
 }
 
-test('deck generation writes eighteen ordered slides and their section mapping', async () => {
+test('deck generation writes twenty ordered slides and their section mapping', async () => {
   const outputPath = join(mkdtempSync(join(tmpdir(), 'repo-guide-deck-')), 'deck.html');
   const report = await generateDeck({
     root,
@@ -30,28 +30,31 @@ test('deck generation writes eighteen ordered slides and their section mapping',
   });
   const html = readFileSync(outputPath, 'utf8');
 
-  assert.equal(report.slides, 18);
+  assert.equal(report.slides, 20);
   assert.deepEqual(report.slides_per_section, {
     repository: 2,
-    lifecycle: 3,
+    products: 1,
+    start: 1,
+    shape: 1,
+    plan: 1,
+    build: 2,
     supplies: 2,
     sweep: 2,
-    'person-required': 1,
+    review: 1,
     decks: 1,
     demos: 1,
-    deployments: 3,
+    deployments: 2,
     portability: 2,
     sources: 1,
   });
-  assert.equal([...html.matchAll(/<article class="slide/g)].length, 18);
+  assert.equal([...html.matchAll(/<article class="slide/g)].length, 20);
   assert.deepEqual([...html.matchAll(/data-section-id="([^"]+)"/g)].map(match => match[1]), [
-    'repository', 'repository', 'lifecycle', 'lifecycle', 'lifecycle', 'supplies', 'supplies',
-    'sweep', 'sweep', 'person-required', 'decks', 'demos',
-    'deployments', 'deployments', 'deployments',
-    'portability', 'portability', 'sources',
+    'repository', 'repository', 'products', 'start', 'shape', 'plan', 'build', 'build',
+    'supplies', 'supplies', 'sweep', 'sweep', 'review', 'decks', 'demos',
+    'deployments', 'deployments', 'portability', 'portability', 'sources',
   ]);
   assert.match(html, /data-source-sha="abcdef123456"/);
-  assert.equal([...html.matchAll(/<span>Ken Novak<\/span>/g)].length, 18);
+  assert.equal([...html.matchAll(/SitePrep Repo Guide · Ken Novak<\/span>/g)].length, 20);
   assert.match(html, /#frame:has\(\.title-slide:not\(\[hidden\]\)\) #controls/);
   assert.doesNotMatch(html, /[ \t]+$/m);
   assert.doesNotMatch(html, /<script[^>]+src=|<link[^>]+stylesheet|\bfetch\s*\(/i);
@@ -78,9 +81,9 @@ test('a block directive does not spend the slide copy budget', () => {
 
 test('rendered slide count is enforced at both boundaries', () => {
   assert.equal(validateSlides(syntheticSlides(10)).length, 10);
-  assert.equal(validateSlides(syntheticSlides(20)).length, 20);
-  assert.throws(() => validateSlides(syntheticSlides(9)), /10-20 rendered slides; found 9/);
-  assert.throws(() => validateSlides(syntheticSlides(21)), /10-20 rendered slides; found 21/);
+  assert.equal(validateSlides(syntheticSlides(24)).length, 24);
+  assert.throws(() => validateSlides(syntheticSlides(9)), /10-24 rendered slides; found 9/);
+  assert.throws(() => validateSlides(syntheticSlides(25)), /10-24 rendered slides; found 25/);
 });
 
 test('one-idea limit and truncation guard reject invalid slide copy', () => {

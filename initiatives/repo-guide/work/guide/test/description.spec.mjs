@@ -19,12 +19,13 @@ test('description opens offline with provenance, all sections, and resolvable so
   page.on('request', request => { if (/^https?:/i.test(request.url())) networkRequests.push(request.url()); });
   await page.goto(pathToFileURL(outputPath).href);
 
-  await expect(page.locator('main section')).toHaveCount(10);
+  await expect(page.locator('main section')).toHaveCount(14);
   await expect(page.locator('main section').first()).toHaveAttribute('id', 'repository');
   await expect(page.locator('main section').last()).toHaveAttribute('id', 'sources');
-  await expect(page.locator('[data-audience="forker"]')).toHaveCount(1);
-  await expect(page.locator('[data-audience="contributor"]')).toHaveCount(2);
-  await expect(page.locator('section .audience')).toHaveCount(10);
+  // The sidebar lists every section, in order, and nothing else.
+  const navTargets = await page.locator('.sidebar ol a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+  const sectionIds = await page.locator('main section').evaluateAll(nodes => nodes.map(node => `#${node.id}`));
+  expect(navTargets).toEqual(sectionIds);
 
   const footer = page.locator('footer');
   const sha = await footer.getAttribute('data-source-sha');
@@ -75,7 +76,7 @@ test('structured facts render as structure, not as flattened prose', async ({pag
 test('figures are inline, self-contained, and described', async ({page}) => {
   await page.goto(pathToFileURL(outputPath).href);
   const figures = page.locator('figure[data-figure]');
-  expect(await figures.count()).toBeGreaterThanOrEqual(4);
+  expect(await figures.count()).toBeGreaterThanOrEqual(10);
 
   for (const svg of await page.locator('figure[data-figure] svg').all()) {
     await expect(svg).toHaveAttribute('role', 'img');
@@ -89,7 +90,9 @@ test('figures are inline, self-contained, and described', async ({page}) => {
   expect(new Set(markerIds).size).toBe(markerIds.length);
 });
 
-test('the description begins with the repository entry point', async ({page}) => {
+test('the description begins with the repository entry point and names the guide', async ({page}) => {
   await page.goto(pathToFileURL(outputPath).href);
   await expect(page.locator('main > *').first()).toHaveAttribute('id', 'repository');
+  await expect(page).toHaveTitle('SitePrep Repo Guide');
+  await expect(page.locator('h1')).toHaveText('SitePrep Repo Guide');
 });

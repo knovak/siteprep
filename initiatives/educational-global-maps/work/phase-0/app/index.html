@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Educational Global Maps — teach from a pinned scene</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#map-title">Skip to map</a>
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Educational Global Maps · Phase 5</p>
+        <h1>Teach from a scene—control it from anywhere nearby.</h1>
+      </div>
+      <p class="intro">Open a prepared lesson, follow its discussion stops, and share the exact revision. Newer data is offered as a comparison—never substituted silently.</p>
+    </header>
+
+    <main class="workspace">
+      <aside class="control-panel" aria-label="Map controls">
+        <div class="panel-heading">
+          <span>Explore</span>
+          <span class="status-pill" id="motion-status">Paused</span>
+        </div>
+
+        <label for="scene-library">Prepared educational scene</label>
+        <select id="scene-library"></select>
+
+        <label for="dataset">Catalogue selection</label>
+        <select id="dataset"></select>
+
+        <label for="projection">Projection</label>
+        <select id="projection">
+          <option value="equal-earth">Equal Earth</option>
+          <option value="airocean">Airocean</option>
+          <option value="population-cartogram">Fixed population cartogram</option>
+        </select>
+
+        <label for="scene-time">Scene time</label>
+        <select id="scene-time"></select>
+        <button id="play-time" type="button" aria-pressed="false">Play time</button>
+
+        <fieldset class="layer-fieldset">
+          <legend>Temporal layers</legend>
+          <div id="temporal-layers"></div>
+        </fieldset>
+
+        <label class="check-row" for="reference-raster">
+          <input id="reference-raster" type="checkbox">
+          <span>Add conventional-grid reference raster</span>
+        </label>
+
+        <div class="button-row" aria-label="Camera controls">
+          <button id="zoom-in" type="button">Zoom in</button>
+          <button id="zoom-out" type="button">Zoom out</button>
+          <button id="reset-view" type="button">Reset</button>
+        </div>
+
+        <button class="primary" id="pause-inspection" type="button" aria-pressed="true">Inspection paused · values enabled</button>
+
+        <div class="refusal" id="refusal" role="alert" hidden></div>
+
+        <dl class="scene-facts">
+          <div><dt>Revision</dt><dd id="revision"></dd></div>
+          <div><dt>Period</dt><dd id="period"></dd></div>
+          <div><dt>Encoding</dt><dd id="encoding"></dd></div>
+          <div><dt>Current view</dt><dd id="current-projection"></dd></div>
+        </dl>
+      </aside>
+
+      <section class="map-card" aria-labelledby="map-title">
+        <div class="map-heading">
+          <div>
+            <p class="eyebrow" id="dataset-title"></p>
+            <h2 id="map-title"></h2>
+            <p id="map-summary"></p>
+          </div>
+          <div class="selected-value" aria-live="polite">
+            <span id="selected-label"></span>
+            <strong id="selected-value"></strong>
+            <small id="selected-detail"></small>
+          </div>
+        </div>
+        <div class="canvas-wrap" id="canvas-wrap">
+          <canvas id="map" aria-label="Projected map; use the exact-value table below for a semantic equivalent"></canvas>
+        </div>
+        <p class="caveat" id="geography-caveat"></p>
+      </section>
+
+      <section class="scene-card" aria-labelledby="scene-title">
+        <div class="scene-card-heading">
+          <div>
+            <p class="eyebrow">Pinned educational scene</p>
+            <h2 id="scene-title"></h2>
+            <p id="scene-summary"></p>
+          </div>
+          <span class="revision-badge" id="scene-revision"></span>
+        </div>
+        <div class="teaching-grid">
+          <section>
+            <h3>Definition</h3>
+            <p id="scene-definition"></p>
+            <h3>Caveat</h3>
+            <p id="scene-caveat"></p>
+          </section>
+          <section>
+            <h3>Discussion prompt</h3>
+            <p id="scene-question"></p>
+            <h3>Presentation stop</h3>
+            <p class="stop" id="scene-stop"></p>
+            <div class="stop-controls">
+              <button type="button" id="previous-stop">Previous</button>
+              <button type="button" id="next-stop">Next stop</button>
+            </div>
+          </section>
+          <section>
+            <h3>Share and carry</h3>
+            <p class="share-link" id="scene-share"></p>
+            <p id="upgrade-status"></p>
+            <button type="button" id="compare-upgrade">Compare available upgrade</button>
+            <p id="portable-status"></p>
+            <button type="button" id="prepare-bundle">Prepare portable bundle</button>
+          </section>
+        </div>
+      </section>
+
+      <section class="session-card" aria-labelledby="session-title">
+        <div>
+          <p class="eyebrow">Detached controller</p>
+          <h2 id="session-title">Move the controls off the display.</h2>
+          <p>Start a two-device session, then open the join link or scan its QR code. The display remains authoritative and usable if the controller disconnects.</p>
+          <p class="connection-status" id="session-status" aria-live="polite">Not started</p>
+          <div class="stop-controls">
+            <button class="primary" id="start-session" type="button">Start controller session</button>
+            <button id="end-session" type="button" hidden>End session</button>
+          </div>
+        </div>
+        <div class="join-card">
+          <img id="join-qr" alt="QR code for the controller join link" hidden>
+          <a id="join-url"></a>
+          <small>Join secrets use 128 bits of browser-generated randomness. Sessions expire after two inactive hours on the reference relay.</small>
+        </div>
+      </section>
+
+      <section class="legend-card" aria-labelledby="legend-title">
+        <h2 id="legend-title">Legend and exact values</h2>
+        <ul class="legend" id="legend"></ul>
+        <div class="table-wrap">
+          <table>
+            <caption id="table-caption"></caption>
+            <thead><tr><th scope="col">Place</th><th scope="col">Exact value</th><th scope="col">Status</th><th scope="col">Evidence note</th></tr></thead>
+            <tbody id="values"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="citation-card" aria-labelledby="citation-title">
+        <h2 id="citation-title">Sources and interpretation</h2>
+        <h3>Actual periods in this frame</h3>
+        <ul id="actual-periods"></ul>
+        <p id="alignment-note"></p>
+        <ul id="citations"></ul>
+        <p id="cartogram-note" hidden></p>
+      </section>
+    </main>
+
+    <main class="controller-shell" id="controller-app" hidden>
+      <header>
+        <p class="eyebrow">Educational Global Maps · Controller</p>
+        <h1>Presentation controls</h1>
+        <p id="controller-status" class="connection-status" aria-live="polite">Joining…</p>
+        <p id="controller-revision" class="controller-revision"></p>
+      </header>
+      <section class="controller-grid" aria-label="Detached presentation controls">
+        <label for="controller-time">Time</label>
+        <select id="controller-time"></select>
+        <label for="controller-projection">Projection</label>
+        <select id="controller-projection"></select>
+        <fieldset class="layer-fieldset">
+          <legend>Layers</legend>
+          <div id="controller-layers"></div>
+        </fieldset>
+        <label for="controller-feature">Selected place</label>
+        <select id="controller-feature"><option value="">No selection</option></select>
+        <fieldset class="layer-fieldset">
+          <legend>Pan and zoom</legend>
+          <div class="controller-buttons">
+            <button id="controller-pan-left" type="button">Pan left</button>
+            <button id="controller-pan-up" type="button">Pan up</button>
+            <button id="controller-pan-down" type="button">Pan down</button>
+            <button id="controller-pan-right" type="button">Pan right</button>
+            <button id="controller-zoom-in" type="button">Zoom in</button>
+            <button id="controller-zoom-out" type="button">Zoom out</button>
+          </div>
+        </fieldset>
+        <fieldset class="layer-fieldset">
+          <legend>Presentation stop</legend>
+          <div class="stop-controls">
+            <button id="controller-previous-stop" type="button">Previous</button>
+            <button id="controller-next-stop" type="button">Next stop</button>
+          </div>
+        </fieldset>
+      </section>
+    </main>
+    <script src="bundle.js"></script>
+  </body>
+</html>

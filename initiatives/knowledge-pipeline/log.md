@@ -35,3 +35,19 @@ Built and deployed the public test gate and authenticated collection shell with 
 ## 2026-09-02 — Phase 2 - build harvest, native adapters, and the tag inventory
 
 Built direct and browser-saved intake, native Bookmark Sorter and Newsletter Story Harvester adapters, immutable source custody, dependency proposals, tag inventory, receipts, and source-aware canonical backup/restore; 16 tests and the production Site build pass.
+
+## 2026-09-02 — Phase 3 - build tagging, assessment, promotion, and the LLM file loop
+
+Built the authenticated Phase 3 packet/proposal/review/receipt loop and its portable accepted records. The recorded deterministic fixture and 2,000-operation gate pass; live-model corrections remain explicitly human-blocked rather than being simulated.
+
+## 2026-09-02 — Review a live model proposal for the fixed fixture and record corrections, unsupported claims, accepted percentage, and process version
+
+Proposed a live-model fixture review: 75% of operations accepted unchanged, with novelty and importance corrected to unknown under process phase-3-live-review-v1.
+
+## 2026-09-02 — Phase 4 - build topics, pair relationships, and mini narratives
+
+Implemented the exact relationship registry, many-to-many topic assignments, human-reviewed mini narratives, evidence closure, topic ordering, inverse-label inspection, and the 1,000-edge query budget in the portable Site core.
+
+## 2026-09-02 — Phase 5 - add standing documents, comparison, and archive closure
+
+Built immutable standing-document revision and comparison contracts, inspectable five-dimension urgency, human-only approval, disposition-gated archival, archive search/reopen, and backward claim audit; all 44 Site-core tests pass.

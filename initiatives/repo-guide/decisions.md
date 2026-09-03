@@ -592,3 +592,65 @@ So that is done."*
 With these four items closed the initiative has no remaining work, and the user
 has declared it **dormant** rather than seeding another round — the §5.1
 distinction made explicitly instead of by neglect.
+
+## 2026-09-02 — How is the second version of the guide written, organized, and styled?
+
+The user asked for a fresh start on the description and the deck: plain prose
+for a developer seeing the repository for the first time, better graphics,
+and complete coverage of the lifecycle and of what an initiative produces.
+Four questions were put to the user as multiple choice, and answered in one
+turn.
+
+**How is it produced?** Keep the generator and rewrite everything in it. The
+content sections were started over, the figures and both renderers were
+rewritten, and the fact-derivation and lint rules stay so that stage names,
+document lists, labels, budgets, skills, and workflows still cannot drift.
+The alternatives were hand-written HTML (faster, but the live values go stale
+silently) and relaxing the literal-value rules (more natural sentences at the
+cost of drift). Neither was taken.
+
+**How is it organized?** Follow one initiative from wish to archive. The
+document opens with what the repository is and what an initiative produces,
+then walks the lifecycle in four sections (starting; shaping and specifying;
+planning and critiquing; building, graduating, and resting), then who supplies
+what, the sweep, review and merge, decks, demos, deployment, forking, and
+sources. Fourteen sections. The alternatives were reader-question sections and
+a reference-first layout.
+
+**What voice?** Plain second person. "You" when it is the reader's action,
+"the person" and "the agent" for the roles, no first-person narrator, no
+anecdotes. The alternatives were impersonal third person and keeping an
+occasional narrator voice.
+
+**What look?** Documentation style: white page, left sidebar with numbered
+section links, wide figures, restrained navy accent. The deck gets a matching
+clean 16:9 layout with a navy title bar and full-width diagrams, and no
+diagonal wedge. The alternatives were tidying the previous navy-and-orange
+design or copying the site's shared styling.
+
+Four smaller choices from the same review: the fourteen-section outline stands
+as proposed; the live table of initiatives stays in the first section, dated by
+the footer; the title is "SitePrep Repo Guide"; and this work is recorded as a
+new version of the initiative rather than a silent edit to the guide files.
+
+Two notes from the user on wording, applied throughout: decks are static
+content organized into collections, used here for travel information, rather
+than "travel decks"; and the phrase "at the same gate" is replaced with plain
+language about which documents a stage expects. The user also allowed the deck
+to grow past twenty slides if sections needed it, with a ceiling of
+twenty-five; the generator's ceiling is now twenty-four and the deck renders
+twenty.
+
+### What this settles, and what it does not
+
+- **Settled:** the description has fourteen sections and twelve fact-derived
+  figures; the deck has twenty slides; both carry the new title and layout.
+- **Settled:** the sweep phase cards are no longer rendered from the prompt's
+  first paragraphs, because the survey phase's first paragraph is a numbered
+  list and reads badly as a card. The phase meanings are drawn in the sweep
+  figure instead. The `sweep.phase_summaries` fact is now uncited, which the
+  generator reports as a warning and not an error.
+- **Not settled:** the simulator. A list of proposed changes is in
+  `notes.md`; none of it is built.
+- **Not settled:** whether to release. The generated copy under `out/` is
+  ahead of the released copy under `demos/`, and releasing is the user's call.

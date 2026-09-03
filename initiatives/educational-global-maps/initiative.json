@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "phase-2-single-device-renderer-and-projection-comparison",
-      "title": "Phase 2 - build the single-device renderer and projection comparison",
+      "id": "phase-6-teaching-and-large-display-validation",
+      "title": "Phase 6 - teaching and large-display validation",
       "state": "actionable",
       "value": "high",
       "effort": "large",

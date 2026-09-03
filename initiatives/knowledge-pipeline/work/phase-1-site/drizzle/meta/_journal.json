@@ -15,6 +15,13 @@
       "when": 1788313160272,
       "tag": "0001_strong_night_thrasher",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788346519314,
+      "tag": "0002_married_solo",
+      "breakpoints": true
     }
   ]
 }

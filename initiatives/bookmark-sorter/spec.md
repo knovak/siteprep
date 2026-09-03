@@ -385,7 +385,7 @@ to a person, not a separate kind of object.
 literally:
 
 ```
-folder:reading/* and not topic:rust
+folder:reading-research* and not topic:rust
 (src:chrome-export or src:safari-export) and err:404
 verdict:keep or verdict:needs-time
 ```
@@ -393,6 +393,15 @@ verdict:keep or verdict:needs-time
 Grammar: `and`, `or`, `not`, parentheses, bare tags, and `*` as a trailing
 wildcard. Deliberately small — a selection tool, not a language. A saved
 selection (§5) is this expression plus a name.
+
+Title, source, folder, and ordinary-tag search keys share one normalization
+rule: lowercase the text, replace punctuation and symbols with spaces, collapse
+whitespace, and replace the remaining spaces with dashes. A tag's first colon
+remains as its conventional namespace separator, so `Topic:Modern Art` becomes
+`topic:modern-art`; folder and source keep their synthetic `folder:` and `src:`
+prefixes. One trailing `*` makes the normalized key a prefix match. Stored tags
+are unchanged, and their raw and percent-encoded exact keys remain available so
+existing saved selections continue to evaluate as before.
 
 The evaluator also exposes the current verdict as a synthetic tag, using the
 same words as the interface: `verdict:keep`, `verdict:junk`,
@@ -404,8 +413,8 @@ table and therefore cannot drift when a verdict changes.
 expression, an automatic proposal, a named saved selection, and the signed-in
 user's recent expression history. Opening any route records the expression in
 history, newest first, without duplicates. Automatic proposals are grouped from
-the current collection's source, exact tags, verdicts, folders, sites, image
-state, and normalized titles. Proposal, saved-selection, and history choosers
+the current collection's normalized source, tag, folder, and title keys, plus
+verdicts, capture errors, sites, and image state. Proposal, saved-selection, and history choosers
 all retain a placeholder option; their adjacent Open action is black on white
 until a real option is chosen and white on blue afterward, so the intended
 target is visible before the action runs.
@@ -446,10 +455,10 @@ this way:
   later, or from three different directions, without a schema change.
 - **Nothing here is privileged.** A tag written by a skill is the same as one
   typed by the user, which is what §5's "the schema is not fixed" is for.
-- **Cheap in-app proposals still earn their place** — same site, same folder
-  path, near-identical titles are signals the app already holds, and offering
-  them as pre-filled selections costs almost nothing. They are a convenience on
-  top of the three routes, not a fourth one.
+- **Cheap in-app proposals still earn their place** — same site, normalized
+  source, tag, or folder key, and near-identical titles are signals the app
+  already holds, and offering them as pre-filled selections costs almost
+  nothing. They are a convenience on top of the three routes, not a fourth one.
 
 ### 8.3 Judging a selection as one
 
