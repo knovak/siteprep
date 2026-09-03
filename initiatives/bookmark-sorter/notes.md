@@ -54,7 +54,6 @@ when behavior changes or a real support gap appears.
 
 | Candidate | Why it could help | Likely size | Boundary and evidence |
 |---|---|---:|---|
-| **Allow contains matching in selections** | The current selection code supports `string*` for prefix matching. It should also support `*string*` to match the string anywhere. | Small–medium | Apply the same contains form to title, folder, tag, and `src` selection values; preserve current exact and prefix behavior; and test empty strings, punctuation, case, saved selections, and large collections. |
 | **Make Help easier to scan with a collapsed details section** | The full help text is useful but takes attention away from the controls people use most often. Keep the essential instructions visible and place the rest in a collapsed section that a user can expand when needed. | Small | Decide which instructions are essential before hiding anything; use an accessible disclosure control with a clear label, keyboard support, and preserved behavior on phone and desktop layouts. |
 | **Give no-image bookmarks an honest, distinguishable metadata card** | The known blank-card population is the largest visible weakness. A locally rendered fallback based on the saved title and site could make those cards easier to scan without turning on the paid screenshot pass or implying that a page was captured. | Medium | Use only stored bookmark metadata and existing capture state; make the fallback visibly different from an image capture, keep URLs private, and do not fetch another remote asset. Re-run the 10,000-item grid, phone, duplicate-image, and no-image fixtures and compare an ordinary sitting before and after. |
 | **Add a private usage-evidence summary** | Sittings and undo records already contain the throughput and sweep-regret evidence described above, but reading raw records makes the optional measurement harder than it needs to be. A small administrator view could summarize finished sittings and immediate sweep undos without adding analytics. | Small | Compute from existing owner-scoped records, disclose exactly what is counted, exclude unfinished sittings, and add no tracking event or cross-user comparison. The summary remains evidence for a later decision, not an automatic product threshold. |
@@ -86,9 +85,8 @@ selection, verdict, tag, and open-link controls remain in their normal places
 outside this preview area, so the fallback changes recognition rather than the
 card's behavior.
 
-**Contains matching** is first because it answers recurring selection friction
-with one consistent form across title, folder, tag, and source. The **collapsed
-Help details** proposal follows because it improves readability without removing
+**Contains matching** graduated from this menu on 2026-09-03. **Collapsed Help
+details** is now first because it improves readability without removing
 guidance. The **honest metadata fallback card** remains the strongest visual
 improvement because it addresses the measured 503 no-image bookmarks without a
 new vendor, credential, network request, or privacy boundary.

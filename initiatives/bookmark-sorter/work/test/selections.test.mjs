@@ -16,9 +16,16 @@ test('selection grammar covers precedence, grouping, not, wildcards, unknown tag
   assert.deepEqual(evaluateSelection(items, '(topic:garden or topic:rust) and saved:later').map(item => item.id), ['b', 'c']);
   assert.deepEqual(evaluateSelection(items, 'topic:rust and not saved:later').map(item => item.id), ['a', 'd']);
   assert.deepEqual(evaluateSelection(items, 'folder:reading/*').map(item => item.id), ['a', 'b', 'c', 'd']);
+  assert.deepEqual(evaluateSelection(items, 'title:*a-guide*').map(item => item.id), ['a', 'b', 'd']);
+  assert.deepEqual(evaluateSelection(items, 'folder:*rust*').map(item => item.id), ['a', 'b', 'd']);
+  assert.deepEqual(evaluateSelection(items, 'topic:*us*').map(item => item.id), ['a', 'b', 'd']);
+  assert.deepEqual(evaluateSelection(items, 'src:*irefo*').map(item => item.id), ['c', 'd']);
+  assert.deepEqual(evaluateSelection(items, '*rust*').map(item => item.id), ['a', 'b', 'd']);
   assert.deepEqual(evaluateSelection(items, 'unknown:value'), []);
   assert.throws(() => compileSelection('topic:rust and (saved:later or)'), /Expected a tag.*character/);
-  assert.throws(() => compileSelection('topic:*:rust'), /wildcard.*end.*character/i);
+  for (const expression of ['*', '**', 'title:**', 'title:*guide', 'title:g*ide*', 'topic:*:rust']) {
+    assert.throws(() => compileSelection(expression), /wildcard.*character/i);
+  }
 });
 
 test('folder, tag, and source searches share title-style normalised keys', () => {
@@ -33,6 +40,10 @@ test('folder, tag, and source searches share title-style normalised keys', () =>
   assert.deepEqual(evaluateSelection(punctuationItems, 'topic:modern*').map(item => item.id), ['punctuation', 'spacing']);
   assert.deepEqual(evaluateSelection(punctuationItems, 'src:safari*').map(item => item.id), ['punctuation', 'spacing']);
   assert.deepEqual(evaluateSelection(punctuationItems, 'folder:reading-research*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'title:*rust-a*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'topic:*modern-art*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'src:*safari-read*').map(item => item.id), ['punctuation', 'spacing']);
+  assert.deepEqual(evaluateSelection(punctuationItems, 'folder:*research-rust*').map(item => item.id), ['punctuation', 'spacing']);
   assert.deepEqual(evaluateSelection(punctuationItems, 'tag-key:Topic%3AModern%20%26%20Art').map(item => item.id), ['punctuation']);
   assert.deepEqual(evaluateSelection(punctuationItems, 'folder-key:Reading%20%26%20Research%2FRust').map(item => item.id), ['punctuation']);
 
@@ -134,8 +145,14 @@ test('saved selections, additive tags, mark-then-sweep, and one-action undo shar
     store.addTags(item.id, [index < 40 ? 'group:large' : 'group:small', 'existing']);
   }
   store.saveSelection('pile', {id: 'saved-1', name: 'Large', expression: 'group:large'});
+  store.saveSelection('pile', {id: 'saved-2', name: 'Twenties', expression: 'title:*example-2*'});
   assert.equal(store.selection('pile', 'saved-1').expression, 'group:large');
-  assert.equal(store.listSelections('pile').length, 1);
+  assert.equal(store.selection('pile', 'saved-2').expression, 'title:*example-2*');
+  assert.deepEqual(evaluateSelection(store.listAllItems('pile'), store.selection('pile', 'saved-2').expression).map(item => item.title), [
+    'Example 2', 'Example 20', 'Example 21', 'Example 22', 'Example 23', 'Example 24',
+    'Example 25', 'Example 26', 'Example 27', 'Example 28', 'Example 29',
+  ]);
+  assert.equal(store.listSelections('pile').length, 2);
 
   const session = store.startSession('pile', {id: 'session-1', startedAt: '2026-08-18T12:00:00Z'});
   const selected = evaluateSelection(store.listAllItems('pile'), 'group:large', {collectionId: 'pile'});
@@ -164,4 +181,17 @@ test('saved selections, additive tags, mark-then-sweep, and one-action undo shar
   assert.equal(sweepUndo.kind, 'verdict');
   assert.equal(sweepUndo.changes.length, 36);
   assert.equal(store.countUntriagedItems('pile'), 50);
+});
+
+test('contains matching stays linear over a 10,000-item collection', () => {
+  const largeCollection = Array.from({length: 10_000}, (_, index) => ({
+    id: `item-${index}`,
+    collection_id: 'large',
+    url: `https://example.test/${index}`,
+    title: index % 100 === 0 ? `Reference needle ${index}` : `Reference ${index}`,
+    title_key: index % 100 === 0 ? `reference-needle-${index}` : `reference-${index}`,
+    tags: [index % 250 === 0 ? 'folder:Research/Needle' : 'folder:Research/Other'],
+  }));
+  assert.equal(evaluateSelection(largeCollection, 'title:*needle*', {collectionId: 'large'}).length, 100);
+  assert.equal(evaluateSelection(largeCollection, 'folder:*needle*', {collectionId: 'large'}).length, 40);
 });

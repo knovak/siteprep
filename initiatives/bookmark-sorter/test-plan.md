@@ -161,6 +161,8 @@ sweep a verdict across the result).
 | Scope wrapping | Every selection made through the UI is wrapped `collection:<current> and ( … )`; no user-typed expression can reach another collection's items | §8.1, O8 |
 | One evaluator | The administrative unwrapped path and the UI path are the same function with a different argument | §8.1 |
 | Normalized search keys | Titles, sources, folders, and ordinary tags lowercase text, turn punctuation, symbols, and whitespace into single dashes, and preserve a tag's prefix colon | §8 |
+| Contains matching | `*value*` finds the normalized value anywhere in title, source, folder, and ordinary-tag keys; empty values and malformed wildcard placement are clear errors | §8, O5 |
+| Contains compatibility and scale | Exact and trailing-wildcard saved selections keep their meaning, a paired-wildcard saved selection round-trips, and contains matching returns the expected set from 10,000 items | §8, O5 |
 | Normalized proposal expressions | Automatic source, tag, folder, and title proposals use the same normalized keys accepted by typed selections; punctuation variants group together | §8.2, O5 |
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
 | `tag-remove` on a selection | Removes only the named tags from every member that has them; one undo restores exactly those removals | O6 |
@@ -238,6 +240,7 @@ guarding against.
 | No key or vendor endpoint in the client bundle | Pass 2 gets turned on the quick way |
 | Displaying an item makes no outbound request | A lazy re-capture on view creeps in and the grid starts waiting on the network |
 | Every UI selection is collection-wrapped by the app | A "search all my stuff" feature makes the wrapping optional |
+| Exact, prefix, and contains matching remain distinct | A parser shortcut changes an existing saved expression or lets an empty contains value select the entire collection |
 | An import never overwrites a verdict or a `note` | A "sync" or "newest wins" import is added and silently edits the user's own writing |
 | Export carries no captures | Someone makes the file self-contained and it stops being movable |
 | The export is the app's own streamed document, never a host or database dump | A platform export turns up later, looks free and complete, and O7 quietly becomes a vendor's format — which strands every archive already taken and gives back the host-independence §10's table was rewritten to gain |

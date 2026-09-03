@@ -240,13 +240,13 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
-      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. Titles, folder paths, tags, and source names use lowercase search keys: punctuation, symbols, and spaces become a single dash. A tag's prefix colon remains, so <code>Topic:Modern Art</code> becomes <code>topic:modern-art</code>. A trailing <code>*</code> matches any characters after the normalized text.</p>
+      <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. Titles, folder paths, tags, and source names use lowercase search keys: punctuation, symbols, and spaces become a single dash. A tag's prefix colon remains, so <code>Topic:Modern Art</code> becomes <code>topic:modern-art</code>. A trailing <code>*</code> matches the beginning of a normalized value; surrounding a value with <code>*</code> matches it anywhere.</p>
       <ul>
         <li><code>site:example.com</code> — items from one site.</li>
-        <li><code>title:court-drama*</code> — normalized titles beginning with that text.</li>
+        <li><code>title:*court-drama*</code> — normalized titles containing that text; use <code>title:court-drama*</code> to match only the beginning.</li>
         <li><code>src:safari-export</code> — items whose normalized Source tag is <code>safari-export</code>.</li>
-        <li><code>folder:favorites-modern-art*</code> — items whose normalized bookmark folder path begins with that text.</li>
-        <li><code>topic:modern-art</code> — items with that normalized tag; ordinary tags need no extra <code>tag:</code> prefix.</li>
+        <li><code>folder:*modern-art*</code> — items whose normalized bookmark folder path contains that text.</li>
+        <li><code>topic:*modern-art*</code> — items whose normalized tag value contains that text; ordinary tags need no extra <code>tag:</code> prefix.</li>
         <li><code>in:2026-08-19</code> — items imported on that date.</li>
         <li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, or <code>verdict:untriaged</code> — current verdict.</li>
         <li><code>image:present</code>, <code>image:failed</code>, or <code>image:none</code> — stored picture status.</li>

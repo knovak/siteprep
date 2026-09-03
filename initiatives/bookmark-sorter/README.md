@@ -217,10 +217,10 @@ white on blue after text is entered, showing that the action is ready.
 
 ### Selection expressions
 
-Expressions support `and`, `or`, `not`, parentheses, and a trailing `*`
-wildcard. Operators are evaluated with `not` before `and`, and `and` before
-`or`. Ordinary user tags are written directly; there is no extra `tag:`
-prefix.
+Expressions support `and`, `or`, `not`, parentheses, a trailing `*` for prefix
+matching, and `*value*` for contains matching. Operators are evaluated with
+`not` before `and`, and `and` before `or`. Ordinary user tags are written
+directly; there is no extra `tag:` prefix.
 
 Titles, source names, folder paths, and ordinary tags share one normalized
 search format. Text is lowercased, punctuation and symbols become spaces,
@@ -232,9 +232,13 @@ its value remains in the search key.
 
 Without a wildcard, the normalized key must match in full. A single trailing
 asterisk makes it a prefix search: `folder:reading-research*` matches normalized
-folder paths beginning with `reading-research`. Existing saved expressions that
-use exact stored tags or the older encoded `tag-key:` and `folder-key:` forms
-remain valid, but new Automatic proposals use the normalized format.
+folder paths beginning with `reading-research`. Put an asterisk on both sides
+of the value to match it anywhere: `folder:*research-rust*`,
+`title:*court-drama*`, `src:*safari*`, and `topic:*modern-art*`. An empty
+contains value is rejected instead of matching every item. Existing saved
+expressions that use exact or prefix matching, exact stored tags, or the older
+encoded `tag-key:` and `folder-key:` forms remain valid, but new Automatic
+proposals use the normalized exact format.
 
 Examples:
 
@@ -242,8 +246,8 @@ Examples:
 - `site:example.com`
 - `folder:reading-research* and not topic:rust`
 - `(src:safari-export or src:chrome-export) and verdict:untriaged`
-- `title:court-drama*`
-- `topic:modern-art`
+- `title:*court-drama*`
+- `topic:*modern-art*`
 - `image:none`
 
 Useful generated or synthetic values include:

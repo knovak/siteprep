@@ -390,17 +390,21 @@ folder:reading-research* and not topic:rust
 verdict:keep or verdict:needs-time
 ```
 
-Grammar: `and`, `or`, `not`, parentheses, bare tags, and `*` as a trailing
-wildcard. Deliberately small — a selection tool, not a language. A saved
-selection (§5) is this expression plus a name.
+Grammar: `and`, `or`, `not`, parentheses, bare tags, `*` as a trailing prefix
+wildcard, and paired wildcards around a value for contains matching. Empty
+contains values and unmatched or embedded wildcards are syntax errors.
+Deliberately small — a selection tool, not a language. A saved selection (§5)
+is this expression plus a name.
 
 Title, source, folder, and ordinary-tag search keys share one normalization
 rule: lowercase the text, replace punctuation and symbols with spaces, collapse
 whitespace, and replace the remaining spaces with dashes. A tag's first colon
 remains as its conventional namespace separator, so `Topic:Modern Art` becomes
 `topic:modern-art`; folder and source keep their synthetic `folder:` and `src:`
-prefixes. One trailing `*` makes the normalized key a prefix match. Stored tags
-are unchanged, and their raw and percent-encoded exact keys remain available so
+prefixes. One trailing `*` makes the normalized key a prefix match. Paired
+wildcards around the value match it anywhere, as in `title:*court-drama*`,
+`folder:*research*`, `src:*safari*`, or `topic:*modern-art*`. Stored tags are
+unchanged, and their raw and percent-encoded exact keys remain available so
 existing saved selections continue to evaluate as before.
 
 The evaluator also exposes the current verdict as a synthetic tag, using the

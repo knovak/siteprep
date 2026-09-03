@@ -71,7 +71,9 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /image:present/);
   assert.match(html, /id="tag-popover"/);
   assert.match(html, /punctuation, symbols, and spaces become a single dash/);
-  assert.match(html, /A trailing <code>\*<\/code> matches any characters after the normalized text/);
+  assert.match(html, /A trailing <code>\*<\/code> matches the beginning of a normalized value/);
+  assert.match(html, /surrounding a value with <code>\*<\/code> matches it anywhere/);
+  assert.match(html, /title:\*court-drama\*/);
   assert.match(html, /topic:modern-art/);
   assert.match(html, /href="https:\/\/knovak\.github\.io\/siteprep\/initiatives\/bookmark-sorter\/README\.html"[^>]*>Full documentation<\/a>/);
   assert.doesNotMatch(html, /prompt\('Collection name'/);

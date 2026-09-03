@@ -50,7 +50,8 @@ selection, and export operations.
   `spec.md` §4 and unwraps Google `/url` references before storing a bookmark.
 - `src/selections.mjs` is the one selection evaluator used by UI-scoped and
   administrative calls. It parses `and`, `or`, `not`, parentheses, bare tags,
-  and trailing wildcards; applies the title normalization rule to source,
+  trailing wildcards for prefix matching, and paired wildcards around a value
+  for contains matching; applies the title normalization rule to source,
   ordinary-tag, and folder search keys; retains raw and encoded exact keys for
   compatibility; adds synthetic collection/site/title/folder/image keys; and
   computes normalized source, tag, folder, and near-title proposals on demand.
