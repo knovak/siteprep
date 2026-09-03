@@ -19,6 +19,23 @@ Content is generally organized as a web page that contains a series of "topics".
 - a distance visualization, as described in techdoc
 - a photo gallery, as described in techdoc
 
+## Writing style
+
+Use direct, literal language. Remove or minimize mannered prose that substitutes
+metaphor or flourish for a plain statement. In particular, do not overuse:
+
+- `honestly` when describing an action, or `honest` when describing an object
+- `gate` as a verb, or `ungated`
+- `trade-off`
+- `a dial worth turning`
+- `what makes it work`
+- phrases such as `the rail ... can't drift` when a literal statement such as
+  `differences can't arise` is available
+- `it matters more than it looks`
+- `earns its keep`
+- `what to leave behind`
+- the construction `not X, but Y`
+
 ## Skills
 
 A skill is a reusable workflow invoked by name. Skills exist to be invoked
@@ -235,6 +252,7 @@ When adding a deck or section, it will usually refer to an area, such as a count
   - the population of the area; if the area is a city, include both central city and metro area population
   - the altitude and a brief summary of the climate
   - a very brief history, including the founding date, with a link to the Wikipedia page for more information
+  - one short item stating whether crime poses a danger in the location and, if so, how severe that danger is
 - an Attractions topic with a few popular tourist attractions, including a modern art museum or national park if nearby; provide location info for each attraction
 - if the area is a city, a Neighborhoods topic listing the neighborhoods that are walkable or important for visitors
 
