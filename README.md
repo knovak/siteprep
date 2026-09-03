@@ -14,6 +14,7 @@ This repository holds experimental deck content and a simple static build pipeli
 - **british-columbia** – Option deck for Vancouver, October 1–15, 2026, with VIFF film and music planning.
 - **rockies** – Option deck for Jackson Hole stays in October and December 2026.
 - **ecuador** – Future planning for Ecuador, beginning with boat-based exploration of the Galápagos Islands.
+- **peru** – Future planning for Machu Picchu, the Sacred Valley, and Cusco alongside a Galápagos cruise.
 
 
 ## Initiatives
