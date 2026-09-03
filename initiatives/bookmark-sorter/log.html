@@ -179,9 +179,17 @@
 <p>Fixed the generated-page tag parser after live testing showed <code>test-tag</code> becoming <code>te</code> and <code>t-tag</code>. The outer HTML template had consumed the whitespace regex&#39;s backslash, leaving the browser to split on the letter <code>s</code>. Escaped the backslash for the generated script and added exact browser and rendered-page regression coverage for the hyphenated tag.</p>
 <h3>2026-09-02 — Add the operator runbook</h3>
 <p>Added a concise operator runbook for the existing public-entry, private-data deployment. It records the access, backup, smoke-test, merge-recovery, capture, and incident boundaries an administrator must preserve without exposing bookmark content or treating a Sites version replacement as a database backup.</p>
+<h3>2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features</h3>
+<p>Proposed five optional refinements with expected value, likely size, privacy boundaries, and evidence: honest metadata fallback cards, a private usage-evidence summary, saved-text selection, a file-based open-tabs bridge, and named private collection collaborators.</p>
+<h3>2026-09-02 — Revise the optional-improvements proposal after review</h3>
+<p>Added exact-title search as a guarded recovery path for unreachable bookmark URLs, and made the proposed metadata fallback concrete with a compact text-card mockup and an explicit account of what it does and does not display.</p>
+<h3>2026-09-02 — Review round: research selection spaces and title search</h3>
+<p>Placed the requested selection improvements at the top of the optional menu after checking the shipped grammar. Recorded that title keys already normalize punctuation and spaces to dashes but provide only exact or trailing-wildcard prefix matching, while tags and folders use percent-encoded exact keys and treat underscores literally. Proposed backward-compatible boundaries and tests rather than silently changing saved selection meanings.</p>
 <h3>2026-09-02 — Normalize folder, tag, and source selection keys</h3>
 <p>Extended the title search-key rule to folder paths, ordinary tags, and import sources: lowercase text, punctuation and symbols become spaces, whitespace collapses, and remaining spaces become dashes. Tag namespace colons remain structural. Automatic proposals now use the same normalized expressions while raw and encoded exact keys remain available for existing saved selections.</p>
 <p>Updated Help, the user guide, import reference, specification, test plan, operator test checklist, and technical documentation, with unit and browser coverage for punctuation variants, trailing wildcards, proposal grouping, and the visible explanation.</p>
+<h3>2026-09-02 — Review round: simplify the optional-improvements menu</h3>
+<p>Removed the underscore-as-space proposal because it is being implemented separately. Reframed selection search as one consistent <code><em>string</em></code> contains form for title, folder, tag, and source, and added an optional collapsed Help details section that keeps essential guidance visible.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
