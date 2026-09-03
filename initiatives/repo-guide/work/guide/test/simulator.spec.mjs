@@ -136,8 +136,8 @@ test('controls stay fixed, the title condenses, and the color key explains state
 
   await page.locator('#step').click();
   await page.evaluate(() => window.simulatorState.settle());
-  const compactTitleSize = await page.locator('header h1').evaluate(node => parseFloat(getComputedStyle(node).fontSize));
-  expect(compactTitleSize).toBeLessThan(openingTitleSize);
+  await expect.poll(() => page.locator('header h1').evaluate(node => parseFloat(getComputedStyle(node).fontSize)))
+    .toBeLessThan(openingTitleSize);
   const targetsAfter = await Promise.all(['#back', '#step', '#play'].map(selector => page.locator(selector).boundingBox()));
   for (let index = 0; index < targetsBefore.length; index += 1) {
     expect(Math.abs(targetsBefore[index].x - targetsAfter[index].x)).toBeLessThan(1);
