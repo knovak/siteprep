@@ -1,0 +1,23 @@
+{
+  "hostedSchedule": {
+    "active": false,
+    "reason": "Explicit permission to create the Codex heartbeat has not been granted."
+  },
+  "retryDelaysMinutes": [1, 5, 20],
+  "retention": { "daily": 14, "monthly": 6 },
+  "scale": {
+    "collections": 3,
+    "currentEntities": 10000,
+    "retainedVersions": 50000,
+    "relationships": 100000,
+    "acceptedTags": 1000,
+    "proposedOperations": 2000,
+    "referencedAssetBytes": 2147483648
+  },
+  "budgets": {
+    "queryP95Milliseconds": 2000,
+    "manifestMilliseconds": 60000,
+    "manifestMemoryBytes": 67108864,
+    "restoreMilliseconds": 600000
+  }
+}

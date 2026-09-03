@@ -1,7 +1,7 @@
-# Knowledge Pipeline Phase 5 Site
+# Knowledge Pipeline Phase 6 Site
 
 This is the login-gated collection, Harvest workspace, and portable review core
-through `plan.md` Phase 5. It is a
+through `plan.md` Phase 6. It is a
 Vinext/Cloudflare Workers application intended for a public-access ChatGPT Site:
 the sign-in surface is public, while collection, administration, backup, API,
 and blob access require both ChatGPT authentication and a server-side
@@ -70,6 +70,39 @@ references. Confirmation can create a final private backup, tombstones the
 collection, invalidates pending work, removes collection references, and then
 finishes bounded request-driven deletion. Shared blobs remain until their final
 authorized reference disappears.
+
+## Recovery, scheduling, and scale
+
+`lib/recovery.mjs` is the portable recovery service shared by the web,
+administrator, and deterministic schedule callers. It provides stable due-run
+operation ids, derives scheduled scope from stored schedule state, applies the
+ordinary administrator boundary, and refuses authentication material in
+schedule inputs, URLs, packages, and receipts. Accepted operations are
+idempotent. Failed destinations retry after 1, 5, and 20 minutes, notify only
+after the final failure, and preserve the preceding successful recovery point.
+
+Collection packages compose into a deterministic knowledge-space package.
+Restore verifies the canonical package, source-version hashes, and embedded
+asset hashes before staging any writes, then exposes the result in one commit.
+The same module adapts the checked pre-v1 shape, copies a bounded collection
+subset while remapping internal ids and endpoints, records origin aliases,
+omits unauthorized dependencies with warnings, and replaces source ownership
+with the destination actor.
+
+Scheduled packages follow the 14-daily/6-monthly successful-retention policy;
+failed and partial objects never qualify. Large erasure tombstones first,
+disables schedules, resumes bounded batches, applies the requested backup
+choice, retains only the minimal deletion receipt, and removes a blob only when
+its final reference is gone. Cursor paging and the checked Phase 6 fixture cover
+10,000 current entities, 50,000 versions, and 100,000 relationships within the
+documented local hosted-equivalent budgets.
+
+`fixtures/phase-6-recovery.json` is also the operational status record. The
+external due-schedule adapter is tested and ready, but the hosted Codex
+heartbeat is inactive because explicit permission to create it has not been
+given. This local evidence does not claim a live hosted schedule, physical R2
+restore, or witnessed representative use; those remain separate deployment and
+Phase 7 gates.
 
 ## Harvest boundary
 

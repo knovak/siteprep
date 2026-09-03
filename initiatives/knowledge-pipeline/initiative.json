@@ -21,12 +21,12 @@
   ],
   "todo": [
     {
-      "id": "phase-6-recovery-scheduling-and-scale",
-      "title": "Phase 6 - recovery, scheduling, and scale",
+      "id": "phase-7-representative-use-and-distribution-evidence",
+      "title": "Phase 7 - representative use and distribution evidence",
       "state": "actionable",
       "value": "high",
       "effort": "large",
-      "advances_stage": false
+      "advances_stage": true
     }
   ]
 }
