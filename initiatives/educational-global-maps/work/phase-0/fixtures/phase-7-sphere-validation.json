@@ -1,0 +1,31 @@
+{
+  "schema": "educational-global-maps/phase-7-validation/v1",
+  "reviewedAt": "2026-09-03",
+  "profile": {
+    "target": "NOAA Science On a Sphere site-custom dataset",
+    "projection": "equatorial cylindrical equidistant",
+    "ratio": "2:1",
+    "formats": ["PNG image sequence", "playlist.sos", "labels.txt", "external legend and attribution"],
+    "documentation": [
+      "https://sos.noaa.gov/support/sos/manuals/content-creation-guidelines/all/",
+      "https://sos.noaa.gov/support/sos/manuals/playlist-format/"
+    ]
+  },
+  "localValidation": {
+    "status": "passed",
+    "checks": ["deterministic frame checksums", "PNG structure", "2:1 extent", "manifest checksums", "label count", "playlist required fields", "offline inventory"]
+  },
+  "hardware": {
+    "status": "unavailable",
+    "validation": "Direct sphere testing requires an installation and operator; the no-hardware fallback is the verified frame inventory and offline viewer."
+  },
+  "independentWitness": {
+    "status": "needed",
+    "required": ["new contribution", "cited catalogue entry", "single-device exploration", "detached presentation", "portable restore", "sphere export", "measure/period/source/missing/projection/limitation comprehension"]
+  },
+  "limitations": [
+    "The package has not been tested on sphere hardware, so seam, orientation, physical legibility, and operator workflow remain unproved.",
+    "The export path has not yet been witnessed by a learner or presenter other than the implementer.",
+    "Browser interaction and typography are represented by the complete globe frames and external context files rather than projected as interactive controls."
+  ]
+}

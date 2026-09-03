@@ -8,10 +8,11 @@
     {
       "id": "phase-7-spherical-export-and-representative-acceptance",
       "title": "Phase 7 - spherical export and representative acceptance",
-      "state": "actionable",
+      "state": "blocked",
       "value": "high",
       "effort": "large",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "data:independent learner or presenter findings for the full contribution, exploration, presentation, restore, and sphere-export path"
     }
   ]
 }
