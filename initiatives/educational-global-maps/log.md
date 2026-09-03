@@ -43,3 +43,14 @@ Built the authoritative session protocol, same-browser controller fallback, pack
 ## 2026-09-03 — Phase 6 - teaching and large-display validation
 
 Added local teaching and presentation modes, presenter notes, 4K typography, accessibility/privacy evidence, and three-viewport validation; 54 Node and 45 browser tests pass. Public app and relay deployment remains pending explicit permission.
+
+## 2026-09-03 — Phase 7 sphere-export implementation
+
+Implemented deterministic 2:1 equatorial cylindrical equidistant PNG frames,
+an SOS `playlist.sos` and labels profile, external legend and attribution,
+checksummed manifest verification, an offline inventory, and explicit
+projection, layer, live-asset, interaction, and typography dispositions. The
+profile follows NOAA's current content-creation and playlist references. Local
+package verification passes; sphere hardware behavior and the required
+independent learner or presenter walkthrough remain unproved, so Phase 7 is
+blocked on that human evidence rather than recorded complete.

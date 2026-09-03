@@ -255,6 +255,42 @@ Phase 7, and no live URLs were tested because public deployment permission was
 not granted. No account, location, contacts, analytics, or unpublished scene
 support was added.
 
+## Phase 7 spherical export boundary
+
+`src/sphere.mjs` converts a compatible prepared scene into a deterministic
+equatorial cylindrical equidistant PNG sequence. Each frame spans 180°W to
+180°E and 90°N to 90°S at an exact 2:1 ratio with the prime meridian at the
+centre. The package also contains `playlist.sos`, one `labels.txt` entry per
+frame, an external SVG legend, attribution and citation text, a conversion
+report, an offline flat-frame viewer, and a canonical manifest with every file
+size and SHA-256 checksum.
+
+The profile follows NOAA Science On a Sphere's content-creation and playlist
+references reviewed on 2026-09-03: PNG image sequences live in one directory,
+the directory is the playlist's `data`, file names sort by padded frame number,
+and the playlist records `fps` and `framewidth`. `verifySpherePackage` checks
+the manifest, PNG signature and extent, labels, and required playlist fields.
+It is a local compatibility check, not a claim that SOS hardware accepted the
+package.
+
+Generate and verify the representative package with:
+
+```sh
+npm run sphere-export -- /path/to/new/output
+```
+
+Every conversion reports source-projection, layer, live-asset, interaction,
+and typography dispositions. Unsupported projection or layer behavior refuses
+the export; restricted live assets remain named omissions. The generated
+offline viewer and frame inventory are the no-hardware fallback. Direct seam,
+orientation, physical legibility, installation workflow, and independent
+learner comprehension remain explicitly unproved in
+`fixtures/phase-7-sphere-validation.json` until a person and, if available, an
+SOS installation can supply that evidence.
+
+The latest rendered export preview is captured in
+`screenshots/phase-7-sphere.png`.
+
 ## Canonicalization profile
 
 - Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate

@@ -11,6 +11,7 @@
     "contributions": "node scripts/validate-contribution.mjs fixtures/contributions/owid-population fixtures/contributions/datacommons-income",
     "relay": "node scripts/reference-relay.mjs",
     "round-trip": "node scripts/round-trip.mjs",
+    "sphere-export": "node scripts/export-sphere.mjs",
     "test": "npm run build:app && node --test test/*.test.mjs",
     "test:browser": "npm run build:app && playwright test --config playwright.config.mjs"
   },
