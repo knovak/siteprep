@@ -2378,7 +2378,7 @@
         definitions: ["Population is the recorded number of residents in the selected period."],
         caveats: ["Simplified instructional geometry is not an authoritative boundary product."],
         discussionPrompts: ["Which differences are visible, and which require the exact-value table?"],
-        presentationStops: [{ order: 1, title: "Read the measure", focus: "legend" }, { order: 2, title: "Compare France and Germany", focus: "country:FRA" }],
+        presentationStops: [{ order: 1, title: "Read the measure", focus: "legend", presenterNote: "Name the measure, unit, period, and source before asking learners to compare places." }, { order: 2, title: "Compare France and Germany", focus: "country:FRA", presenterNote: "Pause for estimates, then use the exact-value table to check what the shapes alone do not show." }],
         claims: [{ text: "Projection changes area and shape, not the pinned values.", sources: [{ title: "D3 geographic projections", url: "https://d3js.org/d3-geo/projection" }] }],
         app: { datasetId: "dataset:population", time: "2023-06", layerIds: ["layer:population-through-time"] }
       },
@@ -2391,7 +2391,7 @@
         definitions: ["An index combines selected observations into a comparable score."],
         caveats: ["The education index is interpolated between 2022 and 2024 fixture values."],
         discussionPrompts: ["What can two differently scaled layers suggest, and what can they not establish?"],
-        presentationStops: [{ order: 1, title: "Check actual periods", focus: "periods" }, { order: 2, title: "Compare encodings", focus: "legend" }],
+        presentationStops: [{ order: 1, title: "Check actual periods", focus: "periods", presenterNote: "Ask which source periods each layer actually uses before discussing their apparent relationship." }, { order: 2, title: "Compare encodings", focus: "legend", presenterNote: "Separate what the two encodings show from any causal claim the map cannot support." }],
         claims: [{ text: "Correlation in a layered map does not establish causation.", sources: [{ title: "NIST uncertainty guidance", url: "https://www.nist.gov/pml/owm/si-units-information" }] }],
         app: { datasetId: "dataset:population", time: "2023-06", layerIds: ["layer:population-through-time", "layer:education-index"] }
       },
@@ -2404,7 +2404,7 @@
         definitions: ["A flow connects an origin and destination; line direction and width encode direction and magnitude."],
         caveats: ["Movement is a reference-only classroom fixture and is not bundled for redistribution."],
         discussionPrompts: ["How would a missing route differ from a route with zero recorded movement?"],
-        presentationStops: [{ order: 1, title: "Read direction and magnitude", focus: "layer:learner-movement" }, { order: 2, title: "Separate zero from missing", focus: "flow:london-paris" }],
+        presentationStops: [{ order: 1, title: "Read direction and magnitude", focus: "layer:learner-movement", presenterNote: "Trace one arrow from origin to destination and distinguish width from direction." }, { order: 2, title: "Separate zero from missing", focus: "flow:london-paris", presenterNote: "Use the legend and exact table to distinguish a recorded zero from absent evidence." }],
         claims: [{ text: "The layers have different actual periods.", sources: [{ title: "Recorded Phase 3 fixture", url: "https://github.com/knovak/siteprep" }] }],
         app: { datasetId: "dataset:population", time: "2023-06", layerIds: ["layer:population-through-time", "layer:learner-movement"] }
       }
@@ -5983,6 +5983,7 @@
     "selected-detail",
     "canvas-wrap",
     "map",
+    "method-cue",
     "geography-caveat",
     "legend",
     "table-caption",
@@ -6003,6 +6004,8 @@
     "scene-caveat",
     "scene-question",
     "scene-stop",
+    "presenter-notes",
+    "presentation-link",
     "previous-stop",
     "next-stop",
     "scene-share",
@@ -6044,6 +6047,8 @@
   var presentationStop = 0;
   var sessionParameters = new URL(window.location.href).searchParams;
   var controllerRole = sessionParameters.get("controller") === "1";
+  var presentationRole = sessionParameters.get("presentation") === "1";
+  document.body.dataset.presentation = String(presentationRole);
   var sessionLink = null;
   var sessionId = sessionParameters.get("session");
   var sessionSecret = sessionParameters.get("secret");
@@ -6183,12 +6188,22 @@
     elements["scene-caveat"].textContent = educationalScene.caveats.join(" ");
     elements["scene-question"].textContent = educationalScene.discussionPrompts.join(" ");
     elements["scene-stop"].textContent = `${stop.order} of ${stops.length} \xB7 ${stop.title}`;
+    elements["presenter-notes"].textContent = stop.presenterNote;
     elements["previous-stop"].disabled = presentationStop === 0;
     elements["next-stop"].disabled = presentationStop === stops.length - 1;
     const share = new URL(window.location.href);
     share.search = "";
     share.searchParams.set("sceneRevision", sceneRevisionId());
     elements["scene-share"].textContent = share.toString();
+    const presentation = new URL(share);
+    presentation.searchParams.set("presentation", "1");
+    elements["presentation-link"].href = presentation;
+    elements["presentation-link"].textContent = presentationRole ? "Return to exploration controls" : "Open presentation display";
+    if (presentationRole) {
+      const exploration = new URL(share);
+      exploration.searchParams.delete("presentation");
+      elements["presentation-link"].href = exploration;
+    }
   }
   function render() {
     const width = Math.max(280, Math.round(elements["canvas-wrap"].getBoundingClientRect().width));
@@ -6209,6 +6224,7 @@
     elements["dataset-title"].textContent = model.dataset.title;
     elements["map-title"].textContent = model.title;
     elements["map-summary"].textContent = model.summary;
+    elements["method-cue"].textContent = `Method: ${model.projectionLabel}. Measure: ${model.dataset.title}; unit: ${model.dataset.unit}; period: ${model.period}.`;
     elements["geography-caveat"].textContent = model.projection === "population-cartogram" ? renderer_scene_default.cartogram.caveat : renderer_scene_default.geography.caveat;
     elements["cartogram-note"].hidden = model.projection !== "population-cartogram";
     elements["cartogram-note"].textContent = `Cartogram geometry: ${renderer_scene_default.cartogram.source}, ${renderer_scene_default.cartogram.year}; ${renderer_scene_default.cartogram.geometryVersion}.`;

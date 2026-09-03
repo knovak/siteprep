@@ -1,0 +1,47 @@
+{
+  "schema": "educational-global-maps/phase-6-validation/v1",
+  "reviewedAt": "2026-09-02",
+  "application": "local packaged build",
+  "deployment": {
+    "status": "pending-permission",
+    "applicationUrl": null,
+    "relayUrl": null,
+    "note": "No public application or relay was created; the live deployment gate remains closed until the user explicitly authorizes it."
+  },
+  "roles": [
+    {
+      "role": "unguided public explorer",
+      "method": "browser-driven task walkthrough",
+      "tasks": ["open a topic", "identify measure, unit, period, and source", "change time", "change projection", "find caveats", "return to the catalogue"],
+      "result": "passed"
+    },
+    {
+      "role": "teacher presenter",
+      "method": "browser-driven display and controller walkthrough",
+      "tasks": ["open a pinned scene", "start a controller session", "join from a phone viewport", "advance a stop", "change time and projection", "recover after disconnect"],
+      "result": "passed"
+    }
+  ],
+  "viewports": [
+    {"name": "phone controller", "width": 430, "height": 932, "result": "passed"},
+    {"name": "laptop", "width": 1440, "height": 900, "result": "passed"},
+    {"name": "4K display equivalent", "width": 3840, "height": 2160, "result": "passed"}
+  ],
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "verified": ["keyboard paths", "44 pixel controls", "semantic exact-value table", "named controls", "visible focus", "color-independent labels", "reduced motion", "200 percent zoom layout"],
+    "blockingDefects": []
+  },
+  "privacy": {
+    "requestsAccount": false,
+    "requestsLocation": false,
+    "requestsContacts": false,
+    "usesAnalytics": false,
+    "relayData": "bounded session state and connection identifiers only"
+  },
+  "limitations": [
+    "The 4K result is an equivalently reviewed browser viewport, not a witnessed physical classroom display.",
+    "Independent learner comprehension and real sphere hardware remain Phase 7 evidence.",
+    "Live public application and relay behavior remain untested because deployment permission was not granted."
+  ]
+}

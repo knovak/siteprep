@@ -25,11 +25,11 @@ const elements = Object.fromEntries([
   'dataset', 'projection', 'reference-raster', 'zoom-in', 'zoom-out', 'reset-view',
   'pause-inspection', 'refusal', 'revision', 'period', 'encoding', 'current-projection',
   'dataset-title', 'map-title', 'map-summary', 'selected-label', 'selected-value',
-  'selected-detail', 'canvas-wrap', 'map', 'geography-caveat', 'legend', 'table-caption',
+  'selected-detail', 'canvas-wrap', 'map', 'method-cue', 'geography-caveat', 'legend', 'table-caption',
   'values', 'citations', 'cartogram-note', 'motion-status',
   'scene-time', 'temporal-layers', 'play-time', 'actual-periods', 'alignment-note',
   'scene-library', 'scene-title', 'scene-summary', 'scene-revision', 'scene-definition',
-  'scene-caveat', 'scene-question', 'scene-stop', 'previous-stop', 'next-stop',
+  'scene-caveat', 'scene-question', 'scene-stop', 'presenter-notes', 'presentation-link', 'previous-stop', 'next-stop',
   'scene-share', 'upgrade-status', 'compare-upgrade', 'portable-status', 'prepare-bundle',
   'start-session', 'end-session', 'session-status', 'join-url', 'join-qr',
   'controller-app', 'controller-status', 'controller-time', 'controller-projection',
@@ -53,6 +53,8 @@ let educationalRevision = Number.parseInt(requestedSceneRevision?.split('@').at(
 let presentationStop = 0;
 const sessionParameters = new URL(window.location.href).searchParams;
 const controllerRole = sessionParameters.get('controller') === '1';
+const presentationRole = sessionParameters.get('presentation') === '1';
+document.body.dataset.presentation = String(presentationRole);
 let sessionLink = null;
 let sessionId = sessionParameters.get('session');
 let sessionSecret = sessionParameters.get('secret');
@@ -205,12 +207,22 @@ function renderEducationalScene() {
   elements['scene-caveat'].textContent = educationalScene.caveats.join(' ');
   elements['scene-question'].textContent = educationalScene.discussionPrompts.join(' ');
   elements['scene-stop'].textContent = `${stop.order} of ${stops.length} · ${stop.title}`;
+  elements['presenter-notes'].textContent = stop.presenterNote;
   elements['previous-stop'].disabled = presentationStop === 0;
   elements['next-stop'].disabled = presentationStop === stops.length - 1;
   const share = new URL(window.location.href);
   share.search = '';
   share.searchParams.set('sceneRevision', sceneRevisionId());
   elements['scene-share'].textContent = share.toString();
+  const presentation = new URL(share);
+  presentation.searchParams.set('presentation', '1');
+  elements['presentation-link'].href = presentation;
+  elements['presentation-link'].textContent = presentationRole ? 'Return to exploration controls' : 'Open presentation display';
+  if (presentationRole) {
+    const exploration = new URL(share);
+    exploration.searchParams.delete('presentation');
+    elements['presentation-link'].href = exploration;
+  }
 }
 
 function render() {
@@ -232,6 +244,7 @@ function render() {
   elements['dataset-title'].textContent = model.dataset.title;
   elements['map-title'].textContent = model.title;
   elements['map-summary'].textContent = model.summary;
+  elements['method-cue'].textContent = `Method: ${model.projectionLabel}. Measure: ${model.dataset.title}; unit: ${model.dataset.unit}; period: ${model.period}.`;
   elements['geography-caveat'].textContent = model.projection === 'population-cartogram'
     ? fixture.cartogram.caveat
     : fixture.geography.caveat;

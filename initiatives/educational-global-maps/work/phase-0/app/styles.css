@@ -49,6 +49,9 @@ h1, h2, p { margin-top: 0; }
 h1 { max-width: 15ch; margin-bottom: 0; font-size: clamp(2.2rem, 5vw, 5.2rem); line-height: .95; letter-spacing: -.05em; }
 h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 .intro, #map-summary, .caveat { color: #a8b8d6; line-height: 1.6; }
+.entry-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+.entry-actions a { min-height: 44px; padding: .65rem .8rem; border: 1px solid #4d73bf; border-radius: .75rem; color: #edf5ff; text-decoration: none; }
+.entry-actions a:focus-visible { outline: 3px solid #7fe2ff; outline-offset: 3px; }
 
 .workspace {
   display: grid;
@@ -92,6 +95,7 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 .canvas-wrap { min-height: 33rem; border-radius: 1rem; overflow: hidden; background: #111a32; }
 #map { display: block; width: 100%; height: 33rem; touch-action: none; }
 .caveat { margin: .75rem 0 0; font-size: .78rem; }
+.method-cue { margin: .8rem 0 0; color: #7fe2ff; font-weight: 750; line-height: 1.45; }
 
 .scene-card, .session-card, .legend-card, .citation-card { grid-column: 2; padding: 1rem; }
 .scene-card-heading { display: flex; gap: 1rem; justify-content: space-between; align-items: start; }
@@ -101,6 +105,9 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 .teaching-grid > section { padding: 1rem; border-radius: .9rem; background: rgba(8, 15, 31, .72); }
 .teaching-grid h3 { margin: .2rem 0 .4rem; color: #ffcc66; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
 .teaching-grid p { color: #cbd7eb; line-height: 1.5; }
+.presenter-notes { margin-top: 1rem; padding: .8rem 1rem; border: 1px solid rgba(123, 156, 208, .28); border-radius: .9rem; color: #cbd7eb; }
+.presenter-notes summary { min-height: 44px; cursor: pointer; color: #ffcc66; font-weight: 800; line-height: 44px; }
+.presenter-notes p { margin-bottom: .25rem; line-height: 1.55; }
 .stop { min-height: 3rem; font-weight: 800; }
 .stop-controls { display: flex; gap: .5rem; }
 .share-link { padding: .6rem; border-radius: .6rem; background: #050a16; color: #7fe2ff !important; overflow-wrap: anywhere; font: .72rem ui-monospace, monospace; }
@@ -111,7 +118,7 @@ h2 { margin-bottom: .5rem; font-size: clamp(1.25rem, 2vw, 1.7rem); }
 table { width: 100%; border-collapse: collapse; font-size: .84rem; }
 caption { padding: 0 0 .7rem; color: #91a3c3; text-align: left; }
 th, td { padding: .65rem; border-top: 1px solid rgba(123, 156, 208, .18); text-align: left; vertical-align: top; }
-tbody button { width: 100%; min-height: 36px; padding: .35rem .5rem; text-align: left; }
+tbody button { width: 100%; min-height: 44px; padding: .35rem .5rem; text-align: left; }
 tr[data-selected="true"] { background: rgba(92, 200, 255, .09); }
 .citation-card ul { margin: 0; padding-left: 1.2rem; }
 .citation-card li { margin: .45rem 0; line-height: 1.5; }
@@ -135,6 +142,18 @@ tr[data-selected="true"] { background: rgba(92, 200, 255, .09); }
 .controller-grid select { width: 100%; padding: .65rem; }
 .controller-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 
+body[data-presentation="true"] .masthead { grid-template-columns: 1fr auto; }
+body[data-presentation="true"] .control-panel,
+body[data-presentation="true"] .carry-panel,
+body[data-presentation="true"] .presenter-notes { display: none; }
+body[data-presentation="true"] .workspace { grid-template-columns: 1fr; max-width: 2300px; }
+body[data-presentation="true"] .map-card,
+body[data-presentation="true"] .scene-card,
+body[data-presentation="true"] .session-card,
+body[data-presentation="true"] .legend-card,
+body[data-presentation="true"] .citation-card { grid-column: 1; }
+body[data-presentation="true"] .teaching-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
 @media (max-width: 760px) {
   .masthead { grid-template-columns: 1fr; gap: 1rem; padding-top: 1.4rem; }
   .workspace { grid-template-columns: 1fr; }
@@ -155,6 +174,11 @@ tr[data-selected="true"] { background: rgba(92, 200, 255, .09); }
   .workspace { grid-template-columns: 26rem minmax(0, 1fr); }
   .control-panel { align-self: start; }
   .canvas-wrap, #map { min-height: 58rem; height: 58rem; }
+  body[data-presentation="true"] { font-size: 22px; }
+  body[data-presentation="true"] h1 { font-size: 6.2rem; }
+  body[data-presentation="true"] h2 { font-size: 2.6rem; }
+  body[data-presentation="true"] .legend li,
+  body[data-presentation="true"] table { font-size: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
