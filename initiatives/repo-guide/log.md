@@ -205,3 +205,35 @@ Added a user-facing guide to the description, deck, simulator, regeneration work
 ## 2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features
 
 Added a dated optional-refinement menu covering a worked PR trail, downloadable bundle, accessibility review, presenter notes, and public-version freshness without duplicating the actionable simulator redesign.
+
+## 2026-09-02 — Redesign the simulator to match the new guide
+
+Rebuilt the simulator as a white, navy-accented single-column guide with the
+description's figure palette and a sticky full-lifecycle rail. The walkthrough
+now shows the optional research fork, amber person steps and blue agent steps,
+digest lines appearing and disappearing around a question, the plan critique,
+both increments moving through branch, write-scope check, branch preview, pull
+request, and merge, two refining items, and a production release that runs only
+after the person's explicit request. The generated output remains self-contained
+and offline, and its vocabulary still resolves from the narrow fact set.
+
+This is the initiative's last actionable item. It remains on the todo list so
+the sweep does not declare the initiative dormant on the user's behalf.
+
+## 2026-09-02 — Review round: stabilize and explain the simulator layout
+
+Fixed Back, Step, and Play in a bottom control deck so their targets stay put;
+condensed the title after the opening step; removed the redundant lifecycle
+tagline; and renamed the work trail with an explanation of its per-item path.
+Added a visible key for work, sweep, actor, and stage colors, separated ready
+teal from completed green, made active sweep phases blue, and returned the phase
+display to gray once a sweep is no longer running.
+
+## 2026-09-02 — Review round: tighten the simulator story and phase cues
+
+Applied the second review round to the simulator source: tightened the requested
+interaction-style and release copy, renamed the optional research artifact to
+`background.md`, and folded three redundant screens into the surrounding plan
+and pull-request steps. Work-producing agent steps now highlight the applicable
+sweep phase, while person-controlled steps keep the phase row gray. Regenerated
+the self-contained simulator and expanded its Node and browser regression checks.

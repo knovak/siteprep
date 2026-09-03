@@ -67,7 +67,7 @@ describe('simulator choreography', () => {
         assert.ok(step.documents.includes(name), `${step.id} keeps ${name}`);
       }
     }
-    assert.deepEqual(steps.at(-1).documents, ['shape.md', 'choice.md']);
+    assert.deepEqual(steps.at(-1).documents, ['wish.md', 'shape.md', 'choice.md']);
   });
 
   test('the sweep step spends its allowance in beats rather than presenting it finished', () => {
@@ -76,18 +76,79 @@ describe('simulator choreography', () => {
     assert.ok(sweep.beats.length >= 3, 'the interesting moment is choreographed');
     assert.equal(sweep.beats[0].budget.spent, 0);
     assert.equal(sweep.beats.at(-1).budget.spent, vocabulary.items_per_run);
-    assert.ok(sweep.narrative.includes(`currently ${vocabulary.items_per_run} items per run`));
+    assert.ok(sweep.narrative.includes(`currently ${vocabulary.items_per_run} items`));
     assert.ok(sweep.beats.some(beat => beat.phases[vocabulary.phases[Math.min(2, vocabulary.phases.length - 1)]] === 'active'));
     assert.ok(sweep.beats.at(-1).items.some(item => item.state === 'passed'
       && item.detail.includes(`${vocabulary.items_per_run}/${vocabulary.items_per_run}`)));
     assert.deepEqual(sweep.beats.map(beat => beat.at), [...sweep.beats.map(beat => beat.at)].sort((a, b) => a - b));
+
+    const answer = steps.find(step => step.id === 'answer-recorded');
+    assert.ok(Object.values(answer.phases).every(value => value === 'waiting'),
+      'an unrelated person step does not inherit the completed sweep colors');
+    assert.equal(answer.budget.spent, 0);
   });
 
-  test('the recorded answer and optional closeout use the Guide wording', () => {
+  test('the recorded answer and optional closeout use second-person Guide wording', () => {
     const {steps} = buildSimulatorSteps(syntheticFacts);
     assert.match(steps.find(step => step.id === 'answer-recorded').narrative,
-      /an agent records it in decisions\.md and unblocks the item/);
-    assert.match(steps.at(-1).narrative, /initiative may be closed out/);
+      /You make the choice.*agent records your answer.*decisions\.md/);
+    assert.match(steps.at(-1).narrative, /you can archive it/i);
+  });
+
+  test('the review-directed copy and shorter sequence stay in place', () => {
+    const {steps} = buildSimulatorSteps(syntheticFacts);
+    const research = steps.find(step => step.id === 'research-choice');
+    assert.equal(research.title, 'Research first');
+    assert.ok(research.flow.includes('background.md'));
+    assert.equal(steps.find(step => step.id === 'objectives-merged').items[1].label,
+      'Choose the interaction style');
+    assert.match(steps.find(step => step.id === 'answer-recorded').items[1].detail,
+      /enables the agent to proceed/);
+    assert.equal(steps.find(step => step.id === 'outputs-registered').narrative,
+      'You merge the final increment. The initiative is now ready for refinement before going to production.');
+    assert.deepEqual(steps.find(step => step.id === 'polish-finished').items.map(item => item.key), ['release']);
+    assert.deepEqual(steps.find(step => step.id === 'release-requested').items.map(item => item.key), ['release']);
+    assert.equal(steps.find(step => step.id === 'goes-quiet').items[0].label, 'Record dormant state');
+    assert.equal(steps.find(step => step.id === 'goes-quiet').items[0].detail, 'Needs input from the user');
+    assert.ok(!steps.some(step => ['plan-merged', 'increment-one-pr', 'increment-two-pr'].includes(step.id)));
+  });
+
+  test('agent work identifies the sweep phase responsible for it', () => {
+    const {steps, vocabulary} = buildSimulatorSteps(syntheticFacts);
+    const workPhase = vocabulary.phases.at(-1);
+    for (const id of ['objectives-pr', 'assumption-breaks', 'plan-pr', 'critique-pr',
+      'increment-one-branch', 'increment-two-branch', 'polish-finished']) {
+      assert.equal(steps.find(step => step.id === id).phases[workPhase], 'active', `${id} highlights work`);
+    }
+  });
+
+  test('the redesigned walk-through shows the missing teaching steps', () => {
+    const {steps} = buildSimulatorSteps(syntheticFacts);
+    assert.ok(steps.every(step => ['person', 'agent'].includes(step.actor)), 'every step names its actor');
+    assert.deepEqual(steps.find(step => step.id === 'research-choice').fork,
+      ['Research notes added', 'No research needed']);
+    assert.ok(steps.some(step => step.items.some(item => item.key === 'critique-plan')),
+      'the plan critique precedes implementation');
+    const refining = steps.find(step => step.id === 'outputs-registered');
+    assert.deepEqual(refining.items.map(item => item.key), ['polish', 'release']);
+    assert.equal(steps.find(step => step.id === 'release-requested').actor, 'person');
+    assert.match(steps.find(step => step.id === 'production-released').narrative, /Because you asked/);
+  });
+
+  test('questions change the digest and both increments show branch, preview, PR, and merge', () => {
+    const {steps} = buildSimulatorSteps(syntheticFacts);
+    assert.equal(steps.find(step => step.id === 'blocker-named').digest.change, 'added');
+    assert.equal(steps.find(step => step.id === 'answer-recorded').digest.change, 'removed');
+    for (const number of ['one', 'two']) {
+      const branch = steps.find(step => step.id === `increment-${number}-branch`);
+      const merge = number === 'one'
+        ? steps.find(step => step.id === 'increment-one-merged')
+        : steps.find(step => step.id === 'outputs-registered');
+      assert.ok(branch.flow.includes('write-scope check'));
+      assert.ok(branch.flow.includes('branch preview'));
+      assert.ok(branch.flow.includes('ready pull request'));
+      assert.ok(merge.flow.includes('you merge'));
+    }
   });
 
   test('every step but the last says what the next one will do', () => {

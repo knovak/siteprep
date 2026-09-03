@@ -112,9 +112,9 @@ test('the stage stands out on exactly the steps where it moved, in both directio
     expect(await badge.getAttribute('data-changed')).toBe(forward[step - 1].changed);
   }
 
-  // The orange is the one the active sweep phase already uses, so a reader
-  // learns one colour rather than two.
-  await page.locator('#step').click();
+  // Orange is reserved for a stage that just moved; active sweep phases use
+  // blue and completed phases use green.
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('objectives-merged')));
   await page.evaluate(() => window.simulatorState.settle());
   const orange = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--orange').trim());
   expect(orange).toBe('#ef6a3a');
@@ -125,6 +125,47 @@ test('the stage stands out on exactly the steps where it moved, in both directio
     .toBe('rgb(239, 106, 58)');
 });
 
+test('controls stay fixed, the title condenses, and the color key explains state', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+
+  await expect(page.locator('header')).not.toContainText('Every stage, start to finish');
+  const controls = page.locator('.controls');
+  expect(await controls.evaluate(node => getComputedStyle(node).position)).toBe('fixed');
+  const openingTitleSize = await page.locator('header h1').evaluate(node => parseFloat(getComputedStyle(node).fontSize));
+  const targetsBefore = await Promise.all(['#back', '#step', '#play'].map(selector => page.locator(selector).boundingBox()));
+
+  await page.locator('#step').click();
+  await page.evaluate(() => window.simulatorState.settle());
+  await expect.poll(() => page.locator('header h1').evaluate(node => parseFloat(getComputedStyle(node).fontSize)))
+    .toBeLessThan(openingTitleSize);
+  const targetsAfter = await Promise.all(['#back', '#step', '#play'].map(selector => page.locator(selector).boundingBox()));
+  for (let index = 0; index < targetsBefore.length; index += 1) {
+    expect(Math.abs(targetsBefore[index].x - targetsAfter[index].x)).toBeLessThan(1);
+    expect(Math.abs(targetsBefore[index].y - targetsAfter[index].y)).toBeLessThan(1);
+  }
+
+  const key = page.locator('.color-key');
+  await expect(key).toContainText('Work items');
+  await expect(key).toContainText('ready');
+  await expect(key).toContainText('Sweep phases');
+  await expect(key).toContainText('not running');
+  await expect(key).toContainText('finished this sweep');
+  await expect(key).toContainText('stage just moved');
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('blocker-named'), {animate: false}));
+  const activePhase = page.locator('#phase-row .phase.active');
+  await expect(activePhase).toHaveCount(1);
+  expect(await activePhase.evaluate(node => getComputedStyle(node).backgroundColor)).toBe('rgb(30, 75, 184)');
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('answer-recorded'), {animate: false}));
+  await expect(page.locator('#phase-row .phase.waiting')).toHaveCount(4);
+  await expect(page.locator('#phase-row .phase.complete')).toHaveCount(0);
+  await expect(page.locator('#meter .slot[data-spent="true"]')).toHaveCount(0);
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('increment-one-branch'), {animate: false}));
+  await expect(page.locator('#phase-row .phase.active')).toHaveText('work');
+});
+
 test('an item that survives a step is the same element, and a finished one leaves', async ({page}) => {
   await page.goto(pathToFileURL(outputPath).href);
 
@@ -133,10 +174,10 @@ test('an item that survives a step is the same element, and a finished one leave
   const survived = await page.evaluate(async () => {
     const container = document.querySelector('#items');
     const find = () => [...container.children].filter(node => node.dataset.exiting !== 'true');
-    window.simulatorState.show(1, {animate: false});
+    window.simulatorState.show(window.simulatorState.indexOf('objectives-merged'), {animate: false});
     const before = find().map(node => node.dataset.key);
     for (const node of find()) node.dataset.probe = node.dataset.key;
-    window.simulatorState.show(2, {animate: false});
+    window.simulatorState.show(window.simulatorState.indexOf('blocker-named'), {animate: false});
     const after = find();
     return {
       before,
@@ -155,9 +196,9 @@ test('an item that survives a step is the same element, and a finished one leave
   const cascade = await page.evaluate(async () => {
     const container = document.querySelector('#items');
     const keys = () => [...container.children].filter(node => node.dataset.exiting !== 'true').map(node => node.dataset.key);
-    window.simulatorState.show(4, {animate: false});
+    window.simulatorState.show(window.simulatorState.indexOf('answer-recorded'), {animate: false});
     const before = keys();
-    window.simulatorState.show(5, {animate: false});
+    window.simulatorState.show(window.simulatorState.indexOf('spec-merged'), {animate: false});
     return {before, after: keys()};
   });
   expect(cascade.before).toContain('spec');
@@ -169,17 +210,19 @@ test('the sweep step spends its allowance over time and can be interrupted', asy
   await page.goto(pathToFileURL(outputPath).href);
   const spent = () => page.locator('#meter .slot[data-spent="true"]').count();
 
-  await page.evaluate(() => window.simulatorState.show(3));
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('sweep-runs')));
   expect(await spent()).toBe(0);
   await expect.poll(spent, {timeout: 6000}).toBeGreaterThan(0);
   await expect.poll(spent, {timeout: 6000}).toBe(await page.locator('#meter .slot').count());
   await expect(page.locator('#items [data-item-state="passed"]')).toBeVisible();
 
   // Navigating away mid-choreography cancels its pending beats.
-  await page.evaluate(() => window.simulatorState.show(3));
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('sweep-runs')));
   await page.locator('#step').click();
   await page.waitForTimeout(1200);
-  expect(await page.evaluate(() => window.simulatorState.current())).toBe(4);
+  expect(await page.evaluate(() => window.simulatorState.current())).toBe(
+    await page.evaluate(() => window.simulatorState.indexOf('answer-recorded'))
+  );
 });
 
 test('the record accumulates and never empties out', async ({page}) => {
@@ -198,6 +241,46 @@ test('the record accumulates and never empties out', async ({page}) => {
     for (const name of documents[index - 1]) expect(documents[index]).toContain(name);
   }
   expect(documents.at(-1).length).toBeGreaterThan(0);
+});
+
+test('the redesign keeps the lifecycle visible and identifies who acts', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  await expect(page).toHaveTitle('SitePrep Repo Guide: lifecycle simulator');
+  expect(await page.locator('.lifecycle').evaluate(node => getComputedStyle(node).position)).toBe('sticky');
+  await expect(page.locator('#stage-track [data-stage]')).toHaveCount(8);
+  await expect(page.locator('#documents .document')).toContainText(['wish.md']);
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('wish-written'), {animate: false}));
+  await expect(page.locator('body')).toHaveAttribute('data-actor', 'person');
+  await expect(page.locator('#actor')).toHaveText(/person/i);
+  expect(await page.locator('.story').evaluate(node => getComputedStyle(node).borderLeftColor)).toBe('rgb(199, 119, 0)');
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('research-choice'), {animate: false}));
+  await expect(page.locator('body')).toHaveAttribute('data-actor', 'agent');
+  await expect(page.locator('#fork')).toHaveAttribute('data-visible', 'true');
+  await expect(page.locator('#fork-options')).toContainText('Research notes added');
+  expect(await page.locator('.story').evaluate(node => getComputedStyle(node).borderLeftColor)).toBe('rgb(30, 75, 184)');
+});
+
+test('the digest changes and the pull-request trail is visible', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('blocker-named'), {animate: false}));
+  await expect(page.locator('#digest')).toContainText('A line was added for you');
+  await expect(page.locator('#digest .digest-line')).toHaveCount(1);
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('answer-recorded'), {animate: false}));
+  await expect(page.locator('#digest')).toContainText('Your answer removed the line');
+  await expect(page.locator('#digest .digest-line')).toHaveCount(0);
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('increment-two-branch'), {animate: false}));
+  await expect(page.locator('#flow-section h3')).toHaveText('Current work path');
+  await expect(page.locator('.flow-help')).toContainText('can cross stages');
+  await expect(page.locator('#flow')).toContainText('write-scope check');
+  await expect(page.locator('#flow')).toContainText('branch preview');
+  await expect(page.locator('#flow')).toContainText('ready pull request');
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('outputs-registered'), {animate: false}));
+  await expect(page.locator('#flow')).toContainText('you merge');
+  await expect(page.locator('#items .item')).toHaveCount(2);
 });
 
 test('Play advances by itself and can be paused and resumed', async ({page}) => {

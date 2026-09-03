@@ -5,7 +5,7 @@ import {promisify} from 'node:util';
 const execFile = promisify(execFileCallback);
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 export const SIMULATOR_SOURCE_PATHS = ['scripts/initiatives.mjs', 'initiatives/sweep.json'];
-export const SIMULATOR_WATCHED_DATE = '2026-08-18';
+export const SIMULATOR_WATCHED_DATE = '2026-09-02';
 
 function requireDate(value, name) {
   if (typeof value !== 'string' || !DATE.test(value) || new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) !== value) {

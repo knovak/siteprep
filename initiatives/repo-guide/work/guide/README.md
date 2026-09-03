@@ -73,10 +73,35 @@ names, and the per-run budget resolve from the fact registry at generation.
 
 The walk-through covers the whole lifecycle — every derived stage, including one
 deliberate move backwards when an assumption breaks, and the quiet stages at the
-end. Items carry stable keys and the item list is *reconciled* rather than
-replaced, so an item that survives a step is the same element: it recolours in
-place, slides when a neighbour leaves, and collapses out when it merges. That is
-the difference between watching a process and paging through screenshots of one.
+end. Its white, navy-accented page uses the description's figure palette. A
+sticky lifecycle rail keeps the current stage and accumulated documents visible
+throughout. The large opening title condenses after the first step, while the
+Back, Step, and Play controls stay in a fixed bottom control deck so advancing
+the walk-through never moves the next target away from the pointer.
+
+The visible color key separates the three contexts instead of asking color to
+carry meaning on its own. Work items use teal for ready, blue for active, violet
+for review, amber for blocked, and gray for passed over. Sweep phases are gray
+when they are not involved in the step, blue for the phase acting in the step,
+and green when a phase has finished during the animated sweep. Work-producing
+agent steps highlight `work`, the review round highlights `respond`, and the
+blocker survey highlights `survey`; person-controlled steps stay gray. Amber
+and blue identify person and agent steps; orange marks a stage that just moved,
+while green marks completed stages. A work path is labeled as milestones for
+the item named by the current step; it can cross a stage boundary and is
+replaced when the walk-through follows another item.
+
+The fixed story now includes the optional `background.md` fork at the wish
+stage, the plan critique before implementation, and the two items seeded when
+work enters refining. Redundant merge and pull-request-only screens are folded
+into their neighboring steps. Both implementation increments visibly move from
+item to branch, write-scope check, branch preview, ready pull request, and your
+merge. A waiting question visibly adds a digest line and your answer removes
+it. Production is a separate release step: it becomes actionable only after
+your explicit request. Items still carry stable keys and the item list is
+*reconciled* rather than replaced, so an item that survives a step is the same
+element: it recolours in place, slides when a neighbour leaves, and collapses
+out when it merges.
 
 Two steps choreograph their interesting moment across timed beats rather than
 presenting it finished: the sweep run spends its allowance with the meter
@@ -172,7 +197,7 @@ generated file from `file://`, refuses network dependencies, checks all
 authoritative links, exercises forward, back, first, and last keyboard
 navigation, and asserts that no slide's content overflows its fixed frame.
 
-`build/simulator.mjs` resolves only four registered fact keys rather than the
+`build/simulator.mjs` resolves only six registered fact keys rather than the
 whole repository fact set. The selective resolver is what makes the spec's
 "reads no initiative data" promise testable: an absent initiatives directory
 does not affect generation, while inconsistent lifecycle constants still fail.
@@ -180,18 +205,19 @@ Its browser harness steps forward and back across every state, checks the budget
 and cascade moments, interrupts and resumes Play, and refuses network
 dependencies.
 
-The stage the simulator is showing takes the same orange as the active sweep
-phase on exactly the steps where it moved, badge and lifecycle track together.
-That flag is derived by comparing a step with the one before it rather than
-recorded against the step, so stepping backwards onto a move highlights it the
-same way stepping forwards onto it did - including the one deliberate move back
-down the lifecycle, which its test demands the walk-through still contains.
+The stage the simulator is showing takes orange on exactly the steps where it
+moved, badge and lifecycle rail together; an active sweep phase uses blue. The
+stage-moved flag is derived by comparing a step with the one before it rather
+than recorded against the step, so stepping backwards onto a move highlights it
+the same way stepping forwards onto it did - including the one deliberate move
+back down the lifecycle, which its test demands the walk-through still contains.
 
 `build/dating.mjs` records the last complete human simulator walkthrough and
 compares it only with the lifecycle and sweep-phase sources. Simulator
 generation returns a report diagnostic when another walkthrough may be due;
 unrelated commits do not advance the comparison. There is no separate metadata
-configuration file.
+configuration file. The redesign was walked through and visually inspected on
+2026-09-02.
 
 The description contains fourteen sections, following one initiative from
 wish to archive: what the repository is, what an initiative produces,
