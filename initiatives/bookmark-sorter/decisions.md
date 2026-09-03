@@ -942,3 +942,52 @@ public.
 - This does not create general collection sharing or make stored bookmark data
   public. It also does not replace the Sites-owned sign-in or sign-out routes
   with application credential handling.
+
+## 2026-09-02 — Which Bookmark Sorter refinement should come next?
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Allow contains matching in selections** | Addresses recurring selection friction with one consistent `*string*` form across title, folder, tag, and source; builds directly on the normalization already shipped; small-to-medium scope | Must preserve exact and prefix behavior and prove punctuation, case, empty-string, saved-selection, and large-collection behavior |
+| **Make Help easier to scan with collapsed details** | Small, visible readability improvement without removing guidance | Requires a careful essential-versus-detail split and does less for the core triage workflow |
+| **Give no-image bookmarks an honest metadata card** | Directly improves the largest known visual weakness without another vendor, credential, or network request | Medium scope with broad grid, phone, duplicate-image, and no-image verification; still cannot show page imagery |
+| **Add a private usage-evidence summary** | Makes existing throughput and immediate-undo evidence easier to read without adding analytics | Primarily helps later decisions rather than day-to-day sorting, and the meaning of each count must remain explicit |
+| **Extend selections to saved text** | Helps early-pass recovery when only a title, URL, or note fragment is remembered | Medium scope; normalization, token semantics, indexing, note privacy, deterministic saves, and exports all need design and proof |
+| **Add an explicit file bridge for open browser tabs** | Turns temporary browsing sessions into reviewable collections without broad Site permissions | Medium scope and a new interchange format; import must stay explicit and source tabs must never be modified |
+| **Repair an unreachable bookmark from an exact-title search** | Provides a guarded recovery path for moved pages and retains the original URL in history | Sends the title to a search provider and needs confirmation plus no-hit, ambiguous, redirect, and collision handling |
+| **Introduce named private collaborators for one collection** | Enables a valuable shared research workflow with explicit roles and revocation | Large scope and the broadest access-control risk; every data path and administrator power needs isolation testing |
+| **Request another proposal round** | Leaves room for a need that the current menu missed | Spends another round without acting on a concrete, already-supported candidate |
+| **Declare the initiative dormant** | Honestly records that the current product is sufficient and stops recurring sweep attention | Defers all improvements, including the recurring contains-match friction already identified |
+
+### Recommendation
+
+**Recommendation: promote “Allow contains matching in selections” as the next
+actionable refinement.** It is the menu's clearest combination of recurring
+user value, bounded implementation size, and continuity with the normalized
+selection keys already on `main`. The change should add `*string*` contains
+matching for title, folder, tag, and source while preserving today's exact and
+trailing-wildcard prefix behavior.
+
+This is a recommendation, not a decision. Merging this pull request accepts it;
+naming any other option in a review comment is enough to redirect it.
+
+### What would change the recommendation
+
+- Choose **collapsed Help details** instead if the immediate problem is that
+  Help obscures the controls people use during ordinary sittings.
+- Choose the **honest metadata card** instead if real use shows blank cards are
+  slowing visual recognition more than selection syntax is slowing retrieval.
+- Choose **dormant** if the current build is sufficient and no further
+  refinement is worth active sweep attention now.
+- Request **another proposal round** if the desired next improvement is absent
+  from this menu.
+
+### What this settles, and what it does not
+
+- It selects the next refinement and makes that implementation item
+  actionable; it does not implement or release the change.
+- It does not broaden the selection grammar beyond the bounded contains form,
+  change the collection privacy boundary, or authorize production deployment.
+- All other menu entries remain optional in `notes.md` and can be promoted in a
+  later round.
