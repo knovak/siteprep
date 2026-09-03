@@ -1,7 +1,7 @@
 {
   "title": "Repo Guide",
   "summary": "A web guide, slide deck, and simulator explaining how people and agents work in this repository.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "high",
   "outputs": [],
   "deployments": [
@@ -16,14 +16,5 @@
       }
     }
   ],
-  "todo": [
-    {
-      "id": "simulator-redesign",
-      "title": "Redesign the simulator to match the new guide, following the list in notes.md",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "large",
-      "advances_stage": false
-    }
-  ]
+  "todo": []
 }

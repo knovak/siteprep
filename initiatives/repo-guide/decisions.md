@@ -654,3 +654,19 @@ twenty.
   `notes.md`; none of it is built.
 - **Not settled:** whether to release. The generated copy under `out/` is
   ahead of the released copy under `demos/`, and releasing is the user's call.
+
+## 2026-09-03 — Should the Repo Guide keep another refinement active?
+
+**No. The Repo Guide is dormant.**
+
+The user explicitly declared the initiative dormant after the redesigned
+simulator and its review rounds were completed.
+
+### What this settles, and what it does not
+
+- The completed `simulator-redesign` item closes, and no new refinement is
+  seeded.
+- The generated guide, current public Demo, and optional ideas in `notes.md`
+  are unchanged.
+- A later concrete request may reactivate the initiative with new work;
+  dormancy is a resting state, not archival.

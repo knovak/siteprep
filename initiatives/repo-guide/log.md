@@ -237,3 +237,7 @@ interaction-style and release copy, renamed the optional research artifact to
 and pull-request steps. Work-producing agent steps now highlight the applicable
 sweep phase, while person-controlled steps keep the phase row gray. Regenerated
 the self-contained simulator and expanded its Node and browser regression checks.
+
+## 2026-09-03 — Redesign the simulator to match the new guide, following the list in notes.md
+
+The user declared the Repo Guide dormant after the completed simulator redesign and review rounds.
