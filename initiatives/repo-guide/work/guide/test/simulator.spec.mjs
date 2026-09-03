@@ -112,8 +112,8 @@ test('the stage stands out on exactly the steps where it moved, in both directio
     expect(await badge.getAttribute('data-changed')).toBe(forward[step - 1].changed);
   }
 
-  // The orange is the one the active sweep phase already uses, so a reader
-  // learns one colour rather than two.
+  // Orange is reserved for a stage that just moved; active sweep phases use
+  // blue and completed phases use green.
   await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('objectives-merged')));
   await page.evaluate(() => window.simulatorState.settle());
   const orange = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--orange').trim());
@@ -123,6 +123,44 @@ test('the stage stands out on exactly the steps where it moved, in both directio
   await expect
     .poll(() => badge.evaluate(node => getComputedStyle(node).backgroundColor))
     .toBe('rgb(239, 106, 58)');
+});
+
+test('controls stay fixed, the title condenses, and the color key explains state', async ({page}) => {
+  await page.goto(pathToFileURL(outputPath).href);
+
+  await expect(page.locator('header')).not.toContainText('Every stage, start to finish');
+  const controls = page.locator('.controls');
+  expect(await controls.evaluate(node => getComputedStyle(node).position)).toBe('fixed');
+  const openingTitleSize = await page.locator('header h1').evaluate(node => parseFloat(getComputedStyle(node).fontSize));
+  const targetsBefore = await Promise.all(['#back', '#step', '#play'].map(selector => page.locator(selector).boundingBox()));
+
+  await page.locator('#step').click();
+  await page.evaluate(() => window.simulatorState.settle());
+  const compactTitleSize = await page.locator('header h1').evaluate(node => parseFloat(getComputedStyle(node).fontSize));
+  expect(compactTitleSize).toBeLessThan(openingTitleSize);
+  const targetsAfter = await Promise.all(['#back', '#step', '#play'].map(selector => page.locator(selector).boundingBox()));
+  for (let index = 0; index < targetsBefore.length; index += 1) {
+    expect(Math.abs(targetsBefore[index].x - targetsAfter[index].x)).toBeLessThan(1);
+    expect(Math.abs(targetsBefore[index].y - targetsAfter[index].y)).toBeLessThan(1);
+  }
+
+  const key = page.locator('.color-key');
+  await expect(key).toContainText('Work items');
+  await expect(key).toContainText('ready');
+  await expect(key).toContainText('Sweep phases');
+  await expect(key).toContainText('not running');
+  await expect(key).toContainText('finished this sweep');
+  await expect(key).toContainText('stage just moved');
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('blocker-named'), {animate: false}));
+  const activePhase = page.locator('#phase-row .phase.active');
+  await expect(activePhase).toHaveCount(1);
+  expect(await activePhase.evaluate(node => getComputedStyle(node).backgroundColor)).toBe('rgb(30, 75, 184)');
+
+  await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('answer-recorded'), {animate: false}));
+  await expect(page.locator('#phase-row .phase.waiting')).toHaveCount(4);
+  await expect(page.locator('#phase-row .phase.complete')).toHaveCount(0);
+  await expect(page.locator('#meter .slot[data-spent="true"]')).toHaveCount(0);
 });
 
 test('an item that survives a step is the same element, and a finished one leaves', async ({page}) => {
@@ -232,6 +270,8 @@ test('the digest changes and the pull-request trail is visible', async ({page}) 
   await expect(page.locator('#digest .digest-line')).toHaveCount(0);
 
   await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('increment-two-pr'), {animate: false}));
+  await expect(page.locator('#flow-section h3')).toHaveText('Current work path');
+  await expect(page.locator('.flow-help')).toContainText('can cross stages');
   await expect(page.locator('#flow')).toContainText('write-scope check');
   await expect(page.locator('#flow')).toContainText('branch preview');
   await expect(page.locator('#flow')).toContainText('ready pull request');

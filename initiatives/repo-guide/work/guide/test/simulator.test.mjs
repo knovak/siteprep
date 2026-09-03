@@ -81,6 +81,11 @@ describe('simulator choreography', () => {
     assert.ok(sweep.beats.at(-1).items.some(item => item.state === 'passed'
       && item.detail.includes(`${vocabulary.items_per_run}/${vocabulary.items_per_run}`)));
     assert.deepEqual(sweep.beats.map(beat => beat.at), [...sweep.beats.map(beat => beat.at)].sort((a, b) => a - b));
+
+    const answer = steps.find(step => step.id === 'answer-recorded');
+    assert.ok(Object.values(answer.phases).every(value => value === 'waiting'),
+      'an unrelated person step does not inherit the completed sweep colors');
+    assert.equal(answer.budget.spent, 0);
   });
 
   test('the recorded answer and optional closeout use second-person Guide wording', () => {

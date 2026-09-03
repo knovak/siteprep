@@ -219,3 +219,12 @@ and offline, and its vocabulary still resolves from the narrow fact set.
 
 This is the initiative's last actionable item. It remains on the todo list so
 the sweep does not declare the initiative dormant on the user's behalf.
+
+## 2026-09-02 — Review round: stabilize and explain the simulator layout
+
+Fixed Back, Step, and Play in a bottom control deck so their targets stay put;
+condensed the title after the opening step; removed the redundant lifecycle
+tagline; and renamed the work trail with an explanation of its per-item path.
+Added a visible key for work, sweep, actor, and stage colors, separated ready
+teal from completed green, made active sweep phases blue, and returned the phase
+display to gray once a sweep is no longer running.

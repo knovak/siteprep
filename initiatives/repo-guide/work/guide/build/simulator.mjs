@@ -214,7 +214,6 @@ export function buildSimulatorSteps(facts) {
         {key: 'spec', label: 'Draft the specification', state: 'in-flight', detail: 'Review continues in its pull request.'},
         {key: 'interaction', label: 'Choose the interaction', state: 'actionable', detail: 'Your recorded answer makes this doable.', changed: true},
       ],
-      phases: allComplete, budget: {spent: budget, of: budget},
       digest: {change: 'removed', lines: []},
       changes: ['decisions.md keeps the answer.', 'The digest line disappears.'],
       advance: 'you merge the specification',
@@ -451,16 +450,21 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
       --ink: #1a2233; --muted: #5b6578; --line: #e1e5ec; --navy: #163a8f;
       --blue: #1e4bb8; --blue-soft: #e9effc; --orange: #ef6a3a;
       --amber: #c77700; --amber-soft: #fff5e5; --green: #2a8c5c; --green-soft: #e6f5ec;
+      --teal: #087f78; --teal-soft: #e7f6f4;
       --violet: #7b5ea7; --doc: #e8ecf4;
     }
     * { box-sizing: border-box; }
     body { min-width: 320px; min-height: 100vh; margin: 0; background: #fff; }
     button { font: inherit; }
-    .shell { width: min(1080px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 18px; }
-    header { display: flex; align-items: end; justify-content: space-between; gap: 28px; padding: 8px 0 24px; }
+    .shell { width: min(1080px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 112px; }
+    header { display: flex; align-items: end; justify-content: space-between; gap: 28px; padding: 8px 0 24px; transition: padding 220ms ease; }
     .eyebrow { margin: 0 0 7px; color: var(--muted); font-size: .74rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-    h1 { margin: 0; color: var(--navy); font-size: clamp(2rem, 4.5vw, 3.45rem); line-height: 1.02; letter-spacing: -.035em; }
+    header h1 { margin: 0; color: var(--navy); font-size: clamp(2rem, 4.5vw, 3.45rem); line-height: 1.02; letter-spacing: -.035em; transition: font-size 220ms ease, letter-spacing 220ms ease; }
     .step-number { color: var(--muted); font-size: .8rem; font-weight: 700; white-space: nowrap; text-align: right; }
+    body:not([data-step="wish-written"]) header { align-items: center; padding: 0 0 12px; }
+    body:not([data-step="wish-written"]) header .eyebrow { display: none; }
+    body:not([data-step="wish-written"]) header h1 { font-size: clamp(1.2rem, 2.3vw, 1.55rem); letter-spacing: -.015em; }
+    body:not([data-step="wish-written"]) .step-number { font-size: .72rem; }
     .lifecycle { position: sticky; top: 0; z-index: 10; margin: 0 -12px; padding: 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fffffff2; backdrop-filter: blur(12px); }
     .stage-track { display: flex; gap: 18px; overflow-x: auto; padding: 2px 2px 8px; }
     .stage { position: relative; flex: 1 0 max-content; min-width: 94px; padding: 7px 10px; border: 1px solid #d7dce6; border-radius: 17px; color: var(--muted); background: #f4f6fa; font-size: .72rem; font-weight: 800; text-align: center; transition: background 320ms ease, color 320ms ease, border-color 320ms ease; }
@@ -498,8 +502,21 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
     @keyframes pulse-stage { 0% { box-shadow: 0 0 0 0 #ef6a3a66; } 70% { box-shadow: 0 0 0 12px #ef6a3a00; } 100% { box-shadow: 0 0 0 0 #ef6a3a00; } }
     h3 { margin: 0; color: var(--ink); font-size: .92rem; }
     .muted { color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .color-key { display: grid; gap: 7px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+    .key-row { display: flex; align-items: center; gap: 7px 13px; flex-wrap: wrap; color: var(--muted); font-size: .72rem; }
+    .key-row strong { min-width: 92px; color: var(--ink); font-size: .72rem; }
+    .key-item { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .key-swatch { width: 10px; height: 10px; border-radius: 50%; background: var(--key-color); }
+    .key-swatch[data-color="teal"] { --key-color: var(--teal); }
+    .key-swatch[data-color="blue"] { --key-color: var(--blue); }
+    .key-swatch[data-color="violet"] { --key-color: var(--violet); }
+    .key-swatch[data-color="amber"] { --key-color: var(--amber); }
+    .key-swatch[data-color="gray"] { --key-color: #8b94a5; }
+    .key-swatch[data-color="green"] { --key-color: var(--green); }
+    .key-swatch[data-color="orange"] { --key-color: var(--orange); }
     .flow-section { display: none; }
     .flow-section[data-visible="true"] { display: block; }
+    .flow-help { margin: 3px 0 0; color: var(--muted); font-size: .72rem; }
     .flow { display: flex; gap: 18px; margin-top: 9px; overflow-x: auto; padding: 2px 2px 6px; }
     .flow-step { position: relative; flex: 0 0 auto; padding: 7px 10px; border: 1px solid #a8bce8; border-radius: 8px; color: var(--navy); background: var(--blue-soft); font-size: .78rem; font-weight: 750; }
     .flow-step[data-actor="person"] { border-color: #e7c27d; color: #7a4a00; background: var(--amber-soft); }
@@ -518,7 +535,8 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
     .item[data-item-state="review"] { background: #f8f4fd; }
     .item[data-item-state="passed"]::before { background: #8c6c9b; }
     .item[data-item-state="passed"] { opacity: .6; }
-    .item[data-item-state="actionable"]::before { background: var(--green); }
+    .item[data-item-state="actionable"]::before { background: var(--teal); }
+    .item[data-item-state="actionable"] { background: var(--teal-soft); }
     /* Entering, leaving, and changing are the whole point: an item that just
        appeared in place would read as a new screen rather than a consequence. */
     .item[data-entering="true"] { opacity: 0; transform: translateY(10px); }
@@ -531,20 +549,20 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
     .phase-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
     .phase-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
     .phase { padding: 5px 8px; border-radius: 7px; color: #6c7484; background: #e8ebf1; font-size: .7rem; font-weight: 800; transition: background 300ms ease, color 300ms ease; }
-    .phase.active { color: white; background: var(--orange); }
+    .phase.active { color: white; background: var(--blue); }
     .phase.complete { color: #1c5f3f; background: var(--green-soft); }
     .meter { display: flex; gap: 5px; margin-top: 9px; }
     .slot { flex: 1; height: 9px; border: 1px solid #ccd5e6; border-radius: 4px; background: #eef1f8; transition: background 300ms ease, border-color 300ms ease; }
     .slot[data-spent="true"] { border-color: var(--blue); background: var(--blue); }
-    .controls { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 0 4px; flex-wrap: wrap; }
-    .controls button { min-width: 100px; min-height: 44px; padding: 0 16px; border: 1px solid #bdc8dc; border-radius: 11px; color: #263b65; background: white; font-weight: 800; cursor: pointer; }
+    .controls { position: fixed; left: 50%; bottom: 14px; z-index: 30; display: grid; grid-template-columns: 100px 78px 100px 100px; align-items: center; justify-content: center; gap: 7px 10px; width: min(520px, calc(100% - 24px)); padding: 10px 12px 8px; border: 1px solid #cfd6e2; border-radius: 14px; background: #fffffff5; box-shadow: 0 12px 34px #14285024; backdrop-filter: blur(12px); transform: translateX(-50%); }
+    .controls button { min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid #bdc8dc; border-radius: 11px; color: #263b65; background: white; font-weight: 800; cursor: pointer; }
     .controls button.primary { color: white; border-color: var(--blue); background: var(--blue); }
     .controls button:disabled { opacity: .42; cursor: default; }
     .progress { min-width: 78px; color: #61708b; font-weight: 780; text-align: center; font-variant-numeric: tabular-nums; }
-    #next-label { flex: 0 0 100%; margin: 2px 0 0; color: #6b7691; font-size: .8rem; text-align: center; }
+    #next-label { grid-column: 1 / -1; min-width: 0; margin: 0; overflow: hidden; color: #6b7691; font-size: .76rem; line-height: 1.2; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
     footer { display: flex; justify-content: space-between; gap: 18px; padding: 16px 0 0; color: var(--muted); font-size: .72rem; }
     footer a { color: var(--blue); }
-    @media (max-width: 760px) { .shell { width: min(100% - 24px, 1080px); } .story, .board { padding: 24px 20px; } .actor-badge { position: static; display: inline-block; margin-bottom: 10px; } h2 { padding-right: 0; } header { align-items: start; flex-direction: column; gap: 10px; } .step-number { text-align: left; } footer { flex-direction: column; } }
+    @media (max-width: 760px) { .shell { width: min(100% - 24px, 1080px); } .story, .board { padding: 24px 20px; } .actor-badge { position: static; display: inline-block; margin-bottom: 10px; } h2 { padding-right: 0; } header { align-items: start; flex-direction: column; gap: 10px; } body:not([data-step="wish-written"]) header { align-items: start; gap: 3px; } .step-number { text-align: left; } .key-row strong { flex: 0 0 100%; } .controls { grid-template-columns: minmax(66px, 1fr) 54px minmax(66px, 1fr) minmax(66px, 1fr); gap: 6px; padding-inline: 8px; } .controls button { padding-inline: 7px; font-size: .86rem; } footer { flex-direction: column; } }
     @media (prefers-reduced-motion: reduce) { * { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
   </style>
 </head>
@@ -552,7 +570,7 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
   <div class="shell">
     <header>
       <div><p class="eyebrow">Repo guide · generated from the repository</p><h1>SitePrep Repo Guide: lifecycle simulator</h1></div>
-      <span class="step-number">Made-up initiative · real vocabulary<br>Every stage, start to finish</span>
+      <span class="step-number">Made-up initiative · real vocabulary</span>
     </header>
     <div class="lifecycle">
       <nav id="stage-track" class="stage-track" aria-label="Lifecycle stages"></nav>
@@ -570,7 +588,12 @@ function simulatorHtml({steps, vocabulary, generatedDate, sha, repositoryUrl}) {
       </section>
       <section class="board">
         <div class="board-heading"><h3>Initiative state</h3><span id="current-stage" class="stage-badge"></span></div>
-        <div id="flow-section" class="flow-section"><h3>Work trail</h3><div id="flow" class="flow"></div></div>
+        <div class="color-key" aria-label="Color key">
+          <div class="key-row"><strong>Work items</strong><span class="key-item"><i class="key-swatch" data-color="teal"></i>ready</span><span class="key-item"><i class="key-swatch" data-color="blue"></i>active</span><span class="key-item"><i class="key-swatch" data-color="violet"></i>in review</span><span class="key-item"><i class="key-swatch" data-color="amber"></i>blocked</span><span class="key-item"><i class="key-swatch" data-color="gray"></i>passed over</span></div>
+          <div class="key-row"><strong>Sweep phases</strong><span class="key-item"><i class="key-swatch" data-color="gray"></i>not running</span><span class="key-item"><i class="key-swatch" data-color="blue"></i>running</span><span class="key-item"><i class="key-swatch" data-color="green"></i>finished this sweep</span></div>
+          <div class="key-row"><strong>Walk-through</strong><span class="key-item"><i class="key-swatch" data-color="amber"></i>you act</span><span class="key-item"><i class="key-swatch" data-color="blue"></i>agent acts</span><span class="key-item"><i class="key-swatch" data-color="orange"></i>stage just moved</span><span class="key-item"><i class="key-swatch" data-color="green"></i>stage complete</span></div>
+        </div>
+        <div id="flow-section" class="flow-section"><h3>Current work path</h3><p class="flow-help">Milestones completed by the work named in this step. The path can cross stages and changes when the walk-through moves to another item.</p><div id="flow" class="flow"></div></div>
         <div id="items"></div>
         <div class="phases">
           <div class="phase-head"><h3>Sweep phases</h3><span id="budget-label" class="muted"></span></div>

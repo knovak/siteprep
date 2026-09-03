@@ -75,7 +75,20 @@ The walk-through covers the whole lifecycle — every derived stage, including o
 deliberate move backwards when an assumption breaks, and the quiet stages at the
 end. Its white, navy-accented page uses the description's figure palette. A
 sticky lifecycle rail keeps the current stage and accumulated documents visible
-throughout. Amber identifies steps you take; blue identifies agent work.
+throughout. The large opening title condenses after the first step, while the
+Back, Step, and Play controls stay in a fixed bottom control deck so advancing
+the walk-through never moves the next target away from the pointer.
+
+The visible color key separates the three contexts instead of asking color to
+carry meaning on its own. Work items use teal for ready, blue for active, violet
+for review, amber for blocked, and gray for passed over. Sweep phases are gray
+when not running, blue while running, and green when finished in the current
+sweep. Amber and blue identify person and agent steps; orange marks a stage that
+just moved, while green marks completed stages. Once the sweep step ends, its
+phase display returns to gray rather than leaving an unrelated person step
+looking like a completed sweep. A work path is labeled as milestones for the
+item named by the current step; it can cross a stage boundary and is replaced
+when the walk-through follows another item.
 
 The fixed story now includes the optional research fork at the wish stage, the
 plan critique before implementation, and the two items seeded when work enters
@@ -189,12 +202,12 @@ Its browser harness steps forward and back across every state, checks the budget
 and cascade moments, interrupts and resumes Play, and refuses network
 dependencies.
 
-The stage the simulator is showing takes the same orange as the active sweep
-phase on exactly the steps where it moved, badge and lifecycle rail together.
-That flag is derived by comparing a step with the one before it rather than
-recorded against the step, so stepping backwards onto a move highlights it the
-same way stepping forwards onto it did - including the one deliberate move back
-down the lifecycle, which its test demands the walk-through still contains.
+The stage the simulator is showing takes orange on exactly the steps where it
+moved, badge and lifecycle rail together; an active sweep phase uses blue. The
+stage-moved flag is derived by comparing a step with the one before it rather
+than recorded against the step, so stepping backwards onto a move highlights it
+the same way stepping forwards onto it did - including the one deliberate move
+back down the lifecycle, which its test demands the walk-through still contains.
 
 `build/dating.mjs` records the last complete human simulator walkthrough and
 compares it only with the lifecycle and sweep-phase sources. Simulator
