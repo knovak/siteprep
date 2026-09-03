@@ -39,3 +39,7 @@ Built immutable educational scene composition, pinned share links, explicit upgr
 ## 2026-09-02 — Phase 5 - build detached controller and reference relay
 
 Built the authoritative session protocol, same-browser controller fallback, packaged WebSocket relay, QR join flow, reconnect/expiry/rate boundaries, and complete detached controls; 51 deterministic tests and 36 browser checks pass.
+
+## 2026-09-03 — Phase 6 - teaching and large-display validation
+
+Added local teaching and presentation modes, presenter notes, 4K typography, accessibility/privacy evidence, and three-viewport validation; 54 Node and 45 browser tests pass. Public app and relay deployment remains pending explicit permission.

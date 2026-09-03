@@ -230,6 +230,31 @@ The Phase 5 browser tests prove QR/join creation, synchronized controller
 operations, and the disconnected display fallback. No public application or
 relay was deployed; that remains permission-gated by `plan.md`.
 
+## Phase 6 teaching and large-display validation
+
+The reader now has two clear entry points: open a topic with the ordinary
+exploration controls, or open a presentation display pinned to the same scene
+revision. Presentation mode removes the control rail and share/upgrade tools
+from the display while retaining the map, method cue, legend, exact-value table,
+sources, discussion stop, and controller join flow. Each prepared stop carries
+presenter notes; they stay available in exploration mode and off the projected
+display.
+
+Controls and table targets are at least 44 pixels, focus remains visible,
+reduced motion disables animation, and the semantic table names the same values
+and statuses as Canvas. The 4K presentation layout increases teaching text and
+keeps the title, period, legend, missing-data class, source names, and method cue
+visible without horizontal overflow. Browser-driven unguided-exploration and
+teacher/controller paths run at 430×932, 1440×900, and 3840×2160.
+
+`fixtures/phase-6-validation.json` is the evidence record. It identifies test
+roles rather than people, names the accessibility and privacy checks, and keeps
+three limitations explicit: the 4K check is an equivalent browser review rather
+than a physical classroom display, independent learner understanding belongs to
+Phase 7, and no live URLs were tested because public deployment permission was
+not granted. No account, location, contacts, analytics, or unpublished scene
+support was added.
+
 ## Canonicalization profile
 
 - Input is UTF-8 JSON parsed before ordinary `JSON.parse` can discard duplicate

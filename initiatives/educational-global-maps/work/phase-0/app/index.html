@@ -11,10 +11,16 @@
     <a class="skip-link" href="#map-title">Skip to map</a>
     <header class="masthead">
       <div>
-        <p class="eyebrow">Educational Global Maps · Phase 5</p>
+        <p class="eyebrow">Educational Global Maps · Phase 6</p>
         <h1>Teach from a scene—control it from anywhere nearby.</h1>
       </div>
-      <p class="intro">Open a prepared lesson, follow its discussion stops, and share the exact revision. Newer data is offered as a comparison—never substituted silently.</p>
+      <div>
+        <p class="intro">Open a prepared lesson, follow its discussion stops, and share the exact revision. Newer data is offered as a comparison—never substituted silently.</p>
+        <nav class="entry-actions" aria-label="Start exploring">
+          <a href="#scene-title">Open a topic</a>
+          <a id="presentation-link" href="?presentation=1">Open presentation display</a>
+        </nav>
+      </div>
     </header>
 
     <main class="workspace">
@@ -85,6 +91,7 @@
         <div class="canvas-wrap" id="canvas-wrap">
           <canvas id="map" aria-label="Projected map; use the exact-value table below for a semantic equivalent"></canvas>
         </div>
+        <p class="method-cue" id="method-cue"></p>
         <p class="caveat" id="geography-caveat"></p>
       </section>
 
@@ -114,7 +121,7 @@
               <button type="button" id="next-stop">Next stop</button>
             </div>
           </section>
-          <section>
+          <section class="carry-panel">
             <h3>Share and carry</h3>
             <p class="share-link" id="scene-share"></p>
             <p id="upgrade-status"></p>
@@ -123,6 +130,10 @@
             <button type="button" id="prepare-bundle">Prepare portable bundle</button>
           </section>
         </div>
+        <details class="presenter-notes">
+          <summary>Presenter notes for this stop</summary>
+          <p id="presenter-notes"></p>
+        </details>
       </section>
 
       <section class="session-card" aria-labelledby="session-title">
