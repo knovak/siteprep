@@ -29,12 +29,13 @@
   ],
   "todo": [
     {
-      "id": "refining-improvements",
-      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
-      "state": "actionable",
+      "id": "choose-next-refinement-after-improvement-menu",
+      "title": "Choose a Bookmark Sorter improvement or declare the initiative dormant",
+      "state": "blocked",
       "value": "medium",
-      "effort": "medium",
-      "advances_stage": false
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "human:choose a proposed improvement from notes.md, request another proposal round, or declare the initiative dormant"
     }
   ]
 }

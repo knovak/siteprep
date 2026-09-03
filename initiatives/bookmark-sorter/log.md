@@ -461,6 +461,25 @@ deployment. It records the access, backup, smoke-test, merge-recovery, capture,
 and incident boundaries an administrator must preserve without exposing
 bookmark content or treating a Sites version replacement as a database backup.
 
+## 2026-09-02 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Proposed five optional refinements with expected value, likely size, privacy boundaries, and evidence: honest metadata fallback cards, a private usage-evidence summary, saved-text selection, a file-based open-tabs bridge, and named private collection collaborators.
+
+## 2026-09-02 — Revise the optional-improvements proposal after review
+
+Added exact-title search as a guarded recovery path for unreachable bookmark
+URLs, and made the proposed metadata fallback concrete with a compact text-card
+mockup and an explicit account of what it does and does not display.
+
+## 2026-09-02 — Review round: research selection spaces and title search
+
+Placed the requested selection improvements at the top of the optional menu
+after checking the shipped grammar. Recorded that title keys already normalize
+punctuation and spaces to dashes but provide only exact or trailing-wildcard
+prefix matching, while tags and folders use percent-encoded exact keys and
+treat underscores literally. Proposed backward-compatible boundaries and tests
+rather than silently changing saved selection meanings.
+
 ## 2026-09-02 — Normalize folder, tag, and source selection keys
 
 Extended the title search-key rule to folder paths, ordinary tags, and import
@@ -473,3 +492,10 @@ Updated Help, the user guide, import reference, specification, test plan,
 operator test checklist, and technical documentation, with unit and browser
 coverage for punctuation variants, trailing wildcards, proposal grouping, and
 the visible explanation.
+
+## 2026-09-02 — Review round: simplify the optional-improvements menu
+
+Removed the underscore-as-space proposal because it is being implemented
+separately. Reframed selection search as one consistent `*string*` contains form
+for title, folder, tag, and source, and added an optional collapsed Help details
+section that keeps essential guidance visible.
