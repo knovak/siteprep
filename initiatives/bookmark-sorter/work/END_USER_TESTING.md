@@ -46,9 +46,12 @@ verdicts, and notes; it never contains capture images.
 ## Selection sitting
 
 1. Open a normalized selection such as `folder:reading-research*`,
-   `topic:modern-art`, `src:safari-export`, or `site:example.com`. Confirm that
+   `topic:*modern-art*`, `src:*safari*`, `title:*court-drama*`, or
+   `site:example.com`. Confirm that exact expressions still match in full,
+   trailing `*` still matches a prefix, and paired wildcards match the value
+   anywhere. Confirm that
    folder, tag, and source values use lowercase words separated by dashes, just
-   like `title:court-drama*`.
+   like `title:court-drama*`, and that an empty `**` contains value is rejected.
 2. Choose a verdict and use **Sweep untriaged** to change only untriaged cards
    on the visible page and advance. Use the arrow on that control to switch to
    **Sweep all selected** when every item in the current open selection should

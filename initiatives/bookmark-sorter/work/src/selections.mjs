@@ -196,8 +196,15 @@ function siteKey(value) {
 
 function evaluate(node, tags) {
   if (node.type === 'tag') {
-    if (node.wildcard) {
+    if (node.match === 'prefix') {
       for (const tag of tags) if (tag.startsWith(node.value)) return true;
+      return false;
+    }
+    if (node.match === 'contains') {
+      for (const tag of tags) {
+        if (!tag.startsWith(node.namespace)) continue;
+        if (tag.slice(node.namespace.length).includes(node.value)) return true;
+      }
       return false;
     }
     return tags.has(node.value);
@@ -245,10 +252,27 @@ class Parser {
       throw new SelectionSyntaxError('Expected a tag, not, or (', token?.position ?? this.source.length);
     }
     this.index += 1;
-    const wildcard = token.text.endsWith('*');
-    const value = wildcard ? token.text.slice(0, -1) : token.text;
-    if (!value || value.includes('*')) throw new SelectionSyntaxError('A wildcard is allowed only once, at the end of a tag', token.position);
-    return {type: 'tag', value, wildcard};
+    const wildcardPositions = [...token.text.matchAll(/\*/g)].map(match => match.index);
+    if (!wildcardPositions.length) return {type: 'tag', value: token.text, match: 'exact'};
+
+    if (wildcardPositions.length === 1 && wildcardPositions[0] === token.text.length - 1) {
+      const value = token.text.slice(0, -1);
+      if (value) return {type: 'tag', value, match: 'prefix'};
+    }
+
+    if (wildcardPositions.length === 2 && wildcardPositions[1] === token.text.length - 1) {
+      const first = wildcardPositions[0];
+      const separator = token.text.indexOf(':');
+      const startsWholeTag = first === 0;
+      const startsNamespacedValue = separator >= 0 && first === separator + 1;
+      if (startsWholeTag || startsNamespacedValue) {
+        const namespace = startsWholeTag ? '' : token.text.slice(0, first);
+        const value = token.text.slice(first + 1, -1);
+        if (value) return {type: 'tag', namespace, value, match: 'contains'};
+      }
+    }
+
+    throw new SelectionSyntaxError('Wildcards are allowed only at the end for prefix matching or around a value for contains matching', token.position);
   }
 
   peek() { return this.tokens[this.index] || null; }

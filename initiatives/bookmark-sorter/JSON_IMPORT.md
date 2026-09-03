@@ -130,6 +130,9 @@ single dashes, and retain the first colon as the conventional prefix separator.
 For example, the stored tag `Topic:Modern Art` is selected with
 `topic:modern-art`. The exact stored spelling remains available through
 `tag-key:<percent-encoded-tag>` when that distinction matters.
+A trailing `*` matches the beginning of a normalized value, while paired
+wildcards match the value anywhere: `topic:*modern-art*`. Empty contains values
+are rejected, and existing exact and prefix expressions keep their meaning.
 
 JSON imports do not automatically add `src:`, `in:`, or `folder:` tags. Those
 are generated when browser bookmark HTML is imported. If those tags matter for

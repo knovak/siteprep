@@ -524,13 +524,14 @@ test('help explains controls and selection syntax, and tags expose their complet
   await expect(page.locator('#help-panel')).toBeVisible();
   await expect(page.locator('#help-panel')).toContainText('Sweep untriaged');
   await expect(page.locator('#help-panel')).toContainText('site:example.com');
-  await expect(page.locator('#help-panel')).toContainText('title:court-drama*');
+  await expect(page.locator('#help-panel')).toContainText('title:*court-drama*');
   await expect(page.locator('#help-panel')).toContainText('src:safari-export');
-  await expect(page.locator('#help-panel')).toContainText('folder:favorites-modern-art*');
-  await expect(page.locator('#help-panel')).toContainText('topic:modern-art');
+  await expect(page.locator('#help-panel')).toContainText('folder:*modern-art*');
+  await expect(page.locator('#help-panel')).toContainText('topic:*modern-art*');
   await expect(page.locator('#help-panel')).toContainText('in:2026-08-19');
   await expect(page.locator('#help-panel')).toContainText('punctuation, symbols, and spaces become a single dash');
-  await expect(page.locator('#help-panel')).toContainText('A trailing * matches any characters after the normalized text');
+  await expect(page.locator('#help-panel')).toContainText('A trailing * matches the beginning of a normalized value');
+  await expect(page.locator('#help-panel')).toContainText('surrounding a value with * matches it anywhere');
   await expect(page.locator('#help-panel')).toContainText('verdict:untriaged');
   await expect(page.locator('#help-panel')).toContainText('image:present');
   const documentation = page.getByRole('link', {name: 'Full documentation'});
