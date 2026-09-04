@@ -992,7 +992,7 @@ naming any other option in a review comment is enough to redirect it.
 - All other menu entries remain optional in `notes.md` and can be promoted in a
   later round.
 
-## 2026-09-03 — Which Bookmark Sorter refinement should follow contains matching?
+## 2026-09-04 — Which Bookmark Sorter refinement should follow contains matching?
 
 ### Alternatives considered
 
@@ -1010,34 +1010,29 @@ naming any other option in a review comment is enough to redirect it.
 
 ### Recommendation
 
-**Recommendation: promote “Make Help easier to scan with a collapsed details
-section” as the next actionable refinement.** Contains matching has just improved
-retrieval; the smallest complementary step is to reduce the amount of guidance
-competing with those controls while keeping the essential instructions visible.
-The change should use an accessible disclosure with a clear label, keyboard
-support, and preserved phone and desktop behavior.
+**Recommendation: declare the initiative dormant.** The reviewer rejected the
+collapsed-Help proposal and explicitly chose “Just make bookmark sorter
+dormant.” The current product is therefore sufficient for now; the remaining
+optional improvements should stay available in `notes.md` without recurring
+sweep attention.
 
-This is a recommendation, not a decision. Merging this pull request accepts it;
-naming any other option in a review comment is enough to redirect it.
+This recommendation now reflects the user's direction. Merging this pull
+request records that choice and makes the initiative dormant.
 
 ### What would change the recommendation
 
-- Choose the **honest metadata card** instead if ordinary use shows that blank
-  cards slow visual recognition more than Help slows access to the controls.
-- Choose the **private usage-evidence summary** if the immediate goal is to
-  decide whether another product change is warranted before making one.
-- Choose **dormant** if the current build is sufficient and no further
-  refinement is worth active sweep attention now.
-- Request **another proposal round** if the desired next improvement is absent
-  from this menu.
+- Choose **collapsed Help details** instead if guidance starts obstructing the
+  controls during ordinary sittings.
+- Choose the **honest metadata card** instead if blank cards materially slow
+  visual recognition.
+- Choose the **private usage-evidence summary** if evidence is needed before a
+  later product decision.
+- Revive the initiative for **another proposal round** if a new need appears
+  that is absent from the current menu.
 
 ### What this settles, and what it does not
 
-- It selects the next refinement and makes that implementation item
-  actionable; it does not implement or release the change.
-- The essential-versus-detail split remains an implementation judgement bounded
-  by the requirement that essential instructions stay visible.
-- It does not alter selection behavior, bookmark data, access control, capture
-  policy, or production deployment.
-- All other menu entries remain optional in `notes.md` and can be promoted in a
-  later round.
+- It ends active refinement work and removes the last blocked choice.
+- It does not change, release, or redeploy the Bookmark Sorter product.
+- All menu entries remain optional in `notes.md` and may be promoted if the
+  user later revives the initiative.

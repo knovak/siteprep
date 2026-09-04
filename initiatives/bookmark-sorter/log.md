@@ -510,4 +510,7 @@ Added paired-wildcard contains matching for normalized title, folder, tag, and s
 
 ## 2026-09-04 — Choose another Bookmark Sorter improvement or declare the initiative dormant
 
-Proposed collapsed Help details as the next refinement; merging accepts the recommendation.
+Initially proposed collapsed Help details as the next refinement; the reviewer
+rejected that option and directed the initiative to become dormant instead. The
+current product is sufficient for now, and the remaining optional improvements
+stay available in `notes.md` if the initiative is revived.
