@@ -507,3 +507,10 @@ Proposed contains matching in selections as the next refinement; merging accepts
 ## 2026-09-03 — Allow contains matching in selections
 
 Added paired-wildcard contains matching for normalized title, folder, tag, and source values while preserving exact and trailing-wildcard prefix behavior; updated Help and related user and technical documents; covered malformed and empty patterns, punctuation and case normalization, saved selections, and a 10,000-item collection.
+
+## 2026-09-04 — Choose another Bookmark Sorter improvement or declare the initiative dormant
+
+Initially proposed collapsed Help details as the next refinement; the reviewer
+rejected that option and directed the initiative to become dormant instead. The
+current product is sufficient for now, and the remaining optional improvements
+stay available in `notes.md` if the initiative is revived.

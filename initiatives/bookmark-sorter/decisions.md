@@ -991,3 +991,48 @@ naming any other option in a review comment is enough to redirect it.
   change the collection privacy boundary, or authorize production deployment.
 - All other menu entries remain optional in `notes.md` and can be promoted in a
   later round.
+
+## 2026-09-04 — Which Bookmark Sorter refinement should follow contains matching?
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Make Help easier to scan with collapsed details** | Small, visible improvement that keeps essential instructions in view and makes the controls easier to find; already identified as the menu's next candidate after contains matching | Requires a careful essential-versus-detail split and accessible disclosure behavior; improves orientation rather than the core sorting mechanics |
+| **Give no-image bookmarks an honest metadata card** | Addresses the largest measured visual weakness for 503 bookmarks without a vendor, credential, remote asset, or new privacy boundary | Medium scope with broad grid, phone, duplicate-image, and no-image verification; improves recognition but still cannot provide page imagery |
+| **Add a private usage-evidence summary** | Makes existing sitting-throughput and immediate-undo evidence readable without adding analytics or tracking | Primarily supports later decisions rather than ordinary sorting, and every count needs a precise explanation |
+| **Extend selections to saved text** | Helps recover bookmarks when a first-pass user remembers only a title, URL, or note fragment | Medium scope with normalization, indexing, saved-selection, export, and private-note isolation requirements |
+| **Add an explicit file bridge for open browser tabs** | Turns temporary browser sessions into reviewable collections without granting the Site live browser access | Introduces an interchange format and must preserve order and grouping without closing or modifying source tabs |
+| **Repair an unreachable bookmark from an exact-title search** | Offers a guarded recovery path for moved pages while retaining the original URL in undo and history | Sends the saved title to a search provider and needs confirmation plus no-hit, ambiguous-hit, redirect, and collision handling |
+| **Introduce named private collaborators for one collection** | Enables a valuable shared research workflow with explicit roles and revocation | Large scope and the broadest access-control risk; every data path and administrator power needs isolation testing |
+| **Request another proposal round** | Leaves room for a need absent from the current menu | Delays action despite several bounded candidates already supported by evidence |
+| **Declare the initiative dormant** | Honestly records that the current product is sufficient and stops recurring sweep attention | Defers all remaining readability, visual-recognition, evidence, import, recovery, and collaboration improvements |
+
+### Recommendation
+
+**Recommendation: declare the initiative dormant.** The reviewer rejected the
+collapsed-Help proposal and explicitly chose “Just make bookmark sorter
+dormant.” The current product is therefore sufficient for now; the remaining
+optional improvements should stay available in `notes.md` without recurring
+sweep attention.
+
+This recommendation now reflects the user's direction. Merging this pull
+request records that choice and makes the initiative dormant.
+
+### What would change the recommendation
+
+- Choose **collapsed Help details** instead if guidance starts obstructing the
+  controls during ordinary sittings.
+- Choose the **honest metadata card** instead if blank cards materially slow
+  visual recognition.
+- Choose the **private usage-evidence summary** if evidence is needed before a
+  later product decision.
+- Revive the initiative for **another proposal round** if a new need appears
+  that is absent from the current menu.
+
+### What this settles, and what it does not
+
+- It ends active refinement work and removes the last blocked choice.
+- It does not change, release, or redeploy the Bookmark Sorter product.
+- All menu entries remain optional in `notes.md` and may be promoted if the
+  user later revives the initiative.
