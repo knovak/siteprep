@@ -991,3 +991,53 @@ naming any other option in a review comment is enough to redirect it.
   change the collection privacy boundary, or authorize production deployment.
 - All other menu entries remain optional in `notes.md` and can be promoted in a
   later round.
+
+## 2026-09-03 — Which Bookmark Sorter refinement should follow contains matching?
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Make Help easier to scan with collapsed details** | Small, visible improvement that keeps essential instructions in view and makes the controls easier to find; already identified as the menu's next candidate after contains matching | Requires a careful essential-versus-detail split and accessible disclosure behavior; improves orientation rather than the core sorting mechanics |
+| **Give no-image bookmarks an honest metadata card** | Addresses the largest measured visual weakness for 503 bookmarks without a vendor, credential, remote asset, or new privacy boundary | Medium scope with broad grid, phone, duplicate-image, and no-image verification; improves recognition but still cannot provide page imagery |
+| **Add a private usage-evidence summary** | Makes existing sitting-throughput and immediate-undo evidence readable without adding analytics or tracking | Primarily supports later decisions rather than ordinary sorting, and every count needs a precise explanation |
+| **Extend selections to saved text** | Helps recover bookmarks when a first-pass user remembers only a title, URL, or note fragment | Medium scope with normalization, indexing, saved-selection, export, and private-note isolation requirements |
+| **Add an explicit file bridge for open browser tabs** | Turns temporary browser sessions into reviewable collections without granting the Site live browser access | Introduces an interchange format and must preserve order and grouping without closing or modifying source tabs |
+| **Repair an unreachable bookmark from an exact-title search** | Offers a guarded recovery path for moved pages while retaining the original URL in undo and history | Sends the saved title to a search provider and needs confirmation plus no-hit, ambiguous-hit, redirect, and collision handling |
+| **Introduce named private collaborators for one collection** | Enables a valuable shared research workflow with explicit roles and revocation | Large scope and the broadest access-control risk; every data path and administrator power needs isolation testing |
+| **Request another proposal round** | Leaves room for a need absent from the current menu | Delays action despite several bounded candidates already supported by evidence |
+| **Declare the initiative dormant** | Honestly records that the current product is sufficient and stops recurring sweep attention | Defers all remaining readability, visual-recognition, evidence, import, recovery, and collaboration improvements |
+
+### Recommendation
+
+**Recommendation: promote “Make Help easier to scan with a collapsed details
+section” as the next actionable refinement.** Contains matching has just improved
+retrieval; the smallest complementary step is to reduce the amount of guidance
+competing with those controls while keeping the essential instructions visible.
+The change should use an accessible disclosure with a clear label, keyboard
+support, and preserved phone and desktop behavior.
+
+This is a recommendation, not a decision. Merging this pull request accepts it;
+naming any other option in a review comment is enough to redirect it.
+
+### What would change the recommendation
+
+- Choose the **honest metadata card** instead if ordinary use shows that blank
+  cards slow visual recognition more than Help slows access to the controls.
+- Choose the **private usage-evidence summary** if the immediate goal is to
+  decide whether another product change is warranted before making one.
+- Choose **dormant** if the current build is sufficient and no further
+  refinement is worth active sweep attention now.
+- Request **another proposal round** if the desired next improvement is absent
+  from this menu.
+
+### What this settles, and what it does not
+
+- It selects the next refinement and makes that implementation item
+  actionable; it does not implement or release the change.
+- The essential-versus-detail split remains an implementation judgement bounded
+  by the requirement that essential instructions stay visible.
+- It does not alter selection behavior, bookmark data, access control, capture
+  policy, or production deployment.
+- All other menu entries remain optional in `notes.md` and can be promoted in a
+  later round.

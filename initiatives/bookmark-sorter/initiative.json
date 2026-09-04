@@ -29,13 +29,12 @@
   ],
   "todo": [
     {
-      "id": "choose-next-refinement-after-contains",
-      "title": "Choose another Bookmark Sorter improvement or declare the initiative dormant",
-      "state": "blocked",
+      "id": "collapsed-help-details",
+      "title": "Make Help easier to scan with a collapsed details section",
+      "state": "actionable",
       "value": "medium",
       "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose another proposed improvement from notes.md, request another proposal round, or declare the initiative dormant"
+      "advances_stage": false
     }
   ]
 }
