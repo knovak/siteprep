@@ -1,5 +1,26 @@
 import { index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
+export const workflowSnapshot = sqliteTable('workflow_snapshot', {
+  collectionId: text('collection_id').notNull(),
+  revision: integer('revision').notNull(),
+  operationId: text('operation_id').notNull(),
+  stateJson: text('state_json').notNull(),
+  contentHash: text('content_hash').notNull(),
+  createdAt: text('created_at').notNull(),
+}, (t) => [uniqueIndex('idx_workflow_collection_revision').on(t.collectionId, t.revision), uniqueIndex('idx_workflow_collection_operation').on(t.collectionId, t.operationId)]);
+
+export const workflowExport = sqliteTable('workflow_export', {
+  id: text('id').primaryKey(), collectionId: text('collection_id').notNull(), actorId: text('actor_id').notNull(),
+  objectKey: text('object_key').notNull(), contentHash: text('content_hash').notNull(), byteSize: integer('byte_size').notNull(),
+  packageId: text('package_id').notNull(), caller: text('caller').notNull(), receiptJson: text('receipt_json').notNull(), createdAt: text('created_at').notNull(),
+}, (t) => [index('idx_workflow_export_owner').on(t.actorId, t.collectionId)]);
+
+export const workflowRestorePreview = sqliteTable('workflow_restore_preview', {
+  id: text('id').primaryKey(), collectionId: text('collection_id').notNull(), actorId: text('actor_id').notNull(),
+  objectKey: text('object_key').notNull(), contentHash: text('content_hash').notNull(), revision: integer('revision').notNull(),
+  selectionRevision: integer('selection_revision').notNull(), createdAt: text('created_at').notNull(),
+}, (t) => [index('idx_workflow_restore_owner').on(t.actorId, t.collectionId)]);
+
 export const authorizedUser = sqliteTable(
   'authorized_user',
   {

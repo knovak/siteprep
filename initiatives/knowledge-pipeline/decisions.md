@@ -72,3 +72,19 @@ than inheriting this result.
   minimum acceptance percentage or a model-quality threshold.
 - It does not commit a proposal to a live collection, grant an LLM authority,
   or make any later proposal safe without its own human review.
+
+## 2026-09-05 — Prepare the connected curator exercise
+
+Ken selected option 1: finish the missing workflow and prepare the acceptance
+test, with Ken acting as curator. This authorizes the bounded implementation,
+automated rehearsal, test-Site refresh, and disposable hosted recovery check
+needed to make the exercise usable.
+
+### What this settles, and what it does not
+
+- Prepare the test so Ken can perform and report the curator sitting.
+- Automated operation as Ken's signed-in session remains operator rehearsal,
+  not independent human testimony or an acceptance finding.
+- The representative-use todo remains blocked until measured curator feedback
+  and the remaining evidence are supplied. No production release, hosted
+  schedule, distribution recommendation, or merge is authorized.
