@@ -1,4 +1,42 @@
-# Knowledge Pipeline Phase 6 Site
+# Knowledge Pipeline acceptance workspace
+
+The signed-in entry now opens six connected stages at `/workspace`, backed by
+the tested Harvest, Topics, Documents, and Recovery services. The public
+`/acceptance` page is the curator exercise. The fixture button deliberately
+creates synthetic practice data, never a witnessed acceptance result.
+
+`lib/workflow.mjs` composes accepted operations and the portable complete-workflow
+JSON package. `lib/workflow-store.mjs` persists immutable snapshots using one
+conditional D1 insert per accepted operation. Owner, active collection,
+selection revision, and previous snapshot revision are checked at commit.
+The first workspace load retains legacy Harvest originals, reviews, dependencies,
+activities, and receipts without deleting or changing the old records.
+
+Web and administrator exports use the same stable snapshot and private R2-backed
+package; unchanged state produces byte-identical downloads. Fresh-site upload
+restore requires an explicitly selected empty destination, verifies package,
+version, and asset checksums, writes and reads back actual R2 objects, then
+commits once. Historical authors remain historical authors; only the selected
+destination owner receives collection access. Failed staging is cleaned up.
+The uploaded complete-workflow package must carry `siteprep:workflow-v1`;
+the older Harvest-only ZIP is not silently treated as a full recovery point.
+
+This is a bounded representative-use workspace: accepted state is capped at
+800,000 UTF-8 bytes and uploads at 1,500,000 bytes. It does not establish the
+10,000-entity hosted performance target. Every revision retains a full snapshot;
+production scale, retention, scheduled operation, and deletion of the new
+snapshot/R2 tables require further work. Use fresh disposable practice collections,
+not the legacy erasure path, for this acceptance exercise.
+
+`test/workflow-store.test.mjs` runs generated migrations and the actual store SQL
+against SQLite, with a filesystem object adapter. It checks all archive outcomes,
+reload, canonical exports, fresh-database restore, stale pages, cross-owner
+denial, checksum failures, and rollback after object/commit failures.
+`scripts/workflow-browser-check.mjs` is a localhost-only visible-control rehearsal:
+run it with Node while the local Site runs, using the repo-installed Playwright
+and Chrome. It uses the Sites local sign-in fixture (administrator seed
+`seedy@sites.test`), not a deployed authentication override. Output under
+`outputs/` is local test evidence, not curator testimony.
 
 This is the login-gated collection, Harvest workspace, and portable review core
 through `plan.md` Phase 6. It is a
@@ -74,7 +112,9 @@ authorized reference disappears.
 ## Recovery, scheduling, and scale
 
 `lib/recovery.mjs` is the portable recovery service shared by the web,
-administrator, and deterministic schedule callers. It provides stable due-run
+administrator, and deterministic schedule callers. The connected workspace uses
+its export and atomic restore services; the schedule adapter remains a
+library-level capability rather than a hosted scheduled job. It provides stable due-run
 operation ids, derives scheduled scope from stored schedule state, applies the
 ordinary administrator boundary, and refuses authentication material in
 schedule inputs, URLs, packages, and receipts. Accepted operations are

@@ -52,6 +52,13 @@ const now = () => new Date().toISOString();
 const db = () => env.DB;
 const shortHash = async (value: string) => (await sha256(value)).slice(7, 31);
 
+// Older Harvest-only operations must never claim to back up, modify, or erase
+// the complete workspace while leaving its accepted snapshots behind.
+async function requireLegacyHarvest(collectionId: string) {
+  const snapshot = await db().prepare('SELECT revision FROM workflow_snapshot WHERE collection_id=? LIMIT 1').bind(collectionId).first();
+  if (snapshot) throw new AccessError(409, 'workflow.use_workspace', 'This collection uses the complete workspace. Use its Backup tab; legacy Harvest operations and erasure are unavailable.');
+}
+
 async function seedAdministrator() {
   const configured = normalizeEmail(env.KNOWLEDGE_PIPELINE_ADMIN_EMAIL);
   if (!configured) return;
@@ -215,6 +222,7 @@ async function selectedCollection(context: AuthorizedContext, collectionId: stri
 }
 
 export async function previewHarvest(context: AuthorizedContext, collectionId: string, kind: string, payload: unknown) {
+  await requireLegacyHarvest(collectionId);
   const selected = await selectedCollection(context, collectionId);
   let preview;
   try { preview = await makeHarvestPreview(kind, payload); }
@@ -288,6 +296,7 @@ async function sourceForAliases(collectionId: string, source: any) {
 }
 
 export async function commitHarvest(context: AuthorizedContext, collectionId: string, previewId: string) {
+  await requireLegacyHarvest(collectionId);
   const selected = await selectedCollection(context, collectionId);
   const row = await db().prepare(`SELECT * FROM import_preview
     WHERE id = ? AND actor_id = ? AND collection_id = ?`).bind(previewId, context.actorId, collectionId).first<any>();
@@ -415,6 +424,7 @@ export async function listHarvestSources(context: AuthorizedContext, collectionI
 }
 
 export async function createWorkPacket(context: AuthorizedContext, collectionId: string, selectedSourceIds: string[]) {
+  await requireLegacyHarvest(collectionId);
   const selected = await selectedCollection(context, collectionId);
   const sources = await listHarvestSources(context, collectionId, 100);
   let packet;
@@ -456,6 +466,7 @@ export async function readWorkPacket(context: AuthorizedContext, collectionId: s
 }
 
 export async function importReviewProposal(context: AuthorizedContext, collectionId: string, workPacketId: string, proposal: unknown) {
+  await requireLegacyHarvest(collectionId);
   const selected = await selectedCollection(context, collectionId);
   const row = await db().prepare(`SELECT package_json FROM work_packet
     WHERE id = ? AND collection_id = ? AND actor_id = ?`)
@@ -488,6 +499,7 @@ export async function listReviewPreviews(context: AuthorizedContext, collectionI
 }
 
 export async function commitReviewProposal(context: AuthorizedContext, collectionId: string, reviewId: string, acceptedOperationIds: string[], rationaleEdits: Record<string, string>) {
+  await requireLegacyHarvest(collectionId);
   const selected = await selectedCollection(context, collectionId);
   const row = await db().prepare(`SELECT proposal_review.*, work_packet.package_json
     FROM proposal_review JOIN work_packet ON work_packet.id = proposal_review.work_packet_id
@@ -629,12 +641,14 @@ export async function listHarvestReceipts(context: AuthorizedContext, collection
 }
 
 export async function previewErase(context: AuthorizedContext, collectionId: string) {
+  await requireLegacyHarvest(collectionId);
   const selected = await currentSelection(context);
   if (!selected.collection || selected.collection.id !== collectionId) throw new AccessError(409, 'collection.selection.changed', 'Select the collection again before erasing it');
   return erasePreview(selected.collection, await collectionCounts(context, collectionId), selected.selectionRevision);
 }
 
 export async function tombstoneAndErase(context: AuthorizedContext, collectionId: string, expectedRevision: number) {
+  await requireLegacyHarvest(collectionId);
   const at = now();
   const activityId = `activity:${crypto.randomUUID()}`;
   const result = await db().batch([
@@ -779,6 +793,7 @@ async function portableHarvestRecords(collectionId: string) {
 }
 
 export async function createCurrentBackup(context: AuthorizedContext, collectionId: string) {
+  await requireLegacyHarvest(collectionId);
   const audit = await collectionAudit(context, collectionId);
   if (audit.collection.state !== 'active') throw new AccessError(409, 'collection.not_active', 'Only an active collection can be backed up');
   const createdAt = now();
@@ -850,6 +865,7 @@ export async function readBackupBytes(context: AuthorizedContext, collectionId: 
 }
 
 export async function restoreCollectionBackup(context: AuthorizedContext, collectionId: string, backupId: string) {
+  await requireLegacyHarvest(collectionId);
   const bytes = await readBackupBytes(context, collectionId, backupId);
   const files = unzipSync(bytes);
   if (!files['manifest.json']) throw new AccessError(409, 'backup.manifest_missing', 'Backup manifest is missing');
