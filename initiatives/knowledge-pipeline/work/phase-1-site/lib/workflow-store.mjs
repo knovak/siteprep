@@ -8,6 +8,7 @@ import {
   restoreWorkflowPackage,
   workflowCounts,
   MAX_WORKFLOW_BYTES,
+  MAX_UPLOAD_BYTES,
 } from './workflow.mjs';
 import {
   runExportCaller,
@@ -188,6 +189,15 @@ export function workflowStore(db, files, actor) {
       );
     const hash = await sha256(encoded);
     const at = new Date().toISOString();
+    const portable = await workflowPackage(state, previous.name, at);
+    if (
+      new TextEncoder().encode(canonicalJson(portable)).byteLength >
+      MAX_UPLOAD_BYTES - 10000
+    ) {
+      throw new WorkflowError(
+        'This change would exceed the restorable package limit. Export this collection and start another.',
+      );
+    }
     // One conditional INSERT is the complete commit. Concurrent edits, collection
     // changes, and selection changes cannot expose half an accepted operation.
     const result = await db
@@ -413,6 +423,7 @@ export function workflowStore(db, files, actor) {
       throw new WorkflowError('Staged restore checksum does not match.');
     const pkg = JSON.parse(new TextDecoder().decode(bytes));
     const assetKeys = [];
+    const restoreAttempt = crypto.randomUUID();
     let accepted;
     await restoreAtomically({
       pkg,
@@ -422,7 +433,14 @@ export function workflowStore(db, files, actor) {
           accepted = await restoreWorkflowPackage(pkg, collectionId);
           for (const asset of accepted.assets) {
             const key =
-              'workflow-assets/' + collectionId + '/' + id + '/' + asset.id;
+              'workflow-assets/' +
+              collectionId +
+              '/' +
+              id +
+              '/' +
+              restoreAttempt +
+              '/' +
+              asset.id;
             assetKeys.push(key);
             await files.put(key, new TextEncoder().encode(asset.text));
             const retained = await files.get(key);

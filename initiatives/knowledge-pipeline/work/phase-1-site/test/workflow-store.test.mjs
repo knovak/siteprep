@@ -362,3 +362,40 @@ test('corrupt packages and broken evidence refuse before accepting a destination
   const broken = await workflowPackage(state, loaded.name, loaded.createdAt);
   await assert.rejects(validateWorkflowPackage(broken), /original is missing/);
 });
+
+test('concurrent export and restore retries do not delete the winning object', async (t) => {
+  const c = await setup(t);
+  await c.mutate({ type: 'fixture' });
+  const attempts = await Promise.allSettled([
+    c.store.exportCollection(c.collectionId, 'web', 'same-export'),
+    c.store.exportCollection(c.collectionId, 'web', 'same-export'),
+  ]);
+  const winner = attempts.find(
+    (attempt) => attempt.status === 'fulfilled',
+  ).value;
+  const exported = await c.store.readExport(winner.id);
+  const pkg = JSON.parse(new TextDecoder().decode(exported.bytes));
+  const destination = await setup(t, 'actor:restore', 'collection:restore');
+  const preview = await destination.store.previewRestore(
+    destination.collectionId,
+    pkg,
+    await destination.store.load(destination.collectionId),
+  );
+  const restores = await Promise.allSettled([
+    destination.store.commitRestore(destination.collectionId, preview.id),
+    destination.store.commitRestore(destination.collectionId, preview.id),
+  ]);
+  assert.ok(restores.some((attempt) => attempt.status === 'fulfilled'));
+  assert.equal(
+    (await destination.store.load(destination.collectionId)).state.harvest
+      .sources.length,
+    18,
+  );
+  const objects = await readdir(destination.files.directory);
+  assert.equal(
+    objects.filter((name) =>
+      decodeURIComponent(name).startsWith('workflow-assets/'),
+    ).length,
+    1,
+  );
+});
