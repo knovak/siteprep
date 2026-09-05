@@ -86,7 +86,7 @@ The viewer is an authored illustration, not a scanned or measured body. Its
 vertebra its own control. Ribs follow trunk motion without a separate breathing
 cycle. Muscle coverage is representative; clavicle motion and foot contact are
 illustrative. These limits are documented in the
-[anatomy audit](work/phase-3/ANATOMY-AUDIT.md).
+[anatomy audit](https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-3/ANATOMY-AUDIT.md#axial-anatomy-and-foot-direction-audit).
 
 Independent vertebral control, breathing, more complete muscle geometry,
 measured motion or additional studies would be further development choices,
@@ -100,9 +100,9 @@ movement scoring and treatment claims remain outside this version's scope.
 
 ## Evidence and project records
 
-- [Objectives](objectives.md), [original implementation plan](plan.md), and
-  [test plan](test-plan.md)
-- [Recorded decisions](decisions.md), including KRN feedback and the private/public boundary
-- [Anatomy and foot-direction audit](work/phase-3/ANATOMY-AUDIT.md)
-- [Validation record](work/phase-6/VALIDATION.md) and [review triage](work/phase-5/TRIAGE.md)
-- [Release history](releases.md)
+- [Objectives](objectives.html), [original implementation plan](plan.html), and
+  [test plan](test-plan.html)
+- [Recorded decisions](decisions.html), including KRN feedback and the private/public boundary
+- [Anatomy and foot-direction audit](https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-3/ANATOMY-AUDIT.md#axial-anatomy-and-foot-direction-audit)
+- [Validation record](https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-6/VALIDATION.md#phase-6-validation-record) and [review triage](https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-5/TRIAGE.md#human-review-triage)
+- [Release history](releases.html)
