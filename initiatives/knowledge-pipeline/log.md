@@ -65,3 +65,26 @@ four deferred distribution topologies. The checked record deliberately keeps
 the independent witness, measurements, package hash, and live disposable
 restore pending. Phase 7 is blocked on those human and hosted results rather
 than being declared complete from deterministic tests.
+
+## 2026-09-05 — Connected curator workspace and hosted recovery rehearsal
+
+Following Ken's option-1 choice, connected Harvest, source review/promotion,
+topics/narratives, standing documents, archive/reopen, and canonical web/admin
+export with a D1 snapshot store and fresh-package R2 restore. Added explicit
+stale-selection and ownership guards, per-attempt recovery staging, restorable
+package bounds, an 18-source synthetic practice fixture, and the public
+`/acceptance` curator checklist. Legacy Harvest-only mutations, backups, and
+erasure refuse collections after they adopt complete-workflow snapshots.
+
+The portable core passed 17 tests; the Site passed 63 tests, targeted lint,
+production build, and a desktop/phone browser rehearsal. Refreshed the existing
+public test Site to version 2 and deployed a separate owner-only recovery Site.
+The actual hosted web and administrator packages were byte-identical (288,989
+bytes). Fresh-site upload restored 18 sources, six narratives, one document
+with two revisions, and one read-back-verified R2 asset. Re-export comparison
+preserved originals, decisions, narratives, document versions, relationships,
+and assets exactly. See `notes/2026-09-05-connected-workflow-rehearsal.md`.
+
+These are operator observations, not human acceptance. The fixture remains
+synthetic; Ken's curator findings, full Phase 7 evidence, and distribution
+observations remain pending. Production and the hosted schedule remain off.
