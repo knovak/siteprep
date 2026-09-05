@@ -514,3 +514,26 @@ Initially proposed collapsed Help details as the next refinement; the reviewer
 rejected that option and directed the initiative to become dormant instead. The
 current product is sufficient for now, and the remaining optional improvements
 stay available in `notes.md` if the initiative is revived.
+
+
+## 2026-09-05 — Day/Night themes deployed to test
+
+Implemented the user's Cream and teal Day palette and Dark slate Night palette
+while retaining navigation and layout presets. The mode selector remembers its
+choice locally; storage failures leave current-page switching usable. Marked
+cards have visible outlines, light grey at night, and focused cards have a
+separate teal outline. Verdict stripes render above pictures; Junk cards stay
+opaque. Updated Help, README, specification, and theme regression coverage.
+
+Validation: 64 app tests, 26 browser checks, the Vinext production build, and the
+repository build passed. Screenshots of both modes were inspected with sample
+bookmarks after the final build. The browser checks cover every wide layout,
+phone/tablet selector visibility, persistence, storage failure, unchanged marks
+and grid geometry, and night outline/text contrast across all verdicts.
+
+Existing public test Site version 33 succeeded at 2026-09-05T16:06:19Z.
+Siteprep source commit: `543e418be8e966784fb0615771265488d0f61c5e`.
+Matching Sites source commit: `98e6765984868a61f73709918c89c94901280766`.
+The isolated Sites checkout contains the same 66 tracked application files;
+the archive reuses the validated build from that source. D1/R2 bindings and
+application authorization remain intact. Production was not deployed.
