@@ -56,3 +56,35 @@ not turn a restricted SMPL-Model download into a distributable asset.
   does not claim its landmarks or muscle paths are anatomically reviewed.
 - A public successor still needs the separate rights and trademark review
   already recorded above.
+
+
+## 2026-09-05 — KRN anatomy-display feedback and revision
+
+**Revise the skeleton and muscle illustration in the existing private validation viewer.**
+
+The user relayed feedback from reviewer **KRN** and authorized a revision:
+
+- "model all the vertebra and ribs, not just a single line for the spine"
+- "draw the muscles with more detail, in a style like an anatomy drawing (attached)"
+
+The attachment shows a frontal anatomy illustration with distinct red muscle
+bellies, visible fibre direction, shaded contours, and pale connective tissue.
+It is a visual reference; its pixels are not incorporated into the viewer.
+No instruction in the attachment supplies additional project requirements.
+
+### What this settles, and what it does not
+
+- KRN is the reviewer code name supplied by the user. Do not infer a real name,
+  professional qualification, tradition, email address, or approval of a claim.
+- The immediate revision is individual vertebral and rib geometry and more
+  detailed, differentiated muscle illustration on the existing shared motion
+  rig. This remains the Phase 6 corrective review loop.
+- The implementation depicts C1-C7, T1-T12, L1-L5, five fused sacral segments,
+  a typical four-segment fused coccyx, and 12 bilateral ribs. The sacral and
+  coccygeal depiction does not imply separately mobile adult vertebrae.
+- This feedback is evidence of a requested correction, not acceptance of the
+  revised result. Geometry, landmark accuracy, muscle grouping, and all
+  tradition-specific records remain unreviewed pending appropriate findings.
+- The broader reviewer roles, remaining findings, invitation addresses, and
+  report destination are still open. No access or public-release decision is
+  implied by this feedback.

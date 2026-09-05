@@ -28,3 +28,10 @@ browser persistence of reviewer identifiers or reports.
 `VALIDATION.md` records the real private deployment boundary and observed
 timings. Practitioner and anatomy review remain human evidence: automation may
 exercise the workflow but may not promote an `unreviewed` claim.
+
+
+The KRN revision packages `lib/anatomy-geometry.mjs` from the Phase 3 source and
+rewrites its rig-math import to the local bundle. Rebuild this bundle after
+anatomy display changes; do not edit its copied viewer or module by hand.
+The user's relayed review and outstanding human evidence are recorded in
+`REVIEW-KRN.md` and the initiative's decisions.

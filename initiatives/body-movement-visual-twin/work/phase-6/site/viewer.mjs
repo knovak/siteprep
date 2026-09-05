@@ -1,4 +1,5 @@
-import { globalMatrices, muscleWorldPaths, transformPoint } from './lib/rig-math.mjs';
+import { globalMatrices, transformPoint } from './lib/rig-math.mjs';
+import { createAxialGeometry, createMuscleGeometry } from './lib/anatomy-geometry.mjs';
 import { TRADITION_LABELS, anatomySummary, instructionSections, movementCompleteness } from './lib/collection.mjs';
 import {
   DEFAULT_VISUAL_PROFILE,
@@ -47,7 +48,7 @@ let lastFrameTime = 0;
 let dragPoint;
 let visualProfile = DEFAULT_VISUAL_PROFILE;
 let selectedClaim;
-let projectionFrame = { centerX: 0, centerY: 850, scale: 1 };
+let projectionFrame = { centerX: 0, centerY: 850, scale: 1, offsetY: 0 };
 let projectionKey = '';
 const reviewInbox = '';
 
@@ -165,19 +166,24 @@ function fitProjection(displayRig) {
   });
   const xs = points.map((point) => point[0]);
   const ys = points.map((point) => point[1]);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const padding = Math.min(canvas.width, canvas.height) * .11;
+  const stature = displayRig.reference_stature_mm / 1700;
+  const minX = Math.min(...xs) - 90 * stature;
+  const maxX = Math.max(...xs) + 90 * stature;
+  const minY = Math.min(...ys) - 50 * stature;
+  const maxY = Math.max(...ys) + 110 * stature;
+  const ratio = Math.min(devicePixelRatio || 1, 2);
+  const top = 112 * ratio;
+  const bottom = 64 * ratio;
+  const padding = canvas.width * .06;
   const fitted = Math.min(
     (canvas.width - padding * 2) / Math.max(360, maxX - minX),
-    (canvas.height - padding * 2) / Math.max(620, maxY - minY)
+    (canvas.height - top - bottom) / Math.max(620, maxY - minY)
   );
   projectionFrame = {
     centerX: (minX + maxX) / 2,
     centerY: (minY + maxY) / 2,
-    scale: fitted * state.camera.zoom
+    scale: fitted * state.camera.zoom,
+    offsetY: (top - bottom) / 2
   };
   projectionKey = nextKey;
 }
@@ -186,7 +192,7 @@ function project(point) {
   const [horizontal, vertical, depth] = cameraPoint(point);
   return [
     canvas.width / 2 + (horizontal - projectionFrame.centerX) * projectionFrame.scale,
-    canvas.height / 2 - (vertical - projectionFrame.centerY) * projectionFrame.scale,
+    canvas.height / 2 + projectionFrame.offsetY - (vertical - projectionFrame.centerY) * projectionFrame.scale,
     depth
   ];
 }
@@ -194,7 +200,7 @@ function project(point) {
 function visibleAround(nodeId) {
   if (state.isolatedJoint === 'none') return true;
   const accepted = new Set([state.isolatedJoint]);
-  let current = rig.nodes.find((node) => node.id === nodeId);
+  let current = rig.nodes.find((node) => node.id === state.isolatedJoint);
   for (let count = 0; current && count < 2; count += 1) {
     accepted.add(current.id);
     current = rig.nodes.find((node) => node.id === current.parent);
@@ -249,7 +255,7 @@ function drawSurface(matrices, alpha, displayRig) {
     if (!visibleAround(shell.from) && !visibleAround(shell.to)) continue;
     const ratio = Math.min(devicePixelRatio || 1, 2);
     const regionFactor = shell.region === 'torso' ? appearance.torsoFactor : shell.region === 'limb' ? appearance.limbFactor : 1;
-    const width = Math.max(20, shell.radius_mm * appearance.radiusFactor * regionFactor * 1.28 * ratio * projectionFrame.scale);
+    const width = Math.max(20, shell.radius_mm * appearance.radiusFactor * regionFactor * 1.28 * projectionFrame.scale);
     line(start, end, { color: '#2d1d19', alpha: alpha * .62, width: width * 1.08 });
     line(start, end, { color: appearance.color, alpha, width });
   }
@@ -292,13 +298,13 @@ function drawSurface(matrices, alpha, displayRig) {
   context.fill();
   context.stroke();
   context.beginPath();
-  context.ellipse(head[0], head[1], (76 - sideAmount * 10) * ratio * projectionFrame.scale, 104 * ratio * projectionFrame.scale, 0, 0, Math.PI * 2);
+  context.ellipse(head[0], head[1], (76 - sideAmount * 10) * projectionFrame.scale, 104 * projectionFrame.scale, 0, 0, Math.PI * 2);
   context.fill();
   context.stroke();
   context.restore();
-  line(world('thoracic-upper'), neck, { color: appearance.color, alpha, width: 58 * appearance.radiusFactor * ratio * projectionFrame.scale });
+  line(world('thoracic-upper'), neck, { color: appearance.color, alpha, width: 58 * appearance.radiusFactor * projectionFrame.scale });
   for (const joint of ['scapula-left', 'scapula-right', 'humerus-left', 'humerus-right', 'forearm-left', 'forearm-right', 'hip-left', 'hip-right', 'femur-left', 'femur-right', 'tibia-left', 'tibia-right']) {
-    point(world(joint), 14 * ratio * Math.max(.8, projectionFrame.scale), appearance.color, alpha);
+    point(world(joint), 14 * projectionFrame.scale, appearance.color, alpha);
   }
 }
 
@@ -313,38 +319,53 @@ function boneLandmarks(matrices, alpha = 1) {
     context.strokeStyle = '#8c7855';
     context.lineWidth = 1.5 * ratio;
     context.beginPath();
-    context.ellipse(x, y, radiusX * ratio * projectionFrame.scale, radiusY * ratio * projectionFrame.scale, 0, 0, Math.PI * 2);
+    context.ellipse(x, y, radiusX * projectionFrame.scale, radiusY * projectionFrame.scale, 0, 0, Math.PI * 2);
     context.fill();
     context.stroke();
     context.restore();
   };
   ellipseAt('head', 82, 105, '#f0e4c9');
   ellipseAt('pelvis', 135, 72, '#d8c69f');
-  const chest = project(transformPoint(matrices.get('thoracic-lower'), [0, 75, 0]));
-  context.save();
-  context.globalAlpha = alpha * .72;
-  context.strokeStyle = '#d8c69f';
-  context.lineWidth = 3 * ratio;
-  for (let index = 0; index < 5; index += 1) {
-    context.beginPath();
-    context.ellipse(chest[0], chest[1] - index * 13 * ratio * projectionFrame.scale, (105 - index * 6) * ratio * projectionFrame.scale, (48 - index * 2) * ratio * projectionFrame.scale, 0, 0, Math.PI * 2);
-    context.stroke();
-  }
-  context.restore();
 }
 
 function drawSkeleton(matrices, displayRig, activeJoints) {
+  const axialNodes = new Set(['pelvis', 'lumbar-spine', 'thoracic-lower', 'thoracic-upper', 'neck-base', 'head']);
   const segments = displayRig.nodes.map((node) => {
-    if (!node.parent || node.id === 'root' || !visibleAround(node.id)) return null;
+    if (!node.parent || node.id === 'root' || axialNodes.has(node.id) || !visibleAround(node.id)) return null;
     const start = transformPoint(matrices.get(node.parent), [0, 0, 0]);
     const end = transformPoint(matrices.get(node.id), [0, 0, 0]);
     return { node, start, end, depth: (project(start)[2] + project(end)[2]) / 2 };
   }).filter(Boolean).sort((a, b) => a.depth - b.depth);
   boneLandmarks(matrices, .9);
+  const axial = createAxialGeometry(displayRig, matrices);
+  const palette = { bone: '#decba8', 'bone-light': '#fff0ce', 'bone-shade': '#ad9270', disc: '#a6b1ae', cartilage: '#c0d5ce' };
+  const ordered = axial.bones.filter((bone) => visibleAround(bone.node)).map((bone) => ({ ...bone, depth: bone.points.reduce((sum, p) => sum + project(p)[2], 0) / bone.points.length })).sort((a, b) => a.depth - b.depth);
+  for (const bone of ordered) {
+    context.save();
+    const active = activeJoints.has(bone.node);
+    context.strokeStyle = active ? '#e4b360' : '#79664e';
+    context.fillStyle = palette[bone.material];
+    context.lineJoin = 'round';
+    context.lineCap = 'round';
+    const points = bone.points.map(project);
+    traceProjected(points, !bone.line);
+    if (bone.line) {
+      context.lineWidth = Math.max(1, bone.width * projectionFrame.scale + 1.5);
+      context.stroke();
+      context.strokeStyle = palette[bone.material];
+      context.lineWidth = Math.max(.6, bone.width * projectionFrame.scale);
+      context.stroke();
+    } else {
+      context.fill();
+      context.lineWidth = .55 * Math.min(devicePixelRatio || 1, 2);
+      context.stroke();
+    }
+    context.restore();
+  }
   for (const { node, start, end } of segments) {
     const ratio = Math.min(devicePixelRatio || 1, 2);
     const active = activeJoints.has(node.id) || activeJoints.has(node.parent);
-    const width = (active ? 11 : 7) * ratio * Math.max(.72, projectionFrame.scale);
+    const width = (active ? 11 : 7) * projectionFrame.scale;
     line(start, end, { color: active ? '#684414' : '#7f6b49', width: width * 1.55, alpha: .86 });
     line(start, end, { color: active ? '#ffd36e' : '#f0e4c9', width });
     if (['forearm-left', 'forearm-right', 'tibia-left', 'tibia-right'].includes(node.id)) {
@@ -366,91 +387,75 @@ function drawSkeleton(matrices, displayRig, activeJoints) {
       }
       context.restore();
     }
-    point(end, (active ? 9 : 6.5) * ratio * Math.max(.72, projectionFrame.scale), active ? '#ffd36e' : '#fff4d8');
+    point(end, (active ? 9 : 6.5) * projectionFrame.scale, active ? '#ffd36e' : '#fff4d8');
   }
 }
 
-function muscleBelly(a, b, options = {}) {
-  const tendonStart = project(a);
-  const tendonEnd = project(b);
-  const fullDx = tendonEnd[0] - tendonStart[0];
-  const fullDy = tendonEnd[1] - tendonStart[1];
-  const startInset = options.startInset ?? .12;
-  const endInset = options.endInset ?? .14;
-  const start = [tendonStart[0] + fullDx * startInset, tendonStart[1] + fullDy * startInset];
-  const end = [tendonEnd[0] - fullDx * endInset, tendonEnd[1] - fullDy * endInset];
-  const dx = end[0] - start[0];
-  const dy = end[1] - start[1];
-  const length = Math.max(1, Math.hypot(dx, dy));
-  const nx = -dy / length;
-  const ny = dx / length;
-  const width = options.width || 12;
-  const lateral = options.lateral || 0;
-  start[0] += nx * lateral;
-  start[1] += ny * lateral;
-  end[0] += nx * lateral;
-  end[1] += ny * lateral;
-  context.save();
-  context.globalAlpha = options.alpha ?? 1;
-  context.strokeStyle = options.tendon || '#e6b6a1';
-  context.lineWidth = Math.max(1.5, width * .13);
-  context.lineCap = 'round';
+function traceProjected(points, closed = false) {
   context.beginPath();
-  context.moveTo(tendonStart[0], tendonStart[1]);
-  context.lineTo(start[0], start[1]);
-  context.moveTo(end[0], end[1]);
-  context.lineTo(tendonEnd[0], tendonEnd[1]);
-  context.stroke();
-  context.fillStyle = options.color;
-  context.strokeStyle = options.edge || '#571d22';
-  context.lineWidth = Math.max(1.2, width * .12);
-  context.beginPath();
-  context.moveTo(start[0], start[1]);
-  context.bezierCurveTo(start[0] + dx * .28 + nx * width, start[1] + dy * .28 + ny * width, start[0] + dx * .72 + nx * width, start[1] + dy * .72 + ny * width, end[0], end[1]);
-  context.bezierCurveTo(start[0] + dx * .72 - nx * width, start[1] + dy * .72 - ny * width, start[0] + dx * .28 - nx * width, start[1] + dy * .28 - ny * width, start[0], start[1]);
-  context.closePath();
-  context.fill();
-  context.stroke();
-  context.restore();
+  context.moveTo(points[0][0], points[0][1]);
+  for (const p of points.slice(1)) context.lineTo(p[0], p[1]);
+  if (closed) context.closePath();
 }
 
-function drawMuscles(frame, kinds, displayRig, displayMuscles, activeMuscles) {
-  if (!muscles) return;
-  const fullRig = { ...displayRig, layers: { ...displayRig.layers, muscles: displayMuscles.layers.muscles }, attachments: displayMuscles.attachments };
-  const paths = muscleWorldPaths(fullRig, frame);
-  const entries = displayMuscles.layers.muscles.filter((entry) => kinds.includes(entry.depth));
-  for (const entry of entries) {
-    const facing = Math.cos(state.camera.yaw);
-    if (facing > .35 && ['back', 'upper-back'].includes(entry.region)) continue;
-    if (facing < -.35 && ['abdomen', 'chest'].includes(entry.region)) continue;
-    const id = entry.id;
-    const path = paths.get(id);
-    if (!path || path.length < 2) continue;
-    const attachmentNodes = displayMuscles.attachments.filter((entry) => entry.muscle_id === id).map((entry) => entry.bone_id);
-    if (!attachmentNodes.some(visibleAround)) continue;
-    const ratio = Math.min(devicePixelRatio || 1, 2);
-    const active = activeMuscles.has(id);
-    const regionWidth = {
-      abdomen: 31,
-      back: 28,
-      chest: 40,
-      hip: 39,
-      'lower-leg': 34,
-      shoulder: 38,
-      thigh: 45,
-      'upper-arm': 27,
-      'upper-back': 35
-    }[entry.region] || 28;
-    const centeredRegion = ['abdomen', 'back'].includes(entry.region);
-    const lateral = centeredRegion ? (entry.side === 'left' ? -1 : 1) * regionWidth * ratio * Math.max(.68, projectionFrame.scale) * .62 : 0;
-    muscleBelly(path[0].point, path.at(-1).point, {
-      color: active ? '#ffbf4a' : entry.depth === 'deep' ? '#8b4a8d' : '#c84d4f',
-      edge: active ? '#6f4711' : entry.depth === 'deep' ? '#412044' : '#642126',
-      tendon: active ? '#ffe29b' : '#e6b6a1',
-      width: regionWidth * ratio * Math.max(.68, projectionFrame.scale) * (active ? 1.08 : 1),
-      lateral,
-      alpha: active ? .98 : .86
-    });
+let muscleGeometryCache;
+let muscleGeometryKey = '';
+function drawMuscles(frame, kinds, displayRig, displayMuscles, activeMuscles, matrices) {
+  if (!muscles || !kinds.length) return;
+  const key = `${clip.id}:${state.time}:${visualProfile.statureCm}`;
+  if (key !== muscleGeometryKey) {
+    muscleGeometryCache = createMuscleGeometry(displayRig, matrices);
+    muscleGeometryKey = key;
+  }
+  const facing = Math.cos(state.camera.yaw);
+  const availableClaims = new Set(displayMuscles.layers.muscles.map((entry) => entry.id));
+  const patches = muscleGeometryCache.filter((patch) => kinds.includes(patch.depth)
+    && (patch.claimId === null || availableClaims.has(patch.claimId))
+    && visibleAround(patch.node)
+    && !(facing > .16 && patch.facing === 'back')
+    && !(facing < -.16 && patch.facing === 'front'))
+    .sort((a, b) => project(a.center)[2] - project(b.center)[2]);
+  const ratio = Math.min(devicePixelRatio || 1, 2);
+  for (const patch of patches) {
+    const active = activeMuscles.has(patch.claimId);
+    const points = patch.contour.map(project);
+    context.save();
+    context.globalAlpha = .98;
+    traceProjected(points, true);
+    context.fillStyle = '#823e32';
+    context.fill();
+    context.strokeStyle = '#46271f';
+    context.lineWidth = 1.4 * ratio;
+    context.lineJoin = 'round';
+    context.stroke();
+    for (const strip of patch.strips) {
+      const light = strip.shade;
+      context.fillStyle = `rgb(${Math.round(120 + light * 79)},${Math.round(36 + light * 56)},${Math.round(32 + light * 43)})`;
+      traceProjected(strip.points.map(project), true);
+      context.fill();
+    }
+    for (let i = 0; i < patch.fibers.length; i += 1) {
+      context.strokeStyle = i % 3 === 0 ? 'rgba(251,205,173,.43)' : 'rgba(86,29,26,.36)';
+      context.lineWidth = (i % 3 === 0 ? .6 : .5) * ratio;
+      traceProjected(patch.fibers[i].map(project));
+      context.stroke();
+    }
+    for (const tendon of patch.tendons) {
+      const p = tendon.map(project);
+      traceProjected(p, true);
+      const gradient = context.createLinearGradient(p[0][0], p[0][1], p.at(-1)[0], p.at(-1)[1]);
+      gradient.addColorStop(0, 'rgba(250,234,204,.9)');
+      gradient.addColorStop(1, 'rgba(243,214,181,.28)');
+      context.fillStyle = gradient;
+      context.fill();
+    }
+    if (active) {
+      traceProjected(points, true);
+      context.strokeStyle = '#f7ce82';
+      context.lineWidth = 1.5 * ratio;
+      context.stroke();
+    }
+    context.restore();
   }
 }
 
@@ -472,7 +477,7 @@ function render() {
   const muscleKinds = [];
   if (shown.superficial) muscleKinds.push('superficial');
   if (shown.deep) muscleKinds.push('deep');
-  drawMuscles(frame, muscleKinds, displayRig, displayMuscles, activeMuscles);
+  drawMuscles(frame, muscleKinds, displayRig, displayMuscles, activeMuscles, matrices);
 }
 
 function activePhase() {
@@ -486,7 +491,7 @@ function updateReadout() {
   $('#timeline').value = Math.round(state.time * 1000);
   $('#phase-name').textContent = phase.id;
   $('#phase-cue').textContent = anatomySummary(movement, phase.id);
-  $('#anatomy-status').textContent = `${phase.joint_actions.length} joint claim${phase.joint_actions.length === 1 ? '' : 's'} · ${phase.muscles.length} highlighted muscle path${phase.muscles.length === 1 ? '' : 's'}`;
+  $('#anatomy-status').textContent = `${phase.joint_actions.length} joint claim${phase.joint_actions.length === 1 ? '' : 's'} · ${phase.muscles.length} highlighted muscle group${phase.muscles.length === 1 ? '' : 's'}`;
   $('#layer-output').value = LAYER_STATES[state.layer];
   $('#reference-label').hidden = !anatomyIsVisible(state);
   $('#play').textContent = state.playing ? 'Pause' : 'Play';

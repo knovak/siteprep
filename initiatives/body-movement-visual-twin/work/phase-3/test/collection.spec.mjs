@@ -132,6 +132,33 @@ test('yoga playback uses one fixed projection scale for the full clip', async ({
   }
 });
 
+test('detailed anatomy changes with pose and isolation while layers preserve time, camera, and framing', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto(pagePath);
+  await expect(page.locator('#stage')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#movement-select').selectOption('standing-forward-fold-study');
+  await page.locator('#layer').selectOption('5');
+  const start = await page.locator('#model-canvas').screenshot();
+  await page.locator('#timeline').fill('550');
+  const bent = await page.locator('#model-canvas').screenshot();
+  expect(start.equals(bent)).toBe(false);
+  const scale = await page.locator('#stage').getAttribute('data-projection-scale');
+  const camera = await page.locator('#stage').getAttribute('data-camera');
+  await page.locator('#isolate-joint').selectOption('lumbar-spine');
+  const isolated = await page.locator('#model-canvas').screenshot();
+  expect(isolated.equals(bent)).toBe(false);
+  await page.locator('#isolate-joint').selectOption('none');
+  for (const layer of ['2', '3', '4', '5']) {
+    await page.locator('#layer').selectOption(layer);
+    await expect(page.locator('#stage')).toHaveAttribute('data-time', '0.5500');
+    await expect(page.locator('#stage')).toHaveAttribute('data-camera', camera);
+    await expect(page.locator('#stage')).toHaveAttribute('data-projection-scale', scale);
+  }
+  await expect(page.locator('#review-pill')).toHaveText('unreviewed');
+  expect(errors).toEqual([]);
+});
+
 test('claim reports download and copy exact paths without editing or retaining the record', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto(pagePath);

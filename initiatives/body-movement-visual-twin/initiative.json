@@ -24,7 +24,7 @@
       "value": "high",
       "effort": "medium",
       "advances_stage": false,
-      "blocked_by": "data:reviewer identities, invitation addresses, and a report destination for one anatomy reviewer and one practitioner from each tradition"
+      "blocked_by": "data:remaining anatomy and tradition-practitioner findings, reviewer roles and invitation addresses, and a report destination; KRN display feedback is recorded but does not establish anatomy or tradition sign-off"
     }
   ]
 }

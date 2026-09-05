@@ -55,3 +55,7 @@ Replaced the shoulder-and-spine debug figure with a 27-node full-body fitted ref
 ## 2026-08-22 — Tighten playback, camera, and viewport behavior
 
 Moved the playback acknowledgement into the Educational visualization block above the animation and made one acknowledgement apply across movement changes for the page session. Renamed the timeline to Movement, constrained the animation to one browser-viewport height, repaired the camera presets so their buttons are not intercepted by orbit dragging, added distinct side and back rendering cues, and fixed each clip to one projection frame so yoga playback no longer pulses in and out.
+
+## 2026-09-05 — Revise vertebrae, ribs, and muscle illustration detail from KRN feedback
+
+Recorded KRN feedback relayed by the user, replaced the schematic spine and rib outlines with a complete authored axial display, and added shaped muscle surfaces, directional fibres, and tendon shading. Broader anatomy and tradition-practitioner validation remains open.
