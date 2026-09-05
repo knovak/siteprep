@@ -83,10 +83,18 @@ Rules carried from the decision, all binding on §6:
 
 **Input:** a browser bookmark export (Netscape bookmark HTML, which Chrome,
 Safari, Firefox and Edge all produce) and a previously exported JSON file (§9).
-Both land in the *current* collection. The visible Import panel accepts either
-through the file chooser or a drag-and-drop target beside it; dropping chooses
-the file and the explicit Import action submits it. The source name applies to
-HTML imports only.
+The visible Import panel accepts one or more files through the file chooser or
+the neighboring drag-and-drop target, including mixed HTML/JSON batches.
+Dropping selects files; **Import files** submits one request per file in the
+selected order. The collection id and HTML source tag are captured when the
+batch starts, so changing the open collection cannot redirect later files.
+Each file keeps the existing 20 MB upload limit and URL merge semantics.
+Progress and individual results remain visible, with aggregate new/merged
+counts and a failure count. A rejected file does not stop later files or roll
+back successful ones. The queue runs in the open page and does not survive a
+reload. File selection and repeat submission are disabled until it finishes;
+collection and selection summaries refresh once after the batch. A failed
+refresh is reported separately from the completed import results.
 
 Parsing an export yields, per item: title, URL, `add_date` where the file
 carries it, the enclosing folder path, and the `<DD>` description where one is

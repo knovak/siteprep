@@ -275,11 +275,14 @@ the user-facing controls that now sit on top of it:
 | Test | Pass condition | Protects |
 |---|---|---|
 | Import/Select/Export accordion | The three collapsed panels have equal width; none or exactly one opens; the open panel receives most of the row | Current control-center layout |
-| File chooser and drop target | A chooser-selected or dropped HTML/JSON file enters the same form; a drop displays the file name but does not import until Import file is chosen | Explicit import intent |
+| File chooser and drop target | Chooser-selected or dropped HTML/JSON files enter the same form in order; a drop shows the selected count but does not import until Import files is chosen | Explicit import intent |
 | Selection chooser readiness | Open proposal, Open saved, and Open previous are black on white with their placeholder selected and white on blue after a real value is chosen | Visible target state |
 | Tag action readiness and parsing | Tag/Untag is black on white with an empty tag field and white on blue when text is present; either action returns to the empty state after it completes; `test-tag` remains one tag rather than splitting at `s` or the hyphen | Visible action state and literal tag names |
 | Error proposals | `err:` tags appear only in an Errors group immediately after Verdict; the group includes every specific error plus **any error** for `err:*` | Clear capture-failure selection |
 | Selection history | Successfully opened expressions persist per user, newest first and without duplicates; selecting a previous expression opens it through the ordinary evaluator | Recent-selection workflow |
+| Multiple-file import | Mixed HTML/JSON files produce one sequential request each, retaining the starting collection and source tag; per-file results and aggregate new/merged totals agree | Batch import |
+| Partial batch failure | A rejected middle file is reported while later files continue; a refresh failure preserves successful results; controls re-enable and results remain visible | Import recovery |
+| Import during collection change | Switching collections while a file is pending cannot redirect later files or restore an outdated collection after refresh; repeat submits do not start a second batch | Collection boundary |
 | Export scopes | Current collection and Current selection produce importable `bookmark-sorter/v1` downloads named from the collection | O7 user workflow |
 | Confirmed erasure | Erase current collection writes only after confirmation, leaves the collection present, and reports the erased count | Destructive-action boundary |
 | Admin authorization | The menu is absent for a non-admin; its APIs also reject the request server-side; an administrator can manage the user list, sittings, captures, and templates | Authority is not CSS |

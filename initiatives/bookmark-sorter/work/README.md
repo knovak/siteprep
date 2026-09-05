@@ -150,8 +150,16 @@ selection, and export operations.
   gives it the available width and closes the other two. Import contains both
   file loading and demo-template copying, with a keyboard-operable drop target
   beside the ordinary file input and an inline success or parser-error result
-  after each attempt. A drop selects one file but leaves the explicit form
-  submission in place. Select contains expression, proposal, saved-selection,
+  after each attempt. The input and drop target accept multiple files; explicit
+  submission snapshots the FileList, source tag, and destination collection id.
+  The browser awaits each existing `/api/import` request before sending the next,
+  placing exactly one file in each FormData body. It retains per-file results,
+  continues after errors, aggregates added/merged counts, and refreshes collection
+  and selection data once after the batch. Repeat submits and replacement drops
+  are ignored while running. A collection switch cannot redirect the captured
+  destination or be overwritten by a stale collection-list refresh. The import
+  panel stays open during the batch refresh, and refresh errors preserve the
+  completed results. The queue is held only in the current browser page. Select contains expression, proposal, saved-selection,
   tagging, and per-user recent-query controls. The Open action beside proposal,
   saved, and recent choosers uses a neutral background at the placeholder and a
   mint/teal wash after a real value is selected.
