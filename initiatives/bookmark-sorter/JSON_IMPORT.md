@@ -4,9 +4,13 @@ Bookmark Sorter accepts a portable JSON format named `bookmark-sorter/v1`.
 Use it to restore an export, copy bookmarks between collections, add tags to
 bookmarks already in a collection, or add bookmarks that are not there yet.
 
-Import always targets the collection currently open in Bookmark Sorter. The
-`collection` value inside the file is descriptive only; it cannot redirect an
-import to another collection.
+Import targets the collection open when **Import files** is chosen. You can
+select or drop multiple JSON files, or a mixture of JSON and bookmark HTML.
+They are imported one at a time in the selected order, all into that starting
+collection. Each file has its own result; a failed file does not stop the rest
+or undo successful imports. The 20 MB limit applies separately to each file.
+The `collection` value inside a file is descriptive only; it cannot redirect
+an import to another collection.
 
 ## Quick recipe: add tags to existing bookmarks
 
@@ -29,7 +33,7 @@ For each bookmark, provide its URL and the tags to add:
 ```
 
 Save the document with a `.json` extension, open the destination collection,
-choose **Import bookmarks**, and import the file.
+open **Import**, select the file, and choose **Import files**.
 
 If a URL matches an existing bookmark, its tags are added to the bookmark's
 existing tags. Existing tags and other user data are not removed. If a URL is

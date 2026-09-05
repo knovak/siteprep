@@ -25,6 +25,9 @@ async function installPile(page) {
     actions: [],
     requests: [],
     proposalRevision: 0,
+    importRequests: [],
+    importOutcomes: [],
+    importBarrier: null,
     selectionDelays: new Map(),
     history: [],
     savedSelections: [{id: 'saved-reading', name: 'Reading queue', expression: 'folder:Reading/*', count: 834}],
@@ -103,8 +106,15 @@ async function installPile(page) {
       }});
     }
     if (request.method() === 'POST' && url.pathname === '/api/import') {
+      const form = await new Response(request.postDataBuffer(), {headers: {'content-type': request.headers()['content-type']}}).formData();
+      backend.importRequests.push({
+        files: await Promise.all(form.getAll('file').map(async file => ({name: file.name, text: await file.text()}))),
+        source: form.get('source'), collectionId: requestCollectionId,
+      });
+      const outcome = backend.importOutcomes.shift();
+      if (backend.importBarrier) await backend.importBarrier();
       backend.proposalRevision += 1;
-      return route.fulfill({status: 201, json: {parsed: 1, added: 1, merged: 0, total: 1}});
+      return route.fulfill(outcome || {status: 201, json: {parsed: 1, added: 1, merged: 0, total: 1}});
     }
     const body = request.postDataJSON();
     if (request.method() === 'POST' && url.pathname === '/api/collections' && body.action === 'rename') {
@@ -349,7 +359,7 @@ test('Import accepts a file dropped beside the file chooser', async ({page}) => 
   await page.locator('#importer > summary').click();
 
   const dropZone = page.locator('#import-drop-zone');
-  await expect(dropZone).toContainText('Drop a file here');
+  await expect(dropZone).toContainText('Drop files here');
   const positions = await page.locator('.import-file-picker').evaluate(picker => {
     const input = picker.querySelector('#bookmark-file').getBoundingClientRect();
     const drop = picker.querySelector('#import-drop-zone').getBoundingClientRect();
@@ -378,6 +388,93 @@ test('Import accepts a file dropped beside the file chooser', async ({page}) => 
 
   await page.getByRole('button', {name: 'Import file'}).click();
   await expect(page.locator('#import-status')).toHaveText('Imported 1 new; merged 0.');
+});
+
+test('file chooser imports a mixed batch sequentially into its starting collection', async ({page}) => {
+  const backend = await installPile(page);
+  backend.collections.push({id: 'other', name: 'Other collection', kind: 'private'});
+  backend.importOutcomes.push(
+    {status: 201, json: {added: 2, merged: 1}},
+    {status: 201, json: {added: 1, merged: 3}},
+  );
+  let releaseFirst;
+  const firstFinished = new Promise(resolve => { releaseFirst = resolve; });
+  backend.importBarrier = () => backend.importRequests.length === 1 ? firstFinished : Promise.resolve();
+  await page.goto('https://pile.test/');
+  await page.locator('#importer > summary').click();
+  const files = [
+    {name: 'first.html', mimeType: 'text/html', buffer: Buffer.from('<DL><DT><A HREF="https://example.com">First</A></DL>')},
+    {name: 'second.json', mimeType: 'application/json', buffer: Buffer.from('{"format":"bookmark-sorter/v1","items":[]}')},
+  ];
+  await page.locator('#bookmark-file').setInputFiles(files);
+  await page.locator('#source').fill('batch-source');
+  await expect(page.locator('#import-drop-copy')).toHaveText('2 files ready to import');
+  expect(backend.importRequests).toHaveLength(0);
+  await page.getByRole('button', {name: 'Import files', exact: true}).click();
+  await expect(page.locator('#import-status')).toContainText('Importing 1 of 2: first.html');
+  await expect(page.locator('#bookmark-file')).toBeDisabled();
+  await expect(page.locator('#source')).toBeDisabled();
+  await expect(page.getByRole('button', {name: 'Import files', exact: true})).toBeDisabled();
+  await page.locator('#import-form').dispatchEvent('submit');
+  await page.locator('#collection-select').selectOption('other');
+  await expect(page.locator('#collection-select')).toHaveValue('other');
+  expect(backend.importRequests).toHaveLength(1);
+  releaseFirst();
+  await expect(page.locator('#import-status')).toHaveText('Imported 3 new; merged 4. 2 of 2 files imported into “My bookmarks”.');
+  await expect(page.locator('#import-results li')).toHaveText([
+    'first.html — Imported 2 new; merged 1.',
+    'second.json — Imported 1 new; merged 3.',
+  ]);
+  expect(backend.importRequests).toEqual(files.map(file => ({
+    files: [{name: file.name, text: file.buffer.toString()}], source: 'batch-source', collectionId: 'pile',
+  })));
+  await expect(page.locator('#collection-select')).toHaveValue('other');
+  await expect(page.locator('#bookmark-file')).toBeEnabled();
+  await expect(page.locator('#source')).toBeEnabled();
+});
+
+test('dropping multiple files keeps their order and continues after a rejected file', async ({page}) => {
+  const backend = await installPile(page);
+  backend.importOutcomes.push(
+    {status: 201, json: {added: 2, merged: 0}},
+    {status: 400, json: {error: 'Invalid JSON'}},
+    {status: 201, json: {added: 0, merged: 2}},
+  );
+  await page.goto('https://pile.test/');
+  await page.locator('#importer > summary').click();
+  const dataTransfer = await page.evaluateHandle(() => {
+    const transfer = new DataTransfer();
+    for (const [name, content] of [['first.html', '<DL></DL>'], ['broken.json', '{'], ['last.json', '{}']]) {
+      transfer.items.add(new File([content], name));
+    }
+    return transfer;
+  });
+  await page.locator('#import-drop-zone').dispatchEvent('drop', {dataTransfer});
+  await expect(page.locator('#import-drop-copy')).toHaveText('3 files ready to import');
+  expect(backend.importRequests).toHaveLength(0);
+  await page.getByRole('button', {name: 'Import files', exact: true}).click();
+  await expect(page.locator('#import-status')).toHaveText('Imported 2 new; merged 2. 2 of 3 files imported into “My bookmarks”. 1 file failed; see results below.');
+  await expect(page.locator('#import-results li')).toHaveText([
+    'first.html — Imported 2 new; merged 0.',
+    'broken.json — Import failed: Invalid JSON',
+    'last.json — Imported 0 new; merged 2.',
+  ]);
+  await expect(page.locator('#import-results .error')).toHaveCount(1);
+  await expect(page.locator('#importer')).toHaveAttribute('open', '');
+  expect(backend.importRequests.map(request => request.files.map(file => file.name))).toEqual([['first.html'], ['broken.json'], ['last.json']]);
+  await expect(page.getByRole('button', {name: 'Import files', exact: true})).toBeEnabled();
+});
+
+test('a refresh failure preserves successful import results and allows another batch', async ({page}) => {
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  await page.locator('#importer > summary').click();
+  await page.route('https://pile.test/api/collections', route => route.fulfill({status: 503, json: {error: 'Temporarily unavailable'}}));
+  await page.locator('#bookmark-file').setInputFiles({name: 'one.json', mimeType: 'application/json', buffer: Buffer.from('{}')});
+  await page.getByRole('button', {name: 'Import files', exact: true}).click();
+  await expect(page.locator('#import-status')).toHaveText('Imported 1 new; merged 0. Could not refresh the collection: Temporarily unavailable');
+  await expect(page.locator('#import-results li')).toHaveText('one.json — Imported 1 new; merged 0.');
+  await expect(page.getByRole('button', {name: 'Import files', exact: true})).toBeEnabled();
 });
 
 test('page layout dropdown redraws the wide grid immediately', async ({page}) => {

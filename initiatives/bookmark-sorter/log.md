@@ -596,3 +596,21 @@ produced version 3 (62 packaged files, 1,392,640 bytes), deployed successfully a
 Anonymous entry still offers sign-in; authorized Chrome showed the same 5,562
 bookmarks and 5,530 untriaged items before and after release, plus the Day/Night
 control and visible Night marked-card outline. Test remains at version 35.
+
+## 2026-09-05 — Multiple-file import test deployment
+
+At the user's request, replaced the existing public test Site with version
+**36**, deployed successfully at **2026-09-05 23:08:16 UTC**. The file chooser
+and drop target accept multiple HTML/JSON files; Import files processes them
+sequentially into the starting collection, keeps per-file results, and
+continues after a file fails. Help and the import documentation were updated.
+
+The 66 tracked application files at Siteprep source
+`ff645376dcdc32fe4e85cb5a5a174db55916797d` were byte-verified against Sites source
+`aeff3917adf29f36db820bcd5dac03fe342648d1`. The archive contains 62 deployment
+files (1,402,880 bytes). Validation passed: 64 application tests, 30 browser
+tests, both application and repository builds, and a local real-import check
+of HTML, invalid JSON, and overlapping JSON (3 new, 1 merged, 1 failed file;
+merged tags verified through export). Anonymous live entry returns HTTP 200
+with Sign in with ChatGPT. Existing public access and D1/R2 bindings were
+preserved; production was not deployed. PR #434 remains ready for review.

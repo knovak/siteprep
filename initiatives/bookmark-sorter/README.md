@@ -116,10 +116,10 @@ open panel most of the available width.
    not yet authorized, ask an administrator to add the email shown on the page,
    then choose **Check again**.
 3. Open **Import**.
-4. Choose the HTML file with **Choose File**, or drag it onto **Drop a file
-   here** beside the file chooser.
+4. Choose one or more HTML or Sorter JSON files with **Choose Files**, or drag
+   them onto **Drop files here** beside the file chooser.
 5. Give the HTML import a short source tag such as `safari-export` or
-   `chrome-export`, then choose **Import file**.
+   `chrome-export`, then choose **Import files**.
 6. Check that the total collection count looks plausible. Re-importing the same
    file should merge the matches and leave the total unchanged.
 7. Open several bookmark titles and check that the cards correspond to the
@@ -129,9 +129,19 @@ open panel most of the available width.
 10. If you are an administrator, open **Admin** and end the sitting when you
     want its elapsed time and judged-item count saved.
 
-Import accepts one file at a time, up to 20 MB. The source tag is applied to an
-HTML import only. Dropping a file selects it for import; the import begins only
-after **Import file** is chosen.
+Import accepts multiple files, up to 20 MB each, including a mixture of HTML
+and Sorter JSON. Dropping files selects them; **Import files** starts the batch.
+Files are processed in the selected order, one at a time, into the collection
+that was open when the batch started, even if you switch collections while it
+runs. The source tag applies to every HTML file in the batch; JSON retains its
+own tags. Use separate batches when HTML files need different source tags.
+
+Progress names the current file and destination. The results list shows each
+file's new and merged counts or its error, followed by totals for the batch.
+A failed file does not stop the remaining files or undo successful imports.
+Correct and select failed files again to retry. Overlapping files use the same
+URL-based merge rules as individual imports. Keep the page open until the
+batch finishes; the queue does not resume after a reload.
 
 ## Everyday triage
 
@@ -388,7 +398,7 @@ the backup.
 ## Troubleshooting
 
 - **Import does nothing:** confirm a file name appears either in the file input
-  or in the drop area, then choose **Import file**. Dropping selects the file;
+  or in the drop area, then choose **Import files**. Dropping selects the file;
   it does not submit automatically.
 - **An import fails:** read the inline error. For JSON, validate the format and
   each URL against `JSON_IMPORT.md`; imported URLs must be usable HTTP or HTTPS

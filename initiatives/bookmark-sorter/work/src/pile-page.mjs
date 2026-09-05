@@ -113,6 +113,8 @@ export function renderPilePage({isAdmin = false} = {}) {
     #import-form { grid-template-columns: minmax(360px, 1.4fr) minmax(160px, .35fr) auto; }
     .import-file-picker { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(150px, .65fr); gap: 8px; align-items: end; }
     .drop-zone { min-height: 40px; display: grid; place-content: center; border: 2px dashed var(--control-line); border-radius: 9px; padding: 5px 10px; color: var(--ink); background-color: var(--subtle); cursor: pointer; text-align: center; }
+    .import-results { max-height: 10rem; overflow-y: auto; overflow-wrap: anywhere; padding-left: 1.4rem; font-size: .875rem; }
+    .import-results .error { color: var(--red); }
     .drop-zone strong { font-size: .78rem; }
     .drop-zone span { color: var(--muted); font-size: .68rem; }
     .drop-zone[data-drag-active="true"] { border-color: var(--focus); color: var(--link); background-color: var(--selected-bg); box-shadow: inset 0 0 0 1px var(--focus); }
@@ -284,7 +286,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><strong>Day / Night</strong> changes the colors without changing your layout or bookmarks. Day uses Cream and teal; Night uses Dark slate. This browser remembers your choice. Buttons use compact, rounded pastel washes with regular-weight labels. Marked cards have an outline (light grey at night); teal shows the focused card.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag items</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked. Use its arrow to choose <strong>Untag items</strong> and remove the entered tags from the same set.</li>
-        <li><strong>Import</strong> accepts bookmark HTML or Sorter JSON through Choose File or the neighboring drop target. Dropping selects the file; Import file starts the write.</li>
+        <li><strong>Import</strong> accepts one or more bookmark HTML or Sorter JSON files through Choose Files or the neighboring drop target. Dropping selects the files; Import files processes them in order into the collection selected when you start. Each file has its own result; a failed file does not stop the remaining files. The source tag applies to every HTML file in the batch.</li>
         <li><strong>Open proposal / saved / previous</strong> uses a neutral background until its chooser has a target, then a soft mint wash in Day or a muted teal wash in Night.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, demo-template creation, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
@@ -356,16 +358,17 @@ export function renderPilePage({isAdmin = false} = {}) {
         <summary>Import</summary>
         <form id="import-form">
           <div class="import-file-picker">
-            <label>Bookmark HTML or Sorter JSON<input id="bookmark-file" name="file" type="file" accept=".html,.json,text/html,application/json" required></label>
+            <label>Bookmark HTML or Sorter JSON<input id="bookmark-file" name="file" type="file" accept=".html,.json,text/html,application/json" multiple required></label>
             <div id="import-drop-zone" class="drop-zone" role="button" tabindex="0" aria-controls="bookmark-file">
-              <strong>Drop a file here</strong>
+              <strong>Drop files here</strong>
               <span id="import-drop-copy" aria-live="polite">HTML or Sorter JSON</span>
             </div>
           </div>
           <label>Source tag (HTML only)<input id="source" name="source" value="browser-export" pattern="[a-z0-9][a-z0-9-]*" required></label>
-          <button type="submit">Import file</button>
+          <button type="submit">Import files</button>
         </form>
         <p id="import-status" class="tool-status" role="status" aria-live="polite"></p>
+        <ol id="import-results" class="import-results" aria-label="Import results" hidden></ol>
         <div class="template-tools">
           <label>Demo templates<select id="template-select" aria-label="Demo templates"><option value="">Demo templates</option></select></label>
           <button id="copy-template" type="button">Load a copy</button>
@@ -466,18 +469,18 @@ export function renderPilePage({isAdmin = false} = {}) {
       themeMode: document.querySelector('#theme-mode'),
       pageLayout: document.querySelector('#page-layout'),
       previousPage: document.querySelector('#previous-page'), nextPage: document.querySelector('#next-page'),
-      importStatus: document.querySelector('#import-status'), bookmarkFile: document.querySelector('#bookmark-file'), importDropZone: document.querySelector('#import-drop-zone'), importDropCopy: document.querySelector('#import-drop-copy'),
+      importStatus: document.querySelector('#import-status'), importResults: document.querySelector('#import-results'), bookmarkFile: document.querySelector('#bookmark-file'), importDropZone: document.querySelector('#import-drop-zone'), importDropCopy: document.querySelector('#import-drop-copy'),
     };
     elements.themeMode.value = document.documentElement.dataset.theme;
     elements.themeMode.addEventListener('change', () => {
       document.documentElement.dataset.theme = elements.themeMode.value;
       try { localStorage.setItem('bookmark-sorter-theme', elements.themeMode.value); } catch { /* The mode still works for this page. */ }
     });
-    const state = {collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
-    async function api(path, options = {}) {
+    async function api(path, options = {}, collectionId = state.collectionId) {
       const headers = new Headers(options.headers || {});
-      if (state.collectionId) headers.set('x-bookmark-collection-id', state.collectionId);
+      if (collectionId) headers.set('x-bookmark-collection-id', collectionId);
       const response = await fetch(path, {...options, headers});
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Request failed');
@@ -677,7 +680,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         if (requestId !== state.windowRequest || collectionId !== state.collectionId) return;
         state.collectionTotal = data.collection_total; state.total = data.total; state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog; state.captures = data.captures; state.offset = Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
         state.items = data.items; state.focused = 0; renderGrid();
-        if (state.collectionTotal) { elements.importer.open = false; await startSession(); elements.grid.focus({preventScroll: true}); }
+        if (state.collectionTotal) { if (!state.importInProgress) elements.importer.open = false; await startSession(); elements.grid.focus({preventScroll: true}); }
       } finally {
         if (requestId === state.windowRequest) { state.loading = false; updateProgress(); }
       }
@@ -744,13 +747,15 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
 
     function updateImportFileLabel() {
-      const file = elements.bookmarkFile.files?.[0];
-      elements.importDropCopy.textContent = file ? file.name + ' ready to import' : 'HTML or Sorter JSON';
+      const files = Array.from(elements.bookmarkFile.files || []);
+      elements.importDropCopy.textContent = files.length > 1 ? files.length + ' files ready to import' : files.length ? files[0].name + ' ready to import' : 'HTML or Sorter JSON';
+      elements.importDropCopy.title = files.map(file => file.name).join('\\n');
     }
 
-    function useDroppedImportFile(file) {
+    function useDroppedImportFiles(files) {
+      if (state.importInProgress || !files?.length) return;
       const transfer = new DataTransfer();
-      transfer.items.add(file);
+      for (const file of files) transfer.items.add(file);
       elements.bookmarkFile.files = transfer.files;
       updateImportFileLabel();
     }
@@ -797,7 +802,9 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
 
     async function loadCollections(preferredId = state.collectionId) {
+      const previousId = state.collectionId;
       const data = await api('/api/collections');
+      if (state.collectionId !== previousId) preferredId = state.collectionId;
       state.collections = data.collections;
       state.templates = data.templates;
       state.canEditTemplates = data.can_edit_templates;
@@ -1127,14 +1134,62 @@ export function renderPilePage({isAdmin = false} = {}) {
       return 'bookmark-sorter-' + part + '.json';
     }
     elements.form.addEventListener('submit', async event => {
-      event.preventDefault(); const button = elements.form.querySelector('button'); button.disabled = true; elements.status.textContent = 'Importing…'; elements.importStatus.classList.remove('error'); elements.importStatus.textContent = 'Importing…';
+      event.preventDefault();
+      if (state.importInProgress || !state.collectionId) return;
+      const files = Array.from(elements.bookmarkFile.files || []);
+      if (!files.length) return;
+      const collectionId = state.collectionId;
+      const collectionName = currentCollection()?.name || 'collection';
+      const source = elements.form.elements.source.value;
+      const controls = Array.from(elements.form.querySelectorAll('input, button'));
+      const disabledBefore = controls.map(control => control.disabled);
+      state.importInProgress = true;
+      for (const control of controls) control.disabled = true;
+      elements.importDropZone.setAttribute('aria-disabled', 'true');
+      elements.importStatus.classList.remove('error');
+      elements.importResults.replaceChildren();
+      elements.importResults.hidden = false;
+      const results = files.map(file => addText(elements.importResults, 'li', '', file.name + ' — Waiting'));
+      let added = 0, merged = 0, failed = 0;
       try {
-        const data = await api('/api/import', {method: 'POST', body: new FormData(elements.form)});
-        elements.status.textContent = 'Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.';
-        elements.importStatus.textContent = elements.status.textContent;
-        await loadCollections(state.collectionId);
-        await Promise.all([loadWindow(0), loadSelectionTools()]);
-      } catch (error) { elements.status.textContent = error.message; elements.importStatus.classList.add('error'); elements.importStatus.textContent = 'Import failed: ' + error.message; } finally { button.disabled = false; }
+        for (const [index, file] of files.entries()) {
+          const progress = 'Importing ' + (index + 1) + ' of ' + files.length + ': ' + file.name + ' into “' + collectionName + '”…';
+          elements.status.textContent = progress;
+          elements.importStatus.textContent = progress;
+          results[index].textContent = file.name + ' — Importing…';
+          try {
+            const body = new FormData();
+            body.append('file', file);
+            body.append('source', source);
+            const data = await api('/api/import', {method: 'POST', body}, collectionId);
+            added += data.added;
+            merged += data.merged;
+            results[index].textContent = file.name + ' — Imported ' + data.added.toLocaleString() + ' new; merged ' + data.merged.toLocaleString() + '.';
+          } catch (error) {
+            failed += 1;
+            results[index].classList.add('error');
+            results[index].textContent = file.name + ' — Import failed: ' + error.message;
+          }
+        }
+        const summary = 'Imported ' + added.toLocaleString() + ' new; merged ' + merged.toLocaleString() + '.'
+          + (files.length > 1 ? ' ' + (files.length - failed) + ' of ' + files.length + ' files imported into “' + collectionName + '”.' : '')
+          + (failed ? ' ' + failed + ' file' + (failed === 1 ? '' : 's') + ' failed; see results below.' : '');
+        elements.status.textContent = summary;
+        elements.importStatus.textContent = summary;
+        elements.importStatus.classList.toggle('error', failed > 0);
+        try {
+          await loadCollections(state.collectionId);
+          await Promise.all([loadWindow(0), loadSelectionTools()]);
+        } catch (error) {
+          elements.importStatus.classList.add('error');
+          elements.importStatus.textContent += ' Could not refresh the collection: ' + error.message;
+          elements.status.textContent = elements.importStatus.textContent;
+        }
+      } finally {
+        state.importInProgress = false;
+        controls.forEach((control, index) => { control.disabled = disabledBefore[index]; });
+        elements.importDropZone.removeAttribute('aria-disabled');
+      }
     });
     elements.bookmarkFile.addEventListener('change', updateImportFileLabel);
     elements.importDropZone.addEventListener('click', () => elements.bookmarkFile.click());
@@ -1144,7 +1199,8 @@ export function renderPilePage({isAdmin = false} = {}) {
     });
     for (const eventName of ['dragenter', 'dragover']) elements.importDropZone.addEventListener(eventName, event => {
       event.preventDefault();
-      if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+      if (event.dataTransfer) event.dataTransfer.dropEffect = state.importInProgress ? 'none' : 'copy';
+      if (state.importInProgress) return;
       elements.importDropZone.dataset.dragActive = 'true';
     });
     elements.importDropZone.addEventListener('dragleave', event => {
@@ -1152,8 +1208,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     });
     elements.importDropZone.addEventListener('drop', event => {
       event.preventDefault(); delete elements.importDropZone.dataset.dragActive;
-      const file = event.dataTransfer?.files?.[0];
-      if (file) useDroppedImportFile(file);
+      useDroppedImportFiles(event.dataTransfer?.files);
     });
     elements.exportForm.addEventListener('submit', event => {
       event.preventDefault();
