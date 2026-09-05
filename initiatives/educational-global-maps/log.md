@@ -54,3 +54,22 @@ profile follows NOAA's current content-creation and playlist references. Local
 package verification passes; sphere hardware behavior and the required
 independent learner or presenter walkthrough remain unproved, so Phase 7 is
 blocked on that human evidence rather than recorded complete.
+
+## 2026-09-05 — First private test deployment
+
+At the user's request, published the unchanged browser app from
+`work/phase-0/app/` to the new owner-only
+[Educational Global Maps — Test](https://educational-global-maps-test.ken-novak.chatgpt.site)
+Site, version 1, at 14:23:43 UTC. All 58 application checks passed. The isolated
+static-server check returned HTTP 200 with exact source bytes for all six
+files. Authenticated live checks returned HTTP 200 for the page, JavaScript,
+and stylesheet; the latter two matched the source exactly, while the hosting
+edge appended its challenge script to the otherwise unchanged HTML. The Sites
+deployment reached `succeeded`, and its access remained owner-only. The archive
+contained seven files (six source assets and hosting metadata), reported as
+307,200 bytes by Sites. Temporary deployment files were removed, and the
+deployment engine left its source repository unchanged.
+
+Registered the test target for future refreshes and documented its scope.
+No production release or separate relay was deployed. Independent Phase 7
+acceptance remains blocked on the existing user-supplied findings.

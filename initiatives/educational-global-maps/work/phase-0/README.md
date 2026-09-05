@@ -34,6 +34,28 @@ startup never fetches a provider artifact.
 
 ## Run it
 
+### Private test Site
+
+The browser reader is available at
+[Educational Global Maps — Test](https://educational-global-maps-test.ken-novak.chatgpt.site).
+It is owner-only and requires the owner's ChatGPT sign-in. Production has not
+been released.
+
+The test Site serves the already-built `app/` directory. To refresh it, rebuild
+and validate this work area with `npm ci` and `npm test`, then run the
+`deploy-test` skill for `educational-global-maps`. The initiative's deployment
+record identifies this private Site as the replacement target.
+
+This deployment includes exploration, prepared scenes, presentation mode, and
+same-browser controller tabs. It does not host the separate WebSocket relay;
+a controller on another device still needs an explicitly configured hosted
+relay. Contribution validation, repository administration, and sphere-package
+generation remain the local commands documented below. The private test
+deployment does not establish independent learner, presenter, or SOS hardware
+acceptance.
+
+### Local commands
+
 From this directory:
 
 ```bash
