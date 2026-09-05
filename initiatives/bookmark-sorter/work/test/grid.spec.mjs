@@ -892,7 +892,12 @@ test('Day and Night preserve every layout and remember the browser choice', asyn
     const bounds = await mode.boundingBox();
     expect(bounds.x).toBeGreaterThanOrEqual(0);
     expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
-    expect(await page.locator('header').evaluate(header => header.scrollWidth <= header.clientWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.locator('header').evaluate(header => {
+      const brand = header.querySelector('.brand').getBoundingClientRect();
+      const tools = header.querySelector('.header-tools').getBoundingClientRect();
+      return brand.right <= tools.left;
+    })).toBe(true);
     await mode.selectOption('night');
   }
 });

@@ -211,7 +211,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       :root { --columns: 1; --rows: 1; }
       main { padding: 9px; gap: 4px; }
       .brand p, .stat.total, .toolbar .shortcut { display: none; }
-      .header-tools { gap: 6px; }
+      header { min-width: 0; gap: 8px; }
+      .brand { flex: 1 0 106px; }
+      .header-tools { min-width: 0; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
       .stats { gap: 10px; }
       .stat strong { font-size: 1.15rem; }
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
