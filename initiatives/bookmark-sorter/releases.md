@@ -3,6 +3,16 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-09-05 — ChatGPT Site — version 4
+
+<https://bookmark-sorter.ken-novak.chatgpt.site/>
+
+Released `623aac0` · 1 commit(s) since the previous release · test last deployed 2026-09-05 at `ff64537`.
+
+Changes since the previous release, in `initiatives/bookmark-sorter/work`:
+
+- Allow Bookmark Sorter to import multiple files (#434)
+
 ## 2026-09-05 — ChatGPT Site — version 3
 
 <https://bookmark-sorter.ken-novak.chatgpt.site/>
