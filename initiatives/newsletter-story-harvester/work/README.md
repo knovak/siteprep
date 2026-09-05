@@ -391,23 +391,18 @@ not human reading speed.
 
 ### Refresh the existing private test
 
-The deployment pointer identifies the existing owner-only test Site. Generate
-its single HTML asset from the ignored private store and inventory, then use
-`deploy-test`. Keep private inputs and output mode 0600 and out of Git. Generate
-inside a restrictive umask; do not replace a prior private store or review file.
-
-```sh
-umask 077
-mkdir -p initiatives/newsletter-story-harvester/work/private/site
-node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
-  initiatives/newsletter-story-harvester/work/private/store.json \
-  initiatives/newsletter-story-harvester/work/private/site/index.html \
-  --inventory initiatives/newsletter-story-harvester/work/private/inventory.json
-```
+The deployment pointer identifies this committed build project and the existing
+owner-only test Site. Its Sites manifest serves the ignored `private/site`
+directory. `npm ci && npm run build` here generates its single HTML asset from
+local `private/store.json` and `private/inventory.json`; `deploy-test` then uses
+Sites hosting. The build refuses missing, symlinked, or group/world-readable
+inputs and writes generated HTML atomically with mode 0600. It never substitutes
+fixture data. The store and earlier review files are not modified.
 
 A new worktree needs its own protected copies of those existing private inputs.
-The generated source directory is intentionally ignored: the test receipt's
-commit identifies the committed renderer, while the deployment's Sites source
-commit identifies the exact generated HTML and hosting adapter. Private payloads
-and screenshots must never enter a public PR. Use fixture data for PR images.
+The generated HTML is intentionally ignored: the test receipt's commit identifies
+the committed renderer, while the deployment's Sites source commit identifies
+the exact generated HTML and hosting adapter. Private payloads and screenshots
+must never enter a public PR. Use fixture data for PR images. GitHub can validate
+the committed deployment project without reading private input or output.
 There is no production deployment recorded for this initiative.

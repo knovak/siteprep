@@ -578,4 +578,8 @@ mobile behavior, storage denial, verdict/export isolation, and published-field
 withholding. `work/measure-review-rate.mjs` sorts Unjudged first and measures the
 whole fixture backlog rather than the current page. Private test generation and
 the existing Site pointer are documented in the initiative's `work/README.md`;
-the ignored generated HTML is separate from the committed renderer.
+the ignored generated HTML is separate from the committed renderer. The committed
+Sites build project points its static output at `private/site`. Its
+`build-private-site.mjs` requires protected local inputs and writes mode-0600
+HTML atomically, refusing missing data and symlinked paths. Repository validation
+checks the committed package rather than requiring private artifacts in CI.

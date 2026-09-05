@@ -248,3 +248,16 @@ returned HTTP 200 with all original style/script/data blocks unchanged and
 identical before and after deployment. No production Site is recorded or
 released. A separate filtered-cluster browser check confirmed that a page sweep
 judges only the matching member and Undo restores the prior judgments.
+
+
+The initial GitHub check exposed that the ignored generated Site directory is
+absent in a fresh checkout. The deployment pointer now identifies the committed
+Sites build project under `work/`, with a manifest that serves `private/site`.
+The local build requires existing protected inputs and generates that ignored
+HTML atomically; no fixture fallback or private data is committed. The deployed
+renderer and generated HTML are unchanged. Added build checks cover private
+permissions, missing input, and symlink refusal.
+
+After the deployment-configuration correction, all 131 harvester tests and the
+root build passed. The committed private build reproduced the deployed HTML
+hash exactly. The Day screenshot was refreshed after that final build.
