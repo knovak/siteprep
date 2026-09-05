@@ -1,0 +1,17 @@
+{
+  "title": "SitePrep Repo Guide",
+  "description": "How one person and a set of AI agents share the work in this repository: initiatives and their lifecycle, the sweep, review and merge, and deployment, written for a developer seeing it for the first time. Also view this slide deck, and step through this simulator.",
+  "initiative": "repo-guide",
+  "featured": true,
+  "root": "description.html",
+  "links": [
+    {
+      "label": "this slide deck",
+      "href": "deck.html"
+    },
+    {
+      "label": "this simulator",
+      "href": "simulator.html"
+    }
+  ]
+}
