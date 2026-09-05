@@ -614,3 +614,7 @@ of HTML, invalid JSON, and overlapping JSON (3 new, 1 merged, 1 failed file;
 merged tags verified through export). Anonymous live entry returns HTTP 200
 with Sign in with ChatGPT. Existing public access and D1/R2 bindings were
 preserved; production was not deployed. PR #434 remains ready for review.
+
+## 2026-09-05 — Release
+
+Released to production — ChatGPT Site, version 4, `623aac0`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
