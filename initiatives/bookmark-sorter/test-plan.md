@@ -290,3 +290,14 @@ the user-facing controls that now sit on top of it:
 
 Visible changes also receive a post-build screenshot so spacing, colors, and the
 drop target are reviewed as presentation rather than inferred from DOM tests.
+
+
+## Day and Night theme regression (2026-09-05)
+
+Browser checks cover all four wide layouts across mode changes without a grid
+redraw, lost marks, or API calls; persisted Day/Night after reload; blocked
+browser storage; and the mode selector in phone/tablet windows. For every
+verdict including Junk, verify the marked outline is light grey in Night,
+card opacity stays full, and focus and marked outlines have at least 3:1
+contrast against the card. Titles and secondary text must retain 4.5:1 contrast.
+Inspect screenshots of both palettes after the final build.

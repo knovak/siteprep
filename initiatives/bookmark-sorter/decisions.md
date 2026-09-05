@@ -1036,3 +1036,17 @@ request records that choice and makes the initiative dormant.
 - It does not change, release, or redeploy the Bookmark Sorter product.
 - All menu entries remain optional in `notes.md` and may be promoted if the
   user later revives the initiative.
+
+
+## 2026-09-05 — Cream and teal by day, Dark slate at night
+
+The user chose **Cream and teal** from the cosmetic alternatives and requested
+**Day/Night modes**, with **Dark slate** for Night. They specifically required
+selected-item outlines to remain visible at night, at least grey. The earlier
+instruction to retain navigation and layout still applies. This replaces the
+previous blue/white presentation and its color-specific ready-state wording.
+
+This authorizes the theme implementation, deployment to the existing test Site,
+and a ready-for-review PR. Production release remains a separate decision.
+No existing initiative blocker is being completed; this is a direct follow-up
+request while the initiative is otherwise dormant.

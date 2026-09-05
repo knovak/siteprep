@@ -110,8 +110,17 @@ selection, and export operations.
   same API records each signed-in user's distinct selection expressions by
   most-recent use. Admin-only routes expose the authorized-user list editor;
   hiding the menu is backed by the same server-side role check.
-- `src/pile-page.mjs` renders the self-contained grid. Its Page layout selector
-  offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
+- `src/pile-page.mjs` renders the self-contained grid. CSS custom properties
+  define Cream and teal (Day, the default) and Dark slate (Night), including
+  forms, Help, popovers, and semantic verdict colors. The header's Color mode
+  selector stores `bookmark-sorter-theme` (`day` or `night`) in localStorage
+  for this origin. An early head script restores it before paint; invalid or
+  unavailable storage falls back to Day, and blocked writes do not prevent
+  switching for the current page. Changing mode does not call the API or
+  redraw the grid. Marked cards use an explicit border (light grey at night),
+  focus uses a separate inset teal outline, and verdicts retain their stripe.
+  Junk cards stay opaque so their text and outlines remain readable.
+  Its Page layout selector offers 3×3, 2×6, 2×8 (the default), and 3×12 wide layouts and redraws the
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
   and single-card phone layouts; while one of those automatic layouts is active,
   the inapplicable Page layout label and selector are hidden. Three-row grids
@@ -139,8 +148,8 @@ selection, and export operations.
   after each attempt. A drop selects one file but leaves the explicit form
   submission in place. Select contains expression, proposal, saved-selection,
   tagging, and per-user recent-query controls. The Open action beside proposal,
-  saved, and recent choosers is black on white at the placeholder and white on
-  blue after a real value is selected.
+  saved, and recent choosers uses a neutral background at the placeholder and white on
+  teal after a real value is selected.
   Export downloads the whole collection or open selection as
   `bookmark-sorter-<collection-name>.json` and can erase the
   current collection after confirmation while preserving the collection and
@@ -304,8 +313,8 @@ collection creation.
 - `POST /api/tag` accepts `mode: "apply"` (the default) or `mode: "remove"` for
   the marked set or current selection. It logs only the tags actually added or
   removed, so one undo reverses exactly that action and preserves everything
-  else. The split action is black on white while its tag field is empty and
-  white on blue when entered text makes it ready. The client separates entered
+  else. The split action uses a neutral background while its tag field is empty and
+  white on teal when entered text makes it ready. The client separates entered
   tags only on commas or whitespace, preserving punctuation such as hyphens
   inside a tag.
 - `POST /api/selection/verdict` applies one verdict to the entire open

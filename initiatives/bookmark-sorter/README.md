@@ -169,6 +169,17 @@ Tablet windows choose 4 × 3 or 3 × 3 automatically. A narrow phone window show
 one large card at a time and supports horizontal swiping. The wide-layout menu
 is hidden when an automatic tablet or phone layout is active.
 
+### Day and Night colors
+
+Choose **Day** or **Night** beside Help. Day uses Cream and teal; Night uses
+Dark slate. Your choice is remembered in this browser on this Site. If browser
+storage is unavailable, switching still works until the page is reloaded.
+Changing colors keeps the current layout, selection, marks, and bookmarks.
+
+A teal outline identifies the focused card. Marked cards also have a tinted
+background, a checked mark button, and an outline that is light grey in Night.
+The verdict stripe stays visible separately, including on Junk cards.
+
 ### Keyboard controls
 
 | Key | Action |
@@ -197,8 +208,8 @@ Open **Select and tag** to use any of four routes:
    previous**.
 
 The three chooser actions provide a visual check before opening anything. With
-no proposal or selection chosen, its **Open…** control is black on white. After
-one is chosen, that control is white on blue.
+no proposal or selection chosen, its **Open…** control uses a neutral background. After
+one is chosen, that control uses a filled teal background with white text.
 
 Opening a selection makes it the visible working set and records its expression
 in **Previous selections** for the signed-in user, newest first. History is
@@ -212,8 +223,8 @@ tags from that set. Both actions are recorded as one step, so **Undo** reverses
 the whole tag or untag operation. Adding preserves every existing tag that was
 not entered; removing preserves every tag that was not entered.
 
-The Tag/Untag control is black on white while the tag field is empty. It turns
-white on blue after text is entered, showing that the action is ready.
+The Tag/Untag control uses a neutral background while the tag field is empty.
+It turns teal with white text after text is entered, showing that the action is ready.
 
 ### Selection expressions
 
