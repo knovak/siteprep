@@ -41,7 +41,14 @@ test('the generated file is self-contained and has no store write path', () => {
 
 test('it opens offline with the complete fixture and always-visible backlog', async () => {
   const {page, externalRequests} = await openPage();
-  assert.equal(await page.locator('.story').count(), 74);
+  const ids = [];
+  do {
+    ids.push(...await page.locator('.story').evaluateAll(nodes => nodes.map(node => node.dataset.id)));
+    if (await page.locator('#next').isDisabled()) break;
+    await page.locator('#next').click();
+  } while (true);
+  assert.equal(ids.length, 74);
+  assert.equal(new Set(ids).size, 74);
   await assert.doesNotReject(() => page.locator('#backlog').waitFor({state: 'visible'}));
   assert.equal(await page.locator('#backlog').textContent(), '73 unjudged of 74');
   assert.deepEqual(externalRequests, []);
@@ -95,7 +102,7 @@ test('verdict-rest touches only visible unjudged stories and undo restores the s
   assert.equal(await page.locator('#backlog').textContent(), `${73 - visibleUnjudged} unjudged of 74`);
   assert.equal(await page.locator('.story[data-verdict=""]').count(), 0);
   await page.locator('#filter').selectOption('');
-  assert.equal(await page.locator('.story[data-verdict=""]').count(), 73 - visibleUnjudged);
+  assert.equal((await page.evaluate(() => window.reviewPage.getExport())).verdicts.length, 1 + visibleUnjudged);
   await page.locator('#undo').click();
   assert.equal(await page.locator('#backlog').textContent(), '73 unjudged of 74');
   await page.close();
@@ -127,6 +134,7 @@ test('a verdict exported by the page imports against the same story id', async (
 test('an unrecognised verdict displays and round-trips in the export', async () => {
   const {page} = await openPage();
   const unknown = page.locator('.story[data-verdict="to-be-shared"]');
+  while (!await unknown.count() && !await page.locator('#next').isDisabled()) await page.locator('#next').click();
   assert.equal(await unknown.count(), 1);
   assert.equal(await unknown.locator('.verdict').textContent(), 'to-be-shared');
   const exported = await page.evaluate(() => window.reviewPage.getExport());
@@ -156,8 +164,9 @@ test('a cluster renders once with its member provenance and judges every member 
   const page = await browser.newPage();
   await page.goto(`file://${clusteredOutput}`);
 
+  await page.locator('#filter').selectOption(taggingProposal.clusters[0].tag);
   assert.equal(await page.locator('.story.cluster').count(), 1);
-  assert.equal(await page.locator('.story').count(), 71);
+  assert.equal(await page.locator('.story').count(), 1);
   const cluster = page.locator('.story.cluster');
   assert.equal(await cluster.getAttribute('open'), '');
   assert.equal(await cluster.locator('.cluster-member').count(), 4);
@@ -168,5 +177,109 @@ test('a cluster renders once with its member provenance and judges every member 
   const exported = await page.evaluate(() => window.reviewPage.getExport());
   const memberIds = new Set(taggingProposal.clusters[0].story_ids);
   assert.equal(exported.verdicts.filter(entry => memberIds.has(entry.id) && entry.verdict === 'kept').length, 4);
+  await page.close();
+});
+
+
+test('all six layouts have the requested rows and columns and retain off-page verdicts', async () => {
+  const {page} = await openPage();
+  await page.setViewportSize({width: 1600, height: 1100});
+  assert.deepEqual(await page.locator('#page-layout option').evaluateAll(nodes => nodes.map(node => node.value)), ['1x1', '1x2', '1x3', '1x4', '2x3', '2x4']);
+  for (const [layout, rows, columns] of [['1x1',1,1],['1x2',1,2],['1x3',1,3],['1x4',1,4],['2x3',2,3],['2x4',2,4]]) {
+    await page.locator('#page-layout').selectOption(layout);
+    const boxes = await page.locator('.story').evaluateAll(nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return {x:r.x,y:r.y}; }));
+    assert.equal(boxes.length, rows * columns);
+    assert.equal(new Set(boxes.map(box => box.x)).size, columns);
+    assert.equal(new Set(boxes.map(box => box.y)).size, rows);
+  }
+  const first = page.locator('.story[data-verdict=""]').first();
+  const id = await first.getAttribute('data-id');
+  await first.locator('button[data-verdict="kept"]').click();
+  await page.locator('#next').click();
+  assert.ok((await page.evaluate(() => window.reviewPage.getExport())).verdicts.some(story => story.id === id && story.verdict === 'kept'));
+  await page.locator('#undo').click();
+  assert.ok(!(await page.evaluate(() => window.reviewPage.getExport())).verdicts.some(story => story.id === id));
+  await page.close();
+});
+
+test('page sweep excludes off-page stories and preserves existing judgments', async () => {
+  const {page} = await openPage();
+  await page.locator('#page-layout').selectOption('1x2');
+  const ids = await page.locator('.story[data-verdict=""]').evaluateAll(nodes => nodes.map(node => node.dataset.id));
+  const before = await page.evaluate(() => window.reviewPage.getExport());
+  await page.locator('#sweep-verdict').selectOption('kept');
+  await page.locator('#verdict-rest').click();
+  const after = await page.evaluate(() => window.reviewPage.getExport());
+  assert.deepEqual(after.verdicts.filter(story => !before.verdicts.some(old => old.id === story.id)).map(story => story.id).sort(), ids.sort());
+  for (const old of before.verdicts) assert.deepEqual(after.verdicts.find(story => story.id === old.id), old);
+  await page.locator('#next').click();
+  assert.ok(await page.locator('.story[data-verdict=""]').count() > 0);
+  await page.close();
+});
+
+test('Day and Night persist with layout, while selected Night outlines remain visible', async () => {
+  const {page} = await openPage();
+  await page.locator('#theme').selectOption('night');
+  await page.locator('#page-layout').selectOption('1x2');
+  await page.locator('.story[data-verdict=""]').first().locator('button[data-verdict="kept"]').click();
+  const appearance = await page.locator('button[aria-pressed="true"]').first().evaluate(button => ({border:getComputedStyle(button).borderColor, width:getComputedStyle(button).borderWidth, background:getComputedStyle(document.documentElement).backgroundColor}));
+  assert.equal(appearance.border, 'rgb(185, 199, 213)');
+  assert.equal(appearance.width, '2px');
+  assert.equal(appearance.background, 'rgb(23, 31, 40)');
+  await page.reload();
+  assert.equal(await page.locator('#theme').inputValue(), 'night');
+  assert.equal(await page.locator('#page-layout').inputValue(), '1x2');
+  assert.equal(await page.locator('#backlog').textContent(), '73 unjudged of 74');
+  await page.locator('#theme').selectOption('day');
+  assert.equal(await page.locator('html').evaluate(node => getComputedStyle(node).backgroundColor), 'rgb(250, 243, 232)');
+  await page.close();
+});
+
+test('phone layout has one card without horizontal overflow and keeps chosen layout', async () => {
+  const {page} = await openPage();
+  await page.locator('#page-layout').selectOption('2x4');
+  await page.setViewportSize({width:390, height:844});
+  await page.waitForFunction(() => document.querySelectorAll('.story').length === 1);
+  assert.equal(await page.locator('.story').count(), 1);
+  assert.equal(await page.locator('#page-layout').inputValue(), '2x4');
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  await page.locator('#next').click();
+  await page.locator('#filter').selectOption('theme:clean-energy');
+  assert.equal(await page.locator('#previous').isDisabled(), true);
+  await page.setViewportSize({width:1600, height:1100});
+  await page.locator('#filter').selectOption('');
+  assert.equal(await page.locator('.story').count(), 8);
+  await page.close();
+});
+
+test('blocked preference storage does not prevent reading or judging', async () => {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await page.addInitScript(() => { Object.defineProperty(window, 'localStorage', {get() { throw new Error('blocked'); }}); });
+  await page.goto(`file://${output}`);
+  await page.locator('#theme').selectOption('night');
+  await page.locator('#page-layout').selectOption('1x1');
+  await page.locator('.story[data-verdict=""]').first().locator('button[data-verdict="kept"]').click();
+  assert.equal(await page.locator('#backlog').textContent(), '72 unjudged of 74');
+  assert.deepEqual(errors, []);
+  await page.close();
+});
+
+test('long text scrolls inside cards with verdict controls visible', async () => {
+  const longStore = structuredClone(store);
+  longStore.stories.forEach(story => { story.text = 'A long story. '.repeat(2000); });
+  const file = join(mkdtempSync(join(tmpdir(), 'newsletter-long-')), 'review.html');
+  writeFileSync(file, reviewPageHtml(longStore));
+  const page = await browser.newPage({viewport:{width:1600,height:1100}});
+  await page.goto(`file://${file}`);
+  const card = page.locator('.story').first();
+  const geometry = await card.evaluate(node => { const body = node.querySelector('.body'); const controls = node.querySelector('.card-controls'); return {scroll:body.scrollHeight > body.clientHeight, bodyBottom:body.getBoundingClientRect().bottom, controlsTop:controls.getBoundingClientRect().top, controlsBottom:controls.getBoundingClientRect().bottom, cardBottom:node.getBoundingClientRect().bottom}; });
+  assert.ok(geometry.scroll);
+  assert.ok(geometry.bodyBottom <= geometry.controlsTop + 1);
+  assert.ok(geometry.controlsBottom <= geometry.cardBottom);
+  await card.locator('.body').evaluate(body => {body.scrollTop = 160;});
+  await card.locator('button[data-verdict="kept"]').click();
+  assert.equal(await card.locator('.body').evaluate(body => body.scrollTop), 160);
   await page.close();
 });

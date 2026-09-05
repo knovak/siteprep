@@ -365,3 +365,49 @@ read-only handoff then exercised the exact queries the private inventory
 resolves, including the sender-and-subject intersection. The first real
 extraction, count-band measurements, merge rate, and real-story review sitting
 remain the rest of `test-plan.md` §4.6 rather than being claimed by the adapter.
+
+
+## September 2026 story matrix
+
+The review and published pages share Cream-and-teal Day and Dark-slate Night
+palettes, with rounded, regular-weight Pastel washes verdict buttons. Selected
+buttons keep a visible border, including a light grey border at Night.
+
+Page Layout uses rows × columns: **1x1, 1x2, 1x3, 1x4, 2x3, 2x4**. The initial
+layout is 2x3. Previous/Next page through the sorted, filtered cards, with a
+cluster counting as one card. Scroll inside a card to read all its text; verdict
+buttons remain below the scrolling text. Smaller screens reduce columns and
+phones show one card per page while retaining the requested layout preference.
+
+Day/Night and layout are saved locally when browser storage is available.
+Verdicts are held in memory only: **export before closing or reloading**. Export
+includes all judged stories across pages. Undo works across page and layout
+changes. “Judge visible unjudged” affects matching, unjudged stories on the
+current page; explicit cluster buttons still judge all members of that cluster.
+
+The interaction harness uses Unjudged first to visit all 73 unjudged fixture
+stories despite pagination. Its three passes measure UI interaction throughput,
+not human reading speed.
+
+### Refresh the existing private test
+
+The deployment pointer identifies the existing owner-only test Site. Generate
+its single HTML asset from the ignored private store and inventory, then use
+`deploy-test`. Keep private inputs and output mode 0600 and out of Git. Generate
+inside a restrictive umask; do not replace a prior private store or review file.
+
+```sh
+umask 077
+mkdir -p initiatives/newsletter-story-harvester/work/private/site
+node initiatives/newsletter-story-harvester/work/generate-review-page.mjs \
+  initiatives/newsletter-story-harvester/work/private/store.json \
+  initiatives/newsletter-story-harvester/work/private/site/index.html \
+  --inventory initiatives/newsletter-story-harvester/work/private/inventory.json
+```
+
+A new worktree needs its own protected copies of those existing private inputs.
+The generated source directory is intentionally ignored: the test receipt's
+commit identifies the committed renderer, while the deployment's Sites source
+commit identifies the exact generated HTML and hosting adapter. Private payloads
+and screenshots must never enter a public PR. Use fixture data for PR images.
+There is no production deployment recorded for this initiative.

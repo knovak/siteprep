@@ -4,5 +4,18 @@
   "stage": "refining",
   "value": "medium",
   "outputs": [],
-  "todo": []
+  "todo": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "static",
+      "source": "initiatives/newsletter-story-harvester/work/private/site",
+      "test": {
+        "slug": "newsletter-story-harvester-test",
+        "url": "https://newsletter-story-harvester-test.ken-novak.chatgpt.site",
+        "access": "private",
+        "version": 3
+      }
+    }
+  ]
 }

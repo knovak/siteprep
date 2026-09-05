@@ -200,7 +200,7 @@ silently wrong extraction gets wrong.
 | Source help | The private review page lists every configured source by name and slug with the exact Gmail search string; the published page carries none of that private configuration | §4, §8, §12 |
 | Sort | Story date falling back to issue date, plus issue date, source, and unjudged-first | O5 |
 | Filter by tag | Any tag including `theme:`; this is how a theme is a page | O4, §8 |
-| **`verdict-rest` respects the filter** | Applies to everything **visible and unjudged**, so changing the filter changes what it means | O7, §8 |
+| **`verdict-rest` respects the filter** | Applies only to **matching, unjudged stories on the current page**, including matching cluster members; excludes off-page stories and existing judgments | O7, §8 |
 | `undo` reverses a sweep as one action | Fifty swept, one undo restores all fifty | §8 |
 | Backlog count | Correct after every action, and shown at all times | O7 |
 | Unrecognised verdict displays | A store carrying `to-be-shared` renders and round-trips it | §11, `story-record.md` §1.2 |
@@ -291,3 +291,17 @@ undo, and each names the change it is guarding against.
 - **Anything held out of the first version** — publication as an OpenAI site,
   writing back to the mailbox. The one thing tested on their behalf is the store
   format, which §13 says is what makes the D fallback cheap.
+
+
+### September 2026 presentation regression checks
+
+- Verify all six layouts at desktop width by rendered card positions, and page
+  through the fixture to reach every story exactly once.
+- Preserve off-page verdicts in exports and reverse them with Undo from another
+  page. Preserve the published allow-list and exclusion of judging controls.
+- Verify Day/Night and layout after reload, optional storage denial, one-card
+  phone layout, and full layout restoration at desktop width.
+- Verify long text scrolls independently of visible verdict controls and keeps
+  its scroll position after judging; selected Night borders are light grey.
+- Inspect fixture screenshots in Day, Night and phone sizes; run the existing
+  whole-store browser interaction harness and root build before test deployment.

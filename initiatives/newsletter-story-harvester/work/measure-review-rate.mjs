@@ -22,17 +22,17 @@ async function measurePass(browser, fileUrl, pass) {
   page.on('requestfailed', request => errors.push(`request: ${request.url()} — ${request.failure()?.errorText || 'failed'}`));
   await page.goto(fileUrl);
 
-  const clicks = await page.locator('.story[data-verdict=""]').count();
+  await page.locator('#sort').selectOption('unjudged');
+  const clicks = store.stories.filter(story => story.verdict === null).length;
   const latencies = [];
   let startedAt = null;
   for (let index = 0; index < clicks; index += 1) {
     const card = page.locator('.story[data-verdict=""]').first();
-    await card.locator('summary').click();
     const before = performance.now();
     if (startedAt === null) startedAt = before;
     await card.locator(`button[data-verdict="${VERDICTS[index % VERDICTS.length]}"]`).click();
     await page.waitForFunction(
-      remaining => document.querySelectorAll('.story[data-verdict=""]').length === remaining,
+      remaining => document.getElementById('backlog').textContent.startsWith(remaining + ' unjudged of '),
       clicks - index - 1,
     );
     latencies.push(performance.now() - before);
@@ -47,7 +47,7 @@ async function measurePass(browser, fileUrl, pass) {
     clicks_per_second: Number((clicks / (elapsedMs / 1000)).toFixed(3)),
     latency_p50_ms: Number(percentile(latencies, 0.5).toFixed(2)),
     latency_p95_ms: Number(percentile(latencies, 0.95).toFixed(2)),
-    reached_zero: backlog === `0 unjudged of ${await page.locator('.story').count()}`,
+    reached_zero: backlog === `0 unjudged of ${store.stories.length}`,
     browser_errors: errors,
   };
   await page.close();

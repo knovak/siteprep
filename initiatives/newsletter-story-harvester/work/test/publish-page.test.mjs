@@ -68,7 +68,13 @@ test('only kept and emphasised stories are published', async () => {
   assert.deepEqual([...new Set(payload.stories.map(story => story.verdict))].sort(), ['emphasised', 'kept']);
 
   const {page, externalRequests, errors} = await openPublished();
-  assert.equal(await page.locator('.story').count(), expectedPublished.length);
+  const ids = [];
+  do {
+    ids.push(...await page.locator('.story').evaluateAll(nodes => nodes.map(node => node.dataset.id)));
+    if (await page.locator('#next').isDisabled()) break;
+    await page.locator('#next').click();
+  } while (true);
+  assert.deepEqual(ids.sort(), expectedPublished.map(story => story.id).sort());
   assert.deepEqual(errors, []);
   assert.deepEqual(externalRequests, []);
   await page.close();
@@ -146,6 +152,7 @@ test('it is the review renderer with two arguments changed, not a second rendere
     writeFileSync(file, source, 'utf8');
     const page = await browser.newPage();
     await page.goto(`file://${file}`);
+    await page.locator('#filter').selectOption('theme:clean-energy');
     const card = page.locator(`.story[data-id="${sample.id}"]`);
     assert.equal(await card.getAttribute('open'), '');
     const shape = {
@@ -173,6 +180,7 @@ test('a cluster publishes as one entry, with withheld members left out', async (
   const file = join(directory, 'clustered.html');
   writeFileSync(file, reviewPageHtml(tagged, PUBLISH), 'utf8');
   const {page, errors} = await openPublished(file);
+  await page.locator('#filter').selectOption(clusterTag);
   const cluster = page.locator('.story.cluster');
   assert.equal(await cluster.count(), 1);
   assert.equal(await cluster.getAttribute('open'), '');

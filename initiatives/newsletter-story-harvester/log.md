@@ -214,3 +214,22 @@ Separated source identity from subject themes: inventory entries carry explicit
 source slugs, fixture generation no longer manufactures source-shaped themes,
 and private review Help shows the configured source names, slugs, and Gmail
 search strings. The published page does not carry that private configuration.
+
+
+## 2026-09-05 — Story matrix and Bookmark Sorter presentation
+
+Implemented the requested Cream-and-teal Day, Dark-slate Night, Pastel washes
+controls, and six Page Layout options. Story and cluster cards paginate, retain
+full scrollable text, and keep verdict actions below the text. Bulk verdicts
+apply only to matching unjudged stories on the current page; Undo and exports
+retain the complete sitting. Preferences are optional local browser state.
+
+Validation: all 128 harvester tests passed, including the updated review and
+publication browser tests; all 26 UI/publication checks passed again after the
+final visual changes. The root build passed. Three automated full-fixture
+interaction passes each reached zero backlog with no browser errors; p95 was
+35–48 ms (UI speed, not human reading speed). Day, Night, and phone screenshots
+use fixture content only. Local verification of the existing private collection
+reached 148 distinct cards, 135 full-text stories, 13 summaries, and three source
+help entries with no browser errors. Private store and inventory were copied
+without changes into ignored mode-0600 files in the isolated worktree.
