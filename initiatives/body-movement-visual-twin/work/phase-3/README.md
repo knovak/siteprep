@@ -59,3 +59,66 @@ check for every clip. Browser tests cover selection, single-session
 acknowledgement, viewport-height animation, fixed projection, named camera
 presets, six renderings, source links, WebGL fallback, desktop and phone layout,
 and serious or critical accessibility findings.
+
+
+## Detailed anatomy illustration (KRN revision)
+
+`src/anatomy-geometry.mjs` owns authored display geometry. The original 27-node
+motion rig, 40 named muscle groups, record sources, and registration fixtures
+remain intact. Render detail does not add clinical claims or independently
+controlled vertebral joints.
+
+The axial display includes 24 individual vertebrae (C1-C7, T1-T12, L1-L5),
+vertebral bodies and posterior processes, the atlas ring, axis dens,
+intervertebral disc seams below C2, a connected sacrum with five fused segments,
+and a typical four-segment coccyx. Twelve rib pairs curve in three dimensions:
+ribs 1-7 connect through cartilage to the sternum, 8-10 connect to the costal
+arch, and 11-12 have free anterior ends. The sternum and scapular blades complete
+the immediate chest context. The reference widths, curves, proportions, and
+skin weights are illustrative estimates awaiting anatomy review.
+
+Muscles use 86 shaped surface patches rather than identical two-point bellies.
+These include chest fans, shoulder portions, separate abdominal blocks,
+oblique fibres, three visible quadriceps bundles per side, paired calf heads,
+and distinct front/back arm and back surfaces. Curved surface fibres, tonal
+strips, fascia/tendon fades, and fine claim outlines give anatomy-drawing detail
+without replacing the animated viewer with a fixed image. Contextual neck,
+forearm, adductor and shin groups have no movement claim ID; they cannot be
+highlighted as if the record supplied a new claim. All existing claim IDs and
+review statuses are preserved.
+
+Reference points carry weights on existing rig nodes. A cached template stores
+those weights and fibre topology; each new pose deforms the template. Stature
+invalidates the template and scales the complete reference geometry. Camera or
+layer changes reuse the same posed geometry. Neither surface build nor surface
+presentation changes internal anatomy. The original packaged muscle data still
+loads lazily; it remains the claim/attachment contract rather than the source
+of the new display contours.
+
+The viewer depth-sorts projected geometry and filters front/back surfaces. This
+is a Canvas illustration of posed 3D points, not a watertight volumetric mesh or
+a clinical atlas; limb overlap and extreme poses still require human visual
+review. Joint isolation now filters the selected joint's immediate region,
+fixing the prior lookup that inadvertently accepted every node.
+
+The anatomy facts and illustration conventions were checked against OpenStax
+*Anatomy and Physiology 2e* on 2026-09-05:
+
+- [7.3 The Vertebral Column](https://openstax.org/books/anatomy-and-physiology-2e/pages/7-3-the-vertebral-column)
+- [7.4 The Thoracic Cage](https://openstax.org/books/anatomy-and-physiology-2e/pages/7-4-the-thoracic-cage)
+- [11.1 Muscle shapes and fascicle arrangement](https://openstax.org/books/anatomy-and-physiology-2e/pages/11-1-interactions-of-skeletal-muscles-their-fascicle-arrangement-and-their-lever-systems)
+
+These references establish structural categories, not the accuracy of this
+project's geometry. No external atlas mesh, bitmap, or source text is bundled.
+
+`test/anatomy-geometry.test.mjs` checks complete regional and bilateral counts,
+rib connection classes, three-dimensional curvature, finite surfaces and
+fibres at every authored clip frame, rib-root attachment, proportional stature
+scaling, movement of the detailed spine, and preservation of all muscle claim
+IDs. Browser coverage checks that posed anatomy and joint isolation actually
+change the rendered image while layers preserve time, camera, and framing.
+
+Physical anatomy dimensions use the projection scale once. Device-pixel ratio
+applies only to screen-space line detail; the earlier surface and skull code
+multiplied it twice. Clip-wide fitting now reserves room for the camera controls
+and full head/feet extents on phones while remaining constant through playback.
