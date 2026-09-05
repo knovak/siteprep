@@ -233,3 +233,18 @@ use fixture content only. Local verification of the existing private collection
 reached 148 distinct cards, 135 full-text stories, 13 summaries, and three source
 help entries with no browser errors. Private store and inventory were copied
 without changes into ignored mode-0600 files in the isolated worktree.
+
+The existing owner-only test Site was replaced successfully at
+2026-09-05T22:11:51Z: version 4 at
+<https://newsletter-story-harvester-test.ken-novak.chatgpt.site>.
+Renderer commit: `6af529cd3c23055edda759e6ee763b0105fb34f6`.
+Sites source commit: `55229bfe7de38cf96d5519ad2d19c9aa023f4d8e`.
+Generated HTML SHA-256:
+`cb61321203c0d567739089952e9b48c97143e387181fb4cc6480fda65ad5c81b`.
+The single HTML asset was copied unchanged into an isolated Sites checkout;
+its local Worker returned HTTP 200 with byte-identical HTML. The live response
+returned HTTP 200 with all original style/script/data blocks unchanged and
+148 stories; the platform adds its own response markup. Access policy was
+identical before and after deployment. No production Site is recorded or
+released. A separate filtered-cluster browser check confirmed that a page sweep
+judges only the matching member and Undo restores the prior judgments.

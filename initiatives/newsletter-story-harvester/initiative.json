@@ -14,7 +14,9 @@
         "slug": "newsletter-story-harvester-test",
         "url": "https://newsletter-story-harvester-test.ken-novak.chatgpt.site",
         "access": "private",
-        "version": 3
+        "deployed_at": "2026-09-05T22:11:51Z",
+        "version": 4,
+        "commit": "6af529cd3c23055edda759e6ee763b0105fb34f6"
       }
     }
   ]
