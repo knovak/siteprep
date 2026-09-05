@@ -21,9 +21,9 @@
         "slug": "bookmark-sorter",
         "url": "https://bookmark-sorter.ken-novak.chatgpt.site/",
         "access": "public",
-        "deployed_at": "2026-08-26T08:19:26Z",
-        "version": 2,
-        "commit": "a943830668537fff375107e7eff1f40dfcba2267"
+        "deployed_at": "2026-09-05T18:13:58Z",
+        "version": 3,
+        "commit": "a365909f4c668a0b707c14f85d2d6b0643ae64f3"
       }
     }
   ],
