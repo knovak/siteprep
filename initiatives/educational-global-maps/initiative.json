@@ -4,6 +4,21 @@
   "stage": "building",
   "value": "medium",
   "outputs": [],
+  "deployments": [
+    {
+      "kind": "chatgpt-site",
+      "build": "static",
+      "source": "initiatives/educational-global-maps/work/phase-0/app",
+      "test": {
+        "slug": "educational-global-maps-test",
+        "url": "https://educational-global-maps-test.ken-novak.chatgpt.site",
+        "access": "private",
+        "deployed_at": "2026-09-05T14:24:36Z",
+        "version": 1,
+        "commit": "93016e9aff6ad3219570b97c359a6ec6ab5ca23f"
+      }
+    }
+  ],
   "todo": [
     {
       "id": "phase-7-spherical-export-and-representative-acceptance",
