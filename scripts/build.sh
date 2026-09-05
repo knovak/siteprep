@@ -389,6 +389,25 @@ EOF_DEMOS
   toc_page_close "$OUTPUT_DIR/demos/index.html"
 fi
 
+# Publish each demo deployment's source as its test environment.
+#
+# demos/<destination>/ holds what was last released, and only a release changes
+# it - so a demo's work in progress had nowhere to be looked at. Copying the
+# source here on every build gives it one, at a path that is never the released
+# copy, on main as well as in a branch preview. See INITIATIVES_TECHDOC.md.
+if [ -d "$ROOT_DIR/initiatives" ]; then
+  while IFS=$'\t' read -r preview_slug preview_source preview_path preview_root; do
+    [ -n "$preview_slug" ] || continue
+    mkdir -p "$OUTPUT_DIR/$preview_path"
+    cp -r "$ROOT_DIR/$preview_source/." "$OUTPUT_DIR/$preview_path/"
+    if [ ! -f "$OUTPUT_DIR/$preview_path/$preview_root" ]; then
+      echo "BUILD FAIL: preview for $preview_slug has no $preview_root" >&2
+      exit 1
+    fi
+    echo "Published test preview for $preview_slug at $preview_path/$preview_root"
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" previews)
+fi
+
 # Generate the initiatives TOC, one overview page per initiative, and a rendered
 # page per initiative document. The bodies come from scripts/initiatives.mjs -
 # nested todo[] and outputs[] are not something to pattern-match out of JSON with
@@ -568,6 +587,12 @@ echo "Injecting version info into HTML files..."
 while IFS= read -r -d '' html_file; do
   file_rel_path="${html_file#$OUTPUT_DIR/}"
   if [[ "$file_rel_path" == demos/* && "$file_rel_path" != "demos/index.html" ]]; then
+    continue
+  fi
+  # A test preview is the same files the release will be, so it is skipped for
+  # the same reason: a footer here and none in demos/ would make the preview
+  # render differently from what it is previewing.
+  if [[ "$file_rel_path" == preview/* ]]; then
     continue
   fi
   inject_version_footer "$html_file"

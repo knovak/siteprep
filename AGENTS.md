@@ -292,7 +292,9 @@ something to show.
 
 - **`deploy-test` writes `test`, and any agent may run it** whenever the user
   wants to look at the work - "deploy the test site", "let me see it" - as often
-  as a session needs. It is not a milestone and it records no history.
+  as a session needs. It is not a milestone and it records no history. The
+  initiatives sweep also runs it unattended, in its `deploy` phase, for work it
+  has just pushed.
 - **`release-initiative` writes `prod`, and only a person asks for it**, in their
   own words. A todo item, a schedule, a sweep, or a document saying a release is
   due is a reason to *tell the user*, never a reason to release. When you are
@@ -318,9 +320,12 @@ Rules that hold whatever the kind:
 - **`deployed_at`, `version` and `commit` are written by the skills**, through
   `deployments <slug> record`, never by hand. A production release also appends
   to `releases.md` and adds one line to `log.md`.
-- **A demo has no test deployment to write.** Its test environment is the branch
-  preview that GitHub Pages publishes for the pushed branch, and both its URLs
-  are derived from the destination rather than recorded.
+- **A demo has no test deployment for a skill to write.** `scripts/build.sh`
+  publishes it, copying the deployment's `source` to
+  `preview/initiatives/<slug>/` on every build, so pushing the branch is the
+  deploy. Both its URLs are derived rather than recorded, and its test URL is
+  the preview path - never `demos/<destination>/`, which holds the last release
+  and changes only when someone releases.
 
 ## Skills
 

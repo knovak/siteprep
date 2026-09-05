@@ -64,7 +64,7 @@ To make a run harmless while you check something, set `phases` back to
 ## What the sweep is allowed to do
 
 `phases` in `sweep.json` decides what a run may do, and is currently
-`["survey", "respond", "propose", "work"]` — everything:
+`["survey", "respond", "propose", "work", "deploy"]` — everything:
 
 | Phase | What it does |
 |---|---|
@@ -72,11 +72,19 @@ To make a run harmless while you check something, set `phases` back to
 | `respond` | Answers review comments on its own open pull requests |
 | `propose` | Opens a pull request proposing an answer to a `human:` question |
 | `work` | Starts new work from the todo lists and opens pull requests |
+| `deploy` | Refreshes the **test** environment of what the run changed |
 
-They run in that order, and share one budget of `items_per_run` taken in the
-same order — finishing what is in flight outranks starting more. Narrowing or
-widening this is a commit to a config file, reviewed like anything else, which
+They run in that order. The first four share one budget of `items_per_run` taken
+in the same order — finishing what is in flight outranks starting more. Narrowing
+or widening this is a commit to a config file, reviewed like anything else, which
 is the point: changing how autonomous the job is should leave a trace.
+
+`deploy` takes no budget, because it publishes work the run has already done
+rather than starting any. It writes the test environment only, from the branch
+the run just pushed, and only when `deployments <slug> plan --env test --since
+<base>` says the source actually changed. Production never moves without a
+person running `release-initiative`, so the worst a deploy phase can produce is
+a preview showing an unmerged branch — which is what a preview is for.
 
 `select` and `propose` enforce it on their own — with a phase absent from
 `phases` they return nothing and say why, so a prompt cannot talk the sweep into
@@ -91,6 +99,14 @@ never become a pull request, and they stay in the digest issue.
 A proposal does not rewrite the blocker on `main`. The item stays blocked until
 the pull request merges — merging it *is* answering the question, and a
 proposal you close unmerged leaves nothing behind.
+
+**What `deploy` may write.** The test environment, and nothing else. A
+`chatgpt-site` is redeployed and the receipt recorded back into
+`initiative.json` on the same branch; a demo needs no deploy step at all,
+because the push that builds the branch publishes its source to
+`preview/initiatives/<slug>/` (§Deployments in `INITIATIVES_TECHDOC.md`). A
+Site the sweep deploys for the first time goes out **private**, since nobody is
+there to be asked, and the pull request says so.
 
 **Turning it down.** The staged bring-up the plan described — `work` first at
 `items_per_run: 1`, then `respond`, then `propose` — was collapsed into one
@@ -108,6 +124,7 @@ Most of a run is commands, not reasoning:
 | Survey | `node scripts/initiatives.mjs digest` |
 | Choose questions to answer | `node scripts/initiatives.mjs propose --claimed <branches> --open-prs <n> --spent <n>` |
 | Choose work | `node scripts/initiatives.mjs select --claimed <branches> --open-prs <n> --spent <n>` |
+| Decide whether to deploy | `node scripts/initiatives.mjs deployments <slug> plan --env test --since <base>` |
 | Record an item done | `node scripts/initiatives.mjs complete <slug> <item-id> --note "..." [--stage <stage>]` |
 | Check a change stays in scope | `node scripts/initiatives.mjs check-scope <slug> --files-from changed.txt` |
 

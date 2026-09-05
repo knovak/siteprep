@@ -752,7 +752,7 @@ behaviour is readable from the repo alone.
 
 | Field | Default | Meaning |
 |---|---|---|
-| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `propose`, `work`. Must include `survey` |
+| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `propose`, `work`, `deploy`. Must include `survey` |
 | `items_per_run` | `4` | Total actionable items a single sweep may complete |
 | `max_items_per_initiative` | `2` | Cap per initiative, so one hot initiative can't eat the whole budget |
 | `max_effort` | `large` | Largest item the job may attempt unsupervised |
@@ -767,9 +767,10 @@ the same reasoning that puts the budget here rather than at the call site.
 
 > **Where it stands.** The block above is the default the design proposed. The
 > live `initiatives/sweep.json` now reads
-> `"phases": ["survey", "respond", "propose", "work"]` with every other value as
-> shown — Phases 5, 5a and 6 of §12, landed together. Turning a capability back
-> off is the same reviewable commit that turning it on was.
+> `"phases": ["survey", "respond", "propose", "work", "deploy"]` with every other
+> value as shown — Phases 5, 5a and 6 of §12, landed together, plus `deploy`.
+> Turning a capability back off is the same reviewable commit that turning it on
+> was.
 
 Three notes on these values:
 
@@ -1366,12 +1367,22 @@ deployment scheme is a kind entry plus a skill — not an edit to the validator,
 the record, or the overview page. A leftover `sites` block is a validation error rather
 than an ignored key, so a half-migrated record cannot quietly stop being deployed.
 
-A demo has no test copy to write. Its test environment is the branch preview §8.6
-already gives away for free, which exists because the branch was pushed. So a demo's
-URLs are *derived* from its destination — production is `demos/<destination>/`, test is
-the same path under the branch preview — and recording a test entry on one is an error.
-Deriving them means a demo's link cannot drift out of step with what is actually under
-`demos/`.
+A demo has no test copy for a *skill* to write. Its test environment rides on the
+branch preview §8.6 already gives away for free, which exists because the branch was
+pushed. So a demo's URLs are *derived* rather than stored, and recording a test entry on
+one is an error. Deriving them means a demo's links cannot drift out of step with what
+is actually published.
+
+The first version pointed both of them at the destination: production
+`demos/<destination>/`, test the same path under the branch preview. That was wrong, and
+in a way worth recording. `demos/<destination>/` holds the *last release*, and only a
+release changes it — so the test URL 404ed before the first release and served the
+previous release forever after, while the plan reported the environment as deployed. A
+demo's work in progress could not be looked at at all, which is the one thing a test
+environment is for. The build now copies each demo deployment's `source` to
+`preview/initiatives/<slug>/` on every build, and that is the test URL. The correction
+also brought demos under the rule every other kind already obeyed: two environments never
+resolve to one target.
 
 This is also the case that keeps the schema honest. A kind need not support both
 environments, and pretending otherwise would have forced either a fake test deploy for
@@ -1660,8 +1671,9 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 | 6 | **done** | Restore the configured budget (§7.5) | Review load, not ambition, sets the ceiling |
 
 **Phases 5, 5a and 6 landed together, at the user's direction**, so `phases` is
-now `["survey", "respond", "propose", "work"]` at the configured budget of four
-items per run. The staged bring-up below — `work` alone first, at
+now `["survey", "respond", "propose", "work", "deploy"]` at the configured budget
+of four items per run — `deploy` added later, and taking no budget, since it
+publishes what a run has already done rather than starting anything. The staged bring-up below — `work` alone first, at
 `items_per_run: 1`, then `respond`, then `propose` — was a precaution, not a
 dependency; collapsing it trades a slower start for a shorter path to finding
 out whether a whole run works. `items_per_run` remains the dial if the review

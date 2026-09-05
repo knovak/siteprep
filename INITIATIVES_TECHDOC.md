@@ -49,6 +49,7 @@ dependency. That is fine for flat string fields and does not survive nested
 | `deployments <slug>` | Every deployment, both environment URLs each |
 | `deployments <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
 | `deployments <slug> record --env test\|prod` | Record a completed deployment |
+| `previews` | Demo sources `build.sh` publishes as test previews |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -246,30 +247,63 @@ is the whole feature, and three things protect it:
 The dirty-source check is scoped to the deployment's `source`. Uncommitted work
 elsewhere in the repository is none of a release's business.
 
-**A kind need not be able to deploy both environments.** A demo has no test copy
-to write: its test environment is the branch preview that gh-pages.yml publishes
-at `branch/<branch-with-slashes-as-dashes>/`, which exists because the branch was
-pushed. So a demo's URLs are *derived* from its `destination` rather than
-recorded - production is `demos/<destination>/`, test is the same path under the
-branch preview, and on `main` they are the same URL because main publishes
-straight to production. Recording a `test` entry on a demo is an error, and
-`record --env test` refuses it.
+**A kind need not have an engine for both environments.** A demo has no test
+copy for a skill to write: `scripts/build.sh` publishes it, by copying every
+demo deployment's `source` into `preview/initiatives/<slug>/` on every build.
+Pushing the branch is therefore the deploy, and the preview appears when that
+branch's Pages build finishes. Recording a `test` entry on a demo is still an
+error, and `record --env test` refuses it — there is nothing to record.
 
-Deriving those URLs rather than storing them means a demo's link can never drift
-out of step with what is actually under `demos/`. The Pages base comes from the
-`origin` remote, so a fork or a rename needs no edit here.
+A demo's URLs are *derived* rather than stored, so neither can drift out of step
+with what is published:
+
+| Environment | Path | Changes when |
+|---|---|---|
+| `prod` | `demos/<destination>/` | someone runs `release-initiative` |
+| `test` | `[branch/<branch-with-slashes-as-dashes>/]preview/initiatives/<slug>/<root_html>` | any build of that branch |
+
+**The preview directory is why a demo has a test environment at all.** Before
+it, a demo's test URL was `demos/<destination>/` under the branch preview — but
+that directory holds the *last release*, and only a release changes it. The
+preview URL either 404ed, before the first release, or served the previous
+release forever after, while `plan` reported the environment as deployed. So
+"deploy the test site" could not show a demo's work in progress, which is the
+one thing a test environment is for. Publishing the source separately fixes
+that, and incidentally stops a demo's two environments resolving to one URL on
+`main`, which every other kind is forbidden from doing.
+
+`preview/` is build output, not a directory in the repository, and it carries no
+injected footer, so a preview page renders exactly as the released copy will.
+The build fails if a deployment's `root_html` is missing from the copy. The
+Pages base comes from the `origin` remote, so a fork or a rename needs no edit
+here.
 
 ### The subcommands
 
 ```text
+previews [--json]                       demo sources the build publishes as test previews
 deployments SLUG                        every deployment, both environment URLs each
-deployments SLUG plan --env test|prod [--kind KIND]
+deployments SLUG plan --env test|prod [--kind KIND] [--since REF]
                                         what a deployment would do; exits 1 if blocked
 deployments SLUG record --env test|prod [--kind KIND]
     chatgpt-site: --site-slug S --url U [--access private|public] [--version N]
     demo:         (no target arguments - the URL comes from the destination)
     both:         [--commit SHA]
 ```
+
+`previews` is what `build.sh` reads, as tab-separated
+`slug<TAB>source<TAB>path<TAB>root_html`, so the preview path is defined once in
+`initiatives.mjs` rather than parsed out of `initiative.json` by the build.
+Deployments whose source cannot be published are omitted; `validate` is what
+reports those, since one broken deployment must not fail the whole build.
+
+`--since REF` adds a `since` block to the plan: the commits that have touched
+this deployment's `source` between `REF` and `HEAD`, and whether there are any.
+The sweep's deploy phase uses it to skip an initiative whose run only edited
+`log.md` and `initiative.json` — nothing a reader would see changed, so a
+redeploy would say nothing. `since.known` is false when git cannot compare (an
+unknown ref, a shallow clone), which is a different answer from "nothing
+changed" and the caller is expected to treat it as such.
 
 `--kind` is needed only when an initiative has more than one deployment;
 guessing which one a release meant is exactly the mistake this arrangement
@@ -392,9 +426,19 @@ the wall clock advances. Normal runs leave it unset and use the actual time.
 
 `initiatives/sweep.json` holds the run configuration; `phases` controls what a
 run may do, and must always include `"survey"`. It is now
-`["survey", "respond", "propose", "work"]` - every capability on, at the
-configured budget of four items per run. Narrowing it is the same kind of
+`["survey", "respond", "propose", "work", "deploy"]` - every capability on, at
+the configured budget of four items per run. Narrowing it is the same kind of
 reviewable commit that widening it was.
+
+`deploy` is the one phase that takes no budget. It publishes what the run has
+already done rather than starting anything, and refusing to show finished work
+because the budget ran out would be the wrong economy. It writes the **test**
+environment only, from the branch the run just pushed, and only when
+`deployments <slug> plan --env test --since <base>` reports the source actually
+changed - an item that touched nothing but `log.md` has changed nothing a reader
+would see. A first deploy of an environment goes out private, because
+`confirm_access` asks a question no unattended run can answer. Production never
+moves without a person running `release-initiative`.
 
 `initiatives/sweep-prompt.md` is the instruction a sweep follows. It lives in
 the repo so a manual run and a scheduled run are the same text.

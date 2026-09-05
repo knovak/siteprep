@@ -57,6 +57,23 @@ the Playwright suite because a guard inside `build_tests.sh` could not catch its
 own suite no longer being called. If the invocation is ever removed on purpose,
 restore an explicit build-test step in the workflow and update this document.
 
+## What the build publishes beyond `decks/` and `demos/`
+
+Two directories in `gh-pages/` have no counterpart in the repository:
+
+- `initiatives/` - the Initiative TOC, one overview page per initiative, and a
+  rendered page per initiative document, all from `scripts/initiatives.mjs`.
+- `preview/initiatives/<slug>/` - the source of each demo-kind deployment,
+  copied verbatim, which is that initiative's **test** environment. The list
+  comes from `initiatives.mjs previews`, so the path is defined in one place;
+  the build fails if a deployment's entry page is missing from the copy.
+  `INITIATIVES_TECHDOC.md` has the reasoning, and `BUILD-21` checks it.
+
+Preview pages are exempt from the footer injection and from `BUILD-17`'s
+version-root check, for the same reason demo pages are: they are the bytes a
+release will ship, and a preview that differs from its source is previewing
+something else.
+
 ## Browser provisioning
 
 Playwright's browsers are not part of `npm ci`; they are downloaded separately
