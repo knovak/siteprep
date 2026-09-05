@@ -214,3 +214,50 @@ Separated source identity from subject themes: inventory entries carry explicit
 source slugs, fixture generation no longer manufactures source-shaped themes,
 and private review Help shows the configured source names, slugs, and Gmail
 search strings. The published page does not carry that private configuration.
+
+
+## 2026-09-05 — Story matrix and Bookmark Sorter presentation
+
+Implemented the requested Cream-and-teal Day, Dark-slate Night, Pastel washes
+controls, and six Page Layout options. Story and cluster cards paginate, retain
+full scrollable text, and keep verdict actions below the text. Bulk verdicts
+apply only to matching unjudged stories on the current page; Undo and exports
+retain the complete sitting. Preferences are optional local browser state.
+
+Validation: all 128 harvester tests passed, including the updated review and
+publication browser tests; all 26 UI/publication checks passed again after the
+final visual changes. The root build passed. Three automated full-fixture
+interaction passes each reached zero backlog with no browser errors; p95 was
+35–48 ms (UI speed, not human reading speed). Day, Night, and phone screenshots
+use fixture content only. Local verification of the existing private collection
+reached 148 distinct cards, 135 full-text stories, 13 summaries, and three source
+help entries with no browser errors. Private store and inventory were copied
+without changes into ignored mode-0600 files in the isolated worktree.
+
+The existing owner-only test Site was replaced successfully at
+2026-09-05T22:11:51Z: version 4 at
+<https://newsletter-story-harvester-test.ken-novak.chatgpt.site>.
+Renderer commit: `6af529cd3c23055edda759e6ee763b0105fb34f6`.
+Sites source commit: `55229bfe7de38cf96d5519ad2d19c9aa023f4d8e`.
+Generated HTML SHA-256:
+`cb61321203c0d567739089952e9b48c97143e387181fb4cc6480fda65ad5c81b`.
+The single HTML asset was copied unchanged into an isolated Sites checkout;
+its local Worker returned HTTP 200 with byte-identical HTML. The live response
+returned HTTP 200 with all original style/script/data blocks unchanged and
+148 stories; the platform adds its own response markup. Access policy was
+identical before and after deployment. No production Site is recorded or
+released. A separate filtered-cluster browser check confirmed that a page sweep
+judges only the matching member and Undo restores the prior judgments.
+
+
+The initial GitHub check exposed that the ignored generated Site directory is
+absent in a fresh checkout. The deployment pointer now identifies the committed
+Sites build project under `work/`, with a manifest that serves `private/site`.
+The local build requires existing protected inputs and generates that ignored
+HTML atomically; no fixture fallback or private data is committed. The deployed
+renderer and generated HTML are unchanged. Added build checks cover private
+permissions, missing input, and symlink refusal.
+
+After the deployment-configuration correction, all 131 harvester tests and the
+root build passed. The committed private build reproduced the deployed HTML
+hash exactly. The Day screenshot was refreshed after that final build.

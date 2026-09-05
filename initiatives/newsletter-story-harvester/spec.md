@@ -415,7 +415,7 @@ What it does, against O5 and O7:
 | `sort(key)` | Date at minimum — story date, falling back to issue date — plus issue date, source, and unjudged-first |
 | `filter(tag)` | Any tag, including `theme:` ones. This is how a theme is "a page" without themes being a structure |
 | `verdict(story, v)` | Drop, keep, emphasise, or whatever else the vocabulary offers (§11) |
-| `verdict-rest(v)` | Apply a verdict to everything visible that has not been judged individually |
+| `verdict-rest(v)` | Apply a verdict to matching, unjudged stories on the current page only; existing judgments and off-page stories stay unchanged |
 | `undo()` | Reverses the last action, including a `verdict-rest`, as one action |
 | `export()` | Produces the verdict file (§9) |
 | `help()` | Lists each source's display name, slug, and configured Gmail search string |
@@ -428,6 +428,20 @@ target, and each is undoable as one action.**
 it: naming the four keepers out of fifty is quick, judging fifty is not, so the
 cheap action is per-item and the sweep is one gesture. It is the single most
 important thing on the page for O7.
+
+The September 2026 presentation follows Bookmark Sorter's Cream-and-teal Day,
+Dark-slate Night, and Pastel washes controls. Page Layout offers 1x1, 1x2,
+1x3, 1x4, 2x3, and 2x4 (rows × columns), initially 2x3. Previous/Next page
+through sorted, filtered story cards; a cluster occupies one card. Cards have
+scrollable full text and fixed verdict controls. Below 1000px, at most two
+columns fit; below 640px, one card is shown per page. The chosen layout remains
+selected, and larger screens restore its full grid.
+
+Only display mode and layout are remembered in browser storage, when available.
+Filter/sort/layout changes and responsive resizing start at page one. Pagination,
+display changes, and layout changes retain the sitting's verdicts and Undo;
+Export includes judgments from every page. A page sweep filters cluster members
+by the active tag; explicitly judging a cluster still judges its whole group.
 
 Stories start expanded so the text and linked title are available without a
 click; the title itself is the outbound link, rather than a second “Open story”

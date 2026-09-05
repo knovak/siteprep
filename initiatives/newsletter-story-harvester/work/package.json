@@ -1,0 +1,8 @@
+{
+  "name": "newsletter-story-harvester",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build-private-site.mjs" },
+  "engines": { "node": ">=18" }
+}

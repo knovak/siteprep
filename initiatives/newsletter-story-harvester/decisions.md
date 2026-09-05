@@ -815,3 +815,19 @@ key nor its display name is the right lasting vocabulary.
   configuration along with its other private provenance.
 - **Unchanged:** this does not establish or constrain the vocabulary of subject
   themes.
+
+
+## 2026-09-05 — Use Bookmark Sorter's visual conventions and story layouts
+
+The user requested the same styles and visual conventions as Bookmark Sorter,
+Day/Night displays, and a Page Layout dropdown with 1x1, 1x2, 1x3, 1x4, 2x3,
+and 2x4. This adopts Cream and teal for Day, Dark slate for Night, and Pastel
+washes for controls. The user authorized a test deployment and reviewable PR.
+
+Implementation choices: interpret layouts as rows × columns, initially 2x3;
+use larger, scrollable text cards with verdict controls at the bottom; reduce
+columns on narrower screens while remembering the requested layout. A bulk
+verdict affects the current page's matching unjudged stories. Explicit cluster
+judgments still apply to the entire cluster. No change to the store/export
+contract or publication privacy boundary is implied. Production release remains
+outside this request.

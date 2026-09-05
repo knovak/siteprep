@@ -365,3 +365,44 @@ read-only handoff then exercised the exact queries the private inventory
 resolves, including the sender-and-subject intersection. The first real
 extraction, count-band measurements, merge rate, and real-story review sitting
 remain the rest of `test-plan.md` §4.6 rather than being claimed by the adapter.
+
+
+## September 2026 story matrix
+
+The review and published pages share Cream-and-teal Day and Dark-slate Night
+palettes, with rounded, regular-weight Pastel washes verdict buttons. Selected
+buttons keep a visible border, including a light grey border at Night.
+
+Page Layout uses rows × columns: **1x1, 1x2, 1x3, 1x4, 2x3, 2x4**. The initial
+layout is 2x3. Previous/Next page through the sorted, filtered cards, with a
+cluster counting as one card. Scroll inside a card to read all its text; verdict
+buttons remain below the scrolling text. Smaller screens reduce columns and
+phones show one card per page while retaining the requested layout preference.
+
+Day/Night and layout are saved locally when browser storage is available.
+Verdicts are held in memory only: **export before closing or reloading**. Export
+includes all judged stories across pages. Undo works across page and layout
+changes. “Judge visible unjudged” affects matching, unjudged stories on the
+current page; explicit cluster buttons still judge all members of that cluster.
+
+The interaction harness uses Unjudged first to visit all 73 unjudged fixture
+stories despite pagination. Its three passes measure UI interaction throughput,
+not human reading speed.
+
+### Refresh the existing private test
+
+The deployment pointer identifies this committed build project and the existing
+owner-only test Site. Its Sites manifest serves the ignored `private/site`
+directory. `npm ci && npm run build` here generates its single HTML asset from
+local `private/store.json` and `private/inventory.json`; `deploy-test` then uses
+Sites hosting. The build refuses missing, symlinked, or group/world-readable
+inputs and writes generated HTML atomically with mode 0600. It never substitutes
+fixture data. The store and earlier review files are not modified.
+
+A new worktree needs its own protected copies of those existing private inputs.
+The generated HTML is intentionally ignored: the test receipt's commit identifies
+the committed renderer, while the deployment's Sites source commit identifies
+the exact generated HTML and hosting adapter. Private payloads and screenshots
+must never enter a public PR. Use fixture data for PR images. GitHub can validate
+the committed deployment project without reading private input or output.
+There is no production deployment recorded for this initiative.

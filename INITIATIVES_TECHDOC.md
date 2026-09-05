@@ -559,3 +559,27 @@ scheduler has to provide.
 `tests/e2e/initiatives.spec.js` covers the rendered result: the TOC explains
 what an initiative is, entries link to overview pages, the nav bar carries the
 Initiatives button, and document links never point at raw markdown.
+
+
+## Newsletter review presentation
+
+`initiatives/newsletter-story-harvester/work/src/review-page.mjs` emits a
+self-contained story matrix for review and provenance-safe publication. Six
+row-by-column layouts paginate the existing sorted/filtered rows; clusters stay
+one row. Only the current page's matching unjudged members enter a bulk verdict.
+The sitting's complete verdict/Undo/export state remains independent of the
+rendered page. Day/Night and layout preferences use guarded localStorage access;
+judgments are never persisted there. CSS uses Bookmark Sorter's Cream/teal and
+Dark-slate palettes and Pastel washes, with visible selected borders at Night.
+
+Browser coverage in `work/test/review-page.test.mjs` and
+`work/test/publish-page.test.mjs` checks grid geometry, paging completeness,
+mobile behavior, storage denial, verdict/export isolation, and published-field
+withholding. `work/measure-review-rate.mjs` sorts Unjudged first and measures the
+whole fixture backlog rather than the current page. Private test generation and
+the existing Site pointer are documented in the initiative's `work/README.md`;
+the ignored generated HTML is separate from the committed renderer. The committed
+Sites build project points its static output at `private/site`. Its
+`build-private-site.mjs` requires protected local inputs and writes mode-0600
+HTML atomically, refusing missing data and symlinked paths. Repository validation
+checks the committed package rather than requiring private artifacts in CI.
