@@ -203,8 +203,8 @@ deploys it. Adding a deployment scheme means adding a `KINDS` entry and a skill
 | `demo` | — | `index.html`, or the named `root_html` | `deploy-demo` | when the branch merges to `main` |
 
 Bookmark Sorter's renderer also owns its browser-local Day/Night preference.
-Its CSS palettes, before-paint preference restoration, storage fallback, and
-selection/focus outlines are documented in
+Its CSS palettes, pastel button washes and touch targets, before-paint
+preference restoration, storage fallback, and selection/focus outlines are documented in
 [`initiatives/bookmark-sorter/work/README.md`](initiatives/bookmark-sorter/work/README.md).
 This preference does not change deployment access or persist bookmark data.
 

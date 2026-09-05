@@ -554,3 +554,20 @@ source is `3c9e936c4a20fe30adf4ad64f4e6984e3eeb68b6`. All 66 tracked application
 files were compared byte-for-byte. Live Chrome also confirmed both themes,
 visible marked outlines on Junk, and persistence after reload. Production
 remains unchanged.
+
+## 2026-09-05 — Pastel washes implemented
+
+Applied the user's selected button study to Day and Night: compact rounded
+controls, regular-weight labels, neutral sand/slate surfaces, sage/rose/blue/oat
+verdict washes, and mint/muted-teal ready actions. Touch pointers retain 44px
+targets. Semantic button ink is separate from card verdict-stripe colors so
+labels retain 4.5:1 contrast when resting, hovered, or pressed. Grey Night
+selection outlines, focus outlines, layouts, and bookmark behavior are preserved.
+Updated Help, user documentation, specification, and technical documentation.
+Corrected popover shadow tokens while checking both palettes.
+
+Validation: 64 app tests and 27 browser tests passed, including all layouts,
+storage fallback, selection/tagging/sweep behavior, enabled-button contrast,
+keyboard focus, and touch targets. App production build and repository build
+passed. Post-build Day/Night screenshots were visually checked with sample
+bookmarks at 1600×1000; a 320px phone rendering was also checked.

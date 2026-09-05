@@ -112,7 +112,12 @@ selection, and export operations.
   hiding the menu is backed by the same server-side role check.
 - `src/pile-page.mjs` renders the self-contained grid. CSS custom properties
   define Cream and teal (Day, the default) and Dark slate (Night), including
-  forms, Help, popovers, and semantic verdict colors. The header's Color mode
+  forms, Help, popovers, and semantic verdict colors. Pastel-wash controls use
+  separate neutral, primary, and verdict background tokens with readable ink;
+  do not reuse the pale primary fill for link text or drag-target outlines.
+  Buttons use 14px regular labels, 32px desktop height and 12px corners, with
+  larger 44px targets on coarse pointers. Hover/pressed overlays affect only
+  the fill; ready states and keyboard focus remain distinct. The header's Color mode
   selector stores `bookmark-sorter-theme` (`day` or `night`) in localStorage
   for this origin. An early head script restores it before paint; invalid or
   unavailable storage falls back to Day, and blocked writes do not prevent
@@ -148,8 +153,8 @@ selection, and export operations.
   after each attempt. A drop selects one file but leaves the explicit form
   submission in place. Select contains expression, proposal, saved-selection,
   tagging, and per-user recent-query controls. The Open action beside proposal,
-  saved, and recent choosers uses a neutral background at the placeholder and white on
-  teal after a real value is selected.
+  saved, and recent choosers uses a neutral background at the placeholder and a
+  mint/teal wash after a real value is selected.
   Export downloads the whole collection or open selection as
   `bookmark-sorter-<collection-name>.json` and can erase the
   current collection after confirmation while preserving the collection and
@@ -314,7 +319,7 @@ collection creation.
   the marked set or current selection. It logs only the tags actually added or
   removed, so one undo reverses exactly that action and preserves everything
   else. The split action uses a neutral background while its tag field is empty and
-  white on teal when entered text makes it ready. The client separates entered
+  a mint/teal wash when entered text makes it ready. The client separates entered
   tags only on commas or whitespace, preserving punctuation such as hyphens
   inside a tag.
 - `POST /api/selection/verdict` applies one verdict to the entire open

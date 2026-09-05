@@ -1050,3 +1050,20 @@ This authorizes the theme implementation, deployment to the existing test Site,
 and a ready-for-review PR. Production release remains a separate decision.
 No existing initiative blocker is being completed; this is a direct follow-up
 request while the initiative is otherwise dormant.
+
+## 2026-09-05 — Pastel washes for lighter controls
+
+The user said the buttons were “too heavy - too large, corners too sharp,
+too much bold text” and “too dark when selected.” After reviewing the five
+Day/Night button studies, they chose **Pastel washes** and asked to implement
+it, release to test, and write a PR.
+
+The alternatives were Soft pills, Airy outlines, Pastel washes, Soft lift,
+and Quiet text. Pastel washes keeps visible button faces and action colors
+while reducing border and type weight. Implement compact rounded controls,
+regular labels, sage/rose/blue/oat fills, and muted counterparts at night.
+Preserve navigation, layouts, and the visible grey selected-card outline.
+
+This updates the existing ready-for-review theme PR and the existing test
+Site. Production release remains separate. There is no blocked todo to
+complete; the initiative remains otherwise dormant.

@@ -176,6 +176,11 @@ Dark slate. Your choice is remembered in this browser on this Site. If browser
 storage is unavailable, switching still works until the page is reloaded.
 Changing colors keeps the current layout, selection, marks, and bookmarks.
 
+Buttons use **Pastel washes**: compact rounded shapes, regular-weight labels,
+and soft sage (Keep), rose (Junk), blue (Archive), and oat (Needs time) fills.
+Ready actions use a mint wash by day and muted teal at night. Hover and keyboard
+focus remain visible; touch devices use larger targets.
+
 A teal outline identifies the focused card. Marked cards also have a tinted
 background, a checked mark button, and an outline that is light grey in Night.
 The verdict stripe stays visible separately, including on Junk cards.
@@ -209,7 +214,7 @@ Open **Select and tag** to use any of four routes:
 
 The three chooser actions provide a visual check before opening anything. With
 no proposal or selection chosen, its **Open…** control uses a neutral background. After
-one is chosen, that control uses a filled teal background with white text.
+one is chosen, that control uses a soft mint wash in Day or a muted teal wash in Night.
 
 Opening a selection makes it the visible working set and records its expression
 in **Previous selections** for the signed-in user, newest first. History is
@@ -224,7 +229,7 @@ the whole tag or untag operation. Adding preserves every existing tag that was
 not entered; removing preserves every tag that was not entered.
 
 The Tag/Untag control uses a neutral background while the tag field is empty.
-It turns teal with white text after text is entered, showing that the action is ready.
+It uses a soft mint wash in Day or a muted teal wash in Night after text is entered, showing that the action is ready.
 
 ### Selection expressions
 

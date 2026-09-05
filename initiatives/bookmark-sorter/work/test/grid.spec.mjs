@@ -320,15 +320,15 @@ test('Open choice buttons show whether a proposal, saved selection, or previous 
     const select = page.getByLabel(selectLabel);
     const button = page.getByRole('button', {name: buttonName});
     await expect(button).toHaveCSS('color', 'rgb(23, 49, 56)');
-    await expect(button).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+    await expect(button).toHaveCSS('background-color', 'rgb(240, 233, 221)');
     await expect(button).toHaveAttribute('data-selection-ready', 'false');
     await select.selectOption(option);
-    await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
-    await expect(button).toHaveCSS('background-color', 'rgb(0, 89, 101)');
+    await expect(button).toHaveCSS('color', 'rgb(23, 63, 67)');
+    await expect(button).toHaveCSS('background-color', 'rgb(211, 232, 225)');
     await expect(button).toHaveAttribute('data-selection-ready', 'true');
     await select.selectOption('');
     await expect(button).toHaveCSS('color', 'rgb(23, 49, 56)');
-    await expect(button).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+    await expect(button).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   }
 
   await page.getByLabel('Selection expression').fill('site:first.example');
@@ -336,10 +336,10 @@ test('Open choice buttons show whether a proposal, saved selection, or previous 
   const previous = page.getByLabel('Previous selections');
   const openPrevious = page.getByRole('button', {name: 'Open previous'});
   await expect(openPrevious).toHaveCSS('color', 'rgb(23, 49, 56)');
-  await expect(openPrevious).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+  await expect(openPrevious).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   await previous.selectOption('site:first.example');
-  await expect(openPrevious).toHaveCSS('color', 'rgb(255, 255, 255)');
-  await expect(openPrevious).toHaveCSS('background-color', 'rgb(0, 89, 101)');
+  await expect(openPrevious).toHaveCSS('color', 'rgb(23, 63, 67)');
+  await expect(openPrevious).toHaveCSS('background-color', 'rgb(211, 232, 225)');
 });
 
 test('Import accepts a file dropped beside the file chooser', async ({page}) => {
@@ -652,7 +652,7 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
   await expect(page.locator('#authorized-users')).toContainText('new.reader@example.com — user');
   await page.locator('#remove-user-email').fill('new.reader@example.com');
   const removeUser = page.getByRole('button', {name: 'Remove user'});
-  await expect(removeUser).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(removeUser).toHaveCSS('color', 'rgb(142, 48, 41)');
   await removeUser.click();
   await expect(page.locator('#authorized-users')).not.toContainText('new.reader@example.com');
   expect(backend.authorizedUsers).toHaveLength(2);
@@ -817,19 +817,19 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to add');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
   await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(23, 49, 56)');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(23, 49, 56)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   await page.locator('#tag-input').fill('test-tag');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
-  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(255, 255, 255)');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(0, 89, 101)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(255, 255, 255)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(0, 89, 101)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(23, 63, 67)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(211, 232, 225)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(23, 63, 67)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(211, 232, 225)');
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Added tags to 4 items as one action.');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   expect(backend.items.every(item => item.tags.includes('test-tag'))).toBe(true);
   expect(backend.items.every(item => !item.tags.includes('te') && !item.tags.includes('t-tag'))).toBe(true);
 
@@ -841,7 +841,7 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Removed tags from 4 items as one action.');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 253, 247)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   expect(backend.items.every(item => !item.tags.includes('test-tag'))).toBe(true);
 
   await page.getByLabel('Tag mode').selectOption('apply');
@@ -956,4 +956,59 @@ test('night selection and focus outlines stay visible for all verdicts', async (
   await expect(page.locator('.bookmark-card.marked')).toHaveCount(5);
   await expect(page.locator('.bookmark-card').first()).not.toHaveClass(/focused/);
   await expect(page.locator('.bookmark-card').first()).toHaveCSS('border-color', 'rgb(185, 199, 213)');
+});
+
+test('Pastel washes keep actions readable, compact, and touch accessible', async ({page, browser}) => {
+  await page.setViewportSize({width: 1600, height: 1000});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  const contrast = button => button.evaluate(button => {
+    const style = getComputedStyle(button);
+    const channels = value => value.match(/[\d.]+/g).map(Number);
+    let background = channels(style.backgroundColor);
+    const overlay = style.backgroundImage.match(/rgba?\([^)]+\)/);
+    if (overlay) {
+      const wash = channels(overlay[0]);
+      background = background.map((v, i) => v * (1 - (wash[3] ?? 1)) + wash[i] * (wash[3] ?? 1));
+    }
+    const luminance = rgb => rgb.slice(0, 3).map(v => {
+      v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
+    }).reduce((total, v, i) => total + v * [.2126, .7152, .0722][i], 0);
+    const a = luminance(channels(style.color)), b = luminance(background);
+    return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+  });
+  for (const theme of ['day', 'night']) {
+    await page.getByLabel('Color mode').selectOption(theme);
+    const buttons = page.locator('.toolbar button[data-verdict], #sweep-rest, #help-toggle');
+    for (const button of await buttons.all()) {
+      await expect(button).toBeEnabled();
+      await expect(button).toHaveCSS('font-weight', '400');
+      expect((await button.boundingBox()).height).toBeLessThanOrEqual(34);
+      expect(await button.evaluate(el => parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThanOrEqual(12);
+      await page.mouse.move(0, 0);
+      expect(await contrast(button)).toBeGreaterThanOrEqual(4.5);
+      await button.hover();
+      await expect(button).not.toHaveCSS('background-image', 'none');
+      expect(await contrast(button)).toBeGreaterThanOrEqual(4.5);
+      await page.mouse.down();
+      expect(await contrast(button)).toBeGreaterThanOrEqual(4.5);
+      await page.mouse.move(0, 0);
+      await page.mouse.up();
+    }
+    await page.locator('#help-toggle').focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.locator('#help-toggle')).toHaveCSS('outline-style', 'solid');
+    await expect(page.locator('#previous-page')).toBeDisabled();
+  }
+  const touch = await browser.newContext({hasTouch: true, viewport: {width: 390, height: 844}});
+  try {
+    const phone = await touch.newPage();
+    await installPile(phone);
+    await phone.goto('https://pile.test/');
+    for (const control of await phone.locator('.toolbar button, #theme-mode, #help-toggle, .file-tools > details > summary').all()) {
+      expect((await control.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    }
+    expect(await phone.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  } finally { await touch.close(); }
 });
