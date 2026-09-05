@@ -73,16 +73,19 @@ vertebral bodies and posterior processes, the atlas ring, axis dens,
 intervertebral disc seams below C2, a connected sacrum with five fused segments,
 and a typical four-segment coccyx. Twelve rib pairs curve in three dimensions:
 ribs 1-7 connect through cartilage to the sternum, 8-10 connect to the costal
-arch, and 11-12 have free anterior ends. The sternum and scapular blades complete
-the immediate chest context. The reference widths, curves, proportions, and
+arch, and 11-12 have free anterior ends. The sternum, scapular blades, and two curved clavicles complete
+the immediate chest context. The skull has a posed cranium, an explicit occipital
+region and paired condyles, nasal and jaw landmarks, and orbital recesses. Head
+rotation is re-anchored at the atlas-occiput articulation; the skull and its
+surface silhouette rotate in three dimensions instead of remaining flat ovals. The reference widths, curves, proportions, and
 skin weights are illustrative estimates awaiting anatomy review.
 
-Muscles use 86 shaped surface patches rather than identical two-point bellies.
+Muscles use 180 shaped surface patches rather than identical two-point bellies.
 These include chest fans, shoulder portions, separate abdominal blocks,
 oblique fibres, three visible quadriceps bundles per side, paired calf heads,
 and distinct front/back arm and back surfaces. Curved surface fibres, tonal
 strips, fascia/tendon fades, and fine claim outlines give anatomy-drawing detail
-without replacing the animated viewer with a fixed image. Contextual neck,
+without replacing the animated viewer with a fixed image. Contextual neck, intercostal, segmental back, collarbone,
 forearm, adductor and shin groups have no movement claim ID; they cannot be
 highlighted as if the record supplied a new claim. All existing claim IDs and
 review statuses are preserved.
@@ -122,3 +125,43 @@ Physical anatomy dimensions use the projection scale once. Device-pixel ratio
 applies only to screen-space line detail; the earlier surface and skull code
 multiplied it twice. Clip-wide fitting now reserves room for the camera controls
 and full head/feet extents on phones while remaining constant through playback.
+
+
+## Spine, skull, collarbone and foot audit (2026-09-05)
+
+[ANATOMY-AUDIT.md](ANATOMY-AUDIT.md) records the explicit counts and remaining
+reference-model limitations. Every vertebral level, every rib, both clavicles,
+and the skull is tested for motion *within* a clip. Fused sacral segments keep
+constant separation. Cervical deformation reaches C1; a separate head rotation
+pivots at the occiput without dragging the atlas along with a nod. C1 has no
+vertebral body, disc or spinous process.
+
+The illustrated muscle set includes two sternocleidomastoid heads per side,
+splenius/semispinalis capitis, four suboccipital pairs, three scalene pairs,
+levator scapulae, subclavius, pectoralis minor, 11 external-intercostal patches
+per side, and 23 paired intertransversarii patches along C1-L5. These are authored
+surface estimates, not an exhaustive individual-muscle atlas. New patches retain
+null movement-claim IDs and have named attachment landmarks. Skull insertions use
+the same corrected head transform as the bones. Clavicular and scapular ends
+follow the shoulder; intercostal borders use the same rib geometry and torso
+binding as the skeleton. The clavicle curve blends the clavicle and scapular
+controls and is not a rigid-body sternoclavicular/acromioclavicular simulation.
+Small contextual patches use fewer fibres and strips to bound rendering cost.
+
+The movement generator uses +Z as anterior. Negative X hip rotation brings the
+downward reference thigh forward; positive X knee rotation returns the shin
+downward. The former seated keyframes reversed both signs, placing the knees
+behind the body while the toes still pointed forward. All seated variants now
+use the corrected signs. Chair-pose and forward-fold keyframes compensate at the
+ankles and root to preserve reference foot positions at those keyframes; the
+forward fold rotates the pelvis with compensating hip rotation to keep the legs
+beneath the body. Linear interpolation remains illustrative, not contact-solving
+inverse kinematics. Counter-turn includes a small independent head nod/turn;
+shoulder-clock and arm-sweep keyframes include clavicular response.
+
+Additional anatomical references checked on 2026-09-05:
+
+- [11.3 Axial Muscles of the Head, Neck, and Back](https://openstax.org/books/anatomy-and-physiology-2e/pages/11-3-axial-muscles-of-the-head-neck-and-back)
+- [11.4 Axial Muscles of the Abdominal Wall, and Thorax](https://openstax.org/books/anatomy-and-physiology/pages/11-4-axial-muscles-of-the-abdominal-wall-and-thorax)
+- [11.5 Muscles of the Pectoral Girdle and Upper Limbs](https://openstax.org/books/anatomy-and-physiology-2e/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs)
+- [University of Utah: Deep back and suboccipital muscles](https://anatomy.med.utah.edu/diganat/PT/2014_lecture/L08_deep_back_suboccipital.pdf)

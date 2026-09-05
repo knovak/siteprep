@@ -1,5 +1,5 @@
 import { globalMatrices, transformPoint } from '../phase-0/scripts/rig-math.mjs';
-import { createAxialGeometry, createMuscleGeometry } from './src/anatomy-geometry.mjs';
+import { createAxialGeometry, createMuscleGeometry, createSkullGeometry } from './src/anatomy-geometry.mjs';
 import { TRADITION_LABELS, anatomySummary, instructionSections, movementCompleteness } from './src/collection.mjs';
 import {
   DEFAULT_VISUAL_PROFILE,
@@ -160,9 +160,10 @@ function fitProjection(displayRig) {
   if (nextKey === projectionKey) return;
   const points = clip.frames.flatMap((frame) => {
     const matrices = globalMatrices(displayRig, frame);
-    return displayRig.nodes
+    return [...displayRig.nodes
       .filter((node) => node.id !== 'root')
-      .map((node) => cameraPoint(transformPoint(matrices.get(node.id), [0, 0, 0])));
+      .map((node) => cameraPoint(transformPoint(matrices.get(node.id), [0, 0, 0]))),
+      ...createSkullGeometry(displayRig, matrices).bones.flatMap((bone) => bone.points.map(cameraPoint))];
   });
   const xs = points.map((point) => point[0]);
   const ys = points.map((point) => point[1]);
@@ -270,7 +271,6 @@ function drawSurface(matrices, alpha, displayRig) {
   const leftHip = world('pelvis', [-126, -34, 0]);
   const rightHip = world('pelvis', [126, -34, 0]);
   const neck = personalizeSurfacePoint(transformPoint(matrices.get('neck-base'), [0, 0, 0]), 'neck-base', visualProfile);
-  const head = project(world('head'));
   const frontSilhouette = [leftShoulder, leftChest, leftWaist, leftHip, rightHip, rightWaist, rightChest, rightShoulder];
   const sideSilhouette = [
     world('thoracic-upper', [0, 45, -68]),
@@ -297,8 +297,7 @@ function drawSurface(matrices, alpha, displayRig) {
   context.closePath();
   context.fill();
   context.stroke();
-  context.beginPath();
-  context.ellipse(head[0], head[1], (76 - sideAmount * 10) * projectionFrame.scale, 104 * projectionFrame.scale, 0, 0, Math.PI * 2);
+  traceProjected(convexHull(createSkullGeometry(displayRig, matrices).bones.flatMap((bone) => bone.points.map(project))), true);
   context.fill();
   context.stroke();
   context.restore();
@@ -324,21 +323,20 @@ function boneLandmarks(matrices, alpha = 1) {
     context.stroke();
     context.restore();
   };
-  ellipseAt('head', 82, 105, '#f0e4c9');
   ellipseAt('pelvis', 135, 72, '#d8c69f');
 }
 
 function drawSkeleton(matrices, displayRig, activeJoints) {
   const axialNodes = new Set(['pelvis', 'lumbar-spine', 'thoracic-lower', 'thoracic-upper', 'neck-base', 'head']);
   const segments = displayRig.nodes.map((node) => {
-    if (!node.parent || node.id === 'root' || axialNodes.has(node.id) || !visibleAround(node.id)) return null;
+    if (!node.parent || node.id === 'root' || axialNodes.has(node.id) || node.id.startsWith('clavicle-') || node.id.startsWith('scapula-') || !visibleAround(node.id)) return null;
     const start = transformPoint(matrices.get(node.parent), [0, 0, 0]);
     const end = transformPoint(matrices.get(node.id), [0, 0, 0]);
     return { node, start, end, depth: (project(start)[2] + project(end)[2]) / 2 };
   }).filter(Boolean).sort((a, b) => a.depth - b.depth);
   boneLandmarks(matrices, .9);
   const axial = createAxialGeometry(displayRig, matrices);
-  const palette = { bone: '#decba8', 'bone-light': '#fff0ce', 'bone-shade': '#ad9270', disc: '#a6b1ae', cartilage: '#c0d5ce' };
+  const palette = { bone: '#decba8', 'bone-light': '#fff0ce', 'bone-shade': '#ad9270', disc: '#a6b1ae', cartilage: '#c0d5ce', cavity: '#514838' };
   const ordered = axial.bones.filter((bone) => visibleAround(bone.node)).map((bone) => ({ ...bone, depth: bone.points.reduce((sum, p) => sum + project(p)[2], 0) / bone.points.length })).sort((a, b) => a.depth - b.depth);
   for (const bone of ordered) {
     context.save();
@@ -396,6 +394,20 @@ function traceProjected(points, closed = false) {
   context.moveTo(points[0][0], points[0][1]);
   for (const p of points.slice(1)) context.lineTo(p[0], p[1]);
   if (closed) context.closePath();
+}
+
+function convexHull(points) {
+  const sorted = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (a, b, c) => (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+  const half = (list) => {
+    const result = [];
+    for (const p of list) {
+      while (result.length > 1 && cross(result.at(-2),result.at(-1),p) <= 0) result.pop();
+      result.push(p);
+    }
+    return result.slice(0,-1);
+  };
+  return [...half(sorted),...half(sorted.reverse())];
 }
 
 let muscleGeometryCache;

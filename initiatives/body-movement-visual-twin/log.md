@@ -63,3 +63,22 @@ Recorded KRN feedback relayed by the user, replaced the schematic spine and rib 
 ## 2026-09-05 — Deploy the KRN anatomy revision to test
 
 At the user's request, replaced the existing private validation Site with version 4 from source commit `2f3051bf774bf57be18ee7acb074071659f6fcf2`. Verified the updated viewer and anatomy module live, preserved owner-only access, and recorded the deployment receipt in the Phase 6 validation record. The initiative remains on test, never released; PR #427 remains ready for review and unmerged.
+
+
+## 2026-09-05 — Complete axial-motion audit and correct foot direction
+
+The user requested an explicit count through the occiput/skull, rib and
+collarbone movement, connected muscles, and correction of apparently backward
+feet in a supplied side-view screenshot. Audited the current source: 24 mobile
+vertebrae plus five fused sacral and four coccygeal segments and 12 rib pairs
+were present; the head was a flat oval, the collarbones were generic rig links,
+several connecting muscles were absent, and seated hip/knee signs faced the
+knees away from the toes.
+
+Corrected the pose generator and regenerated the collection; added posed skull
+and occipital detail, curved moving clavicles and connected neck, intercostal,
+clavicular and segmental muscle patches. Rebuilt the private static bundle from
+its sources. Added per-structure motion, skull-pivot, fused-sacrum, foot-direction,
+shoulder-response, muscle-attachment and scaling regressions. The audit is in
+`work/phase-3/ANATOMY-AUDIT.md`. This is a software/display correction; the existing
+anatomy/practitioner evidence item and unreviewed records remain open.
