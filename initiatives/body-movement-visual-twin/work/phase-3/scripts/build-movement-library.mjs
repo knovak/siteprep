@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { globalMatrices, transformPoint } from '../../phase-0/scripts/rig-math.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const recordsDirectory = resolve(phaseDirectory, 'records');
@@ -230,7 +232,7 @@ const records = [
 ];
 
 const armsDown = { 'scapula-left': [0, 0, 90], 'scapula-right': [0, 0, -90] };
-const seated = { ...armsDown, 'hip-left': [90, 0, 0], 'hip-right': [90, 0, 0], 'femur-left': [-90, 0, 0], 'femur-right': [-90, 0, 0] };
+const seated = { ...armsDown, 'hip-left': [-90, 0, 0], 'hip-right': [-90, 0, 0], 'femur-left': [90, 0, 0], 'femur-right': [90, 0, 0] };
 const frame = (id, t, rotations_deg, translations_mm) => ({ id, t, rotations_deg, ...(translations_mm ? { translations_mm } : {}) });
 const clip = (id, duration_seconds, description, frames) => ({ id, duration_seconds, description, required_samples: frames.map((entry) => entry.id), frames });
 
@@ -242,19 +244,34 @@ const clips = {
     frame('start', 0, seated), frame('enter', .28, { ...seated, 'scapula-left': [0, 0, -80], 'humerus-left': [0, 0, -10] }), frame('stay', .62, { ...seated, 'thoracic-lower': [0, 0, -4], 'thoracic-upper': [0, 0, -8], 'scapula-left': [0, 0, -90] }), frame('exit-upright', .86, { ...seated, 'scapula-left': [0, 0, -70] }), frame('end', 1, seated)
   ]),
   'pause-before-standing': clip('pause-before-standing', 14, 'A seated pause and whole-torso incline; it stops before claiming to reproduce standing.', [
-    frame('start', 0, seated), frame('pause', .4, seated), frame('incline', .74, { ...seated, 'lumbar-spine': [4, 0, 0], 'thoracic-lower': [7, 0, 0], 'neck-base': [-2, 0, 0] }), frame('begin-standing', 1, { ...seated, 'hip-left': [72, 0, 0], 'hip-right': [72, 0, 0], 'femur-left': [-68, 0, 0], 'femur-right': [-68, 0, 0], 'lumbar-spine': [5, 0, 0], 'thoracic-lower': [9, 0, 0] })
+    frame('start', 0, seated), frame('pause', .4, seated), frame('incline', .74, { ...seated, 'lumbar-spine': [4, 0, 0], 'thoracic-lower': [7, 0, 0], 'neck-base': [-2, 0, 0] }), frame('begin-standing', 1, { ...seated, 'hip-left': [-72, 0, 0], 'hip-right': [-72, 0, 0], 'femur-left': [68, 0, 0], 'femur-right': [68, 0, 0], 'lumbar-spine': [5, 0, 0], 'thoracic-lower': [9, 0, 0] })
   ]),
-  'mountain-arm-sweep-study': clip('mountain-arm-sweep-study', 18, 'A symmetrical standing arm sweep on the fitted reference.', [frame('start', 0, armsDown), frame('raise', .38, { 'scapula-left': [0, 0, 20], 'scapula-right': [0, 0, -20] }), frame('overhead', .68, { 'scapula-left': [0, 0, -90], 'scapula-right': [0, 0, 90] }), frame('return', 1, armsDown)]),
+  'mountain-arm-sweep-study': clip('mountain-arm-sweep-study', 18, 'A symmetrical standing arm sweep on the fitted reference.', [frame('start', 0, armsDown), frame('raise', .38, { 'scapula-left': [0, 0, 20], 'scapula-right': [0, 0, -20], 'clavicle-left': [0, 0, -6], 'clavicle-right': [0, 0, 6] }), frame('overhead', .68, { 'scapula-left': [0, 0, -90], 'scapula-right': [0, 0, 90], 'clavicle-left': [0, 0, -12], 'clavicle-right': [0, 0, 12] }), frame('return', 1, armsDown)]),
   'warrior-two-study': clip('warrior-two-study', 20, 'A frontal wide-stance Warrior II anatomical estimate.', [frame('start', 0, armsDown), frame('open', .3, { 'hip-left': [0, 0, -24], 'hip-right': [0, 0, 24] }), frame('display', .7, { 'hip-left': [0, 0, -24], 'hip-right': [0, 0, 24], 'femur-left': [0, 0, 48] }), frame('return', 1, armsDown)]),
   'triangle-study': clip('triangle-study', 20, 'A frontal wide-stance triangle anatomical estimate.', [frame('start', 0, armsDown), frame('lengthen', .3, { 'hip-left': [0, 0, -22], 'hip-right': [0, 0, 22] }), frame('side-angle', .7, { 'hip-left': [0, 0, -22], 'hip-right': [0, 0, 22], 'lumbar-spine': [0, 0, -18], 'thoracic-lower': [0, 0, -12] }), frame('return', 1, armsDown)]),
-  'chair-pose-study': clip('chair-pose-study', 20, 'A sagittal hip-and-knee flexion anatomical estimate.', [frame('start', 0, armsDown), frame('bend', .36, { ...armsDown, 'hip-left': [24, 0, 0], 'hip-right': [24, 0, 0], 'femur-left': [-42, 0, 0], 'femur-right': [-42, 0, 0] }), frame('display', .68, { 'scapula-left': [0, 0, -78], 'scapula-right': [0, 0, 78], 'hip-left': [32, 0, 0], 'hip-right': [32, 0, 0], 'femur-left': [-58, 0, 0], 'femur-right': [-58, 0, 0], 'thoracic-lower': [8, 0, 0] }), frame('return', 1, armsDown)]),
-  'standing-forward-fold-study': clip('standing-forward-fold-study', 22, 'A sagittal hip-hinge and segmented forward-fold anatomical estimate.', [frame('start', 0, armsDown), frame('hinge', .36, { ...armsDown, 'hip-left': [50, 0, 0], 'hip-right': [50, 0, 0] }), frame('display', .7, { ...armsDown, 'hip-left': [72, 0, 0], 'hip-right': [72, 0, 0], 'lumbar-spine': [24, 0, 0], 'thoracic-lower': [18, 0, 0], 'neck-base': [-18, 0, 0] }), frame('return', 1, armsDown)]),
+  'chair-pose-study': clip('chair-pose-study', 20, 'A sagittal hip-and-knee flexion anatomical estimate.', [frame('start', 0, armsDown), frame('bend', .36, { ...armsDown, 'hip-left': [-24, 0, 0], 'hip-right': [-24, 0, 0], 'femur-left': [42, 0, 0], 'femur-right': [42, 0, 0] }), frame('display', .68, { 'scapula-left': [0, 0, -78], 'scapula-right': [0, 0, 78], 'hip-left': [-32, 0, 0], 'hip-right': [-32, 0, 0], 'femur-left': [58, 0, 0], 'femur-right': [58, 0, 0], 'thoracic-lower': [8, 0, 0] }), frame('return', 1, armsDown)]),
+  'standing-forward-fold-study': clip('standing-forward-fold-study', 22, 'A sagittal hip-hinge and segmented forward-fold anatomical estimate.', [frame('start', 0, armsDown), frame('hinge', .36, { ...armsDown, pelvis: [50, 0, 0], 'hip-left': [-50, 0, 0], 'hip-right': [-50, 0, 0] }), frame('display', .7, { ...armsDown, pelvis: [72, 0, 0], 'hip-left': [-72, 0, 0], 'hip-right': [-72, 0, 0], 'lumbar-spine': [24, 0, 0], 'thoracic-lower': [18, 0, 0], 'neck-base': [-18, 0, 0] }), frame('return', 1, armsDown)]),
   'dynamic-chair-clock-study': clip('dynamic-chair-clock-study', 22, 'A seated pelvic side-shift anatomical estimate.', [frame('start', 0, seated), frame('side-shift', .45, { ...seated, pelvis: [0, 0, -6], 'lumbar-spine': [0, 0, 5] }, { root: [-28, 0, 0] }), frame('return-across', .8, { ...seated, pelvis: [0, 0, 6], 'lumbar-spine': [0, 0, -5] }, { root: [28, 0, 0] }), frame('end', 1, seated)]),
-  'shoulder-clock-study': clip('shoulder-clock-study', 22, 'A seated left-scapula clock-path anatomical estimate.', [frame('start', 0, seated), frame('up-down', .35, { ...seated, 'scapula-left': [0, 0, 84] }, { 'scapula-left': [0, 22, 0] }), frame('around', .72, { ...seated, 'scapula-left': [0, 8, 96] }, { 'scapula-left': [-16, -10, 0] }), frame('end', 1, seated)]),
+  'shoulder-clock-study': clip('shoulder-clock-study', 22, 'A seated left-scapula clock-path anatomical estimate.', [frame('start', 0, seated), frame('up-down', .35, { ...seated, 'scapula-left': [0, 0, 84], 'clavicle-left': [0, 0, -5] }, { 'scapula-left': [0, 22, 0] }), frame('around', .72, { ...seated, 'scapula-left': [0, 8, 96], 'clavicle-left': [0, -4, 3] }, { 'scapula-left': [-16, -10, 0] }), frame('end', 1, seated)]),
   'sliding-hand-study': clip('sliding-hand-study', 22, 'A seated hand-slide and rib-response anatomical estimate.', [frame('start', 0, seated), frame('slide', .45, { ...seated, 'scapula-left': [0, 0, 76], 'humerus-left': [0, 0, -55], 'forearm-left': [0, 0, -35] }), frame('follow', .78, { ...seated, 'scapula-left': [0, 0, 72], 'humerus-left': [0, 0, -68], 'thoracic-upper': [0, 0, -7], 'lumbar-spine': [0, 0, -3] }), frame('end', 1, seated)]),
-  'seated-counterturn-study': clip('seated-counterturn-study', 22, 'A seated pelvis, ribs, and head counter-turn anatomical estimate.', [frame('start', 0, seated), frame('turn-together', .45, { ...seated, pelvis: [0, 9, 0], 'thoracic-lower': [0, 8, 0] }), frame('differentiate', .78, { ...seated, pelvis: [0, 9, 0], 'thoracic-lower': [0, 5, 0], 'thoracic-upper': [0, -8, 0], 'neck-base': [0, -12, 0] }), frame('end', 1, seated)]),
-  'seated-weight-shift-study': clip('seated-weight-shift-study', 22, 'A seated bilateral weight-shift anatomical estimate.', [frame('start', 0, seated), frame('shift-left', .42, { ...seated, pelvis: [0, 0, -5], 'hip-left': [88, 0, -3] }, { root: [-34, 0, 0] }), frame('shift-right', .78, { ...seated, pelvis: [0, 0, 5], 'hip-right': [88, 0, 3] }, { root: [34, 0, 0] }), frame('end', 1, seated)]),
+  'seated-counterturn-study': clip('seated-counterturn-study', 22, 'A seated pelvis, ribs, and head counter-turn anatomical estimate.', [frame('start', 0, seated), frame('turn-together', .45, { ...seated, pelvis: [0, 9, 0], 'thoracic-lower': [0, 8, 0] }), frame('differentiate', .78, { ...seated, pelvis: [0, 9, 0], 'thoracic-lower': [0, 5, 0], 'thoracic-upper': [0, -8, 0], 'neck-base': [0, -12, 0], head: [7, -8, 0] }), frame('end', 1, seated)]),
+  'seated-weight-shift-study': clip('seated-weight-shift-study', 22, 'A seated bilateral weight-shift anatomical estimate.', [frame('start', 0, seated), frame('shift-left', .42, { ...seated, pelvis: [0, 0, -5], 'hip-left': [-88, 0, -3] }, { root: [-34, 0, 0] }), frame('shift-right', .78, { ...seated, pelvis: [0, 0, 5], 'hip-right': [-88, 0, 3] }, { root: [34, 0, 0] }), frame('end', 1, seated)]),
 };
+
+// +Z is anterior. Hip flexion takes a downward thigh toward +Z (negative X),
+// while knee flexion uses positive X. Counter-rotate the ankles in planted
+// sagittal studies and translate the root to retain the reference ankle height.
+const referenceRig = JSON.parse(await readFile(resolve(phaseDirectory, '../phase-2/data/rig-core.json'), 'utf8'));
+for (const id of ['chair-pose-study', 'standing-forward-fold-study']) {
+  for (const pose of clips[id].frames) {
+    for (const side of ['left', 'right']) {
+      const angles = ['pelvis', `hip-${side}`, `femur-${side}`].reduce((sum, node) => sum + (pose.rotations_deg[node]?.[0] || 0), 0);
+      pose.rotations_deg[`tibia-${side}`] = [-angles, 0, 0];
+    }
+    const ankle = transformPoint(globalMatrices(referenceRig, pose).get('tibia-left'), [0, 0, 0]);
+    pose.translations_mm = { root: [0, 80 - ankle[1], -ankle[2]] };
+  }
+}
 
 const baseRecords = [
   { tradition: 'feldenkrais', record: '../phase-1/fixtures/feldenkrais.json' },

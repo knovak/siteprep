@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { createAxialGeometry, createMuscleGeometry } from '../src/anatomy-geometry.mjs';
-import { globalMatrices, distanceBetween } from '../../phase-0/scripts/rig-math.mjs';
+import { globalMatrices, distanceBetween, transformPoint } from '../../phase-0/scripts/rig-math.mjs';
 import { scaleReferenceRig, DEFAULT_VISUAL_PROFILE } from '../../phase-4/src/visual-twin-controls.mjs';
 
 const rig = JSON.parse(await readFile(new URL('../../phase-2/data/rig-core.json', import.meta.url)));
@@ -27,7 +27,103 @@ test('complete vertebral regions and twelve bilateral ribs retain their connecti
   }
   assert.ok(baseline.bones.some((bone) => bone.id === 'C2-dens'));
   assert.ok(!baseline.bones.some((bone) => bone.id === 'C1-disc'));
+  assert.ok(!baseline.bones.some((bone) => bone.id === 'C1-spinous'), 'atlas has no spinous process');
   assert.ok(baseline.bones.some((bone) => bone.id === 'C2-disc'));
+});
+
+test('each vertebra, rib, collarbone and the skull moves within a clip, with the sacrum staying fused', () => {
+  const moved = new Set();
+  for (const clip of Object.values(clips)) {
+    const start = createAxialGeometry(rig, globalMatrices(rig, clip.frames[0]));
+    const landmarks = (g) => [...g.vertebrae.map((v) => [v.id,v.center]), ...g.ribs.map((r) => [r.id,r.points[12]]),
+      ...g.bones.filter((b) => b.id.startsWith('clavicle-') || b.id.startsWith('occipital-condyle-')).map((b) => [b.id,b.points[2]]), ['skull',g.skull.center]];
+    const initial = new Map(landmarks(start));
+    for (const frame of clip.frames.slice(1)) {
+      const geometry = createAxialGeometry(rig, globalMatrices(rig, frame));
+      for (const [id,point] of landmarks(geometry)) if (distanceBetween(point,initial.get(id)) > 1) moved.add(id);
+      const sacral = geometry.vertebrae.filter((v) => v.region === 'sacral');
+      const reference = baseline.vertebrae.filter((v) => v.region === 'sacral');
+      for (let i=1; i<sacral.length; i+=1) assert.ok(Math.abs(distanceBetween(sacral[0].center,sacral[i].center) - distanceBetween(reference[0].center,reference[i].center)) < 1e-8);
+    }
+  }
+  for (const id of [...baseline.vertebrae.map((v) => v.id),...baseline.ribs.map((r) => r.id),'clavicle-left','clavicle-right','occipital-condyle--1','occipital-condyle-1','skull']) assert.ok(moved.has(id), `${id} must move during playback, not merely differ from the T-pose`);
+});
+
+test('skull nods at the occiput and keeps the atlas beneath it instead of rotating a flat oval', () => {
+  const nodded = createAxialGeometry(rig, globalMatrices(rig, { rotations_deg: { head: [10,12,0] } }));
+  assert.ok(distanceBetween(nodded.skull.pivot,baseline.skull.pivot) < 1e-8);
+  assert.ok(distanceBetween(nodded.skull.center,baseline.skull.center) > 10);
+  assert.ok(distanceBetween(nodded.vertebrae[0].center,baseline.vertebrae[0].center) < 1e-8);
+  assert.ok(distanceBetween(nodded.skull.pivot,nodded.vertebrae[0].center) < 10);
+  for (const id of ['nasal-bridge','maxilla','mandible-front','occipital-condyle--1','occipital-condyle-1']) assert.ok(nodded.bones.some((b) => b.id === id));
+  assert.ok(nodded.bones.some((b) => b.id.startsWith('occiput-')));
+});
+
+test('collarbones respond to shoulder motion and the neck-to-clavicle muscles stay attached', () => {
+  const clip=clips['shoulder-clock-study'];
+  const first=globalMatrices(rig,clip.frames[0]);
+  const next=globalMatrices(rig,clip.frames[1]);
+  const a=createAxialGeometry(rig,first);
+  const b=createAxialGeometry(rig,next);
+  const clavicle=(g,side)=>g.bones.find((bone)=>bone.id===`clavicle-${side}`);
+  assert.ok(distanceBetween(clavicle(a,'left').points.at(-1),clavicle(b,'left').points.at(-1))>15);
+  assert.ok(distanceBetween(clavicle(a,'right').points.at(-1),clavicle(b,'right').points.at(-1))<1e-8);
+  const scm=createMuscleGeometry(rig,next).find((p)=>p.id==='sternocleidomastoid-clavicular-left');
+  assert.ok(distanceBetween(scm.attachments[1].point,clavicle(b,'left').points[1])<1e-8);
+});
+
+test('seated feet and knees point anteriorly together and standing sagittal studies keep feet planted', () => {
+  for (const clip of Object.values(clips)) for (const frame of clip.frames) {
+    const matrices = globalMatrices(rig,frame);
+    const at = (id) => transformPoint(matrices.get(id),[0,0,0]);
+    if (clip.description.toLowerCase().includes('seated') || clip.id === 'pause-before-standing') {
+      const m = matrices.get('pelvis');
+      const forward = [m[2],m[6],m[10]];
+      const anterior = (a,b) => a.reduce((sum,v,i) => sum + (v-b[i])*forward[i],0);
+      for (const side of ['left','right']) {
+        assert.ok(anterior(at(`femur-${side}`),at(`hip-${side}`)) > 300, `${clip.id}/${frame.id}: knee must be in front of hip`);
+        assert.ok(anterior(at(`toe-${side}`),at(`tibia-${side}`)) > 200, `${clip.id}/${frame.id}: toes must be in front of ankle`);
+      }
+    }
+    if (['chair-pose-study','standing-forward-fold-study'].includes(clip.id)) for (const side of ['left','right']) {
+      assert.ok(distanceBetween(at(`tibia-${side}`),[side === 'left' ? -90 : 90,80,0]) < 1e-7);
+      assert.ok(distanceBetween(at(`toe-${side}`),[side === 'left' ? -90 : 90,25,260]) < 1e-7);
+    }
+  }
+});
+
+test('new cervical, occipital, clavicular and segmental muscle attachments deform without losing their landmarks', () => {
+  const rest = createMuscleGeometry(rig,globalMatrices(rig,neutral));
+  for (const side of ['left','right']) {
+    for (const name of ['splenius-capitis','semispinalis-capitis','rectus-capitis-posterior-major','rectus-capitis-posterior-minor','obliquus-capitis-superior','obliquus-capitis-inferior','scalene-anterior','scalene-middle','scalene-posterior','levator-scapulae','subclavius','pectoralis-minor','sternocleidomastoid-sternal','sternocleidomastoid-clavicular']) assert.ok(rest.some((p) => p.id === `${name}-${side}`));
+    assert.equal(rest.filter((p) => p.id.startsWith('external-intercostal-') && p.id.endsWith(side)).length,11);
+    assert.equal(rest.filter((p) => p.id.startsWith('intertransversarii-') && p.id.endsWith(side)).length,23);
+  }
+  const seen = new Set();
+  for (const clip of Object.values(clips)) {
+    const initial = createMuscleGeometry(rig,globalMatrices(rig,clip.frames[0]));
+    for (const frame of clip.frames.slice(1)) {
+      const matrices = globalMatrices(rig,frame);
+      const axial = createAxialGeometry(rig,matrices);
+      const muscles = createMuscleGeometry(rig,matrices);
+      for (let i=0; i<muscles.length; i+=1) {
+        const patch = muscles[i];
+        if (patch.attachments && patch.attachments.some((a,j) => distanceBetween(a.point,initial[i].attachments[j].point) > 1)) seen.add(patch.id);
+        if (patch.id.startsWith('external-intercostal-')) for (const a of patch.attachments) {
+          const rib = axial.ribs.find((r) => r.id === a.bone);
+          assert.ok(distanceBetween(a.point,rib.points[10]) < 1e-8, `${patch.id} detached from ${a.bone}`);
+        }
+        if (patch.id.startsWith('subclavius-')) {
+          const a=patch.attachments[1];
+          assert.ok(distanceBetween(a.point,axial.bones.find((b) => b.id === a.bone).points[2]) < 1e-8);
+        }
+      }
+    }
+  }
+  for (const patch of rest.filter((p) => p.attachments)) assert.ok(seen.has(patch.id),`${patch.id} must move during a clip`);
+  const taller=scaleReferenceRig(rig,{...DEFAULT_VISUAL_PROFILE,statureCm:195});
+  const scaled=createMuscleGeometry(taller,globalMatrices(taller,neutral));
+  rest.forEach((patch,i) => patch.attachments?.forEach((a,j) => assert.ok(distanceBetween(scaled[i].attachments[j].point,a.point.map((v)=>v*195/170))<1e-8)));
 });
 
 test('axial geometry scales proportionally and follows every movement without nonfinite geometry or detached rib roots', () => {
