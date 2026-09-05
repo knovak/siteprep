@@ -55,3 +55,17 @@ release remains a separate successor decision and legal review.
 - **Verification:** the Sites build passed; the local Worker served the source root byte-for-byte with `200`. The authenticated live root returned `200` and matched the source except for the hosting layer's injected Cloudflare challenge script. The live viewer and anatomy module matched their source files byte-for-byte. The earlier KRN technical validation is recorded in [REVIEW-KRN.md](REVIEW-KRN.md).
 - **Isolation:** the temporary deployment workspace was removed and the source repository was verified unchanged before this receipt and deployment metadata were recorded.
 - **Production:** not released yet. The initiative is on test, never released; no claim has gained practitioner approval from this deployment.
+
+
+## 2026-09-05 — First private production release
+
+- **Production:** [Body Movement Visual Twin](https://body-movement-visual-twin.ken-novak.chatgpt.site/), new Site, version 1. Deployment succeeded at **2026-09-05 23:11:22 UTC (16:11:22 PDT)**.
+- **Test:** [Private validation Site](https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/), version 4, unchanged by this production release.
+- **Released source:** `initiatives/body-movement-visual-twin/work/phase-6/site` at repository commit `021648cc4c585caff04e2a9880cad4969daaa77c` (merged PR #435). The isolated Sites source commit was `52a87ae9521035b273131ce482de19dd65f0bf95`.
+- **Release contents:** first production baseline; no earlier production release exists, so a commits-since-release count is unavailable. Includes the 13-study collection, six anatomy views, visual-twin and report controls, complete axial counts, moving skull/occiput and clavicles, added connected muscles, and corrected seated foot direction.
+- **Files:** 26 unchanged static source files, 237,237 bytes. Sites reported 27 packaged files including hosting metadata, 266,240 bytes (260 KiB). The compressed local upload was 45,319 bytes.
+- **Access:** verified owner-only custom access; one allowed account, no groups and zero external visitors. Signed-out requests to both `/` and `/lib/anatomy-geometry.mjs` returned `401`; authenticated requests returned `200`.
+- **Verification:** isolated static build and local HTTP smoke check passed, with the root and all 26 files matching source byte-for-byte. Authenticated live `viewer.mjs`, `lib/anatomy-geometry.mjs` and `data/movement-clips.json` matched source byte-for-byte. The live root differed only by the platform's injected Cloudflare challenge script.
+- **Packaging:** the installed Sites plugin no longer contains the initializer named by the older repository helper. Preparation stopped before creating a workspace or building anything. The release used the current Sites-supported static-only path in a fresh isolated workspace with `static.directory: dist`, followed by the bundled packaging helper. No source content or release gate was changed.
+- **Cleanup:** the unique temporary deployment workspace was removed. The source repository status matched its pre-deployment baseline before these intentional release/status records were written.
+- **Review status:** production availability does not mark anatomy or tradition claims reviewed. `phase-6-practitioner-review` remains blocked on reviewer details, a feedback destination and the remaining human findings. See the [current status and next steps](../../overview.md).
