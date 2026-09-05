@@ -571,3 +571,13 @@ storage fallback, selection/tagging/sweep behavior, enabled-button contrast,
 keyboard focus, and touch targets. App production build and repository build
 passed. Post-build Day/Night screenshots were visually checked with sample
 bookmarks at 1600×1000; a 320px phone rendering was also checked.
+
+Test deployment version **35** succeeded at **2026-09-05 18:03:10 UTC** on
+<https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/>. Existing public
+entry, application authorization, and D1/R2 bindings were preserved. All 66
+tracked application files at Siteprep source
+`c15ea45b84b93f1d4503302ed7e765eb5a40e00f` match the pushed Sites source
+`acd72c0b0b5046b81480d2443bf63cfcb52e3060`. The validated archive contains
+62 deployment files (1,392,640 bytes). Live Chrome confirmed the updated Day
+and Night button washes. Production was not deployed. Receipt-only changes
+following this source commit do not change the app deployed in version 35.
