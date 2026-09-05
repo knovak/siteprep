@@ -45,3 +45,13 @@ Automation does not promote any `unreviewed` claim. Completion still requires:
 
 The site remains owner-only until those reviewers are named and invited. Public
 release remains a separate successor decision and legal review.
+
+## 2026-09-05 — KRN revision deployed to test
+
+- **Test:** [Body Movement Visual Twin — private validation](https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/), replacement version 4; deployment succeeded at 2026-09-05 07:54:35 UTC (00:54:35 PDT).
+- **Source:** `initiatives/body-movement-visual-twin/work/phase-6/site`, 26 static files from repository commit `2f3051bf774bf57be18ee7acb074071659f6fcf2`. The isolated Sites source commit is `c80fd339b9323c837b6282a500f0ef488c4de1f5`.
+- **Saved package:** 80 packaged files, 1,392,640 bytes (1.33 MiB) reported by Sites, including hosting runtime files. The local compressed upload was 368,743 bytes.
+- **Access:** unchanged owner-only custom policy; one allowed account, no groups and no external visitors. An anonymous root request returned `401`.
+- **Verification:** the Sites build passed; the local Worker served the source root byte-for-byte with `200`. The authenticated live root returned `200` and matched the source except for the hosting layer's injected Cloudflare challenge script. The live viewer and anatomy module matched their source files byte-for-byte. The earlier KRN technical validation is recorded in [REVIEW-KRN.md](REVIEW-KRN.md).
+- **Isolation:** the temporary deployment workspace was removed and the source repository was verified unchanged before this receipt and deployment metadata were recorded.
+- **Production:** not released yet. The initiative is on test, never released; no claim has gained practitioner approval from this deployment.

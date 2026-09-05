@@ -59,3 +59,7 @@ Moved the playback acknowledgement into the Educational visualization block abov
 ## 2026-09-05 — Revise vertebrae, ribs, and muscle illustration detail from KRN feedback
 
 Recorded KRN feedback relayed by the user, replaced the schematic spine and rib outlines with a complete authored axial display, and added shaped muscle surfaces, directional fibres, and tendon shading. Broader anatomy and tradition-practitioner validation remains open.
+
+## 2026-09-05 — Deploy the KRN anatomy revision to test
+
+At the user's request, replaced the existing private validation Site with version 4 from source commit `2f3051bf774bf57be18ee7acb074071659f6fcf2`. Verified the updated viewer and anatomy module live, preserved owner-only access, and recorded the deployment receipt in the Phase 6 validation record. The initiative remains on test, never released; PR #427 remains ready for review and unmerged.
