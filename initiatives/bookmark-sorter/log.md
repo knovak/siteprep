@@ -581,3 +581,18 @@ tracked application files at Siteprep source
 62 deployment files (1,392,640 bytes). Live Chrome confirmed the updated Day
 and Night button washes. Production was not deployed. Receipt-only changes
 following this source commit do not change the app deployed in version 35.
+
+## 2026-09-05 — Release
+
+Released to production — ChatGPT Site, version 3, `a365909`. 4 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+Production release validation: all 64 app tests passed after installing from the
+lockfile in an isolated production checkout, and the production-bound build
+passed. Its 66 tracked source files match merged Siteprep commit
+`a365909f4c668a0b707c14f85d2d6b0643ae64f3`, except the preserved production
+project binding. Sites source `6501dd3f2043af74771394eabf9cd3f9baea7f82`
+produced version 3 (62 packaged files, 1,392,640 bytes), deployed successfully at
+2026-09-05 18:13:58 UTC. Existing public access and D1/R2 bindings were preserved.
+Anonymous entry still offers sign-in; authorized Chrome showed the same 5,562
+bookmarks and 5,530 untriaged items before and after release, plus the Day/Night
+control and visible Night marked-card outline. Test remains at version 35.
