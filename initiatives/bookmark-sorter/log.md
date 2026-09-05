@@ -537,3 +537,20 @@ Matching Sites source commit: `98e6765984868a61f73709918c89c94901280766`.
 The isolated Sites checkout contains the same 66 tracked application files;
 the archive reuses the validated build from that source. D1/R2 bindings and
 application authorization remain intact. Production was not deployed.
+
+
+### Narrow-phone follow-up, test version 34
+
+Final visual inspection found the extra theme selector increased the header's
+minimum width on 320-pixel phones. The header now wraps its controls on narrow
+screens while retaining the existing automatic card layout. Browser regression
+coverage now asserts the document fits the viewport and the title does not
+overlap its controls. All 26 browser checks, the app build, and the repository
+build passed again; final desktop and 320-pixel phone screenshots were checked.
+
+Test version 34 succeeded at 2026-09-05T16:10:56Z, replacing version 33. Its
+Siteprep source is `ebc0909c13c07f53d4a0e71f719c609c21e3a5f1`; its matching Sites
+source is `3c9e936c4a20fe30adf4ad64f4e6984e3eeb68b6`. All 66 tracked application
+files were compared byte-for-byte. Live Chrome also confirmed both themes,
+visible marked outlines on Junk, and persistence after reload. Production
+remains unchanged.
