@@ -1036,3 +1036,34 @@ request records that choice and makes the initiative dormant.
 - It does not change, release, or redeploy the Bookmark Sorter product.
 - All menu entries remain optional in `notes.md` and may be promoted if the
   user later revives the initiative.
+
+
+## 2026-09-05 — Cream and teal by day, Dark slate at night
+
+The user chose **Cream and teal** from the cosmetic alternatives and requested
+**Day/Night modes**, with **Dark slate** for Night. They specifically required
+selected-item outlines to remain visible at night, at least grey. The earlier
+instruction to retain navigation and layout still applies. This replaces the
+previous blue/white presentation and its color-specific ready-state wording.
+
+This authorizes the theme implementation, deployment to the existing test Site,
+and a ready-for-review PR. Production release remains a separate decision.
+No existing initiative blocker is being completed; this is a direct follow-up
+request while the initiative is otherwise dormant.
+
+## 2026-09-05 — Pastel washes for lighter controls
+
+The user said the buttons were “too heavy - too large, corners too sharp,
+too much bold text” and “too dark when selected.” After reviewing the five
+Day/Night button studies, they chose **Pastel washes** and asked to implement
+it, release to test, and write a PR.
+
+The alternatives were Soft pills, Airy outlines, Pastel washes, Soft lift,
+and Quiet text. Pastel washes keeps visible button faces and action colors
+while reducing border and type weight. Implement compact rounded controls,
+regular labels, sage/rose/blue/oat fills, and muted counterparts at night.
+Preserve navigation, layouts, and the visible grey selected-card outline.
+
+This updates the existing ready-for-review theme PR and the existing test
+Site. Production release remains separate. There is no blocked todo to
+complete; the initiative remains otherwise dormant.

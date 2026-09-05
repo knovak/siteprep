@@ -290,3 +290,24 @@ the user-facing controls that now sit on top of it:
 
 Visible changes also receive a post-build screenshot so spacing, colors, and the
 drop target are reviewed as presentation rather than inferred from DOM tests.
+
+
+## Day and Night theme regression (2026-09-05)
+
+Browser checks cover all four wide layouts across mode changes without a grid
+redraw, lost marks, or API calls; persisted Day/Night after reload; blocked
+browser storage; and the mode selector in phone/tablet windows. For every
+verdict including Junk, verify the marked outline is light grey in Night,
+card opacity stays full, and focus and marked outlines have at least 3:1
+contrast against the card. Titles and secondary text must retain 4.5:1 contrast.
+Inspect screenshots of both palettes after the final build.
+
+
+## Pastel button regression (2026-09-05)
+
+Check Day and Night neutral/ready actions, all four verdict fills, normal-weight
+labels, compact desktop controls and rounded corners. Enabled button labels must
+retain at least 4.5:1 contrast in resting, hovered and pressed states. Verify
+keyboard focus remains visible and disabled controls still cannot act. Touch
+controls must retain 44px targets without document overflow. Re-run selection,
+tag/untag, sweep, undo, all layout presets, and selected-card outline coverage.

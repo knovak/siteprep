@@ -202,6 +202,12 @@ deploys it. Adding a deployment scheme means adding a `KINDS` entry and a skill
 | `chatgpt-site` | `sites-app` | `package.json` | the platform's `sites-hosting` workflow | immediately |
 | `demo` | — | `index.html`, or the named `root_html` | `deploy-demo` | when the branch merges to `main` |
 
+Bookmark Sorter's renderer also owns its browser-local Day/Night preference.
+Its CSS palettes, pastel button washes and touch targets, before-paint
+preference restoration, storage fallback, and selection/focus outlines are documented in
+[`initiatives/bookmark-sorter/work/README.md`](initiatives/bookmark-sorter/work/README.md).
+This preference does not change deployment access or persist bookmark data.
+
 `sites-app` exists because Bookmark Sorter is a full Sites project - it brings
 its own `.openai/hosting.json`, D1 and R2 bindings, and migrations, and builds
 itself. The static-folder engine cannot deploy that, and pretending otherwise

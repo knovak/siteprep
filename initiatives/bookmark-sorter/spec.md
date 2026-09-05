@@ -302,6 +302,15 @@ layouts stay automatic so cards remain readable. Three-row layouts reserve more
 card height for text, and the 3×12 view gives its compact cards as much title
 space as possible.
 
+The default Day palette is Cream and teal; Night is Dark slate. A compact
+Day/Night selector beside Help changes colors without changing navigation,
+layout, collection, or selection. The browser remembers the mode locally.
+Marked cards have a contrasting border (light grey at night); focus has its
+own teal outline so verdict stripes cannot hide it. Junk cards remain opaque. Buttons use the selected Pastel washes treatment:
+compact rounded controls, regular-weight labels, semantic pale fills, and muted
+slate variants at night. Ready actions use a mint/teal wash rather than a dark
+solid fill. Coarse pointers retain 44px targets.
+
 Above the grid, Import, Select, and Export are mutually exclusive panels in one
 row. None or exactly one may be open, and the open panel receives most of the
 available width. Collection and Admin controls stay separate because they set
@@ -419,8 +428,8 @@ user's recent expression history. Opening any route records the expression in
 history, newest first, without duplicates. Automatic proposals are grouped from
 the current collection's normalized source, tag, folder, and title keys, plus
 verdicts, capture errors, sites, and image state. Proposal, saved-selection, and history choosers
-all retain a placeholder option; their adjacent Open action is black on white
-until a real option is chosen and white on blue afterward, so the intended
+all retain a placeholder option; their adjacent Open action is neutral
+until a real option is chosen and a mint/teal wash afterward, so the intended
 target is visible before the action runs.
 
 ### 8.1 Scope: one collection by default, all of them for administration

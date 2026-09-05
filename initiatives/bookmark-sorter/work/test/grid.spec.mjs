@@ -319,27 +319,27 @@ test('Open choice buttons show whether a proposal, saved selection, or previous 
   ]) {
     const select = page.getByLabel(selectLabel);
     const button = page.getByRole('button', {name: buttonName});
-    await expect(button).toHaveCSS('color', 'rgb(17, 17, 17)');
-    await expect(button).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(button).toHaveCSS('color', 'rgb(23, 49, 56)');
+    await expect(button).toHaveCSS('background-color', 'rgb(240, 233, 221)');
     await expect(button).toHaveAttribute('data-selection-ready', 'false');
     await select.selectOption(option);
-    await expect(button).toHaveCSS('color', 'rgb(255, 255, 255)');
-    await expect(button).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+    await expect(button).toHaveCSS('color', 'rgb(23, 63, 67)');
+    await expect(button).toHaveCSS('background-color', 'rgb(211, 232, 225)');
     await expect(button).toHaveAttribute('data-selection-ready', 'true');
     await select.selectOption('');
-    await expect(button).toHaveCSS('color', 'rgb(17, 17, 17)');
-    await expect(button).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+    await expect(button).toHaveCSS('color', 'rgb(23, 49, 56)');
+    await expect(button).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   }
 
   await page.getByLabel('Selection expression').fill('site:first.example');
   await page.getByRole('button', {name: 'Open selection'}).click();
   const previous = page.getByLabel('Previous selections');
   const openPrevious = page.getByRole('button', {name: 'Open previous'});
-  await expect(openPrevious).toHaveCSS('color', 'rgb(17, 17, 17)');
-  await expect(openPrevious).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(openPrevious).toHaveCSS('color', 'rgb(23, 49, 56)');
+  await expect(openPrevious).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   await previous.selectOption('site:first.example');
-  await expect(openPrevious).toHaveCSS('color', 'rgb(255, 255, 255)');
-  await expect(openPrevious).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+  await expect(openPrevious).toHaveCSS('color', 'rgb(23, 63, 67)');
+  await expect(openPrevious).toHaveCSS('background-color', 'rgb(211, 232, 225)');
 });
 
 test('Import accepts a file dropped beside the file chooser', async ({page}) => {
@@ -652,7 +652,7 @@ test('Admin contains sitting, capture, and authorized-user controls', async ({pa
   await expect(page.locator('#authorized-users')).toContainText('new.reader@example.com — user');
   await page.locator('#remove-user-email').fill('new.reader@example.com');
   const removeUser = page.getByRole('button', {name: 'Remove user'});
-  await expect(removeUser).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(removeUser).toHaveCSS('color', 'rgb(142, 48, 41)');
   await removeUser.click();
   await expect(page.locator('#authorized-users')).not.toContainText('new.reader@example.com');
   expect(backend.authorizedUsers).toHaveLength(2);
@@ -816,20 +816,20 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await expect(page.locator('#tag-selection')).toHaveText('Tag items');
   await expect(page.locator('#tag-input')).toHaveAttribute('aria-label', 'Tags to add');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
-  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(17, 17, 17)');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(17, 17, 17)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(23, 49, 56)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(23, 49, 56)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   await page.locator('#tag-input').fill('test-tag');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'true');
-  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(255, 255, 255)');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(255, 255, 255)');
-  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(35, 79, 196)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('color', 'rgb(23, 63, 67)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(211, 232, 225)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('color', 'rgb(23, 63, 67)');
+  await expect(page.locator('.tag-mode-picker')).toHaveCSS('background-color', 'rgb(211, 232, 225)');
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Added tags to 4 items as one action.');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   expect(backend.items.every(item => item.tags.includes('test-tag'))).toBe(true);
   expect(backend.items.every(item => !item.tags.includes('te') && !item.tags.includes('t-tag'))).toBe(true);
 
@@ -841,9 +841,174 @@ test('tag dropdown toggles between adding and removing tags from the current sel
   await page.locator('#tag-selection').click();
   await expect(page.locator('#status')).toHaveText('Removed tags from 4 items as one action.');
   await expect(page.locator('#tag-selection')).toHaveAttribute('data-tag-ready', 'false');
-  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('#tag-selection')).toHaveCSS('background-color', 'rgb(240, 233, 221)');
   expect(backend.items.every(item => !item.tags.includes('test-tag'))).toBe(true);
 
   await page.getByLabel('Tag mode').selectOption('apply');
   await expect(page.locator('#tag-selection')).toHaveText('Tag items');
+});
+
+
+test('Day and Night preserve every layout and remember the browser choice', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  await page.goto('https://pile.test/');
+  const mode = page.getByLabel('Color mode');
+  await expect(mode).toHaveValue('day');
+  await expect(page.locator('#count')).toHaveText('10,000');
+  for (const layout of ['3x3', '2x6', '2x8', '3x12']) {
+    await page.getByLabel('Page layout').selectOption(layout);
+    await page.locator('.bookmark-card .mark').first().click();
+    const before = await page.locator('#grid').evaluate(grid => ({
+      bounds: grid.getBoundingClientRect().toJSON(),
+      columns: getComputedStyle(grid).gridTemplateColumns,
+      rows: getComputedStyle(grid).gridTemplateRows,
+      ids: [...grid.children].map(card => card.dataset.itemId),
+    }));
+    const requests = backend.requests.length;
+    await mode.selectOption('night');
+    await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark');
+    await expect(page.locator('.bookmark-card.marked')).toHaveCount(1);
+    expect(await page.locator('#grid').evaluate(grid => ({
+      bounds: grid.getBoundingClientRect().toJSON(),
+      columns: getComputedStyle(grid).gridTemplateColumns,
+      rows: getComputedStyle(grid).gridTemplateRows,
+      ids: [...grid.children].map(card => card.dataset.itemId),
+    }))).toEqual(before);
+    expect(backend.requests.length).toBe(requests);
+    await page.locator('.bookmark-card .mark').first().click();
+    await mode.selectOption('day');
+  }
+  await mode.selectOption('night');
+  await page.reload();
+  await expect(mode).toHaveValue('night');
+  await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark');
+  await mode.selectOption('day');
+  await page.reload();
+  await expect(mode).toHaveValue('day');
+  for (const width of [320, 390, 820]) {
+    await page.setViewportSize({width, height: 844});
+    await expect(mode).toBeVisible();
+    const bounds = await mode.boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.locator('header').evaluate(header => {
+      const brand = header.querySelector('.brand').getBoundingClientRect();
+      const tools = header.querySelector('.header-tools').getBoundingClientRect();
+      return brand.right <= tools.left;
+    })).toBe(true);
+    await mode.selectOption('night');
+  }
+});
+
+test('unavailable browser storage still permits Day and Night', async ({page}) => {
+  await installPile(page);
+  await page.addInitScript(() => {
+    Storage.prototype.getItem = () => { throw new Error('Storage blocked'); };
+    Storage.prototype.setItem = () => { throw new Error('Storage blocked'); };
+  });
+  await page.goto('https://pile.test/');
+  await expect(page.getByLabel('Color mode')).toHaveValue('day');
+  await page.getByLabel('Color mode').selectOption('night');
+  await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark');
+  await expect(page.locator('#count')).toHaveText('10,000');
+});
+
+test('night selection and focus outlines stay visible for all verdicts', async ({page}) => {
+  await page.setViewportSize({width: 1600, height: 900});
+  const backend = await installPile(page);
+  const verdicts = [null, 'keeper', 'junk', 'archive', 'needs-more-time'];
+  verdicts.forEach((verdict, index) => { backend.items[index].verdict = verdict; });
+  await page.goto('https://pile.test/');
+  await page.getByLabel('Color mode').selectOption('night');
+  for (let index = 0; index < verdicts.length; index += 1) {
+    const card = page.locator('.bookmark-card').nth(index);
+    await card.locator('.site').click();
+    await card.locator('.mark').click();
+    await expect(card).toHaveAttribute('aria-selected', 'true');
+    await expect(card).toHaveCSS('border-color', 'rgb(185, 199, 213)');
+    await expect(card).toHaveCSS('opacity', '1');
+    await expect(card).toHaveClass(/focused/);
+    await expect(card).toHaveCSS('outline-style', 'solid');
+    const contrast = await card.evaluate(card => {
+      const luminance = color => {
+        const channels = color.match(/[0-9.]+/g).slice(0, 3).map(Number).map(v => {
+          v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
+        });
+        return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+      };
+      const ratio = (a, b) => { a = luminance(a); b = luminance(b); return (Math.max(a, b) + .05) / (Math.min(a, b) + .05); };
+      const style = getComputedStyle(card);
+      const canvas = getComputedStyle(document.documentElement).backgroundColor;
+      return {
+        selection: Math.min(ratio(style.borderColor, style.backgroundColor), ratio(style.borderColor, canvas)),
+        focus: ratio(style.outlineColor, style.backgroundColor),
+        text: ratio(getComputedStyle(card.querySelector('h2')).color, style.backgroundColor),
+        secondary: ratio(getComputedStyle(card.querySelector('.site')).color, style.backgroundColor),
+      };
+    });
+    expect(contrast.selection).toBeGreaterThanOrEqual(3);
+    expect(contrast.focus).toBeGreaterThanOrEqual(3);
+    expect(contrast.text).toBeGreaterThanOrEqual(4.5);
+    expect(contrast.secondary).toBeGreaterThanOrEqual(4.5);
+  }
+  await expect(page.locator('.bookmark-card.marked')).toHaveCount(5);
+  await expect(page.locator('.bookmark-card').first()).not.toHaveClass(/focused/);
+  await expect(page.locator('.bookmark-card').first()).toHaveCSS('border-color', 'rgb(185, 199, 213)');
+});
+
+test('Pastel washes keep actions readable, compact, and touch accessible', async ({page, browser}) => {
+  await page.setViewportSize({width: 1600, height: 1000});
+  await installPile(page);
+  await page.goto('https://pile.test/');
+  const contrast = button => button.evaluate(button => {
+    const style = getComputedStyle(button);
+    const channels = value => value.match(/[\d.]+/g).map(Number);
+    let background = channels(style.backgroundColor);
+    const overlay = style.backgroundImage.match(/rgba?\([^)]+\)/);
+    if (overlay) {
+      const wash = channels(overlay[0]);
+      background = background.map((v, i) => v * (1 - (wash[3] ?? 1)) + wash[i] * (wash[3] ?? 1));
+    }
+    const luminance = rgb => rgb.slice(0, 3).map(v => {
+      v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4;
+    }).reduce((total, v, i) => total + v * [.2126, .7152, .0722][i], 0);
+    const a = luminance(channels(style.color)), b = luminance(background);
+    return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+  });
+  for (const theme of ['day', 'night']) {
+    await page.getByLabel('Color mode').selectOption(theme);
+    const buttons = page.locator('.toolbar button[data-verdict], #sweep-rest, #help-toggle');
+    for (const button of await buttons.all()) {
+      await expect(button).toBeEnabled();
+      await expect(button).toHaveCSS('font-weight', '400');
+      expect((await button.boundingBox()).height).toBeLessThanOrEqual(34);
+      expect(await button.evaluate(el => parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThanOrEqual(12);
+      await page.mouse.move(0, 0);
+      expect(await contrast(button)).toBeGreaterThanOrEqual(4.5);
+      await button.hover();
+      await expect(button).not.toHaveCSS('background-image', 'none');
+      expect(await contrast(button)).toBeGreaterThanOrEqual(4.5);
+      await page.mouse.down();
+      expect(await contrast(button)).toBeGreaterThanOrEqual(4.5);
+      await page.mouse.move(0, 0);
+      await page.mouse.up();
+    }
+    await page.locator('#help-toggle').focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.locator('#help-toggle')).toHaveCSS('outline-style', 'solid');
+    await expect(page.locator('#previous-page')).toBeDisabled();
+  }
+  const touch = await browser.newContext({hasTouch: true, viewport: {width: 390, height: 844}});
+  try {
+    const phone = await touch.newPage();
+    await installPile(phone);
+    await phone.goto('https://pile.test/');
+    for (const control of await phone.locator('.toolbar button, #theme-mode, #help-toggle, .file-tools > details > summary').all()) {
+      expect((await control.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    }
+    expect(await phone.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  } finally { await touch.close(); }
 });

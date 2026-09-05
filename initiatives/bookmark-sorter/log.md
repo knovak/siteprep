@@ -514,3 +514,70 @@ Initially proposed collapsed Help details as the next refinement; the reviewer
 rejected that option and directed the initiative to become dormant instead. The
 current product is sufficient for now, and the remaining optional improvements
 stay available in `notes.md` if the initiative is revived.
+
+
+## 2026-09-05 — Day/Night themes deployed to test
+
+Implemented the user's Cream and teal Day palette and Dark slate Night palette
+while retaining navigation and layout presets. The mode selector remembers its
+choice locally; storage failures leave current-page switching usable. Marked
+cards have visible outlines, light grey at night, and focused cards have a
+separate teal outline. Verdict stripes render above pictures; Junk cards stay
+opaque. Updated Help, README, specification, and theme regression coverage.
+
+Validation: 64 app tests, 26 browser checks, the Vinext production build, and the
+repository build passed. Screenshots of both modes were inspected with sample
+bookmarks after the final build. The browser checks cover every wide layout,
+phone/tablet selector visibility, persistence, storage failure, unchanged marks
+and grid geometry, and night outline/text contrast across all verdicts.
+
+Existing public test Site version 33 succeeded at 2026-09-05T16:06:19Z.
+Siteprep source commit: `543e418be8e966784fb0615771265488d0f61c5e`.
+Matching Sites source commit: `98e6765984868a61f73709918c89c94901280766`.
+The isolated Sites checkout contains the same 66 tracked application files;
+the archive reuses the validated build from that source. D1/R2 bindings and
+application authorization remain intact. Production was not deployed.
+
+
+### Narrow-phone follow-up, test version 34
+
+Final visual inspection found the extra theme selector increased the header's
+minimum width on 320-pixel phones. The header now wraps its controls on narrow
+screens while retaining the existing automatic card layout. Browser regression
+coverage now asserts the document fits the viewport and the title does not
+overlap its controls. All 26 browser checks, the app build, and the repository
+build passed again; final desktop and 320-pixel phone screenshots were checked.
+
+Test version 34 succeeded at 2026-09-05T16:10:56Z, replacing version 33. Its
+Siteprep source is `ebc0909c13c07f53d4a0e71f719c609c21e3a5f1`; its matching Sites
+source is `3c9e936c4a20fe30adf4ad64f4e6984e3eeb68b6`. All 66 tracked application
+files were compared byte-for-byte. Live Chrome also confirmed both themes,
+visible marked outlines on Junk, and persistence after reload. Production
+remains unchanged.
+
+## 2026-09-05 — Pastel washes implemented
+
+Applied the user's selected button study to Day and Night: compact rounded
+controls, regular-weight labels, neutral sand/slate surfaces, sage/rose/blue/oat
+verdict washes, and mint/muted-teal ready actions. Touch pointers retain 44px
+targets. Semantic button ink is separate from card verdict-stripe colors so
+labels retain 4.5:1 contrast when resting, hovered, or pressed. Grey Night
+selection outlines, focus outlines, layouts, and bookmark behavior are preserved.
+Updated Help, user documentation, specification, and technical documentation.
+Corrected popover shadow tokens while checking both palettes.
+
+Validation: 64 app tests and 27 browser tests passed, including all layouts,
+storage fallback, selection/tagging/sweep behavior, enabled-button contrast,
+keyboard focus, and touch targets. App production build and repository build
+passed. Post-build Day/Night screenshots were visually checked with sample
+bookmarks at 1600×1000; a 320px phone rendering was also checked.
+
+Test deployment version **35** succeeded at **2026-09-05 18:03:10 UTC** on
+<https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/>. Existing public
+entry, application authorization, and D1/R2 bindings were preserved. All 66
+tracked application files at Siteprep source
+`c15ea45b84b93f1d4503302ed7e765eb5a40e00f` match the pushed Sites source
+`acd72c0b0b5046b81480d2443bf63cfcb52e3060`. The validated archive contains
+62 deployment files (1,392,640 bytes). Live Chrome confirmed the updated Day
+and Night button washes. Production was not deployed. Receipt-only changes
+following this source commit do not change the app deployed in version 35.
