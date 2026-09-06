@@ -318,3 +318,11 @@ advanced the database to revision 2. Reloading showed 307 unjudged of 321 and
 restored the original unjudged story. The 14 prior judgments remain preserved.
 The canonical protected local store and its pre-harvest backup were retained.
 Access remains owner-only; no production Site is recorded or released.
+
+## 2026-09-06 — Write a user-facing README covering how to use it and how to deploy it
+
+Added a user-facing guide for reviewing, loading, saving, privacy, local verification, and owner-only test deployment.
+
+## 2026-09-06 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Recorded five optional refinements with value, size, privacy boundaries, and evidence, recommending a dedicated harvest skill.
