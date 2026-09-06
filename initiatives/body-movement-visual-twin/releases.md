@@ -7,6 +7,12 @@ Newest first.
 
 <https://body-movement-visual-twin.ken-novak.chatgpt.site/>
 
+Released `d2c85a3` · test last deployed 2026-09-06 at `d2c85a3`.
+
+## 2026-09-06 — ChatGPT Site — version 2
+
+<https://body-movement-visual-twin.ken-novak.chatgpt.site/>
+
 Released `d2c85a3` · 1 commit(s) since the previous release · test last deployed 2026-09-06 at `772c1dd`.
 
 Changes since the previous release, in `initiatives/body-movement-visual-twin/work/phase-6/site`:
