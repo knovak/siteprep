@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Body Movement Visual Twin</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Body Movement Visual Twin</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Body Movement Visual Twin</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<p>Questions this initiative was waiting on, and how they were settled. Newest at the bottom.</p>
+<h3>2026-08-19 — When does the public-release rights review apply?</h3>
+<p><strong>Only when a public successor release is being prepared. It does not apply to private validation before then.</strong></p>
+<p>The user&#39;s words: <em>&quot;I confirm rights, licenses, attribution, and trademark will not apply before a public successor release.&quot;</em></p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>Private validation may continue without treating publication rights, licensing, attribution, or trademark review as a current gate.</li><li>This does not establish the rights basis for a future public or commercial release. If a public successor is prepared, that release still needs the movement descriptions, recordings, names, anatomical assets, licences, attribution terms, and intended use reviewed before publication.</li></ul>
+<h3>2026-08-20 — Which anatomy asset path can actually be hosted for private validation?</h3>
+<p><strong>Exclude SKEL and SMPL-Model from the hosted demo. Use the CC BY-SA Open3DModel skeleton and upper-limb sources, public-domain Visible Human images as reference only, and a project-authored surface and shared-rig fixture.</strong></p>
+<p>The official SKEL and SMPL-Model licences are personal, single-user and non-transferable, and prohibit making the data available to third parties without prior written permission. An access-controlled page still makes its packaged assets available to invited reviewers, so “private” does not cure that restriction. No account agreement or model file is present in the repository.</p>
+<p>SMPL-Body is different: Max Planck licenses that asset class under CC BY 4.0. It remains an eligible later surface source when a concrete asset with that provenance is supplied, but the licence page itself is not geometry and does not turn a restricted SMPL-Model download into a distributable asset.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td><strong>SKEL or SMPL-Model</strong></td><td>Best ready-made surface/skeleton correspondence and parameterisation</td><td>Current official terms prohibit third-party availability without written permission; unusable for invited hosting as-is</td></tr><tr><td><strong>A concrete SMPL-Body asset</strong></td><td>CC BY 4.0 expressly permits sharing with attribution; already includes mesh and rig</td><td>No concrete ledgered asset is present; excludes SMPL shape tools and is not the muscle source</td></tr><tr><td><strong>Open3DModel plus project-authored rig and surface</strong> <em>(chosen)</em></td><td>Official source permits hosting under CC BY-SA; July 2025 upper-limb model covers the chosen shoulder region; share-alike can be contained and audited</td><td>Requires selection, retopology and skinning; deep spine paths remain authored and unreviewed; procedural Phase 0 surface is not a production body</td></tr><tr><td><strong>Visible Human reconstruction from source imagery</strong></td><td>Public-domain, high-resolution anatomical reference for the chosen region</td><td>Segmentation and credible display geometry are substantial work; source imagery is subject-specific and is deliberately not redistributed here</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The private demo has a permissible source path without relying on obscurity or a licence the project has not accepted.</li><li>Share-alike geometry stays under <code>assets/anatomy/share-alike/</code> with its own manifest, attribution and modification history.</li><li>The Phase 0 fixture proves shared hierarchy and attachment registration; it does not claim its landmarks or muscle paths are anatomically reviewed.</li><li>A public successor still needs the separate rights and trademark review already recorded above.</li></ul>
+<h3>2026-09-05 — KRN anatomy-display feedback and revision</h3>
+<p><strong>Revise the skeleton and muscle illustration in the existing private validation viewer.</strong></p>
+<p>The user relayed feedback from reviewer <strong>KRN</strong> and authorized a revision:</p>
+<ul><li>&quot;model all the vertebra and ribs, not just a single line for the spine&quot;</li><li>&quot;draw the muscles with more detail, in a style like an anatomy drawing (attached)&quot;</li></ul>
+<p>The attachment shows a frontal anatomy illustration with distinct red muscle bellies, visible fibre direction, shaded contours, and pale connective tissue. It is a visual reference; its pixels are not incorporated into the viewer. No instruction in the attachment supplies additional project requirements.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>KRN is the reviewer code name supplied by the user. Do not infer a real name, professional qualification, tradition, email address, or approval of a claim.</li><li>The immediate revision is individual vertebral and rib geometry and more detailed, differentiated muscle illustration on the existing shared motion rig. This remains the Phase 6 corrective review loop.</li><li>The implementation depicts C1-C7, T1-T12, L1-L5, five fused sacral segments, a typical four-segment fused coccyx, and 12 bilateral ribs. The sacral and coccygeal depiction does not imply separately mobile adult vertebrae.</li><li>This feedback is evidence of a requested correction, not acceptance of the revised result. Geometry, landmark accuracy, muscle grouping, and all tradition-specific records remain unreviewed pending appropriate findings.</li><li>The broader reviewer roles, remaining findings, invitation addresses, and report destination are still open. No access or public-release decision is implied by this feedback.</li></ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/body-movement-production-receipt" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
