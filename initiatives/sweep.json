@@ -1,5 +1,6 @@
 {
-  "phases": ["survey", "respond", "propose", "work", "deploy", "brief"],
+  "phases": ["survey", "merge", "respond", "propose", "work", "deploy", "brief"],
+  "auto_merge": { "stages": ["planned", "building"], "min_age_minutes": 15 },
   "items_per_run": 4,
   "max_items_per_initiative": 2,
   "max_effort": "large",

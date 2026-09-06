@@ -202,7 +202,7 @@ Do not call demo content a "deck" or "section" unless a user explicitly asks for
 
 `INITIATIVES_VISION.md` is the full design; `INITIATIVES_TECHDOC.md` has the schema, the validation rules, and the subcommands. This section is the working vocabulary. Do not create an initiative unless the user asks for one.
 
-`scripts/initiatives.mjs` generates the Initiative TOC and overview pages, validates the data, produces the digest, and computes what each phase may do. A scheduled sweep runs the phases listed in `initiatives/sweep.json` and opens pull requests for its work; it never merges, and never writes outside the initiative it is working on. See `initiatives/sweep-prompt.md` and `initiatives/sweep-setup.md`.
+`scripts/initiatives.mjs` generates the Initiative TOC and overview pages, validates the data, produces the digest, and computes what each phase may do. A scheduled sweep runs the phases listed in `initiatives/sweep.json` and opens pull requests for its work; it merges only its own pull requests, and only those its `auto_merge` policy covers - never a proposal, and never outside the initiative it is working on. See `initiatives/sweep-prompt.md` and `initiatives/sweep-setup.md`.
 
 Seven skills do this work, by hand or in the sweep: `new-initiative`, `respond-to-review`, `answer-decision` and `merge-prs` cover starting work, settling what it is blocked on, iterating under review, and finishing it; `deploy-test` and `release-initiative` publish what an initiative builds, under the rules in Deployments below; `write-brief` keeps its status summary current.
 

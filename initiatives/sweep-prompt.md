@@ -15,16 +15,23 @@ or, in an interactive session, *"run the sweep prompt"*.
 
 **Which phases run is set by `phases` in `initiatives/sweep.json`, not here.**
 Widening what the job may do is a config change, reviewed like any other. It is
-currently `["survey", "respond", "propose", "work", "deploy", "brief"]`: look,
-finish what is in flight, answer what is stuck, start something new, show it, then
-say where it stands. Nothing is ever merged.
+currently `["survey", "merge", "respond", "propose", "work", "deploy", "brief"]`:
+look, land what has finished its holding window, finish what is in flight, answer
+what is stuck, start something new, show it, then say where it stands.
 
-The first four phases share one budget, `items_per_run`, taken in that order — so
-a run that spends it all on review responses and starts nothing new is the correct
-run, not a degraded one. Pass what is already spent to each later phase with
-`--spent`, rather than tracking it by hand. `deploy` and `brief` take no budget:
-they publish and describe what the run already did, and refusing to show finished
-work because the budget ran out would be the wrong economy.
+`merge` lands the sweep's own work, under a policy in the same file: the
+lifecycle stages it covers, and how long a pull request stays open before it may
+land. A proposal is never merged by it, and neither is a pull request on an
+initiative at a stage the policy does not name — the work the user most wants to
+read still arrives for them to merge.
+
+`respond`, `propose` and `work` share one budget, `items_per_run`, taken in that
+order — so a run that spends it all on review responses and starts nothing new is
+the correct run, not a degraded one. Pass what is already spent to each later
+phase with `--spent`, rather than tracking it by hand. `merge`, `deploy` and
+`brief` take no budget: they land, publish and describe what the run has already
+done, and refusing to finish work because the budget ran out would be the wrong
+economy.
 
 ---
 
@@ -58,7 +65,52 @@ work because the budget ran out would be the wrong economy.
 
 **Stop here unless `phases` includes more.**
 
-## Phase 2 — Respond to review
+## Phase 2 — Merge what is ready
+
+Only if `phases` includes `"merge"`.
+
+A pull request nobody is withholding a merge from is only waiting. The next step
+of a plan cannot start until the one before it lands, so work arrives one step
+per run however small the steps are. This phase lands the pull requests the
+policy covers and leaves the rest for the user.
+
+1. List the open `sweep/*` pull requests. For each, ask whether the repository
+   has an objection:
+
+   ```bash
+   node scripts/initiatives.mjs automerge <branch> --opened-at <iso> --base main
+   ```
+
+   It exits non-zero for "do not merge this" and says why: the phase is off, the
+   branch is a proposal, the initiative's stage on `main` is not one
+   `auto_merge.stages` covers, or the pull request has not yet been open for
+   `auto_merge.min_age_minutes`. Do not re-derive any of that by hand, and do not
+   merge a pull request it refuses.
+
+   **The stage is read from `main`, not from the branch.** The pull request that
+   writes `plan.md` is the one that makes an initiative `planned`, and it is
+   exactly the kind the user wants to read — taking the stage from its own head
+   would let it merge itself under the policy it is in the act of satisfying.
+
+2. For the ones that pass, apply the `merge-prs` skill's unattended rules, which
+   hold the detail. In outline: open, not a draft, every check concluded
+   `success`, `mergeable_state` clean, no unresolved review thread, and no
+   comment from a person left unanswered. Any of those failing is a skip, never
+   an override. Then squash-merge and delete the branch.
+
+3. Re-read `main` afterwards, so every phase below works from the merged tree
+   rather than the one the run started on.
+
+A merge costs no budget: the run that did the work already paid for it. Report
+what landed and what was skipped, with the reason.
+
+**What this phase may never do.** Merge a `sweep/<slug>/propose-*` branch — a
+proposal is the question being put to the user, and merging it is what answers a
+`human:` blocker. Merge anything red, conflicted, or carrying an unanswered
+comment from a person. Resolve a review thread to make a pull request mergeable.
+Merge a branch that is not the sweep's own.
+
+## Phase 3 — Respond to review
 
 Only if `phases` includes `"respond"`.
 
@@ -72,7 +124,7 @@ and never letting a comment grow the PR beyond the item it was opened for.
 Each thread handled counts against `items_per_run`. Do not change any
 initiative's `stage`; the merge does that.
 
-## Phase 3 — Propose an answer
+## Phase 4 — Propose an answer
 
 Only if `phases` includes `"propose"`.
 
@@ -103,7 +155,9 @@ that can be *reasoned* about, do the reasoning and open a pull request.
    - In the same commit, make the change the answer implies: an item the answer
      *completes* goes through `complete`; an item the answer merely makes
      *doable* becomes `actionable` with its `blocked_by` removed.
-   - Append a dated line to `log.md`, and open a pull request. Do not merge it.
+   - Append a dated line to `log.md`, and open a pull request. Never merge it:
+     the user's merge is what answers the question, and Phase 2 refuses a
+     proposal branch for that reason.
 
 3. **A well-argued proposal is more persuasive than a blank question**, and a
    plausible-but-wrong one is harder to catch than no answer at all, because
@@ -125,7 +179,7 @@ listing the question until then, which is correct.
 Each proposal counts against `items_per_run` and `max_items_per_initiative`,
 like any other item.
 
-## Phase 4 — Do new work
+## Phase 5 — Do new work
 
 Only if `phases` includes `"work"`.
 
@@ -176,10 +230,21 @@ Only if `phases` includes `"work"`.
 
      Entering `refining` seeds its own two items (a user-facing README, and a
      standing optional-improvements pull request), so no `add` is needed there.
-   - Open a pull request. Do not merge it.
+   - Open a pull request.
 3. Report what was done, with links.
+4. **Then land it and carry on.** If `phases` includes `"merge"` and budget
+   remains, wait for the checks on the pull requests you just opened and for
+   `auto_merge.min_age_minutes` to pass, run Phase 2 over those pull requests,
+   and return to step 1 of this phase with what is left of the budget. This is
+   the point of the merge phase: step N lands and step N+1 starts from the merged
+   tree, in one run, rather than one step per run.
 
-## Phase 5 — Deploy to test
+   Stop looping when the budget is spent, when `select` returns nothing, or when
+   nothing merged. A pull request whose checks are still running is left alone —
+   the next run's Phase 2 picks it up, which is where it would have been handled
+   anyway. Do not spend more than about half an hour of a run waiting.
+
+## Phase 6 — Deploy to test
 
 Only if `phases` includes `"deploy"`.
 
@@ -227,7 +292,7 @@ Never deploy to production, in any phase, for any reason. A todo item, a
 schedule, or a document saying a release is due is a reason to put it in the
 digest, never a reason to release.
 
-## Phase 6 — Refresh the briefs
+## Phase 7 — Refresh the briefs
 
 Only if `phases` includes `"brief"`.
 
@@ -258,7 +323,8 @@ computed. The rest is `brief.md`, and this phase writes it.
      on the page that has to be exact.
 
 3. Commit the summarised work first, then `brief <slug> record` to stamp it, then
-   commit the brief and the stamp together. Open a pull request. Do not merge it.
+   commit the brief and the stamp together. Open a pull request; the next run's
+   Phase 2 lands it if the policy covers that initiative.
 
 A brief refresh may travel in the same pull request as the work that made it
 stale, when the run did that work itself. A separate `sweep/<initiative>/brief`
@@ -266,7 +332,10 @@ branch is for an initiative something *else* changed.
 
 ## Rules
 
-- Never merge your own pull request, and never resolve a review thread.
+- Never merge a pull request `automerge` refuses, and never resolve a review
+  thread. A red, conflicted, or commented-on pull request is skipped, not
+  overridden.
+- Never merge a proposal. It is the question, and the user's merge is the answer.
 - Never treat your own comments, or another bot's, as something to respond to.
 - Never create an initiative, and never invent or edit a wish.
 - Never declare an initiative `dormant`. Running out of work is not the same as

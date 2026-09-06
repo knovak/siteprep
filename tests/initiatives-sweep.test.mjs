@@ -12,7 +12,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -365,6 +365,142 @@ test('refuses a duplicate id, an unknown blocker, and a dangling todo reference'
 test('refuses an item with no title, which would be unrankable and unreadable', () => {
   const dir = scratch();
   assert.throws(() => run(['add', 'healthy', 'untitled'], dir));
+});
+
+// ----------------------------------------------------------- automerge
+
+/** `automerge` exits non-zero for "do not merge this", so stdout is read either way. */
+function askMerge(args, initiativesDir) {
+  const result = spawnSync('node', [SCRIPT, 'automerge', ...args, '--json'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    env: { ...process.env, INITIATIVES_DIR: initiativesDir }
+  });
+  return { status: result.status, answer: JSON.parse(result.stdout) };
+}
+
+const MERGING = { phases: ['survey', 'merge'] };
+/** Every stage a policy is allowed to name - the resting two are refused by validation. */
+const EVERY_STAGE = ['wish', 'shaped', 'specified', 'planned', 'building', 'refining'];
+/** Comfortably past any holding window the tests configure. */
+const LONG_AGO = () => new Date(Date.now() - 6 * 3600 * 1000).toISOString();
+
+test('nothing merges while the merge phase is switched off', () => {
+  const dir = scratch({ phases: ['survey', 'work'] });
+  const { status, answer } = askMerge(
+    ['sweep/idle-one/step', '--opened-at', LONG_AGO()], dir
+  );
+
+  assert.equal(answer.eligible, false);
+  assert.equal(status, 1);
+  assert.match(answer.blockers.join(' '), /does not enable the "merge" phase/);
+});
+
+test('a work branch merges at a stage the policy covers', () => {
+  const dir = scratch(MERGING);
+  const { status, answer } = askMerge(
+    ['sweep/idle-one/step', '--opened-at', LONG_AGO()], dir
+  );
+
+  assert.equal(answer.eligible, true, 'idle-one is building, which is in the default stages');
+  assert.equal(status, 0);
+  assert.equal(answer.kind, 'work');
+  assert.deepEqual(answer.blockers, []);
+});
+
+/**
+ * The stages dial is the whole request behind this phase: a pull request that
+ * writes the objectives, the spec or the plan is where the user's judgement is
+ * the point, so it waits for them however green it is.
+ */
+test('an early-stage initiative is left for the user to merge', () => {
+  const dir = scratch(MERGING);
+  const { answer } = askMerge(['sweep/healthy/obj', '--opened-at', LONG_AGO()], dir);
+
+  assert.equal(answer.eligible, false, 'healthy is at wish');
+  assert.match(answer.blockers.join(' '), /stage "wish".*is not in auto_merge\.stages/);
+});
+
+test('the covered stages are configuration, not a constant', () => {
+  const dir = scratch({ ...MERGING, auto_merge: { stages: ['wish'], min_age_minutes: 0 } });
+  const { answer } = askMerge(['sweep/healthy/obj'], dir);
+
+  assert.equal(answer.eligible, true, 'a config naming wish covers healthy');
+  assert.deepEqual(answer.policy.stages, ['wish']);
+});
+
+/**
+ * A proposal *is* the question, put as a pull request. Merging it is what
+ * answers a `human:` blocker, so no stage and no config may do it.
+ */
+test('a proposal never merges unattended, whatever the stage', () => {
+  const dir = scratch({ ...MERGING, auto_merge: { stages: EVERY_STAGE, min_age_minutes: 0 } });
+  const { answer } = askMerge(['sweep/idle-one/propose-pick'], dir);
+
+  assert.equal(answer.eligible, false);
+  assert.equal(answer.kind, 'propose');
+  assert.match(answer.blockers.join(' '), /only a person merges one/);
+});
+
+test('a pull request is held for the configured window', () => {
+  const dir = scratch(MERGING);
+  const justNow = new Date(Date.now() - 60 * 1000).toISOString();
+  const { answer } = askMerge(['sweep/idle-one/step', '--opened-at', justNow], dir);
+
+  assert.equal(answer.eligible, false);
+  assert.ok(answer.wait_minutes >= 13, `still holding, ${answer.wait_minutes} minute(s) to go`);
+  assert.match(answer.blockers.join(' '), /holds it for 15/);
+});
+
+test('a window of zero needs no opening time at all', () => {
+  const dir = scratch({ ...MERGING, auto_merge: { min_age_minutes: 0 } });
+  const { answer } = askMerge(['sweep/idle-one/step'], dir);
+
+  assert.equal(answer.eligible, true);
+});
+
+test('a branch outside the sweep namespace is not the sweep\'s to merge', () => {
+  const dir = scratch(MERGING);
+  const { answer } = askMerge(['feature/something', '--opened-at', LONG_AGO()], dir);
+
+  assert.equal(answer.eligible, false);
+  assert.match(answer.blockers.join(' '), /only the sweep's own work merges unattended/);
+});
+
+test('the summary says which initiatives the policy covers', () => {
+  const dir = scratch(MERGING);
+  const result = spawnSync('node', [SCRIPT, 'automerge', '--json'], {
+    cwd: ROOT, encoding: 'utf8', env: { ...process.env, INITIATIVES_DIR: dir }
+  });
+  const summary = JSON.parse(result.stdout);
+
+  assert.equal(summary.enabled, true);
+  assert.equal(summary.min_age_minutes, 15);
+  const covered = Object.fromEntries(summary.initiatives.map((i) => [i.slug, i.covered]));
+  assert.equal(covered['idle-one'], true, 'building');
+  assert.equal(covered['needs-decision'], true, 'planned');
+  assert.equal(covered.healthy, false, 'wish');
+});
+
+test('a malformed auto_merge block fails validation', () => {
+  const dir = scratch({ ...MERGING, auto_merge: { stages: ['bulding'], hold: 5 } });
+  const result = spawnSync('node', [SCRIPT, 'validate'], {
+    cwd: ROOT, encoding: 'utf8', env: { ...process.env, INITIATIVES_DIR: dir }
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /unknown stage "bulding"/);
+  assert.match(result.stderr, /unknown key "hold"/);
+});
+
+test('a resting stage may not be configured for unattended merges', () => {
+  const dir = scratch({ ...MERGING, auto_merge: { stages: ['building', 'dormant'] } });
+  const result = spawnSync('node', [SCRIPT, 'validate'], {
+    cwd: ROOT, encoding: 'utf8', env: { ...process.env, INITIATIVES_DIR: dir }
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /may not include "dormant"/);
 });
 
 // ------------------------------------------------------------- check-scope

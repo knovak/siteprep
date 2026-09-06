@@ -43,6 +43,7 @@ dependency. That is fine for flat string fields and does not survive nested
 | `digest [--json]` | The sweep survey - what needs attention |
 | `propose [--json]` | Which `human:` questions a run should propose answers to |
 | `select [--json]` | Which items a run should work on, ranked and budgeted |
+| `automerge [<branch>] [--json]` | Whether one sweep pull request may land unattended, or the policy and which initiatives it covers; exit 1 for "do not merge this" |
 | `add <slug> <item>` | Author a new todo item |
 | `complete <slug> <item>` | Remove a finished item, unblock dependents, write the log; refuses to leave a live initiative with nothing to do |
 | `check-scope <slug>` | Fail if changed files reach outside the write scope |
@@ -136,6 +137,10 @@ unrelated deck from publishing.
 - a blocked item with no `blocked_by`, or an unknown blocker prefix
 - `blocked_by: todo:<id>` pointing at an item that does not exist
 - `sweep.json` unparseable, or `max_items_per_initiative` > `items_per_run`
+- `sweep.json` naming an unknown phase, or omitting `survey`
+- an `auto_merge` block that is not an object, has an unrecognised key, names an
+  unknown stage, names `dormant` or `archived` - an initiative at rest has no
+  work to land - or has a negative `min_age_minutes`
 
 **Warnings** - the backlog needs attention, reported but never fatal:
 
@@ -531,11 +536,11 @@ the wall clock advances. Normal runs leave it unset and use the actual time.
 
 `initiatives/sweep.json` holds the run configuration; `phases` controls what a
 run may do, and must always include `"survey"`. It is now
-`["survey", "respond", "propose", "work", "deploy", "brief"]` - every capability
-on, at the configured budget of four items per run. Narrowing it is the same kind of
+`["survey", "merge", "respond", "propose", "work", "deploy", "brief"]` - every
+capability on, at the configured budget of four items per run. Narrowing it is the same kind of
 reviewable commit that widening it was.
 
-`deploy` and `brief` are the two phases that take no budget. It publishes what the run has
+`merge`, `deploy` and `brief` are the three phases that take no budget. It publishes what the run has
 already done rather than starting anything, and refusing to show finished work
 because the budget ran out would be the wrong economy. It writes the **test**
 environment only, from the branch the run just pushed, and only when
@@ -549,6 +554,9 @@ moves without a person running `release-initiative`.
 digest no longer matches, through the `write-brief` skill. Selection is a
 digest comparison, so an initiative nobody has touched is skipped and a quiet
 run costs nothing.
+
+`merge` lands the sweep's own pull requests under the `auto_merge` block in the
+same file - see The merge phase below.
 
 `initiatives/sweep-prompt.md` is the instruction a sweep follows. It lives in
 the repo so a manual run and a scheduled run are the same text.
@@ -589,6 +597,44 @@ Three things are specific to it:
 
 The digest marks each waiting decision `proposable`, so the same list says both
 what needs the user and which entries will arrive as a pull request.
+
+### The merge phase
+
+`merge` is what stops a plan arriving one step per sweep. It lands the sweep's
+own pull requests, so the next step starts from the merged tree - once at the
+top of a run, for what earlier runs left open, and again at the end of `work`
+for what the run has just opened.
+
+`automerge <branch>` answers the part the repository can answer, and exits
+non-zero for "do not merge this". Four rules, in the order it reports them:
+
+- **`merge` must be in `phases`.** The config is the switch, as for every other
+  phase.
+- **Never a `sweep/<slug>/propose-*` branch.** A proposal is the question being
+  put to the user; merging it is what answers a `human:` blocker, so a policy
+  may not. This one is not configurable.
+- **The initiative's stage must be in `auto_merge.stages`**, default `planned`
+  and `building`. **The stage is read from the base branch**, through `git show
+  main:<path>`, falling back to the working tree when git cannot answer - and
+  the reply says which was used. Reading it from the pull request's own head
+  would let the pull request that writes `plan.md`, and so advances the
+  initiative to `planned`, merge itself under the policy it is in the act of
+  satisfying.
+- **The pull request must have been open `auto_merge.min_age_minutes`**, default
+  15, passed as `--opened-at <iso>`. The reply carries `age_minutes` and, while
+  it is still holding, `wait_minutes`.
+
+What the command deliberately does not know is CI, mergeability and review
+threads: those need GitHub, and the `merge-prs` skill holds the rules for them.
+The same division as everywhere else here - the repository computes what it can,
+and the agent supplies what only GitHub knows.
+
+Two defaults are worth the reasoning. `planned` and `building` are the stages
+where a pull request transcribes a plan the user has already merged, so the work
+can be checked against a document; the objectives, the spec and the plan itself
+are where their judgement is the point of the pull request. And the holding
+window is what keeps the phase reviewable rather than instant: the pull request
+is open, visible and closeable for fifteen minutes before it may land.
 
 ### The shared budget
 

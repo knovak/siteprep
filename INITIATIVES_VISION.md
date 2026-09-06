@@ -716,7 +716,9 @@ decision rather than a document.
 ### 7.4 Phase 4 — Do new work (each run)
 
 Take the **top-ranked actionable items across all initiatives**, up to a configured
-budget, do the work, and open PRs. Never self-merged.
+budget, do the work, and open PRs. Never self-merged — superseded: the `merge`
+phase lands the pull requests its policy covers, under the rules recorded in
+§7.9.
 
 Ranking, roughly:
 
@@ -981,7 +983,9 @@ Each thread you handle counts against `items_per_run`.
 
 ## Rules
 
-- Never merge your own pull request, and never resolve a review thread.
+- Never merge your own pull request, and never resolve a review thread. The
+  first half is now bounded rather than absolute: see the `merge` phase in §7.9.
+  Never resolving a review thread still holds without exception.
 - Never treat your own comments, or another bot's, as something to respond to.
 - Never create a new initiative, and never invent or edit a wish.
 - Never repair a malformed `initiative.json` — skip that initiative and report it.
@@ -1029,6 +1033,42 @@ friction fix, but §6.3 makes the human merge the event that closes a todo item.
 Auto-merging on CI green would make "review enacts closure" vacuous — items would
 close because the build passed, which tests nothing about whether the work was any
 good. The merge skill keeps the human decision and removes only the clicking.
+
+> **What changed, and why.** The paragraph above was right about what the human
+> merge is *for* and wrong about what it had become. In practice nearly every
+> sweep pull request was merged unread, and the wait for the next run was what
+> the merge actually bought: a plan of eight steps took eight runs, however small
+> the steps were. A review nobody performs only delays the work, so the fix is to
+> say which merges are the decision and which are the clicking.
+>
+> So the sweep gained a `merge` phase, with a policy in `sweep.json`:
+>
+> ```json
+> "auto_merge": { "stages": ["planned", "building"], "min_age_minutes": 15 }
+> ```
+>
+> The argument above survives in three places rather than being discarded. **A
+> proposal is never merged by it**: a proposal *is* the question, and merging it
+> is what answers a `human:` blocker, so no policy may. **`stages` names where
+> the merge is the clicking**: at `planned` and `building` a pull request
+> transcribes a plan the user has already merged, and the work can be checked
+> against that document — the objectives, the spec and the plan itself are where
+> their judgement is the point, and those still wait for them. And the stage is
+> read from `main`, not from the branch, so the pull request that writes
+> `plan.md` cannot merge itself under the stage it is creating.
+>
+> **`min_age_minutes` is what keeps this from being auto-merge-on-green.** The
+> pull request is open, visible and closeable for that long before the phase may
+> land it. Fifteen minutes is not a review window for a person watching; it is
+> long enough for a run to do other work and come back, and long enough that a
+> pull request the user objects to can be closed before it lands.
+>
+> `initiatives.mjs automerge <branch>` computes all of that, for the same reason
+> `select` computes ranking: a rule the prompt has to remember is a rule that
+> goes missing on a long run. CI, mergeability and unresolved threads still come
+> from GitHub, through the merge skill's unattended rules — nothing merges red,
+> conflicted, or with a comment from a person unanswered, and there are no
+> overrides in an unattended run.
 
 ### 7.10 Creating an initiative — the new-initiative skill
 
@@ -1084,8 +1124,8 @@ build has to be tried in that environment, not described from here — so a seco
 will sometimes be working on an initiative while the sweep runs. **This needs no new
 mechanism**, because three properties already established carry it:
 
-- **The sweep never merges (§7.7).** A collision costs a pull request you close, not a
-  corrupted `main`.
+- **The sweep merges only its own covered pull requests (§7.9).** A collision
+  costs a pull request you close, not a corrupted `main`.
 - **Every run re-derives its picture from `main` (§7.1).** There is no cached state to
   go stale, so the run after someone else's merge simply sees the new state. "Claude's
   sweep discovers what happened" is the design working, not a recovery path.
