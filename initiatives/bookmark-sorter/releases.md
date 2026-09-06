@@ -3,6 +3,16 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-09-06 — ChatGPT Site — version 5
+
+<https://bookmark-sorter.ken-novak.chatgpt.site/>
+
+Released `3ce20ee` · 1 commit(s) since the previous release · test last deployed 2026-09-05 at `ff64537`.
+
+Changes since the previous release, in `initiatives/bookmark-sorter/work`:
+
+- Fix clipped images in Bookmark Sorter 3x12 layout (#445)
+
 ## 2026-09-05 — ChatGPT Site — version 4
 
 <https://bookmark-sorter.ken-novak.chatgpt.site/>

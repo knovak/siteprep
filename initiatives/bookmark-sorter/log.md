@@ -629,3 +629,19 @@ space above tags; other layouts keep their existing image treatment.
 The browser regression reproduces overflow before the fix and checks landscape,
 square, and portrait captures at 1320×820, 1600×900, and 3440×1440. It also checks
 title/tag visibility and unchanged image dimensions after returning to 2×8.
+
+## 2026-09-06 — Release
+
+Released to production — ChatGPT Site, version 5, `3ce20ee`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+Production verification: the existing public Site successfully published version
+5 at 2026-09-06 07:45 UTC. Sites source
+`50814e790e2bb13bee6af6d6cadec91a3eb897b2` matches the 66 application files at
+merged PR #445 (`3ce20ee56cf20910473ea1ac5b30cc45c4e56401`), except for the
+production project ID. The validated pre-merge source `a0be925` has the same
+application tree. The production build and 64 application tests passed, and the
+preceding fix passed 31 browser tests. Anonymous entry returned HTTP 200 with
+Sign in with ChatGPT. Signed-in 3×12 showed all nine loaded images contained
+within their image areas; the collection remained at 5,562 bookmarks and 5,530
+untriaged. Existing access and D1/R2 bindings were preserved. Test remains on
+deployed version 36; saved test version 37 was not deployed.
