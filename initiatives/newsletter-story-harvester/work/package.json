@@ -3,6 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "build": "node build-private-site.mjs" },
-  "engines": { "node": ">=18" }
+  "scripts": {
+    "build": "node build-private-site.mjs && vite build",
+    "dev": "node build-private-site.mjs && vite",
+    "test": "node --test test/*.test.mjs",
+    "db:generate": "drizzle-kit generate"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.2"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@openai/sites-vite-plugin": "0.1.0",
+    "drizzle-kit": "0.31.10",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  }
 }

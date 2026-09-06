@@ -449,8 +449,10 @@ row. The backlog count — stories with no verdict — is shown at all times. O7
 that the system be able to say how large it is, and a number nobody is looking
 at will not be believed later.
 
-**Nothing is only in the page.** Close it without exporting and the only loss is
-the verdicts given in that sitting, which is the cost §9 exists to keep small.
+**Hosted judgments are durable.** The private hosted review saves each action
+and Undo in D1, with revision checks against stale tabs. A database error is
+shown before any success state. The downloaded self-contained page retains the
+offline export/import workflow described below.
 Source-search help is present only on the private judgeable review page. It is
 not included in the provenance-safe published page.
 
@@ -700,3 +702,16 @@ worth naming.
 - **Which subset selectors `store export` (§7.1) needs on day one.** Whole-file
   copy covers backup; the subsets earn their place only when something is
   actually being handed somewhere.
+
+### September 2026 hosted review persistence
+
+The user requested automatic database storage on 2026-09-06. The hosted Site now
+uses D1 for verdict state; the earlier file handoff remains available for offline
+review and synchronizing the local harvesting store. A versioned snapshot per
+store makes individual, cluster, sweep, and Undo updates atomic. Store and story
+IDs survive re-harvests; persisted verdicts take precedence over bundled seeds.
+Drop, Keep, and Emphasize are action labels for the existing dropped/kept/emphasised
+values. The chosen action is outlined, including when loaded from the database.
+The Help dialog explains loading through an LLM with repository and Gmail access,
+optional tagging, and the private test refresh. See work/README.md for the API,
+migration, failure handling, and private-input details.

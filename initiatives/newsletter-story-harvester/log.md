@@ -274,3 +274,32 @@ Both are `REFINING_ENTRY_ITEMS` verbatim, with the same ids, values and efforts
 that `complete --stage refining` would have written, so the initiative now
 carries the state the transition should have left behind. Nothing about the
 work itself changed.
+
+## 2026-09-06 — Save review judgments and explain harvesting
+
+Ken requested loading instructions in Help, action verbs on story buttons, an
+outline on the selected judgment, and database persistence. Help now includes
+a reusable harvest request and explains the available tagging and test refresh
+skills. Buttons read Drop, Keep, and Emphasize; the selected action has an
+outline and check mark, including judgments restored from an earlier session.
+
+The private hosted review now runs as a Worker with D1. Judgments and Undo use
+an atomic revision-checked snapshot per store. Controls wait for the first load
+and for each save; uncertain saves require reloading the database state before
+another action. Stale tabs cannot overwrite newer judgments. Export remains an
+optional backup and carries timestamped clears so Undo can synchronize with the
+local store. Offline review files retain their explicit export workflow.
+
+Ken also requested a harvest of all configured sources for the last 30 days.
+Three read-only Gmail searches found 39 issues in the requested window. Fifteen
+already-loaded issues were skipped; 24 newly read issues yielded 173 stories.
+The protected collection grew from 148 to 321 stories. Fourteen judgments from
+the existing open page were exported and preserved before rebuilding. Raw
+newsletter bodies stayed in memory; store, extraction reports, and backups are
+ignored owner-only local files. No mailbox changes were made. Paid-only stories
+absent from the delivered emails were not available to this run.
+
+All 137 harvester tests pass, including real SQLite persistence, concurrent
+updates, Undo, rebuilds with new stories, authentication and request validation,
+and browser coverage for reloads, another browser, conflicts, and failed saves.
+The Worker build also passes. Screenshots use synthetic fixture stories.

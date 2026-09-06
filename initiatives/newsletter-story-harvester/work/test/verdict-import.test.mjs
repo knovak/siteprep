@@ -127,3 +127,14 @@ test('each nonduplicate import records the §7.1 merge counters and fingerprint'
   for (const field of ['added', 'matched', 'merged', 'conflicted']) assert.equal(run[field], report[field]);
   assert.match(run.file_hash, /^[a-f0-9]{64}$/);
 });
+
+test('a saved Undo clears an older judgment and cannot be overwritten by an older export', () => {
+  const store = freshStore();
+  const target = store.stories[0];
+  const file = {store_id: store.store_id, tags: [], verdicts: [{id: target.id, verdict: null, verdict_at: '2026-09-06T12:00:00.000Z'}]};
+  assert.equal(importVerdictFile(store, file).updated, 1);
+  assert.equal(target.verdict, null);
+  assert.equal(importVerdictFile(store, {...file, verdicts: [{id: target.id, verdict: 'kept', verdict_at: '2026-09-05T12:00:00.000Z'}]}).updated, 0);
+  assert.equal(target.verdict, null);
+  assert.ok(!store.vocabularies.verdict.includes(null));
+});
