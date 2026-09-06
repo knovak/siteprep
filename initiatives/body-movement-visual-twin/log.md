@@ -101,4 +101,4 @@ Released to production — ChatGPT Site, version 1, `021648c`. <https://body-mov
 
 ## 2026-09-06 — Release
 
-Released to production — ChatGPT Site, version 2, `772c1dd`. 1 commit(s) since the previous release. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.
+Released to production — ChatGPT Site, version 2, `d2c85a3`. 1 commit(s) since the previous release. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.

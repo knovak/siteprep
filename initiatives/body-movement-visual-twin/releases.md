@@ -7,11 +7,11 @@ Newest first.
 
 <https://body-movement-visual-twin.ken-novak.chatgpt.site/>
 
-Released `772c1dd` · 1 commit(s) since the previous release · test last deployed 2026-09-06 at `772c1dd`.
+Released `d2c85a3` · 1 commit(s) since the previous release · test last deployed 2026-09-06 at `772c1dd`.
 
 Changes since the previous release, in `initiatives/body-movement-visual-twin/work/phase-6/site`:
 
-- Expand movement library and stabilize feet through playback
+- Add 30 body movements and stabilize foot playback (#442)
 
 ## 2026-09-05 — ChatGPT Site — version 1
 
