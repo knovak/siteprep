@@ -315,3 +315,17 @@ retain at least 4.5:1 contrast in resting, hovered and pressed states. Verify
 keyboard focus remains visible and disabled controls still cannot act. Touch
 controls must retain 44px targets without document overflow. Re-run selection,
 tag/untag, sweep, undo, all layout presets, and selected-card outline coverage.
+
+
+## Verdict checkboxes in Select and tag
+
+Verify all five verdicts start checked and match the complete collection. With
+Keep and Needs-time checked, a typed OR expression must match only those verdicts.
+Repeat through proposal, saved, and recent entry routes; save/history, tag, sweep,
+and current-selection export must use the complete effective expression. Clearing
+all checkboxes produces no cards or proposals. Rechecking all restores the base
+selection. Proposal counts must match the filtered intersections, omit zero-count
+verdict/error groups, and retain an existing group reduced to one match. Delay
+older grid/proposal responses while changing filters to prove they cannot restore
+stale results. Check collection switches, cleared marks, preserved checkbox focus,
+and phone/keyboard reachability. Use isolated fixture data for mutation checks.

@@ -809,9 +809,9 @@ test('Automatic proposals are grouped in the requested order without Same labels
   await expect(page.locator('#proposals optgroup')).toHaveCount(7);
   const labels = await page.locator('#proposals optgroup').evaluateAll(groups => groups.map(group => group.label));
   expect(labels).toEqual(['src', 'tag', 'verdict', 'errors', 'folder', 'site', 'image']);
-  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(7);
+  await expect(page.locator('#proposals optgroup[label="verdict"] option')).toHaveCount(3);
   const verdictLabels = await page.locator('#proposals optgroup[label="verdict"] option').allTextContents();
-  expect(verdictLabels).toEqual(['archive (0)', 'junk (0)', 'keep (0)', 'needs-time (0)', 'not junk (10,000)', 'untriaged (10,000)', 'untriaged or needs-time (10,000)']);
+  expect(verdictLabels).toEqual(['not junk (10,000)', 'untriaged (10,000)', 'untriaged or needs-time (10,000)']);
   const errorLabels = await page.locator('#proposals optgroup[label="errors"] option').allTextContents();
   expect(errorLabels).toEqual(['any error (3)', 'err:404 (2)', 'err:timeout (1)']);
   await expect(page.locator('#proposals optgroup[label="tag"]')).not.toContainText('err:');

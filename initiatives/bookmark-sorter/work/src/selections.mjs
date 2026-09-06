@@ -98,7 +98,13 @@ function selectionImage(capture) {
   return 'none';
 }
 
-export function proposeSelections(items, {minimum = 2} = {}) {
+export function proposeSelections(items, {minimum = 2, expression = ''} = {}) {
+  if (String(expression).trim()) {
+    // Keep an existing group when the filter reduces it to one match.
+    const eligible = new Set(proposeSelections(items, {minimum}).map(proposal => proposal.id));
+    return proposeSelections(evaluateSelection(items, expression), {minimum: 1})
+      .filter(proposal => eligible.has(proposal.id));
+  }
   const proposals = [
     ...groupProposalValues(items, 'src', item => (item.tags || [])
       .filter(tag => hasTagPrefix(tag, 'src'))
@@ -118,6 +124,7 @@ export function proposeSelections(items, {minimum = 2} = {}) {
   const includeSingleton = new Set(['src', 'tag', 'error', 'folder', 'image']);
   const kindOrder = new Map(['src', 'tag', 'verdict', 'error', 'folder', 'site', 'image', 'title'].map((kind, index) => [kind, index]));
   return proposals
+    .filter(proposal => proposal.count > 0)
     .filter(proposal => proposal.kind === 'verdict' || proposal.id === 'error:any'
       || proposal.count >= (includeSingleton.has(proposal.kind) ? 1 : minimum))
     .sort((left, right) => kindOrder.get(left.kind) - kindOrder.get(right.kind)

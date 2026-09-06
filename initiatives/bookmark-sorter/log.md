@@ -645,3 +645,16 @@ Sign in with ChatGPT. Signed-in 3×12 showed all nine loaded images contained
 within their image areas; the collection remained at 5,562 bookmarks and 5,530
 untriaged. Existing access and D1/R2 bindings were preserved. Test remains on
 deployed version 36; saved test version 37 was not deployed.
+
+
+## 2026-09-06 — Verdict filters for Select and tag
+
+Added Keep, Junk, Archive, Needs-time, and Untriaged checkboxes, all initially
+checked. Their OR clause intersects typed, proposed, saved, and recent selections;
+clearing all selects nothing. Checkbox changes refresh the active selection and
+automatic proposals, remove zero-count entries, preserve existing single-match
+groups, and discard stale responses. Saving, history, tagging, sweeping, and
+current-selection export use the effective filtered expression. Updated Help,
+the user and technical READMEs, specification, and test plan. All 65 application
+tests and 34 browser checks passed, including the real-route verdict-filter
+fixture and the existing layout/triage suite. The Sites application build passed.

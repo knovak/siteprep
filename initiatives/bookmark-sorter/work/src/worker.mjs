@@ -269,7 +269,9 @@ export function createPileApp({
         }
 
         if (request.method === 'GET' && url.pathname === '/api/proposals') {
-          return json({proposals: proposeSelections(await store.listAllItems(collectionId))});
+          return json({proposals: proposeSelections(await store.listAllItems(collectionId), {
+            expression: url.searchParams.get('expression') || '',
+          })});
         }
 
         if (request.method === 'GET' && url.pathname === '/api/export') {
