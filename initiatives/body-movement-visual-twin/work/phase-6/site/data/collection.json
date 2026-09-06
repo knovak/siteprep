@@ -53,6 +53,126 @@
     {
       "tradition": "feldenkrais",
       "record": "./records/seated-weight-shift-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/ankle-flexion-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/ankle-circle-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/foot-edge-tilt-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/wrist-flexion-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/wrist-clock-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/elbow-fold-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/shoulder-glide-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/forward-arm-reach-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/head-nod-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/head-sidebend-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/spinal-round-arch-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/supine-knee-tilt-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/heel-slide-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/diagonal-lengthening-study.json"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/seated-knee-extension-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/tree-pose-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/warrior-one-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/extended-side-angle-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/wide-standing-fold-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/pyramid-pose-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/half-moon-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/eagle-arms-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/cow-face-arms-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/prayer-position-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/upward-prayer-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/chair-twist-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/staff-pose-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/seated-forward-fold-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/wide-seated-angle-study.json"
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/legs-up-wall-study.json"
     }
   ]
 }

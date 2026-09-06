@@ -6,7 +6,7 @@ deployed page has a root `index.html`, retains `noindex`, and does not depend on
 mutable parent paths under `initiatives/` at runtime.
 
 Run `node scripts/build-site.mjs` whenever an earlier phase changes. The builder
-reads the collection manifest and copies all 13 listed records plus their
+reads the collection manifest and copies all 43 listed records plus their
 modules and generated anatomy data, rewrites only their deployment paths,
 and fails if the active viewer gains an unknown cross-phase dependency.
 
@@ -35,3 +35,6 @@ rewrites its rig-math import to the local bundle. Rebuild this bundle after
 anatomy display changes; do not edit its copied viewer or module by hand.
 The user's relayed review and outstanding human evidence are recorded in
 `REVIEW-KRN.md` and the initiative's decisions.
+
+The bundle also packages `lib/movement-pose.mjs` from the Phase 3 source, so
+interpolated ankle direction and foot placement use the same code as the tests.

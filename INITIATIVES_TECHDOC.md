@@ -737,3 +737,15 @@ Sites build project points its static output at `private/site`. Its
 `build-private-site.mjs` requires protected local inputs and writes mode-0600
 HTML atomically, refusing missing data and symlinked paths. Repository validation
 checks the committed package rather than requiring private artifacts in CI.
+
+
+### Body Movement generated collection
+
+The Body Movement collection is authored in its Phase 3 movement-library
+scripts, including `additional-studies.mjs`. Run `build-movement-library.mjs`
+then Phase 6 `build-site.mjs` after changing a study or the playback modules.
+The self-contained Site copies all 43 records and rewrites the shared
+`movement-pose.mjs` import. That module keeps designated sagittal foot contacts
+fixed throughout playback. See the initiative's
+[Phase 3 documentation](initiatives/body-movement-visual-twin/work/phase-3/README.md)
+for the record contract, sources, limits, and verification commands.

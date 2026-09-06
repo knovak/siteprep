@@ -86,3 +86,15 @@ anatomy/practitioner evidence item and unreviewed records remain open.
 ## 2026-09-05 — Release
 
 Released to production — ChatGPT Site, version 1, `021648c`. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.
+
+
+## 2026-09-06 — Foot playback and thirty additional movements
+
+- Responded to the user's foot-direction screenshot and request for fifteen more
+  Feldenkrais movements and fifteen more yoga movements.
+- Preserved the seated-direction correction from main and corrected interpolated
+  foot placement in chair pose and standing forward fold, including stature changes.
+- Added thirty original sourced studies, expanding the collection to 43 entries.
+  Anatomy and tradition sign-off remain unreviewed; no teacher lesson is copied.
+- Regenerated the complete private bundle and extended geometry and desktop/phone
+  browser checks to the new movements and between-keyframe foot placement.

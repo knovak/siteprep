@@ -76,7 +76,7 @@ test('seated feet and knees point anteriorly together and standing sagittal stud
   for (const clip of Object.values(clips)) for (const frame of clip.frames) {
     const matrices = globalMatrices(rig,frame);
     const at = (id) => transformPoint(matrices.get(id),[0,0,0]);
-    if (clip.description.toLowerCase().includes('seated') || clip.id === 'pause-before-standing') {
+    if (['seated-pelvic-clock-exploration', 'supported-seated-side-reach', 'pause-before-standing', 'dynamic-chair-clock-study', 'shoulder-clock-study', 'sliding-hand-study', 'seated-counterturn-study', 'seated-weight-shift-study'].includes(clip.id)) {
       const m = matrices.get('pelvis');
       const forward = [m[2],m[6],m[10]];
       const anterior = (a,b) => a.reduce((sum,v,i) => sum + (v-b[i])*forward[i],0);

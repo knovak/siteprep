@@ -1123,7 +1123,8 @@
           ]
         }
       }
-    ]
+    ],
+    "planted_sagittal_feet": true
   },
   "standing-forward-fold-study": {
     "id": "standing-forward-fold-study",
@@ -1313,7 +1314,8 @@
           ]
         }
       }
-    ]
+    ],
+    "planted_sagittal_feet": true
   },
   "dynamic-chair-clock-study": {
     "id": "dynamic-chair-clock-study",
@@ -2237,6 +2239,4724 @@
             90,
             0,
             0
+          ]
+        }
+      }
+    ]
+  },
+  "ankle-flexion-study": {
+    "id": "ankle-flexion-study",
+    "duration_seconds": 20,
+    "description": "One ankle alternates between lifting the forefoot and pointing it, with the shin held steady. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            -18,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            22,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "ankle-circle-study": {
+    "id": "ankle-circle-study",
+    "duration_seconds": 20,
+    "description": "The left foot follows a small loop combining forefoot lift, tilt, and return. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "around",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            -14,
+            0,
+            -9
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "around",
+        "t": 0.525,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            0,
+            0,
+            -12
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            14,
+            0,
+            9
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "foot-edge-tilt-study": {
+    "id": "foot-edge-tilt-study",
+    "duration_seconds": 20,
+    "description": "A small ankle tilt turns the sole inward and outward while the knee keeps its direction. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            0,
+            0,
+            -15
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            0,
+            0,
+            15
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "wrist-flexion-study": {
+    "id": "wrist-flexion-study",
+    "duration_seconds": 20,
+    "description": "With the elbow bent, one hand changes its angle relative to the forearm. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ],
+          "forearm-left": [
+            0,
+            0,
+            -25
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ],
+          "forearm-left": [
+            0,
+            0,
+            25
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "wrist-clock-study": {
+    "id": "wrist-clock-study",
+    "duration_seconds": 20,
+    "description": "A supported-arm reference combines two small wrist angles into a hand loop. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "around",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ],
+          "forearm-left": [
+            0,
+            -12,
+            -18
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "around",
+        "t": 0.525,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ],
+          "forearm-left": [
+            0,
+            -16,
+            0
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ],
+          "forearm-left": [
+            0,
+            12,
+            18
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            85,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "elbow-fold-study": {
+    "id": "elbow-fold-study",
+    "duration_seconds": 20,
+    "description": "The left forearm folds toward the upper arm and opens again while the shoulder stays quiet. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            100,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            30,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "shoulder-glide-study": {
+    "id": "shoulder-glide-study",
+    "duration_seconds": 20,
+    "description": "Both shoulder blades travel forward and back with a small collarbone response. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            6,
+            90
+          ],
+          "scapula-right": [
+            0,
+            -6,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "scapula-left": [
+            0,
+            0,
+            20
+          ],
+          "scapula-right": [
+            0,
+            0,
+            20
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            -5,
+            90
+          ],
+          "scapula-right": [
+            0,
+            5,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "scapula-left": [
+            0,
+            0,
+            -15
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -15
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "forward-arm-reach-study": {
+    "id": "forward-arm-reach-study",
+    "duration_seconds": 20,
+    "description": "One arm reaches forward, then the upper chest contributes a small following turn. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            75,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "humerus-left": [
+            0,
+            10,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            85,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "thoracic-upper": [
+            0,
+            -8,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "head-nod-study": {
+    "id": "head-nod-study",
+    "duration_seconds": 20,
+    "description": "The skull nods and returns around its articulation with the upper neck. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "head": [
+            10,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "head": [
+            -7,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "head-sidebend-study": {
+    "id": "head-sidebend-study",
+    "duration_seconds": 20,
+    "description": "The head and upper neck incline toward each shoulder in a small alternating arc. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "head": [
+            0,
+            0,
+            6
+          ],
+          "neck-base": [
+            0,
+            0,
+            5
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "head": [
+            0,
+            0,
+            -6
+          ],
+          "neck-base": [
+            0,
+            0,
+            -5
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "spinal-round-arch-study": {
+    "id": "spinal-round-arch-study",
+    "duration_seconds": 20,
+    "description": "The seated spine rounds and lengthens through the lumbar, thoracic, and neck regions. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            8,
+            0,
+            0
+          ],
+          "thoracic-lower": [
+            9,
+            0,
+            0
+          ],
+          "thoracic-upper": [
+            6,
+            0,
+            0
+          ],
+          "head": [
+            5,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            -5,
+            0,
+            0
+          ],
+          "thoracic-lower": [
+            -6,
+            0,
+            0
+          ],
+          "thoracic-upper": [
+            -4,
+            0,
+            0
+          ],
+          "head": [
+            -3,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "supine-knee-tilt-study": {
+    "id": "supine-knee-tilt-study",
+    "duration_seconds": 20,
+    "description": "With both knees bent, the thighs incline together toward one side and then the other. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -55,
+            0,
+            0
+          ],
+          "hip-right": [
+            -55,
+            0,
+            0
+          ],
+          "femur-left": [
+            110,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -55,
+            0,
+            -12
+          ],
+          "hip-right": [
+            -55,
+            0,
+            -12
+          ],
+          "femur-left": [
+            110,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -55,
+            0,
+            12
+          ],
+          "hip-right": [
+            -55,
+            0,
+            12
+          ],
+          "femur-left": [
+            110,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -55,
+            0,
+            0
+          ],
+          "hip-right": [
+            -55,
+            0,
+            0
+          ],
+          "femur-left": [
+            110,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      }
+    ]
+  },
+  "heel-slide-study": {
+    "id": "heel-slide-study",
+    "duration_seconds": 20,
+    "description": "One bent leg lengthens toward a straight position, then folds back toward its starting shape. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -55,
+            0,
+            0
+          ],
+          "hip-right": [
+            -55,
+            0,
+            0
+          ],
+          "femur-left": [
+            110,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -25,
+            0,
+            0
+          ],
+          "hip-right": [
+            -55,
+            0,
+            0
+          ],
+          "femur-left": [
+            50,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -8,
+            0,
+            0
+          ],
+          "hip-right": [
+            -55,
+            0,
+            0
+          ],
+          "femur-left": [
+            16,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -55,
+            0,
+            0
+          ],
+          "hip-right": [
+            -55,
+            0,
+            0
+          ],
+          "femur-left": [
+            110,
+            0,
+            0
+          ],
+          "femur-right": [
+            110,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      }
+    ]
+  },
+  "diagonal-lengthening-study": {
+    "id": "diagonal-lengthening-study",
+    "duration_seconds": 20,
+    "description": "A long leg and the opposite arm move away from the torso, then soften toward the starting position. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -65
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            0,
+            0,
+            10
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -80
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            0,
+            0,
+            14
+          ],
+          "thoracic-upper": [
+            0,
+            0,
+            -4
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      }
+    ]
+  },
+  "seated-knee-extension-study": {
+    "id": "seated-knee-extension-study",
+    "duration_seconds": 20,
+    "description": "One shin swings forward as the knee opens; the ankle adjusts to keep the toes facing forward. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            55,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            35,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            25,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "tibia-left": [
+            65,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "tree-pose-study": {
+    "id": "tree-pose-study",
+    "duration_seconds": 20,
+    "description": "One leg bends and opens outward while the other remains long beneath the upright trunk. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -30,
+            -55,
+            -12
+          ],
+          "femur-left": [
+            100,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -80
+          ],
+          "scapula-right": [
+            0,
+            0,
+            80
+          ],
+          "hip-left": [
+            -40,
+            -65,
+            -12
+          ],
+          "femur-left": [
+            120,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "warrior-one-study": {
+    "id": "warrior-one-study",
+    "duration_seconds": 20,
+    "description": "A split stance combines front-leg flexion, back-leg extension, and an overhead arm line. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -42,
+            0,
+            0
+          ],
+          "femur-left": [
+            52,
+            0,
+            0
+          ],
+          "tibia-left": [
+            -10,
+            0,
+            0
+          ],
+          "hip-right": [
+            22,
+            0,
+            0
+          ],
+          "tibia-right": [
+            -22,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -80
+          ],
+          "scapula-right": [
+            0,
+            0,
+            80
+          ],
+          "hip-left": [
+            -48,
+            0,
+            0
+          ],
+          "femur-left": [
+            65,
+            0,
+            0
+          ],
+          "tibia-left": [
+            -17,
+            0,
+            0
+          ],
+          "hip-right": [
+            25,
+            0,
+            0
+          ],
+          "tibia-right": [
+            -25,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "extended-side-angle-study": {
+    "id": "extended-side-angle-study",
+    "duration_seconds": 20,
+    "description": "A wide stance and one bent knee support an inclined trunk with the upper arm extending overhead. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            0
+          ],
+          "scapula-right": [
+            0,
+            0,
+            0
+          ],
+          "hip-left": [
+            -40,
+            -90,
+            0
+          ],
+          "hip-right": [
+            0,
+            0,
+            28
+          ],
+          "femur-left": [
+            65,
+            0,
+            0
+          ],
+          "tibia-left": [
+            -25,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            45
+          ],
+          "scapula-right": [
+            0,
+            0,
+            70
+          ],
+          "hip-left": [
+            -45,
+            -90,
+            0
+          ],
+          "hip-right": [
+            0,
+            0,
+            28
+          ],
+          "femur-left": [
+            70,
+            0,
+            0
+          ],
+          "tibia-left": [
+            -25,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            0,
+            0,
+            18
+          ],
+          "thoracic-lower": [
+            0,
+            0,
+            12
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "wide-standing-fold-study": {
+    "id": "wide-standing-fold-study",
+    "duration_seconds": 20,
+    "description": "Both hips hinge with the legs spread apart and the arms descending toward the floor. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            0,
+            0,
+            -22
+          ],
+          "hip-right": [
+            0,
+            0,
+            22
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "pelvis": [
+            60,
+            0,
+            0
+          ],
+          "hip-left": [
+            -60,
+            0,
+            -22
+          ],
+          "hip-right": [
+            -60,
+            0,
+            22
+          ],
+          "lumbar-spine": [
+            15,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "pyramid-pose-study": {
+    "id": "pyramid-pose-study",
+    "duration_seconds": 20,
+    "description": "The trunk inclines over the front leg in a short split stance with both knees long. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -18,
+            0,
+            0
+          ],
+          "hip-right": [
+            18,
+            0,
+            0
+          ],
+          "tibia-left": [
+            18,
+            0,
+            0
+          ],
+          "tibia-right": [
+            -18,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "pelvis": [
+            55,
+            0,
+            0
+          ],
+          "hip-left": [
+            -73,
+            0,
+            0
+          ],
+          "hip-right": [
+            -37,
+            0,
+            0
+          ],
+          "tibia-left": [
+            18,
+            0,
+            0
+          ],
+          "tibia-right": [
+            -18,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            8,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "half-moon-study": {
+    "id": "half-moon-study",
+    "duration_seconds": 20,
+    "description": "The pelvis turns sideways as one leg stays beneath it and the other extends outward. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            0
+          ],
+          "scapula-right": [
+            0,
+            0,
+            0
+          ],
+          "pelvis": [
+            0,
+            0,
+            40
+          ],
+          "hip-left": [
+            0,
+            0,
+            -40
+          ],
+          "hip-right": [
+            0,
+            0,
+            30
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            15
+          ],
+          "scapula-right": [
+            0,
+            0,
+            15
+          ],
+          "pelvis": [
+            0,
+            0,
+            75
+          ],
+          "hip-left": [
+            0,
+            0,
+            -75
+          ],
+          "hip-right": [
+            0,
+            0,
+            15
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "eagle-arms-study": {
+    "id": "eagle-arms-study",
+    "duration_seconds": 20,
+    "description": "Bent arms move forward and across the chest to show the shoulder and elbow arrangement. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            19.685730102414364,
+            63.43494882292201
+          ],
+          "scapula-right": [
+            0,
+            -19.685730102414364,
+            -63.43494882292201
+          ],
+          "humerus-left": [
+            0,
+            36.52123635670193,
+            165.5894171098803
+          ],
+          "forearm-left": [
+            0,
+            -14.039810763105924,
+            24.143745821128825
+          ],
+          "humerus-right": [
+            0,
+            -36.52123635670193,
+            -165.5894171098803
+          ],
+          "forearm-right": [
+            0,
+            14.039810763105924,
+            -24.143745821128825
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            49.48941056266724,
+            110.55604521958348
+          ],
+          "scapula-right": [
+            0,
+            -51.82680666196613,
+            -122.00538320808353
+          ],
+          "humerus-left": [
+            0,
+            46.47757289811548,
+            135.371393664344
+          ],
+          "forearm-left": [
+            0,
+            -0.1434125867667291,
+            10.218381474686796
+          ],
+          "humerus-right": [
+            0,
+            -33.89220276316627,
+            -132.83239653253128
+          ],
+          "forearm-right": [
+            0,
+            -7.92936608351372,
+            -1.3897550273251882
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "cow-face-arms-study": {
+    "id": "cow-face-arms-study",
+    "duration_seconds": 20,
+    "description": "One elbow points upward while the opposite arm turns behind the trunk. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -75
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -95
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -78.69006752597979
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -78.69006752597979
+          ],
+          "humerus-left": [
+            0,
+            -24.121247601101558,
+            174.4006606634794
+          ],
+          "forearm-left": [
+            0,
+            23.993989176709658,
+            -6.252790809753617
+          ],
+          "humerus-right": [
+            0,
+            24.121247601101558,
+            174.4006606634794
+          ],
+          "forearm-right": [
+            0,
+            -23.993989176709658,
+            -6.252790809753617
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "prayer-position-study": {
+    "id": "prayer-position-study",
+    "duration_seconds": 20,
+    "description": "Both elbows bend as the forearms approach the front of the chest. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            19.685730102414364,
+            63.43494882292201
+          ],
+          "scapula-right": [
+            0,
+            -19.685730102414364,
+            -63.43494882292201
+          ],
+          "humerus-left": [
+            0,
+            39.37146020482873,
+            -180
+          ],
+          "forearm-left": [
+            0,
+            -17.53554649807231,
+            27.969943299757254
+          ],
+          "humerus-right": [
+            0,
+            -39.37146020482873,
+            180
+          ],
+          "forearm-right": [
+            0,
+            17.53554649807231,
+            -27.969943299757254
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            19.685730102414364,
+            63.43494882292201
+          ],
+          "scapula-right": [
+            0,
+            -19.685730102414364,
+            -63.43494882292201
+          ],
+          "humerus-left": [
+            0,
+            36.52123635670193,
+            165.5894171098803
+          ],
+          "forearm-left": [
+            0,
+            -14.039810763105924,
+            24.143745821128825
+          ],
+          "humerus-right": [
+            0,
+            -36.52123635670193,
+            -165.5894171098803
+          ],
+          "forearm-right": [
+            0,
+            14.039810763105924,
+            -24.143745821128825
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "upward-prayer-study": {
+    "id": "upward-prayer-study",
+    "duration_seconds": 20,
+    "description": "Both arms elevate and approach one another above the head. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -40
+          ],
+          "scapula-right": [
+            0,
+            0,
+            40
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            -100
+          ],
+          "scapula-right": [
+            0,
+            0,
+            100
+          ],
+          "clavicle-left": [
+            0,
+            0,
+            -10
+          ],
+          "clavicle-right": [
+            0,
+            0,
+            10
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ]
+        }
+      }
+    ]
+  },
+  "chair-twist-study": {
+    "id": "chair-twist-study",
+    "duration_seconds": 20,
+    "description": "The chest and head turn relative to the pelvis while the seated legs stay forward. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            0,
+            5,
+            0
+          ],
+          "thoracic-lower": [
+            0,
+            12,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            0,
+            7,
+            0
+          ],
+          "thoracic-lower": [
+            0,
+            15,
+            0
+          ],
+          "thoracic-upper": [
+            0,
+            12,
+            0
+          ],
+          "neck-base": [
+            0,
+            8,
+            0
+          ],
+          "humerus-left": [
+            0,
+            65,
+            0
+          ]
+        },
+        "translations_mm": {}
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            90,
+            0,
+            0
+          ],
+          "femur-right": [
+            90,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "staff-pose-study": {
+    "id": "staff-pose-study",
+    "duration_seconds": 20,
+    "description": "A long sitting reference moves from slightly bent knees toward two extended legs. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            18,
+            0,
+            0
+          ],
+          "femur-right": [
+            18,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ],
+          "femur-left": [
+            0,
+            0,
+            0
+          ],
+          "femur-right": [
+            0,
+            0,
+            0
+          ],
+          "thoracic-lower": [
+            -3,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "seated-forward-fold-study": {
+    "id": "seated-forward-fold-study",
+    "duration_seconds": 20,
+    "description": "From long sitting, the pelvis and spine incline toward the extended legs. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            65,
+            90
+          ],
+          "scapula-right": [
+            0,
+            -65,
+            -90
+          ],
+          "hip-left": [
+            -110,
+            0,
+            0
+          ],
+          "hip-right": [
+            -110,
+            0,
+            0
+          ],
+          "pelvis": [
+            20,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            45,
+            90
+          ],
+          "scapula-right": [
+            0,
+            -45,
+            -90
+          ],
+          "hip-left": [
+            -125,
+            0,
+            0
+          ],
+          "hip-right": [
+            -125,
+            0,
+            0
+          ],
+          "pelvis": [
+            35,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            10,
+            0,
+            0
+          ],
+          "thoracic-lower": [
+            8,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "wide-seated-angle-study": {
+    "id": "wide-seated-angle-study",
+    "duration_seconds": 20,
+    "description": "Both legs open from long sitting and the torso makes a small forward incline between them. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            -28,
+            0
+          ],
+          "hip-right": [
+            -90,
+            28,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -110,
+            -32,
+            0
+          ],
+          "hip-right": [
+            -110,
+            32,
+            0
+          ],
+          "pelvis": [
+            20,
+            0,
+            0
+          ],
+          "lumbar-spine": [
+            6,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            -750,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "legs-up-wall-study": {
+    "id": "legs-up-wall-study",
+    "duration_seconds": 20,
+    "description": "A back-lying reference raises both legs while the head and trunk remain horizontal. Project-authored anatomical estimate, not measured motion.",
+    "required_samples": [
+      "start",
+      "explore",
+      "develop",
+      "return"
+    ],
+    "frames": [
+      {
+        "id": "start",
+        "t": 0,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "explore",
+        "t": 0.35,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -45,
+            0,
+            0
+          ],
+          "hip-right": [
+            -45,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "develop",
+        "t": 0.7,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ],
+          "hip-left": [
+            -90,
+            0,
+            0
+          ],
+          "hip-right": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
+          ]
+        }
+      },
+      {
+        "id": "return",
+        "t": 1,
+        "rotations_deg": {
+          "scapula-left": [
+            0,
+            0,
+            90
+          ],
+          "scapula-right": [
+            0,
+            0,
+            -90
+          ],
+          "root": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "translations_mm": {
+          "root": [
+            0,
+            120,
+            900
           ]
         }
       }

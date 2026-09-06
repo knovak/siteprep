@@ -27,7 +27,7 @@ test('the deployment bundle is complete, noindex, and self-contained', async () 
     'index.html', 'lib/anatomy-geometry.mjs', 'lib/collection.mjs', 'lib/review-report.mjs', 'lib/rig-math.mjs',
     'lib/viewer-state.mjs', 'lib/visual-twin-controls.mjs', 'styles.css', 'viewer.mjs'
   ]) assert.ok(files.includes(expected), `missing ${expected}`);
-  assert.equal(files.filter((file) => file.startsWith('records/')).length, 13);
+  assert.equal(files.filter((file) => file.startsWith('records/')).length, 43);
   const index = await readFile(resolve(site, 'index.html'), 'utf8');
   const viewer = await readFile(resolve(site, 'viewer.mjs'), 'utf8');
   const collection = JSON.parse(await readFile(resolve(site, 'data/collection.json'), 'utf8'));
@@ -45,6 +45,6 @@ test('the deployment bundle is complete, noindex, and self-contained', async () 
       await readFile(imported);
     }
   }
-  assert.equal(collection.records.length, 13);
+  assert.equal(collection.records.length, 43);
   assert.ok(collection.records.every((entry) => /^\.\/records\/[a-z0-9-]+\.json$/.test(entry.record)));
 });

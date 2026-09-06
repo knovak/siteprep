@@ -1,15 +1,15 @@
 # Phase 3 anatomical movement collection
 
-This increment is a selectable 13-entry validation collection: the original
-Feldenkrais, yoga, and Alexander Technique records plus five additional yoga
-and five additional Feldenkrais anatomical studies. It remains private,
+This increment is a selectable 43-entry validation collection: the original
+Feldenkrais, yoga, and Alexander Technique records plus twenty additional yoga
+and twenty additional Feldenkrais anatomical studies. It remains private,
 `noindex`, educational, and unreviewed. Its primary purpose is to display the
 changing fitted-reference bones, joints, and muscle paths rather than guide a
 viewer through performing a movement.
 
 ## Records and clips
 
-`scripts/build-movement-library.mjs` generates the ten added records under
+`scripts/build-movement-library.mjs` generates the forty added records under
 `records/`, the complete `data/collection.json`, and the complete
 `data/movement-clips.json`. The yoga studies cover Tadasana with an arm sweep,
 Virabhadrasana II, Utthita Trikonasana, Utkatasana, and Uttanasana. The
@@ -20,7 +20,7 @@ all anatomical wording and keyframes are project-authored estimates. Every
 record retains an explicit caution, provisional rights basis, and `unreviewed`
 practitioner and anatomy status.
 
-`data/movement-clips.json` holds 13 distinct project-authored keyframe clips on
+`data/movement-clips.json` holds 43 distinct project-authored keyframe clips on
 the Phase 0 shared rig. They are illustrative geometry, not motion capture,
 biomechanics, force, load, or individual anatomy.
 
@@ -52,8 +52,8 @@ node --test initiatives/body-movement-visual-twin/work/phase-3/test/*.test.mjs
 ./node_modules/.bin/playwright test --config initiatives/body-movement-visual-twin/work/phase-3/playwright.config.mjs
 ```
 
-The data tests validate all 13 records and sources, prove that removing the
-non-geometric context makes each entry incomplete, verify 13 distinct
+The data tests validate all 43 records and sources, prove that removing the
+non-geometric context makes each entry incomplete, verify 43 distinct
 bounded clips on known rig nodes, and rerun the eight-millimetre registration
 check for every clip. Browser tests cover selection, single-session
 acknowledgement, viewport-height animation, fixed projection, named camera
@@ -165,3 +165,39 @@ Additional anatomical references checked on 2026-09-05:
 - [11.4 Axial Muscles of the Abdominal Wall, and Thorax](https://openstax.org/books/anatomy-and-physiology/pages/11-4-axial-muscles-of-the-abdominal-wall-and-thorax)
 - [11.5 Muscles of the Pectoral Girdle and Upper Limbs](https://openstax.org/books/anatomy-and-physiology-2e/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs)
 - [University of Utah: Deep back and suboccipital muscles](https://anatomy.med.utah.edu/diganat/PT/2014_lecture/L08_deep_back_suboccipital.pdf)
+
+
+## Thirty-study expansion (2026-09-06)
+
+`additional-studies.mjs` adds fifteen Feldenkrais themes: ankle flexion,
+ankle circles, foot-edge tilts, wrist flexion, wrist clocks, elbow folding,
+shoulder glides, forward reach, head nods, head side bends, spinal rounding and
+arching, back-lying knee tilts, heel slides, diagonal lengthening, and knee
+extension with a forward-facing foot. Fifteen yoga additions cover tree,
+Warrior I, extended side angle, wide standing fold, pyramid, half moon, eagle
+arms, cow-face arms, prayer position, upward prayer, chair twist, staff,
+seated forward fold, seated wide angle, and legs up the wall.
+
+Every addition has original keyframes, three timed phases, tradition-specific
+context, per-record sources, and explicit unreviewed muscle-behaviour estimates.
+Source links identify postures and movement families; they do not validate the
+project's angles or muscle annotations. Finger articulation, exact hand binds,
+props, and general floor/contact constraints remain outside the reference rig.
+Folded-arm keyframes derive local rotations from torso-space segment directions.
+
+The new themes were checked against the linked Iyengar Level I curriculum,
+Feldenkrais Guild sample and hands/feet pages, the Guild article
+[Building Better Sitting Habits](https://feldenkrais.com/building-better-sitting-habits-even-in-your-car-by-nick-strauss-klein/),
+and [Focus on Knees and Ankles II](https://feldenkraisresources.com/products/knees-and-ankles-2).
+Muscle-function categories were checked against OpenStax
+[upper limbs](https://openstax.org/books/anatomy-and-physiology-2e/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs)
+and [lower limbs](https://openstax.org/books/anatomy-and-physiology-2e/pages/11-6-appendicular-muscles-of-the-pelvic-girdle-and-lower-limbs).
+
+`src/movement-pose.mjs` is shared by playback and regression tests. Clips with
+`planted_sagittal_feet` cancel inherited ankle pitch and correct root translation
+at each interpolated time, using the scaled reference ankle as the anchor.
+This fixes the foot drift left between the previously corrected chair-pose and
+standing-fold keyframes. Ankle explorations and raised feet retain their authored
+rotation. Tests sample both planted clips at 101 times and three statures, check
+seated forward toe direction, and interpolate all 43 clips. The private browser
+suite loads and visibly animates every addition on desktop and phone.

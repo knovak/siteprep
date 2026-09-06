@@ -1,0 +1,123 @@
+{
+  "id": "chair-twist-study",
+  "tradition": "yoga",
+  "title": "Bharadvajasana · Chair-twist anatomy",
+  "summary": "The chest and head turn relative to the pelvis while the seated legs stay forward.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "explore",
+      "t": [
+        0,
+        7
+      ],
+      "joint_actions": [
+        {
+          "joint": "thoracic-lower",
+          "action": "axial rotation above a quiet pelvis"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "external-oblique-left",
+          "behaviour": "shortens"
+        }
+      ]
+    },
+    {
+      "id": "develop",
+      "t": [
+        7,
+        14
+      ],
+      "joint_actions": [
+        {
+          "joint": "neck-base",
+          "action": "following turn with arm support context"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "multifidus-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        14,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "thoracic-lower",
+          "action": "return to the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "multifidus-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "posture": "A chair-seated twist with the pelvis facing forward and rotation distributed above it.",
+    "transitions": [
+      {
+        "phase": "explore",
+        "direction": "entry",
+        "cue": "The reference animation moves from neutral into the displayed joint arrangement."
+      },
+      {
+        "phase": "return",
+        "direction": "exit",
+        "cue": "The final frames return the fitted reference toward neutral."
+      }
+    ],
+    "modifications": [
+      {
+        "id": "supported-reference",
+        "note": "A smaller trunk turn and supported hands reduce the displayed range."
+      }
+    ],
+    "props": [
+      "chair"
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "The authored clip may be viewed over a smaller angular range."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This is an anatomical display, not a recommendation to attempt the posture or match its range."
+    ],
+    "expects_teacher": false,
+    "notes": "Suitability, balance, loading, and individual restrictions are outside this visualization."
+  },
+  "source": {
+    "tradition_basis": "Project-authored anatomical study using posture names listed by Iyengar Yoga organizations; no teacher sequence or instructional wording is copied.",
+    "rights_basis": "provisional: project-authored record and animation using a procedural fitted-reference body; no third-party movement media or anatomy asset is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "Iyengar Yoga Level I curriculum",
+        "url": "https://iyengar.hu/wp-content/uploads/2017/11/Curriculum-Level-I.pdf",
+        "supports": [
+          "Bharadvajasana"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Requires review by a yoga practitioner and an anatomy reviewer. Muscle behaviours are illustrative anatomical hypotheses, not measurements of contraction or activity."
+    }
+  }
+}
