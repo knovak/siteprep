@@ -380,8 +380,11 @@ buttons remain below the scrolling text. Smaller screens reduce columns and
 phones show one card per page while retaining the requested layout preference.
 
 Day/Night and layout are saved locally when browser storage is available.
-Verdicts are held in memory only: **export before closing or reloading**. Export
-includes all judged stories across pages. Undo works across page and layout
+On the hosted test Site, judgments and Undo save automatically to D1 and reload
+from the database. The selected **Drop**, **Keep**, or **Emphasize** button has
+an outline and check mark. Wait for **All judgments saved** before closing.
+Export is an optional backup; it includes saved judgments and timestamped
+clears across pages. Downloaded offline HTML still requires export and import. Undo works across page and layout
 changes. “Judge visible unjudged” affects matching, unjudged stories on the
 current page; explicit cluster buttons still judge all members of that cluster.
 
@@ -392,10 +395,11 @@ not human reading speed.
 ### Refresh the existing private test
 
 The deployment pointer identifies this committed build project and the existing
-owner-only test Site. Its Sites manifest serves the ignored `private/site`
-directory. `npm ci && npm run build` here generates its single HTML asset from
-local `private/store.json` and `private/inventory.json`; `deploy-test` then uses
-Sites hosting. The build refuses missing, symlinked, or group/world-readable
+owner-only test Site. Its Sites manifest declares the logical D1 binding `DB`.
+`npm ci && npm run build` here generates protected HTML and judgment seed data
+from local `private/store.json` and `private/inventory.json`, then builds the
+Worker through Vite and the Sites plugin; `deploy-test` uses Sites hosting.
+The Worker serves the page and its authenticated `/api/verdicts` endpoint. The build refuses missing, symlinked, or group/world-readable
 inputs and writes generated HTML atomically with mode 0600. It never substitutes
 fixture data. The store and earlier review files are not modified.
 
@@ -406,3 +410,61 @@ the exact generated HTML and hosting adapter. Private payloads and screenshots
 must never enter a public PR. Use fixture data for PR images. GitHub can validate
 the committed deployment project without reading private input or output.
 There is no production deployment recorded for this initiative.
+
+## Load new stories with an LLM assistant
+
+In an assistant with this repository and connected Gmail, ask:
+
+> Harvest newsletter stories from the configured sources for the last 30 days,
+> merge them into the existing private store, and refresh the private test site.
+
+Name particular sources or a date range when desired. An explicit range overrides
+the inventory's default lookback periods. The Help dialog lists the current
+source names and Gmail search expressions. There is no dedicated harvest skill
+yet: loading uses the private extraction workflow documented above.
+
+Search every configured source, follow pagination, verify the actual sender and
+subject constraints, and use each source's extraction contract. Keep full MIME
+and newsletter bodies in memory only. Known issue IDs already represented in
+the existing store can be skipped; count them separately. The finalizer creates
+a **new** store and refuses replacement, so a refresh must merge extracted
+records into the existing store with `mergeRecords(..., {mode: 'harvest'})`,
+record the run and exact range, and save atomically with mode 0600 and a protected
+backup. Never change the existing `store_id`, surviving story IDs, or judgments.
+
+Before upgrading an already-open offline-style review page, export its sitting
+and import those verdicts into the protected store. For a hosted database review,
+export/import is needed only to synchronize judgments back to the local story
+store for offline review or publishing; redeployment itself preserves D1 choices.
+The `tag-newsletter-stories` skill optionally adds themes and event clusters after
+harvesting. The `deploy-test` skill rebuilds the existing private test Site.
+
+## Hosted judgment database
+
+`db/schema.ts` and its generated `drizzle/` migration define `review_state`, one
+row per store: a JSON judgment map keyed by story ID, a monotonically increasing
+revision, and a save timestamp. The small snapshot makes a cluster or sweep
+judgment one atomic update. `src/review-database.mjs` uses prepared D1 statements
+and compare-and-swap on the revision; stale tabs receive HTTP 409 and current
+choices instead of overwriting them. Snapshots are capped at 1 MB, below D1's
+row limit. This is intended for the current small newsletter collection.
+
+`src/review-worker.mjs` requires the Sites authenticated-user header for the page
+and every API call. The existing owner-only Site access policy remains the
+authorization boundary. PATCH additionally requires same-origin JSON, an exact
+store ID, valid story IDs and verdicts, and a bounded body. Initial seed values
+are inserted only when the store has no database row. On later harvests, missing
+IDs receive seed defaults while saved values win; saving persists that merged map.
+The database never replaces story text, provenance, tags, or the local JSON store.
+
+The browser enables judgment controls only after loading saved state and marks
+action success only after the database acknowledges it. A failed or uncertain
+save disables further writes until Reload judgments has fetched the authoritative
+state. Undo uses a new timestamp, including for a return to unjudged; export and
+the importer retain these clears so an older export cannot resurrect a judgment.
+Undo history lasts for the current sitting; the resulting judgments are durable.
+
+Generate new schema migrations with `npm run db:generate`; migrations, not runtime
+requests, own table creation. Package the Worker plus `dist/.openai/` metadata and
+migrations with the Sites helper. Keep `private/`, `dist/`, `.wrangler/`, and real
+mailbox screenshots out of public Git. Only fixture screenshots belong in a PR.

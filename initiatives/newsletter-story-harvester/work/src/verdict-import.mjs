@@ -71,25 +71,25 @@ export function importVerdictFile(store, file, {now = new Date().toISOString()} 
   for (const entry of file.verdicts) {
     const story = entry && typeof entry === 'object' ? index.byId.get(entry.id) : null;
     const verdictAt = isoTimestamp(entry?.verdict_at);
-    if (!story || typeof entry.verdict !== 'string' || !entry.verdict.trim() || !verdictAt) {
+    if (!story || (entry.verdict !== null && (typeof entry.verdict !== 'string' || !entry.verdict.trim())) || !verdictAt) {
       conflict(report, entry?.id);
       continue;
     }
     report.matched += 1;
 
     const existingAt = isoTimestamp(story.verdict_at);
-    if (existingAt === verdictAt && story.verdict && story.verdict !== entry.verdict) {
+    if (existingAt === verdictAt && story.verdict !== entry.verdict) {
       conflict(report, entry.id);
       continue;
     }
-    if (!story.verdict || !existingAt || verdictAt > existingAt) {
+    if (!existingAt || verdictAt > existingAt) {
       story.verdict = entry.verdict;
       story.verdict_at = verdictAt;
       report.updated += 1;
     }
     store.vocabularies.verdict = [...new Set([
       ...(store.vocabularies.verdict || []),
-      entry.verdict,
+      ...entry.verdict === null ? [] : [entry.verdict],
     ])].sort();
   }
 

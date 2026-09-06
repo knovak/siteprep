@@ -1,5 +1,65 @@
 const DEFAULT_VERDICTS = ['dropped', 'kept', 'emphasised'];
 
+const hostedJudgmentsScript = `
+    const endpoint = '/api/verdicts?store_id=' + encodeURIComponent(store.store_id);
+    function saveStatus(message, error = false) {
+      const status = document.getElementById('save-status');
+      status.textContent = message; status.dataset.error = String(error);
+      document.getElementById('retry-save').hidden = !error || ready;
+    }
+    function applySaved(data) {
+      if (data.store_id !== store.store_id || !Number.isSafeInteger(data.revision) || !data.judgments) throw new Error('Invalid saved state');
+      revision = data.revision;
+      for (const story of stories) {
+        const judgment = data.judgments[story.id];
+        if (!judgment) throw new Error('Missing judgment');
+        story.verdict = judgment.verdict; story.verdict_at = judgment.verdict_at;
+        if (story.verdict && !verdicts.includes(story.verdict)) verdicts.push(story.verdict);
+      }
+      ready = true;
+    }
+    async function loadJudgments() {
+      if (saving) return;
+      saving = true; ready = false; render(); saveStatus('Loading saved judgments…');
+      try {
+        const response = await fetch(endpoint, {cache: 'no-store'});
+        if (!response.ok) throw new Error('Load failed');
+        applySaved(await response.json()); state.undo = [];
+        saveStatus('All judgments saved');
+      } catch {
+        ready = false; saveStatus('Could not load saved judgments. Use Reload judgments to try again.', true);
+      } finally { saving = false; render(); }
+    }
+    async function persistChanges(changes, onSaved) {
+      if (!ready || saving || !changes.length) return;
+      saving = true; render(); saveStatus('Saving judgments…');
+      try {
+        const response = await fetch(endpoint, {method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({revision, changes})});
+        const data = await response.json();
+        if (response.status === 409 && data.judgments) {
+          applySaved(data); state.undo = [];
+          saveStatus('Newer judgments loaded from another tab. Please choose again.', true);
+        } else {
+          if (!response.ok) throw new Error('Save failed');
+          applySaved(data); onSaved(); saveStatus('All judgments saved');
+        }
+      } catch {
+        ready = false;
+        saveStatus('Save not confirmed. Use Reload judgments to check the database before trying again.', true);
+      } finally { saving = false; render(); }
+    }
+    function setVerdicts(targets, verdict) {
+      const changes = targets.map(story => ({id: story.id, verdict: story.verdict, verdict_at: story.verdict_at}));
+      return persistChanges(targets.map(story => ({id: story.id, verdict})), () => state.undo.push(changes));
+    }
+    function undoLast() {
+      const changes = state.undo.at(-1);
+      if (!changes) return;
+      return persistChanges(changes.map(({id, verdict}) => ({id, verdict})), () => state.undo.pop());
+    }
+    window.addEventListener('beforeunload', event => { if (saving) { event.preventDefault(); event.returnValue = ''; } });
+`;
+
 /**
  * What a published story may carry. This is an allow-list rather than a list of
  * fields to delete, so a field added to the record later cannot reach a
@@ -54,13 +114,15 @@ function reviewSources(sources) {
  *                             purpose: a page nobody can judge on is a page
  *                             meant to leave this machine, so publishing cannot
  *                             be half-done by forgetting a second flag.
+ * @param options.persistence  true uses the authenticated hosted judgment API
  * @param options.sources      safe source help: name, slug, Gmail search string
  */
 export function reviewPageHtml(store, {
   title = 'Newsletter story review',
   include = null,
   judgeable = true,
-  sources = []
+  sources = [],
+  persistence = false
 } = {}) {
   if (!store || !Array.isArray(store.stories) || !store.store_id) {
     throw new Error('review page: a store with store_id and stories is required');
@@ -151,13 +213,18 @@ export function reviewPageHtml(store, {
     button[data-verdict="kept"] { background: var(--green); color: var(--green-ink); }
     button[data-verdict="dropped"] { background: var(--red); color: var(--red-ink); }
     button[data-verdict="emphasised"] { background: var(--purple); color: var(--purple-ink); }
-    .verdict-buttons button[aria-pressed="true"] { border-color: var(--selected); }
+    .verdict-buttons button[aria-pressed="true"] { border-color: var(--selected); outline: 2px solid var(--selected); outline-offset: 1px; }
     .verdict-buttons button[aria-pressed="true"]::before { content: '✓ '; }
     dialog { width: min(720px, calc(100% - 32px)); border: 1px solid var(--line); border-radius: 18px; padding: 0; color: var(--ink); background: var(--surface); }
     dialog::backdrop { background: #10182088; }
     .help-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
     .help-head h2 { margin: 0; font-size: 1.25rem; font-weight: 600; }
     .help-reading { padding: 0 20px; }
+    .help-reading h3 { margin-bottom: 8px; }
+    .help-reading blockquote { margin: 12px 0; padding: 12px 16px; border-left: 3px solid var(--focus); background: var(--subtle); }
+    .save-status { margin-top: 12px; font-size: 14px; color: var(--muted); }
+    .save-status[data-error="true"] { color: var(--red-ink); }
+    [hidden] { display: none !important; }
     .source-help { display: grid; gap: 12px; padding: 20px; margin: 0; }
     .source-help div { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--subtle); }
     .source-help dt { font-weight: 600; }
@@ -204,19 +271,26 @@ export function reviewPageHtml(store, {
       <button class="tool-button" id="help">Help</button>
       <button class="tool-button primary" id="export">Export verdicts</button>` : ''}
     </div>
+    ${judgeable && persistence ? '<div class="save-status" id="save-status" role="status" aria-live="polite">Loading saved judgments…</div><button id="retry-save" type="button" hidden>Reload judgments</button>' : ''}
   </header>
   ${judgeable ? `<dialog id="help-dialog" aria-labelledby="help-title">
     <div class="help-head">
-      <h2 id="help-title">Newsletter sources</h2>
+      <h2 id="help-title">Help</h2>
       <button class="help-close" id="help-close" type="button">Close</button>
     </div>
-    <div class="help-reading"><p>Page Layout uses rows × columns. Smaller screens show fewer columns; phones show one card per page. Use Previous and Next to read the rest. Scroll inside a card for its full text; click its heading area to collapse or expand it.</p><p>Judge visible unjudged applies only to matching stories on the current page. A cluster’s verdict buttons apply to all its members. Undo reverses the last verdict action, even after changing pages.</p><p>Day and Night and your chosen layout are remembered on this browser when storage is available. Verdicts stay in this page until you export them: export before closing or reloading.</p></div>
+    <div class="help-reading"><h3>Review stories</h3><p>Page Layout uses rows × columns. Smaller screens show fewer columns; phones show one card per page. Use Previous and Next to read the rest. Scroll inside a card for its full text; click its heading area to collapse or expand it.</p><p>Judge visible unjudged applies only to matching stories on the current page. A cluster’s verdict buttons apply to all its members. Undo reverses the last verdict action, even after changing pages.</p><p>Drop, Keep, and Emphasize set a story’s judgment. An outline and check mark identify the current choice, including judgments from an earlier session.</p><p>${persistence ? 'Each judgment and Undo saves automatically to the database. Wait for “All judgments saved” before closing. If saving fails, use Reload judgments to check the saved state before trying again. Export verdicts is an optional backup or a way to bring saved judgments into the local story store.' : 'This downloaded review file works offline. Export verdicts before closing or reloading, then import that file into the local story store. Automatic database saving is available on the hosted review site.'}</p><p>Day and Night and your chosen layout are remembered on this browser when storage is available.</p>
+    <h3>Load new stories</h3>
+    <p>Ask an LLM assistant with access to this repository and your connected Gmail account to harvest the newsletters. Specify which sources to use and the dates to include; the source names and Gmail searches below identify the current sources.</p>
+    <blockquote>Load new Newsletter Story Harvester stories from the sources listed in Help for [start date] through [end date]. Follow the private harvest workflow in initiatives/newsletter-story-harvester/work/README.md. Merge into the existing private store, preserving its store ID, story IDs, and judgments. Refresh the existing private test site.</blockquote>
+    <p>Replace the bracketed dates before sending. Loading uses the repository’s Gmail extraction and merge workflow; there is no dedicated loading skill yet. The <code>tag-newsletter-stories</code> skill optionally adds themes and groups stories about the same event after loading. The <code>deploy-test</code> skill refreshes this test site so the new stories appear. Refresh this page after the assistant finishes.</p>
+    <p>Re-harvesting should add or merge stories, not replace your collection. Database judgments survive a site refresh when the store and story IDs stay the same. If you need those judgments in the local store for tagging, offline review, or publishing, export and import them first.</p>
+    <h3>Newsletter sources</h3></div>
     <dl class="source-help" id="source-help"></dl>
   </dialog>` : ''}
   <main id="stories" aria-label="Stories"></main>
   <nav class="pagination" aria-label="Story pages"><button id="previous" type="button">Previous</button><span id="page-status" role="status"></span><button id="next" type="button">Next</button></nav>
   <footer><span id="layout-note">Layouts are rows × columns; cards adapt to your screen.</span> ${judgeable
-    ? `Self-contained review for store <strong>${escapeHtml(store.store_id)}</strong>. The store is never written by this page. Export verdicts before closing.`
+    ? (persistence ? 'Judgments save automatically to the database. Export is optional.' : `Self-contained review for store <strong>${escapeHtml(store.store_id)}</strong>. The store is never written by this page. Export verdicts before closing.`)
     : 'Self-contained page. Nothing here names the message a story arrived in.'}</footer>
   <script id="store-data" type="application/json">${embeddedJson(payload)}</script>
   <script>
@@ -229,11 +303,14 @@ export function reviewPageHtml(store, {
     const reviewSources = Array.from(store.review_sources || []);
     const sourcesBySlug = new Map(reviewSources.map(source => [source.slug, source]));
     const verdicts = Array.from(new Set(store.vocabularies.verdict || []));
+    const verdictLabels = {dropped: 'Drop', kept: 'Keep', emphasised: 'Emphasize'};
+    function actionLabel(verdict) { return verdictLabels[verdict] || 'Mark ' + verdict; }
     function saved(key) { try { return localStorage.getItem('newsletter-review-' + key); } catch { return null; } }
     function remember(key, value) { try { localStorage.setItem('newsletter-review-' + key, value); } catch { /* Preferences are optional. */ } }
     const layouts = ['1x1', '1x2', '1x3', '1x4', '2x3', '2x4'];
     const state = { filter: '', sort: 'story-date', undo: [], page: 0, layout: layouts.includes(saved('layout')) ? saved('layout') : '2x3' };
     let pageRows = [];
+    ${judgeable && persistence ? 'let revision = null; let saving = false; let ready = false;' : ''}
     const cardState = new Map();
     const root = document.getElementById('stories');
     const filter = document.getElementById('filter');
@@ -304,6 +381,7 @@ export function reviewPageHtml(store, {
     }
 
     ${judgeable ? `
+    ${persistence ? hostedJudgmentsScript : `
     function setVerdicts(targets, verdict) {
       const at = new Date().toISOString();
       const changes = targets.map((story) => ({ id: story.id, verdict: story.verdict, verdict_at: story.verdict_at }));
@@ -321,11 +399,12 @@ export function reviewPageHtml(store, {
       render();
     }
 
+    `}
     function getExport() {
       return {
         store_id: store.store_id,
         exported_at: new Date().toISOString(),
-        verdicts: stories.filter(story => story.verdict !== null).map(story => ({ id: story.id, verdict: story.verdict, verdict_at: story.verdict_at })),
+        verdicts: stories.filter(story => story.verdict !== null${persistence ? ' || story.verdict_at' : ''}).map(story => ({ id: story.id, verdict: story.verdict, verdict_at: story.verdict_at })),
         tags: []
       };
     }
@@ -389,7 +468,8 @@ export function reviewPageHtml(store, {
     function verdictControls(targets, className = 'verdict-buttons') {
       const controls = document.createElement('div'); controls.className = className; controls.setAttribute('aria-label', 'Verdict');
       for (const verdict of verdicts) {
-        const button = text('button', '', verdict);
+        const button = text('button', '', actionLabel(verdict));
+        ${persistence ? 'button.disabled = !ready || saving;' : ''}
         button.type = 'button'; button.dataset.verdict = verdict;
         button.setAttribute('aria-pressed', String(targets.every(story => story.verdict === verdict)));
         button.addEventListener('click', () => setVerdicts(targets, verdict)); controls.append(button);
@@ -460,8 +540,9 @@ export function reviewPageHtml(store, {
       ${judgeable ? `
       const remaining = stories.filter(story => story.verdict === null).length;
       backlog.textContent = remaining + ' unjudged of ' + stories.length;
-      undo.disabled = state.undo.length === 0;
-      document.getElementById('verdict-rest').disabled = pageUnjudged().length === 0;
+      undo.disabled = state.undo.length === 0${persistence ? ' || !ready || saving' : ''};
+      document.getElementById('verdict-rest').disabled = pageUnjudged().length === 0${persistence ? ' || !ready || saving' : ''};
+      ${persistence ? "document.getElementById('export').disabled = !ready || saving;" : ''}
       ` : ''}
     }
 
@@ -470,7 +551,7 @@ export function reviewPageHtml(store, {
     }
     ${judgeable ? `
     for (const verdict of verdicts) {
-      const option = document.createElement('option'); option.value = verdict; option.textContent = verdict; sweepVerdict.append(option);
+      const option = document.createElement('option'); option.value = verdict; option.textContent = actionLabel(verdict); sweepVerdict.append(option);
     }
     ` : ''}
     filter.addEventListener('change', () => { state.filter = filter.value; state.page = 0; render(); });
@@ -501,6 +582,7 @@ export function reviewPageHtml(store, {
     window.reviewPage = { getExport, undo: undoLast, verdictRest: verdict => setVerdicts(pageUnjudged(), verdict) };
     ` : ''}
     render();
+    ${judgeable && persistence ? "document.getElementById('retry-save').addEventListener('click', loadJudgments); loadJudgments();" : ''}
   })();
   </script>
 </body>

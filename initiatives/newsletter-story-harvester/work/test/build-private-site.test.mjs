@@ -18,7 +18,13 @@ test('private Site build emits exactly the renderer output with owner-only permi
   const dir = inputs();
   const file = buildPrivateSite(dir);
   const sources = inventory.sources.map(source => ({name:source.name,slug:source.slug,search:gmailSearchString(source)}));
-  assert.equal(readFileSync(file, 'utf8'), reviewPageHtml(store, {sources}));
+  assert.equal(readFileSync(file, 'utf8'), reviewPageHtml(store, {sources, persistence: true}));
+  const seedPath = join(dir, 'site', 'seed.json');
+  const seed = JSON.parse(readFileSync(seedPath, 'utf8'));
+  assert.equal(seed.store_id, store.store_id);
+  assert.equal(seed.stories.length, store.stories.length);
+  assert.deepEqual(Object.keys(seed.stories[0]), ['id', 'verdict', 'verdict_at']);
+  assert.equal(statSync(seedPath).mode & 0o777, 0o600);
   assert.equal(statSync(file).mode & 0o777, 0o600);
   chmodSync(file, 0o644);
   buildPrivateSite(dir);

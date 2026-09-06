@@ -21,7 +21,7 @@ export function buildPrivateSite(privateDir = join(work, 'private')) {
   const store = readPrivate('store.json');
   const inventory = readPrivate('inventory.json');
   const sources = inventory.sources.map(source => ({name: source.name, slug: source.slug, search: gmailSearchString(source)}));
-  const html = reviewPageHtml(store, {sources});
+  const html = reviewPageHtml(store, {sources, persistence: true});
   const site = join(privateDir, 'site');
   if (existsSync(site) && !lstatSync(site).isDirectory()) throw new Error('Site output must be a real directory.');
   mkdirSync(site, {recursive: true, mode: 0o700});
@@ -32,6 +32,17 @@ export function buildPrivateSite(privateDir = join(work, 'private')) {
     renameSync(temporary, output);
   } finally {
     rmSync(temporary, {force: true});
+  }
+  const seedTemporary = join(site, `.seed-${randomUUID()}.tmp`);
+  try {
+    writeFileSync(seedTemporary, JSON.stringify({
+      store_id: store.store_id,
+      vocabularies: {verdict: store.vocabularies?.verdict || []},
+      stories: store.stories.map(({id, verdict, verdict_at}) => ({id, verdict, verdict_at})),
+    }), {flag: 'wx', mode: 0o600});
+    renameSync(seedTemporary, join(site, 'seed.json'));
+  } finally {
+    rmSync(seedTemporary, {force: true});
   }
   return output;
 }
