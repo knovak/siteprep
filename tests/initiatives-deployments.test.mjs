@@ -803,10 +803,49 @@ test('the overview page states whether production is current', () => {
   const current = run(['page', 'healthy'], scratch([staticSite({
     prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: head }
   })]));
-  assert.match(current, /class="deployment-status">production is current</);
+  assert.match(current, /class="deployment-status">[^<]*production is current</);
 
   const behind = run(['page', 'healthy'], scratch([
     historiedDemo({ deployed_at: '2026-01-01T00:00:00Z', commit: firstCommitFor(HISTORIED_SOURCE) })
   ]));
-  assert.match(behind, /class="deployment-status">\d+ commit\(s\) unreleased</);
+  assert.match(behind, /class="deployment-status">[^<]*\d+ commit\(s\) unreleased</);
+});
+
+test('the overview page places each environment against main', () => {
+  // The question a reader arrives with is not "is production current?" but
+  // "is what I am about to open the current work?" - so each environment gets
+  // its own verdict, and the pair gets a sentence.
+  const head = firstCommitFor(SITE);
+  const page = run(['page', 'healthy'], scratch([staticSite({
+    prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: head }
+  })]));
+  assert.match(page, /class="verdict verdict-current">current with main</);
+  assert.match(page, /<strong>Test<\/strong> <span class="verdict verdict-none">not deployed</);
+});
+
+test('a squashed-away commit reads as unknown, never as current', () => {
+  // This repository squash-merges, so a commit recorded from a branch is
+  // usually gone by the time anyone reads the page. Guessing "current" there
+  // would be the one wrong answer.
+  const page = run(['page', 'healthy'], scratch([staticSite({
+    prod: {
+      slug: 'healthy',
+      url: 'https://healthy.example.chatgpt.site/',
+      commit: '0'.repeat(40)
+    }
+  })]));
+  assert.match(page, /verdict-unknown/);
+  assert.match(page, /no longer in this history/);
+});
+
+test('a recorded tree survives a commit that does not', async () => {
+  const { environmentCurrency } = await import('../scripts/initiatives.mjs');
+  const tree = execFileSync('git', ['rev-parse', `HEAD:${SITE}`], { cwd: ROOT, encoding: 'utf8' }).trim();
+
+  // The commit is unreachable, but the content hash still places it exactly.
+  const entry = {
+    kind: 'chatgpt-site', build: 'static', source: SITE,
+    prod: { slug: 'healthy', url: 'https://x.example.chatgpt.site/', commit: '0'.repeat(40), tree }
+  };
+  assert.equal(environmentCurrency(entry, 'prod').verdict, 'current');
 });

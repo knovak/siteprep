@@ -26,6 +26,9 @@
  *                       refuses to leave a non-dormant initiative with nothing to do
  *   check-scope <slug> --files <path>...   or --files-from <file>
  *                       fail if a change reaches outside the initiative's write scope
+ *   brief [candidates] [--json]        initiatives whose brief is missing or stale
+ *   brief <slug> [--json]              one initiative's brief state
+ *   brief <slug> record                stamp a freshly written brief
  *   previews [--json]                  demo sources the build publishes as test previews
  *   deployments <slug> [--json]        every deployment, both environment URLs each
  *   deployments <slug> plan --env test|prod [--kind <kind>] [--since <ref>]
@@ -47,6 +50,7 @@
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,6 +60,15 @@ const INITIATIVES_DIR = process.env.INITIATIVES_DIR
   ? resolve(process.env.INITIATIVES_DIR)
   : join(ROOT, 'initiatives');
 const SWEEP_CONFIG = join(INITIATIVES_DIR, 'sweep.json');
+
+/**
+ * The initiatives directory as git sees it. The tests point INITIATIVES_DIR at
+ * a fixture outside the repository, where a digest cannot be computed at all -
+ * and that reads as "cannot tell", which is already handled.
+ */
+function relativeInitiativesDir() {
+  return relative(ROOT, INITIATIVES_DIR).split('\\').join('/') || 'initiatives';
+}
 
 export const STAGES = [
   'wish', 'shaped', 'specified', 'planned', 'building', 'refining', 'dormant', 'archived'
@@ -117,6 +130,15 @@ export const STAGE_DOCUMENTS = {
   refining: ['objectives.md', 'spec.md', 'plan.md', 'test-plan.md']
 };
 
+/**
+ * Stages that carry a brief. Before `building` an initiative is still being
+ * shaped and its own documents are the summary; from `building` on there is
+ * a growing body of work that nobody should have to read to find out where it
+ * stands. Resting stages keep whatever brief they had - a dormant initiative's
+ * last brief is exactly the thing you want when you come back to it.
+ */
+export const BRIEF_STAGES = new Set(['building', 'refining']);
+
 export const BLOCKER_PREFIXES = [
   'todo', 'initiative', 'review', 'schedule',
   'human', 'permission', 'cost', 'legal',
@@ -141,6 +163,14 @@ export const PROPOSABLE_BLOCKERS = new Set(['human']);
  * lifecycle gates: the wish the work started from, the decisions that settled
  * what it is, the plans, what shipped, and the log of what happened.
  */
+/**
+ * The brief is a *derived view*, not a document, so it is deliberately absent
+ * from DOCUMENTS: it is rendered inline on the overview page rather than as a
+ * page of its own, and it is written by an agent rather than by a person. See
+ * BRIEF_SECTIONS below.
+ */
+export const BRIEF_FILE = 'brief.md';
+
 export const DOCUMENTS = [
   ['README.md', 'README'],
   ['wish.md', 'Wish'],
@@ -155,10 +185,153 @@ export const DOCUMENTS = [
   ['notes.md', 'Notes']
 ];
 
+/**
+ * The brief: a short, current answer to "where does this stand, and what does
+ * it need from me?", carried on the overview page above everything else.
+ *
+ * It is written by an agent reading the initiative's own documents - the
+ * counts are in `work/`, the reviewer duties in `test-plan.md`, the deferred
+ * items in `spec.md` - so it is a summary of the record rather than a new
+ * claim about it. That is what makes refreshing it a sweep phase rather than
+ * a chore for the user.
+ *
+ * Two consequences shape everything below.
+ *
+ * **It is agent-owned.** `wish.md` is the user's words and may never be
+ * rewritten; the brief is the exact opposite, rewritten in full whenever the
+ * initiative moves. A hand-edit here is discarded by the next refresh without
+ * a word, so a correction belongs in the document the brief was summarising -
+ * `spec.md`, `plan.md`, `decisions.md` - and reaches the brief when it is
+ * next written. The file says so in its own header.
+ *
+ * **The row that matters most is not in it.** "What it needs from you" comes
+ * from the blocked todo items, which are data. A summary that paraphrased
+ * your blockers could soften or misstate what you owe, which is the one thing
+ * on the page that has to be exact.
+ */
+const BRIEF_SECTIONS = [
+  ['Done', 'Done'],
+  ['Waiting on others', 'Waiting on others'],
+  ['Remaining work', 'Remaining work'],
+  ['Optional later', 'Optional later']
+];
+
+/** Section names a brief may carry, for the writer and the validator alike. */
+export const BRIEF_SECTION_NAMES = BRIEF_SECTIONS.map(([name]) => name);
+
+/** The header every generated brief carries, so nobody hand-edits one by mistake. */
+export const BRIEF_HEADER = [
+  '# Brief',
+  '',
+  '<!-- Generated by the `write-brief` skill. Do not edit by hand: the next',
+  '     refresh overwrites this file. Correct the document it summarises',
+  '     instead - spec.md, plan.md, decisions.md - and the fix arrives here. -->',
+  ''
+].join('\n');
+
+/**
+ * What the brief was written from.
+ *
+ * Hashing the initiative's tracked files - minus the brief itself, which would
+ * otherwise invalidate its own stamp the moment it was written - gives a value
+ * that changes exactly when there is something new to summarise. Reading it
+ * from `HEAD` rather than the working tree means a brief is stamped against
+ * committed work, so the sweep commits what it did before writing one.
+ *
+ * Null when git cannot answer, which reads as "cannot tell" rather than as
+ * "unchanged" everywhere it is used.
+ */
+export function initiativeDigest(slug) {
+  const dir = `${relativeInitiativesDir()}/${slug}`;
+  let listing;
+  try {
+    listing = git(['ls-tree', '-r', 'HEAD', '--', dir]);
+  } catch {
+    return null;
+  }
+  if (!listing) return null;
+  const lines = listing.split('\n')
+    .filter(Boolean)
+    .filter((line) => !line.endsWith(`/${slug}/${BRIEF_FILE}`));
+  if (!lines.length) return null;
+  return createHash('sha1').update(lines.join('\n')).digest('hex');
+}
+
+/**
+ * Whether the brief still describes the initiative.
+ *
+ * `absent` is not a failure state at every stage - most initiatives have
+ * nothing worth summarising until they are building something - so the caller
+ * decides what to make of it.
+ */
+export function briefState(record) {
+  const state = { present: false, status: 'absent', behind: null, generated_at: null };
+  if (!record || record.error) return state;
+
+  state.present = existsSync(join(record.dir, BRIEF_FILE));
+  if (!state.present) return state;
+
+  const stamp = record.data && typeof record.data.brief === 'object' && record.data.brief
+    ? record.data.brief
+    : null;
+  state.generated_at = stamp?.generated_at || null;
+
+  const digest = initiativeDigest(record.slug);
+  if (!digest || !stamp?.digest) {
+    state.status = 'unknown';
+    return state;
+  }
+  if (digest === stamp.digest) {
+    state.status = 'current';
+    return state;
+  }
+
+  state.status = 'stale';
+  // How far behind, when the stamped commit survives. A squash-merge discards
+  // a branch commit, so this is a nicety rather than the verdict.
+  if (stamp.commit) {
+    try {
+      const out = git(['log', '--format=%h', `${stamp.commit}..HEAD`, '--',
+        `${relativeInitiativesDir()}/${record.slug}`]);
+      state.behind = out ? out.split('\n').filter(Boolean).length : 0;
+    } catch { /* stamped commit is gone; "stale" is answer enough */ }
+  }
+  return state;
+}
+
+/**
+ * The brief's sections, in the order the page shows them.
+ *
+ * Unknown headings are kept rather than dropped: a brief that grew a section
+ * this parser has not heard of should still show it, and the alternative is
+ * content silently vanishing from the page.
+ */
+export function readBrief(record) {
+  const path = join(record.dir, BRIEF_FILE);
+  if (!existsSync(path)) return [];
+  const text = readFileSync(path, 'utf8');
+  const sections = [];
+  let current = null;
+  for (const line of text.split('\n')) {
+    const heading = /^##\s+(.+?)\s*$/.exec(line);
+    if (heading) {
+      current = { title: heading[1], body: [] };
+      sections.push(current);
+    } else if (current) {
+      current.body.push(line);
+    }
+  }
+  const order = new Map(BRIEF_SECTION_NAMES.map((name, index) => [name.toLowerCase(), index]));
+  return sections
+    .map((section) => ({ title: section.title, body: section.body.join('\n').trim() }))
+    .filter((section) => section.body)
+    .sort((a, b) => (order.get(a.title.toLowerCase()) ?? 99) - (order.get(b.title.toLowerCase()) ?? 99));
+}
+
 const DEFAULT_STALENESS_DAYS = 14;
 
 /** What a sweep run is permitted to do, in order. Survey is never optional. */
-const SWEEP_PHASES = ['survey', 'respond', 'propose', 'work', 'deploy'];
+const SWEEP_PHASES = ['survey', 'respond', 'propose', 'work', 'deploy', 'brief'];
 
 // ---------------------------------------------------------------- loading
 
@@ -363,6 +536,22 @@ function validate() {
       }
     }
 
+    // A missing or stale brief is a warning rather than an error, and it is
+    // addressed to the sweep rather than to the user: the `brief` phase writes
+    // one on its next run. Only stages that have something to summarise are
+    // asked for it - a wish with no plan yet has nothing to say.
+    if (BRIEF_STAGES.has(data.stage)) {
+      const brief = briefState(record);
+      if (!brief.present) {
+        warnings.push(`${slug}: stage is "${data.stage}" but ${BRIEF_FILE} is missing`);
+      } else if (brief.status === 'stale') {
+        warnings.push(
+          `${slug}: ${BRIEF_FILE} is stale`
+          + (brief.behind ? ` - ${brief.behind} commit(s) since it was written` : '')
+        );
+      }
+    }
+
     if (!existsSync(join(record.dir, 'wish.md'))) {
       warnings.push(`${slug}: no wish.md`);
     }
@@ -452,7 +641,7 @@ const KINDS = {
   'chatgpt-site': {
     label: 'ChatGPT Site',
     keys: ['kind', 'source', 'build', 'test', 'prod'],
-    envKeys: ['slug', 'url', 'access', 'deployed_at', 'version', 'commit'],
+    envKeys: ['slug', 'url', 'access', 'deployed_at', 'version', 'commit', 'tree'],
     /** Environments stored in the record; the rest are derived at read time. */
     recorded: ['test', 'prod'],
     // A static folder is what `deploy-to-chatgpt-sites` exists for. A
@@ -466,7 +655,7 @@ const KINDS = {
   demo: {
     label: 'Demo',
     keys: ['kind', 'source', 'destination', 'root_html', 'prod'],
-    envKeys: ['deployed_at', 'commit'],
+    envKeys: ['deployed_at', 'commit', 'tree'],
     // A demo has no test Site to write: its test environment is the branch
     // preview, which exists because the branch was pushed.
     recorded: ['prod'],
@@ -476,6 +665,16 @@ const KINDS = {
 };
 
 export const DEPLOYMENT_KINDS = Object.keys(KINDS);
+
+/** How each currency verdict reads on the page. */
+export const CURRENCY_LABELS = {
+  current: 'current with main',
+  behind: 'behind main',
+  ahead: 'ahead of main',
+  differs: 'differs from main',
+  unknown: 'unknown',
+  none: 'not deployed'
+};
 
 /** Human labels, exported so the page renderer needs no access to KINDS itself. */
 export const DEPLOYMENT_LABELS = Object.fromEntries(
@@ -1098,6 +1297,13 @@ export function recordDeployment(slug, env, {
 
   if (sourceCommit) written.commit = sourceCommit;
 
+  // The tree hash is what makes currency survive a squash-merge: the commit
+  // recorded here is usually a branch commit that the merge discards, but the
+  // content it published keeps the same hash on main. Recorded from the
+  // working tree, which is what was actually deployed.
+  const sourceContent = sourceTree('HEAD', entry.source);
+  if (sourceContent) written.tree = sourceContent;
+
   // Read the state *before* the record moves, so "since the previous release"
   // means what it says.
   const state = releaseState(entry);
@@ -1176,6 +1382,127 @@ export function releaseState(entry) {
     state.test_ahead = isAncestor(prod.commit, test.commit);
   }
   return state;
+}
+
+/**
+ * Where one environment stands against main's source, which is the question
+ * "is what I am looking at the current work, or something older?".
+ *
+ * Keyed on the source directory's **tree hash** rather than the commit,
+ * because this repository squash-merges: a deploy made on a branch records
+ * that branch's commit, and the squash discards it. Six of the nine
+ * deployment commits recorded before this existed are already unreachable. A
+ * tree hash depends only on file content, so it survives the squash and says
+ * "this is what main has" without needing the commit to still exist.
+ *
+ * The recorded commit is still used, where it resolves, to say which
+ * *direction* a difference goes - behind main, or ahead of it on an unmerged
+ * branch. Without it the honest answer is that the content differs and we
+ * cannot place it.
+ */
+export function environmentCurrency(entry, env) {
+  const state = { verdict: 'none', behind: null, detail: '' };
+  if (!entry || !entry.source) return state;
+
+  const recorded = environmentEntry(entry, env);
+  // A demo's test environment is built from the source on every build, so it
+  // is current with whatever branch built it, by construction.
+  if (!recorded) {
+    if (entry.kind === 'demo' && env === 'test') {
+      state.verdict = 'current';
+      state.detail = 'built from the source on every build';
+      return state;
+    }
+    state.detail = env === 'prod' ? 'not released yet' : 'not deployed yet';
+    return state;
+  }
+
+  const head = sourceTree('HEAD', entry.source);
+  const deployed = recorded.tree || sourceTree(recorded.commit, entry.source);
+  if (!head || !deployed) {
+    state.verdict = 'unknown';
+    state.detail = recorded.commit && !deployed
+      ? 'the recorded commit is no longer in this history'
+      : 'nothing recorded to compare';
+    return state;
+  }
+
+  if (deployed === head) {
+    state.verdict = 'current';
+    state.detail = 'matches main';
+    return state;
+  }
+
+  if (recorded.commit && commitExists(recorded.commit)) {
+    if (isAncestor(recorded.commit, 'HEAD')) {
+      state.verdict = 'behind';
+      state.behind = commitSubjects(recorded.commit, 'HEAD', entry.source).length;
+      state.detail = state.behind
+        ? `${state.behind} commit${state.behind === 1 ? '' : 's'} behind main`
+        : 'behind main by an unknown amount';
+      return state;
+    }
+    if (isAncestor('HEAD', recorded.commit)) {
+      state.verdict = 'ahead';
+      state.detail = 'deployed from a branch that has not merged';
+      return state;
+    }
+  }
+
+  state.verdict = 'differs';
+  state.detail = 'content is not main\'s, and the recorded commit cannot place it';
+  return state;
+}
+
+/**
+ * One sentence for the pair, because the interesting fact is the relationship.
+ * "Test current, production three behind" is a different situation from
+ * "production current, newer work on test", and a reader should not have to
+ * work out which one they are looking at.
+ */
+export function currencySummary(test, prod) {
+  if (test.verdict === 'current' && prod.verdict === 'current') {
+    return 'main is on both test and production';
+  }
+  if (test.verdict === 'current' && prod.verdict === 'behind') {
+    return 'main is on test, not released';
+  }
+  if (test.verdict === 'current' && prod.verdict === 'none') {
+    return 'main is on test, never released';
+  }
+  if (test.verdict === 'ahead' && prod.verdict === 'current') {
+    return 'released, with newer work on test';
+  }
+  if (test.verdict === 'ahead' && prod.verdict === 'behind') {
+    return 'test is ahead of main, and production is behind it';
+  }
+  if (prod.verdict === 'current') return 'production has main';
+  if (test.verdict === 'current') return 'test has main';
+  if (test.verdict === 'unknown' && prod.verdict === 'unknown') {
+    return 'neither environment can be placed against main';
+  }
+  return '';
+}
+
+/** The tree hash of one directory at a commit - content, independent of history. */
+function sourceTree(commitish, source) {
+  if (!commitish || !source) return null;
+  try {
+    return git(['rev-parse', `${commitish}:${source}`]) || null;
+  } catch {
+    return null;
+  }
+}
+
+function commitExists(commitish) {
+  try {
+    execFileSync('git', ['cat-file', '-e', `${commitish}^{commit}`], {
+      cwd: ROOT, stdio: 'ignore'
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** Commit subjects touching `path` in (from, to], newest first. Empty on any doubt. */
@@ -1296,6 +1623,85 @@ function appendReleaseLogLine(dir, label, written, url, state) {
     const existing = existsSync(path) ? readFileSync(path, 'utf8').trimEnd() : '# Log';
     writeFileSync(path, `${existing}\n\n## ${String(written.deployed_at).slice(0, 10)} — Release\n\n${body}\n`);
   } catch { /* the breadcrumb is not worth failing a release over */ }
+}
+
+/**
+ * Stamp a brief as written, so staleness is computed rather than remembered.
+ *
+ * Called by the `write-brief` skill after it has written the file, never by
+ * hand. The digest is taken from `HEAD`, so the work being summarised must be
+ * committed first - which is also the order that makes the brief describe
+ * something a reader can go and look at.
+ */
+export function recordBrief(slug) {
+  const record = loadInitiative(slug);
+  if (record.error) throw new Error(`${slug}: ${record.error}`);
+  if (!existsSync(join(record.dir, BRIEF_FILE))) {
+    throw new Error(`${slug}: no ${BRIEF_FILE} to record - write it first`);
+  }
+
+  const digest = initiativeDigest(slug);
+  if (!digest) {
+    throw new Error(
+      `${slug}: cannot digest the initiative - is this a git repository with the work committed?`
+    );
+  }
+
+  let commit = null;
+  try { commit = git(['rev-parse', 'HEAD']); } catch { /* stamp without it */ }
+
+  record.data.brief = {
+    generated_at: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    ...(commit ? { commit } : {}),
+    digest
+  };
+  writeFileSync(
+    join(record.dir, 'initiative.json'),
+    `${JSON.stringify(record.data, null, 2)}\n`
+  );
+  return { slug, ...record.data.brief, sections: readBrief(record).map((x) => x.title) };
+}
+
+/**
+ * Which initiatives want a brief written, and why.
+ *
+ * The whole selection is computed: a stage that carries a brief, and either no
+ * brief at all or a digest that no longer matches. An initiative nobody has
+ * touched costs nothing to skip, which is what keeps this affordable to run on
+ * every sweep.
+ */
+export function briefCandidates({ phases } = {}) {
+  const allowed = !phases || phases.includes('brief');
+  const result = { phase: 'brief', enabled: allowed, selected: [], skipped: [] };
+  if (!allowed) {
+    result.reason = '"brief" is not in phases - sweep.json decides what a run may do';
+    return result;
+  }
+
+  for (const record of loadAll()) {
+    if (record.error) {
+      result.skipped.push({ slug: record.slug, reason: record.error });
+      continue;
+    }
+    const stage = record.data.stage;
+    if (!BRIEF_STAGES.has(stage)) {
+      result.skipped.push({ slug: record.slug, reason: `stage "${stage}" carries no brief` });
+      continue;
+    }
+    const state = briefState(record);
+    if (state.status === 'current') {
+      result.skipped.push({ slug: record.slug, reason: 'brief is current' });
+      continue;
+    }
+    result.selected.push({
+      slug: record.slug,
+      stage,
+      reason: state.status === 'absent' ? 'no brief yet' : `brief is ${state.status}`,
+      behind: state.behind,
+      generated_at: state.generated_at
+    });
+  }
+  return result;
 }
 
 // --------------------------------------------------------------- reporting
@@ -2343,20 +2749,60 @@ function renderPage(slug) {
         <li>Last activity: ${escapeHtml(relativeDays(daysSince(record.lastActivity)))}</li>
       </ul>`));
 
-  parts.push(card("What's next", 'initiative-next', actionable.length
-    ? `      <ul>\n${actionable.map((item) =>
-      `        <li>${escapeHtml(item.title)}${item.advances_stage ? ' <em>(advances the stage)</em>' : ''}</li>`
-    ).join('\n')}\n      </ul>`
-    : '      <p>Nothing actionable.</p>'));
+  // "Where this stands" answers the two questions a reader actually arrives
+  // with. The first rows are computed from the todo list, the rest are the
+  // brief. They share one card because they are one answer - but the rows a
+  // person acts on are the computed ones, so those come first and are never
+  // paraphrased: a summary that softened a blocker would be wrong about the
+  // one thing on this page that has to be exact.
+  const briefSections = readBrief(record);
+  const brief = briefState(record);
+  const standRows = [];
 
-  if (blocked.length) {
-    parts.push(card("What's blocked", 'initiative-blocked',
-      `      <ul>\n${blocked.map((item) => {
-        const prefix = String(item.blocked_by).split(':', 1)[0];
-        const kind = HUMAN_BLOCKERS.has(prefix) ? 'needs a decision' : 'clears on its own';
-        return `        <li>${escapeHtml(item.title)} — <code>${escapeHtml(item.blocked_by)}</code> <em>(${kind})</em></li>`;
-      }).join('\n')}\n      </ul>`));
+  const yours = blocked.filter((item) => HUMAN_BLOCKERS.has(String(item.blocked_by).split(':', 1)[0]));
+  const elsewhere = blocked.filter((item) => !yours.includes(item));
+
+  standRows.push(['Needs from you', yours.length
+    ? `<ul>\n${yours.map((item) => {
+      const [prefix, ...rest] = String(item.blocked_by).split(':');
+      const ask = rest.join(':').trim();
+      return `          <li>${escapeHtml(ask || item.title)} `
+        + `<em>(${escapeHtml(item.title)} — <code>${escapeHtml(prefix)}:</code>)</em></li>`;
+    }).join('\n')}\n        </ul>`
+    : '<p>Nothing.</p>']);
+
+  const scheduled = [
+    ...actionable.map((item) =>
+      `          <li>${escapeHtml(item.title)}`
+      + `${item.advances_stage ? ' <em>(advances the stage)</em>' : ''}</li>`),
+    ...elsewhere.map((item) =>
+      `          <li>${escapeHtml(item.title)} — <code>${escapeHtml(item.blocked_by)}</code> `
+      + '<em>(clears on its own)</em></li>')
+  ];
+  standRows.push(['Scheduled', scheduled.length
+    ? `<ul>\n${scheduled.join('\n')}\n        </ul>`
+    : '<p>Nothing actionable.</p>']);
+
+  for (const section of briefSections) {
+    standRows.push([section.title, renderMarkdown(section.body)]);
   }
+
+  const provenance = brief.present
+    ? `      <p class="meta">The last ${briefSections.length ? 'four rows are' : 'rows are'} `
+      + `a written summary of this initiative's own documents, `
+      + `${brief.status === 'current'
+        ? 'current as of the latest change'
+        : brief.status === 'stale'
+          ? `written ${brief.behind ? `${brief.behind} commit(s)` : 'some time'} ago and now out of date`
+          : 'of unknown currency'}`
+      + `${brief.generated_at ? ` (${escapeHtml(String(brief.generated_at).slice(0, 10))})` : ''}. `
+      + 'Correct the document it summarises rather than the summary.</p>'
+    : '';
+
+  parts.push(card('Where this stands', 'initiative-stands',
+    `      <dl class="stands">\n${standRows.map(([label, body]) =>
+      `        <dt>${escapeHtml(label)}</dt>\n        <dd>${body}</dd>`
+    ).join('\n')}\n      </dl>\n${provenance}`));
 
   // Every deployment, both environments each - a pair is only useful if you can
   // see at a glance which one is ahead, and a row is never simply missing.
@@ -2386,12 +2832,30 @@ function renderPage(slug) {
             + `${detail ? ` <em>(${escapeHtml(detail)})</em>` : ''}</li>`;
         }).join('\n');
         const heading = escapeHtml(DEPLOYMENT_LABELS[entry.kind] || entry.kind || 'Deployment');
-        // Whether production is the latest, derived from the two recorded
-        // commits - so the page cannot claim a currency it has not checked.
+        // Where each environment stands against main, which is the question a
+        // reader has: is the thing I am about to open the current work, or
+        // something older? Derived from content, so the page cannot claim a
+        // currency it has not checked.
+        const testState = environmentCurrency(entry, 'test');
+        const prodState = environmentCurrency(entry, 'prod');
+        const verdicts = `      <ul class="currency">\n`
+          + [['Test', testState], ['Production', prodState]].map(([label, cur]) => {
+            const verdict = CURRENCY_LABELS[cur.verdict] || cur.verdict;
+            // The detail earns its place only when it says more than the
+            // verdict already does - "not deployed, not released yet" is noise.
+            const detail = cur.detail && cur.detail !== verdict
+              && !verdict.startsWith(cur.detail) && !cur.detail.startsWith(verdict)
+              ? ` — ${escapeHtml(cur.detail)}` : '';
+            return `        <li><strong>${escapeHtml(label)}</strong> `
+              + `<span class="verdict verdict-${escapeHtml(cur.verdict)}">${escapeHtml(verdict)}</span>`
+              + `${detail}</li>`;
+          }).join('\n')
+          + `\n      </ul>`;
+        const rollup = currencySummary(testState, prodState);
         const state = releaseState(entry);
-        const status = escapeHtml(state.summary
-          + (state.test_ahead ? ', and test is ahead of production' : ''));
+        const status = escapeHtml([rollup, state.summary].filter(Boolean).join(' · '));
         return `      <p><strong>${heading}</strong></p>\n      <ul>\n${rows}\n      </ul>\n`
+          + `${verdicts}\n`
           + `      <p class="deployment-status">${status}</p>`;
       }).join('\n')));
   }
@@ -2406,18 +2870,21 @@ function renderPage(slug) {
       }).join('\n')}\n      </ul>`));
   }
 
+  // The long narrative sits above Documents rather than below it: someone who
+  // wants the full account should meet it before the file list, and someone
+  // who does not is already past the answer in "Where this stands".
+  const overviewPath = join(record.dir, 'overview.md');
+  if (existsSync(overviewPath)) {
+    parts.push(card('In detail', 'initiative-overview',
+      renderMarkdown(readFileSync(overviewPath, 'utf8'))));
+  }
+
   const docs = documentsFor(record);
   if (docs.length) {
     parts.push(card('Documents', 'initiative-documents',
       `      <ul>\n${docs.map((doc) =>
         `        <li><a href="./${escapeHtml(doc.output)}">${escapeHtml(doc.title)}</a></li>`
       ).join('\n')}\n      </ul>`));
-  }
-
-  const overviewPath = join(record.dir, 'overview.md');
-  if (existsSync(overviewPath)) {
-    parts.push(card('Overview', 'initiative-overview',
-      renderMarkdown(readFileSync(overviewPath, 'utf8'))));
   }
 
   return parts.join('\n');
@@ -2619,6 +3086,45 @@ if (RUN_AS_CLI) switch (command) {
           }))
         }, null, 2)
         : formatDeployments(slug, record.data));
+    } catch (err) {
+      console.error(`INITIATIVE FAIL: ${err.message}`);
+      process.exit(1);
+    }
+    break;
+  }
+  case 'brief': {
+    // Flags may sit anywhere, so positionals are what is left after removing
+    // them - otherwise `brief --json` reads --json as an initiative slug.
+    const [slug, sub] = args.filter((arg) => !arg.startsWith('--'));
+    const json = args.includes('--json');
+    try {
+      if (!slug || slug === 'candidates') {
+        // Which initiatives want one written, for the sweep's brief phase.
+        const result = briefCandidates({ phases: loadSweepConfig().config.phases || ['survey'] });
+        console.log(json ? JSON.stringify(result, null, 2) : [
+          result.enabled ? `${result.selected.length} initiative(s) need a brief` : result.reason,
+          ...result.selected.map((item) => `  ${item.slug} — ${item.reason}`),
+          ...result.skipped.map((item) => `  (skipped) ${item.slug} — ${item.reason}`)
+        ].join('\n'));
+        break;
+      }
+
+      if (sub === 'record') {
+        const written = recordBrief(slug);
+        console.log(json ? JSON.stringify(written, null, 2)
+          : `recorded ${written.slug} brief (${written.sections.length} section(s)) at ${written.digest.slice(0, 10)}`);
+        break;
+      }
+
+      const record = loadInitiative(slug);
+      if (record.error) throw new Error(`${slug}: ${record.error}`);
+      const state = briefState(record);
+      console.log(json ? JSON.stringify({ slug, ...state }, null, 2) : [
+        `${slug}: brief is ${state.status}`,
+        ...(state.generated_at ? [`  written ${state.generated_at}`] : []),
+        ...(state.behind ? [`  ${state.behind} commit(s) since`] : []),
+        ...readBrief(record).map((section) => `  ## ${section.title}`)
+      ].join('\n'));
     } catch (err) {
       console.error(`INITIATIVE FAIL: ${err.message}`);
       process.exit(1);

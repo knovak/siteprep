@@ -271,7 +271,7 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
 
   # BUILD-19: Initiative rendering and workflow behavior. The workflow suites
   # are deterministic against fixtures rather than current in-flight work.
-  for suite in initiatives-digest initiatives-sweep initiatives-deployments initiatives-rendering; do
+  for suite in initiatives-digest initiatives-sweep initiatives-deployments initiatives-rendering initiatives-brief; do
     if ! node --test "$ROOT_DIR/tests/${suite}.test.mjs" > /dev/null 2>&1; then
       node --test "$ROOT_DIR/tests/${suite}.test.mjs" || true
       fail "BUILD-19 ${suite} tests failed"

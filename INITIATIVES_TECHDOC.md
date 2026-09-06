@@ -50,6 +50,8 @@ dependency. That is fine for flat string fields and does not survive nested
 | `deployments <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
 | `deployments <slug> record --env test\|prod` | Record a completed deployment |
 | `previews` | Demo sources `build.sh` publishes as test previews |
+| `brief [candidates]` | Initiatives whose brief is missing or stale |
+| `brief <slug> [record]` | One initiative's brief state, or stamp a freshly written one |
 
 Each subcommand prints a **page body**, not a whole page. `build.sh` wraps it
 with `toc_page_open` / `toc_page_close`, the same shell the root and demos
@@ -153,6 +155,63 @@ what makes parallel sweep pull requests safe. **`todo:` references must
 resolve**, so a forgotten unblock breaks the build instead of stranding an item
 in `blocked` forever.
 
+## The brief
+
+`initiatives/<slug>/brief.md` is the short answer to "where does this stand?",
+rendered at the top of the overview page under **Where this stands**. Four
+optional `##` sections: `Done`, `Waiting on others`, `Remaining work`,
+`Optional later`.
+
+**It is a summary of the initiative's own documents**, not a new claim about
+them - counts from `work/`, remaining work from `plan.md`, deferred items from
+`spec.md`. That is what makes writing it a sweep phase rather than a chore: an
+agent reading the record can produce it, and check it.
+
+**It is agent-owned, the mirror image of `wish.md`.** The wish is the user's
+words and may never be rewritten; the brief is rewritten in full whenever the
+initiative moves, so a hand-edit is discarded by the next refresh. A correction
+belongs in the document the brief summarised. The file carries a header saying
+so, because a rule nobody reads does not stop anybody editing.
+
+**Two rows are never in it.** What the initiative needs from the user comes from
+the blocked todo items, and the deployment state from git. Both are rendered
+around the brief rather than inside it: a summary that paraphrased a blocker
+could soften or misstate what is owed, which is the one thing on the page that
+has to be exact.
+
+### Staleness is computed, not remembered
+
+`initiative.json` carries the stamp, written only by `brief <slug> record`:
+
+```json
+"brief": {
+  "generated_at": "2026-09-06T02:14:07Z",
+  "commit": "1a69f28…",
+  "digest": "c977302d23f28021…"
+}
+```
+
+`digest` is a SHA-1 over `git ls-tree -r HEAD` for the initiative directory
+**with `brief.md` removed** - otherwise writing the brief would invalidate its
+own stamp. It changes exactly when there is something new to summarise, so a
+comparison answers "is this brief still true?" without reading a word of it.
+
+| `briefState` | Means |
+| --- | --- |
+| `absent` | No `brief.md`. A warning from `building` on; the sweep writes one |
+| `current` | The digest matches - nothing has changed since it was written |
+| `stale` | Files have moved since; `behind` counts the commits where the stamped commit survives |
+| `unknown` | No stamp, or git cannot answer |
+
+Reading from `HEAD` rather than the working tree is deliberate: a brief is
+stamped against committed work, so it describes something a reader can go and
+look at. The consequence is an ordering the skill states - commit the work, then
+write and stamp the brief.
+
+Only `building` and `refining` carry a brief (`BRIEF_STAGES`). Before that an
+initiative's own documents *are* the summary; a resting stage keeps whatever
+brief it had, which is exactly what you want when returning to a dormant one.
+
 ## Deployments
 
 Most initiatives are not deployed at all, and an initiative may develop for
@@ -187,8 +246,8 @@ both a demo and a Site.
 ]
 ```
 
-Only `kind` and `source` are required. `deployed_at`, `version` and `commit` are
-written by the deploy skills, not by hand.
+Only `kind` and `source` are required. `deployed_at`, `version`, `commit` and
+`tree` are written by the deploy skills, not by hand.
 
 ### Kinds
 
@@ -246,6 +305,39 @@ is the whole feature, and three things protect it:
 
 The dirty-source check is scoped to the deployment's `source`. Uncommitted work
 elsewhere in the repository is none of a release's business.
+
+### Currency: what each environment holds
+
+`environmentCurrency(entry, env)` answers "is what I am about to open the
+current work, or something older?", against main's source directory:
+
+| Verdict | Means |
+| --- | --- |
+| `current` | The deployed content matches main's source |
+| `behind` | Main has moved on; `behind` counts the commits since |
+| `ahead` | Deployed from a branch that has not merged |
+| `differs` | The content is not main's, and the recorded commit cannot place it |
+| `unknown` | Nothing recorded, or the recorded commit is unreachable |
+| `none` | Not deployed |
+
+`currencySummary` turns the pair into the sentence that carries the actual
+information - "main is on test, not released", "released, with newer work on
+test" - because the relationship between the two is the thing a reader wants
+and neither verdict states it alone.
+
+**It is keyed on the source directory's tree hash, not the commit.** This
+repository squash-merges: a deploy made on a branch records that branch's
+commit, and the merge discards it. Six of the nine deployment commits recorded
+before this existed are already unreachable, five of them test records - so a
+currency check built on commit ancestry would have answered "unknown" for
+almost every test environment. A tree hash depends only on file content, so the
+same files give the same hash whether they arrived by squash, merge or rebase.
+
+`record` writes `tree` alongside `commit` from that point on. Records that
+predate it keep only a commit, fall back to resolving its tree, and degrade to
+`unknown` when it has been squashed away - which is honest, and fixes itself on
+the next deploy. The commit is still used, where it resolves, to say which
+*direction* a difference goes; without it the answer is `differs`.
 
 **A kind need not have an engine for both environments.** A demo has no test
 copy for a skill to write: `scripts/build.sh` publishes it, by copying every
@@ -426,11 +518,11 @@ the wall clock advances. Normal runs leave it unset and use the actual time.
 
 `initiatives/sweep.json` holds the run configuration; `phases` controls what a
 run may do, and must always include `"survey"`. It is now
-`["survey", "respond", "propose", "work", "deploy"]` - every capability on, at
-the configured budget of four items per run. Narrowing it is the same kind of
+`["survey", "respond", "propose", "work", "deploy", "brief"]` - every capability
+on, at the configured budget of four items per run. Narrowing it is the same kind of
 reviewable commit that widening it was.
 
-`deploy` is the one phase that takes no budget. It publishes what the run has
+`deploy` and `brief` are the two phases that take no budget. It publishes what the run has
 already done rather than starting anything, and refusing to show finished work
 because the budget ran out would be the wrong economy. It writes the **test**
 environment only, from the branch the run just pushed, and only when
@@ -439,6 +531,11 @@ changed - an item that touched nothing but `log.md` has changed nothing a reader
 would see. A first deploy of an environment goes out private, because
 `confirm_access` asks a question no unattended run can answer. Production never
 moves without a person running `release-initiative`.
+
+`brief` rewrites `brief.md` on any `building` or `refining` initiative whose
+digest no longer matches, through the `write-brief` skill. Selection is a
+digest comparison, so an initiative nobody has touched is skipped and a quiet
+run costs nothing.
 
 `initiatives/sweep-prompt.md` is the instruction a sweep follows. It lives in
 the repo so a manual run and a scheduled run are the same text.

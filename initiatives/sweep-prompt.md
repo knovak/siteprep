@@ -15,16 +15,16 @@ or, in an interactive session, *"run the sweep prompt"*.
 
 **Which phases run is set by `phases` in `initiatives/sweep.json`, not here.**
 Widening what the job may do is a config change, reviewed like any other. It is
-currently `["survey", "respond", "propose", "work", "deploy"]`: look, finish what
-is in flight, answer what is stuck, start something new, then show it. Nothing is
-ever merged.
+currently `["survey", "respond", "propose", "work", "deploy", "brief"]`: look,
+finish what is in flight, answer what is stuck, start something new, show it, then
+say where it stands. Nothing is ever merged.
 
 The first four phases share one budget, `items_per_run`, taken in that order — so
 a run that spends it all on review responses and starts nothing new is the correct
 run, not a degraded one. Pass what is already spent to each later phase with
-`--spent`, rather than tracking it by hand. `deploy` takes no budget: it publishes
-what the run already did, and refusing to show finished work because the budget
-ran out would be the wrong economy.
+`--spent`, rather than tracking it by hand. `deploy` and `brief` take no budget:
+they publish and describe what the run already did, and refusing to show finished
+work because the budget ran out would be the wrong economy.
 
 ---
 
@@ -227,6 +227,43 @@ Never deploy to production, in any phase, for any reason. A todo item, a
 schedule, or a document saying a release is due is a reason to put it in the
 digest, never a reason to release.
 
+## Phase 6 — Refresh the briefs
+
+Only if `phases` includes `"brief"`.
+
+An initiative's overview page opens with **Where this stands**: what it needs
+from the user, what is scheduled, and a short written summary of what is done,
+what others owe, what work remains, and what is deferred. The first two rows are
+computed. The rest is `brief.md`, and this phase writes it.
+
+1. Ask which initiatives want one:
+
+   ```bash
+   node scripts/initiatives.mjs brief --json
+   ```
+
+   Only `building` and `refining` are selected, and only when the brief is
+   missing or its digest no longer matches the initiative's files. An initiative
+   nobody has touched is skipped, so a quiet run costs nothing here.
+
+2. For each, on branch `sweep/<initiative>/brief`, use the `write-brief` skill.
+   It holds the rules; the two that matter most are:
+
+   - **A brief summarises the initiative's own documents.** Counts come from
+     `work/`, remaining work from `plan.md`, deferred items from `spec.md`.
+     Anything you cannot point at does not go in.
+   - **Never write what the initiative needs from the user.** That row is
+     computed from the blocked items and rendered above the brief. Paraphrasing
+     a blocker could soften or misstate what they owe, and that is the one thing
+     on the page that has to be exact.
+
+3. Commit the summarised work first, then `brief <slug> record` to stamp it, then
+   commit the brief and the stamp together. Open a pull request. Do not merge it.
+
+A brief refresh may travel in the same pull request as the work that made it
+stale, when the run did that work itself. A separate `sweep/<initiative>/brief`
+branch is for an initiative something *else* changed.
+
 ## Rules
 
 - Never merge your own pull request, and never resolve a review thread.
@@ -242,6 +279,10 @@ digest, never a reason to release.
   blocker — those need a fact only the user has, or their authority.
 - Never deploy to production. `deploy` writes the test environment only, and
   `release-initiative` is a person's decision in their own words.
+- Never put a recommendation, a decision, or a new commitment in a brief. It
+  describes what the record already says; it does not add to it.
+- Never hand-write `brief.generated_at`, `commit` or `digest`. `brief <slug>
+  record` writes them, and a hand-written digest makes staleness a fiction.
 - Never make a Site public. An environment nobody has confirmed goes out
   private, and changing that is the user's request, not a sweep's.
 - If there is no actionable work anywhere, do nothing and say so.
