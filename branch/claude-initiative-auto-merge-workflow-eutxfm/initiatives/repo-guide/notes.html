@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes — Repo Guide</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Notes — Repo Guide</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Repo Guide</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Notes</h2>
+    </div>
+    <div class="card-content">
+<h2>Notes</h2>
+<p>Optional ideas nobody has committed to. Promote one with <code>add</code> when it stops being optional.</p>
+<h3>2026-09-02 — Optional refinement menu</h3>
+<p>These are possible later improvements, not commitments. The simulator redesign below is already an actionable item and is intentionally not duplicated here.</p>
+<div class="table-scroll"><table><thead><tr><th>Candidate</th><th>Why it could help</th><th>Likely size</th><th>Boundary and evidence</th></tr></thead><tbody><tr><td><strong>Add a worked pull-request trail to the description</strong></td><td>The guide explains the lifecycle abstractly. One compact, real example linking a wish, decision, plan item, branch, review, merge, test deployment, and release would help a newcomer verify how the pieces connect.</td><td>Medium</td><td>Derive every link and state from one completed initiative; label it as an example rather than the only valid route; omit private review content; and fail generation when a referenced file or commit disappears.</td></tr><tr><td><strong>Provide a downloadable guide bundle</strong></td><td>The three self-contained files travel independently, but a newcomer may want one obvious download containing the description, deck, simulator, and a short index.</td><td>Small</td><td>Generate the bundle from the same successful outputs, include hashes and the source commit, add no second copy of the narrative source, and keep publishing an explicit release action.</td></tr><tr><td><strong>Run a dedicated accessibility review</strong></td><td>Keyboard navigation and overflow are tested, but the current exit suite is not a full screen-reader, contrast, zoom, or reduced-motion review across all three renderings.</td><td>Medium</td><td>Record human and automated findings separately; preserve offline operation; test at high zoom and with reduced motion; and do not call automated checks proof of screen-reader usability.</td></tr><tr><td><strong>Add presenter notes to the deck</strong></td><td>The deck is concise enough to present quickly, but a first-time presenter has to infer transitions and the intended point of dense diagrams from the long description.</td><td>Medium</td><td>Author notes in the shared section files, keep them out of the projected frame, make them printable or separately visible to the presenter, and retain the deck&#39;s copy and overflow gates.</td></tr><tr><td><strong>Show public-version freshness before release</strong></td><td>The artifact footers name their source commit, while checking whether the public Demo lags still requires a manual comparison. A release preview could summarize which generated files and live facts changed.</td><td>Small</td><td>Report drift without auto-publishing, distinguish source changes from live-initiative data changes, and never treat a green comparison as release authorization.</td></tr></tbody></table></div>
+<p>The smallest useful next step is the <strong>public-version freshness preview</strong>: it uses provenance already present in every file and makes the manual release decision easier without weakening it. The <strong>worked pull-request trail</strong> is the stronger teaching improvement if newcomer comprehension, rather than release operations, becomes the next priority.</p>
+<h3>2026-09-02 — How the simulator should change</h3>
+<p>The description and the deck were rewritten on 2026-09-02. The simulator was left as it was. If it gets the same treatment, these are the changes worth making, roughly in order of value.</p>
+<ul><li><strong>Match the new look.</strong> White page, navy accent, the same figure palette as the description, and the title &quot;SitePrep Repo Guide: lifecycle simulator&quot;. The dark left panel and the two-column card layout read as a different product from the other two files.</li><li><strong>Show the whole lifecycle rail at the top and keep it visible.</strong> The stage track exists but is small. Make it the same rail the lifecycle figure draws, with the current stage filled and the documents added so far beneath it, so the simulator and the figure look like one thing.</li><li><strong>Add the steps the new guide covers and the old walk-through skips.</strong> Background research at the wish stage (optional, so show it as a fork: &quot;research first, or not&quot;), the critique-the-plan item before the first increment, the two items that entering the refining stage seeds, and a release step that writes to production only when the person asks.</li><li><strong>Show who acts on each step.</strong> Colour each step by actor, using the same amber-for-person and blue-for-agent scheme as the figures, and put &quot;you merge&quot; on every step where the person&#39;s merge is what moves the stage.</li><li><strong>Show the pull request, not just the item.</strong> Each increment should visibly become a branch, then a pull request, then a merge, with the write-scope check and the branch preview named. The current walk-through goes from &quot;item actionable&quot; to &quot;item merged&quot; with nothing in between.</li><li><strong>Show the digest.</strong> When a step leaves a question waiting on the person, show the digest issue gaining a line, and losing it when the person answers.</li><li><strong>Plain second-person narrative.</strong> The step narratives still carry the old register (&quot;The record exists before any of the work does, which is the whole trick&quot;). Rewrite them in the same voice as the description.</li><li><strong>A free-play mode, later.</strong> The objectives explicitly held this out of the first version. It is still the larger build, and still not the first thing to do.</li></ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/initiative-auto-merge-workflow-eutxfm" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
