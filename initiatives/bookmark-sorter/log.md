@@ -618,3 +618,14 @@ preserved; production was not deployed. PR #434 remains ready for review.
 ## 2026-09-05 — Release
 
 Released to production — ChatGPT Site, version 4, `623aac0`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+## 2026-09-06 — Complete images in the 3×12 layout
+
+Fixed the reported top-only image clipping in 3×12. Its capture area now uses
+42% of each card instead of 18%, constrains the image grid track to that area,
+and scales the complete image to fit. Titles retain the remaining flexible
+space above tags; other layouts keep their existing image treatment.
+
+The browser regression reproduces overflow before the fix and checks landscape,
+square, and portrait captures at 1320×820, 1600×900, and 3440×1440. It also checks
+title/tag visibility and unchanged image dimensions after returning to 2×8.

@@ -120,6 +120,7 @@ isolation attack became the phase 6 product test. Measurements are in
 |---|---|---|
 | Virtualisation | With 10,000 items loaded, the DOM holds a screenful plus buffer, not the pile | §7 |
 | Selectable and responsive layouts | 3×3, 2×6, 2×8, and 3×12 all redraw a wide viewport; tablet chooses 4×3 or 3×3 automatically; phone shows one card at a time | O3 |
+| Complete images in 3×12 | Landscape, square, and portrait captures fit inside their image areas at ordinary and ultrawide desktop sizes; titles and tags remain visible, and switching back restores the 2×8 image sizes | O3 |
 | Verdicts | Each of the four lands on the focused item and on the marked set | O2 |
 | `undo` | Reverses the last function as one action, including a verdict applied to a set | §7 |
 | Backlog count | Untriaged count for the collection is correct after every action | O2 |
