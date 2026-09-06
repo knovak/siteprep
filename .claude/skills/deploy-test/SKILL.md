@@ -70,10 +70,21 @@ declares (`npm ci`, `npm test`, `npm run build`).
 
 ### `kind: demo`
 
-**There is nothing to deploy.** A demo's test environment is its branch
-preview, published by pushing the branch. Report the plan's `note` and its test
-URL, and — if the branch has unpushed commits — push it. Do not run
-`$deploy-demo`: copying into `demos/` is a production release.
+**There is no engine to run.** A demo's test environment is published by the
+build: `scripts/build.sh` copies the deployment's `source` to the plan's
+`preview_path`, so pushing the branch is the deploy. Push it if it has unpushed
+commits, then report the plan's `note` and its test URL.
+
+That URL is *not* `demos/<destination>/`. The released copy under `demos/` only
+changes when someone runs `$release-initiative`, so a test URL pointing there
+would show the previous release, or 404 before the first one. The preview path
+is the current source, which is the whole point of looking at it.
+
+The preview appears when the branch's Pages build finishes, not when the push
+returns — so say the URL will be live shortly rather than implying it already
+is. On `main` the preview is built too, from main's copy of the source.
+
+Do not run `$deploy-demo`: copying into `demos/` is a production release.
 
 ## Record and report
 

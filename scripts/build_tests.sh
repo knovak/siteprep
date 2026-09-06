@@ -209,6 +209,11 @@ while IFS= read -r -d '' html_file; do
   if [[ "$file_rel" == demos/* && "$file_rel" != "demos/index.html" ]]; then
     continue
   fi
+  # A test preview is the same bytes the release will be, and is exempt for the
+  # same reason: injecting anything here would make it preview something else.
+  if [[ "$file_rel" == preview/* ]]; then
+    continue
+  fi
   if ! grep -q 'name="siteprep-version-root"' "$html_file"; then
     echo "  missing version root: $file_rel" >&2
     missing_root=$((missing_root + 1))
@@ -278,6 +283,30 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
     fail "BUILD-19 sweep digest could not be produced"
   fi
   pass "BUILD-19 sweep digest produced for the real initiatives"
+
+  # BUILD-21: A demo deployment's test environment is published, and is not the
+  # released copy. Before the preview directory existed a demo's test URL
+  # pointed at demos/<destination>/, which holds the last release - so the
+  # preview showed old content, or 404ed, and "deploy to test" could not show a
+  # demo's work in progress at all.
+  while IFS=$'\t' read -r preview_slug preview_source preview_path preview_root; do
+    [ -n "$preview_slug" ] || continue
+
+    if [ ! -f "$OUTPUT_DIR/$preview_path/$preview_root" ]; then
+      fail "BUILD-21 no test preview published for ${preview_slug}"
+    fi
+
+    # Published verbatim: a preview that differs from its source is previewing
+    # something other than what a release would ship.
+    while IFS= read -r -d '' source_file; do
+      rel_file="${source_file#$ROOT_DIR/$preview_source/}"
+      if ! cmp -s "$source_file" "$OUTPUT_DIR/$preview_path/$rel_file"; then
+        fail "BUILD-21 preview file differs from its source: ${preview_slug}/${rel_file}"
+      fi
+    done < <(find "$ROOT_DIR/$preview_source" -type f -print0)
+
+    pass "BUILD-21 test preview published unmodified for ${preview_slug}"
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" previews)
 fi
 
 # BUILD-09: Valid HTML - basic structure check

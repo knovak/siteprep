@@ -26,8 +26,9 @@
  *                       refuses to leave a non-dormant initiative with nothing to do
  *   check-scope <slug> --files <path>...   or --files-from <file>
  *                       fail if a change reaches outside the initiative's write scope
+ *   previews [--json]                  demo sources the build publishes as test previews
  *   deployments <slug> [--json]        every deployment, both environment URLs each
- *   deployments <slug> plan --env test|prod [--kind <kind>]
+ *   deployments <slug> plan --env test|prod [--kind <kind>] [--since <ref>]
  *                       what a deployment would do; exits 1 if the release gate blocks it
  *   deployments <slug> record --env test|prod [--kind <kind>] ...
  *                       record a completed deployment
@@ -157,7 +158,7 @@ export const DOCUMENTS = [
 const DEFAULT_STALENESS_DAYS = 14;
 
 /** What a sweep run is permitted to do, in order. Survey is never optional. */
-const SWEEP_PHASES = ['survey', 'respond', 'propose', 'work'];
+const SWEEP_PHASES = ['survey', 'respond', 'propose', 'work', 'deploy'];
 
 // ---------------------------------------------------------------- loading
 
@@ -430,8 +431,8 @@ function checkOutputIndependence(slug, outputPath) {
  * Two environments, everywhere: `test` is overwritten as often as the work
  * needs it, by whichever agent is doing the work; `prod` moves only when a
  * person runs the release skill. A kind that cannot deploy its test
- * environment still has one - a demo's is the branch preview, which appears
- * from the push rather than from a deployment.
+ * environment still has one - a demo's is published by the build, from the push
+ * rather than by an engine.
  */
 
 export const DEPLOY_ENVIRONMENTS = ['test', 'prod'];
@@ -513,6 +514,31 @@ function sourceStatus(relPath) {
   return { commit, dirty };
 }
 
+/**
+ * What a branch has changed under one directory, against the ref it branched
+ * from - the question "is there anything new here worth showing?".
+ *
+ * The sweep uses it to decide whether an initiative it just worked on has
+ * anything to deploy: an item that only edited `log.md` has moved the
+ * initiative on without changing what a reader would see, and redeploying for
+ * that wastes a deploy and tells the user nothing.
+ *
+ * `known` is false when git cannot answer - an unknown ref, a shallow clone -
+ * so a caller can tell "nothing changed" from "cannot tell", which are
+ * opposite answers for anything that decides to act.
+ */
+function changedSince(source, ref) {
+  const result = { ref, known: false, changed: false, commits: [] };
+  if (!source || !ref) return result;
+  try {
+    const out = git(['log', '--format=%s', `${ref}..HEAD`, '--', source]);
+    result.known = true;
+    result.commits = out ? out.split('\n').filter(Boolean) : [];
+    result.changed = result.commits.length > 0;
+  } catch { /* unknown ref, or not a repository: `known` stays false */ }
+  return result;
+}
+
 /** The current branch, and the directory gh-pages.yml publishes it to. */
 function currentBranch() {
   try {
@@ -551,26 +577,52 @@ function environmentEntry(entry, env) {
 }
 
 /**
+ * Where the build publishes a demo deployment's source, so that its test
+ * environment shows the work rather than the last release.
+ *
+ * `demos/<destination>/` holds what was released; it only changes when someone
+ * runs the release skill. Pointing a demo's test URL there meant the preview
+ * either 404ed, before the first release, or served the previous release
+ * forever after - so "deploy to test" could not show a demo's work in
+ * progress at all. `build.sh` therefore copies each demo deployment's source
+ * to this path on every build, from `previews` below.
+ *
+ * It is generated output, not a directory in the repository, and it exists on
+ * `main` as well as in a branch preview - which is also what stops a demo's
+ * two environments resolving to one URL on main.
+ */
+const PREVIEW_ROOT = 'preview/initiatives';
+
+/** A demo's entry page, named or defaulted, as both the check and the URL use it. */
+function demoRootHtml(entry) {
+  return (entry && entry.root_html) || 'index.html';
+}
+
+/**
  * Both URLs for one deployment, always both keys.
  *
- * A ChatGPT Site's URLs are recorded when it is deployed. A demo's are computed
- * from its destination: production is the published path, and test is the same
- * path under this branch's preview. On `main` the preview *is* production,
- * which the caller is told rather than left to infer.
+ * A ChatGPT Site's URLs are recorded when it is deployed. A demo's are computed:
+ * production is the published `demos/` path, and test is the initiative's
+ * preview directory under this branch's build. Deriving them means a demo's
+ * links can never drift out of step with what is actually published.
  */
-export function deploymentUrls(entry) {
+export function deploymentUrls(entry, slug) {
   const urls = { test: null, prod: null };
   if (!entry || typeof entry !== 'object') return urls;
 
   if (entry.kind === 'demo') {
     const base = pagesBase();
-    if (!base || !entry.destination) return urls;
-    const path = `demos/${encodeURIComponent(entry.destination)}/`;
+    if (!base) return urls;
     const branch = currentBranch();
-    urls.prod = `${base}${path}`;
-    urls.test = (!branch || branch === 'main')
-      ? urls.prod
-      : `${base}branch/${branch.replace(/\//g, '-')}/${path}`;
+    const here = (!branch || branch === 'main')
+      ? base
+      : `${base}branch/${branch.replace(/\//g, '-')}/`;
+    if (entry.destination) {
+      urls.prod = `${base}demos/${encodeURIComponent(entry.destination)}/`;
+    }
+    if (slug) {
+      urls.test = `${here}${PREVIEW_ROOT}/${encodeURIComponent(slug)}/${demoRootHtml(entry)}`;
+    }
     return urls;
   }
 
@@ -581,13 +633,41 @@ export function deploymentUrls(entry) {
 }
 
 /** Whether an environment has actually been deployed, as opposed to merely addressable. */
-function isDeployed(entry, env) {
+function isDeployed(entry, env, slug) {
   if (!entry) return false;
   if (entry.kind === 'demo' && env === 'test') {
-    // The preview exists once the branch is pushed; there is nothing to record.
-    return Boolean(deploymentUrls(entry).test);
+    // The preview appears from the push that builds the branch; there is
+    // nothing to record, so being addressable is all "deployed" can mean.
+    return Boolean(deploymentUrls(entry, slug).test);
   }
   return Boolean(environmentEntry(entry, env));
+}
+
+/**
+ * Every demo deployment the build has to publish a preview for.
+ *
+ * `build.sh` reads this rather than parsing initiative.json itself, so the
+ * preview path is defined in exactly one place and a new deployment kind that
+ * wants a preview becomes an entry here rather than a change to the build.
+ * Entries whose source cannot be published are skipped; `validate` is what
+ * reports those, and a broken deployment must not fail the whole build.
+ */
+export function deploymentPreviews() {
+  const rows = [];
+  for (const record of loadAll()) {
+    if (record.error) continue;
+    for (const entry of deploymentList(record.data)) {
+      if (!entry || entry.kind !== 'demo' || !entry.source) continue;
+      if (checkDeploymentSource(record.slug, 'preview', entry).length) continue;
+      rows.push({
+        slug: record.slug,
+        source: entry.source,
+        root_html: demoRootHtml(entry),
+        path: `${PREVIEW_ROOT}/${record.slug}`
+      });
+    }
+  }
+  return rows;
 }
 
 /**
@@ -855,7 +935,7 @@ function countStaticFiles(abs) {
  * prompt can be talked out of refusing; `deployments plan --env prod` exits
  * non-zero.
  */
-export function deploymentPlan(slug, env, { kind } = {}) {
+export function deploymentPlan(slug, env, { kind, since } = {}) {
   if (!DEPLOY_ENVIRONMENTS.includes(env)) {
     throw new Error(env
       ? `unknown environment "${env}" - use ${DEPLOY_ENVIRONMENTS.join(' or ')}`
@@ -874,7 +954,7 @@ export function deploymentPlan(slug, env, { kind } = {}) {
   const abs = join(ROOT, entry.source);
   const status = sourceStatus(entry.source);
   const existing = environmentEntry(entry, env);
-  const urls = deploymentUrls(entry);
+  const urls = deploymentUrls(entry, slug);
   const blockers = [];
 
   // Production is released from committed files only. Test is not: the whole
@@ -899,7 +979,7 @@ export function deploymentPlan(slug, env, { kind } = {}) {
     source_commit: status.commit,
     uncommitted: status.dirty,
     urls,
-    deployed: { test: isDeployed(entry, 'test'), prod: isDeployed(entry, 'prod') },
+    deployed: { test: isDeployed(entry, 'test', slug), prod: isDeployed(entry, 'prod', slug) },
     release: releaseState(entry),
     blockers,
     ready: blockers.length === 0
@@ -917,18 +997,23 @@ export function deploymentPlan(slug, env, { kind } = {}) {
     plan.last_version = existing?.version ?? null;
   } else {
     plan.destination = entry.destination;
-    plan.root_html = entry.root_html || 'index.html';
+    plan.root_html = demoRootHtml(entry);
     plan.branch = currentBranch();
+    plan.preview_path = `${PREVIEW_ROOT}/${slug}`;
   }
   plan.last_deployed_at = existing?.deployed_at || null;
   plan.last_commit = existing?.commit || null;
 
-  // A derived environment has nothing to deploy; say what makes it appear.
+  // A derived environment has nothing for an engine to deploy; say what does
+  // make it appear, which for a demo is the push that builds this branch.
   if (!plan.deployable) {
     plan.note = plan.branch === 'main'
-      ? 'a demo has no separate preview on main - main publishes straight to production'
-      : `a demo's test environment is its branch preview, published by pushing ${plan.branch || 'this branch'}`;
+      ? `a demo's test environment is built from ${entry.source} into ${plan.preview_path}/ by the main build`
+      : `a demo's test environment is built from ${entry.source} into ${plan.preview_path}/ by the branch preview, `
+        + `published by pushing ${plan.branch || 'this branch'}`;
   }
+
+  if (since) plan.since = changedSince(entry.source, since);
 
   return plan;
 }
@@ -1030,7 +1115,7 @@ export function recordDeployment(slug, env, {
     kind: entry.kind,
     environment: env,
     entry: written,
-    urls: deploymentUrls(entry),
+    urls: deploymentUrls(entry, slug),
     history,
     changes: env === 'prod' ? state.changes : []
   };
@@ -1130,7 +1215,7 @@ function appendReleaseHistory(dir, slug, entry, env, written, state) {
 
   const path = join(dir, 'releases.md');
   const label = KINDS[entry.kind]?.label || entry.kind;
-  const url = deploymentUrls(entry).prod;
+  const url = deploymentUrls(entry, slug).prod;
   const lines = [];
 
   const heading = [
@@ -1227,7 +1312,7 @@ export function formatDeployments(slug, data) {
   for (const entry of list) {
     const spec = KINDS[entry.kind] || { label: entry.kind };
     lines.push(`  ${spec.label} (${entry.kind}) from ${entry.source || '(no source)'}`);
-    const urls = deploymentUrls(entry);
+    const urls = deploymentUrls(entry, slug);
     for (const env of DEPLOY_ENVIRONMENTS) {
       const stored = environmentEntry(entry, env);
       const detail = stored ? [
@@ -2281,7 +2366,7 @@ function renderPage(slug) {
   if (deployments.length) {
     parts.push(card('Deployments', 'initiative-deployments',
       deployments.map((entry) => {
-        const urls = deploymentUrls(entry);
+        const urls = deploymentUrls(entry, slug);
         const rows = DEPLOY_ENVIRONMENTS.map((env) => {
           const label = env === 'test' ? 'Test' : 'Production';
           const stored = entry[env] && typeof entry[env] === 'object' ? entry[env] : null;
@@ -2292,11 +2377,10 @@ function renderPage(slug) {
             stored?.access,
             stored?.version !== undefined ? `version ${stored.version}` : null,
             stored?.deployed_at ? `deployed ${String(stored.deployed_at).slice(0, 10)}` : null,
-            // On main the preview is production, so say that rather than
-            // showing one URL twice under two labels with no explanation.
-            !stored && env === 'test'
-              ? (urls.test === urls.prod ? 'published from main' : 'branch preview')
-              : null
+            // A demo's test row has nothing recorded against it, because the
+            // build publishes it rather than a deploy. Say where it comes from,
+            // so it is not read as a stale release nobody has refreshed.
+            !stored && env === 'test' ? 'built from the initiative source' : null
           ].filter(Boolean).join(', ');
           return `        <li>${label} — <a href="${escapeHtml(urls[env])}">${escapeHtml(urls[env])}</a>`
             + `${detail ? ` <em>(${escapeHtml(detail)})</em>` : ''}</li>`;
@@ -2471,7 +2555,7 @@ if (RUN_AS_CLI) switch (command) {
 
     if (!slug) {
       console.error('usage: initiatives.mjs deployments <slug> [--json]\n'
-        + '       initiatives.mjs deployments <slug> plan --env test|prod [--kind <kind>] [--json]\n'
+        + '       initiatives.mjs deployments <slug> plan --env test|prod [--kind <kind>] [--since <ref>] [--json]\n'
         + '       initiatives.mjs deployments <slug> record --env test|prod [--kind <kind>]\n'
         + '         ChatGPT Site: --site-slug <slug> --url <https://...> [--access private|public] [--version n]\n'
         + '         demo:         (no target arguments - the URL comes from the destination)\n'
@@ -2481,7 +2565,9 @@ if (RUN_AS_CLI) switch (command) {
 
     try {
       if (sub === 'plan') {
-        const plan = deploymentPlan(slug, flag('--env'), { kind: flag('--kind') });
+        const plan = deploymentPlan(slug, flag('--env'), {
+          kind: flag('--kind'), since: flag('--since')
+        });
         console.log(json ? JSON.stringify(plan, null, 2) : [
           `${plan.slug} ${plan.environment}: ${plan.deployable ? `${plan.mode} ` : ''}`
             + `${plan.label} deployment of ${plan.source} (${plan.source_files} file(s))`,
@@ -2490,6 +2576,9 @@ if (RUN_AS_CLI) switch (command) {
           `  test:   ${plan.urls.test || 'not deployed yet'}`,
           `  prod:   ${plan.urls.prod || 'not released yet'}`,
           `  status: ${plan.release.summary}${plan.release.test_ahead ? ' (test is ahead of production)' : ''}`,
+          ...(plan.since ? [`  since ${plan.since.ref}: ${plan.since.known
+            ? `${plan.since.commits.length} commit(s) touched ${plan.source}`
+            : 'cannot tell - git could not compare'}`] : []),
           ...plan.release.changes.slice(0, 10).map((change) => `    - ${change}`),
           ...plan.blockers.map((blocker) => `  BLOCKED: ${blocker}`)
         ].join('\n'));
@@ -2526,7 +2615,7 @@ if (RUN_AS_CLI) switch (command) {
           deployments: (record.data.deployments || []).map((entry) => ({
             kind: entry.kind,
             source: entry.source || null,
-            urls: deploymentUrls(entry)
+            urls: deploymentUrls(entry, slug)
           }))
         }, null, 2)
         : formatDeployments(slug, record.data));
@@ -2534,6 +2623,15 @@ if (RUN_AS_CLI) switch (command) {
       console.error(`INITIATIVE FAIL: ${err.message}`);
       process.exit(1);
     }
+    break;
+  }
+  case 'previews': {
+    // Tab-separated so build.sh can read it with `while IFS=$'\t' read`, which
+    // is the only consumer. --json is there for anyone inspecting it by hand.
+    const rows = deploymentPreviews();
+    console.log(args.includes('--json')
+      ? JSON.stringify(rows, null, 2)
+      : rows.map((row) => [row.slug, row.source, row.path, row.root_html].join('\t')).join('\n'));
     break;
   }
   case 'list':

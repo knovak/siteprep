@@ -22,7 +22,7 @@ have to go looking for the other one.
 | --- | --- |
 | `chatgpt-site`, `build: static` | Deploys the folder through [`deploy-to-chatgpt-sites`](../deploy-to-chatgpt-sites/) to a `<slug>-test` Site |
 | `chatgpt-site`, `build: sites-app` | Builds and deploys the project through the Sites hosting workflow |
-| `demo` | Nothing to deploy — a demo's test environment is its branch preview, which appears once the branch is pushed |
+| `demo` | No engine to run — `build.sh` publishes the source to `preview/initiatives/<slug>/`, so pushing the branch is the deploy |
 
 ## Access
 

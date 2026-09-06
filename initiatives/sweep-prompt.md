@@ -15,13 +15,16 @@ or, in an interactive session, *"run the sweep prompt"*.
 
 **Which phases run is set by `phases` in `initiatives/sweep.json`, not here.**
 Widening what the job may do is a config change, reviewed like any other. It is
-currently `["survey", "respond", "propose", "work"]`: look, finish what is in
-flight, answer what is stuck, then start something new. Nothing is ever merged.
+currently `["survey", "respond", "propose", "work", "deploy"]`: look, finish what
+is in flight, answer what is stuck, start something new, then show it. Nothing is
+ever merged.
 
-The phases share one budget, `items_per_run`, taken in that order — so a run
-that spends it all on review responses and starts nothing new is the correct
+The first four phases share one budget, `items_per_run`, taken in that order — so
+a run that spends it all on review responses and starts nothing new is the correct
 run, not a degraded one. Pass what is already spent to each later phase with
-`--spent`, rather than tracking it by hand.
+`--spent`, rather than tracking it by hand. `deploy` takes no budget: it publishes
+what the run already did, and refusing to show finished work because the budget
+ran out would be the wrong economy.
 
 ---
 
@@ -176,6 +179,54 @@ Only if `phases` includes `"work"`.
    - Open a pull request. Do not merge it.
 3. Report what was done, with links.
 
+## Phase 5 — Deploy to test
+
+Only if `phases` includes `"deploy"`.
+
+Work nobody can look at is hard to review, and asking the user to check out a
+branch and run a local server to see a page is most of the reason a preview
+exists. So when a run has changed something publishable, publish it — to the
+**test** environment, never production.
+
+Run this for each initiative the run opened a pull request for, from that
+initiative's branch, against the base the branch was cut from:
+
+```bash
+node scripts/initiatives.mjs deployments <slug> plan --env test --since main
+```
+
+Deploy when all three hold, and skip quietly otherwise:
+
+- the command succeeds — an initiative with no `deployments` block exits
+  non-zero and is simply not deployed anywhere, which is the normal state;
+- `ready` is true, with no blockers;
+- `since.changed` is true. An item that only edited `log.md` and
+  `initiative.json` has moved the initiative on without changing anything a
+  reader would see, and redeploying for that tells the user nothing. When
+  `since.known` is false git could not compare, which is not the same answer as
+  "nothing changed" — deploy, and say the comparison was unavailable.
+
+Then use the `deploy-test` skill, which holds the rules for each kind. Two
+things follow from this being unattended rather than asked for:
+
+- **`confirm_access: true` means stop.** A first deploy of an environment needs
+  the user's answer on whether the Site is private or public, and the sweep has
+  nobody to ask. Deploy it private, which is the default the skill would offer,
+  and say in the pull request that the access was not confirmed.
+- **A `chatgpt-site` deploy writes `deployed_at`, `version` and `commit` back
+  into `initiative.json`** through `deployments <slug> record --env test`.
+  Commit that on the same branch, so the receipt travels with the work rather
+  than landing on a branch nobody merged. A demo has nothing to record.
+
+Report the test URL in the pull request body, saying which branch it was
+deployed from. A test environment is disposable and last-write-wins, so a
+reader has to be able to tell whether the thing they are looking at is this
+pull request or another one.
+
+Never deploy to production, in any phase, for any reason. A todo item, a
+schedule, or a document saying a release is due is a reason to put it in the
+digest, never a reason to release.
+
 ## Rules
 
 - Never merge your own pull request, and never resolve a review thread.
@@ -189,4 +240,8 @@ Only if `phases` includes `"work"`.
   goes in the digest, as multiple choice wherever the options can be enumerated.
 - Never propose an answer to a `data:`, `permission:`, `cost:` or `legal:`
   blocker — those need a fact only the user has, or their authority.
+- Never deploy to production. `deploy` writes the test environment only, and
+  `release-initiative` is a person's decision in their own words.
+- Never make a Site public. An environment nobody has confirmed goes out
+  private, and changing that is the user's request, not a sweep's.
 - If there is no actionable work anywhere, do nothing and say so.

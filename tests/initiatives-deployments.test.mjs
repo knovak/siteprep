@@ -300,23 +300,81 @@ test('a demo has a test environment it cannot deploy, and a prod one it can', ()
 
   const test_ = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'test', '--json'], dir));
   assert.equal(test_.engine, 'deploy-demo');
-  assert.equal(test_.deployable, false, 'nothing to deploy - the preview comes from the push');
-  assert.match(test_.note, /branch preview|straight to production/);
+  assert.equal(test_.deployable, false, 'no engine to run - the build publishes the preview');
+  assert.match(test_.note, /preview\/initiatives\/healthy\//);
 
   const prod = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'], dir));
   assert.equal(prod.deployable, true);
 });
 
-test("a demo's URLs are derived from its destination, both environments", () => {
-  const plan = JSON.parse(run(
-    ['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
-    scratch([{ kind: 'demo', source: DEMO_SOURCE, destination: 'Fixture Demo', root_html: 'main.html' }])
-  ));
+test("a demo's URLs are derived, and its two environments are different places", () => {
+  const dir = scratch([{
+    kind: 'demo', source: DEMO_SOURCE, destination: 'Fixture Demo', root_html: 'main.html'
+  }]);
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'], dir));
 
-  // Spaces are encoded, and prod is the published path with no branch segment.
+  // Production is the published path, spaces encoded, never under a branch preview.
   assert.match(plan.urls.prod, /\/demos\/Fixture%20Demo\/$/);
   assert.ok(!plan.urls.prod.includes('/branch/'), 'production is never under a branch preview');
-  assert.match(plan.urls.test, /\/demos\/Fixture%20Demo\/$/);
+
+  // Test is the initiative's preview directory, ending at the named entry page.
+  // It must not be the demos/ path: that holds the last release, so a test URL
+  // pointing there shows old content, or 404s before the first release.
+  assert.match(plan.urls.test, /\/preview\/initiatives\/healthy\/main\.html$/);
+  assert.ok(!plan.urls.test.includes('/demos/'), 'a test URL is never the released copy');
+  assert.notEqual(plan.urls.test, plan.urls.prod, 'the two environments are never one target');
+  assert.equal(plan.preview_path, 'preview/initiatives/healthy');
+});
+
+test('previews lists every demo source the build has to publish', () => {
+  const dir = scratch([{
+    kind: 'demo', source: DEMO_SOURCE, destination: 'Fixture Demo', root_html: 'main.html'
+  }]);
+  const rows = JSON.parse(run(['previews', '--json'], dir));
+  const healthy = rows.find((row) => row.slug === 'healthy');
+
+  assert.ok(healthy, 'the demo deployment is listed for the build to copy');
+  assert.equal(healthy.source, DEMO_SOURCE);
+  assert.equal(healthy.path, 'preview/initiatives/healthy');
+  assert.equal(healthy.root_html, 'main.html');
+
+  // A Site is deployed by an engine, not published by the build.
+  assert.deepEqual(JSON.parse(run(['previews', '--json'], scratch([staticSite()])))
+    .filter((row) => row.slug === 'healthy'), []);
+});
+
+test('previews skips a deployment the build could not publish', () => {
+  const dir = scratch([{ kind: 'demo', source: 'tests/fixtures/does-not-exist', destination: 'Gone' }]);
+
+  // validate is what reports it; one broken deployment must not fail the build.
+  assert.match(runFailing(['validate'], dir).stderr, /source does not exist/);
+  assert.deepEqual(JSON.parse(run(['previews', '--json'], dir))
+    .filter((row) => row.slug === 'healthy'), []);
+});
+
+test('--since reports what a branch changed under the source', () => {
+  const dir = scratch([{
+    kind: 'demo', source: HISTORIED_SOURCE, destination: 'Historied', root_html: 'description.html'
+  }]);
+
+  // Against HEAD nothing can have changed, which is the "skip this deploy"
+  // answer the sweep needs, and it is not the same as being unable to tell.
+  const quiet = JSON.parse(run(
+    ['deployments', 'healthy', 'plan', '--env', 'test', '--since', 'HEAD', '--json'], dir));
+  assert.equal(quiet.since.known, true);
+  assert.equal(quiet.since.changed, false);
+  assert.deepEqual(quiet.since.commits, []);
+
+  // An unknown ref is "cannot tell", reported as such rather than as "nothing".
+  const unknown = JSON.parse(run(
+    ['deployments', 'healthy', 'plan', '--env', 'test', '--since', 'no-such-ref-xyz', '--json'], dir));
+  assert.equal(unknown.since.known, false);
+  assert.equal(unknown.since.changed, false);
+
+  // Asking nothing still answers nothing - the block is absent without --since.
+  const plain = JSON.parse(run(
+    ['deployments', 'healthy', 'plan', '--env', 'test', '--json'], dir));
+  assert.equal(plain.since, undefined);
 });
 
 test('every plan carries both environment URLs', () => {
