@@ -105,6 +105,7 @@ conventions they follow.
 - [`respond-to-review`](.claude/skills/respond-to-review/SKILL.md) — Answer review comments on a pull request - revising the branch, replying, or escalating a decision.
 - [`tag-newsletter-stories`](.claude/skills/tag-newsletter-stories/SKILL.md) — Add theme tags, event clusters, and cluster paraphrases to a Newsletter Story Harvester JSON store.
 - [`update-deck-events`](.claude/skills/update-deck-events/SKILL.md) — Refresh the Events topic of every current or future deck page that has a date range, by searching for festivals, fairs, religious celebrations, concerts, and theater happening in that place during that window and reconciling them against the events already on the page and on its reject page.
+- [`write-brief`](.claude/skills/write-brief/SKILL.md) — Write or refresh an initiative's brief - the short "where this stands" summary shown at the top of its overview page, covering what is done, what others owe, what work remains, and what is deferred.
 
 <!-- END GENERATED SKILLS INDEX -->
 

@@ -64,7 +64,7 @@ To make a run harmless while you check something, set `phases` back to
 ## What the sweep is allowed to do
 
 `phases` in `sweep.json` decides what a run may do, and is currently
-`["survey", "respond", "propose", "work", "deploy"]` — everything:
+`["survey", "respond", "propose", "work", "deploy", "brief"]` — everything:
 
 | Phase | What it does |
 |---|---|
@@ -73,14 +73,15 @@ To make a run harmless while you check something, set `phases` back to
 | `propose` | Opens a pull request proposing an answer to a `human:` question |
 | `work` | Starts new work from the todo lists and opens pull requests |
 | `deploy` | Refreshes the **test** environment of what the run changed |
+| `brief` | Rewrites the "where this stands" summary on an initiative whose files have moved |
 
 They run in that order. The first four share one budget of `items_per_run` taken
 in the same order — finishing what is in flight outranks starting more. Narrowing
 or widening this is a commit to a config file, reviewed like anything else, which
 is the point: changing how autonomous the job is should leave a trace.
 
-`deploy` takes no budget, because it publishes work the run has already done
-rather than starting any. It writes the test environment only, from the branch
+`deploy` and `brief` take no budget, because they publish and describe work the
+run has already done rather than starting any. It writes the test environment only, from the branch
 the run just pushed, and only when `deployments <slug> plan --env test --since
 <base>` says the source actually changed. Production never moves without a
 person running `release-initiative`, so the worst a deploy phase can produce is
@@ -108,6 +109,18 @@ because the push that builds the branch publishes its source to
 Site the sweep deploys for the first time goes out **private**, since nobody is
 there to be asked, and the pull request says so.
 
+**What `brief` may write.** One file per initiative, `brief.md`, plus its stamp
+in `initiative.json`. It is a summary of documents the initiative already
+carries, never a new commitment, and it never states what the initiative needs
+from you — that row is computed from the blocked items so a summary cannot soften
+it. Selection is a digest comparison, so an initiative nobody has touched is
+skipped and a quiet run costs nothing.
+
+The brief is **agent-owned**, which is the opposite of `wish.md`: it is rewritten
+in full on every refresh, so a hand-edit is discarded without a word. Correct the
+document it summarised — `spec.md`, `plan.md`, `decisions.md` — and the fix
+arrives in the brief when it is next written.
+
 **Turning it down.** The staged bring-up the plan described — `work` first at
 `items_per_run: 1`, then `respond`, then `propose` — was collapsed into one
 change deliberately (Phase 5a and 6, §12 of the vision). If a run turns out to
@@ -125,6 +138,8 @@ Most of a run is commands, not reasoning:
 | Choose questions to answer | `node scripts/initiatives.mjs propose --claimed <branches> --open-prs <n> --spent <n>` |
 | Choose work | `node scripts/initiatives.mjs select --claimed <branches> --open-prs <n> --spent <n>` |
 | Decide whether to deploy | `node scripts/initiatives.mjs deployments <slug> plan --env test --since <base>` |
+| Choose briefs to refresh | `node scripts/initiatives.mjs brief --json` |
+| Stamp a written brief | `node scripts/initiatives.mjs brief <slug> record` |
 | Record an item done | `node scripts/initiatives.mjs complete <slug> <item-id> --note "..." [--stage <stage>]` |
 | Check a change stays in scope | `node scripts/initiatives.mjs check-scope <slug> --files-from changed.txt` |
 

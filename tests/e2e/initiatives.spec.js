@@ -54,11 +54,17 @@ test.describe('initiative overview page', () => {
 
     await expect(page.locator('#initiative-purpose')).toBeVisible();
     await expect(page.locator('#initiative-status')).toBeVisible();
-    await expect(page.locator('#initiative-next')).toBeVisible();
+    await expect(page.locator('#initiative-stands')).toBeVisible();
 
     // The stage has to actually appear - this is the page's whole job.
     const status = await page.locator('#initiative-status ~ .card-content, .card-content').allTextContents();
     expect(status.join(' ')).toMatch(/Stage:/);
+
+    // "Where this stands" leads with the two rows a reader arrives for, and
+    // both are computed - they are on the page whether or not a brief exists.
+    const stands = await page.locator('[aria-labelledby="initiative-stands"] dl.stands dt')
+      .evaluateAll((els) => els.map((el) => el.textContent.trim()));
+    expect(stands.slice(0, 2)).toEqual(['Needs from you', 'Scheduled']);
   });
 
   test('links documents as rendered HTML, never as raw markdown', async ({ page }) => {

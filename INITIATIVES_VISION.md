@@ -752,7 +752,7 @@ behaviour is readable from the repo alone.
 
 | Field | Default | Meaning |
 |---|---|---|
-| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `propose`, `work`, `deploy`. Must include `survey` |
+| `phases` | `["survey"]` | What a run may do: `survey`, `respond`, `propose`, `work`, `deploy`, `brief`. Must include `survey` |
 | `items_per_run` | `4` | Total actionable items a single sweep may complete |
 | `max_items_per_initiative` | `2` | Cap per initiative, so one hot initiative can't eat the whole budget |
 | `max_effort` | `large` | Largest item the job may attempt unsupervised |
@@ -767,8 +767,9 @@ the same reasoning that puts the budget here rather than at the call site.
 
 > **Where it stands.** The block above is the default the design proposed. The
 > live `initiatives/sweep.json` now reads
-> `"phases": ["survey", "respond", "propose", "work", "deploy"]` with every other
-> value as shown — Phases 5, 5a and 6 of §12, landed together, plus `deploy`.
+> `"phases": ["survey", "respond", "propose", "work", "deploy", "brief"]` with
+> every other value as shown — Phases 5, 5a and 6 of §12, landed together, plus
+> `deploy` and `brief`.
 > Turning a capability back off is the same reviewable commit that turning it on
 > was.
 
@@ -1384,6 +1385,40 @@ environment is for. The build now copies each demo deployment's `source` to
 also brought demos under the rule every other kind already obeyed: two environments never
 resolve to one target.
 
+## The brief, and who writes prose here
+
+The overview page long answered "what is this?" and never "where does it stand?".
+The missing part — what is done, what others owe, what work remains, what was
+deferred — is not in `initiative.json` and cannot be computed from it.
+
+The first design put that on the user, as a document they would write. That was
+wrong, and instructively so: the user writes wishes, not summaries. Everything
+the summary needs is already in the initiative's own documents — the counts in
+`work/`, the reviewer duties in `test-plan.md`, the deferred items in `spec.md`
+— so it is a *summarisation of the record*, which is exactly the shape of work
+the sweep already does. `brief.md` is therefore agent-written, and the `brief`
+phase keeps it current.
+
+Three properties follow, and each is a constraint rather than a convenience.
+
+**It is the mirror image of the wish.** `wish.md` is the user's words and may
+never be rewritten. `brief.md` is rewritten in full on every refresh, so a
+hand-edit is discarded without a word. The resolution is that a correction goes
+to the document the brief summarised, and arrives in the brief when it is next
+written — which also keeps the correction where the next reader will find it.
+
+**What the user owes is never summarised.** That row comes from the blocked todo
+items and is rendered above the brief. A summary that paraphrased a blocker
+could soften or misstate it, and it is the one row on the page a person acts on.
+Prose describes; data instructs.
+
+**Staleness is computed.** A confident summary twenty commits out of date is
+worse than none, so the brief is stamped with a digest of the initiative's files
+— minus the brief itself, which would otherwise invalidate its own stamp. The
+page says how current it is, and the sweep refreshes it when it is not. This is
+the same instinct as the deployment tree hash: a claim about currency should be
+derived, never remembered.
+
 This is also the case that keeps the schema honest. A kind need not support both
 environments, and pretending otherwise would have forced either a fake test deploy for
 demos or a second, parallel mechanism for them.
@@ -1671,9 +1706,10 @@ Deliberately slow, because the schema should be proven by hand before it is auto
 | 6 | **done** | Restore the configured budget (§7.5) | Review load, not ambition, sets the ceiling |
 
 **Phases 5, 5a and 6 landed together, at the user's direction**, so `phases` is
-now `["survey", "respond", "propose", "work", "deploy"]` at the configured budget
-of four items per run — `deploy` added later, and taking no budget, since it
-publishes what a run has already done rather than starting anything. The staged bring-up below — `work` alone first, at
+now `["survey", "respond", "propose", "work", "deploy", "brief"]` at the
+configured budget of four items per run — `deploy` and `brief` added later, and
+taking no budget, since they publish and describe what a run has already done
+rather than starting anything. The staged bring-up below — `work` alone first, at
 `items_per_run: 1`, then `respond`, then `propose` — was a precaution, not a
 dependency; collapsing it trades a slower start for a shorter path to finding
 out whether a whole run works. `items_per_run` remains the dial if the review

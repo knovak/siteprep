@@ -37,5 +37,10 @@
       "advances_stage": false,
       "blocked_by": "data:remaining anatomy and tradition-practitioner findings, reviewer roles and invitation addresses, and a report destination; KRN display feedback is recorded but does not establish anatomy or tradition sign-off"
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-09-06T04:11:31Z",
+    "commit": "1a69f2891d7580cdfe789aad257db5ca5f4c8afa",
+    "digest": "c977302d23f28021a197f75e3ea34d77057b859a"
+  }
 }

@@ -204,7 +204,7 @@ Do not call demo content a "deck" or "section" unless a user explicitly asks for
 
 `scripts/initiatives.mjs` generates the Initiative TOC and overview pages, validates the data, produces the digest, and computes what each phase may do. A scheduled sweep runs the phases listed in `initiatives/sweep.json` and opens pull requests for its work; it never merges, and never writes outside the initiative it is working on. See `initiatives/sweep-prompt.md` and `initiatives/sweep-setup.md`.
 
-Six skills do this work, by hand or in the sweep: `new-initiative`, `respond-to-review`, `answer-decision` and `merge-prs` cover starting work, settling what it is blocked on, iterating under review, and finishing it; `deploy-test` and `release-initiative` publish what an initiative builds, under the rules in Deployments below.
+Seven skills do this work, by hand or in the sweep: `new-initiative`, `respond-to-review`, `answer-decision` and `merge-prs` cover starting work, settling what it is blocked on, iterating under review, and finishing it; `deploy-test` and `release-initiative` publish what an initiative builds, under the rules in Deployments below; `write-brief` keeps its status summary current.
 
 ### Terminology
 
@@ -214,6 +214,7 @@ Use these names, mirroring the Demos vocabulary above:
 - **Initiative**: one immediate subdirectory of `initiatives/`.
 - **Initiative index page**: an initiative's own `index.html` overview.
 - **Initiative document**: a markdown file in an initiative - `wish.md`, `objectives.md`, `decisions.md`, `spec.md`, `plan.md`, `test-plan.md`, `overview.md`, `log.md`, `releases.md`.
+- **Initiative brief**: `brief.md`, the short "where this stands" summary at the top of the overview page. Written by an agent from the initiative's own documents, never by hand.
 - **Initiative capability**: a script or library an initiative develops, under its `lib/` or `prompts/`.
 - **Initiative output**: a deck, demo, or external deployment an initiative produced.
 - **Initiative deployment**: one publishing target declared in `deployments[]`, with a test environment and a production environment.
@@ -233,7 +234,8 @@ initiatives/<initiative-name>/
   spec.md            # what it is, including alternatives considered
   plan.md            # how it gets built, in phases
   test-plan.md       # how we know it works
-  overview.md        # optional hand-written narrative
+  brief.md           # generated - where this stands, in four short sections
+  overview.md        # optional long narrative
   log.md             # append-only record of what happened
   releases.md        # written by a production release, never by hand
   prompts/ notes/ work/ lib/
@@ -252,11 +254,16 @@ Only `initiative.json` and `wish.md` exist when an initiative is created. The ov
 | `shaped` | + `objectives.md` | Draft `spec.md`, including alternatives considered |
 | `specified` | + `spec.md` | Draft `plan.md` and `test-plan.md` |
 | `planned` | + `plan.md`, `test-plan.md` | Critique the plan, then build the first increment in `work/` |
-| `building` | `work/` has content | Next plan step, or graduate the output |
-| `refining` | output has graduated | Work the todo list |
+| `building` | `work/` has content, + `brief.md` | Next plan step, or graduate the output |
+| `refining` | output has graduated, + `brief.md` | Work the todo list |
 | `dormant` | nothing actionable, by choice | Nothing - this is a resting state |
 
 Stages may regress; `archived` may not.
+
+`brief.md` appears from `building` on, once there is a body of work nobody
+should have to read to find out where it stands. The sweep's `brief` phase
+writes it, so a missing one is a warning addressed to the sweep rather than a
+chore for the user.
 
 **The stage gates only part of the record.** `wish.md` is required at every
 stage, and `decisions.md`, `log.md`, `releases.md` and `notes.md` are tied to
@@ -272,6 +279,8 @@ rules or not at all.
 - **An answered question goes in `decisions.md`**, dated and appended, with the reasoning and what is still open. A decision recorded only in a commit message or a chat gets re-argued months later, which is the drift initiatives exist to prevent. Use the `answer-decision` skill rather than editing by hand.
 - **A blocked todo item must say what blocks it**, using a namespaced prefix: `todo:`, `initiative:`, `review:`, `schedule:`, `human:`, `permission:`, `cost:`, `legal:`, `data:`, `external:`, `upstream:`. The prefix decides what may happen next, so pick it honestly: `human:` is a judgement call the sweep may propose an answer to, while `data:` is a fact only the user has and `permission:`, `cost:` and `legal:` need their authority - none of those may ever be proposed.
 - **There is no `updated` field.** Last activity comes from git.
+- **The brief is agent-owned, and is the mirror image of the wish.** `wish.md` is the user's words and may never be rewritten; `brief.md` is rewritten in full whenever the initiative moves, so a hand-edit there is discarded by the next refresh without a word. A correction goes to the document the brief summarised - `spec.md`, `plan.md`, `decisions.md` - and reaches the brief when it is next written. Use the `write-brief` skill rather than editing it by hand, and never hand-write its `generated_at`, `commit` or `digest` stamp.
+- **A brief never states what the initiative needs from you.** That row is computed from the blocked todo items and rendered above the brief on the page. A summary that paraphrased a blocker could soften or misstate what is owed, which is the one thing on the page that has to be exact.
 - **A published output may never reference code under `initiatives/`.** Anything under an initiative is mutable and private to it, so a deck or demo that loaded it would change without any PR appearing to touch it. Either graduate the library to `shared/`, or vendor a copy into the output and record the source path and commit.
 
 ### Work in progress and graduation
