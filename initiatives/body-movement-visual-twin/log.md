@@ -82,3 +82,7 @@ its sources. Added per-structure motion, skull-pivot, fused-sacrum, foot-directi
 shoulder-response, muscle-attachment and scaling regressions. The audit is in
 `work/phase-3/ANATOMY-AUDIT.md`. This is a software/display correction; the existing
 anatomy/practitioner evidence item and unreviewed records remain open.
+
+## 2026-09-05 — Release
+
+Released to production — ChatGPT Site, version 1, `021648c`. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.

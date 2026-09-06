@@ -16,6 +16,14 @@
         "deployed_at": "2026-09-05T07:55:20Z",
         "version": 4,
         "commit": "2f3051bf774bf57be18ee7acb074071659f6fcf2"
+      },
+      "prod": {
+        "slug": "body-movement-visual-twin",
+        "url": "https://body-movement-visual-twin.ken-novak.chatgpt.site/",
+        "access": "private",
+        "deployed_at": "2026-09-05T23:12:28Z",
+        "version": 1,
+        "commit": "021648cc4c585caff04e2a9880cad4969daaa77c"
       }
     }
   ],
