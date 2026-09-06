@@ -23,6 +23,15 @@ They load these assets instead, and depend on no deck.
 | `site_base.css` | Page styling for site-level pages. Seeded from the deck template, and free to diverge from it - decks own their look, and so do these pages. |
 | `site_base.js` | Registers the service worker and renders the shared nav bar |
 
+Three classes in `site_base.css` exist for the generated initiative pages, and
+are not used by decks:
+
+| Class | Purpose |
+|---|---|
+| `dl.stands` | The "Where this stands" label/value grid, which collapses to one column on a narrow screen rather than scrolling sideways |
+| `ul.currency` | One row per deployment environment, saying where it stands against main |
+| `.verdict`, `.verdict-current`, `.verdict-behind`, `.verdict-ahead`, `.verdict-differs` | The currency chip. The verdict is a word first and a colour second, so it still reads printed, or to a reader who cannot separate the hues |
+
 ## `site_base.js`
 
 Two jobs:

@@ -65,12 +65,18 @@
       </ul>
     </div>
   </main>
-  <main class="card" aria-labelledby="initiative-next">
+  <main class="card" aria-labelledby="initiative-stands">
     <div class="card-header">
-      <h2 id="initiative-next">What&#39;s next</h2>
+      <h2 id="initiative-stands">Where this stands</h2>
     </div>
     <div class="card-content">
-      <p>Nothing actionable.</p>
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><p>Nothing.</p></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+      </dl>
+
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -83,7 +89,11 @@
         <li>Test — <a href="https://knovak.github.io/siteprep/preview/initiatives/repo-guide/description.html">https://knovak.github.io/siteprep/preview/initiatives/repo-guide/description.html</a> <em>(built from the initiative source)</em></li>
         <li>Production — <a href="https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/">https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/</a> <em>(deployed 2026-09-02)</em></li>
       </ul>
-      <p class="deployment-status">1 commit(s) unreleased</p>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
+        <li><strong>Production</strong> <span class="verdict verdict-behind">behind main</span> — 1 commit behind main</li>
+      </ul>
+      <p class="deployment-status">main is on test, not released · 1 commit(s) unreleased</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-documents">

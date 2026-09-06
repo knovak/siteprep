@@ -48,22 +48,20 @@
       </ul>
     </div>
   </main>
-  <main class="card" aria-labelledby="initiative-next">
+  <main class="card" aria-labelledby="initiative-stands">
     <div class="card-header">
-      <h2 id="initiative-next">What&#39;s next</h2>
+      <h2 id="initiative-stands">Where this stands</h2>
     </div>
     <div class="card-content">
-      <p>Nothing actionable.</p>
-    </div>
-  </main>
-  <main class="card" aria-labelledby="initiative-blocked">
-    <div class="card-header">
-      <h2 id="initiative-blocked">What&#39;s blocked</h2>
-    </div>
-    <div class="card-content">
-      <ul>
-        <li>Phase 7 - spherical export and representative acceptance — <code>data:independent learner or presenter findings for the full contribution, exploration, presentation, restore, and sphere-export path</code> <em>(needs a decision)</em></li>
-      </ul>
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><ul>
+          <li>independent learner or presenter findings for the full contribution, exploration, presentation, restore, and sphere-export path <em>(Phase 7 - spherical export and representative acceptance — <code>data:</code>)</em></li>
+        </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+      </dl>
+
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -76,7 +74,11 @@
         <li>Test — <a href="https://educational-global-maps-test.ken-novak.chatgpt.site">https://educational-global-maps-test.ken-novak.chatgpt.site</a> <em>(private, version 1, deployed 2026-09-05)</em></li>
         <li>Production — <em>not released yet</em></li>
       </ul>
-      <p class="deployment-status">on test, never released</p>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-none">not deployed</span> — not released yet</li>
+      </ul>
+      <p class="deployment-status">main is on test, never released · on test, never released</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-documents">

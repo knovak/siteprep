@@ -47,12 +47,18 @@
       </ul>
     </div>
   </main>
-  <main class="card" aria-labelledby="initiative-next">
+  <main class="card" aria-labelledby="initiative-stands">
     <div class="card-header">
-      <h2 id="initiative-next">What&#39;s next</h2>
+      <h2 id="initiative-stands">Where this stands</h2>
     </div>
     <div class="card-content">
-      <p>Nothing actionable.</p>
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><p>Nothing.</p></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+      </dl>
+
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -64,6 +70,10 @@
       <ul>
         <li>Test — <a href="https://tide-here-test.ken-novak.chatgpt.site">https://tide-here-test.ken-novak.chatgpt.site</a> <em>(public, version 15, deployed 2026-09-01)</em></li>
         <li>Production — <a href="https://tide-here-five-coast-local-days.ken-novak.chatgpt.site">https://tide-here-five-coast-local-days.ken-novak.chatgpt.site</a> <em>(public, version 7, deployed 2026-09-01)</em></li>
+      </ul>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-behind">behind main</span> — 2 commits behind main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-behind">behind main</span> — 2 commits behind main</li>
       </ul>
       <p class="deployment-status">2 commit(s) unreleased</p>
     </div>

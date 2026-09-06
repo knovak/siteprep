@@ -59,12 +59,18 @@
       </ul>
     </div>
   </main>
-  <main class="card" aria-labelledby="initiative-next">
+  <main class="card" aria-labelledby="initiative-stands">
     <div class="card-header">
-      <h2 id="initiative-next">What&#39;s next</h2>
+      <h2 id="initiative-stands">Where this stands</h2>
     </div>
     <div class="card-content">
-      <p>Nothing actionable.</p>
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><p>Nothing.</p></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+      </dl>
+
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -77,7 +83,11 @@
         <li>Test — <a href="https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/">https://bookmark-sorter-end-user-test.ken-novak.chatgpt.site/</a> <em>(public, version 36, deployed 2026-09-05)</em></li>
         <li>Production — <a href="https://bookmark-sorter.ken-novak.chatgpt.site/">https://bookmark-sorter.ken-novak.chatgpt.site/</a> <em>(public, version 4, deployed 2026-09-05)</em></li>
       </ul>
-      <p class="deployment-status">production is current</p>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-unknown">unknown</span> — the recorded commit is no longer in this history</li>
+        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
+      </ul>
+      <p class="deployment-status">production has main · production is current</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-documents">

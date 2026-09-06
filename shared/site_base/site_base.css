@@ -72,6 +72,65 @@ footer {
   opacity: 0.75;
 }
 
+/*
+ * "Where this stands" on an initiative overview: the two questions a reader
+ * arrives with, then the written summary. A definition list rather than a
+ * table so it reflows on a phone instead of scrolling sideways.
+ */
+.card-content dl.stands {
+  display: grid;
+  grid-template-columns: minmax(9rem, max-content) 1fr;
+  gap: 0.6rem 1.5rem;
+  margin: 0 0 1rem;
+}
+.card-content dl.stands dt {
+  font-weight: 600;
+  color: var(--primary);
+}
+.card-content dl.stands dd {
+  margin: 0;
+}
+.card-content dl.stands dd > :first-child { margin-top: 0; }
+.card-content dl.stands dd > :last-child { margin-bottom: 0; }
+.card-content dl.stands ul { margin: 0; }
+
+@media (max-width: 600px) {
+  .card-content dl.stands {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+  .card-content dl.stands dt { margin-top: 0.7rem; }
+}
+
+/*
+ * Deployment currency: whether each environment holds what main holds. The
+ * verdict is a word first and a colour second, so it still reads when the
+ * colour does not - printed, or by a reader who cannot separate the hues.
+ */
+.card-content ul.currency {
+  list-style: none;
+  padding-left: 0;
+  margin: -0.5rem 0 0.75rem;
+  font-size: 0.92rem;
+}
+.card-content ul.currency li {
+  margin-bottom: 0.3rem;
+}
+.verdict {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  margin-right: 0.4em;
+  background: #e5e7eb;
+  color: #374151;
+}
+.verdict-current { background: #dcfce7; color: #166534; }
+.verdict-behind  { background: #fef3c7; color: #92400e; }
+.verdict-ahead   { background: #ede9fe; color: #5b21b6; }
+.verdict-differs { background: #fee2e2; color: #991b1b; }
+
 .meta-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

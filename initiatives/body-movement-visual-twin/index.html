@@ -48,22 +48,28 @@
       </ul>
     </div>
   </main>
-  <main class="card" aria-labelledby="initiative-next">
+  <main class="card" aria-labelledby="initiative-stands">
     <div class="card-header">
-      <h2 id="initiative-next">What&#39;s next</h2>
+      <h2 id="initiative-stands">Where this stands</h2>
     </div>
     <div class="card-content">
-      <p>Nothing actionable.</p>
-    </div>
-  </main>
-  <main class="card" aria-labelledby="initiative-blocked">
-    <div class="card-header">
-      <h2 id="initiative-blocked">What&#39;s blocked</h2>
-    </div>
-    <div class="card-content">
-      <ul>
-        <li>Record anatomy and tradition-practitioner validation findings — <code>data:remaining anatomy and tradition-practitioner findings, reviewer roles and invitation addresses, and a report destination; KRN display feedback is recorded but does not establish anatomy or tradition sign-off</code> <em>(needs a decision)</em></li>
-      </ul>
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><ul>
+          <li>remaining anatomy and tradition-practitioner findings, reviewer roles and invitation addresses, and a report destination; KRN display feedback is recorded but does not establish anatomy or tradition sign-off <em>(Record anatomy and tradition-practitioner validation findings — <code>data:</code>)</em></li>
+        </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+        <dt>Done</dt>
+        <dd><p>Phases 0-6 of <code>plan.md</code> are built. The private validation site carries 13 movement studies (<code>work/phase-6/site/data/movement-clips.json</code>) across Feldenkrais, yoga and Alexander Technique, on one shared rig with surface, skeleton and muscle layers, playback and camera controls, and the flag-and- export review tools that let a reviewer file a correction without editing the source.</p></dd>
+        <dt>Waiting on others</dt>
+        <dd><p>An anatomy reviewer checks joint actions, named muscles, group labels, annotations, landmarks and cautions. One practitioner per tradition checks the movement path, timing, instruction, variations and wording. Each claim comes back <code>reviewed</code> or <code>disputed</code> — a disagreement is recorded rather than converted to a silent pass (<code>test-plan.md</code> §1.4).</p></dd>
+        <dt>Remaining work</dt>
+        <dd><p>Configure the chosen report handoff and grant only the authorized access, trace each returned report to its exact movement and claim, correct geometry, wording or attribution, record the reviewer and outcome against each claim, rerun the affected checks, and complete the Phase 6 validation record.</p></dd>
+        <dt>Optional later</dt>
+        <dd><p><code>plan.md</code> §5 leaves four things open: whether a successor becomes public, and its rights and trademark review; whether the collection grows past the reviewed set; whether subject-specific clinical data ever replaces the fitted reference anatomy, which would be a different claim surface; and which private host and report inbox to settle on.</p></dd>
+      </dl>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, written 2 commit(s) ago and now out of date (2026-09-06). Correct the document it summarises rather than the summary.</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -76,30 +82,16 @@
         <li>Test — <a href="https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/">https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/</a> <em>(private, version 4, deployed 2026-09-05)</em></li>
         <li>Production — <a href="https://body-movement-visual-twin.ken-novak.chatgpt.site/">https://body-movement-visual-twin.ken-novak.chatgpt.site/</a> <em>(private, version 1, deployed 2026-09-05)</em></li>
       </ul>
-      <p class="deployment-status">production is current</p>
-    </div>
-  </main>
-  <main class="card" aria-labelledby="initiative-documents">
-    <div class="card-header">
-      <h2 id="initiative-documents">Documents</h2>
-    </div>
-    <div class="card-content">
-      <ul>
-        <li><a href="./wish.html">Wish</a></li>
-        <li><a href="./background.html">Background</a></li>
-        <li><a href="./objectives.html">Objectives</a></li>
-        <li><a href="./decisions.html">Decisions</a></li>
-        <li><a href="./spec.html">Specification</a></li>
-        <li><a href="./plan.html">Implementation plan</a></li>
-        <li><a href="./test-plan.html">Test plan</a></li>
-        <li><a href="./releases.html">Releases</a></li>
-        <li><a href="./log.html">Log</a></li>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-unknown">unknown</span> — the recorded commit is no longer in this history</li>
+        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
       </ul>
+      <p class="deployment-status">production has main · production is current</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-overview">
     <div class="card-header">
-      <h2 id="initiative-overview">Overview</h2>
+      <h2 id="initiative-overview">In detail</h2>
     </div>
     <div class="card-content">
 <h2>Body Movement: status and next steps</h2>
@@ -125,6 +117,24 @@
 <p>A public release would require a separate decision about audience plus the rights/licensing/attribution/trademark review already reserved for a public successor. That is not a current gate for private use. Clinical personalization, movement scoring and treatment claims remain outside this version&#39;s scope.</p>
 <h3>Evidence and project records</h3>
 <ul><li><a href="objectives.html">Objectives</a>, <a href="plan.html">original implementation plan</a>, and <a href="test-plan.html">test plan</a></li><li><a href="decisions.html">Recorded decisions</a>, including KRN feedback and the private/public boundary</li><li><a href="https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-3/ANATOMY-AUDIT.md#axial-anatomy-and-foot-direction-audit">Anatomy and foot-direction audit</a></li><li><a href="https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-6/VALIDATION.md#phase-6-validation-record">Validation record</a> and <a href="https://github.com/knovak/siteprep/blob/9ba71aeb9fb2be3c2ba6650eb9408e12c8e0a5c9/initiatives/body-movement-visual-twin/work/phase-5/TRIAGE.md#human-review-triage">review triage</a></li><li><a href="releases.html">Release history</a></li></ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-documents">
+    <div class="card-header">
+      <h2 id="initiative-documents">Documents</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="./wish.html">Wish</a></li>
+        <li><a href="./background.html">Background</a></li>
+        <li><a href="./objectives.html">Objectives</a></li>
+        <li><a href="./decisions.html">Decisions</a></li>
+        <li><a href="./spec.html">Specification</a></li>
+        <li><a href="./plan.html">Implementation plan</a></li>
+        <li><a href="./test-plan.html">Test plan</a></li>
+        <li><a href="./releases.html">Releases</a></li>
+        <li><a href="./log.html">Log</a></li>
+      </ul>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
