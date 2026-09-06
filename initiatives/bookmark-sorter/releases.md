@@ -7,11 +7,11 @@ Newest first.
 
 <https://bookmark-sorter.ken-novak.chatgpt.site/>
 
-Released `9b5ff9d` · 1 commit(s) since the previous release · test last deployed 2026-09-06 at `9b5ff9d`.
+Released `5b4ccee` · 1 commit(s) since the previous release · test last deployed 2026-09-06 at `9b5ff9d`.
 
 Changes since the previous release, in `initiatives/bookmark-sorter/work`:
 
-- Add verdict filters to Bookmark Sorter selections and proposals
+- Filter Bookmark Sorter selections and proposals by verdict (#453)
 
 ## 2026-09-06 — ChatGPT Site — version 5
 

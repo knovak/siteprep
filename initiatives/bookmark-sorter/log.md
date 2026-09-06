@@ -668,11 +668,10 @@ receipt is included with this feature PR. Production remains on version 5.
 
 ## 2026-09-06 — Release
 
-Released to production — ChatGPT Site, version 6, `9b5ff9d`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
-
+Released to production — ChatGPT Site, version 6, `5b4ccee`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
 
 Production verification: version 6 succeeded at 2026-09-06 22:11 UTC. Its 67
-application files match committed source `9b5ff9dc85ed194fcd1aef4bc2ce0ed7efe5a3e1`
+application files match merged source `5b4cceeec5b5ddd0239705b1bb2764c6a031613f`
 with only the production project ID changed. Sites source is
 `1d146580988ec47a961e273a30a92538da7bd97c`. The production build and all 65
 application tests passed. Anonymous entry returned HTTP 200 with Sign in with
@@ -681,4 +680,5 @@ Keep plus Needs-time selected the five Needs-time bookmarks and reduced automati
 proposals from 972 to 11, with no zero-count entries. Clearing all five checkboxes
 produced zero cards and proposals; all five were restored afterward. Existing
 public entry, application authorization, and D1/R2 bindings were preserved. The
-release record travels with feature PR #453. Test remains at version 38.
+initial release record merged with feature PR #453. This correction identifies
+the equivalent squash-merged source; no additional deployment was made. Test remains at version 38.
