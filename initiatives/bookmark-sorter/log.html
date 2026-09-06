@@ -218,6 +218,9 @@
 <h3>2026-09-06 — Complete images in the 3×12 layout</h3>
 <p>Fixed the reported top-only image clipping in 3×12. Its capture area now uses 42% of each card instead of 18%, constrains the image grid track to that area, and scales the complete image to fit. Titles retain the remaining flexible space above tags; other layouts keep their existing image treatment.</p>
 <p>The browser regression reproduces overflow before the fix and checks landscape, square, and portrait captures at 1320×820, 1600×900, and 3440×1440. It also checks title/tag visibility and unchanged image dimensions after returning to 2×8.</p>
+<h3>2026-09-06 — Release</h3>
+<p>Released to production — ChatGPT Site, version 5, <code>3ce20ee</code>. 1 commit(s) since the previous release. <a href="https://bookmark-sorter.ken-novak.chatgpt.site/">https://bookmark-sorter.ken-novak.chatgpt.site/</a> See releases.md.</p>
+<p>Production verification: the existing public Site successfully published version 5 at 2026-09-06 07:45 UTC. Sites source <code>50814e790e2bb13bee6af6d6cadec91a3eb897b2</code> matches the 66 application files at merged PR #445 (<code>3ce20ee56cf20910473ea1ac5b30cc45c4e56401</code>), except for the production project ID. The validated pre-merge source <code>a0be925</code> has the same application tree. The production build and 64 application tests passed, and the preceding fix passed 31 browser tests. Anonymous entry returned HTTP 200 with Sign in with ChatGPT. Signed-in 3×12 showed all nine loaded images contained within their image areas; the collection remained at 5,562 bookmarks and 5,530 untriaged. Existing access and D1/R2 bindings were preserved. Test remains on deployed version 36; saved test version 37 was not deployed.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
