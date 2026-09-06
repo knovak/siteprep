@@ -3,6 +3,16 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-09-06 — ChatGPT Site — version 6
+
+<https://bookmark-sorter.ken-novak.chatgpt.site/>
+
+Released `9b5ff9d` · 1 commit(s) since the previous release · test last deployed 2026-09-06 at `9b5ff9d`.
+
+Changes since the previous release, in `initiatives/bookmark-sorter/work`:
+
+- Add verdict filters to Bookmark Sorter selections and proposals
+
 ## 2026-09-06 — ChatGPT Site — version 5
 
 <https://bookmark-sorter.ken-novak.chatgpt.site/>
