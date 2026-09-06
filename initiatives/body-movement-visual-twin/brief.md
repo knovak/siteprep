@@ -6,20 +6,25 @@
 
 ## Done
 
-Phases 0-6 of `plan.md` are built. The private validation site carries 13
-movement studies (`work/phase-6/site/data/movement-clips.json`) across
-Feldenkrais, yoga and Alexander Technique, on one shared rig with surface,
-skeleton and muscle layers, playback and camera controls, and the flag-and-
-export review tools that let a reviewer file a correction without editing the
-source.
+Phases 0-6 of `plan.md` are built. The collection carries 13 movement studies -
+six Feldenkrais, six yoga, one Alexander Technique
+(`work/phase-6/site/data/collection.json`) - on one shared rig with surface,
+skeleton and muscle layers, six anatomy views, playback and camera controls, and
+flag-and-export review tools that let a reviewer file a correction without
+editing the source. The last correction round completed the axial anatomy - 24
+mobile vertebrae plus nine fused segments, 12 rib pairs, a posed skull pivoting
+at the atlas-occiput joint, and shoulder-responsive clavicles - and turned the
+seated feet to face the knees; the counts and the muscle coverage are in
+`work/phase-3/ANATOMY-AUDIT.md`.
 
 ## Waiting on others
 
 An anatomy reviewer checks joint actions, named muscles, group labels,
 annotations, landmarks and cautions. One practitioner per tradition checks the
 movement path, timing, instruction, variations and wording. Each claim comes
-back `reviewed` or `disputed` — a disagreement is recorded rather than
-converted to a silent pass (`test-plan.md` §1.4).
+back `reviewed` or `disputed` - a disagreement is recorded rather than converted
+to a silent pass (`test-plan.md` §1.4). No claim has been reviewed yet;
+`work/phase-6/VALIDATION.md` records what automation has and has not settled.
 
 ## Remaining work
 
