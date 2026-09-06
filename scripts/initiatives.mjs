@@ -232,11 +232,16 @@ export const BRIEF_HEADER = [
 /**
  * What the brief was written from.
  *
- * Hashing the initiative's tracked files - minus the brief itself, which would
- * otherwise invalidate its own stamp the moment it was written - gives a value
- * that changes exactly when there is something new to summarise. Reading it
- * from `HEAD` rather than the working tree means a brief is stamped against
- * committed work, so the sweep commits what it did before writing one.
+ * Hashing the initiative's tracked files gives a value that changes exactly
+ * when there is something new to summarise. Two things are held out of it,
+ * both for the same reason: writing the brief must not invalidate the brief's
+ * own stamp. `brief.md` is one of them. The other is the stamp itself, which
+ * `recordBrief` writes into `initiative.json` - so that file goes in by its
+ * content with the `brief` key stripped, rather than by its blob hash, and a
+ * change to the stage or the todo list still moves the digest.
+ *
+ * Reading it from `HEAD` rather than the working tree means a brief is stamped
+ * against committed work, so the sweep commits what it did before writing one.
  *
  * Null when git cannot answer, which reads as "cannot tell" rather than as
  * "unchanged" everywhere it is used.
@@ -254,7 +259,23 @@ export function initiativeDigest(slug) {
     .filter(Boolean)
     .filter((line) => !line.endsWith(`/${slug}/${BRIEF_FILE}`));
   if (!lines.length) return null;
-  return createHash('sha1').update(lines.join('\n')).digest('hex');
+
+  // The record's blob hash moves whenever the stamp is written, so hash what
+  // the record *says* instead. If it cannot be read from HEAD - not committed,
+  // or not parsing - the blob line stays in, which is the old behaviour and
+  // errs towards calling a brief stale.
+  const recordPath = `${dir}/initiative.json`;
+  let record = null;
+  try {
+    const data = JSON.parse(git(['show', `HEAD:${recordPath}`]));
+    delete data.brief;
+    record = JSON.stringify(data);
+  } catch { /* fall back to the blob line */ }
+
+  const parts = record === null
+    ? lines
+    : [...lines.filter((line) => !line.endsWith(`/${slug}/initiative.json`)), record];
+  return createHash('sha1').update(parts.join('\n')).digest('hex');
 }
 
 /**

@@ -211,3 +211,67 @@ test('the digest ignores the brief itself', async () => {
     rmSync(path, { force: true });
   }
 });
+
+/**
+ * The digest reads `HEAD`, so the only way to ask what a *commit* does to it is
+ * to make one. A detached worktree gives somewhere to commit that the real
+ * checkout never sees, and the script is copied in from the working tree so the
+ * version under test is the one being edited rather than the one at HEAD.
+ */
+function committedDigest(edit) {
+  const dir = mkdtempSync(join(tmpdir(), 'initiative-digest-'));
+  const tree = join(dir, 'tree');
+  execFileSync('git', ['worktree', 'add', '--detach', '-q', tree, 'HEAD'], { cwd: ROOT });
+  try {
+    cpSync(SCRIPT, join(tree, 'scripts', 'initiatives.mjs'));
+    const record = join(tree, 'initiatives', 'repo-guide', 'initiative.json');
+    const data = JSON.parse(readFileSync(record, 'utf8'));
+    edit(data);
+    writeFileSync(record, `${JSON.stringify(data, null, 2)}\n`);
+    execFileSync('git', ['add', '-A'], { cwd: tree });
+    execFileSync('git', [
+      '-c', 'user.name=test', '-c', 'user.email=test@example.com',
+      // --allow-empty so the baseline call, which edits nothing, still makes a
+      // commit once this file matches HEAD.
+      'commit', '-q', '--allow-empty', '-m', 'digest fixture'
+    ], { cwd: tree });
+    return execFileSync('node', [
+      '-e',
+      "import('./scripts/initiatives.mjs').then((m) => "
+        + "process.stdout.write(String(m.initiativeDigest('repo-guide'))))"
+    ], { cwd: tree, encoding: 'utf8' }).trim();
+  } finally {
+    execFileSync('git', ['worktree', 'remove', '--force', tree], { cwd: ROOT });
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test('committing the stamp does not make the brief it stamps stale', () => {
+  // The bug this covers: `recordBrief` writes `brief` into initiative.json, so
+  // hashing that file by its blob meant every brief went stale the moment its
+  // own stamp was committed - and the next sweep rewrote a brief that was
+  // already correct.
+  const unstamped = committedDigest(() => {});
+  const stamped = committedDigest((data) => {
+    data.brief = {
+      generated_at: '2026-01-01T00:00:00Z',
+      commit: '0'.repeat(40),
+      digest: 'whatever the stamp says'
+    };
+  });
+  assert.equal(stamped, unstamped, 'the stamp is not part of what it stamps');
+});
+
+test('the digest still moves when the record itself changes', () => {
+  // Holding the stamp out must not hold the rest of initiative.json out with
+  // it: a new todo item or a stage change is exactly what a brief is for.
+  const unchanged = committedDigest(() => {});
+  const retodoed = committedDigest((data) => {
+    data.todo = [...(data.todo || []), {
+      id: 'digest-fixture',
+      title: 'Something a brief would have to mention',
+      status: 'actionable'
+    }];
+  });
+  assert.notEqual(retodoed, unchanged, 'a changed todo list moves the digest');
+});

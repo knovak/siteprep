@@ -191,9 +191,22 @@ has to be exact.
 }
 ```
 
-`digest` is a SHA-1 over `git ls-tree -r HEAD` for the initiative directory
-**with `brief.md` removed** - otherwise writing the brief would invalidate its
-own stamp. It changes exactly when there is something new to summarise, so a
+`digest` is a SHA-1 over `git ls-tree -r HEAD` for the initiative directory,
+with **two** things held out so that writing the brief cannot invalidate the
+stamp it is about to be given:
+
+- **`brief.md`**, whose tree line is dropped.
+- **the stamp itself**, which lives in `initiative.json`. That file's tree line
+  is dropped too, and its committed *content* with the `brief` key stripped is
+  hashed in its place - so a changed stage or todo list still moves the digest
+  while the stamp does not.
+
+Hashing `initiative.json` by its blob was a real defect rather than a nicety:
+`recordBrief` writes the stamp into that file, so committing the stamp changed
+the blob and every brief went stale the moment it was written. Each sweep then
+rewrote four briefs that were already correct.
+
+What remains changes exactly when there is something new to summarise, so a
 comparison answers "is this brief still true?" without reading a word of it.
 
 | `briefState` | Means |
