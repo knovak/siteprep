@@ -185,6 +185,12 @@ test('selection API scopes, saves, proposes, tags, sweeps visibly, and confirms 
   assert.ok(proposals.proposals.some(proposal => proposal.kind === 'tag'));
   assert.equal(proposals.proposals.find(proposal => proposal.id === 'image:none').count, 3);
 
+  const filteredProposals = await app.fetch(new Request('https://pile.test/api/proposals?expression=verdict%3Akeep'));
+  assert.equal(filteredProposals.status, 200);
+  assert.deepEqual((await filteredProposals.json()).proposals, []);
+  const invalidProposals = await app.fetch(new Request('https://pile.test/api/proposals?expression=verdict%3Akeep%20and'));
+  assert.equal(invalidProposals.status, 400);
+
   const savedResponse = await app.fetch(new Request('https://pile.test/api/selections', {
     method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({name: 'Example site', expression: 'site:example.com'}),
   }));

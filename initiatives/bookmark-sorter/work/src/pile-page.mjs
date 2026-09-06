@@ -131,6 +131,11 @@ export function renderPilePage({isAdmin = false} = {}) {
     .selection-panel input, .selection-panel select, .selection-panel button { min-width: 0; min-height: 32px; border: 1px solid var(--control-line); border-radius: 12px; padding: 4px 9px; background-color: var(--surface); }
     .selection-panel button { border-color: transparent; color: var(--ink); background-color: var(--control-bg); font-weight: 400; }
     .selection-panel button:disabled { opacity: .45; cursor: not-allowed; }
+    .verdict-filters { min-width: 0; margin: 0; border: 0; padding: 7px 12px 0; }
+    .verdict-filters legend { padding: 0; color: var(--muted); font-size: 14px; }
+    .verdict-options { display: flex; flex-wrap: wrap; gap: 2px 16px; }
+    .verdict-options label { display: flex; align-items: center; gap: 6px; min-height: 32px; color: var(--ink); font-size: 14px; font-weight: 400; letter-spacing: normal; text-transform: none; cursor: pointer; }
+    .verdict-options input { width: 16px; height: 16px; min-height: 0; margin: 0; padding: 0; accent-color: var(--focus); }
     .selection-panel .primary { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
     .selection-panel .choice-action { color: var(--ink); background-color: var(--control-bg); }
     .selection-panel .choice-action[data-selection-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
@@ -294,6 +299,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
+      <p>In <strong>Select and tag</strong>, the <strong>Verdicts</strong> checkboxes filter every selection. All five start checked. Changing them immediately filters the open selection and refreshes automatic proposal counts; proposals with no matches disappear. Clearing every checkbox selects nothing. With only Keep and Needs-time checked, an expression is treated as <code>(verdict:keep or verdict:needs-time) and (your expression)</code>. Saving or exporting the current selection includes this filter.</p>
       <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. Titles, folder paths, tags, and source names use lowercase search keys: punctuation, symbols, and spaces become a single dash. A tag's prefix colon remains, so <code>Topic:Modern Art</code> becomes <code>topic:modern-art</code>. A trailing <code>*</code> matches the beginning of a normalized value; surrounding a value with <code>*</code> matches it anywhere.</p>
       <ul>
         <li><code>site:example.com</code> — items from one site.</li>
@@ -377,6 +383,16 @@ export function renderPilePage({isAdmin = false} = {}) {
       </details>
       <details id="selector">
         <summary>Select and tag</summary>
+        <fieldset class="verdict-filters" id="verdict-filters">
+          <legend>Verdicts</legend>
+          <div class="verdict-options">
+            <label><input type="checkbox" value="keep" checked>Keep</label>
+            <label><input type="checkbox" value="junk" checked>Junk</label>
+            <label><input type="checkbox" value="archive" checked>Archive</label>
+            <label><input type="checkbox" value="needs-time" checked>Needs-time</label>
+            <label><input type="checkbox" value="untriaged" checked>Untriaged</label>
+          </div>
+        </fieldset>
         <section class="selection-panel" aria-label="Selection tools">
           <input id="selection-expression" aria-label="Selection expression" placeholder="folder:reading/* and not topic:rust">
           <button id="open-selection" class="primary" type="button">Open selection</button>
@@ -477,7 +493,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       document.documentElement.dataset.theme = elements.themeMode.value;
       try { localStorage.setItem('bookmark-sorter-theme', elements.themeMode.value); } catch { /* The mode still works for this page. */ }
     });
-    const state = {importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}, collectionId = state.collectionId) {
       const headers = new Headers(options.headers || {});
@@ -671,7 +687,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       elements.grid.replaceChildren(...cards);
       setFocus(Math.min(state.focused, state.visible - 1, state.items.length - 1));
     }
-    async function loadWindow(offset = state.offset) {
+    async function loadWindow(offset = state.offset, {focusGrid = true} = {}) {
       const requestId = ++state.windowRequest;
       const collectionId = state.collectionId;
       state.loading = true;
@@ -681,19 +697,44 @@ export function renderPilePage({isAdmin = false} = {}) {
         if (requestId !== state.windowRequest || collectionId !== state.collectionId) return;
         state.collectionTotal = data.collection_total; state.total = data.total; state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog; state.captures = data.captures; state.offset = Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
         state.items = data.items; state.focused = 0; renderGrid();
-        if (state.collectionTotal) { if (!state.importInProgress) elements.importer.open = false; await startSession(); elements.grid.focus({preventScroll: true}); }
+        if (state.collectionTotal) {
+          if (!state.importInProgress) elements.importer.open = false;
+          await startSession();
+          if (focusGrid && requestId === state.windowRequest && collectionId === state.collectionId) elements.grid.focus({preventScroll: true});
+        }
       } finally {
         if (requestId === state.windowRequest) { state.loading = false; updateProgress(); }
       }
     }
 
+    function verdictExpression() {
+      const boxes = [...document.querySelectorAll('#verdict-filters input')];
+      const checked = boxes.filter(box => box.checked);
+      if (checked.length === boxes.length) return '';
+      return checked.length ? '(' + checked.map(box => 'verdict:' + box.value).join(' or ') + ')' : 'not verdict:*';
+    }
+
+    function filteredExpression(expression) {
+      const filter = verdictExpression();
+      return filter && expression ? filter + ' and (' + expression + ')' : filter || expression;
+    }
+
+    async function changeVerdictFilter() {
+      state.expression = filteredExpression(state.baseExpression);
+      state.offset = 0; state.focused = 0; clearMarks();
+      await Promise.all([loadWindow(0, {focusGrid: false}), loadProposals()]);
+    }
+
     async function openExpression(expression) {
-      state.expression = String(expression || '').trim();
-      elements.expression.value = state.expression;
+      state.baseExpression = String(expression || '').trim();
+      state.expression = filteredExpression(state.baseExpression);
+      elements.expression.value = state.baseExpression;
+      const openedExpression = state.expression;
+      const collectionId = state.collectionId;
       state.offset = 0; state.focused = 0; clearMarks();
       await loadWindow(0);
-      if (state.expression) {
-        await api('/api/selection-history', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({expression: state.expression})});
+      if (openedExpression && openedExpression === state.expression && collectionId === state.collectionId) {
+        await api('/api/selection-history', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({expression: openedExpression})});
         const history = await api('/api/selection-history');
         state.history = history.selections;
         fillHistorySelect();
@@ -721,9 +762,10 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
 
     function fillProposalSelect(rows) {
+      const previous = elements.proposals.value;
       elements.proposals.replaceChildren(new Option('Automatic proposals', ''));
       for (const kind of ['src', 'tag', 'verdict', 'error', 'folder', 'site', 'image', 'title']) {
-        const matches = rows.filter(row => row.kind === kind);
+        const matches = rows.filter(row => row.kind === kind && row.count > 0);
         if (!matches.length) continue;
         const group = document.createElement('optgroup');
         group.label = kind === 'error' ? 'errors' : kind;
@@ -732,6 +774,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         ));
         elements.proposals.append(group);
       }
+      elements.proposals.value = rows.some(row => row.id === previous && row.count > 0) ? previous : '';
     }
 
     function fillHistorySelect() {
@@ -827,7 +870,9 @@ export function renderPilePage({isAdmin = false} = {}) {
         elements.showSitting.textContent = 'Show sitting';
         elements.showSitting.setAttribute('aria-expanded', 'false');
       }
-      state.expression = '';
+      state.baseExpression = '';
+      elements.expression.value = '';
+      state.expression = filteredExpression('');
       state.offset = 0;
       state.focused = 0;
       clearMarks();
@@ -845,7 +890,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       await loadCollections(deleted ? '' : result.collection?.id || state.collectionId);
       state.session = null;
       state.sittingReport = null;
-      state.expression = '';
+      state.baseExpression = '';
+      elements.expression.value = '';
+      state.expression = filteredExpression('');
       clearMarks();
       await Promise.all([loadWindow(0), loadSelectionTools()]);
       return result;
@@ -854,13 +901,35 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function loadSelectionTools() {
       const requestId = ++state.selectionToolsRequest;
       const collectionId = state.collectionId;
-      const [saved, proposals, history] = await Promise.all([api('/api/selections'), api('/api/proposals'), api('/api/selection-history')]);
+      const [saved, history] = await Promise.all([api('/api/selections'), api('/api/selection-history'), loadProposals()]);
       if (requestId !== state.selectionToolsRequest || collectionId !== state.collectionId) return;
-      state.saved = saved.selections; state.proposals = proposals.proposals; state.history = history.selections;
+      state.saved = saved.selections; state.history = history.selections;
       fillSelect(elements.savedSelections, state.saved, 'Saved selections');
-      fillProposalSelect(state.proposals);
       fillHistorySelect();
       updateSelectionActionStates();
+    }
+
+    async function loadProposals() {
+      const requestId = ++state.proposalsRequest;
+      const collectionId = state.collectionId;
+      const filter = verdictExpression();
+      elements.proposals.disabled = true;
+      elements.openProposal.disabled = true;
+      try {
+        const data = await api('/api/proposals?expression=' + encodeURIComponent(filter));
+        if (requestId !== state.proposalsRequest || collectionId !== state.collectionId) return;
+        state.proposals = data.proposals;
+        fillProposalSelect(state.proposals);
+        elements.proposals.disabled = false;
+        elements.openProposal.disabled = false;
+        updateSelectionActionStates();
+      } catch (error) {
+        if (requestId !== state.proposalsRequest || collectionId !== state.collectionId) return;
+        state.proposals = [];
+        fillProposalSelect([]);
+        updateSelectionActionStates();
+        throw error;
+      }
     }
 
     async function saveCurrentSelection() {
@@ -1277,6 +1346,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         .catch(error => { elements.status.textContent = error.message; elements.createTemplateName.focus(); })
         .finally(() => { button.disabled = false; });
     });
+    document.querySelector('#verdict-filters').addEventListener('change', () => changeVerdictFilter().catch(error => { elements.status.textContent = error.message; }));
     elements.openSelection.addEventListener('click', () => openExpression(elements.expression.value).catch(error => { elements.status.textContent = error.message; }));
     elements.expression.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); elements.openSelection.click(); } });
     elements.saveSelection.addEventListener('click', () => saveCurrentSelection().catch(error => { elements.status.textContent = error.message; }));

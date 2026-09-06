@@ -315,8 +315,8 @@ collection creation.
   `err:` tags are excluded from the ordinary tag group and instead appear in
   the error group, along with an **any error** proposal using `err:*`. The five
   individual verdict expressions and the combined **not junk** and
-  **untriaged or needs-time** expressions are always present, including
-  zero-count individual values. The interface groups source, tag, verdict,
+  **untriaged or needs-time** expressions appear only when they have at least
+  one match. The interface groups source, tag, verdict,
   errors, folder, site, and image in that order,
   with title last for the retained near-title feature, and alphabetizes each
   group. Folder and tag groups therefore change on the request after tags
@@ -325,6 +325,20 @@ collection creation.
   if the user has already switched collections again. Card-window requests use
   the same collection guard, so a slower response cannot replace the newly
   selected collection's grid.
+  The optional `expression` query parameter intersects each proposal with the
+  verdict filter through the ordinary evaluator. Zero-count proposals, including
+  verdict and any-error entries, are omitted. Candidate site/title groups are
+  established before filtering, so an existing group remains when only one
+  filtered item matches. A filter change reloads both the open card window and
+  proposals; independent request counters and collection checks discard stale
+  responses. Proposals are disabled during refresh and cleared on refresh failure.
+  The five native Verdicts checkboxes start checked on each page load. The client
+  holds the opened base expression separately from the effective expression used
+  for selection, save/history, tag, sweep, and selection export. Checked verdicts
+  are OR-ed, then AND-ed with the parenthesized base; all checked is unrestricted,
+  none checked is `not verdict:*`. Collection switches reset the base expression
+  while retaining the checkboxes. Filter refreshes preserve keyboard focus and
+  clear marks; the editable expression is not rewritten by checkbox changes.
 - `POST /api/tag` accepts `mode: "apply"` (the default) or `mode: "remove"` for
   the marked set or current selection. It logs only the tags actually added or
   removed, so one undo reverses exactly that action and preserves everything
@@ -432,3 +446,9 @@ read after pass 1 catches up on the real collection. Automated fixtures verify
 all instruments and paths but cannot manufacture those baselines. The duplicate
 real-pile measurement recorded in `decisions.md` kept the duplicate threshold
 at 30 after the largest repeated image group measured 11.
+
+The verdict-filter browser checks in `test/verdict-filters.spec.mjs` run the real
+Worker routes and selection/proposal evaluator against an isolated memory store.
+They cover OR precedence, all/none states, saved/recent/proposed entry routes,
+filtered tagging and export, collection switches, out-of-order responses, and
+phone/keyboard use without changing hosted bookmark data.

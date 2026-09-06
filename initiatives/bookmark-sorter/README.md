@@ -222,6 +222,21 @@ Open **Select and tag** to use any of four routes:
 4. Choose a recent query from **Previous selections**, then choose **Open
    previous**.
 
+The **Verdicts** checkboxes include **Keep**, **Junk**, **Archive**,
+**Needs-time**, and **Untriaged**, all checked when the page opens. Changing them
+immediately filters the open selection and recomputes automatic proposal counts.
+Only checked verdicts can match; clearing all five selects nothing. With Keep and
+Needs-time checked, `topic:reading` means
+`(verdict:keep or verdict:needs-time) and (topic:reading)`. Parentheses preserve
+this restriction even when your expression contains `or`.
+
+The checkboxes apply to all four routes, tagging, sweeping, and current-selection
+export. Saving or recording an opened selection in history includes its verdict
+filter. The expression field keeps the expression you opened, so checkbox changes
+do not add repeated prefixes or apply unfinished edits. Switching collections
+clears that expression but keeps the checked verdicts; reloading starts with all
+five checked. Whole-collection export still includes the whole collection.
+
 The three chooser actions provide a visual check before opening anything. With
 no proposal or selection chosen, its **Open…** control uses a neutral background. After
 one is chosen, that control uses a soft mint wash in Day or a muted teal wash in Night.
@@ -294,7 +309,10 @@ title.
 Capture errors have their own section after Verdict, with one proposal for
 every `err:` tag and an **any error** proposal for `err:*`; they do not also
 appear among ordinary tags. Proposals are computed from current collection
-data, so imports and tag changes can change the offered groups.
+data, so imports and tag changes can change the offered groups. Counts reflect
+the checked verdicts across the collection, independently of the typed expression.
+Proposals with zero matches disappear, including verdict and error proposals.
+An existing site or title group remains available if filtering leaves one match.
 
 ## Collections and demo templates
 

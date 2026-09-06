@@ -440,6 +440,16 @@ all retain a placeholder option; their adjacent Open action is neutral
 until a real option is chosen and a mint/teal wash afterward, so the intended
 target is visible before the action runs.
 
+The Select panel also has one checkbox per verdict, including Untriaged, all
+checked initially. Their OR expression is AND-ed with a parenthesized selection
+from any entry route. All checked leaves the expression unrestricted; none
+checked selects nothing. Checkbox changes refresh the current selection and
+proposal counts immediately. Proposals count only checked verdicts, omit zero
+matches, and retain existing groups reduced to one match. The editable base
+expression remains separate; save/history and selection-based actions use the
+complete filtered expression. Collection changes retain checkboxes but reset the
+base expression; a page reload checks all five again.
+
 ### 8.1 Scope: one collection by default, all of them for administration
 
 The evaluator can select across the whole store; the ordinary UI does not let it.

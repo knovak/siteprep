@@ -645,3 +645,40 @@ Sign in with ChatGPT. Signed-in 3×12 showed all nine loaded images contained
 within their image areas; the collection remained at 5,562 bookmarks and 5,530
 untriaged. Existing access and D1/R2 bindings were preserved. Test remains on
 deployed version 36; saved test version 37 was not deployed.
+
+
+## 2026-09-06 — Verdict filters for Select and tag
+
+Added Keep, Junk, Archive, Needs-time, and Untriaged checkboxes, all initially
+checked. Their OR clause intersects typed, proposed, saved, and recent selections;
+clearing all selects nothing. Checkbox changes refresh the active selection and
+automatic proposals, remove zero-count entries, preserve existing single-match
+groups, and discard stale responses. Saving, history, tagging, sweeping, and
+current-selection export use the effective filtered expression. Updated Help,
+the user and technical READMEs, specification, and test plan. All 65 application
+tests and 34 browser checks passed, including the real-route verdict-filter
+fixture and the existing layout/triage suite. The Sites application build passed.
+
+
+Test Site version 38 succeeded at 2026-09-06 20:03 UTC, preserving public entry,
+application sign-in, and the existing D1/R2 bindings. Its 67 tracked application
+files match repository source `9b5ff9dc85ed194fcd1aef4bc2ce0ed7efe5a3e1`;
+Sites source is `12690d51c659587e63515ca527bd869f3f27a5c1`. The test deployment
+receipt is included with this feature PR. Production remains on version 5.
+
+## 2026-09-06 — Release
+
+Released to production — ChatGPT Site, version 6, `9b5ff9d`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+
+Production verification: version 6 succeeded at 2026-09-06 22:11 UTC. Its 67
+application files match committed source `9b5ff9dc85ed194fcd1aef4bc2ce0ed7efe5a3e1`
+with only the production project ID changed. Sites source is
+`1d146580988ec47a961e273a30a92538da7bd97c`. The production build and all 65
+application tests passed. Anonymous entry returned HTTP 200 with Sign in with
+ChatGPT. Signed-in production retained 5,562 bookmarks and 5,530 untriaged;
+Keep plus Needs-time selected the five Needs-time bookmarks and reduced automatic
+proposals from 972 to 11, with no zero-count entries. Clearing all five checkboxes
+produced zero cards and proposals; all five were restored afterward. Existing
+public entry, application authorization, and D1/R2 bindings were preserved. The
+release record travels with feature PR #453. Test remains at version 38.

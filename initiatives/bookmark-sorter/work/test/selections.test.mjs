@@ -112,7 +112,7 @@ test('cheap proposals are ordinary selections and mutable folder tags are recomp
   assert.equal(source.expression, 'src:safari');
   assert.equal(tag.expression, 'topic:rust');
   assert.deepEqual(verdicts.map(proposal => [proposal.name, proposal.count]), [
-    ['archive', 0], ['junk', 0], ['keep', 0], ['needs-time', 0], ['not junk', 4], ['untriaged', 4], ['untriaged or needs-time', 4],
+    ['not junk', 4], ['untriaged', 4], ['untriaged or needs-time', 4],
   ]);
   assert.deepEqual(errors.map(proposal => [proposal.name, proposal.count]), [
     ['any error', 3], ['err:404', 2], ['err:timeout', 1],
@@ -194,4 +194,27 @@ test('contains matching stays linear over a 10,000-item collection', () => {
   }));
   assert.equal(evaluateSelection(largeCollection, 'title:*needle*', {collectionId: 'large'}).length, 100);
   assert.equal(evaluateSelection(largeCollection, 'folder:*needle*', {collectionId: 'large'}).length, 40);
+});
+
+
+test('verdict-filtered proposals count intersections, retain single matches, and omit empty groups', () => {
+  const mixed = structuredClone(items);
+  mixed[0].verdict = 'keeper';
+  mixed[1].verdict = 'junk';
+  mixed[2].verdict = 'needs-more-time';
+  mixed[3].verdict = 'archive';
+  const expression = '(verdict:keep or verdict:needs-time)';
+  const filtered = proposeSelections(mixed, {expression});
+  assert.equal(filtered.find(proposal => proposal.id === 'site:news.test').count, 1);
+  assert.equal(filtered.find(proposal => proposal.id === 'title:rust-a-guide').count, 1);
+  assert.equal(filtered.find(proposal => proposal.id === 'tag:topic:rust').count, 1);
+  assert.equal(filtered.find(proposal => proposal.id === 'error:any').count, 2);
+  for (const proposal of filtered) {
+    assert.equal(proposal.count, evaluateSelection(mixed, `${expression} and (${proposal.expression})`).length, proposal.id);
+    assert.ok(proposal.count > 0);
+  }
+  assert.equal(filtered.some(proposal => proposal.id === 'verdict:junk'), false);
+  assert.equal(filtered.some(proposal => proposal.id === 'verdict:archive'), false);
+  assert.deepEqual(proposeSelections(mixed, {expression: 'not verdict:*'}), []);
+  assert.deepEqual(proposeSelections([]), []);
 });
