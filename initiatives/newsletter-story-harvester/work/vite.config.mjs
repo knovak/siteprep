@@ -9,7 +9,7 @@ export default defineConfig({
     config: {
       name: 'newsletter-story-review',
       main: './worker/index.mjs',
-      compatibility_date: '2026-09-01',
+      compatibility_date: '2026-05-22',
       d1_databases: [{binding: 'DB', database_name: 'newsletter-review-local', database_id: '00000000-0000-4000-8000-000000000000'}],
     },
   })],
