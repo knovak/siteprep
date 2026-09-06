@@ -6,16 +6,17 @@
 
 ## Done
 
-Phases 0-6 of `plan.md` are built. The collection carries 13 movement studies -
-six Feldenkrais, six yoga, one Alexander Technique
-(`work/phase-6/site/data/collection.json`) - on one shared rig with surface,
-skeleton and muscle layers, six anatomy views, playback and camera controls, and
-flag-and-export review tools that let a reviewer file a correction without
-editing the source. The last correction round completed the axial anatomy - 24
-mobile vertebrae plus nine fused segments, 12 rib pairs, a posed skull pivoting
-at the atlas-occiput joint, and shoulder-responsive clavicles - and turned the
-seated feet to face the knees; the counts and the muscle coverage are in
-`work/phase-3/ANATOMY-AUDIT.md`.
+Phases 0-6 of `plan.md` are built. The collection now carries 43 movement
+studies - 21 Feldenkrais, 21 yoga, and one Alexander Technique - on one shared
+rig with surface, skeleton and muscle layers, six anatomy views, playback and
+camera controls, and flag-and-export review tools that never edit the source
+record (`work/phase-6/site/data/collection.json`).
+
+The current anatomy includes 24 mobile vertebrae plus nine fused segments, 12
+rib pairs, a posed skull and occiput, moving clavicles, and connected muscle
+surfaces. The latest corrections preserve seated foot direction and keep the
+feet planted through chair-pose and standing-fold playback while retaining
+explicit movement for ankle studies (`work/phase-3/ANATOMY-AUDIT.md`).
 
 ## Waiting on others
 
@@ -23,20 +24,19 @@ An anatomy reviewer checks joint actions, named muscles, group labels,
 annotations, landmarks and cautions. One practitioner per tradition checks the
 movement path, timing, instruction, variations and wording. Each claim comes
 back `reviewed` or `disputed` - a disagreement is recorded rather than converted
-to a silent pass (`test-plan.md` §1.4). No claim has been reviewed yet;
-`work/phase-6/VALIDATION.md` records what automation has and has not settled.
+to a silent pass (`test-plan.md` §1.4). KRN display feedback has been applied,
+but the anatomy and tradition claims remain `unreviewed`.
 
 ## Remaining work
 
-Configure the chosen report handoff and grant only the authorized access, trace
-each returned report to its exact movement and claim, correct geometry, wording
-or attribution, record the reviewer and outcome against each claim, rerun the
-affected checks, and complete the Phase 6 validation record.
+After review findings arrive, trace each report to its exact movement and claim,
+correct geometry, wording or attribution, record the outcome as `reviewed` or
+`disputed`, rerun the affected checks, and complete the Phase 6 validation
+record.
 
 ## Optional later
 
-`plan.md` §5 leaves four things open: whether a successor becomes public, and
-its rights and trademark review; whether the collection grows past the reviewed
-set; whether subject-specific clinical data ever replaces the fitted reference
-anatomy, which would be a different claim surface; and which private host and
-report inbox to settle on.
+A public successor remains a separate decision with its own rights and
+trademark review. Further collection expansion should follow validation
+evidence, while replacing the fitted reference with subject-specific clinical
+data would be a different product and claim surface (`plan.md` §5).
