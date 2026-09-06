@@ -6,20 +6,13 @@
   "outputs": [],
   "todo": [
     {
-      "id": "refining-readme",
-      "title": "Write a user-facing README covering how to use it and how to deploy it",
-      "state": "actionable",
-      "value": "high",
-      "effort": "small",
-      "advances_stage": false
-    },
-    {
-      "id": "refining-improvements",
-      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
-      "state": "actionable",
+      "id": "choose-next-refinement",
+      "title": "Choose a Newsletter Story Harvester improvement, request another proposal round, or declare the initiative dormant",
+      "state": "blocked",
       "value": "medium",
-      "effort": "medium",
-      "advances_stage": false
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "human:choose a Newsletter Story Harvester improvement, request another proposal round, or declare the initiative dormant"
     }
   ],
   "deployments": [
@@ -31,16 +24,16 @@
         "slug": "newsletter-story-harvester-test",
         "url": "https://newsletter-story-harvester-test.ken-novak.chatgpt.site",
         "access": "private",
-        "deployed_at": "2026-09-06T07:20:57Z",
-        "version": 6,
-        "commit": "cb715bf40777553464b7730a360bf5576e6d98cc",
+        "deployed_at": "2026-09-06T10:25:21Z",
+        "version": 7,
+        "commit": "1962b19b4b0202cd84f4c12751bce2b85a49ec02",
         "tree": "2cab2d5f25c8a2065602bfc74affa77c9f1743c5"
       }
     }
   ],
   "brief": {
-    "generated_at": "2026-09-06T05:19:22Z",
-    "commit": "9f5b713f1eff14ddca2be0a6d4e1eb919c969788",
-    "digest": "c9b542910879f2fe980a690f7d5481584c4591a7"
+    "generated_at": "2026-09-06T10:27:04Z",
+    "commit": "7bd0f54eac710f68157ea81c23755e7b20ad8810",
+    "digest": "016f746bf0c9eb312bb618378c7c332650e25ec1"
   }
 }

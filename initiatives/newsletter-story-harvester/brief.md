@@ -6,29 +6,23 @@
 
 ## Done
 
-All nine phases of `plan.md` (0-8) are built: 15 source modules and 15 test
-suites under `work/`, with no dependencies, no network and no live model in the
-deterministic path. That covers the store and the two identity cases, the three
-extraction contracts scored against fixtures, a whole run over a fixture
-mailbox, the self-contained review page, idempotent verdict import, the Gmail
-message-source adapter with a private inventory that commits no mailbox data,
-the additive set-undoable tagging and cluster-paraphrase skill, and the
-provenance-safe published page.
+All nine phases in `plan.md` are built across 17 source modules and 17 test
+files under `work/`: bounded Gmail harvesting, structural identity and merging,
+the portable JSON store, tagging and event clusters, offline review, and the
+provenance-safe kept-and-emphasised page. The private hosted review adds D1
+judgment persistence with stale-tab protection while retaining the explicit
+export/import path for synchronising the local store.
 
-Refining has since made the private review page readable on its own terms -
-cards start expanded, source identity is separated from subject themes, and the
-extraction contract requires complete unmodified text through 3,000 characters -
-and added the story matrix presentation: three colour controls, six page
-layouts, paginated cards that keep full scrollable text, and page-scoped bulk
-verdicts with an Undo that restores the prior judgments.
+The review surface has six paginated layouts, Day and Night displays, complete
+scrollable story text, per-story and clustered judgments, page-scoped bulk
+judgment, Undo, tag filtering, and source-search help. The current gating suite
+contains 137 tests and the latest recorded real harvest preserved 321 stories
+without committing the mailbox inventory, message bodies, or private store.
 
 ## Optional later
 
-`plan.md` §6 leaves three things unsettled: the 10-60, 3-15 and 1 count bands,
-which measurement is meant to replace through a `decisions.md` entry rather than
-a quietly edited constant; whether the single HEAD follow
-(`story-record.md` §4, step 2) is on by default, which the phase 6 merge rate
-decides; and the disagreement between `spec.md` §10.2 and §13.1 over tag
-metadata, where the spec has to say which of its two rules gives way. Held out
-of the first version: publication as an OpenAI site, and writing back to the
-mailbox in any form.
+The recorded count bands and optional single-HEAD redirect follow are revisited
+only when measured extraction or duplicate evidence warrants a change. Hosting
+the kept-and-emphasised publication, direct browser-to-file verdict writing,
+richer saved selections, and any mailbox write-back remain deliberately
+deferred rather than implied commitments.
