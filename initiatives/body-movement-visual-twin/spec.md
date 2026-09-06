@@ -363,3 +363,15 @@ as instruction:
 6. **How review reports are collected** without a backend, given §11 is static.
 7. **Whether three movements or six** is the right first count, given each needs
    a practitioner review pass.
+
+
+## Movement expansion and foot playback, 2026-09-06
+
+The selectable collection now contains 43 studies: 21 Feldenkrais, 21 yoga,
+and the existing Alexander Technique record. The additional fifteen studies in
+each requested tradition are documented in the Phase 3 README with per-record
+source attribution and authored motion. Each retains anatomy and practitioner
+review status as unreviewed. Chair-pose and standing-fold feet retain their
+reference positions throughout interpolation; explicit ankle explorations can
+still move the feet. This extends the seated-direction correction already on
+main. Other foot/hand contacts remain illustrative rather than solved constraints.

@@ -3,11 +3,11 @@ import AxeBuilder from '@axe-core/playwright';
 
 const pagePath = '/initiatives/body-movement-visual-twin/work/phase-3/index.html';
 
-test('13 records switch clips and context after one acknowledgement per page session', async ({ page }) => {
+test('43 records switch clips and context after one acknowledgement per page session', async ({ page }) => {
   await page.goto(pagePath);
 
   const selector = page.getByLabel('Choose a movement');
-  await expect(selector.locator('option')).toHaveCount(13);
+  await expect(selector.locator('option')).toHaveCount(43);
   await expect(page.getByRole('heading', { name: /small seated pelvic/i })).toBeVisible();
   await expect(page.locator('#phase-cue')).toContainText(/lumbar spine.*flexion/i);
   await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeDisabled();
@@ -37,11 +37,11 @@ test('13 records switch clips and context after one acknowledgement per page ses
   await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
 });
 
-test('five additional yoga and five additional Feldenkrais studies are selectable', async ({ page }) => {
+test('twenty-one yoga and twenty-one Feldenkrais studies are selectable', async ({ page }) => {
   await page.goto(pagePath);
   const selector = page.getByLabel('Choose a movement');
-  await expect(selector.locator('optgroup[label="Yoga"] option')).toHaveCount(6);
-  await expect(selector.locator('optgroup[label="Feldenkrais"] option')).toHaveCount(6);
+  await expect(selector.locator('optgroup[label="Yoga"] option')).toHaveCount(21);
+  await expect(selector.locator('optgroup[label="Feldenkrais"] option')).toHaveCount(21);
   await selector.selectOption('warrior-two-study');
   await expect(page.locator('#stage')).toHaveAttribute('data-clip', 'warrior-two-study');
   await expect(page.locator('#phase-cue')).toContainText(/hip.*left.*abduction/i);

@@ -1,0 +1,129 @@
+{
+  "id": "diagonal-lengthening-study",
+  "tradition": "feldenkrais",
+  "title": "Back-lying diagonal-lengthening study",
+  "summary": "A long leg and the opposite arm move away from the torso, then soften toward the starting position.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "explore",
+      "t": [
+        0,
+        7
+      ],
+      "joint_actions": [
+        {
+          "joint": "scapula-left",
+          "action": "arm elevation opposite the right leg"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "latissimus-dorsi-left",
+          "behaviour": "lengthens"
+        }
+      ]
+    },
+    {
+      "id": "develop",
+      "t": [
+        7,
+        14
+      ],
+      "joint_actions": [
+        {
+          "joint": "thoracic-upper",
+          "action": "small lateral response"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "external-oblique-right",
+          "behaviour": "lengthens"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        14,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "scapula-left",
+          "action": "return to the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "external-oblique-right",
+          "behaviour": "shortens"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "exploration": "Follow the diagonal connection from hand through trunk to the opposite foot.",
+    "attention": [
+      {
+        "phase": "explore",
+        "cue": "The display emphasizes scapula left."
+      },
+      {
+        "phase": "develop",
+        "cue": "The display emphasizes thoracic upper."
+      },
+      {
+        "phase": "return",
+        "cue": "The display emphasizes scapula left."
+      }
+    ],
+    "range": {
+      "kind": "optional",
+      "smaller_reference": "The same relationship can be displayed with smaller angles and pauses between changes."
+    },
+    "rest_pauses": [
+      {
+        "after_phase": "return",
+        "duration_seconds": 8,
+        "note": "The animation ends at neutral so the anatomical relationship can be compared."
+      }
+    ]
+  },
+  "variations": [
+    {
+      "id": "reduced-amplitude",
+      "kind": "range",
+      "note": "A lower-amplitude rendering preserves the same joint relationships."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This animation visualizes an authored movement theme and is not an Awareness Through Movement lesson."
+    ],
+    "expects_teacher": false,
+    "notes": "The display does not replace verbal guidance, individual variation, or practitioner observation."
+  },
+  "source": {
+    "tradition_basis": "Project-authored anatomical study using movement themes published by the Feldenkrais Guild; no lesson text, recording, or teacher sequence is copied.",
+    "rights_basis": "provisional: project-authored record and animation using a procedural fitted-reference body; no third-party movement media or anatomy asset is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "Feldenkrais Guild sample lessons",
+        "url": "https://feldenkrais.com/enjoy-a-free-sample-lesson/",
+        "supports": [
+          "dynamic sitting and chair clock",
+          "pelvic and spinal exploration",
+          "shoulder exploration"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Requires review by a Feldenkrais practitioner and an anatomy reviewer. Muscle behaviours are illustrative anatomical hypotheses, not measurements of contraction or activity."
+    }
+  }
+}

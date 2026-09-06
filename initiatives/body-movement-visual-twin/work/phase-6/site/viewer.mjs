@@ -1,4 +1,5 @@
 import { globalMatrices, transformPoint } from './lib/rig-math.mjs';
+import { interpolateMovementPose } from './lib/movement-pose.mjs';
 import { createAxialGeometry, createMuscleGeometry, createSkullGeometry } from './lib/anatomy-geometry.mjs';
 import { TRADITION_LABELS, anatomySummary, instructionSections, movementCompleteness } from './lib/collection.mjs';
 import {
@@ -96,29 +97,7 @@ if (!interactive) {
 }
 
 function interpolateFrame(time) {
-  const frames = clip.frames;
-  let before = frames[0];
-  let after = frames.at(-1);
-  for (let index = 1; index < frames.length; index += 1) {
-    if (time <= frames[index].t) {
-      before = frames[index - 1];
-      after = frames[index];
-      break;
-    }
-  }
-  const span = Math.max(after.t - before.t, Number.EPSILON);
-  const amount = Math.max(0, Math.min(1, (time - before.t) / span));
-  const rotations = {};
-  const translations = {};
-  for (const node of rig.nodes) {
-    const a = before.rotations_deg[node.id] || [0, 0, 0];
-    const b = after.rotations_deg[node.id] || [0, 0, 0];
-    rotations[node.id] = a.map((value, index) => value + ((b[index] || 0) - value) * amount);
-    const ta = before.translations_mm?.[node.id] || [0, 0, 0];
-    const tb = after.translations_mm?.[node.id] || [0, 0, 0];
-    translations[node.id] = ta.map((value, index) => value + ((tb[index] || 0) - value) * amount);
-  }
-  return { id: `${before.id}-${after.id}`, rotations_deg: rotations, translations_mm: translations };
+  return interpolateMovementPose(scaleReferenceRig(rig, visualProfile), clip, time);
 }
 
 function resizeCanvas() {

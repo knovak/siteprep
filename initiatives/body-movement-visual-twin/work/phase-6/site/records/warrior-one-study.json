@@ -1,0 +1,124 @@
+{
+  "id": "warrior-one-study",
+  "tradition": "yoga",
+  "title": "Virabhadrasana I · Warrior I anatomy",
+  "summary": "A split stance combines front-leg flexion, back-leg extension, and an overhead arm line.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "explore",
+      "t": [
+        0,
+        7
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "front hip and knee flexion"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-maximus-left",
+          "behaviour": "lengthens"
+        }
+      ]
+    },
+    {
+      "id": "develop",
+      "t": [
+        7,
+        14
+      ],
+      "joint_actions": [
+        {
+          "joint": "scapula-left",
+          "action": "bilateral arm elevation"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "serratus-anterior-right",
+          "behaviour": "shortens"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        14,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "return to the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "serratus-anterior-right",
+          "behaviour": "lengthens"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "posture": "The front knee bends, the back leg extends, and the trunk faces the front of the split stance.",
+    "transitions": [
+      {
+        "phase": "explore",
+        "direction": "entry",
+        "cue": "The reference animation moves from neutral into the displayed joint arrangement."
+      },
+      {
+        "phase": "return",
+        "direction": "exit",
+        "cue": "The final frames return the fitted reference toward neutral."
+      }
+    ],
+    "modifications": [
+      {
+        "id": "supported-reference",
+        "note": "A shorter stance and chair support reduce the illustrated range."
+      }
+    ],
+    "props": [
+      "wall",
+      "chair"
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "The authored clip may be viewed over a smaller angular range."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This is an anatomical display, not a recommendation to attempt the posture or match its range."
+    ],
+    "expects_teacher": false,
+    "notes": "Suitability, balance, loading, and individual restrictions are outside this visualization."
+  },
+  "source": {
+    "tradition_basis": "Project-authored anatomical study using posture names listed by Iyengar Yoga organizations; no teacher sequence or instructional wording is copied.",
+    "rights_basis": "provisional: project-authored record and animation using a procedural fitted-reference body; no third-party movement media or anatomy asset is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "Iyengar Yoga Level I curriculum",
+        "url": "https://iyengar.hu/wp-content/uploads/2017/11/Curriculum-Level-I.pdf",
+        "supports": [
+          "Virabhadrasana I"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Requires review by a yoga practitioner and an anatomy reviewer. Muscle behaviours are illustrative anatomical hypotheses, not measurements of contraction or activity."
+    }
+  }
+}

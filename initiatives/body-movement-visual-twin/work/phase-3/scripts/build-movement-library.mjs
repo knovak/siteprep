@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { globalMatrices, transformPoint } from '../../phase-0/scripts/rig-math.mjs';
+import { additionalStudies } from './additional-studies.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const recordsDirectory = resolve(phaseDirectory, 'records');
@@ -258,11 +259,89 @@ const clips = {
   'seated-weight-shift-study': clip('seated-weight-shift-study', 22, 'A seated bilateral weight-shift anatomical estimate.', [frame('start', 0, seated), frame('shift-left', .42, { ...seated, pelvis: [0, 0, -5], 'hip-left': [-88, 0, -3] }, { root: [-34, 0, 0] }), frame('shift-right', .78, { ...seated, pelvis: [0, 0, 5], 'hip-right': [-88, 0, 3] }, { root: [34, 0, 0] }), frame('end', 1, seated)]),
 };
 
+const additionalSources = {
+  handsFeet: feldenkraisHandsSource,
+  sample: feldenkraisSampleSource,
+  sitting: {
+    title: 'Building Better Sitting Habits, Even in Your Car',
+    url: 'https://feldenkrais.com/building-better-sitting-habits-even-in-your-car-by-nick-strauss-klein/',
+    supports: ['dynamic sitting', 'head, spine, and pelvis relationships']
+  },
+  knees: {
+    title: 'Embodied Learning: Focus on the Knees & Ankles II',
+    url: 'https://feldenkraisresources.com/products/knees-and-ankles-2',
+    supports: ['leg bending and straightening', 'sitting foot exploration']
+  }
+};
+
+const muscleReferences = {
+  'ankle-flexion-study': [['gastrocnemius-left', 'lengthens'], ['gastrocnemius-left', 'shortens']],
+  'ankle-circle-study': [['gastrocnemius-left', 'lengthens'], ['gastrocnemius-left', 'shortens']],
+  'foot-edge-tilt-study': [['quadriceps-left', 'stabilises'], ['quadriceps-left', 'stabilises']],
+  'wrist-flexion-study': [['biceps-brachii-left', 'stabilises'], ['biceps-brachii-left', 'stabilises']],
+  'wrist-clock-study': [['biceps-brachii-left', 'stabilises'], ['biceps-brachii-left', 'stabilises']],
+  'elbow-fold-study': [['biceps-brachii-left', 'shortens'], ['biceps-brachii-left', 'lengthens']],
+  'shoulder-glide-study': [['rhomboids-left', 'lengthens'], ['rhomboids-left', 'shortens']],
+  'forward-arm-reach-study': [['deltoid-left', 'shortens'], ['serratus-anterior-left', 'shortens']],
+  'head-nod-study': [['trapezius-superior-left', 'lengthens'], ['trapezius-superior-left', 'shortens']],
+  'head-sidebend-study': [['trapezius-superior-left', 'shortens'], ['trapezius-superior-left', 'lengthens']],
+  'spinal-round-arch-study': [['erector-spinae-left', 'lengthens'], ['erector-spinae-left', 'shortens']],
+  'supine-knee-tilt-study': [['external-oblique-left', 'stabilises'], ['external-oblique-right', 'stabilises']],
+  'heel-slide-study': [['quadriceps-left', 'shortens'], ['hamstrings-left', 'lengthens']],
+  'diagonal-lengthening-study': [['latissimus-dorsi-left', 'lengthens'], ['external-oblique-right', 'lengthens']],
+  'seated-knee-extension-study': [['quadriceps-left', 'shortens'], ['hamstrings-left', 'lengthens']],
+  'tree-pose-study': [['gluteus-medius-right', 'stabilises'], ['serratus-anterior-left', 'shortens']],
+  'warrior-one-study': [['gluteus-maximus-left', 'lengthens'], ['serratus-anterior-right', 'shortens']],
+  'extended-side-angle-study': [['quadriceps-left', 'stabilises'], ['external-oblique-right', 'lengthens']],
+  'wide-standing-fold-study': [['gluteus-medius-left', 'shortens'], ['hamstrings-left', 'lengthens']],
+  'pyramid-pose-study': [['quadriceps-left', 'stabilises'], ['hamstrings-left', 'lengthens']],
+  'half-moon-study': [['gluteus-medius-left', 'stabilises'], ['gluteus-medius-right', 'shortens']],
+  'eagle-arms-study': [['rhomboids-left', 'lengthens'], ['biceps-brachii-left', 'shortens']],
+  'cow-face-arms-study': [['latissimus-dorsi-left', 'lengthens'], ['biceps-brachii-right', 'shortens']],
+  'prayer-position-study': [['biceps-brachii-left', 'shortens'], ['biceps-brachii-right', 'shortens']],
+  'upward-prayer-study': [['serratus-anterior-left', 'shortens'], ['serratus-anterior-right', 'shortens']],
+  'chair-twist-study': [['external-oblique-left', 'shortens'], ['multifidus-right', 'stabilises']],
+  'staff-pose-study': [['hamstrings-left', 'shortens'], ['quadriceps-left', 'shortens']],
+  'seated-forward-fold-study': [['hamstrings-left', 'lengthens'], ['erector-spinae-left', 'lengthens']],
+  'wide-seated-angle-study': [['gluteus-medius-left', 'shortens'], ['erector-spinae-left', 'lengthens']],
+  'legs-up-wall-study': [['hamstrings-left', 'lengthens'], ['quadriceps-right', 'stabilises']]
+};
+
+for (const study of additionalStudies) {
+  const [firstMuscle, secondMuscle] = muscleReferences[study.id];
+  const phases = [
+    phase('explore', 0, 7, [joint(...study.actions[0])], [muscle(...firstMuscle)]),
+    phase('develop', 7, 14, [joint(...study.actions[1])], [muscle(...secondMuscle)]),
+    phase('return', 14, 20, [joint(study.actions[0][0], 'return to the starting arrangement')], [muscle(secondMuscle[0], secondMuscle[1] === 'shortens' ? 'lengthens' : secondMuscle[1] === 'lengthens' ? 'shortens' : 'stabilises')])
+  ];
+  const details = { ...study, phases };
+  const record = study.tradition === 'yoga'
+    ? yogaRecord(details)
+    : feldenkraisRecord({ ...details, exploration: study.focus,
+      smaller: 'The same relationship can be displayed with smaller angles and pauses between changes.' });
+  record.source.authored_on = '2026-09-06';
+  record.source.claim_sources = study.tradition === 'yoga'
+    ? [{ ...yogaSource, supports: [study.title.split(' · ')[0]] }]
+    : [additionalSources[study.family]];
+  record.source.review.notes += ' Muscle behaviours are illustrative anatomical hypotheses, not measurements of contraction or activity.';
+  records.push(record);
+  const pose = (index) => ({ ...study.base, ...study.poses[index] });
+  const translation = (index) => ({ ...study.position, ...study.translations?.[index] });
+  clips[study.id] = clip(study.id, 20, `${study.summary} Project-authored anatomical estimate, not measured motion.`, [
+    frame('start', 0, study.base, study.position),
+    frame('explore', .35, pose(0), translation(0)),
+    ...(study.middle ? [frame('around', .525, { ...study.base, ...study.middle }, study.position)] : []),
+    frame('develop', .7, pose(1), translation(1)),
+    frame('return', 1, study.base, study.position)
+  ]);
+}
+
 // +Z is anterior. Hip flexion takes a downward thigh toward +Z (negative X),
 // while knee flexion uses positive X. Counter-rotate the ankles in planted
 // sagittal studies and translate the root to retain the reference ankle height.
 const referenceRig = JSON.parse(await readFile(resolve(phaseDirectory, '../phase-2/data/rig-core.json'), 'utf8'));
 for (const id of ['chair-pose-study', 'standing-forward-fold-study']) {
+  clips[id].planted_sagittal_feet = true;
   for (const pose of clips[id].frames) {
     for (const side of ['left', 'right']) {
       const angles = ['pelvis', `hip-${side}`, `femur-${side}`].reduce((sum, node) => sum + (pose.rotations_deg[node]?.[0] || 0), 0);
