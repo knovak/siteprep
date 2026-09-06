@@ -354,4 +354,8 @@ branch is for an initiative something *else* changed.
   record` writes them, and a hand-written digest makes staleness a fiction.
 - Never make a Site public. An environment nobody has confirmed goes out
   private, and changing that is the user's request, not a sweep's.
+- Any pull request the run opens for an initiative carries that initiative's
+  waiting deploy record first: `git fetch origin "deploy-record/<slug>" && git
+  merge --no-edit FETCH_HEAD`. A record waits on that branch to avoid a pull
+  request of its own, so folding it in is what lands it.
 - If there is no actionable work anywhere, do nothing and say so.

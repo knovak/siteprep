@@ -324,6 +324,54 @@ is the whole feature, and three things protect it:
 The dirty-source check is scoped to the deployment's `source`. Uncommitted work
 elsewhere in the repository is none of a release's business.
 
+### Where a record lands
+
+`record` writes files - `initiative.json` always, plus `releases.md` and
+`log.md` for a production release - so every deploy produces a commit. It does
+not have to produce a pull request, and six of the pull requests merged before
+this rule existed carried a deploy record and nothing else.
+
+**A record travels with work.** Commit it on the branch that already carries
+the change it belongs to and it merges when that change does. That is what the
+sweep does in its `deploy` phase, and what a session does when it deploys
+something it has just built.
+
+**A deploy with nothing to travel with waits on its own branch.** Commit the
+record, push it to `deploy-record/<slug>`, and open no pull request. The
+receipt says where it is waiting, so nobody has to guess whether it was written
+down.
+
+**The next pull request for that initiative folds it in**, before anything
+else:
+
+```bash
+git fetch origin "deploy-record/<slug>" && git merge --no-edit FETCH_HEAD
+```
+
+Where both sides recorded the same environment, keep the newer stamp. What is
+still waiting anywhere:
+
+```bash
+git branch -r --no-merged origin/main --list 'origin/deploy-record/*'
+```
+
+A branch whose record has reached main is spent and can be deleted.
+`gh-pages.yml` ignores `deploy-record/**`, so one of these branches builds no
+branch preview and a record push costs no deployment.
+
+Two records must not be left waiting indefinitely, and the skills say so:
+
+- **The first deploy of an environment** registers a Site's slug, URL and
+  access. Until that is on main the next deploy plans `mode: new` and creates a
+  second Site instead of replacing the first.
+- **A production release** appends history that cannot be worked out again
+  later: the version, the deployment time, and the commits the release carried
+  are known only to the session that made it.
+
+A repeated test stamp is the opposite case. The next recorded deploy overwrites
+the `test` block in full, so an unmerged one costs a date and a currency
+verdict that fixes itself.
+
 ### Currency: what each environment holds
 
 `environmentCurrency(entry, env)` answers "is what I am about to open the

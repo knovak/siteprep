@@ -7,6 +7,12 @@ The `Build and Deploy GitHub Pages` workflow publishes the `main` branch at the
 site root. Other branches are published below `branch/`, with slashes in the
 branch name replaced by hyphens.
 
+`deploy-record/**` branches are excluded from the workflow's `push` trigger.
+One of those carries a deploy record waiting for the initiative's next pull
+request to fold it in, changes no page, and would otherwise cost a full build
+and deployment per deploy. See "Where a record lands" in
+`INITIATIVES_TECHDOC.md`.
+
 Every deployment reconciles the preview directories on `gh-pages` with the
 branches currently present in the repository. A preview directory is removed
 when no corresponding branch exists. The separate `Cleanup Branch Preview`

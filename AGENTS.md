@@ -329,6 +329,12 @@ Rules that hold whatever the kind:
 - **`deployed_at`, `version` and `commit` are written by the skills**, through
   `deployments <slug> record`, never by hand. A production release also appends
   to `releases.md` and adds one line to `log.md`.
+- **A deploy record is a commit, never a pull request of its own.** It goes on
+  the branch that already carries work, so it merges with the change it belongs
+  to. A session that deployed and changed nothing else pushes the record to
+  `deploy-record/<slug>` and opens nothing; the next pull request touching that
+  initiative folds that branch in first. See "Where a record lands" in
+  `INITIATIVES_TECHDOC.md`.
 - **A demo has no test deployment for a skill to write.** `scripts/build.sh`
   publishes it, copying the deployment's `source` to
   `preview/initiatives/<slug>/` on every build, so pushing the branch is the
