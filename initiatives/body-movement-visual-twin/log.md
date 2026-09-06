@@ -98,3 +98,7 @@ Released to production — ChatGPT Site, version 1, `021648c`. <https://body-mov
   Anatomy and tradition sign-off remain unreviewed; no teacher lesson is copied.
 - Regenerated the complete private bundle and extended geometry and desktop/phone
   browser checks to the new movements and between-keyframe foot placement.
+
+## 2026-09-06 — Release
+
+Released to production — ChatGPT Site, version 2, `d2c85a3`. 1 commit(s) since the previous release. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.
