@@ -29,5 +29,10 @@
       "advances_stage": false,
       "blocked_by": "data:independent learner or presenter findings for the full contribution, exploration, presentation, restore, and sphere-export path"
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-09-06T04:58:33Z",
+    "commit": "a4d38740f32bef8ead80b55364a18c0b79b82831",
+    "digest": "08de45c8e43c775109f3e32f60c2cd064b4e248c"
+  }
 }

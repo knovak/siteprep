@@ -29,5 +29,10 @@
       "advances_stage": true,
       "blocked_by": "data:Ken's independent curator sitting and measured review feedback using the connected acceptance workspace; automated hosted recovery rehearsal passed, but human observations and final distribution evidence remain pending"
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-09-06T04:58:33Z",
+    "commit": "a4d38740f32bef8ead80b55364a18c0b79b82831",
+    "digest": "48788fd1607c91220672be5e2526dd7af4a52643"
+  }
 }
