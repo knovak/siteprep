@@ -352,7 +352,7 @@ export function readBrief(record) {
 const DEFAULT_STALENESS_DAYS = 14;
 
 /** What a sweep run is permitted to do, in order. Survey is never optional. */
-const SWEEP_PHASES = ['survey', 'respond', 'propose', 'work', 'deploy', 'brief'];
+const SWEEP_PHASES = ['survey', 'merge', 'respond', 'propose', 'work', 'deploy', 'brief'];
 
 // ---------------------------------------------------------------- loading
 
@@ -465,6 +465,41 @@ function validate() {
         }
         if (!phases.includes('survey')) {
           errors.push('sweep.json: phases must include "survey" - the sweep always looks before acting');
+        }
+      }
+    }
+
+    // What a run may merge unattended is config for the same reason `phases`
+    // is: widening it should leave a commit behind rather than live in a
+    // prompt somebody edited once.
+    const autoMerge = sweep.config.auto_merge;
+    if (autoMerge !== undefined) {
+      if (autoMerge === null || typeof autoMerge !== 'object' || Array.isArray(autoMerge)) {
+        errors.push('sweep.json: auto_merge must be an object');
+      } else {
+        for (const key of Object.keys(autoMerge)) {
+          if (!AUTO_MERGE_KEYS.includes(key)) {
+            errors.push(`sweep.json: auto_merge has unknown key "${key}"`);
+          }
+        }
+        if (autoMerge.stages !== undefined) {
+          if (!Array.isArray(autoMerge.stages) || autoMerge.stages.length === 0) {
+            errors.push('sweep.json: auto_merge.stages must be a non-empty array');
+          } else {
+            for (const stage of autoMerge.stages) {
+              if (!STAGES.includes(stage)) {
+                errors.push(`sweep.json: auto_merge.stages has unknown stage "${stage}"`);
+              } else if (RESTING_STAGES.has(stage)) {
+                errors.push(
+                  `sweep.json: auto_merge.stages may not include "${stage}" - an initiative at rest has no work to merge`
+                );
+              }
+            }
+          }
+        }
+        const minAge = autoMerge.min_age_minutes;
+        if (minAge !== undefined && (!Number.isFinite(minAge) || minAge < 0)) {
+          errors.push('sweep.json: auto_merge.min_age_minutes must be a number of minutes, zero or more');
         }
       }
     }
@@ -2418,6 +2453,191 @@ function completeItem(slug, itemId, { note, stage } = {}) {
   return changes;
 }
 
+// ------------------------------------------------- merging what is ready
+
+/**
+ * What the merge phase may merge when `sweep.json` names no `auto_merge` block.
+ *
+ * `planned` and `building` are the stages where a pull request transcribes a
+ * plan the user has already merged, so it can be checked against a document
+ * rather than against taste. Everything earlier - the objectives, the spec, the
+ * plan itself - is where their judgement is the point of the pull request, so
+ * those wait for them.
+ */
+const AUTO_MERGE_DEFAULTS = { stages: ['planned', 'building'], min_age_minutes: 15 };
+const AUTO_MERGE_KEYS = ['stages', 'min_age_minutes'];
+
+/** `sweep/<slug>/<suffix>` - the branch name says who owns the change and what kind it is. */
+const SWEEP_BRANCH = /^sweep\/([^/]+)\/(.+)$/;
+
+/** The merge policy in force: config where it says something, defaults elsewhere. */
+function autoMergePolicy(sweep = loadSweepConfig().config) {
+  const block = sweep.auto_merge && typeof sweep.auto_merge === 'object' ? sweep.auto_merge : {};
+  return {
+    enabled: (sweep.phases || ['survey']).includes('merge'),
+    stages: Array.isArray(block.stages) ? [...block.stages] : [...AUTO_MERGE_DEFAULTS.stages],
+    minAgeMinutes: Number.isFinite(block.min_age_minutes)
+      ? block.min_age_minutes
+      : AUTO_MERGE_DEFAULTS.min_age_minutes
+  };
+}
+
+/**
+ * An initiative's stage on the base branch rather than on the pull request's
+ * own head.
+ *
+ * The distinction is the rule, not a detail: the pull request that writes
+ * `plan.md` also advances the initiative to `planned`, and reading the stage
+ * from its head would let it merge itself under the policy it is in the act of
+ * satisfying. The base is the state the user has already agreed to.
+ *
+ * Falling back to the working tree is for a checkout git cannot answer for -
+ * the fixture suite, or a detached run - and the answer says which was used.
+ */
+function stageOnBase(slug, base = 'main') {
+  const path = `${relativeInitiativesDir()}/${slug}/initiative.json`;
+  try {
+    const data = JSON.parse(git(['show', `${base}:${path}`]));
+    return { stage: data.stage || null, source: base };
+  } catch { /* no such ref, or the file is not there yet - fall through */ }
+
+  const record = loadInitiative(slug);
+  if (record.error) return { stage: null, source: 'worktree', error: record.error };
+  return { stage: record.data.stage || null, source: 'worktree' };
+}
+
+/**
+ * Whether one sweep pull request may be merged unattended.
+ *
+ * Everything here is computed, for the same reason ranking and budgeting are:
+ * a rule the prompt has to remember is a rule that eventually goes missing on a
+ * long run. The caller still checks CI, mergeability and review threads through
+ * GitHub - this answers only the questions the repository can answer.
+ */
+function autoMergeCheck(branch, { openedAt = null, base = 'main', now = Date.now() } = {}) {
+  const policy = autoMergePolicy();
+  const result = {
+    branch: String(branch || '').trim(),
+    slug: null,
+    kind: null,
+    stage: null,
+    stage_source: null,
+    policy: { stages: policy.stages, min_age_minutes: policy.minAgeMinutes },
+    eligible: false,
+    blockers: []
+  };
+
+  if (!policy.enabled) {
+    result.blockers.push('sweep.json does not enable the "merge" phase');
+  }
+
+  const match = SWEEP_BRANCH.exec(result.branch);
+  if (!match) {
+    result.blockers.push('not a sweep/<slug>/<suffix> branch - only the sweep\'s own work merges unattended');
+    return result;
+  }
+  const [, slug, suffix] = match;
+  result.slug = slug;
+  result.kind = suffix.startsWith('propose-') ? 'propose' : suffix === 'brief' ? 'brief' : 'work';
+
+  // A proposal is the question itself, put as a pull request. Merging it is
+  // what answers a `human:` blocker, so no policy may - only a person.
+  if (result.kind === 'propose') {
+    result.blockers.push('a proposal is the question being put to you - only a person merges one');
+  }
+
+  const { stage, source, error } = stageOnBase(slug, base);
+  result.stage = stage;
+  result.stage_source = source;
+  if (error) {
+    result.blockers.push(`${slug}: ${error}`);
+  } else if (!stage) {
+    result.blockers.push(`${slug} declares no stage on ${source}`);
+  } else if (!policy.stages.includes(stage)) {
+    result.blockers.push(
+      `stage "${stage}" on ${source} is not in auto_merge.stages (${policy.stages.join(', ')})`
+    );
+  }
+
+  // The holding window is what makes this reviewable rather than instant: the
+  // pull request is open, visible and closeable for that long before it lands.
+  if (policy.minAgeMinutes > 0) {
+    const opened = openedAt ? new Date(openedAt).getTime() : NaN;
+    if (!openedAt) {
+      result.blockers.push(
+        `--opened-at is needed: the policy holds a pull request for ${policy.minAgeMinutes} minute(s)`
+      );
+    } else if (Number.isNaN(opened)) {
+      result.blockers.push(`--opened-at "${openedAt}" is not a date`);
+    } else {
+      const age = (now - opened) / 60000;
+      result.age_minutes = Math.round(age * 10) / 10;
+      if (age < policy.minAgeMinutes) {
+        result.wait_minutes = Math.ceil(policy.minAgeMinutes - age);
+        result.blockers.push(
+          `opened ${result.age_minutes} minute(s) ago; the policy holds it for ${policy.minAgeMinutes}`
+        );
+      }
+    }
+  }
+
+  result.eligible = result.blockers.length === 0;
+  return result;
+}
+
+/** The policy itself, and which initiatives are at a stage it covers. */
+function autoMergeSummary(base = 'main') {
+  const policy = autoMergePolicy();
+  const initiatives = loadAll().map((record) => {
+    const { stage, source, error } = record.error
+      ? { stage: null, source: 'worktree', error: record.error }
+      : stageOnBase(record.slug, base);
+    return {
+      slug: record.slug,
+      stage,
+      stage_source: source,
+      covered: !error && !!stage && policy.stages.includes(stage),
+      error: error || null
+    };
+  });
+  return {
+    enabled: policy.enabled,
+    stages: policy.stages,
+    min_age_minutes: policy.minAgeMinutes,
+    initiatives
+  };
+}
+
+function formatAutoMerge(result) {
+  const lines = [
+    `Branch:  ${result.branch}`,
+    `Kind:    ${result.kind || '(unrecognised)'}`,
+    `Stage:   ${result.stage || '(none)'}${result.stage_source ? ` (from ${result.stage_source})` : ''}`,
+    `Policy:  stages ${result.policy.stages.join(', ')}; held ${result.policy.min_age_minutes} minute(s)`,
+    result.eligible
+      ? 'ELIGIBLE - the repository has no objection; now check CI, mergeability and review threads'
+      : 'NOT ELIGIBLE'
+  ];
+  for (const blocker of result.blockers) lines.push(`  - ${blocker}`);
+  return lines.join('\n');
+}
+
+function formatAutoMergeSummary(summary) {
+  const lines = [
+    `Merge phase: ${summary.enabled ? 'enabled' : 'not in sweep.json phases'}`,
+    `Stages:      ${summary.stages.join(', ')}`,
+    `Held for:    ${summary.min_age_minutes} minute(s) after the pull request opens`,
+    ''
+  ];
+  for (const entry of summary.initiatives) {
+    const mark = entry.covered ? 'auto' : '   -';
+    lines.push(`  ${mark}  ${entry.slug} (${entry.error || entry.stage || 'no stage'})`);
+  }
+  lines.push('');
+  lines.push('A proposal branch never merges unattended, whatever the stage.');
+  return lines.join('\n');
+}
+
 // ---------------------------------------------------------- write scope
 
 /**
@@ -2963,6 +3183,38 @@ if (RUN_AS_CLI) switch (command) {
     console.log(args.includes('--json')
       ? JSON.stringify(selection, null, 2)
       : (proposing ? formatProposals(selection) : formatSelection(selection)));
+    break;
+  }
+  case 'automerge': {
+    const flag = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
+    const base = flag('--base') || 'main';
+    let branch = null;
+    for (let i = 0; i < args.length && branch === null; i += 1) {
+      if (args[i].startsWith('--')) i += 1;          // skip the flag and its value
+      else branch = args[i];
+    }
+
+    if (!branch) {
+      const summary = autoMergeSummary(base);
+      console.log(args.includes('--json')
+        ? JSON.stringify(summary, null, 2)
+        : formatAutoMergeSummary(summary));
+      break;
+    }
+    const now = process.env.INITIATIVES_NOW ? new Date(process.env.INITIATIVES_NOW) : new Date();
+    if (Number.isNaN(now.getTime())) {
+      console.error('INITIATIVE FAIL: INITIATIVES_NOW must be a valid date or timestamp');
+      process.exit(1);
+    }
+    const check = autoMergeCheck(branch, {
+      openedAt: flag('--opened-at'),
+      base,
+      now: now.getTime()
+    });
+    console.log(args.includes('--json') ? JSON.stringify(check, null, 2) : formatAutoMerge(check));
+    // Non-zero for "do not merge this", so a caller can branch on the exit code
+    // rather than parsing prose.
+    if (!check.eligible) process.exit(1);
     break;
   }
   case 'add': {

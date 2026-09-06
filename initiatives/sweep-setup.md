@@ -14,7 +14,9 @@ Four things, and nothing else:
 
 1. **A checkout of this repository with full history.** Last activity comes from
    `git log`, so a shallow clone reports every initiative as touched today.
-2. **Permission to create branches and open pull requests.** Never to merge.
+2. **Permission to create branches, open pull requests, and — while `merge` is
+   in `phases` — merge its own `sweep/*` pull requests.** Never to merge anything
+   else, and never to push to `main` directly.
 3. **A schedule.** Four times daily is the current setting; the design assumed
    twice, and anything from daily to hourly works, since a run with nothing to
    do costs almost nothing.
@@ -54,9 +56,10 @@ it is one action in the Routines list rather than a commit.
 ### First run
 
 Run it once by hand before trusting the schedule. In a Claude Code session on
-this repo, say *"run the sweep prompt"*. All four phases are enabled, so a run
-may open pull requests — it will never merge one. Read what it opens before
-letting the schedule run unattended.
+this repo, say *"run the sweep prompt"*. Every phase is enabled, so a run may
+open pull requests and land the ones the merge policy covers. Read what it does
+before letting the schedule run unattended; to watch a few rounds first, drop
+`merge` from `phases`.
 
 To make a run harmless while you check something, set `phases` back to
 `["survey"]`: it then reads, reports, and changes nothing.
@@ -64,32 +67,59 @@ To make a run harmless while you check something, set `phases` back to
 ## What the sweep is allowed to do
 
 `phases` in `sweep.json` decides what a run may do, and is currently
-`["survey", "respond", "propose", "work", "deploy", "brief"]` — everything:
+`["survey", "merge", "respond", "propose", "work", "deploy", "brief"]` —
+everything:
 
 | Phase | What it does |
 |---|---|
 | `survey` | Reads and reports. Mandatory: the sweep always looks before acting |
+| `merge` | Lands its own pull requests that the `auto_merge` policy covers |
 | `respond` | Answers review comments on its own open pull requests |
 | `propose` | Opens a pull request proposing an answer to a `human:` question |
 | `work` | Starts new work from the todo lists and opens pull requests |
 | `deploy` | Refreshes the **test** environment of what the run changed |
 | `brief` | Rewrites the "where this stands" summary on an initiative whose files have moved |
 
-They run in that order. The first four share one budget of `items_per_run` taken
-in the same order — finishing what is in flight outranks starting more. Narrowing
-or widening this is a commit to a config file, reviewed like anything else, which
-is the point: changing how autonomous the job is should leave a trace.
+They run in that order, and `merge` runs again at the end of `work` so one step
+can land and the next start in the same run. `respond`, `propose` and `work`
+share one budget of `items_per_run` taken in that order — finishing what is in
+flight outranks starting more. Narrowing or widening this is a commit to a config
+file, reviewed like anything else, which is the point: changing how autonomous
+the job is should leave a trace.
 
-`deploy` and `brief` take no budget, because they publish and describe work the
-run has already done rather than starting any. It writes the test environment only, from the branch
-the run just pushed, and only when `deployments <slug> plan --env test --since
-<base>` says the source actually changed. Production never moves without a
-person running `release-initiative`, so the worst a deploy phase can produce is
-a preview showing an unmerged branch — which is what a preview is for.
+`merge`, `deploy` and `brief` take no budget, because they land, publish and
+describe work the run has already done rather than starting any.
 
 `select` and `propose` enforce it on their own — with a phase absent from
 `phases` they return nothing and say why, so a prompt cannot talk the sweep into
 doing more than the config allows.
+
+**What `merge` may land.** Its own `sweep/*` pull requests, and only the ones
+the `auto_merge` block covers:
+
+```json
+"auto_merge": { "stages": ["planned", "building"], "min_age_minutes": 15 }
+```
+
+`stages` is read from the initiative's state on `main`, not from the branch — so
+the pull request that *makes* an initiative `planned`, the one writing `plan.md`,
+is not covered by its own change. The default names the two stages where a pull
+request transcribes a plan you have already merged: there the work can be checked
+against a document, which is the kind of checking CI and the scope test actually
+do. Everything earlier — the objectives, the spec, the plan itself — is where your
+judgement is the point of the pull request, so it waits for you.
+
+`min_age_minutes` is the holding window. The pull request is open, visible and
+closeable for that long before the sweep may land it; fifteen minutes is long
+enough to catch one you did not want and short enough that a run can do other
+work and come back to it. Zero lands as soon as the checks are green.
+
+Three things it may never do, whatever the config says: merge a
+`sweep/<slug>/propose-*` branch, since a proposal is the question being put to
+you and merging it is what answers a `human:` blocker; merge anything red,
+conflicted, or carrying an unanswered comment from a person; or resolve a review
+thread to make a pull request mergeable. `initiatives.mjs automerge <branch>`
+computes the first of those, and the `merge-prs` skill holds the rest.
 
 **What `propose` may answer.** Only `human:` blockers, which are judgement
 calls. A `data:` blocker is a fact only you have, and `permission:`, `cost:` and
@@ -101,7 +131,11 @@ A proposal does not rewrite the blocker on `main`. The item stays blocked until
 the pull request merges — merging it *is* answering the question, and a
 proposal you close unmerged leaves nothing behind.
 
-**What `deploy` may write.** The test environment, and nothing else. A
+**What `deploy` may write.** The test environment, and nothing else, from the
+branch the run just pushed, and only when `deployments <slug> plan --env test
+--since <base>` says the source actually changed. Production never moves without
+a person running `release-initiative`, so the worst a deploy phase can produce is
+a preview showing an unmerged branch — which is what a preview is for. A
 `chatgpt-site` is redeployed and the receipt recorded back into
 `initiative.json` on the same branch; a demo needs no deploy step at all,
 because the push that builds the branch publishes its source to
@@ -128,6 +162,11 @@ be more than you want to review, the dial is `items_per_run` rather than the
 phase list: dropping it to `1` keeps every capability on and slows the flow to
 one pull request per run.
 
+The dials for the merge phase are separate, and there are three of them, in
+increasing order of how much they take away: raise `min_age_minutes` to hold
+pull requests open longer; narrow `auto_merge.stages` to fewer stages; remove
+`merge` from `phases` so every pull request waits for you again.
+
 ## What the runner actually does
 
 Most of a run is commands, not reasoning:
@@ -135,6 +174,7 @@ Most of a run is commands, not reasoning:
 | Step | How |
 |---|---|
 | Survey | `node scripts/initiatives.mjs digest` |
+| Decide whether a pull request may land | `node scripts/initiatives.mjs automerge <branch> --opened-at <iso>` |
 | Choose questions to answer | `node scripts/initiatives.mjs propose --claimed <branches> --open-prs <n> --spent <n>` |
 | Choose work | `node scripts/initiatives.mjs select --claimed <branches> --open-prs <n> --spent <n>` |
 | Decide whether to deploy | `node scripts/initiatives.mjs deployments <slug> plan --env test --since <base>` |
@@ -169,8 +209,10 @@ deploying and revising code that has to be tried in its own environment, say,
 while the sweep carries the rest. That is fine, and needs no new mechanism,
 because of what the design already refuses to do:
 
-- **The sweep never merges.** The worst a collision produces is a pull request
-  you close, never a corrupted `main`.
+- **The sweep merges only its own `sweep/*` pull requests**, and only the ones
+  its policy covers. It never merges another agent's branch, and never touches
+  `main` except through one of its own pull requests — so the worst a collision
+  produces is a pull request you close.
 - **Every run re-reads `main`.** The survey is derived from `initiative.json`,
   the files present, and git at the moment it runs. There is no cached picture
   to go stale, so a run after someone else's merge simply sees the new state.
@@ -228,12 +270,18 @@ Two guardrails hold regardless of what the runner does:
   touches files outside its initiative and that initiative's declared outputs,
   or that touches a protected path. This is enforced by CI, not by the agent
   remembering the rule.
-- **The sweep never merges.** Every change arrives as a pull request for you to
-  read. The `merge-prs` skill clears a batch once you are happy.
+- **Every change is still a pull request**, with the write-scope check and the
+  build run against it before anything lands, and a holding window in which you
+  can close it. What the merge phase removes is the clicking, not the record: a
+  landed change is a squash commit on `main` you can read or revert, and the
+  pull requests the policy does not cover — every proposal, and every initiative
+  at a stage outside `auto_merge.stages` — still wait for you. The `merge-prs`
+  skill clears those as a batch.
 
 ## Stopping it
 
 Delete or pause the Routine in your Routines list. Nothing in the repository
 needs changing, and any open `sweep/*` pull requests can be closed as normal.
 
-To keep the schedule but make it harmless, set `phases` back to `["survey"]`.
+To keep the schedule but make it harmless, set `phases` back to `["survey"]`. To
+keep it working but stop it landing anything, drop `"merge"` from the list.

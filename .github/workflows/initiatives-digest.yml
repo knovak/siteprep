@@ -4,9 +4,10 @@ name: Initiatives digest
 #
 # Every part of the survey is derived from initiative.json, the files present,
 # and git, so this needs no model - it runs `initiatives.mjs digest` and keeps a
-# single issue current. The phases that need one (respond, propose, work) run in
-# the scheduled sweep instead; see initiatives/sweep-setup.md. This workflow
-# never changes anything, whatever `phases` in sweep.json allows.
+# single issue current. The phases that need one, and the merge phase that needs
+# permission to land a pull request, run in the scheduled sweep instead; see
+# initiatives/sweep-setup.md. This workflow never changes anything and never
+# merges anything, whatever `phases` in sweep.json allows.
 #
 # Noise is the failure mode of a twice-daily job, so the issue body is refreshed
 # silently and a comment - the only thing that notifies - is posted solely when
