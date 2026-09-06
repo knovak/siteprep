@@ -261,3 +261,16 @@ permissions, missing input, and symlink refusal.
 After the deployment-configuration correction, all 131 harvester tests and the
 root build passed. The committed private build reproduced the deployed HTML
 hash exactly. The Day screenshot was refreshed after that final build.
+
+## 2026-09-06 — Seed the two refining entry items
+
+The initiative reached `refining` with an empty todo list, so the two items that
+entering that stage normally seeds - a user-facing README, and a standing
+optional-improvements pull request - were never created. The sweep reported it
+as nothing actionable at a non-resting stage, and Ken chose to seed them rather
+than declare the initiative dormant.
+
+Both are `REFINING_ENTRY_ITEMS` verbatim, with the same ids, values and efforts
+that `complete --stage refining` would have written, so the initiative now
+carries the state the transition should have left behind. Nothing about the
+work itself changed.

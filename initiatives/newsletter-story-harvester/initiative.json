@@ -4,7 +4,24 @@
   "stage": "refining",
   "value": "medium",
   "outputs": [],
-  "todo": [],
+  "todo": [
+    {
+      "id": "refining-readme",
+      "title": "Write a user-facing README covering how to use it and how to deploy it",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": false
+    },
+    {
+      "id": "refining-improvements",
+      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    }
+  ],
   "deployments": [
     {
       "kind": "chatgpt-site",
@@ -21,8 +38,8 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-09-06T04:58:34Z",
-    "commit": "a4d38740f32bef8ead80b55364a18c0b79b82831",
-    "digest": "53897b2ff7538fb45fa869382e2c5140637d1e7b"
+    "generated_at": "2026-09-06T05:19:22Z",
+    "commit": "9f5b713f1eff14ddca2be0a6d4e1eb919c969788",
+    "digest": "c9b542910879f2fe980a690f7d5481584c4591a7"
   }
 }
