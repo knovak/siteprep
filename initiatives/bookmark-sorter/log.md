@@ -658,3 +658,10 @@ current-selection export use the effective filtered expression. Updated Help,
 the user and technical READMEs, specification, and test plan. All 65 application
 tests and 34 browser checks passed, including the real-route verdict-filter
 fixture and the existing layout/triage suite. The Sites application build passed.
+
+
+Test Site version 38 succeeded at 2026-09-06 20:03 UTC, preserving public entry,
+application sign-in, and the existing D1/R2 bindings. Its 67 tracked application
+files match repository source `9b5ff9dc85ed194fcd1aef4bc2ce0ed7efe5a3e1`;
+Sites source is `12690d51c659587e63515ca527bd869f3f27a5c1`. The test deployment
+receipt is included with this feature PR. Production remains on version 5.
