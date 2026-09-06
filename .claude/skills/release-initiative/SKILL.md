@@ -157,6 +157,27 @@ Two things are worth your judgement afterwards:
   wrote), mention it in the receipt and carry on. A missing record never
   invalidates a release that actually happened.
 
+### The record travels with work
+
+The files `record` wrote are a commit. They are not a pull request of its own.
+
+- **The branch already carries work** - commit the record with it.
+- **The release is all this session did**, which is the usual case for a Site
+  released from committed files - commit the record, push it to
+  `deploy-record/<slug>`, and open nothing. The receipt says where it is
+  waiting, and the initiative's next pull request folds it in:
+
+  ```bash
+  git fetch origin "deploy-record/<slug>" && git merge --no-edit FETCH_HEAD
+  ```
+
+A release record must not be lost, and unlike a test stamp it cannot be worked
+out again later - the version, the deployment time and the commits this release
+carried are known only here. So commit it and push the branch before you
+report, never leave it in the working tree, and when nothing is expected to
+touch this initiative soon, offer to open a pull request for the record alone.
+That is the user's call rather than a default.
+
 ## Refuse
 
 - Releasing without an explicit request from a person in this conversation.
@@ -165,3 +186,5 @@ Two things are worth your judgement afterwards:
 - Making any Site public without being told to, in so many words.
 - Changing an existing Site's access as a side effect of a release.
 - Recording a production Site whose slug or URL matches the test Site.
+- Opening a pull request whose only content is a release record, unless the
+  user asked for one.

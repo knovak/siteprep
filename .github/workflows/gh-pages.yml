@@ -2,6 +2,11 @@ name: Build and Deploy GitHub Pages
 
 on:
   push:
+    branches-ignore:
+      # A deploy record waits on one of these until a pull request folds it in.
+      # It changes no page, so building and deploying a preview for it would
+      # publish nothing and cost a full build per deploy.
+      - 'deploy-record/**'
   workflow_dispatch:
 
 permissions:

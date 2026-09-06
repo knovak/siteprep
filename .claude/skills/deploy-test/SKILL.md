@@ -102,6 +102,31 @@ A test deploy writes no release history. Only a production release does, which
 is why `releases.md` stays a list of releases rather than a log of every preview
 you pushed while working.
 
+### The record travels with work
+
+`record` edits `initiative.json`, so a deploy makes a commit. It does not make a
+pull request of its own.
+
+- **The branch already carries work** - commit the record with it and carry on.
+  It merges when that work does.
+- **The deploy is all this session did** - commit the record, push it to
+  `deploy-record/<slug>`, and open nothing. Say in the receipt that it is
+  waiting on that branch and that the initiative's next pull request will carry
+  it.
+- **Before opening any pull request for this initiative**, fold in whatever is
+  waiting, keeping the newer stamp if both sides recorded the same environment:
+
+  ```bash
+  git fetch origin "deploy-record/<slug>" && git merge --no-edit FETCH_HEAD
+  ```
+
+One test record should not be left waiting: the first deploy of an environment,
+where the plan said `mode: new`. It holds the Site's slug, URL and access, and
+until it reaches main the next deploy plans `new` again and creates a second
+Site. Land that one, and say why. A refresh of an environment already
+registered can wait as long as it likes - the next recorded deploy overwrites
+the stamp in full.
+
 Then report, in this order:
 
 - what was deployed: kind, source directory, file count, `new` or `replacement`;
@@ -155,3 +180,6 @@ entry — nothing else about the initiative moves.
 - Deploying with an engine other than the one the plan names.
 - Recording a test Site whose slug or URL matches the production Site. `record`
   refuses this too, and its refusal is not to be worked around.
+- Opening a pull request whose only content is a deploy record. It waits on
+  `deploy-record/<slug>` instead, unless it is the first deploy of an
+  environment.
