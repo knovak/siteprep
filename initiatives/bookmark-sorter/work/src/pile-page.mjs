@@ -176,7 +176,8 @@ export function renderPilePage({isAdmin = false} = {}) {
     :root[data-grid-rows="3"] .capture { flex: 0 0 30%; min-height: 0; }
     :root[data-grid-rows="3"] .bookmark-card h2 { min-height: 2.34em; -webkit-line-clamp: 2; }
     :root[data-grid-rows="3"] .note { -webkit-line-clamp: 1; }
-    :root[data-grid-rows="3"][data-grid-columns="12"] .capture { flex-basis: 18%; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .capture { flex-basis: 42%; grid-template-rows: minmax(0, 1fr); }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .capture img { min-height: 0; object-fit: contain; }
     :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card { padding: 8px; }
     :root[data-grid-rows="3"][data-grid-columns="12"] .capture { margin: -8px -8px 5px; }
     :root[data-grid-rows="3"][data-grid-columns="12"] .bookmark-card h2 { flex: 1 1 auto; min-height: 0; margin-block: 5px 3px; font-size: .82rem; -webkit-line-clamp: unset; }

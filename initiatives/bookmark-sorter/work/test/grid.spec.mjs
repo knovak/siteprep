@@ -499,6 +499,42 @@ test('page layout dropdown redraws the wide grid immediately', async ({page}) =>
   await expect(page.locator('#status')).toHaveText('Showing 2 rows × 8 columns (16 bookmarks per page).');
 });
 
+test('3x12 fits complete landscape, square, and portrait captures inside each card', async ({page}) => {
+  const backend = await installPile(page);
+  for (const [index, [width, height]] of [[1200, 630], [600, 600], [600, 900]].entries()) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="teal"/><rect y="66%" width="100%" height="34%" fill="orange"/></svg>`;
+    backend.items[index].capture_url = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    backend.items[index].capture = {state: 'pass1-ready', image_ref: `shape-${index}`};
+  }
+  await page.setViewportSize({width: 1600, height: 900});
+  await page.goto('https://pile.test/');
+  const captures = page.locator('.bookmark-card:not([hidden]) .capture img');
+  await expect.poll(() => captures.evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
+  const originalTwoRowSizes = await captures.evaluateAll(images => images.slice(0, 3).map(image => ({width: image.clientWidth, height: image.clientHeight})));
+  await page.getByLabel('Page layout').selectOption('3x12');
+  for (const viewport of [{width: 1320, height: 820}, {width: 1600, height: 900}, {width: 3440, height: 1440}]) {
+    await expectLayout(page, {...viewport, visible: 36, cards: 48, columns: 12, rows: 3});
+    const metrics = await captures.evaluateAll(images => images.slice(0, 3).map(image => {
+      const bounds = image.getBoundingClientRect();
+      const capture = image.parentElement.getBoundingClientRect();
+      const card = image.closest('.bookmark-card');
+      const title = card.querySelector('h2').getBoundingClientRect();
+      const tags = card.querySelector('.tags').getBoundingClientRect();
+      const verdict = card.querySelector('.verdict-label').getBoundingClientRect();
+      return {
+        fits: bounds.top >= capture.top - 1 && bounds.bottom <= capture.bottom + 1 && bounds.left >= capture.left - 1 && bounds.right <= capture.right + 1,
+        objectFit: getComputedStyle(image).objectFit,
+        readable: title.height >= 30 && title.bottom <= tags.top && verdict.bottom <= card.getBoundingClientRect().bottom,
+      };
+    }));
+    expect(metrics).toHaveLength(3);
+    for (const metric of metrics) expect(metric).toEqual({fits: true, objectFit: 'contain', readable: true});
+  }
+  await page.setViewportSize({width: 1600, height: 900});
+  await page.getByLabel('Page layout').selectOption('2x8');
+  await expect.poll(() => captures.evaluateAll(images => images.slice(0, 3).map(image => ({width: image.clientWidth, height: image.clientHeight})))).toEqual(originalTwoRowSizes);
+});
+
 test('three-row layouts reserve most of each card for readable bookmark text', async ({page}) => {
   await page.setViewportSize({width: 1600, height: 900});
   await installPile(page);
@@ -531,8 +567,9 @@ test('three-row layouts reserve most of each card for readable bookmark text', a
       tagsTop: tags.top,
     };
   });
-  expect(compactMetrics.captureRatio).toBeLessThan(0.2);
-  expect(compactMetrics.titleHeight).toBeGreaterThan(80);
+  expect(compactMetrics.captureRatio).toBeGreaterThan(0.35);
+  expect(compactMetrics.captureRatio).toBeLessThan(0.45);
+  expect(compactMetrics.titleHeight).toBeGreaterThan(30);
   expect(compactMetrics.lineClamp).toBe('none');
   expect(compactMetrics.tagsTop - compactMetrics.titleBottom).toBeLessThan(5);
 });

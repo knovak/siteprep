@@ -129,8 +129,10 @@ selection, and export operations.
   window as soon as the choice changes. It keeps automatic 4×3 or 3×3 tablet
   and single-card phone layouts; while one of those automatic layouts is active,
   the inapplicable Page layout label and selector are hidden. Three-row grids
-  cap captures at 30% of the card height; the dense 3×12 layout reduces captures
-  to 18%. It lets the title flex through all available space between the site
+  cap captures at 30% of the card height, except the dense 3×12 layout, which
+  reserves 42% and scales the whole image to fit without cropping. Its image
+  grid track can shrink below the image's natural height to prevent overflow.
+  It lets the title flex through all available space between the site
   line and the bottom tags, hiding notes so title text gets that space. Only the
   visible cells plus
   a small buffer exist in the DOM. Dynamic values enter through DOM text nodes,
