@@ -403,9 +403,10 @@ the format is one it can read and the merge rules are written down here.
 
 ## 8. The review page
 
-Generated from the store, self-contained, opened from the filesystem. No server,
-no build step, no network at open time — the store's contents are embedded in
-the page, and the page is regenerated whenever it is wanted.
+Story content is generated from the local store and embedded in the page. The
+private hosted review uses a Worker and D1 to load and save judgments; its build
+is regenerated after a harvest. Downloaded review files remain self-contained
+and open from the filesystem without a server or network access.
 
 What it does, against O5 and O7:
 
@@ -418,7 +419,7 @@ What it does, against O5 and O7:
 | `verdict-rest(v)` | Apply a verdict to matching, unjudged stories on the current page only; existing judgments and off-page stories stay unchanged |
 | `undo()` | Reverses the last action, including a `verdict-rest`, as one action |
 | `export()` | Produces the verdict file (§9) |
-| `help()` | Lists each source's display name, slug, and configured Gmail search string |
+| `help()` | Explains review controls, automatic saving, and how to request a harvest; lists each source's display name, slug, and configured Gmail search string |
 
 Two properties every one of these keeps, because they are what a later
 refinement could quietly break: **each applies to a set rather than to a click
@@ -458,7 +459,10 @@ not included in the provenance-safe published page.
 
 ## 9. Verdicts, back into the store
 
-The fiddly part of the chosen option, as `decisions.md` said it would be.
+Hosted judgments save directly to D1 as described in §8. The file workflow
+below synchronizes saved judgments into the local harvesting store, and remains
+necessary for downloaded offline reviews. The following alternatives record
+the original offline design choice.
 
 | Option | Strengths | Weaknesses |
 |---|---|---|
@@ -466,9 +470,10 @@ The fiddly part of the chosen option, as `decisions.md` said it would be.
 | **B. The page writes the store directly** | No steps at all | Needs the File System Access API, so it is browser-dependent, and it puts write access to the durable thing in the disposable thing |
 | **C. A localhost helper the skill runs** | Immediate, and browser-independent | A process to start, a port to pick, and a second way into the store that has to stay consistent with the first |
 
-**Chosen: A, with B as an enhancement** where the browser supports it — and even
-then B writes the same file, not the store. The store is only ever written by
-the skill. That is the rule that keeps the page disposable.
+**For local store synchronization: A**, with B as an optional enhancement where
+the browser supports it. B would write the same verdict file, not the story
+store. The assistant imports that file into the local store; the hosted page
+writes only the judgment database.
 
 The file:
 

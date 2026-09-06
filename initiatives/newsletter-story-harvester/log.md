@@ -303,3 +303,18 @@ All 137 harvester tests pass, including real SQLite persistence, concurrent
 updates, Undo, rebuilds with new stories, authentication and request validation,
 and browser coverage for reloads, another browser, conflicts, and failed saves.
 The Worker build also passes. Screenshots use synthetic fixture stories.
+
+The owner-only test Site was updated successfully at 2026-09-06T07:20:57Z,
+version 6, at <https://newsletter-story-harvester-test.ken-novak.chatgpt.site>.
+Renderer source: `cb715bf40777553464b7730a360bf5576e6d98cc` (merged in PR #444).
+Sites source: `b88ec98133a67d4eb769564f01c62595a6deb496`.
+The deployed archive contains only the Worker, build manifest, hosting metadata,
+and D1 migrations; local verification database files are excluded.
+
+The generated Worker passed a local D1 save/read check after applying its
+migration. The pinned runtime supports compatibility date 2026-05-22, which is
+now the configured date. On the live Site, a temporary Keep followed by Undo
+advanced the database to revision 2. Reloading showed 307 unjudged of 321 and
+restored the original unjudged story. The 14 prior judgments remain preserved.
+The canonical protected local store and its pre-harvest backup were retained.
+Access remains owner-only; no production Site is recorded or released.
