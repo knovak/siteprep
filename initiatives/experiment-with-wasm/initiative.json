@@ -40,9 +40,9 @@
       "destination": "experiment-with-wasm",
       "root_html": "index.html",
       "prod": {
-        "deployed_at": "2026-09-07T18:55:14Z",
-        "commit": "471ff3ec5dffce79612cb0f728f8519f9a646d64",
-        "tree": "079127a67a283f7036bf55ea5e1aeceefc64f5c1"
+        "deployed_at": "2026-09-07T18:57:01Z",
+        "commit": "a7545f171dbd8079dabeb3eaa3337859d6e439fc",
+        "tree": "9e0d75f22a775ab4c4edf803b67675078626d368"
       }
     }
   ]

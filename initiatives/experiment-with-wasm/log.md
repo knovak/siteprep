@@ -27,3 +27,7 @@ The initiative README documents opening both apps, sample use, database backup a
 ## 2026-09-07 — Release
 
 Released to production — Demo, `471ff3e`. 1 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
+
+## 2026-09-07 — Release
+
+Released to production — Demo, `a7545f1`. 1 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
