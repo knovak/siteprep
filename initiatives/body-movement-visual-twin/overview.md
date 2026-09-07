@@ -7,15 +7,17 @@ practitioner review; each record retains its actual review status.
 
 The compact selector and all 140 studies are live in **private production
 version 3**, released September 6 at 18:36 PDT (September 7 at 01:36 UTC).
-Production remains owner-only. The test Site remains on its earlier version 5;
+Production remains owner-only. The test Site is now public, as requested on
+September 6, and remains on its earlier version 5;
 `initiative.json` records the source commit and version for each environment.
 
 - **Production:** [Body Movement Visual Twin](https://body-movement-visual-twin.ken-novak.chatgpt.site/).
-- **Test:** [Private validation Site](https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/).
+- **Test:** [Public validation Site](https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/).
 
 Further anatomy and practitioner findings can be incorporated when available.
-They are not a prerequisite for the authorized collection expansion. A public
-release remains a separate decision.
+They are not a prerequisite for the authorized collection expansion or the
+authorized public test access. Making production public remains a separate
+decision.
 
 ## What is already done
 
@@ -99,7 +101,7 @@ measured motion or growth beyond the current 140 studies are further choices,
 not hidden tasks you must supply before the current review can happen. Review
 findings may identify which improvements matter most.
 
-A public release would require a separate decision about audience plus the
+Making production public would require a separate decision about audience plus the
 rights/licensing/attribution/trademark review already reserved for a public
 successor. That is not a current gate for private use. Clinical personalization,
 movement scoring and treatment claims remain outside this version's scope.

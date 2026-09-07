@@ -112,3 +112,21 @@ now. (no need to wait for pratitioner review”.
 - The outstanding review-evidence todo remains a record of missing findings;
   it does not block this implementation. No production-release or access change
   is implied by this request.
+
+
+## 2026-09-06 — Make the test Site public
+
+**Make the existing Body Movement test Site public.** The user requested:
+“change the test site to be public”.
+
+### What this settles, and what it does not
+
+- The existing validation Site is accessible to anyone with its URL, without
+  signing in. This explicit request supersedes the earlier private-only test
+  audience.
+- This changes access to the current test version 5; it does not redeploy the
+  test Site or promote the 140-study production collection to it.
+- Production remains owner-only on version 3. The request does not authorize
+  public production access or create practitioner findings or review sign-off.
+- The test access change succeeded on September 6 at 20:58 PDT (September 7
+  at 03:58 UTC); anonymous root and viewer-module requests returned HTTP 200.

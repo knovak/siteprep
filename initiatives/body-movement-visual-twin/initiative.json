@@ -12,7 +12,7 @@
       "test": {
         "slug": "body-movement-visual-twin-validation",
         "url": "https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/",
-        "access": "private",
+        "access": "public",
         "deployed_at": "2026-09-06T07:25:28Z",
         "version": 5,
         "commit": "d2c85a33ef7e9c1763bf03acaa835a50d65bae03",
