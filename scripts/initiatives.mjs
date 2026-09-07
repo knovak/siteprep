@@ -1388,10 +1388,16 @@ export function recordDeployment(slug, env, {
 /**
  * How far production has fallen behind, from git.
  *
- * Best-effort by design. The commits recorded against the two environments are
- * the only inputs, so a deployment made before this existed, a rewritten
+ * Content first, history second, for the same reason `environmentCurrency` is
+ * keyed on a tree hash: this repository squash-merges, so the commit recorded
+ * against a release is routinely discarded by the merge that published it.
+ * Comparing commits alone reported a production whose files are exactly main's
+ * as behind, on the same card whose verdicts said it matched.
+ *
+ * Best-effort by design. A deployment made before this existed, a rewritten
  * history, or a source that moved under a different path all degrade to
- * "unknown" rather than to a wrong answer. Nothing here blocks a release.
+ * "unknown" rather than to a wrong answer, and a direction nothing established
+ * is never asserted. Nothing here blocks a release.
  */
 export function releaseState(entry) {
   const state = {
@@ -1422,15 +1428,34 @@ export function releaseState(entry) {
   }
 
   state.known = true;
-  if (prod.commit === head) {
+
+  // What production holds, by content: the recorded tree, or the tree that
+  // commit had where it still resolves. Matching main's source means current,
+  // whatever became of the commit.
+  const deployedTree = prod.tree || sourceTree(prod.commit, entry.source);
+  const currentTree = sourceTree('HEAD', entry.source);
+
+  if (prod.commit === head || (deployedTree && deployedTree === currentTree)) {
     state.summary = 'production is current';
     state.unreleased = 0;
   } else {
     state.changes = commitSubjects(prod.commit, head, entry.source);
     state.unreleased = state.changes.length;
-    state.summary = state.unreleased
-      ? `${state.unreleased} commit(s) unreleased`
-      : 'production is behind by an unknown amount';
+    if (state.unreleased) {
+      state.summary = `${state.unreleased} commit(s) unreleased`;
+    } else if (isAncestor(head, prod.commit)) {
+      // Released from a branch before it merged: main is behind production,
+      // and nothing on main is waiting to be released.
+      state.summary = 'released from a branch main has not merged';
+      state.unreleased = 0;
+    } else {
+      // The content is not main's and the recorded commit cannot place it -
+      // squashed away, or never in this history at all. There is no direction
+      // to report, so `known` is false and callers skip it.
+      state.known = false;
+      state.unreleased = null;
+      state.summary = 'released, and the released commit can no longer be placed';
+    }
   }
 
   if (test?.commit && test.commit !== prod.commit) {

@@ -481,16 +481,26 @@ record left half-migrated must not quietly stop being deployed.
 
 Two questions, answered from git rather than from anybody's memory.
 
-**Is production the latest?** `releaseState()` compares the commit recorded
-against `prod` with the source directory's current commit, and reports one of:
+**Is production the latest?** `releaseState()` compares what production holds
+with the source directory as it stands, and reports one of:
 
 | Summary | Means |
 | --- | --- |
 | `not released yet` | no production environment |
 | `on test, never released` | test exists, production does not |
-| `production is current` | the released commit is the source's latest |
+| `production is current` | the released content is the source's current content |
 | `N commit(s) unreleased` | that many commits have touched the source since |
+| `released from a branch main has not merged` | production has content main does not |
+| `released, and the released commit can no longer be placed` | the content differs and the recorded commit is unreachable |
 | `released, but the released commit is unknown` | nothing to compare against |
+
+It reads the recorded `tree` before the recorded commit, for the reason the
+currency verdicts do: a squash-merge discards the branch commit a release was
+recorded at, and comparing commits alone called a production whose files are
+exactly main's `production is behind by an unknown amount` - on the same card
+whose verdicts said it matched. The last two rows leave `known` false, so the
+digest and the release history skip them rather than counting an unreleased
+commit nothing established.
 
 It also reports `test_ahead` when the test environment's commit is a genuine
 descendant of production's - "different" is not "ahead". The summary appears

@@ -849,3 +849,34 @@ test('a recorded tree survives a commit that does not', async () => {
   };
   assert.equal(environmentCurrency(entry, 'prod').verdict, 'current');
 });
+
+test('a release whose commit was squashed away is current, not behind', () => {
+  // The overview card said "current with main" and "production is behind by an
+  // unknown amount" at once: the verdicts compare trees, and the release state
+  // compared a commit the squash-merge had already discarded.
+  const tree = execFileSync('git', ['rev-parse', `HEAD:${SITE}`], { cwd: ROOT, encoding: 'utf8' }).trim();
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([staticSite({
+      prod: {
+        slug: 'healthy',
+        url: 'https://healthy.example.chatgpt.site/',
+        commit: '0'.repeat(40),
+        tree
+      }
+    })])));
+
+  assert.equal(plan.release.summary, 'production is current');
+  assert.equal(plan.release.unreleased, 0);
+  assert.deepEqual(plan.release.changes, []);
+});
+
+test('a release that can be placed nowhere reports no direction at all', () => {
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'prod', '--json'],
+    scratch([staticSite({
+      prod: { slug: 'healthy', url: 'https://healthy.example.chatgpt.site/', commit: '0'.repeat(40) }
+    })])));
+
+  assert.equal(plan.release.known, false);
+  assert.equal(plan.release.unreleased, null);
+  assert.match(plan.release.summary, /can no longer be placed/);
+});
