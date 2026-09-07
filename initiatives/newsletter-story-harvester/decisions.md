@@ -831,3 +831,57 @@ verdict affects the current page's matching unjudged stories. Explicit cluster
 judgments still apply to the entire cluster. No change to the store/export
 contract or publication privacy boundary is implied. Production release remains
 outside this request.
+
+## 2026-09-07 — Which Newsletter Story Harvester refinement should come next?
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| **Add a dedicated harvest skill** | Turns the working but privacy-sensitive repeat-harvest protocol into a discoverable, consistent operation; directly removes the long prompt currently exposed in Help; can preserve the proven bounded-date, read-only-mailbox, stable-identity, judgment-preservation, private-file, and test-only-deployment safeguards | Medium scope and needs failure-path rehearsal against overlap, sender mismatch, extraction failure, and an existing judged collection; it improves operation rather than the review experience itself |
+| **Make hosted-to-local judgment reconciliation one guided operation** | Smallest direct reduction in routine friction; makes it harder to forget the export/import step before tagging, offline review, or publication while keeping an inspectable verdict file | The local handoff may happen less often than harvesting; it does not simplify adding new stories and still depends on a person initiating two systems |
+| **Publish a curated kept-and-emphasised Site** | Delivers the shareable reading surface promised by the wish using an already provenance-safe generator | Requires a separate publication and access decision, plus an explicit release; it creates another deployed surface before repeat loading is easier |
+| **Add saved compound filters** | Could make repeated review and publishing cuts easier as the collection grows beyond its current few hundred stories; aligns with the Bookmark Sorter selection model | Medium product and test scope, and current evidence does not yet show that single-tag filtering is the limiting step |
+| **Add a private harvest-health summary** | Small, owner-only visibility into missing or drifting sources using counts the run already records | Observability does not prevent an incorrect run, and one unusual issue could invite overreaction without longer-term evidence |
+| **Request another proposal round** | Leaves room for a need that the current optional menu missed or for evidence from more real review use | Keeps the initiative active without making the already documented choices cheaper to act on |
+| **Declare the initiative dormant** | Honestly records that the current private review system is sufficient and stops recurring sweep attention | Leaves repeat harvests dependent on reproducing the low-level protocol and long prompt correctly |
+
+### Recommendation
+
+**Recommendation: promote “Add a dedicated harvest skill” as the next
+actionable refinement.** The private collection, durable hosted judgments, and
+bounded Gmail harvest already work; the remaining recurring risk is having to
+reconstruct a long, privacy-sensitive handoff every time new stories are
+loaded. A named skill makes that operation discoverable while concentrating the
+safeguards that already proved necessary: explicit sources and dates, read-only
+mail operations, in-memory message bodies, mode-`0600` ignored inputs, stable
+store and story identities, preserved judgments, and no production deployment.
+
+This is a recommendation, not a decision. Merging this pull request accepts it;
+naming any other option in a review comment is enough to redirect it.
+
+### What would change the recommendation
+
+- Choose **hosted-to-local judgment reconciliation** instead if exporting and
+  importing judgments is causing more real-use mistakes than repeat harvesting.
+- Choose **the curated publication Site** if sharing selected stories is the
+  immediate goal and its access policy is ready to be decided.
+- Choose **saved compound filters** if ordinary review shows that retrieving
+  useful subsets, rather than loading new stories, is now the bottleneck.
+- Choose **the private harvest-health summary** if missing or drifting sources
+  have already occurred and detection is the immediate need.
+- Choose **dormant** if the current private test Site and manual loading protocol
+  are sufficient and no further refinement is worth active sweep attention.
+- Request **another proposal round** if the desired next improvement is absent
+  from this menu.
+
+### What this settles, and what it does not
+
+- It selects a dedicated harvest skill as the next actionable refinement; it
+  does not build or install the skill.
+- The implementation must keep the existing privacy, identity, overlap,
+  attribution, and failure boundaries and exercise them before adoption.
+- It does not authorize a mailbox run, test refresh, curated publication, or
+  production release.
+- All other menu entries remain optional in `notes.md` and can be promoted in a
+  later round.
