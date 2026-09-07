@@ -28,7 +28,7 @@ The offline provider always uses FES2022 model data, including where the hosted 
 
 ## Static demo output
 
-`work/scripts/build-demo.mjs` generates `work/site/` from `work/demo-src/`, the original `wish.md`, canonical `findings.md`, and recorded app artifacts. `release-initiative` copies that package to `demos/experiment-with-wasm/`. No runtime code loads from the initiative. Source path/commit strings in `provenance.json` identify the copies; they are not runtime dependencies. App snapshots are pinned as release inputs rather than recomputed from HEAD, preserving reproducibility after a squash merge.
+`work/scripts/build-demo.mjs` generates `work/site/` from `work/demo-src/`, the original `wish.md`, canonical `findings.md`, and recorded app artifacts. `release-initiative` copies that package to `demos/experiment-with-wasm/`. No runtime code loads from the initiative. Source initiative names, relative artifact names and commit records in `provenance.json` identify the copies without paths back into the mutable initiative tree. App snapshots are pinned as release inputs rather than recomputed from HEAD, preserving reproducibility after a squash merge.
 
 The landing page explains WASM before linking to the two applications, downloads and examples. The findings page renders the entire original wish, selection rationale, WASM boundaries, storage/backup behavior, tide coverage, evidence and Safari/iPad limits. Prompt history preserves the user requests. The original direct-file paths remain intact, while the initiative records the demo as an output.
 

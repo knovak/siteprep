@@ -1,20 +1,20 @@
 {
   "schema": "experiment-with-wasm/demo/v1",
   "repository": "https://github.com/knovak/siteprep",
-  "sourceDirectory": "initiatives/experiment-with-wasm/work/site",
-  "note": "Static release snapshot. Application HTML is copied byte for byte. Source paths identify provenance; no page loads code from those paths.",
+  "sourceInitiative": "experiment-with-wasm",
+  "sourceArtifact": "work/site",
+  "note": "Static release snapshot. Application HTML is copied byte for byte. Source initiative names, relative artifact names and commits identify provenance; they are not runtime dependencies.",
   "applications": [
     {
       "name": "Bookmark Sorter",
       "path": "bookmark-sorter/index.html",
-      "sourcePath": "initiatives/experiment-with-wasm/work/dist/index.html",
+      "sourceArtifact": "work/dist/index.html",
       "sourceCommit": "f3f9b481b890bf1db5e8c2764ef9e51a03b75937",
       "bytes": 1107016,
       "sha256": "2cc47a17f8cc933eab375dbdcf34510eba3f54eb61ed9e507aff4f246dd46260",
       "fork": {
         "source_repository": "https://github.com/knovak/siteprep",
         "source_commit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
-        "source_directory": "initiatives/bookmark-sorter/work",
         "files": {
           "bookmark-html.mjs": "25a7e820d2c3d731990a03116966cf59db9dc9c9292e07645dab9b6910b2a349",
           "url-key.mjs": "b8a86f7e355f19fc67c7b9f3fe18e28cdf9c539263b56567ab795dab1b187da5",
@@ -44,20 +44,21 @@
           "0008_authorized_user_identity.sql": "e7da0b53aba0518990b7f47125d813f0d7f85b65ee9c75ca8b614e3702b82b57",
           "0009_tag_removal.sql": "d7ef97ada9dd4449c07d1a9929f99c3f22c42a3b48d81e3c503b2b332c75e497",
           "0010_selection_pagination.sql": "54bfa7777e01e97f48709f401e9594feef666ea8a09d148b71336b7ecd059a5d"
-        }
+        },
+        "sourceInitiative": "bookmark-sorter",
+        "sourceArtifact": "work"
       }
     },
     {
       "name": "Tide Here",
       "path": "tide-here/index.html",
-      "sourcePath": "initiatives/experiment-with-wasm/work/tide-here/dist/index.html",
+      "sourceArtifact": "work/tide-here/dist/index.html",
       "sourceCommit": "a468fb203a6701f3d02c391833d595ece9fb9be8",
       "bytes": 39526881,
       "sha256": "8a840400e24a3d083374a5ee9a3e7bd8bb8b0c445a35d25b069c13a73f97873f",
       "fork": {
         "sourceRepository": "https://github.com/knovak/siteprep",
         "sourceCommit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
-        "sourceDirectory": "initiatives/tide-here/work",
         "files": {
           "phase-1/src/day-model.mjs": "dedea9903e8a03ad5f7c80868950400cc47db6e2e33a12bc20407238d467d149",
           "phase-4/src/astronomy.mjs": "02ebc4ad664292e23eb9db79a43eaad75769feae556126d1b7ed618a3656d366",
@@ -79,7 +80,9 @@
           "Complete existing 65,203-point FES coastal extract compacted for embedding",
           "GeoNames local catalogue replaces Nominatim; global model replaces live national providers",
           "No original application, hosting configuration or personal database copied or modified"
-        ]
+        ],
+        "sourceInitiative": "tide-here",
+        "sourceArtifact": "work"
       }
     }
   ]

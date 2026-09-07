@@ -51,18 +51,23 @@ try {
   await copyFile(join(work,'demo-src/prompts.txt'),join(stage,'prompts.txt'));
   for (const document of ['wish','findings','evaluation','verification']) await copyFile(join(initiative,document+'.md'),join(stage,document+'.txt'));
   const provenance = {schema:'experiment-with-wasm/demo/v1',repository:'https://github.com/knovak/siteprep',
-    sourceDirectory:'initiatives/experiment-with-wasm/work/site',
-    note:'Static release snapshot. Application HTML is copied byte for byte. Source paths identify provenance; no page loads code from those paths.',
+    sourceInitiative:'experiment-with-wasm',sourceArtifact:'work/site',
+    note:'Static release snapshot. Application HTML is copied byte for byte. Source initiative names, relative artifact names and commits identify provenance; they are not runtime dependencies.',
     applications:[]};
   for (const app of applications) {
     await mkdir(join(stage,app.slug));
     for (const file of ['index.html','build.json']) await copyFile(join(work,app.directory,file),join(stage,app.slug,file));
-    const sourcePath = `initiatives/experiment-with-wasm/work/${app.directory}/index.html`;
+    const sourceArtifact = `work/${app.directory}/index.html`;
     const snapshot = snapshots[app.slug];
     const commit = snapshot?.sourceCommit;
     if (!/^[0-9a-f]{40}$/.test(commit || '') || snapshot.sha256 !== app.hash) throw new Error('Record the committed application snapshot before packaging it.');
     const fork = JSON.parse(await readFile(join(initiative,app.slug==='tide-here'?'work/tide-here/fork-provenance.json':'fork-provenance.json'),'utf8'));
-    provenance.applications.push({name:app.name,path:app.slug+'/index.html',sourcePath,sourceCommit:commit,bytes:app.bytes,sha256:app.hash,fork});
+    // Published metadata identifies each initiative without pointing back into its mutable tree.
+    fork.sourceInitiative = app.slug;
+    fork.sourceArtifact = 'work';
+    delete fork.source_directory;
+    delete fork.sourceDirectory;
+    provenance.applications.push({name:app.name,path:app.slug+'/index.html',sourceArtifact,sourceCommit:commit,bytes:app.bytes,sha256:app.hash,fork});
   }
   await copyFile(join(work,'dist/SQLJS-LICENSE.txt'),join(stage,'bookmark-sorter/SQLJS-LICENSE.txt'));
   await copyFile(join(work,'tide-here/vendor/THIRD-PARTY-LICENSES.txt'),join(stage,'tide-here/THIRD-PARTY-LICENSES.txt'));
