@@ -233,7 +233,7 @@ static-folder-only `deploy-to-chatgpt-sites` skill.
 - `.openai/hosting.json` declares D1 as `DB` and R2 as `CAPTURES`. The first
   test deployment intentionally left R2 `null`; the user approved the storage
   limits on 2026-08-20, so later versions keep the capture binding declared.
-- `db/schema.ts` is the deployable final form of migrations 0001–0009. The
+- `db/schema.ts` is the deployable final form of migrations 0001–0010. The
   generated `drizzle/` migration is packaged with a Site version and creates the
   same tables, constraints, and query indexes on a fresh D1 database.
 - `worker/index.ts` passes `/` and `/api/*` to the existing application and
@@ -264,6 +264,65 @@ npm run build
 The root repository build remains a separate validation step for generated
 initiative pages. See `END_USER_TESTING.md` for the public-entry test procedure and
 the data-handling boundary.
+
+## Selection pagination and prefetching
+
+`D1BookmarkStore.selectionWindow` filters, counts, and limits in SQLite, then
+joins capture metadata and aggregates tags for only the requested cards. A
+3×12 window hydrates at most 48 cards (36 visible plus the existing 12-card
+buffer). It never calls `listAllItems`. The ordinary `/api/items` API and
+whole-collection export/import/proposal operations retain their existing paths.
+
+`selection-sql.mjs` uses the same parser and tag normalization as the in-memory
+evaluator. It resolves distinct stored tags to their raw and normalized aliases;
+only expressions that can match site or title keys read those distinct values.
+This preserves Unicode, exact/prefix/contains matching, Boolean precedence,
+literal tag-key/folder-key forms, and raw tags that share synthetic namespaces.
+These dictionaries can grow with collection diversity; they are lightweight
+keys, not hydrated bookmark records. Counts still examine matching rows in SQL.
+User values are bound as one JSON dictionary, so large expressions and tag sets
+do not exceed D1's 100-parameter limit. All queries retain collection ownership
+checks and a mandatory collection predicate.
+
+Migration 0010 and the Sites migration add `idx_items_collection_page` on
+`(collection_id, coalesce(added_at, ingested_at) DESC, id)`. The Drizzle schema
+declares the expression index; Drizzle 0.31.10 emits incorrectly quoted
+expression fragments, so the generated SQL statement is corrected to retain
+the expression. Migration tests execute the actual deployment SQL, and the
+6,001-item SQLite fixture checks the query plan uses the index.
+
+`GET /api/selection` accepts `after={date,id}` as URL-encoded JSON for stable
+forward paging, or the existing numeric `offset` for reverse/direct navigation.
+It returns the actual `offset`, collection/selection totals and backlogs.
+`counts_only=1` skips card hydration; `include_captures=0` omits capture statistics
+without clearing the browser's existing totals. Initial collection loads retain
+capture statistics; paging and verdict changes do not recalculate them.
+
+The client keeps at most one next-page promise/result for 30 seconds, keyed by
+collection, expression, layout and cursor. It also warms that page's stored
+image URLs. Navigation can consume an in-flight request. Collection, filter,
+layout and data changes discard or abort obsolete prefetches; older responses
+cannot replace the current grid. Failed prefetches silently fall back to an
+ordinary page request.
+
+A visible sweep sends optional `selection: {expression, after}` with its verdict
+request. The response includes lightweight post-write selection counts and the
+cursor's new offset. Swept IDs precede the cursor, so the next prefetched page
+remains valid even when those IDs leave the selection. The UI waits for the
+save acknowledgment, updates counts, and uses the prepared next page without
+the old `limit=1` refresh. A failed save invalidates the prefetch and leaves the
+current page available for retry. Sweep/Next/Previous are disabled during the
+save to prevent overlapping page sweeps. Other verdict/tag/Undo actions discard
+prefetched data before it can be reused.
+
+`test/selection-pagination.test.mjs` runs real SQLite against the deployed
+migrations, proving bounded card hydration, index use, grammar parity, owner
+isolation, cursor continuity, Undo and the optional capture/count API paths.
+`test/pagination.spec.mjs` runs the browser against those real Worker/D1 routes:
+3×12 sweeps reuse prefetched pages, filtered 90-item sweeps cover every item
+exactly once, failed saves can be retried, and delayed responses cannot replace
+a newly chosen collection. These fixtures measure work performed, not hosted
+network latency or a promised end-user speedup.
 
 ## Triage API and interaction
 

@@ -43,13 +43,18 @@ export function wrapUiSelection(collectionId, expression = '') {
   return String(expression).trim() ? `${scope} and (${expression})` : scope;
 }
 
+export function parseSelection(expression) {
+  const source = String(expression ?? '').trim();
+  return source ? new Parser(source).parse() : null;
+}
+
 /** Parse once and return a predicate over an item's ordinary and synthetic tags. */
 export function compileSelection(expression) {
   const source = String(expression ?? '').trim();
   if (!source) return () => true;
   const parser = new Parser(source);
   const ast = parser.parse();
-  return item => evaluate(ast, selectionTags(item));
+  return item => evaluateSelectionNode(ast, selectionTags(item));
 }
 
 export function evaluateSelection(items, expression, {collectionId = null} = {}) {
@@ -59,7 +64,7 @@ export function evaluateSelection(items, expression, {collectionId = null} = {})
 }
 
 export function selectionTags(item) {
-  const tags = new Set(item.tags || []);
+  const tags = ordinarySelectionTags(item.tags || []);
   if (item.collection_id) tags.add(`collection:${item.collection_id}`);
   tags.add(`verdict:${selectionVerdict(item.verdict)}`);
   tags.add(`image:${selectionImage(item.capture)}`);
@@ -67,7 +72,12 @@ export function selectionTags(item) {
   if (site) tags.add(`site:${site}`);
   const titleKey = item.title_key || normaliseTitle(item.title);
   if (titleKey) tags.add(`title:${titleKey}`);
-  for (const tag of item.tags || []) {
+  return tags;
+}
+
+export function ordinarySelectionTags(rawTags) {
+  const tags = new Set(rawTags);
+  for (const tag of rawTags) {
     tags.add(`tag-key:${encodeURIComponent(tag)}`);
     if (hasTagPrefix(tag, 'src')) {
       const key = normaliseSearchValue(tag.slice(4));
@@ -201,7 +211,7 @@ function siteKey(value) {
   catch { return ''; }
 }
 
-function evaluate(node, tags) {
+export function evaluateSelectionNode(node, tags) {
   if (node.type === 'tag') {
     if (node.match === 'prefix') {
       for (const tag of tags) if (tag.startsWith(node.value)) return true;
@@ -216,9 +226,9 @@ function evaluate(node, tags) {
     }
     return tags.has(node.value);
   }
-  if (node.type === 'not') return !evaluate(node.value, tags);
-  if (node.type === 'and') return evaluate(node.left, tags) && evaluate(node.right, tags);
-  return evaluate(node.left, tags) || evaluate(node.right, tags);
+  if (node.type === 'not') return !evaluateSelectionNode(node.value, tags);
+  if (node.type === 'and') return evaluateSelectionNode(node.left, tags) && evaluateSelectionNode(node.right, tags);
+  return evaluateSelectionNode(node.left, tags) || evaluateSelectionNode(node.right, tags);
 }
 
 class Parser {

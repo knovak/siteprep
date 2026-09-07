@@ -493,12 +493,16 @@ export function renderPilePage({isAdmin = false} = {}) {
       document.documentElement.dataset.theme = elements.themeMode.value;
       try { localStorage.setItem('bookmark-sorter-theme', elements.themeMode.value); } catch { /* The mode still works for this page. */ }
     });
-    const state = {importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}, collectionId = state.collectionId) {
       const headers = new Headers(options.headers || {});
       if (collectionId) headers.set('x-bookmark-collection-id', collectionId);
+      const mutates = options.method === 'POST' && !['/api/session', '/api/selections', '/api/selection-history'].includes(path);
+      if (mutates && !options.preservePrefetch) invalidatePrefetch();
       const response = await fetch(path, {...options, headers});
+      if (mutates && !options.preservePrefetch) invalidatePrefetch();
+      if (mutates && ['/api/import', '/api/import-json'].includes(path)) state.captures = null;
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Request failed');
       return data;
@@ -548,8 +552,11 @@ export function renderPilePage({isAdmin = false} = {}) {
       elements.exportScope.options[1].textContent = 'Current selection (' + state.total.toLocaleString() + ')';
       elements.exportFile.disabled = !state.collectionId;
       elements.eraseCollection.disabled = !state.collectionId || !state.collectionTotal;
-      elements.previousPage.disabled = state.loading || state.offset <= 0;
-      elements.nextPage.disabled = state.loading || !state.total || state.offset + state.visible >= state.total;
+      elements.sweepRest.disabled = state.sweeping || state.loading;
+      elements.undo.disabled = state.sweeping;
+      for (const button of document.querySelectorAll('button[data-verdict]')) button.disabled = state.sweeping;
+      elements.previousPage.disabled = state.sweeping || state.loading || state.offset <= 0;
+      elements.nextPage.disabled = state.sweeping || state.loading || !state.total || state.offset + state.visible >= state.total;
       if (elements.capturePassOne) elements.capturePassOne.disabled = state.loading || state.captureInProgress || !state.captures;
     }
     async function startSession() {
@@ -680,28 +687,79 @@ export function renderPilePage({isAdmin = false} = {}) {
       hideTagPopover(0);
       if (!state.items.length) {
         const holder = document.createElement('div');
-        addText(holder, 'p', 'empty', 'Import a bookmark HTML file to begin blind triage.');
+        addText(holder, 'p', 'empty', state.collectionTotal ? 'No bookmarks match this selection.' : 'Import a bookmark HTML file to begin blind triage.');
         elements.grid.replaceChildren(holder); elements.grid.removeAttribute('aria-activedescendant'); updateProgress(); return;
       }
       const cards = state.items.map((item, index) => { const card = renderCard(item, index); card.hidden = index >= state.visible; return card; });
       elements.grid.replaceChildren(...cards);
       setFocus(Math.min(state.focused, state.visible - 1, state.items.length - 1));
     }
-    async function loadWindow(offset = state.offset, {focusGrid = true} = {}) {
+    function windowContext() {
+      return JSON.stringify([state.collectionId, state.expression, state.visible, state.buffer]);
+    }
+    function cursorAfterPage() {
+      const item = state.items[Math.min(state.visible, state.items.length) - 1];
+      const date = item?.added_at ?? item?.ingested_at;
+      return item && date ? {date, id: item.id} : null;
+    }
+    function invalidatePrefetch() {
+      if (state.prefetch) state.prefetch.controller.abort();
+      state.prefetch = null;
+    }
+    function windowKey(offset, after) {
+      return windowContext() + JSON.stringify(after || offset);
+    }
+    function fetchWindow(offset, after, {signal, captures = false} = {}) {
+      const path = '/api/selection?limit=' + (state.visible + state.buffer) + '&offset=' + Math.max(0, offset)
+        + '&expression=' + encodeURIComponent(state.expression) + '&include_captures=' + (captures ? '1' : '0')
+        + (after ? '&after=' + encodeURIComponent(JSON.stringify(after)) : '');
+      return api(path, {signal});
+    }
+    function prefetchNext() {
+      if (state.importInProgress || !state.items.length || state.offset + state.visible >= state.total) return;
+      const offset = state.offset + state.visible, after = cursorAfterPage();
+      const key = windowKey(offset, after);
+      if (state.prefetch?.key === key) return;
+      invalidatePrefetch();
+      const entry = {key, controller: new AbortController(), created: Date.now(), promise: null};
+      state.prefetch = entry;
+      entry.promise = fetchWindow(offset, after, {signal: entry.controller.signal}).then(data => {
+        if (state.prefetch !== entry) return null;
+        entry.images = data.items.slice(0, state.visible).filter(item => item.capture_url).map(item => {
+          const image = new Image(); image.src = item.capture_url; return image;
+        });
+        return data;
+      }).catch(() => null);
+    }
+    function updateCounts(data) {
+      state.collectionTotal = data.collection_total; state.total = data.total;
+      state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog;
+      if (Object.hasOwn(data, 'captures')) state.captures = data.captures;
+      updateProgress();
+    }
+    async function loadWindow(offset = state.offset, {focusGrid = true, after = null, summary = null, usePrefetch = false} = {}) {
       const requestId = ++state.windowRequest;
-      const collectionId = state.collectionId;
-      state.loading = true;
+      const context = windowContext();
+      const entry = usePrefetch && state.prefetch?.key === windowKey(offset, after)
+        && Date.now() - state.prefetch.created < 30000 ? state.prefetch : null;
+      if (!entry) invalidatePrefetch();
+      state.loading = true; updateProgress();
       try {
-        const path = '/api/selection?limit=' + (state.visible + state.buffer) + '&offset=' + Math.max(0, offset) + '&expression=' + encodeURIComponent(state.expression);
-        const data = await api(path);
-        if (requestId !== state.windowRequest || collectionId !== state.collectionId) return;
-        state.collectionTotal = data.collection_total; state.total = data.total; state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog; state.captures = data.captures; state.offset = Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
+        let data = entry ? await entry.promise : null;
+        if (requestId !== state.windowRequest || context !== windowContext()) return;
+        if (!data) data = await fetchWindow(offset, after, {captures: state.captures === null});
+        if (requestId !== state.windowRequest || context !== windowContext()) return;
+        if (summary) data = {...data, collection_total: summary.collection_total, collection_backlog: summary.collection_backlog,
+          total: summary.total, backlog: summary.backlog, offset: summary.cursor_offset};
+        updateCounts(data);
+        state.offset = data.offset ?? Math.max(0, Math.min(offset, Math.max(0, data.total - 1)));
         state.items = data.items; state.focused = 0; renderGrid();
         if (state.collectionTotal) {
           if (!state.importInProgress) elements.importer.open = false;
           await startSession();
-          if (focusGrid && requestId === state.windowRequest && collectionId === state.collectionId) elements.grid.focus({preventScroll: true});
+          if (focusGrid && requestId === state.windowRequest && context === windowContext()) elements.grid.focus({preventScroll: true});
         }
+        if (requestId === state.windowRequest && context === windowContext()) prefetchNext();
       } finally {
         if (requestId === state.windowRequest) { state.loading = false; updateProgress(); }
       }
@@ -742,17 +800,17 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
 
     async function refreshSelectionCounts() {
-      const data = await api('/api/selection?limit=1&offset=0&expression=' + encodeURIComponent(state.expression));
-      state.collectionTotal = data.collection_total; state.total = data.total; state.backlog = data.collection_backlog; state.selectionBacklog = data.backlog; state.captures = data.captures;
-      updateProgress();
+      const context = windowContext();
+      const data = await api('/api/selection?counts_only=1&include_captures=0&expression=' + encodeURIComponent(state.expression));
+      if (context !== windowContext()) return;
+      updateCounts(data); prefetchNext();
     }
 
     async function pageWindow(delta) {
-      if (!state.total || state.loading) return false;
-      const lastOffset = Math.floor((state.total - 1) / state.visible) * state.visible;
-      const nextOffset = Math.max(0, Math.min(lastOffset, state.offset + delta * state.visible));
-      if (nextOffset === state.offset) return false;
-      await loadWindow(nextOffset);
+      if (!state.total || state.loading || state.sweeping) return false;
+      const nextOffset = delta > 0 ? state.offset + state.visible : Math.max(0, state.offset - state.visible);
+      if (nextOffset === state.offset || nextOffset >= state.total) return false;
+      await loadWindow(nextOffset, {after: delta > 0 ? cursorAfterPage() : null, usePrefetch: delta > 0});
       return true;
     }
 
@@ -863,6 +921,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function openCollection(id) {
       if (!id || id === state.collectionId) return;
       state.collectionId = id;
+      state.captures = null;
       state.session = null;
       state.sittingReport = null;
       if (elements.sittingReport) {
@@ -886,6 +945,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({action, ...payload}),
       });
+      state.captures = null;
       const deleted = action === 'delete-copy';
       await loadCollections(deleted ? '' : result.collection?.id || state.collectionId);
       state.session = null;
@@ -943,6 +1003,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
 
     async function changeTagsOnCurrentSelection() {
+      if (state.sweeping) return;
       await startSession();
       const tags = elements.tagInput.value.split(/[\\s,]+/).filter(Boolean);
       const mode = elements.tagMode.value === 'remove' ? 'remove' : 'apply';
@@ -970,23 +1031,48 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
 
     async function sweepCurrentPage() {
+      if (state.sweeping || state.loading) return;
       const ids = state.items.slice(0, state.visible).filter(item => !item.verdict).map(item => item.id);
       if (!ids.length) {
         const advanced = await pageWindow(1);
         elements.status.textContent = advanced ? 'No untriaged items on that page; showing the next page.' : 'No untriaged items on the final page.';
         return;
       }
-      await startSession();
-      const data = await api('/api/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({
-        session_id: state.session.id, item_ids: ids, verdict: elements.sweepVerdict.value,
-      })});
-      patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
-      clearMarks(); await refreshSelectionCounts();
-      const advanced = await pageWindow(1);
-      elements.status.textContent = verdictText(elements.sweepVerdict.value) + ' applied to ' + data.changes.length.toLocaleString() + ' untriaged item' + (data.changes.length === 1 ? '' : 's') + (advanced ? '; showing the next page.' : '; this is the final page.');
+      const context = windowContext(), requestId = state.windowRequest;
+      const collectionId = state.collectionId, expression = state.expression;
+      const after = cursorAfterPage(), offset = state.offset, total = state.total, visible = state.visible;
+      const verdict = elements.sweepVerdict.value;
+      state.sweeping = true; updateProgress();
+      elements.status.textContent = 'Saving verdicts…';
+      try {
+        await startSession();
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        const data = await api('/api/verdict', {method: 'POST', preservePrefetch: true,
+          headers: {'content-type': 'application/json'}, body: JSON.stringify({
+            session_id: state.session.id, item_ids: ids, verdict, selection: {expression, after},
+          })}, collectionId);
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
+        clearMarks();
+        const summary = data.selection;
+        const nextOffset = summary ? summary.cursor_offset : offset + visible;
+        const advanced = nextOffset < (summary?.total ?? total);
+        if (advanced) await loadWindow(offset + visible, {after, summary, usePrefetch: true});
+        else if (summary && summary.total !== total) {
+          invalidatePrefetch();
+          await loadWindow(Math.max(0, Math.min(offset, Math.floor((summary.total - 1) / visible) * visible)));
+        } else if (summary) updateCounts(summary);
+        if (context === windowContext()) elements.status.textContent = verdictText(verdict) + ' applied to '
+          + data.changes.length.toLocaleString() + ' untriaged item' + (data.changes.length === 1 ? '' : 's')
+          + (advanced ? '; showing the next page.' : '; this is the final page.');
+      } catch (error) {
+        invalidatePrefetch(); throw error;
+      } finally { state.sweeping = false; updateProgress(); }
     }
 
     async function sweepEntireSelection(confirmed = false) {
+      if (state.sweeping) return;
+      invalidatePrefetch();
       await startSession();
       const response = await fetch('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': state.collectionId}, body: JSON.stringify({
         session_id: state.session.id, expression: state.expression, verdict: elements.sweepVerdict.value, visible: false, confirmed,
@@ -997,6 +1083,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         elements.status.textContent = 'Entire-selection action cancelled.'; return;
       }
       if (!response.ok) throw new Error(data.error || 'Request failed');
+      invalidatePrefetch();
       patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
       elements.status.textContent = 'Applied the verdict to all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the current selection.';
       await refreshSelectionCounts();
@@ -1043,6 +1130,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       }
     }
     async function applyVerdict(verdict) {
+      if (state.sweeping) return;
       if (!state.total) return;
       await startSession();
       const focused = state.items[state.focused];
@@ -1057,11 +1145,11 @@ export function renderPilePage({isAdmin = false} = {}) {
       await moveFocus(1);
     }
     async function undo() {
-      if (!state.session || state.session.ended_at) return;
+      if (state.sweeping || !state.session || state.session.ended_at) return;
       const data = await api('/api/undo', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id})});
       state.backlog = data.backlog; state.session = data.session;
       elements.status.textContent = data.changes.length ? 'Undid the last action as one step.' : 'Nothing to undo.';
-      if (data.kind === 'tag-apply' || data.kind === 'tag-remove') await loadWindow(state.offset);
+      if (data.kind === 'tag-apply' || data.kind === 'tag-remove' || (!state.items.length && data.changes.length)) await loadWindow(state.offset);
       else { patchChanges(data.changes); await refreshSelectionCounts(); }
     }
     async function toggleSession() {

@@ -56,6 +56,7 @@ test('the generated deployment migration creates the complete final schema', asy
   for (const required of [
     'idx_collections_owner_personal',
     'items_collection_url_key_unique',
+    'idx_items_collection_page',
     'idx_items_collection_untriaged',
     'idx_capture_queue_pending',
     'idx_triage_actions_session_active',
