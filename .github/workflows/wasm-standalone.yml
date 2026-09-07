@@ -1,0 +1,65 @@
+name: Standalone WASM
+on:
+  pull_request:
+    paths:
+      - 'initiatives/experiment-with-wasm/**'
+      - 'demos/experiment-with-wasm/**'
+      - 'EXPERIMENT_WITH_WASM_TECHDOC.md'
+      - '.github/workflows/wasm-standalone.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'initiatives/experiment-with-wasm/**'
+      - 'demos/experiment-with-wasm/**'
+      - 'EXPERIMENT_WITH_WASM_TECHDOC.md'
+      - '.github/workflows/wasm-standalone.yml'
+permissions:
+  contents: read
+jobs:
+  standalone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            initiatives/experiment-with-wasm/work/package-lock.json
+            initiatives/experiment-with-wasm/work/tide-here/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: initiatives/experiment-with-wasm/work
+      - run: npm run setup:browsers:ci
+      - name: Rebuild the single-file application
+        run: npm run build
+        working-directory: initiatives/experiment-with-wasm/work
+      - name: Check distribution matches source
+        run: git diff --exit-code -- initiatives/experiment-with-wasm/work/dist
+      - name: WASM integration and offline browser tests
+        run: |
+          npm test
+          npm run test:browser
+        working-directory: initiatives/experiment-with-wasm/work
+      - run: npm ci
+        working-directory: initiatives/experiment-with-wasm/work/tide-here
+      - name: Rebuild standalone Tide Here
+        run: npm run build
+        working-directory: initiatives/experiment-with-wasm/work/tide-here
+      - name: Check Tide Here distribution matches source
+        run: git diff --exit-code -- initiatives/experiment-with-wasm/work/tide-here/dist
+      - name: Tide Here WASM parity and offline browser tests
+        run: |
+          npm test
+          npm run test:browser
+        working-directory: initiatives/experiment-with-wasm/work/tide-here
+      - name: Rebuild the static demo package
+        run: npm run build:demo
+        working-directory: initiatives/experiment-with-wasm/work
+      - name: Check demo package matches committed source
+        run: git diff --exit-code -- initiatives/experiment-with-wasm/work/site
+      - name: Verify static release packaging and website journeys
+        run: npm run test:demo
+        working-directory: initiatives/experiment-with-wasm/work

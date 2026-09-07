@@ -1,0 +1,49 @@
+{
+  "title": "experiment with wasm",
+  "summary": "Convert an existing web application into a standalone browser application powered by WebAssembly.",
+  "stage": "refining",
+  "value": "medium",
+  "outputs": [
+    {
+      "kind": "demo",
+      "path": "demos/experiment-with-wasm",
+      "status": "ready for review"
+    }
+  ],
+  "todo": [
+    {
+      "id": "verify-other-browsers",
+      "title": "Verify static and downloaded app use, persistence and recovery in Safari, Firefox and on iPad",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    },
+    {
+      "id": "refining-improvements",
+      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    }
+  ],
+  "brief": {
+    "generated_at": "2026-09-07T18:57:01Z",
+    "commit": "1676997afffee81fad7b40a642f0cd62391058ad",
+    "digest": "390c659d487247a2993eafaa5588b0d223a79a0a"
+  },
+  "deployments": [
+    {
+      "kind": "demo",
+      "source": "initiatives/experiment-with-wasm/work/site",
+      "destination": "experiment-with-wasm",
+      "root_html": "index.html",
+      "prod": {
+        "deployed_at": "2026-09-07T18:57:01Z",
+        "commit": "a7545f171dbd8079dabeb3eaa3337859d6e439fc",
+        "tree": "9e0d75f22a775ab4c4edf803b67675078626d368"
+      }
+    }
+  ]
+}

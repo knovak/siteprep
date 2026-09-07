@@ -1,0 +1,27 @@
+{
+  "sourceRepository": "https://github.com/knovak/siteprep",
+  "sourceCommit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
+  "sourceDirectory": "initiatives/tide-here/work",
+  "files": {
+    "phase-1/src/day-model.mjs": "dedea9903e8a03ad5f7c80868950400cc47db6e2e33a12bc20407238d467d149",
+    "phase-4/src/astronomy.mjs": "02ebc4ad664292e23eb9db79a43eaad75769feae556126d1b7ed618a3656d366",
+    "phase-4/vendor/suncalc-2.0.1.mjs": "5f19965472d4d142455648cd43dc8c4548ec2223b5f7469f660ad2521784469d",
+    "phase-4/vendor/SUNCALC-LICENSE.txt": "e8881f5d09f1f3c5e0e6ad4c2120521bad1079246a2af84d756af8ab1a53da3c",
+    "phase-6/index.html": "270570f8316766c33ca8ef7724698b3c8cff7e2e0f68d4bb4a34697504a24a5f",
+    "phase-6/app.mjs": "b37256f9df9210a5e23685d2dfc5b5388e01dc73e8cd69c44bccfe610c15cd3c",
+    "phase-6/styles.css": "66597799cf2925c353a08b23216874cae1a253ac10cabc712df4aa9a4c1e9575",
+    "phase-9/src/forecast.mjs": "badb78de7238f79770c78f53562d6200477293b15a55f3403f1759b5ae20ddd8",
+    "phase-12/src/fes-provider.mjs": "0e61c373e4d1c40f412952b98e92772e0d74367acce0c550b43d16775e5923d5"
+  },
+  "dataPackageSha256": "3df318013b4e14c1d693a0137d4f3d7958d3990f826e8e2e7640364e3c85795c",
+  "dataVersion": "2026-08-29-global-coast-r1",
+  "avisoLicenseSha256": "dba741dfcbd79ee9852591d0c0713ea35afa7be912447254751e6425d9a144f1",
+  "adaptations": [
+    "Local day and astronomy modules vendored with adjusted imports",
+    "Original styles and five-day card vocabulary; offline place and history controls",
+    "Same @neaps/tide-predictor 0.11.0 with Schureman corrections runs exclusively in QuickJS WASM",
+    "Complete existing 65,203-point FES coastal extract compacted for embedding",
+    "GeoNames local catalogue replaces Nominatim; global model replaces live national providers",
+    "No original application, hosting configuration or personal database copied or modified"
+  ]
+}
