@@ -16,3 +16,7 @@
 - Copy only the HTML into an unrelated directory, disable networking, and calculate five different coasts. Require five cards, tide events, astronomy and zero HTTP(S) requests.
 - Verify alternate-point selection, future dates, geolocation rejection, history reload/export/restore, storage-quota failure and startup failure without a tide fallback. Clear browser storage and require the embedded model still to calculate.
 - Inspect desktop and phone screenshots after the final repository build. Chromium is the currently verified engine; Safari and Firefox acceptance remains an actionable follow-up.
+
+## Static demo
+
+Four website checks compare every release file against `work/site/` except `demo.json`, verify the complete wish and local links/anchors, follow both app links through a plain static HTTP server and exercise them after networking is disabled, and check a 390-pixel layout with contained table scrolling. App HTML hashes must remain unchanged. Capture the final landing, findings and Demo TOC screenshots after the root build, then verify the branch preview after CI publishes it.

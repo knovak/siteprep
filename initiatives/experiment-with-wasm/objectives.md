@@ -11,3 +11,7 @@
 ## 2026-09-07 follow-up: Tide Here
 
 The user asked, "can you do the same for tide-here?" Add a second standalone application without moving or replacing the Bookmark Sorter file. Retain five coast-local days, high/low tide heights and times, sun/moon information, location selection, alternative coastal points, local history and export. Run the existing harmonic engine inside WebAssembly with all required data embedded. Explain the use of global-model predictions in place of live national services, offline place-search limits, coverage boundaries and data longevity.
+
+## 2026-09-07 follow-up: a static demo
+
+Extend PR #467 with the original wish, findings and both sample applications as a static website under `demos/`. The first page briefly explains WASM before linking to Bookmark Sorter and Tide Here. The published demo carries its runtime files in full, preserves source provenance, explains data persistence and iPad findings, and remains ready for review without merging automatically.

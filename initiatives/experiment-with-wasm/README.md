@@ -2,6 +2,8 @@
 
 Standalone forks of **Bookmark Sorter** and **Tide Here**, both powered by real WebAssembly with no backend or runtime network requests.
 
+The static demo is [experiment with wasm](../../demos/experiment-with-wasm/index.html). Its first page explains WASM and links to both apps. The [wish and findings](../../demos/experiment-with-wasm/findings.html) preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations. This demo is prepared in PR #467 and goes live after merge and Pages publication.
+
 - [Open Bookmark Sorter](work/dist/index.html): a browser database and the existing bookmark card interface.
 - [Open Tide Here](work/tide-here/dist/index.html): a single 39.5 MB HTML file carrying 65,203 global coastal harmonic points and 170,946 searchable places. Five days of tides, sun and moon are calculated locally for the chosen coast and date. See [Tide Here details and rebuild instructions](work/tide-here/README.md).
 
@@ -48,4 +50,10 @@ npm run test:browser
 
 The browser test uses the repository's pinned Playwright installation. Provision Chromium with the root `npm run setup:browsers` only if needed. The committed `work/dist/index.html` embeds the pinned WASM module and needs no build to run. `work/dist/build.json` records its byte counts and hashes. The license is embedded in the HTML and also provided as `SQLJS-LICENSE.txt`.
 
-[Fork provenance](fork-provenance.json) identifies the exact original commit and source hashes. [Specification](spec.md), [test plan](test-plan.md), and the root [technical documentation](../../EXPERIMENT_WITH_WASM_TECHDOC.md) describe the implementation. Work remains in this initiative pending human acceptance and any later graduation decision.
+[Fork provenance](fork-provenance.json) identifies the exact original commit and source hashes. [Specification](spec.md), [test plan](test-plan.md), and the root [technical documentation](../../EXPERIMENT_WITH_WASM_TECHDOC.md) describe the implementation. Source and build capabilities remain in the initiative; the published runtime is a complete, recorded copy under `demos/`.
+
+## Rebuild the static demo
+
+After rebuilding an application, record its committed HTML hash and source commit in `work/demo-src/applications.json`. Run `npm run build:demo` in `work/` to render the original wish and [findings](findings.md), verify both snapshots and stage the complete website in `work/site/`. Run `npm run test:demo` to compare the release copy with that package and exercise both apps through a static web address. Before a first release, set `WASM_DEMO_ROOT` to the absolute `work/site` directory to test the staged package.
+
+Publish updates through `release-initiative`; the root build generates the Demo TOC. The original direct-file app paths remain available so this website publication does not relocate anyone's local bookmark database. Transfer data from a downloaded file to the website by backup and restore.

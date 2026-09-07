@@ -7,9 +7,17 @@
   "todo": [
     {
       "id": "verify-other-browsers",
-      "title": "Verify direct-file persistence and recovery in Safari and Firefox",
+      "title": "Verify static and downloaded app use, persistence and recovery in Safari, Firefox and on iPad",
       "state": "actionable",
       "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    },
+    {
+      "id": "publish-static-demo",
+      "title": "Publish the wish, findings and both applications as a static demo",
+      "state": "actionable",
+      "value": "high",
       "effort": "medium",
       "advances_stage": false
     }
@@ -18,5 +26,13 @@
     "generated_at": "2026-09-07T18:24:58Z",
     "commit": "a468fb203a6701f3d02c391833d595ece9fb9be8",
     "digest": "04d72c25849b29f1d3cf0864be359b432044382a"
-  }
+  },
+  "deployments": [
+    {
+      "kind": "demo",
+      "source": "initiatives/experiment-with-wasm/work/site",
+      "destination": "experiment-with-wasm",
+      "root_html": "index.html"
+    }
+  ]
 }

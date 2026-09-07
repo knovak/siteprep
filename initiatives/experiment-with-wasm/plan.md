@@ -21,3 +21,12 @@ Verify direct-file persistence and recovery in Safari and Firefox before claimin
 3. Preserve coast-local dates, astronomy, location selection, alternative points, forecast history and portable exports; disclose provider differences.
 4. Compare actual WASM forecasts with original full-precision server results across world regions and a future date. Verify direct-file operation with networking disabled, storage failures, backup/restore, DST, polar conditions and phone layout.
 5. Extend this initiative's CI and ready-for-review PR, run the repository build, inspect final screenshots, and open the local app. Other browser acceptance and production graduation remain separate work.
+
+## Static demo requested for PR #467
+
+1. Preserve the wish and record findings in a canonical document.
+2. Generate a landing page, wish/findings page and complete app copies with downloads, licences and provenance.
+3. Verify static-hosted navigation, both app workflows after going offline, complete copying and phone layout; commit the package and release it through the demo workflow.
+4. Record the output and release, refresh the brief, run the final repository build, inspect demo/Demo TOC screenshots, update the existing PR, and verify its branch preview.
+
+Production follows a separately authorized merge. Safari, Firefox and real iPad verification remain actionable. Home Screen installation with explicit offline caching is a possible later increment, not part of this static publication request.

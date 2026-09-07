@@ -3,12 +3,14 @@ on:
   pull_request:
     paths:
       - 'initiatives/experiment-with-wasm/**'
+      - 'demos/experiment-with-wasm/**'
       - 'EXPERIMENT_WITH_WASM_TECHDOC.md'
       - '.github/workflows/wasm-standalone.yml'
   push:
     branches: [main]
     paths:
       - 'initiatives/experiment-with-wasm/**'
+      - 'demos/experiment-with-wasm/**'
       - 'EXPERIMENT_WITH_WASM_TECHDOC.md'
       - '.github/workflows/wasm-standalone.yml'
 permissions:
@@ -53,3 +55,11 @@ jobs:
           npm test
           npm run test:browser
         working-directory: initiatives/experiment-with-wasm/work/tide-here
+      - name: Rebuild the static demo package
+        run: npm run build:demo
+        working-directory: initiatives/experiment-with-wasm/work
+      - name: Check demo package matches committed source
+        run: git diff --exit-code -- initiatives/experiment-with-wasm/work/site
+      - name: Verify static release packaging and website journeys
+        run: npm run test:demo
+        working-directory: initiatives/experiment-with-wasm/work

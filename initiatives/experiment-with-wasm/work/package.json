@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:demo": "node scripts/build-demo.mjs",
+    "test:demo": "playwright test --config demo-test/playwright.config.mjs",
     "test": "node --test test/*.test.mjs",
     "test:browser": "playwright test --config test/playwright.config.mjs"
   },

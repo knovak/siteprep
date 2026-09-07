@@ -43,3 +43,9 @@ One direct engine measurement including VM initialization and a five-day Half Mo
 The source package is the existing derived FES2022b coastal extract, not the synthetic feasibility fixtures or the original 3.95 GB atlas. AVISO licence, source metadata, checksums, transformations and attribution are retained. Runtime and build details are in the Tide Here README and root technical documentation.
 
 Tide Here screenshots are written after the final repository build to `screenshots/wasm-tide-here-desktop.png` and `screenshots/wasm-tide-here-phone.png`. These tests establish implementation parity and offline behavior in Chromium; they do not establish new empirical model accuracy, perpetual forecast accuracy, or Safari/Firefox acceptance. The offline app always uses global-model predictions, with visible mean-sea-level datum and coverage limits.
+
+## Static demo package — 2026-09-07
+
+Four additional Chromium website checks cover complete file equality, the original wish, local links/anchors, Bookmark Sorter sample editing, Tide Here sample/second-coast calculations, and phone layout. Both app workflows produce no HTTP(S) requests after loading. This is separate from guaranteed offline reopening, which the website does not implement.
+
+The package preserves the standalone app hashes. Source is `work/site/` and the release copy is `demos/experiment-with-wasm/`; CI checks generated-package drift and release equality. Final post-build screenshots are `screenshots/wasm-demo-desktop.png`, `screenshots/wasm-demo-phone.png`, `screenshots/wasm-demo-findings.png` and `screenshots/wasm-demo-toc.png`. Actual iPad/Safari use remains unverified.

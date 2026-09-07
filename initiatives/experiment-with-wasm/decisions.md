@@ -28,3 +28,11 @@ Implementation choices within that requested conversion: reuse the actual 65,203
 The offline edition uses FES2022 model predictions everywhere. It cannot offer the online application's live NOAA/CHS forecasts or official-provider preference. Its independent place catalogue, 40 km model coverage limit, model datum and approximate nature are visible in the interface. Calculations do not have a fixed end-of-year cutoff, but this does not establish indefinite accuracy or future browser/time-zone compatibility.
 
 The existing reviewed FES package is transformed harmonic data, not redistribution of the original native atlas. Source checksums, prior transformations, attribution and licence links are retained. No original hosted application, production dataset or live bookmark database is changed. Graduation, production deployment and broader browser acceptance remain open.
+
+## 2026-09-07 — Publish the experiment as a static demo
+
+The user requested extending PR #467 with "the wish, and the findings you've discovered and the web pages you've created with the sample applications" and said, "I'd like this to deploy as a static website under demos/ . it's first page should have a brief explanation of wasm and then links to these first two applications."
+
+This authorizes preparing `demos/experiment-with-wasm/` in that PR, not a merge. It contains the landing page, complete original wish and findings, both applications and downloads, licences, provenance, verification and prompt history. Production goes live after merge and Pages publication.
+
+The original wish stays intact. Build sources remain in the initiative; the runtime is copied in full with source commits and hashes. Existing local-file paths remain available. The iPad and Home Screen offline-installation findings are documented as unverified/future work, not silently treated as implemented features.

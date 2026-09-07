@@ -27,3 +27,7 @@ Use the WASM build of [sql.js](https://github.com/sql-js/sql.js), pinned in the 
 ## Functional boundary
 
 This is a local, single-person fork. There is no cloud sign-in, user allowlist, cross-device sync, or background screenshot service. Manual image attachment supplies local card pictures. Portable bookmark JSON retains the original fields; full database backups additionally retain pictures, collections, selections, undo records and sitting history. The original applications and their deployments are unchanged.
+
+## Subsequent result
+
+The table above records the initial choice, not the final scope. The user's follow-up also converted Tide Here, using the complete available 65,203-point coastal model and a 170,946-place offline catalogue. Both applications are now included in the requested static demo. [findings.md](findings.md) records the resulting comparison and browser/storage limits.
