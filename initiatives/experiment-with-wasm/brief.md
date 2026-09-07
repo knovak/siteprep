@@ -6,14 +6,14 @@
 
 ## Done
 
-Evaluated both applications and forked Bookmark Sorter into a single HTML file with embedded SQLite WASM. Six integration tests and five offline Chromium browser tests verify local triage, import/export, persistence, pictures, backups and failure handling.
+Evaluated and converted both applications into self-contained HTML files: Bookmark Sorter uses SQLite WASM, while Tide Here runs its original harmonic engine inside WASM with 65,203 coastal points and 170,946 searchable places. Eleven integration tests and ten offline Chromium browser tests cover application behavior, persistence, recovery and tide calculation parity.
 
-The user's follow-up also converted Tide Here: a separate single HTML file carries 65,203 coastal model points and 170,946 searchable places, with the original harmonic engine running inside WebAssembly. Five integration and five offline browser tests cover numerical parity across 12 cases, coast-local days, astronomy, coverage, history backup/restore and storage failures.
+The static demo under `demos/experiment-with-wasm/` includes a WASM introduction, both apps and downloads, the original wish, findings, licences and provenance. Four website checks verify the complete copies, navigation, offline app use and phone layout; reproducible source and build tools remain in the initiative.
 
 ## Remaining work
 
-Verify direct-file behavior, persistence and recovery in Safari and Firefox before claiming support for those browsers. Both applications and their reproducible builds remain in this initiative.
+Verify static and downloaded-file behavior, persistence and recovery in Safari, Firefox and on a real iPad before claiming support. Propose optional refinements through review as the demo gets used.
 
 ## Optional later
 
-Human use can inform a later graduation decision. Bookmark Sorter's remote screenshot capture and cloud account administration, and Tide Here's live national-provider services, are outside the standalone editions.
+Home Screen installation with explicit offline caching is deferred. Bookmark Sorter's remote screenshot capture and cloud account administration, and Tide Here's live national-provider services, are outside the standalone editions.
