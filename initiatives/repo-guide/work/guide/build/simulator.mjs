@@ -103,17 +103,21 @@ export function buildSimulatorSteps(facts) {
   const factClass = vocabulary.unproposable_class;
   const budget = vocabulary.items_per_run;
   const phases = vocabulary.phases;
-  const firstPhase = phases[0];
-  const respondPhase = phases[Math.min(1, phases.length - 1)];
-  const proposePhase = phases[Math.min(2, phases.length - 1)];
-  const workPhase = phases.at(-1);
+  // These steps depict specific jobs. Inserting merge, deploy, or brief into
+  // the configured order must not change which job a step highlights.
+  const demonstratedPhases = ['survey', 'respond', 'propose', 'work'].map(name => {
+    const phase = phases.find(value => value === name);
+    if (!phase) throw new Error(`Simulator requires sweep.phases to include ${name}`);
+    return phase;
+  });
+  const [firstPhase, respondPhase, proposePhase, workPhase] = demonstratedPhases;
 
   const phaseStatus = (active, completed = []) => Object.fromEntries(phases.map(phase => [
     phase,
     completed.includes(phase) ? 'complete' : phase === active ? 'active' : 'waiting',
   ]));
   const idle = phaseStatus(null);
-  const allComplete = phaseStatus(null, phases);
+  const allComplete = phaseStatus(null, demonstratedPhases);
   const documentsFor = stage => vocabulary.stage_documents[stage] ?? [];
 
   const step = value => ({
@@ -194,8 +198,8 @@ export function buildSimulatorSteps(facts) {
       beats: [
         {at: 0, phases: phaseStatus(firstPhase), budget: {spent: 0, of: budget}},
         {at: 900, phases: phaseStatus(respondPhase, [firstPhase]), budget: {spent: Math.max(1, budget - 3), of: budget}},
-        {at: 1800, phases: phaseStatus(proposePhase, phases.filter(phase => phases.indexOf(phase) < phases.indexOf(proposePhase))), budget: {spent: Math.max(1, budget - 2), of: budget}},
-        {at: 2700, phases: phaseStatus(workPhase, phases.filter(phase => phase !== workPhase)), budget: {spent: budget - 1, of: budget}, items: [
+        {at: 1800, phases: phaseStatus(proposePhase, [firstPhase, respondPhase]), budget: {spent: Math.max(1, budget - 2), of: budget}},
+        {at: 2700, phases: phaseStatus(workPhase, [firstPhase, respondPhase, proposePhase]), budget: {spent: budget - 1, of: budget}, items: [
           {key: 'spec', label: 'Draft the specification', state: 'in-flight', detail: 'A ready pull request is open.'},
           {key: 'interaction', label: 'Choose the interaction style', state: 'blocked', detail: `${proposable}: still waiting`},
           {key: 'increment', label: 'Build the first increment', state: 'actionable', detail: 'Next in the ranking.'},

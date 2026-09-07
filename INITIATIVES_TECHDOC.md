@@ -809,6 +809,17 @@ what an initiative is, entries link to overview pages, the nav bar carries the
 Initiatives button, and document links never point at raw markdown.
 
 
+## Repo Guide simulator
+
+The generator in `initiatives/repo-guide/work/guide/build/simulator.mjs` reads
+the configured sweep phases and binds its demonstrated jobs to `survey`,
+`respond`, `propose`, and `work` by name. A missing required phase fails
+generation. Added phases such as `merge`, `deploy`, and `brief` stay visible
+without inheriting work or review highlights, and are not marked complete by
+beats that did not run them. Generator and browser regression checks cover the
+seven-phase configuration. Run `generate-guide` before releasing the three
+committed artifacts through `release-initiative` and `deploy-demo`.
+
 ## Newsletter review presentation
 
 `initiatives/newsletter-story-harvester/work/src/review-page.mjs` emits a

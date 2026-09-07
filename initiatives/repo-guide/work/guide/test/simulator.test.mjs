@@ -15,7 +15,7 @@ const syntheticFacts = {
   'lifecycle.stage_documents': {sketched: ['shape.md'], chosen: ['shape.md', 'choice.md']},
   'blockers.proposable': ['person'],
   'blockers.human': ['person', 'ledger'],
-  'sweep.phases': ['look', 'reply', 'start'],
+  'sweep.phases': ['survey', 'respond', 'propose', 'work'],
   'sweep.budget': {items_per_run: 3},
 };
 const dating = {
@@ -120,6 +120,30 @@ describe('simulator choreography', () => {
       'increment-one-branch', 'increment-two-branch', 'polish-finished']) {
       assert.equal(steps.find(step => step.id === id).phases[workPhase], 'active', `${id} highlights work`);
     }
+  });
+
+  test('additional sweep phases do not take over work, review, or proposal steps', () => {
+    const phases = ['survey', 'merge', 'respond', 'propose', 'work', 'deploy', 'brief'];
+    const {steps, vocabulary} = buildSimulatorSteps({...syntheticFacts, 'sweep.phases': phases});
+    assert.deepEqual(vocabulary.phases, phases);
+    for (const id of ['objectives-pr', 'assumption-breaks', 'plan-pr', 'critique-pr',
+      'increment-one-branch', 'increment-two-branch', 'polish-finished']) {
+      assert.equal(steps.find(step => step.id === id).phases.work, 'active', id);
+    }
+    const review = steps.find(step => step.id === 'review-returns');
+    assert.equal(review.beats.at(-1).phases.respond, 'active');
+    const sweep = steps.find(step => step.id === 'sweep-runs');
+    const active = sweep.beats.map(beat => Object.keys(beat.phases).find(phase => beat.phases[phase] === 'active'));
+    assert.deepEqual(active, ['survey', 'respond', 'propose', 'work', undefined]);
+    for (const phase of ['merge', 'deploy', 'brief']) {
+      assert.ok(steps.every(step => step.phases[phase] === 'waiting'), phase);
+      assert.ok(steps.every(step => (step.beats ?? []).every(beat => beat.phases[phase] === 'waiting')), phase);
+    }
+  });
+
+  test('a missing demonstrated phase fails instead of highlighting another job', () => {
+    assert.throws(() => buildSimulatorSteps({...syntheticFacts, 'sweep.phases': ['survey', 'respond', 'propose', 'brief']}),
+      /sweep.phases to include work/);
   });
 
   test('the redesigned walk-through shows the missing teaching steps', () => {

@@ -71,6 +71,13 @@ abstract: it never reads an `initiative.json`. Stage names, their expected
 documents, the proposable and unproposable human blocker classes, sweep phase
 names, and the per-run budget resolve from the fact registry at generation.
 
+The walk-through binds survey, review replies, proposals, and work to the
+configured `survey`, `respond`, `propose`, and `work` names. It fails if one is
+missing. Additional configured phases remain visible but gray when the story
+does not demonstrate them; their position cannot take over another phase's
+highlight. Browser checks derive the displayed phase count from the generated
+vocabulary, including the current seven-phase configuration.
+
 The walk-through covers the whole lifecycle — every derived stage, including one
 deliberate move backwards when an assumption breaks, and the quiet stages at the
 end. Its white, navy-accented page uses the description's figure palette. A

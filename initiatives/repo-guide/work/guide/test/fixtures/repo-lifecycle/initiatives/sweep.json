@@ -1,5 +1,5 @@
 {
-  "phases": ["look", "reply", "start"],
+  "phases": ["survey", "respond", "propose", "work"],
   "items_per_run": 3,
   "max_items_per_initiative": 1,
   "max_open_prs": 3,
