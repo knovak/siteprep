@@ -130,3 +130,23 @@ now. (no need to wait for pratitioner review”.
   public production access or create practitioner findings or review sign-off.
 - The test access change succeeded on September 6 at 20:58 PDT (September 7
   at 03:58 UTC); anonymous root and viewer-module requests returned HTTP 200.
+
+
+## 2026-09-06 — Make production public as well
+
+**Make the existing production release public.** After making test public,
+the user requested: “also change the prod release to be public”.
+
+### What this settles, and what it does not
+
+- Production is now accessible to anyone with its URL, without signing in.
+  This explicitly supersedes the earlier owner-only production audience and
+  the reservation of public access for a later successor.
+- Access changes on the existing production version 3 with all 140 studies;
+  no source files are redeployed and no release version or timestamp changes.
+- Test remains public on version 5. Future changes should preserve both public
+  audiences unless the user requests otherwise.
+- The request does not create practitioner acceptance or rights-review findings.
+  Existing source and review statuses remain unchanged.
+- Public production access took effect September 6 at 21:06:50 PDT (September 7
+  at 04:06:50 UTC).

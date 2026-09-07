@@ -5,10 +5,10 @@ and expanded collection now contain **60 Feldenkrais, 60 yoga, and 20 Alexander
 Technique studies**. The user authorized this expansion without waiting for
 practitioner review; each record retains its actual review status.
 
-The compact selector and all 140 studies are live in **private production
+The compact selector and all 140 studies are live in **public production
 version 3**, released September 6 at 18:36 PDT (September 7 at 01:36 UTC).
-Production remains owner-only. The test Site is now public, as requested on
-September 6, and remains on its earlier version 5;
+The user made both production and test public on September 6. Production
+remains version 3 and test remains on its earlier version 5;
 `initiative.json` records the source commit and version for each environment.
 
 - **Production:** [Body Movement Visual Twin](https://body-movement-visual-twin.ken-novak.chatgpt.site/).
@@ -16,8 +16,7 @@ September 6, and remains on its earlier version 5;
 
 Further anatomy and practitioner findings can be incorporated when available.
 They are not a prerequisite for the authorized collection expansion or the
-authorized public test access. Making production public remains a separate
-decision.
+authorized public access to both environments.
 
 ## What is already done
 
@@ -46,9 +45,9 @@ practitioner findings, the remaining context is:
    exported JSON reports, outside the source repository. The current Site
    does not collect reports centrally. An email handoff can be configured after
    an inbox is chosen.
-3. **Authorize the invitations when ready.** Production is currently
-   owner-only; publishing it did not invite anyone. Reviewer access can be
-   granted once the people and intended audience are settled.
+3. **Authorize the invitations when ready.** Both Sites are publicly
+   accessible; reviewers can open the links without an access grant. Making
+   access public did not send invitations.
 4. **Return or arrange the review findings.** Include accepted claims, disputed
    claims and concrete corrections. Also try the corrected model yourself and
    report visible problems; your display feedback remains useful even when it
@@ -101,10 +100,11 @@ measured motion or growth beyond the current 140 studies are further choices,
 not hidden tasks you must supply before the current review can happen. Review
 findings may identify which improvements matter most.
 
-Making production public would require a separate decision about audience plus the
-rights/licensing/attribution/trademark review already reserved for a public
-successor. That is not a current gate for private use. Clinical personalization,
-movement scoring and treatment claims remain outside this version's scope.
+The user explicitly authorized public access to the current production release.
+That audience decision does not supply rights/licensing/attribution/trademark
+findings or practitioner acceptance; those records remain as documented.
+Clinical personalization, movement scoring and treatment claims remain outside
+this version's scope.
 
 ## Evidence and project records
 
