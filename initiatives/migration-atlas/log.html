@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log — World Migration Atlas</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Log — World Migration Atlas</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to World Migration Atlas</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Log</h2>
+    </div>
+    <div class="card-content">
+<h2>Log</h2>
+<h3>2026-09-07 — Adopt the existing World Migration Atlas</h3>
+<p>Created the initiative around the existing working demo, following the user&#39;s migration-only request. Preserved the supplied wish and linked its prompt history. Adopted the original specification and implementation plan without changes and retained the complete supplied README with current context. Added objectives, decisions, provenance, and a test plan grounded in those records.</p>
+<p>Copied all nine repository demo files unchanged into <code>work/</code> and registered the existing demo as the output and the destination for a later release. The adoption manifest records the source commit, hashes, and attachment provenance. The existing production demo, application behavior, research data, and deployment scripts are unchanged.</p>
+<p>The initiative rests pending user testing and an explicit production-release decision. Historical build phases and prompts are not treated as fresh instructions to change code.</p>
+<h4>Adoption verification</h4>
+<p>The nine source files and two adopted attachments passed byte-for-byte comparisons; the supplied README was confirmed intact within the new README. <code>npm ci</code> installed the repository dependencies successfully with no reported vulnerabilities.</p>
+<p>A Chromium browser check of <code>work/index.html</code> via <code>file://</code> passed: 48 migration records; initial type coloring; legend and color toggles; identical canvas output after scrubbing away from and back to 1880; 48 table rows and an opening detail panel; Irish-migration search; playback; wheel zoom and drag pan. A 390×844 touch-emulated page rendered without horizontal overflow and its legend opened. No uncaught page errors were observed. This is migration verification, not a rerun of the historical T1–T8 suites.</p>
+<p>The repository build passed, including generated initiative/README and deployment-preview checks. Visual inspection confirmed the atlas rendering. The generated-page link check identified Markdown document targets that needed the published <code>.html</code> suffix; those navigation links were corrected without modifying the adopted specification or plan.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="main" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
