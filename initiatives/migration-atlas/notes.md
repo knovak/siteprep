@@ -1,23 +1,53 @@
-# Adoption provenance
+# Provenance
 
-Adopted on 2026-09-07 from repository path `demos/world_migration_atlas/`, last changed at commit `37e1a5f1306b1386562e95133580547c3490d38a`. All nine files are copied unchanged into `work/`; no production file is moved or deleted. This preserves the existing public demo while establishing the initiative source for future maintenance and test deployment.
+Two packages make up this initiative, adopted on 2026-09-07.
 
-| File within `work/` | Bytes |
-| --- | ---: |
-| `data/basemap/land110.json` | 86750 |
-| `data/basemap/land50.json` | 1016502 |
-| `data/migrations.json` | 44464 |
-| `dist/migration-atlas.html` | 1254652 |
-| `index-initial.html` | 1254896 |
-| `index.html` | 1254896 |
-| `prompts.html` | 8703 |
-| `prompts.txt` | 5217 |
-| `src/index.html` | 16809 |
+## The published demo, adopted as `work/`
 
-`adoption-manifest.json` in the initiative source records the full SHA-256 hash for each file and the two unchanged attachments, plus the supplied README hash. It is a provenance record, not executable code. The original README is retained as the final section of the current README without editing its content.
+From `demos/world_migration_atlas/`, introduced by commit
+`04de6ead060bd230b242a320279e943708cb2ae2` (2026-09-03).
 
-The files named `index.html` and `index-initial.html` are identical in the adopted demo; `dist/migration-atlas.html` is a distinct original artifact and is preserved separately. No bundle is regenerated. The dataset has 48 migration records. `src/index.html` is a development shell, not a complete development tree. Additional code found alongside the named attachments in the download folder is outside the adopted repository source and has not been substituted for it.
+An earlier version of this file and of `adoption-manifest.json` named
+`37e1a5f1306b1386562e95133580547c3490d38a` as the source commit. That object
+does not exist in this repository and never did: `git cat-file -t` cannot
+resolve it and it appears in no branch. It was a branch commit that this
+repository's squash merge discarded - the failure mode
+`INITIATIVES_TECHDOC.md` describes under "Currency". The commit above is the one
+`git log -- demos/world_migration_atlas` reports, and it resolves.
 
-The supplied specification and plan retain their July 2026 titles, version, original 44-entry research list, historical directory names, and later E1–E7 extensions. Current navigation and source-location explanations live in the README and other initiative documents so those originals remain intact.
+## The development package, adopted as `lib/`
 
-The deployment includes an empty `prod` record to identify the existing released demo. Its pre-initiative release timestamp and source commit are unknown; this adoption does not invent a release receipt or create `releases.md`. The deployment planner therefore reports “released, but the released commit is unknown.” Its static file counter excludes `dist/`; the complete copied snapshot and build preview contain nine files, as listed above.
+From `migrationatlascomplete2.zip`, supplied by the user on 2026-09-07 as the
+complete July 2026 code base. 28 files; SHA-256
+`645c73d88b84d9b70eb602a1807b284ef217f89e6e1d5afbd9f0a8ee68d40969`. Everything
+in it is committed under `lib/` except its three markdown documents, which the
+first adoption had already taken as `spec.md`, `plan.md` and the preserved
+section of `README.md`.
+
+Those three hashes were recorded before the package arrived and could not be
+checked against anything. All three now match the package byte for byte, which
+is what `adoption-manifest.json` records under `documents[].verified_against_package`.
+
+The package's `data/` files are identical to the ones the demo shipped, and its
+`data/migrations.json` holds the same 48 records the bundle inlines. Its
+`dist/migration-atlas.html` and `src/index.html` differ from the demo's copies:
+the package is the state of the source before the branding edits listed in
+`decisions.md` were made to the bundle. Those edits are ported into `lib/src/`,
+so the build reproduces the published `work/index.html` exactly.
+
+`lib/data/basemap/ne_50m_land_raw.geojson` is an upstream input that nothing
+reads and no script regenerates. It is kept as the only record of where the
+basemap came from.
+
+## Two things to know before the next release
+
+`demos/world_migration_atlas/` has no `demo.json`. Its title, description and
+the two tutorial links are hardcoded in `scripts/build.sh`, in
+`get_demo_description`. `release-initiative` runs `deploy-demo`, which writes a
+`demo.json` into the destination - so after the first release the demo will have
+two sources for the same index entry, and the hardcoded branch wins. Nothing
+breaks; it is worth knowing rather than rediscovering.
+
+`spec.md` and `plan.md` are preserved originals and are not edited to match this
+repository's writing-style rules. Wording in them that those rules discourage is
+July 2026 text, not a lapse to correct.

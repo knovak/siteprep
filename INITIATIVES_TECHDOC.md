@@ -274,6 +274,15 @@ both a demo and a Site.
 Only `kind` and `source` are required. `deployed_at`, `version`, `commit` and
 `tree` are written by the deploy skills, not by hand.
 
+An **empty environment block** is the one part of this written by hand.
+`releaseState` treats any present `prod` as released, so `"prod": {}` says "this
+was released before the initiative existed, and the commit is not recoverable" -
+the deployment reads *released, but the released commit is unknown* rather than
+*not released yet*, and `plan --env prod` plans a replacement rather than a new
+target. World Migration Atlas uses it: its demo was published months before it
+was adopted. Do not invent a `commit` or a `deployed_at` to fill the gap; the
+next real release records both.
+
 ### Kinds
 
 A **kind** decides which environments exist, which of them are recorded rather

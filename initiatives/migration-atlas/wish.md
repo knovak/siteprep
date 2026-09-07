@@ -1,6 +1,6 @@
 # Wish
 
-## 2026-09-07
+## July 2026
 
 Imagine an interactive map animation of showing international migrations and diaspora in recorded history. Perhaps start in 1000 A.D. Be sure to include people that moved due to oppression, forced labor for slavery, civil chaos, such as the collapse of empires, voluntary migration, etc.
 
@@ -12,7 +12,4 @@ Do initial research, and make a detailed specification with these requirements, 
 
 It would be ideal if the program could be readily modified for the addition of new movements as new research discovers them. It would also be ideal if it could run locally, without reference to an online server. If there are reasons to prefer an online server, identify those reasons and present them as an alternative implementation.
 
-## Prompt history
-
-[Read the original prompts and subsequent refinements](../../demos/world_migration_atlas/prompts.html).
-The same `prompts.html` and `prompts.txt` are preserved unchanged in this initiative's `work/` snapshot and test preview.
+[The original prompts and subsequent refinements.](../../demos/world_migration_atlas/prompts.html)
