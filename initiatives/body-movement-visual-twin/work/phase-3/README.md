@@ -1,15 +1,15 @@
 # Phase 3 anatomical movement collection
 
-This increment is a selectable 43-entry validation collection: the original
-Feldenkrais, yoga, and Alexander Technique records plus twenty additional yoga
-and twenty additional Feldenkrais anatomical studies. It remains private,
+This increment is a selectable 140-entry collection: 60 Feldenkrais, 60 yoga, and
+20 Alexander Technique studies. The user approved expansion on September 6,
+2026 without waiting for practitioner review. It remains private,
 `noindex`, educational, and unreviewed. Its primary purpose is to display the
 changing fitted-reference bones, joints, and muscle paths rather than guide a
 viewer through performing a movement.
 
 ## Records and clips
 
-`scripts/build-movement-library.mjs` generates the forty added records under
+`scripts/build-movement-library.mjs` generates the 137 added records under
 `records/`, the complete `data/collection.json`, and the complete
 `data/movement-clips.json`. The yoga studies cover Tadasana with an arm sweep,
 Virabhadrasana II, Utthita Trikonasana, Utkatasana, and Uttanasana. The
@@ -20,7 +20,7 @@ all anatomical wording and keyframes are project-authored estimates. Every
 record retains an explicit caution, provisional rights basis, and `unreviewed`
 practitioner and anatomy status.
 
-`data/movement-clips.json` holds 43 distinct project-authored keyframe clips on
+`data/movement-clips.json` holds 140 distinct project-authored keyframe clips on
 the Phase 0 shared rig. They are illustrative geometry, not motion capture,
 biomechanics, force, load, or individual anatomy.
 
@@ -52,8 +52,8 @@ node --test initiatives/body-movement-visual-twin/work/phase-3/test/*.test.mjs
 ./node_modules/.bin/playwright test --config initiatives/body-movement-visual-twin/work/phase-3/playwright.config.mjs
 ```
 
-The data tests validate all 43 records and sources, prove that removing the
-non-geometric context makes each entry incomplete, verify 43 distinct
+The data tests validate all 140 records and sources, prove that removing the
+non-geometric context makes each entry incomplete, verify 140 distinct
 bounded clips on known rig nodes, and rerun the eight-millimetre registration
 check for every clip. Browser tests cover selection, single-session
 acknowledgement, viewport-height animation, fixed projection, named camera
@@ -199,5 +199,69 @@ at each interpolated time, using the scaled reference ankle as the anchor.
 This fixes the foot drift left between the previously corrected chair-pose and
 standing-fold keyframes. Ankle explorations and raised feet retain their authored
 rotation. Tests sample both planted clips at 101 times and three statures, check
-seated forward toe direction, and interpolate all 43 clips. The private browser
+seated forward toe direction, and interpolate all 140 clips. The private browser
 suite loads and visibly animates every addition on desktop and phone.
+
+
+## Compact library and 140-study expansion (2026-09-06)
+
+The compact collection card replaces the long native select with a searchable
+popup in the same charcoal/mint control layout. Its closed state contains the
+collection count, selected name, tradition/position, and a Variations disclosure.
+The popup overlays adjacent controls and chooses upward or downward placement
+from available viewport space. It includes English/Sanskrit alias search,
+tradition counts, body-region filtering, grouped results, the current selection,
+an empty-state reset, Escape dismissal, and arrow-key result navigation.
+The native select is hidden only after the picker mounts; record reading and
+selection also work in the no-WebGL fallback. No selection or review data is
+persisted in browser storage.
+
+`src/movement-picker.mjs` owns popup interaction and compact metadata.
+`src/movement-library.mjs` owns accent-insensitive matching and display variants.
+Smaller range halves each excursion from the authored first pose, preserving
+the starting arrangement, pauses, and timing. Mirroring reflects the rig across
+its sagittal plane, swaps left/right anatomical readout IDs, and reverses lateral
+and axial rotations. Smaller-range display also retains the full-range projection envelope, avoiding
+an automatic zoom change. Display variants preserve camera, layer and timeline; a new
+movement resets variants and time. Variants are not extra library entries.
+Claim reports still target the original record and exact original claim paths;
+a visible mirrored-display note explains that boundary.
+
+`scripts/expanded-studies.mjs` defines 97 additions: 39 Feldenkrais, 39 yoga,
+and 19 Alexander studies. Each has independent joint waypoints, a starting
+position, an original description, and navigation metadata. The earlier 43
+records keep their IDs. `scripts/expanded-library.mjs` generates the new record
+contexts, timings and per-record sources, plus navigation for earlier entries.
+All generator outputs are deterministic and bundled by Phase 6.
+
+Feldenkrais groups follow body regions and include seated, standing, back-lying,
+side-lying and rolling themes. Yoga groups follow starting position, covering
+standing balances, folds, seated arrangements, prone/supine backbends, and
+pre-positioned inverted arrangements. Alexander groups follow everyday activity:
+resting/sitting, standing/walking, bending/reaching, lifting/carrying, and desk
+activities. The latter are activity studies, not a canonical exercise list.
+
+The new Feldenkrais clips pause initially and hold the final eight seconds for
+rest; Alexander clips pause for four seconds before the activity. Named yoga
+sources establish posture families, not the correctness of the generated
+angles. Source descriptions do not reproduce lessons or third-party media.
+Deep folds, hand binds, support contacts, balance and loading remain illustrative;
+individual record notes identify these limitations. New muscle highlights are
+explicitly provisional stabilisation hypotheses, not measured activity.
+
+Verification includes exact 60/60/20 totals; schema/source completeness;
+distinct motion signatures including oriented skull landmarks; finite geometry
+at every waypoint; mirrored world-space landmarks; smaller-range excursions;
+rest/pause timing; and planted sagittal feet at 101 times and three statures.
+Desktop/phone browser coverage exercises the overlay, search, filters, keyboard,
+variants, canonical reports, and every one of the 140 animations in the private
+bundle. Anatomy/tradition review remains separate evidence; it is not a
+prerequisite for this authorized expansion.
+
+
+Folded-leg additions orient the thigh's knee-hinge plane from authored thigh
+and shin directions. Knee flexion stays on the existing X hinge; this prevents
+crossed seats from becoming dangling-leg poses. Regression checks require the
+shins to approach the midline in the seated plane. The downward-dog study is
+also checked for a hip apex with head and feet on opposite sides. These are
+geometric checks, not a general joint-limit or support-contact solver.

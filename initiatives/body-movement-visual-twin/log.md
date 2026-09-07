@@ -106,3 +106,7 @@ Released to production — ChatGPT Site, version 2, `d2c85a3`. 1 commit(s) since
 ## 2026-09-06 — Release
 
 Released to production — ChatGPT Site, version 2, `d2c85a3`. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.
+
+## 2026-09-07 — Implement the approved compact selector and 60 Feldenkrais, 60 yoga, 20 Alexander studies
+
+Implemented the approved compact picker and exactly 60 Feldenkrais, 60 yoga, 20 Alexander studies without waiting for practitioner review. Added real smaller-range and mirrored displays, sources and timed context; 44 data/geometry tests, 28 collection browser checks, six private-bundle checks and four targeted framing checks passed. All 140 studies animate on desktop and phone; records remain unreviewed.

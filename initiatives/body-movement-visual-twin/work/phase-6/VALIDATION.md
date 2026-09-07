@@ -69,3 +69,30 @@ release remains a separate successor decision and legal review.
 - **Packaging:** the installed Sites plugin no longer contains the initializer named by the older repository helper. Preparation stopped before creating a workspace or building anything. The release used the current Sites-supported static-only path in a fresh isolated workspace with `static.directory: dist`, followed by the bundled packaging helper. No source content or release gate was changed.
 - **Cleanup:** the unique temporary deployment workspace was removed. The source repository status matched its pre-deployment baseline before these intentional release/status records were written.
 - **Review status:** production availability does not mark anatomy or tradition claims reviewed. `phase-6-practitioner-review` remains blocked on reviewer details, a feedback destination and the remaining human findings. See the [current status and next steps](../../overview.md).
+
+
+## September 6, 2026 — Compact 140-study collection
+
+Local implementation now contains exactly 60 Feldenkrais, 60 yoga, and 20
+Alexander Technique studies. The user authorized expansion without waiting for
+practitioner review; all records retain `unreviewed` status. This entry records
+local engineering checks, not a deployment or practitioner sign-off.
+
+- 44 geometry, movement-contract, navigation, variant, report, and bundle tests
+  passed across Phases 0–6.
+- 28 collection browser checks passed on desktop and phone. These include the
+  compact overlay, diacritic/Sanskrit search, combined filters, keyboard support,
+  viewport containment, variations, original report paths, and accessibility.
+- Six private-bundle browser checks passed, including loading and visibly
+  animating every one of the 140 entries on both desktop and phone.
+- Four targeted browser checks passed after making smaller-range framing use
+  the original full-range envelope, preventing a comparison from auto-zooming.
+- All 97 new studies were inspected in side/front contact sheets. Crossed-leg
+  and related seated arrangements were corrected to keep the shin in the seat
+  plane; downward dog was corrected to form an inverted V. Pose regression
+  checks cover both corrections. Contact and loading remain approximate.
+- Repeating both generators reproduced every collection and bundle file
+  byte-for-byte. The repository build and final UI screenshots accompany the PR.
+
+The existing private production and test releases are unchanged by these local
+checks; `initiative.json` remains the authority for deployed versions.

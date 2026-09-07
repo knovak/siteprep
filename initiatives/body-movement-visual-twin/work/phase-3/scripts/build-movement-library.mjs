@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 import { globalMatrices, transformPoint } from '../../phase-0/scripts/rig-math.mjs';
 import { additionalStudies } from './additional-studies.mjs';
+import { expandedStudies } from './expanded-studies.mjs';
+import { buildExpandedStudy, legacyNavigation } from './expanded-library.mjs';
 
 const phaseDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const recordsDirectory = resolve(phaseDirectory, 'records');
@@ -336,19 +338,26 @@ for (const study of additionalStudies) {
   ]);
 }
 
+const expanded = expandedStudies.map(buildExpandedStudy);
+for (const study of expanded) {
+  records.push(study.record);
+  clips[study.record.id] = study.clip;
+}
+
 // +Z is anterior. Hip flexion takes a downward thigh toward +Z (negative X),
 // while knee flexion uses positive X. Counter-rotate the ankles in planted
 // sagittal studies and translate the root to retain the reference ankle height.
 const referenceRig = JSON.parse(await readFile(resolve(phaseDirectory, '../phase-2/data/rig-core.json'), 'utf8'));
-for (const id of ['chair-pose-study', 'standing-forward-fold-study']) {
+for (const id of Object.keys(clips).filter(id => clips[id].planted_sagittal_feet || ['chair-pose-study', 'standing-forward-fold-study'].includes(id))) {
   clips[id].planted_sagittal_feet = true;
   for (const pose of clips[id].frames) {
     for (const side of ['left', 'right']) {
-      const angles = ['pelvis', `hip-${side}`, `femur-${side}`].reduce((sum, node) => sum + (pose.rotations_deg[node]?.[0] || 0), 0);
+      const angles = ['root', 'pelvis', `hip-${side}`, `femur-${side}`].reduce((sum, node) => sum + (pose.rotations_deg[node]?.[0] || 0), 0);
       pose.rotations_deg[`tibia-${side}`] = [-angles, 0, 0];
     }
     const ankle = transformPoint(globalMatrices(referenceRig, pose).get('tibia-left'), [0, 0, 0]);
-    pose.translations_mm = { root: [0, 80 - ankle[1], -ankle[2]] };
+    const root = pose.translations_mm?.root || [0, 0, 0];
+    pose.translations_mm = { root: root.map((value, axis) => value + [ -90, 80, 0 ][axis] - ankle[axis]) };
   }
 }
 
@@ -363,6 +372,18 @@ const collection = {
   title: 'Anatomy in motion across yoga, Feldenkrais, and Alexander Technique studies',
   records: [...baseRecords, ...generatedRecords]
 };
+
+const recordById = new Map(records.map(record => [record.id, record]));
+const navigation = new Map(expanded.map(study => [study.record.id, study.navigation]));
+for (const entry of collection.records) {
+  const record = entry.record.startsWith('./records/')
+    ? recordById.get(entry.record.split('/').at(-1).replace('.json', ''))
+    : JSON.parse(await readFile(resolve(phaseDirectory, entry.record), 'utf8'));
+  Object.assign(entry, navigation.get(record.id) || legacyNavigation(record));
+}
+for (const [tradition, expected] of Object.entries({ feldenkrais: 60, yoga: 60, alexander: 20 })) {
+  if (collection.records.filter(record => record.tradition === tradition).length !== expected) throw new Error(`Expected ${expected} ${tradition} studies`);
+}
 
 await mkdir(recordsDirectory, { recursive: true });
 for (const record of records) await writeFile(resolve(recordsDirectory, `${record.id}.json`), `${JSON.stringify(record, null, 2)}\n`);

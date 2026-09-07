@@ -1,0 +1,152 @@
+{
+  "id": "reclining-hand-big-toe-study",
+  "tradition": "yoga",
+  "title": "Reclining hand-to-big-toe arrangement",
+  "summary": "One long leg rises as the same-side arm reaches toward it, while the other leg remains extended.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "entry",
+      "t": [
+        0,
+        6
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "illustrative hip flexion and extension"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "illustrative forward/backward arm reach with arm elevation and lowering"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "display",
+      "t": [
+        6,
+        14
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "illustrative hip flexion and extension"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "illustrative forward/backward arm reach with arm elevation and lowering"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "t": [
+        14,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "return toward the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "posture": "One long leg rises as the same-side arm reaches toward it, while the other leg remains extended.",
+    "transitions": [
+      {
+        "phase": "entry",
+        "direction": "entry",
+        "cue": "The animation moves from its stated starting arrangement toward the posture."
+      },
+      {
+        "phase": "exit",
+        "direction": "exit",
+        "cue": "The display retraces its path to the starting arrangement."
+      }
+    ],
+    "modifications": [
+      {
+        "id": "smaller-range",
+        "note": "A smaller-range illustration reduces movement away from the stated starting arrangement; it is not an individually adapted practice."
+      }
+    ],
+    "props": [
+      "Optional support is described, not rendered or simulated."
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "Halve excursions from the authored starting pose while preserving timing and rest."
+    },
+    {
+      "id": "mirrored-display",
+      "kind": "side",
+      "note": "Reflect the reference across its sagittal plane; the original source record stays unchanged."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "Deep hip or knee arrangements are not a target range; individual joint restrictions and support needs are not represented."
+    ],
+    "expects_teacher": false,
+    "notes": "A strap is represented by the described support, not a rendered attachment. Educational fitted-reference geometry, not measured motion or individual instruction."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description and keyframes. Sources identify the practice context or named posture; they do not validate these angles or anatomy annotations.",
+    "rights_basis": "provisional: project-authored record and animation; no third-party movement media or lesson text is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "Iyengar Yoga UK teaching syllabi",
+        "url": "https://iyengaryoga.org.uk/wp-content/uploads/2022/09/I8-Teaching-syllabi.pdf",
+        "supports": [
+          "named asanas and posture families; not the authored animation angles"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Anatomical and tradition claims await review. Highlighted muscle groups are provisional stabilisation hypotheses, not measured activity. The user authorized collection expansion without waiting for practitioner review."
+    }
+  }
+}

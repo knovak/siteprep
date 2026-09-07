@@ -88,3 +88,27 @@ No instruction in the attachment supplies additional project requirements.
 - The broader reviewer roles, remaining findings, invitation addresses, and
   report destination are still open. No access or public-release decision is
   implied by this feedback.
+
+
+## 2026-09-06 — Compact selector and immediate 140-study collection
+
+**Implement the approved compact selector and a total of 60 Feldenkrais,
+60 yoga, and 20 Alexander Technique studies now.**
+
+The user approved the compact mockup and said: “Looks good! Let's implement
+that now. And also implement a total of 60 feldekreis, 60 yoga, and 20 alexander
+now. (no need to wait for pratitioner review”.
+
+### What this settles, and what it does not
+
+- The collection expands to exactly 140 distinct authored studies; range and
+  mirrored display variants do not count toward those totals.
+- Selection stays within the existing control-card format: one compact selected
+  value, a searchable/filterable overlay, short metadata, and collapsed variations.
+- This decision supersedes the earlier sequencing that deferred collection
+  growth until practitioner review. Implementation proceeds immediately.
+- Existing and new source/anatomy claims remain honestly `unreviewed`. The
+  decision does not create findings, reviewer identities, or professional sign-off.
+- The outstanding review-evidence todo remains a record of missing findings;
+  it does not block this implementation. No production-release or access change
+  is implied by this request.

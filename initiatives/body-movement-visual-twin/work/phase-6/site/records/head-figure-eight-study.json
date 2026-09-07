@@ -1,0 +1,167 @@
+{
+  "id": "head-figure-eight-study",
+  "tradition": "feldenkrais",
+  "title": "Small head figure eight",
+  "summary": "Combined nodding and turning traces two small loops at the skull.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "notice",
+      "t": [
+        0,
+        3
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "observe the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "explore",
+      "t": [
+        3,
+        19
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "illustrative nodding with turning with side bending"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        19,
+        22
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "return toward the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "rest",
+      "t": [
+        22,
+        30
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "pause in the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "exploration": "Combined nodding and turning traces two small loops at the skull.",
+    "attention": [
+      {
+        "phase": "notice",
+        "cue": "Compare the starting relationships before movement begins."
+      },
+      {
+        "phase": "explore",
+        "cue": "Observe head and neck as one region moves relative to another."
+      },
+      {
+        "phase": "rest",
+        "cue": "Compare the still reference with the preceding motion; a smaller movement is also an option."
+      }
+    ],
+    "range": {
+      "kind": "optional",
+      "smaller_reference": "The smaller-range display halves angular and translation excursions from the starting arrangement."
+    },
+    "rest_pauses": [
+      {
+        "after_phase": "return",
+        "duration_seconds": 8,
+        "note": "The final eight seconds hold the starting arrangement for comparison."
+      }
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "Halve excursions from the authored starting pose while preserving timing and rest."
+    },
+    {
+      "id": "mirrored-display",
+      "kind": "side",
+      "note": "Reflect the reference across its sagittal plane; the original source record stays unchanged."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This is an original movement-theme illustration, not a guided Feldenkrais lesson or a range to reproduce."
+    ],
+    "expects_teacher": false,
+    "notes": "Educational fitted-reference geometry, not measured motion or individual instruction."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description and keyframes. Sources identify the practice context or named posture; they do not validate these angles or anatomy annotations.",
+    "rights_basis": "provisional: project-authored record and animation; no third-party movement media or lesson text is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "International Feldenkrais Federation competency profile",
+        "url": "https://feldenkrais-method.org/wp-content/uploads/English-Competency-Profile.pdf",
+        "supports": [
+          "original movement exploration, attention, differentiation, and rest; not a reproduction of a lesson"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Anatomical and tradition claims await review. Highlighted muscle groups are provisional stabilisation hypotheses, not measured activity. The user authorized collection expansion without waiting for practitioner review."
+    }
+  }
+}
