@@ -123,3 +123,11 @@ Site to public access at 2026-09-07 03:58:02 UTC. Anonymous root and viewer-modu
 requests returned HTTP 200. Test remains version 5 and production remains
 private version 3; no deployment, source revision, or review status changed.
 See the corresponding decision and current deployment access record.
+
+
+## 2026-09-06 — Public production access
+
+At the user's explicit request, changed the existing production Site to public
+access at 2026-09-07 04:06:50 UTC. Production remains version 3 with 140 studies,
+and test remains public version 5. No source files were redeployed and no
+review status changed. See the corresponding decision and deployment record.
