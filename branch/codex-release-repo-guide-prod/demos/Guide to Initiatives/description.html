@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SitePrep Repo Guide</title>
+  <style>
+    :root {
+      color-scheme: light; font: 17px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a2233; background: #ffffff;
+      --ink: #1a2233; --muted: #5b6578; --line: #e1e5ec; --accent: #1e4bb8; --accent-ink: #163a8f; --accent-soft: #e9effc;
+      --fig-ink: #1a2233; --fig-muted: #5b6578; --fig-line: #d7dce6; --fig-fill: #f4f6fa; --fig-surface: #ffffff;
+      --fig-accent: #1e4bb8; --fig-accent-soft: #e9effc; --fig-accent-ink: #163a8f;
+      --fig-warn: #c77700; --fig-warn-soft: #fff5e5; --fig-warn-ink: #7a4a00;
+      --fig-go: #2a8c5c; --fig-go-soft: #e6f5ec; --fig-go-ink: #1c5f3f;
+      --fig-doc: #e8ecf4; --fig-doc-ink: #45536f;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: var(--accent); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+    a:hover { color: var(--accent-ink); }
+    .masthead { border-bottom: 1px solid var(--line); }
+    .masthead-inner { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 44px 0 34px; }
+    .eyebrow { margin: 0 0 12px; color: var(--muted); font-size: .76rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    h1 { margin: 0; color: var(--accent-ink); font-size: clamp(2.1rem, 4.4vw, 3.4rem); line-height: 1.05; letter-spacing: -.03em; }
+    .lede { max-width: 62ch; margin: 18px 0 0; color: #3a455b; font-size: 1.12rem; line-height: 1.55; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 22px 0 0; color: var(--muted); font-size: .88rem; }
+    .meta strong { color: var(--ink); font-weight: 700; }
+    .meta a { text-decoration: none; }
+    .layout { width: min(1180px, calc(100% - 48px)); margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 56px; }
+    .sidebar { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: 32px 0 32px; }
+    .sidebar h2 { margin: 0 0 12px; color: var(--muted); font-size: .74rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .sidebar ol { margin: 0; padding: 0; list-style: none; }
+    .sidebar li + li { margin-top: 2px; }
+    .sidebar a { display: flex; gap: 10px; padding: 6px 10px; border-left: 2px solid transparent; border-radius: 0 6px 6px 0; color: #34405a; font-size: .9rem; line-height: 1.35; text-decoration: none; }
+    .sidebar a:hover { background: #f4f6fa; }
+    .sidebar a.active { border-left-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; }
+    .nav-number { flex: 0 0 auto; color: var(--muted); font-variant-numeric: tabular-nums; font-size: .8rem; font-weight: 700; padding-top: .1em; }
+    .sidebar a.active .nav-number { color: var(--accent-ink); }
+    .companions { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); font-size: .88rem; color: var(--muted); }
+    .companions a { display: block; margin-top: 6px; padding: 0; border: 0; color: var(--accent); font-weight: 600; text-decoration: none; }
+    main { min-width: 0; padding: 8px 0 72px; }
+    section { padding: 40px 0 34px; border-bottom: 1px solid var(--line); scroll-margin-top: 16px; }
+    section:first-child { padding-top: 28px; }
+    section:last-child { border-bottom: 0; }
+    h2 { display: flex; align-items: baseline; gap: 14px; margin: 0 0 20px; color: var(--accent-ink); font-size: clamp(1.55rem, 2.6vw, 2.05rem); line-height: 1.15; letter-spacing: -.02em; }
+    .section-number { color: var(--muted); font-size: .95rem; font-weight: 800; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+    h3 { margin: 30px 0 10px; color: var(--ink); font-size: 1.15rem; }
+    h4 { margin: 22px 0 8px; color: var(--ink); font-size: 1rem; }
+    section > p, section > ul, section > blockquote { max-width: 74ch; }
+    p { margin: 0 0 16px; }
+    ul { margin: 0 0 16px; padding-left: 1.3em; }
+    li + li { margin-top: 7px; }
+    blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid var(--accent); background: #f5f7fb; color: #34405a; }
+    code { padding: 2px 6px; border-radius: 5px; background: #eef1f6; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .86em; }
+    .fact-cards p:not(.fact-card-meta) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
+    .figure { margin: 26px 0 28px; padding: 22px 22px 16px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfe; overflow-x: auto; }
+    footer { border-top: 1px solid var(--line); background: #f7f8fb; }
+    .footer-inner { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 26px 0; color: var(--muted); font-size: .88rem; }
+    footer strong { color: var(--ink); }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 0; }
+      .sidebar { position: static; max-height: none; padding: 20px 0 0; border-bottom: 1px solid var(--line); }
+      .sidebar ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2px 10px; }
+      .companions { margin-top: 18px; padding-bottom: 18px; }
+      .masthead-inner { padding: 30px 0 24px; }
+    }
+
+.figure { margin: 28px 0; }
+.figure-svg { display: block; width: 100%; height: auto; max-width: 800px; margin: 0 auto; overflow: visible; font-family: inherit; }
+.figure-svg--wide { max-width: 100%; }
+.fig-chip rect { fill: var(--fig-fill); stroke: var(--fig-line); stroke-width: 1; }
+.fig-chip text { fill: var(--fig-ink); font-size: 13.5px; font-weight: 700; }
+.fig-chip--stage rect, .fig-chip--phase rect { fill: var(--fig-accent); stroke: var(--fig-accent); }
+.fig-chip--stage text, .fig-chip--phase text { fill: #fff; font-size: 14px; }
+.fig-chip--quiet rect { fill: var(--fig-surface); stroke: var(--fig-muted); stroke-dasharray: 4 3; }
+.fig-chip--quiet text { fill: var(--fig-muted); font-size: 14px; }
+.fig-chip--wait rect, .fig-chip--propose rect { fill: var(--fig-warn-soft); stroke: var(--fig-warn); }
+.fig-chip--wait text, .fig-chip--propose text { fill: var(--fig-warn-ink); font-size: 12.5px; }
+.fig-chip--propose rect { stroke-dasharray: 5 3; stroke-width: 1.5; }
+.fig-chip--auto rect, .fig-chip--go rect { fill: var(--fig-go-soft); stroke: var(--fig-go); }
+.fig-chip--auto text, .fig-chip--go text { fill: var(--fig-go-ink); font-size: 12.5px; }
+.fig-chip--path rect { fill: var(--fig-surface); stroke: var(--fig-line); }
+.fig-chip--path text, .fig-chip--doc text { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-weight: 600; }
+.fig-chip--doc rect { fill: var(--fig-doc); stroke: none; }
+.fig-chip--doc text { fill: var(--fig-doc-ink); font-size: 11px; }
+.fig-panel rect { fill: var(--fig-fill); stroke: var(--fig-line); stroke-width: 1; }
+.fig-panel--surface rect { fill: var(--fig-surface); }
+.fig-panel--quiet rect { fill: var(--fig-fill); stroke: var(--fig-line); }
+.fig-panel--area rect { fill: var(--fig-surface); stroke: var(--fig-line); }
+.fig-panel--accent rect, .fig-panel--agent rect, .fig-panel--auto rect { fill: var(--fig-accent-soft); stroke: var(--fig-accent); }
+.fig-panel--person rect, .fig-panel--wait rect { fill: var(--fig-warn-soft); stroke: var(--fig-warn); }
+.fig-panel--go rect, .fig-panel--carry rect { fill: var(--fig-go-soft); stroke: var(--fig-go); }
+.fig-panel--leave rect { fill: var(--fig-surface); stroke: var(--fig-line); stroke-dasharray: 5 4; }
+.fig-text { fill: var(--fig-ink); font-size: 14px; }
+.fig-text--mono { fill: var(--fig-ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600; }
+.fig-text--eyebrow { fill: var(--fig-muted); font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.fig-text--heading { fill: var(--fig-ink); font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+.fig-text--heading-small { fill: var(--fig-ink); font-size: 14px; font-weight: 800; }
+.fig-text--head { fill: var(--fig-accent-ink); font-size: 13px; font-weight: 800; }
+.fig-text--muted-head { fill: var(--fig-muted); font-size: 13px; font-weight: 700; }
+.fig-text--caption { fill: var(--fig-muted); font-size: 12.5px; }
+.fig-text--note { fill: var(--fig-muted); font-size: 12.5px; }
+.fig-text--edge { fill: var(--fig-muted); font-size: 12px; font-weight: 700; letter-spacing: .03em; }
+.fig-doc rect { fill: var(--fig-doc); stroke: none; }
+.fig-doc text { fill: var(--fig-doc-ink); font-size: 10.5px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.fig-cell--on { fill: var(--fig-accent); opacity: .85; }
+.fig-cell--rest { fill: var(--fig-accent); opacity: .28; }
+.fig-dash { stroke: var(--fig-line); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.fig-bracket { stroke: var(--fig-muted); stroke-width: 1.5; }
+.fig-arrow { stroke: var(--fig-muted); stroke-width: 1.8; }
+.fig-arrow--person { stroke: var(--fig-warn); }
+.fig-arrow--agent { stroke: var(--fig-accent); }
+.fig-arrow--go { stroke: var(--fig-go); }
+.fig-arrow-head { fill: var(--fig-muted); }
+.fig-dot { fill: var(--fig-muted); }
+.fig-dot--person, .fig-dot--wait, .fig-dot--carry { fill: var(--fig-warn); }
+.fig-dot--agent, .fig-dot--auto { fill: var(--fig-accent); }
+.fig-dot--carry { fill: var(--fig-go); }
+.fig-dot--go { fill: var(--fig-go); }
+.fig-slot { fill: var(--fig-accent-soft); stroke: var(--fig-accent); stroke-width: 1.2; }
+
+.fact-block { margin: 22px 0; }
+.fact-chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.fact-chips li { padding: 6px 11px; border: 1px solid var(--fig-line); border-radius: 999px; background: var(--fig-fill); color: var(--fig-ink); font-size: .82em; font-weight: 750; }
+.fact-chips--file li { border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .76em; font-weight: 600; }
+.fact-rail { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: rail; }
+.fact-rail li { display: flex; align-items: center; gap: 6px; }
+.fact-rail li span { padding: 7px 13px; border: 1px solid var(--fig-accent); border-radius: 999px; background: var(--fig-accent-soft); color: var(--fig-accent-ink); font-size: .84em; font-weight: 800; }
+.fact-rail li + li::before { content: '→'; color: var(--fig-muted); font-weight: 800; }
+.fact-table { display: grid; gap: 1px; margin: 0; padding: 0; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; background: var(--fig-line); }
+.fact-table > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 11px 15px; background: var(--fig-surface); }
+.fact-table dt { color: var(--fig-muted); font-size: .86em; font-weight: 700; }
+.fact-table dd { margin: 0; color: var(--fig-ink); font-size: 1.05em; font-weight: 800; font-variant-numeric: tabular-nums; }
+.fact-stack { display: grid; gap: 8px; margin: 0; padding: 0; }
+.fact-stack > div { display: grid; grid-template-columns: minmax(96px, auto) minmax(0, 1fr); gap: 8px 16px; align-items: center; padding: 9px 14px; border: 1px solid var(--fig-line); border-radius: 10px; background: var(--fig-surface); }
+.fact-stack dt { color: var(--fig-accent-ink); font-size: .84em; font-weight: 850; }
+.fact-stack dd { margin: 0; }
+.fact-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.fact-list li { padding: 9px 14px 9px 30px; position: relative; border: 1px solid var(--fig-line); border-radius: 10px; background: var(--fig-surface); font-size: .92em; }
+.fact-list li::before { content: '✕'; position: absolute; left: 12px; color: var(--fig-warn); font-weight: 900; }
+.fact-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.fact-cards article { padding: 14px 16px; border: 1px solid var(--fig-line); border-radius: 12px; background: var(--fig-surface); }
+.fact-cards h4 { margin: 0 0 5px; color: var(--fig-ink); font-size: .95em; font-weight: 800; }
+.fact-cards p { margin: 0; color: var(--fig-muted); font-size: .84em; line-height: 1.45; overflow-wrap: anywhere; }
+.fact-card-meta { margin-top: 6px !important; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .74em !important; }
+.fact-documents { width: 100%; border-collapse: collapse; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; font-size: .9em; }
+.fact-documents th { padding: 9px 14px; background: var(--fig-fill); color: var(--fig-muted); font-size: .82em; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+.fact-documents td { padding: 8px 14px; border-top: 1px solid var(--fig-line); background: var(--fig-surface); }
+.fact-documents td:first-child { font-weight: 750; }
+.fact-documents code { padding: 0; background: none; border: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; color: var(--fig-muted); }
+.fact-initiatives { width: 100%; border-collapse: collapse; border: 1px solid var(--fig-line); border-radius: 12px; overflow: hidden; font-size: .9em; }
+.fact-initiatives th { padding: 9px 14px; background: var(--fig-fill); color: var(--fig-muted); font-size: .82em; font-weight: 800; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+.fact-initiatives td { padding: 9px 14px; border-top: 1px solid var(--fig-line); background: var(--fig-surface); }
+.fact-stage { padding: 3px 9px; border-radius: 999px; background: var(--fig-accent-soft); color: var(--fig-accent-ink); font-size: .82em; font-weight: 800; }
+.fact-empty { color: var(--fig-muted); font-style: italic; }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <p class="eyebrow">Repo guide · generated from the repository</p>
+      <h1>SitePrep Repo Guide</h1>
+      <p class="lede">How one person and a set of AI agents share the work in this repository: how a piece of work starts, moves through a fixed lifecycle, gets reviewed and published, and rests until the next version.</p>
+      <p class="meta"><span>Generated <strong>2026-09-07</strong></span><span>Source commit <a href="https://github.com/knovak/siteprep/tree/5bd39b9aeb27"><strong>5bd39b9aeb27</strong></a></span><span>Written for a developer seeing the repository for the first time</span></p>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Guide sections">
+      <h2>Contents</h2>
+      <ol><li><a href="#repository"><span class="nav-number">01</span>What this repository is</a></li><li><a href="#products"><span class="nav-number">02</span>What an initiative produces</a></li><li><a href="#start"><span class="nav-number">03</span>Starting an initiative</a></li><li><a href="#shape"><span class="nav-number">04</span>Shaping and specifying</a></li><li><a href="#plan"><span class="nav-number">05</span>Planning, and critiquing the plan</a></li><li><a href="#build"><span class="nav-number">06</span>Building, graduating, and resting</a></li><li><a href="#supplies"><span class="nav-number">07</span>Who supplies what</a></li><li><a href="#sweep"><span class="nav-number">08</span>How work gets picked up</a></li><li><a href="#review"><span class="nav-number">09</span>Review and merge</a></li><li><a href="#decks"><span class="nav-number">10</span>Decks</a></li><li><a href="#demos"><span class="nav-number">11</span>Demos</a></li><li><a href="#deployments"><span class="nav-number">12</span>Deploying to test and production</a></li><li><a href="#portability"><span class="nav-number">13</span>Taking this elsewhere</a></li><li><a href="#sources"><span class="nav-number">14</span>Where the real answers are</a></li></ol>
+      <div class="companions">Also in this guide<a href="deck.html">The slide deck</a><a href="simulator.html">The lifecycle simulator</a></div>
+    </nav>
+    <main>
+    <section id="repository" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">01</span>What this repository is</h2>
+      <p>SitePrep is one person&#39;s GitHub repository, worked mostly by AI agents. It publishes a static website through GitHub Pages, and it keeps a record of every piece of software work in a form that an agent can pick up months later without being told what was going on.</p>
+<p>Three kinds of content live in the repository, each in its own top-level folder with its own vocabulary.</p>
+<figure class="figure" data-figure="repo-map"><svg class="figure-svg" viewBox="0 0 800 406" width="800" height="406" role="img" aria-label="The repository has three content areas, decks, demos, and initiatives, plus shared machinery, and is published to GitHub Pages." preserveAspectRatio="xMidYMid meet"><title>The repository has three content areas, decks, demos, and initiatives, plus shared machinery, and is published to GitHub Pages.</title><defs><marker id="fig-arrowhead-repo-map" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--area"><rect x="0" y="8" width="248" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="36" text-anchor="start">decks/</text><text class="fig-text fig-text--heading" x="16" y="60" text-anchor="start">Decks</text><text class="fig-text fig-text--body" x="16" y="84" text-anchor="start">Static web content organized</text><text class="fig-text fig-text--body" x="16" y="104" text-anchor="start">into collections. Here, travel</text><text class="fig-text fig-text--body" x="16" y="124" text-anchor="start">information: places, dates,</text><text class="fig-text fig-text--body" x="16" y="144" text-anchor="start">attractions, events, maps.</text><g class="fig-panel fig-panel--area"><rect x="276" y="8" width="248" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="292" y="36" text-anchor="start">demos/</text><text class="fig-text fig-text--heading" x="292" y="60" text-anchor="start">Demos</text><text class="fig-text fig-text--body" x="292" y="84" text-anchor="start">Standalone web examples.</text><text class="fig-text fig-text--body" x="292" y="104" text-anchor="start">Each owns its pages and</text><text class="fig-text fig-text--body" x="292" y="124" text-anchor="start">assets and is copied to the</text><text class="fig-text fig-text--body" x="292" y="144" text-anchor="start">site unchanged.</text><g class="fig-panel fig-panel--accent"><rect x="552" y="8" width="248" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="568" y="36" text-anchor="start">initiatives/</text><text class="fig-text fig-text--heading" x="568" y="60" text-anchor="start">Initiatives</text><text class="fig-text fig-text--body" x="568" y="84" text-anchor="start">Where software gets made.</text><text class="fig-text fig-text--body" x="568" y="104" text-anchor="start">A wish, a record of</text><text class="fig-text fig-text--body" x="568" y="124" text-anchor="start">documents, capability, and</text><text class="fig-text fig-text--body" x="568" y="144" text-anchor="start">pointers to what shipped.</text><g class="fig-panel fig-panel--quiet"><rect x="0" y="196" width="800" height="140" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="16" y="222" text-anchor="start">Machinery, shared by all three</text>
+
+      <text class="fig-text fig-text--mono" x="16" y="250" text-anchor="start">scripts/</text>
+      <text class="fig-text fig-text--body" x="190" y="250" text-anchor="start">the build and the lifecycle script</text>
+      <text class="fig-text fig-text--mono" x="16" y="274" text-anchor="start">shared/</text>
+      <text class="fig-text fig-text--body" x="190" y="274" text-anchor="start">opt-in web libraries: maps, galleries, nav</text>
+      <text class="fig-text fig-text--mono" x="16" y="298" text-anchor="start">.claude/skills/</text>
+      <text class="fig-text fig-text--body" x="190" y="298" text-anchor="start">procedures an agent runs by name</text>
+      <text class="fig-text fig-text--mono" x="16" y="322" text-anchor="start">.github/workflows/</text>
+      <text class="fig-text fig-text--body" x="190" y="322" text-anchor="start">build, publish, digest, scope check</text>
+        <line class="fig-arrow fig-arrow--plain" x1="400" y1="338" x2="400" y2="362" marker-end="url(#fig-arrowhead-repo-map)"></line>
+        <g class="fig-chip fig-chip--stage" data-figure-label="Built and published to GitHub Pages">
+    <rect x="230" y="366" width="340" height="32" rx="16"></rect>
+    <text x="400" y="382" dominant-baseline="central" text-anchor="middle">Built and published to GitHub Pages</text>
+  </g></svg></figure>
+<p><strong>Decks</strong> are static web content organized into collections, one folder per deck with pages or sections under it. In this repository the decks hold travel information: places, dates, attractions, events, and maps.</p>
+<p><strong>Demos</strong> are standalone web examples. Each one owns its pages and assets and is copied to the site as it is.</p>
+<p><strong>Initiatives</strong> are where software gets made. An initiative starts as a wish in your own words, grows a set of documents that say what it is and how it gets built, and produces something: a deck, a demo, a website hosted elsewhere, or a reusable script or skill. Most of this guide is about initiatives, because that is where the process lives.</p>
+<p>The rest of the repository is machinery: build scripts, shared web libraries, GitHub Actions workflows, and a set of skills that agents run by name. If you fork this repository, the machinery is what you&#39;re taking.</p>
+<p>Here are the initiatives in this copy of the repository, with the lifecycle stage each one is at. The stage names are explained in the sections that follow.</p>
+<div class="fact-block" data-fact-block="initiatives.live" data-fact-view="initiatives"><table class="fact-initiatives"><thead><tr><th>Initiative</th><th>Stage</th></tr></thead><tbody><tr data-fact-key="body-movement-visual-twin"><td>Body Movement Visual Twin</td><td><span class="fact-stage">building</span></td></tr><tr data-fact-key="bookmark-sorter"><td>Interactive Bookmark Sorter</td><td><span class="fact-stage">dormant</span></td></tr><tr data-fact-key="educational-global-maps"><td>Educational Global Maps</td><td><span class="fact-stage">building</span></td></tr><tr data-fact-key="knowledge-pipeline"><td>Knowledge pipeline</td><td><span class="fact-stage">building</span></td></tr><tr data-fact-key="newsletter-story-harvester"><td>Newsletter Story Harvester</td><td><span class="fact-stage">refining</span></td></tr><tr data-fact-key="repo-guide"><td>Repo Guide</td><td><span class="fact-stage">dormant</span></td></tr><tr data-fact-key="tide-here"><td>Tide Here</td><td><span class="fact-stage">dormant</span></td></tr></tbody></table></div>
+<p>This table is a snapshot as of the date in the footer. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The working conventions for agents are in the instruction file</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">the design of the initiative system is in the vision document</a>.</p>
+    </section>
+    <section id="products" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">02</span>What an initiative produces</h2>
+      <p>An initiative is a folder under the initiatives directory. Over its life it accumulates three kinds of thing, and they have different lifetimes.</p>
+<figure class="figure" data-figure="initiative-products"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 404" width="800" height="404" role="img" aria-label="An initiative accumulates a record of documents (README, Wish, Background, Objectives, Decisions, Specification, Implementation plan, Test plan, Releases, Log, Notes), capability that stays, and work in progress that graduates to decks, demos, or a ChatGPT Site or Demo." preserveAspectRatio="xMidYMid meet"><title>An initiative accumulates a record of documents (README, Wish, Background, Objectives, Decisions, Specification, Implementation plan, Test plan, Releases, Log, Notes), capability that stays, and work in progress that graduates to decks, demos, or a ChatGPT Site or Demo.</title><defs><marker id="fig-arrowhead-initiative-products" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--accent"><rect x="0" y="0" width="530" height="374" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="16" y="26" text-anchor="start">One initiative</text>
+    <text class="fig-text fig-text--mono" x="150" y="26" text-anchor="start">initiatives/&lt;slug&gt;/</text><g class="fig-panel fig-panel--surface"><rect x="16" y="58" width="158" height="300" rx="10"></rect></g>
+      <text class="fig-text fig-text--eyebrow" x="28" y="80" text-anchor="start">Never shrinks</text>
+      <text class="fig-text fig-text--heading" x="28" y="102" text-anchor="start">Record</text>
+      <g class="fig-chip fig-chip--doc" data-figure-label="README">
+    <rect x="28" y="118" width="60" height="22" rx="11"></rect>
+    <text x="58" y="129" dominant-baseline="central" text-anchor="middle">README</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Wish">
+    <rect x="93" y="118" width="46" height="22" rx="11"></rect>
+    <text x="116" y="129" dominant-baseline="central" text-anchor="middle">Wish</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Background">
+    <rect x="28" y="145" width="90" height="22" rx="11"></rect>
+    <text x="73" y="156" dominant-baseline="central" text-anchor="middle">Background</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Objectives">
+    <rect x="28" y="172" width="90" height="22" rx="11"></rect>
+    <text x="73" y="183" dominant-baseline="central" text-anchor="middle">Objectives</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Decisions">
+    <rect x="28" y="199" width="83" height="22" rx="11"></rect>
+    <text x="69.5" y="210" dominant-baseline="central" text-anchor="middle">Decisions</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Specification">
+    <rect x="28" y="226" width="112" height="22" rx="11"></rect>
+    <text x="84" y="237" dominant-baseline="central" text-anchor="middle">Specification</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Implementation plan">
+    <rect x="28" y="253" width="157" height="22" rx="11"></rect>
+    <text x="106.5" y="264" dominant-baseline="central" text-anchor="middle">Implementation plan</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Test plan">
+    <rect x="28" y="280" width="83" height="22" rx="11"></rect>
+    <text x="69.5" y="291" dominant-baseline="central" text-anchor="middle">Test plan</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Releases">
+    <rect x="28" y="307" width="75" height="22" rx="11"></rect>
+    <text x="65.5" y="318" dominant-baseline="central" text-anchor="middle">Releases</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Log">
+    <rect x="108" y="307" width="38" height="22" rx="11"></rect>
+    <text x="127" y="318" dominant-baseline="central" text-anchor="middle">Log</text>
+  </g><g class="fig-chip fig-chip--doc" data-figure-label="Notes">
+    <rect x="28" y="334" width="53" height="22" rx="11"></rect>
+    <text x="54.5" y="345" dominant-baseline="central" text-anchor="middle">Notes</text>
+  </g><g class="fig-panel fig-panel--surface"><rect x="186" y="58" width="158" height="300" rx="10"></rect></g>
+      <text class="fig-text fig-text--eyebrow" x="198" y="80" text-anchor="start">Kept for later</text>
+      <text class="fig-text fig-text--heading" x="198" y="102" text-anchor="start">Capability</text>
+      <text class="fig-text fig-text--mono" x="198" y="132" text-anchor="start">lib/</text><text class="fig-text fig-text--mono" x="198" y="156" text-anchor="start">prompts/</text><text class="fig-text fig-text--mono" x="198" y="180" text-anchor="start">scripts</text><g class="fig-panel fig-panel--surface"><rect x="356" y="58" width="158" height="300" rx="10"></rect></g>
+      <text class="fig-text fig-text--eyebrow" x="368" y="80" text-anchor="start">Graduates out</text>
+      <text class="fig-text fig-text--heading" x="368" y="102" text-anchor="start">In progress</text>
+      <text class="fig-text fig-text--body" x="368" y="132" text-anchor="start">work/</text><text class="fig-text fig-text--body" x="368" y="152" text-anchor="start"></text><text class="fig-text fig-text--body" x="368" y="172" text-anchor="start">Not published,</text><text class="fig-text fig-text--body" x="368" y="192" text-anchor="start">and not under</text><text class="fig-text fig-text--body" x="368" y="212" text-anchor="start">deck or demo</text><text class="fig-text fig-text--body" x="368" y="232" text-anchor="start">rules yet.</text><path class="fig-arrow fig-arrow--go" d="M 514 208 C 544 208, 554 20, 584 20" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--go" data-figure-label="decks/">
+    <rect x="590" y="5" width="124" height="28" rx="14"></rect>
+    <text x="652" y="19" dominant-baseline="central" text-anchor="middle">decks/</text>
+  </g>
+      <text class="fig-text fig-text--note" x="590" y="49" text-anchor="start">a deck graduates here</text><path class="fig-arrow fig-arrow--go" d="M 514 208 C 544 208, 554 94, 584 94" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--go" data-figure-label="demos/">
+    <rect x="590" y="79" width="124" height="28" rx="14"></rect>
+    <text x="652" y="93" dominant-baseline="central" text-anchor="middle">demos/</text>
+  </g>
+      <text class="fig-text fig-text--note" x="590" y="123" text-anchor="start">a demo graduates here</text><path class="fig-arrow fig-arrow--go" d="M 514 208 C 544 208, 554 168, 584 168" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--go" data-figure-label="ChatGPT Site">
+    <rect x="590" y="153" width="124" height="28" rx="14"></rect>
+    <text x="652" y="167" dominant-baseline="central" text-anchor="middle">ChatGPT Site</text>
+  </g>
+      <text class="fig-text fig-text--note" x="590" y="197" text-anchor="start">deployed outside the repository</text><path class="fig-arrow fig-arrow--plain" d="M 344 218 C 374 218, 554 242, 584 242" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--path" data-figure-label="shared/">
+    <rect x="590" y="227" width="124" height="28" rx="14"></rect>
+    <text x="652" y="241" dominant-baseline="central" text-anchor="middle">shared/</text>
+  </g>
+      <text class="fig-text fig-text--note" x="590" y="271" text-anchor="start">a library used by other work</text><path class="fig-arrow fig-arrow--plain" d="M 344 218 C 374 218, 554 316, 584 316" fill="none" marker-end="url(#fig-arrowhead-initiative-products)"></path>
+      <g class="fig-chip fig-chip--path" data-figure-label=".claude/skills/">
+    <rect x="590" y="301" width="124" height="28" rx="14"></rect>
+    <text x="652" y="315" dominant-baseline="central" text-anchor="middle">.claude/skills/</text>
+  </g>
+      <text class="fig-text fig-text--note" x="590" y="345" text-anchor="start">skills live here from the start</text>
+        <text class="fig-text fig-text--caption" x="0" y="398" text-anchor="start">The record and the capability stay. Outputs graduate out, and the initiative keeps a pointer to each.</text></svg></figure>
+<p><strong>The record</strong> is a set of markdown documents. They arrive in a fixed order as the initiative advances, and once written they&#39;re amended rather than replaced. The full set is listed below; a later section says when each one appears.</p>
+<div class="fact-block" data-fact-block="documents.record" data-fact-view="documents"><table class="fact-documents"><thead><tr><th>Document</th><th>File</th></tr></thead><tbody><tr data-fact-key="README.md"><td>README</td><td><code>README.md</code></td></tr><tr data-fact-key="wish.md"><td>Wish</td><td><code>wish.md</code></td></tr><tr data-fact-key="background.md"><td>Background</td><td><code>background.md</code></td></tr><tr data-fact-key="objectives.md"><td>Objectives</td><td><code>objectives.md</code></td></tr><tr data-fact-key="decisions.md"><td>Decisions</td><td><code>decisions.md</code></td></tr><tr data-fact-key="spec.md"><td>Specification</td><td><code>spec.md</code></td></tr><tr data-fact-key="plan.md"><td>Implementation plan</td><td><code>plan.md</code></td></tr><tr data-fact-key="test-plan.md"><td>Test plan</td><td><code>test-plan.md</code></td></tr><tr data-fact-key="releases.md"><td>Releases</td><td><code>releases.md</code></td></tr><tr data-fact-key="log.md"><td>Log</td><td><code>log.md</code></td></tr><tr data-fact-key="notes.md"><td>Notes</td><td><code>notes.md</code></td></tr></tbody></table></div>
+<p><strong>Capability</strong> is code the initiative develops for itself: libraries under its own lib folder, prompts, and scripts. This stays inside the initiative so that a revisit a year later finds the tooling where it was left. A skill is the exception. Skills go into the repository&#39;s skills folder from the start, because a skill has to be discoverable to be invoked at all.</p>
+<p><strong>Outputs</strong> are what the initiative publishes. Work in progress lives in the initiative&#39;s work folder, where deck and demo conventions don&#39;t apply. When it&#39;s good enough it graduates: it moves to the decks or demos folder, or it&#39;s deployed to a website hosted outside the repository. The initiative keeps a pointer to each output, never a copy.</p>
+<p>One rule holds the boundary. A published output may not load code from under the initiatives folder at runtime, because that code keeps changing without any pull request appearing to touch the output. Either the library graduates to the shared folder, or the output vendors a copy and records where it came from.</p>
+<p>An initiative can also produce nothing published at all. A script that audits every deck, or a skill that refreshes event listings, is a complete initiative. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">What an initiative can produce is set out in the vision document</a>.</p>
+    </section>
+    <section id="start" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">03</span>Starting an initiative</h2>
+      <p>You start an initiative by describing what you want. The <code>new-initiative</code> skill turns that into a folder with two files: your wish, in your own words, and a small JSON record holding the title, a one-line summary, a value rating, the lifecycle stage, and a todo list with one item on it: draft the objectives.</p>
+<figure class="figure" data-figure="initiative-birth"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 194" width="800" height="194" role="img" aria-label="You describe the idea, the new-initiative skill scaffolds the folder, and merging the pull request fixes the wish at the wish stage." preserveAspectRatio="xMidYMid meet"><title>You describe the idea, the new-initiative skill scaffolds the folder, and merging the pull request fixes the wish at the wish stage.</title><defs><marker id="fig-arrowhead-initiative-birth" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--person"><rect x="0" y="0" width="188" height="140" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="28" text-anchor="start">You</text><text class="fig-text fig-text--heading" x="16" y="52" text-anchor="start">Describe it</text><text class="fig-text fig-text--body" x="16" y="76" text-anchor="start">In your own words.</text><text class="fig-text fig-text--body" x="16" y="96" text-anchor="start">A paragraph is</text><text class="fig-text fig-text--body" x="16" y="116" text-anchor="start">enough.</text><g class="fig-panel fig-panel--accent"><rect x="204" y="0" width="188" height="140" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="220" y="28" text-anchor="start">Skill</text><text class="fig-text fig-text--heading" x="220" y="52" text-anchor="start">new-initiative</text><text class="fig-text fig-text--body" x="220" y="76" text-anchor="start">Asks three questions:</text><text class="fig-text fig-text--body" x="220" y="96" text-anchor="start">value, summary, and</text><text class="fig-text fig-text--body" x="220" y="116" text-anchor="start">research or not.</text><g class="fig-panel fig-panel--surface"><rect x="408" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="424" y="28" text-anchor="start">New folder</text><text class="fig-text fig-text--heading" x="424" y="52" text-anchor="start">Two files</text><text class="fig-text fig-text--mono" x="424" y="76" text-anchor="start">initiative.json</text><text class="fig-text fig-text--mono" x="424" y="96" text-anchor="start">wish.md</text><text class="fig-text fig-text--mono" x="424" y="116" text-anchor="start">background.md</text><text class="fig-text fig-text--mono" x="424" y="136" text-anchor="start">(optional)</text><g class="fig-panel fig-panel--go"><rect x="612" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="628" y="28" text-anchor="start">Pull request</text><text class="fig-text fig-text--heading" x="628" y="52" text-anchor="start">You merge it</text><text class="fig-text fig-text--body" x="628" y="76" text-anchor="start">Stage: wish.</text><text class="fig-text fig-text--body" x="628" y="96" text-anchor="start">The wish is fixed.</text><text class="fig-text fig-text--body" x="628" y="116" text-anchor="start">One item: draft</text><text class="fig-text fig-text--body" x="628" y="136" text-anchor="start">the objectives.</text><line class="fig-arrow fig-arrow--plain" x1="192" y1="80" x2="198" y2="80" marker-end="url(#fig-arrowhead-initiative-birth)"></line><line class="fig-arrow fig-arrow--plain" x1="396" y1="80" x2="402" y2="80" marker-end="url(#fig-arrowhead-initiative-birth)"></line><line class="fig-arrow fig-arrow--plain" x1="600" y1="80" x2="606" y2="80" marker-end="url(#fig-arrowhead-initiative-birth)"></line>
+        <text class="fig-text fig-text--caption" x="0" y="188" text-anchor="start">While the pull request is open the wish can be tidied. After the merge, changes are added above it with a date.</text></svg></figure>
+<p>The skill asks three questions and no more. How valuable is this compared to your other work? What&#39;s the one-line summary for the index page? And should it look around before starting?</p>
+<p>That last question is the optional <strong>background</strong> step. If you say yes, the agent does a short web search for prior art and for lessons from similar attempts, and writes what it found as a background document beside the wish. The document carries links for every claim, lists the questions the research raised, and makes no recommendations. Finding nothing is a legitimate result and gets written down as one.</p>
+<p>The initiative arrives as a pull request. While that pull request is open, the wish can be tidied freely. Once it merges, the wish is fixed. If your intent changes later, the new version goes at the top of the file with a date, and the old text stays below it.</p>
+<p>Two things the agents never do here: they never create an initiative on their own, and they never edit a wish. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/.claude/skills/new-initiative/SKILL.md" data-source-path=".claude/skills/new-initiative/SKILL.md">The skill&#39;s own instructions are the authority</a>.</p>
+    </section>
+    <section id="shape" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">04</span>Shaping and specifying</h2>
+      <p>The next two stages turn the wish into something an agent can build. An agent does the writing. You review the pull request and decide the questions it raises.</p>
+<p><strong>Objectives</strong> say what done would mean, as outcomes rather than implementation. They also name the questions the wish leaves open. Merging the objectives moves the initiative to its second stage.</p>
+<p><strong>Decisions</strong> are where those questions get settled. Each answer is appended with a date, together with the alternatives that were considered and what the answer leaves open. This file exists so that a settled argument doesn&#39;t get re-argued months later. When you answer a question the work is stuck on, the <code>answer-decision</code> skill writes the entry and unblocks the waiting item.</p>
+<p><strong>The specification</strong> says what the thing is, including the alternatives that were considered and why they lost. Merging it moves the initiative to its third stage.</p>
+<figure class="figure" data-figure="record-growth"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 356" width="800" height="356" role="img" aria-label="Which documents each stage expects. The wish is required at every stage; objectives.md, spec.md, plan.md, test-plan.md are expected from the stage that adds them; the rest appear whenever there is something to record." preserveAspectRatio="xMidYMid meet"><title>Which documents each stage expects. The wish is required at every stage; objectives.md, spec.md, plan.md, test-plan.md are expected from the stage that adds them; the rest appear whenever there is something to record.</title><text class="fig-text fig-text--head" x="190.125" y="24" text-anchor="middle">wish</text><text class="fig-text fig-text--head" x="270.375" y="24" text-anchor="middle">shaped</text><text class="fig-text fig-text--head" x="350.625" y="24" text-anchor="middle">specified</text><text class="fig-text fig-text--head" x="430.875" y="24" text-anchor="middle">planned</text><text class="fig-text fig-text--head" x="511.125" y="24" text-anchor="middle">building</text><text class="fig-text fig-text--head" x="591.375" y="24" text-anchor="middle">refining</text><text class="fig-text fig-text--muted-head" x="671.625" y="24" text-anchor="middle">dormant</text><text class="fig-text fig-text--muted-head" x="751.875" y="24" text-anchor="middle">archived</text><text class="fig-text fig-text--mono" x="0" y="58" text-anchor="start">wish.md</text><rect class="fig-cell fig-cell--on" x="153" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="233.25" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="313.5" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="393.75" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="474" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="554.25" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="634.5" y="44" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="714.75" y="44" width="74.25" height="18" rx="4"></rect><text class="fig-text fig-text--mono" x="0" y="84" text-anchor="start">background.md</text><line class="fig-dash" x1="156" y1="79" x2="794" y2="79"></line><text class="fig-text fig-text--mono" x="0" y="110" text-anchor="start">objectives.md</text><rect class="fig-cell fig-cell--on" x="233.25" y="96" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="313.5" y="96" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="393.75" y="96" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="474" y="96" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="554.25" y="96" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="634.5" y="96" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="714.75" y="96" width="74.25" height="18" rx="4"></rect><text class="fig-text fig-text--mono" x="0" y="136" text-anchor="start">decisions.md</text><line class="fig-dash" x1="156" y1="131" x2="794" y2="131"></line><text class="fig-text fig-text--mono" x="0" y="162" text-anchor="start">spec.md</text><rect class="fig-cell fig-cell--on" x="313.5" y="148" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="393.75" y="148" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="474" y="148" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="554.25" y="148" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="634.5" y="148" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="714.75" y="148" width="74.25" height="18" rx="4"></rect><text class="fig-text fig-text--mono" x="0" y="188" text-anchor="start">plan.md</text><rect class="fig-cell fig-cell--on" x="393.75" y="174" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="474" y="174" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="554.25" y="174" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="634.5" y="174" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="714.75" y="174" width="74.25" height="18" rx="4"></rect><text class="fig-text fig-text--mono" x="0" y="214" text-anchor="start">test-plan.md</text><rect class="fig-cell fig-cell--on" x="393.75" y="200" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="474" y="200" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--on" x="554.25" y="200" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="634.5" y="200" width="74.25" height="18" rx="4"></rect><rect class="fig-cell fig-cell--rest" x="714.75" y="200" width="74.25" height="18" rx="4"></rect><text class="fig-text fig-text--mono" x="0" y="240" text-anchor="start">releases.md</text><line class="fig-dash" x1="156" y1="235" x2="794" y2="235"></line><text class="fig-text fig-text--mono" x="0" y="266" text-anchor="start">log.md</text><line class="fig-dash" x1="156" y1="261" x2="794" y2="261"></line><text class="fig-text fig-text--mono" x="0" y="292" text-anchor="start">notes.md</text><line class="fig-dash" x1="156" y1="287" x2="794" y2="287"></line>
+        <rect class="fig-cell fig-cell--on" x="0" y="316" width="18" height="12" rx="3"></rect><text class="fig-text fig-text--caption" x="24" y="326" text-anchor="start">expected at this stage; the validator warns if it is missing</text>
+        <rect class="fig-cell fig-cell--rest" x="480" y="316" width="18" height="12" rx="3"></rect><text class="fig-text fig-text--caption" x="504" y="326" text-anchor="start">still present while it rests</text>
+        <line class="fig-dash" x1="0" y1="342" x2="18" y2="342"></line><text class="fig-text fig-text--caption" x="24" y="346" text-anchor="start">tied to no stage: appears whenever there is something to record</text></svg></figure>
+<p>Each stage expects certain documents to exist, as the chart above shows. The validator warns when a document expected at the current stage is missing, and that warning is how the next piece of work gets noticed.</p>
+<p>Two documents are tied to no stage. The decisions file appears when there&#39;s a question to settle. The log appears when there&#39;s something to record, and it&#39;s append-only: a dated line for each item completed, each release, and each change of stage. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The lifecycle table is in the instruction file</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the validation rules are in the technical document</a>.</p>
+    </section>
+    <section id="plan" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">05</span>Planning, and critiquing the plan</h2>
+      <p>Before anything is built, an agent writes two more documents and then argues with them.</p>
+<p><strong>The plan</strong> breaks the work into phases, each small enough to review as one pull request, with what each phase leaves behind. <strong>The test plan</strong> says how you&#39;d know each phase worked. Both merge together, and the initiative moves to its fourth stage.</p>
+<figure class="figure" data-figure="plan-critique"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 194" width="800" height="194" role="img" aria-label="The plan and test plan merge at the planned stage, the first item critiques them, and building starts after the revised plan merges." preserveAspectRatio="xMidYMid meet"><title>The plan and test plan merge at the planned stage, the first item critiques them, and building starts after the revised plan merges.</title><defs><marker id="fig-arrowhead-plan-critique" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--accent"><rect x="0" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="28" text-anchor="start">Agent writes</text><text class="fig-text fig-text--heading" x="16" y="52" text-anchor="start">Plan, test plan</text><text class="fig-text fig-text--body" x="16" y="76" text-anchor="start">Phases small enough</text><text class="fig-text fig-text--body" x="16" y="96" text-anchor="start">to review one at a</text><text class="fig-text fig-text--body" x="16" y="116" text-anchor="start">time, and how each</text><text class="fig-text fig-text--body" x="16" y="136" text-anchor="start">one is checked.</text><g class="fig-panel fig-panel--go"><rect x="204" y="0" width="188" height="128" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="220" y="28" text-anchor="start">You merge</text><text class="fig-text fig-text--heading" x="220" y="52" text-anchor="start">Stage: planned</text><text class="fig-text fig-text--body" x="220" y="76" text-anchor="start">First todo item:</text><text class="fig-text fig-text--body" x="220" y="96" text-anchor="start">critique the plan.</text><g class="fig-panel fig-panel--accent"><rect x="408" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="424" y="28" text-anchor="start">Agent critiques</text><text class="fig-text fig-text--heading" x="424" y="52" text-anchor="start">The critique</text><text class="fig-text fig-text--body" x="424" y="76" text-anchor="start">Against objectives</text><text class="fig-text fig-text--body" x="424" y="96" text-anchor="start">and spec. Splits big</text><text class="fig-text fig-text--body" x="424" y="116" text-anchor="start">phases, adds missing</text><text class="fig-text fig-text--body" x="424" y="136" text-anchor="start">checks and gates.</text><g class="fig-panel fig-panel--go"><rect x="612" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="628" y="28" text-anchor="start">You merge</text><text class="fig-text fig-text--heading" x="628" y="52" text-anchor="start">Revised plan</text><text class="fig-text fig-text--body" x="628" y="76" text-anchor="start">Then the first</text><text class="fig-text fig-text--body" x="628" y="96" text-anchor="start">increment in work/,</text><text class="fig-text fig-text--body" x="628" y="116" text-anchor="start">and the stage moves</text><text class="fig-text fig-text--body" x="628" y="136" text-anchor="start">to building.</text><line class="fig-arrow fig-arrow--plain" x1="192" y1="80" x2="198" y2="80" marker-end="url(#fig-arrowhead-plan-critique)"></line><line class="fig-arrow fig-arrow--plain" x1="396" y1="80" x2="402" y2="80" marker-end="url(#fig-arrowhead-plan-critique)"></line><line class="fig-arrow fig-arrow--plain" x1="600" y1="80" x2="606" y2="80" marker-end="url(#fig-arrowhead-plan-critique)"></line>
+        <text class="fig-text fig-text--caption" x="0" y="188" text-anchor="start">The critique is a todo item with a pull request, not a comment. The log records what it changed.</text></svg></figure>
+<p><strong>The critique</strong> is a todo item, not a mood. The first item at this stage is to critique the plan and the test plan against the objectives and the specification, and to fix what the critique finds. The result is a pull request that revises the plan, and the log records what changed. In this repository the critique has split phases that were too large, added checkpoints that a phase had skipped, and tightened test gates before any code existed.</p>
+<p>Only after the critique merges does the first increment of building start. The next todo items are then transcribed from the plan&#39;s phases rather than invented. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The lifecycle table names the critique step</a>; <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">the vision document explains why it&#39;s a todo item</a>.</p>
+    </section>
+    <section id="build" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">06</span>Building, graduating, and resting</h2>
+      <p>Building happens one increment at a time. Each todo item becomes a branch and a pull request, written only inside the initiative&#39;s own folder and its declared outputs. You merge it. The merge is what completes the item: the completing command removes it from the list, makes any item that was waiting on it actionable, and writes a dated line in the log.</p>
+<figure class="figure" data-figure="lifecycle-flow"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 208" width="800" height="208" role="img" aria-label="The lifecycle in order: wish, shaped, specified, planned, building, refining, dormant, archived. Beneath each stage, the documents it adds to the record." preserveAspectRatio="xMidYMid meet"><title>The lifecycle in order: wish, shaped, specified, planned, building, refining, dormant, archived. Beneath each stage, the documents it adds to the record.</title><defs><marker id="fig-arrowhead-lifecycle-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-chip fig-chip--stage" data-figure-label="wish">
+    <rect x="0" y="64" width="88" height="34" rx="17"></rect>
+    <text x="44" y="81" dominant-baseline="central" text-anchor="middle">wish</text>
+  </g><g class="fig-doc"><rect x="0" y="120" width="88" height="17" rx="4"></rect><text x="44" y="128.5" dominant-baseline="central" text-anchor="middle">wish.md</text></g><line class="fig-arrow fig-arrow--plain" x1="90" y1="81" x2="96" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="shaped">
+    <rect x="100" y="64" width="88" height="34" rx="17"></rect>
+    <text x="144" y="81" dominant-baseline="central" text-anchor="middle">shaped</text>
+  </g>
+      <g class="fig-doc"><rect x="100" y="120" width="88" height="17" rx="4"></rect>
+      <text x="144" y="128.5" dominant-baseline="central" text-anchor="middle">objectives.md</text></g><line class="fig-arrow fig-arrow--plain" x1="190" y1="81" x2="196" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="specified">
+    <rect x="200" y="64" width="95" height="34" rx="17"></rect>
+    <text x="247.5" y="81" dominant-baseline="central" text-anchor="middle">specified</text>
+  </g>
+      <g class="fig-doc"><rect x="200" y="120" width="95" height="17" rx="4"></rect>
+      <text x="247.5" y="128.5" dominant-baseline="central" text-anchor="middle">spec.md</text></g><line class="fig-arrow fig-arrow--plain" x1="297" y1="81" x2="303" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="planned">
+    <rect x="307" y="64" width="88" height="34" rx="17"></rect>
+    <text x="351" y="81" dominant-baseline="central" text-anchor="middle">planned</text>
+  </g>
+      <g class="fig-doc"><rect x="307" y="120" width="88" height="17" rx="4"></rect>
+      <text x="351" y="128.5" dominant-baseline="central" text-anchor="middle">plan.md</text></g>
+      <g class="fig-doc"><rect x="307" y="142" width="88" height="17" rx="4"></rect>
+      <text x="351" y="150.5" dominant-baseline="central" text-anchor="middle">test-plan.md</text></g><line class="fig-arrow fig-arrow--plain" x1="397" y1="81" x2="403" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="building">
+    <rect x="407" y="64" width="88" height="34" rx="17"></rect>
+    <text x="451" y="81" dominant-baseline="central" text-anchor="middle">building</text>
+  </g><line class="fig-arrow fig-arrow--plain" x1="497" y1="81" x2="503" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--stage" data-figure-label="refining">
+    <rect x="507" y="64" width="88" height="34" rx="17"></rect>
+    <text x="551" y="81" dominant-baseline="central" text-anchor="middle">refining</text>
+  </g><line class="fig-arrow fig-arrow--plain" x1="597" y1="81" x2="603" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--quiet" data-figure-label="dormant">
+    <rect x="607" y="64" width="88" height="34" rx="17"></rect>
+    <text x="651" y="81" dominant-baseline="central" text-anchor="middle">dormant</text>
+  </g><line class="fig-arrow fig-arrow--plain" x1="697" y1="81" x2="703" y2="81" marker-end="url(#fig-arrowhead-lifecycle-flow)"></line><g class="fig-chip fig-chip--quiet" data-figure-label="archived">
+    <rect x="707" y="64" width="88" height="34" rx="17"></rect>
+    <text x="751" y="81" dominant-baseline="central" text-anchor="middle">archived</text>
+  </g><path class="fig-arrow fig-arrow--person" d="M 451 60 C 451 28, 144 28, 144 58" fill="none" marker-end="url(#fig-arrowhead-lifecycle-flow)"></path>
+       <text class="fig-text fig-text--edge" x="297.5" y="24" text-anchor="middle">moves back when an assumption breaks</text><text class="fig-text fig-text--edge" x="499" y="112" text-anchor="middle">graduates</text><line class="fig-bracket" x1="607" y1="186" x2="795" y2="186"></line>
+    <text class="fig-text fig-text--caption" x="800" y="202" text-anchor="end">resting states: nothing actionable, by your choice</text>
+        <text class="fig-text fig-text--caption" x="0" y="202" text-anchor="start">Each stage adds documents; none are removed.</text></svg></figure>
+<p>The full lifecycle has eight stages. The first six are working stages, in the order the record grows. The last two are resting states.</p>
+<p><strong>Graduation</strong> moves the output out of the initiative&#39;s work folder into its published home, and moves the initiative to the refining stage. Entering refining seeds two todo items automatically. One asks for a user-facing README that says how to use the output and how to deploy it, because everything written so far was addressed to whoever was building it. The other asks for a standing pull request of optional improvements, so that the finished-looking thing keeps getting suggestions.</p>
+<p><strong>Dormant</strong> means nothing is actionable, by your choice. An agent may never declare an initiative dormant. If it runs out of work it says so and leaves the last item open, because running out of work and being finished are different things, and only you can say which one applies.</p>
+<p><strong>Archived</strong> is the one terminal stage. Everything stays readable.</p>
+<p>Movement runs both ways. If an assumption breaks, the stage is set back deliberately, the documents are amended rather than rewritten, and the todo list carries the work from then on. An initiative may not sit at a working stage with nothing to do: the validator warns, and the completing command refuses to remove the last item unless you also declare the initiative dormant. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The stage table and the rules for editing an initiative are in the instruction file</a>; <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the completion mechanics are in the technical document</a>.</p>
+    </section>
+    <section id="supplies" data-audience="contributor">
+      <h2><span class="section-number" aria-hidden="true">07</span>Who supplies what</h2>
+      <p>The process needs three things from you that no agent can produce: what you want, facts that live outside the repository, and permission for anything that spends money, grants access, or commits to a policy. Everything downstream of those is structure, and the agents supply it.</p>
+<figure class="figure" data-figure="division-of-labor"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 321" width="800" height="321" role="img" aria-label="You supply intent, facts, authority, and the merge; the agents supply the documents, the increments, and the replies. Items labeled human, permission, cost, legal, data wait for a person." preserveAspectRatio="xMidYMid meet"><title>You supply intent, facts, authority, and the merge; the agents supply the documents, the increments, and the replies. Items labeled human, permission, cost, legal, data wait for a person.</title><defs><marker id="fig-arrowhead-division-of-labor" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+
+    <g class="fig-panel fig-panel--person"><rect x="0" y="0" width="330" height="291" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">You supply</text>
+    <text class="fig-text fig-text--heading" x="20" y="56" text-anchor="start">Intent, facts, authority</text>
+
+    <circle class="fig-dot fig-dot--person" cx="25" cy="79" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="84" text-anchor="start">What you want, in your own words</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="103" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="108" text-anchor="start">Facts only you can observe</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="127" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="132" text-anchor="start">Authority: spending, access, policy</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="151" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="156" text-anchor="start">Answers to blocked questions</text>
+    <circle class="fig-dot fig-dot--person" cx="25" cy="175" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="180" text-anchor="start">The merge, every time</text>
+
+    <g class="fig-panel fig-panel--agent"><rect x="470" y="0" width="330" height="291" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="490" y="30" text-anchor="start">The agents supply</text>
+    <text class="fig-text fig-text--heading" x="490" y="56" text-anchor="start">Everything downstream</text>
+
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="79" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="84" text-anchor="start">Objectives, spec, plan, test plan</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="103" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="108" text-anchor="start">Alternatives, and the ones rejected</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="127" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="132" text-anchor="start">One reviewable increment at a time</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="151" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="156" text-anchor="start">Replies to every review comment</text>
+    <circle class="fig-dot fig-dot--agent" cx="495" cy="175" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="180" text-anchor="start">Proposed answers to judgment calls</text>
+        <text class="fig-text fig-text--eyebrow" x="20" y="204" text-anchor="start">Labels that wait for you</text>
+        <g class="fig-chip fig-chip--wait" data-figure-label="human">
+    <rect x="20" y="214" width="57" height="26" rx="13"></rect>
+    <text x="48.5" y="227" dominant-baseline="central" text-anchor="middle">human</text>
+  </g><g class="fig-chip fig-chip--wait" data-figure-label="permission">
+    <rect x="84" y="214" width="94" height="26" rx="13"></rect>
+    <text x="131" y="227" dominant-baseline="central" text-anchor="middle">permission</text>
+  </g><g class="fig-chip fig-chip--wait" data-figure-label="cost">
+    <rect x="185" y="214" width="50" height="26" rx="13"></rect>
+    <text x="210" y="227" dominant-baseline="central" text-anchor="middle">cost</text>
+  </g><g class="fig-chip fig-chip--wait" data-figure-label="legal">
+    <rect x="242" y="214" width="57" height="26" rx="13"></rect>
+    <text x="270.5" y="227" dominant-baseline="central" text-anchor="middle">legal</text>
+  </g><g class="fig-chip fig-chip--wait" data-figure-label="data">
+    <rect x="20" y="247" width="50" height="26" rx="13"></rect>
+    <text x="45" y="260" dominant-baseline="central" text-anchor="middle">data</text>
+  </g>
+        <line class="fig-arrow fig-arrow--person" x1="342" y1="129.5" x2="458" y2="129.5" marker-end="url(#fig-arrowhead-division-of-labor)"></line>
+        <line class="fig-arrow fig-arrow--agent" x1="458" y1="171.5" x2="342" y2="171.5" marker-end="url(#fig-arrowhead-division-of-labor)"></line>
+        <text class="fig-text fig-text--edge" x="400" y="119.5" text-anchor="middle">intent and answers</text>
+        <text class="fig-text fig-text--edge" x="400" y="189.5" text-anchor="middle">pull requests</text></svg></figure>
+<p>Agents write the objectives, the specification, the plan, and the tests. They weigh alternatives and record the ones they rejected. They cut the work into increments small enough to review, answer review comments, and propose answers to open questions. What they never do is merge. A pull request is a proposal, and merging it is your act.</p>
+<p>When work is stuck, the todo item says why, using one of a fixed set of labels. The label decides who may act.</p>
+<figure class="figure" data-figure="blocker-triage"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 330" width="800" height="330" role="img" aria-label="human, permission, cost, legal, data wait for a person; todo, initiative, review, schedule, external, upstream clear when something else moves. Items labeled human may receive a proposed answer from an agent." preserveAspectRatio="xMidYMid meet"><title>human, permission, cost, legal, data wait for a person; todo, initiative, review, schedule, external, upstream clear when something else moves. Items labeled human may receive a proposed answer from an agent.</title><defs><marker id="fig-arrowhead-blocker-triage" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+
+    <g class="fig-panel fig-panel--wait"><rect x="0" y="0" width="384" height="300" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">Waits on you</text>
+    <text class="fig-text fig-text--heading" x="20" y="58" text-anchor="start">You have to act</text>
+    <g class="fig-chip fig-chip--propose" data-figure-label="human">
+    <rect x="20" y="72" width="100" height="26" rx="13"></rect>
+    <text x="70" y="85" dominant-baseline="central" text-anchor="middle">human</text>
+  </g><text class="fig-text fig-text--note" x="130" y="89" text-anchor="start">a judgment call; an agent may propose</text><g class="fig-chip fig-chip--wait" data-figure-label="permission">
+    <rect x="20" y="106" width="100" height="26" rx="13"></rect>
+    <text x="70" y="119" dominant-baseline="central" text-anchor="middle">permission</text>
+  </g><text class="fig-text fig-text--note" x="130" y="123" text-anchor="start">an access grant</text><g class="fig-chip fig-chip--wait" data-figure-label="cost">
+    <rect x="20" y="140" width="100" height="26" rx="13"></rect>
+    <text x="70" y="153" dominant-baseline="central" text-anchor="middle">cost</text>
+  </g><text class="fig-text fig-text--note" x="130" y="157" text-anchor="start">money</text><g class="fig-chip fig-chip--wait" data-figure-label="legal">
+    <rect x="20" y="174" width="100" height="26" rx="13"></rect>
+    <text x="70" y="187" dominant-baseline="central" text-anchor="middle">legal</text>
+  </g><text class="fig-text fig-text--note" x="130" y="191" text-anchor="start">a policy question</text><g class="fig-chip fig-chip--wait" data-figure-label="data">
+    <rect x="20" y="208" width="100" height="26" rx="13"></rect>
+    <text x="70" y="221" dominant-baseline="central" text-anchor="middle">data</text>
+  </g><text class="fig-text fig-text--note" x="130" y="225" text-anchor="start">a fact only you have</text>
+
+    <g class="fig-panel fig-panel--auto"><rect x="416" y="0" width="384" height="300" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="436" y="30" text-anchor="start">Waits on something else</text>
+    <text class="fig-text fig-text--heading" x="436" y="58" text-anchor="start">Clears when that moves</text>
+    <g class="fig-chip fig-chip--auto" data-figure-label="todo">
+    <rect x="436" y="72" width="100" height="26" rx="13"></rect>
+    <text x="486" y="85" dominant-baseline="central" text-anchor="middle">todo</text>
+  </g><text class="fig-text fig-text--note" x="546" y="89" text-anchor="start">another item in this initiative</text><g class="fig-chip fig-chip--auto" data-figure-label="initiative">
+    <rect x="436" y="106" width="100" height="26" rx="13"></rect>
+    <text x="486" y="119" dominant-baseline="central" text-anchor="middle">initiative</text>
+  </g><text class="fig-text fig-text--note" x="546" y="123" text-anchor="start">another initiative</text><g class="fig-chip fig-chip--auto" data-figure-label="review">
+    <rect x="436" y="140" width="100" height="26" rx="13"></rect>
+    <text x="486" y="153" dominant-baseline="central" text-anchor="middle">review</text>
+  </g><text class="fig-text fig-text--note" x="546" y="157" text-anchor="start">an open pull request</text><g class="fig-chip fig-chip--auto" data-figure-label="schedule">
+    <rect x="436" y="174" width="100" height="26" rx="13"></rect>
+    <text x="486" y="187" dominant-baseline="central" text-anchor="middle">schedule</text>
+  </g><text class="fig-text fig-text--note" x="546" y="191" text-anchor="start">a date</text><g class="fig-chip fig-chip--auto" data-figure-label="external">
+    <rect x="436" y="208" width="100" height="26" rx="13"></rect>
+    <text x="486" y="221" dominant-baseline="central" text-anchor="middle">external</text>
+  </g><text class="fig-text fig-text--note" x="546" y="225" text-anchor="start">an outside service</text><g class="fig-chip fig-chip--auto" data-figure-label="upstream">
+    <rect x="436" y="242" width="100" height="26" rx="13"></rect>
+    <text x="486" y="255" dominant-baseline="central" text-anchor="middle">upstream</text>
+  </g><text class="fig-text fig-text--note" x="546" y="259" text-anchor="start">a dependency</text>
+        <text class="fig-text fig-text--caption" x="0" y="324" text-anchor="start">The dashed label is the one an agent may answer with a pull request; the others wait until you act.</text></svg></figure>
+<p>An item labeled <strong>human</strong> is a judgment call. An agent may propose an answer to it as a pull request, with the alternatives laid out before the recommendation and a statement of what would change the answer. The item stays blocked until you merge or redirect the proposal.</p>
+<p>The other four person-class labels can&#39;t be proposed. A fact only you can observe has to come from you. Spending, access, and policy stay with whoever holds that authority. Guessing at any of them produces a confident answer with nothing behind it, which is worse than an item that sits there waiting.</p>
+<p>The remaining labels clear on their own when something else moves: another item completes, another initiative advances, a pull request merges, a date passes, or an outside dependency changes.</p>
+<p>Questions that need you are collected twice a day into one GitHub issue, the digest. Its body is refreshed silently, and it posts a comment only when the set of questions waiting on a person changes, so a notification always means you&#39;re now the bottleneck. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The blocker rules are in the instruction file</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the digest workflow is described in the technical document</a>.</p>
+    </section>
+    <section id="sweep" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">08</span>How work gets picked up</h2>
+      <p>Nobody assigns work. A scheduled run called the sweep reads every initiative, decides what to do from the todo lists, and opens pull requests. It runs as a Claude routine several times a day, and you can run the same prompt by hand in a session at any time. The prompt lives in the repository, so the scheduled run and a manual run execute the same text.</p>
+<figure class="figure" data-figure="sweep-run"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 282" width="800" height="282" role="img" aria-label="A run moves through survey, then merge, then respond, then propose, then work, then deploy, then brief, sharing one budget of 4 items per run." preserveAspectRatio="xMidYMid meet"><title>A run moves through survey, then merge, then respond, then propose, then work, then deploy, then brief, sharing one budget of 4 items per run.</title><defs><marker id="fig-arrowhead-sweep-run" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+        <text class="fig-text fig-text--eyebrow" x="0" y="16" text-anchor="start">Every run, in this order</text>
+        <g class="fig-panel fig-panel--quiet"><rect x="0" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="60" text-anchor="start">Phase 1</text><text class="fig-text fig-text--heading" x="16" y="84" text-anchor="start">survey</text><text class="fig-text fig-text--body" x="16" y="108" text-anchor="start">Read everything and</text><text class="fig-text fig-text--body" x="16" y="128" text-anchor="start">report</text><g class="fig-panel fig-panel--accent"><rect x="104" y="32" width="176" height="104" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="120" y="60" text-anchor="start">Phase 2</text><text class="fig-text fig-text--heading" x="120" y="84" text-anchor="start">merge</text><g class="fig-panel fig-panel--accent"><rect x="208" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="224" y="60" text-anchor="start">Phase 3</text><text class="fig-text fig-text--heading" x="224" y="84" text-anchor="start">respond</text><text class="fig-text fig-text--body" x="224" y="108" text-anchor="start">Answer review</text><text class="fig-text fig-text--body" x="224" y="128" text-anchor="start">comments</text><g class="fig-panel fig-panel--accent"><rect x="312" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="328" y="60" text-anchor="start">Phase 4</text><text class="fig-text fig-text--heading" x="328" y="84" text-anchor="start">propose</text><text class="fig-text fig-text--body" x="328" y="108" text-anchor="start">Propose answers to</text><text class="fig-text fig-text--body" x="328" y="128" text-anchor="start">open questions</text><g class="fig-panel fig-panel--accent"><rect x="416" y="32" width="176" height="120" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="432" y="60" text-anchor="start">Phase 5</text><text class="fig-text fig-text--heading" x="432" y="84" text-anchor="start">work</text><text class="fig-text fig-text--body" x="432" y="108" text-anchor="start">Start new items from</text><text class="fig-text fig-text--body" x="432" y="128" text-anchor="start">the todo lists</text><g class="fig-panel fig-panel--accent"><rect x="520" y="32" width="176" height="104" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="536" y="60" text-anchor="start">Phase 6</text><text class="fig-text fig-text--heading" x="536" y="84" text-anchor="start">deploy</text><g class="fig-panel fig-panel--accent"><rect x="624" y="32" width="176" height="104" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="640" y="60" text-anchor="start">Phase 7</text><text class="fig-text fig-text--heading" x="640" y="84" text-anchor="start">brief</text><line class="fig-arrow fig-arrow--plain" x1="180" y1="92" x2="98" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="284" y1="92" x2="202" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="388" y1="92" x2="306" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="492" y1="92" x2="410" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="596" y1="92" x2="514" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line><line class="fig-arrow fig-arrow--plain" x1="700" y1="92" x2="618" y2="92" marker-end="url(#fig-arrowhead-sweep-run)"></line>
+        <text class="fig-text fig-text--eyebrow" x="0" y="190" text-anchor="start">One budget, currently 4 items per run, spent in phase order</text>
+        <rect class="fig-slot" x="0" y="204" width="56" height="22" rx="5"></rect><rect class="fig-slot" x="64" y="204" width="56" height="22" rx="5"></rect><rect class="fig-slot" x="128" y="204" width="56" height="22" rx="5"></rect><rect class="fig-slot" x="192" y="204" width="56" height="22" rx="5"></rect>
+        <text class="fig-text fig-text--caption" x="0" y="250" text-anchor="start">At most 2 from any one initiative; the run stops at 8 open pull requests.</text>
+        <text class="fig-text fig-text--caption" x="0" y="270" text-anchor="start">Every result is a pull request. Nothing is merged by a run.</text></svg></figure>
+<p>A run moves through four phases in a fixed order. Which phases are switched on is a setting in the sweep configuration file, so widening what the job may do is a reviewed commit rather than an edit in a scheduler.</p>
+<p>The phases share one budget of 4 items per run, spent in phase order. Answering review comments comes first, then proposing answers to open questions, then starting new work. A run that spends its whole budget on review replies and starts nothing new is a correct run.</p>
+<div class="fact-block" data-fact-block="sweep.budget" data-fact-view="table"><dl class="fact-table"><div data-fact-key="items_per_run"><dt>Current items per run</dt><dd>4</dd></div><div data-fact-key="max_items_per_initiative"><dt>Max items per initiative</dt><dd>2</dd></div><div data-fact-key="max_open_prs"><dt>Max open PRs</dt><dd>8</dd></div><div data-fact-key="max_effort"><dt>Max effort</dt><dd>large</dd></div></dl></div>
+<p>Which items get picked is arithmetic, not judgment. Each actionable item is scored from the initiative&#39;s value, the item&#39;s value, and its effort, with a bonus for advancing the stage and a bonus that grows with how long the initiative has sat. Items that already have an open pull request are skipped. The command that ranks them is code, so the definition of &quot;most important&quot; doesn&#39;t drift between runs.</p>
+<p>Each run also obeys a short list of rules, whatever it finds:</p>
+<div class="fact-block" data-fact-block="sweep.rules" data-fact-view="list"><ul class="fact-list"><li>Never merge a pull request automerge refuses, and never resolve a review thread. A red, conflicted, or commented-on pull request is skipped, not overridden.</li><li>Never merge a proposal. It is the question, and the user&#39;s merge is the answer.</li><li>Never treat your own comments, or another bot&#39;s, as something to respond to.</li><li>Never create an initiative, and never invent or edit a wish.</li><li>Never declare an initiative dormant. Running out of work is not the same as being finished, and only the user can say which one it is.</li><li>Never repair a malformed initiative.json — skip that initiative and report it.</li><li>Never settle a human-class blocker unilaterally. A human: question may be proposed as a pull request the user merges or redirects; everything else goes in the digest, as multiple choice wherever the options can be enumerated.</li><li>Never propose an answer to a data:, permission:, cost: or legal: blocker — those need a fact only the user has, or their authority.</li><li>Never deploy to production. deploy writes the test environment only, and release-initiative is a person&#39;s decision in their own words.</li><li>Never put a recommendation, a decision, or a new commitment in a brief. It describes what the record already says; it does not add to it.</li><li>Never hand-write brief.generated_at, commit or digest. brief &lt;slug&gt; record writes them, and a hand-written digest makes staleness a fiction.</li><li>Never make a Site public. An environment nobody has confirmed goes out private, and changing that is the user&#39;s request, not a sweep&#39;s.</li><li>Any pull request the run opens for an initiative carries that initiative&#39;s waiting deploy record first: git fetch origin &quot;deploy-record/&lt;slug&gt;&quot; &amp;&amp; git merge --no-edit FETCH_HEAD. A record waits on that branch to avoid a pull request of its own, so folding it in is what lands it.</li><li>If there is no actionable work anywhere, do nothing and say so.</li></ul></div>
+<p><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">The sweep prompt is the authority for what a run does</a>, <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/initiatives/sweep.json" data-source-path="initiatives/sweep.json">the configuration sets the budget and phases</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/initiatives/sweep-setup.md" data-source-path="initiatives/sweep-setup.md">the setup notes say how to schedule it</a>.</p>
+    </section>
+    <section id="review" data-audience="contributor">
+      <h2><span class="section-number" aria-hidden="true">09</span>Review and merge</h2>
+      <p>Every change an agent makes arrives as a pull request on its own branch. The branch name carries the initiative and the item, and a workflow checks that the diff stays inside that initiative&#39;s folder and its declared outputs. A pull request that writes outside its scope fails the check, whether or not the agent remembered the rule.</p>
+<figure class="figure" data-figure="review-loop"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 228" width="800" height="228" role="img" aria-label="An agent opens a scoped pull request, CI checks its write scope, you review it, and the merge completes the item. Comments go back to the agent through respond-to-review; merge-prs merges what is green." preserveAspectRatio="xMidYMid meet"><title>An agent opens a scoped pull request, CI checks its write scope, you review it, and the merge completes the item. Comments go back to the agent through respond-to-review; merge-prs merges what is green.</title><defs><marker id="fig-arrowhead-review-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs><g class="fig-panel fig-panel--accent"><rect x="0" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="16" y="28" text-anchor="start">Agent</text><text class="fig-text fig-text--heading" x="16" y="52" text-anchor="start">Pull request</text><text class="fig-text fig-text--body" x="16" y="76" text-anchor="start">sweep/&lt;slug&gt;/&lt;item&gt;</text><text class="fig-text fig-text--body" x="16" y="96" text-anchor="start">Writes only inside</text><text class="fig-text fig-text--body" x="16" y="116" text-anchor="start">its initiative and</text><text class="fig-text fig-text--body" x="16" y="136" text-anchor="start">declared outputs.</text><g class="fig-panel fig-panel--quiet"><rect x="204" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="220" y="28" text-anchor="start">CI</text><text class="fig-text fig-text--heading" x="220" y="52" text-anchor="start">Scope check</text><text class="fig-text fig-text--body" x="220" y="76" text-anchor="start">Fails if the diff</text><text class="fig-text fig-text--body" x="220" y="96" text-anchor="start">reaches outside.</text><text class="fig-text fig-text--body" x="220" y="116" text-anchor="start">The branch preview</text><text class="fig-text fig-text--body" x="220" y="136" text-anchor="start">is built.</text><g class="fig-panel fig-panel--person"><rect x="408" y="0" width="188" height="140" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="424" y="28" text-anchor="start">You</text><text class="fig-text fig-text--heading" x="424" y="52" text-anchor="start">Review</text><text class="fig-text fig-text--body" x="424" y="76" text-anchor="start">Read the diff or the</text><text class="fig-text fig-text--body" x="424" y="96" text-anchor="start">preview. Comment,</text><text class="fig-text fig-text--body" x="424" y="116" text-anchor="start">or merge.</text><g class="fig-panel fig-panel--go"><rect x="612" y="0" width="188" height="160" rx="14"></rect></g><text class="fig-text fig-text--eyebrow" x="628" y="28" text-anchor="start">Merge</text><text class="fig-text fig-text--heading" x="628" y="52" text-anchor="start">Item completed</text><text class="fig-text fig-text--body" x="628" y="76" text-anchor="start">Removed from the</text><text class="fig-text fig-text--body" x="628" y="96" text-anchor="start">list. Dependents</text><text class="fig-text fig-text--body" x="628" y="116" text-anchor="start">unblocked. Log</text><text class="fig-text fig-text--body" x="628" y="136" text-anchor="start">entry written.</text><line class="fig-arrow fig-arrow--plain" x1="192" y1="80" x2="198" y2="80" marker-end="url(#fig-arrowhead-review-loop)"></line><line class="fig-arrow fig-arrow--plain" x1="396" y1="80" x2="402" y2="80" marker-end="url(#fig-arrowhead-review-loop)"></line><line class="fig-arrow fig-arrow--plain" x1="600" y1="80" x2="606" y2="80" marker-end="url(#fig-arrowhead-review-loop)"></line><path class="fig-arrow fig-arrow--person" d="M 502 162 C 502 198, 94 198, 94 164" fill="none" marker-end="url(#fig-arrowhead-review-loop)"></path>
+    <text class="fig-text fig-text--edge" x="298" y="214" text-anchor="middle">comments go back to the agent: the next sweep, or respond-to-review</text><text class="fig-text fig-text--edge" x="800" y="214" text-anchor="end">merge-prs merges a green batch</text></svg></figure>
+<p>You review the pull request the way you&#39;d review any other. The site is built for every pushed branch, so the rendered result of a pull request is browsable before you merge it, at a preview address under the branch name.</p>
+<p><strong>Comments</strong> get answered by the next sweep run, or by the <code>respond-to-review</code> skill when you ask directly. For each thread whose last comment is yours, the agent does one of three things: revises the branch and replies, replies without a change, or replies that the question is yours to decide and surfaces it in the digest. It replies in every case, never resolves a thread, and never lets a comment grow the pull request beyond the item it was opened for.</p>
+<p><strong>Merging</strong> is yours. The <code>merge-prs</code> skill clears a batch in one sentence: it checks that CI is green, the branch is mergeable, and no review thread is unresolved, then merges what qualifies and reports what it skipped and why. It never resolves a thread to make a pull request mergeable. The merge is also the event that completes the todo item, so auto-merging on green would make review meaningless.</p>
+<p>Because each sweep pull request is confined to one initiative, a batch of them merges cleanly in any order. A conflict between two sweep pull requests means an initiative wrote outside its scope, and the merge skill says so instead of rebasing past it. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/.claude/skills/respond-to-review/SKILL.md" data-source-path=".claude/skills/respond-to-review/SKILL.md">The response rules are in the review skill</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/.claude/skills/merge-prs/SKILL.md" data-source-path=".claude/skills/merge-prs/SKILL.md">the merge checks are in the merge skill</a>.</p>
+    </section>
+    <section id="decks" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">10</span>Decks</h2>
+      <p>A deck is a folder of static web content: an index page, optional sections, and its own stylesheet and script seeded from a template. Decks are the oldest part of the repository, and in this one they hold travel planning: places, dates, attractions, events, and maps. A small JSON file per deck sets its title, its description, and which group it appears under on the home page.</p>
+<p>Changing a deck is ordinary web work with a few house rules that the shared components assume:</p>
+<ul><li>Keep topic content inside the page&#39;s content card.</li><li>Use the shared libraries for maps, photo galleries, collapsible topics, and footers instead of writing new ones.</li><li>Preserve every URL you were given, exactly as given.</li><li>Give every attraction and event a three-digit number, so you can say &quot;promote 361&quot; or &quot;reject 475&quot; in a later edit and the agent knows which item you mean.</li><li>For a new place, include the population, altitude, climate, a short history, a few attractions, and a map with every location on the page.</li></ul>
+<p>After the last source change, run <code>bash scripts/build.sh</code> and screenshot anything that looks different. The build validates its own output and fails on a broken page, so a passing build is the check. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The content rules are in the instruction file</a>; <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">the build commands are in the build document</a>; <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/DECK_ITEMS_TECHDOC.md" data-source-path="DECK_ITEMS_TECHDOC.md">item numbering is in its own technical document</a>.</p>
+    </section>
+    <section id="demos" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">11</span>Demos</h2>
+      <p>A demo is a standalone web example in its own folder under the demos directory. It owns its pages and assets, and it may carry the prompt history that produced it. The build copies the folder to the site without rewriting anything and adds one entry to the demos index, taken from a small JSON manifest: a title, a description, the root HTML file, and optional links.</p>
+<p>Most demos here are the graduated output of an initiative. The <code>deploy-demo</code> skill copies a complete folder from elsewhere in the repository into the demos directory, replacing an existing demo in one step, and writes the manifest. A demo can name the initiative that produced it, which is how the index orders entries by recent activity.</p>
+<p>This guide is itself a demo. Its three files are generated inside the repo-guide initiative and released to the demos folder by hand when something significant has changed.</p>
+<p>Demo language stays separate from deck language, because the two have different publishing structures and an agent asked to edit one shouldn&#39;t apply the other&#39;s rules. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">The publishing contract is in the demos document</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/.claude/skills/deploy-demo/SKILL.md" data-source-path=".claude/skills/deploy-demo/SKILL.md">the copy-and-register procedure is in the deploy skill</a>.</p>
+    </section>
+    <section id="deployments" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">12</span>Deploying to test and production</h2>
+      <p>An initiative with something to publish declares it in its JSON record as a deployment. Every deployment has two environments, and the difference between them is who may write.</p>
+<figure class="figure" data-figure="deployment-environments"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 320" width="800" height="320" role="img" aria-label="Every deployment has a test environment any agent may overwrite and a prod environment only a person releases. Both exist for every kind: ChatGPT Site and Demo." preserveAspectRatio="xMidYMid meet"><title>Every deployment has a test environment any agent may overwrite and a prod environment only a person releases. Both exist for every kind: ChatGPT Site and Demo.</title><defs><marker id="fig-arrowhead-deployment-environments" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+
+    <g class="fig-panel fig-panel--auto"><rect x="0" y="0" width="330" height="204" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">Written by any agent, any time</text>
+    <text class="fig-text fig-text--heading" x="20" y="56" text-anchor="start">Test</text>
+
+    <circle class="fig-dot fig-dot--agent" cx="25" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="90" text-anchor="start">Refreshed whenever you want a look</text>
+    <circle class="fig-dot fig-dot--agent" cx="25" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="114" text-anchor="start">Overwritten as often as needed</text>
+    <circle class="fig-dot fig-dot--agent" cx="25" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="138" text-anchor="start">Keeps no history</text>
+    <g class="fig-chip fig-chip--phase" data-figure-label="deploy-test">
+    <rect x="20" y="158" width="105" height="28" rx="14"></rect>
+    <text x="72.5" y="172" dominant-baseline="central" text-anchor="middle">deploy-test</text>
+  </g>
+
+    <g class="fig-panel fig-panel--wait"><rect x="470" y="0" width="330" height="204" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="490" y="30" text-anchor="start">Written only when a person asks</text>
+    <text class="fig-text fig-text--heading" x="490" y="56" text-anchor="start">Production</text>
+
+    <circle class="fig-dot fig-dot--person" cx="495" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="90" text-anchor="start">Released from committed files only</text>
+    <circle class="fig-dot fig-dot--person" cx="495" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="114" text-anchor="start">Refuses an uncommitted source</text>
+    <circle class="fig-dot fig-dot--person" cx="495" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="508" y="138" text-anchor="start">Records the commit and a release entry</text>
+    <g class="fig-chip fig-chip--wait" data-figure-label="release-initiative">
+    <rect x="490" y="158" width="157" height="28" rx="14"></rect>
+    <text x="568.5" y="172" dominant-baseline="central" text-anchor="middle">release-initiative</text>
+  </g>
+        <line class="fig-arrow fig-arrow--person" x1="342" y1="102" x2="458" y2="102" marker-end="url(#fig-arrowhead-deployment-environments)"></line>
+        <text class="fig-text fig-text--edge" x="400" y="76" text-anchor="middle">you ask for</text>
+        <text class="fig-text fig-text--edge" x="400" y="90" text-anchor="middle">a release</text>
+        <text class="fig-text fig-text--eyebrow" x="0" y="232" text-anchor="start">What each environment is, by kind</text>
+    <text class="fig-text fig-text--heading-small" x="0" y="262" text-anchor="start">ChatGPT Site</text><text class="fig-text fig-text--body" x="130" y="262" text-anchor="start">a separate test Site, private by default</text><text class="fig-text fig-text--body" x="470" y="262" text-anchor="start">the production Site, from committed files</text><text class="fig-text fig-text--heading-small" x="0" y="290" text-anchor="start">Demo</text><text class="fig-text fig-text--body" x="130" y="290" text-anchor="start">the branch preview GitHub Pages publishes</text><text class="fig-text fig-text--body" x="470" y="290" text-anchor="start">demos/ on main, live when the branch merges</text></svg></figure>
+<p><strong>Test</strong> is disposable. Any agent may overwrite it, without asking, whenever you want to look at the work: several times in a session, in whatever state the work is in. It keeps no history. The <code>deploy-test</code> skill does this and reports both URLs.</p>
+<p><strong>Production</strong> is the copy other people see. Only a person asks for a release, in their own words. A todo item, a schedule, or an agent&#39;s own judgment that the work looks ready are reasons to tell you, never reasons to release. The <code>release-initiative</code> skill writes production, and only from committed files: it refuses a source folder with uncommitted changes, records the commit it shipped, and appends an entry to the initiative&#39;s releases document.</p>
+<p>The split is enforced, not requested. The test and production targets may never be the same, the release plan exits non-zero when the source is dirty, and the skill an agent reaches for to refresh a preview has no way to reach production.</p>
+<p>Two kinds of website are supported, and the kind decides how each environment works:</p>
+<ul><li><strong>A ChatGPT Site.</strong> A full website hosted on the ChatGPT Sites platform, with backend services, storage, and a database available. Test and production are two separate Sites with separate data, and a Site is private unless you say otherwise.</li><li><strong>A demo.</strong> A folder of static pages under this repository&#39;s demos directory. Its test environment is the branch preview that GitHub Pages publishes for any pushed branch, and its production copy goes live when the branch merges to main.</li></ul>
+<p>Adding a third kind means adding one entry to the kinds table and one skill. The validator, the plan, the record, and the overview page don&#39;t change. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">The rules are in the instruction file</a>; <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the schema, the release gate, and the release history are in the technical document</a>.</p>
+    </section>
+    <section id="portability" data-audience="forker">
+      <h2><span class="section-number" aria-hidden="true">13</span>Taking this elsewhere</h2>
+      <p>If what you want from this repository is the process rather than the content, the process is a small set of files, and the sweep configuration already names most of them.</p>
+<figure class="figure" data-figure="fork-boundary"><svg class="figure-svg figure-svg--wide" viewBox="0 0 800 328" width="800" height="328" role="img" aria-label="A fork carries the process files and leaves this repository&#39;s own content behind. The protected paths are shared/, scripts/, .github/." preserveAspectRatio="xMidYMid meet"><title>A fork carries the process files and leaves this repository&#39;s own content behind. The protected paths are shared/, scripts/, .github/.</title><defs><marker id="fig-arrowhead-fork-boundary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fig-arrow-head" d="M 0 1 L 9 5 L 0 9 z"></path></marker></defs>
+
+    <g class="fig-panel fig-panel--carry"><rect x="0" y="0" width="384" height="298" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="20" y="30" text-anchor="start">Take it</text>
+    <text class="fig-text fig-text--heading" x="20" y="58" text-anchor="start">The process</text>
+
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="90" text-anchor="start">AGENTS.md, the working instructions</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="114" text-anchor="start">scripts/initiatives.mjs and its tests</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="138" text-anchor="start">The sweep prompt and sweep.json</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="157" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="162" text-anchor="start">The skills under .claude/skills/</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="181" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="186" text-anchor="start">The four workflows under .github/</text>
+    <circle class="fig-dot fig-dot--carry" cx="25" cy="205" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="38" y="210" text-anchor="start">The build script and shared libraries</text>
+    <text class="fig-text fig-text--eyebrow" x="20" y="248" text-anchor="start">Protected paths a sweep may never write</text>
+    <g class="fig-chip fig-chip--path" data-figure-label="shared/">
+    <rect x="20" y="256" width="72" height="26" rx="13"></rect>
+    <text x="56" y="269" dominant-baseline="central" text-anchor="middle">shared/</text>
+  </g><g class="fig-chip fig-chip--path" data-figure-label="scripts/">
+    <rect x="99" y="256" width="79" height="26" rx="13"></rect>
+    <text x="138.5" y="269" dominant-baseline="central" text-anchor="middle">scripts/</text>
+  </g><g class="fig-chip fig-chip--path" data-figure-label=".github/">
+    <rect x="185" y="256" width="79" height="26" rx="13"></rect>
+    <text x="224.5" y="269" dominant-baseline="central" text-anchor="middle">.github/</text>
+  </g>
+
+    <g class="fig-panel fig-panel--leave"><rect x="416" y="0" width="384" height="298" rx="14"></rect></g>
+    <text class="fig-text fig-text--eyebrow" x="436" y="30" text-anchor="start">Leave it</text>
+    <text class="fig-text fig-text--heading" x="436" y="58" text-anchor="start">This repository’s content</text>
+
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="85" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="90" text-anchor="start">Published decks</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="109" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="114" text-anchor="start">Standalone demos</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="133" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="138" text-anchor="start">Existing initiatives and their histories</text>
+    <circle class="fig-dot fig-dot--leave" cx="441" cy="157" r="3.5"></circle>
+    <text class="fig-text fig-text--body" x="454" y="162" text-anchor="start">This guide, until you regenerate it</text>
+
+        <text class="fig-text fig-text--caption" x="0" y="322" text-anchor="start">The initiatives folder can start empty. The first skill you run creates the first one.</text></svg></figure>
+<p>The protected paths are the folders a sweep may never write to. They&#39;re protected because everything in them is shared machinery, which makes the list a good inventory of what a fork needs.</p>
+<p>Four workflows run in GitHub Actions:</p>
+<div class="fact-block" data-fact-block="workflows.*" data-fact-view="cards"><div class="fact-cards">
+    <article data-fact-key="cleanup-pr-preview.yml">
+      <h4>cleanup-pr-preview</h4>
+      <p>Runs when a branch or tag is deleted.</p>
+      <p class="fact-card-meta">Job: cleanup</p>
+    </article>
+    <article data-fact-key="gh-pages.yml">
+      <h4>gh-pages</h4>
+      <p>Runs when a push happens or someone starts it manually.</p>
+      <p class="fact-card-meta">Jobs: build, deploy</p>
+    </article>
+    <article data-fact-key="initiatives-digest.yml">
+      <h4>initiatives-digest</h4>
+      <p>Runs when its schedule fires or someone starts it manually.</p>
+      <p class="fact-card-meta">Job: digest</p>
+    </article>
+    <article data-fact-key="sweep-scope.yml">
+      <h4>sweep-scope</h4>
+      <p>Runs when a pull request opens or updates.</p>
+      <p class="fact-card-meta">Job: scope</p>
+    </article></div></div>
+<p>The skills are single-purpose procedures an agent runs by name. Each is one markdown file with a short frontmatter description, and that description is how an agent decides which skill a request matches.</p>
+<div class="fact-block" data-fact-block="skills.*" data-fact-view="cards"><div class="fact-cards">
+    <article data-fact-key="skills.answer-decision">
+      <h4>answer-decision</h4>
+      <p>Answer a question an initiative is blocked on, recording it in decisions.md and unblocking the item.</p>
+    </article>
+    <article data-fact-key="skills.deploy-demo">
+      <h4>deploy-demo</h4>
+      <p>Copy a complete folder from elsewhere in the SitePrep repository into one immediate subdirectory of demos/, replacing an existing demo atomically when necessary, and register its title, description, root HTML file, and optional local or web links for the generated Demo TOC.</p>
+    </article>
+    <article data-fact-key="skills.deploy-test">
+      <h4>deploy-test</h4>
+      <p>Refresh an initiative&#39;s test deployment from the source directory recorded in its initiative.json, then report both the test and the production URL.</p>
+    </article>
+    <article data-fact-key="skills.deploy-to-chatgpt-sites">
+      <h4>deploy-to-chatgpt-sites</h4>
+      <p>Deploy an already-built static website directory containing index.html and optional CSS, JavaScript, images, or data files to ChatGPT Sites.</p>
+    </article>
+    <article data-fact-key="skills.generate-guide">
+      <h4>generate-guide</h4>
+      <p>Generate and verify the repository guide description, slide deck, and lifecycle simulator.</p>
+    </article>
+    <article data-fact-key="skills.merge-prs">
+      <h4>merge-prs</h4>
+      <p>Merge one or more pull requests after checking CI, mergeability, and review threads.</p>
+    </article>
+    <article data-fact-key="skills.new-initiative">
+      <h4>new-initiative</h4>
+      <p>Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list.</p>
+    </article>
+    <article data-fact-key="skills.release-initiative">
+      <h4>release-initiative</h4>
+      <p>Release an initiative&#39;s committed source to its production deployment - a ChatGPT Site or a demo under demos/ - and report both the test and the production URL.</p>
+    </article>
+    <article data-fact-key="skills.respond-to-review">
+      <h4>respond-to-review</h4>
+      <p>Answer review comments on a pull request - revising the branch, replying, or escalating a decision.</p>
+    </article>
+    <article data-fact-key="skills.tag-newsletter-stories">
+      <h4>tag-newsletter-stories</h4>
+      <p>Add theme tags, event clusters, and cluster paraphrases to a Newsletter Story Harvester JSON store.</p>
+    </article>
+    <article data-fact-key="skills.update-deck-events">
+      <h4>update-deck-events</h4>
+      <p>Refresh the Events topic of every current or future deck page that has a date range, by searching for festivals, fairs, religious celebrations, concerts, and theater happening in that place during that window and reconciling them against the events already on the page and on its reject page.</p>
+    </article>
+    <article data-fact-key="skills.write-brief">
+      <h4>write-brief</h4>
+      <p>Write or refresh an initiative&#39;s brief - the short &quot;where this stands&quot; summary shown at the top of its overview page, covering what is done, what others owe, what work remains, and what is deferred.</p>
+    </article></div></div>
+<p>The decks, the demos, and the existing initiatives are this repository&#39;s own content. Leave them behind unless they belong in your fork too. The initiative folder can start empty; the first skill you run will create the first one.</p>
+<p>You&#39;ll also need a scheduler that can check out the repository with full history, run a Node script, and open pull requests. A Claude routine is what this repository uses. The setup notes list what any runner has to provide. <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">The vision document explains which mechanism is essential</a>, <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">the technical document explains how it&#39;s wired</a>, and <a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/initiatives/sweep-setup.md" data-source-path="initiatives/sweep-setup.md">the sweep setup notes say what a scheduler needs</a>.</p>
+    </section>
+    <section id="sources" data-audience="both">
+      <h2><span class="section-number" aria-hidden="true">14</span>Where the real answers are</h2>
+      <p>This guide is an entry point. The files that actually drive the agents are these:</p>
+<ul><li><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/AGENTS.md" data-source-path="AGENTS.md">AGENTS.md</a> for the working conventions: content vocabulary, the lifecycle table, the blocker labels, and the deployment rules.</li><li><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_VISION.md" data-source-path="INITIATIVES_VISION.md">INITIATIVES_VISION.md</a> for the design of the initiative system and the reasoning behind each choice.</li><li><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/INITIATIVES_TECHDOC.md" data-source-path="INITIATIVES_TECHDOC.md">INITIATIVES_TECHDOC.md</a> for what the code does: validation, rendering, the sweep commands, and deployments.</li><li><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/initiatives/sweep-prompt.md" data-source-path="initiatives/sweep-prompt.md">initiatives/sweep-prompt.md</a> for the exact instruction a sweep run follows.</li><li><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/BUILD_TECHDOC.md" data-source-path="BUILD_TECHDOC.md">BUILD_TECHDOC.md</a> for the site build, browser setup, and screenshots.</li><li><a href="https://github.com/knovak/siteprep/blob/5bd39b9aeb27/DEMOS_TECHDOC.md" data-source-path="DEMOS_TECHDOC.md">DEMOS_TECHDOC.md</a> for the demo publishing contract.</li></ul>
+<p>Every link in this guide is pinned to the commit named in the footer, so the linked text matches what the guide describes. For the current version, look at the same paths on the main branch.</p>
+<p>The guide itself is generated. Stage names, document lists, blocker labels, the budget, the skills, and the workflows are read from the repository when the guide is built, so those parts can&#39;t disagree with the code. The prose around them was written by hand and dated.</p>
+    </section>
+    </main>
+  </div>
+  <footer data-generated-date="2026-09-07" data-source-sha="5bd39b9aeb27">
+    <div class="footer-inner">
+      Generated <strong>2026-09-07</strong> from source commit
+      <a href="https://github.com/knovak/siteprep/tree/5bd39b9aeb27"><strong>5bd39b9aeb27</strong></a>.
+      The prose was written by hand and dated. Stage names, document lists, labels, budgets, skills, and workflows are read from that commit.
+    </div>
+  </footer>
+  <script>
+    (() => {
+      const links = [...document.querySelectorAll('.sidebar a[href^="#"]')];
+      const byId = new Map(links.map(link => [link.getAttribute('href').slice(1), link]));
+      const sections = [...document.querySelectorAll('main section')];
+      if (!('IntersectionObserver' in window) || !sections.length) return;
+      let active = null;
+      const setActive = id => {
+        if (active === id) return;
+        active = id;
+        links.forEach(link => link.classList.toggle('active', link === byId.get(id)));
+      };
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length) setActive(visible[0].target.id);
+      }, {rootMargin: '-10% 0px -70% 0px', threshold: 0});
+      sections.forEach(section => observer.observe(section));
+      setActive(sections[0].id);
+    })();
+  </script>
+</body>
+</html>
