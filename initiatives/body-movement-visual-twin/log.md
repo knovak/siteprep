@@ -114,3 +114,12 @@ Implemented the approved compact picker and exactly 60 Feldenkrais, 60 yoga, 20 
 ## 2026-09-07 — Release
 
 Released to production — ChatGPT Site, version 3, `6f238c9`. 1 commit(s) since the previous release. <https://body-movement-visual-twin.ken-novak.chatgpt.site/> See releases.md.
+
+
+## 2026-09-06 — Public test access
+
+At the user's explicit request, changed the existing Body Movement validation
+Site to public access at 2026-09-07 03:58:02 UTC. Anonymous root and viewer-module
+requests returned HTTP 200. Test remains version 5 and production remains
+private version 3; no deployment, source revision, or review status changed.
+See the corresponding decision and current deployment access record.
