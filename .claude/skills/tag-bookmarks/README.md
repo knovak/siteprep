@@ -43,7 +43,7 @@ URL, its title, and only the **new** tags:
     {
       "url": "https://www.example-times.com/2024/03/11/california-drought-rules",
       "title": "California tightens water rules after a third dry winter",
-      "tags": ["2001-2019", "california", "climate", "environment", "major_publication", "politics", "usa"]
+      "tags": ["2001-2019", "california", "climate", "environment", "major_publication", "politics", "tag_run:2026-09-07T20:55:59", "usa"]
     }
   ]
 }
@@ -54,8 +54,25 @@ adds tags and never removes them, so re-importing the same file twice changes
 nothing the second time. Verdicts, notes, titles, and dates are untouched: the
 file does not contain them.
 
-Items that received no tags are left out of the file, and the run tells you how
-many there were.
+## The run tag
+
+Every item a pass looks at also gets one tag naming the pass itself: `tag_run:`
+followed by the date and time the run started, as in
+`tag_run:2026-09-07T20:55:59`. Two things follow from it.
+
+- **No bookmark comes back with nothing.** An item the judgement found no
+  vocabulary tag for still carries its run tag, so it appears in the output file
+  and can be found again in the collection.
+- **A pass is selectable as a whole.** In **Select and tag**, an expression such
+  as `tag_run:2026-09-07T20:55:59 and not usa` picks out what that run looked at,
+  which is the quickest way to review a pass or to undo it with **Untag items**.
+
+Ask for it to be left off if you would rather not have it:
+
+> Tag ~/Downloads/pile-export.json without the run tag
+
+Then, as before, items that received no tags are left out of the file, and the
+run tells you how many there were.
 
 ## The default tags
 
@@ -132,7 +149,7 @@ a dimension is adding one object to `dimensions`; nothing else changes.
 
 Ask for a report and you get a markdown file next to the output listing how many
 items were tagged, how often each tag was used within its dimension, and which
-items came back untagged:
+items came back carrying only the run tag:
 
 > Tag ~/Downloads/pile-export.json and write me a report
 
@@ -160,6 +177,10 @@ node .claude/skills/tag-bookmarks/scripts/tag-bookmarks.mjs prepare export.json 
 node .claude/skills/tag-bookmarks/scripts/tag-bookmarks.mjs apply export.json assignments.json \
   -o export-tagged.json --report report.md
 ```
+
+`apply` stamps the run tag from the current time. `--run-tag 2026-09-07T20:55:59`
+sets it instead, so batches applied separately can be marked as one pass, and
+`--no-run-tag` leaves it off.
 
 `prepare` writes a worksheet of items with a `ref` for each one. The tagging
 step answers with an assignments file of `{"ref": "b0001", "tags": [...]}`

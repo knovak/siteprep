@@ -7,7 +7,8 @@
 //
 // The reading and the writing are both here so that the file Bookmark Sorter
 // imports is machine-written and validated: every tag is checked against the
-// vocabulary, every item against the export it came from.
+// vocabulary, every item against the export it came from, and every item
+// surveyed carries the run's own tag_run: tag.
 
 import {createHash} from 'node:crypto';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
@@ -22,14 +23,21 @@ const WORKSHEET_FORMAT = 'bookmark-tags/worksheet/v1';
 const ASSIGNMENTS_FORMAT = 'bookmark-tags/assignments/v1';
 const VOCABULARY_FORMAT = 'bookmark-tags/vocabulary/v1';
 
+// Every item an apply run surveys takes one run tag, tag_run:<stamp>, so a pass
+// can be selected as a whole afterwards and no bookmark comes back carrying
+// nothing. The stamp is the run's own UTC second, the file's exported_at with
+// the fraction and the zone dropped: tag_run:2026-09-07T20:55:59.
+const RUN_TAG_PREFIX = 'tag_run:';
+const RUN_STAMP = /^\d{4}-\d{2}-\d{2}[T:]\d{2}:\d{2}:\d{2}$/;
+
 const TRACKING_PARAMETERS = /^(utm_.*|fbclid|gclid)$/i;
 
 class UsageError extends Error {}
 
 // ---------------------------------------------------------------- arguments
 
-const FLAGS = new Set(['include-untagged', 'no-implied', 'allow-unknown-tags', 'quiet', 'help']);
-const VALUED = new Set(['vocabulary', 'dimensions', 'limit', 'offset', 'out', 'report']);
+const FLAGS = new Set(['include-untagged', 'no-implied', 'no-run-tag', 'allow-unknown-tags', 'quiet', 'help']);
+const VALUED = new Set(['vocabulary', 'dimensions', 'limit', 'offset', 'out', 'report', 'run-tag']);
 
 function parseArgs(argv) {
   const options = {};
@@ -73,6 +81,23 @@ function wholeNumber(value, label) {
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed < 0) throw new UsageError(`--${label} must be a whole number`);
   return parsed;
+}
+
+// ----------------------------------------------------------------- run tag
+
+function resolveRunTag(options, at) {
+  if (options['no-run-tag']) {
+    if (options['run-tag'] !== undefined) throw new UsageError('--run-tag and --no-run-tag contradict each other');
+    return null;
+  }
+  const given = options['run-tag'];
+  if (given === undefined) return `${RUN_TAG_PREFIX}${at.slice(0, 19)}`;
+  const value = given.trim();
+  const stamp = value.startsWith(RUN_TAG_PREFIX) ? value.slice(RUN_TAG_PREFIX.length) : value;
+  if (!RUN_STAMP.test(stamp)) {
+    throw new UsageError(`--run-tag must be a date and time such as 2026-09-07T20:55:59, not "${given}"`);
+  }
+  return `${RUN_TAG_PREFIX}${stamp}`;
 }
 
 // --------------------------------------------------------------- vocabulary
@@ -412,6 +437,7 @@ function commandPrepare(positional, options) {
       'Assign nothing from a dimension rather than guessing when the item gives no evidence for it.',
       'Answer with an assignments file: {"format":"bookmark-tags/assignments/v1","source_fingerprint":"' + source.fingerprint + '","items":[{"ref":"...","tags":["..."]}]}.',
       'existing_tags shows what the bookmark already carries. Import adds tags and never removes them.',
+      'Do not assign a tag_run: tag. apply stamps every item it surveys with the run\'s own one.',
     ],
     vocabulary: vocabularyView(vocabulary),
     items: slice.map(item => ({
@@ -464,6 +490,8 @@ function commandApply(positional, options) {
   if (!sourcePath) throw new UsageError('apply needs the path of a Bookmark Sorter export');
   if (assignmentPaths.length === 0) throw new UsageError('apply needs at least one assignments file');
 
+  const generatedAt = new Date().toISOString();
+  const runTag = resolveRunTag(options, generatedAt);
   const source = readExport(sourcePath);
   const vocabulary = loadVocabulary({path: options.vocabulary || DEFAULT_VOCABULARY, dimensions: options.dimensions});
   const byRef = new Map(source.items.map(item => [item.ref, item]));
@@ -495,6 +523,9 @@ function commandApply(positional, options) {
       for (const value of raw.tags) {
         if (typeof value !== 'string' || !value.trim()) throw new UsageError(`${where} has an empty tag`);
         const tag = value.trim();
+        if (tag.startsWith(RUN_TAG_PREFIX)) {
+          throw new UsageError(`${where}: apply writes the run tag itself; leave "${tag}" out of an assignments file`);
+        }
         if (!vocabulary.tagDimension.has(tag)) {
           const owner = vocabulary.everyTagDimension.get(tag);
           const reason = owner
@@ -517,6 +548,7 @@ function commandApply(positional, options) {
   let impliedAdded = 0;
   let alreadyPresent = 0;
   let taggedItems = 0;
+  let runTagged = 0;
 
   for (const item of source.items) {
     const raw = assigned.get(item.ref) || [];
@@ -530,14 +562,19 @@ function commandApply(positional, options) {
       const counter = dimension ? perDimension.get(dimension) : otherTags;
       counter.set(tag, (counter.get(tag) || 0) + 1);
     }
-    if (!fresh.length && !options['include-untagged']) continue;
+    // The run tag goes on every item the run surveyed, whether or not the
+    // judgement found a vocabulary tag for it, so an item that took nothing
+    // else still comes back with one tag and can be found again.
+    const wantsRunTag = runTag !== null && !item.existing_tags.includes(runTag) && !fresh.includes(runTag);
+    if (wantsRunTag) runTagged += 1;
+    const written = wantsRunTag ? [...fresh, runTag] : fresh;
+    if (!written.length && !options['include-untagged']) continue;
     const output = {url: item.url};
     if (item.title) output.title = item.title;
-    output.tags = fresh.slice().sort();
+    output.tags = written.slice().sort();
     outputItems.push(output);
   }
 
-  const generatedAt = new Date().toISOString();
   const document = {
     format: PORTABLE_FORMAT,
     exported_at: generatedAt,
@@ -547,6 +584,7 @@ function commandApply(positional, options) {
       at: generatedAt,
       vocabulary: vocabulary.name,
       dimensions: vocabulary.dimensions.map(dimension => dimension.name),
+      run_tag: runTag,
       source_fingerprint: source.fingerprint,
       source_items: source.items.length,
     },
@@ -559,10 +597,12 @@ function commandApply(positional, options) {
   const summary = {
     source: source.path,
     output: written,
+    run_tag: runTag,
     items_in_export: source.items.length,
     items_with_assignments: assigned.size,
-    items_tagged: taggedItems,
-    items_untagged: source.items.length - taggedItems,
+    items_given_vocabulary_tags: taggedItems,
+    items_with_no_vocabulary_tag: source.items.length - taggedItems,
+    items_given_the_run_tag: runTagged,
     tags_written: outputItems.reduce((total, item) => total + item.tags.length, 0),
     tags_added_by_implication: impliedAdded,
     tags_already_on_the_bookmark: alreadyPresent,
@@ -602,14 +642,16 @@ function renderReport(summary, source, assigned, vocabulary, warnings) {
     `- Output: \`${summary.output}\``,
     `- Vocabulary: ${vocabulary.name} (\`${vocabulary.path}\`)`,
     `- Dimensions: ${vocabulary.dimensions.map(dimension => dimension.name).join(', ')}`,
+    `- Run tag: ${summary.run_tag ? `\`${summary.run_tag}\`` : 'none (--no-run-tag)'}`,
     '',
     '## Counts',
     '',
     '| Measure | Value |',
     '|---|---:|',
     `| Items in the export | ${summary.items_in_export} |`,
-    `| Items given tags | ${summary.items_tagged} |`,
-    `| Items left untagged | ${summary.items_untagged} |`,
+    `| Items given vocabulary tags | ${summary.items_given_vocabulary_tags} |`,
+    `| Items with no vocabulary tag | ${summary.items_with_no_vocabulary_tag} |`,
+    `| Items given the run tag | ${summary.items_given_the_run_tag} |`,
     `| Tags written to the output file | ${summary.tags_written} |`,
     `| Tags added by implication | ${summary.tags_added_by_implication} |`,
     `| Tags the bookmark already carried | ${summary.tags_already_on_the_bookmark} |`,
@@ -624,7 +666,12 @@ function renderReport(summary, source, assigned, vocabulary, warnings) {
   }
   const untagged = source.items.filter(item => !(assigned.get(item.ref) || []).length);
   if (untagged.length) {
-    lines.push('## Items left untagged', '');
+    lines.push(
+      '## Items with no vocabulary tag',
+      '',
+      summary.run_tag ? `These carry \`${summary.run_tag}\` and nothing else.` : 'These were given no tags at all.',
+      '',
+    );
     for (const item of untagged.slice(0, 50)) lines.push(`- \`${item.ref}\` ${item.title || item.url}`);
     if (untagged.length > 50) lines.push(`- ... and ${untagged.length - 50} more`);
     lines.push('');
@@ -647,6 +694,7 @@ Usage:
   tag-bookmarks.mjs apply <export.json> <assignments.json...> [--vocabulary <file>]
                           [--dimensions <a,b>] [-o <file>] [--report <file.md>]
                           [--include-untagged] [--no-implied] [--allow-unknown-tags]
+                          [--run-tag <datetime>] [--no-run-tag]
 
 Options:
   --vocabulary <file>   Vocabulary to use: a JSON file, or a text file of
@@ -660,6 +708,11 @@ Options:
   --report <file.md>    Write a markdown summary of an apply run.
   --include-untagged    Keep items that received no new tags in the output.
   --no-implied          Do not add the vocabulary's implied tags.
+  --run-tag <datetime>  Stamp the run with this time rather than the current
+                        one, as 2026-09-07T20:55:59 or 2026-09-07:20:55:59.
+                        Pass the same value to several apply runs to mark them
+                        as one pass.
+  --no-run-tag          Do not add the tag_run: tag to the items surveyed.
   --allow-unknown-tags  Warn instead of failing on a tag outside the vocabulary.
   --quiet               Do not write the summary to standard error.
 `;

@@ -14,6 +14,12 @@ nothing.
 `README.md` beside this file is the user-facing guide. Read it when the user asks
 how the round trip works.
 
+Every item the pass surveys also receives the run's own tag, `tag_run:` followed
+by the date and time the run started, such as `tag_run:2026-09-07T20:55:59`.
+`apply` writes it; never put one in an assignments file. It means one pass can be
+selected as a whole afterwards, and that no bookmark comes out of a pass with no
+tags on it at all.
+
 Never change a verdict, note, title, or added date: the output file carries
 `url`, `title`, and `tags` only. Bookmark URLs, titles, and notes are private
 user data. Keep the export, the worksheet, the assignments, and the output
@@ -69,11 +75,18 @@ The script does the reading and the writing; the judgement in step 2 is yours.
    vocabulary, a ref that is not in the export, and assignments whose
    `source_fingerprint` belongs to a different export.
 
+`apply` adds the run tag to every item in the export, so every item appears in
+the output file and none of them is empty. `--run-tag 2026-09-07T20:55:59` sets
+the stamp rather than taking the current time, which is how several `apply` runs
+are marked as one pass; `--no-run-tag` leaves the tag off entirely, and then
+items that gained nothing drop out of the output as before.
+
 The vocabulary's implied tags are added during `apply` — `california` also
 writes `usa`, `ai` also writes `technology` — so the output holds the full set
 even where the assignment named only the narrower tag. `--no-implied` turns that
 off. Tags a bookmark already carries are dropped from the output, and items that
-gained nothing are left out unless `--include-untagged` is given.
+gained nothing are left out unless `--include-untagged` is given — which, with
+the run tag in play, only matters under `--no-run-tag`.
 
 To see the tags in play before starting:
 
@@ -85,7 +98,8 @@ node .claude/skills/tag-bookmarks/scripts/tag-bookmarks.mjs vocabulary
 
 Give the user the output file's path and tell them to import it into the same
 collection they exported from. Report the item counts, the number of items
-tagged, the tags written per dimension, and anything left untagged and why. Name
+given vocabulary tags, the tags written per dimension, the run tag every item
+received, and which items took only that and why. Name
 the vocabulary and dimensions used. Do not list bookmark titles or URLs in the
 report; the `--report` file holds those for the user to read locally.
 
