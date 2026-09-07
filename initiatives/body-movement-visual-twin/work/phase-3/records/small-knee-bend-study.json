@@ -1,0 +1,222 @@
+{
+  "id": "small-knee-bend-study",
+  "tradition": "feldenkrais",
+  "title": "Small standing knee bend",
+  "summary": "Both knees bend with a small hip hinge and compensating ankle motion.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "notice",
+      "t": [
+        0,
+        3
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "observe the starting arrangement"
+        },
+        {
+          "joint": "hip-right",
+          "action": "observe the starting arrangement"
+        },
+        {
+          "joint": "femur-left",
+          "action": "observe the starting arrangement"
+        },
+        {
+          "joint": "femur-right",
+          "action": "observe the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "explore",
+      "t": [
+        3,
+        19
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "illustrative hip flexion and extension"
+        },
+        {
+          "joint": "hip-right",
+          "action": "illustrative hip flexion and extension"
+        },
+        {
+          "joint": "femur-left",
+          "action": "illustrative knee folding and opening"
+        },
+        {
+          "joint": "femur-right",
+          "action": "illustrative knee folding and opening"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        19,
+        22
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "hip-right",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "femur-left",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "femur-right",
+          "action": "return toward the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "rest",
+      "t": [
+        22,
+        30
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-left",
+          "action": "pause in the starting arrangement"
+        },
+        {
+          "joint": "hip-right",
+          "action": "pause in the starting arrangement"
+        },
+        {
+          "joint": "femur-left",
+          "action": "pause in the starting arrangement"
+        },
+        {
+          "joint": "femur-right",
+          "action": "pause in the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "quadriceps-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "hamstrings-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "exploration": "Both knees bend with a small hip hinge and compensating ankle motion.",
+    "attention": [
+      {
+        "phase": "notice",
+        "cue": "Compare the starting relationships before movement begins."
+      },
+      {
+        "phase": "explore",
+        "cue": "Observe legs and feet as one region moves relative to another."
+      },
+      {
+        "phase": "rest",
+        "cue": "Compare the still reference with the preceding motion; a smaller movement is also an option."
+      }
+    ],
+    "range": {
+      "kind": "optional",
+      "smaller_reference": "The smaller-range display halves angular and translation excursions from the starting arrangement."
+    },
+    "rest_pauses": [
+      {
+        "after_phase": "return",
+        "duration_seconds": 8,
+        "note": "The final eight seconds hold the starting arrangement for comparison."
+      }
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "Halve excursions from the authored starting pose while preserving timing and rest."
+    },
+    {
+      "id": "mirrored-display",
+      "kind": "side",
+      "note": "Reflect the reference across its sagittal plane; the original source record stays unchanged."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "This is an original movement-theme illustration, not a guided Feldenkrais lesson or a range to reproduce."
+    ],
+    "expects_teacher": false,
+    "notes": "Educational fitted-reference geometry, not measured motion or individual instruction."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description and keyframes. Sources identify the practice context or named posture; they do not validate these angles or anatomy annotations.",
+    "rights_basis": "provisional: project-authored record and animation; no third-party movement media or lesson text is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "International Feldenkrais Federation competency profile",
+        "url": "https://feldenkrais-method.org/wp-content/uploads/English-Competency-Profile.pdf",
+        "supports": [
+          "original movement exploration, attention, differentiation, and rest; not a reproduction of a lesson"
+        ]
+      },
+      {
+        "title": "Pleasant Exploration of Hands and Feet",
+        "url": "https://feldenkrais.com/pleasant-exploration-of-hands-and-feet/",
+        "supports": [
+          "hand and foot exploration themes; not the authored keyframes"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Anatomical and tradition claims await review. Highlighted muscle groups are provisional stabilisation hypotheses, not measured activity. The user authorized collection expansion without waiting for practitioner review."
+    }
+  }
+}

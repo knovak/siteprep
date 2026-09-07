@@ -1,0 +1,212 @@
+{
+  "id": "head-to-knee-fold-study",
+  "tradition": "yoga",
+  "title": "Head-to-knee fold",
+  "summary": "One leg stays long as the other folds outward and the trunk inclines toward the long leg.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "entry",
+      "t": [
+        0,
+        6
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-right",
+          "action": "illustrative hip flexion and extension with thigh opening or crossing"
+        },
+        {
+          "joint": "femur-right",
+          "action": "illustrative knee folding and opening"
+        },
+        {
+          "joint": "tibia-right",
+          "action": "illustrative ankle flexion and extension"
+        },
+        {
+          "joint": "lumbar-spine",
+          "action": "illustrative lumbar rounding and extension"
+        },
+        {
+          "joint": "thoracic-lower",
+          "action": "illustrative lower-chest rounding and extension"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "illustrative forward/backward arm reach"
+        },
+        {
+          "joint": "scapula-right",
+          "action": "illustrative forward/backward arm reach"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-medius-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "gluteus-maximus-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "display",
+      "t": [
+        6,
+        14
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-right",
+          "action": "illustrative hip flexion and extension with thigh opening or crossing"
+        },
+        {
+          "joint": "femur-right",
+          "action": "illustrative knee folding and opening"
+        },
+        {
+          "joint": "tibia-right",
+          "action": "illustrative ankle flexion and extension"
+        },
+        {
+          "joint": "lumbar-spine",
+          "action": "illustrative lumbar rounding and extension"
+        },
+        {
+          "joint": "thoracic-lower",
+          "action": "illustrative lower-chest rounding and extension"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "illustrative forward/backward arm reach"
+        },
+        {
+          "joint": "scapula-right",
+          "action": "illustrative forward/backward arm reach"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-medius-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "gluteus-maximus-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "t": [
+        14,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "hip-right",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "femur-right",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "tibia-right",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "lumbar-spine",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "thoracic-lower",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "scapula-left",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "scapula-right",
+          "action": "return toward the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "gluteus-medius-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "gluteus-maximus-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "posture": "One leg stays long as the other folds outward and the trunk inclines toward the long leg.",
+    "transitions": [
+      {
+        "phase": "entry",
+        "direction": "entry",
+        "cue": "The animation moves from its stated starting arrangement toward the posture."
+      },
+      {
+        "phase": "exit",
+        "direction": "exit",
+        "cue": "The display retraces its path to the starting arrangement."
+      }
+    ],
+    "modifications": [
+      {
+        "id": "smaller-range",
+        "note": "A smaller-range illustration reduces movement away from the stated starting arrangement; it is not an individually adapted practice."
+      }
+    ],
+    "props": [
+      "Optional support is described, not rendered or simulated."
+    ]
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "Halve excursions from the authored starting pose while preserving timing and rest."
+    },
+    {
+      "id": "mirrored-display",
+      "kind": "side",
+      "note": "Reflect the reference across its sagittal plane; the original source record stays unchanged."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "Deep hip or knee arrangements are not a target range; individual joint restrictions and support needs are not represented."
+    ],
+    "expects_teacher": false,
+    "notes": "Educational fitted-reference geometry, not measured motion or individual instruction."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description and keyframes. Sources identify the practice context or named posture; they do not validate these angles or anatomy annotations.",
+    "rights_basis": "provisional: project-authored record and animation; no third-party movement media or lesson text is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "Iyengar Yoga UK teaching syllabi",
+        "url": "https://iyengaryoga.org.uk/wp-content/uploads/2022/09/I8-Teaching-syllabi.pdf",
+        "supports": [
+          "named asanas and posture families; not the authored animation angles"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Anatomical and tradition claims await review. Highlighted muscle groups are provisional stabilisation hypotheses, not measured activity. The user authorized collection expansion without waiting for practitioner review."
+    }
+  }
+}

@@ -1,4 +1,5 @@
-import { additionalStudies } from '../../phase-3/scripts/additional-studies.mjs';
+import { selectMovement } from '../../phase-3/test/select-movement.mjs';
+
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -8,8 +9,8 @@ test('the private bundle runs the complete movement and correction path', async 
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
-  await expect(page.getByLabel('Choose a movement').locator('option')).toHaveCount(43);
-  await page.getByLabel('Choose a movement').selectOption('supported-seated-side-reach');
+  await expect(page.locator('#movement-select').locator('option')).toHaveCount(140);
+  await selectMovement(page, 'supported-seated-side-reach');
   await expect(page.getByRole('heading', { name: 'Supported seated side reach' })).toBeVisible();
   await page.getByRole('button', { name: /enable playback/i }).click();
   await page.getByRole('button', { name: 'Play', exact: true }).click();
@@ -30,7 +31,7 @@ test('the private bundle runs the complete movement and correction path', async 
 test('fallback content remains usable and has no serious accessibility findings', async ({ page }) => {
   await page.goto('/?noWebgl=1');
   await expect(page.getByRole('heading', { name: /cannot start the WebGL scene/i })).toBeVisible();
-  await page.getByLabel('Choose a movement').selectOption('pause-before-standing');
+  await selectMovement(page, 'pause-before-standing');
   await expect(page.getByRole('heading', { name: /pause before standing/i })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   const results = await new AxeBuilder({ page }).analyze();
@@ -38,26 +39,31 @@ test('fallback content remains usable and has no serious accessibility findings'
 });
 
 
-test('all thirty additions load their own records, animate, and retain session playback', async ({ page }) => {
+test('all 140 records animate and retain session playback', async ({ page }) => {
+  test.setTimeout(240000);
+  const collection = await (await page.request.get('/data/collection.json')).json();
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await page.locator('#stage[data-ready="true"]').waitFor();
   await page.getByRole('button', { name: /enable playback/i }).click();
   const signatures = new Set();
-  for (const study of additionalStudies) {
-    await page.locator('#movement-select').selectOption(study.id);
+  for (const study of collection.records) {
+    await selectMovement(page, study.id);
     await expect(page.locator('#stage')).toHaveAttribute('data-clip', study.id);
-    await expect(page.getByRole('heading', { name: study.title, exact: true })).toBeVisible();
+    await expect(page.locator('#movement-selected-label')).toHaveText(study.label);
     await expect(page.locator('#record-incomplete')).toBeHidden();
     await expect(page.locator('#review-pill')).toHaveText('unreviewed');
     const initial = await page.locator('#model-canvas').evaluate((canvas) => canvas.toDataURL());
     await page.locator('#timeline').fill('350');
+    const middle = await page.locator('#model-canvas').evaluate((canvas) => canvas.toDataURL());
+    await page.locator('#timeline').fill('700');
     const moved = await page.locator('#model-canvas').evaluate((canvas) => canvas.toDataURL());
-    expect(moved, study.id).not.toBe(initial);
-    signatures.add(moved);
+    // The original Alexander study holds its opening pause until 40%.
+    expect(middle !== initial || moved !== initial, study.id).toBe(true);
+    signatures.add(middle + moved);
     await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
   }
-  expect(signatures.size).toBe(30);
+  expect(signatures.size).toBe(140);
   expect(errors).toEqual([]);
 });

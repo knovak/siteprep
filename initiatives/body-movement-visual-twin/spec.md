@@ -1,3 +1,8 @@
+> **September 6, 2026 scope update:** the approved compact selector now serves
+> 140 distinct studies (60 Feldenkrais, 60 yoga, 20 Alexander). Collection growth
+> proceeds without waiting for practitioner review, per the recorded user
+> decision. The original specification below describes the initial increment.
+
 # Spec
 
 How the Body Movement Visual Twin is built. `objectives.md` says what "done"

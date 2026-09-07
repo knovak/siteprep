@@ -178,9 +178,28 @@ the product:
   uses a fitted reference model.
 - **The final public-republication or trademark basis.** That requires the
   separate successor legal review, not an engineering assertion.
-- **A comprehensive movement catalogue.** Three movements validate the data,
-  viewer, and review loop; catalogue breadth would obscure those risks.
+- **Exhaustiveness of the traditions.** The authorized collection has exactly
+  60 Feldenkrais, 60 yoga, and 20 Alexander studies; it is not an exhaustive
+  taxonomy or a claim that each tradition has a fixed number of movements.
 - **Exact rendering parity across GPUs.** Functional fallbacks, registration,
   legibility, and interaction are tested; vendor pixel identity is not.
 - **A backend report service.** The first version deliberately uses local
   export and an explicit handoff.
+
+
+## 6. September 6 compact collection acceptance
+
+- Exactly 140 unique record IDs and animation clips, split 60/60/20; no variants
+  counted as independent entries. Navigation metadata covers every record.
+- English/Sanskrit search, diacritics, combined filters, empty-state reset,
+  current-selection feedback, keyboard navigation and Escape work.
+- The closed collection card remains below 200 px on tested desktop/phone
+  sizes. Opening the popup does not move neighboring controls or overflow the
+  viewport. Closed variations use no additional space.
+- Smaller range changes the rendered movement; mirroring reflects landmarks
+  and left/right readout while canonical reports still flag original claims.
+- Every clip produces finite, distinct motion including terminal-head rotation.
+  All 140 render and animate on both desktop and phone; pauses and rests match
+  the new records' timed phases.
+- User authorization removes review as a prerequisite for this expansion;
+  automated success does not change any source claim to `reviewed`.

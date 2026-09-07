@@ -4,175 +4,1849 @@
   "records": [
     {
       "tradition": "feldenkrais",
-      "record": "../phase-1/fixtures/feldenkrais.json"
+      "record": "../phase-1/fixtures/feldenkrais.json",
+      "id": "seated-pelvic-clock-exploration",
+      "label": "Pelvic clock",
+      "aliases": [],
+      "regions": [
+        "hips"
+      ],
+      "position": "Seated",
+      "group": "Pelvis and hips"
     },
     {
       "tradition": "yoga",
-      "record": "../phase-1/fixtures/yoga.json"
+      "record": "../phase-1/fixtures/yoga.json",
+      "id": "supported-seated-side-reach",
+      "label": "Supported seated side reach",
+      "aliases": [],
+      "regions": [
+        "spine"
+      ],
+      "position": "Seated",
+      "group": "Seated"
     },
     {
       "tradition": "alexander",
-      "record": "../phase-1/fixtures/alexander.json"
+      "record": "../phase-1/fixtures/alexander.json",
+      "id": "pause-before-standing",
+      "label": "Pause before standing",
+      "aliases": [],
+      "regions": [
+        "whole"
+      ],
+      "position": "Seated",
+      "group": "Standing and walking"
     },
     {
       "tradition": "yoga",
-      "record": "./records/mountain-arm-sweep-study.json"
+      "record": "./records/mountain-arm-sweep-study.json",
+      "id": "mountain-arm-sweep-study",
+      "label": "Mountain arm sweep",
+      "aliases": [
+        "Tadasana"
+      ],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/warrior-two-study.json"
+      "record": "./records/warrior-two-study.json",
+      "id": "warrior-two-study",
+      "label": "Warrior II",
+      "aliases": [
+        "Virabhadrasana",
+        "II"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/triangle-study.json"
+      "record": "./records/triangle-study.json",
+      "id": "triangle-study",
+      "label": "Triangle",
+      "aliases": [
+        "Utthita",
+        "Trikonasana"
+      ],
+      "regions": [
+        "spine"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/chair-pose-study.json"
+      "record": "./records/chair-pose-study.json",
+      "id": "chair-pose-study",
+      "label": "Chair pose",
+      "aliases": [
+        "Utkatasana"
+      ],
+      "regions": [
+        "legs"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/standing-forward-fold-study.json"
+      "record": "./records/standing-forward-fold-study.json",
+      "id": "standing-forward-fold-study",
+      "label": "Standing forward fold",
+      "aliases": [
+        "Uttanasana"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/dynamic-chair-clock-study.json"
+      "record": "./records/dynamic-chair-clock-study.json",
+      "id": "dynamic-chair-clock-study",
+      "label": "Chair clock",
+      "aliases": [],
+      "regions": [
+        "hips"
+      ],
+      "position": "Seated",
+      "group": "Pelvis and hips"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/shoulder-clock-study.json"
+      "record": "./records/shoulder-clock-study.json",
+      "id": "shoulder-clock-study",
+      "label": "Shoulder clock",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/sliding-hand-study.json"
+      "record": "./records/sliding-hand-study.json",
+      "id": "sliding-hand-study",
+      "label": "Sliding hand and rib response",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/seated-counterturn-study.json"
+      "record": "./records/seated-counterturn-study.json",
+      "id": "seated-counterturn-study",
+      "label": "Head, ribs, and pelvis counterturn",
+      "aliases": [],
+      "regions": [
+        "spine"
+      ],
+      "position": "Seated",
+      "group": "Spine and ribs"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/seated-weight-shift-study.json"
+      "record": "./records/seated-weight-shift-study.json",
+      "id": "seated-weight-shift-study",
+      "label": "Seated weight shift",
+      "aliases": [],
+      "regions": [
+        "whole"
+      ],
+      "position": "Seated",
+      "group": "Whole-body coordination"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/ankle-flexion-study.json"
+      "record": "./records/ankle-flexion-study.json",
+      "id": "ankle-flexion-study",
+      "label": "Ankle flexion and extension",
+      "aliases": [],
+      "regions": [
+        "legs"
+      ],
+      "position": "Seated",
+      "group": "Legs and feet"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/ankle-circle-study.json"
+      "record": "./records/ankle-circle-study.json",
+      "id": "ankle-circle-study",
+      "label": "Ankle circle",
+      "aliases": [],
+      "regions": [
+        "legs"
+      ],
+      "position": "Seated",
+      "group": "Legs and feet"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/foot-edge-tilt-study.json"
+      "record": "./records/foot-edge-tilt-study.json",
+      "id": "foot-edge-tilt-study",
+      "label": "Foot-edge tilt",
+      "aliases": [],
+      "regions": [
+        "legs"
+      ],
+      "position": "Seated",
+      "group": "Legs and feet"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/wrist-flexion-study.json"
+      "record": "./records/wrist-flexion-study.json",
+      "id": "wrist-flexion-study",
+      "label": "Wrist flexion and extension",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/wrist-clock-study.json"
+      "record": "./records/wrist-clock-study.json",
+      "id": "wrist-clock-study",
+      "label": "Wrist clock",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/elbow-fold-study.json"
+      "record": "./records/elbow-fold-study.json",
+      "id": "elbow-fold-study",
+      "label": "Elbow folding",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/shoulder-glide-study.json"
+      "record": "./records/shoulder-glide-study.json",
+      "id": "shoulder-glide-study",
+      "label": "Shoulder glide",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/forward-arm-reach-study.json"
+      "record": "./records/forward-arm-reach-study.json",
+      "id": "forward-arm-reach-study",
+      "label": "Forward reach and chest response",
+      "aliases": [],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Seated",
+      "group": "Shoulders and arms"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/head-nod-study.json"
+      "record": "./records/head-nod-study.json",
+      "id": "head-nod-study",
+      "label": "Head nod",
+      "aliases": [],
+      "regions": [
+        "head"
+      ],
+      "position": "Seated",
+      "group": "Head and neck"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/head-sidebend-study.json"
+      "record": "./records/head-sidebend-study.json",
+      "id": "head-sidebend-study",
+      "label": "Head side bend",
+      "aliases": [],
+      "regions": [
+        "head"
+      ],
+      "position": "Seated",
+      "group": "Head and neck"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/spinal-round-arch-study.json"
+      "record": "./records/spinal-round-arch-study.json",
+      "id": "spinal-round-arch-study",
+      "label": "Spinal rounding and arching",
+      "aliases": [],
+      "regions": [
+        "spine"
+      ],
+      "position": "Seated",
+      "group": "Spine and ribs"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/supine-knee-tilt-study.json"
+      "record": "./records/supine-knee-tilt-study.json",
+      "id": "supine-knee-tilt-study",
+      "label": "Back-lying knee tilt",
+      "aliases": [],
+      "regions": [
+        "hips"
+      ],
+      "position": "Supine",
+      "group": "Pelvis and hips"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/heel-slide-study.json"
+      "record": "./records/heel-slide-study.json",
+      "id": "heel-slide-study",
+      "label": "Heel slide",
+      "aliases": [],
+      "regions": [
+        "legs"
+      ],
+      "position": "Supine",
+      "group": "Legs and feet"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/diagonal-lengthening-study.json"
+      "record": "./records/diagonal-lengthening-study.json",
+      "id": "diagonal-lengthening-study",
+      "label": "Diagonal lengthening",
+      "aliases": [],
+      "regions": [
+        "whole"
+      ],
+      "position": "Supine",
+      "group": "Whole-body coordination"
     },
     {
       "tradition": "feldenkrais",
-      "record": "./records/seated-knee-extension-study.json"
+      "record": "./records/seated-knee-extension-study.json",
+      "id": "seated-knee-extension-study",
+      "label": "Seated knee extension",
+      "aliases": [],
+      "regions": [
+        "legs"
+      ],
+      "position": "Seated",
+      "group": "Legs and feet"
     },
     {
       "tradition": "yoga",
-      "record": "./records/tree-pose-study.json"
+      "record": "./records/tree-pose-study.json",
+      "id": "tree-pose-study",
+      "label": "Tree",
+      "aliases": [
+        "Vrksasana",
+        "Vrikshasana"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/warrior-one-study.json"
+      "record": "./records/warrior-one-study.json",
+      "id": "warrior-one-study",
+      "label": "Warrior I",
+      "aliases": [
+        "Virabhadrasana",
+        "I"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/extended-side-angle-study.json"
+      "record": "./records/extended-side-angle-study.json",
+      "id": "extended-side-angle-study",
+      "label": "Extended side angle",
+      "aliases": [
+        "Utthita",
+        "Parsvakonasana"
+      ],
+      "regions": [
+        "spine"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/wide-standing-fold-study.json"
+      "record": "./records/wide-standing-fold-study.json",
+      "id": "wide-standing-fold-study",
+      "label": "Wide standing fold",
+      "aliases": [
+        "Prasarita",
+        "Padottanasana"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/pyramid-pose-study.json"
+      "record": "./records/pyramid-pose-study.json",
+      "id": "pyramid-pose-study",
+      "label": "Pyramid",
+      "aliases": [
+        "Parsvottanasana"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/half-moon-study.json"
+      "record": "./records/half-moon-study.json",
+      "id": "half-moon-study",
+      "label": "Half moon",
+      "aliases": [
+        "Ardha",
+        "Chandrasana"
+      ],
+      "regions": [
+        "whole"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/eagle-arms-study.json"
+      "record": "./records/eagle-arms-study.json",
+      "id": "eagle-arms-study",
+      "label": "Eagle arms",
+      "aliases": [
+        "Garudasana"
+      ],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/cow-face-arms-study.json"
+      "record": "./records/cow-face-arms-study.json",
+      "id": "cow-face-arms-study",
+      "label": "Cow-face arms",
+      "aliases": [
+        "Gomukhasana"
+      ],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/prayer-position-study.json"
+      "record": "./records/prayer-position-study.json",
+      "id": "prayer-position-study",
+      "label": "Prayer position",
+      "aliases": [
+        "Namaskarasana"
+      ],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/upward-prayer-study.json"
+      "record": "./records/upward-prayer-study.json",
+      "id": "upward-prayer-study",
+      "label": "Upward prayer",
+      "aliases": [
+        "Urdhva",
+        "Namaskarasana"
+      ],
+      "regions": [
+        "shoulders"
+      ],
+      "position": "Standing",
+      "group": "Standing"
     },
     {
       "tradition": "yoga",
-      "record": "./records/chair-twist-study.json"
+      "record": "./records/chair-twist-study.json",
+      "id": "chair-twist-study",
+      "label": "Chair twist",
+      "aliases": [
+        "Bharadvajasana"
+      ],
+      "regions": [
+        "spine"
+      ],
+      "position": "Seated",
+      "group": "Seated"
     },
     {
       "tradition": "yoga",
-      "record": "./records/staff-pose-study.json"
+      "record": "./records/staff-pose-study.json",
+      "id": "staff-pose-study",
+      "label": "Staff pose",
+      "aliases": [
+        "Dandasana"
+      ],
+      "regions": [
+        "legs"
+      ],
+      "position": "Long sitting",
+      "group": "Long sitting"
     },
     {
       "tradition": "yoga",
-      "record": "./records/seated-forward-fold-study.json"
+      "record": "./records/seated-forward-fold-study.json",
+      "id": "seated-forward-fold-study",
+      "label": "Seated forward fold",
+      "aliases": [
+        "Paschimottanasana"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Long sitting",
+      "group": "Long sitting"
     },
     {
       "tradition": "yoga",
-      "record": "./records/wide-seated-angle-study.json"
+      "record": "./records/wide-seated-angle-study.json",
+      "id": "wide-seated-angle-study",
+      "label": "Wide seated angle",
+      "aliases": [
+        "Upavistha",
+        "Konasana"
+      ],
+      "regions": [
+        "hips"
+      ],
+      "position": "Long sitting",
+      "group": "Long sitting"
     },
     {
       "tradition": "yoga",
-      "record": "./records/legs-up-wall-study.json"
+      "record": "./records/legs-up-wall-study.json",
+      "id": "legs-up-wall-study",
+      "label": "Legs up the wall",
+      "aliases": [
+        "Viparita",
+        "Karani"
+      ],
+      "regions": [
+        "legs"
+      ],
+      "position": "Supine",
+      "group": "Supine"
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/head-turn-study.json",
+      "id": "head-turn-study",
+      "label": "Head turning",
+      "aliases": [],
+      "group": "Head and neck",
+      "position": "Seated",
+      "regions": [
+        "head"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/head-chest-follow-study.json",
+      "id": "head-chest-follow-study",
+      "label": "Head leading the chest",
+      "aliases": [],
+      "group": "Head and neck",
+      "position": "Seated",
+      "regions": [
+        "head"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/head-figure-eight-study.json",
+      "id": "head-figure-eight-study",
+      "label": "Small head figure eight",
+      "aliases": [],
+      "group": "Head and neck",
+      "position": "Seated",
+      "regions": [
+        "head"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/neck-lengthening-study.json",
+      "id": "neck-lengthening-study",
+      "label": "Head and neck counterbalance",
+      "aliases": [],
+      "group": "Head and neck",
+      "position": "Seated",
+      "regions": [
+        "head"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/shoulder-shrug-study.json",
+      "id": "shoulder-shrug-study",
+      "label": "Shoulder elevation and settling",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/alternating-shoulder-circles-study.json",
+      "id": "alternating-shoulder-circles-study",
+      "label": "Alternating shoulder circles",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/cross-body-reach-study.json",
+      "id": "cross-body-reach-study",
+      "label": "Cross-body reach",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/palm-turning-study.json",
+      "id": "palm-turning-study",
+      "label": "Palm turning",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/wrist-deviation-study.json",
+      "id": "wrist-deviation-study",
+      "label": "Hand moving side to side",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/arms-opening-study.json",
+      "id": "arms-opening-study",
+      "label": "Arms opening around the chest",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/elbow-circle-study.json",
+      "id": "elbow-circle-study",
+      "label": "Elbow tracing a circle",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/arm-spiral-study.json",
+      "id": "arm-spiral-study",
+      "label": "Arm spiral",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/hand-behind-study.json",
+      "id": "hand-behind-study",
+      "label": "Hand travelling behind the trunk",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/overhead-rib-reach-study.json",
+      "id": "overhead-rib-reach-study",
+      "label": "One arm overhead with rib response",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/seated-side-arc-study.json",
+      "id": "seated-side-arc-study",
+      "label": "Seated side-bending arc",
+      "aliases": [],
+      "group": "Spine and ribs",
+      "position": "Seated",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/sternum-lift-study.json",
+      "id": "sternum-lift-study",
+      "label": "Sternum lifting and settling",
+      "aliases": [],
+      "group": "Spine and ribs",
+      "position": "Seated",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/standing-spiral-study.json",
+      "id": "standing-spiral-study",
+      "label": "Standing spiral",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/supine-pelvis-roll-study.json",
+      "id": "supine-pelvis-roll-study",
+      "label": "Back-lying pelvic roll",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/supine-pelvic-circle-study.json",
+      "id": "supine-pelvic-circle-study",
+      "label": "Back-lying pelvic circle",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/alternating-knee-lift-study.json",
+      "id": "alternating-knee-lift-study",
+      "label": "Alternating bent-knee lifts",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/knees-opening-study.json",
+      "id": "knees-opening-study",
+      "label": "Bent knees opening apart",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/hip-circle-study.json",
+      "id": "hip-circle-study",
+      "label": "Bent-leg hip circle",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/knee-across-study.json",
+      "id": "knee-across-study",
+      "label": "One knee across the midline",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/sideways-heel-slide-study.json",
+      "id": "sideways-heel-slide-study",
+      "label": "Heel sliding sideways",
+      "aliases": [],
+      "group": "Legs and feet",
+      "position": "Supine",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/long-leg-roll-study.json",
+      "id": "long-leg-roll-study",
+      "label": "Long leg rolling inward and outward",
+      "aliases": [],
+      "group": "Legs and feet",
+      "position": "Supine",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/floor-arm-sweep-study.json",
+      "id": "floor-arm-sweep-study",
+      "label": "Arm sweeping along the floor plane",
+      "aliases": [],
+      "group": "Shoulders and arms",
+      "position": "Supine",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/diagonal-elbow-knee-study.json",
+      "id": "diagonal-elbow-knee-study",
+      "label": "Diagonal elbow and knee approach",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Supine",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/side-lying-book-study.json",
+      "id": "side-lying-book-study",
+      "label": "Side-lying arm and chest opening",
+      "aliases": [],
+      "group": "Spine and ribs",
+      "position": "Side lying",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/side-lying-leg-arc-study.json",
+      "id": "side-lying-leg-arc-study",
+      "label": "Side-lying upper-leg arc",
+      "aliases": [],
+      "group": "Pelvis and hips",
+      "position": "Side lying",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/side-lying-head-lift-study.json",
+      "id": "side-lying-head-lift-study",
+      "label": "Side-lying head lift and return",
+      "aliases": [],
+      "group": "Head and neck",
+      "position": "Side lying",
+      "regions": [
+        "head"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/rolling-back-side-study.json",
+      "id": "rolling-back-side-study",
+      "label": "Rolling from the back toward the side",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Supine",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/rolling-knee-led-study.json",
+      "id": "rolling-knee-led-study",
+      "label": "Knee-led rolling",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Supine",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/alternating-heel-lift-study.json",
+      "id": "alternating-heel-lift-study",
+      "label": "Alternating heel lifts in sitting",
+      "aliases": [],
+      "group": "Legs and feet",
+      "position": "Seated",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/foot-knee-differentiation-study.json",
+      "id": "foot-knee-differentiation-study",
+      "label": "Foot and knee counter-directions",
+      "aliases": [],
+      "group": "Legs and feet",
+      "position": "Seated",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/ankle-wrist-coordination-study.json",
+      "id": "ankle-wrist-coordination-study",
+      "label": "Ankle and wrist coordination",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Seated",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/standing-weight-transfer-study.json",
+      "id": "standing-weight-transfer-study",
+      "label": "Standing side-to-side transfer",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/small-knee-bend-study.json",
+      "id": "small-knee-bend-study",
+      "label": "Small standing knee bend",
+      "aliases": [],
+      "group": "Legs and feet",
+      "position": "Standing",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/stepping-in-place-study.json",
+      "id": "stepping-in-place-study",
+      "label": "Alternating steps in place",
+      "aliases": [],
+      "group": "Whole-body coordination",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "feldenkrais",
+      "record": "./records/ankle-standing-sway-study.json",
+      "id": "ankle-standing-sway-study",
+      "label": "Forward and backward ankle sway",
+      "aliases": [],
+      "group": "Legs and feet",
+      "position": "Standing",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/revolved-triangle-study.json",
+      "id": "revolved-triangle-study",
+      "label": "Revolved triangle",
+      "aliases": [
+        "Parivrtta",
+        "Trikonasana"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/revolved-side-angle-study.json",
+      "id": "revolved-side-angle-study",
+      "label": "Revolved side angle",
+      "aliases": [
+        "Parivrtta",
+        "Parsvakonasana"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/warrior-three-study.json",
+      "id": "warrior-three-study",
+      "label": "Warrior III",
+      "aliases": [
+        "Virabhadrasana",
+        "III"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/extended-hand-big-toe-study.json",
+      "id": "extended-hand-big-toe-study",
+      "label": "Standing hand-to-big-toe arrangement",
+      "aliases": [
+        "Utthita",
+        "Hasta",
+        "Padangusthasana"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/eagle-balance-study.json",
+      "id": "eagle-balance-study",
+      "label": "Eagle balance",
+      "aliases": [
+        "Garudasana"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/garland-squat-study.json",
+      "id": "garland-squat-study",
+      "label": "Garland squat",
+      "aliases": [
+        "Malasana"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/easy-crossed-seat-study.json",
+      "id": "easy-crossed-seat-study",
+      "label": "Cross-legged seat",
+      "aliases": [
+        "Swastikasana",
+        "Sukhasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/accomplished-seat-study.json",
+      "id": "accomplished-seat-study",
+      "label": "Accomplished seat arrangement",
+      "aliases": [
+        "Siddhasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/lotus-arrangement-study.json",
+      "id": "lotus-arrangement-study",
+      "label": "Lotus arrangement",
+      "aliases": [
+        "Padmasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/hero-seat-study.json",
+      "id": "hero-seat-study",
+      "label": "Hero seat",
+      "aliases": [
+        "Virasana"
+      ],
+      "group": "Kneeling",
+      "position": "Kneeling",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/bound-angle-study.json",
+      "id": "bound-angle-study",
+      "label": "Bound angle",
+      "aliases": [
+        "Baddha",
+        "Konasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/head-to-knee-fold-study.json",
+      "id": "head-to-knee-fold-study",
+      "label": "Head-to-knee fold",
+      "aliases": [
+        "Janu",
+        "Sirsasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/marichi-fold-study.json",
+      "id": "marichi-fold-study",
+      "label": "Marichi forward fold",
+      "aliases": [
+        "Marichyasana",
+        "I"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/half-lord-fishes-study.json",
+      "id": "half-lord-fishes-study",
+      "label": "Half lord of the fishes",
+      "aliases": [
+        "Ardha",
+        "Matsyendrasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/gate-pose-study.json",
+      "id": "gate-pose-study",
+      "label": "Gate pose",
+      "aliases": [
+        "Parighasana"
+      ],
+      "group": "Kneeling",
+      "position": "Kneeling",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/camel-pose-study.json",
+      "id": "camel-pose-study",
+      "label": "Camel pose",
+      "aliases": [
+        "Ustrasana"
+      ],
+      "group": "Kneeling",
+      "position": "Kneeling",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/child-fold-study.json",
+      "id": "child-fold-study",
+      "label": "Kneeling forward fold",
+      "aliases": [
+        "Adho",
+        "Mukha",
+        "Virasana",
+        "Balasana",
+        "Child",
+        "pose"
+      ],
+      "group": "Kneeling",
+      "position": "Kneeling",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/boat-pose-study.json",
+      "id": "boat-pose-study",
+      "label": "Boat pose",
+      "aliases": [
+        "Paripurna",
+        "Navasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/supine-leg-raise-study.json",
+      "id": "supine-leg-raise-study",
+      "label": "Supine leg raise",
+      "aliases": [
+        "Urdhva",
+        "Prasarita",
+        "Padasana"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/reclining-hand-big-toe-study.json",
+      "id": "reclining-hand-big-toe-study",
+      "label": "Reclining hand-to-big-toe arrangement",
+      "aliases": [
+        "Supta",
+        "Padangusthasana"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/locust-pose-study.json",
+      "id": "locust-pose-study",
+      "label": "Locust pose",
+      "aliases": [
+        "Salabhasana"
+      ],
+      "group": "Prone",
+      "position": "Prone",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/crocodile-rest-study.json",
+      "id": "crocodile-rest-study",
+      "label": "Crocodile resting arrangement",
+      "aliases": [
+        "Makarasana"
+      ],
+      "group": "Prone",
+      "position": "Prone",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/bow-pose-study.json",
+      "id": "bow-pose-study",
+      "label": "Bow pose arrangement",
+      "aliases": [
+        "Dhanurasana"
+      ],
+      "group": "Prone",
+      "position": "Prone",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/cobra-pose-study.json",
+      "id": "cobra-pose-study",
+      "label": "Cobra pose",
+      "aliases": [
+        "Bhujangasana"
+      ],
+      "group": "Prone",
+      "position": "Prone",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/upward-facing-dog-study.json",
+      "id": "upward-facing-dog-study",
+      "label": "Upward-facing dog",
+      "aliases": [
+        "Urdhva",
+        "Mukha",
+        "Svanasana"
+      ],
+      "group": "Prone",
+      "position": "Prone",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/upward-bow-study.json",
+      "id": "upward-bow-study",
+      "label": "Upward bow arrangement",
+      "aliases": [
+        "Urdhva",
+        "Dhanurasana",
+        "Wheel"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/reclining-hero-study.json",
+      "id": "reclining-hero-study",
+      "label": "Reclining hero arrangement",
+      "aliases": [
+        "Supta",
+        "Virasana"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/reclining-bound-angle-study.json",
+      "id": "reclining-bound-angle-study",
+      "label": "Reclining bound angle",
+      "aliases": [
+        "Supta",
+        "Baddha",
+        "Konasana"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/corpse-rest-study.json",
+      "id": "corpse-rest-study",
+      "label": "Savasana resting arrangement",
+      "aliases": [
+        "Savasana",
+        "Corpse",
+        "pose"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/four-limbed-staff-study.json",
+      "id": "four-limbed-staff-study",
+      "label": "Four-limbed staff",
+      "aliases": [
+        "Chaturanga",
+        "Dandasana"
+      ],
+      "group": "Prone",
+      "position": "Prone",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/downward-facing-dog-study.json",
+      "id": "downward-facing-dog-study",
+      "label": "Downward-facing dog",
+      "aliases": [
+        "Adho",
+        "Mukha",
+        "Svanasana"
+      ],
+      "group": "Standing",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/reverse-plank-study.json",
+      "id": "reverse-plank-study",
+      "label": "Reverse plank",
+      "aliases": [
+        "Purvottanasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/fish-pose-study.json",
+      "id": "fish-pose-study",
+      "label": "Fish pose arrangement",
+      "aliases": [
+        "Matsyasana"
+      ],
+      "group": "Supine",
+      "position": "Supine",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/headstand-line-study.json",
+      "id": "headstand-line-study",
+      "label": "Headstand alignment study",
+      "aliases": [
+        "Salamba",
+        "Sirsasana"
+      ],
+      "group": "Inverted",
+      "position": "Inverted",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/shoulderstand-line-study.json",
+      "id": "shoulderstand-line-study",
+      "label": "Shoulderstand alignment study",
+      "aliases": [
+        "Salamba",
+        "Sarvangasana"
+      ],
+      "group": "Inverted",
+      "position": "Inverted",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/plough-arrangement-study.json",
+      "id": "plough-arrangement-study",
+      "label": "Plough arrangement",
+      "aliases": [
+        "Halasana"
+      ],
+      "group": "Inverted",
+      "position": "Inverted",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/three-limbed-fold-study.json",
+      "id": "three-limbed-fold-study",
+      "label": "Three-limbed seated fold",
+      "aliases": [
+        "Trianga",
+        "Mukhaikapada",
+        "Paschimottanasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/revolved-head-knee-study.json",
+      "id": "revolved-head-knee-study",
+      "label": "Revolved head-to-knee arrangement",
+      "aliases": [
+        "Parivrtta",
+        "Janu",
+        "Sirsasana"
+      ],
+      "group": "Long sitting",
+      "position": "Long sitting",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "yoga",
+      "record": "./records/side-plank-study.json",
+      "id": "side-plank-study",
+      "label": "Side plank arrangement",
+      "aliases": [
+        "Vasisthasana",
+        "Vasistasana"
+      ],
+      "group": "Side lying",
+      "position": "Side lying",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/constructive-rest-study.json",
+      "id": "constructive-rest-study",
+      "label": "Constructive rest",
+      "aliases": [],
+      "group": "Resting and sitting",
+      "position": "Supine",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/sitting-at-ease-study.json",
+      "id": "sitting-at-ease-study",
+      "label": "Sitting at ease",
+      "aliases": [],
+      "group": "Resting and sitting",
+      "position": "Seated",
+      "regions": [
+        "spine"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/seated-conversation-turn-study.json",
+      "id": "seated-conversation-turn-study",
+      "label": "Turning toward someone while seated",
+      "aliases": [],
+      "group": "Resting and sitting",
+      "position": "Seated",
+      "regions": [
+        "head"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/chair-forward-shift-study.json",
+      "id": "chair-forward-shift-study",
+      "label": "Moving forward on a chair",
+      "aliases": [],
+      "group": "Resting and sitting",
+      "position": "Seated",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/returning-to-chair-study.json",
+      "id": "returning-to-chair-study",
+      "label": "Returning to sitting",
+      "aliases": [],
+      "group": "Standing and walking",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/first-step-study.json",
+      "id": "first-step-study",
+      "label": "Taking the first step",
+      "aliases": [],
+      "group": "Standing and walking",
+      "position": "Standing",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/walking-turn-study.json",
+      "id": "walking-turn-study",
+      "label": "Walking and turning",
+      "aliases": [],
+      "group": "Standing and walking",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/hip-bending-study.json",
+      "id": "hip-bending-study",
+      "label": "Bending at the hips",
+      "aliases": [],
+      "group": "Bending and reaching",
+      "position": "Standing",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/shelf-reach-study.json",
+      "id": "shelf-reach-study",
+      "label": "Reaching toward a shelf",
+      "aliases": [],
+      "group": "Bending and reaching",
+      "position": "Standing",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/floor-reach-study.json",
+      "id": "floor-reach-study",
+      "label": "Reaching toward the floor",
+      "aliases": [],
+      "group": "Bending and reaching",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/door-opening-study.json",
+      "id": "door-opening-study",
+      "label": "Opening a door",
+      "aliases": [],
+      "group": "Bending and reaching",
+      "position": "Standing",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/light-object-lift-study.json",
+      "id": "light-object-lift-study",
+      "label": "Lifting a light object",
+      "aliases": [],
+      "group": "Lifting and carrying",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/carrying-bag-study.json",
+      "id": "carrying-bag-study",
+      "label": "Carrying a bag",
+      "aliases": [],
+      "group": "Lifting and carrying",
+      "position": "Standing",
+      "regions": [
+        "whole"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/object-setting-down-study.json",
+      "id": "object-setting-down-study",
+      "label": "Setting an object down",
+      "aliases": [],
+      "group": "Lifting and carrying",
+      "position": "Standing",
+      "regions": [
+        "hips"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/stair-step-study.json",
+      "id": "stair-step-study",
+      "label": "Stepping onto a stair",
+      "aliases": [],
+      "group": "Lifting and carrying",
+      "position": "Standing",
+      "regions": [
+        "legs"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/keyboard-approach-study.json",
+      "id": "keyboard-approach-study",
+      "label": "Hands moving to a keyboard",
+      "aliases": [],
+      "group": "Desk and everyday activities",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/mouse-use-study.json",
+      "id": "mouse-use-study",
+      "label": "Using a mouse",
+      "aliases": [],
+      "group": "Desk and everyday activities",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/cup-raising-study.json",
+      "id": "cup-raising-study",
+      "label": "Raising a cup",
+      "aliases": [],
+      "group": "Desk and everyday activities",
+      "position": "Seated",
+      "regions": [
+        "shoulders"
+      ]
+    },
+    {
+      "tradition": "alexander",
+      "record": "./records/screen-turn-study.json",
+      "id": "screen-turn-study",
+      "label": "Turning toward a screen",
+      "aliases": [],
+      "group": "Desk and everyday activities",
+      "position": "Seated",
+      "regions": [
+        "head"
+      ]
     }
   ]
 }

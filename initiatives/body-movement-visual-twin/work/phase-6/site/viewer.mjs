@@ -1,5 +1,7 @@
 import { globalMatrices, transformPoint } from './lib/rig-math.mjs';
 import { interpolateMovementPose } from './lib/movement-pose.mjs';
+import { variantClip, variantRecord } from './lib/movement-library.mjs';
+import { mountMovementPicker } from './lib/movement-picker.mjs';
 import { createAxialGeometry, createMuscleGeometry, createSkullGeometry } from './lib/anatomy-geometry.mjs';
 import { TRADITION_LABELS, anatomySummary, instructionSections, movementCompleteness } from './lib/collection.mjs';
 import {
@@ -39,6 +41,9 @@ const context = canvas.getContext('2d');
 let state = setLayer(createViewerState(), 2);
 let rig;
 let movement;
+let displayMovement;
+let movementPicker;
+let movementVariation = { smaller: false, mirrored: false };
 let movements;
 let collection;
 let clips;
@@ -66,6 +71,7 @@ const recordResponses = await Promise.all(collection.records.map((entry) => fetc
 if (recordResponses.some((response) => !response.ok)) throw new Error('A movement record could not be loaded.');
 movements = await Promise.all(recordResponses.map((response) => response.json()));
 movement = movements[0];
+displayMovement = movement;
 clip = clips[movement.id];
 
 $('#movement-select').replaceChildren(...Object.keys(TRADITION_LABELS).flatMap((tradition) => {
@@ -80,6 +86,8 @@ $('#movement-select').replaceChildren(...Object.keys(TRADITION_LABELS).flatMap((
   return [group];
 }));
 
+movementPicker = mountMovementPicker($('.collection-panel'), collection.records, { onSelect: selectMovement, onVariation: selectVariation });
+
 function startWebGL() {
   if (new URLSearchParams(location.search).has('noWebgl')) return false;
   const gl = $('#gl-canvas').getContext('webgl', { antialias: true, alpha: false });
@@ -93,7 +101,7 @@ const interactive = startWebGL();
 if (!interactive) {
   stage.hidden = true;
   $('#webgl-fallback').hidden = false;
-  for (const element of document.querySelectorAll('.control-card button, .control-card input, .control-card select:not(#movement-select)')) element.disabled = true;
+  for (const element of document.querySelectorAll('.control-card button, .control-card input, .control-card select')) if (!element.closest('.collection-panel')) element.disabled = true;
 }
 
 function interpolateFrame(time) {
@@ -126,6 +134,7 @@ function cameraPoint(point) {
 function fitProjection(displayRig) {
   const nextKey = [
     clip.id,
+    movementVariation.mirrored,
     canvas.width,
     canvas.height,
     state.camera.yaw.toFixed(4),
@@ -137,7 +146,10 @@ function fitProjection(displayRig) {
     visualProfile.presentation
   ].join(':');
   if (nextKey === projectionKey) return;
-  const points = clip.frames.flatMap((frame) => {
+  // Keep the full-range frame while reducing excursions, so the comparison
+  // cannot look larger merely because its automatic framing became tighter.
+  const framingClip = variantClip(clips[movement.id], { mirrored: movementVariation.mirrored });
+  const points = framingClip.frames.flatMap((frame) => {
     const matrices = globalMatrices(displayRig, frame);
     return [...displayRig.nodes
       .filter((node) => node.id !== 'root')
@@ -473,7 +485,7 @@ function render() {
 
 function activePhase() {
   const movementTime = state.time * clip.duration_seconds;
-  return movement.phases.find((phase) => movementTime >= phase.t[0] && movementTime <= phase.t[1]) || movement.phases.at(-1);
+  return displayMovement.phases.find((phase) => movementTime >= phase.t[0] && movementTime <= phase.t[1]) || displayMovement.phases.at(-1);
 }
 
 function updateReadout() {
@@ -481,7 +493,7 @@ function updateReadout() {
   $('#time-output').value = `${Math.round(state.time * clip.duration_seconds)}s · ${Math.round(state.time * 100)}%`;
   $('#timeline').value = Math.round(state.time * 1000);
   $('#phase-name').textContent = phase.id;
-  $('#phase-cue').textContent = anatomySummary(movement, phase.id);
+  $('#phase-cue').textContent = anatomySummary(displayMovement, phase.id);
   $('#anatomy-status').textContent = `${phase.joint_actions.length} joint claim${phase.joint_actions.length === 1 ? '' : 's'} · ${phase.muscles.length} highlighted muscle group${phase.muscles.length === 1 ? '' : 's'}`;
   $('#layer-output').value = LAYER_STATES[state.layer];
   $('#reference-label').hidden = !anatomyIsVisible(state);
@@ -508,6 +520,7 @@ function updateReadout() {
     musclesLoaded: String(Boolean(muscles)),
     movement: movement.id,
     clip: clip.id,
+    variation: `${movementVariation.smaller ? 'smaller' : 'standard'},${movementVariation.mirrored ? 'mirrored' : 'original'}`,
     profile: `${visualProfile.statureCm},${visualProfile.build.toFixed(2)},${visualProfile.torsoToLimb.toFixed(2)},${visualProfile.presentation}`,
     cameraView: activeView?.id || 'orbit'
   });
@@ -650,13 +663,23 @@ function resetMovement() {
   $('#accept-cautions').disabled = !interactive || state.cautionsAccepted;
 }
 
-$('#movement-select').addEventListener('change', (event) => {
-  movement = movements.find((record) => record.id === event.target.value);
+function selectMovement(id) {
+  movement = movements.find((record) => record.id === id);
+  displayMovement = movement;
+  movementVariation = { smaller: false, mirrored: false };
   clip = clips[movement.id];
+  movementPicker?.select(id);
   resetMovement();
   populateRecord();
   updateReadout();
-});
+}
+function selectVariation(variation) {
+  movementVariation = variation;
+  clip = variantClip(clips[movement.id], variation);
+  displayMovement = variantRecord(movement, variation);
+  updateReadout();
+}
+$('#movement-select').addEventListener('change', event => selectMovement(event.target.value));
 
 $('#accept-cautions').addEventListener('click', () => {
   state = { ...state, cautionsAccepted: true };

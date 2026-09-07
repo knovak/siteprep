@@ -1,3 +1,8 @@
+> **September 6, 2026 scope update:** the user approved the compact selector
+> and exactly 60 Feldenkrais, 60 yoga, and 20 Alexander studies immediately,
+> without waiting for practitioner review. That decision supersedes the
+> catalogue-growth sequencing below; the original phase history is retained.
+
 # Plan
 
 This plan turns `spec.md` into a private validation demo in increments that
@@ -219,3 +224,16 @@ Public release remains a separate successor decision and legal review.
   and email handoff before considering a backend.
 - **Phone load is too large:** reduce geometry and textures within the chosen
   region before dropping controls or shipping an unusable fallback.
+
+
+## Approved expansion: compact library with 140 studies
+
+1. Preserve the existing anatomy, playback, camera, and review controls.
+2. Add a compact selection card with overlay search, tradition/body-region
+   filters, grouped entries, and collapsed display variants.
+3. Author 97 additional clips and records, bringing the existing 43 to 60/60/20.
+   Keep independent stable IDs and sources; do not count side/range variants.
+4. Verify all records, animations, contact constraints, variant transforms,
+   accessibility, phone layout, and report paths; rebuild the private bundle.
+5. Package the implementation for review. Practitioner findings may arrive later
+   and update individual claims without blocking this expansion.

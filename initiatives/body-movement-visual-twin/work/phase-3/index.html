@@ -10,7 +10,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#viewer">Body Movement <span>Visual Twin</span></a>
-    <p>Private anatomical visualization · 13 movement studies · practitioner review pending</p>
+    <p>Private anatomical visualization · 140 movement studies · practitioner review pending</p>
   </header>
 
   <main>
@@ -60,11 +60,25 @@
 
       <aside class="control-card" aria-label="Movement and layer controls" aria-busy="true">
         <section class="collection-panel">
-          <p class="eyebrow">Movement collection</p>
-          <label for="movement-select">Choose a movement
+          <div class="collection-heading"><p class="eyebrow">Movement collection</p><span id="collection-count"></span></div>
+          <label for="movement-select" id="movement-native-label">Movement record
             <select id="movement-select"></select>
           </label>
-          <p id="clip-boundary" class="clip-boundary"></p>
+          <div id="movement-picker" hidden>
+            <span id="movement-picker-label" class="picker-label">Choose a movement</span>
+            <div class="movement-picker-anchor">
+              <button type="button" id="movement-trigger" aria-expanded="false" aria-controls="movement-menu" aria-haspopup="dialog" aria-labelledby="movement-picker-label movement-selected-label"><span id="movement-selected-label"></span><span class="picker-chevron" aria-hidden="true">⌄</span></button>
+              <div id="movement-menu" class="movement-menu" role="dialog" aria-label="Choose a movement from the collection" hidden>
+                <div class="movement-search-row"><span aria-hidden="true">⌕</span><label class="picker-sr-only" for="movement-search">Search movements</label><input id="movement-search" type="search" autocomplete="off" placeholder="Search movements…"><button id="movement-clear" type="button" aria-label="Clear movement search" hidden>×</button></div>
+                <div class="movement-filters"><label class="picker-sr-only" for="movement-tradition">Tradition</label><select id="movement-tradition"><option value="all">All traditions</option></select><label class="picker-sr-only" for="movement-region">Body region</label><select id="movement-region"><option value="all">All body regions</option></select></div>
+                <div id="movement-results" class="movement-results"></div>
+                <div class="movement-menu-footer"><span id="movement-result-count" role="status" aria-live="polite"></span><button id="movement-close" type="button">Close picker</button></div>
+              </div>
+            </div>
+            <div class="movement-meta-row"><span id="movement-meta" aria-live="polite"></span><button type="button" id="movement-variations-toggle" aria-expanded="false" aria-controls="movement-variations">Variations ⌄</button></div>
+            <div id="movement-variations" class="movement-variations" hidden><label>Version<select id="movement-range"><option value="standard">Standard</option><option value="smaller">Smaller range</option></select></label><label>Display side<select id="movement-side"><option value="original">Original</option><option value="mirrored">Mirrored</option></select></label></div>
+            <p id="movement-variant-note" class="clip-boundary" hidden>Mirrored display. Source descriptions and flagged claims refer to the original side.</p>
+          </div>
         </section>
 
         <section class="control-section anatomy-controls">
@@ -159,6 +173,7 @@
         <p class="eyebrow">Movement record</p>
         <h2 id="movement-title"></h2>
         <p id="movement-summary"></p>
+        <p id="clip-boundary" class="clip-boundary"></p>
         <div id="record-incomplete" class="record-incomplete" role="status" hidden></div>
         <div id="instruction-sections"></div>
         <h3>Safety boundary</h3>

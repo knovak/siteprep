@@ -23,11 +23,11 @@ const rig = {
   attachments: muscles.attachments
 };
 
-test('the collection has 43 valid, sourced, unreviewed records across the three traditions', () => {
+test('the collection has 140 valid, sourced, unreviewed records across the three traditions', () => {
   assert.deepEqual(validateMovementSet(records, rig).errors, []);
   assert.deepEqual(
     Object.fromEntries(['alexander', 'feldenkrais', 'yoga'].map((tradition) => [tradition, records.filter((record) => record.tradition === tradition).length])),
-    { alexander: 1, feldenkrais: 21, yoga: 21 }
+    { alexander: 20, feldenkrais: 60, yoga: 60 }
   );
   for (const record of records) {
     assert.equal(record.source.review.status, 'unreviewed');
@@ -81,5 +81,5 @@ test('each hand-authored clip is distinct, bounded, and stays on the registered 
     assert.deepEqual(registration.errors, []);
     assert.ok(registration.report.maximum_distance_mm <= 8);
   }
-  assert.equal(serialized.size, 43);
+  assert.equal(serialized.size, 140);
 });

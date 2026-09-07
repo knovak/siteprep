@@ -1,0 +1,166 @@
+{
+  "id": "screen-turn-study",
+  "tradition": "alexander",
+  "title": "Turning toward a screen",
+  "summary": "A small head turn is followed by a coordinated upper-trunk turn toward a screen.",
+  "asset_manifest": "../phase-0/assets/original/reference-rig.json",
+  "phases": [
+    {
+      "id": "pause",
+      "t": [
+        0,
+        4
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "pause before the everyday action"
+        },
+        {
+          "joint": "neck-base",
+          "action": "pause before the everyday action"
+        },
+        {
+          "joint": "thoracic-upper",
+          "action": "pause before the everyday action"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "activity",
+      "t": [
+        4,
+        14
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "illustrative turning"
+        },
+        {
+          "joint": "neck-base",
+          "action": "illustrative neck turning"
+        },
+        {
+          "joint": "thoracic-upper",
+          "action": "illustrative upper-chest turning"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    },
+    {
+      "id": "return",
+      "t": [
+        14,
+        20
+      ],
+      "joint_actions": [
+        {
+          "joint": "head",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "neck-base",
+          "action": "return toward the starting arrangement"
+        },
+        {
+          "joint": "thoracic-upper",
+          "action": "return toward the starting arrangement"
+        }
+      ],
+      "muscles": [
+        {
+          "id": "trapezius-superior-left",
+          "behaviour": "stabilises"
+        },
+        {
+          "id": "trapezius-superior-right",
+          "behaviour": "stabilises"
+        }
+      ]
+    }
+  ],
+  "instruction": {
+    "activity": "Turning toward a screen",
+    "directions": [
+      {
+        "phase": "pause",
+        "cue": "Leave room to reconsider the first effort before the action begins."
+      },
+      {
+        "phase": "activity",
+        "cue": "Allow the head, neck, and back relationship to remain part of turning toward a screen, without arranging a fixed posture."
+      },
+      {
+        "phase": "return",
+        "cue": "Notice the whole action as the reference returns."
+      }
+    ],
+    "inhibition": "The initial pause represents not immediately carrying out a habitual response; it does not mean bracing or freezing.",
+    "manual_guidance_boundary": "A teacher’s observation, hands-on guidance, and individual directions are not reproduced by this animation."
+  },
+  "variations": [
+    {
+      "id": "smaller-display-range",
+      "kind": "range",
+      "note": "Halve excursions from the authored starting pose while preserving timing and rest."
+    },
+    {
+      "id": "mirrored-display",
+      "kind": "side",
+      "note": "Reflect the reference across its sagittal plane; the original source record stays unchanged."
+    }
+  ],
+  "safety": {
+    "cautions": [
+      "Support, balance, and object weight are not simulated; the display does not replace a teacher’s observation."
+    ],
+    "expects_teacher": true,
+    "notes": "Educational fitted-reference geometry, not measured motion or individual instruction."
+  },
+  "source": {
+    "tradition_basis": "Project-authored description and keyframes. Sources identify the practice context or named posture; they do not validate these angles or anatomy annotations.",
+    "rights_basis": "provisional: project-authored record and animation; no third-party movement media or lesson text is packaged",
+    "authored_by": "Siteprep project",
+    "authored_on": "2026-09-06",
+    "claim_sources": [
+      {
+        "title": "Learning the Alexander Technique",
+        "url": "https://alexandertechnique.co.uk/learning-it/learning-alexander-technique",
+        "supports": [
+          "everyday activity, verbal directions, and hands-on guidance; not an exercise prescription"
+        ]
+      },
+      {
+        "title": "STAT introductory activity themes",
+        "url": "https://alexandertechnique.co.uk/public/course/alexander-technique-introductory-classes",
+        "supports": [
+          "sitting, standing, bending, lifting, walking, stairs, and desk activities"
+        ]
+      }
+    ],
+    "review": {
+      "status": "unreviewed",
+      "notes": "Anatomical and tradition claims await review. Highlighted muscle groups are provisional stabilisation hypotheses, not measured activity. The user authorized collection expansion without waiting for practitioner review."
+    }
+  }
+}

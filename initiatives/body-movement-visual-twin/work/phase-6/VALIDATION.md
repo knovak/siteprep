@@ -69,3 +69,42 @@ release remains a separate successor decision and legal review.
 - **Packaging:** the installed Sites plugin no longer contains the initializer named by the older repository helper. Preparation stopped before creating a workspace or building anything. The release used the current Sites-supported static-only path in a fresh isolated workspace with `static.directory: dist`, followed by the bundled packaging helper. No source content or release gate was changed.
 - **Cleanup:** the unique temporary deployment workspace was removed. The source repository status matched its pre-deployment baseline before these intentional release/status records were written.
 - **Review status:** production availability does not mark anatomy or tradition claims reviewed. `phase-6-practitioner-review` remains blocked on reviewer details, a feedback destination and the remaining human findings. See the [current status and next steps](../../overview.md).
+
+
+## September 6, 2026 — Compact 140-study collection
+
+Local implementation now contains exactly 60 Feldenkrais, 60 yoga, and 20
+Alexander Technique studies. The user authorized expansion without waiting for
+practitioner review; all records retain `unreviewed` status. This entry records
+local engineering checks, not a deployment or practitioner sign-off.
+
+- 44 geometry, movement-contract, navigation, variant, report, and bundle tests
+  passed across Phases 0–6.
+- 28 collection browser checks passed on desktop and phone. These include the
+  compact overlay, diacritic/Sanskrit search, combined filters, keyboard support,
+  viewport containment, variations, original report paths, and accessibility.
+- Six private-bundle browser checks passed, including loading and visibly
+  animating every one of the 140 entries on both desktop and phone.
+- Four targeted browser checks passed after making smaller-range framing use
+  the original full-range envelope, preventing a comparison from auto-zooming.
+- All 97 new studies were inspected in side/front contact sheets. Crossed-leg
+  and related seated arrangements were corrected to keep the shin in the seat
+  plane; downward dog was corrected to form an inverted V. Pose regression
+  checks cover both corrections. Contact and loading remain approximate.
+- Repeating both generators reproduced every collection and bundle file
+  byte-for-byte. The repository build and final UI screenshots accompany the PR.
+
+The existing private production and test releases are unchanged by these local
+checks; `initiative.json` remains the authority for deployed versions.
+
+## September 6, 2026 — Compact 140-study collection released to production
+
+- **Production:** [Body Movement Visual Twin](https://body-movement-visual-twin.ken-novak.chatgpt.site/), replacement version 3. Deployment succeeded at **2026-09-07 01:36:32 UTC (September 6, 18:36:32 PDT)**.
+- **Test:** [Private validation Site](https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/), version 5, unchanged by this release.
+- **Released source:** `initiatives/body-movement-visual-twin/work/phase-6/site` at repository commit `6f238c9420afc506fd11c5334c20618196e6b548`. The isolated Sites source commit was `0d7b9007bc849bafe050e91fda6039e08a2829df`.
+- **Contents:** one source commit since the previous release: the compact picker and exactly 60 Feldenkrais, 60 yoga, and 20 Alexander Technique studies, including working range/side variations.
+- **Package:** 156 unchanged static source files; Sites reported 213 packaged files including the hosting runtime and 2,723,840 bytes (2.60 MiB).
+- **Verification:** the isolated production build passed. The local Worker returned the root with HTTP 200 and matched the source byte-for-byte. All 156 authenticated live files matched source, allowing only the hosting platform's injected challenge script in HTML. The live browser loaded the compact picker and displayed 140 studies; the clip file contains all 140 animations.
+- **Access:** the existing owner-only policy is unchanged. Signed-out root, viewer module and animation-data requests returned 401 with a browser user agent; authenticated requests returned 200. The default Python user agent initially received an edge 403 before the browser-user-agent check confirmed the expected sign-in gate.
+- **Isolation:** the absent legacy initializer was replaced with the current Sites scaffold in a unique temporary workspace. The static adapter used the Worker entry point and the existing Site's remote history. The workspace was removed, and the source repository status matched its baseline before these intentional release records were written.
+- **Review status:** this private release follows the user's explicit authorization to proceed without waiting for practitioner review. Records retain their actual unreviewed status; no human acceptance is inferred from deployment or technical checks.

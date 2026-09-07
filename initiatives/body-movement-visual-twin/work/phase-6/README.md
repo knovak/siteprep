@@ -6,7 +6,7 @@ deployed page has a root `index.html`, retains `noindex`, and does not depend on
 mutable parent paths under `initiatives/` at runtime.
 
 Run `node scripts/build-site.mjs` whenever an earlier phase changes. The builder
-reads the collection manifest and copies all 43 listed records plus their
+reads the collection manifest and copies all 140 listed records plus their
 modules and generated anatomy data, rewrites only their deployment paths,
 and fails if the active viewer gains an unknown cross-phase dependency.
 
@@ -38,3 +38,8 @@ The user's relayed review and outstanding human evidence are recorded in
 
 The bundle also packages `lib/movement-pose.mjs` from the Phase 3 source, so
 interpolated ankle direction and foot placement use the same code as the tests.
+
+The compact picker modules (`movement-picker.mjs`, `movement-library.mjs`) are
+also bundled locally. The browser suite selects and renders all 140 records
+on both desktop and phone, including all 97 studies added in the September 6
+expansion. Rebuild from Phase 3; do not edit generated records or copied UI.
