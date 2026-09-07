@@ -3002,8 +3002,8 @@ function renderToc() {
   section('Active Initiatives', 'initiatives-active',
     'Initiatives still moving through the lifecycle, each with work to do.', active);
   section('Dormant Initiatives', 'initiatives-dormant',
-    'Initiatives resting by choice. Nothing is actionable on one until it is picked up again, '
-    + 'and the tooling it built is still there when it is.', resting);
+    'Initiatives that have been <a href="../demos/index.html">deployed to demos/</a>. '
+    + 'Can be updated for refinement at any time, and can be re-activated for major extensions.', resting);
 
   return parts.join('\n');
 }
