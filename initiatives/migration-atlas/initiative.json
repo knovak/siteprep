@@ -6,7 +6,8 @@
   "outputs": [
     {
       "kind": "demo",
-      "path": "demos/world_migration_atlas"
+      "path": "demos/world_migration_atlas",
+      "status": "published"
     }
   ],
   "deployments": [

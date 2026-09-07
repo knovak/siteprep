@@ -11,7 +11,7 @@ Adopted 2026-09-07 from the user's wish and the supplied July 2026 specification
 - Preserve the Ocean Blueprint presentation and the E1–E7 refinements recorded in the supplied documents and prompt history.
 - Keep a self-contained offline HTML artifact and a data-driven path for adding researched movements, with the original validation and editorial requirements preserved.
 
-The exact requirements, alternatives, acceptance criteria, and phased work remain in [spec.md](spec.md) and [plan.md](plan.md). The specification describes an initial 44-movement dataset; the supplied README and repository dataset contain the later 48-movement version. Neither count is silently rewritten in its source document.
+The exact requirements, alternatives, acceptance criteria, and phased work remain in [spec.md](spec.html) and [plan.md](plan.html). The specification describes an initial 44-movement dataset; the supplied README and repository dataset contain the later 48-movement version. Neither count is silently rewritten in its source document.
 
 ## Adoption acceptance
 

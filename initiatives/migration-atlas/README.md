@@ -4,13 +4,13 @@ This initiative adopts the working atlas from `demos/world_migration_atlas/` wit
 
 ## Documents and history
 
-- [Wish and original prompt history](wish.md)
-- [Objectives and adoption acceptance](objectives.md)
-- [Specification](spec.md) — supplied `SPECIFICATION.md`, unchanged
-- [Implementation plan](plan.md) — supplied `IMPLEMENTATION_PLAN.md`, unchanged
-- [Test plan](test-plan.md) — inherited gates and adoption verification
-- [Decisions](decisions.md) and [log](log.md)
-- [Provenance and file inventory](notes.md)
+- [Wish and original prompt history](wish.html)
+- [Objectives and adoption acceptance](objectives.html)
+- [Specification](spec.html) — supplied `SPECIFICATION.md`, unchanged
+- [Implementation plan](plan.html) — supplied `IMPLEMENTATION_PLAN.md`, unchanged
+- [Test plan](test-plan.html) — inherited gates and adoption verification
+- [Decisions](decisions.html) and [log](log.html)
+- [Provenance and file inventory](notes.html)
 
 The original [tutorial slideshow](https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&ouid=111064312747417346604&rtpof=true&sd=true) and [tutorial PDF](https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk) remain linked from the demo collection. These links are carried over from its existing metadata; this adoption does not revise the tutorials.
 
@@ -22,7 +22,7 @@ Production remains [the existing demo](../../demos/world_migration_atlas/index.h
 
 ## Scope of the preserved README
 
-The supplied README is reproduced in full below, including its feature descriptions, extension history, test-result table, contribution instructions, and layout. Its relative code paths refer to the original development package, not the initiative root. In this adoption, the files actually present live under `work/`; see [the inventory](notes.md).
+The supplied README is reproduced in full below, including its feature descriptions, extension history, test-result table, contribution instructions, and layout. Its relative code paths refer to the original development package, not the initiative root. In this adoption, the files actually present live under `work/`; see [the inventory](notes.html).
 
 In particular, the README's `src/core.js`, `src/app.js`, `tools/build.py`, and `tests/` are absent from the repository demo. Its build and test commands are retained as historical instructions and cannot currently be run from this snapshot. Drag-and-drop of a dataset can still preview research in the running app; making permanent data changes requires the original build package or separate authorized maintenance. The original test numbers below are July 2026 reports, not newly verified results.
 
