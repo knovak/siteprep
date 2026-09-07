@@ -9,9 +9,9 @@
       "name": "Bookmark Sorter",
       "path": "bookmark-sorter/index.html",
       "sourceArtifact": "work/dist/index.html",
-      "sourceCommit": "f3f9b481b890bf1db5e8c2764ef9e51a03b75937",
-      "bytes": 1107016,
-      "sha256": "2cc47a17f8cc933eab375dbdcf34510eba3f54eb61ed9e507aff4f246dd46260",
+      "sourceCommit": "d037cc7d644a8fa997bbba95aebf8c771afb78b4",
+      "bytes": 1106952,
+      "sha256": "6df915fc229f2343f478b91d928a0b3aa1a5a8ccdb143fb5e53460ef1c6f8747",
       "fork": {
         "source_repository": "https://github.com/knovak/siteprep",
         "source_commit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
@@ -30,7 +30,7 @@
           "d1-store.mjs becomes bookmark-store.mjs; same SQL, local ownership",
           "worker.mjs becomes local-app.mjs; in-process dispatch, no server or identity",
           "pile-page.mjs retains UI with local transport and file tools",
-          "ingest/round-trip restrict imported URLs to http and https",
+          "ingest/round-trip retain absolute URLs; the card renderer links only http and https",
           "SQL migrations retained without account allowlist"
         ],
         "migration_files": {
