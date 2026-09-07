@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specification — experiment with wasm</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Specification — experiment with wasm</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to experiment with wasm</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Specification</h2>
+    </div>
+    <div class="card-content">
+<h2>Specification</h2>
+<p>The output is <code>work/dist/index.html</code>, built from a vendored fork of Bookmark Sorter. The file embeds the CSS, application JavaScript, SQLite WASM bytes and schema. It opens from disk without a local web server and also works on an ordinary static origin.</p>
+<h3>Architecture</h3>
+<p>Existing card UI → local in-process request dispatcher → forked BookmarkStore → SQLite binding adapter → SQLite/WASM. No request crosses the network. The adapter preserves prepared statement binding and atomic batches. Successful actions persist a complete SQLite snapshot to IndexedDB before the UI receives success. A serialized request queue prevents overlapping asynchronous actions from interleaving transactions. A stored revision rejects stale writes from another tab.</p>
+<p>The saved database is an experiment-specific namespace, with no access to the original app or personal export files. New databases start empty. An explicit sample-data button adds a separate collection. Full backup/restore and the existing compatible JSON export/import serve different purposes. Restore validates the database format, schema, integrity, and image references before replacing local state.</p>
+<h3>Parity</h3>
+<p>Retain HTML and JSON multi-file imports; source/folder tags and URL deduplication; collection creation/rename/erase; demo template copies; exact/prefix/contains boolean selection expressions and verdict filters; proposals and saved/previous selections; keyboard/card marking; all four verdicts; bulk/sweep actions; tag addition/removal; undo; collection/selection JSON export; sitting reports; day/night and responsive grid layouts.</p>
+<p>Replace cloud identity with local ownership. Replace remote captures with local raster image attachments, saved with the database. Do not expose nonworking cloud controls. Saved pictures work offline. Links open their original sites only when the user follows them.</p>
+<h3>Alternatives</h3>
+<p>See evaluation.md for the application comparison. SQLite/WASM was chosen over a fresh Rust rewrite to retain tested SQL and exact behavior. A JavaScript-only memory store would miss the requested WASM conversion. A fetch-driven WASM asset or OPFS-only build would complicate direct file opening; embedded bytes and IndexedDB are used instead. Code stays in this initiative until graduation is requested.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/experiment-with-wasm" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
