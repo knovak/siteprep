@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tag bookmarks"
+  short_description: "Tag a Bookmark Sorter export and write an importable file"
+  default_prompt: "Use $tag-bookmarks to assign topic, location, period, and source-type tags to this Bookmark Sorter export."

@@ -1,0 +1,114 @@
+{
+  "vocabulary": "bookmark-tags/vocabulary/v1",
+  "name": "default",
+  "description": "The default tagging vocabulary for Bookmark Sorter piles: four dimensions, ordinary tags with no prefix.",
+  "notes": [
+    "A dimension is one axis of description. An item may take tags from every dimension, and any number of tags within a dimension.",
+    "Tags are deliberately overlapping: california and usa on the same item is correct, not a mistake.",
+    "Tag names are stored exactly as written here. Bookmark Sorter selection keys lowercase them and turn punctuation into dashes, so business_economics is selected as business-economics."
+  ],
+  "dimensions": [
+    {
+      "name": "topic",
+      "description": "What the item is about.",
+      "notes": [
+        "Assign every topic that applies. One to three is usual; more is fine when the item genuinely spans them.",
+        "Assign the narrower topic and the broader one together when both apply: an item on model training takes ai and technology; an item on emissions policy takes climate, environment, and politics."
+      ],
+      "tags": [
+        "politics",
+        "technology",
+        "media",
+        "business_economics",
+        "covid_19",
+        "science",
+        "international_affairs",
+        "law_crime",
+        "arts_culture",
+        "books_writing",
+        "health",
+        "social_justice",
+        "ai",
+        "environment",
+        "energy",
+        "climate",
+        "travel",
+        "history"
+      ],
+      "tag_notes": {
+        "media": "Journalism, publishing, broadcasting, and platforms as a subject, not the fact that the item is itself a news story.",
+        "covid_19": "The pandemic and its aftermath specifically. Ordinary public health goes to health.",
+        "ai": "Machine learning and its products, research, and consequences. Also assign technology.",
+        "social_justice": "Race, gender, inequality, migration, disability, and civil rights as a subject."
+      },
+      "implies": {
+        "ai": ["technology"],
+        "covid_19": ["health"],
+        "climate": ["environment"]
+      }
+    },
+    {
+      "name": "location",
+      "description": "The places the item is about.",
+      "notes": [
+        "This is the subject's location, not the publisher's. A New York Times report on Lagos is africa, not usa.",
+        "Assign the specific place and the broader places that contain it. The containment tags this vocabulary knows about are added for you.",
+        "Assign nothing when an item has no particular place."
+      ],
+      "tags": [
+        "australia",
+        "california",
+        "africa",
+        "developing_countries",
+        "cameroon",
+        "latin_america",
+        "europe",
+        "usa",
+        "canada",
+        "india",
+        "china",
+        "asia"
+      ],
+      "tag_notes": {
+        "developing_countries": "A judgement about the item's framing, not a fixed list of states. Assign it when the item is about development, aid, or low- and middle-income economies as such."
+      },
+      "implies": {
+        "california": ["usa"],
+        "cameroon": ["africa"],
+        "india": ["asia"],
+        "china": ["asia"]
+      }
+    },
+    {
+      "name": "period",
+      "description": "The period the item's content belongs to.",
+      "notes": [
+        "Use the era the item is about when it is historical, and its publication date otherwise.",
+        "Evidence, in order: a date in the title or note, a date in the URL, then the item's added date.",
+        "Assign nothing when neither the subject period nor the date can be established. A guess here is worse than a gap."
+      ],
+      "tags": ["pre-2000", "2001-2019", "post-2020"],
+      "tag_notes": {
+        "pre-2000": "Everything up to and including the year 2000.",
+        "2001-2019": "The years 2001 to 2019 inclusive.",
+        "post-2020": "The year 2020 onwards."
+      }
+    },
+    {
+      "name": "sourcetype",
+      "description": "Who published the item.",
+      "notes": [
+        "Judge from the host name first, then the title. Usually exactly one tag.",
+        "Assign nothing rather than guessing when the host says nothing useful."
+      ],
+      "tags": ["major_publication", "blogger", "corporation", "ngo", "government"],
+      "tag_notes": {
+        "major_publication": "An established newspaper, magazine, broadcaster, wire service, or academic journal.",
+        "blogger": "A personal site, newsletter, or writing platform account: Substack, Medium, a named individual's domain.",
+        "corporation": "A company's own site: product pages, documentation, engineering and corporate blogs.",
+        "ngo": "A non-profit, foundation, advocacy group, research institute, or university that is not run by a government.",
+        "government": "A government agency or intergovernmental body, including .gov and .gov.* hosts and bodies such as the UN and the WHO."
+      }
+    }
+  ]
+}
