@@ -555,7 +555,7 @@ export class D1BookmarkStore {
     return this.db.prepare(
       `SELECT url_key, image_ref, source, captured_at, image_hash, state,
               page_title, description, favicon_url, error_tag, image_candidate,
-              content_type, width, height, byte_size
+              content_type, width, height, byte_size, final_url
        FROM captures WHERE url_key = ? LIMIT 1`,
     ).bind(urlKey).first();
   }
@@ -565,8 +565,8 @@ export class D1BookmarkStore {
       `INSERT INTO captures
        (url_key, image_ref, source, captured_at, image_hash, state,
         page_title, description, favicon_url, error_tag, image_candidate,
-        content_type, width, height, byte_size)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        content_type, width, height, byte_size, final_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(url_key) DO UPDATE SET
          image_ref = excluded.image_ref,
          source = excluded.source,
@@ -581,7 +581,8 @@ export class D1BookmarkStore {
          content_type = excluded.content_type,
          width = excluded.width,
          height = excluded.height,
-         byte_size = excluded.byte_size`,
+         byte_size = excluded.byte_size,
+         final_url = excluded.final_url`,
     ).bind(
       capture.url_key,
       capture.image_ref,
@@ -598,6 +599,7 @@ export class D1BookmarkStore {
       capture.width,
       capture.height,
       capture.byte_size,
+      capture.final_url ?? null,
     ).run();
     return this.getCapture(capture.url_key);
   }

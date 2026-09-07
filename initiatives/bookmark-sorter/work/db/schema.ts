@@ -101,6 +101,7 @@ export const captures = sqliteTable("captures", {
   width: integer("width"),
   height: integer("height"),
   byteSize: integer("byte_size"),
+  finalUrl: text("final_url"),
 }, table => [
   check("captures_source_check", sql`${table.source} in ('og', 'screenshot', 'none')`),
   index("idx_captures_image_hash").on(table.imageHash).where(sql`${table.imageHash} is not null`),

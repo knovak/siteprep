@@ -111,6 +111,30 @@ test('portable imports simplify Google redirect URLs before storing them', async
   assert.equal(item.url_key, item.url);
 });
 
+test('an AMP viewer link merges with the same page saved directly', async () => {
+  const store = new MemoryBookmarkStore();
+  store.createCollection({id: 'pile', name: 'Pile'});
+  const item = (url, title) => ({url, title, note: null, added_at: null, tags: [], verdict: null, verdict_at: null});
+  await importExportDocument({
+    store,
+    collectionId: 'pile',
+    importedAt: '2026-08-20T00:00:00Z',
+    document: {
+      format: 'bookmark-sorter/v1',
+      exported_at: '2026-08-20T00:00:00Z',
+      collection: 'source',
+      selection: '',
+      items: [
+        item('https://www.google.co.uk/amp/s/www.independent.co.uk/news/story-a9536396.html', 'Viewer copy'),
+        item('https://www.independent.co.uk/news/story-a9536396.html', 'Direct copy'),
+      ],
+    },
+  });
+  const items = store.listAllItems('pile');
+  assert.equal(items.length, 1);
+  assert.equal(items[0].url, 'https://www.independent.co.uk/news/story-a9536396.html');
+});
+
 test('an exported legacy bookmark remains importable with a non-web URL or missing verdict date', async () => {
   const store = new MemoryBookmarkStore();
   store.createCollection({id: 'destination', name: 'Destination'});

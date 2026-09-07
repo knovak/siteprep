@@ -43,6 +43,13 @@
       "when": 1788764764043,
       "tag": "0005_lively_zeigeist",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1788804030285,
+      "tag": "0006_greedy_wong",
+      "breakpoints": true
     }
   ]
 }

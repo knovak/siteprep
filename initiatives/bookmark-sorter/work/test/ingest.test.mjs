@@ -43,6 +43,41 @@ test('Google redirect references store their canonical destinations', () => {
   assert.equal(simplifyStoredUrl('https://example.com/saved?keep=1#part'), 'https://example.com/saved?keep=1#part');
 });
 
+test('Google redirect references unwrap from country domains as well as google.com', () => {
+  const target = 'https%3A%2F%2Fthebaffler.com%2Fsalvos%2Fhydropower-neumann';
+  assert.equal(simplifyStoredUrl(`https://www.google.co.uk/url?sa=D&q=${target}`), 'https://thebaffler.com/salvos/hydropower-neumann');
+  assert.equal(simplifyStoredUrl(`https://www.google.com.au/url?q=${target}`), 'https://thebaffler.com/salvos/hydropower-neumann');
+  assert.equal(simplifyStoredUrl(`https://google.de/url?q=${target}`), 'https://thebaffler.com/salvos/hydropower-neumann');
+  const lookalike = `https://google.com.example.net/url?q=${target}`;
+  assert.equal(simplifyStoredUrl(lookalike), lookalike);
+});
+
+test('Google AMP viewer links store the destination the path encodes', () => {
+  const independent = 'https://www.google.com/amp/s/www.independent.co.uk/life-style/gadgets-and-tech/news/facebook-algorithm-bias-right-wing-feed-a9536396.html%3famp';
+  assert.equal(
+    simplifyStoredUrl(independent),
+    'https://www.independent.co.uk/life-style/gadgets-and-tech/news/facebook-algorithm-bias-right-wing-feed-a9536396.html?amp',
+  );
+  // The destination is the AMP variant the viewer was showing, which is the page
+  // the user saved. Whether an `.amp.html` URL should become the canonical
+  // article is a question only the network answers, and is not decided here.
+  assert.equal(
+    simplifyStoredUrl('https://www.google.com/amp/s/www.nytimes.com/2020/06/26/opinion/confederate-monuments-racism.amp.html'),
+    'https://www.nytimes.com/2020/06/26/opinion/confederate-monuments-racism.amp.html',
+  );
+  assert.equal(simplifyStoredUrl('https://www.google.co.uk/amp/s/example.com/story'), 'https://example.com/story');
+  assert.equal(simplifyStoredUrl('https://www.google.com/amp/example.com/legacy'), 'http://example.com/legacy');
+  assert.equal(simplifyStoredUrl('https://www.google.com/amp/s/example.com/tracked%3Futm_source%3Dnews'), 'https://example.com/tracked');
+  const notGoogle = 'https://example.com/amp/s/other.test/page';
+  assert.equal(simplifyStoredUrl(notGoogle), notGoogle);
+  assert.equal(simplifyStoredUrl('https://www.google.com/search?q=cats'), 'https://www.google.com/search?q=cats');
+});
+
+test('a wrapper around a wrapper unwraps to the innermost destination', () => {
+  const nested = 'https://www.google.com/url?q=https%3A%2F%2Fwww.google.com%2Famp%2Fs%2Fexample.com%2Fnested';
+  assert.equal(simplifyStoredUrl(nested), 'https://example.com/nested');
+});
+
 test('ingestion deduplicates normalised URLs and retains the saved URL', async () => {
   const store = newStore();
   const result = await ingestBookmarkHtml({

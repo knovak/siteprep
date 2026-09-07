@@ -29,5 +29,14 @@
       }
     }
   ],
-  "todo": []
+  "todo": [
+    {
+      "id": "redirect-proposals",
+      "title": "Offer confirmed URL replacements from recorded final_url values, including a merge when the destination is already in the pile",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    }
+  ]
 }

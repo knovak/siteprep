@@ -61,7 +61,7 @@ class SqliteD1 {
 
 async function identityDatabase() {
   const database = new DatabaseSync(':memory:');
-  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql', '0007_authorized_users_history.sql', '0008_authorized_user_identity.sql']) {
+  for (const migration of ['0001_core.sql', '0002_triage.sql', '0003_captures.sql', '0004_selections.sql', '0005_identity_collections.sql', '0007_authorized_users_history.sql', '0008_authorized_user_identity.sql', '0011_capture_final_url.sql']) {
     database.exec(await readFile(`${workRoot}migrations/${migration}`, 'utf8'));
   }
   return {database, d1: new SqliteD1(database)};
@@ -300,4 +300,24 @@ test('owner collections isolate two users while templates copy privately and cap
   const itemForeignKeys = database.prepare("PRAGMA foreign_key_list('items')").all();
   assert.deepEqual(itemForeignKeys.map(row => row.table), ['collections']);
   database.close();
+});
+
+test('a capture round-trips its recorded redirect destination through SQL', async () => {
+  const {d1} = await identityDatabase();
+  const store = new D1BookmarkStore(d1);
+
+  const base = {
+    image_ref: null, source: 'none', captured_at: '2026-09-07T00:00:00Z', image_hash: null,
+    state: 'pass1-gap', page_title: null, description: null, favicon_url: null, error_tag: null,
+    image_candidate: null, content_type: null, width: null, height: null, byte_size: null,
+  };
+  await store.upsertCapture({
+    ...base,
+    url_key: 'https://example.com/moved',
+    final_url: 'https://example.com/landed',
+  });
+  await store.upsertCapture({...base, url_key: 'https://example.com/stayed'});
+
+  assert.equal((await store.getCapture('https://example.com/moved')).final_url, 'https://example.com/landed');
+  assert.equal((await store.getCapture('https://example.com/stayed')).final_url, null);
 });
