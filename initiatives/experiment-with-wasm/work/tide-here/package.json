@@ -1,0 +1,19 @@
+{
+  "name": "tide-here-wasm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "playwright test --config test/playwright.config.mjs"
+  },
+  "dependencies": {
+    "@neaps/tide-predictor": "0.11.0",
+    "quickjs-emscripten-core": "0.32.0",
+    "@jitl/quickjs-singlefile-browser-release-sync": "0.32.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

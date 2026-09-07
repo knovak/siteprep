@@ -22,3 +22,24 @@ The application is built as `work/dist/index.html` with the 658,410-byte WASM mo
 Only Chromium was exercised. Safari, Firefox, private browsing and browser storage eviction require separate compatibility/use checks. The complete database is held in memory and snapshotted for each action; the 100 MB cap is a guard, not a claim that 100 MB picture-heavy databases have been benchmarked. No automatic website capture, cloud account management or cross-device synchronization is claimed.
 
 The repository build and final post-build screenshots are required before handoff; the pull request's checks report validation of its exact head. No existing deployment or live bookmark database was changed.
+
+## Tide Here — 2026-09-07
+
+The second package passes five integration tests and five Chromium browser tests. Numerical evidence is recorded from the original server code and full-precision retained FES2022b dataset, independently of the compact binary and WASM wrapper.
+
+| Check | Result |
+|---|---|
+| Original algorithm parity | 12 cases: Half Moon Bay, Galway, Cooktown, Cape Town, Auckland, Vancouver, Mumbai, Rio, Tromsø, Suva, Nice and Galway in 2036; event types/counts match, times differ by less than one second and heights by less than 0.00001 m |
+| Real global model | All 65,203 coastal points, 34 constituents and 376 verified source tiles included |
+| Offline place search | 170,946 GeoNames records; native/ASCII names, aliases and region/country disambiguation |
+| Single-file portability | Only the HTML copied to an unrelated directory; five regions calculated with networking disabled and zero HTTP(S) requests |
+| Local day and astronomy behavior | Five days, 23/25-hour DST boundaries, date-line placement, polar always-up/no-rise case |
+| Honest unavailable states | Inland/no-coverage, unknown/invalid locations, denied geolocation and engine startup failure |
+| History and embedded data | History survives reload, exports/restores; clearing browser storage removes history while the embedded model still calculates; quota failure is visible |
+| Phone layout | 390 × 844 viewport, no horizontal overflow |
+
+One direct engine measurement including VM initialization and a five-day Half Moon Bay forecast completed in 75 ms on this machine. It excludes HTML loading, data decompression, place indexing and astronomy; it is not a benchmark promise. The full artifact is about 39.5 MB, larger than Bookmark Sorter because it carries the global dataset and gazetteer. Exact size and hash are in `work/tide-here/dist/build.json`.
+
+The source package is the existing derived FES2022b coastal extract, not the synthetic feasibility fixtures or the original 3.95 GB atlas. AVISO licence, source metadata, checksums, transformations and attribution are retained. Runtime and build details are in the Tide Here README and root technical documentation.
+
+Tide Here screenshots are written after the final repository build to `screenshots/wasm-tide-here-desktop.png` and `screenshots/wasm-tide-here-phone.png`. These tests establish implementation parity and offline behavior in Chromium; they do not establish new empirical model accuracy, perpetual forecast accuracy, or Safari/Firefox acceptance. The offline app always uses global-model predictions, with visible mean-sea-level datum and coverage limits.

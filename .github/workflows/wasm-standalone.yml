@@ -26,6 +26,7 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             initiatives/experiment-with-wasm/work/package-lock.json
+            initiatives/experiment-with-wasm/work/tide-here/package-lock.json
       - run: npm ci
       - run: npm ci
         working-directory: initiatives/experiment-with-wasm/work
@@ -40,3 +41,15 @@ jobs:
           npm test
           npm run test:browser
         working-directory: initiatives/experiment-with-wasm/work
+      - run: npm ci
+        working-directory: initiatives/experiment-with-wasm/work/tide-here
+      - name: Rebuild standalone Tide Here
+        run: npm run build
+        working-directory: initiatives/experiment-with-wasm/work/tide-here
+      - name: Check Tide Here distribution matches source
+        run: git diff --exit-code -- initiatives/experiment-with-wasm/work/tide-here/dist
+      - name: Tide Here WASM parity and offline browser tests
+        run: |
+          npm test
+          npm run test:browser
+        working-directory: initiatives/experiment-with-wasm/work/tide-here

@@ -13,3 +13,11 @@ The hardest risks are silent persistence failure, multiple tabs overwriting data
 ## After the first experiment
 
 Verify direct-file persistence and recovery in Safari and Firefox before claiming those engines are supported. Human use and a later graduation decision follow the verified Chromium implementation; neither is evidence this automated run can provide.
+
+## Second conversion requested by the user
+
+1. Verify the retained full FES coastal package and redistribution terms; preserve provenance.
+2. Package the 65,203 points plus an offline place catalogue and the existing harmonic engine in a self-contained Tide Here file.
+3. Preserve coast-local dates, astronomy, location selection, alternative points, forecast history and portable exports; disclose provider differences.
+4. Compare actual WASM forecasts with original full-precision server results across world regions and a future date. Verify direct-file operation with networking disabled, storage failures, backup/restore, DST, polar conditions and phone layout.
+5. Extend this initiative's CI and ready-for-review PR, run the repository build, inspect final screenshots, and open the local app. Other browser acceptance and production graduation remain separate work.

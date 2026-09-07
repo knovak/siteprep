@@ -1,6 +1,11 @@
 # experiment with wasm
 
-A standalone fork of **Bookmark Sorter**, powered by SQLite compiled to WebAssembly. It retains the card interface and runs its database in your browser.
+Standalone forks of **Bookmark Sorter** and **Tide Here**, both powered by real WebAssembly with no backend or runtime network requests.
+
+- [Open Bookmark Sorter](work/dist/index.html): a browser database and the existing bookmark card interface.
+- [Open Tide Here](work/tide-here/dist/index.html): a single 39.5 MB HTML file carrying 65,203 global coastal harmonic points and 170,946 searchable places. Five days of tides, sun and moon are calculated locally for the chosen coast and date. See [Tide Here details and rebuild instructions](work/tide-here/README.md).
+
+The tide model is embedded in the HTML file and cannot be erased by clearing browser storage. Its optional local forecast history can be cleared or lost; history backup/restore is included. Predictions use the global model everywhere, with explicit differences from the hosted app's live national providers. The following sections describe Bookmark Sorter.
 
 ## Open the application
 
@@ -20,7 +25,7 @@ Browser storage is not a backup. Clearing browser data, private browsing, browse
 
 ## Conversion boundaries
 
-The evaluation selected Bookmark Sorter because its core inputs are complete local files. Tide Here depends on external geocoding, tide providers, and maintained model/geographic datasets; see [evaluation.md](evaluation.md).
+The initial evaluation selected Bookmark Sorter because its core inputs are complete local files; see [evaluation.md](evaluation.md). At the user's subsequent request, Tide Here was also converted by bundling its complete available global coastal dataset and replacing network geocoding with a local catalogue.
 
 This edition uses device-local ownership. Cloud sign-in, user allowlists, cross-device sync and automatic remote website screenshots are absent. Attach pictures locally instead. No personal export, account list, deployment configuration or capture database is bundled. Opening bookmark links is the only routine action that leaves the app; those websites need a connection.
 

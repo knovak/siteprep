@@ -18,3 +18,13 @@ The user requested an application that "runs alone without a backend server and 
 - The actual deliverable is one HTML file, with local persistence and portable backups. This is work in the initiative, not a production release.
 - Account administration and remote screenshot services are not equivalent in a standalone browser. The fork replaces those with device-local ownership and local picture attachment; the limitation is visible in Help and README.md.
 - Human acceptance and any later graduation or deployment remain open. No existing Site or live bookmark collection is modified.
+
+## 2026-09-07 — Convert Tide Here as well
+
+The user asked, **"can you do the same for tide-here?"** This expands the experiment to both applications. The original Bookmark Sorter file stays at its existing path; Tide Here is added under `work/tide-here/`.
+
+Implementation choices within that requested conversion: reuse the actual 65,203-point derived FES2022b dataset retained locally for the existing Tide Here, and embed a GeoNames offline gazetteer. Execute the pinned original harmonic engine in QuickJS compiled to WebAssembly. This preserves the algorithm and its Schureman corrections without pretending a rewritten approximation is equivalent. It is an interpreter inside WASM, not a native numerical port or a promised performance improvement.
+
+The offline edition uses FES2022 model predictions everywhere. It cannot offer the online application's live NOAA/CHS forecasts or official-provider preference. Its independent place catalogue, 40 km model coverage limit, model datum and approximate nature are visible in the interface. Calculations do not have a fixed end-of-year cutoff, but this does not establish indefinite accuracy or future browser/time-zone compatibility.
+
+The existing reviewed FES package is transformed harmonic data, not redistribution of the original native atlas. Source checksums, prior transformations, attribution and licence links are retained. No original hosted application, production dataset or live bookmark database is changed. Graduation, production deployment and broader browser acceptance remain open.

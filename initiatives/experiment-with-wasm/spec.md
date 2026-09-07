@@ -17,3 +17,11 @@ Replace cloud identity with local ownership. Replace remote captures with local 
 ## Alternatives
 
 See evaluation.md for the application comparison. SQLite/WASM was chosen over a fresh Rust rewrite to retain tested SQL and exact behavior. A JavaScript-only memory store would miss the requested WASM conversion. A fetch-driven WASM asset or OPFS-only build would complicate direct file opening; embedded bytes and IndexedDB are used instead. Code stays in this initiative until graduation is requested.
+
+## Second application: Tide Here
+
+`work/tide-here/dist/index.html` is a separate self-contained application. Its DOM retains the original five-day visual vocabulary. A Blob worker hosts QuickJS compiled to WebAssembly; the original pinned `@neaps/tide-predictor` 0.11.0 is evaluated exclusively inside that interpreter. It calculates harmonic high/low extrema with the same Schureman corrections as the original FES provider. Host JavaScript handles input, nearest-point selection, IANA local-day boundaries, SunCalc astronomy, history and DOM rendering. There is no JavaScript tide-engine fallback and no claim of compiling the UI or performing a native Rust/C numerical rewrite.
+
+The file embeds the complete available FES2022b coastal extract (65,203 sampled water points, 34 constituents, 40 km maximum selection distance), packed as gzip with float64 coordinates and float32 amplitude/phase pairs. It retains source metadata and time zones; float32 reduction is checked against original full-precision forecasts. It also embeds the 170,946-place GeoNames cities1000 snapshot, aliases and regional context. Names can be ambiguous and are offered as explicit choices; coordinates work independently of name coverage.
+
+The offline provider always uses FES2022 model data, including where the hosted app prefers national predictions. Heights are metres relative to model mean sea level, not local chart datum. No fixed yearly table is required. Unsupported coastal/inland requests fail visibly; nearby points can be selected by their coordinates. Approximate nature, omitted environmental effects and no-navigation guidance remain visible. Model points cannot be erased through browser storage; only the optional last-100 forecast history uses localStorage, with export/restore and explicit failure messages.

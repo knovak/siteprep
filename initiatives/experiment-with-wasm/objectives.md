@@ -7,3 +7,7 @@
 5. Preserve bookmark HTML / bookmark-sorter/v1 JSON compatibility, deduplication, collections, selection expressions, tags, verdicts, undo, paging, and sitting reports.
 6. Persist changes locally and expose portable backups; show storage failures instead of claiming a successful save.
 7. Document the unavoidable differences in cloud account administration and automatic remote page capture. Verify the converted workflows with network access disabled.
+
+## 2026-09-07 follow-up: Tide Here
+
+The user asked, "can you do the same for tide-here?" Add a second standalone application without moving or replacing the Bookmark Sorter file. Retain five coast-local days, high/low tide heights and times, sun/moon information, location selection, alternative coastal points, local history and export. Run the existing harmonic engine inside WebAssembly with all required data embedded. Explain the use of global-model predictions in place of live national services, offline place-search limits, coverage boundaries and data longevity.
