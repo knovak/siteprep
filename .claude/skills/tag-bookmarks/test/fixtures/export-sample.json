@@ -1,0 +1,62 @@
+{
+  "format": "bookmark-sorter/v1",
+  "exported_at": "2026-09-06T10:00:00.000Z",
+  "collection": "sample-collection",
+  "selection": "",
+  "items": [
+    {
+      "url": "https://www.example-times.com/2024/03/11/california-drought-rules",
+      "title": "California tightens water rules after a third dry winter",
+      "note": null,
+      "added_at": "2024-03-12T08:00:00.000Z",
+      "tags": ["src:safari-export", "folder:News"],
+      "verdict": null,
+      "verdict_at": null
+    },
+    {
+      "url": "https://blog.example.dev/posts/what-i-learned-training-a-small-model",
+      "title": "What I learned training a small model on one GPU",
+      "note": "Good notes on data cleaning.",
+      "added_at": "2025-11-02T19:30:00.000Z",
+      "tags": ["src:safari-export"],
+      "verdict": "keeper",
+      "verdict_at": "2026-08-01T12:00:00.000Z"
+    },
+    {
+      "url": "https://www.who.int/news/item/global-vaccination-coverage-2019",
+      "title": "Global vaccination coverage stalls, WHO reports",
+      "note": null,
+      "added_at": "2019-07-15T09:00:00.000Z",
+      "tags": ["src:safari-export", "folder:Health"],
+      "verdict": null,
+      "verdict_at": null
+    },
+    {
+      "url": "https://example-museum.org/exhibitions/cameroon-textiles",
+      "title": "Cameroon textiles: a century of pattern",
+      "note": null,
+      "added_at": "2023-05-04T14:00:00.000Z",
+      "tags": ["src:safari-export"],
+      "verdict": null,
+      "verdict_at": null
+    },
+    {
+      "url": "https://example-corp.com/engineering/scaling-our-queue",
+      "title": "Scaling our job queue to a billion messages",
+      "note": null,
+      "added_at": "2022-01-20T11:00:00.000Z",
+      "tags": ["src:safari-export", "technology"],
+      "verdict": null,
+      "verdict_at": null
+    },
+    {
+      "url": "https://example.net/untitled-page",
+      "title": "https://example.net/untitled-page",
+      "note": null,
+      "added_at": null,
+      "tags": ["src:safari-export"],
+      "verdict": null,
+      "verdict_at": null
+    }
+  ]
+}
