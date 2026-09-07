@@ -67,6 +67,13 @@ gh-pages/initiatives/<slug>/README.html      # rendered when README.md is presen
 gh-pages/initiatives/<slug>/wish.html        # one page per source .md
 ```
 
+The TOC opens with what an initiative is, then lists the initiatives in two
+sections: **Active Initiatives**, and **Dormant Initiatives** for the resting
+stages, `dormant` and `archived`. A section with no initiatives in it is not
+rendered, so a collection that is entirely active shows one section. An
+initiative whose `initiative.json` cannot be read has no stage to sort on and is
+listed with the active ones, where the error is visible.
+
 The overview page is derived entirely from `initiative.json` and the files
 present - purpose, status, what's next, what's blocked, outputs, and links to
 the documents - so displayed status cannot drift from recorded state. An
@@ -821,8 +828,9 @@ proposal branch cannot collide with the work branch for the same item.
 scheduler has to provide.
 
 `tests/e2e/initiatives.spec.js` covers the rendered result: the TOC explains
-what an initiative is, entries link to overview pages, the nav bar carries the
-Initiatives button, and document links never point at raw markdown.
+what an initiative is, entries link to overview pages, the active and dormant
+sections hold the right stages, the nav bar carries the Initiatives button, and
+document links never point at raw markdown.
 
 
 ## Newsletter review presentation
