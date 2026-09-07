@@ -47,7 +47,10 @@ selection, and export operations.
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
 - `src/url-key.mjs` implements the deliberately narrow URL identity rule from
-  `spec.md` §4 and unwraps Google `/url` references before storing a bookmark.
+  `spec.md` §4 and unwraps Google wrappers before storing a bookmark: a `/url`
+  redirect and an `/amp/` viewer link, from google.com and from the country
+  domains (`google.co.uk`, `google.com.au`, `google.de`), repeating while a
+  destination is itself a wrapper.
 - `src/selections.mjs` is the one selection evaluator used by UI-scoped and
   administrative calls. It parses `and`, `or`, `not`, parentheses, bare tags,
   trailing wildcards for prefix matching, and paired wildcards around a value
@@ -455,13 +458,12 @@ has no image storage, and no capture request is made by the grid.
 node --test initiatives/bookmark-sorter/work/test/*.test.mjs
 ```
 
-The Node tests cover parsing, Google redirect simplification, normalisation,
-tag creation, idempotent
-re-import, overlap merging, D1 owner scoping and batch chunking, the upload API,
-the 20 MB guard, verdicts, group undo, sitting totals, and a generated
-10,000-item export. Phase 4 adds table-driven grammar and scope tests, image
-attributes, D1 and memory-store saved-selection/tag-undo checks, grouped
-on-demand proposal checks, both
+The Node tests cover parsing, Google redirect and AMP viewer simplification,
+normalisation, tag creation, idempotent re-import, overlap merging, D1 owner
+scoping and batch chunking, the upload API, the 20 MB guard, verdicts, group
+undo, sitting totals, and a generated 10,000-item export. Phase 4 adds
+table-driven grammar and scope tests, image attributes, D1 and memory-store
+saved-selection/tag-undo checks, grouped on-demand proposal checks, both
 confirmation paths, and a visible 3,000-item sweep followed by one undo.
 Phase 5 adds a hand-written portable export, selection-scoped export, same- and
 cross-collection round trips, existing note/verdict protection, shared capture

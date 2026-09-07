@@ -153,7 +153,9 @@ For host-based URLs, Bookmark Sorter:
 - removes the fragment after `#`;
 - removes `utm_*`, `fbclid`, and `gclid` query parameters;
 - removes the trailing slash from an otherwise empty path; and
-- unwraps an HTTP or HTTPS destination from a Google `/url` redirect.
+- unwraps an HTTP or HTTPS destination from a Google `/url` redirect or a
+  Google `/amp/` viewer link, on google.com and on the country domains such
+  as `google.co.uk` and `google.com.au`.
 
 Other valid absolute schemes are retained for compatibility with legacy
 bookmarks. They still receive a normalised identity key, but web-specific host
