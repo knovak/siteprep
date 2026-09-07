@@ -1,3 +1,22 @@
+import {compileSelectionSql, selectionDictionaries, validateCursor} from './selection-sql.mjs';
+
+function cardItem({tags_json, capture_image_ref, capture_source, capture_state, capture_error_tag, capture_page_title, capture_description, capture_displayable, ...item}, collectionId) {
+  return {
+      ...item,
+      collection_id: collectionId,
+      tags: JSON.parse(tags_json || '[]'),
+      capture: capture_state ? {
+        image_ref: capture_image_ref,
+        source: capture_source,
+        state: capture_state,
+        error_tag: capture_error_tag,
+        page_title: capture_page_title,
+        description: capture_description,
+        displayable: Number(capture_displayable) !== 0,
+      } : null,
+    };
+}
+
 function ownerClause(ownerId, alias = '') {
   const column = alias ? `${alias}.owner_id` : 'owner_id';
   return ownerId === null
@@ -429,20 +448,68 @@ export class D1BookmarkStore {
        ORDER BY COALESCE(i.added_at, i.ingested_at) DESC, i.id
        LIMIT ? OFFSET ?`,
     ).bind(collectionId, safeLimit, safeOffset).all();
-    return (result.results ?? []).map(({tags_json, capture_image_ref, capture_source, capture_state, capture_error_tag, capture_page_title, capture_description, capture_displayable, ...item}) => ({
-      ...item,
-      collection_id: collectionId,
-      tags: JSON.parse(tags_json || '[]'),
-      capture: capture_state ? {
-        image_ref: capture_image_ref,
-        source: capture_source,
-        state: capture_state,
-        error_tag: capture_error_tag,
-        page_title: capture_page_title,
-        description: capture_description,
-        displayable: Number(capture_displayable) !== 0,
-      } : null,
-    }));
+    return (result.results ?? []).map(row => cardItem(row, collectionId));
+  }
+
+  async selectionWindow(collectionId, {expression = '', limit = 200, offset = 0, after = null, countsOnly = false} = {}) {
+    await this.assertCollectionReadable(collectionId);
+    after = validateCursor(after);
+    const needed = selectionDictionaries(expression);
+    const dictionaries = [];
+    if (needed.tags) dictionaries.push(['tags', this.db.prepare(
+      'SELECT DISTINCT t.tag FROM tags t JOIN items i ON i.id = t.item_id WHERE i.collection_id = ?',
+    ).bind(collectionId)]);
+    if (needed.sites) dictionaries.push(['sites', this.db.prepare(
+      'SELECT DISTINCT url FROM items WHERE collection_id = ?',
+    ).bind(collectionId)]);
+    if (needed.titles) dictionaries.push(['titles', this.db.prepare(
+      "SELECT DISTINCT title_key, CASE WHEN title_key = '' THEN title ELSE '' END AS title FROM items WHERE collection_id = ?",
+    ).bind(collectionId)]);
+    const keys = {collectionId};
+    if (dictionaries.length) {
+      const results = await this.db.batch(dictionaries.map(([, statement]) => statement));
+      dictionaries.forEach(([name], index) => {
+        const rows = results[index].results || [];
+        keys[name] = name === 'tags' ? rows.map(row => row.tag) : name === 'sites' ? rows.map(row => row.url) : rows;
+      });
+    }
+    const filter = compileSelectionSql(expression, keys);
+    const joins = filter.captures ? 'LEFT JOIN captures c ON c.url_key = i.url_key LEFT JOIN capture_queue q ON q.url_key = i.url_key' : '';
+    const base = `WITH filter_values AS (SELECT ? AS data)`;
+    const where = `i.collection_id = ? AND (${filter.sql})`;
+    const safeLimit = Math.max(1, Math.min(500, Math.floor(Number(limit) || 200)));
+    const safeOffset = Math.max(0, Math.floor(Number(offset) || 0));
+    const before = after ? "COALESCE(SUM(COALESCE(i.added_at, i.ingested_at) > ? OR (COALESCE(i.added_at, i.ingested_at) = ? AND i.id <= ?)), 0)" : '0';
+    const counts = this.db.prepare(`${base}
+      SELECT (SELECT COUNT(*) FROM items WHERE collection_id = ?) AS collection_total,
+        (SELECT COUNT(*) FROM items WHERE collection_id = ? AND verdict IS NULL) AS collection_backlog,
+        COUNT(*) AS total, COALESCE(SUM(i.verdict IS NULL), 0) AS backlog, ${before} AS cursor_offset
+      FROM items i ${joins} WHERE ${where}`)
+      .bind(filter.values, collectionId, collectionId, ...(after ? [after.date, after.date, after.id] : []), collectionId);
+    const page = (pageOffset, cursor) => this.db.prepare(`${base}, page AS (
+      SELECT i.id FROM items i ${joins} WHERE ${where}
+        ${cursor ? 'AND (COALESCE(i.added_at, i.ingested_at) < ? OR (COALESCE(i.added_at, i.ingested_at) = ? AND i.id > ?))' : ''}
+      ORDER BY COALESCE(i.added_at, i.ingested_at) DESC, i.id LIMIT ? OFFSET ?
+    )
+    SELECT i.*, c.image_ref AS capture_image_ref, c.source AS capture_source,
+      c.state AS capture_state, c.error_tag AS capture_error_tag,
+      c.page_title AS capture_page_title, c.description AS capture_description,
+      CASE WHEN q.reason = 'duplicate-image' AND q.state != 'complete' THEN 0 ELSE 1 END AS capture_displayable,
+      COALESCE((SELECT json_group_array(tag) FROM (SELECT tag FROM tags WHERE item_id = i.id ORDER BY tag)), '[]') AS tags_json
+    FROM page JOIN items i ON i.id = page.id
+    LEFT JOIN captures c ON c.url_key = i.url_key LEFT JOIN capture_queue q ON q.url_key = i.url_key
+    ORDER BY COALESCE(i.added_at, i.ingested_at) DESC, i.id`)
+      .bind(filter.values, collectionId, ...(cursor ? [cursor.date, cursor.date, cursor.id] : []), safeLimit, cursor ? 0 : pageOffset);
+    const results = await this.db.batch(countsOnly ? [counts] : [counts, page(safeOffset, after)]);
+    const summary = results[0].results[0];
+    let pageOffset = after ? Number(summary.cursor_offset) : safeOffset;
+    let rows = results[1]?.results || [];
+    // An exhausted cursor or a shrinking final page returns the remaining tail.
+    if (!countsOnly && !rows.length && summary.total > 0) {
+      pageOffset = Math.max(0, Number(summary.total) - safeLimit);
+      rows = (await page(pageOffset, null).all()).results || [];
+    }
+    return {...summary, offset: pageOffset, items: rows.map(row => cardItem(row, collectionId))};
   }
 
   async listAllItems(collectionId) {

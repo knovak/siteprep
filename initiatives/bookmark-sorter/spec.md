@@ -362,6 +362,14 @@ workflow operates on what the user can see:
    changes only cards that still have no verdict, clears the marks, and advances
    one page.
 
+Page selection and counts run in the database before card details are loaded.
+The browser prepares one next page, including its stored images, while the
+current page is being reviewed. Sweeps await the write acknowledgment and use
+the counts returned with it, without a second selection-count request. Forward
+paging continues after the last visible card's date and ID, so verdict-dependent
+selections may shrink without skipping unreviewed items. The final partial page
+remains supported. A failed write leaves the current page visible.
+
 The asymmetry is still the point. In a page of near-identical links, naming the
 few worth keeping is quick; once they have been judged, the untriaged sweep can
 dispose of the remainder in one gesture without overwriting those exceptions.

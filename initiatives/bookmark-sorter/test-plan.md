@@ -168,6 +168,9 @@ sweep a verdict across the result).
 | `tag-apply` on a selection | Applies to every member; tags union rather than replace | O6 |
 | `tag-remove` on a selection | Removes only the named tags from every member that has them; one undo restores exactly those removals | O6 |
 | **No confirmation on the visible page sweep** | Sweep untriaged changes only untriaged cards on the visible page, asks nothing, and advances one page | §8.3, O3 |
+| **Database pagination** | A 6,001-item SQLite fixture hydrates at most 48 cards for 3×12 and uses the ordering index; selection results match the existing grammar | §7.1, O3 |
+| **Prefetched sweeps** | A ready next page is reused without another count/page request; filtered sweeps visit each item once, including the partial final page | §7.1, O3 |
+| **Prefetch recovery** | Failed writes retain the current page; retry succeeds; obsolete responses cannot replace a different collection, expression or layout | §7.1, O3 |
 | Confirmation on the unbounded path | Sweep all selected asks first, shows the full selection count, and changes items across virtual pages only after confirmation | §8.3 |
 | Mark then sweep | A verdict applies to the marked exceptions as one action; the following untriaged page sweep does not overwrite them | §7.1 |
 | **`undo` reverses a sweep as one action** | Fifty items swept and one undo restores all fifty | §7.1 |

@@ -36,6 +36,13 @@
       "when": 1787988169617,
       "tag": "0004_unusual_ghost_rider",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1788764764043,
+      "tag": "0005_lively_zeigeist",
+      "breakpoints": true
     }
   ]
 }

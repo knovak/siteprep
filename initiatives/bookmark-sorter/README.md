@@ -161,6 +161,12 @@ A practical page-by-page workflow is:
 5. Use **Previous** and **Next** when you want to inspect pages without writing
    a verdict.
 
+The next page loads in the background while you review. A sweep waits for its
+verdicts to save, then uses that prepared page when available. When the open
+selection excludes the new verdict, the sweep continues after the last card
+you reviewed, so disappearing untriaged cards do not cause the next group to
+be skipped. A failed save leaves you on the current page to retry.
+
 The arrow attached to **Sweep untriaged** changes its scope to **Sweep all
 selected**. That second mode applies the chosen verdict to every item in the
 current open selection and therefore shows the affected count for confirmation

@@ -682,3 +682,22 @@ produced zero cards and proposals; all five were restored afterward. Existing
 public entry, application authorization, and D1/R2 bindings were preserved. The
 initial release record merged with feature PR #453. This correction identifies
 the equivalent squash-merged source; no additional deployment was made. Test remains at version 38.
+
+## 2026-09-07 — Database pagination and next-page prefetch
+
+Implemented the requested sweep performance changes. Selections now filter and
+count in D1 before hydrating a bounded page, with the existing expression
+grammar and an index matching date/ID order. The browser prepares one next
+page and its stored images. Visible sweeps use post-write counts from their
+verdict response instead of making a second count request, and cursor-based
+advancement prevents skipping items when a verdict removes them from the
+selection. Failed writes retain the page; Undo restores cards after the final
+untriaged page.
+
+Validation: 69 application tests and 38 browser tests passed, including a real
+SQLite fixture with 6,001 bookmarks (48 hydrated card rows per 3×12 window),
+search-grammar parity, ordering-index use, owner scoping, prefetch reuse, failed
+save/retry, delayed responses and three sweeps covering 90 items exactly once.
+These are local fixtures, not a hosted latency measurement. The waiting
+production-source reconciliation from deploy-record/bookmark-sorter is carried
+with this substantive change. No Site deployment is part of this update.

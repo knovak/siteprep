@@ -65,6 +65,7 @@ export const items = sqliteTable("items", {
 }, table => [
   uniqueIndex("items_collection_url_key_unique").on(table.collectionId, table.urlKey),
   index("items_collection_added_idx").on(table.collectionId, table.addedAt),
+  index("idx_items_collection_page").on(table.collectionId, sql`coalesce(added_at, ingested_at) desc`, table.id),
   index("idx_items_collection_untriaged").on(table.collectionId).where(sql`${table.verdict} is null`),
   index("idx_items_collection_title_key").on(table.collectionId, table.titleKey),
 ]);

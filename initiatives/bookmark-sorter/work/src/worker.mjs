@@ -1,3 +1,4 @@
+import {validateCursor} from './selection-sql.mjs';
 import {D1BookmarkStore} from './d1-store.mjs';
 import {renderSignInPage, renderUnauthorizedPage} from './access-page.mjs';
 import {createCapturePipeline} from './capture-pipeline.mjs';
@@ -219,22 +220,16 @@ export function createPileApp({
           const expression = url.searchParams.get('expression') || '';
           const limit = Math.max(1, Math.min(500, Number(url.searchParams.get('limit')) || 200));
           const offset = Math.max(0, Number(url.searchParams.get('offset')) || 0);
-          const matches = await selectedItems(store, collectionId, expression);
-          const [collectionTotal, collectionBacklog, captureStatus] = await Promise.all([
-            store.countItems(collectionId),
-            store.countUntriagedItems(collectionId),
-            capture ? capture.status(collectionId) : null,
-          ]);
+          const after = url.searchParams.has('after') ? JSON.parse(url.searchParams.get('after')) : null;
+          const window = await store.selectionWindow(collectionId, {expression, limit, offset, after,
+            countsOnly: url.searchParams.get('counts_only') === '1'});
+          const captures = url.searchParams.get('include_captures') === '0' ? undefined
+            : capture ? await capture.status(collectionId) : null;
           return json({
-            collection_id: collectionId,
-            expression,
+            collection_id: collectionId, expression,
             effective_expression: wrapUiSelection(collectionId, expression),
-            collection_total: collectionTotal,
-            collection_backlog: collectionBacklog,
-            total: matches.length,
-            backlog: matches.filter(item => !item.verdict).length,
-            captures: captureStatus,
-            items: matches.slice(offset, offset + limit).map(item => withCaptureUrl(item, collectionId)),
+            ...window, captures,
+            items: window.items.map(item => withCaptureUrl(item, collectionId)),
           });
         }
 
@@ -420,12 +415,19 @@ export function createPileApp({
           const body = await requestJson(request);
           if (!Array.isArray(body.item_ids) || body.item_ids.length === 0) throw new Error('Choose at least one item');
           if (!body.session_id) throw new Error('Session id is required');
+          if (body.selection) {
+            compileSelection(body.selection.expression || '');
+            validateCursor(body.selection.after);
+          }
           const result = await store.applyVerdict(collectionId, {
             itemIds: body.item_ids,
             verdict: body.verdict,
             at: now().toISOString(),
             sessionId: body.session_id,
             actionId: idFactory('action'),
+          });
+          if (body.selection) result.selection = await store.selectionWindow(collectionId, {
+            expression: body.selection.expression || '', after: body.selection.after, countsOnly: true,
           });
           return json(result);
         }

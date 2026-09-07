@@ -286,6 +286,12 @@ preference restoration, storage fallback, and selection/focus outlines are docum
 [`initiatives/bookmark-sorter/work/README.md`](initiatives/bookmark-sorter/work/README.md).
 This preference does not change deployment access or persist bookmark data.
 
+Bookmark Sorter also pages selections in D1 before loading card details. The
+selection compiler preserves the existing expression grammar; the browser
+prefetches one next page and advances by a stable date-and-ID cursor after a
+sweep. Query bounds, the ordering-index migration, cache invalidation, and the
+SQLite/browser checks are documented in the same work README.
+
 `sites-app` exists because Bookmark Sorter is a full Sites project - it brings
 its own `.openai/hosting.json`, D1 and R2 bindings, and migrations, and builds
 itself. The static-folder engine cannot deploy that, and pretending otherwise

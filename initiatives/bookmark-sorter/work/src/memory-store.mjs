@@ -1,3 +1,5 @@
+import {evaluateSelection} from './selections.mjs';
+import {validateCursor} from './selection-sql.mjs';
 const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 
 function earlier(left, right) {
@@ -311,6 +313,25 @@ export class MemoryBookmarkStore {
           capture: capture ? {...structuredClone(capture), displayable} : null,
         };
       });
+  }
+
+  selectionWindow(collectionId, {expression = '', limit = 200, offset = 0, after = null, countsOnly = false} = {}) {
+    after = validateCursor(after);
+    const all = this.listAllItems(collectionId).sort((a, b) => {
+      const left = a.added_at ?? a.ingested_at, right = b.added_at ?? b.ingested_at;
+      return left < right ? 1 : left > right ? -1 : a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+    });
+    const matches = evaluateSelection(all, expression, {collectionId});
+    const size = Math.max(1, Math.min(500, Math.floor(Number(limit) || 200)));
+    let start = after ? matches.filter(item => {
+      const date = item.added_at ?? item.ingested_at;
+      return date > after.date || (date === after.date && item.id <= after.id);
+    }).length : Math.max(0, Math.floor(Number(offset) || 0));
+    const cursorOffset = start;
+    if (!countsOnly && start >= matches.length && matches.length) start = Math.max(0, matches.length - size);
+    return {collection_total: all.length, collection_backlog: all.filter(item => !item.verdict).length,
+      total: matches.length, backlog: matches.filter(item => !item.verdict).length, cursor_offset: cursorOffset,
+      offset: start, items: countsOnly ? [] : matches.slice(start, start + size)};
   }
 
   listAllItems(collectionId) {
