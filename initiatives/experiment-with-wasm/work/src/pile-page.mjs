@@ -306,7 +306,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><strong>Open proposal / saved / previous</strong> uses a neutral background until its chooser has a target, then a soft mint wash in Day or a muted teal wash in Night.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         ${isAdmin ? '<li><strong>Local tools</strong> contains sitting controls, demo templates, a full database backup, restore, and sample bookmarks.</li>' : ''}
-        <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
+        <li>Click a web bookmark title to open its URL in a new tab. Non-web bookmarks are kept as text. Use the overlapping-squares icon to copy any bookmark's URL.</li>
       </ul>
       <h3>Selection expressions</h3>
       <p>In <strong>Select and tag</strong>, the <strong>Verdicts</strong> checkboxes filter every selection. All five start checked. Changing them immediately filters the open selection and refreshes automatic proposal counts; proposals with no matches disappear. Clearing every checkbox selects nothing. With only Keep and Needs-time checked, an expression is treated as <code>(verdict:keep or verdict:needs-time) and (your expression)</code>. Saving or exporting the current selection includes this filter.</p>
@@ -374,6 +374,7 @@ export function renderPilePage({isAdmin = false} = {}) {
           <label>Source tag (HTML only)<input id="source" name="source" value="browser-export" pattern="[a-z0-9][a-z0-9-]*" required></label>
           <button type="submit">Import files</button>
         </form>
+        <p class="tool-status">Non-web bookmarks are kept as text. Only HTTP and HTTPS bookmarks open as links.</p>
         <p id="import-status" class="tool-status" role="status" aria-live="polite"></p>
         <ol id="import-results" class="import-results" aria-label="Import results" hidden></ol>
         <div class="template-tools">

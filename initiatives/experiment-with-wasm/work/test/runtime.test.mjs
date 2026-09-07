@@ -32,6 +32,44 @@ const records = [
   {url: 'https://other.org/c', title: 'Ancient architecture', tags: ['topic:history'], verdict: 'archive'},
 ];
 
+test('legacy HTML retains non-web bookmarks through merge, JSON round trip, reload and backup restore', async () => {
+  const {runtime, persistence, call} = await setup();
+  const html = await readFile(new URL('fixtures/legacy-bookmarks.html', import.meta.url), 'utf8');
+  const importHtml = async () => {
+    const form = new FormData();
+    form.set('file', new Blob([html], {type: 'text/html'}), 'bookmarks 2010.html');
+    form.set('source', 'legacy');
+    const response = await runtime.request('/api/import', {method: 'POST', body: form});
+    const result = await response.json();
+    assert.equal(response.ok, true, JSON.stringify(result));
+    return result;
+  };
+  const result = await importHtml();
+  assert.equal(result.parsed, 8);
+  assert.equal(result.added, 8);
+  assert.equal((await importHtml()).merged, 8);
+  const exported = await call('/api/export');
+  assert.deepEqual(exported.items.map(item => item.url).sort(), [
+    'https://example.org/first', 'http://example.org/last',
+    'javascript:window.__bookmarkExecuted=true', 'file:///Users/example/Documents/saved.html',
+    'mailto:reader@example.org', 'data:text/html,<script>window.__bookmarkExecuted=true</script>',
+    'place:folder=BOOKMARKS_MENU', 'about:blank',
+  ].sort());
+  assert.ok(exported.items.every(item => item.tags.includes('src:legacy') && item.tags.includes('folder:Older bookmarks')));
+  const first = exported.items.find(item => item.url === 'https://example.org/first');
+  assert.equal(first.note, 'A saved note.');
+  assert.equal(first.added_at, '2010-01-01T00:00:00.000Z');
+  const clone = await setup();
+  assert.equal((await clone.call('/api/import-json', exported)).added, 8);
+  const sorted = items => items.toSorted((left, right) => left.url.localeCompare(right.url));
+  assert.deepEqual(sorted((await clone.call('/api/export')).items), sorted(exported.items));
+  const reopened = await setup(persistence);
+  assert.deepEqual((await reopened.call('/api/export')).items, exported.items);
+  const restored = await setup();
+  await restored.runtime.restore(await runtime.backup());
+  assert.deepEqual((await restored.call('/api/export')).items, exported.items);
+});
+
 test('real WASM SQL preserves import, deduplication, Unicode/boolean selection and round trip', async () => {
   const {runtime, call, importItems} = await setup();
   assert.equal((await importItems(records)).added, 3);
@@ -75,10 +113,16 @@ test('verdicts, tags, removal, undo, sitting reports and history survive databas
 
 test('invalid imports and mid-batch SQL errors roll back; persistence failure never reports success', async () => {
   const {runtime, persistence, call, importItems} = await setup(); await importItems(records);
-  for (const url of ['javascript:alert(1)', 'data:text/html,Hi', 'file:///tmp/private']) {
-    const bad = await runtime.request('/api/import-json', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({format: 'bookmark-sorter/v1', items: [{url, tags: []}]})});
+  for (const url of ['not a URL', '/relative/path', 'https://[invalid']) {
+    const bad = await runtime.request('/api/import-json', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({format: 'bookmark-sorter/v1', items: [{url: 'https://example.org/must-not-import'}, {url, tags: []}]})});
     assert.equal(bad.ok, false);
+    assert.match((await bad.json()).error, /items\[1\].url must be a valid URL/);
+    assert.equal((await call('/api/export')).items.length, 3);
   }
+  const form = new FormData();
+  form.set('file', new Blob(['<DL><A HREF="https://example.org/must-not-import">Valid</A><A HREF="not a URL">Invalid</A></DL>']), 'invalid.html');
+  assert.equal((await runtime.request('/api/import', {method: 'POST', body: form})).ok, false);
+  assert.equal((await call('/api/export')).items.length, 3);
   await assert.rejects(runtime.binding.batch([
     runtime.binding.prepare("UPDATE items SET title = 'changed'"),
     runtime.binding.prepare('INSERT INTO missing_table VALUES (1)'),
@@ -115,6 +159,8 @@ test('collections, local images and backups retain data; corrupt or altered sche
   await assert.rejects(runtime.restore(new Uint8Array([1,2,3])));
   const changed = new SQL.Database(backup); changed.run('CREATE TABLE unwanted (value)');
   assert.throws(() => validateDatabase(SQL, changed.export(), schema), /schema/); changed.close();
+  const invalidUrl = new SQL.Database(backup); invalidUrl.run("UPDATE items SET url = 'not a URL'");
+  await assert.rejects(runtime.restore(invalidUrl.export()), /invalid bookmark URL/); invalidUrl.close();
   assert.equal((await call('/api/export')).items.length, 3);
 });
 

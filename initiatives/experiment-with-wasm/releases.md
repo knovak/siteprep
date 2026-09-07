@@ -7,6 +7,17 @@ Newest first.
 
 <https://knovak.github.io/siteprep/demos/experiment-with-wasm/>
 
+Released `35499ea` · 2 commit(s) since the previous release.
+
+Changes since the previous release, in `initiatives/experiment-with-wasm/work/site`:
+
+- Refresh the staged WASM bookmark app and snapshot provenance
+- Create a static WASM demo with Bookmark Sorter and Tide Here (#467)
+
+## 2026-09-07 — Demo
+
+<https://knovak.github.io/siteprep/demos/experiment-with-wasm/>
+
 Released `a7545f1` · 1 commit(s) since the previous release.
 
 Changes since the previous release, in `initiatives/experiment-with-wasm/work/site`:

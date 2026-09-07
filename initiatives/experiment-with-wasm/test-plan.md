@@ -2,6 +2,7 @@
 
 - Run actual WASM SQLite, checking SQL selection results against the original JavaScript reference across exact/prefix/contains/Unicode/boolean cases.
 - Test HTML/JSON deduplication and round trip; collections; verdicts/tags/undo; saved/history selections; sitting reports; local images and database backup/restore.
+- Import a mixed legacy HTML export containing web links, bookmarklets, local files, mail links and browser-internal bookmarks. Retain all entries through JSON export/import, reload and full backup/restore; verify only HTTP(S) titles link anywhere and non-web records execute nothing. Malformed URLs must still roll back the entire file.
 - Verify invalid imports and failed saves are atomic; stale revisions cannot overwrite another window's changes; corrupt/wrong-schema backups are rejected.
 - Open the generated HTML through file:// with all network blocked. Import, filter, tag, judge, undo, export, reload and verify data is retained. Exercise desktop and phone layouts and local pictures.
 - Confirm the bundle contains a real validated WASM binary; remove/disable WebAssembly and require a clear startup failure rather than a JavaScript fallback.
@@ -20,3 +21,5 @@
 ## Static demo
 
 Four website checks compare every release file against `work/site/` except `demo.json`, verify the complete wish and local links/anchors, follow both app links through a plain static HTTP server and exercise them after networking is disabled, and check a 390-pixel layout with contained table scrolling. App HTML hashes must remain unchanged. Capture the final landing, findings and Demo TOC screenshots after the root build, then verify the branch preview after CI publishes it.
+
+Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site/` directory to exercise the staged preview without requiring `demos/` to change. Use the default target for the complete release comparison when publishing to production.

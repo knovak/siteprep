@@ -103,6 +103,46 @@ test('phone layout, HTML import and all-clear verdict filters', async ({page,con
   expect(requests).toEqual([]); expect(errors).toEqual([]);
 });
 
+test('legacy HTML imports every bookmark while non-web addresses stay inert after reload and JSON import', async ({page,context}) => {
+  const {requests,errors} = await boot(page,context);
+  await page.locator('#importer > summary').click();
+  await page.locator('#bookmark-file').setInputFiles({name:'bookmarks 2010.html',mimeType:'text/html',buffer:await readFile(new URL('fixtures/legacy-bookmarks.html',import.meta.url))});
+  await page.locator('#import-form button[type=submit]').click();
+  await expect(page.locator('#import-status')).toHaveText('Imported 8 new; merged 0.');
+  await expect(page.locator('#count')).toHaveText('8');
+  await page.locator('#importer > summary').click();
+  async function checkCards() {
+    await expect(page.locator('.bookmark-card')).toHaveCount(8);
+    await expect(page.locator('.bookmark-card h2 a')).toHaveCount(2);
+    expect(await page.locator('.bookmark-card a').evaluateAll(links => links.every(link => /^https?:$/.test(new URL(link.href).protocol)))).toBe(true);
+    for (const title of ['Saved bookmarklet','Local document','Email contact','Saved data URL','Browser folder','Browser page']) {
+      const heading = page.getByRole('heading',{name:title,exact:true});
+      await expect(heading).toBeVisible();
+      await expect(heading.locator('a')).toHaveCount(0);
+      await heading.click();
+    }
+    expect(await page.evaluate(() => window.__bookmarkExecuted)).toBeUndefined();
+    expect(context.pages()).toHaveLength(1);
+  }
+  await checkCards();
+  await page.reload();
+  await expect(page.locator('#count')).toHaveText('8');
+  await checkCards();
+  await page.locator('#exporter > summary').click();
+  const pending = page.waitForEvent('download');
+  await page.locator('#export-form button[type=submit]').click();
+  const path = await (await pending).path();
+  const exported = JSON.parse(await readFile(path,'utf8'));
+  expect(exported.items).toHaveLength(8);
+  await page.locator('#importer > summary').click();
+  await page.locator('#bookmark-file').setInputFiles({name:'round-trip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
+  await page.locator('#import-form button[type=submit]').click();
+  await expect(page.locator('#import-status')).toHaveText('Imported 0 new; merged 8.');
+  await page.locator('#importer > summary').click();
+  await checkCards();
+  expect(requests).toEqual([]); expect(errors).toEqual([]);
+});
+
 test('a second real browser tab cannot overwrite the first tab', async ({page,context}) => {
   await boot(page,context);
   const second = await context.newPage(); await second.goto(url);

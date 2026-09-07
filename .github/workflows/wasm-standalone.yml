@@ -60,6 +60,6 @@ jobs:
         working-directory: initiatives/experiment-with-wasm/work
       - name: Check demo package matches committed source
         run: git diff --exit-code -- initiatives/experiment-with-wasm/work/site
-      - name: Verify static release packaging and website journeys
-        run: npm run test:demo
+      - name: Verify staged packaging and website journeys
+        run: WASM_DEMO_ROOT="$PWD/site" npm run test:demo
         working-directory: initiatives/experiment-with-wasm/work
