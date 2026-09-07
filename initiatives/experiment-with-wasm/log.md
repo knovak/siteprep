@@ -23,3 +23,7 @@ Prepared the static demo in demos/experiment-with-wasm for PR #467: landing page
 ## 2026-09-07 — Write a user-facing README covering how to use it and how to deploy it
 
 The initiative README documents opening both apps, sample use, database backup and transfer, conversion limits, rebuilding and release-initiative deployment. The demo landing and findings pages provide the same user-facing entry points.
+
+## 2026-09-07 — Release
+
+Released to production — Demo, `471ff3e`. 1 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
