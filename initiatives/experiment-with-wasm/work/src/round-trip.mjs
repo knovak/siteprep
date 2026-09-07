@@ -26,9 +26,12 @@ function urlRecord(item, index) {
     throw new TypeError(`items[${index}] must be an object`);
   }
   if (typeof item.url !== 'string' || !item.url) throw new TypeError(`items[${index}].url is required`);
-  const url = simplifyStoredUrl(item.url);
-  try { if (!['https:', 'http:'].includes(new URL(url).protocol)) throw new Error('Unsafe URL'); } catch { throw new TypeError(`items[${index}].url must be a valid URL`); }
-  return {item, url, url_key: normaliseUrl(url)};
+  try {
+    const url = simplifyStoredUrl(item.url);
+    return {item, url, url_key: normaliseUrl(url)};
+  } catch {
+    throw new TypeError(`items[${index}].url must be a valid URL`);
+  }
 }
 
 function tagList(value, field) {

@@ -17,7 +17,7 @@
     "d1-store.mjs becomes bookmark-store.mjs; same SQL, local ownership",
     "worker.mjs becomes local-app.mjs; in-process dispatch, no server or identity",
     "pile-page.mjs retains UI with local transport and file tools",
-    "ingest/round-trip restrict imported URLs to http and https",
+    "ingest/round-trip retain absolute URLs; the card renderer links only http and https",
     "SQL migrations retained without account allowlist"
   ],
   "migration_files": {

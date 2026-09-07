@@ -14,6 +14,8 @@ Retain HTML and JSON multi-file imports; source/folder tags and URL deduplicatio
 
 Replace cloud identity with local ownership. Replace remote captures with local raster image attachments, saved with the database. Do not expose nonworking cloud controls. Saved pictures work offline. Links open their original sites only when the user follows them.
 
+HTML and JSON imports retain valid non-web URLs from older browser exports, including bookmarklets, local files and browser-internal bookmarks. They remain sortable/exportable records through reload and backup/restore. Only HTTP(S) URLs become clickable title links; all other titles render as text and their addresses remain available through Copy URL. Invalid URLs still reject the file atomically.
+
 ## Alternatives
 
 See evaluation.md for the application comparison. SQLite/WASM was chosen over a fresh Rust rewrite to retain tested SQL and exact behavior. A JavaScript-only memory store would miss the requested WASM conversion. A fetch-driven WASM asset or OPFS-only build would complicate direct file opening; embedded bytes and IndexedDB are used instead. Code stays in this initiative until graduation is requested.

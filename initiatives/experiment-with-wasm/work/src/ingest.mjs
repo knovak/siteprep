@@ -35,7 +35,6 @@ export async function ingestBookmarkHtml({
 
   const candidates = parsed.map(candidate => {
     const storedUrl = simplifyStoredUrl(candidate.url);
-    if (!['https:', 'http:'].includes(new URL(storedUrl).protocol)) throw new Error('Only HTTP and HTTPS bookmarks can be imported');
     const title = candidate.title || storedUrl;
     return {
       url: storedUrl,

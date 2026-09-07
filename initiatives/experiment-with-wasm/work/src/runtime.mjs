@@ -22,7 +22,9 @@ export function validateDatabase(SQL, bytes, schema) {
     if (objects(db) !== objects(reference)) throw new Error('The backup schema does not match this application.');
     if (scalar(db, 'PRAGMA integrity_check') !== 'ok' || db.exec('PRAGMA foreign_key_check').length) throw new Error('The database backup failed its integrity check.');
     for (const row of db.exec('SELECT url FROM items')[0]?.values || []) {
-      if (!['https:', 'http:'].includes(new URL(row[0]).protocol)) throw new Error('The backup contains an unsupported bookmark URL.');
+      // Stored non-web bookmarks are inert text; the card renderer only links HTTP(S).
+      try { new URL(row[0]); }
+      catch { throw new Error('The backup contains an invalid bookmark URL.'); }
     }
     for (const [ref] of db.exec('SELECT image_ref FROM captures WHERE image_ref IS NOT NULL')[0]?.values || []) {
       if (!IMAGE.test(ref) || ref.length > 7 * 1024 * 1024) throw new Error('The backup contains an unsupported picture.');
