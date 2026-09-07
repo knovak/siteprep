@@ -1,4 +1,5 @@
 import {sha256Hex} from './capture-images.mjs';
+import {normaliseUrl} from './url-key.mjs';
 
 const DEFAULT_TIMEOUT_MS = 5_000;
 const DEFAULT_MAX_HTML_BYTES = 2 * 1024 * 1024;
@@ -89,6 +90,23 @@ function failureTag(error) {
   return 'err:fetch';
 }
 
+/**
+ * Where the fetch landed, when following redirects moved it. Recorded as
+ * history only: nothing rewrites an item's url or url_key from it, because a
+ * redirect can lead to a consent wall, a login page, or a geo-specific variant.
+ * Null when the response landed where it was asked to, so the column stays a
+ * short list of the URLs that actually moved.
+ */
+function redirectedTo(requestedUrl, response) {
+  const landed = response.url;
+  if (!landed || landed === requestedUrl) return null;
+  try {
+    return normaliseUrl(landed) === normaliseUrl(requestedUrl) ? null : landed;
+  } catch {
+    return landed;
+  }
+}
+
 function statusTag(status) {
   if (status === 404 || status === 410) return `err:${status}`;
   return status >= 400 ? `err:http-${status}` : null;
@@ -130,6 +148,7 @@ function captureRecord(urlKey, at, changes = {}) {
     width: null,
     height: null,
     byte_size: null,
+    final_url: null,
     ...changes,
   };
 }
@@ -174,15 +193,16 @@ export function createCapturePipeline({
     } catch (error) {
       return saveFailure(collectionId, urlKey, failureTag(error));
     }
-    if (!response.ok) return saveFailure(collectionId, urlKey, statusTag(response.status));
+    const landed = {final_url: redirectedTo(url, response)};
+    if (!response.ok) return saveFailure(collectionId, urlKey, statusTag(response.status), landed);
 
     let html;
     try {
       html = new TextDecoder().decode(await boundedBytes(response, maxHtmlBytes));
     } catch {
-      return saveFailure(collectionId, urlKey, 'err:oversize');
+      return saveFailure(collectionId, urlKey, 'err:oversize', landed);
     }
-    const metadata = parsePageMetadata(html, response.url || url);
+    const metadata = {...parsePageMetadata(html, response.url || url), ...landed};
     if (parked(html)) return saveFailure(collectionId, urlKey, 'err:parked', metadata);
     if (!metadata.image_url) {
       const record = captureRecord(urlKey, now().toISOString(), metadata);

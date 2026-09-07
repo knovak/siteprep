@@ -1067,3 +1067,53 @@ Preserve navigation, layouts, and the visible grey selected-card outline.
 This updates the existing ready-for-review theme PR and the existing test
 Site. Production release remains separate. There is no blocked todo to
 complete; the initiative remains otherwise dormant.
+
+## 2026-09-07 — Record the URL a capture redirected to, never rewrite a bookmark with it
+
+The user asked, of the capture pipeline following HTTP redirects and discarding
+the destination: *"should we save that URL instead?"* The answer is **yes to
+saving it, no to "instead"** — the final URL is recorded on the capture record
+as `final_url`, and it never rewrites a bookmark's stored URL on its own.
+
+What prompted the question was a live example. A Google AMP viewer link unwraps
+by string rules to the AMP variant it was showing:
+
+```
+https://www.google.com/amp/s/www.nytimes.com/2020/06/26/opinion/confederate-monuments-racism.amp.html
+  → https://www.nytimes.com/2020/06/26/opinion/confederate-monuments-racism.amp.html
+```
+
+That `.amp.html` URL then 301s to the canonical article. No string rule can know
+that; only the response does. The same gap covers shorteners, moved sites, and
+http-to-https upgrades, and capture already fetches every one of these pages, so
+the information costs nothing extra to keep.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Discard it, as before | No new column, no new failure modes | Leaves the one class of redirect a string rule cannot reach permanently invisible |
+| Record `final_url` on the capture, act only on confirmation | Free to collect; non-destructive; reviewable in bulk; reuses the existing proposal and undo machinery | Needs a migration and, later, a proposal surface before it changes anything |
+| Rewrite the bookmark's URL automatically when it differs | Self-healing pile with no user effort | Consent walls, login walls, geo-redirects and A/B tests would silently replace hand-curated links, with no undo; `url_key` is the per-collection unique key, so a rewrite can collide with an existing item and becomes an unreviewed merge |
+
+### What this settles, and what it does not
+
+- **Settled**: capture stores the post-redirect URL as `final_url` on the
+  capture record, alongside `page_title`, `description` and `favicon_url`.
+- **Settled**: no automatic rewriting of `url` or `url_key`. This follows the
+  posture already stated for the exact-title repair in `notes.md` — show the old
+  and the candidate, confirm before replacing, keep the original in history.
+- **Not settled**: the proposal surface that would let the user act on what was
+  recorded ("N bookmarks redirect to a URL already in your pile"). It is real
+  work, it is not built by this decision, and it is recorded as a todo item.
+- **Consequence worth noting**: a recorded redirect is a fact with a date, not a
+  permanent property of the URL. `captured_at` already stamps the row, and any
+  later proposal should treat a stale `final_url` as a candidate to re-check
+  rather than as truth.
+- **Consequence worth noting**: the capture cache is shared across collections
+  (2026-08-28 above), so `final_url` is a cross-collection fact while any merge
+  acting on it is per-collection. That asymmetry belongs to the proposal, which
+  is why the proposal is where confirmation lives.
+
+This revives a dormant initiative for one increment. Nothing here authorizes a
+production release.

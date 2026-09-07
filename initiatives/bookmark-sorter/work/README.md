@@ -43,6 +43,10 @@ selection, and export operations.
   unique partial index permits later admission by either value.
 - `migrations/0009_tag_removal.sql` adds undoable tag-removal actions while
   preserving existing verdict and tag-addition history.
+- `migrations/0011_capture_final_url.sql` adds `captures.final_url`, where a
+  capture records the URL its fetch landed on after following redirects. It is
+  history only - nothing rewrites an item's `url` or `url_key` from it. See the
+  2026-09-07 entry in `decisions.md`.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -71,6 +75,12 @@ selection, and export operations.
   description and favicon, stores only a fixed-size derivative, hashes that
   derivative, queues missing and duplicate images, and exposes pass 2 only as
   an explicit bounded function. The screenshot-vendor switch defaults off.
+  It also records `final_url` when following redirects moved the request, on
+  the success path and on an HTTP-status failure alike, leaving the column null
+  when the response landed where it was asked to. A redirect can lead to a
+  consent wall, a login page, or a geo-specific variant, so the value is kept
+  as a dated observation for a later confirmed proposal to act on, never
+  applied to a bookmark on its own.
 - `src/capture-images.mjs` keeps derivative bytes behind a small R2 adapter. Its
   object key is content-addressed below a hash of the URL; neither the original
   bytes nor the URL itself appear in the key.

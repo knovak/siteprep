@@ -63,6 +63,18 @@ async function fixtureServer() {
       response.end('gone');
       return;
     }
+    if (request.url === '/moved') {
+      response.statusCode = 301;
+      response.setHeader('location', '/none');
+      response.end();
+      return;
+    }
+    if (request.url === '/moved-to-gone') {
+      response.statusCode = 301;
+      response.setHeader('location', '/404');
+      response.end();
+      return;
+    }
     const kind = request.url === '/image-og' ? 'og' : request.url === '/image-twitter' ? 'twitter' : request.url === '/image-common' ? 'common' : null;
     if (kind) {
       response.setHeader('content-type', 'image/png');
@@ -255,4 +267,64 @@ test('capture stats and the explicit gap action stay inside the active collectio
   assert.deepEqual(vendorUrls, ['https://alpha.example/gap']);
   assert.equal((await pipeline.status('alpha')).queued, 0);
   assert.equal((await pipeline.status('beta')).queued, 1);
+});
+
+test('a capture records where a redirect landed, and never rewrites the bookmark', async t => {
+  const fixture = await fixtureServer();
+  t.after(() => fixture.close());
+  const store = storeWith('pile');
+  const pipeline = createCapturePipeline({
+    store,
+    imageStore: new MemoryCaptureImages(),
+    transformImage: derivative,
+    now: () => new Date('2026-09-07T00:00:00Z'),
+  });
+
+  const moved = `${fixture.baseUrl}/moved`;
+  const direct = `${fixture.baseUrl}/none`;
+  await ingestBookmarkHtml({
+    store, collectionId: 'pile', source: 'chrome', ingestedAt: '2026-09-07T00:00:00Z',
+    html: bookmarkHtml([moved, direct]),
+  });
+  const candidates = [moved, direct].map(url => ({url, url_key: normaliseUrl(url)}));
+  await pipeline.captureMany('pile', candidates);
+
+  const redirected = await store.getCapture(normaliseUrl(moved));
+  assert.equal(redirected.final_url, `${fixture.baseUrl}/none`);
+  assert.equal(redirected.page_title, 'No image');
+
+  // A response that landed where it was asked to leaves the column null, so it
+  // stays a short list of the URLs that actually moved.
+  const unmoved = await store.getCapture(normaliseUrl(direct));
+  assert.equal(unmoved.final_url, null);
+
+  // The recorded destination is already in the pile, and both bookmarks are
+  // still there under the URLs the user saved. Acting on that is a proposal,
+  // not something a capture does.
+  const items = store.listAllItems('pile');
+  assert.equal(items.length, 2);
+  assert.deepEqual(items.map(item => item.url).sort(), [moved, direct].sort());
+});
+
+test('a redirect that ends in an error still records where it landed', async t => {
+  const fixture = await fixtureServer();
+  t.after(() => fixture.close());
+  const store = storeWith('pile');
+  const pipeline = createCapturePipeline({
+    store,
+    imageStore: new MemoryCaptureImages(),
+    transformImage: derivative,
+    now: () => new Date('2026-09-07T00:00:00Z'),
+  });
+
+  const url = `${fixture.baseUrl}/moved-to-gone`;
+  await ingestBookmarkHtml({
+    store, collectionId: 'pile', source: 'chrome', ingestedAt: '2026-09-07T00:00:00Z',
+    html: bookmarkHtml([url]),
+  });
+  await pipeline.captureMany('pile', [{url, url_key: normaliseUrl(url)}]);
+
+  const capture = await store.getCapture(normaliseUrl(url));
+  assert.equal(capture.error_tag, 'err:404');
+  assert.equal(capture.final_url, `${fixture.baseUrl}/404`);
 });
