@@ -2936,7 +2936,12 @@ ${body}
   </main>`;
 }
 
-/** The initiatives TOC: what this collection is, then one entry per initiative. */
+/**
+ * The initiatives TOC: what this collection is, then the live initiatives and the
+ * resting ones in separate sections. A stage in RESTING_STAGES - dormant or
+ * archived - is what puts an initiative in the second section; an unreadable one
+ * has no stage to go on and stays with the active list, where it is visible.
+ */
 function renderToc() {
   const { records } = validate();
   const parts = [];
@@ -2958,7 +2963,7 @@ function renderToc() {
     return parts.join('\n');
   }
 
-  const rows = records.map((record) => {
+  const row = (record) => {
     if (record.error) {
       return `        <li class="toc-item">
           <h3>${escapeHtml(record.slug)}</h3>
@@ -2969,9 +2974,10 @@ function renderToc() {
     const todo = data.todo || [];
     const next = todo.find((item) => item.state === 'actionable');
     const blocked = todo.filter((item) => item.state === 'blocked');
+    const resting = RESTING_STAGES.has(data.stage);
     const bits = [
       stageBadge(data.stage),
-      next ? `Next: ${escapeHtml(next.title)}` : '<strong>Nothing actionable</strong>',
+      next ? `Next: ${escapeHtml(next.title)}` : (resting ? null : '<strong>Nothing actionable</strong>'),
       blocked.length ? `${blocked.length} blocked` : null,
       relativeDays(daysSince(record.lastActivity))
     ].filter(Boolean);
@@ -2981,10 +2987,24 @@ function renderToc() {
           <p>${escapeHtml(data.summary || '')}</p>
           <p class="meta">${bits.join(' · ')}</p>
         </li>`;
-  });
+  };
 
-  parts.push(card('Initiatives', 'initiative-list',
-    `      <ul class="toc-grid">\n${rows.join('\n')}\n      </ul>`));
+  const isResting = (record) => !record.error && RESTING_STAGES.has(record.data.stage);
+  const resting = records.filter(isResting);
+  const active = records.filter((record) => !isResting(record));
+
+  const section = (title, id, blurb, group) => {
+    if (!group.length) return;
+    parts.push(card(title, id,
+      `      <p>${blurb}</p>\n      <ul class="toc-grid">\n${group.map(row).join('\n')}\n      </ul>`));
+  };
+
+  section('Active Initiatives', 'initiatives-active',
+    'Initiatives still moving through the lifecycle, each with work to do.', active);
+  section('Dormant Initiatives', 'initiatives-dormant',
+    'Initiatives resting by choice. Nothing is actionable on one until it is picked up again, '
+    + 'and the tooling it built is still there when it is.', resting);
+
   return parts.join('\n');
 }
 

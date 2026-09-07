@@ -23,7 +23,7 @@ test.describe('initiatives TOC', () => {
   test('lists every initiative with a link to its overview', async ({ page }) => {
     await page.goto('/initiatives/index.html');
 
-    const entries = page.locator('#initiative-list ~ .card-content .toc-item, .toc-item');
+    const entries = page.locator('.toc-item');
     expect(await entries.count()).toBeGreaterThan(0);
 
     const links = await page
@@ -32,6 +32,27 @@ test.describe('initiatives TOC', () => {
     expect(links.length).toBeGreaterThan(0);
     for (const href of links) {
       expect(href).toMatch(/^\.\/[^/]+\/index\.html$/);
+    }
+  });
+
+  test('separates active initiatives from dormant ones', async ({ page }) => {
+    await page.goto('/initiatives/index.html');
+
+    // At least one section is on the page, and an empty one is not rendered at
+    // all, so each is asserted only when it has entries.
+    const sections = page.locator('[aria-labelledby="initiatives-active"], [aria-labelledby="initiatives-dormant"]');
+    expect(await sections.count()).toBeGreaterThan(0);
+
+    for (const [id, expected] of [['initiatives-active', false], ['initiatives-dormant', true]]) {
+      const card = page.locator(`[aria-labelledby="${id}"]`);
+      if (await card.count() === 0) continue;
+
+      const stages = await card.locator('.toc-item .tag')
+        .evaluateAll((els) => els.map((el) => el.textContent.trim()));
+      expect(stages.length).toBeGreaterThan(0);
+      for (const stage of stages) {
+        expect(['dormant', 'archived'].includes(stage), `${stage} in ${id}`).toBe(expected);
+      }
     }
   });
 
