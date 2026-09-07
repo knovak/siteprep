@@ -1,0 +1,20 @@
+{
+  "title": "experiment with wasm",
+  "description": "Two standalone applications powered by WebAssembly: Bookmark Sorter and Tide Here, with the wish and findings behind the experiment.",
+  "root": "index.html",
+  "initiative": "experiment-with-wasm",
+  "links": [
+    {
+      "label": "Bookmark Sorter",
+      "href": "bookmark-sorter/index.html"
+    },
+    {
+      "label": "Tide Here",
+      "href": "tide-here/index.html"
+    },
+    {
+      "label": "Wish and findings",
+      "href": "findings.html"
+    }
+  ]
+}

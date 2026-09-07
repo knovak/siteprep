@@ -1,9 +1,15 @@
 {
   "title": "experiment with wasm",
   "summary": "Convert an existing web application into a standalone browser application powered by WebAssembly.",
-  "stage": "building",
+  "stage": "refining",
   "value": "medium",
-  "outputs": [],
+  "outputs": [
+    {
+      "kind": "demo",
+      "path": "demos/experiment-with-wasm",
+      "status": "ready for review"
+    }
+  ],
   "todo": [
     {
       "id": "verify-other-browsers",
@@ -14,10 +20,10 @@
       "advances_stage": false
     },
     {
-      "id": "publish-static-demo",
-      "title": "Publish the wish, findings and both applications as a static demo",
+      "id": "refining-improvements",
+      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
       "state": "actionable",
-      "value": "high",
+      "value": "medium",
       "effort": "medium",
       "advances_stage": false
     }
@@ -32,7 +38,12 @@
       "kind": "demo",
       "source": "initiatives/experiment-with-wasm/work/site",
       "destination": "experiment-with-wasm",
-      "root_html": "index.html"
+      "root_html": "index.html",
+      "prod": {
+        "deployed_at": "2026-09-07T18:53:29Z",
+        "commit": "a99f847b919196a16e4b3cc993be6128d2171dcc",
+        "tree": "8e1c6ec36df48f402c38679082e9cfd54741ae9c"
+      }
     }
   ]
 }
