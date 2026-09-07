@@ -1,0 +1,17 @@
+{
+  "title": "experiment with wasm",
+  "summary": "Convert an existing web application into a standalone browser application powered by WebAssembly.",
+  "stage": "building",
+  "value": "medium",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "verify-other-browsers",
+      "title": "Verify direct-file persistence and recovery in Safari and Firefox",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "medium",
+      "advances_stage": false
+    }
+  ]
+}

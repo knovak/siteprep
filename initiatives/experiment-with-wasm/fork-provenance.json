@@ -1,0 +1,35 @@
+{
+  "source_repository": "https://github.com/knovak/siteprep",
+  "source_commit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
+  "source_directory": "initiatives/bookmark-sorter/work",
+  "files": {
+    "bookmark-html.mjs": "25a7e820d2c3d731990a03116966cf59db9dc9c9292e07645dab9b6910b2a349",
+    "url-key.mjs": "b8a86f7e355f19fc67c7b9f3fe18e28cdf9c539263b56567ab795dab1b187da5",
+    "ingest.mjs": "680552447416559089556696b7f82d6de39b74138cd15df7396fb04403cc31d5",
+    "selections.mjs": "b1a9e0f8b20fc6927bc0f6b45a0f1ab2d600aa3c5edeed74f6a39c54aac93945",
+    "selection-sql.mjs": "af8a0d6a90a17a598609481ceadfd7328d12be40e22749ddb3e43a956f1447f3",
+    "round-trip.mjs": "8f1fbb0782e672e67580424f24cb5c0f3a058dfbbe8b3fc3aaa64547b1877046",
+    "pile-page.mjs": "67ae1ab4727fa2efa324b3a0e8e857d5e071231e9206a0121a014062d6ca4117",
+    "d1-store.mjs": "c707f722198c895af44771989080609f12b68d74ecae37e36192927e7beae2c4",
+    "worker.mjs": "d8b502da6be4bffd241c6b02e6b0f4a53c08a2a533bb0cf1c07c12fb558144b1"
+  },
+  "adaptations": [
+    "d1-store.mjs becomes bookmark-store.mjs; same SQL, local ownership",
+    "worker.mjs becomes local-app.mjs; in-process dispatch, no server or identity",
+    "pile-page.mjs retains UI with local transport and file tools",
+    "ingest/round-trip restrict imported URLs to http and https",
+    "SQL migrations retained without account allowlist"
+  ],
+  "migration_files": {
+    "0001_core.sql": "e175967de11bfb7e32ac0a8e8b2de61453cc38dfb2ddac8f8940fea9f14cc8b1",
+    "0002_triage.sql": "e5d54b4f5db98611cf95e3072d3e770e665e2a01861c84ecf28c5b0c068bc213",
+    "0003_captures.sql": "d83a89908a52560c9d2e008a747d4c241b3974f00e8347a937548c83d9ae611c",
+    "0004_selections.sql": "38cce0d068b8b74dcdf0ca401e936cccedca9c28660c29c8619a1ccd6c00da9d",
+    "0005_identity_collections.sql": "c6773d649f943057ab443b747bf2b2bc8acfd346c676dd6aa3555563a50c4d07",
+    "0006_private_collections.sql": "742891f4513d0e0147da327d90e402915c910328cf7aaf163d7cb493e3d855ec",
+    "0007_authorized_users_history.sql": "ae35a453ef086485de3ae76ff0f42a0b0fa09e37c76dd3dbfbee2826307d0674",
+    "0008_authorized_user_identity.sql": "e7da0b53aba0518990b7f47125d813f0d7f85b65ee9c75ca8b614e3702b82b57",
+    "0009_tag_removal.sql": "d7ef97ada9dd4449c07d1a9929f99c3f22c42a3b48d81e3c503b2b332c75e497",
+    "0010_selection_pagination.sql": "54bfa7777e01e97f48709f401e9594feef666ea8a09d148b71336b7ecd059a5d"
+  }
+}
