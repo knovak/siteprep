@@ -3,6 +3,17 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-09-07 — Demo
+
+<https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/>
+
+Released `3bcca04` · 2 commit(s) since the previous release.
+
+Changes since the previous release, in `initiatives/repo-guide/work/guide/out`:
+
+- Refresh Repo Guide artifacts for production release
+- Redesign the Repo Guide lifecycle simulator (#408)
+
 ## 2026-09-02 — Demo
 
 <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/>

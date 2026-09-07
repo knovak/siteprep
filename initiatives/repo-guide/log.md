@@ -241,3 +241,7 @@ the self-contained simulator and expanded its Node and browser regression checks
 ## 2026-09-03 — Redesign the simulator to match the new guide, following the list in notes.md
 
 The user declared the Repo Guide dormant after the completed simulator redesign and review rounds.
+
+## 2026-09-07 — Release
+
+Released to production — Demo, `3bcca04`. 2 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/> See releases.md.
