@@ -32,6 +32,7 @@
     <div class="card-content">
 <h2>experiment with wasm</h2>
 <p>Standalone forks of <strong>Bookmark Sorter</strong> and <strong>Tide Here</strong>, both powered by real WebAssembly with no backend or runtime network requests.</p>
+<p>The static demo is <a href="../../demos/experiment-with-wasm/index.html">experiment with wasm</a>. Its first page explains WASM and links to both apps. The <a href="../../demos/experiment-with-wasm/findings.html">wish and findings</a> preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations. This demo is prepared in PR #467 and goes live after merge and Pages publication.</p>
 <ul><li><a href="work/dist/index.html">Open Bookmark Sorter</a>: a browser database and the existing bookmark card interface.</li><li><a href="work/tide-here/dist/index.html">Open Tide Here</a>: a single 39.5 MB HTML file carrying 65,203 global coastal harmonic points and 170,946 searchable places. Five days of tides, sun and moon are calculated locally for the chosen coast and date. See <a href="work/tide-here/README.md">Tide Here details and rebuild instructions</a>.</li></ul>
 <p>The tide model is embedded in the HTML file and cannot be erased by clearing browser storage. Its optional local forecast history can be cleared or lost; history backup/restore is included. Predictions use the global model everywhere, with explicit differences from the hosted app&#39;s live national providers. The following sections describe Bookmark Sorter.</p>
 <h3>Open the application</h3>
@@ -56,7 +57,10 @@ npm run build
 npm test
 npm run test:browser</code></pre>
 <p>The browser test uses the repository&#39;s pinned Playwright installation. Provision Chromium with the root <code>npm run setup:browsers</code> only if needed. The committed <code>work/dist/index.html</code> embeds the pinned WASM module and needs no build to run. <code>work/dist/build.json</code> records its byte counts and hashes. The license is embedded in the HTML and also provided as <code>SQLJS-LICENSE.txt</code>.</p>
-<p><a href="fork-provenance.json">Fork provenance</a> identifies the exact original commit and source hashes. <a href="spec.md">Specification</a>, <a href="test-plan.md">test plan</a>, and the root <a href="../../EXPERIMENT_WITH_WASM_TECHDOC.md">technical documentation</a> describe the implementation. Work remains in this initiative pending human acceptance and any later graduation decision.</p>
+<p><a href="fork-provenance.json">Fork provenance</a> identifies the exact original commit and source hashes. <a href="spec.md">Specification</a>, <a href="test-plan.md">test plan</a>, and the root <a href="../../EXPERIMENT_WITH_WASM_TECHDOC.md">technical documentation</a> describe the implementation. Source and build capabilities remain in the initiative; the published runtime is a complete, recorded copy under <code>demos/</code>.</p>
+<h3>Rebuild the static demo</h3>
+<p>After rebuilding an application, record its committed HTML hash and source commit in <code>work/demo-src/applications.json</code>. Run <code>npm run build:demo</code> in <code>work/</code> to render the original wish and <a href="findings.md">findings</a>, verify both snapshots and stage the complete website in <code>work/site/</code>. Run <code>npm run test:demo</code> to compare the release copy with that package and exercise both apps through a static web address. Before a first release, set <code>WASM_DEMO_ROOT</code> to the absolute <code>work/site</code> directory to test the staged package.</p>
+<p>Publish updates through <code>release-initiative</code>; the root build generates the Demo TOC. The original direct-file app paths remain available so this website publication does not relocate anyone&#39;s local bookmark database. Transfer data from a downloaded file to the website by backup and restore.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="codex/experiment-with-wasm" data-root="../../">

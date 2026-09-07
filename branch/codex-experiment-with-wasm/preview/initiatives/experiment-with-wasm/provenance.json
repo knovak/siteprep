@@ -1,0 +1,89 @@
+{
+  "schema": "experiment-with-wasm/demo/v1",
+  "repository": "https://github.com/knovak/siteprep",
+  "sourceInitiative": "experiment-with-wasm",
+  "sourceArtifact": "work/site",
+  "note": "Static release snapshot. Application HTML is copied byte for byte. Source initiative names, relative artifact names and commits identify provenance; they are not runtime dependencies.",
+  "applications": [
+    {
+      "name": "Bookmark Sorter",
+      "path": "bookmark-sorter/index.html",
+      "sourceArtifact": "work/dist/index.html",
+      "sourceCommit": "f3f9b481b890bf1db5e8c2764ef9e51a03b75937",
+      "bytes": 1107016,
+      "sha256": "2cc47a17f8cc933eab375dbdcf34510eba3f54eb61ed9e507aff4f246dd46260",
+      "fork": {
+        "source_repository": "https://github.com/knovak/siteprep",
+        "source_commit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
+        "files": {
+          "bookmark-html.mjs": "25a7e820d2c3d731990a03116966cf59db9dc9c9292e07645dab9b6910b2a349",
+          "url-key.mjs": "b8a86f7e355f19fc67c7b9f3fe18e28cdf9c539263b56567ab795dab1b187da5",
+          "ingest.mjs": "680552447416559089556696b7f82d6de39b74138cd15df7396fb04403cc31d5",
+          "selections.mjs": "b1a9e0f8b20fc6927bc0f6b45a0f1ab2d600aa3c5edeed74f6a39c54aac93945",
+          "selection-sql.mjs": "af8a0d6a90a17a598609481ceadfd7328d12be40e22749ddb3e43a956f1447f3",
+          "round-trip.mjs": "8f1fbb0782e672e67580424f24cb5c0f3a058dfbbe8b3fc3aaa64547b1877046",
+          "pile-page.mjs": "67ae1ab4727fa2efa324b3a0e8e857d5e071231e9206a0121a014062d6ca4117",
+          "d1-store.mjs": "c707f722198c895af44771989080609f12b68d74ecae37e36192927e7beae2c4",
+          "worker.mjs": "d8b502da6be4bffd241c6b02e6b0f4a53c08a2a533bb0cf1c07c12fb558144b1"
+        },
+        "adaptations": [
+          "d1-store.mjs becomes bookmark-store.mjs; same SQL, local ownership",
+          "worker.mjs becomes local-app.mjs; in-process dispatch, no server or identity",
+          "pile-page.mjs retains UI with local transport and file tools",
+          "ingest/round-trip restrict imported URLs to http and https",
+          "SQL migrations retained without account allowlist"
+        ],
+        "migration_files": {
+          "0001_core.sql": "e175967de11bfb7e32ac0a8e8b2de61453cc38dfb2ddac8f8940fea9f14cc8b1",
+          "0002_triage.sql": "e5d54b4f5db98611cf95e3072d3e770e665e2a01861c84ecf28c5b0c068bc213",
+          "0003_captures.sql": "d83a89908a52560c9d2e008a747d4c241b3974f00e8347a937548c83d9ae611c",
+          "0004_selections.sql": "38cce0d068b8b74dcdf0ca401e936cccedca9c28660c29c8619a1ccd6c00da9d",
+          "0005_identity_collections.sql": "c6773d649f943057ab443b747bf2b2bc8acfd346c676dd6aa3555563a50c4d07",
+          "0006_private_collections.sql": "742891f4513d0e0147da327d90e402915c910328cf7aaf163d7cb493e3d855ec",
+          "0007_authorized_users_history.sql": "ae35a453ef086485de3ae76ff0f42a0b0fa09e37c76dd3dbfbee2826307d0674",
+          "0008_authorized_user_identity.sql": "e7da0b53aba0518990b7f47125d813f0d7f85b65ee9c75ca8b614e3702b82b57",
+          "0009_tag_removal.sql": "d7ef97ada9dd4449c07d1a9929f99c3f22c42a3b48d81e3c503b2b332c75e497",
+          "0010_selection_pagination.sql": "54bfa7777e01e97f48709f401e9594feef666ea8a09d148b71336b7ecd059a5d"
+        },
+        "sourceInitiative": "bookmark-sorter",
+        "sourceArtifact": "work"
+      }
+    },
+    {
+      "name": "Tide Here",
+      "path": "tide-here/index.html",
+      "sourceArtifact": "work/tide-here/dist/index.html",
+      "sourceCommit": "a468fb203a6701f3d02c391833d595ece9fb9be8",
+      "bytes": 39526881,
+      "sha256": "8a840400e24a3d083374a5ee9a3e7bd8bb8b0c445a35d25b069c13a73f97873f",
+      "fork": {
+        "sourceRepository": "https://github.com/knovak/siteprep",
+        "sourceCommit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
+        "files": {
+          "phase-1/src/day-model.mjs": "dedea9903e8a03ad5f7c80868950400cc47db6e2e33a12bc20407238d467d149",
+          "phase-4/src/astronomy.mjs": "02ebc4ad664292e23eb9db79a43eaad75769feae556126d1b7ed618a3656d366",
+          "phase-4/vendor/suncalc-2.0.1.mjs": "5f19965472d4d142455648cd43dc8c4548ec2223b5f7469f660ad2521784469d",
+          "phase-4/vendor/SUNCALC-LICENSE.txt": "e8881f5d09f1f3c5e0e6ad4c2120521bad1079246a2af84d756af8ab1a53da3c",
+          "phase-6/index.html": "270570f8316766c33ca8ef7724698b3c8cff7e2e0f68d4bb4a34697504a24a5f",
+          "phase-6/app.mjs": "b37256f9df9210a5e23685d2dfc5b5388e01dc73e8cd69c44bccfe610c15cd3c",
+          "phase-6/styles.css": "66597799cf2925c353a08b23216874cae1a253ac10cabc712df4aa9a4c1e9575",
+          "phase-9/src/forecast.mjs": "badb78de7238f79770c78f53562d6200477293b15a55f3403f1759b5ae20ddd8",
+          "phase-12/src/fes-provider.mjs": "0e61c373e4d1c40f412952b98e92772e0d74367acce0c550b43d16775e5923d5"
+        },
+        "dataPackageSha256": "3df318013b4e14c1d693a0137d4f3d7958d3990f826e8e2e7640364e3c85795c",
+        "dataVersion": "2026-08-29-global-coast-r1",
+        "avisoLicenseSha256": "dba741dfcbd79ee9852591d0c0713ea35afa7be912447254751e6425d9a144f1",
+        "adaptations": [
+          "Local day and astronomy modules vendored with adjusted imports",
+          "Original styles and five-day card vocabulary; offline place and history controls",
+          "Same @neaps/tide-predictor 0.11.0 with Schureman corrections runs exclusively in QuickJS WASM",
+          "Complete existing 65,203-point FES coastal extract compacted for embedding",
+          "GeoNames local catalogue replaces Nominatim; global model replaces live national providers",
+          "No original application, hosting configuration or personal database copied or modified"
+        ],
+        "sourceInitiative": "tide-here",
+        "sourceArtifact": "work"
+      }
+    }
+  ]
+}
