@@ -1,0 +1,65 @@
+{
+  "adopted_at": "2026-09-07",
+  "source": "demos/world_migration_atlas",
+  "source_commit": "37e1a5f1306b1386562e95133580547c3490d38a",
+  "files": [
+    {
+      "path": "data/basemap/land110.json",
+      "bytes": 86750,
+      "sha256": "96f64eec21d930bc351a6b7bba2beae53b7718f6619ae96b374d10da23b60f15"
+    },
+    {
+      "path": "data/basemap/land50.json",
+      "bytes": 1016502,
+      "sha256": "780bb87cb426af925449786cf8b14cd4f9f1691fcca6ca91fd03c4dc3f55bc3a"
+    },
+    {
+      "path": "data/migrations.json",
+      "bytes": 44464,
+      "sha256": "99e4c711ad580e1e0562f65d623add3e4ec79c7c963f4c90f5d27c939e9411a6"
+    },
+    {
+      "path": "dist/migration-atlas.html",
+      "bytes": 1254652,
+      "sha256": "1c36a0965f8038b114cee7c8cec75fbd43e8413d2f847eaf6235a40ffa01c708"
+    },
+    {
+      "path": "index-initial.html",
+      "bytes": 1254896,
+      "sha256": "38f40ff2a445ce8c96896e4269ce981a76e0eb88aee24888b9fdebbe8ac8eb1e"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1254896,
+      "sha256": "38f40ff2a445ce8c96896e4269ce981a76e0eb88aee24888b9fdebbe8ac8eb1e"
+    },
+    {
+      "path": "prompts.html",
+      "bytes": 8703,
+      "sha256": "c749a10a406e03009dd1b59b63b9d298cbdfb8356a6daa3a3a5e80b365bf072e"
+    },
+    {
+      "path": "prompts.txt",
+      "bytes": 5217,
+      "sha256": "6ef26073960afbe17971b0af23e82b82e35bc91e727bc29ef19f6241427d607f"
+    },
+    {
+      "path": "src/index.html",
+      "bytes": 16809,
+      "sha256": "94fa99279f6a752627637e58eb688a72d016b2bee2960c6f8bb825606ac5d614"
+    }
+  ],
+  "documents": [
+    {
+      "source": "SPECIFICATION.md",
+      "destination": "spec.md",
+      "sha256": "f8a1d26234d3e4984315e144986ca206d777dae176d182d5897267fea79096b2"
+    },
+    {
+      "source": "IMPLEMENTATION_PLAN.md",
+      "destination": "plan.md",
+      "sha256": "8ade1c7655205d8be018a79b6fb3fb9c336d8978b9a577dadad32aff3379a185"
+    }
+  ],
+  "readme_sha256": "f169b246eae442e682d0471e4fa7262e77ec7807c09b64ba469f86699748d429"
+}
