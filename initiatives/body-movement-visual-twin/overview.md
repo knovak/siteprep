@@ -5,9 +5,10 @@ and expanded collection now contain **60 Feldenkrais, 60 yoga, and 20 Alexander
 Technique studies**. The user authorized this expansion without waiting for
 practitioner review; each record retains its actual review status.
 
-The implementation is available in the source/private bundle. Deployment state
-is recorded separately in `initiative.json`; these links do not imply that the
-latest source has been released:
+The compact selector and all 140 studies are live in **private production
+version 3**, released September 6 at 18:36 PDT (September 7 at 01:36 UTC).
+Production remains owner-only. The test Site remains on its earlier version 5;
+`initiative.json` records the source commit and version for each environment.
 
 - **Production:** [Body Movement Visual Twin](https://body-movement-visual-twin.ken-novak.chatgpt.site/).
 - **Test:** [Private validation Site](https://body-movement-visual-twin-validation.ken-novak.chatgpt.site/).
