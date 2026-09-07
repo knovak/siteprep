@@ -58,6 +58,13 @@ test('Google AMP viewer links store the destination the path encodes', () => {
     simplifyStoredUrl(independent),
     'https://www.independent.co.uk/life-style/gadgets-and-tech/news/facebook-algorithm-bias-right-wing-feed-a9536396.html?amp',
   );
+  // The destination is the AMP variant the viewer was showing, which is the page
+  // the user saved. Whether an `.amp.html` URL should become the canonical
+  // article is a question only the network answers, and is not decided here.
+  assert.equal(
+    simplifyStoredUrl('https://www.google.com/amp/s/www.nytimes.com/2020/06/26/opinion/confederate-monuments-racism.amp.html'),
+    'https://www.nytimes.com/2020/06/26/opinion/confederate-monuments-racism.amp.html',
+  );
   assert.equal(simplifyStoredUrl('https://www.google.co.uk/amp/s/example.com/story'), 'https://example.com/story');
   assert.equal(simplifyStoredUrl('https://www.google.com/amp/example.com/legacy'), 'http://example.com/legacy');
   assert.equal(simplifyStoredUrl('https://www.google.com/amp/s/example.com/tracked%3Futm_source%3Dnews'), 'https://example.com/tracked');
