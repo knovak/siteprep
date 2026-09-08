@@ -2978,7 +2978,7 @@ function renderToc() {
     const bits = [
       stageBadge(data.stage),
       next ? `Next: ${escapeHtml(next.title)}` : (resting ? null : '<strong>Nothing actionable</strong>'),
-      blocked.length ? `${blocked.length} blocked` : null,
+      blocked.length ? `${blocked.length}&nbsp;blocked` : null,
       relativeDays(daysSince(record.lastActivity))
     ].filter(Boolean);
 
