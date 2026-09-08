@@ -269,6 +269,8 @@
     .capture { position: relative; }
     .picture-tools { position: absolute; bottom: 4px; left: 7px; display: flex; gap: 4px; }
     .local-picture { padding: 3px 6px; border: 1px solid var(--control-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 12px; }
+    :root[data-grid-columns="12"] .picture-tools { left: 4px; gap: 3px; }
+    :root[data-grid-columns="12"] .local-picture { padding: 2px 4px; font-size: 10px; }
     #online-tools input, #online-tools select { max-width: 100%; min-width: 0; }
     #online-results { max-height: 10em; overflow: auto; overflow-wrap: anywhere; }
     .backup-picker { min-width: 0; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
