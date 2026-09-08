@@ -244,6 +244,8 @@ $('#search-online').onclick = () => { $('#data-mode').value = 'auto'; void searc
 $('#data-mode').onchange = () => {
   cancelOnline(); ++version; runtimeStatus();
   if (selectedPlace) void choosePlace(selectedPlace);
+  else if ($('#place-input').value.trim()) void search();
+  else $('#state-panel').hidden = true;
 };
 $('#use-local-model').onclick = () => { if (selectedPlace) void useLocal(); };
 $('#find-stations').onclick = async () => {
