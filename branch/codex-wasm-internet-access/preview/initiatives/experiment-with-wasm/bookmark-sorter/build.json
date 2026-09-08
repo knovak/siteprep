@@ -1,0 +1,8 @@
+{
+  "format": "wasm-bookmark-sorter-build/v1",
+  "html_bytes": 1118793,
+  "html_sha256": "b9fbfc6132433e8ff55bb74144b74a318f5011659904240a5890ced86310833b",
+  "wasm_bytes": 658410,
+  "wasm_sha256": "38c14f6e379210bc942bdc4ebca44e7bfdb4318ecc1c72ca666a28fdce96670a",
+  "sql_js_version": "1.14.2"
+}
