@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — World Migration Atlas</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — World Migration Atlas</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to World Migration Atlas</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<h3>2026-09-07 — Adopt the existing atlas as an initiative</h3>
+<p>The user requested an initiative for the working World Migration Atlas in <code>demos/world_migration_atlas/</code>, with “all the relevant documents” and “no code changes, just file migrations.” The supplied implementation plan and specification must be adopted without modification. The README may be reorganized if all its content is preserved. The wish is the supplied text and must link to <code>prompts.html</code>.</p>
+<p><strong>What this settles.</strong> The supplied <code>SPECIFICATION.md</code> becomes <code>spec.md</code>, and <code>IMPLEMENTATION_PLAN.md</code> becomes <code>plan.md</code>, with identical bytes. The supplied README is preserved in full within the initiative README. Existing development instructions and test reports in those documents are historical project records; the current request does not authorize reimplementation, new research, image generation, or a new tutorial.</p>
+<p><strong>Migration arrangement.</strong> The agent uses <code>migration-atlas</code> as the initiative slug and the default medium value. The existing demo is recorded as an output, and an unchanged copy of its nine files becomes the initiative&#39;s <code>work/</code> source. Keeping the released snapshot in <code>demos/</code> preserves its URL and prevents this adoption from removing or replacing production. The copies may diverge only through later authorized work and release; the production demo does not load anything from <code>initiatives/</code>.</p>
+<p>The repository source takes precedence over other code in the local download folder. The three named Markdown documents are the adopted attachments. Build scripts and tests described by the historical README are absent from the repository demo and are not reconstructed or imported as part of this request.</p>
+<h3>2026-09-07 — Test first, production later</h3>
+<p>The user requested: “proceed to do a test deployment as part of this PR. we&#39;ll do a prod deployment only after testing”.</p>
+<p><strong>What this settles.</strong> Use the existing demo deployment kind, with <code>initiatives/migration-atlas/work</code> as source and <code>world_migration_atlas</code> as destination. The repository build publishes the source to a separate Pages preview. This adopts the existing public demo&#39;s deployment model; it does not create a separate hosted application.</p>
+<p><strong>What remains open.</strong> The user&#39;s test findings and explicit authorization for a production release. The initiative rests at <code>dormant</code> after adoption, with blocked testing/release follow-ups, because no additional implementation work was requested. Resume it when those inputs arrive. Historical implementation phases are retained as history, not seeded as new actionable build tasks.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/tide-data-sources-wz8iaf" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
