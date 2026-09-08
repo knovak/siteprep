@@ -2,7 +2,7 @@
 
 Standalone forks of **Bookmark Sorter** and **Tide Here**, both powered by real WebAssembly with no backend or runtime network requests.
 
-The static demo is [experiment with wasm](../../demos/experiment-with-wasm/index.html). Its first page explains WASM and links to both apps. The [wish and findings](../../demos/experiment-with-wasm/findings.html) preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations. This demo is prepared in PR #467 and goes live after merge and Pages publication.
+The released static demo is [experiment with wasm](../../demos/experiment-with-wasm/index.html). Its first page explains WASM and links to both apps. The [wish and findings](../../demos/experiment-with-wasm/findings.html) preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations.
 
 - [Open Bookmark Sorter](work/dist/index.html): a browser database and the existing bookmark card interface.
 - [Open Tide Here](work/tide-here/dist/index.html): a single 39.5 MB HTML file carrying 65,203 global coastal harmonic points and 170,946 searchable places. Five days of tides, sun and moon are calculated locally for the chosen coast and date. See [Tide Here details and rebuild instructions](work/tide-here/README.md).
@@ -11,7 +11,7 @@ The tide model is embedded in the HTML file and cannot be erased by clearing bro
 
 ## Open the application
 
-Open [`work/dist/index.html`](work/dist/index.html) in Chrome, Edge, Firefox, or Safari. No installation, account, internet connection, local web server, or backend is needed. Chromium has been tested directly; other engines are not yet verified.
+Open [`work/dist/index.html`](work/dist/index.html) in Chrome, Edge, Firefox, or Safari. No installation, account, internet connection, local web server, or backend is needed. Chromium, Safari 26.6.2 and Firefox 153.0.4 have been tested directly on desktop. An iPad Pro 11 WebKit/touch emulation passes the hosted workflows, but a physical iPad remains an explicit acceptance check.
 
 It starts with an empty **My bookmarks** collection. Open **Import** to load a browser bookmark HTML export or a `bookmark-sorter/v1` JSON export. **Local tools → Try sample bookmarks** creates a separate sample collection, leaving existing collections alone.
 
@@ -50,6 +50,8 @@ npm run test:browser
 
 The browser test uses the repository's pinned Playwright installation. Provision Chromium with the root `npm run setup:browsers` only if needed. The committed `work/dist/index.html` embeds the pinned WASM module and needs no build to run. `work/dist/build.json` records its byte counts and hashes. The license is embedded in the HTML and also provided as `SQLJS-LICENSE.txt`.
 
+The Playwright configurations default to Chromium. Set `WASM_BROWSER=firefox` or `WASM_BROWSER=webkit` to select another installed Playwright engine, and optionally set `WASM_DEVICE='iPad Pro 11'` for that device profile. Browser-engine runs do not replace direct-file checks in the installed browser.
+
 [Fork provenance](fork-provenance.json) identifies the exact original commit and source hashes. [Specification](spec.md), [test plan](test-plan.md), and the root [technical documentation](../../EXPERIMENT_WITH_WASM_TECHDOC.md) describe the implementation. Source and build capabilities remain in the initiative; the published runtime is a complete, recorded copy under `demos/`.
 
 ## Rebuild the static demo
@@ -57,3 +59,5 @@ The browser test uses the repository's pinned Playwright installation. Provision
 After rebuilding an application, record its committed HTML hash and source commit in `work/demo-src/applications.json`. Run `npm run build:demo` in `work/` to render the original wish and [findings](findings.md), verify both snapshots and stage the complete website in `work/site/`. Run `npm run test:demo` to compare the release copy with that package and exercise both apps through a static web address. Before a first release, set `WASM_DEMO_ROOT` to the absolute `work/site` directory to test the staged package.
 
 Publish updates through `release-initiative`; the root build generates the Demo TOC. The original direct-file app paths remain available so this website publication does not relocate anyone's local bookmark database. Transfer data from a downloaded file to the website by backup and restore.
+
+[Optional improvements](improvements.md) records a reviewable menu; none is authorized merely by appearing there.

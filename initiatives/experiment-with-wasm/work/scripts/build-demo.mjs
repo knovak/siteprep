@@ -49,7 +49,7 @@ try {
   }
   await copyFile(join(work,'demo-src/styles.css'),join(stage,'styles.css'));
   await copyFile(join(work,'demo-src/prompts.txt'),join(stage,'prompts.txt'));
-  for (const document of ['wish','findings','evaluation','verification']) await copyFile(join(initiative,document+'.md'),join(stage,document+'.txt'));
+  for (const document of ['wish','findings','evaluation','verification','improvements']) await copyFile(join(initiative,document+'.md'),join(stage,document+'.txt'));
   const provenance = {schema:'experiment-with-wasm/demo/v1',repository:'https://github.com/knovak/siteprep',
     sourceInitiative:'experiment-with-wasm',sourceArtifact:'work/site',
     note:'Static release snapshot. Application HTML is copied byte for byte. Source initiative names, relative artifact names and commits identify provenance; they are not runtime dependencies.',

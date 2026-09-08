@@ -49,7 +49,7 @@ The bundled values come from the existing derived FES2022b coastal dataset, not 
 
 | Check | Evidence |
 |---|---|
-| Bookmark Sorter | Six integration tests and five offline Chromium browser tests |
+| Bookmark Sorter | Seven integration tests and six offline Chromium browser tests |
 | Bookmark workload | 5,600 generated bookmarks; indexed paging and a 2,800-item bulk verdict |
 | Tide Here | Five integration tests and five offline Chromium browser tests |
 | Numerical equivalence | Twelve comparisons with the original full-precision FES forecasts, across continents and a 2036 date; event types/counts match, times differ by less than one second and heights by less than 0.00001 metre |
@@ -57,15 +57,17 @@ The bundled values come from the existing derived FES2022b coastal dataset, not 
 | Recovery and limits | Backup/restore, reload, quota errors, missing WASM, invalid input, stale bookmark writes, and tide history loss |
 | Dates and astronomy | Coast-local days, 23/25-hour daylight-saving days, date-line placement and polar no-event conditions |
 | Layout | Chromium desktop and phone layouts inspected |
+| Desktop browser compatibility | Installed Safari 26.6.2 and Firefox 153.0.4 opened both downloaded apps; Safari retained and restored Bookmark Sorter data, and Firefox passed all automated direct-file suites |
+| iPad-shaped compatibility | The static demo and both hosted workflows pass an iPad Pro 11 WebKit/touch emulation; no physical iPad result is claimed |
 
 These are implementation and portability checks. They are not independent scientific validation of tidal accuracy, proof of indefinite persistence, or proof that every browser works. [Original verification record](verification.txt).
 
 ## iPad and Safari findings
 
-Recent iPad Safari has the relevant browser capabilities. Tide Here's compression-stream API arrived in Safari 16.4. However, neither app has been verified on an actual iPad or in Safari, and opening downloaded HTML from Files is a separate compatibility question from running a normal website. Tide Here's large embedded dataset may increase startup time and memory pressure on an older iPad. [Safari 16.4 features](https://webkit.org/blog/13966/webkit-features-in-safari-16-4/).
+Recent iPad Safari has the relevant browser capabilities. Tide Here's compression-stream API arrived in Safari 16.4. Both downloaded apps now work in installed desktop Safari 26.6.2, including local persistence and recovery. Both hosted workflows also pass an iPad Pro 11 WebKit/touch emulation, but neither app has been verified on an actual iPad; opening downloaded HTML from Files remains a distinct acceptance question. Tide Here's large embedded dataset may increase startup time and memory pressure on an older iPad. [Safari 16.4 features](https://webkit.org/blog/13966/webkit-features-in-safari-16-4/).
 
 A useful next increment would be a Home Screen installation with explicit offline caching, followed by real-device checks for touch controls, cold reopening in airplane mode, saving, and backup restoration. The examples here do not yet include that installation layer. A static download site can supply such an app without an application backend. [Apple's iPad web-app instructions](https://support.apple.com/guide/ipad/open-as-web-app-ipad8f1f7a29/ipados), [WebKit's offline service-worker support](https://webkit.org/blog/8090/workers-at-your-service/).
 
 ## What remains open
 
-Safari, Firefox and real iPad acceptance remain follow-up work. A reliable Home Screen offline installation, very large bookmark databases, broader performance measurements and any future model/data refresh need their own implementation and checks. The existing hosted Bookmark Sorter and Tide Here applications are separate from these experimental forks.
+Physical-iPad acceptance remains follow-up work. A reliable Home Screen offline installation, very large bookmark databases, broader performance measurements and any future model/data refresh need their own implementation and checks. The existing hosted Bookmark Sorter and Tide Here applications are separate from these experimental forks. A prioritized, non-binding menu is in [optional improvements](improvements.txt).
