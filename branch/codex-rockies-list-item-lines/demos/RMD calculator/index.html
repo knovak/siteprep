@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RMD calculator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --accent-2: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .slider-row { margin-bottom: 18px; }
+  .slider-row:last-child { margin-bottom: 0; }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .slider-label .name { font-weight: 600; }
+  .slider-label .value {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 700px) {
+    .summary { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat .number { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .chart-wrap { position: relative; height: 380px; }
+  textarea {
+    width: 100%;
+    height: 320px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    background: #fafafa;
+    resize: vertical;
+    white-space: pre;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  button {
+    background: var(--accent);
+    color: white;
+    border: 0;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  button.secondary {
+    background: white;
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+  button:hover { opacity: 0.9; }
+  .note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Retirement Fund &amp; RMD Model</h1>
+<div class="sub">Models a tax-deferred account (Traditional IRA / 401(k)) under IRS Uniform Lifetime Table RMDs.</div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="section-title">Inputs</div>
+
+    <div class="slider-row">
+      <div class="slider-label">
+        <span class="name">Years to model</span>
+        <span class="value" id="yearsVal">30</span>
+      </div>
+      <input type="range" id="years" min="1" max="50" value="30" step="1">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-label">
+        <span class="name">Starting balance</span>
+        <span class="value" id="startVal">$1,000,000</span>
+      </div>
+      <input type="range" id="start" min="0" max="5000000" value="1000000" step="10000">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-label">
+        <span class="name">Current age</span>
+        <span class="value" id="ageVal">65</span>
+      </div>
+      <input type="range" id="age" min="30" max="95" value="65" step="1">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-label">
+        <span class="name">Asset growth rate (annual)</span>
+        <span class="value" id="growthVal">6.0%</span>
+      </div>
+      <input type="range" id="growth" min="-5" max="15" value="6" step="0.1">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-label">
+        <span class="name">Target annual total withdrawals</span>
+        <span class="value" id="targetVal">$60,000</span>
+      </div>
+      <input type="range" id="target" min="0" max="500000" value="60000" step="1000">
+    </div>
+
+    <div class="note">
+      RMDs follow the IRS Uniform Lifetime Table. RMD start age depends on birth year:
+      born ≤1950 → 72, 1951–1959 → 73, ≥1960 → 75 (SECURE 2.0). Each year, the prior
+      year-end balance grows at the chosen rate; the RMD is computed from the prior
+      year-end balance and withdrawn. An additional withdrawal of
+      max(0, target − RMD) is then taken so total withdrawals reach the target.
+    </div>
+  </div>
+
+  <div>
+    <div class="summary">
+      <div class="stat">
+        <div class="label">RMD Start Age</div>
+        <div class="number" id="rmdStartStat">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">Final Balance</div>
+        <div class="number" id="finalBalStat">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">Total RMDs Withdrawn</div>
+        <div class="number" id="totalRMDStat">—</div>
+      </div>
+      <div class="stat">
+        <div class="label">Total Withdrawals</div>
+        <div class="number" id="totalWithdrawStat">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Projection</div>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="section-title">Tab-separated table</div>
+      <textarea id="tsv" readonly></textarea>
+      <div class="actions">
+        <button id="copyBtn">Copy to clipboard</button>
+        <button id="downloadBtn" class="secondary">Download .tsv</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// IRS Uniform Lifetime Table (effective 2022). Distribution period in years.
+const UNIFORM_LIFETIME = {
+  72: 27.4, 73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0,
+  79: 21.1, 80: 20.2, 81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0,
+  86: 15.2, 87: 14.4, 88: 13.7, 89: 12.9, 90: 12.2, 91: 11.5, 92: 10.8,
+  93: 10.1, 94:  9.5, 95:  8.9, 96:  8.4, 97:  7.8, 98:  7.3, 99:  6.8,
+ 100:  6.4,101:  6.0,102:  5.6,103:  5.2,104:  4.9,105:  4.6,106:  4.3,
+ 107:  4.1,108:  3.9,109:  3.7,110:  3.5,111:  3.4,112:  3.3,113:  3.1,
+ 114:  3.0,115:  2.9,116:  2.8,117:  2.7,118:  2.5,119:  2.3,120:  2.0
+};
+
+function divisorForAge(age) {
+  if (age < 72) return null;
+  if (age >= 120) return 2.0;
+  return UNIFORM_LIFETIME[age];
+}
+
+function rmdStartAge(currentAge) {
+  // currentDate is 2026 per env. Birth year ≈ 2026 - currentAge.
+  const birthYear = 2026 - currentAge;
+  if (birthYear <= 1950) return 72;
+  if (birthYear <= 1959) return 73;
+  return 75;
+}
+
+function fmtMoney(n) {
+  if (!isFinite(n)) return "—";
+  const sign = n < 0 ? "-" : "";
+  const a = Math.abs(n);
+  return sign + "$" + Math.round(a).toLocaleString();
+}
+
+const els = {
+  years: document.getElementById('years'),
+  start: document.getElementById('start'),
+  age:   document.getElementById('age'),
+  growth:document.getElementById('growth'),
+  target:document.getElementById('target'),
+  yearsVal: document.getElementById('yearsVal'),
+  startVal: document.getElementById('startVal'),
+  ageVal:   document.getElementById('ageVal'),
+  growthVal:document.getElementById('growthVal'),
+  targetVal:document.getElementById('targetVal'),
+  rmdStartStat: document.getElementById('rmdStartStat'),
+  finalBalStat: document.getElementById('finalBalStat'),
+  totalRMDStat: document.getElementById('totalRMDStat'),
+  totalWithdrawStat: document.getElementById('totalWithdrawStat'),
+  tsv: document.getElementById('tsv'),
+};
+
+let chart;
+function buildChart() {
+  const ctx = document.getElementById('chart').getContext('2d');
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Total asset value',
+          data: [],
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,0.08)',
+          yAxisID: 'y',
+          tension: 0.2,
+          pointRadius: 2,
+          borderWidth: 2,
+        },
+        {
+          label: 'RMD',
+          data: [],
+          borderColor: '#dc2626',
+          backgroundColor: 'rgba(220,38,38,0.08)',
+          yAxisID: 'y1',
+          tension: 0.2,
+          pointRadius: 2,
+          borderWidth: 2,
+        },
+        {
+          label: 'Additional withdrawal',
+          data: [],
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245,158,11,0.08)',
+          yAxisID: 'y1',
+          tension: 0.2,
+          pointRadius: 2,
+          borderWidth: 2,
+          borderDash: [4,3],
+        },
+        {
+          label: 'Total withdrawal',
+          data: [],
+          borderColor: '#16a34a',
+          backgroundColor: 'rgba(22,163,74,0.08)',
+          yAxisID: 'y1',
+          tension: 0.2,
+          pointRadius: 2,
+          borderWidth: 2,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      stacked: false,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.parsed.y)}`
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Age' } },
+        y: {
+          type: 'linear',
+          position: 'left',
+          title: { display: true, text: 'Balance ($)' },
+          ticks: { callback: v => '$' + (v/1000).toLocaleString() + 'k' }
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          title: { display: true, text: 'RMD ($)' },
+          grid: { drawOnChartArea: false },
+          ticks: { callback: v => '$' + (v/1000).toLocaleString() + 'k' }
+        }
+      }
+    }
+  });
+}
+
+function simulate() {
+  const years  = parseInt(els.years.value, 10);
+  const start  = parseFloat(els.start.value);
+  const age0   = parseInt(els.age.value, 10);
+  const g      = parseFloat(els.growth.value) / 100;
+  const target = parseFloat(els.target.value);
+  const startAge = rmdStartAge(age0);
+
+  const rows = [];
+  // Year 0: snapshot of starting balance, before any growth or withdrawals.
+  rows.push({ year: 0, age: age0, beginBal: start, growth: 0,
+              rmd: 0, addl: 0, totalW: 0, endBal: start });
+
+  let prevEnd = start;
+  for (let t = 1; t <= years; t++) {
+    const age = age0 + t;
+    const growthAmt = prevEnd * g;
+    let bal = prevEnd + growthAmt;
+
+    // RMD computed from prior year-end balance, taken first.
+    let rmd = 0;
+    if (age >= startAge) {
+      const div = divisorForAge(age);
+      if (div) rmd = prevEnd / div;
+    }
+    if (rmd > bal) rmd = Math.max(0, bal);
+    bal -= rmd;
+
+    // Additional withdrawal so total reaches target (never negative).
+    let addl = Math.max(0, target - rmd);
+    if (addl > bal) addl = Math.max(0, bal);
+    bal -= addl;
+
+    const totalW = rmd + addl;
+    const endBal = bal;
+    rows.push({ year: t, age, beginBal: prevEnd, growth: growthAmt,
+                rmd, addl, totalW, endBal });
+    prevEnd = endBal < 0 ? 0 : endBal;
+  }
+  return { rows, startAge };
+}
+
+function update() {
+  // labels
+  els.yearsVal.textContent  = els.years.value;
+  els.startVal.textContent  = fmtMoney(parseFloat(els.start.value));
+  els.ageVal.textContent    = els.age.value;
+  els.growthVal.textContent = parseFloat(els.growth.value).toFixed(1) + '%';
+  els.targetVal.textContent = fmtMoney(parseFloat(els.target.value));
+
+  const { rows, startAge } = simulate();
+  els.rmdStartStat.textContent = startAge;
+  els.finalBalStat.textContent = fmtMoney(rows[rows.length-1].endBal);
+  const totalRMD      = rows.reduce((s,r) => s + r.rmd, 0);
+  const totalWithdraw = rows.reduce((s,r) => s + r.totalW, 0);
+  els.totalRMDStat.textContent      = fmtMoney(totalRMD);
+  els.totalWithdrawStat.textContent = fmtMoney(totalWithdraw);
+
+  // chart
+  chart.data.labels = rows.map(r => r.age);
+  chart.data.datasets[0].data = rows.map(r => r.endBal);
+  chart.data.datasets[1].data = rows.map(r => r.rmd);
+  chart.data.datasets[2].data = rows.map(r => r.addl);
+  chart.data.datasets[3].data = rows.map(r => r.totalW);
+  chart.update('none');
+
+  // tsv table
+  const header = ["Year","Age","Begin Balance","Growth","RMD",
+                  "Addl Withdrawal","Total Withdrawal","End Balance"].join("\t");
+  const lines = rows.map(r => [
+    r.year,
+    r.age,
+    Math.round(r.beginBal),
+    Math.round(r.growth),
+    Math.round(r.rmd),
+    Math.round(r.addl),
+    Math.round(r.totalW),
+    Math.round(r.endBal)
+  ].join("\t"));
+  els.tsv.value = [header, ...lines].join("\n");
+}
+
+['years','start','age','growth','target'].forEach(id => {
+  document.getElementById(id).addEventListener('input', update);
+});
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  els.tsv.select();
+  document.execCommand('copy');
+  const btn = document.getElementById('copyBtn');
+  const orig = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = orig, 1200);
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const blob = new Blob([els.tsv.value], { type: 'text/tab-separated-values' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'retirement_rmd_projection.tsv';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+buildChart();
+update();
+</script>
+</body>
+</html>
