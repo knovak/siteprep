@@ -265,8 +265,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       .admin-menu > summary, .file-tools > details > summary { min-height: 44px; }
     }
     h1 small { display: inline-block; font-size: .5em; letter-spacing: .04em; vertical-align: middle; color: var(--link); }
-    .local-picture { position: absolute; top: 42px; left: 7px; padding: 3px 6px; border: 1px solid var(--control-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 12px; }
-    .online-picture { top: 73px; }
+    .capture { position: relative; }
+    .picture-tools { position: absolute; bottom: 4px; left: 7px; display: flex; gap: 4px; }
+    .local-picture { padding: 3px 6px; border: 1px solid var(--control-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 12px; }
     #online-tools input, #online-tools select { max-width: 100%; min-width: 0; }
     #online-results { max-height: 10em; overflow: auto; overflow-wrap: anywhere; }
     .backup-picker { min-width: 0; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
@@ -699,9 +700,11 @@ export function renderPilePage({isAdmin = false} = {}) {
         };
         picker.click();
       });
-      card.append(picture);
+      const pictureTools = document.createElement('div'); pictureTools.className = 'picture-tools';
+      pictureTools.append(picture);
       const onlinePicture = document.createElement('button');
-      onlinePicture.type = 'button'; onlinePicture.className = 'local-picture online-picture'; onlinePicture.textContent = 'Picture URL';
+      onlinePicture.type = 'button'; onlinePicture.className = 'local-picture online-picture'; onlinePicture.textContent = 'URL';
+      onlinePicture.title = 'Download a picture from a URL';
       onlinePicture.setAttribute('aria-label', 'Download picture for ' + item.title);
       onlinePicture.addEventListener('click', async event => {
         event.stopPropagation();
@@ -711,7 +714,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         catch (error) { elements.status.textContent = error.message; }
         finally { onlinePicture.disabled = false; }
       });
-      card.append(onlinePicture);
+      pictureTools.append(onlinePicture); capture.append(pictureTools);
       addText(card, 'span', 'site', host(item.url));
       const heading = document.createElement('h2');
       const href = externalUrl(item.url);
