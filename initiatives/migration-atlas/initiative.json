@@ -1,7 +1,7 @@
 {
   "title": "World Migration Atlas",
   "summary": "An interactive, offline-capable map of historical migrations and diasporas from 1000 AD onward.",
-  "stage": "dormant",
+  "stage": "refining",
   "value": "medium",
   "outputs": [
     {
@@ -21,22 +21,46 @@
   ],
   "todo": [
     {
-      "id": "user-test-preview",
-      "title": "Review the adopted atlas test preview and record findings",
-      "state": "blocked",
+      "id": "run-browser-suites",
+      "title": "Re-baseline the goldens and run the T3-T7 browser suites",
+      "state": "actionable",
       "value": "medium",
-      "effort": "small",
+      "effort": "medium",
       "advances_stage": false,
-      "blocked_by": "data:user test findings for the adopted World Migration Atlas preview"
+      "note": "lib/tests/test_browser.py and test_crossbrowser.py need the Python Playwright, numpy and Pillow packages, which this repository does not install. The eight goldens in lib/tests/goldens were captured on the original 2026 machine, so T3 needs --update-goldens once on the machine that will run it. Record the outcome in log.md."
     },
     {
-      "id": "release-tested-atlas",
-      "title": "Release the adopted atlas after testing and explicit approval",
+      "id": "editorial-review",
+      "title": "Run the T8 editorial checklist over the 48 dataset entries",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false,
+      "note": "lib/tests/T8_editorial_checklist.md is the inherited gate. Check that every entry still carries a cited source and a justified confidence and type, and record which entries need attention."
+    },
+    {
+      "id": "user-test-preview",
+      "title": "Review the test preview and record findings",
       "state": "blocked",
       "value": "medium",
       "effort": "small",
       "advances_stage": false,
-      "blocked_by": "permission:explicit production release authorization after user testing"
+      "blocked_by": "data:user test findings for the World Migration Atlas preview"
+    },
+    {
+      "id": "release-rebuilt-source",
+      "title": "Release the rebuilt source after testing and explicit approval",
+      "state": "blocked",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "permission:explicit production release authorization after user testing",
+      "note": "The release serves the same atlas: work/index.html is byte-identical to what demos/world_migration_atlas/ publishes today. It also drops index-initial.html, dist/ and data/ from the published demo, which nothing links to. See decisions.md."
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-09-07T22:51:24Z",
+    "commit": "eec2feb377cbb539c19c18d51e0cb988ff488b63",
+    "digest": "072751c475b2a8deba528f566810d5c12a88c259"
+  }
 }

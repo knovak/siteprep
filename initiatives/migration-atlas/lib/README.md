@@ -1,0 +1,82 @@
+# Atlas development package
+
+The source the atlas is built from. `work/index.html` is the output: the file
+the branch preview publishes and the file a release copies to
+`demos/world_migration_atlas/`. Nothing here is published.
+
+This package was supplied by the user on 2026-09-07, two months after the atlas
+was written, and restores what the first adoption could not find. Before it
+arrived the repository held only the built bundle, so the dataset could not be
+changed except by editing a minified megabyte by hand.
+
+## Build
+
+```bash
+python3 lib/tools/build.py      # from the initiative directory
+```
+
+It inlines `src/core.js`, `src/app.js`, the two vendored d3 modules, the
+dataset, and both basemap resolutions into `src/index.html` at the
+`<!--BUNDLE-->` marker, and writes `work/index.html`. No network access, no
+package installation, and no build dependencies beyond Python 3.
+
+The build is deterministic: running it over an unchanged source rewrites the
+same bytes. That is worth checking after any change, because it is what lets a
+reader confirm the published bundle came from this source:
+
+```bash
+sha256sum work/index.html && python3 lib/tools/build.py && sha256sum work/index.html
+```
+
+## Adding a migration
+
+1. Add the record to `lib/data/migrations.json`, following the schema in
+   [`spec.md`](../spec.md) section 3. Every entry needs a cited source, a
+   confidence rating, and a type from the coercion spectrum.
+2. Run `node lib/tests/test_core.mjs`. `validateData()` enforces the schema and
+   the semantic rules, and the same function runs in the browser, so a record
+   the tests reject is a record the app rejects.
+3. Run `python3 lib/tools/build.py` to rebuild `work/index.html`.
+4. Push the branch. The build publishes the preview; a person releases.
+
+The running app also accepts a `migrations.json` dropped onto the window, which
+validates and loads it without a rebuild. That previews new research; it does
+not persist it.
+
+## Tests
+
+| Command | Gate | Needs |
+|---|---|---|
+| `node lib/tests/test_core.mjs` | T1 data validation, T2 scaling/clock/determinism, E2 and E6 spectra | nothing - 535 assertions, runs anywhere |
+| `python3 lib/tests/test_browser.py` | T3 visual regression, T4 interaction, T5 performance, T6 accessibility | Python `playwright`, `numpy`, `Pillow` |
+| `python3 lib/tests/test_crossbrowser.py` | T7 Chromium, Firefox and WebKit | the same, plus all three browsers |
+| `python3 lib/verify.py` | screenshot smoke pass over the built bundle | Python `playwright` |
+| [`lib/tests/T8_editorial_checklist.md`](tests/T8_editorial_checklist.md) | T8 sources, confidence and type, by hand | a reader |
+
+The repository installs Playwright for Node, not for Python, so only the first
+row runs as things stand. The eight images in `tests/goldens/` were captured on
+the machine the atlas was written on; T3 compares against them pixel by pixel,
+so a different machine needs one `python3 lib/tests/test_browser.py
+--update-goldens` pass to re-baseline before its results mean anything.
+
+## Layout
+
+```
+lib/
+  src/index.html        shell and styles, with the <!--BUNDLE--> marker
+  src/core.js           projection, scales, clock, validateData()
+  src/app.js            rendering, camera, timeline, panels, filters
+  vendor_d3array.js     vendored d3-array
+  vendor_d3geo.js       vendored d3-geo
+  data/migrations.json  the dataset - 48 movements, the source of truth
+  data/basemap/         Natural Earth land at 110m and 50m, plus the raw
+                        50m GeoJSON the simplified copy came from
+  tools/build.py        the build
+  tests/                T1-T8 as described above
+  verify.py             screenshot smoke pass
+```
+
+`data/basemap/ne_50m_land_raw.geojson` is an upstream input. Nothing reads it -
+`land50.json` is the simplified copy the build inlines - and no script in this
+package regenerates one from the other. It is kept because it is the only copy
+of where the basemap came from.

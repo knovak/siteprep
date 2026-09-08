@@ -1,9 +1,27 @@
 # World Migration Atlas
 
-This initiative adopts an already working historical migration map that predates the initiatives system. Its existing output is the [World Migration Atlas demo](../../demos/world_migration_atlas/index.html).
+A thousand years of human movement on one map. Each migration is an arrow from
+source to destination, its width set by how many people moved; a circle stays
+behind at the destination, its area set by the diaspora there today. Time plays,
+scrubs, and steps a year at a time; the map pans without boundaries and zooms
+from the whole world to a coastline. 48 movements, from the Turkic migration
+into Anatolia to the displacements of the 2020s, each with counts, causes,
+confidence, and cited sources in its detail panel.
 
-The user's wish, original prompt history, unchanged July 2026 specification and implementation plan, complete supplied README, and adoption objectives and test plan now share one initiative. The actual repository snapshot contains 48 migration records, two basemap resolutions, the self-contained app, the original HTML shell, and prompt history. The snapshot is preserved in `work/`, while `demos/world_migration_atlas/` remains the released copy.
+It runs from a local file. No server, no network, no installation - one 1.25 MB
+HTML file with the dataset, both basemap resolutions and the d3 modules inlined.
 
-The original README reports completion of Phases 0–5 and extensions E1–E7. Those are inherited reports; [README.md](README.html) explains which development files are absent from the repository snapshot, and [test-plan.md](test-plan.html) distinguishes historical acceptance gates from adoption verification.
+The atlas was written in July 2026, before `initiatives/` existed, and was
+adopted into the lifecycle on 2026-09-07. Its published output is the
+[World Migration Atlas demo](../../demos/world_migration_atlas/index.html).
 
-The separate test preview is published from `work/` by the existing repository build. After adoption, work rests pending the user's testing and production-release decision. The original plan is preserved for future maintenance, not restarted as a new development project.
+The source it is built from lives in `lib/`: the dataset, the application
+modules, the build, and the T1-T8 test suites. `work/index.html` is what that
+build produces and what the preview and a release publish, so the atlas can take
+new research the way the wish asked - edit one JSON file, run the tests, rebuild.
+The bundle in the repository is byte-for-byte the output of the source beside
+it.
+
+[The specification](spec.html) and [implementation plan](plan.html) are the
+July 2026 originals, kept as written. What can be run today, and what a new
+machine needs first, is in [the test plan](test-plan.html).

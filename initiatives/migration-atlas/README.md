@@ -1,30 +1,60 @@
 # World Migration Atlas initiative
 
-This initiative adopts the working atlas from `demos/world_migration_atlas/` without changing its application files. The entry page is `work/index.html`; `work/dist/migration-atlas.html` is the original self-contained offline artifact. Open either locally in a browser. Do not open `work/src/index.html` as the app: it is the original development shell, whose companion JavaScript and build tools were not present in the repository demo.
+An interactive map of historical migrations and diasporas from 1000 AD onward,
+adopted into `initiatives/` on 2026-09-07. It was built in July 2026, before the
+initiatives system existed.
+
+To look at it, open `work/index.html` in a browser, or use the published
+[demo](../../demos/world_migration_atlas/index.html).
+
+## Source and build
+
+`lib/` holds the source: the dataset, the application modules, the vendored d3,
+the build, and the T1-T8 test suites. `work/index.html` is the build's output -
+the file the branch preview publishes and the file a release copies to
+`demos/world_migration_atlas/`. The committed bundle is byte-for-byte what the
+committed source produces.
+
+```bash
+node lib/tests/test_core.mjs     # 535 assertions, no dependencies
+python3 lib/tools/build.py       # rewrites work/index.html
+```
+
+To add a newly researched movement, edit `lib/data/migrations.json`, run the
+tests, and rebuild. `lib/README.md` covers the layout, the other test gates and
+what they need.
 
 ## Documents and history
 
 - [Wish and original prompt history](wish.html)
-- [Objectives and adoption acceptance](objectives.html)
-- [Specification](spec.html) — supplied `SPECIFICATION.md`, unchanged
-- [Implementation plan](plan.html) — supplied `IMPLEMENTATION_PLAN.md`, unchanged
-- [Test plan](test-plan.html) — inherited gates and adoption verification
-- [Decisions](decisions.html) and [log](log.html)
-- [Provenance and file inventory](notes.html)
+- [Objectives](objectives.html) - what a finished atlas does
+- [Specification](spec.html) - the supplied `SPECIFICATION.md`, unchanged
+- [Implementation plan](plan.html) - the supplied `IMPLEMENTATION_PLAN.md`, unchanged
+- [Test plan](test-plan.html) - which gates run today, and what a new machine needs
+- [Decisions](decisions.html), [log](log.html) and [provenance](notes.html)
 
-The original [tutorial slideshow](https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&ouid=111064312747417346604&rtpof=true&sd=true) and [tutorial PDF](https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk) remain linked from the demo collection. These links are carried over from its existing metadata; this adoption does not revise the tutorials.
+The original [tutorial slideshow](https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&ouid=111064312747417346604&rtpof=true&sd=true) and [tutorial PDF](https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk) are linked from the demo collection and from the atlas header. This adoption does not revise them.
 
 ## Test and production
 
-From the repository root, use `node scripts/initiatives.mjs deployments migration-atlas plan --env test --json` to obtain both current URLs. Invoke `deploy-test` to push the initiative source preview. The repository build copies `work/` to `preview/initiatives/migration-atlas/` under the current branch's Pages build; publication completes after the branch workflow finishes.
+`node scripts/initiatives.mjs deployments migration-atlas` prints both URLs. The
+repository build copies `work/` to `preview/initiatives/migration-atlas/` on
+every build, so pushing the branch is the test deployment. Production is the
+existing [demo](../../demos/world_migration_atlas/index.html), and only a person
+releases to it, with `release-initiative`.
 
-Production remains [the existing demo](../../demos/world_migration_atlas/index.html). After user testing and a separate release instruction, use `release-initiative`; it is the workflow that copies the committed source to `demos/world_migration_atlas/`. No production deployment is part of adoption.
+## Reading the preserved README below
 
-## Scope of the preserved README
+The July 2026 README is reproduced in full, including its feature descriptions,
+extension history, test-result table and contribution instructions. Two things
+have moved since it was written:
 
-The supplied README is reproduced in full below, including its feature descriptions, extension history, test-result table, contribution instructions, and layout. Its relative code paths refer to the original development package, not the initiative root. In this adoption, the files actually present live under `work/`; see [the inventory](notes.html).
-
-In particular, the README's `src/core.js`, `src/app.js`, `tools/build.py`, and `tests/` are absent from the repository demo. Its build and test commands are retained as historical instructions and cannot currently be run from this snapshot. Drag-and-drop of a dataset can still preview research in the running app; making permanent data changes requires the original build package or separate authorized maintenance. The original test numbers below are July 2026 reports, not newly verified results.
+- Its paths are relative to the original package. The same files are under
+  `lib/` now, and the build writes `work/index.html` rather than
+  `dist/migration-atlas.html`. Its "double-click `dist/migration-atlas.html`"
+  instruction means `work/index.html` here.
+- Its test results are July 2026 reports. What has been re-run since is in
+  [test-plan.html](test-plan.html) and [log.html](log.html).
 
 ---
 
