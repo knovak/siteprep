@@ -6,7 +6,7 @@
 
 ## Done
 
-Both single-file applications retain their offline workflows and now offer online data controls. Bookmark Sorter adds URL imports, picture downloads and direct/Microlink previews; Tide Here adds Photon searches and explicit NOAA/CHS station requests with source, datum and cache labels. The 35 application tests and four packaging tests pass; the six new online browser journeys also pass in Firefox and WebKit.
+Both single-file applications support internet data and offline use. Bookmark Sorter adds URL imports, pictures and previews; Tide Here's normal Show tides action now resolves places online and prefers official station predictions, with clear choices and labelled model fallback. The 41 application tests and four package tests pass; the online journeys also pass Firefox and WebKit, and a live San Diego submission loaded NOAA predictions automatically.
 
 ## Remaining work
 
