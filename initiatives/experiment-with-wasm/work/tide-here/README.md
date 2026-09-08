@@ -1,10 +1,10 @@
-# Tide Here, offline
+# Tide Here, online with offline fallback
 
 Open **[dist/index.html](dist/index.html)** directly in a browser. It is a single 39.5 MB file with the tide model, place catalogue, interface and WebAssembly engine inside. No backend, static server, account, API key, installation or connection is needed. Chromium, Safari 26.6.2 and Firefox 153.0.4 direct-file use is verified. The hosted workflow passes an iPad Pro 11 WebKit/touch emulation; a physical iPad remains a compatibility follow-up.
 
 Enter a town (optionally followed by its region or country), choose a matching place, or enter latitude and longitude. **Show here** asks the browser for location permission. Choose the first local date or leave it blank for today on that coast. Five days show high/low tides in metres, with expandable sun/moon information. Nearby model points can be selected explicitly. Download individual forecasts or the last 100 history entries; restore a history backup from JSON.
 
-A local bookmark can prefill the app with `#place=Half%20Moon%20Bay%2C%20California&date=2026-09-07` after the file URL. Omit the date for today; ambiguous place names still require a choice. The fragment is processed locally.
+A local bookmark can prefill the app with `#place=Half%20Moon%20Bay%2C%20California&date=2026-09-07` after the file URL. Omit the date for today; ambiguous place names still require a choice. The fragment starts the same online-first lookup as Show tides; Local model only and offline use keep it local.
 
 ## What is preserved and what changes
 
@@ -65,4 +65,4 @@ The latter records regression evidence using the original server implementation 
 
 ## Online data
 
-Search online uses Photon / OpenStreetMap for addresses and smaller places. Find official tide stations offers nearby NOAA and CHS stations, with coordinates and distance. Choosing a station downloads five days of predictions. Sources, retrieval time and the station height datum are shown separately from model output. Responses are cached locally with bounded retention and labelled stale fallback. No internet request is needed for the original search/model workflow. Live NOAA and Photon requests were verified in Chromium; CHS returned API data but browser access failed in this environment and remains subject to provider CORS behavior.
+Show tides uses Photon / OpenStreetMap for normal place/address input, then requests nearby NOAA/CHS predictions. Clear place matches resolve automatically; a station within 25 km is accepted only when its distance is at most 60% of the next nearest station. Otherwise the app opens a chooser. A failed online lookup or absent supported station uses the bundled catalogue/model with a visible explanation. The same flow handles location, coordinates, Today, history and deep links. Data sources and station options offers alternate stations and an explicit Local model only mode. Sources, retrieval time and the station height datum are shown separately from model output. Responses are cached locally with bounded retention and labelled stale fallback. Local model only and browser-reported offline use make no network requests in the normal search/model workflow. Live NOAA and Photon requests were verified in Chromium; CHS returned API data but browser access failed in this environment and remains subject to provider CORS behavior.

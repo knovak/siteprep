@@ -46,3 +46,12 @@ This authorizes online data retrieval in the two experimental forks. A standalon
 Bookmark Sorter gains direct website metadata, picture-URL downloads, URL imports, and named Microlink metadata/screenshot modes. Microlink receives URLs only when the user chooses that source and requests previews. Original bookmark fields and attached pictures are preserved. Tide Here gains Photon address searches and NOAA/CHS station and prediction adapters, with provider/datum labels, bounded caches and visible failures. Station choice is explicit because a nearby station may be across a bay or island.
 
 The remaining external limits are browser cross-origin permissions, upstream availability and free-service quotas. Canadian requests returned data to the API probe but were blocked in live Chromium; the adapter is implemented and covered by controlled responses, without claiming that this environment verified live Canadian retrieval. Physical-iPad acceptance and a production release remain separate.
+
+
+## 2026-09-08 — Normal Tide Here actions must use the internet
+
+The user reported: **“I don't think this works. I check the tide here application and it doesn't go the internet to get tides -- it always does FES2022 model instead of looking it up online. And, it doesn't resolve place names like the online one does.”**
+
+This corrects the earlier implementation of internet access as separate optional buttons. Show tides must search place names and addresses online and prefer official predictions. The same flow applies to coordinates, Show here, Today, history and deep links. The bundled catalogue and FES2022 model remain fallbacks, with a visible explanation; Local model only is an explicit choice.
+
+A clearly closer station within 25 km is selected automatically, retaining the hosted application's 0.6 distance-ratio rule. Ambiguous places and stations still require a choice, so an arbitrary station across a bay is not selected silently. Nearby station choices remain bounded at 150 km. Current NOAA/CHS adapters, provider/browser limitations, cached data labels and the separate production release boundary remain in effect.

@@ -59,7 +59,7 @@ test('the published Tide Here sample uses its embedded model after going offline
   await expect(app.locator('#result')).toBeVisible();await expect(app.locator('#zone-name')).toContainText('Europe/Dublin');
   expect(await app.locator('.event-group li').count()).toBeGreaterThan(8);
   expect(requests).toEqual([]);await context.setOffline(false);
-  await app.reload();await expect(app.locator('#runtime-status')).toContainText('Ready offline');await expect(app.locator('#history-summary')).toContainText(/\([1-9]/);
+  await app.reload();await expect(app.locator('#runtime-status')).toContainText('Ready ·');await expect(app.locator('#history-summary')).toContainText(/\([1-9]/);
 });
 
 test('landing page and findings remain readable on a phone with contained tables',async({page})=>{

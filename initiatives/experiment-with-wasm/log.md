@@ -51,3 +51,8 @@ Added a prioritized, reviewable menu covering physical-iPad acceptance, a recove
 ## 2026-09-08 — Optional online data in both experiments
 
 Added explicit online controls while retaining both offline workflows: Bookmark Sorter URL imports, website metadata, remote picture downloads and named Microlink metadata/screenshots; Tide Here Photon search and NOAA/CHS station/prediction adapters with bounded caches, source/datum labels and cancellation. User bookmark fields and attached pictures are preserved. Live browser probes verified NOAA, Photon and a saved Microlink screenshot. CHS API responses were available outside the browser, but browser CORS blocked live retrieval; the limitation is documented. Rebuilt artifacts and staged preview are prepared in the internet-access PR; this is not a production release.
+
+
+## 2026-09-08 — Correct the normal Tide Here lookup
+
+Responded to the user's San Diego screenshot by routing Show tides, location, Today, history and deep links through Photon and official station predictions. Clear matches resolve automatically using the hosted 25 km / 0.6 station rule; ambiguity opens a chooser, and failures show a local fallback reason. Added a local-only choice and compact source controls. A live form submission loaded 20 NOAA San Diego events without separate online actions; 9 Node and 13 Chromium tests pass, with 8 online journeys also passing Firefox and WebKit. Integrated main's newer Wasm title/collection labels while retaining this PR's functionality. Production remains outside this change.

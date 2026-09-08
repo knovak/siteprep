@@ -39,3 +39,12 @@ Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site
 - Cancel a slow station request, choose a new coast, and verify the old request cannot replace the new location.
 - Check transport timeouts, download limits, credential omission, malformed provider data, partial catalogue failure, cache limits and quota failures.
 - Preserve all existing WASM parity and offline tests. Check live NOAA, Photon and Microlink separately from deterministic fixtures, and report provider/browser failures explicitly.
+
+
+### Default online regression checks
+
+- Submit San Diego through Show tides; verify Photon and NOAA requests, station 9410170, MLLW, and five days without clicking separate online controls.
+- Resolve a beach/street address absent from the bundled catalogue through the same form.
+- Distinguish city/county labels, require choices for ambiguous places/stations, and preserve the 25 km / 0.6 automatic match thresholds.
+- Verify CHS automatic selection with controlled responses, failed search/prediction fallback, no-network local-only use, and late/cancelled requests.
+- Verify coordinates, deep links, geolocation, Today/history and return to the model use the intended source path. Offline tests explicitly disable online availability; they do not rely on the default being offline.

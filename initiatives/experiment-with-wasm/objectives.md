@@ -19,3 +19,8 @@ Extend PR #467 with the original wish, findings and both sample applications as 
 ## 2026-09-08 follow-up: internet data
 
 Enable as much internet access as browser rules and public services permit in both applications. Add usable online controls while preserving their local computation and offline inputs. Make source, cached data and failure states visible. Deliver a ready-for-review PR and test preview.
+
+
+### Normal online flow (September 8 clarification)
+
+Show tides resolves ordinary place names and addresses online and requests official station predictions without requiring separate online buttons. Clear place/station matches resolve automatically, ambiguity is shown as a choice, and an unavailable online service produces a labelled local fallback. Preserve a local-only mode and apply the same behavior to location, history, Today and deep links.

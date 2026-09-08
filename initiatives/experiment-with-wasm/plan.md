@@ -38,3 +38,11 @@ Production followed a separately authorized merge. Desktop Safari and Firefox ve
 3. Preserve local data, offline behavior, source/datum labels, and backup compatibility; cache online tide responses.
 4. Check controlled success/failure/rate-limit/cancellation cases and live public-service requests. Document any provider that cannot be verified in a browser.
 5. Rebuild the committed single-file artifacts and staged website, run the repository build and visual checks, then open a ready-for-review PR with its branch preview. Production awaits a separate release request.
+
+
+## Correct the default Tide Here flow
+
+1. Route the main form, location, Today, history and deep links through online place resolution and official predictions.
+2. Reuse the hosted app's conservative automatic station criteria; show ambiguous choices and labelled local fallbacks.
+3. Keep Local model only available, move optional controls into a collapsed section, and test the exact San Diego submission shown by the user.
+4. Verify real browser requests, rebuild/package the single file, preserve the newer Wasm title changes from main, and update PR #477 and its test preview.

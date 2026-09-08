@@ -133,6 +133,11 @@ async function calculate(candidate, fallbackReason = '') {
 function internetEnabled() {
   return $('#data-mode').value === 'auto' && navigator.onLine !== false;
 }
+function runtimeStatus() {
+  if (data) $('#runtime-status').textContent = 'Ready · ' + (internetEnabled() ? 'online lookup with offline fallback' : 'using the local model');
+}
+window.addEventListener('online', runtimeStatus);
+window.addEventListener('offline', runtimeStatus);
 function useLocal(reason = '') {
   if (candidates.length) return calculate(candidates[0], reason);
   cancelOnline();
@@ -237,7 +242,7 @@ $('#cancel-online').onclick = () => {
 };
 $('#search-online').onclick = () => { $('#data-mode').value = 'auto'; void search(); };
 $('#data-mode').onchange = () => {
-  cancelOnline(); ++version;
+  cancelOnline(); ++version; runtimeStatus();
   if (selectedPlace) void choosePlace(selectedPlace);
 };
 $('#use-local-model').onclick = () => { if (selectedPlace) void useLocal(); };
@@ -296,7 +301,7 @@ $('#import-history').addEventListener('change', async event => {
 showHistory();
 window.tideReady = Promise.all([inflate(harmonicsGzip), inflate(placesGzip), workerReady]).then(([harmonicBytes, placeBytes]) => {
   data = decodeHarmonics(harmonicBytes); places = makePlaceIndex(JSON.parse(new TextDecoder().decode(placeBytes)).places);
-  $('#runtime-status').textContent = `Ready offline · ${data.metadata.count.toLocaleString('en-US')} coastal points · ${places.length.toLocaleString('en-US')} places`;
+  runtimeStatus();
   $('#search-online').disabled = false;
   $('#show-selection').disabled = false; $('#show-here').disabled = false; showHistory();
   // Deep links use the same online-first place and forecast flow as the form.

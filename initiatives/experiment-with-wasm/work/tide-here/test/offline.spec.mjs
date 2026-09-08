@@ -8,7 +8,7 @@ test.beforeEach(async ({context}) => {
   await context.addInitScript(() => Object.defineProperty(navigator, 'onLine', {get: () => false}));
   await context.route(/^https?:/, route => route.abort());
 });
-async function ready(page, target=url) { await page.goto(target); await expect(page.locator('#runtime-status')).toContainText('Ready offline',{timeout:30000}); }
+async function ready(page, target=url) { await page.goto(target); await expect(page.locator('#runtime-status')).toContainText('Ready ·',{timeout:30000}); }
 async function forecast(page, coordinates='37.46, -122.44', date='2026-09-07') {
   await page.locator('#place-input').fill(coordinates); await page.locator('#start-date').fill(date);
   await page.locator('#show-selection').click(); await expect(page.locator('#result')).toBeVisible();
@@ -50,10 +50,10 @@ test('search, alternative point, future date, inland and invalid input behave ho
 
 test('history reloads, exports and restores; cleared browser storage leaves model intact',async({page})=>{
   await ready(page);await forecast(page);
-  await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready offline');await expect(page.locator('#history-summary')).toContainText('(1)');
+  await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready ·');await expect(page.locator('#history-summary')).toContainText('(1)');
   await page.locator('#history-summary').click();const download=page.waitForEvent('download');await page.locator('#download-history').click();
   const file=await (await download).path();
-  await page.evaluate(()=>localStorage.clear());await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready offline');await expect(page.locator('#history-summary')).toContainText('(0)');
+  await page.evaluate(()=>localStorage.clear());await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready ·');await expect(page.locator('#history-summary')).toContainText('(0)');
   await page.locator('#history-summary').click();await page.locator('#import-history').setInputFiles(file);await expect(page.locator('#history-summary')).toContainText('(1)');
   await forecast(page,'53.27,-9.05');
 });
