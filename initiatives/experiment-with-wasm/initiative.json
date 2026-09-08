@@ -1,5 +1,5 @@
 {
-  "title": "experiment with wasm",
+  "title": "Experiment with Wasm",
   "summary": "Convert an existing web application into a standalone browser application powered by WebAssembly.",
   "stage": "refining",
   "value": "medium",

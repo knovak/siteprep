@@ -1,8 +1,8 @@
-# experiment with wasm
+# Experiment with Wasm
 
 Standalone forks of **Bookmark Sorter** and **Tide Here**, both powered by real WebAssembly, with offline workflows and optional online data retrieval. No custom application backend is required.
 
-The released static demo is [experiment with wasm](../../demos/experiment-with-wasm/index.html). Its first page explains WASM and links to both apps. The [wish and findings](../../demos/experiment-with-wasm/findings.html) preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations.
+The released static demo is [Experiment with Wasm](../../demos/experiment-with-wasm/index.html). Its first page explains WASM and links to both apps. The [wish and findings](../../demos/experiment-with-wasm/findings.html) preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations.
 
 - [Open Bookmark Sorter](work/dist/index.html): a browser database and the existing bookmark card interface.
 - [Open Tide Here](work/tide-here/dist/index.html): a single 39.5 MB HTML file carrying 65,203 global coastal harmonic points and 170,946 searchable places. Five days of tides, sun and moon are calculated locally for the chosen coast and date. See [Tide Here details and rebuild instructions](work/tide-here/README.md).

@@ -74,6 +74,9 @@ rendered, so a collection that is entirely active shows one section. An
 initiative whose `initiative.json` cannot be read has no stage to sort on and is
 listed with the active ones, where the error is visible.
 
+Each entry keeps its blocked count and label together with a nonbreaking space
+(for example, `1&nbsp;blocked`), even when the status line wraps.
+
 The overview page is derived entirely from `initiative.json` and the files
 present - purpose, status, what's next, what's blocked, outputs, and links to
 the documents - so displayed status cannot drift from recorded state. An

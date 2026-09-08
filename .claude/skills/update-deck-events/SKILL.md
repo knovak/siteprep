@@ -120,6 +120,11 @@ the user reverses it.
 
 ## 5. Write the changes
 
+Keep each complete `<li>...</li>` on its own line in the HTML source, including
+existing items in a list being updated. Keep list wrapper tags off the item
+lines. Apply this on both the page and its reject page so later diffs can track
+individual items; preserve each item's content, number, and position.
+
 New items follow the same conventions as any hand-written one:
 
 - A three-digit number, random, unique across the page and its reject page,
