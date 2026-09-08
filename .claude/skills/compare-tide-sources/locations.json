@@ -1,0 +1,151 @@
+{
+  "schema": "compare-tide-sources/locations/v1",
+  "thresholds": {
+    "timeProblemMinutes": 30,
+    "timeWarningMinutes": 15,
+    "rangeProblemPercent": 15,
+    "rangeProblemMetres": 0.1,
+    "rangeWarningPercent": 5,
+    "rangeWarningMetres": 0.05,
+    "datumSpreadMetres": 0.1
+  },
+  "locations": [
+    {
+      "id": "half-moon-bay-ca",
+      "query": "Half Moon Bay, California",
+      "zone": "America/Los_Angeles",
+      "expectProvider": "NOAA",
+      "why": "Open Pacific coast with a NOAA reference station a few km away. The baseline case: everything should agree.",
+      "official": {
+        "kind": "noaa",
+        "station": "9414131",
+        "name": "Pillar Point Harbor, Half Moon Bay",
+        "datum": "MLLW",
+        "url": "https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9414131"
+      }
+    },
+    {
+      "id": "inverness-ca",
+      "query": "Inverness, California",
+      "zone": "America/Los_Angeles",
+      "expectProvider": "NOAA",
+      "why": "Up a long narrow inlet (Tomales Bay). NOAA has a subordinate station that knows the bay lags the ocean by about 90 minutes; a global model has no inlet to lag in. Expect the largest timing gap in the set.",
+      "official": {
+        "kind": "noaa",
+        "station": "9415228",
+        "name": "Inverness, Tomales Bay",
+        "datum": "MLLW",
+        "url": "https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=9415228"
+      }
+    },
+    {
+      "id": "portland-me",
+      "query": "Portland, Maine",
+      "zone": "America/New_York",
+      "expectProvider": "NOAA",
+      "why": "Large-range Atlantic tide (3 m+) at an unambiguous NOAA primary station. Big absolute numbers make a percentage range error easy to see.",
+      "official": {
+        "kind": "noaa",
+        "station": "8418150",
+        "name": "Portland, Maine",
+        "datum": "MLLW",
+        "url": "https://tidesandcurrents.noaa.gov/noaatidepredictions.html?id=8418150"
+      }
+    },
+    {
+      "id": "vancouver-bc",
+      "query": "Vancouver, Canada",
+      "zone": "America/Vancouver",
+      "expectProvider": "CHS",
+      "why": "Exercises the Canadian CHS adapter, the third official provider. Mixed semidiurnal tide with unequal highs and lows, which is harder to match than a clean twice-daily curve.",
+      "official": {
+        "kind": "chs",
+        "station": "07735",
+        "name": "Vancouver",
+        "datum": "Chart Datum",
+        "url": "https://tides.gc.ca/en/stations/07735"
+      }
+    },
+    {
+      "id": "inverness-uk",
+      "query": "Inverness, United Kingdom",
+      "zone": "Europe/London",
+      "expectProvider": "FES2022",
+      "why": "No official adapter is configured for the UK, so both apps fall back to the same global model and should agree with each other exactly. UKHO is the outside check on that model.",
+      "official": {
+        "kind": "ukho",
+        "station": "0256",
+        "name": "Inverness",
+        "datum": "Chart Datum",
+        "url": "https://easytide.admiralty.co.uk/?PortID=0256"
+      }
+    },
+    {
+      "id": "nice-fr",
+      "query": "Nice, France",
+      "zone": "Europe/Paris",
+      "expectProvider": "FES2022",
+      "why": "Microtidal Mediterranean coast: the whole daily range is 10-25 cm. Percentage errors look alarming here and mean almost nothing, which is exactly why the range check needs an absolute floor as well as a percentage.",
+      "official": {
+        "kind": "shom",
+        "station": "NICE",
+        "name": "Nice",
+        "datum": "Chart Datum",
+        "url": "https://maree.shom.fr/harbor/NICE/hlt"
+      }
+    },
+    {
+      "id": "maroochydore-au",
+      "query": "Maroochydore, Australia",
+      "zone": "Australia/Brisbane",
+      "expectProvider": "Bureau of Meteorology",
+      "why": "Exercises the Australian BOM adapter and the LAT datum. Also the location most likely to be on a different coast-local day from the rest of the set.",
+      "official": {
+        "kind": "bom",
+        "station": "QLD_TP019",
+        "region": "QLD",
+        "tzJs": "AEST",
+        "name": "Mooloolaba",
+        "datum": "Lowest Astronomical Tide (LAT)",
+        "url": "https://www.bom.gov.au/australia/tides/"
+      }
+    },
+    {
+      "id": "perth-au",
+      "query": "Perth, Australia",
+      "zone": "Australia/Perth",
+      "expectProvider": "Bureau of Meteorology",
+      "why": "Diurnal tide: some days have only one high and one low. Catches comparison code that assumes four events a day.",
+      "official": {
+        "kind": "bom",
+        "station": "WA_TP015",
+        "region": "WA",
+        "tzJs": "AWST",
+        "name": "Fremantle",
+        "datum": "Chart Datum",
+        "url": "https://www.bom.gov.au/australia/tides/"
+      }
+    },
+    {
+      "id": "osaka-jp",
+      "query": "Osaka, Japan",
+      "zone": "Asia/Tokyo",
+      "expectProvider": "FES2022",
+      "why": "Osaka Bay has a shallow double low water. JMA lists turning points a global model does not resolve, so this is the event-count check.",
+      "official": {
+        "kind": "jma",
+        "station": "OS",
+        "name": "Osaka",
+        "datum": "JMA station datum",
+        "url": "https://www.data.jma.go.jp/kaiyou/db/tide/suisan/suisan.php?stn=OS"
+      }
+    }
+  ],
+  "providerHosts": [
+    "api.tidesandcurrents.noaa.gov",
+    "api-sine.dfo-mpo.gc.ca",
+    "api-iwls.dfo-mpo.gc.ca",
+    "ken-novak.chatgpt.site/stations"
+  ],
+  "shomApiKey": "b2q8lrcdl4s04cbabsj4nhcb"
+}
