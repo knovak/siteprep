@@ -1,1 +1,0 @@
-An interactive browser-based RMD calculator for projecting tax-deferred retirement account balances under fixed annual growth, IRS Required Minimum Distributions, and optional target withdrawals. <a href="./RMD%20calculator/instructions.html">Instructions</a>.
