@@ -51,6 +51,10 @@
 <p>Reproduced the reported whole-file failure with a mixed HTML export containing non-web bookmarks. HTML and portable JSON imports now retain valid absolute URLs; only HTTP(S) card titles become links. Reload and full backup validation accept the same records. Added a visible import explanation and regression coverage for all records surviving deduplication, JSON export/import, reload and backup/restore, non-web titles remaining inert, and malformed URLs still rolling back. All seven WASM integration tests and six offline Chromium tests passed. Regenerated the standalone app and prepared the staged preview; production remains at its recorded release. CI verifies the staged website so source fixes do not require a production copy.</p>
 <h3>2026-09-07 — Release</h3>
 <p>Released to production — Demo, <code>35499ea</code>. 2 commit(s) since the previous release. <a href="https://knovak.github.io/siteprep/demos/experiment-with-wasm/">https://knovak.github.io/siteprep/demos/experiment-with-wasm/</a> See releases.md.</p>
+<h3>2026-09-07 — Verify desktop Safari, Firefox and iPad-shaped WebKit</h3>
+<p>Opened both downloaded applications in installed Safari 26.6.2 and Firefox 153.0.4. Safari retained a Bookmark Sorter edit across reload, restored a full SQLite backup into a fresh file copy, and retained Tide Here history; pinned Firefox automation passed all direct-file and static-demo cases. All static-demo workflows also passed an iPad Pro 11 WebKit/touch emulation. A physical iPad is not attached, so that acceptance evidence remains an explicit <code>data:</code> blocker.</p>
+<h3>2026-09-08 — Propose optional improvements as a pull request, from better documentation to suggested features</h3>
+<p>Added a prioritized, reviewable menu covering physical-iPad acceptance, a recovery guide, installable offline use, storage health and evidence-led performance options; none is authorized by the proposal.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">

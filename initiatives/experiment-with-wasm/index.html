@@ -54,12 +54,11 @@
     <div class="card-content">
       <dl class="stands">
         <dt>Needs from you</dt>
-        <dd><p>Nothing.</p></dd>
-        <dt>Scheduled</dt>
         <dd><ul>
-          <li>Verify static and downloaded app use, persistence and recovery in Safari, Firefox and on iPad</li>
-          <li>Propose optional improvements as a pull request, from better documentation to suggested features</li>
+          <li>physical iPad findings for opening both downloads from Files, persistence, backup recovery, touch layout and Tide Here cold startup; desktop Safari and Firefox pass, and iPad Pro 11 WebKit emulation passes hosted workflows <em>(Verify downloaded app use, persistence and recovery on a physical iPad — <code>data:</code>)</em></li>
         </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
         <dt>Done</dt>
         <dd><p>Evaluated and converted both applications into self-contained HTML files: Bookmark Sorter uses SQLite WASM, while Tide Here runs its original harmonic engine inside WASM with 65,203 coastal points and 170,946 searchable places. Eleven integration tests and ten offline Chromium browser tests cover application behavior, persistence, recovery and tide calculation parity.</p>
 <p>The static demo under <code>demos/experiment-with-wasm/</code> includes a WASM introduction, both apps and downloads, the original wish, findings, licences and provenance. Four website checks verify the complete copies, navigation, offline app use and phone layout; reproducible source and build tools remain in the initiative.</p></dd>
@@ -83,9 +82,9 @@
       </ul>
       <ul class="currency">
         <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
-        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-differs">differs from main</span> — content is not main&#39;s, and the recorded commit cannot place it</li>
       </ul>
-      <p class="deployment-status">main is on both test and production · production is current</p>
+      <p class="deployment-status">test has main · released, and the released commit can no longer be placed</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-outputs">
