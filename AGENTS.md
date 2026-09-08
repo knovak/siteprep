@@ -27,6 +27,37 @@ documented elsewhere and need no techdoc: code inside an initiative (`lib/`,
 Create pull requests as ready for review by default. Create a draft pull request
 only when the user explicitly asks for a draft.
 
+### Check-in schedule after opening a pull request
+
+A scheduled check-in costs money every time it fires, whether or not anything
+changed, and it fires while nobody is at the machine. This repo allows two per
+pull request, and no recurring schedule at all. After opening a pull request or
+pushing to one:
+
+1. Schedule one check-in about 30 minutes out.
+2. When it fires, look at the pull request once - CI on the current head, merge
+   state, open review threads - and act on whatever it turns up.
+3. If the pull request is still open after that, schedule exactly one more
+   check-in about 24 hours out.
+4. When the 24-hour check-in fires, act on what it turns up, then stop. Do not
+   schedule a third one, and never re-arm an hourly or other recurring cycle.
+
+Say in the reply to the 24-hour check-in that scheduled checking has stopped
+and what state the pull request is in. Resume it only when the user asks, on
+the same two check-ins.
+
+These limits are on scheduled check-ins, not on the work:
+
+- Events that arrive on their own - CI results, review comments, merge-conflict
+  and base-branch notices - are still handled when they arrive. They wake the
+  session only when something actually happened, so they are not what costs
+  money while the user is away.
+- A check-in or event that finds a red or conflicted pull request still gets a
+  fix pushed, or one comment saying what is blocking, before the turn ends.
+- Do not poll with `sleep`, a timed loop, repeated status calls, or `/loop`
+  unless the user asks for it in so many words. A check-in is one look, and
+  then the turn ends.
+
 ## Writing style
 
 Use direct, literal language. Remove or minimize mannered prose that substitutes
