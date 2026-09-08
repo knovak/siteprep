@@ -39,3 +39,11 @@ Reproduced the reported whole-file failure with a mixed HTML export containing n
 ## 2026-09-07 — Release
 
 Released to production — Demo, `35499ea`. 2 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
+
+## 2026-09-07 — Verify desktop Safari, Firefox and iPad-shaped WebKit
+
+Opened both downloaded applications in installed Safari 26.6.2 and Firefox 153.0.4. Safari retained a Bookmark Sorter edit across reload, restored a full SQLite backup into a fresh file copy, and retained Tide Here history; pinned Firefox automation passed all direct-file and static-demo cases. All static-demo workflows also passed an iPad Pro 11 WebKit/touch emulation. A physical iPad is not attached, so that acceptance evidence remains an explicit `data:` blocker.
+
+## 2026-09-08 — Propose optional improvements as a pull request, from better documentation to suggested features
+
+Added a prioritized, reviewable menu covering physical-iPad acceptance, a recovery guide, installable offline use, storage health and evidence-led performance options; none is authorized by the proposal.

@@ -1,6 +1,6 @@
 # Tide Here, offline
 
-Open **[dist/index.html](dist/index.html)** directly in a browser. It is a single 39.5 MB file with the tide model, place catalogue, interface and WebAssembly engine inside. No backend, static server, account, API key, installation or connection is needed. Chromium direct-file use is verified; Safari and Firefox remain compatibility follow-ups.
+Open **[dist/index.html](dist/index.html)** directly in a browser. It is a single 39.5 MB file with the tide model, place catalogue, interface and WebAssembly engine inside. No backend, static server, account, API key, installation or connection is needed. Chromium, Safari 26.6.2 and Firefox 153.0.4 direct-file use is verified. The hosted workflow passes an iPad Pro 11 WebKit/touch emulation; a physical iPad remains a compatibility follow-up.
 
 Enter a town (optionally followed by its region or country), choose a matching place, or enter latitude and longitude. **Show here** asks the browser for location permission. Choose the first local date or leave it blank for today on that coast. Five days show high/low tides in metres, with expandable sun/moon information. Nearby model points can be selected explicitly. Download individual forecasts or the last 100 history entries; restore a history backup from JSON.
 

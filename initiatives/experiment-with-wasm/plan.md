@@ -29,4 +29,4 @@ Verify direct-file persistence and recovery in Safari and Firefox before claimin
 3. Verify static-hosted navigation, both app workflows after going offline, complete copying and phone layout; commit the package and release it through the demo workflow.
 4. Record the output and release, refresh the brief, run the final repository build, inspect demo/Demo TOC screenshots, update the existing PR, and verify its branch preview.
 
-Production follows a separately authorized merge. Safari, Firefox and real iPad verification remain actionable. Home Screen installation with explicit offline caching is a possible later increment, not part of this static publication request.
+Production followed a separately authorized merge. Desktop Safari and Firefox verification is complete; physical-iPad verification remains blocked on device findings. Home Screen installation with explicit offline caching is a possible later increment, not part of this static publication request.

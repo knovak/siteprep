@@ -23,3 +23,10 @@
 Four website checks compare every release file against `work/site/` except `demo.json`, verify the complete wish and local links/anchors, follow both app links through a plain static HTTP server and exercise them after networking is disabled, and check a 390-pixel layout with contained table scrolling. App HTML hashes must remain unchanged. Capture the final landing, findings and Demo TOC screenshots after the root build, then verify the branch preview after CI publishes it.
 
 Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site/` directory to exercise the staged preview without requiring `demos/` to change. Use the default target for the complete release comparison when publishing to production.
+
+## Browser compatibility follow-up
+
+- Run all three Playwright suites with `WASM_BROWSER=firefox`; keep the default Chromium projects unchanged for CI.
+- Run the static demo with `WASM_BROWSER=webkit WASM_DEVICE='iPad Pro 11'` to exercise its mobile user agent, 834 × 1194 viewport, touch input, offline post-load actions and reload persistence.
+- Test downloaded files in the installed Safari and Firefox applications, including a separate-copy backup restore, before claiming direct-file compatibility.
+- Treat Playwright WebKit as engine evidence, not as an installed Safari or physical-iPad result. Keep actual-iPad Files/Home Screen testing open until a person supplies that result.

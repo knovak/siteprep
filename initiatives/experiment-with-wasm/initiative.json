@@ -13,19 +13,12 @@
   "todo": [
     {
       "id": "verify-other-browsers",
-      "title": "Verify static and downloaded app use, persistence and recovery in Safari, Firefox and on iPad",
-      "state": "actionable",
+      "title": "Verify downloaded app use, persistence and recovery on a physical iPad",
+      "state": "blocked",
       "value": "medium",
       "effort": "medium",
-      "advances_stage": false
-    },
-    {
-      "id": "refining-improvements",
-      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "medium",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "data:physical iPad findings for opening both downloads from Files, persistence, backup recovery, touch layout and Tide Here cold startup; desktop Safari and Firefox pass, and iPad Pro 11 WebKit emulation passes hosted workflows"
     }
   ],
   "brief": {

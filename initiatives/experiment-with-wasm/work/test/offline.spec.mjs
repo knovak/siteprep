@@ -66,7 +66,7 @@ test('full backup and local picture survive restore; sample uses a separate coll
   await page.locator('#admin-menu > summary').click();
   const chooser = page.waitForEvent('filechooser');
   await page.locator('.local-picture').first().click();
-  await (await chooser).setFiles({name:'picture.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a4t8AAAAASUVORK5CYII=','base64')});
+  await (await chooser).setFiles({name:'picture.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=','base64')});
   await expect(page.locator('#status')).toHaveText('Picture saved on this device.');
   await expect(page.locator('.capture img')).toHaveCount(1);
   await page.locator('#admin-menu > summary').click();

@@ -45,7 +45,9 @@ test('the published Bookmark Sorter opens from the landing page and edits sample
   const requests=[];app.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});await context.setOffline(true);
   await app.locator('#admin-menu > summary').click();await app.locator('#local-sample').click();await expect(app.locator('#count')).toHaveText('18');
   await app.locator('#admin-menu > summary').click();await app.locator('button[data-verdict=keeper]').click();await expect(app.locator('#status')).toContainText('applied');
-  expect(requests).toEqual([]);
+  expect(requests).toEqual([]);await context.setOffline(false);
+  await app.reload();await expect(app.locator('#local-state')).toContainText('SQLite / WASM');
+  await app.locator('#collection-select').selectOption({label:'WASM sample bookmarks · 18'});await expect(app.locator('#backlog')).toHaveText('17');
 });
 
 test('the published Tide Here sample uses its embedded model after going offline',async({page,context})=>{
@@ -54,7 +56,9 @@ test('the published Tide Here sample uses its embedded model after going offline
   const requests=[];app.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});await context.setOffline(true);
   await app.locator('#place-input').fill('53.27,-9.05');await app.locator('#show-selection').click();
   await expect(app.locator('#result')).toBeVisible();await expect(app.locator('#zone-name')).toContainText('Europe/Dublin');
-  expect(await app.locator('.event-group li').count()).toBeGreaterThan(8);expect(requests).toEqual([]);
+  expect(await app.locator('.event-group li').count()).toBeGreaterThan(8);
+  expect(requests).toEqual([]);await context.setOffline(false);
+  await app.reload();await expect(app.locator('#runtime-status')).toContainText('Ready offline');await expect(app.locator('#history-summary')).toContainText(/\([1-9]/);
 });
 
 test('landing page and findings remain readable on a phone with contained tables',async({page})=>{
