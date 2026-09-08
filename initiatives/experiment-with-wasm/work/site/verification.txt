@@ -71,3 +71,13 @@ The package preserves the standalone app hashes. Source is `work/site/` and the 
 - A real Chromium interaction selected SAN FRANCISCO (Golden Gate) through Find official tide stations and loaded 19 high/low events over September 8–12 from NOAA. The page showed NOAA CO-OPS, MLLW, five local-day cards and retrieval time. Photon returned a real Half Moon Bay result.
 - CHS API probes returned station and prediction JSON, but Chromium reported missing CORS headers for both file and loopback-hosted origins. The app's CHS paths are verified with controlled responses and preserve local forecasts on failure. Live Canadian access is not marked verified.
 - The image fixture was replaced with a valid generated PNG after Firefox rejected the original fixture's encoding. The WebKit persistence check blocks HTTP(S) requests before reloading the local file; WebKit's simulated offline network mode itself returned an internal error for file navigation. Existing Chromium tests continue to run the original workflows with networking disabled.
+
+
+## September 8 correction: online first in the normal Tide Here flow
+
+The earlier tests proved only the separate online buttons. The user's San Diego screenshot exposed that the main form still used the offline catalogue and FES2022. The corrected form now prefers online place lookup and official predictions.
+
+- A real Chromium browser submitted `San Diego, California, United States` with Show tides and no additional online clicks. Photon resolved the place and NOAA station **9410170, SAN DIEGO (Broadway)** loaded automatically, 1.3 km away. Five local days (September 8–12) contained **20 events**, labelled NOAA CO-OPS and MLLW.
+- Tide Here now has **9 Node tests and 13 Chromium browser tests**. The **8 online browser journeys also pass Firefox and WebKit**. These cover main-form name/address resolution, clear and ambiguous station selection, cached responses, local-only use, failed-provider fallback, cancellation and newer-place protection, geolocation, deep links and history.
+- The five offline browser journeys still pass with networking disabled. The static-package Tide Here check explicitly sets offline availability before its initial deep link, so it verifies an actual fallback rather than assuming the default stays offline.
+- Canadian live CORS limitations and physical-iPad acceptance remain as recorded above. FES model parity is unchanged.

@@ -17,13 +17,13 @@ Bookmark Sorter already accepted complete local bookmark exports and used SQLite
 | Inputs | The user's imported bookmarks; optional sample collection | 65,203 coastal model points, 34 harmonic constituents and 170,946 searchable places |
 | Standalone file | About 1.1 MB | About 39.5 MB |
 | Browser JavaScript | Interface, import parsing, expression preparation and persistence | Interface, place matching, local dates, decompression and sun/moon calculations |
-| Optional online functions | URL imports, direct website metadata, picture downloads, Microlink details/screenshots | Photon address search and explicit NOAA/CHS station forecasts, with cached responses |
+| Optional online functions | URL imports, direct website metadata, picture downloads, Microlink details/screenshots | Online-first place/address search and NOAA/CHS forecasts, with clear-match selection and local fallback |
 
 Tide Here's conversion preserves the existing predictor inside a WASM interpreter. It is not a new native numerical implementation. The experiment establishes that both applications can perform their central work locally; it does not establish that WASM made them faster.
 
 ## What “no backend” means here
 
-This demo is a static website: hosting delivers files, and the browser runs each application. Its local workflows need no runtime network access. Explicit online controls can retrieve additional data through browser HTTP(S) requests. Following a bookmark or a source link opens an external website. Tide Here's optional location button uses the browser's location service, which may involve operating-system services.
+This demo is a static website: hosting delivers files, and the browser runs each application. Its local workflows need no runtime network access. Bookmark Sorter's explicit online controls and Tide Here's normal Show tides action retrieve data through browser HTTP(S) requests. Following a bookmark or a source link opens an external website. Tide Here's optional location button uses the browser's location service, which may involve operating-system services.
 
 For desktop use without a connection, download the application's HTML file and open it in a supported browser. The tests copied Tide Here to an unrelated directory and blocked networking. A web address still needs a connection to load unless the browser has retained it; these versions do not yet include a service worker or a guaranteed offline reopening installation. Adding a website to a Home Screen alone is not that guarantee.
 
@@ -39,7 +39,7 @@ Both applications keep their databases on the current device and browser; they d
 
 ## Tide coverage and meaning
 
-The included offline calculator uses the FES2022b global model everywhere. Online controls can also request station forecasts with separately labelled provider datums. Heights are approximate astronomical harmonics in metres relative to model mean sea level, not local chart datum. Weather, storm surge, waves and river flow are excluded. These results are not for navigation or safety decisions.
+The included offline calculator uses the FES2022b global model everywhere. The normal Show tides action prefers official station forecasts with separately labelled provider datums. Fallback model heights are approximate astronomical harmonics in metres relative to model mean sea level, not local chart datum. Weather, storm surge, waves and river flow are excluded. These results are not for navigation or safety decisions.
 
 The app offers sampled coastal points within 40 km of the selected place. Inland locations and uncovered coasts return a coverage message. A nearby point can be on a different side of a bay or island; its coordinates are shown and alternatives can be selected. The offline place catalogue supports town names, aliases and regions, not arbitrary street addresses; coordinates work independently of name coverage.
 
@@ -51,12 +51,12 @@ The bundled values come from the existing derived FES2022b coastal dataset, not 
 |---|---|
 | Bookmark Sorter | Ten integration/transport tests and nine Chromium browser tests, including online controls |
 | Bookmark workload | 5,600 generated bookmarks; indexed paging and a 2,800-item bulk verdict |
-| Tide Here | Eight integration/provider tests and eight Chromium browser tests |
+| Tide Here | Nine integration/provider tests and thirteen Chromium browser tests |
 | Numerical equivalence | Twelve comparisons with the original full-precision FES forecasts, across continents and a 2036 date; event types/counts match, times differ by less than one second and heights by less than 0.00001 metre |
 | Offline operation | Copied standalone HTML, networking disabled, zero HTTP(S) requests during the tested application workflows |
 | Recovery and limits | Backup/restore, reload, quota errors, missing WASM, invalid input, stale bookmark writes, and tide history loss |
 | Dates and astronomy | Coast-local days, 23/25-hour daylight-saving days, date-line placement and polar no-event conditions |
-| Online browser checks | Three new journeys per application pass in Chromium, Firefox and WebKit |
+| Online browser checks | Three Bookmark Sorter journeys and eight Tide Here journeys pass in Chromium, Firefox and WebKit |
 | Layout | Chromium desktop and phone layouts checked |
 | Desktop browser compatibility | Installed Safari 26.6.2 and Firefox 153.0.4 opened both downloaded apps; Safari retained and restored Bookmark Sorter data, and Firefox passed all automated direct-file suites |
 | iPad-shaped compatibility | The static demo and both hosted workflows pass an iPad Pro 11 WebKit/touch emulation; no physical iPad result is claimed |
@@ -79,6 +79,6 @@ WASM itself does not prohibit internet access. The first versions explicitly dis
 
 Bookmark Sorter can import export URLs, fetch website metadata directly, save picture URLs, and use explicit Microlink metadata or screenshot modes. The service receives the requested URL only when selected and invoked. Preview batches are limited to 12, run sequentially, can be cancelled and stop on quota errors. Existing user fields and local pictures are retained. Microlink’s unauthenticated endpoint has a small free quota and may fail on particular websites. [Microlink documentation](https://microlink.io/docs/api/basics/rate-limit).
 
-Tide Here offers online Photon address searches and explicit NOAA/CHS station selection. Searches/catalogues cache for seven days and predictions for six hours; stale fallback after service failure preserves the retrieval timestamp and displays a notice. Station results are limited to 150 km and must be checked against the actual bay/coast. The station’s time zone comes from the nearby embedded coastline, or UTC where unavailable. [Photon usage](https://github.com/komoot/photon), [NOAA API](https://api.tidesandcurrents.noaa.gov/api/dev), [CHS web services](https://www.tides.gc.ca/en/web-services-offered-canadian-hydrographic-service).
+Tide Here's Show tides action resolves names and addresses through Photon and prefers NOAA/CHS predictions. A clear place match resolves automatically. A station within 25 km is accepted when its distance is at most 60% of the next nearest station; other nearby matches require a choice. Failed lookups or absent stations produce labelled local fallbacks, and Local model only disables normal online requests. Searches/catalogues cache for seven days and predictions for six hours; stale fallback after service failure preserves the retrieval timestamp and displays a notice. Station results are limited to 150 km and must be checked against the actual bay/coast. The station’s time zone comes from the nearby embedded coastline, or UTC where unavailable. [Photon usage](https://github.com/komoot/photon), [NOAA API](https://api.tidesandcurrents.noaa.gov/api/dev), [CHS web services](https://www.tides.gc.ca/en/web-services-offered-canadian-hydrographic-service).
 
-Live Chromium checks fetched NOAA predictions and Photon results, and saved a Microlink screenshot as a local PNG. CHS station/prediction requests returned JSON through an API probe but were blocked by browser CORS in the live test, even from a hosted loopback origin. Its adapters and failure/cached paths are covered with controlled responses; live Canadian access remains unverified. This is an upstream/browser restriction rather than an application policy denying connections. The original FES model remains usable when services fail. [Browser access rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS).
+Live Chromium checks submitted San Diego through Show tides, resolved it via Photon, and automatically loaded 20 NOAA events for September 8–12 from SAN DIEGO (Broadway), station 9410170. Earlier checks also saved a Microlink screenshot as a local PNG. CHS station/prediction requests returned JSON through an API probe but were blocked by browser CORS in the live test, even from a hosted loopback origin. Its adapters and failure/cached paths are covered with controlled responses; live Canadian access remains unverified. This is an upstream/browser restriction rather than an application policy denying connections. The original FES model remains usable when services fail. [Browser access rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS).
