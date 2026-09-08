@@ -9,11 +9,11 @@ and lifecycle records into the initiative system.
 
 - [Test simulator](../../preview/initiatives/sbdc-night-sky/index.html)
 - [Existing production demo](https://knovak.github.io/siteprep/demos/SBDC%20Night%20Sky/)
-- [Wish](wish.md), [objectives](objectives.md), and [adoption decisions](decisions.md)
-- [Supplied specification](spec.md) and [supplied implementation plan](plan.md)
-- [Adoption checks and user test plan](test-plan.md)
-- [Provenance and all supplied phase, final, and upgrade reports](notes.md)
-- [Adoption log](log.md)
+- [Wish](wish.html), [objectives](objectives.html), and [adoption decisions](decisions.html)
+- [Supplied specification](spec.html) and [supplied implementation plan](plan.html)
+- [Adoption checks and user test plan](test-plan.html)
+- [Provenance and all supplied phase, final, and upgrade reports](notes.html)
+- [Adoption log](log.html)
 
 The original README and complete tutorial appear below, without edits. Their
 `sbdc-sky-simulator.html` is adopted as `work/index.html`; downloading that file
@@ -27,13 +27,13 @@ archive is retained intact under `notes/`.
 | --- | --- | --- |
 | `README.md` | This page | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/README.md) |
 | `TUTORIAL.md` | This page | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/TUTORIAL.md) |
-| `SPECIFICATION.md` | [Specification](spec.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/SPECIFICATION.md) |
-| `IMPLEMENTATION_PLAN.md` | [Implementation plan](plan.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/IMPLEMENTATION_PLAN.md) |
-| `PHASE1_REPORT.md` | [Notes](notes.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/PHASE1_REPORT.md) |
-| `PHASE23_REPORT.md` | [Notes](notes.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/PHASE23_REPORT.md) |
-| `PHASE4_REPORT.md` | [Notes](notes.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/PHASE4_REPORT.md) |
-| `FINAL_REPORT.md` | [Notes](notes.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/FINAL_REPORT.md) |
-| `UPGRADE_PLAN.md` | [Notes](notes.md) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/UPGRADE_PLAN.md) |
+| `SPECIFICATION.md` | [Specification](spec.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/SPECIFICATION.md) |
+| `IMPLEMENTATION_PLAN.md` | [Implementation plan](plan.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/IMPLEMENTATION_PLAN.md) |
+| `PHASE1_REPORT.md` | [Notes](notes.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/PHASE1_REPORT.md) |
+| `PHASE23_REPORT.md` | [Notes](notes.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/PHASE23_REPORT.md) |
+| `PHASE4_REPORT.md` | [Notes](notes.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/PHASE4_REPORT.md) |
+| `FINAL_REPORT.md` | [Notes](notes.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/FINAL_REPORT.md) |
+| `UPGRADE_PLAN.md` | [Notes](notes.html) | [Original](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/lib/UPGRADE_PLAN.md) |
 
 ## Working on the adopted source
 

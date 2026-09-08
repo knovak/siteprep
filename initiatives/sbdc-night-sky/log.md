@@ -39,3 +39,11 @@ release authorization remain open.
 ## 2026-09-08 — Verify adopted file integrity, source reproduction, and inherited behavior
 
 All attached files and verbatim document inclusions verified; all 59 inherited tests passed; original source reproduced the existing demo exactly; offline Chromium check completed with the inherited mobile positioning discrepancy recorded. User testing, mobile-fix authorization, and production permission remain open.
+
+## 2026-09-08 — Repository build and navigation
+
+The repository build passed, including the preview-copy integrity checks.
+Checking the generated pages identified authored links that needed `.html`
+destinations; those navigation links were corrected outside the preserved
+document text. The final build and hosted deployment are verified by the PR
+checks and deployment receipt.

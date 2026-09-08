@@ -58,8 +58,8 @@ demo and attached HTML. This is an inherited behavior, not a migration change.
 No source or tutorial correction is included in this file-only adoption.
 
 The original README and tutorial are preserved in full on the
-[README page](README.md); the specification and implementation plan are
-unchanged [spec.md](spec.md) and [plan.md](plan.md). The five remaining supplied
+[README page](README.html); the specification and implementation plan are
+unchanged [spec.md](spec.html) and [plan.md](plan.html). The five remaining supplied
 reports and plans follow below in full. Original filenames remain under
 `lib/` as listed on the README page.
 

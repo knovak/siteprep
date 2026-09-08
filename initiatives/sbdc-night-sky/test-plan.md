@@ -11,7 +11,7 @@
    embedded assumptions after JSON parsing.
 3. Run the inherited model, scenario, golden, and renderer tests together.
    `npm test` in the supplied package omits the renderer file; use the complete
-   command in [README.md](README.md). Never regenerate golden fixtures here.
+   command in [README.md](README.html). Never regenerate golden fixtures here.
 4. Run the original builder in a temporary copy and compare its output with
    `work/index.html`. Run the inherited validation report as a reproducibility
    check, without treating its external-source commentary as fresh research.
@@ -38,15 +38,15 @@ not declare. That simulated-browser suite is preserved; this adoption uses a
 real Chromium smoke instead and records it separately.
 
 The preserved documents include earlier test totals and superseded control
-descriptions. [Notes](notes.md) explains those differences without editing them.
+descriptions. [Notes](notes.html) explains those differences without editing them.
 Test results from July remain historical; September verification belongs in
-[log.md](log.md).
+[log.md](log.html).
 
 ## User testing before production
 
 **Known inherited discrepancy:** the mobile sky is not sticky in the adopted
 Chromium check, despite the tutorial's description. The later CSS rule overrides
-the mobile positioning rule. [Notes](notes.md) records the finding; correction
+the mobile positioning rule. [Notes](notes.html) records the finding; correction
 requires a separately authorized application change.
 
 - Follow the tutorial on the test preview: dusk, midnight, latitude changes,
