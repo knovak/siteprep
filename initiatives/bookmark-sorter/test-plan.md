@@ -294,6 +294,7 @@ the user-facing controls that now sit on top of it:
 | Application allowlist | A signed-in identity matching neither email nor linked Site user id sees the polite not-yet-authorized page; API calls return `403` and create no user or collection | Sign-in is authentication, not authorization |
 | Authorized identity link | The first successful email match records the Site user id; later requests match either value, while collection ownership stays on the opaque id | Stable admission without using email as ownership |
 | Narrow phone controls | The one-card grid, accordion panels, drop target, and Admin summary remain reachable at a narrow-phone viewport | O3 and mobile usability |
+| Redirect review | A dated captured destination shows both complete URLs; dismissing confirmation writes nothing; acceptance replaces a unique destination or merges tags and the earliest date into an existing item while preserving its title, note, and verdict; one Undo restores the exact prior item or pair | Confirmed, collection-scoped URL repair |
 
 Visible changes also receive a post-build screenshot so spacing, colors, and the
 drop target are reviewed as presentation rather than inferred from DOM tests.

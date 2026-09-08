@@ -269,6 +269,22 @@ export function createPileApp({
           })});
         }
 
+        if (request.method === 'GET' && url.pathname === '/api/redirect-proposals') {
+          return json({proposals: await store.listRedirectProposals(collectionId)});
+        }
+
+        if (request.method === 'POST' && url.pathname === '/api/redirect-proposals/accept') {
+          const body = await requestJson(request);
+          if (!body.session_id) throw new Error('Session id is required');
+          if (!body.item_id) throw new Error('Redirect proposal is required');
+          return json(await store.applyRedirectProposal(collectionId, {
+            itemId: body.item_id,
+            sessionId: body.session_id,
+            actionId: idFactory('action'),
+            at: now().toISOString(),
+          }));
+        }
+
         if (request.method === 'GET' && url.pathname === '/api/export') {
           const document = await exportSelection({
             store,

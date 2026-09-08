@@ -139,6 +139,13 @@ export function renderPilePage({isAdmin = false} = {}) {
     .selection-panel .primary { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
     .selection-panel .choice-action { color: var(--ink); background-color: var(--control-bg); }
     .selection-panel .choice-action[data-selection-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
+    .redirect-review { display: grid; grid-template-columns: minmax(240px, 1fr) auto minmax(280px, 1.4fr); gap: 8px; align-items: center; border-top: 1px solid var(--line); padding: 10px 12px 12px; }
+    .redirect-review select, .redirect-review button { min-width: 0; min-height: 32px; border: 1px solid var(--control-line); border-radius: 12px; padding: 4px 9px; color: var(--ink); background-color: var(--surface); }
+    .redirect-review button { border-color: transparent; background-color: var(--control-bg); }
+    .redirect-review button[data-selection-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
+    .redirect-details { min-width: 0; color: var(--muted); font-size: .76rem; }
+    .redirect-details p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .redirect-details code { color: var(--ink); font-size: .74rem; }
     .tag-control { min-width: 0; display: flex; align-items: stretch; }
     .selection-panel .tag-control #tag-selection { flex: 1 1 auto; border-color: transparent; border-radius: 12px 0 0 12px; color: var(--ink); background-color: var(--control-bg); }
     .selection-panel .tag-control #tag-selection[data-tag-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
@@ -242,6 +249,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       .selection-panel { display: flex; overflow-x: auto; }
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
       .selection-panel button { flex-basis: auto; }
+      .redirect-review { display: flex; overflow-x: auto; }
+      .redirect-review > * { flex: 0 0 min(78vw, 280px); }
+      .redirect-review button { flex-basis: auto; }
       .page-controls { display: flex; }
       .file-tools form, #import-form, #export-form { grid-template-columns: 1fr; }
       .import-file-picker { grid-template-columns: 1fr; }
@@ -294,6 +304,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><strong>Tag items</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked. Use its arrow to choose <strong>Untag items</strong> and remove the entered tags from the same set.</li>
         <li><strong>Import</strong> accepts one or more bookmark HTML or Sorter JSON files through Choose Files or the neighboring drop target. Dropping selects the files; Import files processes them in order into the collection selected when you start. Each file has its own result; a failed file does not stop the remaining files. The source tag applies to every HTML file in the batch.</li>
         <li><strong>Open proposal / saved / previous</strong> uses a neutral background until its chooser has a target, then a soft mint wash in Day or a muted teal wash in Night.</li>
+        <li><strong>Redirected URLs</strong> lists destinations observed during metadata capture. Nothing changes until you choose one and confirm it. If the destination is already in this collection, the two bookmarks merge; Undo restores the original bookmark or pair.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, demo-template creation, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
@@ -417,6 +428,11 @@ export function renderPilePage({isAdmin = false} = {}) {
           <button id="open-previous" class="choice-action" data-selection-ready="false" type="button">Open previous</button>
           <span id="selection-summary">All items</span>
         </section>
+        <section class="redirect-review" aria-label="Redirected URL proposals">
+          <select id="redirect-proposals" aria-label="Redirected URLs"><option value="">Checking recorded redirects…</option></select>
+          <button id="apply-redirect" data-selection-ready="false" type="button" disabled>Use destination</button>
+          <div id="redirect-details" class="redirect-details" aria-live="polite"><p>No recorded redirect selected.</p></div>
+        </section>
       </details>
       <details id="exporter">
         <summary>Export</summary>
@@ -471,6 +487,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       savedSelections: document.querySelector('#saved-selections'), openSaved: document.querySelector('#open-saved'),
       previousSelections: document.querySelector('#previous-selections'), openPrevious: document.querySelector('#open-previous'),
       proposals: document.querySelector('#proposals'), openProposal: document.querySelector('#open-proposal'),
+      redirectProposals: document.querySelector('#redirect-proposals'), applyRedirect: document.querySelector('#apply-redirect'), redirectDetails: document.querySelector('#redirect-details'),
       tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'), tagMode: document.querySelector('#tag-mode'), tagModePicker: document.querySelector('.tag-mode-picker'),
       sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'), sweepMode: document.querySelector('#sweep-mode'),
       selectionSummary: document.querySelector('#selection-summary'),
@@ -493,7 +510,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       document.documentElement.dataset.theme = elements.themeMode.value;
       try { localStorage.setItem('bookmark-sorter-theme', elements.themeMode.value); } catch { /* The mode still works for this page. */ }
     });
-    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], redirects: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, redirectRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}, collectionId = state.collectionId) {
       const headers = new Headers(options.headers || {});
@@ -961,7 +978,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function loadSelectionTools() {
       const requestId = ++state.selectionToolsRequest;
       const collectionId = state.collectionId;
-      const [saved, history] = await Promise.all([api('/api/selections'), api('/api/selection-history'), loadProposals()]);
+      const [saved, history] = await Promise.all([api('/api/selections'), api('/api/selection-history'), loadProposals(), loadRedirectProposals()]);
       if (requestId !== state.selectionToolsRequest || collectionId !== state.collectionId) return;
       state.saved = saved.selections; state.history = history.selections;
       fillSelect(elements.savedSelections, state.saved, 'Saved selections');
@@ -990,6 +1007,74 @@ export function renderPilePage({isAdmin = false} = {}) {
         updateSelectionActionStates();
         throw error;
       }
+    }
+
+    function renderRedirectDetails() {
+      const selected = state.redirects.find(row => row.id === elements.redirectProposals.value);
+      elements.redirectDetails.replaceChildren();
+      elements.applyRedirect.dataset.selectionReady = String(Boolean(selected));
+      elements.applyRedirect.disabled = !selected;
+      if (!selected) {
+        addText(elements.redirectDetails, 'p', '', state.redirects.length
+          ? 'Choose a recorded redirect to compare both URLs.'
+          : 'No recorded redirects need review in this collection.');
+        return;
+      }
+      const consequence = selected.mode === 'merge'
+        ? 'Merge with “' + selected.destination.title + '”; tags combine and its existing verdict and note win.'
+        : 'Replace this bookmark URL. The captured preview may be refreshed for its new address.';
+      addText(elements.redirectDetails, 'p', '', consequence);
+      const route = addText(elements.redirectDetails, 'p', '', '');
+      addText(route, 'code', '', selected.current_url);
+      route.append(' → ');
+      addText(route, 'code', '', selected.final_url);
+      addText(elements.redirectDetails, 'p', '', 'Observed ' + (selected.captured_at ? new Date(selected.captured_at).toLocaleString() : 'during capture') + ' · confirmation required · undoable');
+    }
+
+    async function loadRedirectProposals() {
+      const requestId = ++state.redirectRequest;
+      const collectionId = state.collectionId;
+      elements.redirectProposals.disabled = true;
+      elements.applyRedirect.disabled = true;
+      try {
+        const data = await api('/api/redirect-proposals');
+        if (requestId !== state.redirectRequest || collectionId !== state.collectionId) return;
+        state.redirects = data.proposals;
+        elements.redirectProposals.replaceChildren(new Option(
+          state.redirects.length ? 'Redirected URLs (' + state.redirects.length.toLocaleString() + ')' : 'No redirected URLs', '',
+        ));
+        for (const row of state.redirects) elements.redirectProposals.append(new Option(
+          (row.mode === 'merge' ? 'Merge · ' : 'Replace · ') + row.title, row.id,
+        ));
+        elements.redirectProposals.disabled = !state.redirects.length;
+        renderRedirectDetails();
+      } catch (error) {
+        if (requestId !== state.redirectRequest || collectionId !== state.collectionId) return;
+        state.redirects = [];
+        elements.redirectProposals.replaceChildren(new Option('Redirects unavailable', ''));
+        renderRedirectDetails();
+      }
+    }
+
+    async function applyRedirect() {
+      const proposal = state.redirects.find(row => row.id === elements.redirectProposals.value);
+      if (!proposal) return;
+      const message = proposal.mode === 'merge'
+        ? 'Merge “' + proposal.title + '” into “' + proposal.destination.title + '”? Tags combine; the destination keeps its existing title, note and verdict. You can undo this action.'
+        : 'Replace this bookmark URL with the recorded destination?\\n\\n' + proposal.current_url + '\\n→ ' + proposal.final_url + '\\n\\nYou can undo this action.';
+      if (!confirm(message)) { elements.status.textContent = 'Redirect change cancelled.'; return; }
+      await startSession();
+      const data = await api('/api/redirect-proposals/accept', {
+        method: 'POST', headers: {'content-type': 'application/json'},
+        body: JSON.stringify({session_id: state.session.id, item_id: proposal.id}),
+      });
+      state.session = data.session; state.backlog = data.backlog;
+      const status = data.mode === 'merge'
+        ? 'Merged the redirected bookmark into the existing destination as one undoable action.'
+        : 'Replaced the bookmark with its confirmed destination as one undoable action.';
+      await loadCollections(state.collectionId);
+      await Promise.all([loadWindow(Math.min(state.offset, Math.max(0, state.collectionTotal - state.visible))), loadSelectionTools()]);
+      elements.status.textContent = status;
     }
 
     async function saveCurrentSelection() {
@@ -1149,7 +1234,10 @@ export function renderPilePage({isAdmin = false} = {}) {
       const data = await api('/api/undo', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id})});
       state.backlog = data.backlog; state.session = data.session;
       elements.status.textContent = data.changes.length ? 'Undid the last action as one step.' : 'Nothing to undo.';
-      if (data.kind === 'tag-apply' || data.kind === 'tag-remove' || (!state.items.length && data.changes.length)) await loadWindow(state.offset);
+      if (data.kind === 'redirect') {
+        await loadCollections(state.collectionId);
+        await Promise.all([loadWindow(state.offset), loadSelectionTools()]);
+      } else if (data.kind === 'tag-apply' || data.kind === 'tag-remove' || (!state.items.length && data.changes.length)) await loadWindow(state.offset);
       else { patchChanges(data.changes); await refreshSelectionCounts(); }
     }
     async function toggleSession() {
@@ -1249,7 +1337,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       }
       for (const action of report.actions) {
         const changes = Array.isArray(action.payload?.changes) ? action.payload.changes.length : 0;
-        const kind = action.action_kind === 'tag-apply'
+        const kind = action.action_kind === 'redirect'
+          ? (action.payload?.mode === 'merge' ? 'Merged a redirected bookmark' : 'Replaced a redirected URL')
+          : action.action_kind === 'tag-apply'
           ? 'Tagged ' + changes.toLocaleString()
           : action.action_kind === 'tag-remove'
             ? 'Untagged ' + changes.toLocaleString()
@@ -1449,6 +1539,8 @@ export function renderPilePage({isAdmin = false} = {}) {
       const selected = state.proposals.find(row => row.id === elements.proposals.value);
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
+    elements.redirectProposals.addEventListener('change', renderRedirectDetails);
+    elements.applyRedirect.addEventListener('click', () => applyRedirect().catch(error => { elements.status.textContent = error.message; }));
     for (const select of [elements.proposals, elements.savedSelections, elements.previousSelections]) select.addEventListener('change', updateSelectionActionStates);
     elements.tagInput.addEventListener('input', updateTagActionState);
     elements.tagSelection.addEventListener('click', () => changeTagsOnCurrentSelection().catch(error => { elements.status.textContent = error.message; }));

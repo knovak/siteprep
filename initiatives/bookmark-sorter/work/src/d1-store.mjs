@@ -1,4 +1,5 @@
 import {compileSelectionSql, selectionDictionaries, validateCursor} from './selection-sql.mjs';
+import {mergeRedirectItems, redirectProposal} from './redirect-proposals.mjs';
 
 function cardItem({tags_json, capture_image_ref, capture_source, capture_state, capture_error_tag, capture_page_title, capture_description, capture_displayable, ...item}, collectionId) {
   return {
@@ -604,6 +605,91 @@ export class D1BookmarkStore {
     return this.getCapture(capture.url_key);
   }
 
+  async listRedirectProposals(collectionId) {
+    await this.assertCollectionReadable(collectionId);
+    const [candidateResult, itemResult] = await this.db.batch([
+      this.db.prepare(
+        `SELECT i.id, i.url, i.url_key, i.title, c.final_url, c.captured_at
+         FROM items i JOIN captures c ON c.url_key = i.url_key
+         WHERE i.collection_id = ? AND c.final_url IS NOT NULL
+         ORDER BY c.captured_at DESC, i.title, i.id`,
+      ).bind(collectionId),
+      this.db.prepare(
+        'SELECT id, url, url_key, title FROM items WHERE collection_id = ?',
+      ).bind(collectionId),
+    ]);
+    const byUrl = new Map((itemResult.results ?? []).map(item => [item.url_key, item]));
+    return (candidateResult.results ?? []).flatMap(source => {
+      try {
+        const initial = redirectProposal(source, source);
+        if (!initial) return [];
+        return [redirectProposal(source, source, byUrl.get(initial.final_url_key))];
+      } catch {
+        return [];
+      }
+    }).filter(Boolean);
+  }
+
+  async redirectItemSnapshot(collectionId, itemId) {
+    const row = await this.db.prepare(
+      `SELECT i.id, i.collection_id, i.url, i.url_key, i.title, i.title_key, i.note,
+              i.added_at, i.ingested_at, i.verdict, i.verdict_at,
+              COALESCE((SELECT json_group_array(tag) FROM
+                (SELECT tag FROM tags WHERE item_id = i.id ORDER BY tag)), '[]') AS tags_json
+       FROM items i WHERE i.collection_id = ? AND i.id = ? LIMIT 1`,
+    ).bind(collectionId, itemId).first();
+    if (!row) return null;
+    const {tags_json, ...item} = row;
+    return {...item, tags: JSON.parse(tags_json || '[]')};
+  }
+
+  async applyRedirectProposal(collectionId, {itemId, at, sessionId, actionId}) {
+    await this.assertCollectionWritable(collectionId);
+    const session = await this.getSession(collectionId, sessionId);
+    if (session.ended_at) throw new Error('The sitting has ended');
+    const proposal = (await this.listRedirectProposals(collectionId)).find(candidate => candidate.id === itemId);
+    if (!proposal) throw new Error('That redirect proposal is no longer available');
+    const source = await this.redirectItemSnapshot(collectionId, itemId);
+    const destination = proposal.destination
+      ? await this.redirectItemSnapshot(collectionId, proposal.destination.id)
+      : null;
+    if (!source || (proposal.mode === 'merge' && !destination)) {
+      throw new Error('That redirect proposal is no longer available');
+    }
+
+    const statements = [];
+    if (proposal.mode === 'merge') {
+      const merged = mergeRedirectItems(source, destination);
+      statements.push(this.db.prepare(
+        `UPDATE items SET added_at = ?, note = ?, title_key = ?, verdict = ?, verdict_at = ?
+         WHERE id = ? AND collection_id = ?`,
+      ).bind(merged.added_at, merged.note, merged.title_key, merged.verdict, merged.verdict_at, destination.id, collectionId));
+      statements.push(this.db.prepare(
+        `INSERT OR IGNORE INTO tags (item_id, tag)
+         SELECT ?, tag FROM tags WHERE item_id = ?`,
+      ).bind(destination.id, source.id));
+      statements.push(this.db.prepare(
+        'DELETE FROM items WHERE id = ? AND collection_id = ?',
+      ).bind(source.id, collectionId));
+    } else {
+      statements.push(this.db.prepare(
+        'UPDATE items SET url = ?, url_key = ? WHERE id = ? AND collection_id = ? AND url_key = ?',
+      ).bind(proposal.final_url, proposal.final_url_key, source.id, collectionId, source.url_key));
+    }
+    statements.push(this.db.prepare(
+      `INSERT INTO triage_actions
+       (id, collection_id, session_id, action_kind, payload_json, created_at, undone_at)
+       VALUES (?, ?, ?, 'redirect', ?, ?, NULL)`,
+    ).bind(actionId, collectionId, sessionId, JSON.stringify({mode: proposal.mode, source, destination}), at));
+    await this.db.batch(statements);
+    return {
+      kind: 'redirect', mode: proposal.mode,
+      changes: [{item_id: source.id, destination_item_id: destination?.id ?? source.id}],
+      backlog: await this.countUntriagedItems(collectionId),
+      session: await this.getSession(collectionId, sessionId),
+    };
+  }
+
   async applyCaptureError(collectionId, urlKey, errorTag) {
     await this.assertCollectionWritable(collectionId);
     await this.db.prepare(
@@ -1036,6 +1122,47 @@ export class D1BookmarkStore {
     if (!action) return {changes: [], backlog: await this.countUntriagedItems(collectionId), session};
     const payload = JSON.parse(action.payload_json);
     const changes = Array.isArray(payload.changes) ? payload.changes : [];
+    if (action.action_kind === 'redirect') {
+      const {mode, source, destination} = payload;
+      const statements = [];
+      if (mode === 'merge') {
+        if (!destination) throw new Error('The redirect merge history is incomplete');
+        statements.push(this.db.prepare(
+          `UPDATE items SET url = ?, url_key = ?, title = ?, title_key = ?, note = ?,
+             added_at = ?, ingested_at = ?, verdict = ?, verdict_at = ?
+           WHERE id = ? AND collection_id = ?`,
+        ).bind(destination.url, destination.url_key, destination.title, destination.title_key,
+          destination.note, destination.added_at, destination.ingested_at, destination.verdict,
+          destination.verdict_at, destination.id, collectionId));
+        statements.push(this.db.prepare('DELETE FROM tags WHERE item_id = ?').bind(destination.id));
+        statements.push(this.db.prepare(
+          'INSERT INTO tags (item_id, tag) SELECT ?, value FROM json_each(?)',
+        ).bind(destination.id, JSON.stringify(destination.tags)));
+        statements.push(this.db.prepare(
+          `INSERT INTO items
+           (id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ).bind(source.id, collectionId, source.url, source.url_key, source.title, source.title_key,
+          source.note, source.added_at, source.ingested_at, source.verdict, source.verdict_at));
+        statements.push(this.db.prepare(
+          'INSERT INTO tags (item_id, tag) SELECT ?, value FROM json_each(?)',
+        ).bind(source.id, JSON.stringify(source.tags)));
+      } else {
+        statements.push(this.db.prepare(
+          'UPDATE items SET url = ?, url_key = ? WHERE id = ? AND collection_id = ?',
+        ).bind(source.url, source.url_key, source.id, collectionId));
+      }
+      statements.push(this.db.prepare(
+        'UPDATE triage_actions SET undone_at = ? WHERE id = ? AND collection_id = ?',
+      ).bind(at, action.id, collectionId));
+      await this.db.batch(statements);
+      return {
+        kind: 'redirect',
+        changes: [{item_id: source.id, destination_item_id: destination?.id ?? source.id}],
+        backlog: await this.countUntriagedItems(collectionId),
+        session: await this.getSession(collectionId, sessionId),
+      };
+    }
     const statements = action.action_kind === 'tag-apply'
       ? changes.flatMap(change => change.tags.map(tag => this.db.prepare(
         'DELETE FROM tags WHERE item_id = ? AND tag = ?',

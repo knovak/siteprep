@@ -1,4 +1,5 @@
 import {evaluateSelection} from './selections.mjs';
+import {mergeRedirectItems, redirectProposal} from './redirect-proposals.mjs';
 import {validateCursor} from './selection-sql.mjs';
 const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 
@@ -355,6 +356,68 @@ export class MemoryBookmarkStore {
     return structuredClone(capture);
   }
 
+  listRedirectProposals(collectionId) {
+    if (!this.hasCollection(collectionId)) throw new Error(`Unknown collection: ${collectionId}`);
+    return [...this.#items.values()]
+      .filter(item => item.collection_id === collectionId)
+      .map(item => {
+        const capture = this.#captures.get(item.url_key);
+        if (!capture?.final_url) return null;
+        let destination = null;
+        try {
+          const target = redirectProposal(item, capture);
+          if (!target) return null;
+          const destinationId = this.#itemsByUrl.get(`${collectionId}\u0000${target.final_url_key}`);
+          destination = destinationId ? this.#items.get(destinationId) : null;
+          return redirectProposal(item, capture, destination);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean)
+      .sort((left, right) => String(right.captured_at || '').localeCompare(String(left.captured_at || ''))
+        || left.title.localeCompare(right.title) || left.id.localeCompare(right.id));
+  }
+
+  applyRedirectProposal(collectionId, {itemId, at, sessionId, actionId}) {
+    const session = this.session(collectionId, sessionId);
+    if (session.ended_at) throw new Error('The sitting has ended');
+    const proposal = this.listRedirectProposals(collectionId).find(candidate => candidate.id === itemId);
+    if (!proposal) throw new Error('That redirect proposal is no longer available');
+    const source = this.#items.get(itemId);
+    const sourceBefore = {...structuredClone(source), tags: [...this.#tags.get(source.id)].sort()};
+    let destinationBefore = null;
+
+    if (proposal.mode === 'merge') {
+      const destination = this.#items.get(proposal.destination.id);
+      destinationBefore = {...structuredClone(destination), tags: [...this.#tags.get(destination.id)].sort()};
+      this.#items.set(destination.id, {...destination, ...mergeRedirectItems(source, destination)});
+      for (const tag of this.#tags.get(source.id)) this.#tags.get(destination.id).add(tag);
+      this.#items.delete(source.id);
+      this.#itemsByUrl.delete(`${collectionId}\u0000${source.url_key}`);
+      this.#tags.delete(source.id);
+    } else {
+      this.#itemsByUrl.delete(`${collectionId}\u0000${source.url_key}`);
+      this.#items.set(source.id, {...source, url: proposal.final_url, url_key: proposal.final_url_key});
+      this.#itemsByUrl.set(`${collectionId}\u0000${proposal.final_url_key}`, source.id);
+    }
+
+    this.#actions.push({
+      id: actionId,
+      collection_id: collectionId,
+      session_id: sessionId,
+      action_kind: 'redirect',
+      payload: {mode: proposal.mode, source: sourceBefore, destination: destinationBefore},
+      created_at: at,
+      undone_at: null,
+    });
+    return {
+      kind: 'redirect', mode: proposal.mode,
+      changes: [{item_id: source.id, destination_item_id: destinationBefore?.id ?? source.id}],
+      backlog: this.countUntriagedItems(collectionId), session: structuredClone(session),
+    };
+  }
+
   applyCaptureError(collectionId, urlKey, errorTag) {
     let tagged = 0;
     for (const item of this.#items.values()) {
@@ -647,6 +710,30 @@ export class MemoryBookmarkStore {
     );
     if (!action) return {changes: [], backlog: this.countUntriagedItems(collectionId), session: structuredClone(session)};
     const restored = [];
+    if (action.action_kind === 'redirect') {
+      const {mode, source, destination} = action.payload;
+      if (mode === 'merge') {
+        if (!destination || !this.#items.has(destination.id)) throw new Error('The merged destination is no longer available');
+        this.#items.set(destination.id, {...structuredClone(destination), tags: undefined});
+        delete this.#items.get(destination.id).tags;
+        this.#tags.set(destination.id, new Set(destination.tags));
+        this.#items.set(source.id, {...structuredClone(source), tags: undefined});
+        delete this.#items.get(source.id).tags;
+        this.#itemsByUrl.set(`${collectionId}\u0000${source.url_key}`, source.id);
+        this.#tags.set(source.id, new Set(source.tags));
+      } else {
+        const current = this.#items.get(source.id);
+        if (!current) throw new Error('The replaced bookmark is no longer available');
+        this.#itemsByUrl.delete(`${collectionId}\u0000${current.url_key}`);
+        this.#items.set(source.id, {...structuredClone(source), tags: undefined});
+        delete this.#items.get(source.id).tags;
+        this.#itemsByUrl.set(`${collectionId}\u0000${source.url_key}`, source.id);
+        this.#tags.set(source.id, new Set(source.tags));
+      }
+      restored.push({item_id: source.id, destination_item_id: destination?.id ?? source.id});
+      action.undone_at = at;
+      return {kind: 'redirect', changes: restored, backlog: this.countUntriagedItems(collectionId), session: structuredClone(session)};
+    }
     for (const change of action.payload.changes) {
       const item = this.#items.get(change.item_id);
       if (!item || item.collection_id !== collectionId) continue;

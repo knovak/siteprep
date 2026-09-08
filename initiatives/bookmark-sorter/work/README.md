@@ -45,8 +45,11 @@ selection, and export operations.
   preserving existing verdict and tag-addition history.
 - `migrations/0011_capture_final_url.sql` adds `captures.final_url`, where a
   capture records the URL its fetch landed on after following redirects. It is
-  history only - nothing rewrites an item's `url` or `url_key` from it. See the
-  2026-09-07 entry in `decisions.md`.
+  history only until the user accepts the dated proposal described below. See
+  the 2026-09-07 entry in `decisions.md`.
+- `migrations/0012_redirect_actions.sql` extends the append-only sitting log
+  with confirmed redirect actions so a URL replacement or collision merge can
+  be undone as one step.
 - `src/bookmark-html.mjs` parses Netscape bookmark HTML without executing it. It
   retains title, saved URL, `ADD_DATE`, nested folder path, and the following
   `<DD>` note.
@@ -70,6 +73,13 @@ selection, and export operations.
 - `src/ingest.mjs` applies import tags and the merge rules against a small store
   interface, then hands the unique imported URLs to capture pass 1 without
   making the item list or triage grid wait on a later view.
+- `src/redirect-proposals.mjs` validates captured HTTP(S) destinations,
+  normalizes them with the same identity rule as import, and defines the merge
+  fields shared by the memory and D1 stores. The stores list only observations
+  that would change the current collection. Acceptance is explicit: a new
+  destination replaces the item's saved URL; an existing destination keeps its
+  title, note, and verdict, unions tags, and keeps the earlier add date. Both
+  operations record the complete prior item state for one-action Undo.
 - `src/capture-pipeline.mjs` performs an anonymous, no-JavaScript metadata fetch
   with the `og:image` → `twitter:image` → none ladder. It records title,
   description and favicon, stores only a fixed-size derivative, hashes that
@@ -119,7 +129,8 @@ selection, and export operations.
   Collection operations list templates, create an empty private collection,
   take or refresh a private copy, rename or erase a collection, delete a copy,
   and allow template creation for administrators or users whose legacy D1
-  capability is set. The
+  capability is set. Redirect routes expose dated, read-only candidates and
+  apply only one current collection's confirmed replacement or merge. The
   same API records each signed-in user's distinct selection expressions by
   most-recent use. Admin-only routes expose the authorized-user list editor;
   hiding the menu is backed by the same server-side role check.
@@ -177,7 +188,9 @@ selection, and export operations.
   completed results. The queue is held only in the current browser page. Select contains expression, proposal, saved-selection,
   tagging, and per-user recent-query controls. The Open action beside proposal,
   saved, and recent choosers uses a neutral background at the placeholder and a
-  mint/teal wash after a real value is selected.
+  mint/teal wash after a real value is selected. Its Redirected URLs row shows
+  the source and destination plus capture time, distinguishes replacement from
+  collision merge, and requires a browser confirmation before either action.
   Export downloads the whole collection or open selection as
   `bookmark-sorter-<collection-name>.json` and can erase the
   current collection after confirmation while preserving the collection and
@@ -492,6 +505,13 @@ no-JavaScript rule, derivative-only storage, 404/timeout/TLS/parked failures,
 collection-local error tags, duplicate queuing, the vendor-off switch, stored
 image delivery, and absence of vendor configuration from the page. The sizing
 export is generated rather than committed as a large fixture.
+
+Redirect-proposal tests exercise both the production D1 adapter and the memory
+adapter: listing is read-only, tracking parameters normalize before collision
+checks, unique destinations replace, existing destinations merge with the
+documented precedence, and Undo restores the exact item or pair. Browser tests
+also dismiss and accept the confirmation while keeping the complete URLs and
+capture time reviewable.
 
 The Sites assembly passes the capture pipeline's `maxWidth` and `maxHeight` to
 the platform image transformer. This boundary is named explicitly because the

@@ -701,3 +701,7 @@ save/retry, delayed responses and three sweeps covering 90 items exactly once.
 These are local fixtures, not a hosted latency measurement. The waiting
 production-source reconciliation from deploy-record/bookmark-sorter is carried
 with this substantive change. No Site deployment is part of this update.
+
+## 2026-09-08 — Offer confirmed URL replacements from recorded final_url values, including a merge when the destination is already in the pile
+
+Added dated redirect review with explicit confirmation, collision merging, and exact one-action undo across memory and D1 stores.
