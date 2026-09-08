@@ -1,0 +1,307 @@
+{
+  "adopted_on": "2026-09-08",
+  "archive": {
+    "name": "sbdc.zip",
+    "bytes": 292319,
+    "sha256": "ca60b61f13daafdc778102ea298dc2411a9bb9dff44e165d90c0e3ba6d0fe05a"
+  },
+  "source_archive": {
+    "name": "sbdc-sim-final-source.zip",
+    "sha256": "081985c0810d07c4b7023ce5b0cdbc2b6732eb231a84b48b75722cc8e6e89f03",
+    "files": 29
+  },
+  "outer_files": [
+    {
+      "source": "sbdc-sky-simulator.html",
+      "destination": "work/index.html",
+      "bytes": 245938,
+      "sha256": "682d93a802161283ef4ca67d56a28e8ed67a8ebbb9efc2ef1e9da0e121a8392b"
+    },
+    {
+      "source": "TUTORIAL.md",
+      "destination": "lib/TUTORIAL.md",
+      "bytes": 10842,
+      "sha256": "dd44df95c010980f76eeeff7da586686b92c3cb75431b280ce1dd9f050b5e261"
+    },
+    {
+      "source": "README.md",
+      "destination": "lib/README.md",
+      "bytes": 5954,
+      "sha256": "41d4dea793ef481c31e4cd7df84ac9ddf0dd33b5ca3e0e754c3167f689fd4082"
+    },
+    {
+      "source": "SPECIFICATION.md",
+      "destination": "lib/SPECIFICATION.md",
+      "bytes": 23391,
+      "sha256": "70eb4def2164c87371cbd3440828dfab693cd3d1a5124707e874d0b3d15a5068"
+    },
+    {
+      "source": "FINAL_REPORT.md",
+      "destination": "lib/FINAL_REPORT.md",
+      "bytes": 8256,
+      "sha256": "9fda5cd44fb116aa9ae56acd0b128bd8364f5acdc88db03800c68f43021273b0"
+    },
+    {
+      "source": "UPGRADE_PLAN.md",
+      "destination": "lib/UPGRADE_PLAN.md",
+      "bytes": 12038,
+      "sha256": "95685b75d3a6a2fa6b761695d2102262c031cd87bf860bdb4d5eec0e30ecf6fb"
+    },
+    {
+      "source": "IMPLEMENTATION_PLAN.md",
+      "destination": "lib/IMPLEMENTATION_PLAN.md",
+      "bytes": 8941,
+      "sha256": "3c5a32c6b621fc0f423b2a2330e7c4a2623106d48c77c1ecf18d7f6e4df090de"
+    },
+    {
+      "source": "PHASE1_REPORT.md",
+      "destination": "lib/PHASE1_REPORT.md",
+      "bytes": 5345,
+      "sha256": "407f97c6fad96ce03223e9e4907d3bdd2af4dbcb3d51fc2714c4429359f7ae53"
+    },
+    {
+      "source": "PHASE23_REPORT.md",
+      "destination": "lib/PHASE23_REPORT.md",
+      "bytes": 4654,
+      "sha256": "7f12cf5d5f91ab87ba91f4b1b2836898e5add7a2c168790fad76454593e150d7"
+    },
+    {
+      "source": "PHASE4_REPORT.md",
+      "destination": "lib/PHASE4_REPORT.md",
+      "bytes": 3164,
+      "sha256": "4cb60ce1ac3284290f2bf0e91c729c232983a4678554b37707526f338893efcd"
+    },
+    {
+      "source": "sbdc-data.json",
+      "destination": "work/sbdc-data.json",
+      "bytes": 15832,
+      "sha256": "1f47d1c75c12bc22c5a59fbc9df3cb6e0920b57f89ff041f979d8a75ea1e9d9e"
+    },
+    {
+      "source": "sbdc-sim-final-source.zip",
+      "destination": "notes/sbdc-sim-final-source.zip",
+      "bytes": 161551,
+      "sha256": "081985c0810d07c4b7023ce5b0cdbc2b6732eb231a84b48b75722cc8e6e89f03"
+    }
+  ],
+  "source_files": [
+    {
+      "source": "sbdc-sim/PHASE23_REPORT.md",
+      "destination": "lib/PHASE23_REPORT.md",
+      "bytes": 4654,
+      "sha256": "7f12cf5d5f91ab87ba91f4b1b2836898e5add7a2c168790fad76454593e150d7"
+    },
+    {
+      "source": "sbdc-sim/build.js",
+      "destination": "lib/build.js",
+      "bytes": 2490,
+      "sha256": "c0bf32f469f046a23b133f74744232b225d7eeca713bd7cdc9c6e20d7b2ec3b6"
+    },
+    {
+      "source": "sbdc-sim/src/app.css",
+      "destination": "lib/src/app.css",
+      "bytes": 7654,
+      "sha256": "bef9aef56f459b73c457d9fa29751966bc349ac8a6b37ab8e52c472387abcf90"
+    },
+    {
+      "source": "sbdc-sim/src/model.js",
+      "destination": "lib/src/model.js",
+      "bytes": 35260,
+      "sha256": "32014aaedf20e1aeae47fb3159a8a722a5881b6b144868586c00eb749c2bba5a"
+    },
+    {
+      "source": "sbdc-sim/src/ui.js",
+      "destination": "lib/src/ui.js",
+      "bytes": 35996,
+      "sha256": "800d63761ca4f319bcbf60488f3ad2e16665f2ffcb85cb3431fe74427878af3a"
+    },
+    {
+      "source": "sbdc-sim/src/render.js",
+      "destination": "lib/src/render.js",
+      "bytes": 17348,
+      "sha256": "aa8c57be6fe8ab56ded90ebd1c97fdb29b98f7fe4287f0e55410a3cdb69b81a5"
+    },
+    {
+      "source": "sbdc-sim/src/index.html",
+      "destination": "lib/src/index.html",
+      "bytes": 8992,
+      "sha256": "0bde0fce8e2a752b52aef1a28eec10d60f980f3b3bcf06724a5e4f2ffc40d3e1"
+    },
+    {
+      "source": "sbdc-sim/README.md",
+      "destination": "lib/README.md",
+      "bytes": 5954,
+      "sha256": "41d4dea793ef481c31e4cd7df84ac9ddf0dd33b5ca3e0e754c3167f689fd4082"
+    },
+    {
+      "source": "sbdc-sim/UPGRADE_PLAN.md",
+      "destination": "lib/UPGRADE_PLAN.md",
+      "bytes": 12038,
+      "sha256": "95685b75d3a6a2fa6b761695d2102262c031cd87bf860bdb4d5eec0e30ecf6fb"
+    },
+    {
+      "source": "sbdc-sim/PHASE4_REPORT.md",
+      "destination": "lib/PHASE4_REPORT.md",
+      "bytes": 3164,
+      "sha256": "4cb60ce1ac3284290f2bf0e91c729c232983a4678554b37707526f338893efcd"
+    },
+    {
+      "source": "sbdc-sim/test/golden/golden.json",
+      "destination": "lib/test/golden/golden.json",
+      "bytes": 4064,
+      "sha256": "ebe8baadc5cca841c4aefff510a0d2d166ef9b1642693ac6fb73edbfb85d1c5e"
+    },
+    {
+      "source": "sbdc-sim/test/smoke-browser.mjs",
+      "destination": "lib/test/smoke-browser.mjs",
+      "bytes": 14460,
+      "sha256": "d7fa67aaa883714ee7e61f4d7025f2d90c926f77c120e01ff0dfa6193de25863"
+    },
+    {
+      "source": "sbdc-sim/test/render.test.js",
+      "destination": "lib/test/render.test.js",
+      "bytes": 3083,
+      "sha256": "a4b9cae923473b5febcee62ee5ec4aed2edd7d0ed7654b43fd467cc21f1831df"
+    },
+    {
+      "source": "sbdc-sim/test/scenarios.test.js",
+      "destination": "lib/test/scenarios.test.js",
+      "bytes": 7698,
+      "sha256": "5e822a573e412be7c3721e99b2d0431269fa22aa609e58be796411c05d22c320"
+    },
+    {
+      "source": "sbdc-sim/test/golden.test.js",
+      "destination": "lib/test/golden.test.js",
+      "bytes": 840,
+      "sha256": "d5c4fc50896bec2efbdeaf311ba6e60e70c4650362cbb43910ca0f04329a4283"
+    },
+    {
+      "source": "sbdc-sim/test/model.test.js",
+      "destination": "lib/test/model.test.js",
+      "bytes": 22434,
+      "sha256": "02ef8480edca80235ccb1c6d69bd902fc79b35ea11834605883ea3ae07edbcf4"
+    },
+    {
+      "source": "sbdc-sim/TUTORIAL.md",
+      "destination": "lib/TUTORIAL.md",
+      "bytes": 10842,
+      "sha256": "dd44df95c010980f76eeeff7da586686b92c3cb75431b280ce1dd9f050b5e261"
+    },
+    {
+      "source": "sbdc-sim/SPECIFICATION.md",
+      "destination": "lib/SPECIFICATION.md",
+      "bytes": 23391,
+      "sha256": "70eb4def2164c87371cbd3440828dfab693cd3d1a5124707e874d0b3d15a5068"
+    },
+    {
+      "source": "sbdc-sim/FINAL_REPORT.md",
+      "destination": "lib/FINAL_REPORT.md",
+      "bytes": 8256,
+      "sha256": "9fda5cd44fb116aa9ae56acd0b128bd8364f5acdc88db03800c68f43021273b0"
+    },
+    {
+      "source": "sbdc-sim/data/bsc-reduced.json",
+      "destination": "lib/data/bsc-reduced.json",
+      "bytes": 128556,
+      "sha256": "626d262ab0d95778cad3005e9b1c2d9401e9bbcb5cc95765f7554aeaad737157"
+    },
+    {
+      "source": "sbdc-sim/data/sbdc-data.json",
+      "destination": "lib/data/sbdc-data.json",
+      "bytes": 15832,
+      "sha256": "1f47d1c75c12bc22c5a59fbc9df3cb6e0920b57f89ff041f979d8a75ea1e9d9e"
+    },
+    {
+      "source": "sbdc-sim/package.json",
+      "destination": "lib/package.json",
+      "bytes": 431,
+      "sha256": "b6de7109b85ed5b0105d7e0c93864f9c0e9f0c3c7bb499430ad7e2ed1c9187b6"
+    },
+    {
+      "source": "sbdc-sim/tools/render_demo.py",
+      "destination": "lib/tools/render_demo.py",
+      "bytes": 4209,
+      "sha256": "5d6b08a7ffa2a10b8e0768f132609a6b398c34fdb1c7892cc63664e268962be1"
+    },
+    {
+      "source": "sbdc-sim/tools/make-golden.mjs",
+      "destination": "lib/tools/make-golden.mjs",
+      "bytes": 1962,
+      "sha256": "0a650d6c489873bc2f02f4282df8b7dbf8804d651a78a2891ce5a8d11287a70f"
+    },
+    {
+      "source": "sbdc-sim/tools/validate.mjs",
+      "destination": "lib/tools/validate.mjs",
+      "bytes": 5265,
+      "sha256": "2dca83bd702a8f425fcded6782cd1b01d0d1e1b565f716578f4fb0bacc583f67"
+    },
+    {
+      "source": "sbdc-sim/tools/dump-demo.mjs",
+      "destination": "lib/tools/dump-demo.mjs",
+      "bytes": 2913,
+      "sha256": "8daadaf6d02b348f88bb6a81b994b87098924ab2335fce8c9077be966a702215"
+    },
+    {
+      "source": "sbdc-sim/tools/make_bsc.py",
+      "destination": "lib/tools/make_bsc.py",
+      "bytes": 2750,
+      "sha256": "17a7a4533d3c55f95b2ba817c91c986338e3bc11093a45a175bb224f8b74acd7"
+    },
+    {
+      "source": "sbdc-sim/IMPLEMENTATION_PLAN.md",
+      "destination": "lib/IMPLEMENTATION_PLAN.md",
+      "bytes": 8941,
+      "sha256": "3c5a32c6b621fc0f423b2a2330e7c4a2623106d48c77c1ecf18d7f6e4df090de"
+    },
+    {
+      "source": "sbdc-sim/PHASE1_REPORT.md",
+      "destination": "lib/PHASE1_REPORT.md",
+      "bytes": 5345,
+      "sha256": "407f97c6fad96ce03223e9e4907d3bdd2af4dbcb3d51fc2714c4429359f7ae53"
+    }
+  ],
+  "demo_snapshot": {
+    "path": "demos/SBDC Night Sky",
+    "commit": "be886a7db366a6508ad0dfe2465be6a13ea7a9ed",
+    "files": [
+      {
+        "source": "demos/SBDC Night Sky/index-initial.html",
+        "destination": "work/index-initial.html",
+        "bytes": 219665,
+        "sha256": "703bce804aaabbf92ced0fd148f2c7f14ff62d86c90fcaf0bd7c2158175edd5c"
+      },
+      {
+        "source": "demos/SBDC Night Sky/index.html",
+        "destination": "work/index.html",
+        "bytes": 245938,
+        "sha256": "682d93a802161283ef4ca67d56a28e8ed67a8ebbb9efc2ef1e9da0e121a8392b"
+      }
+    ]
+  },
+  "lifecycle_copies": [
+    {
+      "source": "SPECIFICATION.md",
+      "destination": "spec.md",
+      "sha256": "70eb4def2164c87371cbd3440828dfab693cd3d1a5124707e874d0b3d15a5068"
+    },
+    {
+      "source": "IMPLEMENTATION_PLAN.md",
+      "destination": "plan.md",
+      "sha256": "3c5a32c6b621fc0f423b2a2330e7c4a2623106d48c77c1ecf18d7f6e4df090de"
+    }
+  ],
+  "verbatim_inclusions": {
+    "README.md": [
+      "README.md",
+      "TUTORIAL.md"
+    ],
+    "notes.md": [
+      "PHASE1_REPORT.md",
+      "PHASE23_REPORT.md",
+      "PHASE4_REPORT.md",
+      "FINAL_REPORT.md",
+      "UPGRADE_PLAN.md"
+    ]
+  },
+  "policy": "All adopted files and original document text are unchanged. New initiative context is separate. No code changes or production release."
+}
