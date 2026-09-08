@@ -1,0 +1,19 @@
+{
+  "schema": "tide-here/standalone-build/v1",
+  "htmlBytes": 39526881,
+  "htmlSha256": "8a840400e24a3d083374a5ee9a3e7bd8bb8b0c445a35d25b069c13a73f97873f",
+  "runtime": "QuickJS compiled to WebAssembly via quickjs-emscripten 0.32.0",
+  "predictor": "@neaps/tide-predictor 0.11.0",
+  "coastalPoints": 65203,
+  "places": 170946,
+  "dataFiles": {
+    "coastal-harmonics.bin.gz": {
+      "bytes": 17415896,
+      "sha256": "89ff6553f302993e82ea97047bded09821080a1430fdb73f9c73e15f5e38689a"
+    },
+    "places.json.gz": {
+      "bytes": 11378119,
+      "sha256": "fe459eef44ccec61b2093753d9ecc46f75f0a9c048766adbefd405b165a4fa76"
+    }
+  }
+}
