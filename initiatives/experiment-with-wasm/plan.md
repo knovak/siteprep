@@ -30,3 +30,11 @@ Verify direct-file persistence and recovery in Safari and Firefox before claimin
 4. Record the output and release, refresh the brief, run the final repository build, inspect demo/Demo TOC screenshots, update the existing PR, and verify its branch preview.
 
 Production followed a separately authorized merge. Desktop Safari and Firefox verification is complete; physical-iPad verification remains blocked on device findings. Home Screen installation with explicit offline caching is a possible later increment, not part of this static publication request.
+
+## Internet access requested September 8, 2026
+
+1. Verify browser-accessible services and record the change from mandatory offline operation.
+2. Add bounded, cancellable browser transport and separate online controls to both applications.
+3. Preserve local data, offline behavior, source/datum labels, and backup compatibility; cache online tide responses.
+4. Check controlled success/failure/rate-limit/cancellation cases and live public-service requests. Document any provider that cannot be verified in a browser.
+5. Rebuild the committed single-file artifacts and staged website, run the repository build and visual checks, then open a ready-for-review PR with its branch preview. Production awaits a separate release request.

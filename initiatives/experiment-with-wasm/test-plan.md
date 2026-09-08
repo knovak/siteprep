@@ -30,3 +30,12 @@ Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site
 - Run the static demo with `WASM_BROWSER=webkit WASM_DEVICE='iPad Pro 11'` to exercise its mobile user agent, 834 × 1194 viewport, touch input, offline post-load actions and reload persistence.
 - Test downloaded files in the installed Safari and Firefox applications, including a separate-copy backup restore, before claiming direct-file compatibility.
 - Treat Playwright WebKit as engine evidence, not as an installed Safari or physical-iPad result. Keep actual-iPad Files/Home Screen testing open until a person supplies that result.
+
+## Online controls
+
+- Import an export URL, fetch inert website metadata and a real image, and verify reload/full-backup retention without changing original fields or attached pictures.
+- Exercise explicit Microlink screenshot mode, blocked direct websites, HTTP 429, cancellation and phone layout. Embedded remote HTML must not execute scripts or request tracking images.
+- Search an online address, choose NOAA and CHS stations, verify five-day output and the correct provider/datum, then exercise cached fallback and return to the local model.
+- Cancel a slow station request, choose a new coast, and verify the old request cannot replace the new location.
+- Check transport timeouts, download limits, credential omission, malformed provider data, partial catalogue failure, cache limits and quota failures.
+- Preserve all existing WASM parity and offline tests. Check live NOAA, Photon and Microlink separately from deterministic fixtures, and report provider/browser failures explicitly.

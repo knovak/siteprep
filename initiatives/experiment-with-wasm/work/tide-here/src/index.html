@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval'; worker-src blob:; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Tide Here · Offline</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval'; worker-src blob:; style-src 'unsafe-inline'; img-src data: blob:; connect-src https: http:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Tide Here · WASM</title>
   <meta name="description" content="Five days of tides, sun and moon, calculated offline with WebAssembly and bundled global coastal data.">
   <style>/* STYLES */</style>
 </head>
@@ -12,7 +12,7 @@
 <main class="app-shell">
   <header class="site-header">
     <div class="brand-mark" aria-hidden="true">≈</div>
-    <div><h1>Tide Here <span class="edition">Offline</span></h1><p class="tagline">Five days on your coast. Wherever you take this file.</p></div>
+    <div><h1>Tide Here <span class="edition">WASM + online</span></h1><p class="tagline">Five days on your coast. Wherever you take this file.</p></div>
   </header>
   <p id="runtime-status" class="runtime-status" role="status">Opening the tide model and place catalogue…</p>
   <form id="place-form">
@@ -21,11 +21,19 @@
     <p id="search-help" class="form-help">Search the included world catalogue, or enter coordinates such as 37.46, −122.44 (use a minus sign). No connection needed.</p>
     <div class="date-row"><label for="start-date">First day <small>(blank means today on the coast)</small></label><input id="start-date" type="date"><button id="today" type="button" class="secondary">Today</button></div>
   </form>
+  <section class="panel" id="online-panel" aria-label="Online data">
+    <h2>Online data</h2>
+    <p>Search addresses and smaller places online, or load official US and Canadian tide predictions. The included catalogue and model still work offline.</p>
+    <div class="online-actions"><button id="search-online" type="button" disabled>Search online</button><button id="find-stations" type="button" disabled>Find official tide stations</button><button id="cancel-online" class="secondary" type="button" disabled>Cancel</button></div>
+    <p class="form-help">Search online sends the text above to Photon / OpenStreetMap. Station requests go directly to NOAA and the Canadian Hydrographic Service. Requests run when you use these buttons; saved responses reduce repeat downloads.</p>
+    <p id="online-status" role="status"></p><p id="official-status" role="status"></p><div id="official-stations" class="place-list"></div>
+    <details><summary>Sources and saved responses</summary><p><a href="https://github.com/komoot/photon" target="_blank" rel="noreferrer">Photon</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors, ODbL</a> · <a href="https://tidesandcurrents.noaa.gov/disclaimers.html" target="_blank" rel="noreferrer">NOAA conditions</a> · <a href="https://www.tides.gc.ca/en/licence-agreement" target="_blank" rel="noreferrer">CHS licence</a></p><p>Public services can be unavailable or rate limited. Canadian requests may be blocked by browser-access rules; in that case the app explains the failure and the local model remains available. Station lists and searches are saved for seven days; predictions for six hours. Older saved predictions are labelled when a live request fails. Station time zones use the nearby bundled coastline; UTC is used where no local assignment is available.</p><button id="clear-online-cache" class="secondary" type="button">Clear saved online responses</button></details>
+  </section>
   <section id="place-choices" class="panel" hidden aria-label="Matching places"><h2>Choose a place</h2><div id="place-list" class="place-list"></div></section>
   <section id="state-panel" class="panel state-panel" role="status" tabindex="-1" hidden><h2 id="state-title"></h2><p id="state-message"></p></section>
   <section id="result" hidden aria-label="Five-day tide forecast" aria-busy="false">
     <div class="identity-card"><div><p class="eyebrow">Your coast</p><h2 id="coast-name"></h2><p id="selected-point"></p></div><div><p id="zone-name"></p><span class="model-badge">Calculated here · FES2022 model</span></div></div>
-    <p id="forecast-note" class="form-help"></p>
+    <p id="forecast-note" class="form-help"></p><p><a id="source-link" target="_blank" rel="noreferrer" hidden></a> <button id="refresh-official" class="secondary" type="button" hidden>Refresh official predictions</button></p>
     <div id="day-cards" class="day-cards"></div>
     <p class="safety-line">Approximate tides for exploration. Not for navigation or safety decisions.</p>
     <details id="chooser" class="panel"><summary>Choose another nearby model point</summary><p>Closest does not always mean the same bay or harbour. Check the coordinates and choose a point that fits your coast. Only points within 40 km are shown.</p><div id="candidate-list" class="candidate-list"></div></details>
@@ -33,10 +41,10 @@
   </section>
   <details class="panel" id="about"><summary>What travels with this file?</summary>
     <p><strong>The entire tide model used here.</strong> All 65,203 coastal points and the place catalogue are embedded in this HTML file. Clearing browser storage does not remove them. The model calculates dates as needed; it is not a table that runs out at the end of the year.</p>
-    <p>This edition uses the global FES2022 model everywhere. The online Tide Here can use national-provider predictions; this offline edition cannot fetch those services. Inland locations, unresolved harbours, and coasts with no model point within 40 km return a coverage message.</p>
+    <p>The included FES2022 model works worldwide. Online data additionally offers NOAA and Canadian station predictions with their own labelled height datums. Inland locations, unresolved harbours, and coasts with no model point within 40 km return a coverage message.</p>
     <p>Heights are in metres relative to the model’s mean sea level, not chart datum. Weather, storm surge, waves and river flow are excluded. Future changes to coasts, time-zone rules and the tide model require an updated app file.</p>
-    <p>Place search covers 170,946 named places and their aliases from GeoNames. It is a catalogue, not an address-search service. If a beach or small island is missing, enter its coordinates. “Show here” asks your browser for location permission; your operating system may use location services.</p>
-    <p>Searches and forecasts are calculated on your device. The app makes no network requests. Links below open external sources only when you choose them.</p>
+    <p>Place search covers 170,946 named places and their aliases from GeoNames. Search online adds address and small-place results from Photon / OpenStreetMap. If a beach or small island is missing, enter its coordinates. “Show here” asks your browser for location permission; your operating system may use location services.</p>
+    <p>The included catalogue and model run on your device. Online controls fetch additional data on request, with saved responses and source labels. Links below open external sources when you choose them.</p>
     <p>FES2022 Tide product funded by CNES and produced by LEGOS, NOVELTIS and CLS, made available by AVISO. Tide Here transformed the native atlas into sampled coastal harmonics; this edition packs those constants for browser use. <a href="https://doi.org/10.24400/527896/A01-2024.004" target="_blank" rel="noreferrer">FES2022 source</a> · <a href="https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf" target="_blank" rel="noreferrer">AVISO licence</a>.</p>
     <p>Names and coordinates: <a href="https://www.geonames.org/" target="_blank" rel="noreferrer">GeoNames</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>, selected and compacted September 7, 2026. Coastline: Natural Earth (public domain); time-zone assignments derived from <a href="https://github.com/evansiroky/timezone-boundary-builder" target="_blank" rel="noreferrer">timezone-boundary-builder</a>, <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noreferrer">ODbL</a>. Sun and moon: SunCalc 2.0.1.</p>
     <details><summary>Software licences</summary><pre id="software-licences">/* LICENCES */</pre></details>

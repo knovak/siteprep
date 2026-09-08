@@ -266,6 +266,9 @@ export function renderPilePage({isAdmin = false} = {}) {
     }
     h1 small { display: inline-block; font-size: .5em; letter-spacing: .04em; vertical-align: middle; color: var(--link); }
     .local-picture { position: absolute; top: 42px; left: 7px; padding: 3px 6px; border: 1px solid var(--control-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 12px; }
+    .online-picture { top: 73px; }
+    #online-tools input, #online-tools select { max-width: 100%; min-width: 0; }
+    #online-results { max-height: 10em; overflow: auto; overflow-wrap: anywhere; }
     .backup-picker { min-width: 0; padding: 6px; border: 1px solid var(--line); border-radius: 8px; }
     .backup-picker input { min-width: 0; width: 100%; }
     #local-state { overflow-wrap: anywhere; }
@@ -292,7 +295,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       <h3>Saved on this device</h3>
       <p>This standalone edition runs SQLite in WebAssembly. Sorting works offline. All collections, selections and sitting history stay in this browser. Opening bookmark links still requires their websites.</p>
       <p>Use <strong>Download full backup</strong> under Local tools to keep a copy outside browser storage. Clearing browser data, changing browsers or moving the HTML file may make the saved collection unavailable. Restore a full backup to transfer everything, including pictures and undo history. Ordinary JSON exports transfer bookmark fields, tags and verdicts.</p>
-      <p>Attach a PNG, JPEG or WebP picture with the Picture button on a card. Automatic remote website capture and cloud account administration are not part of this local edition.</p>
+      <p>Attach a PNG, JPEG or WebP picture with the Picture button on a card. Online tools can fetch website details, pictures and screenshots. Direct website requests contact the bookmark’s host; Microlink modes send the chosen URLs to its public service. Saved previews are included in full backups. Cloud account administration is not part of this local edition.</p>
       <h3>Card and action buttons</h3>
       <ul>
         <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs-time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
@@ -381,6 +384,18 @@ export function renderPilePage({isAdmin = false} = {}) {
           <label>Demo templates<select id="template-select" aria-label="Demo templates"><option value="">Demo templates</option></select></label>
           <button id="copy-template" type="button">Load a copy</button>
         </div>
+      </details>
+      <details id="online-tools">
+        <summary>Online tools</summary>
+        <p class="tool-status">Fetch previews for marked cards, or the visible page when none are marked (up to 12 per batch). Your original titles, URLs, notes and verdicts stay intact. Attached pictures are kept.</p>
+        <div class="template-tools">
+          <label>Preview source<select id="online-mode"><option value="direct">Direct website</option><option value="metadata">Microlink website details</option><option value="screenshot">Microlink screenshot</option></select></label>
+          <button id="online-preview" type="button">Fetch previews</button><button id="online-cancel" type="button" disabled>Cancel</button>
+        </div>
+        <p class="tool-status">Direct access depends on the website’s browser permissions. Microlink can read more websites and take screenshots; it receives each requested URL and has a limited free quota. No account or payment is required here. <a href="https://microlink.io/docs/api/basics/rate-limit" target="_blank" rel="noreferrer">Service limits</a></p>
+        <form id="online-import-form"><label>Bookmark export URL<input id="online-import-url" type="url" placeholder="https://…/bookmarks.json" required></label><button id="online-import" type="submit">Import from URL</button></form>
+        <p class="tool-status">Accepts the same HTML and JSON exports as file import. If the source blocks access, download the file and use Import.</p>
+        <p id="online-status" class="tool-status" role="status"></p><ol id="online-results"></ol>
       </details>
       <details id="selector">
         <summary>Select and tag</summary>
@@ -611,6 +626,49 @@ export function renderPilePage({isAdmin = false} = {}) {
         elements.tagPopover.style.top = Math.max(margin, top) + 'px';
       });
     }
+    let onlineController;
+    function onlineBusy(busy) {
+      for (const id of ['online-preview','online-import','online-mode','online-import-url']) document.getElementById(id).disabled = busy;
+      document.getElementById('online-cancel').disabled = !busy;
+    }
+    document.getElementById('online-cancel').onclick = () => onlineController?.abort();
+    document.getElementById('online-preview').onclick = async () => {
+      const collectionId = state.collectionId;
+      const items = state.items.slice(0, state.visible).filter(item => !state.marked.size || state.marked.has(item.id)).slice(0,12);
+      if (!items.length) { document.getElementById('online-status').textContent = 'Choose a page of bookmarks first.'; return; }
+      onlineController = new AbortController(); const signal = onlineController.signal;
+      const mode = document.getElementById('online-mode').value;
+      const results = document.getElementById('online-results'); results.replaceChildren(); onlineBusy(true);
+      let saved = 0;
+      try {
+        for (const item of items) {
+          if (signal.aborted) break;
+          document.getElementById('online-status').textContent = 'Fetching ' + item.title + '…';
+          const row = document.createElement('li'); results.append(row);
+          try { const message = await window.bookmarkCapturePreview(collectionId, item, {mode, signal}); saved++; row.textContent = item.title + ': ' + message; }
+          catch (error) { row.textContent = item.title + ': ' + error.message; if (error.status === 429 || signal.aborted) break; }
+        }
+        if (state.collectionId === collectionId) { invalidatePrefetch(); await loadWindow(); }
+        document.getElementById('online-status').textContent = (signal.aborted ? 'Cancelled. ' : '') + saved + ' of ' + items.length + ' previews saved.';
+      } catch (error) { document.getElementById('online-status').textContent = error.message; }
+      finally { onlineBusy(false); }
+    };
+    document.getElementById('online-import-form').onsubmit = async event => {
+      event.preventDefault(); const collectionId = state.collectionId;
+      if (!collectionId) return;
+      onlineController = new AbortController(); onlineBusy(true);
+      document.getElementById('online-status').textContent = 'Downloading bookmark export…';
+      try {
+        const file = await window.bookmarkFetchExport(document.getElementById('online-import-url').value, onlineController.signal);
+        const form = new FormData(); form.append('file', file); form.append('source','online-export');
+        if (onlineController.signal.aborted) throw new Error('Cancelled');
+        const response = await window.bookmarkLocalRequest('/api/import', {method:'POST', headers:{'x-bookmark-collection-id':collectionId}, body:form});
+        const result = await response.json(); if (!response.ok) throw new Error(result.error);
+        if (state.collectionId === collectionId) { invalidatePrefetch(); await loadCollections(); await Promise.all([loadWindow(0), loadSelectionTools()]); }
+        document.getElementById('online-status').textContent = 'Imported ' + result.added + ' new; merged ' + result.merged + '.';
+      } catch (error) { document.getElementById('online-status').textContent = error.message; }
+      finally { onlineBusy(false); }
+    };
     function renderCard(item, index) {
       const card = document.createElement('article');
       card.id = 'item-' + item.id;
@@ -642,6 +700,18 @@ export function renderPilePage({isAdmin = false} = {}) {
         picker.click();
       });
       card.append(picture);
+      const onlinePicture = document.createElement('button');
+      onlinePicture.type = 'button'; onlinePicture.className = 'local-picture online-picture'; onlinePicture.textContent = 'Picture URL';
+      onlinePicture.setAttribute('aria-label', 'Download picture for ' + item.title);
+      onlinePicture.addEventListener('click', async event => {
+        event.stopPropagation();
+        const url = prompt('Picture URL (downloaded and saved on this device):'); if (!url) return;
+        const collectionId = state.collectionId; onlinePicture.disabled = true;
+        try { await window.bookmarkPictureUrl(collectionId, item, url); if (state.collectionId === collectionId) await loadWindow(); elements.status.textContent = 'Picture downloaded and saved.'; }
+        catch (error) { elements.status.textContent = error.message; }
+        finally { onlinePicture.disabled = false; }
+      });
+      card.append(onlinePicture);
       addText(card, 'span', 'site', host(item.url));
       const heading = document.createElement('h2');
       const href = externalUrl(item.url);
@@ -652,7 +722,8 @@ export function renderPilePage({isAdmin = false} = {}) {
         heading.append(titleLink);
       } else heading.textContent = item.title;
       card.append(heading);
-      if (item.note) addText(card, 'p', 'note', item.note);
+      if (item.note || item.capture?.description) addText(card, 'p', 'note', item.note || item.capture.description);
+      if (item.capture?.page_title) capture.title = item.capture.page_title + (item.capture.description ? ' — ' + item.capture.description : '');
       const tags = document.createElement('div');
       tags.className = 'tags';
       const allTags = item.tags || [];

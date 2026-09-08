@@ -15,7 +15,7 @@ A local bookmark can prefill the app with `#place=Half%20Moon%20Bay%2C%20Califor
 | Sun, moon and polar no-event states | Original SunCalc 2.0.1 and astronomy layer retained |
 | Named locations and coordinates | 170,946-place GeoNames catalogue and aliases replace live Nominatim |
 | Nearby coastal selection | All 65,203 existing global-model points; maximum 40 km |
-| National-provider preferences | Replaced by global FES model everywhere; no live NOAA/CHS or annual BoM tables |
+| National-provider preferences | FES model by default; explicit NOAA/CHS station requests are available online; no annual BoM tables |
 | History | Last 100 forecasts in browser storage, plus export/restore |
 | Runtime data retrieval | None; data and software are embedded |
 
@@ -31,7 +31,7 @@ Only personal forecast history lives in browser storage. Browser cleanup, privat
 
 `src/guest.mjs` bundles the pinned original `@neaps/tide-predictor` 0.11.0 with Schureman nodal corrections. `src/wasm-engine.mjs` evaluates it inside QuickJS compiled to WebAssembly (`quickjs-emscripten` 0.32.0). That interpreter executes the tidal mathematics; the host does not run a duplicate predictor. A Blob worker keeps computation off the interface thread and reports failure if the engine cannot start. This is an interpreted WASM conversion, not a claim of a native numerical port or increased speed.
 
-Browser JavaScript handles the interface, place search, closest-point selection, IANA local-day boundaries, SunCalc astronomy, decompression and local history. Content Security Policy denies network connections and external resources. Opening attribution links is an explicit user navigation.
+Browser JavaScript handles the interface, place search, closest-point selection, IANA local-day boundaries, SunCalc astronomy, decompression and local history. Content Security Policy permits HTTP(S) data connections for explicit online controls, while external scripts and frames remain disabled. Opening attribution links is an explicit user navigation.
 
 ## Data and licensing
 
@@ -62,3 +62,7 @@ node scripts/record-reference.mjs /path/to/global-coast-r1
 ```
 
 The latter records regression evidence using the original server implementation and full-precision data. Do not refresh those reference results merely to make a failed test pass. The fork and hashes are documented in `fork-provenance.json`; original apps and deployments are not modified.
+
+## Online data
+
+Search online uses Photon / OpenStreetMap for addresses and smaller places. Find official tide stations offers nearby NOAA and CHS stations, with coordinates and distance. Choosing a station downloads five days of predictions. Sources, retrieval time and the station height datum are shown separately from model output. Responses are cached locally with bounded retention and labelled stale fallback. No internet request is needed for the original search/model workflow. Live NOAA and Photon requests were verified in Chromium; CHS returned API data but browser access failed in this environment and remains subject to provider CORS behavior.

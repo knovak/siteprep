@@ -22,3 +22,6 @@ i wonder if these should work as well on an ipad under safari?
 great. please extend PR 467 to include the wish, and the findings you've discovered and the web pages you've created with the sample applications.
 
 I'd like this to deploy as a static website under demos/ .  it's first page should have a brief explanation of wasm and then links to these first two applications.
+
+2026-09-08
+enable as much internet access as possible for both applications.  make a PR

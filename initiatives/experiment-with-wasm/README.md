@@ -1,6 +1,6 @@
 # experiment with wasm
 
-Standalone forks of **Bookmark Sorter** and **Tide Here**, both powered by real WebAssembly with no backend or runtime network requests.
+Standalone forks of **Bookmark Sorter** and **Tide Here**, both powered by real WebAssembly, with offline workflows and optional online data retrieval. No custom application backend is required.
 
 The released static demo is [experiment with wasm](../../demos/experiment-with-wasm/index.html). Its first page explains WASM and links to both apps. The [wish and findings](../../demos/experiment-with-wasm/findings.html) preserve the original goal, comparison, storage findings, validation evidence and Safari/iPad limitations.
 
@@ -29,7 +29,7 @@ Browser storage is not a backup. Clearing browser data, private browsing, browse
 
 The initial evaluation selected Bookmark Sorter because its core inputs are complete local files; see [evaluation.md](evaluation.md). At the user's subsequent request, Tide Here was also converted by bundling its complete available global coastal dataset and replacing network geocoding with a local catalogue.
 
-This edition uses device-local ownership. Cloud sign-in, user allowlists, cross-device sync and automatic remote website screenshots are absent. Attach pictures locally instead. No personal export, account list, deployment configuration or capture database is bundled. Opening bookmark links is the only routine action that leaves the app; those websites need a connection.
+This edition uses device-local ownership. Cloud sign-in, user allowlists, cross-device sync and cloud screenshot storage are absent. Online tools can download website details or screenshots through Microlink, or read websites directly when their browser permissions allow. Pictures are saved locally. No personal export, account list, deployment configuration or capture database is bundled. Online actions contact the displayed service only when requested; opening links also requires a connection.
 
 SQLite performs storage, indexed filtering/counting/paging, deduplication, tag/verdict mutations and history queries inside WASM. JavaScript retains the UI, file parsing, expression normalization/compilation, proposal grouping and IndexedDB persistence. This does not claim that the DOM or every line of application code was compiled to WASM.
 
@@ -61,3 +61,9 @@ After rebuilding an application, record its committed HTML hash and source commi
 Publish updates through `release-initiative`; the root build generates the Demo TOC. The original direct-file app paths remain available so this website publication does not relocate anyone's local bookmark database. Transfer data from a downloaded file to the website by backup and restore.
 
 [Optional improvements](improvements.md) records a reviewable menu; none is authorized merely by appearing there.
+
+## Online tools
+
+**Bookmark Sorter:** open Online tools to import from an export URL or fetch previews for marked cards/the current page (up to 12 per batch). Choose Direct website, Microlink website details, or Microlink screenshot. Microlink receives the requested URLs and has a limited free quota; no paid credentials are configured. Use Picture URL on a card to save a web image. Websites may refuse browser downloads; in that case use Microlink for previews or download an export manually and import the file. User bookmark fields and attached pictures are preserved. Full database backups include downloaded previews.
+
+**Tide Here:** enter a place/address and use Search online for Photon results, then choose one. After choosing a location, Find official tide stations offers nearby NOAA/Canadian stations; choose the correct station to load predictions. The provider, height datum and retrieval time appear above the five-day cards. Refresh official predictions retries the service. Saved responses remain available for the same dates when a request fails, with a visible notice. The bundled model remains available through the model-point chooser. Canadian browser access was blocked during this session; its adapter is tested, but live Canadian retrieval is not claimed as verified.

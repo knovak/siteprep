@@ -36,3 +36,13 @@ The user requested extending PR #467 with "the wish, and the findings you've dis
 This authorizes preparing `demos/experiment-with-wasm/` in that PR, not a merge. It contains the landing page, complete original wish and findings, both applications and downloads, licences, provenance, verification and prompt history. Production goes live after merge and Pages publication.
 
 The original wish stays intact. Build sources remain in the initiative; the runtime is copied in full with source commits and hashes. Existing local-file paths remain available. The iPad and Home Screen offline-installation findings are documented as unverified/future work, not silently treated as implemented features.
+
+## 2026-09-08 — Internet access in both applications
+
+The user requested: **“enable as much internet access as possible for both applications. make a PR”** after the investigation found that both applications used `connect-src 'none'` and had replaced their online features during conversion.
+
+This authorizes online data retrieval in the two experimental forks. A standalone application does not have to be disconnected: SQLite and harmonic calculations remain local, while explicit online controls use HTTP(S) services. No new application backend, paid account, API secret, original hosted-app change, merge or production release is included.
+
+Bookmark Sorter gains direct website metadata, picture-URL downloads, URL imports, and named Microlink metadata/screenshot modes. Microlink receives URLs only when the user chooses that source and requests previews. Original bookmark fields and attached pictures are preserved. Tide Here gains Photon address searches and NOAA/CHS station and prediction adapters, with provider/datum labels, bounded caches and visible failures. Station choice is explicit because a nearby station may be across a bay or island.
+
+The remaining external limits are browser cross-origin permissions, upstream availability and free-service quotas. Canadian requests returned data to the API probe but were blocked in live Chromium; the adapter is implemented and covered by controlled responses, without claiming that this environment verified live Canadian retrieval. Physical-iPad acceptance and a production release remain separate.
