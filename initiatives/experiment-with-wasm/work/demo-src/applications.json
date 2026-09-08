@@ -1,10 +1,10 @@
 {
   "bookmark-sorter": {
-    "sourceCommit": "d037cc7d644a8fa997bbba95aebf8c771afb78b4",
-    "sha256": "6df915fc229f2343f478b91d928a0b3aa1a5a8ccdb143fb5e53460ef1c6f8747"
+    "sourceCommit": "60cd6271a9a1e8aa2813d5b478335d65872ac200",
+    "sha256": "b9fbfc6132433e8ff55bb74144b74a318f5011659904240a5890ced86310833b"
   },
   "tide-here": {
-    "sourceCommit": "a468fb203a6701f3d02c391833d595ece9fb9be8",
-    "sha256": "8a840400e24a3d083374a5ee9a3e7bd8bb8b0c445a35d25b069c13a73f97873f"
+    "sourceCommit": "60cd6271a9a1e8aa2813d5b478335d65872ac200",
+    "sha256": "23d5700b3f829f8200a80413904c30f5ed78e4d311ac9fe2c1057823cd64ad41"
   }
 }

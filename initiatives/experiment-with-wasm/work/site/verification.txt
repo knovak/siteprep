@@ -62,3 +62,12 @@ Tide Here screenshots are written after the final repository build to `screensho
 Four additional website checks cover complete file equality, the original wish, local links/anchors, Bookmark Sorter sample editing and persistence, Tide Here sample/second-coast calculations and history persistence, and phone layout. They pass in Chromium, Firefox, WebKit and an iPad Pro 11 WebKit/touch emulation. Both app workflows produce no HTTP(S) requests after loading. This is separate from guaranteed offline reopening, which the website does not implement.
 
 The package preserves the standalone app hashes. Source is `work/site/` and the release copy is `demos/experiment-with-wasm/`; CI checks generated-package drift and release equality. Final post-build screenshots are `screenshots/wasm-demo-desktop.png`, `screenshots/wasm-demo-phone.png`, `screenshots/wasm-demo-findings.png` and `screenshots/wasm-demo-toc.png`. Installed Safari is verified; actual iPad use remains unverified.
+
+## 2026-09-08 — Internet access increment
+
+- Bookmark Sorter: 10 Node/WASM/transport tests and 9 Chromium browser tests pass. The 3 new online journeys also pass in Firefox and WebKit.
+- Tide Here: 8 Node/WASM/provider tests and 8 Chromium browser tests pass. The 3 new online journeys also pass in Firefox and WebKit.
+- The downloaded Bookmark Sorter fetched a real Microlink screenshot for `https://example.com/`, rasterized it to PNG and saved it in its local SQLite database. No real user bookmark collection was used.
+- A real Chromium interaction selected SAN FRANCISCO (Golden Gate) through Find official tide stations and loaded 19 high/low events over September 8–12 from NOAA. The page showed NOAA CO-OPS, MLLW, five local-day cards and retrieval time. Photon returned a real Half Moon Bay result.
+- CHS API probes returned station and prediction JSON, but Chromium reported missing CORS headers for both file and loopback-hosted origins. The app's CHS paths are verified with controlled responses and preserve local forecasts on failure. Live Canadian access is not marked verified.
+- The image fixture was replaced with a valid generated PNG after Firefox rejected the original fixture's encoding. The WebKit persistence check blocks HTTP(S) requests before reloading the local file; WebKit's simulated offline network mode itself returned an internal error for file navigation. Existing Chromium tests continue to run the original workflows with networking disabled.
