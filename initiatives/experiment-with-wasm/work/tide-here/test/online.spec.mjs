@@ -1,34 +1,61 @@
 import {test,expect} from '@playwright/test';
 const url=new URL('../dist/index.html',import.meta.url).href;
-const noaa={stations:[{id:'9414290',name:'San Francisco',lat:37.806,lng:-122.465}]};
+const noaa={stations:[{id:'9410170',name:'SAN DIEGO (Broadway)',lat:32.71556,lng:-117.17667}]};
 const chs=[{id:'halifax',officialName:'Halifax',latitude:44.659,longitude:-63.583,timeSeries:[{code:'wlp-hilo'}]}];
-const predictions={predictions:Array.from({length:20},(_,i)=>({t:'2026-09-'+String(8+Math.floor(i/4)).padStart(2,'0')+' '+String(3+(i%4)*6).padStart(2,'0')+':00',v:i%2?'0.2':'1.7',type:i%2?'L':'H'}))};
-async function ready(page){await page.goto(url);await page.evaluate(()=>window.tideReady);await page.locator('#start-date').fill('2026-09-08');}
-async function choose(page,coords='37.8,-122.46'){await page.locator('#place-input').fill(coords);await page.locator('#show-selection').click();await expect(page.locator('#result')).toBeVisible();}
+const predictions={predictions:Array.from({length:24},(_,i)=>({t:'2026-09-'+String(8+Math.floor(i/4)).padStart(2,'0')+' '+String(3+(i%4)*6).padStart(2,'0')+':00',v:i%2?'0.2':'1.7',type:i%2?'L':'H'}))};
+const feature=(name,coords=[-117.16277,32.71742],extra={})=>({properties:{osm_type:'N',osm_id:name,name,state:'California',country:'United States',...extra},geometry:{coordinates:coords}});
+test.beforeEach(async ({page}) => { await page.clock.setFixedTime(new Date('2026-09-08T12:00:00Z')); });
+async function ready(page,target=url){await page.goto(target);await page.evaluate(()=>window.tideReady);await page.locator('#start-date').fill('2026-09-08');}
+async function show(page,query='32.71742,-117.16277'){await page.locator('#place-input').fill(query);await page.locator('#show-selection').click();}
 async function fixtures(context){
+  await context.route('https://photon.komoot.io/**',route=>route.fulfill({json:{features:[feature('San Diego')]}}));
   await context.route('https://api.tidesandcurrents.noaa.gov/**',route=>route.fulfill({json:route.request().url().includes('datagetter')?predictions:noaa}));
   await context.route('https://api-sine.dfo-mpo.gc.ca/**',route=>route.fulfill({json:route.request().url().includes('/data?')?predictions.predictions.map(p=>({eventDate:p.t.replace(' ','T')+'Z',value:Number(p.v)})):chs}));
 }
 
-test('online address search and NOAA forecast show station, datum and cached fallback',async({page,context})=>{
-  await fixtures(context);
-  await context.route('https://photon.komoot.io/**',route=>route.fulfill({json:{features:[{properties:{osm_type:'N',osm_id:1,name:'Test pier',city:'San Francisco'},geometry:{coordinates:[-122.46,37.8]}}]}}));
-  await ready(page);await page.locator('#place-input').fill('Test pier address');await page.locator('#search-online').click();await expect(page.locator('#place-choices')).toBeVisible();await page.locator('#place-list button').click();await expect(page.locator('#result')).toBeVisible();
-  await page.locator('#find-stations').click();await page.locator('#official-stations button').first().click();await expect(page.locator('.model-badge')).toContainText('NOAA');await expect(page.locator('#forecast-note')).toContainText('MLLW');await expect(page.locator('#source-link')).toHaveAttribute('href',/station=9414290/);await expect(page.locator('.day-card')).toHaveCount(5);
+test('Show tides resolves San Diego online and automatically loads NOAA rather than the model',async({page,context})=>{
+  await fixtures(context);const requests=[];page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});
+  await context.route('https://photon.komoot.io/**',route=>route.fulfill({json:{features:[feature('San Diego'),feature('San Diego',[-116.77,32.96],{type:'county'}),feature('San Diego State University')]}}));
+  await ready(page);await show(page,'San Diego, California, United States');
+  await expect(page.locator('.model-badge')).toContainText('NOAA');await expect(page.locator('#selected-point')).toContainText('SAN DIEGO (Broadway)');await expect(page.locator('#forecast-note')).toContainText('MLLW');await expect(page.locator('#source-link')).toHaveAttribute('href',/station=9410170/);await expect(page.locator('.day-card')).toHaveCount(5);
+  expect(requests.some(u=>u.includes('photon.komoot.io'))).toBe(true);expect(requests.some(u=>u.includes('datagetter'))).toBe(true);await expect(page.locator('#online-panel')).not.toHaveAttribute('open','');
   await context.route('https://api.tidesandcurrents.noaa.gov/**',route=>route.abort());await page.locator('#refresh-official').click();await expect(page.locator('#forecast-note')).toContainText('LIVE SERVICE UNAVAILABLE');await expect(page.locator('#online-status')).toContainText('Saved predictions');
   await page.locator('#chooser > summary').click();await page.locator('#candidate-list button').first().click();await expect(page.locator('.model-badge')).toContainText('FES2022');await expect(page.locator('#source-link')).toBeHidden();
 });
 
-test('CHS predictions have chart datum and an unavailable service leaves the local forecast',async({page,context})=>{
-  await fixtures(context);await ready(page);await choose(page,'44.659,-63.583');await page.locator('#find-stations').click();await page.locator('#official-stations button').first().click();await expect(page.locator('.model-badge')).toContainText('Canadian');await expect(page.locator('#forecast-note')).toContainText('Canadian chart datum');
-  await context.route('https://photon.komoot.io/**',route=>route.abort());await page.locator('#place-input').fill('missing address');await page.locator('#search-online').click();await expect(page.locator('#online-status')).toContainText('CORS');await expect(page.locator('#result')).toBeVisible();
-  await choose(page);await expect(page.locator('.model-badge')).toContainText('FES2022');
+test('ordinary form submission resolves a beach address absent from the bundled catalogue',async({page,context})=>{
+  await fixtures(context);await context.route('https://photon.komoot.io/**',route=>route.fulfill({json:{features:[feature('Harbor Steps',[-117.176,32.715],{housenumber:'123',street:'Waterfront Walk',city:'San Diego'})]}}));
+  await ready(page);await show(page,'123 Waterfront Walk, San Diego');await expect(page.locator('#coast-name')).toContainText('Harbor Steps');await expect(page.locator('.model-badge')).toContainText('NOAA');
 });
 
-test('cancelled station requests cannot overwrite a newer location and phone controls fit',async({page,context})=>{
-  await page.setViewportSize({width:390,height:844});await ready(page);await choose(page);
-  await context.route('https://api.tidesandcurrents.noaa.gov/**',async route=>{await new Promise(r=>setTimeout(r,400));return route.fulfill({json:noaa});});
-  await context.route('https://api-sine.dfo-mpo.gc.ca/**',route=>route.abort());
-  await page.locator('#find-stations').click();await page.locator('#cancel-online').click();await choose(page,'53.27,-9.05');await expect(page.locator('#zone-name')).toContainText('Europe/Dublin');await expect(page.locator('#official-stations button')).toHaveCount(0);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+test('ambiguous places and stations request a choice before displaying tides',async({page,context})=>{
+  await fixtures(context);await context.route('https://photon.komoot.io/**',route=>route.fulfill({json:{features:[feature('Harbor',[-117.17,32.715]),feature('Harbor',[-117.2,32.7],{state:'Another region'})]}}));
+  await context.route('https://api.tidesandcurrents.noaa.gov/**',route=>route.fulfill({json:route.request().url().includes('datagetter')?predictions:{stations:[...noaa.stations,{id:'other',name:'Other side of bay',lat:32.7156,lng:-117.162} ]}}));
+  await ready(page);await show(page,'Harbor');await expect(page.locator('#place-list button')).toHaveCount(2);await page.locator('#place-list button').first().click();await expect(page.locator('#state-title')).toHaveText('Choose a tide station');await expect(page.locator('#result')).toBeHidden();await expect(page.locator('#online-panel')).toHaveAttribute('open','');
+  await page.getByRole('button',{name:/SAN DIEGO \(Broadway\)/}).click();await expect(page.locator('.model-badge')).toContainText('NOAA');
+});
+
+test('failed online search and predictions use labelled local fallbacks; local-only mode sends no requests',async({page,context})=>{
+  await context.route(/^https?:/,route=>route.abort());await ready(page);await show(page,'San Diego, California, United States');await expect(page.locator('#coast-name')).toContainText('San Diego');await expect(page.locator('.model-badge')).toContainText('Local fallback');await expect(page.locator('#online-status')).toContainText('lookup failed');
+  await page.locator('#online-panel > summary').click();await page.locator('#data-mode').selectOption('local');await expect(page.locator('.model-badge')).toContainText('Calculated here');const requests=[];page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});await show(page,'53.27,-9.05');await expect(page.locator('#zone-name')).toContainText('Europe/Dublin');expect(requests).toEqual([]);
+});
+
+test('prediction failure after successful station lookup falls back without hiding the reason',async({page,context})=>{
+  await fixtures(context);await context.route('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter**',route=>route.fulfill({status:503,body:'Unavailable'}));await ready(page);await show(page);await expect(page.locator('.model-badge')).toContainText('Local fallback');await expect(page.locator('#online-status')).toContainText('Online predictions failed');await expect(page.locator('.day-card')).toHaveCount(5);
+});
+
+test('CHS is used automatically where it is the clear nearby station',async({page,context})=>{
+  await fixtures(context);await ready(page);await show(page,'44.659,-63.583');await expect(page.locator('.model-badge')).toContainText('Canadian');await expect(page.locator('#forecast-note')).toContainText('Canadian chart datum');
+});
+
+test('late station and place searches cannot replace a newer choice, and phone controls fit',async({page,context})=>{
+  await fixtures(context);await page.setViewportSize({width:390,height:844});let release;const delay=new Promise(r=>{release=r;});
+  await context.route('https://photon.komoot.io/**',async route=>{await delay;return route.fulfill({json:{features:[feature('Old place')]}});});
+  await ready(page);await show(page,'Old place');await expect(page.locator('#state-title')).toHaveText('Finding your place online');await show(page,'53.27,-9.05');await expect(page.locator('#zone-name')).toContainText('Europe/Dublin');release();await expect(page.locator('#place-choices')).toBeHidden();
+  await context.route('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter**',async route=>{await new Promise(r=>setTimeout(r,300));return route.fulfill({json:predictions});});await show(page);await expect(page.locator('#online-status')).toContainText('Loading NOAA');await page.locator('#cancel-online').click();await show(page,'53.27,-9.05');await expect(page.locator('#zone-name')).toContainText('Europe/Dublin');await expect(page.locator('#official-stations button')).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('deep links, geolocation and history use the same automatic online forecast flow',async({page,context})=>{
+  await fixtures(context);await context.addInitScript(()=>{navigator.geolocation.getCurrentPosition=ok=>ok({coords:{latitude:32.71742,longitude:-117.16277}});});await ready(page,url+'#place=San%20Diego%2C%20California&date=2026-09-08');await expect(page.locator('.model-badge')).toContainText('NOAA');
+  await page.locator('#show-here').click();await expect(page.locator('#coast-name')).toContainText('Your location');await expect(page.locator('.model-badge')).toContainText('NOAA');await page.locator('#history-summary').click();await page.locator('.history-entry button').first().click();await expect(page.locator('.model-badge')).toContainText('NOAA');
 });

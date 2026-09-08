@@ -1,7 +1,7 @@
 {
   "schema": "tide-here/standalone-build/v1",
-  "htmlBytes": 39540762,
-  "htmlSha256": "23d5700b3f829f8200a80413904c30f5ed78e4d311ac9fe2c1057823cd64ad41",
+  "htmlBytes": 39544201,
+  "htmlSha256": "ceff59d10a5709d4b8b7a846dd40b404f048bf32c6a1d4a7f68ccdd0f15d57f4",
   "runtime": "QuickJS compiled to WebAssembly via quickjs-emscripten 0.32.0",
   "predictor": "@neaps/tide-predictor 0.11.0",
   "coastalPoints": 65203,

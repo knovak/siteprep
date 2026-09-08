@@ -1,5 +1,5 @@
 import {createWebCache, fetchResource} from '../../src/network.mjs';
-import {distanceKm} from './data.mjs';
+import {distanceKm, normalize} from './data.mjs';
 import {makeForecast} from './forecast.mjs';
 
 export const providers = {
@@ -16,6 +16,16 @@ export function normalizeStations(payload, provider) {
   if (provider === 'noaa' && !Array.isArray(payload?.stations) || provider === 'chs' && !Array.isArray(payload)) throw new Error('The station list is invalid.');
   return (provider === 'noaa' ? payload.stations.map(s => ({id: String(s.id || ''), name: s.name, latitude: coordinate(s.lat), longitude: coordinate(s.lng), provider}))
     : payload.filter(s => s.timeSeries?.some(t => t.code === 'wlp-hilo')).map(s => ({id: String(s.id || ''), name: s.officialName, latitude: coordinate(s.latitude), longitude: coordinate(s.longitude), provider}))).filter(valid);
+}
+export function automaticStation(stations) {
+  // Match the hosted app: within 25 km and at most 60% of the next distance.
+  const [first, second] = stations;
+  return first && first.distanceKm <= 25 && (!second || first.distanceKm <= 0.6 * second.distanceKm) ? first : null;
+}
+export function automaticPlace(matches, query) {
+  const text = normalize(query);
+  const exact = matches.filter(place => normalize(place.label) === text || normalize(place.label).startsWith(text + ', '));
+  return exact.length === 1 ? exact[0] : matches.length === 1 ? matches[0] : null;
 }
 export function predictionUrl(station, rows) {
   if (station.provider === 'noaa') {
@@ -55,7 +65,7 @@ export function createOnlineTides({storage, fetchImpl = globalThis.fetch} = {}) 
     clear: cache.clear,
     async search(query, signal) {
       if (query.trim().length < 2) throw new Error('Enter a place or address to search.');
-      const url = 'https://photon.komoot.io/api/?' + new URLSearchParams({q:query.trim().slice(0,500),limit:'8'});
+      const url = 'https://photon.komoot.io/api/?' + new URLSearchParams({q:query.trim().slice(0,500),limit:'8',lang:'en'});
       return cache.get(url, 7*86400000, async () => {
         if (Date.now()-lastSearch < 1100) throw new Error('Please wait a moment before another online search.');
         lastSearch = Date.now();
@@ -63,8 +73,9 @@ export function createOnlineTides({storage, fetchImpl = globalThis.fetch} = {}) 
         if (!Array.isArray(data?.features)) throw new Error('The online search response is invalid.');
         return data.features.map(f => {
           const p=f.properties || {}, [longitude,latitude]=f.geometry?.coordinates || [];
-          const label = [...new Set([p.name, [p.housenumber,p.street].filter(Boolean).join(' '),p.city,p.state,p.country].filter(Boolean))].join(', ');
-          return {id:'osm-'+p.osm_type+'-'+p.osm_id,name:p.name || label,label,latitude,longitude};
+          const name = p.type === 'county' ? p.name + ' (county)' : p.name;
+          const label = [...new Set([name, [p.housenumber,p.street].filter(Boolean).join(' '),p.city || p.district,p.state,p.country].filter(Boolean))].join(', ');
+          return {id:'osm-'+p.osm_type+'-'+p.osm_id,name:name || label,label,latitude,longitude};
         }).filter(valid);
       });
     },

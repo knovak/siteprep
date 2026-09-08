@@ -1,4 +1,4 @@
-import {createOnlineTides, providers} from './online.mjs';
+import {automaticPlace, automaticStation, createOnlineTides, providers} from './online.mjs';
 import harmonicsGzip from '../data/coastal-harmonics.bin.gz';
 import placesGzip from '../data/places.json.gz';
 import workerSource from 'tide:worker';
@@ -75,7 +75,7 @@ function renderForecast(forecast) {
   $('#coast-name').textContent = forecast.input.display;
   $('#selected-point').textContent = `${forecast.point.name} · ${forecast.point.distanceKm.toFixed(1)} km from your place`;
   $('#zone-name').textContent = `All times in ${forecast.timeZone}`;
-  $('.model-badge').textContent = forecast.online ? forecast.online.provider + (forecast.online.cached ? ' · saved response' : ' · online') : 'Calculated here · FES2022 model';
+  $('.model-badge').textContent = forecast.online ? forecast.online.provider + (forecast.online.cached ? ' · saved response' : ' · online') : (forecast.fallbackReason ? 'Local fallback · FES2022 model' : 'Calculated here · FES2022 model');
   $('#forecast-note').textContent = forecast.online ? 'High and low tides · metres above ' + forecast.datum + ' · retrieved ' + new Date(forecast.online.retrievedAt).toLocaleString() + (forecast.online.stale ? ' · LIVE SERVICE UNAVAILABLE; saved predictions shown' : '') : 'High and low tides · metres relative to mean sea level · approximate model heights';
   $('#source-link').hidden = !forecast.online;
   if (forecast.online) { $('#source-link').href = forecast.sources[0].sourceUrl; $('#source-link').textContent = 'View the provider response for this station'; }
@@ -114,7 +114,7 @@ function renderForecast(forecast) {
   $('#chooser').open = false;
   $('#result').hidden = false;
 }
-async function calculate(candidate) {
+async function calculate(candidate, fallbackReason = '') {
   cancelOnline();
   const revision = ++version;
   $('#place-choices').hidden = true; $('#result').hidden = true;
@@ -125,95 +125,149 @@ async function calculate(candidate) {
     const place = {...selectedPlace};
     const events = await predict({constituents: point.constituents, start: rows[0].startUtc, end: rows.at(-1).endUtc});
     if (revision !== version) return;
-    const forecast = makeForecast({place, point, rows, events, dataset: data.metadata.dataset});
+    const forecast = {...makeForecast({place, point, rows, events, dataset: data.metadata.dataset}), ...(fallbackReason ? {fallbackReason} : {})};
+    $('#online-status').textContent = fallbackReason || 'Using the model stored in this file.';
     renderForecast(forecast); history.append(forecast); showHistory(); $('#state-panel').hidden = true;
   } catch (error) { if (revision === version) state('Unable to calculate', error.message); }
 }
-function choosePlace(place) {
-  cancelOnline(); $('#official-stations').replaceChildren(); $('#official-status').textContent = '';
-  $('#find-stations').disabled = false;
-  ++version; current = null; selectedPlace = place;
+function internetEnabled() {
+  return $('#data-mode').value === 'auto' && navigator.onLine !== false;
+}
+function useLocal(reason = '') {
+  if (candidates.length) return calculate(candidates[0], reason);
+  cancelOnline();
+  $('#online-status').textContent = reason;
+  state('No coastal coverage here', 'There is no bundled tide-model point within 40 km. Try a nearby coastal place or more precise coordinates.');
+}
+function stationChoices(result, open = false) {
+  for (const station of result.stations) station.timeZone = nearbyPoints(data, station)[0]?.timeZone || 'UTC';
+  $('#official-stations').replaceChildren(...result.stations.map(station => {
+    const button = el('button', station.name + ' · ' + providers[station.provider].name + ' · ' + station.distanceKm.toFixed(1) + ' km · ' + station.latitude.toFixed(4) + ', ' + station.longitude.toFixed(4), 'secondary');
+    button.type = 'button'; button.onclick = () => loadOfficial(station); return button;
+  }));
+  $('#official-status').textContent = (result.stations.length ? 'Choose the station on your coast. Nearby stations may be across a bay or island. ' : 'No official prediction stations within 150 km. ') + result.warning;
+  if (open) $('#online-panel').open = true;
+}
+async function choosePlace(place) {
+  const {signal, revision} = startOnline(); ++version;
+  current = null; selectedPlace = place;
+  $('#official-stations').replaceChildren(); $('#official-status').textContent = '';
+  $('#find-stations').disabled = $('#data-mode').value === 'local';
   $('#result').hidden = true; $('#place-choices').hidden = true; $('#place-input').value = place.label;
   candidates = nearbyPoints(data, place);
-  if (!candidates.length) {
-    state('No coastal coverage here', 'There is no bundled tide-model point within 40 km. Try a nearby coastal place or more precise coordinates. Inland water and some small harbours are outside this model’s coverage.');
-    return;
-  }
-  void calculate(candidates[0]);
-}
-function search() {
-  cancelOnline();
-  ++version; current = null;
-  $('#result').hidden = true; $('#place-choices').hidden = true; $('#state-panel').hidden = true;
+  $('#use-local-model').disabled = !candidates.length;
+  if (!internetEnabled()) return useLocal($('#data-mode').value === 'local' ? '' : 'You are offline. Using the tide model stored in this file.');
+  state('Looking up tide predictions', 'Finding an official station for your coast…');
+  $('#online-status').textContent = 'Checking online tide services…';
   try {
-    const coordinates = parseCoordinates($('#place-input').value.replaceAll('−', '-'));
-    if (coordinates) { choosePlace(coordinates); return; }
-    const matches = searchPlaces(places, $('#place-input').value);
-    if (!matches.length) { state('Place not in this catalogue', 'Try a town name with a country or region after a comma, or enter latitude, longitude. Street addresses are not included.'); return; }
-    if (matches.length === 1) { choosePlace(matches[0]); return; }
-    $('#place-list').replaceChildren(...matches.map(place => {
-      const button = el('button', '', 'secondary'); button.type = 'button';
-      button.append(el('strong', place.name), el('small', place.label.slice(place.name.length+2)));
-      button.addEventListener('click', () => choosePlace(place)); return button;
-    }));
-    $('#place-choices').hidden = false;
-  } catch (error) { state('Check the location', error.message); }
+    const result = await online.stations(place, signal);
+    if (revision !== onlineVersion) return;
+    stationChoices(result);
+    const station = automaticStation(result.stations);
+    if (station) return await loadOfficial(station, false, true);
+    if (result.stations.length) {
+      $('#online-panel').open = true;
+      $('#online-status').textContent = 'Online stations found. Choose one below to load its predictions.';
+      state('Choose a tide station', 'There is no single clear station match. Choose the station on your coast under Data sources and station options.');
+      return;
+    }
+    return useLocal('No supported online tide station near this place. Using the bundled FES2022 model.');
+  } catch (error) {
+    if (revision === onlineVersion) return useLocal('Online tide lookup failed: ' + error.message + ' Using the bundled FES2022 model.');
+  } finally { if (revision === onlineVersion) cancelOnline(); }
+}
+function placeChoices(matches) {
+  $('#place-list').replaceChildren(...matches.map(place => {
+    const button = el('button', '', 'secondary'); button.type = 'button';
+    button.append(el('strong', place.name), el('small', place.label.slice(place.name.length + 2)));
+    button.onclick = () => choosePlace(place); return button;
+  }));
+  $('#state-panel').hidden = true; $('#place-choices').hidden = false;
+}
+async function search() {
+  const {signal, revision} = startOnline(); ++version;
+  current = null; selectedPlace = null; candidates = [];
+  $('#find-stations').disabled = true; $('#use-local-model').disabled = true;
+  $('#official-stations').replaceChildren(); $('#official-status').textContent = '';
+  $('#result').hidden = true; $('#place-choices').hidden = true; $('#state-panel').hidden = true;
+  $('#online-status').textContent = '';
+  try {
+    const query = $('#place-input').value.trim();
+    const coordinates = parseCoordinates(query.replaceAll('−', '-'));
+    if (coordinates) return await choosePlace(coordinates);
+    let matches = [], fallback = '';
+    if (internetEnabled()) {
+      state('Finding your place online', 'Searching places, beaches and street addresses…');
+      try {
+        const result = await online.search(query, signal);
+        if (revision !== onlineVersion) return;
+        matches = result.value;
+        $('#online-status').textContent = result.cached ? 'Using a saved online place search.' : 'Place results from Photon / OpenStreetMap.';
+        if (!matches.length) fallback = 'No online matches. Searching the catalogue stored in this file.';
+      } catch (error) {
+        if (revision !== onlineVersion) return;
+        fallback = 'Online place search failed: ' + error.message + ' Searching the catalogue stored in this file.';
+      }
+    }
+    if (!matches.length) matches = searchPlaces(places, query);
+    if (fallback) $('#online-status').textContent = fallback;
+    if (!matches.length) { state('Place not found', 'Try a more specific place or address, including its region or country, or enter latitude, longitude.'); return; }
+    const resolved = automaticPlace(matches, query);
+    if (resolved) return await choosePlace(resolved);
+    placeChoices(matches);
+  } catch (error) { if (revision === onlineVersion) state('Check the location', error.message); }
+  finally { if (revision === onlineVersion) cancelOnline(); }
 }
 function cancelOnline() {
   onlineController?.abort(); ++onlineVersion;
-  $('#search-online').disabled = !places; $('#find-stations').disabled = !selectedPlace;
+  $('#search-online').disabled = !places || $('#data-mode').value === 'local';
+  $('#find-stations').disabled = !selectedPlace || $('#data-mode').value === 'local';
   $('#cancel-online').disabled = true; $('#refresh-official').disabled = false;
 }
 function startOnline() {
   cancelOnline(); onlineController = new AbortController();
   $('#cancel-online').disabled = false;
-  return {signal:onlineController.signal, revision:onlineVersion};
+  return {signal: onlineController.signal, revision: onlineVersion};
 }
-$('#cancel-online').onclick = () => { cancelOnline(); $('#online-status').textContent = 'Online request cancelled.'; };
-$('#search-online').onclick = async () => {
-  const {signal,revision} = startOnline(); const placeVersion = ++version;
-  $('#search-online').disabled = true; $('#online-status').textContent = 'Searching Photon / OpenStreetMap…';
-  try {
-    const result = await online.search($('#place-input').value, signal);
-    if (revision !== onlineVersion || placeVersion !== version) return;
-    if (!result.value.length) throw new Error('No online matches. Try another address or the included catalogue.');
-    $('#place-list').replaceChildren(...result.value.map(place => {
-      const button = el('button',place.label,'secondary'); button.type='button'; button.onclick=()=>choosePlace(place); return button;
-    }));
-    $('#place-choices').hidden=false;
-    $('#online-status').textContent = 'Choose an online match below. ' + (result.cached ? 'Saved search from '+new Date(result.at).toLocaleString()+'.' : 'Results from Photon / OpenStreetMap.');
-  } catch(error) { if(revision===onlineVersion) $('#online-status').textContent=error.message; }
-  finally { if(revision===onlineVersion) cancelOnline(); }
+$('#cancel-online').onclick = () => {
+  cancelOnline(); ++version;
+  $('#online-status').textContent = 'Online request cancelled.';
+  if (current) $('#state-panel').hidden = true;
+  else state('Request cancelled', 'Try another place, or choose the local model in Data sources and station options.');
 };
+$('#search-online').onclick = () => { $('#data-mode').value = 'auto'; void search(); };
+$('#data-mode').onchange = () => {
+  cancelOnline(); ++version;
+  if (selectedPlace) void choosePlace(selectedPlace);
+};
+$('#use-local-model').onclick = () => { if (selectedPlace) void useLocal(); };
 $('#find-stations').onclick = async () => {
   if (!selectedPlace) return;
-  const place = {...selectedPlace}; const {signal,revision} = startOnline();
-  $('#find-stations').disabled=true; $('#official-status').textContent='Finding NOAA and Canadian tide stations…';
+  const place = {...selectedPlace}; const {signal, revision} = startOnline(); ++version;
+  $('#find-stations').disabled = true; $('#official-status').textContent = 'Finding NOAA and Canadian tide stations…';
   try {
-    const result=await online.stations(place,signal);
-    if(revision!==onlineVersion) return;
-    $('#official-stations').replaceChildren(...result.stations.map(station => {
-      // Use the existing coastline zone assignment when available; UTC is an explicit fallback.
-      const zone = nearbyPoints(data,station)[0]?.timeZone;
-      station.timeZone = zone || 'UTC';
-      const button=el('button',station.name+' · '+providers[station.provider].name+' · '+station.distanceKm.toFixed(1)+' km · '+station.latitude.toFixed(4)+', '+station.longitude.toFixed(4),'secondary');
-      button.type='button'; button.onclick=()=>loadOfficial(station); return button;
-    }));
-    $('#official-status').textContent=(result.stations.length ? 'Choose the station on your coast. Nearby stations may be across a bay or island. ' : 'No NOAA or Canadian prediction stations within 150 km. Use the bundled model here. ') + result.warning;
-  }catch(error){if(revision===onlineVersion) $('#official-status').textContent=error.message;}
-  finally{if(revision===onlineVersion) cancelOnline();}
+    const result = await online.stations(place, signal);
+    if (revision !== onlineVersion) return;
+    stationChoices(result, true);
+  } catch (error) { if (revision === onlineVersion) $('#official-status').textContent = error.message; }
+  finally { if (revision === onlineVersion) cancelOnline(); }
 };
-async function loadOfficial(station, refresh=false) {
-  const place={...selectedPlace}; const {signal,revision}=startOnline(); const placeVersion=++version;
-  $('#refresh-official').disabled=true; $('#online-status').textContent='Loading '+providers[station.provider].name+' predictions…';
+async function loadOfficial(station, refresh = false, fallback = false) {
+  const place = {...selectedPlace}; const {signal, revision} = startOnline(); const placeVersion = ++version;
+  $('#refresh-official').disabled = true;
+  $('#online-status').textContent = 'Loading ' + providers[station.provider].name + ' predictions…';
   try {
-    const rows=forecastRows($('#start-date').value,station.timeZone);
-    const forecast=await online.forecast({place,station,rows,signal,refresh});
-    if(revision!==onlineVersion || placeVersion!==version) return;
-    renderForecast(forecast); history.append(forecast); showHistory(); $('#state-panel').hidden=true;
-    $('#online-status').textContent=forecast.online.stale ? 'The service is unavailable. Saved predictions for these dates are shown.' : 'Official predictions loaded. You can return to a local model point below.';
-  }catch(error){if(revision===onlineVersion) $('#online-status').textContent=error.message+' Your previous forecast remains available.';}
-  finally{if(revision===onlineVersion) cancelOnline();}
+    const rows = forecastRows($('#start-date').value, station.timeZone);
+    const forecast = await online.forecast({place, station, rows, signal, refresh});
+    if (revision !== onlineVersion || placeVersion !== version) return;
+    renderForecast(forecast); history.append(forecast); showHistory(); $('#state-panel').hidden = true;
+    $('#online-status').textContent = forecast.online.stale ? 'The service is unavailable. Saved predictions for these dates are shown.' : 'Official predictions loaded from ' + providers[station.provider].name + '.';
+  } catch (error) {
+    if (revision !== onlineVersion || placeVersion !== version) return;
+    if (fallback) return useLocal('Online predictions failed: ' + error.message + ' Using the bundled FES2022 model.');
+    $('#online-status').textContent = error.message + (current ? ' Your previous forecast remains available.' : ' Try another station or the local model.');
+    if (!current) state('Online predictions unavailable', 'Try another station or use the local model in Data sources and station options.');
+  } finally { if (revision === onlineVersion) cancelOnline(); }
 }
 $('#refresh-official').onclick=()=>{if(current?.online) loadOfficial(current.point,true);};
 $('#clear-online-cache').onclick=()=>{online.clear();$('#online-status').textContent='Saved online responses cleared. Forecast history and the embedded model are unchanged.';};
@@ -221,7 +275,7 @@ $('#place-form').addEventListener('submit', event => { event.preventDefault(); i
 $('#today').addEventListener('click', () => { $('#start-date').value = ''; if (selectedPlace && data) choosePlace(selectedPlace); });
 $('#show-here').addEventListener('click', () => {
   if (!navigator.geolocation) { state('Location unavailable', 'Enter your town or coordinates instead.'); return; }
-  const revision = ++version;
+  cancelOnline(); const revision = ++version;
   state('Finding your location', 'Your browser may ask for location permission.');
   navigator.geolocation.getCurrentPosition(({coords}) => {
     if (revision !== version) return;
@@ -245,7 +299,7 @@ window.tideReady = Promise.all([inflate(harmonicsGzip), inflate(placesGzip), wor
   $('#runtime-status').textContent = `Ready offline · ${data.metadata.count.toLocaleString('en-US')} coastal points · ${places.length.toLocaleString('en-US')} places`;
   $('#search-online').disabled = false;
   $('#show-selection').disabled = false; $('#show-here').disabled = false; showHistory();
-  // Optional local deep links contain plain place/date text, never executable code.
+  // Deep links use the same online-first place and forecast flow as the form.
   const link = new URLSearchParams(location.hash.slice(1));
   if (link.has('place')) {
     $('#place-input').value = link.get('place').slice(0, 500);

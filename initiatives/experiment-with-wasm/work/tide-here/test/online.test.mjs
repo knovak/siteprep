@@ -1,9 +1,19 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createOnlineTides,normalizeEvents,normalizeStations,predictionUrl} from '../src/online.mjs';
+import {automaticPlace,automaticStation,createOnlineTides,normalizeEvents,normalizeStations,predictionUrl} from '../src/online.mjs';
 import {forecastRows} from '../src/forecast.mjs';
 const rows=forecastRows('2026-09-08','America/Los_Angeles');
 const predictions={predictions:[{t:'2026-09-08 09:00',v:'1.7',type:'H'},{t:'2026-09-08 15:00',v:'0.2',type:'L'},{t:'2026-09-07 09:00',v:'1',type:'H'}]};
+
+test('automatic choices require a clear place or a nearby clearly closer station',()=>{
+  const city={label:'San Diego, California, United States'},county={label:'San Diego (county), California, United States'};
+  assert.equal(automaticPlace([city,county],'San Diego, California'),city);
+  assert.equal(automaticPlace([{label:'Harbor, California'},{label:'Harbor, Oregon'}],'Harbor'),null);
+  assert.equal(automaticStation([{distanceKm:2},{distanceKm:5}]).distanceKm,2);
+  assert.equal(automaticStation([{distanceKm:2},{distanceKm:3}]),null);
+  assert.equal(automaticStation([{distanceKm:26}]),null);
+  assert.equal(automaticStation([]),null);
+});
 
 test('official providers keep UTC bounds, sort and deduplicate events, and reject missing data',()=>{
   const url=new URL(predictionUrl({id:'9414290',provider:'noaa'},rows));assert.equal(url.searchParams.get('time_zone'),'gmt');assert.equal(url.searchParams.get('datum'),'MLLW');

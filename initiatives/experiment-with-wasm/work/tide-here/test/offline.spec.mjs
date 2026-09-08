@@ -4,6 +4,10 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL, fileURLToPath} from 'node:url';
 const url = new URL('../dist/index.html',import.meta.url).href;
+test.beforeEach(async ({context}) => {
+  await context.addInitScript(() => Object.defineProperty(navigator, 'onLine', {get: () => false}));
+  await context.route(/^https?:/, route => route.abort());
+});
 async function ready(page, target=url) { await page.goto(target); await expect(page.locator('#runtime-status')).toContainText('Ready offline',{timeout:30000}); }
 async function forecast(page, coordinates='37.46, -122.44', date='2026-09-07') {
   await page.locator('#place-input').fill(coordinates); await page.locator('#start-date').fill(date);
