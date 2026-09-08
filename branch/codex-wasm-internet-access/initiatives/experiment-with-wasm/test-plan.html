@@ -4,7 +4,7 @@
   <meta name="siteprep-version-root" content="../../">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test plan — experiment with wasm</title>
+  <title>Test plan — Experiment with Wasm</title>
   <link rel="stylesheet" href="../../shared/site_base/site_base.css">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
@@ -19,10 +19,10 @@
   <header class="card">
     <div class="card-header">
       <p class="tag">Initiative Document</p>
-      <h1>Test plan — experiment with wasm</h1>
+      <h1>Test plan — Experiment with Wasm</h1>
     </div>
     <div class="card-content">
-      <p><a href="./index.html">Back to experiment with wasm</a></p>
+      <p><a href="./index.html">Back to Experiment with Wasm</a></p>
     </div>
   </header>
   <main class="card" aria-labelledby="doc-body">
@@ -41,6 +41,8 @@
 <ul><li>Run all three Playwright suites with <code>WASM_BROWSER=firefox</code>; keep the default Chromium projects unchanged for CI.</li><li>Run the static demo with <code>WASM_BROWSER=webkit WASM_DEVICE=&#39;iPad Pro 11&#39;</code> to exercise its mobile user agent, 834 × 1194 viewport, touch input, offline post-load actions and reload persistence.</li><li>Test downloaded files in the installed Safari and Firefox applications, including a separate-copy backup restore, before claiming direct-file compatibility.</li><li>Treat Playwright WebKit as engine evidence, not as an installed Safari or physical-iPad result. Keep actual-iPad Files/Home Screen testing open until a person supplies that result.</li></ul>
 <h3>Online controls</h3>
 <ul><li>Import an export URL, fetch inert website metadata and a real image, and verify reload/full-backup retention without changing original fields or attached pictures.</li><li>Exercise explicit Microlink screenshot mode, blocked direct websites, HTTP 429, cancellation and phone layout. Embedded remote HTML must not execute scripts or request tracking images.</li><li>Search an online address, choose NOAA and CHS stations, verify five-day output and the correct provider/datum, then exercise cached fallback and return to the local model.</li><li>Cancel a slow station request, choose a new coast, and verify the old request cannot replace the new location.</li><li>Check transport timeouts, download limits, credential omission, malformed provider data, partial catalogue failure, cache limits and quota failures.</li><li>Preserve all existing WASM parity and offline tests. Check live NOAA, Photon and Microlink separately from deterministic fixtures, and report provider/browser failures explicitly.</li></ul>
+<h4>Default online regression checks</h4>
+<ul><li>Submit San Diego through Show tides; verify Photon and NOAA requests, station 9410170, MLLW, and five days without clicking separate online controls.</li><li>Resolve a beach/street address absent from the bundled catalogue through the same form.</li><li>Distinguish city/county labels, require choices for ambiguous places/stations, and preserve the 25 km / 0.6 automatic match thresholds.</li><li>Verify CHS automatic selection with controlled responses, failed search/prediction fallback, no-network local-only use, and late/cancelled requests.</li><li>Verify coordinates, deep links, geolocation, Today/history and return to the model use the intended source path. Offline tests explicitly disable online availability; they do not rely on the default being offline.</li></ul>
     </div>
   </main>
   <footer class="site-footer" data-version="codex/wasm-internet-access" data-root="../../">

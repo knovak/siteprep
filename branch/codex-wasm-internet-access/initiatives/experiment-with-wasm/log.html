@@ -4,7 +4,7 @@
   <meta name="siteprep-version-root" content="../../">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log — experiment with wasm</title>
+  <title>Log — Experiment with Wasm</title>
   <link rel="stylesheet" href="../../shared/site_base/site_base.css">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
@@ -19,10 +19,10 @@
   <header class="card">
     <div class="card-header">
       <p class="tag">Initiative Document</p>
-      <h1>Log — experiment with wasm</h1>
+      <h1>Log — Experiment with Wasm</h1>
     </div>
     <div class="card-content">
-      <p><a href="./index.html">Back to experiment with wasm</a></p>
+      <p><a href="./index.html">Back to Experiment with Wasm</a></p>
     </div>
   </header>
   <main class="card" aria-labelledby="doc-body">
@@ -57,6 +57,8 @@
 <p>Added a prioritized, reviewable menu covering physical-iPad acceptance, a recovery guide, installable offline use, storage health and evidence-led performance options; none is authorized by the proposal.</p>
 <h3>2026-09-08 — Optional online data in both experiments</h3>
 <p>Added explicit online controls while retaining both offline workflows: Bookmark Sorter URL imports, website metadata, remote picture downloads and named Microlink metadata/screenshots; Tide Here Photon search and NOAA/CHS station/prediction adapters with bounded caches, source/datum labels and cancellation. User bookmark fields and attached pictures are preserved. Live browser probes verified NOAA, Photon and a saved Microlink screenshot. CHS API responses were available outside the browser, but browser CORS blocked live retrieval; the limitation is documented. Rebuilt artifacts and staged preview are prepared in the internet-access PR; this is not a production release.</p>
+<h3>2026-09-08 — Correct the normal Tide Here lookup</h3>
+<p>Responded to the user&#39;s San Diego screenshot by routing Show tides, location, Today, history and deep links through Photon and official station predictions. Clear matches resolve automatically using the hosted 25 km / 0.6 station rule; ambiguity opens a chooser, and failures show a local fallback reason. Added a local-only choice and compact source controls. A live form submission loaded 20 NOAA San Diego events without separate online actions; 9 Node and 13 Chromium tests pass, with 8 online journeys also passing Firefox and WebKit. Integrated main&#39;s newer Wasm title/collection labels while retaining this PR&#39;s functionality. Production remains outside this change.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="codex/wasm-internet-access" data-root="../../">

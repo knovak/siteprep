@@ -4,7 +4,7 @@
   <meta name="siteprep-version-root" content="../../">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Specification — experiment with wasm</title>
+  <title>Specification — Experiment with Wasm</title>
   <link rel="stylesheet" href="../../shared/site_base/site_base.css">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
@@ -19,10 +19,10 @@
   <header class="card">
     <div class="card-header">
       <p class="tag">Initiative Document</p>
-      <h1>Specification — experiment with wasm</h1>
+      <h1>Specification — Experiment with Wasm</h1>
     </div>
     <div class="card-content">
-      <p><a href="./index.html">Back to experiment with wasm</a></p>
+      <p><a href="./index.html">Back to Experiment with Wasm</a></p>
     </div>
   </header>
   <main class="card" aria-labelledby="doc-body">
@@ -52,8 +52,8 @@
 <h3>Optional internet access (2026-09-08)</h3>
 <p>Both single-file applications permit HTTP(S) connections in their Content Security Policy. External scripts, frames and objects remain disabled. No remote JavaScript is loaded: browser JavaScript handles downloads while the bundled WASM handles local computation.</p>
 <p>Bookmark Sorter&#39;s Online tools imports HTML or Sorter JSON from a URL (20 MB maximum) into the collection selected when the operation starts. Fetch previews processes marked visible cards, or the visible page, up to 12 items sequentially. Direct website mode reads inert HTML metadata. Named Microlink modes request metadata or screenshots through its unauthenticated public API. Only explicitly selected URLs go to that service. Picture URL accepts remote rasterizable images. Images are downloaded with omitted credentials, decoded, reduced to at most 1200 pixels per side and saved as PNG; original title, URL, note, tags and verdict stay intact. Existing attached pictures are retained. Preview descriptions fill card text only when there is no user note. Preview text and pictures persist in full backups. Failed requests retain previous previews. Cancellation stops the current request and remaining batch; HTTP 429 ends a batch without retries.</p>
-<p>Tide Here&#39;s Search online uses Photon on explicit clicks, with a one-second minimum between uncached searches. Find official tide stations retrieves independent NOAA and CHS catalogues and offers up to 12 stations within 150 km, with provider, coordinates and distance. The user chooses a station before fetching predictions. UTC provider events are placed into five local days; the nearby bundled coastline supplies the station time zone, with an explicit UTC fallback where absent. NOAA heights are MLLW; Canadian heights are chart datum; model heights remain mean sea level. CHS unlabeled extrema are sorted/deduplicated and must alternate before high/low labels are inferred. Live official forecasts identify the API rather than claiming WASM calculated their tides.</p>
-<p>Searches/catalogues cache for seven days, predictions for six hours, with at most 32 cached responses. Stale responses are used only after a failed refresh and display their original retrieval time and a visible notice. Cache quota failure retains a window-only copy. Cancellation never substitutes a cached response. Forecast history/backups retain provider and datum. Both the initial offline workflows and explicit online controls remain available without a custom application server.</p>
+<p>Tide Here&#39;s normal Show tides submission searches Photon first, with a one-second minimum between uncached searches, then falls back to its bundled place catalogue on failure or no match. One exact label/prefix match resolves automatically; county labels are distinct from cities. Ambiguous names show choices. The selected place triggers independent NOAA/CHS catalogue requests and offers up to 12 stations within 150 km. A station within 25 km whose distance is at most 0.6 times the next station&#39;s distance is chosen automatically, matching the hosted app&#39;s rule; other matches open the station chooser before any forecast is displayed. Failed official requests or no station produce a visibly labelled FES2022 fallback. Local model only, or a browser-reported offline state, bypasses network requests in the normal flow. Coordinates, location, Today, history and deep links all use this path. Manual station and model choices remain in collapsed Data sources and station options. UTC provider events are placed into five local days; the nearby bundled coastline supplies the station time zone, with an explicit UTC fallback where absent. NOAA heights are MLLW; Canadian heights are chart datum; model heights remain mean sea level. CHS unlabeled extrema are sorted/deduplicated and must alternate before high/low labels are inferred. Live official forecasts identify the API rather than claiming WASM calculated their tides.</p>
+<p>Searches/catalogues cache for seven days, predictions for six hours, with at most 32 cached responses. Stale responses are used only after a failed refresh and display their original retrieval time and a visible notice. Cache quota failure retains a window-only copy. Cancellation never substitutes a cached response. Forecast history/backups retain provider and datum. The main flow prefers online data; the offline mode and manual source controls remain available without a custom application server.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="codex/wasm-internet-access" data-root="../../">

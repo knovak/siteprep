@@ -1,5 +1,5 @@
 {
-  "title": "experiment with wasm",
+  "title": "Experiment with Wasm",
   "description": "Two standalone applications powered by WebAssembly: Bookmark Sorter and Tide Here, with the wish and findings behind the experiment.",
   "initiative": "experiment-with-wasm",
   "root": "index.html",
