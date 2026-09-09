@@ -53,9 +53,9 @@
       "name": "Tide Here",
       "path": "tide-here/index.html",
       "sourceArtifact": "work/tide-here/dist/index.html",
-      "sourceCommit": "372e6c04ace88e0c1d7b9d67b53d5c0c6523f4d1",
-      "bytes": 41336024,
-      "sha256": "1e449692d2bc2fbe90b49e41d0324f23e5fe0eaa1ef70f103fd3a86ec7b824fd",
+      "sourceCommit": "6e54843d550520ca10523f5d939ee51106c890db",
+      "bytes": 41336104,
+      "sha256": "894bdace450e6b6e021a072e60cc5f0fa40a063c4e166bc4e6fd69611de3a6f3",
       "fork": {
         "sourceRepository": "https://github.com/knovak/siteprep",
         "sourceCommit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
