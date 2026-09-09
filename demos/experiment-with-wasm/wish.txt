@@ -1,5 +1,9 @@
 # Wish
 
+## 2026-09-08
+
+enable as much internet access as possible for both applications.  make a PR
+
 ## 2026-09-07
 
 convert at least one functional web site and web UI with a wasm-based non-server application.
