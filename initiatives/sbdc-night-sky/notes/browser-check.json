@@ -1,0 +1,43 @@
+{
+  "default": "SUN -5.6° · SBDCs above horizon 22,523 · sunlit 22,013 · naked-eye VISIBLE 3,290 · visible stars 67 · brightest mag -2.4 (brighter than Sirius)",
+  "checks": [
+    "initial canvas and readouts",
+    "latitude, date, dusk and midnight",
+    "brightness response",
+    "clustering and objects readout",
+    "horizon and all-sky views",
+    "camera mode",
+    "French and English",
+    "custom shells",
+    "twilight lock",
+    "real-time and fast-forward playback",
+    "assumptions table",
+    "PNG export",
+    "drag and wheel zoom",
+    "phone canvas and collapsing controls; sticky discrepancy recorded",
+    "zero page errors and zero network requests"
+  ],
+  "equatorDusk": "SUN -8.3° · SBDCs above horizon 39,874 · sunlit 39,301 · naked-eye VISIBLE 19,579 · visible stars 300 · brightest mag -3.9 (Venus-class)",
+  "clustered": "SUN -8.3° · SBDCs above horizon 38,850 · sunlit 38,187 · naked-eye VISIBLE objects 345 (36,819 satellites within) · visible stars 300 · brightest mag -7.8 (Venus-class)",
+  "assumptionRows": 44,
+  "phone": {
+    "groups": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "sticky": "relative",
+    "canvas": [
+      390,
+      388
+    ],
+    "overflow": false,
+    "scrolledCanvasTop": -425
+  },
+  "knownFindings": [
+    "Phone sky computes to position: relative; inherited mobile sticky rule is overridden."
+  ],
+  "errors": [],
+  "requests": []
+}

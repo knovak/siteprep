@@ -105,6 +105,22 @@ rendering here means no client JS, no `fetch`, and no flash of an unrendered
 page. The `.md` file remains the single source of truth and still renders on
 GitHub, so the choice stays reversible.
 
+## SBDC Night-Sky Simulator adoption
+
+`initiatives/sbdc-night-sky/lib/` preserves the complete supplied development
+package, including its build script, source, tests, data, and nine original
+documents. `work/` holds the independent demo preview snapshot; the repository
+build copies it without invoking the inherited builder. The SHA-256 adoption
+manifest retains the original archive metadata and extracted-file inventory;
+the redundant source ZIP is omitted. The unchanged specification and
+implementation plan and the initiative README document reproduction. No new
+repository runtime dependency or executable behavior is introduced.
+
+The original README and tutorial are included verbatim in the initiative
+README; the phase reports, final report, and upgrade plan are included verbatim
+in `notes.md`. This makes every supplied document readable through the existing
+initiative renderer while retaining the originals under `lib/`.
+
 ## Decisions
 
 `decisions.md` records questions the initiative was blocked on and how they were

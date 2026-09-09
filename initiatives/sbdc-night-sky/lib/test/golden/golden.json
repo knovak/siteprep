@@ -1,0 +1,199 @@
+[
+  {
+    "name": "equator-equinox-dusk",
+    "cfg": {
+      "seed": 12345
+    },
+    "state": {
+      "latDeg": 0,
+      "doy": 79,
+      "solarTimeHours": 18.5
+    },
+    "expect": {
+      "aboveHorizon": 40198,
+      "sunlitAbove": 39718,
+      "visible": 18530,
+      "visibleObjects": 18530,
+      "aboveHorizonPerFamily": {
+        "sso": 31316,
+        "inclined": 8882,
+        "train": 0
+      },
+      "visiblePerFamily": {
+        "sso": 14655,
+        "inclined": 3875,
+        "train": 0
+      },
+      "visibleStars": 210,
+      "brightestMag": -3.89,
+      "brightestObjectMag": -3.89,
+      "sunAltDeg": -7.5
+    }
+  },
+  {
+    "name": "40N-june-dusk",
+    "cfg": {
+      "seed": 12345
+    },
+    "state": {
+      "latDeg": 40,
+      "doy": 172,
+      "solarTimeHours": 20.2
+    },
+    "expect": {
+      "aboveHorizon": 20207,
+      "sunlitAbove": 19450,
+      "visible": 4021,
+      "visibleObjects": 4021,
+      "aboveHorizonPerFamily": {
+        "sso": 15230,
+        "inclined": 4977,
+        "train": 0
+      },
+      "visiblePerFamily": {
+        "sso": 1345,
+        "inclined": 2676,
+        "train": 0
+      },
+      "visibleStars": 163,
+      "brightestMag": -2.43,
+      "brightestObjectMag": -2.43,
+      "sunAltDeg": -7.3
+    }
+  },
+  {
+    "name": "55N-june-midnight",
+    "cfg": {
+      "seed": 12345
+    },
+    "state": {
+      "latDeg": 55,
+      "doy": 172,
+      "solarTimeHours": 0
+    },
+    "expect": {
+      "aboveHorizon": 8411,
+      "sunlitAbove": 7538,
+      "visible": 1105,
+      "visibleObjects": 1105,
+      "aboveHorizonPerFamily": {
+        "sso": 6936,
+        "inclined": 1475,
+        "train": 0
+      },
+      "visiblePerFamily": {
+        "sso": 703,
+        "inclined": 402,
+        "train": 0
+      },
+      "visibleStars": 866,
+      "brightestMag": -0.11,
+      "brightestObjectMag": -0.11,
+      "sunAltDeg": -11.56
+    }
+  },
+  {
+    "name": "mitigated-million",
+    "cfg": {
+      "seed": 777,
+      "totalSats": 1000000
+    },
+    "state": {
+      "latDeg": 0,
+      "doy": 79,
+      "solarTimeHours": 18.5,
+      "brightnessRefMag": 5.5
+    },
+    "expect": {
+      "aboveHorizon": 134143,
+      "sunlitAbove": 132488,
+      "visible": 2727,
+      "visibleObjects": 2727,
+      "aboveHorizonPerFamily": {
+        "sso": 104496,
+        "inclined": 29647,
+        "train": 0
+      },
+      "visiblePerFamily": {
+        "sso": 2170,
+        "inclined": 557,
+        "train": 0
+      },
+      "visibleStars": 210,
+      "brightestMag": 0.67,
+      "brightestObjectMag": 0.67,
+      "sunAltDeg": -7.5
+    }
+  },
+  {
+    "name": "clustered-300k-dusk",
+    "cfg": {
+      "seed": 12345,
+      "clustering": {
+        "enabled": true,
+        "satsPerCluster": 100,
+        "memberSigma": 0.35,
+        "clusterDiameterKm": 1,
+        "diameterSigma": 0.35
+      }
+    },
+    "state": {
+      "latDeg": 0,
+      "doy": 79,
+      "solarTimeHours": 18.5
+    },
+    "expect": {
+      "aboveHorizon": 39195,
+      "sunlitAbove": 38694,
+      "visible": 36721,
+      "visibleObjects": 345,
+      "aboveHorizonPerFamily": {
+        "sso": 31483,
+        "inclined": 7712,
+        "train": 0
+      },
+      "visiblePerFamily": {
+        "sso": 30239,
+        "inclined": 6482,
+        "train": 0
+      },
+      "visibleStars": 210,
+      "brightestMag": -4.32,
+      "brightestObjectMag": -7.91,
+      "sunAltDeg": -7.5
+    }
+  },
+  {
+    "name": "50k-low-shells-30deg",
+    "cfg": {
+      "seed": 42,
+      "totalSats": 50000,
+      "ssoFraction": 0.3
+    },
+    "state": {
+      "latDeg": 20,
+      "doy": 265,
+      "solarTimeHours": 19.5
+    },
+    "expect": {
+      "aboveHorizon": 4608,
+      "sunlitAbove": 3525,
+      "visible": 2146,
+      "visibleObjects": 2146,
+      "aboveHorizonPerFamily": {
+        "sso": 1380,
+        "inclined": 3168,
+        "train": 60
+      },
+      "visiblePerFamily": {
+        "sso": 641,
+        "inclined": 1448,
+        "train": 57
+      },
+      "visibleStars": 1695,
+      "brightestMag": -3.52,
+      "brightestObjectMag": -3.52,
+      "sunAltDeg": -21.05
+    }
+  }
+]
