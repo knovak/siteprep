@@ -19,7 +19,8 @@ The original README and complete tutorial appear below, without edits. Their
 `sbdc-sky-simulator.html` is adopted as `work/index.html`; downloading that file
 provides the same standalone simulator. All nine original markdown documents
 also remain under `lib/` with their original filenames and bytes. The source
-archive is retained intact under `notes/`.
+archive has been fully extracted into `lib/`; its checksum and file inventory
+are retained in the adoption manifest, without keeping a duplicate binary ZIP.
 
 ## Original file map
 

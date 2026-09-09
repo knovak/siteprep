@@ -47,3 +47,12 @@ Checking the generated pages identified authored links that needed `.html`
 destinations; those navigation links were corrected outside the preserved
 document text. The final build and hosted deployment are verified by the PR
 checks and deployment receipt.
+
+## 2026-09-08 — Removed the redundant source ZIP
+
+At the user's request, compared all 29 source-archive files with their adopted
+`lib/` copies and manifest hashes, then removed the 161,551-byte duplicate
+`notes/sbdc-sim-final-source.zip`. Preserved the original archive metadata and
+extracted-file inventory in the manifest, and updated the adoption guidance.
+The source, original documents, and simulator snapshots remain unchanged.
+Confirmed the initiative is already `dormant` and retained that status.

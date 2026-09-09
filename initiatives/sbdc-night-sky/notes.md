@@ -7,8 +7,10 @@ markdown documents, an assumptions sidecar, and a complete source archive.
 The nested archive contains 29 files, all adopted unchanged into `lib/`.
 Its nine documents are byte-identical to the corresponding outer files.
 [adoption-manifest.json](https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/adoption-manifest.json)
-records the archive hashes and every mapping. The nested source archive is
-also retained unchanged under `notes/sbdc-sim-final-source.zip`.
+records the archive hashes and every mapping. All 29 nested source files were
+verified byte-for-byte against the ZIP before the redundant binary archive was
+removed at the user's request. The manifest retains the ZIP's original size,
+checksum, and extracted-file inventory; `lib/` retains its complete contents.
 
 `work/index.html` is byte-identical to both the supplied
 `sbdc-sky-simulator.html` and the existing `demos/SBDC Night Sky/index.html`.

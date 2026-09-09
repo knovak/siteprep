@@ -110,9 +110,10 @@ GitHub, so the choice stays reversible.
 `initiatives/sbdc-night-sky/lib/` preserves the complete supplied development
 package, including its build script, source, tests, data, and nine original
 documents. `work/` holds the independent demo preview snapshot; the repository
-build copies it without invoking the inherited builder. The source archive,
-SHA-256 adoption manifest, unchanged specification and implementation plan,
-and the initiative README document provenance and reproduction. No new
+build copies it without invoking the inherited builder. The SHA-256 adoption
+manifest retains the original archive metadata and extracted-file inventory;
+the redundant source ZIP is omitted. The unchanged specification and
+implementation plan and the initiative README document reproduction. No new
 repository runtime dependency or executable behavior is introduced.
 
 The original README and tutorial are included verbatim in the initiative

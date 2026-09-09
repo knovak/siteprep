@@ -3,8 +3,10 @@
 ## Adoption checks
 
 1. Compare every entry in `adoption-manifest.json` against its adopted bytes.
-   Verify all 12 outer entries, 29 nested source files, two demo snapshot files,
-   the two lifecycle copies, and every verbatim document inclusion.
+   Verify all 12 outer entries (11 adopted files and one archive represented
+   by its extracted contents), 29 nested source files, two demo snapshot files,
+   the two lifecycle copies, and every verbatim document inclusion. The archive
+   checksum identifies the original input; its binary is intentionally omitted.
 2. Verify `work/index.html` matches the supplied standalone file and the
    production demo source, `work/index-initial.html` matches the earlier demo
    snapshot, and the sidecar matches `lib/data/sbdc-data.json` and the HTML's

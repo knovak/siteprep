@@ -16,8 +16,10 @@ independent scientific accuracy.
 
 ## This adoption is complete when
 
-1. Every file in the supplied archive, including every nested source file,
-   has an unchanged destination and a SHA-256 provenance record.
+1. Every document, data file, and source file in the supplied archives has an
+   unchanged destination and a SHA-256 provenance record. Archive containers
+   retain their original size, checksum, and extracted-file inventory without
+   requiring duplicate binary copies in the repository.
 2. All nine supplied documents are available under their original names and
    readable through the initiative pages, with their complete text preserved.
 3. The wish, objectives, decisions, test plan, overview, and log describe the

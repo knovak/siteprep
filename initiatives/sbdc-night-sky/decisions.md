@@ -65,3 +65,20 @@ dates or currency metadata.
 - Explicit production-release authorization after testing.
 - Any application or document corrections discovered during that testing,
   which need a separately agreed scope.
+
+## 2026-09-08 — Remove the duplicate archive and keep the initiative dormant
+
+The user asks to remove `notes/sbdc-sim-final-source.zip` if it is unnecessary,
+"to limit the use of binary files and duplicate files", and to set the
+initiative's status to dormant.
+
+All 29 regular files in the source ZIP were compared with their adopted
+`lib/` destinations and found byte-identical, with matching manifest hashes.
+The ZIP contains no additional source or documentation, so its 161,551-byte
+binary copy is removed. Its original size, checksum, and complete file inventory
+remain recorded in `adoption-manifest.json`. The original documents and all
+extracted source files remain unchanged.
+
+The initiative was already `dormant` and remains so, now explicitly confirmed
+by the user. User testing, any separately authorized fixes, and production
+release remain open under their existing blockers.

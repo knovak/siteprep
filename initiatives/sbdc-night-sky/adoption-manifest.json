@@ -8,7 +8,9 @@
   "source_archive": {
     "name": "sbdc-sim-final-source.zip",
     "sha256": "081985c0810d07c4b7023ce5b0cdbc2b6732eb231a84b48b75722cc8e6e89f03",
-    "files": 29
+    "files": 29,
+    "bytes": 161551,
+    "representation": "extracted files under lib/; duplicate binary omitted at user request"
   },
   "outer_files": [
     {
@@ -79,9 +81,10 @@
     },
     {
       "source": "sbdc-sim-final-source.zip",
-      "destination": "notes/sbdc-sim-final-source.zip",
       "bytes": 161551,
-      "sha256": "081985c0810d07c4b7023ce5b0cdbc2b6732eb231a84b48b75722cc8e6e89f03"
+      "sha256": "081985c0810d07c4b7023ce5b0cdbc2b6732eb231a84b48b75722cc8e6e89f03",
+      "representation": "extracted",
+      "contents_manifest": "source_files"
     }
   ],
   "source_files": [
