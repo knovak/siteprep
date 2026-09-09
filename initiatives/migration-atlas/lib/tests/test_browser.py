@@ -11,7 +11,8 @@ from PIL import Image
 from playwright.async_api import async_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-URL = "file://" + os.path.join(ROOT, "dist/migration-atlas.html")
+BUNDLE = os.path.join(os.path.dirname(ROOT), "work/index.html")
+URL = "file://" + BUNDLE
 GOLD = os.path.join(ROOT, "tests/goldens")
 UPDATE = "--update-goldens" in sys.argv
 
@@ -21,7 +22,7 @@ STATES = [
     ("g2_1500_world",   1500, None, False, []),
     ("g3_1750_atlantic",1750, {"rot": 40, "k": 1.8, "cyFrac": 0.5}, False, []),
     ("g4_1880_world",   1880, None, False, []),
-    ("g5_1950_sasia",   1950, {"rot": -76, "k": 6, "cyFrac": 0.72}, False, []),
+    ("g5_1950_sasia",   1950, {"rot": -76, "k": 6, "cyFrac": 1.72}, False, []),
     ("g6_2024_world",   2024, None, False, []),
     ("g7_1880_reduced", 1880, None, True, []),
     ("g8_2015_region_legend", 2015, None, False, ["#colorModeBtn", "#legendBtn"]),
@@ -72,6 +73,10 @@ async def main():
             await pg.goto(URL); await pg.wait_for_timeout(600)
             clip = {"x": 0, "y": 0, "width": 1600, "height": 808}  # map area only
             path = await snap_state(pg, name, yr, camset, clip, setup)
+            if name == "g5_1950_sasia":
+                target = await pg.evaluate("() => __atlas.project([76, 29])")
+                check("T3 South Asia golden includes Punjab", 0 < target[0] < 1600
+                      and 0 < target[1] < 808, str(target))
             gold = os.path.join(GOLD, name + ".png")
             if UPDATE:
                 print("  wrote golden", name)
@@ -393,7 +398,7 @@ async def main():
         med = ft[len(ft) // 2]; p95 = ft[int(len(ft) * 0.95)]
         check("T5 median frame < 17ms (1890s)", med < 17.0, f"{med:.1f}ms")
         check("T5 p95 frame < 33ms", p95 < 33, f"{p95:.1f}ms")
-        size = os.path.getsize(os.path.join(ROOT, "dist/migration-atlas.html"))
+        size = os.path.getsize(BUNDLE)
         check("T5 bundle ≤ 3.5MB", size <= 3.5e6, f"{size/1e6:.2f}MB")
 
         # memory: 3 full timeline sweeps, heap growth < 5% (after GC)

@@ -68,6 +68,14 @@ the stage, from `dormant` to `refining`, since the initiative has actionable
 work and a graduated output. The manifest lost its per-file hash table, which
 git already keeps, and gained the second package and the reproducibility record.
 
+## 2026-09-09 — Run the T8 editorial checklist over the 48 dataset entries
+
+Reviewed all 48 entries against T8 and recorded per-entry findings in notes.md (editorial review). References are present; numerical evidence, confidence, quantity and geographic issues remain explicitly open. Dataset unchanged.
+
+## 2026-09-09 — Re-baseline the goldens and run the T3-T7 browser suites
+
+Restored current-bundle paths, pinned Python dependencies and refreshed eight macOS goldens. Core 535/535, independent browser 88/88 and cross-browser smoke 24/24 passed. notes.md (browser verification) distinguishes implemented coverage from remaining T6/T7 gates.
+
 ## 2026-09-09 — Fixed the flow visibility window
 
 The user reported that a migration recorded as running from year A to year B

@@ -6,30 +6,27 @@
 
 ## Done
 
-The atlas is built and published: 48 migrations from 1000 AD onward, animated as
-population-scaled flows with residual diaspora circles, in one 1.25 MB
-self-contained file that runs from `file://` with no server. Phases 0-5 of
-[plan.md](plan.html) and extensions E1-E7 were completed in July 2026.
+The self-contained atlas contains 48 migrations and 92 destination records,
+with animated flows, diaspora circles, filtering, accessible table controls
+and a reproducible source build. Restored browser suites use the current bundle:
+535 core assertions, 88 browser checks against eight inspected macOS goldens,
+and 24 Chromium/Firefox/WebKit smoke checks passed ([notes.md](notes.html)).
 
-Its source was restored on 2026-09-07 and lives in `lib/` - 25 files: the
-dataset, the two application modules, the vendored d3, the build, and the T1-T7
-suites with eight goldens. `python3 lib/tools/build.py` rewrites
-`work/index.html` byte for byte, so the published bundle is the committed
-source's output. `node lib/tests/test_core.mjs` passes 535 assertions.
+An editorial review covers all 48 entries, including 144 sampled rendering
+states and targeted source checks. It records four confidence-rule conflicts,
+quantity/stock and geographic aggregation issues, and evidence gaps; it does
+not establish T8 acceptance or change the dataset.
 
 ## Remaining work
 
-Two gates from [test-plan.md](test-plan.html) have not been run since the
-restore. T3-T7 need the Python Playwright stack, which this repository does not
-install, and the goldens need one `--update-goldens` re-baseline on whichever
-machine runs them. T8 is an editorial pass over the 48 entries against
-`lib/tests/T8_editorial_checklist.md`, checking each still carries a cited
-source and a justified confidence and type.
+Phase 5 content iteration and T8 require field-level source evidence and
+reconciliation of the recorded quantity, confidence, type and map findings.
+The broader T6/T7 plan still calls for manual screen-reader work, full
+cross-engine interaction coverage and served/file and platform comparisons
+beyond the inherited smoke suite ([test-plan.md](test-plan.html)).
 
 ## Optional later
 
-[plan.md](plan.html) offers a Tauri desktop wrapper as an optional alternative
-to the double-clickable file, and defers street-level detail to the online
-server design it compares against. Phase 5 is content iteration: adding
-movements as new research appears, which is what the restored build makes
-possible.
+[plan.md](plan.html) offers a Tauri desktop wrapper and considers street-level
+detail through an online alternative. Further movements can be added as
+research supplies them through the existing dataset-validation and rebuild path.

@@ -1,7 +1,7 @@
 {
   "title": "Experiment with Wasm",
   "summary": "Convert an existing web application into a standalone browser application powered by WebAssembly.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [
     {
@@ -30,9 +30,9 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-09-09T00:47:17Z",
-    "commit": "4edee1664a918b6d98347f39e7b3c01694e6bc3a",
-    "digest": "7b1b2eff6a87286a6c60a88c80f79650883869d0"
+    "generated_at": "2026-09-09T06:02:55Z",
+    "commit": "fb88acabcd94b2d86222bd950dcc277502329048",
+    "digest": "4a8a4ce67ef4d5695aa9c65f8c98733fff67da92"
   },
   "deployments": [
     {
