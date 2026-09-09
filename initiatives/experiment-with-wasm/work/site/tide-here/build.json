@@ -14,6 +14,10 @@
     "places.json.gz": {
       "bytes": 11378119,
       "sha256": "fe459eef44ccec61b2093753d9ecc46f75f0a9c048766adbefd405b165a4fa76"
+    },
+    "australia-bom-2026.json.gz": {
+      "bytes": 1341291,
+      "sha256": "892fd7b24f5b386c66be1ab600089f92e0d7c249c91d5c12de2c3d5e3c5d96d9"
     }
   },
   "australia": {
