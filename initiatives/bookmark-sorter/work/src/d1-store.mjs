@@ -1,3 +1,4 @@
+import {verdictsForItems} from './verdict-plan.mjs';
 import {isUpdatedTag, updatedTag} from './updated-tag.mjs';
 import {compileSelectionSql, selectionDictionaries, validateCursor} from './selection-sql.mjs';
 
@@ -43,7 +44,6 @@ function chunks(values, size) {
   return result;
 }
 
-const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 const D1_MAX_BOUND_PARAMETERS = 100;
 
 function d1ChunkSize(requestedSize, reservedParameters = 0) {
@@ -896,9 +896,9 @@ export class D1BookmarkStore {
     });
   }
 
-  async applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
+  async applyVerdict(collectionId, {itemIds, verdict, itemVerdicts, at, sessionId, actionId}) {
     await this.assertCollectionWritable(collectionId);
-    if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
+    const assignments = verdictsForItems(itemIds, verdict, itemVerdicts);
     const session = await this.getSession(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
     const ids = [...new Set(itemIds)];
@@ -924,25 +924,28 @@ export class D1BookmarkStore {
     }));
     if (changes.length) {
       const statements = this.updatedTagStatements(collectionId, ids, stamp);
-      for (const batch of chunks(changes.map(change => change.item_id), d1ChunkSize(this.batchSize, 4))) {
-        const placeholders = batch.map(() => '?').join(', ');
-        statements.push(this.db.prepare(
-          `UPDATE items SET verdict = ?, verdict_at = ?
-           WHERE collection_id = ? AND id IN (${placeholders})`,
-        ).bind(verdict, at, collectionId, ...batch));
+      for (const value of new Set(assignments.values())) {
+        const group = ids.filter(id => assignments.get(id) === value);
+        for (const batch of chunks(group, d1ChunkSize(this.batchSize, 4))) {
+          const placeholders = batch.map(() => '?').join(', ');
+          statements.push(this.db.prepare(
+            `UPDATE items SET verdict = ?, verdict_at = ?
+             WHERE collection_id = ? AND id IN (${placeholders})`,
+          ).bind(value, at, collectionId, ...batch));
+        }
       }
       statements.push(this.db.prepare(
         `INSERT INTO triage_actions
          (id, collection_id, session_id, action_kind, payload_json, created_at, undone_at)
          VALUES (?, ?, ?, 'verdict', ?, ?, NULL)`,
-      ).bind(actionId, collectionId, sessionId, JSON.stringify({changes, verdict, verdict_at: at}), at));
+      ).bind(actionId, collectionId, sessionId, JSON.stringify({changes, verdict, item_verdicts: Object.fromEntries(assignments), verdict_at: at}), at));
       statements.push(this.db.prepare(
         'UPDATE triage_sessions SET items_judged = items_judged + ? WHERE id = ? AND collection_id = ?',
       ).bind(changes.length, sessionId, collectionId));
       await this.db.batch(statements);
     }
     return {
-      changes: changes.map(change => ({item_id: change.item_id, verdict, verdict_at: at,
+      changes: changes.map(change => ({item_id: change.item_id, verdict: assignments.get(change.item_id), verdict_at: at,
         added_tags: [stamp], removed_tags: change.previous_updated_tags})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),

@@ -22,73 +22,130 @@ async function boot(page) {
 }
 import {test, expect} from '@playwright/test';
 
-test('single-card verdicts preserve other marks, timestamp/filter/undo persist, and title copy stays independent', async ({page, context}) => {
+test('card choices are local, toggle instantly, and sweep saves mixed verdicts as one undoable action', async ({page, context}) => {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   const close = await boot(page, context);
-  // Clipboard is the only stub: verify the exact payload, without depending on OS permission prompts.
-  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', {value: {writeText: async text => { window.copiedTitle = text; }}, configurable: true}));
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {value:{writeText: async text => {window.copiedTitle = text;}}, configurable:true});
+    window.verdictRequests = [];
+    const name = window.bookmarkLocalRequest ? 'bookmarkLocalRequest' : 'fetch';
+    const request = window[name];
+    window[name] = async (path, options) => {
+      if (path === '/api/verdict' && options?.method === 'POST') {
+        window.verdictRequests.push(JSON.parse(options.body));
+        if (window.failNextSweep) { window.failNextSweep = false; return new Response(JSON.stringify({error:'Try the sweep again'}), {status:503}); }
+      }
+      return request(path, options);
+    };
+  });
   const cards = page.locator('.bookmark-card:visible');
-  const firstId = await cards.nth(0).getAttribute('data-item-id');
-  const secondId = await cards.nth(1).getAttribute('data-item-id');
-  const first = page.locator('[data-item-id="' + firstId + '"]');
-  const second = page.locator('[data-item-id="' + secondId + '"]');
-  const title = await first.locator('.title-text').innerText();
-  await second.locator('.mark').click();
-  await first.locator('.copy-title').click();
+  const ids = await cards.evaluateAll(nodes => nodes.map(node => node.dataset.itemId));
+  const card = i => page.locator('[data-item-id="' + ids[i] + '"]');
+  const choice = (i, value) => card(i).locator('[data-card-verdict="' + value + '"]');
+  await card(1).locator('.mark').click();
+  const title = await card(0).locator('.title-text').innerText();
+  await card(0).locator('.copy-title').click();
   expect(await page.evaluate(() => window.copiedTitle)).toBe(title);
-  await expect(first).toHaveAttribute('aria-selected', 'false');
-  await expect(second).toHaveAttribute('aria-selected', 'true');
-  for (const value of ['keeper', 'archive', 'needs-more-time']) {
-    await first.locator('[data-card-verdict="' + value + '"]').click();
-    await expect(first).toHaveAttribute('data-verdict', value);
-    await expect(second).toHaveAttribute('data-verdict', '');
-    await expect(second).toHaveAttribute('aria-selected', 'true');
-    await expect(first.locator('[data-card-verdict="' + value + '"]')).toHaveAttribute('aria-pressed', 'true');
-    await expect.poll(() => page.evaluate(id => window.__pileState.items.find(item => item.id === id)?.tags.filter(tag => tag.startsWith('updated_at')).length, firstId)).toBe(1);
+  for (const value of ['keeper','archive','needs-more-time']) {
+    await choice(0, value).click();
+    await expect(choice(0, value)).toHaveAttribute('aria-pressed','true');
+    await expect(card(0)).toHaveAttribute('data-verdict','');
+    await expect(card(1)).toHaveAttribute('aria-selected','true');
   }
-  // Space activates the individual button, rather than the grid's marking shortcut.
-  await first.locator('[data-card-verdict="keeper"]').focus();
+  await choice(0,'needs-more-time').click();
+  await expect(choice(0,'needs-more-time')).toHaveAttribute('aria-pressed','false');
+  await choice(0,'keeper').focus();
   await page.keyboard.press('Space');
-  await expect(first).toHaveAttribute('data-verdict', 'keeper');
-  await expect(first).toHaveAttribute('aria-selected', 'false');
-  await second.locator('.mark').click();
-  await page.locator('#selector > summary').click();
-  await page.locator('#selection-expression').fill('updated_at:>2026-09');
-  await page.locator('#open-selection').click();
-  await expect(cards).toHaveCount(1);
-  await page.locator('#tag-input').fill('reviewed');
-  await page.locator('#tag-selection').click();
-  await expect.poll(() => page.evaluate(() => window.__pileState.items[0]?.tags.includes('reviewed'))).toBe(true);
+  await expect(choice(0,'keeper')).toHaveAttribute('aria-pressed','true');
+  await expect(card(0)).toHaveAttribute('aria-selected','false');
+  await choice(1,'archive').click();
+  await choice(2,'needs-more-time').click();
+  expect(await page.evaluate(() => window.verdictRequests.length)).toBe(0);
+  expect(await page.evaluate(() => window.__pileState.items.some(item => item.tags.some(tag => tag.startsWith('updated_at'))))).toBe(false);
+  await page.locator('#next-page').click();
+  await expect(page.locator('#previous-page')).toBeEnabled();
+  await page.locator('#previous-page').click();
+  await expect(choice(0,'keeper')).toHaveAttribute('aria-pressed','true');
+  await page.evaluate(() => {window.failNextSweep = true;});
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('#status')).toHaveText('Try the sweep again');
+  await expect(choice(0,'keeper')).toHaveAttribute('aria-pressed','true');
+  await expect(card(0)).toHaveAttribute('data-verdict','');
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('#position')).toContainText('17–18');
+  await page.locator('#previous-page').click();
+  for (const [i, value] of ['keeper','archive','needs-more-time','junk'].entries()) {
+    await expect(card(i)).toHaveAttribute('data-verdict',value);
+  }
+  await expect(card(0).locator('[aria-pressed="true"]')).toHaveCount(0);
+  const requests = await page.evaluate(() => window.verdictRequests);
+  expect(requests).toHaveLength(2); // failed request and one retry, with the same complete action
+  expect(requests[1].item_ids).toHaveLength(16);
+  expect(requests[1].item_verdicts).toEqual({[ids[0]]:'keeper',[ids[1]]:'archive',[ids[2]]:'needs-more-time'});
+  expect(await page.evaluate(() => window.__pileState.items.slice(0,16).every(item => item.tags.filter(tag => tag.startsWith('updated_at')).length === 1))).toBe(true);
   await page.locator('#undo').click();
-  await expect.poll(() => page.evaluate(() => window.__pileState.items[0]?.tags.includes('reviewed'))).toBe(false);
-  await page.locator('#selection-expression').fill('updated_at:<2027 and verdict:keep');
-  await page.locator('#open-selection').click();
-  await expect(cards).toHaveCount(1);
-  await first.locator('[data-card-verdict="archive"]').click();
-  await expect(cards).toHaveCount(0);
-  await page.locator('#undo').click();
-  await expect(cards).toHaveCount(1);
+  await expect(card(0)).toHaveAttribute('data-verdict','');
+  await expect(card(3)).toHaveAttribute('data-verdict','');
+  expect(await page.evaluate(() => window.__pileState.items.some(item => item.tags.some(tag => tag.startsWith('updated_at'))))).toBe(false);
+  expect(errors).toEqual([]);
+  await close();
+});
+
+test('sweeping honors a new dropdown default, overrides an existing verdict, and persists the saved choices', async ({page, context}) => {
+  const close = await boot(page, context);
+  const first = page.locator('.bookmark-card:visible').first();
+  const id = await first.getAttribute('data-item-id');
+  const target = page.locator('[data-item-id="' + id + '"]');
+  await page.locator('button[data-verdict="keeper"]').click();
+  await expect(target).toHaveAttribute('data-verdict','keeper');
+  await target.locator('[data-card-verdict="archive"]').click();
+  await page.locator('#sweep-verdict').selectOption('needs-more-time');
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('#position')).toContainText('17–18');
+  await page.locator('#previous-page').click();
+  await expect(target).toHaveAttribute('data-verdict','archive');
+  await expect(page.locator('.bookmark-card:visible').nth(1)).toHaveAttribute('data-verdict','needs-more-time');
   const collection = await page.locator('#collection-select').inputValue();
   await page.reload();
-  await expect(page.locator('#collection-select option[value="' + collection + '"]')).toBeAttached();
   await page.locator('#collection-select').selectOption(collection);
-  await expect(first).toHaveAttribute('data-verdict', 'keeper');
-  const tags = await page.evaluate(id => window.__pileState.items.find(item => item.id === id).tags, firstId);
-  expect(tags.filter(tag => tag.startsWith('updated_at'))).toHaveLength(1);
-  expect(tags.find(tag => tag.startsWith('updated_at'))).toMatch(/^updated_at:\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
-  for (const size of [{width:1800,height:1000}, {width:1600,height:900}, {width:430,height:932}]) {
+  await expect(target).toHaveAttribute('data-verdict','archive');
+  await expect(target.locator('.card-verdict[aria-pressed="true"]')).toHaveCount(0);
+  await target.locator('[data-card-verdict="keeper"]').click();
+  for (const size of [{width:1800,height:1000},{width:1600,height:900},{width:430,height:932}]) {
     await page.setViewportSize(size);
     if (size.width > 1100) await page.locator('#page-layout').selectOption('3x12');
-    await expect(first.locator('.copy-title')).toBeVisible();
-    await expect.poll(() => first.evaluate(card => {
+    await expect.poll(() => target.evaluate(card => {
       const mark = card.querySelector('.mark').getBoundingClientRect();
       const buttons = [...card.querySelectorAll('.card-verdict')].map(button => button.getBoundingClientRect());
       const copyButton = card.querySelector('.copy-title');
       const copy = copyButton.getBoundingClientRect();
-      const heading = card.querySelector('h2').getBoundingClientRect();
-      return {copyHit: copyButton.contains(document.elementFromPoint(copy.x + copy.width / 2, copy.y + copy.height / 2)), below: buttons.every(box => box.top > mark.bottom), squares: buttons.every(box => box.width === box.height && box.width < mark.width), copyFits: copy.right <= heading.right + 1 && copy.bottom <= heading.bottom + 1};
-    })).toEqual({copyHit:true,below:true,squares:true,copyFits:true});
+      return {copyHit:copyButton.contains(document.elementFromPoint(copy.x+copy.width/2,copy.y+copy.height/2)),below:buttons.every(box=>box.top>mark.bottom),small:buttons.every(box=>box.width===20 && box.height===20)};
+    })).toEqual({copyHit:true,below:true,small:true});
+    await expect(target.locator('[data-card-verdict="keeper"]')).toHaveAttribute('aria-pressed','true');
   }
-  expect(errors).toEqual([]);
+  await close();
+});
+
+test('pending choices survive filtered paging and both sweep scopes use them', async ({page, context}) => {
+  const close = await boot(page, context);
+  await page.locator('#selector > summary').click();
+  await page.locator('#selection-expression').fill('verdict:untriaged');
+  await page.locator('#open-selection').click();
+  await page.locator('.bookmark-card:visible').first().locator('[data-card-verdict="keeper"]').click();
+  await page.locator('#next-page').click();
+  const last = page.locator('.bookmark-card:visible').last();
+  const lastId = await last.getAttribute('data-item-id');
+  await last.locator('[data-card-verdict="archive"]').click();
+  await page.locator('#previous-page').click();
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('.bookmark-card:visible')).toHaveCount(2);
+  await expect(page.locator('[data-item-id="'+lastId+'"] [data-card-verdict="archive"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#sweep-mode').selectOption('selection');
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('.bookmark-card:visible')).toHaveCount(0);
+  await page.locator('#undo').click();
+  await expect(page.locator('.bookmark-card:visible')).toHaveCount(2);
+  await expect(page.locator('.bookmark-card:visible [aria-pressed="true"]')).toHaveCount(0);
   await close();
 });

@@ -86,6 +86,26 @@ for (const [name, factory] of factories) {
     }
   });
 
+  test(name + ': mixed verdicts validate before writing and undo the entire sweep together', async () => {
+    const {store, sessionId} = await setup(Array.from({length: 201}, (_, i) => ({url: `https://example.org/mixed/${i}`, title: 'Mixed ' + i, tags: old})));
+    const original = await store.listAllItems('pile');
+    const itemIds = original.map(item => item.id);
+    const itemVerdicts = {[itemIds[0]]:'keeper', [itemIds[1]]:'archive', [itemIds[2]]:'needs-more-time'};
+    const args = {itemIds, verdict:'junk', itemVerdicts, at:'2026-09-09T04:05:06Z', sessionId, actionId:'mixed'};
+    await assert.rejects(Promise.resolve().then(() => store.applyVerdict('pile', {...args, itemVerdicts:{...itemVerdicts, [itemIds[200]]:'invalid'}})), /Unsupported verdict/);
+    assert.deepEqual(await store.listAllItems('pile'), original);
+    const result = await store.applyVerdict('pile', args);
+    assert.equal(result.session.items_judged, 201);
+    for (const item of await store.listAllItems('pile')) {
+      assert.equal(item.verdict, itemVerdicts[item.id] || 'junk');
+      assert.deepEqual(stamps(item.tags), [timestamp(args.at)]);
+    }
+    const undone = await store.undoLast('pile', {sessionId, at:'2026-09-09T04:06:00Z'});
+    assert.equal(undone.changes.length, 201);
+    assert.equal(undone.session.items_judged, 0);
+    assert.deepEqual(await store.listAllItems('pile'), original);
+  });
+
   test(name + ': bulk updates respect binding limits and replace timestamps on every item', async () => {
     const {store, sessionId} = await setup(Array.from({length: 201}, (_, i) => ({url: `https://example.org/${i}`, title: 'Bulk ' + i, tags: old})));
     const itemIds = (await store.listAllItems('pile')).map(item => item.id);

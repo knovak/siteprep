@@ -1,7 +1,7 @@
+import {verdictsForItems} from './verdict-plan.mjs';
 import {isUpdatedTag, updatedTag} from './updated-tag.mjs';
 import {evaluateSelection} from './selections.mjs';
 import {validateCursor} from './selection-sql.mjs';
-const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 
 function earlier(left, right) {
   if (!left) return right;
@@ -539,21 +539,24 @@ export class MemoryBookmarkStore {
     };
   }
 
-  applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
-    if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
+  applyVerdict(collectionId, {itemIds, verdict, itemVerdicts, at, sessionId, actionId}) {
+    const assignments = verdictsForItems(itemIds, verdict, itemVerdicts);
     const session = this.session(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
-    const changes = [];
-    for (const id of [...new Set(itemIds)]) {
+    for (const id of assignments.keys()) {
       const item = this.#items.get(id);
       if (!item || item.collection_id !== collectionId) throw new Error(`Unknown item in collection: ${id}`);
+    }
+    const changes = [];
+    for (const id of assignments.keys()) {
+      const item = this.#items.get(id);
       const tags = this.#tags.get(id);
       const previous = [...tags].filter(isUpdatedTag), stamp = updatedTag(at);
       for (const tag of previous) tags.delete(tag);
       tags.add(stamp);
       changes.push({item_id: id, verdict: item.verdict, verdict_at: item.verdict_at,
         previous_updated_tags: previous, updated_tag: stamp});
-      this.#items.set(id, {...item, verdict, verdict_at: at});
+      this.#items.set(id, {...item, verdict: assignments.get(id), verdict_at: at});
     }
     if (changes.length) {
       this.#actions.push({
@@ -561,14 +564,14 @@ export class MemoryBookmarkStore {
         collection_id: collectionId,
         session_id: sessionId,
         action_kind: 'verdict',
-        payload: {changes, verdict, verdict_at: at},
+        payload: {changes, verdict, item_verdicts: Object.fromEntries(assignments), verdict_at: at},
         created_at: at,
         undone_at: null,
       });
       session.items_judged += changes.length;
     }
     return {
-      changes: changes.map(change => ({item_id: change.item_id, verdict, verdict_at: at, added_tags: [change.updated_tag], removed_tags: change.previous_updated_tags})),
+      changes: changes.map(change => ({item_id: change.item_id, verdict: assignments.get(change.item_id), verdict_at: at, added_tags: [change.updated_tag], removed_tags: change.previous_updated_tags})),
       backlog: this.countUntriagedItems(collectionId),
       session: structuredClone(session),
     };

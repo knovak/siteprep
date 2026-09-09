@@ -26,7 +26,7 @@ Snapshot persistence is designed for modest personal collections. Every action c
 
 ## Bookmark triage updates
 
-Bookmark cards include single-item K/A/N verdict buttons and a title-copy control. Manual tag additions and verdict assignments maintain one `updated_at:YYYY-MM-DDTHH:mm:ss` tag; Undo restores its previous value. The selection grammar supports string comparisons such as `tag_run:>2026-09` and `updated_at:<2027`, alongside `updated_at*` prefix matching. `BOOKMARK_SORTER_TECHDOC.md` defines the shared hosted/standalone behavior and test coverage. The standalone files remain locally vendored and require no backend or schema migration.
+Bookmark cards include 20px K/A/N buttons that stage local pending verdicts, saved together by Sweep with the dropdown verdict as fallback, plus a title-copy control. Manual tag additions and verdict assignments maintain one `updated_at:YYYY-MM-DDTHH:mm:ss` tag; Undo restores its previous value. The selection grammar supports string comparisons such as `tag_run:>2026-09` and `updated_at:<2027`, alongside `updated_at*` prefix matching. `BOOKMARK_SORTER_TECHDOC.md` defines the shared hosted/standalone behavior and test coverage. The standalone files remain locally vendored and require no backend or schema migration.
 
 ## Build and tests
 

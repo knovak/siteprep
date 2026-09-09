@@ -934,8 +934,8 @@ test('sweep scope dropdown switches the action to the entire current selection',
   page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.accept(); });
   await page.locator('#sweep-rest').click();
 
-  await expect(page.locator('#status')).toHaveText('Applied the verdict to all 4 items in the current selection.');
-  expect(prompt).toContain('Apply Junk to all 4 items in the current selection?');
+  await expect(page.locator('#status')).toHaveText('Verdicts saved for all 4 items in the current selection.');
+  expect(prompt).toContain('Apply Junk to all 4 items in the current selection, using any pending card choices instead?');
   expect(backend.items.every(item => item.verdict === 'junk')).toBe(true);
 });
 

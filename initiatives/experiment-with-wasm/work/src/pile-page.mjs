@@ -203,13 +203,13 @@ export function renderPilePage({isAdmin = false} = {}) {
     .tag-popover { position: fixed; z-index: 30; width: max-content; max-width: min(360px, calc(100vw - 16px)); max-height: min(300px, calc(100dvh - 16px)); overflow: auto; border: 1px solid var(--control-line); border-radius: 9px; padding: 8px 10px; color: var(--ink); background-color: var(--surface); box-shadow: 0 10px 32px var(--popover-shadow); cursor: text; font-size: .84rem; line-height: 1.45; user-select: text; white-space: pre-wrap; }
     .verdict-label { margin-top: 6px; color: var(--muted); font-size: .66rem; font-weight: 600; text-transform: uppercase; }
     .mark { position: absolute; top: 7px; right: 7px; width: 28px; height: 28px; border: 1px solid var(--control-line); border-radius: 50%; padding: 0; color: var(--ink); background-color: var(--surface); font-weight: 700; }
-    .card-verdicts { position: absolute; top: 40px; right: 9px; display: flex; flex-direction: column; gap: 4px; }
+    .card-verdicts { position: absolute; top: 40px; right: 11px; display: flex; flex-direction: column; gap: 4px; }
     :root[data-grid-rows="3"] .card-verdicts { flex-direction: row; }
-    .card-verdict { width: 24px; height: 24px; min-height: 0; border: 1px solid var(--control-line); border-radius: 6px; padding: 0; color: var(--ink); background-color: var(--surface); font-size: 12px; font-weight: 600; }
+    .card-verdict { width: 20px; height: 20px; min-height: 0; border: 1px solid var(--control-line); border-radius: 5px; padding: 0; color: var(--ink); background-color: var(--surface); font-size: 11px; font-weight: 600; }
     .card-verdict[data-card-verdict="keeper"] { color: var(--green-ink); background-color: var(--green-bg); }
     .card-verdict[data-card-verdict="archive"] { color: var(--blue-ink); background-color: var(--blue-bg); }
     .card-verdict[data-card-verdict="needs-more-time"] { color: var(--amber-ink); background-color: var(--amber-bg); }
-    .card-verdict[aria-pressed="true"] { border-color: currentColor; box-shadow: inset 0 0 0 1px currentColor; }
+    .card-verdict[aria-pressed="true"] { color: var(--on-primary); background-color: var(--primary); border-color: var(--primary-edge); box-shadow: inset 0 2px 3px var(--primary-edge); transform: translateY(1px); font-weight: 800; }
     .card-verdict:focus-visible, .copy-title:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
     .card-verdict:disabled { opacity: .5; cursor: wait; }
     .bookmark-card h2 { display: flex; align-items: flex-start; }
@@ -340,9 +340,9 @@ export function renderPilePage({isAdmin = false} = {}) {
       <h3>Card and action buttons</h3>
       <ul>
         <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs-time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
-        <li><strong>K / A / N</strong> below each card’s + immediately sets Keep, Archive, or Needs-time for that card, even when other cards are marked. The overlapping squares after the title copy its text.</li>
+        <li><strong>K / A / N</strong> below each card’s + chooses Keep, Archive, or Needs-time for the next sweep. A pressed button is a pending choice; tap it again to clear it. Choices stay while you browse this collection but are not saved until you sweep. Reloading clears pending choices. The overlapping squares after the title copy its text.</li>
         <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
-        <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page. Use its arrow to choose <strong>Sweep all selected</strong>, which applies the verdict to the entire open selection after showing a confirmation count.</li>
+        <li><strong>Sweep untriaged</strong> saves the pressed card choices and uses the dropdown verdict for other untriaged cards on the visible page, then advances one page. A card with a pressed choice is included even if it already has a verdict. Use its arrow to choose <strong>Sweep all selected</strong>, which applies pending choices and the dropdown verdict to the entire open selection after showing a confirmation count.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Day / Night</strong> changes the colors without changing your layout or bookmarks. Day uses Cream and teal; Night uses Dark slate. This browser remembers your choice. Buttons use compact, rounded pastel washes with regular-weight labels. Marked cards have an outline (light grey at night); teal shows the focused card.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
@@ -561,7 +561,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       document.documentElement.dataset.theme = elements.themeMode.value;
       try { localStorage.setItem('wasm-bookmark-sorter-theme', elements.themeMode.value); } catch { /* The mode still works for this page. */ }
     });
-    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), pendingVerdicts: new Map(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}, collectionId = state.collectionId) {
       const headers = new Headers(options.headers || {});
@@ -814,7 +814,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       if (item.capture?.page_title) capture.title = item.capture.page_title + (item.capture.description ? ' — ' + item.capture.description : '');
       const tags = renderTags(item.tags);
       card.append(tags);
-      addText(card, 'span', 'verdict-label', verdictText(item.verdict));
+      addText(card, 'span', 'verdict-label', pendingChoices().has(item.id) ? verdictText(pendingChoices().get(item.id)) + ' on sweep' : verdictText(item.verdict));
       const mark = document.createElement('button');
       mark.type = 'button'; mark.className = 'mark'; mark.textContent = state.marked.has(item.id) ? '✓' : '+';
       mark.setAttribute('aria-label', 'Mark ' + item.title); mark.setAttribute('aria-pressed', String(state.marked.has(item.id)));
@@ -825,13 +825,13 @@ export function renderPilePage({isAdmin = false} = {}) {
         const button = document.createElement('button');
         button.type = 'button'; button.className = 'card-verdict'; button.textContent = letter;
         button.dataset.cardVerdict = value;
-        button.title = verdictText(value);
+        button.title = verdictText(value) + ' on next sweep';
         button.setAttribute('aria-label', verdictText(value) + ': ' + item.title);
-        button.setAttribute('aria-pressed', String(item.verdict === value));
+        button.setAttribute('aria-pressed', String(pendingChoices().get(item.id) === value));
         button.disabled = state.sweeping || state.loading;
         button.addEventListener('click', event => {
           event.stopPropagation();
-          applyVerdict(value, item.id).catch(error => { elements.status.textContent = error.message; });
+          togglePendingVerdict(item, value);
         });
         verdicts.append(button);
       }
@@ -1212,7 +1212,7 @@ export function renderPilePage({isAdmin = false} = {}) {
 
     async function sweepCurrentPage() {
       if (state.sweeping || state.loading) return;
-      const ids = state.items.slice(0, state.visible).filter(item => !item.verdict).map(item => item.id);
+      const ids = state.items.slice(0, state.visible).filter(item => !item.verdict || pendingChoices().has(item.id)).map(item => item.id);
       if (!ids.length) {
         const advanced = await pageWindow(1);
         elements.status.textContent = advanced ? 'No untriaged items on that page; showing the next page.' : 'No untriaged items on the final page.';
@@ -1222,6 +1222,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       const collectionId = state.collectionId, expression = state.expression;
       const after = cursorAfterPage(), offset = state.offset, total = state.total, visible = state.visible;
       const verdict = elements.sweepVerdict.value;
+      const itemVerdicts = Object.fromEntries(ids.filter(id => pendingChoices().has(id)).map(id => [id, pendingChoices().get(id)]));
       state.sweeping = true; updateProgress();
       elements.status.textContent = 'Saving verdicts…';
       try {
@@ -1229,7 +1230,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         if (context !== windowContext() || requestId !== state.windowRequest) return;
         const data = await api('/api/verdict', {method: 'POST', preservePrefetch: true,
           headers: {'content-type': 'application/json'}, body: JSON.stringify({
-            session_id: state.session.id, item_ids: ids, verdict, selection: {expression, after},
+            session_id: state.session.id, item_ids: ids, verdict, item_verdicts: itemVerdicts, selection: {expression, after},
           })}, collectionId);
         if (context !== windowContext() || requestId !== state.windowRequest) return;
         patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
@@ -1242,39 +1243,73 @@ export function renderPilePage({isAdmin = false} = {}) {
           invalidatePrefetch();
           await loadWindow(Math.max(0, Math.min(offset, Math.floor((summary.total - 1) / visible) * visible)));
         } else if (summary) updateCounts(summary);
-        if (context === windowContext()) elements.status.textContent = verdictText(verdict) + ' applied to '
-          + data.changes.length.toLocaleString() + ' untriaged item' + (data.changes.length === 1 ? '' : 's')
+        if (context === windowContext()) elements.status.textContent = 'Verdicts saved for '
+          + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's')
           + (advanced ? '; showing the next page.' : '; this is the final page.');
       } catch (error) {
         invalidatePrefetch(); throw error;
       } finally { state.sweeping = false; updateProgress(); }
     }
 
-    async function sweepEntireSelection(confirmed = false) {
-      if (state.sweeping) return;
-      invalidatePrefetch();
-      await startSession();
-      const response = await window.bookmarkLocalRequest('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': state.collectionId}, body: JSON.stringify({
-        session_id: state.session.id, expression: state.expression, verdict: elements.sweepVerdict.value, visible: false, confirmed,
-      })});
-      const data = await response.json();
-      if (response.status === 409 && data.confirmation_required) {
-        if (confirm('Apply ' + verdictText(elements.sweepVerdict.value) + ' to all ' + data.count.toLocaleString() + ' items in the current selection?')) return sweepEntireSelection(true);
-        elements.status.textContent = 'Entire-selection action cancelled.'; return;
-      }
-      if (!response.ok) throw new Error(data.error || 'Request failed');
-      invalidatePrefetch();
-      patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
-      elements.status.textContent = 'Applied the verdict to all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the current selection.';
-      await refreshSelectionCounts();
+    async function sweepEntireSelection() {
+      if (state.sweeping || state.loading) return;
+      const context = windowContext(), requestId = state.windowRequest;
+      const collectionId = state.collectionId, expression = state.expression;
+      const verdict = elements.sweepVerdict.value, itemVerdicts = Object.fromEntries(pendingChoices());
+      state.sweeping = true; updateProgress(); invalidatePrefetch();
+      try {
+        await startSession();
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        let confirmed = false;
+        while (true) {
+          const response = await window.bookmarkLocalRequest('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': collectionId}, body: JSON.stringify({
+            session_id: state.session.id, expression, verdict, item_verdicts: itemVerdicts, visible: false, confirmed,
+          })});
+          const data = await response.json();
+          if (context !== windowContext() || requestId !== state.windowRequest) return;
+          if (response.status === 409 && data.confirmation_required) {
+            if (!confirm('Apply ' + verdictText(verdict) + ' to all ' + data.count.toLocaleString() + ' items in the current selection, using any pending card choices instead?')) {
+              elements.status.textContent = 'Entire-selection action cancelled.'; return;
+            }
+            confirmed = true; continue;
+          }
+          if (!response.ok) throw new Error(data.error || 'Request failed');
+          invalidatePrefetch();
+          patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
+          elements.status.textContent = 'Verdicts saved for all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the current selection.';
+          await loadWindow(state.offset);
+          return;
+        }
+      } finally { state.sweeping = false; updateProgress(); }
     }
 
     function updateSweepMode() {
       const allSelected = elements.sweepMode.value === 'selection';
       elements.sweepRest.textContent = allSelected ? 'Sweep all selected' : 'Sweep untriaged';
       elements.sweepRest.title = allSelected
-        ? 'Apply the chosen verdict to every item in the current selection'
-        : 'Apply the chosen verdict to untriaged items on this page';
+        ? 'Apply pending card choices, or the dropdown verdict, to every item in the current selection'
+        : 'Save pending card choices and apply the dropdown verdict to other untriaged items on this page';
+    }
+    function pendingChoices() {
+      if (!state.pendingVerdicts.has(state.collectionId)) state.pendingVerdicts.set(state.collectionId, new Map());
+      return state.pendingVerdicts.get(state.collectionId);
+    }
+    function updatePendingCard(item, card) {
+      const pending = pendingChoices().get(item.id);
+      card.querySelector('.verdict-label').textContent = pending ? verdictText(pending) + ' on sweep' : verdictText(item.verdict);
+      for (const button of card.querySelectorAll('.card-verdict')) {
+        button.setAttribute('aria-pressed', String(button.dataset.cardVerdict === pending));
+      }
+    }
+    function togglePendingVerdict(item, verdict) {
+      if (state.sweeping || state.loading) return;
+      const choices = pendingChoices();
+      if (choices.get(item.id) === verdict) choices.delete(item.id); else choices.set(item.id, verdict);
+      const card = elements.grid.querySelector('[data-item-id="' + CSS.escape(item.id) + '"]');
+      if (card) updatePendingCard(item, card);
+      elements.status.textContent = choices.has(item.id)
+        ? verdictText(verdict) + ' chosen for the next sweep: ' + item.title
+        : 'Choice cleared: ' + item.title;
     }
     function toggleMark(index = state.focused) {
       const item = state.items[index];
@@ -1303,6 +1338,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function moveFocus(delta) { if (state.total) await focusAbsolute(state.offset + state.focused + delta); }
     function patchChanges(changes) {
       for (const change of changes) {
+        if (Object.hasOwn(change, 'verdict')) pendingChoices().delete(change.item_id);
         const index = state.items.findIndex(candidate => candidate.id === change.item_id);
         if (index < 0) continue;
         const item = state.items[index];
@@ -1311,18 +1347,17 @@ export function renderPilePage({isAdmin = false} = {}) {
         const card = elements.grid.querySelector('[data-item-id="' + CSS.escape(change.item_id) + '"]');
         if (card) {
           card.dataset.verdict = item.verdict || '';
-          card.querySelector('.verdict-label').textContent = verdictText(item.verdict);
-          for (const button of card.querySelectorAll('.card-verdict')) button.setAttribute('aria-pressed', String(button.dataset.cardVerdict === item.verdict));
+          updatePendingCard(item, card);
           card.querySelector('.tags').replaceWith(renderTags(item.tags));
         }
       }
     }
-    async function applyVerdict(verdict, singleItemId = null) {
+    async function applyVerdict(verdict) {
       if (state.sweeping || state.loading || !state.total) return;
       const context = windowContext(), requestId = state.windowRequest;
       const focused = state.items[state.focused];
-      const usedMarkedSet = !singleItemId && state.marked.size > 0;
-      const ids = singleItemId ? [singleItemId] : usedMarkedSet ? [...state.marked] : focused ? [focused.id] : [];
+      const usedMarkedSet = state.marked.size > 0;
+      const ids = usedMarkedSet ? [...state.marked] : focused ? [focused.id] : [];
       if (!ids.length) return;
       state.sweeping = true; updateProgress();
       try {
@@ -1333,14 +1368,8 @@ export function renderPilePage({isAdmin = false} = {}) {
         patchChanges(data.changes); state.backlog = data.backlog; state.session = data.session;
         elements.status.textContent = verdictText(verdict) + ' applied to ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + '.';
         if (usedMarkedSet) clearMarks(); else updateProgress();
-        if (singleItemId) {
-          if (state.expression) await loadWindow(state.offset, {focusGrid: false});
-          else await refreshSelectionCounts();
-          await loadProposals();
-        } else {
-          await refreshSelectionCounts();
-          await moveFocus(1);
-        }
+        await refreshSelectionCounts();
+        await moveFocus(1);
       } finally { state.sweeping = false; updateProgress(); }
     }
     async function undo() {
