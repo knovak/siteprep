@@ -21,24 +21,6 @@
   ],
   "todo": [
     {
-      "id": "run-browser-suites",
-      "title": "Re-baseline the goldens and run the T3-T7 browser suites",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "medium",
-      "advances_stage": false,
-      "note": "lib/tests/test_browser.py and test_crossbrowser.py need the Python Playwright, numpy and Pillow packages, which this repository does not install. The eight goldens in lib/tests/goldens were captured on the original 2026 machine, so T3 needs --update-goldens once on the machine that will run it. Record the outcome in log.md."
-    },
-    {
-      "id": "editorial-review",
-      "title": "Run the T8 editorial checklist over the 48 dataset entries",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "note": "lib/tests/T8_editorial_checklist.md is the inherited gate. Check that every entry still carries a cited source and a justified confidence and type, and record which entries need attention."
-    },
-    {
       "id": "user-test-preview",
       "title": "Review the test preview and record findings",
       "state": "blocked",
@@ -56,11 +38,27 @@
       "advances_stage": false,
       "blocked_by": "permission:explicit production release authorization after user testing",
       "note": "The release serves the same atlas: work/index.html is byte-identical to what demos/world_migration_atlas/ publishes today. It also drops index-initial.html, dist/ and data/ from the published demo, which nothing links to. See decisions.md."
+    },
+    {
+      "id": "reconcile-editorial-findings",
+      "title": "Reconcile the T8 source, quantity, confidence and geography findings",
+      "state": "actionable",
+      "value": "high",
+      "effort": "large",
+      "advances_stage": false
+    },
+    {
+      "id": "extend-packaging-acceptance",
+      "title": "Complete the remaining T6/T7 manual accessibility and cross-platform packaging gates",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "large",
+      "advances_stage": false
     }
   ],
   "brief": {
-    "generated_at": "2026-09-07T22:51:24Z",
-    "commit": "eec2feb377cbb539c19c18d51e0cb988ff488b63",
-    "digest": "072751c475b2a8deba528f566810d5c12a88c259"
+    "generated_at": "2026-09-09T01:29:16Z",
+    "commit": "c62b33117044a208a9e6721185c6c58c3337c27e",
+    "digest": "6af03c9998188ea23bb911a017bccbf02919a40c"
   }
 }
