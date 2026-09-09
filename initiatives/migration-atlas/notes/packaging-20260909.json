@@ -1,0 +1,157 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "bundle_sha256": "a29b6d3b4e974a62d766604e9d23ade6114c2ce67bb662bf8ec7703c139900ea",
+  "engines": {
+    "chromium": {
+      "1100": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1500": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1750": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1880": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1950": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "2024": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "file keyboard": {
+        "tableModal reverse focus stays inside": true,
+        "tableModal forward focus wraps to close": true,
+        "tableModal reading does not scrub background": true,
+        "tableModal closing restores opener": true,
+        "aboutModal reverse focus stays inside": true,
+        "aboutModal forward focus wraps to close": true,
+        "aboutModal reading does not scrub background": true,
+        "aboutModal closing restores opener": true,
+        "keyboard row opens stock-labelled detail": true,
+        "detail qualifies aggregate geography": true
+      },
+      "http keyboard": {
+        "tableModal reverse focus stays inside": true,
+        "tableModal forward focus wraps to close": true,
+        "tableModal reading does not scrub background": true,
+        "tableModal closing restores opener": true,
+        "aboutModal reverse focus stays inside": true,
+        "aboutModal forward focus wraps to close": true,
+        "aboutModal reading does not scrub background": true,
+        "aboutModal closing restores opener": true,
+        "keyboard row opens stock-labelled detail": true,
+        "detail qualifies aggregate geography": true
+      }
+    },
+    "firefox": {
+      "1100": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1500": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1750": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1880": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1950": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "2024": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "file keyboard": {
+        "tableModal reverse focus stays inside": true,
+        "tableModal forward focus wraps to close": true,
+        "tableModal reading does not scrub background": true,
+        "tableModal closing restores opener": true,
+        "aboutModal reverse focus stays inside": true,
+        "aboutModal forward focus wraps to close": true,
+        "aboutModal reading does not scrub background": true,
+        "aboutModal closing restores opener": true,
+        "keyboard row opens stock-labelled detail": true,
+        "detail qualifies aggregate geography": true
+      },
+      "http keyboard": {
+        "tableModal reverse focus stays inside": true,
+        "tableModal forward focus wraps to close": true,
+        "tableModal reading does not scrub background": true,
+        "tableModal closing restores opener": true,
+        "aboutModal reverse focus stays inside": true,
+        "aboutModal forward focus wraps to close": true,
+        "aboutModal reading does not scrub background": true,
+        "aboutModal closing restores opener": true,
+        "keyboard row opens stock-labelled detail": true,
+        "detail qualifies aggregate geography": true
+      }
+    },
+    "webkit": {
+      "1100": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1500": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1750": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1880": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "1950": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "2024": {
+        "pixel_difference": 0.0,
+        "pass": true
+      },
+      "file keyboard": {
+        "tableModal reverse focus stays inside": true,
+        "tableModal forward focus wraps to close": true,
+        "tableModal reading does not scrub background": true,
+        "tableModal closing restores opener": true,
+        "aboutModal reverse focus stays inside": true,
+        "aboutModal forward focus wraps to close": true,
+        "aboutModal reading does not scrub background": true,
+        "aboutModal closing restores opener": true,
+        "keyboard row opens stock-labelled detail": true,
+        "detail qualifies aggregate geography": true
+      },
+      "http keyboard": {
+        "tableModal reverse focus stays inside": true,
+        "tableModal forward focus wraps to close": true,
+        "tableModal reading does not scrub background": true,
+        "tableModal closing restores opener": true,
+        "aboutModal reverse focus stays inside": true,
+        "aboutModal forward focus wraps to close": true,
+        "aboutModal reading does not scrub background": true,
+        "aboutModal closing restores opener": true,
+        "keyboard row opens stock-labelled detail": true,
+        "detail qualifies aggregate geography": true
+      }
+    }
+  },
+  "recorded_at": "2026-09-09T10:59:51.012035+00:00"
+}
