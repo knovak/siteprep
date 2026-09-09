@@ -4,7 +4,7 @@
   <meta name="siteprep-version-root" content="../../">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Decisions — experiment with wasm</title>
+  <title>Decisions — Experiment with Wasm</title>
   <link rel="stylesheet" href="../../shared/site_base/site_base.css">
   <link rel="manifest" href="../../manifest.webmanifest">
   <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
@@ -19,10 +19,10 @@
   <header class="card">
     <div class="card-header">
       <p class="tag">Initiative Document</p>
-      <h1>Decisions — experiment with wasm</h1>
+      <h1>Decisions — Experiment with Wasm</h1>
     </div>
     <div class="card-content">
-      <p><a href="./index.html">Back to experiment with wasm</a></p>
+      <p><a href="./index.html">Back to Experiment with Wasm</a></p>
     </div>
   </header>
   <main class="card" aria-labelledby="doc-body">
@@ -47,6 +47,18 @@
 <p>The user requested extending PR #467 with &quot;the wish, and the findings you&#39;ve discovered and the web pages you&#39;ve created with the sample applications&quot; and said, &quot;I&#39;d like this to deploy as a static website under demos/ . it&#39;s first page should have a brief explanation of wasm and then links to these first two applications.&quot;</p>
 <p>This authorizes preparing <code>demos/experiment-with-wasm/</code> in that PR, not a merge. It contains the landing page, complete original wish and findings, both applications and downloads, licences, provenance, verification and prompt history. Production goes live after merge and Pages publication.</p>
 <p>The original wish stays intact. Build sources remain in the initiative; the runtime is copied in full with source commits and hashes. Existing local-file paths remain available. The iPad and Home Screen offline-installation findings are documented as unverified/future work, not silently treated as implemented features.</p>
+<h3>2026-09-08 — Internet access in both applications</h3>
+<p>The user requested: <strong>“enable as much internet access as possible for both applications. make a PR”</strong> after the investigation found that both applications used <code>connect-src &#39;none&#39;</code> and had replaced their online features during conversion.</p>
+<p>This authorizes online data retrieval in the two experimental forks. A standalone application does not have to be disconnected: SQLite and harmonic calculations remain local, while explicit online controls use HTTP(S) services. No new application backend, paid account, API secret, original hosted-app change, merge or production release is included.</p>
+<p>Bookmark Sorter gains direct website metadata, picture-URL downloads, URL imports, and named Microlink metadata/screenshot modes. Microlink receives URLs only when the user chooses that source and requests previews. Original bookmark fields and attached pictures are preserved. Tide Here gains Photon address searches and NOAA/CHS station and prediction adapters, with provider/datum labels, bounded caches and visible failures. Station choice is explicit because a nearby station may be across a bay or island.</p>
+<p>The remaining external limits are browser cross-origin permissions, upstream availability and free-service quotas. Canadian requests returned data to the API probe but were blocked in live Chromium; the adapter is implemented and covered by controlled responses, without claiming that this environment verified live Canadian retrieval. Physical-iPad acceptance and a production release remain separate.</p>
+<h3>2026-09-08 — Normal Tide Here actions must use the internet</h3>
+<p>The user reported: <strong>“I don&#39;t think this works. I check the tide here application and it doesn&#39;t go the internet to get tides -- it always does FES2022 model instead of looking it up online. And, it doesn&#39;t resolve place names like the online one does.”</strong></p>
+<p>This corrects the earlier implementation of internet access as separate optional buttons. Show tides must search place names and addresses online and prefer official predictions. The same flow applies to coordinates, Show here, Today, history and deep links. The bundled catalogue and FES2022 model remain fallbacks, with a visible explanation; Local model only is an explicit choice.</p>
+<p>A clearly closer station within 25 km is selected automatically, retaining the hosted application&#39;s 0.6 distance-ratio rule. Ambiguous places and stations still require a choice, so an arbitrary station across a bay is not selected silently. Nearby station choices remain bounded at 150 km. Current NOAA/CHS adapters, provider/browser limitations, cached data labels and the separate production release boundary remain in effect.</p>
+<h3>2026-09-08 — Match website place selection and Australian tides</h3>
+<p>The user asked to remove “First day (blank means today on the coast)” and pointed out that San Diego should resolve without a place chooser, while Maroochydore should use the Bureau source shown by the website. This clarifies the requested internet-enabled behavior in PR #477.</p>
+<p>The implementation follows the website’s ranked geocoder selection (settlement preferred over a leading administrative boundary), keeps alternate places accessible, and starts forecasts today in the coast’s time zone. It includes the same existing licensed 2026 Bureau annual dataset as the website, preserving station identity, datum, attribution and conditions; this is prepared annual data, not a new live Bureau API. It adds no new source licence or hosting service. The 25 km / 60% / 150 km coastal safeguards remain. Annual-table renewal, additional countries, Canadian CORS availability and physical-iPad acceptance remain separate follow-ups.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="sweep/bookmark-sorter/redirect-proposals" data-root="../../">
