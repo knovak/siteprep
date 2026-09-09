@@ -15,9 +15,17 @@ export/import path for synchronising the local store.
 
 The review surface has six paginated layouts, Day and Night displays, complete
 scrollable story text, per-story and clustered judgments, page-scoped bulk
-judgment, Undo, tag filtering, and source-search help. The current gating suite
-contains 137 tests and the latest recorded real harvest preserved 321 stories
+judgment, Undo, tag filtering, and source-search help. The latest recorded gating run
+passed 137 tests and the latest recorded real harvest preserved 321 stories
 without committing the mailbox inventory, message bodies, or private store.
+
+## Remaining work
+
+The accepted refinement is a discoverable skill for bounded repeat harvests,
+using the existing read-only mailbox protocol while preserving story identity,
+judgments, private files and failure reporting. Its acceptance work covers
+repeat overlap, a new issue, attribution refusal and failed extraction
+([recorded refinement](decisions.html)).
 
 ## Optional later
 
