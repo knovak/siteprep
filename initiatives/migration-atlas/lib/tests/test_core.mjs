@@ -93,7 +93,11 @@ ok(circleProgress(1550, 1500, 1600) > 0.5, "ease-out growth front-loaded");
 // ---------- T2: clock ----------
 console.log("T2 clock");
 const DOM = timeDomain(data);
-ok(DOM[0] === 1000 && DOM[1] >= 2026, "domain from data");
+ok(DOM[0] === 1000 && DOM[1] >= 2026, "domain begins one year before first migration");
+ok(data.migrations.every(m => flowEnvelope(DOM[0], m.period.start, m.period.end).alpha === 0 &&
+   circleProgress(DOM[0], m.period.start, m.period.end) === 0), "opening year has no flows or circles");
+ok(nextEventStart(data, DOM[0]) === 1001, "first event jump reaches the two earliest migrations");
+ok(data.migrations.filter(m => m.period.start === 1001).length === 2, "two approximate starts moved to 1001");
 ok(close(advanceYear(1500, 1, 1, "piecewise", DOM), 1510), "10 yr/s before 1800");
 ok(close(advanceYear(1850, 1, 1, "piecewise", DOM), 1854), "4 yr/s 1800-1900");
 ok(close(advanceYear(1950, 1, 1, "piecewise", DOM), 1952), "2 yr/s after 1900");
@@ -111,7 +115,7 @@ ok(destVolume(atl, atl.destinations[0]) === 4900000, "destVolume uses settled");
 ok(residualPopulation(atl.destinations[0]) === 112000000, "residual uses diaspora_today");
 const dens = eraDensity(data, DOM, 100);
 ok(dens.length === 100 && Math.max(...dens) >= 8, "era density peaks (mass-migration era)");
-ok(dens[0] >= 1, "density at 1000 counts Turkic/Roma/slave trades era");
+ok(dens[0] >= 1, "first density bin includes the earliest recorded flows");
 ok(nextEventStart(data, 1491) === 1492, "next event after 1491 is 1492 expulsion");
 ok(prevEventStart(data, 1493) === 1492, "prev event before 1493");
 ok(nextEventStart(data, 2025) === null || nextEventStart(data, 2025) <= DOM[1], "next near end");

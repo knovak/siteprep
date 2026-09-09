@@ -24,6 +24,28 @@ To add a newly researched movement, edit `lib/data/migrations.json`, run the
 tests, and rebuild. `lib/README.md` covers the layout, the other test gates and
 what they need.
 
+## Editorial standards and sources
+
+Confidence labels are inherited editorial assessments of the estimates, not
+statistical probabilities or certificates that every field has been verified.
+The checklist requires **low** for ranges wider than about twofold, most
+pre-1800 flows, and community-reported descendant totals; **medium** and
+**high** indicate the inherited assessment of stronger evidence, but the
+record does not define numerical thresholds separating them. The 48-entry
+review corrected four range conflicts and identifies unresolved source,
+quantity and geography questions. Automated checks cover dataset structure,
+timeline and scaling rules, visual regression, interaction, accessibility and
+browser packaging; passing those checks does not verify historical claims.
+Click a flow or a Data table row to read its references, ranges and caveats.
+Open **About the data → Read the editorial review and source findings** for
+the [complete editorial report](../../preview/initiatives/migration-atlas/editorial.html),
+including linked source locators and the evidence still missing.
+
+The opening map is at 1000 AD, before the two earliest recorded starts at
+1001 AD. Those approximate dates were moved by one year at the user's request
+for a blank opening screen; this is a display convention, not new historical
+evidence. The first event button advances to 1001.
+
 ## Documents and history
 
 - [Wish and original prompt history](wish.html)

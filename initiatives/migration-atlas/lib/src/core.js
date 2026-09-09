@@ -65,7 +65,9 @@ export function timeDomain(data) {
     lo = Math.min(lo, m.period.start);
     hi = Math.max(hi, m.period.end);
   }
-  return [lo, hi];
+  // Keep the opening year before the first recorded migration, so Home and
+  // the beginning of the scrubber can show a map without flows or circles.
+  return [lo - 1, hi];
 }
 
 // Volume attributed to one destination arrow (people who moved there).

@@ -51,7 +51,7 @@
    "id": "roma-migration",
    "name": "Romani migration from India to Europe",
    "period": {
-    "start": 1000,
+    "start": 1001,
     "end": 1450
    },
    "type": "voluntary-economic",
@@ -297,7 +297,7 @@
    "id": "indian-ocean-slave-trades",
    "name": "Trans-Saharan, Red Sea & Indian Ocean slave trades (post-1000 portion)",
    "period": {
-    "start": 1000,
+    "start": 1001,
     "end": 1900
    },
    "type": "forced-enslavement",

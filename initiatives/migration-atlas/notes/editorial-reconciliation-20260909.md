@@ -66,3 +66,28 @@ Every row below still needs exact source passages or tables for destination allo
 ## Acceptance boundary
 
 T8 remains open for field-level quantities, pre-1800 confidence exceptions, stock observation dates, cohort-specific descendants, mixed-type interpretation and detailed endpoint evidence. The correction scope deliberately preserves all original numeric values and coordinates. The new tests enforce the broad-range confidence rule and reject unknown quantity categories; they test representation, not historical truth.
+
+
+## Source key from the September 8 audit
+
+These are the source locators referenced as S1–S7 above, with the original verification limits. They are carried forward from the earlier audit; this page adds no new source verification.
+
+Accessed September 8, 2026. Source checks are bounded by the cited page's
+contents; they do not certify every field in the associated entry.
+
+- **S1:** [SlaveVoyages methodology](https://legacy.slavevoyages.org/blog/methodology-trans-atlantic) supports approximately 12.5M embarked and 10.7M disembarked; it does not establish the atlas's modern descendant figures.
+- **S2:** [UNHCR Data content](https://popstats.unhcr.org/refugee-statistics/methodology/data-content/) distinguishes end-year population stocks from annual solution flows. The indexed methodology text was readable; direct page retrieval failed, so no underlying refugee tables were verified from it.
+- **S3:** [Cambridge: England's Jewish Solution](https://www.cambridge.org/core/books/englands-jewish-solution/7ECFE2968099D205C509FB3E2F89D68C) describes an England study for 1262-1290. This raises a coverage question for the atlas's combined English/French count, not proof that the book contains no continental discussion.
+- **S4:** [Cambridge: New England's Generation](https://www.cambridge.org/core/books/new-englands-generation/D9D12C32D8A5ACE1B714E5586CC6EED7) confirms the cited work; neither its numeric tables nor the atlas's descendant total were verified.
+- **S5:** [US Census: The Great Migration, 1910 to 1970](https://www.census.gov/library/visualizations/time-series/demo/the-great-migration.html) supports the six-million order of magnitude with a 1910-1970 envelope. It does not identify this as a state deportation program.
+- **S6:** [R4V 2023 end-year report](https://rmrp.r4v.info/eyr2023/) identifies 7.7M refugees and migrants outside Venezuela at that reporting date. This establishes a date for the matching figure, not a 2026 cumulative count.
+- **S7:** [PSA 2023 Overseas Filipino Workers results](https://psa.gov.ph/content/2023-overseas-filipino-workers-final-results) reports workers during April-September 2023. It illustrates why the worker survey, all overseas Filipinos and historical cumulative movement are different quantities, not a replacement for the atlas's total.
+
+
+## Opening-year convention — September 9 review follow-up
+
+At the user's request, the approximate start dates for Romani migration and
+the Indian Ocean slave trades were moved from 1000 to 1001 AD, while the
+opening map stays at 1000 with no flows or circles. This is a presentation
+convention, not new historical evidence; all population values, end dates
+and coordinates remain as recorded.

@@ -1,0 +1,77 @@
+{
+  "checked_at": "2026-09-09",
+  "core_assertions_passed": 551,
+  "chromium_browser_checks_passed": 91,
+  "journeys": [
+    {
+      "engine": "chromium",
+      "width": 1365,
+      "blankStart": true,
+      "firstEvent": 1001,
+      "activeAtFirstEvent": 2,
+      "editorialRows": 48,
+      "sourceLinks": 9,
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "offlineRoundTrip": true
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "blankStart": true,
+      "firstEvent": 1001,
+      "activeAtFirstEvent": 2,
+      "editorialRows": 48,
+      "sourceLinks": 9,
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "offlineRoundTrip": true
+    },
+    {
+      "engine": "firefox",
+      "width": 1365,
+      "blankStart": true,
+      "firstEvent": 1001,
+      "activeAtFirstEvent": 2,
+      "editorialRows": 48,
+      "sourceLinks": 9,
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "offlineRoundTrip": true
+    },
+    {
+      "engine": "firefox",
+      "width": 390,
+      "blankStart": true,
+      "firstEvent": 1001,
+      "activeAtFirstEvent": 2,
+      "editorialRows": 48,
+      "sourceLinks": 9,
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "offlineRoundTrip": true
+    },
+    {
+      "engine": "webkit",
+      "width": 1365,
+      "blankStart": true,
+      "firstEvent": 1001,
+      "activeAtFirstEvent": 2,
+      "editorialRows": 48,
+      "sourceLinks": 9,
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "offlineRoundTrip": true
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "blankStart": true,
+      "firstEvent": 1001,
+      "activeAtFirstEvent": 2,
+      "editorialRows": 48,
+      "sourceLinks": 9,
+      "seriousOrCriticalAccessibilityViolations": 0,
+      "offlineRoundTrip": true
+    }
+  ],
+  "sha256": {
+    "index.html": "5db863ed18ec6c369ccc1abead35deddbf7ed81e862ef3a9baf8fc7c5bfefad9",
+    "editorial.html": "0b267f10253d8a693dc29db1aa63d4b88e8f0b9c169aefc1e721c2835361a5b3"
+  }
+}

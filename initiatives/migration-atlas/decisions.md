@@ -62,3 +62,26 @@ The package's `README.md` matches the one already preserved in `README.md`,
 hash for hash, so nothing was re-adopted. No application behavior changed: the
 only edits to source files are the four that reconcile the build with the
 already-published bundle.
+
+
+## 2026-09-09 — Keep a blank opening map at 1000 AD
+
+**Move the two start dates to 1001.** The user chose this after the sweep
+explained that starting the timeline at 1001 would still show two ongoing
+migrations.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Open at 999, preserving dates | Provides a blank map before the earliest recorded movements | Changes the desired opening year |
+| Move the two approximate starts to 1001, opening at 1000 — chosen | Keeps the desired opening year with no flows or circles | Changes an approximate date for presentation, without new historical evidence |
+
+### What this settles, and what it does not
+
+- Romani migration and Indian Ocean slave trades now start at 1001; population
+  values, end dates and coordinates stay as recorded.
+- The timeline includes the year before the first migration, so Home and the
+  opening view are blank and the first event jump reaches 1001.
+- This is a display convention, not independent source verification or a
+  production-release decision.

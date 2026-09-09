@@ -119,3 +119,27 @@ existing suite to Firefox/WebKit with separate reference images. Manual
 screen-reader and Windows/Linux results are unavailable on this macOS host, so
 the packaging item now records that explicit external blocker. Detailed results
 are recorded in test-plan.md and notes. Production is unchanged.
+
+
+## 2026-09-09 — Address four review threads on PR #487
+
+Added README guidance on confidence labels, applied checks and finding source
+references. The build now renders the full 48-entry editorial reconciliation
+into a companion HTML page, linked from About the data, and includes the
+earlier audit's seven source locators with their verification limits.
+
+The user chose to move the two approximate 1000 start dates to 1001. The
+timeline now includes the year before the earliest migration, preserving a
+blank opening map at 1000 and a first event jump to 1001. This presentation
+choice is recorded in decisions.md; it is not new source evidence.
+
+Explained that the inherited 17 ms median threshold represents the 60 fps
+target; 30 ms would represent about 33 fps and would relax that target. The
+question does not itself change the recorded acceptance threshold.
+
+Verification passed 551 core assertions and all 91 Chromium browser checks.
+The final offline opening-year, first-event, Home, About-to-report and return
+journeys passed at desktop and 390px widths in Chromium, Firefox and WebKit.
+Each report has 48 rows, nine source links, no horizontal page overflow and
+no serious or critical axe findings. The evidence receipt records the final
+application and report hashes.

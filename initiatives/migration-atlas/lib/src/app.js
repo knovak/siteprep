@@ -19,7 +19,7 @@
   let DOMAIN = timeDomain(data);
   let density = [], maxDensity = 1;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let year = 1000, playing = false, speed = 2, clockMode = "piecewise";
+  let year = DOMAIN[0], playing = false, speed = 2, clockMode = "piecewise";
   let colorMode = "type";             // 'region' | 'type' — type (coercion spectrum) is default
   let hover = null;                    // migration object or null
   let selection = null;                // migration object or null
@@ -912,7 +912,7 @@
   buildLegend();
   refreshDensity();
   resize();
-  setYear(1000);
+  setYear(DOMAIN[0]);
   applyHash();
   readyAt = performance.now();
 })();

@@ -92,3 +92,16 @@ remain on the original fixed Chromium runner; other engines record timing,
 and skip unsupported heap instrumentation. No claim of a universal 60 fps is
 made. Actual manual screen-reader speech and Windows/Linux file/HTTP comparison
 remain external blockers on `extend-packaging-acceptance`.
+
+
+## September 9 review follow-up verification
+
+The [review follow-up receipt](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings/initiatives/migration-atlas/notes/review-followup-20260909.json)
+records 551 core assertions, 91 Chromium suite checks, and six final offline
+journeys across three engines at desktop and 390px widths. These verify the
+blank 1000 opening view, first event at 1001, Home, the About link, all 48
+report rows, nine source links, accessibility and return navigation.
+
+The earlier packaging receipt applies to its recorded bundle hash; its
+file/HTTP screenshot comparison was not repeated for these follow-up edits.
+17 ms remains the median target from the original 60 fps requirement.

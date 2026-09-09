@@ -17,8 +17,14 @@ python3 lib/tools/build.py      # from the initiative directory
 
 It inlines `src/core.js`, `src/app.js`, the two vendored d3 modules, the
 dataset, and both basemap resolutions into `src/index.html` at the
-`<!--BUNDLE-->` marker, and writes `work/index.html`. No network access, no
-package installation, and no build dependencies beyond Python 3.
+`<!--BUNDLE-->` marker, and writes `work/index.html`. It also renders
+`notes/editorial-reconciliation-20260909.md` through the repository Markdown
+renderer into `work/editorial.html`, using `lib/src/editorial.html` as its
+page template. This requires Python 3 and Node.js; it uses no network or extra
+packages. The app links to this companion report from About the data. Keep
+both HTML files together for offline reading; the app itself remains
+self-contained. Edit the Markdown or template and rebuild, rather than
+editing the generated report.
 
 The build is deterministic: running it over an unchanged source rewrites the
 same bytes. That is worth checking after any change, because it is what lets a

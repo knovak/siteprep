@@ -219,3 +219,16 @@ Table and About dialogs retain Tab/Shift+Tab focus inside the dialog and return
 focus to the opener on close. Reading keys do not run the background timeline;
 native button Space behavior remains available. These automated keyboard checks
 do not substitute for manual assistive-technology acceptance.
+
+
+## September 9 review follow-up
+
+The editorial reconciliation is rendered as a companion HTML page in the
+published package and linked from About the data. It preserves the full
+48-entry report, source locators, and unresolved-evidence qualifications.
+
+The timeline includes one year before the earliest migration, allowing a blank
+opening view. At the user's request, the two approximate starts previously
+recorded as 1000 (Romani migration and the Indian Ocean slave trades) are
+recorded as 1001, leaving the opening year at 1000. This display convention
+does not claim new historical precision.
