@@ -22,7 +22,7 @@ without committing the mailbox inventory, message bodies, or private store.
 ## Remaining work
 
 A dedicated repeat-harvest workflow and agent manifest are drafted and validated
-in [the skill draft](notes/harvest-skill-draft.md). Its synthetic rehearsal grew
+in [the skill draft](https://github.com/knovak/siteprep/blob/ec1eda732/initiatives/newsletter-story-harvester/notes/harvest-skill-draft.md). Its synthetic rehearsal grew
 49 stories to 74 while preserving existing judgments; installation in the
 repository's discoverable skill directory and discovery checks remain incomplete
 ([recorded refinement](decisions.html)).
