@@ -28,3 +28,5 @@ enable as much internet access as possible for both applications.  make a PR
 
 2026-09-08 — Correct the normal Tide Here lookup
 I don't think this works. I check the tide here application and it doesn't go the internet to get tides -- it always does FES2022 model instead of looking it up online. And, it doesn't resolve place names like the online one does.
+
+2026-09-08: Remove the First day item. Why does San Diego require a choice when the website resolves it, and why does Maroochydore use Bureau of Meteorology on the website but FES2022 in WASM?
