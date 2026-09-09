@@ -1,6 +1,6 @@
 # Findings from the WASM experiment
 
-Updated September 8, 2026. These are working applications and measured implementation checks, with the remaining limits stated below.
+Updated September 9, 2026. These are working applications and measured implementation checks, with the remaining limits stated below.
 
 ## What WebAssembly contributes
 
@@ -68,6 +68,20 @@ These are implementation and portability checks. They are not independent scient
 Recent iPad Safari has the relevant browser capabilities. Tide Here's compression-stream API arrived in Safari 16.4. Both downloaded apps now work in installed desktop Safari 26.6.2, including local persistence and recovery. Both hosted workflows also pass an iPad Pro 11 WebKit/touch emulation, but neither app has been verified on an actual iPad; opening downloaded HTML from Files remains a distinct acceptance question. Tide Here's large embedded dataset may increase startup time and memory pressure on an older iPad. [Safari 16.4 features](https://webkit.org/blog/13966/webkit-features-in-safari-16-4/).
 
 A useful next increment would be a Home Screen installation with explicit offline caching, followed by real-device checks for touch controls, cold reopening in airplane mode, saving, and backup restoration. The examples here do not yet include that installation layer. A static download site can supply such an app without an application backend. [Apple's iPad web-app instructions](https://support.apple.com/guide/ipad/open-as-web-app-ipad8f1f7a29/ipados), [WebKit's offline service-worker support](https://webkit.org/blog/8090/workers-at-your-service/).
+
+## Lessons learned
+
+This experiment set out to demonstrate WASM applications and learn what building one is like. What it found:
+
+WASM apps with relatively small data sets run extremely fast compared to a website. "Small" can mean 40 MB, as with the Tide Here coastal model and place catalogue, or under 10 MB even for large bookmark collections.
+
+Internet access needs to be explicitly enabled. Nothing about compiling to WASM opens a network connection on its own; the first versions here disabled it outright with `connect-src 'none'`, and later revisions permitted HTTP(S) requests only after adding explicit controls for it, as described above.
+
+Some web services enforce CORS, and a connection from a WASM container in a user's browser will fail against them. The CHS station and prediction adapters above are the example: their JSON responses were available to a direct API probe but blocked by browser CORS in the live test, even from a hosted loopback origin. Clients that need to reach such a service will need a lightweight server to proxy their calls.
+
+Data can persist independently of code, so that an app update doesn't destroy local data — Bookmark Sorter's IndexedDB database and Tide Here's saved history both survive a new build of the application file. But it's best to make regular backups in case a major update does disturb the data; that's why both apps include an explicit backup/restore control rather than relying on browser storage alone.
+
+Keeping both a website and a WASM version of an app in sync could be challenging. Having them in different initiatives almost guarantees functional drift between them, and this experiment already shows it: the Tide Here fork needed a dedicated website-parity pass to catch up to hosted behavior it had fallen behind on. Some functions also make more sense in WASM than on the website, such as Bookmark Sorter's "Online tools" menu. Somewhat like having separate versions for mobile or desktop, WASM presents an additional target for app deployment, with its own customizations.
 
 ## What remains open
 
