@@ -74,11 +74,10 @@ ok(circleRadiusPx(0, 1) === 0 && circleRadiusPx(null, 1) === 0, "radius zero/nul
 // ---------- T2: envelopes ----------
 console.log("T2 envelopes");
 ok(flowEnvelope(1499, 1500, 1600).alpha === 0, "pre alpha 0");
-ok(close(flowEnvelope(1501.5, 1500, 1600).alpha, 0.5), "rise midpoint");
+ok(flowEnvelope(1500, 1500, 1600).alpha === 1, "start year alpha 1, exact");
 ok(flowEnvelope(1550, 1500, 1600).alpha === 1, "active alpha 1");
-ok(close(flowEnvelope(1602.5, 1500, 1600).alpha, 0.5), "fade midpoint");
-ok(flowEnvelope(1606, 1500, 1600).alpha === 0, "post alpha 0");
-ok(flowEnvelope(1947.5, 1947, 1949).phase === "rising", "short period rise capped");
+ok(flowEnvelope(1600, 1500, 1600).alpha === 1, "end year alpha 1, exact");
+ok(flowEnvelope(1601, 1500, 1600).alpha === 0, "post alpha 0, no fade tail");
 ok(circleProgress(1500, 1500, 1600) === 0 && circleProgress(1600, 1500, 1600) === 1,
    "circle growth endpoints");
 ok(circleProgress(1550, 1500, 1600) > 0.5, "ease-out growth front-loaded");

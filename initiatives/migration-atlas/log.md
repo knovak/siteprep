@@ -75,3 +75,30 @@ Reviewed all 48 entries against T8 and recorded per-entry findings in notes.md (
 ## 2026-09-09 — Re-baseline the goldens and run the T3-T7 browser suites
 
 Restored current-bundle paths, pinned Python dependencies and refreshed eight macOS goldens. Core 535/535, independent browser 88/88 and cross-browser smoke 24/24 passed. notes.md (browser verification) distinguishes implemented coverage from remaining T6/T7 gates.
+
+## 2026-09-09 — Fixed the flow visibility window
+
+The user reported that a migration recorded as running from year A to year B
+only appeared on the map from A+1 through B+5. `flowEnvelope` in
+`lib/src/core.js` ramped the arc's opacity up over `RISE_YEARS` (3) after the
+start year and faded it back down over `FADE_YEARS` (5) after the end year, so
+the arc was invisible at the exact start year and stayed partly visible for
+five years past the end year. `flowEnvelope` now returns full opacity for the
+exact `[start, end]` range and zero outside it; `RISE_YEARS` is gone, and
+`FADE_YEARS` remains only for the unrelated camera-focus framing in `app.js`
+that shows a few years of context after a focused migration ends. The
+`"rising"`/`"fading"` phase branches in `app.js`'s renderer, which no longer
+occur, were removed along with them. `lib/tests/test_core.mjs` was updated to
+assert the exact cutoff, and `work/index.html` was rebuilt from source; it is
+no longer byte-identical to `demos/world_migration_atlas/index.html`, so
+`release-rebuilt-source` now also carries this fix, on top of the trim already
+recorded in `decisions.md`. `node lib/tests/test_core.mjs` passes, 534
+assertions, 0 failures.
+
+## 2026-09-09 — Release
+
+Released to production — Demo, `e567057`. <https://knovak.github.io/siteprep/demos/world_migration_atlas/> See releases.md.
+
+## 2026-09-09 — Release the rebuilt source after testing and explicit approval
+
+Released to production 2026-09-09 (e567057); see releases.md.
