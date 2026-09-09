@@ -111,7 +111,8 @@ for (const location of locations) {
       document.querySelector('#day-cards')?.replaceChildren();
     });
     await page.fill('#place-input', location.query);
-    await page.fill('#start-date', '');
+    // Older published files have a date control; current searches start today automatically.
+    if (await page.locator('#start-date').count()) await page.fill('#start-date', '');
     await page.click('#show-selection');
     const settled = () => {
       const visible = (selector) => { const element = document.querySelector(selector); return element && !element.hidden; };

@@ -40,6 +40,8 @@ Useful flags, all optional:
 The three steps also run on their own - `collect-apps.mjs`, then
 `collect-official.mjs`, then `compare.mjs` - which is what to do when one
 official service is having a bad day and you want to re-read just that one.
+The app collector supports both older offline files with a date control and
+the current interface, whose searches start today on the selected coast.
 
 ## Reading the report
 

@@ -52,7 +52,7 @@ npm test
 npm run test:browser
 ```
 
-The normal build verifies the committed data checksums and embeds it without downloading anything. `dist/build.json` records the final artifact hash and counts. Root `npm run build` and the post-build screenshot workflow remain separate repository requirements.
+The normal build verifies the committed data checksums and embeds it without downloading anything. The prepared Bureau gzip snapshot is committed so builds on different platforms embed identical bytes; the build also checks its full decompressed content against the hosted source. After a reviewed Bureau source change, run `node scripts/build.mjs --refresh-australia` to update that snapshot and its checksum, then commit and repackage the application. `dist/build.json` records the final artifact hash and counts. Root `npm run build` and the post-build screenshot workflow remain separate repository requirements.
 
 Data regeneration is an explicit maintainer operation; it is not needed to run, rebuild or test this app. With the retained original package and downloaded source archives:
 

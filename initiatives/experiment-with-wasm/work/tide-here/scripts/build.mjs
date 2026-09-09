@@ -8,12 +8,24 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const australianSource = await readFile(new URL('../../../../tide-here/work/phase-11/data/bom-annual-2026.source.json.gz', import.meta.url));
 const australia = importAustralianAnnualSource(JSON.parse(gunzipSync(australianSource)));
-const australianBytes = gzipSync(JSON.stringify(australia), {level: 9});
 const manifest = JSON.parse(await readFile(root+'/data/manifest.json'));
+const australianFile = 'australia-bom-2026.json.gz';
+const australianJson = Buffer.from(JSON.stringify(australia));
+// zlib versions can encode identical data differently. Refresh explicitly;
+// normal builds embed the checked-in bytes, just like the other two datasets.
+if (process.argv.includes('--refresh-australia')) {
+  const bytes = gzipSync(australianJson, {level: 9});
+  await writeFile(root+'/data/'+australianFile, bytes);
+  manifest.files[australianFile] = {bytes: bytes.length, sha256: sha(bytes)};
+  await writeFile(root+'/data/manifest.json', JSON.stringify(manifest,null,2)+'\n');
+}
+if (!manifest.files[australianFile]) throw new Error('Record the Bureau data with node scripts/build.mjs --refresh-australia.');
 for (const [file, expected] of Object.entries(manifest.files)) {
   const bytes = await readFile(root+'/data/'+file);
   if (bytes.length !== expected.bytes || sha(bytes) !== expected.sha256) throw new Error(`Bundled data checksum mismatch: ${file}`);
 }
+const australianBytes = await readFile(root+'/data/'+australianFile);
+if (!gunzipSync(australianBytes).equals(australianJson)) throw new Error('Bundled Bureau data differs from the hosted source. Review the source update and run node scripts/build.mjs --refresh-australia.');
 const base = {absWorkingDir: root, bundle: true, write: false, minify: true, format: 'iife', platform: 'browser', target: ['chrome110','safari16.4','firefox115'], legalComments: 'inline'};
 const guest = (await build({...base, entryPoints: ['src/guest.mjs'], globalName: 'TideGuest'})).outputFiles[0].text;
 const virtual = (name, contents) => ({name: 'embedded-'+name, setup(api) {

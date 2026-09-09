@@ -378,8 +378,8 @@
       "disclaimer": "Transformed FES2022b model output sampled along public-domain coastlines; weather and storm surge are not included. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
       "engine": "PyFES 2026.5.2 native-grid interpolation/extrapolation; Tide Here runtime uses @neaps/tide-predictor 0.11.0 with Schureman nodal corrections",
       "sampling": {
-        "spacingKm": 15.0,
-        "maximumSelectionDistanceKm": 40.0,
+        "spacingKm": 15,
+        "maximumSelectionDistanceKm": 40,
         "tileDegrees": 10,
         "pointCount": 65203,
         "sources": [
@@ -410,7 +410,7 @@
         }
       ]
     },
-    "maxFloat32AbsoluteError": 5.926562494096288e-05,
+    "maxFloat32AbsoluteError": 0.00005926562494096288,
     "sourcePackageSha256": "3df318013b4e14c1d693a0137d4f3d7958d3990f826e8e2e7640364e3c85795c"
   },
   "places": {
@@ -430,6 +430,10 @@
     "places.json.gz": {
       "bytes": 11378119,
       "sha256": "fe459eef44ccec61b2093753d9ecc46f75f0a9c048766adbefd405b165a4fa76"
+    },
+    "australia-bom-2026.json.gz": {
+      "bytes": 1341291,
+      "sha256": "892fd7b24f5b386c66be1ab600089f92e0d7c249c91d5c12de2c3d5e3c5d96d9"
     }
   }
 }

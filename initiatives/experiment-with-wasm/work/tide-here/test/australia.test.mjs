@@ -10,9 +10,11 @@ import {forecastAustralianStandardPort} from '../../../../tide-here/work/phase-1
 import {initializeJsonDataset} from '../../../../tide-here/work/phase-10/src/json-dataset.mjs';
 
 const prepared = importAustralianAnnualSource(JSON.parse(gunzipSync(await readFile(new URL('../../../../tide-here/work/phase-11/data/bom-annual-2026.source.json.gz', import.meta.url)))));
-const api = createAustralianTides(async () => prepared);
+const bundled = JSON.parse(gunzipSync(await readFile(new URL('../data/australia-bom-2026.json.gz', import.meta.url))));
+const api = createAustralianTides(async () => bundled);
 
 test('standalone Bureau events match the hosted provider at Mooloolaba, Sydney DST and Cocos', async () => {
+  assert.deepEqual(bundled, prepared);
   assert.equal(prepared.stations.length, 76); assert.equal(prepared.events.length, 103597);
   const values = new Map();
   const store = {get: async key => values.get(key), put: async (key, body) => values.set(key, {body})};
