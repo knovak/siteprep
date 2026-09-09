@@ -42,7 +42,11 @@ Production followed a separately authorized merge. Desktop Safari and Firefox ve
 
 ## Correct the default Tide Here flow
 
-1. Route the main form, location, Today, history and deep links through online place resolution and official predictions.
+1. Route the main form, location, history and deep links through online place resolution and official predictions.
 2. Reuse the hosted app's conservative automatic station criteria; show ambiguous choices and labelled local fallbacks.
 3. Keep Local model only available, move optional controls into a collapsed section, and test the exact San Diego submission shown by the user.
 4. Verify real browser requests, rebuild/package the single file, preserve the newer Wasm title changes from main, and update PR #477 and its test preview.
+
+## Website parity follow-up
+
+Use ranked online place selection with accessible alternatives, remove date controls and start on coast-local today. Embed the same licensed Bureau annual tables used by the website, preserve the original coastal match thresholds, and verify San Diego and Maroochydore as submitted by the user, plus offline and annual-expiry behavior. Update PR #477 and the test preview after provider parity, browser, build and visual checks.

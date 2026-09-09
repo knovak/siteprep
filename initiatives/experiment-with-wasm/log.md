@@ -56,3 +56,7 @@ Added explicit online controls while retaining both offline workflows: Bookmark 
 ## 2026-09-08 — Correct the normal Tide Here lookup
 
 Responded to the user's San Diego screenshot by routing Show tides, location, Today, history and deep links through Photon and official station predictions. Clear matches resolve automatically using the hosted 25 km / 0.6 station rule; ambiguity opens a chooser, and failures show a local fallback reason. Added a local-only choice and compact source controls. A live form submission loaded 20 NOAA San Diego events without separate online actions; 9 Node and 13 Chromium tests pass, with 8 online journeys also passing Firefox and WebKit. Integrated main's newer Wasm title/collection labels while retaining this PR's functionality. Production remains outside this change.
+
+## 2026-09-08 — Website-parity correction in PR #477
+
+Removed the date row and made coast-local today the only UI date. Matched the hosted geocoder’s ranked-result/settlement preference while keeping alternate matches available. Embedded the original licensed 2026 Bureau annual dataset (76 ports, 103,597 extrema), retaining source provenance, conditions, datums and IANA zones; official-table forecasts work offline and use a visible model fallback when their full five-day window is outside coverage. Real Chromium submissions now send plain San Diego to NOAA Broadway and Maroochydore to Mooloolaba, matching the supplied website results. Added hosted-provider parity tests and online/offline/expiry browser coverage; see verification.md for evidence.

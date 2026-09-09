@@ -5,8 +5,12 @@ import {forecastRows} from '../src/forecast.mjs';
 const rows=forecastRows('2026-09-08','America/Los_Angeles');
 const predictions={predictions:[{t:'2026-09-08 09:00',v:'1.7',type:'H'},{t:'2026-09-08 15:00',v:'0.2',type:'L'},{t:'2026-09-07 09:00',v:'1',type:'H'}]};
 
-test('automatic choices require a clear place or a nearby clearly closer station',()=>{
+test('online place selection follows ranking, while offline names and coastal stations retain ambiguity checks',()=>{
   const city={label:'San Diego, California, United States'},county={label:'San Diego (county), California, United States'};
+  const rankedCity={...city,source:'photon',type:'city'},rankedCounty={...county,source:'photon',category:'boundary',type:'county'};
+  assert.equal(automaticPlace([rankedCity,rankedCounty,{label:'San Diego, Texas',source:'photon',type:'city'}],'San Diego'),rankedCity);
+  assert.equal(automaticPlace([rankedCounty,rankedCity],'San Diego'),rankedCity);
+  assert.equal(automaticPlace([], 'nothing'),null);
   assert.equal(automaticPlace([city,county],'San Diego, California'),city);
   assert.equal(automaticPlace([{label:'Harbor, California'},{label:'Harbor, Oregon'}],'Harbor'),null);
   assert.equal(automaticStation([{distanceKm:2},{distanceKm:5}]).distanceKm,2);

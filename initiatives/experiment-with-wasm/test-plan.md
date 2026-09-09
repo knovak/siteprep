@@ -45,6 +45,13 @@ Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site
 
 - Submit San Diego through Show tides; verify Photon and NOAA requests, station 9410170, MLLW, and five days without clicking separate online controls.
 - Resolve a beach/street address absent from the bundled catalogue through the same form.
-- Distinguish city/county labels, require choices for ambiguous places/stations, and preserve the 25 km / 0.6 automatic match thresholds.
+- Distinguish city/county labels, use provider ranking for online places, retain choices for ambiguous offline names/stations, and preserve the 25 km / 0.6 automatic match thresholds.
 - Verify CHS automatic selection with controlled responses, failed search/prediction fallback, no-network local-only use, and late/cancelled requests.
 - Verify coordinates, deep links, geolocation, Today/history and return to the model use the intended source path. Offline tests explicitly disable online availability; they do not rely on the default being offline.
+
+### Website parity corrections
+
+- Submit plain San Diego with ranked California city, county, Texas city and university results; load NOAA Broadway automatically and keep alternative places in collapsed options.
+- Confirm First day/Today controls are absent and old date fragments cannot move the forecast away from coast-local today.
+- Submit Maroochydore online and offline; require Mooloolaba, Bureau attribution, LAT and Australia/Brisbane today. Compare all five days with the hosted provider, including additional Sydney DST and Cocos cases.
+- Move the clock to a five-day window crossing December 31; require an explicit annual-coverage explanation and a full model forecast.

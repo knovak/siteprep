@@ -1,8 +1,10 @@
 import {createWebCache, fetchResource} from '../../src/network.mjs';
 import {distanceKm, normalize} from './data.mjs';
 import {makeForecast} from './forecast.mjs';
+import {australianProvider, createAustralianTides} from './australia.mjs';
 
 export const providers = {
+  bom: australianProvider,
   noaa: {name: 'NOAA CO-OPS', catalogue: 'https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions',
     predictions: 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter', datum: 'MLLW (mean lower low water)',
     licence: 'https://tidesandcurrents.noaa.gov/disclaimers.html'},
@@ -23,6 +25,15 @@ export function automaticStation(stations) {
   return first && first.distanceKm <= 25 && (!second || first.distanceKm <= 0.6 * second.distanceKm) ? first : null;
 }
 export function automaticPlace(matches, query) {
+  // Like the website's geocoder, trust the provider's ranking and prefer a
+  // settlement over a leading administrative boundary. Offline matches still
+  // require an unambiguous name because their ranking is only textual.
+  if (matches[0]?.source === 'photon') {
+    const first = matches[0];
+    return first.category === 'boundary' || ['county', 'state', 'country'].includes(first.type)
+      ? matches.find(place => ['city', 'town', 'village', 'hamlet', 'municipality'].includes(place.type)) || first
+      : first;
+  }
   const text = normalize(query);
   const exact = matches.filter(place => normalize(place.label) === text || normalize(place.label).startsWith(text + ', '));
   return exact.length === 1 ? exact[0] : matches.length === 1 ? matches[0] : null;
@@ -57,8 +68,9 @@ export function normalizeEvents(payload, provider, rows) {
   if (!events.length) throw new Error('No tide predictions were returned for these dates.');
   return events;
 }
-export function createOnlineTides({storage, fetchImpl = globalThis.fetch} = {}) {
-  const cache = createWebCache(storage, 'tide-here-wasm-online/v1', 32);
+export function createOnlineTides({storage, fetchImpl = globalThis.fetch, loadAustralia} = {}) {
+  const australia = loadAustralia ? createAustralianTides(loadAustralia) : null;
+  const cache = createWebCache(storage, 'tide-here-wasm-online/v2', 32);
   let lastSearch = 0;
   const json = async (url, signal) => (await fetchResource(url, {signal, fetchImpl, maxBytes:6*1024*1024})).json();
   return {
@@ -75,12 +87,15 @@ export function createOnlineTides({storage, fetchImpl = globalThis.fetch} = {}) 
           const p=f.properties || {}, [longitude,latitude]=f.geometry?.coordinates || [];
           const name = p.type === 'county' ? p.name + ' (county)' : p.name;
           const label = [...new Set([name, [p.housenumber,p.street].filter(Boolean).join(' '),p.city || p.district,p.state,p.country].filter(Boolean))].join(', ');
-          return {id:'osm-'+p.osm_type+'-'+p.osm_id,name:name || label,label,latitude,longitude};
+          return {id:'osm-'+p.osm_type+'-'+p.osm_id,name:name || label,label,latitude,longitude,source:'photon',category:p.osm_key,type:p.type || p.osm_value};
         }).filter(valid);
       });
     },
-    async stations(place, signal) {
-      const results = await Promise.allSettled(Object.entries(providers).map(async ([id,p]) => {
+    async stations(place, signal, {allowNetwork = true} = {}) {
+      const ports = await australia?.stations(place) || [];
+      if (signal?.aborted) throw new DOMException('Cancelled','AbortError');
+      if (ports.length || !allowNetwork) return {stations: ports, warning: ''};
+      const results = await Promise.allSettled(Object.entries(providers).filter(([,p]) => p.catalogue).map(async ([id,p]) => {
         const result = await cache.get(p.catalogue, 7*86400000, async () => normalizeStations(await json(p.catalogue, signal), id));
         return {...result, provider:id};
       }));
@@ -92,6 +107,7 @@ export function createOnlineTides({storage, fetchImpl = globalThis.fetch} = {}) 
         warning: results.some(r=>r.status==='rejected') ? 'One station service is unavailable; results may be incomplete.' : values.some(r=>r.stale) ? 'Using a saved station list because its service is unavailable.' : ''};
     },
     async forecast({place, station, rows, signal, refresh = false}) {
+      if (station.provider === 'bom') return australia.forecast({place, station, rows, signal});
       const url = predictionUrl(station, rows), provider = providers[station.provider];
       const response = await cache.get(url, 6*3600000, async () => normalizeEvents(await json(url,signal), station.provider, rows), {refresh});
       if (signal?.aborted) throw new DOMException('Cancelled','AbortError');

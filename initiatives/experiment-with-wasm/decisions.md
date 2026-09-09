@@ -55,3 +55,9 @@ The user reported: **“I don't think this works. I check the tide here applicat
 This corrects the earlier implementation of internet access as separate optional buttons. Show tides must search place names and addresses online and prefer official predictions. The same flow applies to coordinates, Show here, Today, history and deep links. The bundled catalogue and FES2022 model remain fallbacks, with a visible explanation; Local model only is an explicit choice.
 
 A clearly closer station within 25 km is selected automatically, retaining the hosted application's 0.6 distance-ratio rule. Ambiguous places and stations still require a choice, so an arbitrary station across a bay is not selected silently. Nearby station choices remain bounded at 150 km. Current NOAA/CHS adapters, provider/browser limitations, cached data labels and the separate production release boundary remain in effect.
+
+## 2026-09-08 — Match website place selection and Australian tides
+
+The user asked to remove “First day (blank means today on the coast)” and pointed out that San Diego should resolve without a place chooser, while Maroochydore should use the Bureau source shown by the website. This clarifies the requested internet-enabled behavior in PR #477.
+
+The implementation follows the website’s ranked geocoder selection (settlement preferred over a leading administrative boundary), keeps alternate places accessible, and starts forecasts today in the coast’s time zone. It includes the same existing licensed 2026 Bureau annual dataset as the website, preserving station identity, datum, attribution and conditions; this is prepared annual data, not a new live Bureau API. It adds no new source licence or hosting service. The 25 km / 60% / 150 km coastal safeguards remain. Annual-table renewal, additional countries, Canadian CORS availability and physical-iPad acceptance remain separate follow-ups.

@@ -1,10 +1,10 @@
 # Tide Here, online with offline fallback
 
-Open **[dist/index.html](dist/index.html)** directly in a browser. It is a single 39.5 MB file with the tide model, place catalogue, interface and WebAssembly engine inside. No backend, static server, account, API key, installation or connection is needed. Chromium, Safari 26.6.2 and Firefox 153.0.4 direct-file use is verified. The hosted workflow passes an iPad Pro 11 WebKit/touch emulation; a physical iPad remains a compatibility follow-up.
+Open **[dist/index.html](dist/index.html)** directly in a browser. It is a single 41.3 MB file with the tide model, place catalogue, interface and WebAssembly engine inside. No backend, static server, account, API key, installation or connection is needed. Chromium, Safari 26.6.2 and Firefox 153.0.4 direct-file use is verified. The hosted workflow passes an iPad Pro 11 WebKit/touch emulation; a physical iPad remains a compatibility follow-up.
 
-Enter a town (optionally followed by its region or country), choose a matching place, or enter latitude and longitude. **Show here** asks the browser for location permission. Choose the first local date or leave it blank for today on that coast. Five days show high/low tides in metres, with expandable sun/moon information. Nearby model points can be selected explicitly. Download individual forecasts or the last 100 history entries; restore a history backup from JSON.
+Enter a town (optionally followed by its region or country), an address, or latitude and longitude. The highest-ranked online place is used automatically; other matches remain in the options panel. **Show here** asks the browser for location permission. Forecasts start today on that coast; there is no date control. Five days show high/low tides in metres, with expandable sun/moon information. Nearby model points can be selected explicitly. Download individual forecasts or the last 100 history entries; restore a history backup from JSON.
 
-A local bookmark can prefill the app with `#place=Half%20Moon%20Bay%2C%20California&date=2026-09-07` after the file URL. Omit the date for today; ambiguous place names still require a choice. The fragment starts the same online-first lookup as Show tides; Local model only and offline use keep it local.
+A local bookmark can prefill the app with `#place=Half%20Moon%20Bay%2C%20California` after the file URL. Dates always start today on the selected coast; old date fragments are ignored. Ambiguous offline place names still require a choice. The fragment starts the same online-first lookup as Show tides; Local model only and offline use keep it local.
 
 ## What is preserved and what changes
 
@@ -13,19 +13,19 @@ A local bookmark can prefill the app with `#place=Half%20Moon%20Bay%2C%20Califor
 | Five coast-local days and DST-aware placement | Original local-day model retained |
 | High/low tide times and heights | Original FES harmonic predictor runs inside WASM |
 | Sun, moon and polar no-event states | Original SunCalc 2.0.1 and astronomy layer retained |
-| Named locations and coordinates | 170,946-place GeoNames catalogue and aliases replace live Nominatim |
+| Named locations and coordinates | Photon online search, with a 170,946-place GeoNames fallback |
 | Nearby coastal selection | All 65,203 existing global-model points; maximum 40 km |
-| National-provider preferences | FES model by default; explicit NOAA/CHS station requests are available online; no annual BoM tables |
+| National-provider preferences | Automatic NOAA/CHS internet predictions and included official Bureau tables for 76 Australian Standard Ports; FES fallback |
 | History | Last 100 forecasts in browser storage, plus export/restore |
-| Runtime data retrieval | None; data and software are embedded |
+| Runtime data retrieval | Photon, NOAA and CHS when online; Bureau tables and model embedded |
 
-Heights are approximate astronomical harmonics relative to model mean sea level, not chart datum. Weather, storm surge, river flow and waves are omitted. The nearest sampled point may lie on a different side of a bay or island; choose a point that fits the coast. Inland and uncovered requests return an explicit message. This is not for navigation or safety decisions.
+Model heights are approximate harmonics relative to mean sea level; official predictions use their labelled station datum. Weather, storm surge, river flow and waves are omitted. The nearest sampled point may lie on a different side of a bay or island; choose a point that fits the coast. Inland and uncovered requests return an explicit message. This is not for navigation or safety decisions.
 
 ## Will the data last?
 
-The HTML file carries the model, so clearing browser storage cannot erase it. There is no annual prediction-table expiry: the engine calculates the selected date from harmonic constants. A 2036 calculation is tested for equivalence with the original algorithm, not for measured long-term accuracy. Coastal changes, model improvements and future time-zone rules may require an updated file. Continued support for the browser technologies cannot be guaranteed forever.
+The HTML file carries the model, so clearing browser storage cannot erase it. The harmonic model has no annual expiry; it calculates today from its constants. The included Bureau annual tables cover 2026 only, so five-day windows extending outside that year use the model with an explanation. A 2036 calculation is tested for equivalence with the original algorithm, not for measured long-term accuracy. Coastal changes, model improvements and future time-zone rules may require an updated file. Continued support for the browser technologies cannot be guaranteed forever.
 
-Only personal forecast history lives in browser storage. Browser cleanup, private mode or moving the HTML can affect that history. Download history for independent safekeeping; storage failure is reported while calculations remain available.
+Forecast history and saved online responses live in browser storage. Browser cleanup, private mode or moving the HTML can affect that history. Download history for independent safekeeping; storage failure is reported while calculations remain available.
 
 ## Runtime boundary
 
@@ -65,4 +65,8 @@ The latter records regression evidence using the original server implementation 
 
 ## Online data
 
-Show tides uses Photon / OpenStreetMap for normal place/address input, then requests nearby NOAA/CHS predictions. Clear place matches resolve automatically; a station within 25 km is accepted only when its distance is at most 60% of the next nearest station. Otherwise the app opens a chooser. A failed online lookup or absent supported station uses the bundled catalogue/model with a visible explanation. The same flow handles location, coordinates, Today, history and deep links. Data sources and station options offers alternate stations and an explicit Local model only mode. Sources, retrieval time and the station height datum are shown separately from model output. Responses are cached locally with bounded retention and labelled stale fallback. Local model only and browser-reported offline use make no network requests in the normal search/model workflow. Live NOAA and Photon requests were verified in Chromium; CHS returned API data but browser access failed in this environment and remains subject to provider CORS behavior.
+Show tides uses Photon / OpenStreetMap for normal place/address input, then requests nearby NOAA/CHS predictions. The top-ranked online place resolves automatically; a station within 25 km is accepted only when its distance is at most 60% of the next nearest station. Otherwise the app opens a chooser. A failed online lookup or absent supported station uses the bundled catalogue/model with a visible explanation. The same flow handles location, coordinates, history and deep links. Data sources and station options offers alternate stations and an explicit Local model only mode. Sources, retrieval time and the station height datum are shown separately from model output. Responses are cached locally with bounded retention and labelled stale fallback. Local model only and browser-reported offline use make no network requests in the normal search/model workflow. Live NOAA and Photon requests were verified in Chromium; CHS returned API data but browser access failed in this environment and remains subject to provider CORS behavior.
+
+## Australian official tables and website parity
+
+The build uses the same validated `2026-bom-v2` annual source and importer as the hosted Tide Here application: 76 Standard Ports and 103,597 high/low events. It embeds the compressed prepared dataset with source PDF checksums, attribution, conditions, station datums and IANA time zones. Maroochydore selects Mooloolaba; the website and standalone providers are compared event-for-event, including Sydney daylight saving and the Cocos half-hour zone. No live Bureau API or additional backend is implied: the badge says “2026 tables”, and the link opens that station’s original PDF. Refreshing annual coverage requires rebuilding from reviewed source data and distributing a new app file.
