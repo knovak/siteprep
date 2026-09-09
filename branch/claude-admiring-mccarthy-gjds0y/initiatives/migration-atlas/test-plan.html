@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test plan — World Migration Atlas</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Test plan — World Migration Atlas</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to World Migration Atlas</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Test plan</h2>
+    </div>
+    <div class="card-content">
+<h2>Test plan</h2>
+<h3>What runs today</h3>
+<p>The development package restored on 2026-09-07 brought the original suites with it, so the inherited gates are runnable rather than historical. <code>lib/README.md</code> has the commands.</p>
+<div class="table-scroll"><table><thead><tr><th>Gate</th><th>Covers</th><th>State</th></tr></thead><tbody><tr><td>T1</td><td>Dataset schema, semantic rules, coordinates, references, invalid-record rejection</td><td>Runs. <code>node lib/tests/test_core.mjs</code> - 535 assertions, 0 failures on 2026-09-07</td></tr><tr><td>T2</td><td>Population scaling, clock boundaries, camera behavior, deterministic reverse scrubbing</td><td>Runs, in the same command</td></tr><tr><td>E2, E6</td><td>Coercion spectrum and region spectrum ordering</td><td>Runs, in the same command</td></tr><tr><td>T3</td><td>Fixed-year and fixed-camera visual regression, reduced motion</td><td>Needs Python <code>playwright</code>, <code>numpy</code>, <code>Pillow</code>, and a golden re-baseline</td></tr><tr><td>T4</td><td>Timeline, selection, filtering, zoom and pan, keyboard, legends, WebView guards, responsive controls</td><td>Needs the same packages</td></tr><tr><td>T5</td><td>Playback frame time, first render, bundle size, memory stability</td><td>Needs the same packages</td></tr><tr><td>T6</td><td>Accessibility automation, contrast, reduced motion; <code>tests/axe.min.js</code> is vendored</td><td>Needs the same packages</td></tr><tr><td>T7</td><td>Chromium, Firefox and WebKit, local file against served</td><td>Needs the same packages and all three browsers</td></tr><tr><td>T8</td><td>Cited-source review, justified confidence and type</td><td>By hand, against <code>lib/tests/T8_editorial_checklist.md</code></td></tr></tbody></table></div>
+<p>T1, T2, E2 and E6 need nothing this repository does not already have. The browser gates need the Python Playwright stack, which it does not install; that is the <code>run-browser-suites</code> todo item, not a defect in the suites.</p>
+<p><strong>The goldens need re-baselining before T3 means anything.</strong> The eight images in <code>lib/tests/goldens/</code> were captured on the machine the atlas was written on in July 2026, and T3 compares pixels. One <code>--update-goldens</code> pass on whichever machine will run them comes first; results before that are about font rasterizing, not about the atlas.</p>
+<p><code>validateData()</code> is shared between the test gate and the in-app loader, so a record T1 rejects is a record the running app rejects when it is dropped onto the window. That is the check that matters most for new research.</p>
+<h3>The build is its own test</h3>
+<p><code>python3 lib/tools/build.py</code> is deterministic: over an unchanged source it rewrites the same bytes. Rebuilding and comparing hashes answers whether the published bundle came from the committed source, and is worth doing after any change to <code>lib/</code>. It was verified on 2026-09-07 against <code>work/index.html</code> at <code>38f40ff2a445ce8c96896e4269ce981a76e0eb88aee24888b9fdebbe8ac8eb1e</code>.</p>
+<h3>Adoption verification</h3>
+<p>Done on 2026-09-07 and recorded in <a href="log.html">log.md</a>: hashes compared against both source packages, the repository build run with its own checks, and a Chromium pass over the atlas covering initial render, timeline movement, legend and color toggles, the data table and a detail panel, search, playback, wheel zoom and drag pan, and a 390x844 touch viewport. That is a smoke check, not a substitute for the gates above.</p>
+<h3>User testing and release</h3>
+<p>The user tests the deployed preview - timeline navigation, zoom and pan, what the flows and circles mean, legends, filters, details, and the touch layout - and records findings. Any fixes belong in a later scoped change. Production needs a separate explicit release instruction; see the <code>release-rebuilt-source</code> item in <code>initiative.json</code> for what a release changes.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/admiring-mccarthy-gjds0y" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
