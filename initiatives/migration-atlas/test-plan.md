@@ -63,3 +63,32 @@ the flows and circles mean, legends, filters, details, and the touch layout -
 and records findings. Any fixes belong in a later scoped change. Production
 needs a separate explicit release instruction; see the `release-rebuilt-source`
 item in `initiative.json` for what a release changes.
+
+
+## September 9, 2026 extension
+
+The core suite passes 548 assertions after the editorial corrections. All
+population values and coordinates were compared against the prior dataset and
+preserved. The [48-entry reconciliation](https://github.com/knovak/siteprep/blob/6bb9c23bf4d800695883221392e97de1e8569a16/initiatives/migration-atlas/notes/editorial-reconciliation-20260909.md)
+distinguishes the corrections from unresolved numeric and geographic sources;
+T8 remains open and the original editorial todo remains actionable.
+
+The new [packaging evidence](https://github.com/knovak/siteprep/blob/dfa53eed4ac81948a8840602bd251c69ed925cde/initiatives/migration-atlas/notes/packaging-20260909.json) records six identical
+file/HTTP screenshots in each of Chromium, Firefox and WebKit, plus 60 keyboard
+checks: 78 checks passed on macOS. Dialog focus now stays inside the dialog,
+returns to its opener, and does not let reading keys scrub the map. Keyboard
+selection opens stock-labelled detail, which explains schematic geography.
+The report's SHA-256 matches the current bundle.
+
+The full T3/T4/T6 suites passed 91 checks in Chromium and 88 each in Firefox and WebKit. Separate Firefox/WebKit
+reference images were explicitly generated and visually inspected before
+independent comparison runs; the Chromium goldens remain unchanged. The pixel
+threshold remains 0.5%. T6 now includes About, legend and stock detail as well
+as the original main/table/filter views.
+
+T5 frame cadence is about 20 ms in this headless Firefox/WebKit environment,
+so the original 17 ms median target is not established there. T5's assertions
+remain on the original fixed Chromium runner; other engines record timing,
+and skip unsupported heap instrumentation. No claim of a universal 60 fps is
+made. Actual manual screen-reader speech and Windows/Linux file/HTTP comparison
+remain external blockers on `extend-packaging-acceptance`.
