@@ -65,7 +65,9 @@ export function timeDomain(data) {
     lo = Math.min(lo, m.period.start);
     hi = Math.max(hi, m.period.end);
   }
-  return [lo, hi];
+  // Keep the opening year before the first recorded migration, so Home and
+  // the beginning of the scrubber can show a map without flows or circles.
+  return [lo - 1, hi];
 }
 
 // Volume attributed to one destination arrow (people who moved there).
@@ -174,6 +176,16 @@ export const REGION_SPECTRUM = {
 
 // Shared dataset validation — used by the T1 test gate AND by the app's
 // drag-and-drop data loader, so contributors get the same errors everywhere.
+// Stocks and repeated movements must not be labelled as unique people moved.
+export const QUANTITY_LABELS = {
+  movers: 'People moved', stock: 'Reported population abroad',
+  displacement: 'Displaced people, including internal displacement',
+  circular: 'Cumulative movements, including repeat moves',
+};
+export function quantityLabel(m) {
+  return QUANTITY_LABELS[m.quantity_kind || 'movers'] || 'Reported estimate';
+}
+
 export function validateData(data) {
   const errors = [], warnings = [];
   if (!data || !Array.isArray(data.migrations)) {
@@ -194,6 +206,8 @@ export function validateData(data) {
     if (!types.has(m.type)) errors.push(`unknown type '${m.type}': ${tag}`);
     if (!regions.has(m.region)) errors.push(`unknown region '${m.region}': ${tag}`);
     if (!(Number.isFinite(m.migrants) && m.migrants > 0)) errors.push(`migrants must be > 0: ${tag}`);
+    if (m.quantity_kind != null && !Object.hasOwn(QUANTITY_LABELS, m.quantity_kind))
+      errors.push(`unknown quantity kind: ${tag}`);
     if (!Array.isArray(m.references) || m.references.length < 1) errors.push(`needs a reference: ${tag}`);
     if (!["high", "medium", "low"].includes(m.confidence)) errors.push(`bad confidence: ${tag}`);
     if (!Array.isArray(m.destinations) || m.destinations.length < 1)

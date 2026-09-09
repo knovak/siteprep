@@ -266,3 +266,27 @@ Re-baseline only deliberately after inspecting the changed rendering:
 The eight committed goldens describe the above machine. A different platform
 can have font/rendering differences; investigate before replacing them.
 The full data review is in [editorial review](notes.html).
+
+
+## September 9 editorial and acceptance follow-through
+
+The [48-entry reconciliation](https://github.com/knovak/siteprep/blob/6bb9c23bf4d800695883221392e97de1e8569a16/initiatives/migration-atlas/notes/editorial-reconciliation-20260909.md)
+records four confidence corrections, distinct labels for stocks/repeated moves/
+displacement, the verified Census period, and source or geography work still
+open. Every original population value and coordinate is retained. T8 is not
+complete, and the original reconciliation item stays actionable.
+
+The core suite passed 548 assertions. The full visual/interaction/accessibility
+suites passed 91 checks in Chromium and 88 each in Firefox and WebKit. Separate
+Firefox/WebKit goldens were explicitly generated and inspected; the original
+Chromium goldens and the 0.5% threshold remain. A final legend-label correction
+was separately compared in all three engines within that threshold.
+
+The final [packaging report](https://github.com/knovak/siteprep/blob/dfa53eed4ac81948a8840602bd251c69ed925cde/initiatives/migration-atlas/notes/packaging-20260909.json)
+matches the bundle hash and passes 78 checks: 18 same-engine file/HTTP image
+comparisons (zero pixel difference) and 60 keyboard checks. Manual
+screen-reader observations and Windows/Linux runs remain unavailable. The
+headless Firefox/WebKit frame cadence is about 20 ms; their 17 ms median
+performance target is not established. T5 assertions continue to use the
+original fixed Chromium runner; other engines report timing without claiming
+that target or Chromium-only heap evidence.

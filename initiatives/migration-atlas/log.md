@@ -102,3 +102,71 @@ Released to production — Demo, `e567057`. <https://knovak.github.io/siteprep/d
 ## 2026-09-09 — Release the rebuilt source after testing and explicit approval
 
 Released to production 2026-09-09 (e567057); see releases.md.
+
+
+## 2026-09-09 — Reconcile editorial representation and extend acceptance
+
+Corrected four greater-than-twofold confidence conflicts, separated stocks,
+circular movements and internal-displacement totals in visible quantity labels,
+qualified aggregate map points and unreconciled destination sums, and linked
+the verified Census and SlaveVoyages passages. Preserved population values and
+coordinates. The 48-entry reconciliation record retains outstanding source
+requirements; the editorial todo remains actionable.
+
+Fixed dialog focus containment/return and background timeline keys, added
+same-engine local-file/HTTP comparisons and keyboard checks, and extended the
+existing suite to Firefox/WebKit with separate reference images. Manual
+screen-reader and Windows/Linux results are unavailable on this macOS host, so
+the packaging item now records that explicit external blocker. Detailed results
+are recorded in test-plan.md and notes. Production is unchanged.
+
+
+## 2026-09-09 — Address four review threads on PR #487
+
+Added README guidance on confidence labels, applied checks and finding source
+references. The build now renders the full 48-entry editorial reconciliation
+into a companion HTML page, linked from About the data, and includes the
+earlier audit's seven source locators with their verification limits.
+
+The user chose to move the two approximate 1000 start dates to 1001. The
+timeline now includes the year before the earliest migration, preserving a
+blank opening map at 1000 and a first event jump to 1001. This presentation
+choice is recorded in decisions.md; it is not new source evidence.
+
+Explained that the inherited 17 ms median threshold represents the 60 fps
+target; 30 ms would represent about 33 fps and would relax that target. The
+question does not itself change the recorded acceptance threshold.
+
+Verification passed 551 core assertions and all 91 Chromium browser checks.
+The final offline opening-year, first-event, Home, About-to-report and return
+journeys passed at desktop and 390px widths in Chromium, Firefox and WebKit.
+Each report has 48 rows, nine source links, no horizontal page overflow and
+no serious or critical axe findings. The evidence receipt records the final
+application and report hashes.
+
+The user then changed the performance requirement to “60 fps is preferred,
+30 fps is acceptable”. Updated the specification, README, test plan and T5
+checks to use a 33.33 ms acceptance limit while reporting measured cadence
+against the 60 fps preference. This supersedes the threshold explanation above.
+
+The final suites pass 91/91 Chromium checks and 90/90 each in Firefox and
+WebKit. Median cadence was 16.7 ms (59.9 fps), 20 ms (50 fps), and 20 ms
+(50 fps), respectively; p95 was 16.8, 21 and 21 ms. All three meet the
+revised acceptance limit. Existing goldens were compared without updates.
+
+## 2026-09-09 — Make the editorial report link readable
+
+Addressed the follow-up on PR #487: modal links now use the atlas gold accent
+for both unvisited and visited states, with a light hover color and the shared
+keyboard focus outline. Rebuilt `work/index.html` from the source template.
+
+Six local-file report-and-return journeys passed in Chromium, Firefox and
+WebKit at 1280px and 390px widths. Verification covered the gold color,
+hover styling, keyboard focus and activation, all 48 report rows, and return
+to the link after visiting. The link has at least 9.25:1 contrast even if the
+translucent modal is composited over white; the actual backdrop is darker.
+The targeted axe contrast scan reported no violations; the numeric check
+also covers engines where axe could not classify the translucent background.
+WebKit used macOS Option-Tab to reach the link. These focused checks cover
+the styling revision; the earlier full-suite evidence remains tied to its
+recorded application hash. Production is unchanged.

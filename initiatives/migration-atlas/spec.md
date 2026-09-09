@@ -121,7 +121,7 @@ Validation rules (enforced by a schema + CI test, section 7): unique ids; `start
 
 ## 7. Quality requirements
 
-- 60 fps target during playback with ≤ 200 simultaneous animated flows on a 2020-era laptop; graceful degradation (particle count reduction) below 30 fps.
+- 60 fps is preferred, 30 fps is acceptable during playback with ≤ 200 simultaneous animated flows on a 2020-era laptop; graceful degradation (particle count reduction) below 30 fps.
 - Initial load ≤ 3 MB (basemap ~1 MB gzipped, code ~500 KB, data ~100 KB); first render < 2 s from local disk.
 - Runs entirely offline from local files (see implementation plan for the file:// nuance).
 - Works in current Chrome, Firefox, Safari, Edge; degrades to static map + table without WebGL.
@@ -203,3 +203,32 @@ order; continent members are adjacent; adjacent colors differ ≥40 L1.
 (E7) at 390×844 and 844×390 with touch emulation: no horizontal overflow, all
 timebar controls inside the viewport, play button ≥40px tall, map keeps ≥45%
 of viewport height.
+
+
+## September 2026 editorial representation and keyboard corrections
+
+The optional `quantity_kind` is `movers` (the backward-compatible default),
+`stock`, `circular`, or `displacement`. Core validation rejects other values.
+Details, tooltips and the accessible table label these different measures;
+figures, stock dates and source/descendant attribution remain subject to the
+field-level T8 review. Circle growth is illustrative, and regional points are
+schematic. The dated reconciliation report under `notes/` records each finding
+and what remains unverified. No population or coordinate was substituted.
+
+Table and About dialogs retain Tab/Shift+Tab focus inside the dialog and return
+focus to the opener on close. Reading keys do not run the background timeline;
+native button Space behavior remains available. These automated keyboard checks
+do not substitute for manual assistive-technology acceptance.
+
+
+## September 9 review follow-up
+
+The editorial reconciliation is rendered as a companion HTML page in the
+published package and linked from About the data. It preserves the full
+48-entry report, source locators, and unresolved-evidence qualifications.
+
+The timeline includes one year before the earliest migration, allowing a blank
+opening view. At the user's request, the two approximate starts previously
+recorded as 1000 (Romani migration and the Indian Ocean slave trades) are
+recorded as 1001, leaving the opening year at 1000. This display convention
+does not claim new historical precision.

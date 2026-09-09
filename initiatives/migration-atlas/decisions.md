@@ -62,3 +62,39 @@ The package's `README.md` matches the one already preserved in `README.md`,
 hash for hash, so nothing was re-adopted. No application behavior changed: the
 only edits to source files are the four that reconcile the build with the
 already-published bundle.
+
+
+## 2026-09-09 — Keep a blank opening map at 1000 AD
+
+**Move the two start dates to 1001.** The user chose this after the sweep
+explained that starting the timeline at 1001 would still show two ongoing
+migrations.
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Open at 999, preserving dates | Provides a blank map before the earliest recorded movements | Changes the desired opening year |
+| Move the two approximate starts to 1001, opening at 1000 — chosen | Keeps the desired opening year with no flows or circles | Changes an approximate date for presentation, without new historical evidence |
+
+### What this settles, and what it does not
+
+- Romani migration and Indian Ocean slave trades now start at 1001; population
+  values, end dates and coordinates stay as recorded.
+- The timeline includes the year before the first migration, so Home and the
+  opening view are blank and the first event jump reaches 1001.
+- This is a display convention, not independent source verification or a
+  production-release decision.
+
+## 2026-09-09 — Playback frame-rate target
+
+**60 fps is preferred, 30 fps is acceptable.** The user supplied this exact
+wording after asking about the inherited 17 ms threshold.
+
+### What this settles, and what it does not
+
+- The specification and current README use the requested wording.
+- Performance acceptance permits frame times up to 1000/30 ms for the median
+  and p95, while reporting the measured frame rate against the 60 fps preference.
+- Browser-specific results describe the test machine; the requirement does not
+  certify performance on untested physical devices or authorize a release.

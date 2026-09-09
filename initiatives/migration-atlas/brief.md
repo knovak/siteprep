@@ -6,27 +6,24 @@
 
 ## Done
 
-The self-contained atlas contains 48 migrations and 92 destination records,
-with animated flows, diaspora circles, filtering, accessible table controls
-and a reproducible source build. Restored browser suites use the current bundle:
-535 core assertions, 88 browser checks against eight inspected macOS goldens,
-and 24 Chromium/Firefox/WebKit smoke checks passed ([notes.md](notes.html)).
+The atlas contains 48 migrations and 92 destination records. Four confidence
+conflicts are corrected; stocks, repeated moves and internal displacement have
+distinct labels. About the data links to the full editorial report, including
+source locators and unresolved evidence, and the README explains the standards.
 
-An editorial review covers all 48 entries, including 144 sampled rendering
-states and targeted source checks. It records four confidence-rule conflicts,
-quantity/stock and geographic aggregation issues, and evidence gaps; it does
-not establish T8 acceptance or change the dataset.
+The opening map is blank at 1000; two approximate starts moved to 1001 by the
+user's choice. Verification includes 551 core assertions and six desktop/phone
+offline journeys in Chromium, Firefox and WebKit. The performance requirement
+is “60 fps is preferred, 30 fps is acceptable” ([test plan](test-plan.html)).
 
 ## Remaining work
 
-Phase 5 content iteration and T8 require field-level source evidence and
-reconciliation of the recorded quantity, confidence, type and map findings.
-The broader T6/T7 plan still calls for manual screen-reader work, full
-cross-engine interaction coverage and served/file and platform comparisons
-beyond the inherited smoke suite ([test-plan.md](test-plan.html)).
+Phase 5 and T8 still require field-level numeric sources, dated stock and
+cohort evidence, and the remaining destination-specific visual inspections.
+T6/T7 still need manual screen-reader observations and Windows/Linux runs.
 
 ## Optional later
 
-[plan.md](plan.html) offers a Tauri desktop wrapper and considers street-level
-detail through an online alternative. Further movements can be added as
-research supplies them through the existing dataset-validation and rebuild path.
+The plan retains an optional Tauri wrapper and an online alternative for
+street-level detail. New movements can follow the existing dataset-validation
+and rebuild path as research supplies them.

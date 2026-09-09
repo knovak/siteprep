@@ -17,7 +17,7 @@
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; overflow: hidden; background: var(--page);
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); }
-  button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+  button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, [tabindex]:focus-visible {
     outline: 2px solid var(--accent); outline-offset: 1px; }
   canvas#base, canvas#flows { position: absolute; top: 0; left: 0; }
   canvas#flows { touch-action: none; cursor: grab; }
@@ -107,6 +107,8 @@
     border: none; color: var(--sub); font-size: 18px; cursor: pointer; }
   .modal p { font-size: 13px; line-height: 1.5; color: var(--text); margin: 8px 0; }
   .modal p.dim { color: var(--sub); font-size: 12px; }
+  .modal a, .modal a:visited { color: var(--accent); text-underline-offset: .15em; }
+  .modal a:hover { color: var(--text); }
   table { border-collapse: collapse; width: 100%; font-size: 12px; }
   th, td { text-align: left; padding: 6px 9px; border-bottom: 1px solid var(--edge); }
   th { color: var(--sub); font-size: 10.5px; letter-spacing: .06em; position: sticky;
@@ -206,7 +208,7 @@
   </div>
 
   <div id="legend" role="note" aria-label="Map legend">
-    <h2>FLOW WIDTH = PEOPLE MOVED</h2>
+    <h2>FLOW WIDTH = DESTINATION ESTIMATE</h2>
     <div id="legendWidths"></div>
     <h2 id="legendColorTitle">COLOR = SOURCE REGION</h2>
     <div id="legendRegions"></div>
@@ -243,7 +245,7 @@
       <p class="dim">Click a row to open its detail panel. This table is the accessible, non-visual equivalent of the map.</p>
       <table id="dataTable">
         <thead><tr><th>Migration</th><th>Period</th><th>Type</th><th>Source region</th>
-        <th style="text-align:right">People moved</th><th>Confidence</th></tr></thead>
+        <th style="text-align:right">Estimate and measure</th><th>Confidence</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -257,10 +259,17 @@
       estimate, and many are contested. Pre-1800 figures are order-of-magnitude scholarly estimates;
       flows drawn with dashed edges carry <b>low confidence</b>. Where sources disagree, the dataset
       records a range, shown in each migration's detail panel alongside its references.</p>
-      <p>Two different quantities appear: <b>people moved</b> (arrow width) counts migrants during the
-      period; <b>diaspora today</b> (circle area) is usually a descendant population, which can be far
-      larger — or absent where communities dispersed or assimilated. Some modern flows (Gulf labor,
-      Filipino overseas work) are circular rather than permanent; the notes say so.</p>
+      <p>The table, tooltips and detail panels distinguish <b>people moved</b>, population stocks,
+      repeated movements and totals that include internal displacement. These measures are not
+      directly comparable. Arrow widths use the destination allocations; circles use the reported
+      diaspora or stock estimate, or the settlement estimate when no diaspora value is supplied.
+      Circle growth is an illustration, not a measured population history.</p>
+      <p>Coordinates are schematic points for named regions, including multi-country groups.
+      A point does not locate every community. Source dates, destination allocations and descendant
+      attribution still need field-level verification; a confidence badge does not certify every
+      figure in an entry. The September 2026 editorial review remains open.
+      <a href="editorial.html">Read the editorial review and source findings</a>
+      for all 48 entries, the corrections made, and the evidence still missing.</p>
       <p>This subject includes atrocities — enslavement, expulsion, genocide. The presentation aims to
       be sober and precise; death tolls in transit are recorded in the detail panels where documented.</p>
       <p class="dim"><b>Adding new research:</b> the atlas is driven entirely by one JSON file. Drag and

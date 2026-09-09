@@ -4,7 +4,7 @@ import {
   flowWidthPx, circleRadiusPx, flowEnvelope, circleProgress, advanceYear,
   timeDomain, eraDensity, nextEventStart, prevEventStart, sceneHash,
   destVolume, residualPopulation, particlePhase, CLOCK_SEGMENTS,
-  TYPE_ORDER, TYPE_SPECTRUM, REGION_ORDER, REGION_SPECTRUM, validateData,
+  TYPE_ORDER, TYPE_SPECTRUM, REGION_ORDER, REGION_SPECTRUM, validateData, quantityLabel,
 } from "../src/core.js";
 
 const data = JSON.parse(readFileSync(new URL("../data/migrations.json", import.meta.url)));
@@ -21,6 +21,14 @@ const TYPES = new Set(Object.keys(data.type_legend));
 const REGIONS = new Set(Object.keys(data.region_legend));
 const ids = new Set();
 const YEAR_MAX = new Date().getFullYear() + 1;
+for (const m of data.migrations) {
+  if (m.migrants_range && m.migrants_range[1] / m.migrants_range[0] > 2)
+    ok(m.confidence === 'low', `broad estimate range carries low confidence: ${m.id}`);
+}
+for (const id of ['syrian-civil-war','venezuelan-exodus','rohingya-exodus','ukraine-war','filipino-overseas'])
+  ok(quantityLabel(data.migrations.find(m=>m.id===id)) === 'Reported population abroad', `stock is not called people moved: ${id}`);
+ok(quantityLabel({}) === 'People moved', 'legacy datasets retain mover label');
+ok(validateData({...data,migrations:[{...data.migrations[0],quantity_kind:'invented'}]}).errors.some(e=>e.includes('quantity kind')), 'unsupported quantity definitions are rejected');
 for (const m of data.migrations) {
   ok(!ids.has(m.id), `unique id: ${m.id}`); ids.add(m.id);
   ok(m.period.start >= 1000 && m.period.start <= m.period.end && m.period.end <= YEAR_MAX,
@@ -85,7 +93,11 @@ ok(circleProgress(1550, 1500, 1600) > 0.5, "ease-out growth front-loaded");
 // ---------- T2: clock ----------
 console.log("T2 clock");
 const DOM = timeDomain(data);
-ok(DOM[0] === 1000 && DOM[1] >= 2026, "domain from data");
+ok(DOM[0] === 1000 && DOM[1] >= 2026, "domain begins one year before first migration");
+ok(data.migrations.every(m => flowEnvelope(DOM[0], m.period.start, m.period.end).alpha === 0 &&
+   circleProgress(DOM[0], m.period.start, m.period.end) === 0), "opening year has no flows or circles");
+ok(nextEventStart(data, DOM[0]) === 1001, "first event jump reaches the two earliest migrations");
+ok(data.migrations.filter(m => m.period.start === 1001).length === 2, "two approximate starts moved to 1001");
 ok(close(advanceYear(1500, 1, 1, "piecewise", DOM), 1510), "10 yr/s before 1800");
 ok(close(advanceYear(1850, 1, 1, "piecewise", DOM), 1854), "4 yr/s 1800-1900");
 ok(close(advanceYear(1950, 1, 1, "piecewise", DOM), 1952), "2 yr/s after 1900");
@@ -103,7 +115,7 @@ ok(destVolume(atl, atl.destinations[0]) === 4900000, "destVolume uses settled");
 ok(residualPopulation(atl.destinations[0]) === 112000000, "residual uses diaspora_today");
 const dens = eraDensity(data, DOM, 100);
 ok(dens.length === 100 && Math.max(...dens) >= 8, "era density peaks (mass-migration era)");
-ok(dens[0] >= 1, "density at 1000 counts Turkic/Roma/slave trades era");
+ok(dens[0] >= 1, "first density bin includes the earliest recorded flows");
 ok(nextEventStart(data, 1491) === 1492, "next event after 1491 is 1492 expulsion");
 ok(prevEventStart(data, 1493) === 1492, "prev event before 1493");
 ok(nextEventStart(data, 2025) === null || nextEventStart(data, 2025) <= DOM[1], "next near end");

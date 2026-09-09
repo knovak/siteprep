@@ -1,6 +1,6 @@
 {
  "schema_version": "1.0",
- "notes": "Figures are scholarly consensus estimates; many are contested. 'migrants' = people who moved during the period. 'diaspora_today' = present-day population descended from or identifying with the movement (order-of-magnitude). Coordinates are representative centroids. confidence: high = well-documented archival/statistical record; medium = broad scholarly agreement on range; low = order-of-magnitude estimate only.",
+ "notes": "Historical estimates with different definitions and observation dates; field-level source verification remains incomplete. 'quantity_kind' distinguishes movers, population stock, repeated/circular movements and displacement including internal movement. 'diaspora_today' retains inherited reported diaspora or stock estimates, not a verified current population or descendants attributable to one flow. Coordinates are schematic regional points; aggregates must not be read as exact routes or locations.",
  "type_legend": {
   "forced-enslavement": "Enslaved and transported against their will",
   "forced-expulsion": "Expelled or deported by state/imperial decree",
@@ -51,7 +51,7 @@
    "id": "roma-migration",
    "name": "Romani migration from India to Europe",
    "period": {
-    "start": 1000,
+    "start": 1001,
     "end": 1450
    },
    "type": "voluntary-economic",
@@ -191,11 +191,12 @@
      "diaspora_today": null
     }
    ],
-   "confidence": "medium",
+   "confidence": "low",
    "references": [
     "Kamen, The Spanish Inquisition (2014); Ray, After Expulsion (2013)"
    ],
-   "region": "weur"
+   "region": "weur",
+   "migrants_note": "Confidence is low because the recorded estimate range exceeds twofold; individual quantity and destination sources still need verification."
   },
   {
    "id": "spanish-colonization",
@@ -247,9 +248,9 @@
     "peak": 1780
    },
    "type": "forced-enslavement",
-   "cause": "European colonial plantation economies (sugar, coffee, cotton, tobacco); largest forced migration in history",
+   "cause": "European colonial plantation economies (sugar, coffee, cotton, tobacco) demanded enslaved labor; captives were transported against their will",
    "migrants": 12500000,
-   "migrants_note": "\u224812.5M embarked from Africa; \u224810.7M survived the Middle Passage",
+   "migrants_note": "\u224812.5M embarked from Africa; \u224810.7M survived the Middle Passage; the inherited destination allocations sum to 10.6M, so they are not a complete reconciliation to the 10.7M estimate. The modern descendant figures need separate, dated sources.",
    "source": {
     "name": "West & West-Central Africa",
     "lat": 5.0,
@@ -287,7 +288,8 @@
    ],
    "confidence": "high",
    "references": [
-    "SlaveVoyages.org (Trans-Atlantic Slave Trade Database); Eltis & Richardson, Atlas of the Transatlantic Slave Trade (2010)"
+    "SlaveVoyages.org (Trans-Atlantic Slave Trade Database); Eltis & Richardson, Atlas of the Transatlantic Slave Trade (2010)",
+    "SlaveVoyages, Trans-Atlantic database methodology, Understanding the Database / Coverage: https://legacy.slavevoyages.org/blog/methodology-trans-atlantic"
    ],
    "region": "afr"
   },
@@ -295,7 +297,7 @@
    "id": "indian-ocean-slave-trades",
    "name": "Trans-Saharan, Red Sea & Indian Ocean slave trades (post-1000 portion)",
    "period": {
-    "start": 1000,
+    "start": 1001,
     "end": 1900
    },
    "type": "forced-enslavement",
@@ -397,11 +399,12 @@
      "diaspora_today": 1000000
     }
    ],
-   "confidence": "medium",
+   "confidence": "low",
    "references": [
     "Scoville, The Persecution of Huguenots (1960)"
    ],
-   "region": "weur"
+   "region": "weur",
+   "migrants_note": "Confidence is low because the recorded estimate range exceeds twofold; individual quantity and destination sources still need verification."
   },
   {
    "id": "acadian-expulsion",
@@ -724,7 +727,8 @@
    "references": [
     "Gottschang & Lary, Swallows and Settlers (2000)"
    ],
-   "region": "easia"
+   "region": "easia",
+   "quantity_kind": "circular"
   },
   {
    "id": "circassian-expulsion",
@@ -946,20 +950,21 @@
      "diaspora_today": null
     }
    ],
-   "confidence": "medium",
+   "confidence": "low",
    "references": [
     "Raeff, Russia Abroad (1990)"
    ],
-   "region": "eeur"
+   "region": "eeur",
+   "migrants_note": "Confidence is low because the recorded estimate range exceeds twofold; individual quantity and destination sources still need verification."
   },
   {
    "id": "us-great-migration",
    "name": "Great Migration of African Americans (internal, USA)",
    "period": {
-    "start": 1916,
+    "start": 1910,
     "end": 1970
    },
-   "type": "internal-forced",
+   "type": "refugee-flight",
    "cause": "Flight from Jim Crow terror, lynching, and sharecropping; industrial jobs in the North and West",
    "migrants": 6000000,
    "source": {
@@ -978,9 +983,11 @@
    ],
    "confidence": "high",
    "references": [
-    "Wilkerson, The Warmth of Other Suns (2010)"
+    "Wilkerson, The Warmth of Other Suns (2010)",
+    "US Census Bureau, The Great Migration, 1910 to 1970 (2012): https://www.census.gov/library/visualizations/time-series/demo/the-great-migration.html"
    ],
-   "region": "namer"
+   "region": "namer",
+   "migrants_note": "The US Census Bureau describes about six million people leaving the South during 1910\u20131970. This internal migration combined escape from racial terror and oppression with economic opportunity; it was not a state-ordered deportation. The schematic Chicago point represents many Northern and Western cities. The separate 25M descendant estimate still needs cohort-specific evidence."
   },
   {
    "id": "german-expulsions",
@@ -1027,7 +1034,7 @@
    "type": "refugee-flight",
    "cause": "Nazi persecution and genocide (6M murdered); postwar displaced persons unable/unwilling to return",
    "migrants": 1000000,
-   "migrants_note": "Prewar refugees (~500K) plus postwar DP emigration (~700K, overlap exists)",
+   "migrants_note": "Prewar refugees (~500K) plus postwar DP emigration (~700K, overlap exists); the destination allocations sum to 1.05M against the 1M headline. These overlapping estimates are not reconciled unique-person counts; do not add them or infer a verified descendant cohort from the Israel population figure.",
    "source": {
     "name": "Central & Eastern Europe",
     "lat": 51.0,
@@ -1344,7 +1351,8 @@
    "references": [
     "Pew Research Center; Massey et al., Beyond Smoke and Mirrors (2002)"
    ],
-   "region": "lamer"
+   "region": "lamer",
+   "quantity_kind": "circular"
   },
   {
    "id": "gulf-labor-migration",
@@ -1375,7 +1383,8 @@
    "references": [
     "ILO; Gulf Labour Markets and Migration (GLMM) programme"
    ],
-   "region": "sasia"
+   "region": "sasia",
+   "quantity_kind": "circular"
   },
   {
    "id": "rwandan-genocide-flight",
@@ -1436,7 +1445,8 @@
    "references": [
     "UNHCR, The State of the World's Refugees (2000)"
    ],
-   "region": "eeur"
+   "region": "eeur",
+   "quantity_kind": "displacement"
   },
   {
    "id": "syrian-civil-war",
@@ -1481,7 +1491,8 @@
    "references": [
     "UNHCR Global Trends 2025 (June 2026)"
    ],
-   "region": "mena"
+   "region": "mena",
+   "quantity_kind": "stock"
   },
   {
    "id": "venezuelan-exodus",
@@ -1525,7 +1536,9 @@
    "references": [
     "R4V Inter-Agency Platform; UNHCR"
    ],
-   "region": "lamer"
+   "region": "lamer",
+   "quantity_kind": "stock",
+   "migrants_note": "The inherited 7.7M figure is a reported population outside Venezuela, associated with R4V reporting in 2023; it is not unique cumulative departures through 2026. Destination figures require matching observation dates and coverage before comparison."
   },
   {
    "id": "rohingya-exodus",
@@ -1556,7 +1569,8 @@
    "references": [
     "UNHCR; end-2024 total Rohingya abroad >1.1M"
    ],
-   "region": "seasia"
+   "region": "seasia",
+   "quantity_kind": "stock"
   },
   {
    "id": "ukraine-war",
@@ -1601,7 +1615,8 @@
    "references": [
     "UNHCR Ukraine Situation, 2026 plans"
    ],
-   "region": "eeur"
+   "region": "eeur",
+   "quantity_kind": "stock"
   },
   {
    "id": "sudan-crisis",
@@ -1611,9 +1626,9 @@
     "end": 2026
    },
    "type": "refugee-flight",
-   "cause": "SAF\u2013RSF civil war from April 2023; world's largest current displacement crisis",
+   "cause": "SAF\u2013RSF civil war from April 2023, including violence in Khartoum and Darfur",
    "migrants": 13000000,
-   "migrants_note": "~13.4M total displaced at mid-2025, of which ~9\u201310M internal; ~3\u20134M crossed borders",
+   "migrants_note": "~13.4M total displaced at mid-2025, of which ~9\u201310M internal; ~3\u20134M crossed borders; the international destination point represents only the cross-border component, not all displaced people. The inherited source date and allocations require verification.",
    "source": {
     "name": "Sudan (Khartoum, Darfur)",
     "lat": 14.5,
@@ -1632,7 +1647,8 @@
    "references": [
     "UNHCR Mid-Year Trends 2025; Global Trends 2025"
    ],
-   "region": "afr"
+   "region": "afr",
+   "quantity_kind": "displacement"
   },
   {
    "id": "filipino-overseas",
@@ -1677,7 +1693,8 @@
    "references": [
     "Philippine Statistics Authority; Commission on Filipinos Overseas"
    ],
-   "region": "seasia"
+   "region": "seasia",
+   "quantity_kind": "stock"
   },
   {
    "id": "highland-clearances",
@@ -1693,7 +1710,7 @@
     50000,
     150000
    ],
-   "migrants_note": "Displacement counts contested; many resettled on poor coastal crofts before emigrating",
+   "migrants_note": "Displacement counts contested; many resettled on poor coastal crofts before emigrating Confidence is low because the recorded estimate range exceeds twofold; individual quantity and destination sources still need verification.",
    "source": {
     "name": "Scottish Highlands & Islands",
     "lat": 57.5,
@@ -1715,7 +1732,7 @@
      "diaspora_today": null
     }
    ],
-   "confidence": "medium",
+   "confidence": "low",
    "region": "weur",
    "references": [
     "Richards, The Highland Clearances (2000)"
