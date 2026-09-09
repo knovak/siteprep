@@ -6,13 +6,12 @@
   "outputs": [],
   "todo": [
     {
-      "id": "choose-next-refinement",
-      "title": "Choose a Newsletter Story Harvester improvement, request another proposal round, or declare the initiative dormant",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "human:choose a Newsletter Story Harvester improvement, request another proposal round, or declare the initiative dormant"
+      "id": "add-dedicated-harvest-skill",
+      "title": "Add a dedicated harvest skill for repeat Newsletter Story Harvester runs",
+      "state": "actionable",
+      "value": "high",
+      "effort": "medium",
+      "advances_stage": false
     }
   ],
   "deployments": [

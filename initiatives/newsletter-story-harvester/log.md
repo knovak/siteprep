@@ -326,3 +326,7 @@ Added a user-facing guide for reviewing, loading, saving, privacy, local verific
 ## 2026-09-06 — Propose optional improvements as a pull request, from better documentation to suggested features
 
 Recorded five optional refinements with value, size, privacy boundaries, and evidence, recommending a dedicated harvest skill.
+
+## 2026-09-07 — Choose a Newsletter Story Harvester improvement, request another proposal round, or declare the initiative dormant
+
+Proposed a dedicated harvest skill as the next refinement; merging accepts the recommendation and makes that implementation item actionable.
