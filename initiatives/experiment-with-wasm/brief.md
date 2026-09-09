@@ -6,7 +6,7 @@
 
 ## Done
 
-Both single-file applications support internet data and offline use. Bookmark Sorter adds URL imports, pictures and previews; Tide Here's normal Show tides action now resolves places online and prefers official station predictions, with clear choices and labelled model fallback. The 41 application tests and four package tests pass; the online journeys also pass Firefox and WebKit, and a live San Diego submission loaded NOAA predictions automatically.
+Both single-file applications support internet data and offline use. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website’s Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples.
 
 ## Remaining work
 
