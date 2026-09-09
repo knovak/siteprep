@@ -10,6 +10,7 @@
   <script src="../../assets/scripts.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
+  <link rel="stylesheet" href="../../../../shared/distance_viz/traveltimeviz.css">
 </head>
 <body>
   <article class="card">
@@ -59,16 +60,32 @@
 
       <h2>Map</h2>
       <p>Every attraction, event venue, and named neighborhood reference point above is marked below. Use either clickable legend to focus a location.</p>
-      <h3>OpenStreetMap</h3>
+      <h3 data-collapsed="true">OpenStreetMap</h3>
       <div id="cairns-map-osm" class="map-container"></div>
       <div id="cairns-legend-osm" class="map-legend"></div>
-      <h3>OpenTopoMap</h3>
+      <h3 data-collapsed="false">OpenTopoMap</h3>
       <div id="cairns-map-topo" class="map-container"></div>
       <div id="cairns-legend-topo" class="map-legend"></div>
+
+      <h2>Travel Times Around Cairns</h2>
+      <p>Use the network graph for geographic orientation and the matrix for pairwise driving-time estimates among the seven requested locations. The estimates are rounded to the nearest five minutes and do not include live traffic, roadworks, weather, or stops; check current directions before departure.</p>
+      <ul>
+        <li><strong>Herberton:</strong> Historic Tablelands town centered near Grace Street, Herberton QLD 4887. <a href="https://www.google.com/maps/search/?api=1&amp;query=Herberton+QLD+4887+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Atherton:</strong> Tablelands service town centered near Main Street, Atherton QLD 4883. <a href="https://www.google.com/maps/search/?api=1&amp;query=Atherton+QLD+4883+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>205 E Hill Road:</strong> Rural address in Wondecla, south-east of Herberton. <strong>Address:</strong> 205 E Hill Road, Wondecla QLD 4887, Australia. <a href="https://www.google.com/maps/search/?api=1&amp;query=205+E+Hill+Road+Wondecla+QLD+4887+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Yungaburra:</strong> Heritage village centered near Eacham Road and Kehoe Place, Yungaburra QLD 4884. <a href="https://www.google.com/maps/search/?api=1&amp;query=Yungaburra+QLD+4884+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Cairns Airport:</strong> Cairns’ domestic and international airport. <strong>Address:</strong> Airport Avenue, Cairns City QLD 4870, Australia. <strong>Hours:</strong> Daily, flight-dependent. <a href="https://www.google.com/maps/search/?api=1&amp;query=Cairns+Airport+Airport+Avenue+Cairns+City+QLD+4870+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Gordonvale:</strong> Sugar-growing town south of Cairns, centered near Norman and Gordon Streets, Gordonvale QLD 4865. <a href="https://www.google.com/maps/search/?api=1&amp;query=Gordonvale+QLD+4865+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+        <li><strong>Redlynch:</strong> Cairns suburb at the foot of the Great Dividing Range, centered near Redlynch Connection Road, Redlynch QLD 4870. <a href="https://www.google.com/maps/search/?api=1&amp;query=Redlynch+QLD+4870+Australia" target="_blank" rel="noopener">Google Maps</a>.</li>
+      </ul>
+      <div id="cairns-network-graph"></div>
+      <div id="cairns-distance-matrix"></div>
     </div>
   </article>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="../../../../shared/standard_map/standard_map.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="../../../../shared/distance_viz/traveltimeviz.js"></script>
   <script>
     const locations = [
       { name: 'Cairns Art Gallery', lat: -16.9201, lng: 145.7787, color: '#8e44ad', icon: '🎨' },
@@ -92,6 +109,44 @@
       topoMapId: 'cairns-map-topo',
       topoLegendId: 'cairns-legend-topo'
     });
+
+    const cairnsTravelLocations = {
+      Herberton: { lat: -17.3835, lng: 145.3854, color: '#8e44ad' },
+      Atherton: { lat: -17.2667, lng: 145.4769, color: '#2471a3' },
+      '205 E Hill Road': { lat: -17.4072, lng: 145.4188, color: '#c0392b', name: '205 E Hill Rd, Wondecla' },
+      Yungaburra: { lat: -17.2701, lng: 145.5843, color: '#1e8449' },
+      'Cairns Airport': { lat: -16.8780, lng: 145.7516, color: '#d35400' },
+      Gordonvale: { lat: -17.0968, lng: 145.7744, color: '#16a085' },
+      Redlynch: { lat: -16.8862, lng: 145.6952, color: '#7d3c98' }
+    };
+    const cairnsTravelRoutes = [
+      { from: 'Herberton', to: 'Atherton', time: '20m', minutes: 20 },
+      { from: 'Herberton', to: '205 E Hill Road', time: '10m', minutes: 10 },
+      { from: 'Herberton', to: 'Yungaburra', time: '30m', minutes: 30 },
+      { from: 'Herberton', to: 'Cairns Airport', time: '1h45m', minutes: 105 },
+      { from: 'Herberton', to: 'Gordonvale', time: '1h15m', minutes: 75 },
+      { from: 'Herberton', to: 'Redlynch', time: '1h35m', minutes: 95 },
+      { from: 'Atherton', to: '205 E Hill Road', time: '30m', minutes: 30 },
+      { from: 'Atherton', to: 'Yungaburra', time: '15m', minutes: 15 },
+      { from: 'Atherton', to: 'Cairns Airport', time: '1h30m', minutes: 90 },
+      { from: 'Atherton', to: 'Gordonvale', time: '1h', minutes: 60 },
+      { from: 'Atherton', to: 'Redlynch', time: '1h20m', minutes: 80 },
+      { from: '205 E Hill Road', to: 'Yungaburra', time: '40m', minutes: 40 },
+      { from: '205 E Hill Road', to: 'Cairns Airport', time: '1h55m', minutes: 115 },
+      { from: '205 E Hill Road', to: 'Gordonvale', time: '1h25m', minutes: 85 },
+      { from: '205 E Hill Road', to: 'Redlynch', time: '1h50m', minutes: 110 },
+      { from: 'Yungaburra', to: 'Cairns Airport', time: '1h20m', minutes: 80 },
+      { from: 'Yungaburra', to: 'Gordonvale', time: '50m', minutes: 50 },
+      { from: 'Yungaburra', to: 'Redlynch', time: '1h15m', minutes: 75 },
+      { from: 'Cairns Airport', to: 'Gordonvale', time: '35m', minutes: 35 },
+      { from: 'Cairns Airport', to: 'Redlynch', time: '15m', minutes: 15 },
+      { from: 'Gordonvale', to: 'Redlynch', time: '30m', minutes: 30 }
+    ];
+    const cairnsTravelViz = new TravelTimeViz(cairnsTravelLocations, cairnsTravelRoutes, {
+      network: { height: 590, chargeStrength: -600, nodeRadius: 20 },
+      matrix: { height: 590, colorScheme: 'Blues' }
+    });
+    cairnsTravelViz.render('#cairns-network-graph', '#cairns-distance-matrix');
   </script>
   <footer class="site-footer" data-version="main" data-root="../../../../" data-deck="../../index.html" data-section="overview.html">
     <script src="../../../../shared/site_footer/site_footer.js"></script>
