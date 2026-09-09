@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes — World Migration Atlas</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Notes — World Migration Atlas</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to World Migration Atlas</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Notes</h2>
+    </div>
+    <div class="card-content">
+<h2>Provenance</h2>
+<p>Two packages make up this initiative, adopted on 2026-09-07.</p>
+<h3>The published demo, adopted as <code>work/</code></h3>
+<p>From <code>demos/world_migration_atlas/</code>, introduced by commit <code>04de6ead060bd230b242a320279e943708cb2ae2</code> (2026-09-03).</p>
+<p>An earlier version of this file and of <code>adoption-manifest.json</code> named <code>37e1a5f1306b1386562e95133580547c3490d38a</code> as the source commit. That object does not exist in this repository and never did: <code>git cat-file -t</code> cannot resolve it and it appears in no branch. It was a branch commit that this repository&#39;s squash merge discarded - the failure mode <code>INITIATIVES_TECHDOC.md</code> describes under &quot;Currency&quot;. The commit above is the one <code>git log -- demos/world_migration_atlas</code> reports, and it resolves.</p>
+<h3>The development package, adopted as <code>lib/</code></h3>
+<p>From <code>migrationatlascomplete2.zip</code>, supplied by the user on 2026-09-07 as the complete July 2026 code base. 28 files; SHA-256 <code>645c73d88b84d9b70eb602a1807b284ef217f89e6e1d5afbd9f0a8ee68d40969</code>. Everything in it is committed under <code>lib/</code> except its three markdown documents, which the first adoption had already taken as <code>spec.md</code>, <code>plan.md</code> and the preserved section of <code>README.md</code>.</p>
+<p>Those three hashes were recorded before the package arrived and could not be checked against anything. All three now match the package byte for byte, which is what <code>adoption-manifest.json</code> records under <code>documents[].verified_against_package</code>.</p>
+<p>The package&#39;s <code>data/</code> files are identical to the ones the demo shipped, and its <code>data/migrations.json</code> holds the same 48 records the bundle inlines. Its <code>dist/migration-atlas.html</code> and <code>src/index.html</code> differ from the demo&#39;s copies: the package is the state of the source before the branding edits listed in <code>decisions.md</code> were made to the bundle. Those edits are ported into <code>lib/src/</code>, so the build reproduces the published <code>work/index.html</code> exactly.</p>
+<p><code>lib/data/basemap/ne_50m_land_raw.geojson</code> is an upstream input that nothing reads and no script regenerates. It is kept as the only record of where the basemap came from.</p>
+<h3>Two things to know before the next release</h3>
+<p><code>demos/world_migration_atlas/</code> has no <code>demo.json</code>. Its title, description and the two tutorial links are hardcoded in <code>scripts/build.sh</code>, in <code>get_demo_description</code>. <code>release-initiative</code> runs <code>deploy-demo</code>, which writes a <code>demo.json</code> into the destination - so after the first release the demo will have two sources for the same index entry, and the hardcoded branch wins. Nothing breaks; it is worth knowing rather than rediscovering.</p>
+<p><code>spec.md</code> and <code>plan.md</code> are preserved originals and are not edited to match this repository&#39;s writing-style rules. Wording in them that those rules discourage is July 2026 text, not a lapse to correct.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/wonderful-maxwell-cwe3do" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
