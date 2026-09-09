@@ -220,7 +220,13 @@ class FakeD1Database {
         const action_kind = statement.sql.includes("'tag-apply'") ? 'tag-apply' : statement.sql.includes("'tag-remove'") ? 'tag-remove' : 'verdict';
         this.actions.set(id, {id, collection_id, session_id, action_kind, payload_json, created_at, undone_at: null});
       } else if (statement.sql.startsWith('DELETE FROM tags')) {
-        if (statement.sql.includes('item_id IN')) {
+        if (statement.sql.includes('substr(tag, 1, 10)')) {
+          const [collectionId, ...itemIds] = statement.values;
+          for (const id of itemIds) {
+            assert.equal(this.items.get(id).collection_id, collectionId);
+            for (const tag of this.tags.get(id)) if (tag.startsWith('updated_at')) this.tags.get(id).delete(tag);
+          }
+        } else if (statement.sql.includes('item_id IN')) {
           const [tag, ...itemIds] = statement.values;
           for (const itemId of itemIds) this.tags.get(itemId).delete(tag);
         } else {

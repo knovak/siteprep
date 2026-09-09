@@ -1,6 +1,7 @@
+import {verdictsForItems} from './verdict-plan.mjs';
+import {isUpdatedTag, updatedTag} from './updated-tag.mjs';
 import {evaluateSelection} from './selections.mjs';
 import {validateCursor} from './selection-sql.mjs';
-const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 
 function earlier(left, right) {
   if (!left) return right;
@@ -538,17 +539,24 @@ export class MemoryBookmarkStore {
     };
   }
 
-  applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
-    if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
+  applyVerdict(collectionId, {itemIds, verdict, itemVerdicts, at, sessionId, actionId}) {
+    const assignments = verdictsForItems(itemIds, verdict, itemVerdicts);
     const session = this.session(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
-    const changes = [];
-    for (const id of [...new Set(itemIds)]) {
+    for (const id of assignments.keys()) {
       const item = this.#items.get(id);
       if (!item || item.collection_id !== collectionId) throw new Error(`Unknown item in collection: ${id}`);
-      if (item.verdict === verdict) continue;
-      changes.push({item_id: id, verdict: item.verdict, verdict_at: item.verdict_at});
-      this.#items.set(id, {...item, verdict, verdict_at: at});
+    }
+    const changes = [];
+    for (const id of assignments.keys()) {
+      const item = this.#items.get(id);
+      const tags = this.#tags.get(id);
+      const previous = [...tags].filter(isUpdatedTag), stamp = updatedTag(at);
+      for (const tag of previous) tags.delete(tag);
+      tags.add(stamp);
+      changes.push({item_id: id, verdict: item.verdict, verdict_at: item.verdict_at,
+        previous_updated_tags: previous, updated_tag: stamp});
+      this.#items.set(id, {...item, verdict: assignments.get(id), verdict_at: at});
     }
     if (changes.length) {
       this.#actions.push({
@@ -556,14 +564,14 @@ export class MemoryBookmarkStore {
         collection_id: collectionId,
         session_id: sessionId,
         action_kind: 'verdict',
-        payload: {changes, verdict, verdict_at: at},
+        payload: {changes, verdict, item_verdicts: Object.fromEntries(assignments), verdict_at: at},
         created_at: at,
         undone_at: null,
       });
       session.items_judged += changes.length;
     }
     return {
-      changes: changes.map(change => ({item_id: change.item_id, verdict, verdict_at: at})),
+      changes: changes.map(change => ({item_id: change.item_id, verdict: assignments.get(change.item_id), verdict_at: at, added_tags: [change.updated_tag], removed_tags: change.previous_updated_tags})),
       backlog: this.countUntriagedItems(collectionId),
       session: structuredClone(session),
     };
@@ -579,10 +587,11 @@ export class MemoryBookmarkStore {
       const item = this.#items.get(id);
       if (!item || item.collection_id !== collectionId) throw new Error(`Unknown item in collection: ${id}`);
       const stored = this.#tags.get(id);
-      const added = wanted.filter(tag => !stored.has(tag));
-      if (!added.length) continue;
-      for (const tag of added) stored.add(tag);
-      changes.push({item_id: id, tags: added});
+      const added = wanted.filter(tag => !isUpdatedTag(tag) && !stored.has(tag));
+      const previous = [...stored].filter(isUpdatedTag), stamp = updatedTag(at);
+      for (const tag of previous) stored.delete(tag);
+      for (const tag of [...added, stamp]) stored.add(tag);
+      changes.push({item_id: id, tags: added, previous_updated_tags: previous, updated_tag: stamp});
     }
     if (changes.length) {
       this.#actions.push({
@@ -597,7 +606,7 @@ export class MemoryBookmarkStore {
     }
     return {
       kind: 'tag-apply',
-      changes: changes.map(change => ({item_id: change.item_id, added_tags: [...change.tags]})),
+      changes: changes.map(change => ({item_id: change.item_id, added_tags: [...change.tags, change.updated_tag], removed_tags: change.previous_updated_tags})),
       backlog: this.countUntriagedItems(collectionId),
       session: structuredClone(session),
     };
@@ -650,17 +659,22 @@ export class MemoryBookmarkStore {
     for (const change of action.payload.changes) {
       const item = this.#items.get(change.item_id);
       if (!item || item.collection_id !== collectionId) continue;
+      if (change.updated_tag) {
+        const tags = this.#tags.get(change.item_id);
+        tags.delete(change.updated_tag);
+        for (const tag of change.previous_updated_tags || []) tags.add(tag);
+      }
       if (action.action_kind === 'tag-apply') {
         const tags = this.#tags.get(change.item_id);
         for (const tag of change.tags) tags.delete(tag);
-        restored.push({item_id: change.item_id, removed_tags: [...change.tags]});
+        restored.push({item_id: change.item_id, removed_tags: [...change.tags, ...(change.updated_tag ? [change.updated_tag] : [])], added_tags: change.previous_updated_tags || []});
       } else if (action.action_kind === 'tag-remove') {
         const tags = this.#tags.get(change.item_id);
         for (const tag of change.tags) tags.add(tag);
         restored.push({item_id: change.item_id, added_tags: [...change.tags]});
       } else {
         this.#items.set(change.item_id, {...item, verdict: change.verdict, verdict_at: change.verdict_at});
-        restored.push({...change});
+        restored.push({...change, added_tags: change.previous_updated_tags || [], removed_tags: change.updated_tag ? [change.updated_tag] : []});
       }
     }
     action.undone_at = at;

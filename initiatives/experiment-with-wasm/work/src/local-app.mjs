@@ -286,6 +286,7 @@ export function createLocalApp({store, now = () => new Date(), idFactory = prefi
           const result = await store.applyVerdict(collectionId, {
             itemIds: body.item_ids,
             verdict: body.verdict,
+            itemVerdicts: body.item_verdicts,
             at: now().toISOString(),
             sessionId: body.session_id,
             actionId: idFactory('action'),
@@ -310,6 +311,7 @@ export function createLocalApp({store, now = () => new Date(), idFactory = prefi
           return json(await store.applyVerdict(collectionId, {
             itemIds: matches.map(item => item.id),
             verdict: body.verdict,
+            itemVerdicts: body.item_verdicts,
             at: now().toISOString(),
             sessionId: body.session_id,
             actionId: idFactory('action'),

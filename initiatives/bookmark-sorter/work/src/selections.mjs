@@ -72,11 +72,16 @@ export function selectionTags(item) {
   if (site) tags.add(`site:${site}`);
   const titleKey = item.title_key || normaliseTitle(item.title);
   if (titleKey) tags.add(`title:${titleKey}`);
+  for (const tag of tags) {
+    if (/^(collection|verdict|image|site|title):/.test(tag)) tags.comparisonTags.add(tag);
+  }
   return tags;
 }
 
 export function ordinarySelectionTags(rawTags) {
   const tags = new Set(rawTags);
+  // Comparisons use original values, without punctuation-normalized aliases.
+  tags.comparisonTags = new Set(rawTags);
   for (const tag of rawTags) {
     tags.add(`tag-key:${encodeURIComponent(tag)}`);
     if (hasTagPrefix(tag, 'src')) {
@@ -213,6 +218,14 @@ function siteKey(value) {
 
 export function evaluateSelectionNode(node, tags) {
   if (node.type === 'tag') {
+    if (node.match === 'compare') {
+      for (const tag of tags.comparisonTags || tags) {
+        if (!tag.startsWith(node.namespace)) continue;
+        const value = tag.slice(node.namespace.length);
+        if (value && (node.operator === '>' ? value > node.value : value < node.value)) return true;
+      }
+      return false;
+    }
     if (node.match === 'prefix') {
       for (const tag of tags) if (tag.startsWith(node.value)) return true;
       return false;
@@ -269,6 +282,12 @@ class Parser {
       throw new SelectionSyntaxError('Expected a tag, not, or (', token?.position ?? this.source.length);
     }
     this.index += 1;
+    const comparison = /^([^:*<>]+):([<>])(.*)$/.exec(token.text);
+    if (comparison) {
+      const [, prefix, operator, value] = comparison;
+      if (!value || value.startsWith('=') || /[<>*]/.test(value)) throw new SelectionSyntaxError('A comparison needs a nonempty string without wildcards or comparison operators', token.position);
+      return {type: 'tag', namespace: prefix + ':', operator, value, match: 'compare'};
+    }
     const wildcardPositions = [...token.text.matchAll(/\*/g)].map(match => match.index);
     if (!wildcardPositions.length) return {type: 'tag', value: token.text, match: 'exact'};
 

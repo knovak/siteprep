@@ -187,6 +187,6 @@ test('proposal loading is read-only, URL-matched, grouped per tag, and acceptanc
     store, collectionId: 'source', document, tag: 'topic:rust', sessionId: session.id,
     actionId: 'proposal-existing', at: '2026-08-18T13:04:00Z',
   });
-  assert.equal(alreadyPresent.result.changes.length, 0);
+  assert.equal(alreadyPresent.result.changes.length, 1, 'adding an existing tag still refreshes updated_at');
   assert.equal(store.listAllItems('source').find(item => item.url_key === 'https://example.com/guide').tags.filter(tag => tag === 'topic:rust').length, 1);
 });

@@ -421,7 +421,7 @@ collection creation.
 - `POST /api/selection/verdict` applies one verdict to the entire open
   expression. An unconfirmed request returns `409` with its count; the split
   Sweep control confirms that count before retrying. The default visible-page
-  sweep instead uses `/api/verdict` with only the untriaged item ids currently
+  sweep instead uses `/api/verdict` with the untriaged item ids and explicitly chosen cards currently
   on screen and never needs an unbounded-set confirmation.
 - `GET /api/capture-image?url_key=…` serves the already-stored derivative. A
   grid view never fetches the saved page or starts a capture.
@@ -457,7 +457,7 @@ phase measurement in `decisions.md`; they are not a product dashboard.
 Arrow keys move focus, Space toggles the current mark, `k`/`j`/`a`/`n` apply a
 verdict, `u` undoes, and Enter advances. Marks survive virtual-window changes
 inside the open selection. The user can judge a marked set together or sweep
-only the still-untriaged cards on the visible page before advancing. Saved
+the still-untriaged cards and cards with pending choices on the visible page before advancing. The 20px K/A/N card buttons stage a local choice with a pressed state; they do not write until Sweep. Tapping again clears the choice. On Sweep, pending choices override the dropdown verdict, including for previously judged cards. The mixed action saves and undoes as one step. See `BOOKMARK_SORTER_TECHDOC.md` in the repository root for the full contract. Saved
 expressions, proposal expressions and typed expressions all enter the same
 evaluator. The capture-gap button remains disabled while the test deployment
 has no image storage, and no capture request is made by the grid.

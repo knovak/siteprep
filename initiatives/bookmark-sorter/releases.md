@@ -3,6 +3,22 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-09-09 — ChatGPT Site — version 8
+
+<https://bookmark-sorter.ken-novak.chatgpt.site/>
+
+Released `7d862b9` · 7 commit(s) since the previous release · test last deployed 2026-09-09 at `7d862b9`.
+
+Changes since the previous release, in `initiatives/bookmark-sorter/work`:
+
+- Keep Sweep and paging controls visible on phones
+- Make pending verdict buttons clearly contrast with unselected buttons
+- Stage card verdict choices locally and save them together on sweep
+- Keep quick verdict and copy controls clear in dense grids
+- Enhance Bookmark Sorter timestamps, filters and card controls
+- Unwrap Google redirect and AMP links, and record a capture's post-redirect URL (#466)
+- Speed up Bookmark Sorter sweeps with database pagination and prefetching (#461)
+
 ## 2026-09-06 — ChatGPT Site — version 6
 
 <https://bookmark-sorter.ken-novak.chatgpt.site/>
