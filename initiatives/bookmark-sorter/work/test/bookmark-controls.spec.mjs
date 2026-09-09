@@ -76,16 +76,18 @@ test('single-card verdicts preserve other marks, timestamp/filter/undo persist, 
   const tags = await page.evaluate(id => window.__pileState.items.find(item => item.id === id).tags, firstId);
   expect(tags.filter(tag => tag.startsWith('updated_at'))).toHaveLength(1);
   expect(tags.find(tag => tag.startsWith('updated_at'))).toMatch(/^updated_at:\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
-  for (const size of [{width:1800,height:1000}, {width:430,height:932}]) {
+  for (const size of [{width:1800,height:1000}, {width:1600,height:900}, {width:430,height:932}]) {
     await page.setViewportSize(size);
+    if (size.width > 1100) await page.locator('#page-layout').selectOption('3x12');
     await expect(first.locator('.copy-title')).toBeVisible();
     await expect.poll(() => first.evaluate(card => {
       const mark = card.querySelector('.mark').getBoundingClientRect();
       const buttons = [...card.querySelectorAll('.card-verdict')].map(button => button.getBoundingClientRect());
-      const copy = card.querySelector('.copy-title').getBoundingClientRect();
+      const copyButton = card.querySelector('.copy-title');
+      const copy = copyButton.getBoundingClientRect();
       const heading = card.querySelector('h2').getBoundingClientRect();
-      return {below: buttons.every(box => box.top > mark.bottom), squares: buttons.every(box => box.width === box.height && box.width < mark.width), copyFits: copy.right <= heading.right + 1 && copy.bottom <= heading.bottom + 1};
-    })).toEqual({below:true,squares:true,copyFits:true});
+      return {copyHit: copyButton.contains(document.elementFromPoint(copy.x + copy.width / 2, copy.y + copy.height / 2)), below: buttons.every(box => box.top > mark.bottom), squares: buttons.every(box => box.width === box.height && box.width < mark.width), copyFits: copy.right <= heading.right + 1 && copy.bottom <= heading.bottom + 1};
+    })).toEqual({copyHit:true,below:true,squares:true,copyFits:true});
   }
   expect(errors).toEqual([]);
   await close();
