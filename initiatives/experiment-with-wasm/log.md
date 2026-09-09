@@ -76,3 +76,7 @@ Changed the former three-column row to fit Import, Online tools, Select and tag,
 ## 2026-09-09 — Release
 
 Released to production — Demo, `fcc6370`. 14 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
+
+## 2026-09-09 — Record lessons learned and go dormant
+
+Added a Lessons learned section to findings.md covering runtime speed on small data sets, the need to explicitly enable internet access, CORS blocking browser calls to some services, data persisting independently of code, and the difficulty of keeping a website and a WASM fork in sync. The demonstration and learning goals from wish.md are met; moved the initiative to dormant. The remaining todo items stay recorded for a future revisit.
