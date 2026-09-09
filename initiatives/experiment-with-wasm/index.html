@@ -43,7 +43,7 @@
     </div>
     <div class="card-content">
       <ul>
-        <li>Stage: <span class="tag">refining</span></li>
+        <li>Stage: <span class="tag">dormant</span></li>
         <li>Value: medium</li>
         <li>Last activity: today</li>
       </ul>
@@ -64,13 +64,11 @@
           <li>Expand live provider and station-time-zone checks across representative US and Canadian coasts</li>
         </ul></dd>
         <dt>Done</dt>
-        <dd><p>Both single-file applications support internet data and offline use. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website’s Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples.</p></dd>
-        <dt>Remaining work</dt>
-        <dd><p>Expand live provider and station-time-zone checks across representative US and Canadian coasts. Live NOAA, Photon and Microlink retrieval are verified; Canadian data worked in API probes but was blocked by browser-access rules in the live check, so its live browser availability remains unresolved.</p></dd>
+        <dd><p>Both single-file applications (Bookmark Sorter and Tide Here) support internet data alongside offline use and are published in the static demo. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website&#39;s Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples. findings.md now records the lessons the experiment set out to learn: WASM runtime speed on small data sets, the need to explicitly enable internet access, browser CORS blocking some services, data persisting independently of code, and the difficulty of keeping a website and a WASM fork in sync. The demonstration and learning goals in wish.md are met, and the initiative is now dormant.</p></dd>
         <dt>Optional later</dt>
-        <dd><p>Home Screen offline installation, larger-database persistence improvements and faster Tide Here startup remain optional improvements. These are separate from the completed online controls and existing embedded WASM engines.</p></dd>
+        <dd><p>Expanding live provider and station-time-zone checks across representative US and Canadian coasts, and verifying downloaded app use, persistence and recovery on a physical iPad, remain in the todo list for a future revisit. Home Screen offline installation, larger-database persistence improvements and faster Tide Here startup remain optional improvements from improvements.md. These are separate from the completed online controls and existing embedded WASM engines.</p></dd>
       </dl>
-      <p class="meta">The last four rows are a written summary of this initiative's own documents, written some time ago and now out of date (2026-09-09). Correct the document it summarises rather than the summary.</p>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-09-09). Correct the document it summarises rather than the summary.</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -85,9 +83,9 @@
       </ul>
       <ul class="currency">
         <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
-        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-differs">differs from main</span> — content is not main&#39;s, and the recorded commit cannot place it</li>
       </ul>
-      <p class="deployment-status">main is on both test and production · production is current</p>
+      <p class="deployment-status">test has main · released, and the released commit can no longer be placed</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-outputs">
