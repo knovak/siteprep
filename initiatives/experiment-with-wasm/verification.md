@@ -97,7 +97,7 @@ The explicit `node test/live-coasts.mjs <report.json>` collector opens the
 committed standalone file in Chromium and Firefox, submits public coordinates
 through Show tides, downloads the resulting forecast, and compares its UTC
 events against a separate direct provider response. It does not use fixtures,
-change an application or deploy a Site. The [machine-readable evidence](notes/live-coasts-20260909.json)
+change an application or deploy a Site. The [machine-readable evidence](https://github.com/knovak/siteprep/blob/15c0b77e8/initiatives/experiment-with-wasm/notes/live-coasts-20260909.json)
 records the bundle SHA-256, time, station, source URL, IANA zone and failures.
 
 All 18 journeys produced five coast-local days, correctly placed unique tide
