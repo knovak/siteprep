@@ -52,6 +52,12 @@
 <p>Reviewed all 48 entries against T8 and recorded per-entry findings in notes.md (editorial review). References are present; numerical evidence, confidence, quantity and geographic issues remain explicitly open. Dataset unchanged.</p>
 <h3>2026-09-09 — Re-baseline the goldens and run the T3-T7 browser suites</h3>
 <p>Restored current-bundle paths, pinned Python dependencies and refreshed eight macOS goldens. Core 535/535, independent browser 88/88 and cross-browser smoke 24/24 passed. notes.md (browser verification) distinguishes implemented coverage from remaining T6/T7 gates.</p>
+<h3>2026-09-09 — Fixed the flow visibility window</h3>
+<p>The user reported that a migration recorded as running from year A to year B only appeared on the map from A+1 through B+5. <code>flowEnvelope</code> in <code>lib/src/core.js</code> ramped the arc&#39;s opacity up over <code>RISE_YEARS</code> (3) after the start year and faded it back down over <code>FADE_YEARS</code> (5) after the end year, so the arc was invisible at the exact start year and stayed partly visible for five years past the end year. <code>flowEnvelope</code> now returns full opacity for the exact <code>[start, end]</code> range and zero outside it; <code>RISE_YEARS</code> is gone, and <code>FADE_YEARS</code> remains only for the unrelated camera-focus framing in <code>app.js</code> that shows a few years of context after a focused migration ends. The <code>&quot;rising&quot;</code>/<code>&quot;fading&quot;</code> phase branches in <code>app.js</code>&#39;s renderer, which no longer occur, were removed along with them. <code>lib/tests/test_core.mjs</code> was updated to assert the exact cutoff, and <code>work/index.html</code> was rebuilt from source; it is no longer byte-identical to <code>demos/world_migration_atlas/index.html</code>, so <code>release-rebuilt-source</code> now also carries this fix, on top of the trim already recorded in <code>decisions.md</code>. <code>node lib/tests/test_core.mjs</code> passes, 534 assertions, 0 failures.</p>
+<h3>2026-09-09 — Release</h3>
+<p>Released to production — Demo, <code>e567057</code>. <a href="https://knovak.github.io/siteprep/demos/world_migration_atlas/">https://knovak.github.io/siteprep/demos/world_migration_atlas/</a> See releases.md.</p>
+<h3>2026-09-09 — Release the rebuilt source after testing and explicit approval</h3>
+<p>Released to production 2026-09-09 (e567057); see releases.md.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
