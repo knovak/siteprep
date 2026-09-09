@@ -200,6 +200,23 @@ export function renderPilePage({isAdmin = false} = {}) {
     .tag-popover { position: fixed; z-index: 30; width: max-content; max-width: min(360px, calc(100vw - 16px)); max-height: min(300px, calc(100dvh - 16px)); overflow: auto; border: 1px solid var(--control-line); border-radius: 9px; padding: 8px 10px; color: var(--ink); background-color: var(--surface); box-shadow: 0 10px 32px var(--popover-shadow); cursor: text; font-size: .84rem; line-height: 1.45; user-select: text; white-space: pre-wrap; }
     .verdict-label { margin-top: 6px; color: var(--muted); font-size: .66rem; font-weight: 600; text-transform: uppercase; }
     .mark { position: absolute; top: 7px; right: 7px; width: 28px; height: 28px; border: 1px solid var(--control-line); border-radius: 50%; padding: 0; color: var(--ink); background-color: var(--surface); font-weight: 700; }
+    .card-verdicts { position: absolute; top: 40px; right: 9px; display: flex; flex-direction: column; gap: 4px; }
+    .card-verdict { width: 24px; height: 24px; min-height: 0; border: 1px solid var(--control-line); border-radius: 6px; padding: 0; color: var(--ink); background-color: var(--surface); font-size: 12px; font-weight: 600; }
+    .card-verdict[data-card-verdict="keeper"] { color: var(--green-ink); background-color: var(--green-bg); }
+    .card-verdict[data-card-verdict="archive"] { color: var(--blue-ink); background-color: var(--blue-bg); }
+    .card-verdict[data-card-verdict="needs-more-time"] { color: var(--amber-ink); background-color: var(--amber-bg); }
+    .card-verdict[aria-pressed="true"] { border-color: currentColor; box-shadow: inset 0 0 0 1px currentColor; }
+    .card-verdict:focus-visible, .copy-title:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+    .card-verdict:disabled { opacity: .5; cursor: wait; }
+    .bookmark-card h2 { display: flex; align-items: flex-start; }
+    .title-text { display: -webkit-box; min-width: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
+    :root[data-grid-rows="3"] .title-text { -webkit-line-clamp: 2; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .title-text { -webkit-line-clamp: unset; }
+    .copy-title { flex: 0 0 1em; position: relative; display: inline-block; vertical-align: -.1em; width: 1em; height: 1em; min-height: 0; margin-left: .3em; border: 0; padding: 0; color: var(--muted); background: transparent; font: inherit; }
+    .copy-title .copy-icon::before, .copy-title .copy-icon::after { width: .5em; height: .55em; border-width: 1px; border-radius: 1px; }
+    .copy-title .copy-icon::before { top: .1em; left: .1em; }
+    .copy-title .copy-icon::after { top: .3em; left: .3em; }
+    .copy-title:hover, .copy-title[data-copied="true"] { color: var(--link); }
     .mark[aria-pressed="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
     .copy-url { position: absolute; top: 7px; left: 7px; width: 28px; height: 28px; border: 1px solid var(--control-line); border-radius: 50%; padding: 0; color: var(--ink); background-color: var(--surface); }
     .copy-url:hover, .copy-url:focus-visible { border-color: var(--focus); color: var(--link); }
@@ -286,6 +303,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       <h3>Card and action buttons</h3>
       <ul>
         <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs-time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
+        <li><strong>K / A / N</strong> below each card’s + immediately sets Keep, Archive, or Needs-time for that card, even when other cards are marked. The overlapping squares after the title copy its text.</li>
         <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
         <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page. Use its arrow to choose <strong>Sweep all selected</strong>, which applies the verdict to the entire open selection after showing a confirmation count.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
@@ -300,6 +318,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       </ul>
       <h3>Selection expressions</h3>
       <p>In <strong>Select and tag</strong>, the <strong>Verdicts</strong> checkboxes filter every selection. All five start checked. Changing them immediately filters the open selection and refreshes automatic proposal counts; proposals with no matches disappear. Clearing every checkbox selects nothing. With only Keep and Needs-time checked, an expression is treated as <code>(verdict:keep or verdict:needs-time) and (your expression)</code>. Saving or exporting the current selection includes this filter.</p>
+      <p>Adding tags or setting a verdict replaces the item’s <code>updated_at:</code> tag with the current UTC time, in the same <code>YYYY-MM-DDTHH:mm:ss</code> format as <code>tag_run:</code>. Undo restores its previous timestamp.</p>
       <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. Titles, folder paths, tags, and source names use lowercase search keys: punctuation, symbols, and spaces become a single dash. A tag's prefix colon remains, so <code>Topic:Modern Art</code> becomes <code>topic:modern-art</code>. A trailing <code>*</code> matches the beginning of a normalized value; surrounding a value with <code>*</code> matches it anywhere.</p>
       <ul>
         <li><code>site:example.com</code> — items from one site.</li>
@@ -308,6 +327,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><code>folder:*modern-art*</code> — items whose normalized bookmark folder path contains that text.</li>
         <li><code>topic:*modern-art*</code> — items whose normalized tag value contains that text; ordinary tags need no extra <code>tag:</code> prefix.</li>
         <li><code>in:2026-08-19</code> — items imported on that date.</li>
+        <li><code>tag_run:&gt;2026-09</code> or <code>updated_at:&lt;2027</code> — compare the original value after a tag’s colon as a string, using strict &gt; or &lt;. Partial dates are allowed. Any tag prefix supports this syntax; <code>updated_at*</code> finds timestamp tags.</li>
         <li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, or <code>verdict:untriaged</code> — current verdict.</li>
         <li><code>image:present</code>, <code>image:failed</code>, or <code>image:none</code> — stored picture status.</li>
         <li><code>collection:&lt;id&gt;</code> — collection scope; the interface adds the current collection automatically.</li>
@@ -535,6 +555,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       setFocus(current - state.offset);
     }
     function updateProgress() {
+      for (const button of elements.grid.querySelectorAll('.card-verdict')) button.disabled = state.sweeping || state.loading;
       elements.count.textContent = state.collectionTotal.toLocaleString();
       elements.backlog.textContent = state.backlog.toLocaleString();
       const judged = Number(state.session?.items_judged || 0);
@@ -610,6 +631,21 @@ export function renderPilePage({isAdmin = false} = {}) {
         elements.tagPopover.style.top = Math.max(margin, top) + 'px';
       });
     }
+    function renderTags(values) {
+      const tags = document.createElement('div');
+      tags.className = 'tags';
+      const allTags = values || [];
+      for (const value of allTags.slice(0, 3)) {
+        const tag = addText(tags, 'span', 'tag', value);
+        tag.tabIndex = 0;
+        tag.setAttribute('aria-label', value + '. All tags: ' + allTags.join(', '));
+        tag.addEventListener('pointerenter', () => showTagPopover(tag, allTags));
+        tag.addEventListener('pointerleave', () => hideTagPopover());
+        tag.addEventListener('focus', () => showTagPopover(tag, allTags));
+        tag.addEventListener('blur', () => hideTagPopover());
+      }
+      return tags;
+    }
     function renderCard(item, index) {
       const card = document.createElement('article');
       card.id = 'item-' + item.id;
@@ -628,27 +664,34 @@ export function renderPilePage({isAdmin = false} = {}) {
       card.append(capture);
       addText(card, 'span', 'site', host(item.url));
       const heading = document.createElement('h2');
+      heading.setAttribute('aria-label', item.title);
+      const titleText = document.createElement('span'); titleText.className = 'title-text';
       const href = externalUrl(item.url);
       if (href) {
         const titleLink = document.createElement('a');
         titleLink.href = href; titleLink.target = '_blank'; titleLink.rel = 'noopener noreferrer'; titleLink.textContent = item.title;
         titleLink.addEventListener('click', event => event.stopPropagation());
-        heading.append(titleLink);
-      } else heading.textContent = item.title;
+        titleText.append(titleLink);
+      } else titleText.textContent = item.title;
+      heading.append(titleText);
+      const copyTitle = document.createElement('button');
+      copyTitle.type = 'button'; copyTitle.className = 'copy-title'; copyTitle.title = 'Copy title';
+      copyTitle.setAttribute('aria-label', 'Copy title for ' + item.title);
+      const titleIcon = document.createElement('span'); titleIcon.className = 'copy-icon'; titleIcon.setAttribute('aria-hidden', 'true');
+      copyTitle.append(titleIcon);
+      copyTitle.addEventListener('click', async event => {
+        event.stopPropagation();
+        try {
+          await navigator.clipboard.writeText(item.title);
+          copyTitle.dataset.copied = 'true';
+          elements.status.textContent = 'Copied title: ' + item.title;
+          setTimeout(() => { delete copyTitle.dataset.copied; }, 1200);
+        } catch { elements.status.textContent = 'Could not copy this title.'; }
+      });
+      heading.append(copyTitle);
       card.append(heading);
       if (item.note) addText(card, 'p', 'note', item.note);
-      const tags = document.createElement('div');
-      tags.className = 'tags';
-      const allTags = item.tags || [];
-      for (const value of allTags.slice(0, 3)) {
-        const tag = addText(tags, 'span', 'tag', value);
-        tag.tabIndex = 0;
-        tag.setAttribute('aria-label', value + '. All tags: ' + allTags.join(', '));
-        tag.addEventListener('pointerenter', () => showTagPopover(tag, allTags));
-        tag.addEventListener('pointerleave', () => hideTagPopover());
-        tag.addEventListener('focus', () => showTagPopover(tag, allTags));
-        tag.addEventListener('blur', () => hideTagPopover());
-      }
+      const tags = renderTags(item.tags);
       card.append(tags);
       addText(card, 'span', 'verdict-label', verdictText(item.verdict));
       const mark = document.createElement('button');
@@ -656,6 +699,22 @@ export function renderPilePage({isAdmin = false} = {}) {
       mark.setAttribute('aria-label', 'Mark ' + item.title); mark.setAttribute('aria-pressed', String(state.marked.has(item.id)));
       mark.addEventListener('click', event => { event.stopPropagation(); toggleMark(index); });
       card.append(mark);
+      const verdicts = document.createElement('div'); verdicts.className = 'card-verdicts';
+      for (const [letter, value] of [['K', 'keeper'], ['A', 'archive'], ['N', 'needs-more-time']]) {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'card-verdict'; button.textContent = letter;
+        button.dataset.cardVerdict = value;
+        button.title = verdictText(value);
+        button.setAttribute('aria-label', verdictText(value) + ': ' + item.title);
+        button.setAttribute('aria-pressed', String(item.verdict === value));
+        button.disabled = state.sweeping || state.loading;
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          applyVerdict(value, item.id).catch(error => { elements.status.textContent = error.message; });
+        });
+        verdicts.append(button);
+      }
+      card.append(verdicts);
       const copy = document.createElement('button');
       copy.type = 'button'; copy.className = 'copy-url'; copy.title = 'Copy URL';
       copy.setAttribute('aria-label', 'Copy URL for ' + item.title);
@@ -1123,26 +1182,45 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function moveFocus(delta) { if (state.total) await focusAbsolute(state.offset + state.focused + delta); }
     function patchChanges(changes) {
       for (const change of changes) {
-        const item = state.items.find(candidate => candidate.id === change.item_id);
-        if (item) { item.verdict = change.verdict; item.verdict_at = change.verdict_at; }
+        const index = state.items.findIndex(candidate => candidate.id === change.item_id);
+        if (index < 0) continue;
+        const item = state.items[index];
+        if (Object.hasOwn(change, 'verdict')) { item.verdict = change.verdict; item.verdict_at = change.verdict_at; }
+        item.tags = [...new Set([...(item.tags || []).filter(tag => !(change.removed_tags || []).includes(tag)), ...(change.added_tags || [])])].sort();
         const card = elements.grid.querySelector('[data-item-id="' + CSS.escape(change.item_id) + '"]');
-        if (card) { card.dataset.verdict = change.verdict || ''; card.querySelector('.verdict-label').textContent = verdictText(change.verdict); }
+        if (card) {
+          card.dataset.verdict = item.verdict || '';
+          card.querySelector('.verdict-label').textContent = verdictText(item.verdict);
+          for (const button of card.querySelectorAll('.card-verdict')) button.setAttribute('aria-pressed', String(button.dataset.cardVerdict === item.verdict));
+          card.querySelector('.tags').replaceWith(renderTags(item.tags));
+        }
       }
     }
-    async function applyVerdict(verdict) {
-      if (state.sweeping) return;
-      if (!state.total) return;
-      await startSession();
+    async function applyVerdict(verdict, singleItemId = null) {
+      if (state.sweeping || state.loading || !state.total) return;
+      const context = windowContext(), requestId = state.windowRequest;
       const focused = state.items[state.focused];
-      const usedMarkedSet = state.marked.size > 0;
-      const ids = usedMarkedSet ? [...state.marked] : focused ? [focused.id] : [];
+      const usedMarkedSet = !singleItemId && state.marked.size > 0;
+      const ids = singleItemId ? [singleItemId] : usedMarkedSet ? [...state.marked] : focused ? [focused.id] : [];
       if (!ids.length) return;
-      const data = await api('/api/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id, item_ids: ids, verdict})});
-      patchChanges(data.changes); state.backlog = data.backlog; state.session = data.session;
-      elements.status.textContent = verdictText(verdict) + ' applied to ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + '.';
-      if (usedMarkedSet) clearMarks(); else updateProgress();
-      await refreshSelectionCounts();
-      await moveFocus(1);
+      state.sweeping = true; updateProgress();
+      try {
+        await startSession();
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        const data = await api('/api/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id, item_ids: ids, verdict})});
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        patchChanges(data.changes); state.backlog = data.backlog; state.session = data.session;
+        elements.status.textContent = verdictText(verdict) + ' applied to ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + '.';
+        if (usedMarkedSet) clearMarks(); else updateProgress();
+        if (singleItemId) {
+          if (state.expression) await loadWindow(state.offset, {focusGrid: false});
+          else await refreshSelectionCounts();
+          await loadProposals();
+        } else {
+          await refreshSelectionCounts();
+          await moveFocus(1);
+        }
+      } finally { state.sweeping = false; updateProgress(); }
     }
     async function undo() {
       if (state.sweeping || !state.session || state.session.ended_at) return;
@@ -1534,6 +1612,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     document.addEventListener('keydown', event => {
       if (!elements.helpPanel.hidden) { if (event.key === 'Escape') { event.preventDefault(); setHelp(false); } return; }
       if (event.target.matches('input, textarea, select')) return;
+      if (event.target.closest('button, a') && (event.key === 'Enter' || event.key === ' ')) return;
       const verdict = {k: 'keeper', j: 'junk', a: 'archive', n: 'needs-more-time'}[event.key.toLowerCase()];
       if (verdict) { event.preventDefault(); applyVerdict(verdict).catch(error => { elements.status.textContent = error.message; }); return; }
       if (event.key === ' ') { event.preventDefault(); toggleMark(); return; }

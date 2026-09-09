@@ -24,6 +24,10 @@ Original bookmark JSON import/export keeps the `bookmark-sorter/v1` contract. A 
 
 Snapshot persistence is designed for modest personal collections. Every action copies the entire database, including pictures, so memory and save cost increase with database size. Browser storage can be evicted and varies for file origins; explicit full backups are essential for transfer and recovery. Chromium covers the complete direct-file suite. The new online journeys also pass Playwright Firefox and WebKit; physical Safari/iPad acceptance remains separate.
 
+## Bookmark triage updates
+
+Bookmark cards include single-item K/A/N verdict buttons and a title-copy control. Manual tag additions and verdict assignments maintain one `updated_at:YYYY-MM-DDTHH:mm:ss` tag; Undo restores its previous value. The selection grammar supports string comparisons such as `tag_run:>2026-09` and `updated_at:<2027`, alongside `updated_at*` prefix matching. `BOOKMARK_SORTER_TECHDOC.md` defines the shared hosted/standalone behavior and test coverage. The standalone files remain locally vendored and require no backend or schema migration.
+
 ## Build and tests
 
 The initiative package pins sql.js and esbuild in its own lockfile. `npm ci` at the root supplies the repository's pinned Playwright; `npm ci` in `work/` installs its build/runtime packages. `npm run build` there uses `scripts/build.mjs` to bundle source, CSS, schema and the WASM bytes into `dist/index.html`, alongside the sql.js license and a checksum manifest. The license is also embedded in the HTML for single-file redistribution. The distribution is intentionally committed so it can be opened without a compiler, package manager or server. SQLite is public domain; sql.js is MIT licensed.

@@ -80,3 +80,7 @@ Released to production — Demo, `fcc6370`. 14 commit(s) since the previous rele
 ## 2026-09-09 — Record lessons learned and go dormant
 
 Added a Lessons learned section to findings.md covering runtime speed on small data sets, the need to explicitly enable internet access, CORS blocking browser calls to some services, data persisting independently of code, and the difficulty of keeping a website and a WASM fork in sync. The demonstration and learning goals from wish.md are met; moved the initiative to dormant. The remaining todo items stay recorded for a future revisit.
+
+## 2026-09-09 — Timestamp tags, string comparisons and per-bookmark controls
+
+Added a single refreshed `updated_at:` tag for each manual tag-add or verdict action, matching the `tag_run` timestamp format and preserving exact Undo. Added generic strict string comparisons in selections, including partial dates. Each bookmark now offers K/A/N quick verdict buttons below + and a small title-copy control after its title. The same behavior is maintained in the hosted and standalone applications. Tests cover SQL/WASM membership, bulk updates, timestamp replacement, undo, clipboard payloads and individual controls with other items marked. Production publication remains a separate release.

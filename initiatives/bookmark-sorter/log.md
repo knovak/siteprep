@@ -701,3 +701,7 @@ save/retry, delayed responses and three sweeps covering 90 items exactly once.
 These are local fixtures, not a hosted latency measurement. The waiting
 production-source reconciliation from deploy-record/bookmark-sorter is carried
 with this substantive change. No Site deployment is part of this update.
+
+## 2026-09-09 — Timestamp tags, string comparisons and per-bookmark controls
+
+Added a single refreshed `updated_at:` tag for each manual tag-add or verdict action, matching the `tag_run` timestamp format and preserving exact Undo. Added generic strict string comparisons in selections, including partial dates. Each bookmark now offers K/A/N quick verdict buttons below + and a small title-copy control after its title. The same behavior is maintained in the hosted and standalone applications. Tests cover SQL/WASM membership, bulk updates, timestamp replacement, undo, clipboard payloads and individual controls with other items marked. Production publication remains a separate release.

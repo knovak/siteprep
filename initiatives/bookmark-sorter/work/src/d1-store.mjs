@@ -1,3 +1,4 @@
+import {isUpdatedTag, updatedTag} from './updated-tag.mjs';
 import {compileSelectionSql, selectionDictionaries, validateCursor} from './selection-sql.mjs';
 
 function cardItem({tags_json, capture_image_ref, capture_source, capture_state, capture_error_tag, capture_page_title, capture_description, capture_displayable, ...item}, collectionId) {
@@ -870,6 +871,31 @@ export class D1BookmarkStore {
     };
   }
 
+  async updatedTagsFor(collectionId, ids) {
+    const existing = new Map(ids.map(id => [id, []]));
+    for (const batch of chunks(ids, d1ChunkSize(this.batchSize, 4))) {
+      const placeholders = batch.map(() => '?').join(', ');
+      const rows = await this.db.prepare(
+        `SELECT i.id, t.tag FROM items i LEFT JOIN tags t ON t.item_id = i.id
+         WHERE i.collection_id = ? AND i.id IN (${placeholders})`,
+      ).bind(collectionId, ...batch).all();
+      for (const row of rows.results ?? []) if (isUpdatedTag(row.tag)) existing.get(row.id).push(row.tag);
+    }
+    return existing;
+  }
+
+  updatedTagStatements(collectionId, ids, stamp) {
+    return chunks(ids, d1ChunkSize(this.batchSize, 4)).flatMap(batch => {
+      const placeholders = batch.map(() => '?').join(', ');
+      return [
+        this.db.prepare(`DELETE FROM tags WHERE substr(tag, 1, 10) = 'updated_at' AND item_id IN
+          (SELECT id FROM items WHERE collection_id = ? AND id IN (${placeholders}))`).bind(collectionId, ...batch),
+        this.db.prepare(`INSERT OR IGNORE INTO tags (item_id, tag)
+          SELECT id, ? FROM items WHERE collection_id = ? AND id IN (${placeholders})`).bind(stamp, collectionId, ...batch),
+      ];
+    });
+  }
+
   async applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
     await this.assertCollectionWritable(collectionId);
     if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
@@ -878,7 +904,7 @@ export class D1BookmarkStore {
     const ids = [...new Set(itemIds)];
     if (!ids.length) throw new Error('At least one item is required');
     const found = [];
-    for (const batch of chunks(ids, this.batchSize)) {
+    for (const batch of chunks(ids, d1ChunkSize(this.batchSize, 4))) {
       const placeholders = batch.map(() => '?').join(', ');
       const result = await this.db.prepare(
         `SELECT id, verdict, verdict_at FROM items
@@ -890,13 +916,15 @@ export class D1BookmarkStore {
     for (const id of ids) {
       if (!byId.has(id)) throw new Error(`Unknown item in collection: ${id}`);
     }
-    const changes = ids
-      .map(id => byId.get(id))
-      .filter(item => item.verdict !== verdict)
-      .map(item => ({item_id: item.id, verdict: item.verdict, verdict_at: item.verdict_at}));
+    const stamp = updatedTag(at);
+    const previous = await this.updatedTagsFor(collectionId, ids);
+    const changes = ids.map(id => byId.get(id)).map(item => ({
+      item_id: item.id, verdict: item.verdict, verdict_at: item.verdict_at,
+      previous_updated_tags: previous.get(item.id), updated_tag: stamp,
+    }));
     if (changes.length) {
-      const statements = [];
-      for (const batch of chunks(changes.map(change => change.item_id), this.batchSize)) {
+      const statements = this.updatedTagStatements(collectionId, ids, stamp);
+      for (const batch of chunks(changes.map(change => change.item_id), d1ChunkSize(this.batchSize, 4))) {
         const placeholders = batch.map(() => '?').join(', ');
         statements.push(this.db.prepare(
           `UPDATE items SET verdict = ?, verdict_at = ?
@@ -914,7 +942,8 @@ export class D1BookmarkStore {
       await this.db.batch(statements);
     }
     return {
-      changes: changes.map(change => ({item_id: change.item_id, verdict, verdict_at: at})),
+      changes: changes.map(change => ({item_id: change.item_id, verdict, verdict_at: at,
+        added_tags: [stamp], removed_tags: change.previous_updated_tags})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };
@@ -931,7 +960,7 @@ export class D1BookmarkStore {
 
     const found = new Set();
     const existing = new Map(ids.map(id => [id, new Set()]));
-    for (const batch of chunks(ids, this.batchSize)) {
+    for (const batch of chunks(ids, d1ChunkSize(this.batchSize, 4))) {
       const placeholders = batch.map(() => '?').join(', ');
       const rows = await this.db.prepare(
         `SELECT i.id, t.tag FROM items i LEFT JOIN tags t ON t.item_id = i.id
@@ -944,12 +973,16 @@ export class D1BookmarkStore {
     }
     for (const id of ids) if (!found.has(id)) throw new Error(`Unknown item in collection: ${id}`);
 
-    const changes = ids.map(id => ({item_id: id, tags: wanted.filter(tag => !existing.get(id).has(tag))})).filter(change => change.tags.length);
+    const stamp = updatedTag(at);
+    const changes = ids.map(id => ({item_id: id,
+      tags: wanted.filter(tag => !isUpdatedTag(tag) && !existing.get(id).has(tag)),
+      previous_updated_tags: [...existing.get(id)].filter(isUpdatedTag), updated_tag: stamp,
+    }));
     if (changes.length) {
       const changedIds = changes.map(change => change.item_id);
-      const statements = [];
-      for (const tag of wanted) {
-        for (const batch of chunks(changedIds.filter(id => !existing.get(id).has(tag)), this.batchSize)) {
+      const statements = this.updatedTagStatements(collectionId, changedIds, stamp);
+      for (const tag of wanted.filter(tag => !isUpdatedTag(tag))) {
+        for (const batch of chunks(changedIds.filter(id => !existing.get(id).has(tag)), d1ChunkSize(this.batchSize, 4))) {
           if (!batch.length) continue;
           const placeholders = batch.map(() => '?').join(', ');
           statements.push(this.db.prepare(
@@ -967,7 +1000,8 @@ export class D1BookmarkStore {
     }
     return {
       kind: 'tag-apply',
-      changes: changes.map(change => ({item_id: change.item_id, added_tags: change.tags})),
+      changes: changes.map(change => ({item_id: change.item_id, added_tags: [...change.tags, stamp],
+        removed_tags: change.previous_updated_tags})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };
@@ -1048,6 +1082,15 @@ export class D1BookmarkStore {
         : changes.map(change => this.db.prepare(
           'UPDATE items SET verdict = ?, verdict_at = ? WHERE id = ? AND collection_id = ?',
         ).bind(change.verdict, change.verdict_at, change.item_id, collectionId));
+    // Old actions have no timestamp metadata and retain their original undo behavior.
+    for (const change of changes) {
+      if (!change.updated_tag) continue;
+      statements.push(this.db.prepare('DELETE FROM tags WHERE item_id = ? AND tag = ?').bind(change.item_id, change.updated_tag));
+      for (const tag of change.previous_updated_tags || []) statements.push(this.db.prepare(
+        `INSERT OR IGNORE INTO tags (item_id, tag)
+         SELECT id, ? FROM items WHERE collection_id = ? AND id = ?`,
+      ).bind(tag, collectionId, change.item_id));
+    }
     statements.push(this.db.prepare(
       'UPDATE triage_actions SET undone_at = ? WHERE id = ? AND collection_id = ?',
     ).bind(at, action.id, collectionId));
@@ -1062,10 +1105,10 @@ export class D1BookmarkStore {
     return {
       kind: action.action_kind,
       changes: action.action_kind === 'tag-apply'
-        ? changes.map(change => ({item_id: change.item_id, removed_tags: change.tags}))
+        ? changes.map(change => ({item_id: change.item_id, removed_tags: [...change.tags, ...(change.updated_tag ? [change.updated_tag] : [])], added_tags: change.previous_updated_tags || []}))
         : action.action_kind === 'tag-remove'
           ? changes.map(change => ({item_id: change.item_id, added_tags: change.tags}))
-          : changes,
+          : changes.map(change => ({...change, added_tags: change.previous_updated_tags || [], removed_tags: change.updated_tag ? [change.updated_tag] : []})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };
