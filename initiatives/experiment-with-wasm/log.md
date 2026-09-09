@@ -64,3 +64,7 @@ Removed the date row and made coast-local today the only UI date. Matched the ho
 ## 2026-09-08 — Make the Bureau build reproducible
 
 The website-parity changes on PR #477 already remove the date controls, select San Diego automatically, and use Mooloolaba Bureau predictions for Maroochydore. Its distribution check exposed differing gzip output across local and CI zlib versions. Committed the prepared Bureau snapshot, verified its checksum and complete content against the hosted source on every build, and made compression regeneration an explicit refresh operation. All 11 Node tests and 14 Chromium journeys pass, now exercising the committed Bureau data. The existing application HTML checksum is preserved. Real searches on the branch preview confirm NOAA Broadway for San Diego and BoM Mooloolaba for Maroochydore, with no place chooser or date control. The tide-source comparison collector now accepts the removed date control as well as older released files.
+
+## 2026-09-08 — Put source details below the forecast
+
+Moved the provider status sentence and Data sources and station options section immediately after the safety notice, ahead of the nearby-model chooser and forecast download. Source and cancellation controls stay available before a forecast is displayed.

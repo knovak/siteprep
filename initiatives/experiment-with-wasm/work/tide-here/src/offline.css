@@ -22,6 +22,7 @@
 .history-entry { border-top: 1px solid var(--line); padding: .8rem 0; }
 #software-licences { white-space: pre-wrap; max-height: 25rem; overflow: auto; font-size: .75rem; }
 #download-forecast { margin-top: .5rem; }
+#result[hidden] ~ #chooser, #result[hidden] ~ #download-forecast { display: none; }
 [hidden] { display: none !important; }
 @media(max-width:600px) { .place-list { grid-template-columns: 1fr; } .identity-card { display: block; } .file-button { flex-wrap:wrap; } }
 

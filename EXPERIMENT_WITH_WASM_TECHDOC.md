@@ -84,4 +84,6 @@ The First day input and Today button are removed. Every entry point calculates f
 
 The `compare-tide-sources` app collector clears the former date control only when it exists, so the same comparison workflow supports both released and preview app versions.
 
+The provider status and Data sources and station options panel follow the forecast's safety notice. They remain outside the conditionally hidden forecast so cancellation, source selection and ambiguous-station choices are available before a forecast loads. The nearby-model chooser and forecast download follow these controls and remain hidden whenever the forecast is hidden.
+
 Embedded gzip data streams directly from Uint8Array memory through DecompressionStream, avoiding WebKit’s Blob I/O failure after connectivity is disabled. The Bureau browser test clears saved data, reloads the file, disables connectivity and then loads its annual tables for the first time, so a warm dataset or saved response cannot mask that failure.

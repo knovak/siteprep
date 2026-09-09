@@ -20,6 +20,15 @@
     <div class="search-row"><input id="place-input" name="place" placeholder="Half Moon Bay, Galway, Cooktown…" required autocomplete="off" aria-describedby="search-help"><button id="show-selection" disabled>Show tides</button><button type="button" id="show-here" class="secondary" disabled>Show here</button></div>
     <p id="search-help" class="form-help">Enter a place, beach, address or coordinates. Show tides searches online and loads official predictions where available; the included catalogue and model work as fallbacks.</p>
   </form>
+  <section id="place-choices" class="panel" hidden aria-label="Matching places"><h2>Choose a place</h2><div id="place-list" class="place-list"></div></section>
+  <section id="state-panel" class="panel state-panel" role="status" tabindex="-1" hidden><h2 id="state-title"></h2><p id="state-message"></p></section>
+  <section id="result" hidden aria-label="Five-day tide forecast" aria-busy="false">
+    <div class="identity-card"><div><p class="eyebrow">Your coast</p><h2 id="coast-name"></h2><p id="selected-point"></p></div><div><p id="zone-name"></p><span class="model-badge">Calculated here · FES2022 model</span></div></div>
+    <p id="forecast-note" class="form-help"></p><p><a id="source-link" target="_blank" rel="noreferrer" hidden></a> <button id="refresh-official" class="secondary" type="button" hidden>Refresh official predictions</button></p>
+    <details id="bureau-source" class="form-help" hidden><summary>Bureau source and conditions</summary><p id="bureau-attribution"></p><p id="bureau-disclaimer"></p></details>
+    <div id="day-cards" class="day-cards"></div>
+    <p class="safety-line">Approximate tides for exploration. Not for navigation or safety decisions.</p>
+  </section>
   <div class="online-progress"><p id="online-status" role="status"></p><button id="cancel-online" class="secondary" type="button" disabled>Cancel</button></div>
   <details class="panel" id="online-panel">
     <summary>Data sources and station options</summary>
@@ -31,17 +40,8 @@
     <p id="official-status" role="status"></p><div id="official-stations" class="place-list"></div>
     <details><summary>Sources and saved responses</summary><p><a href="https://github.com/komoot/photon" target="_blank" rel="noreferrer">Photon</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors, ODbL</a> · <a href="https://tidesandcurrents.noaa.gov/disclaimers.html" target="_blank" rel="noreferrer">NOAA conditions</a> · <a href="https://www.tides.gc.ca/en/licence-agreement" target="_blank" rel="noreferrer">CHS licence</a></p><p>Public services can be unavailable or rate limited. Canadian requests may be blocked by browser-access rules; in that case the app explains the failure and the local model remains available. Station lists and searches are saved for seven days; predictions for six hours. Older saved predictions are labelled when a live request fails. Bureau stations retain their published IANA time zones. Other station time zones use the nearby bundled coastline; UTC is used where no local assignment is available.</p><button id="clear-online-cache" class="secondary" type="button">Clear saved online responses</button></details>
   </details>
-  <section id="place-choices" class="panel" hidden aria-label="Matching places"><h2>Choose a place</h2><div id="place-list" class="place-list"></div></section>
-  <section id="state-panel" class="panel state-panel" role="status" tabindex="-1" hidden><h2 id="state-title"></h2><p id="state-message"></p></section>
-  <section id="result" hidden aria-label="Five-day tide forecast" aria-busy="false">
-    <div class="identity-card"><div><p class="eyebrow">Your coast</p><h2 id="coast-name"></h2><p id="selected-point"></p></div><div><p id="zone-name"></p><span class="model-badge">Calculated here · FES2022 model</span></div></div>
-    <p id="forecast-note" class="form-help"></p><p><a id="source-link" target="_blank" rel="noreferrer" hidden></a> <button id="refresh-official" class="secondary" type="button" hidden>Refresh official predictions</button></p>
-    <details id="bureau-source" class="form-help" hidden><summary>Bureau source and conditions</summary><p id="bureau-attribution"></p><p id="bureau-disclaimer"></p></details>
-    <div id="day-cards" class="day-cards"></div>
-    <p class="safety-line">Approximate tides for exploration. Not for navigation or safety decisions.</p>
-    <details id="chooser" class="panel"><summary>Choose another nearby model point</summary><p>Closest does not always mean the same bay or harbour. Check the coordinates and choose a point that fits your coast. Only points within 40 km are shown.</p><div id="candidate-list" class="candidate-list"></div></details>
-    <button id="download-forecast" class="secondary" type="button">Download this forecast</button>
-  </section>
+  <details id="chooser" class="panel"><summary>Choose another nearby model point</summary><p>Closest does not always mean the same bay or harbour. Check the coordinates and choose a point that fits your coast. Only points within 40 km are shown.</p><div id="candidate-list" class="candidate-list"></div></details>
+  <button id="download-forecast" class="secondary" type="button">Download this forecast</button>
   <details class="panel" id="about"><summary>What travels with this file?</summary>
     <p><strong>The entire tide model used here.</strong> All 65,203 coastal points and the place catalogue are embedded in this HTML file. Clearing browser storage does not remove them. The model calculates dates as needed; it is not a table that runs out at the end of the year.</p>
     <p>Official NOAA, Canadian and Australian station predictions are preferred when available, with their own labelled height datums. The included FES2022 model supplies the worldwide fallback. Inland locations, unresolved harbours, and coasts with no model point within 40 km return a coverage message.</p>
