@@ -19,6 +19,16 @@ Changes since the previous release, in `initiatives/bookmark-sorter/work`:
 - Unwrap Google redirect and AMP links, and record a capture's post-redirect URL (#466)
 - Speed up Bookmark Sorter sweeps with database pagination and prefetching (#461)
 
+## 2026-09-07 — ChatGPT Site — version 7
+
+<https://bookmark-sorter.ken-novak.chatgpt.site/>
+
+Released `199fca9` · 1 commit(s) since the previous release · test last deployed 2026-09-07 at `199fca9`.
+
+Changes since the previous release, in `initiatives/bookmark-sorter/work`:
+
+- Speed up Bookmark Sorter sweeps with database pagination and prefetching (#461)
+
 ## 2026-09-06 — ChatGPT Site — version 6
 
 <https://bookmark-sorter.ken-novak.chatgpt.site/>
