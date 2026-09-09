@@ -713,3 +713,29 @@ Changed K/A/N to local pending choices so taps never wait for a database save. B
 ## 2026-09-09 — Release
 
 Released to production — ChatGPT Site, version 8, `7d862b9`. 7 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+## 2026-09-07 — Release
+
+Released to production — ChatGPT Site, version 7, `199fca9`. 1 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.
+
+Deployment verification: test version 39 succeeded at
+2026-09-07T07:24:26.505348Z and production version 7 succeeded at
+2026-09-07T07:25:47.453993Z. Both replacements contain the 74 tracked application
+files from merged source `199fca9cffe22e4729e3f5ffdf25e689cbef1aa2`, with only
+the production project ID changed. Sites source commits are
+`a74c732666b19309c6470b4a308fd83f68018249` (test) and
+`7e17079a11be3f9846043328714f2d868242a189` (production). Each archive contains
+64 built files (1,443,840 bytes), including the pagination index migration.
+Both application builds and all 69 application tests passed.
+
+Authenticated live checks passed for 3×12 Next/Previous paging, including
+positions 1–36 and 37–72. Test retained 1,453 bookmarks / 1,374 untriaged.
+Production retained Test1 at 5,562 / 5,530 and full1 at 9,115 / 8,841. No verdicts
+were changed during these checks. Anonymous entry still returned HTTP 200 with
+Sign in with ChatGPT on both Sites; existing application authorization and
+D1/R2 bindings were preserved. Local browser tests cover sweep writes and
+prefetch reuse; these live checks are not a sweep latency benchmark.
+
+## 2026-09-09 — Offer confirmed URL replacements from recorded final_url values, including a merge when the destination is already in the pile
+
+Review #472: user declined the redirect implementation; preserved confirmed replacement/duplicate-merge intent as an optional notes.md entry, withdrew application changes, and retained dormant with no current work.
