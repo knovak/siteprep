@@ -14,6 +14,8 @@
 
 DOM rendering, HTML/JSON parsing, Unicode normalization, expression compilation, proposal grouping and storage plumbing remain JavaScript. SQLite's native engine inside WASM performs the database work. This boundary is deliberate and is described to the user.
 
+The Import, Online tools, Select and tag, and Export summaries share four columns. Desktop expansion gives the selected tool the remaining width. At tablet and phone widths, the summaries stay in one row and the open form uses the full row below; native details and `::details-content` use `display: contents` to share the grid. Phone column proportions preserve the longer labels, with tighter padding on the narrowest screens. All four tools participate in the same one-open-panel behavior, including Online tools.
+
 ## Database and import boundaries
 
 `schema.sql` is the ordered original SQL migration sequence with user allowlist migrations omitted and schema version 1. No real identities or bookmark data are copied. The full database format carries an application ID, `BSW1`. Restore checks that ID, version, the exact table/index schema (rejecting added triggers/views), SQLite integrity/foreign keys, valid absolute bookmark URLs, and allowed inline raster images before replacing state. A failed restore leaves the current database intact.

@@ -68,3 +68,7 @@ The website-parity changes on PR #477 already remove the date controls, select S
 ## 2026-09-08 — Put source details below the forecast
 
 Moved the provider status sentence and Data sources and station options section immediately after the safety notice, ahead of the nearby-model chooser and forecast download. Source and cancellation controls stay available before a forecast is displayed.
+
+## 2026-09-08 — Fit the four Bookmark Sorter tools on one row
+
+Changed the former three-column row to fit Import, Online tools, Select and tag, and Export side by side. Narrow layouts allocate more width to longer labels and open the selected form below the full button row. Online tools now participates in the same exclusive expansion behavior as the other tools.
