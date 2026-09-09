@@ -328,8 +328,8 @@
   function showTip(g, x, y) {
     const m = g.m;
     tip.innerHTML = `<div class="t1">${m.name}</div>
-      <div class="t2">${m.period.start}–${m.period.end} · ${fmt(m.migrants)} moved` +
-      (g.kind === "circle" ? ` · ${g.d.name}: ${fmt(residualPopulation(g.d))} today` : "") +
+      <div class="t2">${m.period.start}–${m.period.end} · ${quantityLabel(m)}: ${fmt(m.migrants)}` +
+      (g.kind === "circle" ? ` · ${g.d.name}: ${fmt(residualPopulation(g.d))} (${g.d.diaspora_today == null ? 'settlement estimate' : 'reported diaspora or stock'})` : "") +
       `</div>`;
     tip.style.display = "block";
     const r = tip.getBoundingClientRect();
@@ -345,18 +345,19 @@
     $("dpMeta").innerHTML =
       `${m.period.start}–${m.period.end} · ${data.type_legend[m.type] ? m.type.replace(/-/g, " ") : m.type}` +
       ` · from ${data.region_legend[m.region] || m.region} &nbsp;${conf}`;
-    let numHtml = `<div class="num">People moved: <b>${fmt(m.migrants)}</b>`;
+    let numHtml = `<div class="num">${quantityLabel(m)}: <b>${fmt(m.migrants)}</b>`;
     if (m.migrants_range) numHtml += ` <span style="color:${T.subtext}">(est. ${fmt(m.migrants_range[0])}–${fmt(m.migrants_range[1])})</span>`;
     numHtml += `</div>`;
     if (m.migrants_note) numHtml += `<div class="num" style="color:${T.subtext}">${m.migrants_note}</div>`;
     let dests = `<div class="dests">`;
     for (const d of m.destinations) {
       dests += `<div>→ ${d.name} <span>· settled ${fmt(d.settled)}` +
-        (d.diaspora_today != null ? ` · diaspora today ${fmt(d.diaspora_today)}` : "") + `</span></div>`;
+        (d.diaspora_today != null ? ` · reported diaspora / stock ${fmt(d.diaspora_today)}` : "") + `</span></div>`;
     }
     dests += `</div>`;
     $("dpBody").innerHTML =
       `<p>${m.cause}.</p>` + numHtml + dests +
+      `<p class="dim">Map points represent the named regions schematically; an aggregate point does not locate every community. Destination figures may use different dates or populations and need not sum to the headline estimate. See the notes and sources before comparing them.</p>` +
       `<div class="refs">Sources: ${m.references.join("; ")}</div>`;
     $("filterPanel").style.display = "none";
     $("filtersBtn").setAttribute("aria-pressed", "false");
@@ -714,15 +715,23 @@
       tr.tabIndex = 0;
       tr.innerHTML = `<td>${m.name}</td><td>${m.period.start}–${m.period.end}</td>
         <td>${m.type.replace(/-/g, " ")}</td><td>${data.region_legend[m.region] || m.region}</td>
-        <td class="r">${fmt(m.migrants)}</td><td>${m.confidence}</td>`;
+        <td class="r">${fmt(m.migrants)}<br><small>${quantityLabel(m)}</small></td><td>${m.confidence}</td>`;
       const open = () => { closeModal($("tableModal")); openDetail(m); focusOn(m); };
       tr.onclick = open;
       tr.onkeydown = ev => { if (ev.key === "Enter") open(); };
       tb.appendChild(tr);
     }
   }
-  function openModal(el) { el.style.display = "flex"; el.querySelector(".xBtn").focus(); }
-  function closeModal(el) { el.style.display = "none"; }
+  const modalOpeners = new WeakMap();
+  function openModal(el) {
+    modalOpeners.set(el, document.activeElement);
+    el.style.display = "flex";
+    el.querySelector(".xBtn").focus();
+  }
+  function closeModal(el) {
+    el.style.display = "none";
+    modalOpeners.get(el)?.focus();
+  }
   $("tableBtn").onclick = () => { buildTable(); openModal($("tableModal")); };
   $("aboutBtn").onclick = () => openModal($("aboutModal"));
   for (const el of document.querySelectorAll(".modalWrap")) {
@@ -832,7 +841,23 @@
   yearBig.onkeydown = e => { if (e.key === "Enter" || e.key === " ") askYear(); };
 
   window.addEventListener("keydown", e => {
+    const modal = [...document.querySelectorAll('.modalWrap')].find(el => el.style.display === 'flex');
+    if (modal) {
+      if (e.key === 'Escape') { e.preventDefault(); closeModal(modal); }
+      if (e.key === 'Tab') {
+        const controls = [...modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+          .filter(el => !el.disabled && el.getClientRects().length);
+        const first = controls[0], last = controls.at(-1);
+        if (e.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+          e.preventDefault(); last?.focus();
+        } else if (!e.shiftKey && (document.activeElement === last || !modal.contains(document.activeElement))) {
+          e.preventDefault(); first?.focus();
+        }
+      }
+      return; // Reading a dialog must not scrub or start the map behind it.
+    }
     if (["INPUT", "SELECT", "TEXTAREA"].includes(e.target.tagName)) return;
+    if (e.code === 'Space' && e.target.closest('button, a[href]')) return;
     if (e.code === "Space") { e.preventDefault(); setPlaying(!playing); }
     else if (e.key === "ArrowRight") setYear(Math.floor(year) + (e.shiftKey ? 10 : 1));
     else if (e.key === "ArrowLeft") setYear(Math.floor(year) - (e.shiftKey ? 10 : 1));

@@ -203,3 +203,19 @@ order; continent members are adjacent; adjacent colors differ ≥40 L1.
 (E7) at 390×844 and 844×390 with touch emulation: no horizontal overflow, all
 timebar controls inside the viewport, play button ≥40px tall, map keeps ≥45%
 of viewport height.
+
+
+## September 2026 editorial representation and keyboard corrections
+
+The optional `quantity_kind` is `movers` (the backward-compatible default),
+`stock`, `circular`, or `displacement`. Core validation rejects other values.
+Details, tooltips and the accessible table label these different measures;
+figures, stock dates and source/descendant attribution remain subject to the
+field-level T8 review. Circle growth is illustrative, and regional points are
+schematic. The dated reconciliation report under `notes/` records each finding
+and what remains unverified. No population or coordinate was substituted.
+
+Table and About dialogs retain Tab/Shift+Tab focus inside the dialog and return
+focus to the opener on close. Reading keys do not run the background timeline;
+native button Space behavior remains available. These automated keyboard checks
+do not substitute for manual assistive-technology acceptance.

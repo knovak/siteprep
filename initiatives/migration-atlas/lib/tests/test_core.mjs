@@ -4,7 +4,7 @@ import {
   flowWidthPx, circleRadiusPx, flowEnvelope, circleProgress, advanceYear,
   timeDomain, eraDensity, nextEventStart, prevEventStart, sceneHash,
   destVolume, residualPopulation, particlePhase, CLOCK_SEGMENTS,
-  TYPE_ORDER, TYPE_SPECTRUM, REGION_ORDER, REGION_SPECTRUM, validateData,
+  TYPE_ORDER, TYPE_SPECTRUM, REGION_ORDER, REGION_SPECTRUM, validateData, quantityLabel,
 } from "../src/core.js";
 
 const data = JSON.parse(readFileSync(new URL("../data/migrations.json", import.meta.url)));
@@ -21,6 +21,14 @@ const TYPES = new Set(Object.keys(data.type_legend));
 const REGIONS = new Set(Object.keys(data.region_legend));
 const ids = new Set();
 const YEAR_MAX = new Date().getFullYear() + 1;
+for (const m of data.migrations) {
+  if (m.migrants_range && m.migrants_range[1] / m.migrants_range[0] > 2)
+    ok(m.confidence === 'low', `broad estimate range carries low confidence: ${m.id}`);
+}
+for (const id of ['syrian-civil-war','venezuelan-exodus','rohingya-exodus','ukraine-war','filipino-overseas'])
+  ok(quantityLabel(data.migrations.find(m=>m.id===id)) === 'Reported population abroad', `stock is not called people moved: ${id}`);
+ok(quantityLabel({}) === 'People moved', 'legacy datasets retain mover label');
+ok(validateData({...data,migrations:[{...data.migrations[0],quantity_kind:'invented'}]}).errors.some(e=>e.includes('quantity kind')), 'unsupported quantity definitions are rejected');
 for (const m of data.migrations) {
   ok(!ids.has(m.id), `unique id: ${m.id}`); ids.add(m.id);
   ok(m.period.start >= 1000 && m.period.start <= m.period.end && m.period.end <= YEAR_MAX,

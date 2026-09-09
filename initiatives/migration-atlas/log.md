@@ -102,3 +102,20 @@ Released to production — Demo, `e567057`. <https://knovak.github.io/siteprep/d
 ## 2026-09-09 — Release the rebuilt source after testing and explicit approval
 
 Released to production 2026-09-09 (e567057); see releases.md.
+
+
+## 2026-09-09 — Reconcile editorial representation and extend acceptance
+
+Corrected four greater-than-twofold confidence conflicts, separated stocks,
+circular movements and internal-displacement totals in visible quantity labels,
+qualified aggregate map points and unreconciled destination sums, and linked
+the verified Census and SlaveVoyages passages. Preserved population values and
+coordinates. The 48-entry reconciliation record retains outstanding source
+requirements; the editorial todo remains actionable.
+
+Fixed dialog focus containment/return and background timeline keys, added
+same-engine local-file/HTTP comparisons and keyboard checks, and extended the
+existing suite to Firefox/WebKit with separate reference images. Manual
+screen-reader and Windows/Linux results are unavailable on this macOS host, so
+the packaging item now records that explicit external blocker. Detailed results
+are recorded in test-plan.md and notes. Production is unchanged.

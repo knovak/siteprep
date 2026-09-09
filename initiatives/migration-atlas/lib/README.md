@@ -98,3 +98,34 @@ lib/
 `land50.json` is the simplified copy the build inlines - and no script in this
 package regenerates one from the other. It is kept because it is the only copy
 of where the basemap came from.
+
+
+## Extended macOS browser and packaging checks
+
+Run the full interaction/visual/accessibility suite in each engine:
+
+```sh
+ATLAS_BROWSER=chromium python3 lib/tests/test_browser.py
+ATLAS_BROWSER=firefox python3 lib/tests/test_browser.py
+ATLAS_BROWSER=webkit python3 lib/tests/test_browser.py
+python3 lib/tests/test_packaging.py
+```
+
+Use the pinned Python environment above. `ATLAS_URL` can target a served copy,
+`ATLAS_RESULTS_DIR` separates temporary screenshots, and
+`ATLAS_PACKAGING_REPORT` chooses the packaging JSON output. The packaging test
+starts its own loopback-only HTTP server and closes it after comparing six
+file/HTTP scenes and both dialog keyboard paths in all three engines.
+
+Chromium keeps the original eight images under `tests/goldens/`. Firefox and
+WebKit have separate directories below it, created explicitly with that
+engine's `--update-goldens`, inspected, then compared in a separate run. Do not
+raise thresholds or regenerate a baseline to conceal unexplained differences.
+Firefox does not expose Playwright's `is_mobile` option, so its narrow-viewport
+checks use geometry and touch capability without claiming mobile-browser emulation.
+
+T5's performance and heap thresholds retain the original fixed Chromium runner.
+Other engines report frame cadence without claiming those thresholds, and cannot
+use Chromium-only `performance.memory` or forced GC. About, legend and stock
+detail states join the existing axe checks. Actual assistive-technology speech
+and Windows/Linux remain separate acceptance evidence.

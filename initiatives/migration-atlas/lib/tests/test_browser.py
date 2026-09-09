@@ -12,9 +12,14 @@ from playwright.async_api import async_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUNDLE = os.path.join(os.path.dirname(ROOT), "work/index.html")
-URL = "file://" + BUNDLE
-GOLD = os.path.join(ROOT, "tests/goldens")
+URL = os.environ.get("ATLAS_URL", "file://" + BUNDLE)
+ENGINE = os.environ.get("ATLAS_BROWSER", "chromium")
+RESULTS_DIR = os.environ.get("ATLAS_RESULTS_DIR", "/tmp")
+os.makedirs(RESULTS_DIR, exist_ok=True)
+GOLD = os.path.join(ROOT, "tests/goldens", *([] if ENGINE == "chromium" else [ENGINE]))
 UPDATE = "--update-goldens" in sys.argv
+if UPDATE:
+    os.makedirs(GOLD, exist_ok=True)
 
 # T3 golden states: (name, year, camera{rot,k,cyFrac}, reduced_motion, setup_clicks)
 STATES = [
@@ -52,14 +57,14 @@ async def snap_state(pg, name, yr, camset, clip, setup=()):
     await pg.wait_for_timeout(320)   # allow LOD settle
     await pg.evaluate("y => __atlas.setYear(y)", yr)  # re-render after LOD
     await pg.wait_for_timeout(120)
-    path = os.path.join(GOLD if UPDATE else "/tmp", name + ".png")
+    path = os.path.join(GOLD if UPDATE else RESULTS_DIR, name + ".png")
     await pg.screenshot(path=path, clip=clip)
     return path
 
 async def main():
     ok_all = True
     async with async_playwright() as p:
-        browser = await p.chromium.launch(args=["--js-flags=--expose-gc", "--enable-precise-memory-info"])
+        browser = await getattr(p, ENGINE).launch(args=["--js-flags=--expose-gc", "--enable-precise-memory-info"] if ENGINE == "chromium" else [])
 
         # =========== T3: golden screenshots ===========
         print("== T3 visual regression ==")
@@ -316,16 +321,16 @@ async def main():
         px = await pg.evaluate("() => __atlas.findPixelFor('cuban-exodus')")
         check("E3 residual circle hit-testable @2010", px is not None)
         if px:
-            await pg.screenshot(path="/tmp/e3_type.png")
-            hue, dist = sample_hue_dist("/tmp/e3_type.png", px[0], px[1])
+            await pg.screenshot(path=os.path.join(RESULTS_DIR, "e3_type.png"))
+            hue, dist = sample_hue_dist(os.path.join(RESULTS_DIR, "e3_type.png"), px[0], px[1])
             check("E3 circle vivid (>=140 L1 from basemap)", dist >= 140, f"dist={dist}")
             check("E3 circle yellow in default type mode (refugee-flight)",
                   abs(hue - 46) <= 20, f"hue={hue:.0f}")
             await pg.click("#colorModeBtn")   # region mode: Latin America sky blue
             await pg.wait_for_timeout(200)
             px2 = await pg.evaluate("() => __atlas.findPixelFor('cuban-exodus')")
-            await pg.screenshot(path="/tmp/e3_region.png")
-            hue2, dist2 = sample_hue_dist("/tmp/e3_region.png", px2[0], px2[1])
+            await pg.screenshot(path=os.path.join(RESULTS_DIR, "e3_region.png"))
+            hue2, dist2 = sample_hue_dist(os.path.join(RESULTS_DIR, "e3_region.png"), px2[0], px2[1])
             check("E3 circle recolors sky blue in region mode",
                   abs(hue2 - 198) <= 20 and dist2 >= 140, f"hue={hue2:.0f} dist={dist2}")
             await pg.click("#colorModeBtn")   # back to type default
@@ -360,7 +365,8 @@ async def main():
         print("== E7 responsive layout ==")
         for label, vw, vh in [("portrait-phone", 390, 844), ("landscape-phone", 844, 390)]:
             ctx = await browser.new_context(viewport={"width": vw, "height": vh},
-                                            device_scale_factor=3, is_mobile=True, has_touch=True)
+                                            device_scale_factor=3, has_touch=True,
+                                            **({"is_mobile": True} if ENGINE != "firefox" else {}))
             pg = await ctx.new_page()
             errs = []
             pg.on("pageerror", lambda e: errs.append(str(e)))
@@ -396,31 +402,39 @@ async def main():
         # Median measures steady-state cadence (vsync ~16.7ms); mean is inflated
         # by occasional CI scheduler hiccups, which p95 polices instead.
         med = ft[len(ft) // 2]; p95 = ft[int(len(ft) * 0.95)]
-        check("T5 median frame < 17ms (1890s)", med < 17.0, f"{med:.1f}ms")
-        check("T5 p95 frame < 33ms", p95 < 33, f"{p95:.1f}ms")
+        if ENGINE == "chromium":
+            check("T5 median frame < 17ms (1890s)", med < 17.0, f"{med:.1f}ms")
+            check("T5 p95 frame < 33ms", p95 < 33, f"{p95:.1f}ms")
+        else:
+            # T7 extends T3/T4 across engines. T5's calibrated runner remains
+            # Chromium; retain the observed timing without claiming that gate.
+            print(f"OBSERVATION T5 {ENGINE}: median {med:.1f}ms, p95 {p95:.1f}ms; fixed-runner performance acceptance not established")
         size = os.path.getsize(BUNDLE)
         check("T5 bundle ≤ 3.5MB", size <= 3.5e6, f"{size/1e6:.2f}MB")
 
-        # memory: 3 full timeline sweeps, heap growth < 5% (after GC)
-        heap = await pg.evaluate("""async () => {
-            const sweep = async () => {
-              for (let y = 1000; y <= 2026; y += 4) {
-                __atlas.setYear(y);
-                await new Promise(r => requestAnimationFrame(r));
-              }};
-            if (window.gc) window.gc();
-            await sweep();  // warm-up
-            if (window.gc) window.gc();
-            const before = performance.memory.usedJSHeapSize;
-            for (let i = 0; i < 3; i++) await sweep();
-            if (window.gc) window.gc();
-            await new Promise(r => setTimeout(r, 300));
-            const after = performance.memory.usedJSHeapSize;
-            return {before, after};
-        }""")
-        growth = (heap["after"] - heap["before"]) / heap["before"]
-        check("T5 heap growth < 5% over 3 sweeps", growth < 0.05,
-              f"{heap['before']/1e6:.1f}MB -> {heap['after']/1e6:.1f}MB ({growth*100:.1f}%)")
+        if ENGINE == "chromium":
+            # memory: 3 full timeline sweeps, heap growth < 5% (after GC)
+            heap = await pg.evaluate("""async () => {
+                const sweep = async () => {
+                  for (let y = 1000; y <= 2026; y += 4) {
+                    __atlas.setYear(y);
+                    await new Promise(r => requestAnimationFrame(r));
+                  }};
+                if (window.gc) window.gc();
+                await sweep();  // warm-up
+                if (window.gc) window.gc();
+                const before = performance.memory.usedJSHeapSize;
+                for (let i = 0; i < 3; i++) await sweep();
+                if (window.gc) window.gc();
+                await new Promise(r => setTimeout(r, 300));
+                const after = performance.memory.usedJSHeapSize;
+                return {before, after};
+            }""")
+            growth = (heap["after"] - heap["before"]) / heap["before"]
+            check("T5 heap growth < 5% over 3 sweeps", growth < 0.05,
+                  f"{heap['before']/1e6:.1f}MB -> {heap['after']/1e6:.1f}MB ({growth*100:.1f}%)")
+        else:
+            print("SKIP T5 heap: performance.memory and forced GC are Chromium-specific")
         await ctx.close()
 
         # =========== T6: accessibility ===========
@@ -443,6 +457,16 @@ async def main():
         await pg.keyboard.press("Escape")
         await pg.click("#filtersBtn"); await pg.wait_for_timeout(150)
         await run_axe("filters")
+        await pg.keyboard.press("Escape")
+        await pg.click("#aboutBtn"); await pg.wait_for_timeout(150)
+        await run_axe("about the data")
+        await pg.keyboard.press("Escape")
+        await pg.click("#legendBtn"); await pg.wait_for_timeout(150)
+        await run_axe("legend")
+        await pg.click("#tableBtn")
+        row = pg.locator("#dataTable tbody tr").filter(has_text="Venezuelan exodus")
+        await row.focus(); await pg.keyboard.press("Enter")
+        await run_axe("stock detail")
         await ctx.close()
 
         await browser.close()
@@ -451,4 +475,5 @@ async def main():
     print(f"\n{npass}/{len(results)} browser checks passed")
     return 0 if npass == len(results) else 1
 
-sys.exit(asyncio.run(main()))
+if __name__ == '__main__':
+    sys.exit(asyncio.run(main()))

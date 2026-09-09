@@ -233,3 +233,17 @@ rows/order/endpoint swatches; E7 emulated 390×844 and 844×390 with touch:
 overflow, control-visibility, target-size, and map-height gates. T7's 1880
 pixel check switches from region-gold to voluntary-blue (new default). All
 goldens regenerate; g8 becomes the region-legend state.
+
+
+## September 2026 acceptance continuation
+
+The editorial reconciliation is an increment of Phase 5. Its original todo
+remains open for source tables, destination allocations, observation dates,
+confidence exceptions and the remaining destination-specific visual checks.
+Use `notes/editorial-reconciliation-20260909.md` as the entry-by-entry record.
+
+The browser suite accepts `ATLAS_BROWSER` and `ATLAS_URL`, with separate explicitly
+created Firefox/WebKit goldens. `test_packaging.py` compares six same-engine
+file/HTTP scenes and keyboard paths across three engines on the current host.
+A named screen-reader walkthrough and actual Windows/Linux packaging results
+remain external acceptance inputs; they cannot be certified from macOS runs.
