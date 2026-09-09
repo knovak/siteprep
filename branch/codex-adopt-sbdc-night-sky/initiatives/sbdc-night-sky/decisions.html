@@ -46,6 +46,10 @@
 <p>The two existing demo files are preserved in <code>work/</code>; the supplied assumptions sidecar is added there. A later release would publish that sidecar alongside the unchanged simulator and earlier demo snapshot. Production&#39;s empty <code>prod</code> record acknowledges the pre-initiative release without inventing deployment dates or currency metadata.</p>
 <h4>What remains open</h4>
 <ul><li>User findings from real devices, including pointer/pinch feel, PNG downloads, and performance on older phones.</li><li>Explicit production-release authorization after testing.</li><li>Any application or document corrections discovered during that testing, which need a separately agreed scope.</li></ul>
+<h3>2026-09-08 — Remove the duplicate archive and keep the initiative dormant</h3>
+<p>The user asks to remove <code>notes/sbdc-sim-final-source.zip</code> if it is unnecessary, &quot;to limit the use of binary files and duplicate files&quot;, and to set the initiative&#39;s status to dormant.</p>
+<p>All 29 regular files in the source ZIP were compared with their adopted <code>lib/</code> destinations and found byte-identical, with matching manifest hashes. The ZIP contains no additional source or documentation, so its 161,551-byte binary copy is removed. Its original size, checksum, and complete file inventory remain recorded in <code>adoption-manifest.json</code>. The original documents and all extracted source files remain unchanged.</p>
+<p>The initiative was already <code>dormant</code> and remains so, now explicitly confirmed by the user. User testing, any separately authorized fixes, and production release remain open under their existing blockers.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="codex/adopt-sbdc-night-sky" data-root="../../">
