@@ -85,3 +85,16 @@ migrations.
   opening view are blank and the first event jump reaches 1001.
 - This is a display convention, not independent source verification or a
   production-release decision.
+
+## 2026-09-09 — Playback frame-rate target
+
+**60 fps is preferred, 30 fps is acceptable.** The user supplied this exact
+wording after asking about the inherited 17 ms threshold.
+
+### What this settles, and what it does not
+
+- The specification and current README use the requested wording.
+- Performance acceptance permits frame times up to 1000/30 ms for the median
+  and p95, while reporting the measured frame rate against the 60 fps preference.
+- Browser-specific results describe the test machine; the requirement does not
+  certify performance on untested physical devices or authorize a release.

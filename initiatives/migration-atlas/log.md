@@ -143,3 +143,13 @@ journeys passed at desktop and 390px widths in Chromium, Firefox and WebKit.
 Each report has 48 rows, nine source links, no horizontal page overflow and
 no serious or critical axe findings. The evidence receipt records the final
 application and report hashes.
+
+The user then changed the performance requirement to “60 fps is preferred,
+30 fps is acceptable”. Updated the specification, README, test plan and T5
+checks to use a 33.33 ms acceptance limit while reporting measured cadence
+against the 60 fps preference. This supersedes the threshold explanation above.
+
+The final suites pass 91/91 Chromium checks and 90/90 each in Firefox and
+WebKit. Median cadence was 16.7 ms (59.9 fps), 20 ms (50 fps), and 20 ms
+(50 fps), respectively; p95 was 16.8, 21 and 21 ms. All three meet the
+revised acceptance limit. Existing goldens were compared without updates.

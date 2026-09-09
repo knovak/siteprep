@@ -121,7 +121,7 @@ Validation rules (enforced by a schema + CI test, section 7): unique ids; `start
 
 ## 7. Quality requirements
 
-- 60 fps target during playback with ≤ 200 simultaneous animated flows on a 2020-era laptop; graceful degradation (particle count reduction) below 30 fps.
+- 60 fps is preferred, 30 fps is acceptable during playback with ≤ 200 simultaneous animated flows on a 2020-era laptop; graceful degradation (particle count reduction) below 30 fps.
 - Initial load ≤ 3 MB (basemap ~1 MB gzipped, code ~500 KB, data ~100 KB); first render < 2 s from local disk.
 - Runs entirely offline from local files (see implementation plan for the file:// nuance).
 - Works in current Chrome, Firefox, Safari, Edge; degrades to static map + table without WebGL.

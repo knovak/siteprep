@@ -86,12 +86,10 @@ independent comparison runs; the Chromium goldens remain unchanged. The pixel
 threshold remains 0.5%. T6 now includes About, legend and stock detail as well
 as the original main/table/filter views.
 
-T5 frame cadence is about 20 ms in this headless Firefox/WebKit environment,
-so the original 17 ms median target is not established there. T5's assertions
-remain on the original fixed Chromium runner; other engines record timing,
-and skip unsupported heap instrumentation. No claim of a universal 60 fps is
-made. Actual manual screen-reader speech and Windows/Linux file/HTTP comparison
-remain external blockers on `extend-packaging-acceptance`.
+At the original September 9 run, Firefox/WebKit measured about 20 ms and did
+not establish the then-current 17 ms median target. The revised target below
+supersedes that threshold. Actual manual screen-reader speech and Windows/Linux
+file/HTTP comparison remain external blockers on `extend-packaging-acceptance`.
 
 
 ## September 9 review follow-up verification
@@ -104,4 +102,13 @@ report rows, nine source links, accessibility and return navigation.
 
 The earlier packaging receipt applies to its recorded bundle hash; its
 file/HTTP screenshot comparison was not repeated for these follow-up edits.
-17 ms remains the median target from the original 60 fps requirement.
+The user revised the requirement to **60 fps is preferred, 30 fps is acceptable**.
+T5 now accepts median and p95 frame times up to 1000/30 ms (33.33 ms) in each
+engine, and reports the observed median fps against the 60 fps preference.
+The existing bundle-size and Chromium heap limits remain. These are results
+for the test machine, not a guarantee for every physical device.
+
+Final reruns under that requirement passed 91 Chromium checks and 90 each
+in Firefox and WebKit. Median frame times were 16.7, 20 and 20 ms, with
+p95 of 16.8, 21 and 21 ms respectively. All three meet the acceptable target
+on this test machine; no golden images were changed.

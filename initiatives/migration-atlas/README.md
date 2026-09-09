@@ -46,6 +46,8 @@ The opening map is at 1000 AD, before the two earliest recorded starts at
 for a blank opening screen; this is a display convention, not new historical
 evidence. The first event button advances to 1001.
 
+For playback performance, **60 fps is preferred, 30 fps is acceptable**.
+
 ## Documents and history
 
 - [Wish and original prompt history](wish.html)

@@ -402,13 +402,13 @@ async def main():
         # Median measures steady-state cadence (vsync ~16.7ms); mean is inflated
         # by occasional CI scheduler hiccups, which p95 polices instead.
         med = ft[len(ft) // 2]; p95 = ft[int(len(ft) * 0.95)]
-        if ENGINE == "chromium":
-            check("T5 median frame < 17ms (1890s)", med < 17.0, f"{med:.1f}ms")
-            check("T5 p95 frame < 33ms", p95 < 33, f"{p95:.1f}ms")
-        else:
-            # T7 extends T3/T4 across engines. T5's calibrated runner remains
-            # Chromium; retain the observed timing without claiming that gate.
-            print(f"OBSERVATION T5 {ENGINE}: median {med:.1f}ms, p95 {p95:.1f}ms; fixed-runner performance acceptance not established")
+        # 60 fps is preferred, 30 fps is acceptable. Keep the p95 guard so
+        # an acceptable median cannot hide frequent stalls.
+        acceptable_ms = 1000 / 30
+        check("T5 median frame ≤ 33.33ms (30 fps acceptable)", med <= acceptable_ms, f"{med:.1f}ms")
+        check("T5 p95 frame ≤ 33.33ms", p95 <= acceptable_ms, f"{p95:.1f}ms")
+        print(f"OBSERVATION T5 {ENGINE}: median {med:.1f}ms ({1000 / med:.1f} fps), "
+              f"p95 {p95:.1f}ms; 60 fps is preferred, 30 fps is acceptable")
         size = os.path.getsize(BUNDLE)
         check("T5 bundle ≤ 3.5MB", size <= 3.5e6, f"{size/1e6:.2f}MB")
 
