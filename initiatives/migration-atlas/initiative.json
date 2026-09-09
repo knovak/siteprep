@@ -16,7 +16,11 @@
       "source": "initiatives/migration-atlas/work",
       "destination": "world_migration_atlas",
       "root_html": "index.html",
-      "prod": {}
+      "prod": {
+        "deployed_at": "2026-09-09T06:37:20Z",
+        "commit": "e567057673a39469dfd0c0b5c8581722f0ad4f77",
+        "tree": "78c17c6162c4fec4e954a0974d7346501f4d8fd1"
+      }
     }
   ],
   "todo": [
@@ -28,16 +32,6 @@
       "effort": "small",
       "advances_stage": false,
       "blocked_by": "data:user test findings for the World Migration Atlas preview"
-    },
-    {
-      "id": "release-rebuilt-source",
-      "title": "Release the rebuilt source after testing and explicit approval",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "permission:explicit production release authorization after user testing",
-      "note": "The release now also carries the 2026-09-09 flow-visibility fix (see log.md): work/index.html is no longer byte-identical to demos/world_migration_atlas/index.html. It also drops index-initial.html, dist/ and data/ from the published demo, which nothing links to. See decisions.md."
     },
     {
       "id": "reconcile-editorial-findings",

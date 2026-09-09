@@ -322,8 +322,7 @@
 // core.js — pure functions for the Migration Atlas (no DOM, no d3).
 // Exported for node tests; the build strips `export ` for the browser bundle.
 
-const RISE_YEARS = 3;   // arc grow-in after start
-const FADE_YEARS = 5;   // arc fade-out after end
+const FADE_YEARS = 5;   // residual-circle framing after end (not arc visibility)
 
 function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
 
@@ -345,14 +344,11 @@ function circleRadiusPx(population, k = 1) {
 function easeOutCubic(t) { const u = clamp(t, 0, 1) - 1; return u * u * u + 1; }
 
 // ---- time envelopes -------------------------------------------------------
-// Flow visibility envelope: 0 before start, ramp over RISE_YEARS (capped at
-// the period length), 1 while active, linear fade over FADE_YEARS after end.
+// Flow visibility envelope: absent before start, fully visible for the exact
+// [start, end] period the data claims, absent after end.
 function flowEnvelope(year, start, end) {
-  const rise = Math.max(0.5, Math.min(RISE_YEARS, end - start));
   if (year < start) return { alpha: 0, phase: "pre" };
-  if (year < start + rise) return { alpha: (year - start) / rise, phase: "rising" };
   if (year <= end) return { alpha: 1, phase: "active" };
-  if (year < end + FADE_YEARS) return { alpha: 1 - (year - end) / FADE_YEARS, phase: "fading" };
   return { alpha: 0, phase: "post" };
 }
 
@@ -812,7 +808,7 @@ const LAND50 = {"type":"FeatureCollection","features":[{"type":"Feature","geomet
       const color = flowColor(g.m);
       const dim = hl && g.m.id !== hl ? 0.22 : 1;
       const lowConf = g.m.confidence === "low";
-      const alpha = g.env.alpha * (g.env.phase === "fading" ? 0.5 : 0.92) * dim;
+      const alpha = g.env.alpha * 0.92 * dim;
       for (const rib of g.ribs) {
         fctx.globalAlpha = alpha * 0.18;
         traceRibbon(fctx, rib);
@@ -821,7 +817,7 @@ const LAND50 = {"type":"FeatureCollection","features":[{"type":"Feature","geomet
         fctx.globalAlpha = alpha;
         traceRibbon(fctx, rib);
         fctx.fillStyle = color; fctx.fill();
-        if (lowConf || g.env.phase === "fading") {
+        if (lowConf) {
           fctx.globalAlpha = Math.min(1, alpha + 0.15);
           fctx.setLineDash([5, 4]); fctx.lineWidth = 1;
           fctx.strokeStyle = color; fctx.stroke(); fctx.setLineDash([]);
@@ -833,7 +829,7 @@ const LAND50 = {"type":"FeatureCollection","features":[{"type":"Feature","geomet
         }
         fctx.globalAlpha = 1;
       }
-      if (!reducedMotion && g.env.phase !== "fading" && g.w > 2.5) {
+      if (!reducedMotion && g.w > 2.5) {
         fctx.fillStyle = "#ffffff";
         for (let j = 0; j < 3; j++) {
           const ph = particlePhase(year, g.seed * 0.001 + g.di * 7 + j * 11);

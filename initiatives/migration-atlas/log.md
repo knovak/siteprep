@@ -94,3 +94,11 @@ no longer byte-identical to `demos/world_migration_atlas/index.html`, so
 `release-rebuilt-source` now also carries this fix, on top of the trim already
 recorded in `decisions.md`. `node lib/tests/test_core.mjs` passes, 534
 assertions, 0 failures.
+
+## 2026-09-09 — Release
+
+Released to production — Demo, `e567057`. <https://knovak.github.io/siteprep/demos/world_migration_atlas/> See releases.md.
+
+## 2026-09-09 — Release the rebuilt source after testing and explicit approval
+
+Released to production 2026-09-09 (e567057); see releases.md.
