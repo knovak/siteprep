@@ -9,9 +9,9 @@
       "name": "Bookmark Sorter",
       "path": "bookmark-sorter/index.html",
       "sourceArtifact": "work/dist/index.html",
-      "sourceCommit": "a8d5c82d315d159f284e844cb6b473b3390c2643",
-      "bytes": 1120796,
-      "sha256": "7213171306775da874b6128add271347b7a0ed8a14b3f90022422c4dd752e2bc",
+      "sourceCommit": "a7ff022c073b7de08467cb731f3065413c118f27",
+      "bytes": 1129332,
+      "sha256": "596b24586bb2db2019fadf09ae09fe25d48bcbba3bc9c4220dad5daa81a17b73",
       "fork": {
         "source_repository": "https://github.com/knovak/siteprep",
         "source_commit": "48c0f4b54a89480949ee86ffd04b3b67dcbb5dbf",
