@@ -8,10 +8,11 @@
     {
       "id": "add-dedicated-harvest-skill",
       "title": "Add a dedicated harvest skill for repeat Newsletter Story Harvester runs",
-      "state": "actionable",
+      "state": "blocked",
       "value": "high",
       "effort": "medium",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "permission:allow repository-wide harvest skill installation in .claude/skills/harvest-newsletter-stories/, its .agents/skills/harvest-newsletter-stories symlink, and the generated README.md skill index; the tested draft is in notes/harvest-skill-draft.md"
     }
   ],
   "deployments": [

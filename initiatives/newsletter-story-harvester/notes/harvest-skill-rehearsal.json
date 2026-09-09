@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-09",
+  "source_commit": "3b3f607f76f3cab175fffffad333b9caa5060305",
+  "kind": "synthetic rehearsal of proposed workflow using existing modules",
+  "live_mailbox_access": false,
+  "first_run": {
+    "stories": 49,
+    "issues": 4
+  },
+  "overlap_run": {
+    "matched": 49,
+    "added": 25,
+    "total": 74,
+    "judgments_preserved": 2,
+    "all_prior_ids_preserved": true,
+    "store_id_preserved": true
+  },
+  "attribution": {
+    "wrong_sender_body_reads": 0
+  },
+  "failure": {
+    "injected_model_call": 2,
+    "store_bytes_unchanged": true,
+    "review_bytes_unchanged": true
+  },
+  "pre_rename_crash": {
+    "store_readable": true,
+    "store_bytes_unchanged": true,
+    "previous_generation_matches_store": true
+  },
+  "permissions": {
+    "directory": "0700",
+    "store": "0600",
+    "backup": "0600",
+    "temporary": "0600"
+  },
+  "limits": [
+    "Synthetic fixtures and recorded model findings only; no live Gmail adapter exercised.",
+    "The proposed skill has not been installed or independently invoked."
+  ]
+}
