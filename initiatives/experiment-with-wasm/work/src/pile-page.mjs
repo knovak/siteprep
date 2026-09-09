@@ -209,7 +209,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     .card-verdict[data-card-verdict="keeper"] { color: var(--green-ink); background-color: var(--green-bg); }
     .card-verdict[data-card-verdict="archive"] { color: var(--blue-ink); background-color: var(--blue-bg); }
     .card-verdict[data-card-verdict="needs-more-time"] { color: var(--amber-ink); background-color: var(--amber-bg); }
-    .card-verdict[aria-pressed="true"] { color: var(--on-primary); background-color: var(--primary); border-color: var(--primary-edge); box-shadow: inset 0 2px 3px var(--primary-edge); transform: translateY(1px); font-weight: 800; }
+    .card-verdict[aria-pressed="true"] { color: var(--surface); background-color: var(--ink); border-color: var(--ink); box-shadow: inset 0 2px 3px #0006; transform: translateY(1px); font-weight: 800; }
     .card-verdict:focus-visible, .copy-title:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
     .card-verdict:disabled { opacity: .5; cursor: wait; }
     .bookmark-card h2 { display: flex; align-items: flex-start; }
