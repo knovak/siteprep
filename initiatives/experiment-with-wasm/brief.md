@@ -6,12 +6,8 @@
 
 ## Done
 
-Both single-file applications support internet data and offline use. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website’s Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples.
-
-## Remaining work
-
-Expand live provider and station-time-zone checks across representative US and Canadian coasts. Live NOAA, Photon and Microlink retrieval are verified; Canadian data worked in API probes but was blocked by browser-access rules in the live check, so its live browser availability remains unresolved.
+Both single-file applications (Bookmark Sorter and Tide Here) support internet data alongside offline use and are published in the static demo. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website's Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples. findings.md now records the lessons the experiment set out to learn: WASM runtime speed on small data sets, the need to explicitly enable internet access, browser CORS blocking some services, data persisting independently of code, and the difficulty of keeping a website and a WASM fork in sync. The demonstration and learning goals in wish.md are met, and the initiative is now dormant.
 
 ## Optional later
 
-Home Screen offline installation, larger-database persistence improvements and faster Tide Here startup remain optional improvements. These are separate from the completed online controls and existing embedded WASM engines.
+Expanding live provider and station-time-zone checks across representative US and Canadian coasts, and verifying downloaded app use, persistence and recovery on a physical iPad, remain in the todo list for a future revisit. Home Screen offline installation, larger-database persistence improvements and faster Tide Here startup remain optional improvements from improvements.md. These are separate from the completed online controls and existing embedded WASM engines.
