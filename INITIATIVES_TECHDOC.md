@@ -74,6 +74,9 @@ rendered, so a collection that is entirely active shows one section. An
 initiative whose `initiative.json` cannot be read has no stage to sort on and is
 listed with the active ones, where the error is visible.
 
+Each entry keeps its blocked count and label together with a nonbreaking space
+(for example, `1&nbsp;blocked`), even when the status line wraps.
+
 The overview page is derived entirely from `initiative.json` and the files
 present - purpose, status, what's next, what's blocked, outputs, and links to
 the documents - so displayed status cannot drift from recorded state. An
@@ -101,6 +104,22 @@ Validation made this part of the build Node anyway, which is that reason - and
 rendering here means no client JS, no `fetch`, and no flash of an unrendered
 page. The `.md` file remains the single source of truth and still renders on
 GitHub, so the choice stays reversible.
+
+## SBDC Night-Sky Simulator adoption
+
+`initiatives/sbdc-night-sky/lib/` preserves the complete supplied development
+package, including its build script, source, tests, data, and nine original
+documents. `work/` holds the independent demo preview snapshot; the repository
+build copies it without invoking the inherited builder. The SHA-256 adoption
+manifest retains the original archive metadata and extracted-file inventory;
+the redundant source ZIP is omitted. The unchanged specification and
+implementation plan and the initiative README document reproduction. No new
+repository runtime dependency or executable behavior is introduced.
+
+The original README and tutorial are included verbatim in the initiative
+README; the phase reports, final report, and upgrade plan are included verbatim
+in `notes.md`. This makes every supplied document readable through the existing
+initiative renderer while retaining the originals under `lib/`.
 
 ## Decisions
 
@@ -273,6 +292,15 @@ both a demo and a Site.
 
 Only `kind` and `source` are required. `deployed_at`, `version`, `commit` and
 `tree` are written by the deploy skills, not by hand.
+
+An **empty environment block** is the one part of this written by hand.
+`releaseState` treats any present `prod` as released, so `"prod": {}` says "this
+was released before the initiative existed, and the commit is not recoverable" -
+the deployment reads *released, but the released commit is unknown* rather than
+*not released yet*, and `plan --env prod` plans a replacement rather than a new
+target. World Migration Atlas uses it: its demo was published months before it
+was adopted. Do not invent a `commit` or a `deployed_at` to fill the gap; the
+next real release records both.
 
 ### Kinds
 

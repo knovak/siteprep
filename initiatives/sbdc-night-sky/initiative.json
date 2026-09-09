@@ -1,0 +1,58 @@
+{
+  "title": "SBDC Night-Sky Simulator",
+  "summary": "An offline, single-file simulator showing how large constellations of space-based data centers would appear in the sky.",
+  "stage": "dormant",
+  "value": "medium",
+  "outputs": [
+    {
+      "kind": "demo",
+      "path": "demos/SBDC Night Sky",
+      "status": "published"
+    }
+  ],
+  "todo": [
+    {
+      "id": "user-test-preview",
+      "title": "Review the test preview on real devices and record findings",
+      "state": "blocked",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "data:user test findings, including pointer/pinch feel, PNG downloads, and older-phone performance"
+    },
+    {
+      "id": "release-after-testing",
+      "title": "Release the adopted simulator after testing and explicit approval",
+      "state": "blocked",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "permission:explicit production release authorization after user testing",
+      "note": "The current simulator and index-initial.html are preserved. A future release would also add the supplied sbdc-data.json sidecar. This adoption PR changes no files in demos/."
+    },
+    {
+      "id": "mobile-sky-follow-up",
+      "title": "Decide whether to correct the inherited mobile sky positioning",
+      "state": "blocked",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false,
+      "blocked_by": "permission:separate authorization for an application change beyond this file-only adoption",
+      "note": "Chromium at 390 × 844 shows position: relative; the sky scrolls away despite the preserved tutorial describing a sticky sky. See notes.md."
+    }
+  ],
+  "deployments": [
+    {
+      "kind": "demo",
+      "source": "initiatives/sbdc-night-sky/work",
+      "destination": "SBDC Night Sky",
+      "root_html": "index.html",
+      "prod": {}
+    }
+  ],
+  "brief": {
+    "generated_at": "2026-09-09T01:13:34Z",
+    "commit": "7674d17687993f00a39cae041983bd19965211c0",
+    "digest": "5481f3bdc51d2ab70728921364a019fe5a64a0af"
+  }
+}

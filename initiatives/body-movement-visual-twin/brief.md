@@ -6,37 +6,30 @@
 
 ## Done
 
-Phases 0-6 of `plan.md` are built. The collection now carries 43 movement
-studies - 21 Feldenkrais, 21 yoga, and one Alexander Technique - on one shared
-rig with surface, skeleton and muscle layers, six anatomy views, playback and
-camera controls, and flag-and-export review tools that never edit the source
-record (`work/phase-6/site/data/collection.json`).
+The collection contains 140 distinct studies: 60 Feldenkrais, 60 yoga and 20
+Alexander Technique, with a compact searchable picker, tradition/body-region
+filters, and smaller-range and mirrored displays (`work/phase-6/site/data/collection.json`).
+All 140 animate on desktop and phone; the expansion passed 44 data/geometry
+tests, 28 collection browser checks, six bundle checks and four framing checks
+as recorded in [log.md](log.html).
 
-The current anatomy includes 24 mobile vertebrae plus nine fused segments, 12
-rib pairs, a posed skull and occiput, moving clavicles, and connected muscle
-surfaces. The latest corrections preserve seated foot direction and keep the
-feet planted through chair-pose and standing-fold playback while retaining
-explicit movement for ankle studies (`work/phase-3/ANATOMY-AUDIT.md`).
-
-## Waiting on others
-
-An anatomy reviewer checks joint actions, named muscles, group labels,
-annotations, landmarks and cautions. One practitioner per tradition checks the
-movement path, timing, instruction, variations and wording. Each claim comes
-back `reviewed` or `disputed` - a disagreement is recorded rather than converted
-to a silent pass (`test-plan.md` §1.4). KRN display feedback has been applied,
-but the anatomy and tradition claims remain `unreviewed`.
+The shared rig provides surface, skeleton and muscle layers, six anatomy views,
+playback/camera controls and separate flag-and-export reports. Axial and foot
+corrections include mobile vertebrae, rib pairs, moving clavicles, attached
+muscle surfaces and planted-foot constraints; geometry and movement claims
+remain explicitly unreviewed (`work/phase-3/ANATOMY-AUDIT.md`).
 
 ## Remaining work
 
-After review findings arrive, trace each report to its exact movement and claim,
-correct geometry, wording or attribution, record the outcome as `reviewed` or
-`disputed`, rerun the affected checks, and complete the Phase 6 validation
-record.
+The Phase 6 workflow in [plan.md](plan.html) traces each received report to its
+movement and claim, corrects geometry, wording or attribution, records the
+outcome as reviewed or disputed, and reruns the affected checks. The approved
+140-study expansion is implemented; its completion does not establish
+practitioner acceptance.
 
 ## Optional later
 
-A public successor remains a separate decision with its own rights and
-trademark review. Further collection expansion should follow validation
-evidence, while replacing the fitted reference with subject-specific clinical
-data would be a different product and claim surface (`plan.md` §5).
+Replacing fitted reference anatomy with subject-specific clinical data would
+be a separate product with different claims ([plan.md](plan.html) §5).
+Measured forces, muscle activation and individualized biomechanical inference
+remain outside the illustrative model ([spec.md](spec.html)).

@@ -31,12 +31,6 @@ async function installPile(page) {
     selectionDelays: new Map(),
     history: [],
     savedSelections: [{id: 'saved-reading', name: 'Reading queue', expression: 'folder:Reading/*', count: 834}],
-    redirects: [{
-      id: 'item-1', title: 'Bookmark 1: a useful article with enough title context',
-      current_url: 'https://example0.com/read/1', final_url: 'https://example1.com/read/2',
-      final_url_key: 'https://example1.com/read/2', captured_at: '2026-09-08T01:00:00Z', mode: 'merge',
-      destination: {id: 'item-2', title: 'Bookmark 2: a useful article with enough title context', url: 'https://example1.com/read/2'},
-    }],
     authorizedUsers: [
       {email: 'julie.duffield@gmail.com', type: 'user'},
       {email: 'krnovak@gmail.com', type: 'admin'},
@@ -100,9 +94,6 @@ async function installPile(page) {
         {id: 'error:err:timeout', kind: 'error', name: 'err:timeout', expression: 'tag-key:err%3Atimeout', count: 1},
       ]}});
     }
-    if (request.method() === 'GET' && url.pathname === '/api/redirect-proposals') {
-      return route.fulfill({json: {proposals: backend.redirects}});
-    }
     if (request.method() === 'GET' && url.pathname === '/api/session') {
       return route.fulfill({json: {
         collection_id: requestCollectionId || 'pile',
@@ -151,18 +142,6 @@ async function installPile(page) {
       backend.history = backend.history.filter(row => row.expression !== body.expression);
       backend.history.unshift({expression: body.expression, used_at: new Date().toISOString()});
       return route.fulfill({status: 201, json: backend.history[0]});
-    }
-    if (request.method() === 'POST' && url.pathname === '/api/redirect-proposals/accept') {
-      const proposal = backend.redirects.find(row => row.id === body.item_id);
-      if (!proposal) return route.fulfill({status: 400, json: {error: 'That redirect proposal is no longer available'}});
-      backend.items = backend.items.filter(item => item.id !== proposal.id);
-      backend.redirects = backend.redirects.filter(row => row.id !== proposal.id);
-      return route.fulfill({json: {
-        kind: 'redirect', mode: proposal.mode,
-        changes: [{item_id: proposal.id, destination_item_id: proposal.destination.id}],
-        backlog: backend.items.filter(item => !item.verdict).length,
-        session: backend.session,
-      }});
     }
     if (request.method() === 'POST' && url.pathname === '/api/authorized-users') {
       const email = body.email.trim().toLowerCase();
@@ -371,34 +350,6 @@ test('Open choice buttons show whether a proposal, saved selection, or previous 
   await previous.selectOption('site:first.example');
   await expect(openPrevious).toHaveCSS('color', 'rgb(23, 63, 67)');
   await expect(openPrevious).toHaveCSS('background-color', 'rgb(211, 232, 225)');
-});
-
-test('recorded redirects show both URLs and merge only after explicit confirmation', async ({page}) => {
-  const backend = await installPile(page);
-  await page.setViewportSize({width: 1600, height: 900});
-  await page.goto('https://pile.test/');
-  await page.locator('#selector > summary').click();
-
-  const redirects = page.getByLabel('Redirected URLs');
-  const apply = page.getByRole('button', {name: 'Use destination'});
-  await expect(redirects).toContainText('Redirected URLs (1)');
-  await expect(apply).toBeDisabled();
-  await redirects.selectOption('item-1');
-  await expect(apply).toBeEnabled();
-  await expect(page.locator('#redirect-details')).toContainText('Merge with “Bookmark 2');
-  await expect(page.locator('#redirect-details')).toContainText('https://example0.com/read/1 → https://example1.com/read/2');
-
-  page.once('dialog', dialog => dialog.dismiss());
-  await apply.click();
-  await expect(page.locator('#status')).toHaveText('Redirect change cancelled.');
-  expect(backend.items).toHaveLength(10_000);
-
-  page.once('dialog', dialog => dialog.accept());
-  await apply.click();
-  await expect(page.locator('#status')).toHaveText('Merged the redirected bookmark into the existing destination as one undoable action.');
-  await expect(page.locator('#count')).toHaveText('9,999');
-  await expect(redirects).toContainText('No redirected URLs');
-  expect(backend.items).toHaveLength(9_999);
 });
 
 test('Import accepts a file dropped beside the file chooser', async ({page}) => {
@@ -983,8 +934,8 @@ test('sweep scope dropdown switches the action to the entire current selection',
   page.once('dialog', async dialog => { prompt = dialog.message(); await dialog.accept(); });
   await page.locator('#sweep-rest').click();
 
-  await expect(page.locator('#status')).toHaveText('Applied the verdict to all 4 items in the current selection.');
-  expect(prompt).toContain('Apply Junk to all 4 items in the current selection?');
+  await expect(page.locator('#status')).toHaveText('Verdicts saved for all 4 items in the current selection.');
+  expect(prompt).toContain('Apply Junk to all 4 items in the current selection, using any pending card choices instead?');
   expect(backend.items.every(item => item.verdict === 'junk')).toBe(true);
 });
 

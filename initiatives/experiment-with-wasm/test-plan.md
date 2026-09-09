@@ -23,3 +23,35 @@
 Four website checks compare every release file against `work/site/` except `demo.json`, verify the complete wish and local links/anchors, follow both app links through a plain static HTTP server and exercise them after networking is disabled, and check a 390-pixel layout with contained table scrolling. App HTML hashes must remain unchanged. Capture the final landing, findings and Demo TOC screenshots after the root build, then verify the branch preview after CI publishes it.
 
 Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site/` directory to exercise the staged preview without requiring `demos/` to change. Use the default target for the complete release comparison when publishing to production.
+
+## Browser compatibility follow-up
+
+- Run all three Playwright suites with `WASM_BROWSER=firefox`; keep the default Chromium projects unchanged for CI.
+- Run the static demo with `WASM_BROWSER=webkit WASM_DEVICE='iPad Pro 11'` to exercise its mobile user agent, 834 × 1194 viewport, touch input, offline post-load actions and reload persistence.
+- Test downloaded files in the installed Safari and Firefox applications, including a separate-copy backup restore, before claiming direct-file compatibility.
+- Treat Playwright WebKit as engine evidence, not as an installed Safari or physical-iPad result. Keep actual-iPad Files/Home Screen testing open until a person supplies that result.
+
+## Online controls
+
+- Import an export URL, fetch inert website metadata and a real image, and verify reload/full-backup retention without changing original fields or attached pictures.
+- Exercise explicit Microlink screenshot mode, blocked direct websites, HTTP 429, cancellation and phone layout. Embedded remote HTML must not execute scripts or request tracking images.
+- Search an online address, choose NOAA and CHS stations, verify five-day output and the correct provider/datum, then exercise cached fallback and return to the local model.
+- Cancel a slow station request, choose a new coast, and verify the old request cannot replace the new location.
+- Check transport timeouts, download limits, credential omission, malformed provider data, partial catalogue failure, cache limits and quota failures.
+- Preserve all existing WASM parity and offline tests. Check live NOAA, Photon and Microlink separately from deterministic fixtures, and report provider/browser failures explicitly.
+
+
+### Default online regression checks
+
+- Submit San Diego through Show tides; verify Photon and NOAA requests, station 9410170, MLLW, and five days without clicking separate online controls.
+- Resolve a beach/street address absent from the bundled catalogue through the same form.
+- Distinguish city/county labels, use provider ranking for online places, retain choices for ambiguous offline names/stations, and preserve the 25 km / 0.6 automatic match thresholds.
+- Verify CHS automatic selection with controlled responses, failed search/prediction fallback, no-network local-only use, and late/cancelled requests.
+- Verify coordinates, deep links, geolocation, Today/history and return to the model use the intended source path. Offline tests explicitly disable online availability; they do not rely on the default being offline.
+
+### Website parity corrections
+
+- Submit plain San Diego with ranked California city, county, Texas city and university results; load NOAA Broadway automatically and keep alternative places in collapsed options.
+- Confirm First day/Today controls are absent and old date fragments cannot move the forecast away from coast-local today.
+- Submit Maroochydore online and offline; require Mooloolaba, Bureau attribution, LAT and Australia/Brisbane today. Compare all five days with the hosted provider, including additional Sydney DST and Cocos cases.
+- Move the clock to a five-day window crossing December 31; require an explicit annual-coverage explanation and a full model forecast.

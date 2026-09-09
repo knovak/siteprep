@@ -1,5 +1,6 @@
+import {verdictsForItems} from './verdict-plan.mjs';
+import {isUpdatedTag, updatedTag} from './updated-tag.mjs';
 import {compileSelectionSql, selectionDictionaries, validateCursor} from './selection-sql.mjs';
-import {mergeRedirectItems, redirectProposal} from './redirect-proposals.mjs';
 
 function cardItem({tags_json, capture_image_ref, capture_source, capture_state, capture_error_tag, capture_page_title, capture_description, capture_displayable, ...item}, collectionId) {
   return {
@@ -43,7 +44,6 @@ function chunks(values, size) {
   return result;
 }
 
-const VERDICTS = new Set(['keeper', 'junk', 'archive', 'needs-more-time']);
 const D1_MAX_BOUND_PARAMETERS = 100;
 
 function d1ChunkSize(requestedSize, reservedParameters = 0) {
@@ -605,91 +605,6 @@ export class D1BookmarkStore {
     return this.getCapture(capture.url_key);
   }
 
-  async listRedirectProposals(collectionId) {
-    await this.assertCollectionReadable(collectionId);
-    const [candidateResult, itemResult] = await this.db.batch([
-      this.db.prepare(
-        `SELECT i.id, i.url, i.url_key, i.title, c.final_url, c.captured_at
-         FROM items i JOIN captures c ON c.url_key = i.url_key
-         WHERE i.collection_id = ? AND c.final_url IS NOT NULL
-         ORDER BY c.captured_at DESC, i.title, i.id`,
-      ).bind(collectionId),
-      this.db.prepare(
-        'SELECT id, url, url_key, title FROM items WHERE collection_id = ?',
-      ).bind(collectionId),
-    ]);
-    const byUrl = new Map((itemResult.results ?? []).map(item => [item.url_key, item]));
-    return (candidateResult.results ?? []).flatMap(source => {
-      try {
-        const initial = redirectProposal(source, source);
-        if (!initial) return [];
-        return [redirectProposal(source, source, byUrl.get(initial.final_url_key))];
-      } catch {
-        return [];
-      }
-    }).filter(Boolean);
-  }
-
-  async redirectItemSnapshot(collectionId, itemId) {
-    const row = await this.db.prepare(
-      `SELECT i.id, i.collection_id, i.url, i.url_key, i.title, i.title_key, i.note,
-              i.added_at, i.ingested_at, i.verdict, i.verdict_at,
-              COALESCE((SELECT json_group_array(tag) FROM
-                (SELECT tag FROM tags WHERE item_id = i.id ORDER BY tag)), '[]') AS tags_json
-       FROM items i WHERE i.collection_id = ? AND i.id = ? LIMIT 1`,
-    ).bind(collectionId, itemId).first();
-    if (!row) return null;
-    const {tags_json, ...item} = row;
-    return {...item, tags: JSON.parse(tags_json || '[]')};
-  }
-
-  async applyRedirectProposal(collectionId, {itemId, at, sessionId, actionId}) {
-    await this.assertCollectionWritable(collectionId);
-    const session = await this.getSession(collectionId, sessionId);
-    if (session.ended_at) throw new Error('The sitting has ended');
-    const proposal = (await this.listRedirectProposals(collectionId)).find(candidate => candidate.id === itemId);
-    if (!proposal) throw new Error('That redirect proposal is no longer available');
-    const source = await this.redirectItemSnapshot(collectionId, itemId);
-    const destination = proposal.destination
-      ? await this.redirectItemSnapshot(collectionId, proposal.destination.id)
-      : null;
-    if (!source || (proposal.mode === 'merge' && !destination)) {
-      throw new Error('That redirect proposal is no longer available');
-    }
-
-    const statements = [];
-    if (proposal.mode === 'merge') {
-      const merged = mergeRedirectItems(source, destination);
-      statements.push(this.db.prepare(
-        `UPDATE items SET added_at = ?, note = ?, title_key = ?, verdict = ?, verdict_at = ?
-         WHERE id = ? AND collection_id = ?`,
-      ).bind(merged.added_at, merged.note, merged.title_key, merged.verdict, merged.verdict_at, destination.id, collectionId));
-      statements.push(this.db.prepare(
-        `INSERT OR IGNORE INTO tags (item_id, tag)
-         SELECT ?, tag FROM tags WHERE item_id = ?`,
-      ).bind(destination.id, source.id));
-      statements.push(this.db.prepare(
-        'DELETE FROM items WHERE id = ? AND collection_id = ?',
-      ).bind(source.id, collectionId));
-    } else {
-      statements.push(this.db.prepare(
-        'UPDATE items SET url = ?, url_key = ? WHERE id = ? AND collection_id = ? AND url_key = ?',
-      ).bind(proposal.final_url, proposal.final_url_key, source.id, collectionId, source.url_key));
-    }
-    statements.push(this.db.prepare(
-      `INSERT INTO triage_actions
-       (id, collection_id, session_id, action_kind, payload_json, created_at, undone_at)
-       VALUES (?, ?, ?, 'redirect', ?, ?, NULL)`,
-    ).bind(actionId, collectionId, sessionId, JSON.stringify({mode: proposal.mode, source, destination}), at));
-    await this.db.batch(statements);
-    return {
-      kind: 'redirect', mode: proposal.mode,
-      changes: [{item_id: source.id, destination_item_id: destination?.id ?? source.id}],
-      backlog: await this.countUntriagedItems(collectionId),
-      session: await this.getSession(collectionId, sessionId),
-    };
-  }
-
   async applyCaptureError(collectionId, urlKey, errorTag) {
     await this.assertCollectionWritable(collectionId);
     await this.db.prepare(
@@ -956,15 +871,40 @@ export class D1BookmarkStore {
     };
   }
 
-  async applyVerdict(collectionId, {itemIds, verdict, at, sessionId, actionId}) {
+  async updatedTagsFor(collectionId, ids) {
+    const existing = new Map(ids.map(id => [id, []]));
+    for (const batch of chunks(ids, d1ChunkSize(this.batchSize, 4))) {
+      const placeholders = batch.map(() => '?').join(', ');
+      const rows = await this.db.prepare(
+        `SELECT i.id, t.tag FROM items i LEFT JOIN tags t ON t.item_id = i.id
+         WHERE i.collection_id = ? AND i.id IN (${placeholders})`,
+      ).bind(collectionId, ...batch).all();
+      for (const row of rows.results ?? []) if (isUpdatedTag(row.tag)) existing.get(row.id).push(row.tag);
+    }
+    return existing;
+  }
+
+  updatedTagStatements(collectionId, ids, stamp) {
+    return chunks(ids, d1ChunkSize(this.batchSize, 4)).flatMap(batch => {
+      const placeholders = batch.map(() => '?').join(', ');
+      return [
+        this.db.prepare(`DELETE FROM tags WHERE substr(tag, 1, 10) = 'updated_at' AND item_id IN
+          (SELECT id FROM items WHERE collection_id = ? AND id IN (${placeholders}))`).bind(collectionId, ...batch),
+        this.db.prepare(`INSERT OR IGNORE INTO tags (item_id, tag)
+          SELECT id, ? FROM items WHERE collection_id = ? AND id IN (${placeholders})`).bind(stamp, collectionId, ...batch),
+      ];
+    });
+  }
+
+  async applyVerdict(collectionId, {itemIds, verdict, itemVerdicts, at, sessionId, actionId}) {
     await this.assertCollectionWritable(collectionId);
-    if (!VERDICTS.has(verdict)) throw new Error(`Unsupported verdict: ${verdict}`);
+    const assignments = verdictsForItems(itemIds, verdict, itemVerdicts);
     const session = await this.getSession(collectionId, sessionId);
     if (session.ended_at) throw new Error('The sitting has ended');
     const ids = [...new Set(itemIds)];
     if (!ids.length) throw new Error('At least one item is required');
     const found = [];
-    for (const batch of chunks(ids, this.batchSize)) {
+    for (const batch of chunks(ids, d1ChunkSize(this.batchSize, 4))) {
       const placeholders = batch.map(() => '?').join(', ');
       const result = await this.db.prepare(
         `SELECT id, verdict, verdict_at FROM items
@@ -976,31 +916,37 @@ export class D1BookmarkStore {
     for (const id of ids) {
       if (!byId.has(id)) throw new Error(`Unknown item in collection: ${id}`);
     }
-    const changes = ids
-      .map(id => byId.get(id))
-      .filter(item => item.verdict !== verdict)
-      .map(item => ({item_id: item.id, verdict: item.verdict, verdict_at: item.verdict_at}));
+    const stamp = updatedTag(at);
+    const previous = await this.updatedTagsFor(collectionId, ids);
+    const changes = ids.map(id => byId.get(id)).map(item => ({
+      item_id: item.id, verdict: item.verdict, verdict_at: item.verdict_at,
+      previous_updated_tags: previous.get(item.id), updated_tag: stamp,
+    }));
     if (changes.length) {
-      const statements = [];
-      for (const batch of chunks(changes.map(change => change.item_id), this.batchSize)) {
-        const placeholders = batch.map(() => '?').join(', ');
-        statements.push(this.db.prepare(
-          `UPDATE items SET verdict = ?, verdict_at = ?
-           WHERE collection_id = ? AND id IN (${placeholders})`,
-        ).bind(verdict, at, collectionId, ...batch));
+      const statements = this.updatedTagStatements(collectionId, ids, stamp);
+      for (const value of new Set(assignments.values())) {
+        const group = ids.filter(id => assignments.get(id) === value);
+        for (const batch of chunks(group, d1ChunkSize(this.batchSize, 4))) {
+          const placeholders = batch.map(() => '?').join(', ');
+          statements.push(this.db.prepare(
+            `UPDATE items SET verdict = ?, verdict_at = ?
+             WHERE collection_id = ? AND id IN (${placeholders})`,
+          ).bind(value, at, collectionId, ...batch));
+        }
       }
       statements.push(this.db.prepare(
         `INSERT INTO triage_actions
          (id, collection_id, session_id, action_kind, payload_json, created_at, undone_at)
          VALUES (?, ?, ?, 'verdict', ?, ?, NULL)`,
-      ).bind(actionId, collectionId, sessionId, JSON.stringify({changes, verdict, verdict_at: at}), at));
+      ).bind(actionId, collectionId, sessionId, JSON.stringify({changes, verdict, item_verdicts: Object.fromEntries(assignments), verdict_at: at}), at));
       statements.push(this.db.prepare(
         'UPDATE triage_sessions SET items_judged = items_judged + ? WHERE id = ? AND collection_id = ?',
       ).bind(changes.length, sessionId, collectionId));
       await this.db.batch(statements);
     }
     return {
-      changes: changes.map(change => ({item_id: change.item_id, verdict, verdict_at: at})),
+      changes: changes.map(change => ({item_id: change.item_id, verdict: assignments.get(change.item_id), verdict_at: at,
+        added_tags: [stamp], removed_tags: change.previous_updated_tags})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };
@@ -1017,7 +963,7 @@ export class D1BookmarkStore {
 
     const found = new Set();
     const existing = new Map(ids.map(id => [id, new Set()]));
-    for (const batch of chunks(ids, this.batchSize)) {
+    for (const batch of chunks(ids, d1ChunkSize(this.batchSize, 4))) {
       const placeholders = batch.map(() => '?').join(', ');
       const rows = await this.db.prepare(
         `SELECT i.id, t.tag FROM items i LEFT JOIN tags t ON t.item_id = i.id
@@ -1030,12 +976,16 @@ export class D1BookmarkStore {
     }
     for (const id of ids) if (!found.has(id)) throw new Error(`Unknown item in collection: ${id}`);
 
-    const changes = ids.map(id => ({item_id: id, tags: wanted.filter(tag => !existing.get(id).has(tag))})).filter(change => change.tags.length);
+    const stamp = updatedTag(at);
+    const changes = ids.map(id => ({item_id: id,
+      tags: wanted.filter(tag => !isUpdatedTag(tag) && !existing.get(id).has(tag)),
+      previous_updated_tags: [...existing.get(id)].filter(isUpdatedTag), updated_tag: stamp,
+    }));
     if (changes.length) {
       const changedIds = changes.map(change => change.item_id);
-      const statements = [];
-      for (const tag of wanted) {
-        for (const batch of chunks(changedIds.filter(id => !existing.get(id).has(tag)), this.batchSize)) {
+      const statements = this.updatedTagStatements(collectionId, changedIds, stamp);
+      for (const tag of wanted.filter(tag => !isUpdatedTag(tag))) {
+        for (const batch of chunks(changedIds.filter(id => !existing.get(id).has(tag)), d1ChunkSize(this.batchSize, 4))) {
           if (!batch.length) continue;
           const placeholders = batch.map(() => '?').join(', ');
           statements.push(this.db.prepare(
@@ -1053,7 +1003,8 @@ export class D1BookmarkStore {
     }
     return {
       kind: 'tag-apply',
-      changes: changes.map(change => ({item_id: change.item_id, added_tags: change.tags})),
+      changes: changes.map(change => ({item_id: change.item_id, added_tags: [...change.tags, stamp],
+        removed_tags: change.previous_updated_tags})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };
@@ -1122,47 +1073,6 @@ export class D1BookmarkStore {
     if (!action) return {changes: [], backlog: await this.countUntriagedItems(collectionId), session};
     const payload = JSON.parse(action.payload_json);
     const changes = Array.isArray(payload.changes) ? payload.changes : [];
-    if (action.action_kind === 'redirect') {
-      const {mode, source, destination} = payload;
-      const statements = [];
-      if (mode === 'merge') {
-        if (!destination) throw new Error('The redirect merge history is incomplete');
-        statements.push(this.db.prepare(
-          `UPDATE items SET url = ?, url_key = ?, title = ?, title_key = ?, note = ?,
-             added_at = ?, ingested_at = ?, verdict = ?, verdict_at = ?
-           WHERE id = ? AND collection_id = ?`,
-        ).bind(destination.url, destination.url_key, destination.title, destination.title_key,
-          destination.note, destination.added_at, destination.ingested_at, destination.verdict,
-          destination.verdict_at, destination.id, collectionId));
-        statements.push(this.db.prepare('DELETE FROM tags WHERE item_id = ?').bind(destination.id));
-        statements.push(this.db.prepare(
-          'INSERT INTO tags (item_id, tag) SELECT ?, value FROM json_each(?)',
-        ).bind(destination.id, JSON.stringify(destination.tags)));
-        statements.push(this.db.prepare(
-          `INSERT INTO items
-           (id, collection_id, url, url_key, title, title_key, note, added_at, ingested_at, verdict, verdict_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        ).bind(source.id, collectionId, source.url, source.url_key, source.title, source.title_key,
-          source.note, source.added_at, source.ingested_at, source.verdict, source.verdict_at));
-        statements.push(this.db.prepare(
-          'INSERT INTO tags (item_id, tag) SELECT ?, value FROM json_each(?)',
-        ).bind(source.id, JSON.stringify(source.tags)));
-      } else {
-        statements.push(this.db.prepare(
-          'UPDATE items SET url = ?, url_key = ? WHERE id = ? AND collection_id = ?',
-        ).bind(source.url, source.url_key, source.id, collectionId));
-      }
-      statements.push(this.db.prepare(
-        'UPDATE triage_actions SET undone_at = ? WHERE id = ? AND collection_id = ?',
-      ).bind(at, action.id, collectionId));
-      await this.db.batch(statements);
-      return {
-        kind: 'redirect',
-        changes: [{item_id: source.id, destination_item_id: destination?.id ?? source.id}],
-        backlog: await this.countUntriagedItems(collectionId),
-        session: await this.getSession(collectionId, sessionId),
-      };
-    }
     const statements = action.action_kind === 'tag-apply'
       ? changes.flatMap(change => change.tags.map(tag => this.db.prepare(
         'DELETE FROM tags WHERE item_id = ? AND tag = ?',
@@ -1175,6 +1085,15 @@ export class D1BookmarkStore {
         : changes.map(change => this.db.prepare(
           'UPDATE items SET verdict = ?, verdict_at = ? WHERE id = ? AND collection_id = ?',
         ).bind(change.verdict, change.verdict_at, change.item_id, collectionId));
+    // Old actions have no timestamp metadata and retain their original undo behavior.
+    for (const change of changes) {
+      if (!change.updated_tag) continue;
+      statements.push(this.db.prepare('DELETE FROM tags WHERE item_id = ? AND tag = ?').bind(change.item_id, change.updated_tag));
+      for (const tag of change.previous_updated_tags || []) statements.push(this.db.prepare(
+        `INSERT OR IGNORE INTO tags (item_id, tag)
+         SELECT id, ? FROM items WHERE collection_id = ? AND id = ?`,
+      ).bind(tag, collectionId, change.item_id));
+    }
     statements.push(this.db.prepare(
       'UPDATE triage_actions SET undone_at = ? WHERE id = ? AND collection_id = ?',
     ).bind(at, action.id, collectionId));
@@ -1189,10 +1108,10 @@ export class D1BookmarkStore {
     return {
       kind: action.action_kind,
       changes: action.action_kind === 'tag-apply'
-        ? changes.map(change => ({item_id: change.item_id, removed_tags: change.tags}))
+        ? changes.map(change => ({item_id: change.item_id, removed_tags: [...change.tags, ...(change.updated_tag ? [change.updated_tag] : [])], added_tags: change.previous_updated_tags || []}))
         : action.action_kind === 'tag-remove'
           ? changes.map(change => ({item_id: change.item_id, added_tags: change.tags}))
-          : changes,
+          : changes.map(change => ({...change, added_tags: change.previous_updated_tags || [], removed_tags: change.updated_tag ? [change.updated_tag] : []})),
       backlog: await this.countUntriagedItems(collectionId),
       session: await this.getSession(collectionId, sessionId),
     };

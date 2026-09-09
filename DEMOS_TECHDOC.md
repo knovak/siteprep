@@ -66,7 +66,7 @@ cut its link to the initiative that produced it. Set either field by editing
 - optional local or web links from `demo.json` when metadata is present
 - featured entries first, then reverse-chronological activity (using the
   associated initiative when `initiative` is present)
-- curated descriptions for special demos that need stable tutorial/version/code-folder links (`world_migration_atlas` and `SBDC Night Sky`)
+- curated descriptions for special demos that need stable tutorial and documentation links (`world_migration_atlas` and `SBDC Night Sky`); SBDC shows "Slideshow tutorial" and "Documentation and code folder", with its main title linking to the current demo
 - an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file; when a formatted `prompts.html` is also present, the main link opens that page and a parenthetical "text" link opens the original text file
 
 

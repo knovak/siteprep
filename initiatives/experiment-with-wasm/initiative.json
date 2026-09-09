@@ -1,7 +1,7 @@
 {
-  "title": "experiment with wasm",
+  "title": "Experiment with Wasm",
   "summary": "Convert an existing web application into a standalone browser application powered by WebAssembly.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [
     {
@@ -13,15 +13,16 @@
   "todo": [
     {
       "id": "verify-other-browsers",
-      "title": "Verify static and downloaded app use, persistence and recovery in Safari, Firefox and on iPad",
-      "state": "actionable",
+      "title": "Verify downloaded app use, persistence and recovery on a physical iPad",
+      "state": "blocked",
       "value": "medium",
       "effort": "medium",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "data:physical iPad findings for opening both downloads from Files, persistence, backup recovery, touch layout and Tide Here cold startup; desktop Safari and Firefox pass, and iPad Pro 11 WebKit emulation passes hosted workflows"
     },
     {
-      "id": "refining-improvements",
-      "title": "Propose optional improvements as a pull request, from better documentation to suggested features",
+      "id": "expand-online-provider-checks",
+      "title": "Expand live provider and station-time-zone checks across representative US and Canadian coasts",
       "state": "actionable",
       "value": "medium",
       "effort": "medium",
@@ -29,9 +30,9 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-09-07T18:57:01Z",
-    "commit": "1676997afffee81fad7b40a642f0cd62391058ad",
-    "digest": "390c659d487247a2993eafaa5588b0d223a79a0a"
+    "generated_at": "2026-09-09T06:02:55Z",
+    "commit": "fb88acabcd94b2d86222bd950dcc277502329048",
+    "digest": "4a8a4ce67ef4d5695aa9c65f8c98733fff67da92"
   },
   "deployments": [
     {
@@ -40,9 +41,9 @@
       "destination": "experiment-with-wasm",
       "root_html": "index.html",
       "prod": {
-        "deployed_at": "2026-09-07T20:06:34Z",
-        "commit": "35499ea6bb642716c5755892e97fefec79ede303",
-        "tree": "d7745b3c06434fb7c4de54b5c63f0833ce5207bc"
+        "deployed_at": "2026-09-09T08:18:24Z",
+        "commit": "24c4835e7bae4b0b8da6f657e4cf5dec152d7194",
+        "tree": "8f3aedad95bdbae54ec51052026498af3a7da95f"
       }
     }
   ]

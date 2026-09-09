@@ -15,3 +15,12 @@ The user asked, "can you do the same for tide-here?" Add a second standalone app
 ## 2026-09-07 follow-up: a static demo
 
 Extend PR #467 with the original wish, findings and both sample applications as a static website under `demos/`. The first page briefly explains WASM before linking to Bookmark Sorter and Tide Here. The published demo carries its runtime files in full, preserves source provenance, explains data persistence and iPad findings, and remains ready for review without merging automatically.
+
+## 2026-09-08 follow-up: internet data
+
+Enable as much internet access as browser rules and public services permit in both applications. Add usable online controls while preserving their local computation and offline inputs. Make source, cached data and failure states visible. Deliver a ready-for-review PR and test preview.
+
+
+### Normal online flow (September 8 clarification)
+
+Show tides resolves ordinary place names and addresses online and requests official station predictions without requiring separate online buttons. Clear place/station matches resolve automatically, ambiguity is shown as a choice, and an unavailable online service produces a labelled local fallback. Preserve a local-only mode and apply the same behavior to location, history, Today and deep links.

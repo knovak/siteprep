@@ -123,15 +123,6 @@ tags union, the earliest `add_date` wins, and an existing verdict is never
 overwritten by an import. The original URL is kept alongside the normalised one,
 because it is what the user actually saved.
 
-**Recorded redirects are proposals, not ingestion.** A capture whose request
-lands on a different HTTP(S) URL appears in the Select panel with the observed
-date and both complete URLs. Choosing it still changes nothing until the user
-confirms. Confirmation replaces the saved URL when the destination is new to
-that collection; when the normalized destination is already present, it merges
-the source into that item using the import rules above. Either path is one
-undoable sitting action. The global capture observation stays unchanged while
-the confirmed bookmark change remains collection-scoped.
-
 ## 5. Data model
 
 Core records, written as a relational sketch. The deployed schema also carries

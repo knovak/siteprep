@@ -75,9 +75,6 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.match(html, /surrounding a value with <code>\*<\/code> matches it anywhere/);
   assert.match(html, /title:\*court-drama\*/);
   assert.match(html, /topic:modern-art/);
-  assert.match(html, /id="redirect-proposals"/);
-  assert.match(html, /id="apply-redirect"/);
-  assert.match(html, /Nothing changes until you choose one and confirm it/);
   assert.match(html, /href="https:\/\/knovak\.github\.io\/siteprep\/initiatives\/bookmark-sorter\/README\.html"[^>]*>Full documentation<\/a>/);
   assert.doesNotMatch(html, /prompt\('Collection name'/);
   assert.match(html, /textContent = text/);
@@ -96,54 +93,6 @@ test('pile app serves the upload/list surface and imports through its API', asyn
   assert.equal(payload.backlog, 3);
   assert.equal(payload.items.length, 2);
   assert.equal(payload.collection_id, 'pile');
-});
-
-test('redirect API offers dated replacements and merges an existing destination only after acceptance', async () => {
-  const store = new AppStore();
-  store.createCollection({id: 'pile', name: 'Pile'});
-  const source = store.insertItem({
-    collection_id: 'pile', url: 'https://old.example/story', url_key: 'https://old.example/story',
-    title: 'Moved story', title_key: 'moved-story', note: 'Source note', added_at: '2020-01-01T00:00:00Z',
-    ingested_at: '2026-09-08T00:00:00Z', verdict: 'keeper', verdict_at: '2026-09-08T00:00:00Z',
-  });
-  const destination = store.insertItem({
-    collection_id: 'pile', url: 'https://new.example/story', url_key: 'https://new.example/story',
-    title: 'Canonical story', title_key: 'canonical-story', note: 'Destination note', added_at: '2021-01-01T00:00:00Z',
-    ingested_at: '2026-09-08T00:00:00Z', verdict: 'archive', verdict_at: '2026-09-08T00:00:00Z',
-  });
-  store.addTags(source.id, ['src:old']);
-  store.addTags(destination.id, ['src:new']);
-  store.upsertCapture({
-    url_key: source.url_key, source: 'none', state: 'pass1-gap', captured_at: '2026-09-08T00:30:00Z',
-    image_ref: null, image_hash: null, page_title: null, description: null, favicon_url: null,
-    error_tag: null, image_candidate: null, content_type: null, width: null, height: null, byte_size: null,
-    final_url: destination.url,
-  });
-  let sequence = 0;
-  const app = createTestApp({storeFactory: () => store, idFactory: prefix => `${prefix}-${++sequence}`});
-
-  const listed = await (await app.fetch(new Request('https://pile.test/api/redirect-proposals'))).json();
-  assert.equal(listed.proposals.length, 1);
-  assert.equal(listed.proposals[0].mode, 'merge');
-  assert.equal(listed.proposals[0].captured_at, '2026-09-08T00:30:00Z');
-  assert.equal(store.countItems('pile'), 2, 'listing is read-only');
-
-  const session = await (await app.fetch(new Request('https://pile.test/api/session', {
-    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({action: 'start'}),
-  }))).json();
-  const accepted = await (await app.fetch(new Request('https://pile.test/api/redirect-proposals/accept', {
-    method: 'POST', headers: {'content-type': 'application/json'},
-    body: JSON.stringify({session_id: session.id, item_id: source.id}),
-  }))).json();
-  assert.equal(accepted.mode, 'merge');
-  assert.equal(store.countItems('pile'), 1);
-  assert.deepEqual(store.listAllItems('pile')[0].tags, ['src:new', 'src:old']);
-
-  const undone = await (await app.fetch(new Request('https://pile.test/api/undo', {
-    method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: session.id}),
-  }))).json();
-  assert.equal(undone.kind, 'redirect');
-  assert.equal(store.countItems('pile'), 2);
 });
 
 test('verdicts update the backlog and a marked-set action undoes as one step', async () => {

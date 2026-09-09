@@ -6,14 +6,8 @@
 
 ## Done
 
-Evaluated and converted both applications into self-contained HTML files: Bookmark Sorter uses SQLite WASM, while Tide Here runs its original harmonic engine inside WASM with 65,203 coastal points and 170,946 searchable places. Eleven integration tests and ten offline Chromium browser tests cover application behavior, persistence, recovery and tide calculation parity.
-
-The static demo under `demos/experiment-with-wasm/` includes a WASM introduction, both apps and downloads, the original wish, findings, licences and provenance. Four website checks verify the complete copies, navigation, offline app use and phone layout; reproducible source and build tools remain in the initiative.
-
-## Remaining work
-
-Verify static and downloaded-file behavior, persistence and recovery in Safari, Firefox and on a real iPad before claiming support. Propose optional refinements through review as the demo gets used.
+Both single-file applications (Bookmark Sorter and Tide Here) support internet data alongside offline use and are published in the static demo. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website's Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples. findings.md now records the lessons the experiment set out to learn: WASM runtime speed on small data sets, the need to explicitly enable internet access, browser CORS blocking some services, data persisting independently of code, and the difficulty of keeping a website and a WASM fork in sync. The demonstration and learning goals in wish.md are met, and the initiative is now dormant.
 
 ## Optional later
 
-Home Screen installation with explicit offline caching is deferred. Bookmark Sorter's remote screenshot capture and cloud account administration, and Tide Here's live national-provider services, are outside the standalone editions.
+Expanding live provider and station-time-zone checks across representative US and Canadian coasts, and verifying downloaded app use, persistence and recovery on a physical iPad, remain in the todo list for a future revisit. Home Screen offline installation, larger-database persistence improvements and faster Tide Here startup remain optional improvements from improvements.md. These are separate from the completed online controls and existing embedded WASM engines.

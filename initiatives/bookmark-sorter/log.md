@@ -702,6 +702,14 @@ These are local fixtures, not a hosted latency measurement. The waiting
 production-source reconciliation from deploy-record/bookmark-sorter is carried
 with this substantive change. No Site deployment is part of this update.
 
-## 2026-09-08 — Offer confirmed URL replacements from recorded final_url values, including a merge when the destination is already in the pile
+## 2026-09-09 — Timestamp tags, string comparisons and per-bookmark controls
 
-Added dated redirect review with explicit confirmation, collision merging, and exact one-action undo across memory and D1 stores.
+Added a single refreshed `updated_at:` tag for each manual tag-add or verdict action, matching the `tag_run` timestamp format and preserving exact Undo. Added generic strict string comparisons in selections, including partial dates. Each bookmark now offers K/A/N quick verdict buttons below + and a small title-copy control after its title. The same behavior is maintained in the hosted and standalone applications. Tests cover SQL/WASM membership, bulk updates, timestamp replacement, undo, clipboard payloads and individual controls with other items marked. Production publication remains a separate release.
+
+## 2026-09-09 — Choose card verdicts locally, save them on sweep
+
+Changed K/A/N to local pending choices so taps never wait for a database save. Buttons are now 20px squares with a dark pressed state; a second tap clears the choice. Sweeping sends the chosen verdicts and dropdown fallback in one request, stamps the affected items together, and records one Undo action. Choices survive paging, filtering and collection switches during the open page, remain available after failed saves, and clear on successful verdict saves or reload. An explicit choice can override a previously judged item. The hosted app and WASM fork share this behavior; production publication remains separate.
+
+## 2026-09-09 — Release
+
+Released to production — ChatGPT Site, version 8, `7d862b9`. 7 commit(s) since the previous release. <https://bookmark-sorter.ken-novak.chatgpt.site/> See releases.md.

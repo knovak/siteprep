@@ -22,7 +22,8 @@ for (const app of applications) {
   if (html.length !== app.bytes || sha(html) !== app.hash) throw new Error(`${app.name}: rebuild the application before packaging the demo.`);
 }
 const wish = await readFile(join(initiative,'wish.md'),'utf8');
-const lead = wish.split(/\n\s*\n/).find(part=>part.trim() && !part.startsWith('#'));
+const originalWish = wish.split(/\n## \d{4}-\d{2}-\d{2}[^\n]*\n/).at(-1);
+const lead = originalWish.split(/\n\s*\n/).find(part=>part.trim() && !part.startsWith('#'));
 if (!lead) throw new Error('The initiative wish has no text.');
 const findings = await readFile(join(initiative,'findings.md'),'utf8');
 const headings = [{id:'the-original-wish',title:'The original wish'}];
@@ -49,7 +50,7 @@ try {
   }
   await copyFile(join(work,'demo-src/styles.css'),join(stage,'styles.css'));
   await copyFile(join(work,'demo-src/prompts.txt'),join(stage,'prompts.txt'));
-  for (const document of ['wish','findings','evaluation','verification']) await copyFile(join(initiative,document+'.md'),join(stage,document+'.txt'));
+  for (const document of ['wish','findings','evaluation','verification','improvements']) await copyFile(join(initiative,document+'.md'),join(stage,document+'.txt'));
   const provenance = {schema:'experiment-with-wasm/demo/v1',repository:'https://github.com/knovak/siteprep',
     sourceInitiative:'experiment-with-wasm',sourceArtifact:'work/site',
     note:'Static release snapshot. Application HTML is copied byte for byte. Source initiative names, relative artifact names and commits identify provenance; they are not runtime dependencies.',

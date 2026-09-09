@@ -139,13 +139,6 @@ export function renderPilePage({isAdmin = false} = {}) {
     .selection-panel .primary { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
     .selection-panel .choice-action { color: var(--ink); background-color: var(--control-bg); }
     .selection-panel .choice-action[data-selection-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
-    .redirect-review { display: grid; grid-template-columns: minmax(240px, 1fr) auto minmax(280px, 1.4fr); gap: 8px; align-items: center; border-top: 1px solid var(--line); padding: 10px 12px 12px; }
-    .redirect-review select, .redirect-review button { min-width: 0; min-height: 32px; border: 1px solid var(--control-line); border-radius: 12px; padding: 4px 9px; color: var(--ink); background-color: var(--surface); }
-    .redirect-review button { border-color: transparent; background-color: var(--control-bg); }
-    .redirect-review button[data-selection-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
-    .redirect-details { min-width: 0; color: var(--muted); font-size: .76rem; }
-    .redirect-details p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .redirect-details code { color: var(--ink); font-size: .74rem; }
     .tag-control { min-width: 0; display: flex; align-items: stretch; }
     .selection-panel .tag-control #tag-selection { flex: 1 1 auto; border-color: transparent; border-radius: 12px 0 0 12px; color: var(--ink); background-color: var(--control-bg); }
     .selection-panel .tag-control #tag-selection[data-tag-ready="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
@@ -207,6 +200,24 @@ export function renderPilePage({isAdmin = false} = {}) {
     .tag-popover { position: fixed; z-index: 30; width: max-content; max-width: min(360px, calc(100vw - 16px)); max-height: min(300px, calc(100dvh - 16px)); overflow: auto; border: 1px solid var(--control-line); border-radius: 9px; padding: 8px 10px; color: var(--ink); background-color: var(--surface); box-shadow: 0 10px 32px var(--popover-shadow); cursor: text; font-size: .84rem; line-height: 1.45; user-select: text; white-space: pre-wrap; }
     .verdict-label { margin-top: 6px; color: var(--muted); font-size: .66rem; font-weight: 600; text-transform: uppercase; }
     .mark { position: absolute; top: 7px; right: 7px; width: 28px; height: 28px; border: 1px solid var(--control-line); border-radius: 50%; padding: 0; color: var(--ink); background-color: var(--surface); font-weight: 700; }
+    .card-verdicts { position: absolute; top: 40px; right: 11px; display: flex; flex-direction: column; gap: 4px; }
+    :root[data-grid-rows="3"] .card-verdicts { flex-direction: row; }
+    .card-verdict { width: 20px; height: 20px; min-height: 0; border: 1px solid var(--control-line); border-radius: 5px; padding: 0; color: var(--ink); background-color: var(--surface); font-size: 11px; font-weight: 600; }
+    .card-verdict[data-card-verdict="keeper"] { color: var(--green-ink); background-color: var(--green-bg); }
+    .card-verdict[data-card-verdict="archive"] { color: var(--blue-ink); background-color: var(--blue-bg); }
+    .card-verdict[data-card-verdict="needs-more-time"] { color: var(--amber-ink); background-color: var(--amber-bg); }
+    .card-verdict[aria-pressed="true"] { color: var(--surface); background-color: var(--ink); border-color: var(--ink); box-shadow: inset 0 2px 3px #0006; transform: translateY(1px); font-weight: 800; }
+    .card-verdict:focus-visible, .copy-title:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+    .card-verdict:disabled { opacity: .5; cursor: wait; }
+    .bookmark-card h2 { display: flex; align-items: flex-start; }
+    .title-text { display: -webkit-box; min-width: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
+    :root[data-grid-rows="3"] .title-text { -webkit-line-clamp: 2; }
+    :root[data-grid-rows="3"][data-grid-columns="12"] .title-text { -webkit-line-clamp: unset; }
+    .copy-title { flex: 0 0 1em; position: relative; display: inline-block; vertical-align: -.1em; width: 1em; height: 1em; min-height: 0; margin-left: .3em; border: 0; padding: 0; color: var(--muted); background: transparent; font: inherit; }
+    .copy-title .copy-icon::before, .copy-title .copy-icon::after { width: .5em; height: .55em; border-width: 1px; border-radius: 1px; }
+    .copy-title .copy-icon::before { top: .1em; left: .1em; }
+    .copy-title .copy-icon::after { top: .3em; left: .3em; }
+    .copy-title:hover, .copy-title[data-copied="true"] { color: var(--link); }
     .mark[aria-pressed="true"] { border-color: var(--primary); color: var(--on-primary); background-color: var(--primary); }
     .copy-url { position: absolute; top: 7px; left: 7px; width: 28px; height: 28px; border: 1px solid var(--control-line); border-radius: 50%; padding: 0; color: var(--ink); background-color: var(--surface); }
     .copy-url:hover, .copy-url:focus-visible { border-color: var(--focus); color: var(--link); }
@@ -249,9 +260,6 @@ export function renderPilePage({isAdmin = false} = {}) {
       .selection-panel { display: flex; overflow-x: auto; }
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
       .selection-panel button { flex-basis: auto; }
-      .redirect-review { display: flex; overflow-x: auto; }
-      .redirect-review > * { flex: 0 0 min(78vw, 280px); }
-      .redirect-review button { flex-basis: auto; }
       .page-controls { display: flex; }
       .file-tools form, #import-form, #export-form { grid-template-columns: 1fr; }
       .import-file-picker { grid-template-columns: 1fr; }
@@ -259,7 +267,15 @@ export function renderPilePage({isAdmin = false} = {}) {
       .admin-menu-content { top: 118px; max-height: calc(100dvh - 130px); }
       .admin-user-form { grid-template-columns: minmax(0, 1fr) 92px; }
       .admin-user-form button { grid-column: 1 / -1; }
-      .toolbar button { min-height: 42px; padding-inline: 12px; }
+      .toolbar { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; overflow: visible; }
+      .toolbar .spacer { display: none; }
+      .toolbar button { min-height: 42px; padding-inline: 4px; }
+      #sweep-verdict { grid-row: 2; grid-column: 1 / 3; min-width: 0; }
+      .sweep-control { grid-row: 2; grid-column: 3 / -1; min-width: 0; }
+      .toolbar #sweep-rest { flex: 1; }
+      .sweep-mode-picker { width: 28px; flex-shrink: 0; }
+      #mark-count { grid-row: 3; grid-column: 1 / 3; align-self: center; }
+      .page-controls { grid-row: 3; grid-column: 3 / -1; justify-content: flex-end; }
       .bookmark-card { padding: 18px; }
       .capture { min-height: 44%; margin: -18px -18px 12px; }
       .bookmark-card h2 { max-width: 90%; font-size: 1.45rem; -webkit-line-clamp: 5; }
@@ -296,21 +312,22 @@ export function renderPilePage({isAdmin = false} = {}) {
       <h3>Card and action buttons</h3>
       <ul>
         <li><strong>+</strong> marks cards; then Keep, Junk, Archive, or Needs-time applies that verdict to the marked set. With no marks, the verdict applies to the focused card.</li>
+        <li><strong>K / A / N</strong> below each card’s + chooses Keep, Archive, or Needs-time for the next sweep. A pressed button is a pending choice; tap it again to clear it. Choices stay while you browse this collection but are not saved until you sweep. Reloading clears pending choices. The overlapping squares after the title copy its text.</li>
         <li><strong>Undo</strong> or <kbd>U</kbd> reverses the last verdict or tagging action in the active sitting.</li>
-        <li><strong>Sweep untriaged</strong> applies the chosen sweep verdict only to untriaged cards on the visible page, then advances one page. Use its arrow to choose <strong>Sweep all selected</strong>, which applies the verdict to the entire open selection after showing a confirmation count.</li>
+        <li><strong>Sweep untriaged</strong> saves the pressed card choices and uses the dropdown verdict for other untriaged cards on the visible page, then advances one page. A card with a pressed choice is included even if it already has a verdict. Use its arrow to choose <strong>Sweep all selected</strong>, which applies pending choices and the dropdown verdict to the entire open selection after showing a confirmation count.</li>
         <li><strong>Previous / Next</strong> changes pages without changing verdicts.</li>
         <li><strong>Day / Night</strong> changes the colors without changing your layout or bookmarks. Day uses Cream and teal; Night uses Dark slate. This browser remembers your choice. Buttons use compact, rounded pastel washes with regular-weight labels. Marked cards have an outline (light grey at night); teal shows the focused card.</li>
         <li><strong>Page layout</strong> immediately changes the number of rows and columns in a wide window. Compact windows continue to fit fewer, larger cards.</li>
         <li><strong>Tag items</strong> adds the entered tags to marked cards, or to the entire open selection when nothing is marked. Use its arrow to choose <strong>Untag items</strong> and remove the entered tags from the same set.</li>
         <li><strong>Import</strong> accepts one or more bookmark HTML or Sorter JSON files through Choose Files or the neighboring drop target. Dropping selects the files; Import files processes them in order into the collection selected when you start. Each file has its own result; a failed file does not stop the remaining files. The source tag applies to every HTML file in the batch.</li>
         <li><strong>Open proposal / saved / previous</strong> uses a neutral background until its chooser has a target, then a soft mint wash in Day or a muted teal wash in Night.</li>
-        <li><strong>Redirected URLs</strong> lists destinations observed during metadata capture. Nothing changes until you choose one and confirm it. If the destination is already in this collection, the two bookmarks merge; Undo restores the original bookmark or pair.</li>
         <li><strong>Export</strong> downloads either the current collection or the open selection as importable JSON, including tags and verdicts.</li>
         ${isAdmin ? '<li><strong>Admin</strong> contains sitting controls, demo-template creation, the authorized-user list editor, and metadata capture. Show sitting displays the durable sitting record and offers a JSON export. It appears only for users listed as administrators.</li><li><strong>Capture gaps</strong> under Admin is currently unavailable because fallback screenshot capture is not enabled.</li>' : ''}
         <li>Click a title to open its URL in a new tab; use the overlapping-squares icon to copy the URL.</li>
       </ul>
       <h3>Selection expressions</h3>
       <p>In <strong>Select and tag</strong>, the <strong>Verdicts</strong> checkboxes filter every selection. All five start checked. Changing them immediately filters the open selection and refreshes automatic proposal counts; proposals with no matches disappear. Clearing every checkbox selects nothing. With only Keep and Needs-time checked, an expression is treated as <code>(verdict:keep or verdict:needs-time) and (your expression)</code>. Saving or exporting the current selection includes this filter.</p>
+      <p>Adding tags or setting a verdict replaces the item’s <code>updated_at:</code> tag with the current UTC time, in the same <code>YYYY-MM-DDTHH:mm:ss</code> format as <code>tag_run:</code>. Undo restores its previous timestamp.</p>
       <p>Open matching items by typing an expression, then choosing <strong>Open selection</strong>. Titles, folder paths, tags, and source names use lowercase search keys: punctuation, symbols, and spaces become a single dash. A tag's prefix colon remains, so <code>Topic:Modern Art</code> becomes <code>topic:modern-art</code>. A trailing <code>*</code> matches the beginning of a normalized value; surrounding a value with <code>*</code> matches it anywhere.</p>
       <ul>
         <li><code>site:example.com</code> — items from one site.</li>
@@ -319,6 +336,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         <li><code>folder:*modern-art*</code> — items whose normalized bookmark folder path contains that text.</li>
         <li><code>topic:*modern-art*</code> — items whose normalized tag value contains that text; ordinary tags need no extra <code>tag:</code> prefix.</li>
         <li><code>in:2026-08-19</code> — items imported on that date.</li>
+        <li><code>tag_run:&gt;2026-09</code> or <code>updated_at:&lt;2027</code> — compare the original value after a tag’s colon as a string, using strict &gt; or &lt;. Partial dates are allowed. Any tag prefix supports this syntax; <code>updated_at*</code> finds timestamp tags.</li>
         <li><code>verdict:keep</code>, <code>verdict:junk</code>, <code>verdict:archive</code>, <code>verdict:needs-time</code>, or <code>verdict:untriaged</code> — current verdict.</li>
         <li><code>image:present</code>, <code>image:failed</code>, or <code>image:none</code> — stored picture status.</li>
         <li><code>collection:&lt;id&gt;</code> — collection scope; the interface adds the current collection automatically.</li>
@@ -428,11 +446,6 @@ export function renderPilePage({isAdmin = false} = {}) {
           <button id="open-previous" class="choice-action" data-selection-ready="false" type="button">Open previous</button>
           <span id="selection-summary">All items</span>
         </section>
-        <section class="redirect-review" aria-label="Redirected URL proposals">
-          <select id="redirect-proposals" aria-label="Redirected URLs"><option value="">Checking recorded redirects…</option></select>
-          <button id="apply-redirect" data-selection-ready="false" type="button" disabled>Use destination</button>
-          <div id="redirect-details" class="redirect-details" aria-live="polite"><p>No recorded redirect selected.</p></div>
-        </section>
       </details>
       <details id="exporter">
         <summary>Export</summary>
@@ -487,7 +500,6 @@ export function renderPilePage({isAdmin = false} = {}) {
       savedSelections: document.querySelector('#saved-selections'), openSaved: document.querySelector('#open-saved'),
       previousSelections: document.querySelector('#previous-selections'), openPrevious: document.querySelector('#open-previous'),
       proposals: document.querySelector('#proposals'), openProposal: document.querySelector('#open-proposal'),
-      redirectProposals: document.querySelector('#redirect-proposals'), applyRedirect: document.querySelector('#apply-redirect'), redirectDetails: document.querySelector('#redirect-details'),
       tagInput: document.querySelector('#tag-input'), tagSelection: document.querySelector('#tag-selection'), tagMode: document.querySelector('#tag-mode'), tagModePicker: document.querySelector('.tag-mode-picker'),
       sweepVerdict: document.querySelector('#sweep-verdict'), sweepRest: document.querySelector('#sweep-rest'), sweepMode: document.querySelector('#sweep-mode'),
       selectionSummary: document.querySelector('#selection-summary'),
@@ -510,7 +522,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       document.documentElement.dataset.theme = elements.themeMode.value;
       try { localStorage.setItem('bookmark-sorter-theme', elements.themeMode.value); } catch { /* The mode still works for this page. */ }
     });
-    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], redirects: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, redirectRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
+    const state = {prefetch: null, sweeping: false, importInProgress: false, collectionId: '', collections: [], templates: [], canEditTemplates: false, collectionEditing: '', collectionTotal: 0, total: 0, backlog: 0, selectionBacklog: 0, baseExpression: '', expression: '', captures: null, captureInProgress: false, offset: 0, items: [], visible: 16, buffer: 8, columns: 8, focused: 0, marked: new Set(), pendingVerdicts: new Map(), session: null, sittingReport: null, loading: false, windowRequest: 0, resizeTimer: null, saved: [], proposals: [], history: [], selectionToolsRequest: 0, proposalsRequest: 0, tagPopoverAnchor: null, tagPopoverTimer: null, tagPopoverSelecting: false};
 
     async function api(path, options = {}, collectionId = state.collectionId) {
       const headers = new Headers(options.headers || {});
@@ -552,6 +564,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       setFocus(current - state.offset);
     }
     function updateProgress() {
+      for (const button of elements.grid.querySelectorAll('.card-verdict')) button.disabled = state.sweeping || state.loading;
       elements.count.textContent = state.collectionTotal.toLocaleString();
       elements.backlog.textContent = state.backlog.toLocaleString();
       const judged = Number(state.session?.items_judged || 0);
@@ -627,6 +640,21 @@ export function renderPilePage({isAdmin = false} = {}) {
         elements.tagPopover.style.top = Math.max(margin, top) + 'px';
       });
     }
+    function renderTags(values) {
+      const tags = document.createElement('div');
+      tags.className = 'tags';
+      const allTags = values || [];
+      for (const value of allTags.slice(0, 3)) {
+        const tag = addText(tags, 'span', 'tag', value);
+        tag.tabIndex = 0;
+        tag.setAttribute('aria-label', value + '. All tags: ' + allTags.join(', '));
+        tag.addEventListener('pointerenter', () => showTagPopover(tag, allTags));
+        tag.addEventListener('pointerleave', () => hideTagPopover());
+        tag.addEventListener('focus', () => showTagPopover(tag, allTags));
+        tag.addEventListener('blur', () => hideTagPopover());
+      }
+      return tags;
+    }
     function renderCard(item, index) {
       const card = document.createElement('article');
       card.id = 'item-' + item.id;
@@ -645,34 +673,57 @@ export function renderPilePage({isAdmin = false} = {}) {
       card.append(capture);
       addText(card, 'span', 'site', host(item.url));
       const heading = document.createElement('h2');
+      heading.setAttribute('aria-label', item.title);
+      const titleText = document.createElement('span'); titleText.className = 'title-text';
       const href = externalUrl(item.url);
       if (href) {
         const titleLink = document.createElement('a');
         titleLink.href = href; titleLink.target = '_blank'; titleLink.rel = 'noopener noreferrer'; titleLink.textContent = item.title;
         titleLink.addEventListener('click', event => event.stopPropagation());
-        heading.append(titleLink);
-      } else heading.textContent = item.title;
+        titleText.append(titleLink);
+      } else titleText.textContent = item.title;
+      heading.append(titleText);
+      const copyTitle = document.createElement('button');
+      copyTitle.type = 'button'; copyTitle.className = 'copy-title'; copyTitle.title = 'Copy title';
+      copyTitle.setAttribute('aria-label', 'Copy title for ' + item.title);
+      const titleIcon = document.createElement('span'); titleIcon.className = 'copy-icon'; titleIcon.setAttribute('aria-hidden', 'true');
+      copyTitle.append(titleIcon);
+      copyTitle.addEventListener('click', async event => {
+        event.stopPropagation();
+        try {
+          await navigator.clipboard.writeText(item.title);
+          copyTitle.dataset.copied = 'true';
+          elements.status.textContent = 'Copied title: ' + item.title;
+          setTimeout(() => { delete copyTitle.dataset.copied; }, 1200);
+        } catch { elements.status.textContent = 'Could not copy this title.'; }
+      });
+      heading.append(copyTitle);
       card.append(heading);
       if (item.note) addText(card, 'p', 'note', item.note);
-      const tags = document.createElement('div');
-      tags.className = 'tags';
-      const allTags = item.tags || [];
-      for (const value of allTags.slice(0, 3)) {
-        const tag = addText(tags, 'span', 'tag', value);
-        tag.tabIndex = 0;
-        tag.setAttribute('aria-label', value + '. All tags: ' + allTags.join(', '));
-        tag.addEventListener('pointerenter', () => showTagPopover(tag, allTags));
-        tag.addEventListener('pointerleave', () => hideTagPopover());
-        tag.addEventListener('focus', () => showTagPopover(tag, allTags));
-        tag.addEventListener('blur', () => hideTagPopover());
-      }
+      const tags = renderTags(item.tags);
       card.append(tags);
-      addText(card, 'span', 'verdict-label', verdictText(item.verdict));
+      addText(card, 'span', 'verdict-label', pendingChoices().has(item.id) ? verdictText(pendingChoices().get(item.id)) + ' on sweep' : verdictText(item.verdict));
       const mark = document.createElement('button');
       mark.type = 'button'; mark.className = 'mark'; mark.textContent = state.marked.has(item.id) ? '✓' : '+';
       mark.setAttribute('aria-label', 'Mark ' + item.title); mark.setAttribute('aria-pressed', String(state.marked.has(item.id)));
       mark.addEventListener('click', event => { event.stopPropagation(); toggleMark(index); });
       card.append(mark);
+      const verdicts = document.createElement('div'); verdicts.className = 'card-verdicts';
+      for (const [letter, value] of [['K', 'keeper'], ['A', 'archive'], ['N', 'needs-more-time']]) {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'card-verdict'; button.textContent = letter;
+        button.dataset.cardVerdict = value;
+        button.title = verdictText(value) + ' on next sweep';
+        button.setAttribute('aria-label', verdictText(value) + ': ' + item.title);
+        button.setAttribute('aria-pressed', String(pendingChoices().get(item.id) === value));
+        button.disabled = state.sweeping || state.loading;
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          togglePendingVerdict(item, value);
+        });
+        verdicts.append(button);
+      }
+      card.append(verdicts);
       const copy = document.createElement('button');
       copy.type = 'button'; copy.className = 'copy-url'; copy.title = 'Copy URL';
       copy.setAttribute('aria-label', 'Copy URL for ' + item.title);
@@ -978,7 +1029,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function loadSelectionTools() {
       const requestId = ++state.selectionToolsRequest;
       const collectionId = state.collectionId;
-      const [saved, history] = await Promise.all([api('/api/selections'), api('/api/selection-history'), loadProposals(), loadRedirectProposals()]);
+      const [saved, history] = await Promise.all([api('/api/selections'), api('/api/selection-history'), loadProposals()]);
       if (requestId !== state.selectionToolsRequest || collectionId !== state.collectionId) return;
       state.saved = saved.selections; state.history = history.selections;
       fillSelect(elements.savedSelections, state.saved, 'Saved selections');
@@ -1007,74 +1058,6 @@ export function renderPilePage({isAdmin = false} = {}) {
         updateSelectionActionStates();
         throw error;
       }
-    }
-
-    function renderRedirectDetails() {
-      const selected = state.redirects.find(row => row.id === elements.redirectProposals.value);
-      elements.redirectDetails.replaceChildren();
-      elements.applyRedirect.dataset.selectionReady = String(Boolean(selected));
-      elements.applyRedirect.disabled = !selected;
-      if (!selected) {
-        addText(elements.redirectDetails, 'p', '', state.redirects.length
-          ? 'Choose a recorded redirect to compare both URLs.'
-          : 'No recorded redirects need review in this collection.');
-        return;
-      }
-      const consequence = selected.mode === 'merge'
-        ? 'Merge with “' + selected.destination.title + '”; tags combine and its existing verdict and note win.'
-        : 'Replace this bookmark URL. The captured preview may be refreshed for its new address.';
-      addText(elements.redirectDetails, 'p', '', consequence);
-      const route = addText(elements.redirectDetails, 'p', '', '');
-      addText(route, 'code', '', selected.current_url);
-      route.append(' → ');
-      addText(route, 'code', '', selected.final_url);
-      addText(elements.redirectDetails, 'p', '', 'Observed ' + (selected.captured_at ? new Date(selected.captured_at).toLocaleString() : 'during capture') + ' · confirmation required · undoable');
-    }
-
-    async function loadRedirectProposals() {
-      const requestId = ++state.redirectRequest;
-      const collectionId = state.collectionId;
-      elements.redirectProposals.disabled = true;
-      elements.applyRedirect.disabled = true;
-      try {
-        const data = await api('/api/redirect-proposals');
-        if (requestId !== state.redirectRequest || collectionId !== state.collectionId) return;
-        state.redirects = data.proposals;
-        elements.redirectProposals.replaceChildren(new Option(
-          state.redirects.length ? 'Redirected URLs (' + state.redirects.length.toLocaleString() + ')' : 'No redirected URLs', '',
-        ));
-        for (const row of state.redirects) elements.redirectProposals.append(new Option(
-          (row.mode === 'merge' ? 'Merge · ' : 'Replace · ') + row.title, row.id,
-        ));
-        elements.redirectProposals.disabled = !state.redirects.length;
-        renderRedirectDetails();
-      } catch (error) {
-        if (requestId !== state.redirectRequest || collectionId !== state.collectionId) return;
-        state.redirects = [];
-        elements.redirectProposals.replaceChildren(new Option('Redirects unavailable', ''));
-        renderRedirectDetails();
-      }
-    }
-
-    async function applyRedirect() {
-      const proposal = state.redirects.find(row => row.id === elements.redirectProposals.value);
-      if (!proposal) return;
-      const message = proposal.mode === 'merge'
-        ? 'Merge “' + proposal.title + '” into “' + proposal.destination.title + '”? Tags combine; the destination keeps its existing title, note and verdict. You can undo this action.'
-        : 'Replace this bookmark URL with the recorded destination?\\n\\n' + proposal.current_url + '\\n→ ' + proposal.final_url + '\\n\\nYou can undo this action.';
-      if (!confirm(message)) { elements.status.textContent = 'Redirect change cancelled.'; return; }
-      await startSession();
-      const data = await api('/api/redirect-proposals/accept', {
-        method: 'POST', headers: {'content-type': 'application/json'},
-        body: JSON.stringify({session_id: state.session.id, item_id: proposal.id}),
-      });
-      state.session = data.session; state.backlog = data.backlog;
-      const status = data.mode === 'merge'
-        ? 'Merged the redirected bookmark into the existing destination as one undoable action.'
-        : 'Replaced the bookmark with its confirmed destination as one undoable action.';
-      await loadCollections(state.collectionId);
-      await Promise.all([loadWindow(Math.min(state.offset, Math.max(0, state.collectionTotal - state.visible))), loadSelectionTools()]);
-      elements.status.textContent = status;
     }
 
     async function saveCurrentSelection() {
@@ -1117,7 +1100,7 @@ export function renderPilePage({isAdmin = false} = {}) {
 
     async function sweepCurrentPage() {
       if (state.sweeping || state.loading) return;
-      const ids = state.items.slice(0, state.visible).filter(item => !item.verdict).map(item => item.id);
+      const ids = state.items.slice(0, state.visible).filter(item => !item.verdict || pendingChoices().has(item.id)).map(item => item.id);
       if (!ids.length) {
         const advanced = await pageWindow(1);
         elements.status.textContent = advanced ? 'No untriaged items on that page; showing the next page.' : 'No untriaged items on the final page.';
@@ -1127,6 +1110,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       const collectionId = state.collectionId, expression = state.expression;
       const after = cursorAfterPage(), offset = state.offset, total = state.total, visible = state.visible;
       const verdict = elements.sweepVerdict.value;
+      const itemVerdicts = Object.fromEntries(ids.filter(id => pendingChoices().has(id)).map(id => [id, pendingChoices().get(id)]));
       state.sweeping = true; updateProgress();
       elements.status.textContent = 'Saving verdicts…';
       try {
@@ -1134,7 +1118,7 @@ export function renderPilePage({isAdmin = false} = {}) {
         if (context !== windowContext() || requestId !== state.windowRequest) return;
         const data = await api('/api/verdict', {method: 'POST', preservePrefetch: true,
           headers: {'content-type': 'application/json'}, body: JSON.stringify({
-            session_id: state.session.id, item_ids: ids, verdict, selection: {expression, after},
+            session_id: state.session.id, item_ids: ids, verdict, item_verdicts: itemVerdicts, selection: {expression, after},
           })}, collectionId);
         if (context !== windowContext() || requestId !== state.windowRequest) return;
         patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
@@ -1147,39 +1131,73 @@ export function renderPilePage({isAdmin = false} = {}) {
           invalidatePrefetch();
           await loadWindow(Math.max(0, Math.min(offset, Math.floor((summary.total - 1) / visible) * visible)));
         } else if (summary) updateCounts(summary);
-        if (context === windowContext()) elements.status.textContent = verdictText(verdict) + ' applied to '
-          + data.changes.length.toLocaleString() + ' untriaged item' + (data.changes.length === 1 ? '' : 's')
+        if (context === windowContext()) elements.status.textContent = 'Verdicts saved for '
+          + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's')
           + (advanced ? '; showing the next page.' : '; this is the final page.');
       } catch (error) {
         invalidatePrefetch(); throw error;
       } finally { state.sweeping = false; updateProgress(); }
     }
 
-    async function sweepEntireSelection(confirmed = false) {
-      if (state.sweeping) return;
-      invalidatePrefetch();
-      await startSession();
-      const response = await fetch('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': state.collectionId}, body: JSON.stringify({
-        session_id: state.session.id, expression: state.expression, verdict: elements.sweepVerdict.value, visible: false, confirmed,
-      })});
-      const data = await response.json();
-      if (response.status === 409 && data.confirmation_required) {
-        if (confirm('Apply ' + verdictText(elements.sweepVerdict.value) + ' to all ' + data.count.toLocaleString() + ' items in the current selection?')) return sweepEntireSelection(true);
-        elements.status.textContent = 'Entire-selection action cancelled.'; return;
-      }
-      if (!response.ok) throw new Error(data.error || 'Request failed');
-      invalidatePrefetch();
-      patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
-      elements.status.textContent = 'Applied the verdict to all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the current selection.';
-      await refreshSelectionCounts();
+    async function sweepEntireSelection() {
+      if (state.sweeping || state.loading) return;
+      const context = windowContext(), requestId = state.windowRequest;
+      const collectionId = state.collectionId, expression = state.expression;
+      const verdict = elements.sweepVerdict.value, itemVerdicts = Object.fromEntries(pendingChoices());
+      state.sweeping = true; updateProgress(); invalidatePrefetch();
+      try {
+        await startSession();
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        let confirmed = false;
+        while (true) {
+          const response = await fetch('/api/selection/verdict', {method: 'POST', headers: {'content-type': 'application/json', 'x-bookmark-collection-id': collectionId}, body: JSON.stringify({
+            session_id: state.session.id, expression, verdict, item_verdicts: itemVerdicts, visible: false, confirmed,
+          })});
+          const data = await response.json();
+          if (context !== windowContext() || requestId !== state.windowRequest) return;
+          if (response.status === 409 && data.confirmation_required) {
+            if (!confirm('Apply ' + verdictText(verdict) + ' to all ' + data.count.toLocaleString() + ' items in the current selection, using any pending card choices instead?')) {
+              elements.status.textContent = 'Entire-selection action cancelled.'; return;
+            }
+            confirmed = true; continue;
+          }
+          if (!response.ok) throw new Error(data.error || 'Request failed');
+          invalidatePrefetch();
+          patchChanges(data.changes); state.session = data.session; state.backlog = data.backlog;
+          elements.status.textContent = 'Verdicts saved for all ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + ' in the current selection.';
+          await loadWindow(state.offset);
+          return;
+        }
+      } finally { state.sweeping = false; updateProgress(); }
     }
 
     function updateSweepMode() {
       const allSelected = elements.sweepMode.value === 'selection';
       elements.sweepRest.textContent = allSelected ? 'Sweep all selected' : 'Sweep untriaged';
       elements.sweepRest.title = allSelected
-        ? 'Apply the chosen verdict to every item in the current selection'
-        : 'Apply the chosen verdict to untriaged items on this page';
+        ? 'Apply pending card choices, or the dropdown verdict, to every item in the current selection'
+        : 'Save pending card choices and apply the dropdown verdict to other untriaged items on this page';
+    }
+    function pendingChoices() {
+      if (!state.pendingVerdicts.has(state.collectionId)) state.pendingVerdicts.set(state.collectionId, new Map());
+      return state.pendingVerdicts.get(state.collectionId);
+    }
+    function updatePendingCard(item, card) {
+      const pending = pendingChoices().get(item.id);
+      card.querySelector('.verdict-label').textContent = pending ? verdictText(pending) + ' on sweep' : verdictText(item.verdict);
+      for (const button of card.querySelectorAll('.card-verdict')) {
+        button.setAttribute('aria-pressed', String(button.dataset.cardVerdict === pending));
+      }
+    }
+    function togglePendingVerdict(item, verdict) {
+      if (state.sweeping || state.loading) return;
+      const choices = pendingChoices();
+      if (choices.get(item.id) === verdict) choices.delete(item.id); else choices.set(item.id, verdict);
+      const card = elements.grid.querySelector('[data-item-id="' + CSS.escape(item.id) + '"]');
+      if (card) updatePendingCard(item, card);
+      elements.status.textContent = choices.has(item.id)
+        ? verdictText(verdict) + ' chosen for the next sweep: ' + item.title
+        : 'Choice cleared: ' + item.title;
     }
     function toggleMark(index = state.focused) {
       const item = state.items[index];
@@ -1208,36 +1226,46 @@ export function renderPilePage({isAdmin = false} = {}) {
     async function moveFocus(delta) { if (state.total) await focusAbsolute(state.offset + state.focused + delta); }
     function patchChanges(changes) {
       for (const change of changes) {
-        const item = state.items.find(candidate => candidate.id === change.item_id);
-        if (item) { item.verdict = change.verdict; item.verdict_at = change.verdict_at; }
+        if (Object.hasOwn(change, 'verdict')) pendingChoices().delete(change.item_id);
+        const index = state.items.findIndex(candidate => candidate.id === change.item_id);
+        if (index < 0) continue;
+        const item = state.items[index];
+        if (Object.hasOwn(change, 'verdict')) { item.verdict = change.verdict; item.verdict_at = change.verdict_at; }
+        item.tags = [...new Set([...(item.tags || []).filter(tag => !(change.removed_tags || []).includes(tag)), ...(change.added_tags || [])])].sort();
         const card = elements.grid.querySelector('[data-item-id="' + CSS.escape(change.item_id) + '"]');
-        if (card) { card.dataset.verdict = change.verdict || ''; card.querySelector('.verdict-label').textContent = verdictText(change.verdict); }
+        if (card) {
+          card.dataset.verdict = item.verdict || '';
+          updatePendingCard(item, card);
+          card.querySelector('.tags').replaceWith(renderTags(item.tags));
+        }
       }
     }
     async function applyVerdict(verdict) {
-      if (state.sweeping) return;
-      if (!state.total) return;
-      await startSession();
+      if (state.sweeping || state.loading || !state.total) return;
+      const context = windowContext(), requestId = state.windowRequest;
       const focused = state.items[state.focused];
       const usedMarkedSet = state.marked.size > 0;
       const ids = usedMarkedSet ? [...state.marked] : focused ? [focused.id] : [];
       if (!ids.length) return;
-      const data = await api('/api/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id, item_ids: ids, verdict})});
-      patchChanges(data.changes); state.backlog = data.backlog; state.session = data.session;
-      elements.status.textContent = verdictText(verdict) + ' applied to ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + '.';
-      if (usedMarkedSet) clearMarks(); else updateProgress();
-      await refreshSelectionCounts();
-      await moveFocus(1);
+      state.sweeping = true; updateProgress();
+      try {
+        await startSession();
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        const data = await api('/api/verdict', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id, item_ids: ids, verdict})});
+        if (context !== windowContext() || requestId !== state.windowRequest) return;
+        patchChanges(data.changes); state.backlog = data.backlog; state.session = data.session;
+        elements.status.textContent = verdictText(verdict) + ' applied to ' + data.changes.length.toLocaleString() + ' item' + (data.changes.length === 1 ? '' : 's') + '.';
+        if (usedMarkedSet) clearMarks(); else updateProgress();
+        await refreshSelectionCounts();
+        await moveFocus(1);
+      } finally { state.sweeping = false; updateProgress(); }
     }
     async function undo() {
       if (state.sweeping || !state.session || state.session.ended_at) return;
       const data = await api('/api/undo', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({session_id: state.session.id})});
       state.backlog = data.backlog; state.session = data.session;
       elements.status.textContent = data.changes.length ? 'Undid the last action as one step.' : 'Nothing to undo.';
-      if (data.kind === 'redirect') {
-        await loadCollections(state.collectionId);
-        await Promise.all([loadWindow(state.offset), loadSelectionTools()]);
-      } else if (data.kind === 'tag-apply' || data.kind === 'tag-remove' || (!state.items.length && data.changes.length)) await loadWindow(state.offset);
+      if (data.kind === 'tag-apply' || data.kind === 'tag-remove' || (!state.items.length && data.changes.length)) await loadWindow(state.offset);
       else { patchChanges(data.changes); await refreshSelectionCounts(); }
     }
     async function toggleSession() {
@@ -1337,9 +1365,7 @@ export function renderPilePage({isAdmin = false} = {}) {
       }
       for (const action of report.actions) {
         const changes = Array.isArray(action.payload?.changes) ? action.payload.changes.length : 0;
-        const kind = action.action_kind === 'redirect'
-          ? (action.payload?.mode === 'merge' ? 'Merged a redirected bookmark' : 'Replaced a redirected URL')
-          : action.action_kind === 'tag-apply'
+        const kind = action.action_kind === 'tag-apply'
           ? 'Tagged ' + changes.toLocaleString()
           : action.action_kind === 'tag-remove'
             ? 'Untagged ' + changes.toLocaleString()
@@ -1539,8 +1565,6 @@ export function renderPilePage({isAdmin = false} = {}) {
       const selected = state.proposals.find(row => row.id === elements.proposals.value);
       if (selected) openExpression(selected.expression).catch(error => { elements.status.textContent = error.message; });
     });
-    elements.redirectProposals.addEventListener('change', renderRedirectDetails);
-    elements.applyRedirect.addEventListener('click', () => applyRedirect().catch(error => { elements.status.textContent = error.message; }));
     for (const select of [elements.proposals, elements.savedSelections, elements.previousSelections]) select.addEventListener('change', updateSelectionActionStates);
     elements.tagInput.addEventListener('input', updateTagActionState);
     elements.tagSelection.addEventListener('click', () => changeTagsOnCurrentSelection().catch(error => { elements.status.textContent = error.message; }));
@@ -1626,6 +1650,7 @@ export function renderPilePage({isAdmin = false} = {}) {
     document.addEventListener('keydown', event => {
       if (!elements.helpPanel.hidden) { if (event.key === 'Escape') { event.preventDefault(); setHelp(false); } return; }
       if (event.target.matches('input, textarea, select')) return;
+      if (event.target.closest('button, a') && (event.key === 'Enter' || event.key === ' ')) return;
       const verdict = {k: 'keeper', j: 'junk', a: 'archive', n: 'needs-more-time'}[event.key.toLowerCase()];
       if (verdict) { event.preventDefault(); applyVerdict(verdict).catch(error => { elements.status.textContent = error.message; }); return; }
       if (event.key === ' ') { event.preventDefault(); toggleMark(); return; }

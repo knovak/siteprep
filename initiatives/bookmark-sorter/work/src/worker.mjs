@@ -269,22 +269,6 @@ export function createPileApp({
           })});
         }
 
-        if (request.method === 'GET' && url.pathname === '/api/redirect-proposals') {
-          return json({proposals: await store.listRedirectProposals(collectionId)});
-        }
-
-        if (request.method === 'POST' && url.pathname === '/api/redirect-proposals/accept') {
-          const body = await requestJson(request);
-          if (!body.session_id) throw new Error('Session id is required');
-          if (!body.item_id) throw new Error('Redirect proposal is required');
-          return json(await store.applyRedirectProposal(collectionId, {
-            itemId: body.item_id,
-            sessionId: body.session_id,
-            actionId: idFactory('action'),
-            at: now().toISOString(),
-          }));
-        }
-
         if (request.method === 'GET' && url.pathname === '/api/export') {
           const document = await exportSelection({
             store,
@@ -438,6 +422,7 @@ export function createPileApp({
           const result = await store.applyVerdict(collectionId, {
             itemIds: body.item_ids,
             verdict: body.verdict,
+            itemVerdicts: body.item_verdicts,
             at: now().toISOString(),
             sessionId: body.session_id,
             actionId: idFactory('action'),
@@ -462,6 +447,7 @@ export function createPileApp({
           return json(await store.applyVerdict(collectionId, {
             itemIds: matches.map(item => item.id),
             verdict: body.verdict,
+            itemVerdicts: body.item_verdicts,
             at: now().toISOString(),
             sessionId: body.session_id,
             actionId: idFactory('action'),

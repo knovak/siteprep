@@ -4,9 +4,14 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL, fileURLToPath} from 'node:url';
 const url = new URL('../dist/index.html',import.meta.url).href;
-async function ready(page, target=url) { await page.goto(target); await expect(page.locator('#runtime-status')).toContainText('Ready offline',{timeout:30000}); }
+test.beforeEach(async ({context,page}) => {
+  await page.clock.setFixedTime(new Date('2026-09-07T12:00:00Z'));
+  await context.addInitScript(() => Object.defineProperty(navigator, 'onLine', {get: () => false}));
+  await context.route(/^https?:/, route => route.abort());
+});
+async function ready(page, target=url) { await page.goto(target); await expect(page.locator('#runtime-status')).toContainText('Ready ·',{timeout:30000}); }
 async function forecast(page, coordinates='37.46, -122.44', date='2026-09-07') {
-  await page.locator('#place-input').fill(coordinates); await page.locator('#start-date').fill(date);
+  await page.locator('#place-input').fill(coordinates); await page.clock.setFixedTime(new Date(date+'T12:00:00Z'));
   await page.locator('#show-selection').click(); await expect(page.locator('#result')).toBeVisible();
 }
 
@@ -19,6 +24,7 @@ test('a copied HTML file computes worldwide forecasts with networking disabled',
   await context.setOffline(true);
   try {
     await ready(page,pathToFileURL(copy).href);
+    await page.locator('#online-panel > summary').click();await page.locator('#data-mode').selectOption('local');await page.locator('#online-panel > summary').click();
     for(const coords of ['37.46,-122.44','53.27,-9.05','-15.47,145.25','-33.92,18.42','-36.85,174.76']) {
       await forecast(page,coords); await expect(page.locator('.day-card')).toHaveCount(5);
       expect(await page.locator('.event-group li').count()).toBeGreaterThan(8);
@@ -37,7 +43,7 @@ test('search, alternative point, future date, inland and invalid input behave ho
   await page.locator('#chooser summary').click();await page.locator('#candidate-list button:not(:disabled)').first().click();
   await expect(page.locator('#result')).toBeVisible();expect(await page.locator('#selected-point').textContent()).not.toBe(previous);
   await forecast(page,'53.27,-9.05','2036-09-07');await expect(page.locator('.day-card').first()).toHaveAttribute('data-date','2036-09-07');
-  expect(await page.locator('.day-card').first().textContent()).not.toContain('Today');
+  expect(await page.locator('.day-card').first().textContent()).toContain('Today');
   await page.locator('#place-input').fill('Denver, Colorado');await page.locator('#show-selection').click();
   if(await page.locator('#place-choices').isVisible())await page.locator('#place-list button').first().click();
   await expect(page.locator('#state-title')).toHaveText('No coastal coverage here');await expect(page.locator('#result')).toBeHidden();
@@ -46,10 +52,10 @@ test('search, alternative point, future date, inland and invalid input behave ho
 
 test('history reloads, exports and restores; cleared browser storage leaves model intact',async({page})=>{
   await ready(page);await forecast(page);
-  await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready offline');await expect(page.locator('#history-summary')).toContainText('(1)');
+  await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready ·');await expect(page.locator('#history-summary')).toContainText('(1)');
   await page.locator('#history-summary').click();const download=page.waitForEvent('download');await page.locator('#download-history').click();
   const file=await (await download).path();
-  await page.evaluate(()=>localStorage.clear());await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready offline');await expect(page.locator('#history-summary')).toContainText('(0)');
+  await page.evaluate(()=>localStorage.clear());await page.reload();await expect(page.locator('#runtime-status')).toContainText('Ready ·');await expect(page.locator('#history-summary')).toContainText('(0)');
   await page.locator('#history-summary').click();await page.locator('#import-history').setInputFiles(file);await expect(page.locator('#history-summary')).toContainText('(1)');
   await forecast(page,'53.27,-9.05');
 });

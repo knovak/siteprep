@@ -17,3 +17,48 @@ The user requested: “proceed to do a test deployment as part of this PR. we'll
 **What this settles.** Use the existing demo deployment kind, with `initiatives/migration-atlas/work` as source and `world_migration_atlas` as destination. The repository build publishes the source to a separate Pages preview. This adopts the existing public demo's deployment model; it does not create a separate hosted application.
 
 **What remains open.** The user's test findings and explicit authorization for a production release. The initiative rests at `dormant` after adoption, with blocked testing/release follow-ups, because no additional implementation work was requested. Resume it when those inputs arrive. Historical implementation phases are retained as history, not seeded as new actionable build tasks.
+
+## 2026-09-07 — The development package arrived, and where it goes
+
+The user supplied `migrationatlascomplete2.zip` as the complete July 2026 code
+base, two months after the atlas was written. It holds what the first adoption
+looked for and could not find: `src/core.js`, `src/app.js`, `tools/build.py`,
+the vendored d3 modules, the T1-T7 test suites with their eight goldens, and the
+T8 editorial checklist.
+
+**What this settles.** The package is committed under `lib/`, which is where
+AGENTS.md puts an initiative's capability. The atlas can be changed again: edit
+`lib/data/migrations.json`, run the tests, rebuild. The blocker recorded in
+`test-plan.md` as "recovering the development package is separate work" is
+closed.
+
+**The bundle is reproducible.** The package's own build produced a file 195
+bytes short of the published one, differing in four places: the `<title>`, one
+CSS rule for the header link, the header line carrying the tutorial links, and a
+comment in `app.js` - branding edits made to the bundle after the snapshot was
+taken. They are ported into `lib/src/`, so `python3 lib/tools/build.py` now
+rewrites `work/index.html` byte for byte. The published atlas is provably the
+output of the committed source, which is the property that makes the source
+worth keeping.
+
+**Why `work/` was trimmed.** `work/` is the deployment source: the branch
+preview publishes it and a release copies it to `demos/world_migration_atlas/`.
+It now holds only what is served - `index.html`, `prompts.html`, `prompts.txt`.
+Four things left it. `index-initial.html` was byte-identical to `index.html`, so
+the "initial version" was not one. `dist/migration-atlas.html` was an older
+build than the file beside it, and is now a build output rather than a committed
+file. `src/index.html` was a shell with no JavaScript, superseded by the real
+sources. `data/` is a build input, and belongs with the build. This cuts the
+published preview from 4.8 MB to 1.27 MB.
+
+**What that means for the next release.** A release removes those four from
+`demos/world_migration_atlas/` as well. Nothing links to them: the demo's index
+entry is hardcoded in `scripts/build.sh` and points at the demo root and the two
+tutorial documents. Until someone releases, production keeps serving them, and
+the atlas it serves is byte-identical either way.
+
+**What was not done.** `spec.md` and `plan.md` remain the preserved originals.
+The package's `README.md` matches the one already preserved in `README.md`,
+hash for hash, so nothing was re-adopted. No application behavior changed: the
+only edits to source files are the four that reconcile the build with the
+already-published bundle.
