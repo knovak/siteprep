@@ -64,17 +64,17 @@
         <dt>Scheduled</dt>
         <dd><ul>
           <li>Reconcile the T8 source, quantity, confidence and geography findings</li>
-          <li>Complete the remaining T6/T7 manual accessibility and cross-platform packaging gates</li>
+          <li>Complete the remaining T6/T7 manual accessibility and cross-platform packaging gates — <code>external:manual screen-reader observations and Windows/Linux file-versus-HTTP packaging results; this run verifies macOS engines and keyboard behavior only</code> <em>(clears on its own)</em></li>
         </ul></dd>
         <dt>Done</dt>
-        <dd><p>The self-contained atlas contains 48 migrations and 92 destination records, with animated flows, diaspora circles, filtering, accessible table controls and a reproducible source build. Restored browser suites use the current bundle: 535 core assertions, 88 browser checks against eight inspected macOS goldens, and 24 Chromium/Firefox/WebKit smoke checks passed (<a href="notes.html">notes.md</a>).</p>
-<p>An editorial review covers all 48 entries, including 144 sampled rendering states and targeted source checks. It records four confidence-rule conflicts, quantity/stock and geographic aggregation issues, and evidence gaps; it does not establish T8 acceptance or change the dataset.</p></dd>
+        <dd><p>The atlas contains 48 migrations and 92 destination records. Four confidence conflicts are corrected; stocks, repeated moves and internal displacement have distinct labels. About the data links to the full editorial report, including source locators and unresolved evidence, and the README explains the standards.</p>
+<p>The opening map is blank at 1000; two approximate starts moved to 1001 by the user&#39;s choice. Verification includes 551 core assertions and six desktop/phone offline journeys in Chromium, Firefox and WebKit. The performance requirement is “60 fps is preferred, 30 fps is acceptable” (<a href="test-plan.html">test plan</a>).</p></dd>
         <dt>Remaining work</dt>
-        <dd><p>Phase 5 content iteration and T8 require field-level source evidence and reconciliation of the recorded quantity, confidence, type and map findings. The broader T6/T7 plan still calls for manual screen-reader work, full cross-engine interaction coverage and served/file and platform comparisons beyond the inherited smoke suite (<a href="test-plan.html">test-plan.md</a>).</p></dd>
+        <dd><p>Phase 5 and T8 still require field-level numeric sources, dated stock and cohort evidence, and the remaining destination-specific visual inspections. T6/T7 still need manual screen-reader observations and Windows/Linux runs.</p></dd>
         <dt>Optional later</dt>
-        <dd><p><a href="plan.html">plan.md</a> offers a Tauri desktop wrapper and considers street-level detail through an online alternative. Further movements can be added as research supplies them through the existing dataset-validation and rebuild path.</p></dd>
+        <dd><p>The plan retains an optional Tauri wrapper and an online alternative for street-level detail. New movements can follow the existing dataset-validation and rebuild path as research supplies them.</p></dd>
       </dl>
-      <p class="meta">The last four rows are a written summary of this initiative's own documents, written some time ago and now out of date (2026-09-09). Correct the document it summarises rather than the summary.</p>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-09-09). Correct the document it summarises rather than the summary.</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
@@ -89,9 +89,9 @@
       </ul>
       <ul class="currency">
         <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
-        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-behind">behind main</span> — 1 commit behind main</li>
       </ul>
-      <p class="deployment-status">main is on both test and production · production is current</p>
+      <p class="deployment-status">main is on test, not released · 1 commit(s) unreleased</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-outputs">
