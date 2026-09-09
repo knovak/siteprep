@@ -176,3 +176,16 @@ test('5,600-bookmark workload: import, indexed page/contains query and bulk verd
   assert.equal((await call('/api/selection?expression=verdict:archive')).total,2800);
   t.diagnostic(JSON.stringify({items:5600, import_ms:Math.round(imported-start), query_and_bulk_ms:Math.round(performance.now()-imported), bulk_result_count:result.changed ?? result.changes?.length}));
 });
+
+test('online previews preserve user fields and local pictures, persist in backups, and roll back on quota failure',async()=>{
+  const {runtime,persistence,call,importItems}=await setup();await importItems(records);
+  const item=(await call('/api/items')).items[0];
+  const picture='data:image/png;base64,aGVsbG8=';
+  await runtime.attachImage('personal',item.url_key,picture);
+  await runtime.savePreview('personal',item.url_key,{title:'Fetched title',description:'Fetched description',dataUrl:'data:image/png;base64,d29ybGQ=',mode:'metadata'});
+  const after=(await call('/api/items')).items.find(i=>i.id===item.id);
+  assert.equal(after.title,item.title);assert.equal(after.url,item.url);assert.equal(after.capture_url,picture);assert.equal(after.capture.description,'Fetched description');
+  const backup=await runtime.backup();await runtime.restore(backup);assert.equal((await call('/api/items')).items.find(i=>i.id===item.id).capture.description,'Fetched description');
+  persistence.fail=true;await assert.rejects(runtime.savePreview('personal',item.url_key,{title:'lost',description:'lost',mode:'direct'}),/Quota/);
+  assert.equal((await call('/api/items')).items.find(i=>i.id===item.id).capture.description,'Fetched description');
+});

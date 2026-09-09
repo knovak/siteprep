@@ -62,3 +62,30 @@ Tide Here screenshots are written after the final repository build to `screensho
 Four additional website checks cover complete file equality, the original wish, local links/anchors, Bookmark Sorter sample editing and persistence, Tide Here sample/second-coast calculations and history persistence, and phone layout. They pass in Chromium, Firefox, WebKit and an iPad Pro 11 WebKit/touch emulation. Both app workflows produce no HTTP(S) requests after loading. This is separate from guaranteed offline reopening, which the website does not implement.
 
 The package preserves the standalone app hashes. Source is `work/site/` and the release copy is `demos/experiment-with-wasm/`; CI checks generated-package drift and release equality. Final post-build screenshots are `screenshots/wasm-demo-desktop.png`, `screenshots/wasm-demo-phone.png`, `screenshots/wasm-demo-findings.png` and `screenshots/wasm-demo-toc.png`. Installed Safari is verified; actual iPad use remains unverified.
+
+## 2026-09-08 — Internet access increment
+
+- Bookmark Sorter: 10 Node/WASM/transport tests and 9 Chromium browser tests pass. The 3 new online journeys also pass in Firefox and WebKit.
+- Tide Here: 8 Node/WASM/provider tests and 8 Chromium browser tests pass. The 3 new online journeys also pass in Firefox and WebKit.
+- The downloaded Bookmark Sorter fetched a real Microlink screenshot for `https://example.com/`, rasterized it to PNG and saved it in its local SQLite database. No real user bookmark collection was used.
+- A real Chromium interaction selected SAN FRANCISCO (Golden Gate) through Find official tide stations and loaded 19 high/low events over September 8–12 from NOAA. The page showed NOAA CO-OPS, MLLW, five local-day cards and retrieval time. Photon returned a real Half Moon Bay result.
+- CHS API probes returned station and prediction JSON, but Chromium reported missing CORS headers for both file and loopback-hosted origins. The app's CHS paths are verified with controlled responses and preserve local forecasts on failure. Live Canadian access is not marked verified.
+- The image fixture was replaced with a valid generated PNG after Firefox rejected the original fixture's encoding. The WebKit persistence check blocks HTTP(S) requests before reloading the local file; WebKit's simulated offline network mode itself returned an internal error for file navigation. Existing Chromium tests continue to run the original workflows with networking disabled.
+
+
+## September 8 correction: online first in the normal Tide Here flow
+
+The earlier tests proved only the separate online buttons. The user's San Diego screenshot exposed that the main form still used the offline catalogue and FES2022. The corrected form now prefers online place lookup and official predictions.
+
+- A real Chromium browser submitted `San Diego, California, United States` with Show tides and no additional online clicks. Photon resolved the place and NOAA station **9410170, SAN DIEGO (Broadway)** loaded automatically, 1.3 km away. Five local days (September 8–12) contained **20 events**, labelled NOAA CO-OPS and MLLW.
+- Tide Here now has **9 Node tests and 13 Chromium browser tests**. The **8 online browser journeys also pass Firefox and WebKit**. These cover main-form name/address resolution, clear and ambiguous station selection, cached responses, local-only use, failed-provider fallback, cancellation and newer-place protection, geolocation, deep links and history.
+- The five offline browser journeys still pass with networking disabled. The static-package Tide Here check explicitly sets offline availability before its initial deep link, so it verifies an actual fallback rather than assuming the default stays offline.
+- Canadian live CORS limitations and physical-iPad acceptance remain as recorded above. FES model parity is unchanged.
+
+## September 8 website-parity follow-up
+
+- Plain `San Diego`, with California city/county, Texas city and university matches, now follows the provider ranking. A real Chromium file-origin submission resolved to San Diego, California and automatically loaded NOAA **9410170, SAN DIEGO (Broadway)**, 1.3 km away. September 8 times/heights were 02:14 / -0.20 m, 08:35 / 1.50 m, 13:54 / 0.54 m and 19:58 / 2.07 m, matching the supplied website screenshot. Alternatives remain in collapsed options.
+- A real `Maroochydore` submission resolved online and selected **Mooloolaba**, 3.8 km away, **Bureau of Meteorology 2026 tables**, **LAT**, **Australia/Brisbane**. Its September 9 first day showed 00:49 / 0.32 m, 06:32 / 1.41 m, 12:30 / 0.16 m and 19:00 / 1.97 m. Only Photon was requested for this lookup: official Bureau tides come from the same prepared annual data used by the website, embedded here.
+- The actual Bureau dataset contains **76 ports / 103,597 extrema**. New tests compare five days event-for-event and datum-for-datum with the unchanged hosted provider at Mooloolaba, Sydney across daylight saving, and Cocos. Another test verifies a Maroochydore match and rejects windows outside, or straddling the end of, 2026.
+- The First day input and Today button are absent. All forecasts start today in the selected coast’s zone; old date fragments are ignored. Browser-clock tests cover future model operation and a year-boundary official-table fallback.
+- Tide Here now has **11 Node tests and 14 Chromium journeys** (the existing copied-file model test explicitly selects Local model only, while the new Bureau journey verifies automatic official data offline). The **9 online/official browser journeys pass Firefox and WebKit**. Bookmark Sorter’s previously verified 19 tests are unchanged.

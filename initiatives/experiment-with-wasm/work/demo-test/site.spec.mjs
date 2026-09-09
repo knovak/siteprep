@@ -51,6 +51,7 @@ test('the published Bookmark Sorter opens from the landing page and edits sample
 });
 
 test('the published Tide Here sample uses its embedded model after going offline',async({page,context})=>{
+  await context.addInitScript(() => Object.defineProperty(navigator, 'onLine', {get: () => false}));
   await page.goto('/');const opened=page.waitForEvent('popup');await page.getByRole('link',{name:"see Half Moon Bay's next five days"}).click();const app=await opened;
   await expect(app.locator('#result')).toBeVisible();await expect(app.locator('.day-card')).toHaveCount(5);
   const requests=[];app.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});await context.setOffline(true);
@@ -58,7 +59,7 @@ test('the published Tide Here sample uses its embedded model after going offline
   await expect(app.locator('#result')).toBeVisible();await expect(app.locator('#zone-name')).toContainText('Europe/Dublin');
   expect(await app.locator('.event-group li').count()).toBeGreaterThan(8);
   expect(requests).toEqual([]);await context.setOffline(false);
-  await app.reload();await expect(app.locator('#runtime-status')).toContainText('Ready offline');await expect(app.locator('#history-summary')).toContainText(/\([1-9]/);
+  await app.reload();await expect(app.locator('#runtime-status')).toContainText('Ready ·');await expect(app.locator('#history-summary')).toContainText(/\([1-9]/);
 });
 
 test('landing page and findings remain readable on a phone with contained tables',async({page})=>{

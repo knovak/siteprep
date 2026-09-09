@@ -110,6 +110,18 @@ export async function createRuntime({SQL, schema, persistence, onSaved = () => {
         await store.upsertCapture({url_key: urlKey, image_ref: dataUrl, source: 'screenshot', state: 'local-image', captured_at: new Date().toISOString(), content_type: dataUrl.slice(5, dataUrl.indexOf(';'))});
       }));
     },
+    savePreview(collectionId, urlKey, {title, description, dataUrl, mode}) {
+      return enqueue(() => atomic(async () => {
+        if (dataUrl && (!IMAGE.test(dataUrl) || dataUrl.length > 7 * 1024 * 1024)) throw new Error('The preview picture is too large.');
+        if (!await store.collectionHasUrlKey(collectionId, urlKey)) throw new Error('The bookmark is no longer in this collection.');
+        const previous = await store.getCapture(urlKey);
+        const image = previous?.state === 'local-image' ? previous.image_ref : dataUrl || previous?.image_ref || null;
+        await store.upsertCapture({url_key: urlKey, image_ref: image, source: mode === 'screenshot' ? 'screenshot' : 'og',
+          state: previous?.state === 'local-image' ? 'local-image' : 'online-preview', captured_at: new Date().toISOString(),
+          page_title: String(title || '').slice(0,1000), description: String(description || '').slice(0,4000),
+          content_type: image ? image.slice(5,image.indexOf(';')) : null});
+      }));
+    },
     diagnostics() {
       return {engine: 'SQLite/WASM', sqliteVersion: scalar(binding.database, 'SELECT sqlite_version()'), statements: binding.statements, revision};
     },

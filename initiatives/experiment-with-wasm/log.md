@@ -47,3 +47,32 @@ Opened both downloaded applications in installed Safari 26.6.2 and Firefox 153.0
 ## 2026-09-08 — Propose optional improvements as a pull request, from better documentation to suggested features
 
 Added a prioritized, reviewable menu covering physical-iPad acceptance, a recovery guide, installable offline use, storage health and evidence-led performance options; none is authorized by the proposal.
+
+## 2026-09-08 — Optional online data in both experiments
+
+Added explicit online controls while retaining both offline workflows: Bookmark Sorter URL imports, website metadata, remote picture downloads and named Microlink metadata/screenshots; Tide Here Photon search and NOAA/CHS station/prediction adapters with bounded caches, source/datum labels and cancellation. User bookmark fields and attached pictures are preserved. Live browser probes verified NOAA, Photon and a saved Microlink screenshot. CHS API responses were available outside the browser, but browser CORS blocked live retrieval; the limitation is documented. Rebuilt artifacts and staged preview are prepared in the internet-access PR; this is not a production release.
+
+
+## 2026-09-08 — Correct the normal Tide Here lookup
+
+Responded to the user's San Diego screenshot by routing Show tides, location, Today, history and deep links through Photon and official station predictions. Clear matches resolve automatically using the hosted 25 km / 0.6 station rule; ambiguity opens a chooser, and failures show a local fallback reason. Added a local-only choice and compact source controls. A live form submission loaded 20 NOAA San Diego events without separate online actions; 9 Node and 13 Chromium tests pass, with 8 online journeys also passing Firefox and WebKit. Integrated main's newer Wasm title/collection labels while retaining this PR's functionality. Production remains outside this change.
+
+## 2026-09-08 — Website-parity correction in PR #477
+
+Removed the date row and made coast-local today the only UI date. Matched the hosted geocoder’s ranked-result/settlement preference while keeping alternate matches available. Embedded the original licensed 2026 Bureau annual dataset (76 ports, 103,597 extrema), retaining source provenance, conditions, datums and IANA zones; official-table forecasts work offline and use a visible model fallback when their full five-day window is outside coverage. Real Chromium submissions now send plain San Diego to NOAA Broadway and Maroochydore to Mooloolaba, matching the supplied website results. Added hosted-provider parity tests and online/offline/expiry browser coverage; see verification.md for evidence.
+
+## 2026-09-08 — Make the Bureau build reproducible
+
+The website-parity changes on PR #477 already remove the date controls, select San Diego automatically, and use Mooloolaba Bureau predictions for Maroochydore. Its distribution check exposed differing gzip output across local and CI zlib versions. Committed the prepared Bureau snapshot, verified its checksum and complete content against the hosted source on every build, and made compression regeneration an explicit refresh operation. All 11 Node tests and 14 Chromium journeys pass, now exercising the committed Bureau data. The existing application HTML checksum is preserved. Real searches on the branch preview confirm NOAA Broadway for San Diego and BoM Mooloolaba for Maroochydore, with no place chooser or date control. The tide-source comparison collector now accepts the removed date control as well as older released files.
+
+## 2026-09-08 — Put source details below the forecast
+
+Moved the provider status sentence and Data sources and station options section immediately after the safety notice, ahead of the nearby-model chooser and forecast download. Source and cancellation controls stay available before a forecast is displayed.
+
+## 2026-09-08 — Fit the four Bookmark Sorter tools on one row
+
+Changed the former three-column row to fit Import, Online tools, Select and tag, and Export side by side. Narrow layouts allocate more width to longer labels and open the selected form below the full button row. Online tools now participates in the same exclusive expansion behavior as the other tools.
+
+## 2026-09-09 — Release
+
+Released to production — Demo, `fcc6370`. 14 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.

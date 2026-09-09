@@ -6,14 +6,12 @@
 
 ## Done
 
-Evaluated and converted both applications into self-contained HTML files: Bookmark Sorter uses SQLite WASM, while Tide Here runs its original harmonic engine inside WASM with 65,203 coastal points and 170,946 searchable places. Eleven integration tests and ten offline Chromium browser tests cover application behavior, persistence, recovery and tide calculation parity.
-
-The static demo under `demos/experiment-with-wasm/` includes a WASM introduction, both apps and downloads, the original wish, findings, licences and provenance. Four website checks verify the complete copies, navigation, offline app use and phone layout; reproducible source and build tools remain in the initiative.
+Both single-file applications support internet data and offline use. Bookmark Sorter adds URL imports, pictures and previews; Tide Here resolves ranked online places automatically and prefers official predictions, including the website’s Bureau annual tables for 76 Australian ports. All 44 application tests and four package tests pass; online journeys also pass Firefox and WebKit, and real San Diego and Maroochydore submissions match the website examples.
 
 ## Remaining work
 
-Verify static and downloaded-file behavior, persistence and recovery in Safari, Firefox and on a real iPad before claiming support. Propose optional refinements through review as the demo gets used.
+Expand live provider and station-time-zone checks across representative US and Canadian coasts. Live NOAA, Photon and Microlink retrieval are verified; Canadian data worked in API probes but was blocked by browser-access rules in the live check, so its live browser availability remains unresolved.
 
 ## Optional later
 
-Home Screen installation with explicit offline caching is deferred. Bookmark Sorter's remote screenshot capture and cloud account administration, and Tide Here's live national-provider services, are outside the standalone editions.
+Home Screen offline installation, larger-database persistence improvements and faster Tide Here startup remain optional improvements. These are separate from the completed online controls and existing embedded WASM engines.

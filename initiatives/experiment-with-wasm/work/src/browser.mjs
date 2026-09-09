@@ -1,3 +1,5 @@
+import {capturePreview, imageDataUrl} from './online-bookmarks.mjs';
+import {fetchResource, webUrl} from './network.mjs';
 import initSqlJs from 'sql.js/dist/sql-wasm-browser.js';
 import wasm from 'sql.js/dist/sql-wasm-browser.wasm';
 import schema from '../schema.sql';
@@ -19,6 +21,13 @@ window.bookmarkReady = (async () => {
   const runtime = await createRuntime({SQL, schema, persistence, onSaved: () => { banner.textContent = 'Saved on this device · SQLite / WASM'; }});
   window.bookmarkLocalRequest = runtime.request;
   window.bookmarkRuntime = runtime;
+  window.bookmarkCapturePreview = (collection, item, options) => capturePreview(runtime, collection, item, options);
+  window.bookmarkPictureUrl = async (collection, item, url, signal) => runtime.attachImage(collection, item.url_key, await imageDataUrl(url, {signal}));
+  window.bookmarkFetchExport = async (url, signal) => {
+    const resource = await fetchResource(webUrl(url), {signal, maxBytes: 20*1024*1024});
+    const json = resource.type.includes('json') || new URL(resource.url).pathname.endsWith('.json') || resource.text().trimStart().startsWith('{');
+    return new File([resource.bytes], json ? 'online-bookmarks.json' : 'online-bookmarks.html', {type: json ? 'application/json' : 'text/html'});
+  };
   window.bookmarkAttachImage = async (collection, item, file) => {
     if (file.size > 5 * 1024 * 1024 || !['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) throw new Error('Choose a PNG, JPEG or WebP picture smaller than 5 MB.');
     const dataUrl = await new Promise((resolve, reject) => {
