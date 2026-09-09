@@ -11,22 +11,29 @@ has the commands.
 | T1 | Dataset schema, semantic rules, coordinates, references, invalid-record rejection | Runs. `node lib/tests/test_core.mjs` - 535 assertions, 0 failures on 2026-09-07 |
 | T2 | Population scaling, clock boundaries, camera behavior, deterministic reverse scrubbing | Runs, in the same command |
 | E2, E6 | Coercion spectrum and region spectrum ordering | Runs, in the same command |
-| T3 | Fixed-year and fixed-camera visual regression, reduced motion | Needs Python `playwright`, `numpy`, `Pillow`, and a golden re-baseline |
-| T4 | Timeline, selection, filtering, zoom and pan, keyboard, legends, WebView guards, responsive controls | Needs the same packages |
-| T5 | Playback frame time, first render, bundle size, memory stability | Needs the same packages |
-| T6 | Accessibility automation, contrast, reduced motion; `tests/axe.min.js` is vendored | Needs the same packages |
-| T7 | Chromium, Firefox and WebKit, local file against served | Needs the same packages and all three browsers |
-| T8 | Cited-source review, justified confidence and type | By hand, against `lib/tests/T8_editorial_checklist.md` |
+| T3 | Fixed-year and fixed-camera visual regression, reduced motion | Runs with pinned Python dependencies; eight goldens re-baselined September 8, 2026 |
+| T4 | Timeline, selection, filtering, zoom and pan, keyboard, legends, WebView guards, responsive controls | Runs with the same pinned packages |
+| T5 | Playback frame time, first render, bundle size, memory stability | Runs with the same pinned packages |
+| T6 | Accessibility automation, contrast, reduced motion; `tests/axe.min.js` is vendored | Runs with the same pinned packages |
+| T7 | Chromium, Firefox and WebKit, local file against served | 24/24 inherited smoke checks pass on all three engines; broader packaging gates remain open |
+| T8 | Cited-source review, justified confidence and type | 48-entry review recorded; T8 acceptance remains open |
 
-T1, T2, E2 and E6 need nothing this repository does not already have. The
-browser gates need the Python Playwright stack, which it does not install; that
-is the `run-browser-suites` todo item, not a defect in the suites.
+T1, T2, E2 and E6 use the repository's Node installation. Browser dependencies
+are pinned in `lib/tests/requirements.txt` and installed in a Python virtual
+environment. Both browser suites read `work/index.html`.
 
-**The goldens need re-baselining before T3 means anything.** The eight images in
-`lib/tests/goldens/` were captured on the machine the atlas was written on in
-July 2026, and T3 compares pixels. One `--update-goldens` pass on whichever
-machine will run them comes first; results before that are about font rasterizing,
-not about the atlas.
+On September 8, 2026, the core run passed 535 assertions, the golden-generation
+run passed 79 checks, a fresh golden-comparison run passed 88 checks, and the
+three-engine smoke suite passed 24 checks. See
+[browser verification](notes.html) for reproducible
+commands and exact limitations: the original plan's full T3/T4 cross-engine,
+HTTP/file equivalence, Windows/Linux and manual screen-reader gates are not
+established by the inherited scripts.
+
+The new macOS arm64 goldens were inspected before a separate comparison run;
+re-baselining is still an explicit action, not an automatic failure remedy.
+The [48-entry editorial report](notes.html) documents
+confidence, quantities, sources and map representation that need follow-up.
 
 `validateData()` is shared between the test gate and the in-app loader, so a
 record T1 rejects is a record the running app rejects when it is dropped onto

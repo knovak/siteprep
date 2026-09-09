@@ -6,7 +6,8 @@ from PIL import Image
 from playwright.async_api import async_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-URL = "file://" + os.path.join(ROOT, "dist/migration-atlas.html")
+BUNDLE = os.path.join(os.path.dirname(ROOT), "work/index.html")
+URL = "file://" + BUNDLE
 
 results = []
 def check(name, cond, detail=""):

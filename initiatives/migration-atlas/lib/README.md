@@ -53,11 +53,29 @@ not persist it.
 | `python3 lib/verify.py` | screenshot smoke pass over the built bundle | Python `playwright` |
 | [`lib/tests/T8_editorial_checklist.md`](tests/T8_editorial_checklist.md) | T8 sources, confidence and type, by hand | a reader |
 
-The repository installs Playwright for Node, not for Python, so only the first
-row runs as things stand. The eight images in `tests/goldens/` were captured on
-the machine the atlas was written on; T3 compares against them pixel by pixel,
-so a different machine needs one `python3 lib/tests/test_browser.py
---update-goldens` pass to re-baseline before its results mean anything.
+The repository installs Node Playwright. The Python browser dependencies are
+pinned separately in `tests/requirements.txt`; use a virtual environment:
+
+```bash
+python3 -m venv /tmp/migration-atlas-tests
+/tmp/migration-atlas-tests/bin/python -m pip install -r lib/tests/requirements.txt
+# Only when the matching browser builds are missing:
+/tmp/migration-atlas-tests/bin/python -m playwright install chromium firefox webkit
+/tmp/migration-atlas-tests/bin/python lib/tests/test_browser.py
+/tmp/migration-atlas-tests/bin/python lib/tests/test_crossbrowser.py
+```
+
+Both suites read the current `work/index.html` bundle. On September 8, 2026,
+the eight goldens were deliberately re-baselined on macOS arm64 / Playwright
+1.57.0, followed by an independent 88/88 comparison run and 24/24 cross-browser
+smoke checks. A baseline refresh is explicit: pass `--update-goldens`, inspect
+the eight images, then rerun without that flag. Do not update images simply to
+make an unexplained difference pass.
+
+[Browser verification](../notes.md) records the
+machine, exact coverage and broader T6/T7 gates the inherited suites do not
+implement. [Editorial review](../notes.md) records
+findings for all 48 entries; passing schema tests does not establish T8.
 
 ## Layout
 
