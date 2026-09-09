@@ -27,6 +27,11 @@ documented elsewhere and need no techdoc: code inside an initiative (`lib/`,
 Create pull requests as ready for review by default. Create a draft pull request
 only when the user explicitly asks for a draft.
 
+When the user uses **DUM** (all caps) as an instruction, it means: deploy to
+production, update the PR to record the deployment, and merge the PR if the
+GitHub Actions required for merging succeed. DUM authorizes all three steps,
+in that order.
+
 ### Check-in schedule after opening a pull request
 
 A scheduled check-in costs money every time it fires, whether or not anything
