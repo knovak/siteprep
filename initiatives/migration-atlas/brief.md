@@ -6,27 +6,26 @@
 
 ## Done
 
-The self-contained atlas contains 48 migrations and 92 destination records,
-with animated flows, diaspora circles, filtering, accessible table controls
-and a reproducible source build. Restored browser suites use the current bundle:
-535 core assertions, 88 browser checks against eight inspected macOS goldens,
-and 24 Chromium/Firefox/WebKit smoke checks passed ([notes.md](notes.html)).
+The self-contained atlas contains 48 migrations and 92 destination records.
+Four confidence conflicts are corrected; stocks, repeated moves and internal
+displacement have distinct labels, and detail panels explain schematic map
+points and unreconciled quantities. Population values and coordinates are
+preserved ([reconciliation and evidence](notes.html)).
 
-An editorial review covers all 48 entries, including 144 sampled rendering
-states and targeted source checks. It records four confidence-rule conflicts,
-quantity/stock and geographic aggregation issues, and evidence gaps; it does
-not establish T8 acceptance or change the dataset.
+Verification passed 548 core assertions, 91 Chromium checks, 88 each in Firefox
+and WebKit, and 78 macOS file/HTTP and keyboard checks. Dialog focus stays
+inside, returns to its opener, and reading keys leave the background map alone.
 
 ## Remaining work
 
-Phase 5 content iteration and T8 require field-level source evidence and
-reconciliation of the recorded quantity, confidence, type and map findings.
-The broader T6/T7 plan still calls for manual screen-reader work, full
-cross-engine interaction coverage and served/file and platform comparisons
-beyond the inherited smoke suite ([test-plan.md](test-plan.html)).
+Phase 5 and T8 still require field-level numeric sources, dated stock and
+cohort evidence, and the remaining destination-specific visual inspections.
+T6/T7 still need manual screen-reader observations and Windows/Linux runs;
+Firefox/WebKit's measured 20 ms frame cadence does not establish the 17 ms
+median performance target ([test plan](test-plan.html)).
 
 ## Optional later
 
-[plan.md](plan.html) offers a Tauri desktop wrapper and considers street-level
-detail through an online alternative. Further movements can be added as
-research supplies them through the existing dataset-validation and rebuild path.
+The plan retains an optional Tauri wrapper and an online alternative for
+street-level detail. New movements can follow the existing dataset-validation
+and rebuild path as research supplies them.
