@@ -17,7 +17,7 @@
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; overflow: hidden; background: var(--page);
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); }
-  button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+  button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, [tabindex]:focus-visible {
     outline: 2px solid var(--accent); outline-offset: 1px; }
   canvas#base, canvas#flows { position: absolute; top: 0; left: 0; }
   canvas#flows { touch-action: none; cursor: grab; }
@@ -107,6 +107,8 @@
     border: none; color: var(--sub); font-size: 18px; cursor: pointer; }
   .modal p { font-size: 13px; line-height: 1.5; color: var(--text); margin: 8px 0; }
   .modal p.dim { color: var(--sub); font-size: 12px; }
+  .modal a, .modal a:visited { color: var(--accent); text-underline-offset: .15em; }
+  .modal a:hover { color: var(--text); }
   table { border-collapse: collapse; width: 100%; font-size: 12px; }
   th, td { text-align: left; padding: 6px 9px; border-bottom: 1px solid var(--edge); }
   th { color: var(--sub); font-size: 10.5px; letter-spacing: .06em; position: sticky;
