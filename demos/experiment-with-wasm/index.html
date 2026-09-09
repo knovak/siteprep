@@ -16,7 +16,7 @@
       <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Two working browser experiments</div>
       <h1 id="intro-title">Two web applications.<br><span>Running locally with WASM.</span></h1>
       <p class="intro"><strong>WebAssembly (WASM)</strong> lets a browser run compiled software alongside JavaScript. These examples use it to query a bookmark database and calculate tides on your device. Their interfaces stay on the web; their work needs no application backend.</p>
-      <p class="hero-note">Static files deliver the apps. Your browser supplies the computing.</p>
+      <p class="hero-note">Static files deliver the apps. Your browser supplies the computing. Online lookups retrieve extra data, with local workflows available offline.</p>
     </section>
 
     <section id="applications" class="wrap applications" aria-labelledby="apps-title">
@@ -25,7 +25,7 @@
         <article class="app-card bookmarks">
           <div class="card-top"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M14 6h20v36L24 34l-10 8z"/></svg></span><span class="category">Database · SQLite / WASM</span></div>
           <h3>Bookmark Sorter</h3>
-          <p>Import, filter, tag and judge a collection of bookmarks. Keep the card interface, with the database running in your browser.</p>
+          <p>Import, filter, tag and judge a collection of bookmarks. Keep the card interface, with the database running in your browser. Online tools import export URLs and save website previews or screenshots.</p>
           <div class="app-facts"><span>1.1 MB file</span><span>Local database + backups</span></div>
           <div class="actions"><a class="button" href="bookmark-sorter/index.html" target="_blank" rel="noopener">Open Bookmark Sorter <span aria-hidden="true">↗</span><span class="sr-only"> in a new tab</span></a><a class="download" href="bookmark-sorter/index.html" download="bookmark-sorter-wasm.html">Download HTML</a></div>
           <p class="try-note"><strong>Start with an example:</strong> open <b>Local tools → Try sample bookmarks</b>. It adds a separate collection of 18 example bookmarks.</p>
@@ -33,18 +33,18 @@
         <article class="app-card tides">
           <div class="card-top"><span class="app-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 17c8-11 15 11 24 0s14 0 14 0M5 31c8-11 15 11 24 0s14 0 14 0"/></svg></span><span class="category">Tide calculations · WASM</span></div>
           <h3>Tide Here</h3>
-          <p>Choose a coast and see five local days of tides, sun and moon. The global tide model and place catalogue travel inside the file.</p>
-          <div class="app-facts"><span>39.5 MB file</span><span>65,203 coastal points</span></div>
+          <p>Choose a coast and see five local days of tides, sun and moon. The global tide model and place catalogue travel inside the file. Show tides looks up places and official predictions online first, with the included model as a fallback.</p>
+          <div class="app-facts"><span>41.3 MB file</span><span>65,203 coastal points</span></div>
           <div class="actions"><a class="button" href="tide-here/index.html" target="_blank" rel="noopener">Open Tide Here <span aria-hidden="true">↗</span><span class="sr-only"> in a new tab</span></a><a class="download" href="tide-here/index.html" download="tide-here-wasm.html">Download HTML</a></div>
           <p class="try-note"><strong>Start with an example:</strong> <a href="tide-here/index.html#place=Half%20Moon%20Bay%2C%20California" target="_blank" rel="noopener">see Half Moon Bay's next five days<span class="sr-only"> in a new tab</span></a>, then choose your own coast. Model predictions are approximate and not for navigation.</p>
         </article>
       </div>
-      <div class="use-note"><strong>A connection delivers the website; the apps do their work locally.</strong> Downloaded files have been tested offline in Chromium on a desktop. Safari and iPad are not yet verified, and these versions do not include a Home Screen offline installation. <a href="findings.html#ipad-and-safari-findings">Read the browser findings →</a></div>
+      <div class="use-note"><strong>A connection delivers the website; the apps do their work locally.</strong> Downloaded files have been tested in Chromium, Safari and Firefox on desktop. An iPad-shaped WebKit/touch check passes, but a physical iPad is not yet verified and these versions do not include a Home Screen offline installation. <a href="findings.html#ipad-and-safari-findings">Read the browser findings →</a></div>
     </section>
 
     <section id="wish" class="wrap wish-section" aria-labelledby="wish-title"><div><p class="eyebrow">The starting wish</p><h2 id="wish-title">An existing website, <br>running on its own.</h2></div><div><blockquote>convert at least one functional web site and web UI with a wasm-based non-server application.</blockquote><p>Bookmark Sorter was selected first because its exports were complete local inputs. Tide Here followed once its full available coastal model and an offline place catalogue were bundled.</p><a class="text-link" href="findings.html#the-original-wish">Read the complete wish and findings →</a></div></section>
 
-    <section class="wrap findings-preview" aria-labelledby="findings-title"><div class="section-heading"><h2 id="findings-title">What the experiment has shown</h2><a class="text-link" href="findings.html">Read all findings →</a></div><div class="finding-grid"><article><span class="finding-number">01</span><h3>Bring the software and its inputs.</h3><p>WASM runs the engine. Useful offline apps also need their data, interface and supporting code available locally.</p></article><article><span class="finding-number">02</span><h3>Keep a copy of personal data.</h3><p>A saved Tide Here file includes its model. Bookmark Sorter's personal database lives separately in browser storage and needs backups.</p></article><article><span class="finding-number">03</span><h3>Verify the whole application.</h3><p>The 21 application tests cover calculations, editing, offline use and recovery. Safari, Firefox and real iPad use still need their own checks.</p></article></div></section>
+    <section class="wrap findings-preview" aria-labelledby="findings-title"><div class="section-heading"><h2 id="findings-title">What the experiment has shown</h2><a class="text-link" href="findings.html">Read all findings →</a></div><div class="finding-grid"><article><span class="finding-number">01</span><h3>Bring the software and its inputs.</h3><p>WASM runs the engine. Useful offline apps also need their data, interface and supporting code available locally.</p></article><article><span class="finding-number">02</span><h3>Keep a copy of personal data.</h3><p>A saved Tide Here file includes its model. Bookmark Sorter's personal database lives separately in browser storage and needs backups.</p></article><article><span class="finding-number">03</span><h3>Verify the whole application.</h3><p>The application tests cover calculations, editing, offline use and recovery. Desktop Safari and Firefox now pass; a physical iPad still needs its own check.</p></article></div></section>
   </main>
   <footer class="wrap demo-footer"><p>Experiment with Wasm · First two applications · September 2026</p><div><a href="https://webassembly.org/">About WebAssembly</a><a href="findings.html">Wish &amp; findings</a><a href="prompts.txt">Prompt history</a><a href="provenance.json">Source provenance</a></div></footer>
 </body>

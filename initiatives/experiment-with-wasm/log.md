@@ -72,3 +72,7 @@ Moved the provider status sentence and Data sources and station options section 
 ## 2026-09-08 — Fit the four Bookmark Sorter tools on one row
 
 Changed the former three-column row to fit Import, Online tools, Select and tag, and Export side by side. Narrow layouts allocate more width to longer labels and open the selected form below the full button row. Online tools now participates in the same exclusive expansion behavior as the other tools.
+
+## 2026-09-09 — Release
+
+Released to production — Demo, `fcc6370`. 14 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
