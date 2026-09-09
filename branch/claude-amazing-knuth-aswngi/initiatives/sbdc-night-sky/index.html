@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SBDC Night-Sky Simulator</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative</p>
+      <h1>SBDC Night-Sky Simulator</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="../index.html">All initiatives</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="initiative-purpose">
+    <div class="card-header">
+      <h2 id="initiative-purpose">Purpose</h2>
+    </div>
+    <div class="card-content">
+<h3>2026-09-08</h3>
+<p>A tool shows you what the sky would look like if a very large constellation of space-based data centers (SBDCs) were in orbit — from anywhere on Earth, on any date, at any time. It runs from a single file, entirely in any browser, no internet needed.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-status">
+    <div class="card-header">
+      <h2 id="initiative-status">Status</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li>Stage: <span class="tag">dormant</span></li>
+        <li>Value: medium</li>
+        <li>Last activity: today</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-stands">
+    <div class="card-header">
+      <h2 id="initiative-stands">Where this stands</h2>
+    </div>
+    <div class="card-content">
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><ul>
+          <li>user test findings, including pointer/pinch feel, PNG downloads, and older-phone performance <em>(Review the test preview on real devices and record findings — <code>data:</code>)</em></li>
+          <li>explicit production release authorization after user testing <em>(Release the adopted simulator after testing and explicit approval — <code>permission:</code>)</em></li>
+          <li>separate authorization for an application change beyond this file-only adoption <em>(Decide whether to correct the inherited mobile sky positioning — <code>permission:</code>)</em></li>
+        </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
+        <dt>Done</dt>
+        <dd><p>Adopted byte-identical from the supplied <code>sbdc.zip</code>: the 11 outer files, all 29 nested source-package files, and the two existing demo snapshot files, every entry&#39;s SHA-256 recorded and verified in <code>adoption-manifest.json</code>. All nine original documents (<code>README</code>, <code>TUTORIAL</code>, <code>SPECIFICATION</code>, <code>IMPLEMENTATION_PLAN</code>, the three phase reports, <code>FINAL_REPORT</code>, <code>UPGRADE_PLAN</code>) are preserved unchanged under <code>lib/</code> and readable through this initiative&#39;s pages.</p>
+<p>The inherited 59 model/scenario/golden/renderer tests pass, the original builder reproduces <code>work/index.html</code> byte-for-byte from <code>lib/</code>, and an offline Chromium smoke check exercised the full control set (views, playback modes, clustering, camera mode, both languages, custom shells, PNG export, phone layout) with zero page errors and zero network requests (<code>log.md</code>). <code>demos/SBDC Night Sky/</code> is unchanged; <code>work/</code> holds the same two files plus the supplied <code>sbdc-data.json</code> sidecar. The redundant <code>sbdc-sim-final-source.zip</code> was removed after verifying all 29 of its files byte-for-byte against <code>lib/</code>; its checksum and file inventory remain in <code>adoption-manifest.json</code>.</p></dd>
+        <dt>Optional later</dt>
+        <dd><p>Deferred, not hidden obligations: correcting the inherited mobile CSS rule that overrides the tutorial&#39;s described sticky sky (<code>notes.md</code>), and any other application or document corrections real-device testing turns up. Both need a separately agreed scope beyond this file-only adoption.</p></dd>
+      </dl>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-09-09). Correct the document it summarises rather than the summary.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-deployments">
+    <div class="card-header">
+      <h2 id="initiative-deployments">Deployments</h2>
+    </div>
+    <div class="card-content">
+      <p><strong>Demo</strong></p>
+      <ul>
+        <li>Test — <a href="https://knovak.github.io/siteprep/branch/claude-amazing-knuth-aswngi/preview/initiatives/sbdc-night-sky/index.html">https://knovak.github.io/siteprep/branch/claude-amazing-knuth-aswngi/preview/initiatives/sbdc-night-sky/index.html</a> <em>(built from the initiative source)</em></li>
+        <li>Production — <a href="https://knovak.github.io/siteprep/demos/SBDC%20Night%20Sky/">https://knovak.github.io/siteprep/demos/SBDC%20Night%20Sky/</a></li>
+      </ul>
+      <ul class="currency">
+        <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
+        <li><strong>Production</strong> <span class="verdict verdict-unknown">unknown</span> — nothing recorded to compare</li>
+      </ul>
+      <p class="deployment-status">test has main · released, but the released commit is unknown</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-outputs">
+    <div class="card-header">
+      <h2 id="initiative-outputs">Outputs</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="../../demos/SBDC%20Night%20Sky/">demos/SBDC Night Sky</a> — demo, published</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-overview">
+    <div class="card-header">
+      <h2 id="initiative-overview">In detail</h2>
+    </div>
+    <div class="card-content">
+<h2>Existing simulator, adopted with its history</h2>
+<p>SBDC Night-Sky Simulator is a standalone exploration of how a large assumed space-based data-center constellation might appear in the sky. The supplied July 2026 package includes its tutorial, specification, implementation and upgrade plans, phase reports, full source, tests, and assumptions.</p>
+<p>The adoption preserves the working demo and all supplied material. Start with the <a href="README.html">README and tutorial</a>, then use the <a href="../../preview/initiatives/sbdc-night-sky/index.html">test simulator</a>. The <a href="notes.html">notes and reports</a> retain the development history; the <a href="test-plan.html">test plan</a> separates adoption checks from real-device testing.</p>
+<p>Application and documentation corrections are outside this PR. Production release follows testing and an explicit instruction from the user.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-documents">
+    <div class="card-header">
+      <h2 id="initiative-documents">Documents</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="./README.html">README</a></li>
+        <li><a href="./wish.html">Wish</a></li>
+        <li><a href="./objectives.html">Objectives</a></li>
+        <li><a href="./decisions.html">Decisions</a></li>
+        <li><a href="./spec.html">Specification</a></li>
+        <li><a href="./plan.html">Implementation plan</a></li>
+        <li><a href="./test-plan.html">Test plan</a></li>
+        <li><a href="./log.html">Log</a></li>
+        <li><a href="./notes.html">Notes</a></li>
+      </ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/amazing-knuth-aswngi" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>

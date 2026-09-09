@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log — World Migration Atlas</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Log — World Migration Atlas</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to World Migration Atlas</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Log</h2>
+    </div>
+    <div class="card-content">
+<h2>Log</h2>
+<h3>2026-09-07 — Adopt the existing World Migration Atlas</h3>
+<p>Created the initiative around the existing working demo, following the user&#39;s migration-only request. Preserved the supplied wish and linked its prompt history. Adopted the original specification and implementation plan without changes and retained the complete supplied README with current context. Added objectives, decisions, provenance, and a test plan grounded in those records.</p>
+<p>Copied all nine repository demo files unchanged into <code>work/</code> and registered the existing demo as the output and the destination for a later release. The adoption manifest records the source commit, hashes, and attachment provenance. The existing production demo, application behavior, research data, and deployment scripts are unchanged.</p>
+<p>The initiative rests pending user testing and an explicit production-release decision. Historical build phases and prompts are not treated as fresh instructions to change code.</p>
+<h4>Adoption verification</h4>
+<p>The nine source files and two adopted attachments passed byte-for-byte comparisons; the supplied README was confirmed intact within the new README. <code>npm ci</code> installed the repository dependencies successfully with no reported vulnerabilities.</p>
+<p>A Chromium browser check of <code>work/index.html</code> via <code>file://</code> passed: 48 migration records; initial type coloring; legend and color toggles; identical canvas output after scrubbing away from and back to 1880; 48 table rows and an opening detail panel; Irish-migration search; playback; wheel zoom and drag pan. A 390×844 touch-emulated page rendered without horizontal overflow and its legend opened. No uncaught page errors were observed. This is migration verification, not a rerun of the historical T1–T8 suites.</p>
+<p>The repository build passed, including generated initiative/README and deployment-preview checks. Visual inspection confirmed the atlas rendering. The generated-page link check identified Markdown document targets that needed the published <code>.html</code> suffix; those navigation links were corrected without modifying the adopted specification or plan.</p>
+<h4>Adoption acceptance, as met</h4>
+<p>The conditions the adoption set itself, all satisfied and now history: the supplied specification and implementation plan preserved byte for byte as <code>spec.md</code> and <code>plan.md</code>; the wish left in the user&#39;s words with its prompt history linked; every file from <code>demos/world_migration_atlas/</code> preserved and the demo left intact as the released output; the supplied README retained in full; the initiative documents and the test preview building; and production left for a separate authorized release. They were listed in <code>objectives.md</code> until 2026-09-07, when that document went back to describing what a finished atlas does.</p>
+<h3>2026-09-07 — The development package, and a buildable atlas</h3>
+<p>The user supplied <code>migrationatlascomplete2.zip</code> as the complete July 2026 code base. It closed the gap the adoption had documented three times and left off the todo list: the atlas could be looked at but not changed.</p>
+<p>Committed under <code>lib/</code>: <code>src/core.js</code>, <code>src/app.js</code>, <code>src/index.html</code>, the two vendored d3 modules, <code>data/</code> with the 48-record dataset and both basemap resolutions, <code>tools/build.py</code>, <code>verify.py</code>, and <code>tests/</code> with T1-T7 and the eight goldens. Its three markdown documents were already adopted; all three match the package hash for hash, so the hashes recorded before it arrived are now verified rather than merely recorded.</p>
+<p><strong>The bundle is reproducible.</strong> The package&#39;s build came out 195 bytes short of the published file, differing in four places - the page title, one CSS rule, the header line carrying the tutorial links, and a comment in <code>app.js</code>. Those branding edits were ported into <code>lib/src/</code>, and <code>python3 lib/tools/build.py</code> now rewrites <code>work/index.html</code> byte for byte at <code>38f40ff2a445ce8c96896e4269ce981a76e0eb88aee24888b9fdebbe8ac8eb1e</code>. The build writes the deployable artifact directly, so there is one bundle in the repository rather than three.</p>
+<p><strong>T1, T2, E2 and E6 pass</strong>: <code>node lib/tests/test_core.mjs</code>, 535 assertions, 0 failures, with no dependency this repository does not already have. The browser gates need the Python Playwright stack and a golden re-baseline, which is now a todo item rather than a paragraph saying it would be separate work.</p>
+<p><code>work/</code> was trimmed to what is served - <code>index.html</code>, <code>prompts.html</code>, <code>prompts.txt</code> - taking the published preview from 4.8 MB to 1.27 MB. The duplicate <code>index-initial.html</code>, the stale <code>dist/</code>, the JavaScript-free <code>src/index.html</code> and the build-input <code>data/</code> all left; <code>decisions.md</code> says why and what that means for the next release.</p>
+<p>Corrected while here: the source commit in <code>notes.md</code> and <code>adoption-manifest.json</code>, which named an object that does not exist in this repository; the wish&#39;s date heading and an agent-written sentence inside it; and the stage, from <code>dormant</code> to <code>refining</code>, since the initiative has actionable work and a graduated output. The manifest lost its per-file hash table, which git already keeps, and gained the second package and the reproducibility record.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/amazing-knuth-aswngi" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test plan — Experiment with Wasm</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Test plan — Experiment with Wasm</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Experiment with Wasm</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Test plan</h2>
+    </div>
+    <div class="card-content">
+<h2>Test plan</h2>
+<ul><li>Run actual WASM SQLite, checking SQL selection results against the original JavaScript reference across exact/prefix/contains/Unicode/boolean cases.</li><li>Test HTML/JSON deduplication and round trip; collections; verdicts/tags/undo; saved/history selections; sitting reports; local images and database backup/restore.</li><li>Import a mixed legacy HTML export containing web links, bookmarklets, local files, mail links and browser-internal bookmarks. Retain all entries through JSON export/import, reload and full backup/restore; verify only HTTP(S) titles link anywhere and non-web records execute nothing. Malformed URLs must still roll back the entire file.</li><li>Verify invalid imports and failed saves are atomic; stale revisions cannot overwrite another window&#39;s changes; corrupt/wrong-schema backups are rejected.</li><li>Open the generated HTML through file:// with all network blocked. Import, filter, tag, judge, undo, export, reload and verify data is retained. Exercise desktop and phone layouts and local pictures.</li><li>Confirm the bundle contains a real validated WASM binary; remove/disable WebAssembly and require a clear startup failure rather than a JavaScript fallback.</li><li>Measure a generated 5,600-bookmark workload and record actual timings.</li><li>Run npm run build at repository root after the final source changes. Capture and inspect desktop and phone screenshots after that build.</li></ul>
+<h3>Tide Here</h3>
+<ul><li>Validate checksums of all 376 source tiles before packing and of committed data before each normal build. Confirm 65,203 points and 34 constituents without synthetic fixtures.</li><li>Compare real WASM against recorded original full-precision FES forecasts for 12 cases covering the Americas, Europe, Africa, Asia, Oceania and a 2036 date. Require matching event types/counts, times within one second and heights within 0.00001 m. These are implementation parity checks, not new empirical model-accuracy validation.</li><li>Exercise five coast-local days across 23/25-hour DST days and the date line; polar sun never-rise/set states; finite geographic coverage; invalid coordinates and unknown/ambiguous names.</li><li>Copy only the HTML into an unrelated directory, disable networking, and calculate five different coasts. Require five cards, tide events, astronomy and zero HTTP(S) requests.</li><li>Verify alternate-point selection, future dates, geolocation rejection, history reload/export/restore, storage-quota failure and startup failure without a tide fallback. Clear browser storage and require the embedded model still to calculate.</li><li>Inspect desktop and phone screenshots after the final repository build. Chromium is the currently verified engine; Safari and Firefox acceptance remains an actionable follow-up.</li></ul>
+<h3>Static demo</h3>
+<p>Four website checks compare every release file against <code>work/site/</code> except <code>demo.json</code>, verify the complete wish and local links/anchors, follow both app links through a plain static HTTP server and exercise them after networking is disabled, and check a 390-pixel layout with contained table scrolling. App HTML hashes must remain unchanged. Capture the final landing, findings and Demo TOC screenshots after the root build, then verify the branch preview after CI publishes it.</p>
+<p>Before a production release, CI sets <code>WASM_DEMO_ROOT</code> to the absolute <code>work/site/</code> directory to exercise the staged preview without requiring <code>demos/</code> to change. Use the default target for the complete release comparison when publishing to production.</p>
+<h3>Browser compatibility follow-up</h3>
+<ul><li>Run all three Playwright suites with <code>WASM_BROWSER=firefox</code>; keep the default Chromium projects unchanged for CI.</li><li>Run the static demo with <code>WASM_BROWSER=webkit WASM_DEVICE=&#39;iPad Pro 11&#39;</code> to exercise its mobile user agent, 834 × 1194 viewport, touch input, offline post-load actions and reload persistence.</li><li>Test downloaded files in the installed Safari and Firefox applications, including a separate-copy backup restore, before claiming direct-file compatibility.</li><li>Treat Playwright WebKit as engine evidence, not as an installed Safari or physical-iPad result. Keep actual-iPad Files/Home Screen testing open until a person supplies that result.</li></ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/amazing-knuth-aswngi" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
