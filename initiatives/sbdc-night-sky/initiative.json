@@ -49,5 +49,10 @@
       "root_html": "index.html",
       "prod": {}
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-09-09T01:13:34Z",
+    "commit": "7674d17687993f00a39cae041983bd19965211c0",
+    "digest": "5481f3bdc51d2ab70728921364a019fe5a64a0af"
+  }
 }
