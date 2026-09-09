@@ -58,16 +58,16 @@
     <div class="card-content">
       <dl class="stands">
         <dt>Needs from you</dt>
-        <dd><p>Nothing.</p></dd>
-        <dt>Scheduled</dt>
         <dd><ul>
-          <li>Add a dedicated harvest skill for repeat Newsletter Story Harvester runs</li>
+          <li>allow repository-wide harvest skill installation in .claude/skills/harvest-newsletter-stories/, its .agents/skills/harvest-newsletter-stories symlink, and the generated README.md skill index; the tested draft is in notes/harvest-skill-draft.md <em>(Add a dedicated harvest skill for repeat Newsletter Story Harvester runs — <code>permission:</code>)</em></li>
         </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><p>Nothing actionable.</p></dd>
         <dt>Done</dt>
         <dd><p>All nine phases in <code>plan.md</code> are built across 17 source modules and 17 test files under <code>work/</code>: bounded Gmail harvesting, structural identity and merging, the portable JSON store, tagging and event clusters, offline review, and the provenance-safe kept-and-emphasised page. The private hosted review adds D1 judgment persistence with stale-tab protection while retaining the explicit export/import path for synchronising the local store.</p>
 <p>The review surface has six paginated layouts, Day and Night displays, complete scrollable story text, per-story and clustered judgments, page-scoped bulk judgment, Undo, tag filtering, and source-search help. The latest recorded gating run passed 137 tests and the latest recorded real harvest preserved 321 stories without committing the mailbox inventory, message bodies, or private store.</p></dd>
         <dt>Remaining work</dt>
-        <dd><p>The accepted refinement is a discoverable skill for bounded repeat harvests, using the existing read-only mailbox protocol while preserving story identity, judgments, private files and failure reporting. Its acceptance work covers repeat overlap, a new issue, attribution refusal and failed extraction (<a href="decisions.html">recorded refinement</a>).</p></dd>
+        <dd><p>A dedicated repeat-harvest workflow and agent manifest are drafted and validated in <a href="https://github.com/knovak/siteprep/blob/ec1eda732/initiatives/newsletter-story-harvester/notes/harvest-skill-draft.md">the skill draft</a>. Its synthetic rehearsal grew 49 stories to 74 while preserving existing judgments; installation in the repository&#39;s discoverable skill directory and discovery checks remain incomplete (<a href="decisions.html">recorded refinement</a>).</p></dd>
         <dt>Optional later</dt>
         <dd><p>The recorded count bands and optional single-HEAD redirect follow are revisited only when measured extraction or duplicate evidence warrants a change. Hosting the kept-and-emphasised publication, direct browser-to-file verdict writing, richer saved selections, and any mailbox write-back remain deliberately deferred rather than implied commitments.</p></dd>
       </dl>
