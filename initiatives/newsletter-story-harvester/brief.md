@@ -21,10 +21,10 @@ without committing the mailbox inventory, message bodies, or private store.
 
 ## Remaining work
 
-The accepted refinement is a discoverable skill for bounded repeat harvests,
-using the existing read-only mailbox protocol while preserving story identity,
-judgments, private files and failure reporting. Its acceptance work covers
-repeat overlap, a new issue, attribution refusal and failed extraction
+A dedicated repeat-harvest workflow and agent manifest are drafted and validated
+in [the skill draft](notes/harvest-skill-draft.md). Its synthetic rehearsal grew
+49 stories to 74 while preserving existing judgments; installation in the
+repository's discoverable skill directory and discovery checks remain incomplete
 ([recorded refinement](decisions.html)).
 
 ## Optional later
