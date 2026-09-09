@@ -735,3 +735,7 @@ were changed during these checks. Anonymous entry still returned HTTP 200 with
 Sign in with ChatGPT on both Sites; existing application authorization and
 D1/R2 bindings were preserved. Local browser tests cover sweep writes and
 prefetch reuse; these live checks are not a sweep latency benchmark.
+
+## 2026-09-09 — Offer confirmed URL replacements from recorded final_url values, including a merge when the destination is already in the pile
+
+Review #472: user declined the redirect implementation; preserved confirmed replacement/duplicate-merge intent as an optional notes.md entry, withdrew application changes, and retained dormant with no current work.

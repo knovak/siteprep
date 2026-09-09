@@ -1117,3 +1117,28 @@ the information costs nothing extra to keep.
 
 This revives a dormant initiative for one increment. Nothing here authorizes a
 production release.
+
+## 2026-09-09 — Defer the redirect proposal surface
+
+The user directed in [PR #472](https://github.com/knovak/siteprep/pull/472#discussion_r3965218234):
+
+> Do not do this PR.  Instead, summarize its intent as a possible future action in notes.md
+>
+> Leave the initiative dormant, with no work left to be done at present
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+|---|---|---|
+| Implement the confirmed replacement and duplicate-merge queue now | Makes stored redirect observations actionable with confirmation and Undo | Adds application work the user has declined |
+| Keep the idea in notes and remove the current task | Preserves the design intent without scheduling work; follows the user's instruction | Redirect observations remain informational until a later request |
+
+### What this settles, and what it does not
+
+- Defer the proposal surface to `notes.md`, remove `redirect-proposals` from
+  the todo list, and retain the existing `dormant` stage with no current work.
+- Withdraw the application, schema, migration and test changes from PR #472.
+  Existing capture-time `final_url` recording stays as it is on `main`.
+- This supersedes the September 7 decision's commitment to implement the
+  proposal surface. A later request may revive the idea; no delivery date or
+  deployment is agreed.

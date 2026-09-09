@@ -90,3 +90,17 @@ details** is now first because it improves readability without removing
 guidance. The **honest metadata fallback card** remains the strongest visual
 improvement because it addresses the measured 503 no-image bookmarks without a
 new vendor, credential, network request, or privacy boundary.
+
+## Optional later — confirmed redirect proposals — 2026-09-09
+
+Deferred at the user's request in [PR #472](https://github.com/knovak/siteprep/pull/472#discussion_r3965218234).
+A future review queue could show saved URLs alongside their recorded
+`final_url` and capture date, then let the user confirm either a URL replacement
+or a merge when the destination already exists in the same collection. Keep
+the original URL and affected bookmark state in one undoable action, and treat
+old redirects, consent pages and login destinations as candidates to check.
+
+Capture already records redirect observations; this proposal surface is not
+part of the current application. It is optional, has no todo item, and requires
+a new request before implementation. The initiative remains dormant with no
+work scheduled.
