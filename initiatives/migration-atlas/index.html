@@ -64,18 +64,18 @@
         </ul></dd>
         <dt>Scheduled</dt>
         <dd><ul>
-          <li>Re-baseline the goldens and run the T3-T7 browser suites</li>
-          <li>Run the T8 editorial checklist over the 48 dataset entries</li>
+          <li>Reconcile the T8 source, quantity, confidence and geography findings</li>
+          <li>Complete the remaining T6/T7 manual accessibility and cross-platform packaging gates</li>
         </ul></dd>
         <dt>Done</dt>
-        <dd><p>The atlas is built and published: 48 migrations from 1000 AD onward, animated as population-scaled flows with residual diaspora circles, in one 1.25 MB self-contained file that runs from <code>file://</code> with no server. Phases 0-5 of <a href="plan.html">plan.md</a> and extensions E1-E7 were completed in July 2026.</p>
-<p>Its source was restored on 2026-09-07 and lives in <code>lib/</code> - 25 files: the dataset, the two application modules, the vendored d3, the build, and the T1-T7 suites with eight goldens. <code>python3 lib/tools/build.py</code> rewrites <code>work/index.html</code> byte for byte, so the published bundle is the committed source&#39;s output. <code>node lib/tests/test_core.mjs</code> passes 535 assertions.</p></dd>
+        <dd><p>The self-contained atlas contains 48 migrations and 92 destination records, with animated flows, diaspora circles, filtering, accessible table controls and a reproducible source build. Restored browser suites use the current bundle: 535 core assertions, 88 browser checks against eight inspected macOS goldens, and 24 Chromium/Firefox/WebKit smoke checks passed (<a href="notes.html">notes.md</a>).</p>
+<p>An editorial review covers all 48 entries, including 144 sampled rendering states and targeted source checks. It records four confidence-rule conflicts, quantity/stock and geographic aggregation issues, and evidence gaps; it does not establish T8 acceptance or change the dataset.</p></dd>
         <dt>Remaining work</dt>
-        <dd><p>Two gates from <a href="test-plan.html">test-plan.md</a> have not been run since the restore. T3-T7 need the Python Playwright stack, which this repository does not install, and the goldens need one <code>--update-goldens</code> re-baseline on whichever machine runs them. T8 is an editorial pass over the 48 entries against <code>lib/tests/T8_editorial_checklist.md</code>, checking each still carries a cited source and a justified confidence and type.</p></dd>
+        <dd><p>Phase 5 content iteration and T8 require field-level source evidence and reconciliation of the recorded quantity, confidence, type and map findings. The broader T6/T7 plan still calls for manual screen-reader work, full cross-engine interaction coverage and served/file and platform comparisons beyond the inherited smoke suite (<a href="test-plan.html">test-plan.md</a>).</p></dd>
         <dt>Optional later</dt>
-        <dd><p><a href="plan.html">plan.md</a> offers a Tauri desktop wrapper as an optional alternative to the double-clickable file, and defers street-level detail to the online server design it compares against. Phase 5 is content iteration: adding movements as new research appears, which is what the restored build makes possible.</p></dd>
+        <dd><p><a href="plan.html">plan.md</a> offers a Tauri desktop wrapper and considers street-level detail through an online alternative. Further movements can be added as research supplies them through the existing dataset-validation and rebuild path.</p></dd>
       </dl>
-      <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-09-07). Correct the document it summarises rather than the summary.</p>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-09-09). Correct the document it summarises rather than the summary.</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-deployments">
