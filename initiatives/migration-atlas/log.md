@@ -67,3 +67,22 @@ repository; the wish's date heading and an agent-written sentence inside it; and
 the stage, from `dormant` to `refining`, since the initiative has actionable
 work and a graduated output. The manifest lost its per-file hash table, which
 git already keeps, and gained the second package and the reproducibility record.
+
+## 2026-09-09 — Fixed the flow visibility window
+
+The user reported that a migration recorded as running from year A to year B
+only appeared on the map from A+1 through B+5. `flowEnvelope` in
+`lib/src/core.js` ramped the arc's opacity up over `RISE_YEARS` (3) after the
+start year and faded it back down over `FADE_YEARS` (5) after the end year, so
+the arc was invisible at the exact start year and stayed partly visible for
+five years past the end year. `flowEnvelope` now returns full opacity for the
+exact `[start, end]` range and zero outside it; `RISE_YEARS` is gone, and
+`FADE_YEARS` remains only for the unrelated camera-focus framing in `app.js`
+that shows a few years of context after a focused migration ends. The
+`"rising"`/`"fading"` phase branches in `app.js`'s renderer, which no longer
+occur, were removed along with them. `lib/tests/test_core.mjs` was updated to
+assert the exact cutoff, and `work/index.html` was rebuilt from source; it is
+no longer byte-identical to `demos/world_migration_atlas/index.html`, so
+`release-rebuilt-source` now also carries this fix, on top of the trim already
+recorded in `decisions.md`. `node lib/tests/test_core.mjs` passes, 534
+assertions, 0 failures.

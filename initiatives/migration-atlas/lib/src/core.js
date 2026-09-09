@@ -1,8 +1,7 @@
 // core.js — pure functions for the Migration Atlas (no DOM, no d3).
 // Exported for node tests; the build strips `export ` for the browser bundle.
 
-export const RISE_YEARS = 3;   // arc grow-in after start
-export const FADE_YEARS = 5;   // arc fade-out after end
+export const FADE_YEARS = 5;   // residual-circle framing after end (not arc visibility)
 
 export function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
 
@@ -24,14 +23,11 @@ export function circleRadiusPx(population, k = 1) {
 export function easeOutCubic(t) { const u = clamp(t, 0, 1) - 1; return u * u * u + 1; }
 
 // ---- time envelopes -------------------------------------------------------
-// Flow visibility envelope: 0 before start, ramp over RISE_YEARS (capped at
-// the period length), 1 while active, linear fade over FADE_YEARS after end.
+// Flow visibility envelope: absent before start, fully visible for the exact
+// [start, end] period the data claims, absent after end.
 export function flowEnvelope(year, start, end) {
-  const rise = Math.max(0.5, Math.min(RISE_YEARS, end - start));
   if (year < start) return { alpha: 0, phase: "pre" };
-  if (year < start + rise) return { alpha: (year - start) / rise, phase: "rising" };
   if (year <= end) return { alpha: 1, phase: "active" };
-  if (year < end + FADE_YEARS) return { alpha: 1 - (year - end) / FADE_YEARS, phase: "fading" };
   return { alpha: 0, phase: "post" };
 }
 

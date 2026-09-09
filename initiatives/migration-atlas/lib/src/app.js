@@ -247,7 +247,7 @@
       const color = flowColor(g.m);
       const dim = hl && g.m.id !== hl ? 0.22 : 1;
       const lowConf = g.m.confidence === "low";
-      const alpha = g.env.alpha * (g.env.phase === "fading" ? 0.5 : 0.92) * dim;
+      const alpha = g.env.alpha * 0.92 * dim;
       for (const rib of g.ribs) {
         fctx.globalAlpha = alpha * 0.18;
         traceRibbon(fctx, rib);
@@ -256,7 +256,7 @@
         fctx.globalAlpha = alpha;
         traceRibbon(fctx, rib);
         fctx.fillStyle = color; fctx.fill();
-        if (lowConf || g.env.phase === "fading") {
+        if (lowConf) {
           fctx.globalAlpha = Math.min(1, alpha + 0.15);
           fctx.setLineDash([5, 4]); fctx.lineWidth = 1;
           fctx.strokeStyle = color; fctx.stroke(); fctx.setLineDash([]);
@@ -268,7 +268,7 @@
         }
         fctx.globalAlpha = 1;
       }
-      if (!reducedMotion && g.env.phase !== "fading" && g.w > 2.5) {
+      if (!reducedMotion && g.w > 2.5) {
         fctx.fillStyle = "#ffffff";
         for (let j = 0; j < 3; j++) {
           const ph = particlePhase(year, g.seed * 0.001 + g.di * 7 + j * 11);

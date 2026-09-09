@@ -55,7 +55,7 @@
       "effort": "small",
       "advances_stage": false,
       "blocked_by": "permission:explicit production release authorization after user testing",
-      "note": "The release serves the same atlas: work/index.html is byte-identical to what demos/world_migration_atlas/ publishes today. It also drops index-initial.html, dist/ and data/ from the published demo, which nothing links to. See decisions.md."
+      "note": "The release now also carries the 2026-09-09 flow-visibility fix (see log.md): work/index.html is no longer byte-identical to demos/world_migration_atlas/index.html. It also drops index-initial.html, dist/ and data/ from the published demo, which nothing links to. See decisions.md."
     }
   ],
   "brief": {
