@@ -99,10 +99,13 @@
     .sitting-report ol { max-height: 160px; overflow: auto; margin: 8px 0; padding-left: 24px; font-size: .76rem; }
     .sitting-report button { min-height: 32px; border: 1px solid var(--primary); border-radius: 12px; padding: 4px 9px; color: var(--on-primary); background-color: var(--primary); font-weight: 400; }
     .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
-    .file-tools { grid-row: 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: start; }
-    .file-tools:has(#importer[open]) { grid-template-columns: minmax(0, 1fr) max-content max-content; }
-    .file-tools:has(#selector[open]) { grid-template-columns: max-content minmax(0, 1fr) max-content; }
-    .file-tools:has(#exporter[open]) { grid-template-columns: max-content max-content minmax(0, 1fr); }
+    .file-tools { grid-row: 3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: start; }
+    @media (min-width: 1101px) {
+      .file-tools:has(#importer[open]) { grid-template-columns: minmax(0, 1fr) max-content max-content max-content; }
+      .file-tools:has(#online-tools[open]) { grid-template-columns: max-content minmax(0, 1fr) max-content max-content; }
+      .file-tools:has(#selector[open]) { grid-template-columns: max-content max-content minmax(0, 1fr) max-content; }
+      .file-tools:has(#exporter[open]) { grid-template-columns: max-content max-content max-content minmax(0, 1fr); }
+    }
     .file-tools > details { min-width: 0; border: 1px solid var(--line); border-radius: 12px; background-color: var(--surface); }
     .file-tools > details > summary { overflow: hidden; padding: 6px 12px; color: var(--ink); cursor: pointer; font-weight: 400; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
     .file-tools > details[open] > summary { border-bottom: 1px solid var(--line); text-align: left; }
@@ -226,6 +229,18 @@
     .help-documentation a { color: var(--link); font-weight: 600; text-underline-offset: 3px; }
     @media (max-width: 1100px) { :root { --columns: 4; --rows: 3; } .layout-picker { display: none; } .bookmark-card h2 { font-size: .98rem; } }
     @media (max-width: 1100px) and (orientation: portrait) { :root { --columns: 3; --rows: 3; } }
+    @media (max-width: 1100px) {
+      .file-tools > details { display: contents; }
+      .file-tools > details > summary { grid-row: 1; border: 1px solid var(--line); border-radius: 12px; background-color: var(--surface); }
+      #importer > summary { grid-column: 1; }
+      #online-tools > summary { grid-column: 2; }
+      #selector > summary { grid-column: 3; }
+      #exporter > summary { grid-column: 4; }
+      .file-tools > details:not([open]) > .file-tool-content { display: none; }
+      .file-tool-content { grid-row: 2; grid-column: 1 / -1; min-width: 0; border: 1px solid var(--line); border-radius: 12px; background-color: var(--surface); }
+      .file-tools > details::details-content { display: contents; }
+      .file-tools form, #import-form, #export-form { grid-template-columns: minmax(0, 1fr); }
+    }
     @media (max-width: 640px) {
       :root { --columns: 1; --rows: 1; }
       main { padding: 9px; gap: 4px; }
@@ -238,8 +253,8 @@
       .collection-bar { gap: 4px; padding: 3px; border-radius: 9px; }
       .collection-bar select, .collection-bar input, .collection-bar button { min-height: 32px; padding: 4px 7px; }
       .collection-kind, .collection-bar .spacer { display: none; }
-      .file-tools { gap: 4px; }
-      .file-tools > details > summary { padding-inline: 8px; }
+      .file-tools { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, .8fr); gap: 4px; }
+      .file-tools > details > summary { padding-inline: 4px; }
       .selection-panel { display: flex; overflow-x: auto; }
       .selection-panel > * { flex: 0 0 min(72vw, 240px); }
       .selection-panel button { flex-basis: auto; }
@@ -258,6 +273,10 @@
       .note { font-size: .95rem; -webkit-line-clamp: 5; }
       .tag { font-size: .72rem; }
       .footer-line .keys { display: none; }
+    }
+    @media (max-width: 380px) {
+      .file-tools { gap: 2px; }
+      .file-tools > details > summary { padding-inline: 1px; font-size: clamp(12px, 3.7vw, 14px); }
     }
     @media (pointer: coarse) {
       .toolbar button, .collection-bar button, .selection-panel button, .template-tools button,
@@ -418,6 +437,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <section class="file-tools" aria-label="Import, select, and export">
       <details id="importer">
         <summary>Import</summary>
+        <div class="file-tool-content">
         <form id="import-form">
           <div class="import-file-picker">
             <label>Bookmark HTML or Sorter JSON<input id="bookmark-file" name="file" type="file" accept=".html,.json,text/html,application/json" multiple required></label>
@@ -436,9 +456,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           <label>Demo templates<select id="template-select" aria-label="Demo templates"><option value="">Demo templates</option></select></label>
           <button id="copy-template" type="button">Load a copy</button>
         </div>
+        </div>
       </details>
       <details id="online-tools">
         <summary>Online tools</summary>
+        <div class="file-tool-content">
         <p class="tool-status">Fetch previews for marked cards, or the visible page when none are marked (up to 12 per batch). Your original titles, URLs, notes and verdicts stay intact. Attached pictures are kept.</p>
         <div class="template-tools">
           <label>Preview source<select id="online-mode"><option value="direct">Direct website</option><option value="metadata">Microlink website details</option><option value="screenshot">Microlink screenshot</option></select></label>
@@ -448,9 +470,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <form id="online-import-form"><label>Bookmark export URL<input id="online-import-url" type="url" placeholder="https://…/bookmarks.json" required></label><button id="online-import" type="submit">Import from URL</button></form>
         <p class="tool-status">Accepts the same HTML and JSON exports as file import. If the source blocks access, download the file and use Import.</p>
         <p id="online-status" class="tool-status" role="status"></p><ol id="online-results"></ol>
+        </div>
       </details>
       <details id="selector">
         <summary>Select and tag</summary>
+        <div class="file-tool-content">
         <fieldset class="verdict-filters" id="verdict-filters">
           <legend>Verdicts</legend>
           <div class="verdict-options">
@@ -485,15 +509,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           <button id="open-previous" class="choice-action" data-selection-ready="false" type="button">Open previous</button>
           <span id="selection-summary">All items</span>
         </section>
+        </div>
       </details>
       <details id="exporter">
         <summary>Export</summary>
+        <div class="file-tool-content">
         <form id="export-form">
           <div class="file-field"><label for="export-scope">Export scope</label><select id="export-scope" name="scope"><option value="collection">Current collection</option><option value="selection">Current selection</option></select></div>
           <p class="portable-copy">Bookmark Sorter JSON includes URLs, notes, tags, and verdicts, and can be imported here again.</p>
           <button id="export-file" type="submit">Export file</button>
           <button id="erase-collection" class="danger" type="button">Erase current collection</button>
         </form>
+        </div>
       </details>
     </section>
     <section class="toolbar" aria-label="Triage actions">
@@ -2049,10 +2076,11 @@ window.bookmarkReady.then(() => {
       }).catch(error => { elements.status.textContent = error.message; });
     });
     elements.exportSitting?.addEventListener('click', exportSitting);
-    for (const panel of [elements.importer, elements.selector, elements.exporter]) {
+    const fileToolPanels = [...document.querySelectorAll('.file-tools > details')];
+    for (const panel of fileToolPanels) {
       panel.addEventListener('toggle', () => {
         if (!panel.open) return;
-        for (const other of [elements.importer, elements.selector, elements.exporter]) if (other !== panel) other.open = false;
+        for (const other of fileToolPanels) if (other !== panel) other.open = false;
       });
     }
     function positionAdminMenu() {
