@@ -89,3 +89,45 @@ The earlier tests proved only the separate online buttons. The user's San Diego 
 - The actual Bureau dataset contains **76 ports / 103,597 extrema**. New tests compare five days event-for-event and datum-for-datum with the unchanged hosted provider at Mooloolaba, Sydney across daylight saving, and Cocos. Another test verifies a Maroochydore match and rejects windows outside, or straddling the end of, 2026.
 - The First day input and Today button are absent. All forecasts start today in the selected coast’s zone; old date fragments are ignored. Browser-clock tests cover future model operation and a year-boundary official-table fallback.
 - Tide Here now has **11 Node tests and 14 Chromium journeys** (the existing copied-file model test explicitly selects Local model only, while the new Bureau journey verifies automatic official data offline). The **9 online/official browser journeys pass Firefox and WebKit**. Bookmark Sorter’s previously verified 19 tests are unchanged.
+
+
+## 2026-09-09 — Live US and Canadian coast verification
+
+The explicit `node test/live-coasts.mjs <report.json>` collector opens the
+committed standalone file in Chromium and Firefox, submits public coordinates
+through Show tides, downloads the resulting forecast, and compares its UTC
+events against a separate direct provider response. It does not use fixtures,
+change an application or deploy a Site. The [machine-readable evidence](notes/live-coasts-20260909.json)
+records the bundle SHA-256, time, station, source URL, IANA zone and failures.
+
+All 18 journeys produced five coast-local days, correctly placed unique tide
+events, the expected coast's IANA zone and no horizontal overflow or JavaScript
+errors. All 15 official forecasts matched the provider's UTC timestamps and
+heights; NOAA high/low labels also matched. The Canadian high/low labels remain
+covered by the existing alternation tests rather than an upstream H/L field.
+
+| Coast | Expected zone | Chromium | Firefox |
+|---|---|---|---|
+| San Diego | `America/Los_Angeles` | NOAA SAN DIEGO (Broadway) | NOAA SAN DIEGO (Broadway) |
+| Seattle | `America/Los_Angeles` | NOAA SEATTLE (Madison St.), Elliott Bay | NOAA SEATTLE (Madison St.), Elliott Bay |
+| Boston | `America/New_York` | NOAA BOSTON | NOAA BOSTON |
+| Pensacola | `America/Chicago` | NOAA PENSACOLA | NOAA PENSACOLA |
+| Honolulu | `Pacific/Honolulu` | NOAA HONOLULU | NOAA HONOLULU |
+| Anchorage | `America/Anchorage` | NOAA ANCHORAGE, Knik Arm | NOAA ANCHORAGE, Knik Arm |
+| Victoria | `America/Vancouver` | Explicit local model after incomplete station list | CHS Victoria Harbour |
+| Halifax | `America/Halifax` | Labelled local model fallback | CHS Halifax |
+| St John's | `America/St_Johns` | Labelled local model fallback | CHS St. Johns |
+
+CHS catalogue requests failed in Chromium with `net::ERR_FAILED`; Firefox
+retrieved Victoria Harbour, Halifax and St. Johns successfully. Victoria in
+Chromium offered US stations across the strait and required a choice. The
+collector deliberately chose the local model instead of treating one of those
+stations as the Canadian coast. Halifax and St. John's fell back automatically.
+The fallback's “no supported station” wording does not distinguish an empty
+regional catalogue from this partial service failure; that product limitation
+is recorded here, not passed off as Canadian official coverage.
+
+This supersedes a blanket statement that Canadian browser requests fail: the
+result depends on browser and service availability. It does not certify CHS in
+Chromium, a physical iPad, other Canadian coasts, future availability or tide
+model accuracy. The physical-iPad data blocker remains.
