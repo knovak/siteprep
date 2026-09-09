@@ -55,3 +55,14 @@ Before a production release, CI sets `WASM_DEMO_ROOT` to the absolute `work/site
 - Confirm First day/Today controls are absent and old date fragments cannot move the forecast away from coast-local today.
 - Submit Maroochydore online and offline; require Mooloolaba, Bureau attribution, LAT and Australia/Brisbane today. Compare all five days with the hosted provider, including additional Sydney DST and Cocos cases.
 - Move the clock to a five-day window crossing December 31; require an explicit annual-coverage explanation and a full model forecast.
+
+
+### Repeatable live-coast evidence
+
+From `work/tide-here/`, run `node test/live-coasts.mjs /tmp/wasm-live-coasts.json`
+after root `npm ci`. This opt-in network collector is outside deterministic CI.
+It covers San Diego, Seattle, Boston, Pensacola, Honolulu, Anchorage, Victoria,
+Halifax and St. John's in Chromium/Firefox, including provider event parity and
+coast-local calendar placement. It records provider failures and explicit local
+choices; a safe model result does not count as successful official coverage.
+See the dated run in `verification.md` for limitations and evidence.

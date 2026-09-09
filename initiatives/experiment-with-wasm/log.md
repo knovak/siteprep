@@ -92,3 +92,9 @@ Changed K/A/N to local pending choices so taps never wait for a database save. B
 ## 2026-09-09 — Release
 
 Released to production — Demo, `24c4835`. 7 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.
+
+## 2026-09-09 — Expand live provider and station-time-zone checks across representative US and Canadian coasts
+
+Completed 18 live US/Canadian coordinate journeys across Chromium and Firefox; recorded station zones, five-day boundaries, provider-event parity and the Chromium CHS failure/Firefox success split. Kept physical-iPad acceptance blocked and the existing dormant stage.
+
+CI follow-through: regenerated the static demo package to carry the verification text and linked its saved evidence by immutable source commit. The application HTML is unchanged; only the test preview documentation is refreshed.

@@ -70,3 +70,15 @@ Show tides uses Photon / OpenStreetMap for normal place/address input, then requ
 ## Australian official tables and website parity
 
 The build uses the same validated `2026-bom-v2` annual source and importer as the hosted Tide Here application: 76 Standard Ports and 103,597 high/low events. It embeds the compressed prepared dataset with source PDF checksums, attribution, conditions, station datums and IANA time zones. Maroochydore selects Mooloolaba; the website and standalone providers are compared event-for-event, including Sydney daylight saving and the Cocos half-hour zone. No live Bureau API or additional backend is implied: the badge says “2026 tables”, and the link opens that station’s original PDF. Refreshing annual coverage requires rebuilding from reviewed source data and distributing a new app file.
+
+
+### Live provider verification
+
+`node test/live-coasts.mjs /tmp/wasm-live-coasts.json` runs 18 opt-in public
+coordinate journeys in Chromium and Firefox against the committed staged app.
+The report separates official retrieval from fallback, checks IANA zones and
+local-day membership, and compares official event times/heights with the source
+API. It is a network observation rather than deterministic CI. September 9
+results are in the initiative's `verification.md`: US NOAA passed in both
+engines; Canadian CHS passed in Firefox while Chromium retained catalogue
+failures. Physical-iPad acceptance remains open.

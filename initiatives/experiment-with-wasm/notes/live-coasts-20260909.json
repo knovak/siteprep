@@ -1,0 +1,1461 @@
+{
+  "recordedAt": "2026-09-09T10:44:53.165Z",
+  "platform": "darwin",
+  "bundleSha256": "894bdace450e6b6e021a072e60cc5f0fa40a063c4e166bc4e6fd69611de3a6f3",
+  "cases": [
+    {
+      "engine": "chromium",
+      "place": "San Diego",
+      "coordinates": [
+        32.71556,
+        -117.17667
+      ],
+      "expectedZone": "America/Los_Angeles",
+      "startedAt": "2026-09-09T10:44:55.124Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "9410170",
+        "name": "SAN DIEGO (Broadway)",
+        "latitude": 32.71555555555555,
+        "longitude": -117.1766666666667,
+        "provider": "noaa",
+        "catalogueAt": 1788950695887,
+        "catalogueStale": false,
+        "distanceKm": 0.000584367645242245,
+        "timeZone": "America/Los_Angeles"
+      },
+      "zone": "America/Los_Angeles",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "9410170",
+        "stationName": "SAN DIEGO (Broadway)",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9410170&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:44:56.019Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Seattle",
+      "coordinates": [
+        47.6026,
+        -122.3393
+      ],
+      "expectedZone": "America/Los_Angeles",
+      "startedAt": "2026-09-09T10:44:56.419Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "9447130",
+        "name": "SEATTLE (Madison St.), Elliott Bay",
+        "latitude": 47.60263888888889,
+        "longitude": -122.3393055555556,
+        "provider": "noaa",
+        "catalogueAt": 1788950695887,
+        "catalogueStale": false,
+        "distanceKm": 0.0043442677262577585,
+        "timeZone": "America/Los_Angeles"
+      },
+      "zone": "America/Los_Angeles",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 3
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "9447130",
+        "stationName": "SEATTLE (Madison St.), Elliott Bay",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9447130&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:44:56.748Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9447130&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+          "error": "net::ERR_ABORTED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Boston",
+      "coordinates": [
+        42.3548,
+        -71.0534
+      ],
+      "expectedZone": "America/New_York",
+      "startedAt": "2026-09-09T10:44:56.889Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "8443970",
+        "name": "BOSTON",
+        "latitude": 42.35388888888889,
+        "longitude": -71.05027777777778,
+        "provider": "noaa",
+        "catalogueAt": 1788950695887,
+        "catalogueStale": false,
+        "distanceKm": 0.2758388911509573,
+        "timeZone": "America/New_York"
+      },
+      "zone": "America/New_York",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 3
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "8443970",
+        "stationName": "BOSTON",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=8443970&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:44:57.144Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Pensacola",
+      "coordinates": [
+        30.4044,
+        -87.2112
+      ],
+      "expectedZone": "America/Chicago",
+      "startedAt": "2026-09-09T10:44:57.287Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "8729840",
+        "name": "PENSACOLA",
+        "latitude": 30.404399871826172,
+        "longitude": -87.21119689941406,
+        "provider": "noaa",
+        "catalogueAt": 1788950695887,
+        "catalogueStale": false,
+        "distanceKm": 0.00029769671689839055,
+        "timeZone": "America/Chicago"
+      },
+      "zone": "America/Chicago",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 2
+        },
+        {
+          "date": "2026-09-10",
+          "events": 2
+        },
+        {
+          "date": "2026-09-11",
+          "events": 2
+        },
+        {
+          "date": "2026-09-12",
+          "events": 2
+        },
+        {
+          "date": "2026-09-13",
+          "events": 2
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "8729840",
+        "stationName": "PENSACOLA",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=8729840&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:44:57.551Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Honolulu",
+      "coordinates": [
+        21.3069,
+        -157.8675
+      ],
+      "expectedZone": "Pacific/Honolulu",
+      "startedAt": "2026-09-09T10:44:57.696Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "1612340",
+        "name": "HONOLULU",
+        "latitude": 21.30333333333334,
+        "longitude": -157.8645277777778,
+        "provider": "noaa",
+        "catalogueAt": 1788950695887,
+        "catalogueStale": false,
+        "distanceKm": 0.5020923809647195,
+        "timeZone": "Pacific/Honolulu"
+      },
+      "zone": "Pacific/Honolulu",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "1612340",
+        "stationName": "HONOLULU",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=1612340&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:44:57.967Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Anchorage",
+      "coordinates": [
+        61.2375,
+        -149.8904
+      ],
+      "expectedZone": "America/Anchorage",
+      "startedAt": "2026-09-09T10:44:58.101Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "9455920",
+        "name": "ANCHORAGE, Knik Arm",
+        "latitude": 61.2375,
+        "longitude": -149.8903888888889,
+        "provider": "noaa",
+        "catalogueAt": 1788950695887,
+        "catalogueStale": false,
+        "distanceKm": 0.0005944983545134337,
+        "timeZone": "America/Anchorage"
+      },
+      "zone": "America/Anchorage",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "9455920",
+        "stationName": "ANCHORAGE, Knik Arm",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9455920&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:44:58.379Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Victoria",
+      "coordinates": [
+        48.4247,
+        -123.3717
+      ],
+      "expectedZone": "America/Vancouver",
+      "startedAt": "2026-09-09T10:44:58.518Z",
+      "requiredStationChoice": true,
+      "stationChoices": [
+        "Kanaka Bay, San Juan Island \u00b7 NOAA CO-OPS \u00b7 22.3 km \u00b7 48.4850, -123.0830",
+        "Hanbury Point, Mosquito Pass, San Juan I. \u00b7 NOAA CO-OPS \u00b7 22.9 km \u00b7 48.5817, -123.1700",
+        "Roche Harbor, San Juan Island \u00b7 NOAA CO-OPS \u00b7 26.1 km \u00b7 48.6100, -123.1550",
+        "Friday Harbor, San Juan Island \u00b7 NOAA CO-OPS \u00b7 29.7 km \u00b7 48.5453, -123.0125",
+        "Ediz Hook, Port Angeles \u00b7 NOAA CO-OPS \u00b7 31.8 km \u00b7 48.1400, -123.4130",
+        "Port Angeles \u00b7 NOAA CO-OPS \u00b7 33.7 km \u00b7 48.1250, -123.4400",
+        "Dungeness \u00b7 NOAA CO-OPS \u00b7 34.3 km \u00b7 48.1667, -123.1170",
+        "Richardson, Lopez Island \u00b7 NOAA CO-OPS \u00b7 34.9 km \u00b7 48.4467, -122.9000",
+        "Orcas, Orcas Island \u00b7 NOAA CO-OPS \u00b7 36.7 km \u00b7 48.6000, -122.9500",
+        "Shaw Island, Ferry Terminal, Harney Channel \u00b7 NOAA CO-OPS \u00b7 37.2 km \u00b7 48.5850, -122.9280",
+        "WALDRON ISLAND, PUGET SOUND \u00b7 NOAA CO-OPS \u00b7 38.1 km \u00b7 48.6868, -123.0376",
+        "Aleck Bay, Lopez Island \u00b7 NOAA CO-OPS \u00b7 38.3 km \u00b7 48.4250, -122.8530"
+      ],
+      "selectionStatus": "Choose the station on your coast. Nearby stations may be across a bay or island. One station service is unavailable; results may be incomplete.",
+      "manualLocal": true,
+      "provider": "fes2022",
+      "station": {
+        "index": 37915,
+        "id": "coastal-37915",
+        "latitude": 48.4057,
+        "longitude": -123.3276,
+        "name": "Coastal point 48.4057, -123.3276",
+        "timeZone": "America/Vancouver",
+        "interpolationQuality": 6,
+        "distanceKm": 3.8803036988397626
+      },
+      "zone": "America/Vancouver",
+      "datum": "FES2022 mean sea level harmonic datum",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "id": "fes2022b-global-coast",
+        "version": "2026-08-29-global-coast-r1",
+        "schema": "tide-here/fes-prepared-dataset/v2",
+        "preparedAt": "2026-08-29T00:00:00.000Z",
+        "displayName": "FES2022b global coastal points",
+        "dataClass": "licensed-source",
+        "model": "FES2022b native non-structured ocean tide atlas",
+        "isFes2022": true,
+        "attribution": "FES2022 Tide product funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here into sampled native-mesh coastal harmonics.",
+        "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
+        "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+        "licenceReference": "AVISO License, Issue 20 (August 2026): https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+        "disclaimer": "Transformed FES2022b model output sampled along public-domain coastlines; weather and storm surge are not included. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
+        "engine": "PyFES 2026.5.2 native-grid interpolation/extrapolation; Tide Here runtime uses @neaps/tide-predictor 0.11.0 with Schureman nodal corrections",
+        "sampling": {
+          "spacingKm": 15,
+          "maximumSelectionDistanceKm": 40,
+          "tileDegrees": 10,
+          "pointCount": 65203,
+          "sources": [
+            {
+              "name": "ne_10m_coastline.geojson",
+              "bytes": 10110735,
+              "sha256": "6f75ae0e0de157b14946e2255eb1f5486d9a13819032e26d4610852d296788f6"
+            },
+            {
+              "name": "ne_10m_minor_islands_coastline.geojson",
+              "bytes": 1310488,
+              "sha256": "d51fadaffc954e9e85671b0a2ecaba78b883dda1714640a173c151932fd1f2fb"
+            },
+            {
+              "name": "combined-with-oceans-2026c.json",
+              "bytes": 182393702,
+              "sha256": "17f0821bad87d7a44dcebff12ad70b82bf973c54942e29fe20f5f9f8be4b3db6"
+            }
+          ],
+          "plannedPointCount": 66715,
+          "skippedUndefinedPoints": 1512
+        },
+        "sourceFiles": [
+          {
+            "name": "FES2022b_OceanTide_NSgrid.nc",
+            "bytes": 3953139340,
+            "sha256": "6479dbd9acdfb63405ff15de1265154c4659b1f7112b8dfb1cabef945a481a23"
+          }
+        ]
+      },
+      "fallback": null,
+      "status": "Using the model stored in this file.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true
+      },
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "Halifax",
+      "coordinates": [
+        44.659,
+        -63.583
+      ],
+      "expectedZone": "America/Halifax",
+      "startedAt": "2026-09-09T10:44:58.759Z",
+      "requiredStationChoice": false,
+      "provider": "fes2022",
+      "station": {
+        "index": 38603,
+        "id": "coastal-38603",
+        "latitude": 44.6679,
+        "longitude": -63.6053,
+        "name": "Coastal point 44.6679, -63.6053",
+        "timeZone": "America/Halifax",
+        "interpolationQuality": -24,
+        "distanceKm": 2.022332420969583
+      },
+      "zone": "America/Halifax",
+      "datum": "FES2022 mean sea level harmonic datum",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "id": "fes2022b-global-coast",
+        "version": "2026-08-29-global-coast-r1",
+        "schema": "tide-here/fes-prepared-dataset/v2",
+        "preparedAt": "2026-08-29T00:00:00.000Z",
+        "displayName": "FES2022b global coastal points",
+        "dataClass": "licensed-source",
+        "model": "FES2022b native non-structured ocean tide atlas",
+        "isFes2022": true,
+        "attribution": "FES2022 Tide product funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here into sampled native-mesh coastal harmonics.",
+        "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
+        "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+        "licenceReference": "AVISO License, Issue 20 (August 2026): https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+        "disclaimer": "Transformed FES2022b model output sampled along public-domain coastlines; weather and storm surge are not included. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
+        "engine": "PyFES 2026.5.2 native-grid interpolation/extrapolation; Tide Here runtime uses @neaps/tide-predictor 0.11.0 with Schureman nodal corrections",
+        "sampling": {
+          "spacingKm": 15,
+          "maximumSelectionDistanceKm": 40,
+          "tileDegrees": 10,
+          "pointCount": 65203,
+          "sources": [
+            {
+              "name": "ne_10m_coastline.geojson",
+              "bytes": 10110735,
+              "sha256": "6f75ae0e0de157b14946e2255eb1f5486d9a13819032e26d4610852d296788f6"
+            },
+            {
+              "name": "ne_10m_minor_islands_coastline.geojson",
+              "bytes": 1310488,
+              "sha256": "d51fadaffc954e9e85671b0a2ecaba78b883dda1714640a173c151932fd1f2fb"
+            },
+            {
+              "name": "combined-with-oceans-2026c.json",
+              "bytes": 182393702,
+              "sha256": "17f0821bad87d7a44dcebff12ad70b82bf973c54942e29fe20f5f9f8be4b3db6"
+            }
+          ],
+          "plannedPointCount": 66715,
+          "skippedUndefinedPoints": 1512
+        },
+        "sourceFiles": [
+          {
+            "name": "FES2022b_OceanTide_NSgrid.nc",
+            "bytes": 3953139340,
+            "sha256": "6479dbd9acdfb63405ff15de1265154c4659b1f7112b8dfb1cabef945a481a23"
+          }
+        ]
+      },
+      "fallback": "No supported official tide station near this place. Using the bundled FES2022 model.",
+      "status": "No supported official tide station near this place. Using the bundled FES2022 model.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true
+      },
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "place": "St John's",
+      "coordinates": [
+        47.5667,
+        -52.7
+      ],
+      "expectedZone": "America/St_Johns",
+      "startedAt": "2026-09-09T10:44:58.926Z",
+      "requiredStationChoice": false,
+      "provider": "fes2022",
+      "station": {
+        "index": 39240,
+        "id": "coastal-39240",
+        "latitude": 47.6213,
+        "longitude": -52.656,
+        "name": "Coastal point 47.6213, -52.6560",
+        "timeZone": "America/St_Johns",
+        "interpolationQuality": 6,
+        "distanceKm": 6.909885636311009
+      },
+      "zone": "America/St_Johns",
+      "datum": "FES2022 mean sea level harmonic datum",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "id": "fes2022b-global-coast",
+        "version": "2026-08-29-global-coast-r1",
+        "schema": "tide-here/fes-prepared-dataset/v2",
+        "preparedAt": "2026-08-29T00:00:00.000Z",
+        "displayName": "FES2022b global coastal points",
+        "dataClass": "licensed-source",
+        "model": "FES2022b native non-structured ocean tide atlas",
+        "isFes2022": true,
+        "attribution": "FES2022 Tide product funded by CNES and produced by LEGOS, NOVELTIS and CLS; transformed by Tide Here into sampled native-mesh coastal harmonics.",
+        "sourceUrl": "https://doi.org/10.24400/527896/A01-2024.004",
+        "licenceUrl": "https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+        "licenceReference": "AVISO License, Issue 20 (August 2026): https://www.aviso.altimetry.fr/fileadmin/documents/data/License_Aviso.pdf",
+        "disclaimer": "Transformed FES2022b model output sampled along public-domain coastlines; weather and storm surge are not included. AVISO provides the source as-is; Tide Here adds no navigation or safety warranty.",
+        "engine": "PyFES 2026.5.2 native-grid interpolation/extrapolation; Tide Here runtime uses @neaps/tide-predictor 0.11.0 with Schureman nodal corrections",
+        "sampling": {
+          "spacingKm": 15,
+          "maximumSelectionDistanceKm": 40,
+          "tileDegrees": 10,
+          "pointCount": 65203,
+          "sources": [
+            {
+              "name": "ne_10m_coastline.geojson",
+              "bytes": 10110735,
+              "sha256": "6f75ae0e0de157b14946e2255eb1f5486d9a13819032e26d4610852d296788f6"
+            },
+            {
+              "name": "ne_10m_minor_islands_coastline.geojson",
+              "bytes": 1310488,
+              "sha256": "d51fadaffc954e9e85671b0a2ecaba78b883dda1714640a173c151932fd1f2fb"
+            },
+            {
+              "name": "combined-with-oceans-2026c.json",
+              "bytes": 182393702,
+              "sha256": "17f0821bad87d7a44dcebff12ad70b82bf973c54942e29fe20f5f9f8be4b3db6"
+            }
+          ],
+          "plannedPointCount": 66715,
+          "skippedUndefinedPoints": 1512
+        },
+        "sourceFiles": [
+          {
+            "name": "FES2022b_OceanTide_NSgrid.nc",
+            "bytes": 3953139340,
+            "sha256": "6479dbd9acdfb63405ff15de1265154c4659b1f7112b8dfb1cabef945a481a23"
+          }
+        ]
+      },
+      "fallback": "No supported official tide station near this place. Using the bundled FES2022 model.",
+      "status": "No supported official tide station near this place. Using the bundled FES2022 model.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true
+      },
+      "failedRequests": [
+        {
+          "url": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations?time-series-code=wlp-hilo",
+          "error": "net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "San Diego",
+      "coordinates": [
+        32.71556,
+        -117.17667
+      ],
+      "expectedZone": "America/Los_Angeles",
+      "startedAt": "2026-09-09T10:45:02.151Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "9410170",
+        "name": "SAN DIEGO (Broadway)",
+        "latitude": 32.71555555555555,
+        "longitude": -117.1766666666667,
+        "provider": "noaa",
+        "catalogueAt": 1788950702928,
+        "catalogueStale": false,
+        "distanceKm": 0.000584367645242245,
+        "timeZone": "America/Los_Angeles"
+      },
+      "zone": "America/Los_Angeles",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "9410170",
+        "stationName": "SAN DIEGO (Broadway)",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9410170&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:45:03.445Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Seattle",
+      "coordinates": [
+        47.6026,
+        -122.3393
+      ],
+      "expectedZone": "America/Los_Angeles",
+      "startedAt": "2026-09-09T10:45:03.795Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "9447130",
+        "name": "SEATTLE (Madison St.), Elliott Bay",
+        "latitude": 47.60263888888889,
+        "longitude": -122.3393055555556,
+        "provider": "noaa",
+        "catalogueAt": 1788950702928,
+        "catalogueStale": false,
+        "distanceKm": 0.0043442677262577585,
+        "timeZone": "America/Los_Angeles"
+      },
+      "zone": "America/Los_Angeles",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 3
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "9447130",
+        "stationName": "SEATTLE (Madison St.), Elliott Bay",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9447130&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:45:03.971Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Boston",
+      "coordinates": [
+        42.3548,
+        -71.0534
+      ],
+      "expectedZone": "America/New_York",
+      "startedAt": "2026-09-09T10:45:04.128Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "8443970",
+        "name": "BOSTON",
+        "latitude": 42.35388888888889,
+        "longitude": -71.05027777777778,
+        "provider": "noaa",
+        "catalogueAt": 1788950702928,
+        "catalogueStale": false,
+        "distanceKm": 0.2758388911509573,
+        "timeZone": "America/New_York"
+      },
+      "zone": "America/New_York",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 3
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "8443970",
+        "stationName": "BOSTON",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=8443970&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:45:04.356Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Pensacola",
+      "coordinates": [
+        30.4044,
+        -87.2112
+      ],
+      "expectedZone": "America/Chicago",
+      "startedAt": "2026-09-09T10:45:04.521Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "8729840",
+        "name": "PENSACOLA",
+        "latitude": 30.404399871826172,
+        "longitude": -87.21119689941406,
+        "provider": "noaa",
+        "catalogueAt": 1788950702928,
+        "catalogueStale": false,
+        "distanceKm": 0.00029769671689839055,
+        "timeZone": "America/Chicago"
+      },
+      "zone": "America/Chicago",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 2
+        },
+        {
+          "date": "2026-09-10",
+          "events": 2
+        },
+        {
+          "date": "2026-09-11",
+          "events": 2
+        },
+        {
+          "date": "2026-09-12",
+          "events": 2
+        },
+        {
+          "date": "2026-09-13",
+          "events": 2
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "8729840",
+        "stationName": "PENSACOLA",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=8729840&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:45:04.699Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Honolulu",
+      "coordinates": [
+        21.3069,
+        -157.8675
+      ],
+      "expectedZone": "Pacific/Honolulu",
+      "startedAt": "2026-09-09T10:45:04.860Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "1612340",
+        "name": "HONOLULU",
+        "latitude": 21.30333333333334,
+        "longitude": -157.8645277777778,
+        "provider": "noaa",
+        "catalogueAt": 1788950702928,
+        "catalogueStale": false,
+        "distanceKm": 0.5020923809647195,
+        "timeZone": "Pacific/Honolulu"
+      },
+      "zone": "Pacific/Honolulu",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "1612340",
+        "stationName": "HONOLULU",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=1612340&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:45:05.054Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Anchorage",
+      "coordinates": [
+        61.2375,
+        -149.8904
+      ],
+      "expectedZone": "America/Anchorage",
+      "startedAt": "2026-09-09T10:45:05.212Z",
+      "requiredStationChoice": false,
+      "provider": "noaa",
+      "station": {
+        "id": "9455920",
+        "name": "ANCHORAGE, Knik Arm",
+        "latitude": 61.2375,
+        "longitude": -149.8903888888889,
+        "provider": "noaa",
+        "catalogueAt": 1788950702928,
+        "catalogueStale": false,
+        "distanceKm": 0.0005944983545134337,
+        "timeZone": "America/Anchorage"
+      },
+      "zone": "America/Anchorage",
+      "datum": "MLLW (mean lower low water)",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "NOAA CO-OPS",
+        "stationId": "9455920",
+        "stationName": "ANCHORAGE, Knik Arm",
+        "sourceUrl": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=siteprep-wasm&station=9455920&datum=MLLW&time_zone=gmt&units=metric&interval=hilo&format=json&begin_date=20260909&end_date=20260914",
+        "licenceUrl": "https://tidesandcurrents.noaa.gov/disclaimers.html",
+        "retrievedAt": "2026-09-09T10:45:05.451Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from NOAA CO-OPS.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Victoria",
+      "coordinates": [
+        48.4247,
+        -123.3717
+      ],
+      "expectedZone": "America/Vancouver",
+      "startedAt": "2026-09-09T10:45:05.620Z",
+      "requiredStationChoice": false,
+      "provider": "chs",
+      "station": {
+        "id": "5cebf1df3d0f4a073c4bbd1e",
+        "name": "Victoria Harbour",
+        "latitude": 48.424363,
+        "longitude": -123.370828,
+        "provider": "chs",
+        "catalogueAt": 1788950703203,
+        "catalogueStale": false,
+        "distanceKm": 0.07446098678708885,
+        "timeZone": "America/Vancouver"
+      },
+      "zone": "America/Vancouver",
+      "datum": "Canadian chart datum",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "Canadian Hydrographic Service",
+        "stationId": "5cebf1df3d0f4a073c4bbd1e",
+        "stationName": "Victoria Harbour",
+        "sourceUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/5cebf1df3d0f4a073c4bbd1e/data?time-series-code=wlp-hilo&from=2026-09-09T07%3A00%3A00.000Z&to=2026-09-14T07%3A00%3A00.000Z",
+        "licenceUrl": "https://www.tides.gc.ca/en/licence-agreement",
+        "retrievedAt": "2026-09-09T10:45:05.798Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from Canadian Hydrographic Service.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "Halifax",
+      "coordinates": [
+        44.659,
+        -63.583
+      ],
+      "expectedZone": "America/Halifax",
+      "startedAt": "2026-09-09T10:45:06.286Z",
+      "requiredStationChoice": false,
+      "provider": "chs",
+      "station": {
+        "id": "5cebf1df3d0f4a073c4bbcbb",
+        "name": "Halifax",
+        "latitude": 44.65914,
+        "longitude": -63.583386,
+        "provider": "chs",
+        "catalogueAt": 1788950703203,
+        "catalogueStale": false,
+        "distanceKm": 0.03426983982989471,
+        "timeZone": "America/Halifax"
+      },
+      "zone": "America/Halifax",
+      "datum": "Canadian chart datum",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "Canadian Hydrographic Service",
+        "stationId": "5cebf1df3d0f4a073c4bbcbb",
+        "stationName": "Halifax",
+        "sourceUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/5cebf1df3d0f4a073c4bbcbb/data?time-series-code=wlp-hilo&from=2026-09-09T03%3A00%3A00.000Z&to=2026-09-14T03%3A00%3A00.000Z",
+        "licenceUrl": "https://www.tides.gc.ca/en/licence-agreement",
+        "retrievedAt": "2026-09-09T10:45:06.456Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from Canadian Hydrographic Service.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    },
+    {
+      "engine": "firefox",
+      "place": "St John's",
+      "coordinates": [
+        47.5667,
+        -52.7
+      ],
+      "expectedZone": "America/St_Johns",
+      "startedAt": "2026-09-09T10:45:06.630Z",
+      "requiredStationChoice": false,
+      "provider": "chs",
+      "station": {
+        "id": "5cebf1e33d0f4a073c4bc176",
+        "name": "St. Johns",
+        "latitude": 47.567045,
+        "longitude": -52.702311,
+        "provider": "chs",
+        "catalogueAt": 1788950703203,
+        "catalogueStale": false,
+        "distanceKm": 0.17757959482676708,
+        "timeZone": "America/St_Johns"
+      },
+      "zone": "America/St_Johns",
+      "datum": "Canadian chart datum",
+      "days": [
+        {
+          "date": "2026-09-09",
+          "events": 4
+        },
+        {
+          "date": "2026-09-10",
+          "events": 4
+        },
+        {
+          "date": "2026-09-11",
+          "events": 4
+        },
+        {
+          "date": "2026-09-12",
+          "events": 4
+        },
+        {
+          "date": "2026-09-13",
+          "events": 4
+        }
+      ],
+      "source": {
+        "provider": "Canadian Hydrographic Service",
+        "stationId": "5cebf1e33d0f4a073c4bc176",
+        "stationName": "St. Johns",
+        "sourceUrl": "https://api-sine.dfo-mpo.gc.ca/api/v1/stations/5cebf1e33d0f4a073c4bc176/data?time-series-code=wlp-hilo&from=2026-09-09T02%3A30%3A00.000Z&to=2026-09-14T02%3A30%3A00.000Z",
+        "licenceUrl": "https://www.tides.gc.ca/en/licence-agreement",
+        "retrievedAt": "2026-09-09T10:45:06.839Z"
+      },
+      "fallback": null,
+      "status": "Official predictions loaded from Canadian Hydrographic Service.",
+      "checks": {
+        "fiveDays": true,
+        "zone": true,
+        "coastToday": true,
+        "eventsInLocalDay": true,
+        "uniqueEvents": true,
+        "hasEvents": true,
+        "labelledFallback": true,
+        "noOverflow": true,
+        "providerEvents": true
+      },
+      "providerResponseStatus": 200,
+      "failedRequests": [],
+      "pageErrors": []
+    }
+  ]
+}

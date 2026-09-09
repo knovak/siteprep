@@ -19,14 +19,6 @@
       "effort": "medium",
       "advances_stage": false,
       "blocked_by": "data:physical iPad findings for opening both downloads from Files, persistence, backup recovery, touch layout and Tide Here cold startup; desktop Safari and Firefox pass, and iPad Pro 11 WebKit emulation passes hosted workflows"
-    },
-    {
-      "id": "expand-online-provider-checks",
-      "title": "Expand live provider and station-time-zone checks across representative US and Canadian coasts",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "medium",
-      "advances_stage": false
     }
   ],
   "brief": {
