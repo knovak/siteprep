@@ -6,7 +6,7 @@ Promote an entry by writing it as a real item with
 `node scripts/initiatives.mjs add tide-here <id> --title "..."` when it stops
 being optional. See `INITIATIVES_VISION.md` §6.6.
 
-## Possible future refinements — updated 2026-09-02
+## Possible future refinements — updated 2026-09-09
 
 These are optional ideas, not a plan or active work. They were retained when
 the initiative was directed toward dormancy after the global FES2022 release,
@@ -21,6 +21,7 @@ manual-entry fallback.
 | **Pin a few places on this device** | Gives repeat visitors a direct route back to familiar coasts without adding accounts or synchronization. | Small | Keep pins separate from diagnostic history and caches, label them device-local, provide remove and clear controls, and contact no provider until a person opens a pin. Re-resolve the saved display value rather than freezing an old station or model point. |
 | **Add concise coverage and alternative-coast help on the page** | Could reduce first-use uncertainty about official stations, approximate FES results, and coverage refusal. | Small | The current result and source disclosures already carry extensive guidance, so add this only if real use shows misunderstanding. Keep it behind a short disclosure and derive coverage wording from the active registry. |
 | **Add another official tide-provider adapter** | Improves official precision and datum semantics in another country despite the global approximate fallback. | Large | Reopen only for sustained country demand and after rechecking licence, attribution, credentials, limits, station semantics, and five-day access. Preserve official-source priority, time-zone, privacy, and refusal behavior. |
+| **Adopt accuracy testing** | Helps detect discrepancies in tide timing, tidal range, and event counts. | Medium | Base it on the [tests in the experimental WASM version of Tide Here](../experiment-with-wasm/test-plan.md) and/or the [compare-tide-sources skill](../../.claude/skills/compare-tide-sources/SKILL.md). |
 
 No refinement is currently selected. Evidence of ambiguous-station confusion,
 repeat-place use, FES misunderstanding, or sustained demand for one country's
