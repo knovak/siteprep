@@ -3151,7 +3151,8 @@ function renderPage(slug) {
     parts.push(card('Outputs', 'initiative-outputs',
       `      <ul>\n${outputs.map((output) => {
         const label = escapeHtml(output.path || output.url || '');
-        const href = output.url || `../../${output.path}/`;
+        const encodedPath = (output.path || '').split('/').map(encodeURIComponent).join('/');
+        const href = output.url || `../../${encodedPath}/`;
         return `        <li><a href="${escapeHtml(href)}">${label}</a> — ${escapeHtml(output.kind || '')}, ${escapeHtml(output.status || '')}</li>`;
       }).join('\n')}\n      </ul>`));
   }
