@@ -267,7 +267,15 @@ export function renderPilePage({isAdmin = false} = {}) {
       .admin-menu-content { top: 118px; max-height: calc(100dvh - 130px); }
       .admin-user-form { grid-template-columns: minmax(0, 1fr) 92px; }
       .admin-user-form button { grid-column: 1 / -1; }
-      .toolbar button { min-height: 42px; padding-inline: 12px; }
+      .toolbar { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; overflow: visible; }
+      .toolbar .spacer { display: none; }
+      .toolbar button { min-height: 42px; padding-inline: 4px; }
+      #sweep-verdict { grid-row: 2; grid-column: 1 / 3; min-width: 0; }
+      .sweep-control { grid-row: 2; grid-column: 3 / -1; min-width: 0; }
+      .toolbar #sweep-rest { flex: 1; }
+      .sweep-mode-picker { width: 28px; flex-shrink: 0; }
+      #mark-count { grid-row: 3; grid-column: 1 / 3; align-self: center; }
+      .page-controls { grid-row: 3; grid-column: 3 / -1; justify-content: flex-end; }
       .bookmark-card { padding: 18px; }
       .capture { min-height: 44%; margin: -18px -18px 12px; }
       .bookmark-card h2 { max-width: 90%; font-size: 1.45rem; -webkit-line-clamp: 5; }

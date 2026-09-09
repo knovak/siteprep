@@ -20,6 +20,8 @@ Each card has 20px K, A and N square buttons below its + button. They map to `ke
 
 Sweep untriaged submits the current page's untriaged items plus any explicitly chosen cards that already have verdicts. Each submitted ID gets its pending choice or the sweep dropdown fallback (normally Junk). Sweep all selected applies the same precedence to its selected items after the usual confirmation. Both use an optional `item_verdicts` map on the existing verdict endpoints. `verdict-plan.mjs` validates every choice before writes, and the stores group updates by verdict in a single batch/action, preserving one-step Undo, shared timestamps and binding limits. Choices outside an action's item IDs never expand its scope. Failed saves preserve choices for retry; successful saves clear the affected choices. Existing toolbar/keyboard actions retain their immediate marked-set behavior and replace any pending choice on the items they save. Native Enter/Space activation remains intact.
 
+On phones, the toolbar wraps into fixed rows so the sweep dropdown, sweep button and page controls remain visible without horizontal scrolling.
+
 The title's overlapping-squares button copies the complete stored title as plain text, independently of the existing Copy URL control. Both use the clipboard API and report success or failure. The title text can truncate while its copy control remains visible. Controls have descriptive accessible labels and quick verdicts expose their pressed state.
 
 ## Verification

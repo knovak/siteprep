@@ -139,3 +139,22 @@ test('pending choices survive filtered paging and both sweep scopes use them', a
   await expect(page.locator('.bookmark-card:visible [aria-pressed="true"]')).toHaveCount(0);
   await close();
 });
+
+
+test('phone users can choose and sweep without scrolling the toolbar', async ({page, context}) => {
+  await page.setViewportSize({width:430,height:932});
+  const close = await boot(page, context);
+  const first = page.locator('.bookmark-card:visible').first();
+  const id = await first.getAttribute('data-item-id');
+  await first.locator('[data-card-verdict="keeper"]').click();
+  for (const control of ['#sweep-rest','#sweep-verdict','#next-page','#previous-page']) {
+    const box = await page.locator(control).boundingBox();
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(430);
+  }
+  await page.locator('#sweep-rest').click();
+  await expect(page.locator('.bookmark-card:visible')).not.toHaveAttribute('data-item-id',id);
+  await page.locator('#previous-page').click();
+  await expect(page.locator('[data-item-id="'+id+'"]')).toHaveAttribute('data-verdict','keeper');
+  await close();
+});
