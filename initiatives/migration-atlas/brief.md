@@ -6,23 +6,21 @@
 
 ## Done
 
-The self-contained atlas contains 48 migrations and 92 destination records.
-Four confidence conflicts are corrected; stocks, repeated moves and internal
-displacement have distinct labels, and detail panels explain schematic map
-points and unreconciled quantities. Population values and coordinates are
-preserved ([reconciliation and evidence](notes.html)).
+The atlas contains 48 migrations and 92 destination records. Four confidence
+conflicts are corrected; stocks, repeated moves and internal displacement have
+distinct labels. About the data links to the full editorial report, including
+source locators and unresolved evidence, and the README explains the standards.
 
-Verification passed 548 core assertions, 91 Chromium checks, 88 each in Firefox
-and WebKit, and 78 macOS file/HTTP and keyboard checks. Dialog focus stays
-inside, returns to its opener, and reading keys leave the background map alone.
+The opening map is blank at 1000; two approximate starts moved to 1001 by the
+user's choice. Verification includes 551 core assertions and six desktop/phone
+offline journeys in Chromium, Firefox and WebKit. The performance requirement
+is “60 fps is preferred, 30 fps is acceptable” ([test plan](test-plan.html)).
 
 ## Remaining work
 
 Phase 5 and T8 still require field-level numeric sources, dated stock and
 cohort evidence, and the remaining destination-specific visual inspections.
-T6/T7 still need manual screen-reader observations and Windows/Linux runs;
-Firefox/WebKit's measured 20 ms frame cadence does not establish the 17 ms
-median performance target ([test plan](test-plan.html)).
+T6/T7 still need manual screen-reader observations and Windows/Linux runs.
 
 ## Optional later
 
