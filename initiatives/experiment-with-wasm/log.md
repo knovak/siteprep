@@ -88,3 +88,7 @@ Added a single refreshed `updated_at:` tag for each manual tag-add or verdict ac
 ## 2026-09-09 — Choose card verdicts locally, save them on sweep
 
 Changed K/A/N to local pending choices so taps never wait for a database save. Buttons are now 20px squares with a dark pressed state; a second tap clears the choice. Sweeping sends the chosen verdicts and dropdown fallback in one request, stamps the affected items together, and records one Undo action. Choices survive paging, filtering and collection switches during the open page, remain available after failed saves, and clear on successful verdict saves or reload. An explicit choice can override a previously judged item. The hosted app and WASM fork share this behavior; production publication remains separate.
+
+## 2026-09-09 — Release
+
+Released to production — Demo, `24c4835`. 7 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/experiment-with-wasm/> See releases.md.

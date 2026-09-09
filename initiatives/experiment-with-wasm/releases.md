@@ -7,6 +7,22 @@ Newest first.
 
 <https://knovak.github.io/siteprep/demos/experiment-with-wasm/>
 
+Released `24c4835` · 7 commit(s) since the previous release.
+
+Changes since the previous release, in `initiatives/experiment-with-wasm/work/site`:
+
+- Refresh standalone test package with the phone sweep controls
+- Update standalone preview with the final pressed-button appearance
+- Refresh the standalone preview with pending verdict controls
+- Update the preview snapshot with the dense-grid layout
+- Refresh the standalone Bookmark Sorter preview package
+- Record wasm lessons learned and make the initiative dormant (#483)
+- Enable internet data in both WASM apps and prefer online tides (#477)
+
+## 2026-09-09 — Demo
+
+<https://knovak.github.io/siteprep/demos/experiment-with-wasm/>
+
 Released `fcc6370` · 14 commit(s) since the previous release.
 
 Changes since the previous release, in `initiatives/experiment-with-wasm/work/site`:
