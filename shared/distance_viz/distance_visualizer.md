@@ -11,12 +11,14 @@ The **TravelTimeViz** library is a JavaScript component for visualizing travel t
 - Geographic positioning based on latitude and longitude
 - Automatic north-to-south ordering
 - Interactive drag-and-drop nodes
+- Matching blue route and time-label highlights on hover or keyboard focus
+- Selectable routes with a running travel-time total below each graph
 - Zoom and pan capabilities
 - Bidirectional route handling
 - Customizable colors and styling
 - Event system for user interactions
 
-**Version:** 2.1.0
+**Version:** 2.2.0
 **Dependencies:** D3.js v7+
 **License:** MIT
 
@@ -270,6 +272,31 @@ viz.render('#network', '#matrix'); // Re-render after update
 Automatically creates bidirectional routes. If you provide A→B, it creates B→A with the same travel time.
 
 ### Interaction Methods
+
+#### Route selection and travel-time totals
+
+Hovering over a network line highlights that line and its time label in blue.
+Clicking or tapping it selects it, keeping both blue after the pointer leaves.
+Select any number of lines to add their numeric `minutes` values to the
+**Selected travel time** below the graph. Selecting an already selected line
+removes it, clears its blue highlight immediately, and subtracts its time.
+An empty selection displays `0m`; totals use hours and minutes, such as `1h15m`
+or `2h`. Hovering alone does not change the total.
+
+Each drawn direction is independently selectable: choosing A → B counts it
+once; choosing B → A as well adds the return trip. Each time label sits at the
+midpoint of its own curved line so opposite directions do not share a label
+position. Highlighted labels are drawn above other labels with a white outline.
+
+Routes are keyboard buttons: Tab focuses a line, and Enter or Space toggles it.
+`aria-pressed` reports selection and the total is a polite live status. Selection
+belongs to each rendered graph, survives node movement and zoom, and starts
+empty after a fresh render or page reload. Matrix cells do not change it.
+These interactions require no changes to existing deck pages.
+
+Browser coverage in `tests/e2e/travel-time-viz.spec.js` checks hover, persistent
+selection, multiple-route addition and subtraction, return trips, keyboard and
+touch input, and isolation between graphs using the built shared library.
 
 #### `resetNetwork()`
 Resets all node positions to their default geographic layout.
