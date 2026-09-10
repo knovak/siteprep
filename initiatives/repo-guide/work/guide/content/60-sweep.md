@@ -14,14 +14,18 @@ run and a manual run execute the same text.
 
 @figure sweep-run
 
-A run moves through four phases in a fixed order. Which phases are switched on
-is a setting in the sweep configuration file, so widening what the job may do
-is a reviewed commit rather than an edit in a scheduler.
+A run moves through several phases in a fixed order. Which phases are switched
+on is a setting in the sweep configuration file, so widening what the job may
+do is a reviewed commit rather than an edit in a scheduler: survey, land what
+has finished its holding window, answer review comments, propose an answer,
+start new work, deploy a preview, then refresh a brief.
 
-The phases share one budget of {{sweep.budget.items_per_run}} items per run,
-spent in phase order. Answering review comments comes first, then proposing
-answers to open questions, then starting new work. A run that spends its whole
-budget on review replies and starts nothing new is a correct run.
+The phases that do work share one budget of {{sweep.budget.items_per_run}}
+items per run, spent in phase order: answering review comments first, then
+proposing answers to open questions, then starting new work. A run that
+spends its whole budget on review replies and starts nothing new is a correct
+run. Landing, deploying and writing a brief cost no budget - they finish work
+the run already did.
 
 @fact sweep.budget as table
 
@@ -43,9 +47,11 @@ Each run also obeys a short list of rules, whatever it finds:
 ---
 ## The sweep picks up the work
 
-A scheduled run reads every initiative and opens pull requests. Four phases in
-a fixed order: survey, answer review comments, propose answers to open
-questions, start new work. One budget, spent in that order.
+A scheduled run reads every initiative and opens pull requests. Phases in a
+fixed order: survey, land what a policy already covers, answer review
+comments, propose answers to open questions, start new work, deploy a
+preview, refresh a brief. One budget for the work phases, spent in that
+order.
 
 @figure sweep-run
 
@@ -53,8 +59,10 @@ questions, start new work. One budget, spent in that order.
 ## The budget, and what a run never does
 
 The budget is currently {{sweep.budget.items_per_run}} items per run. Ranking is
-arithmetic on value and effort, so it doesn't drift. A run never merges, never
-creates an initiative, never edits a wish, and never declares an initiative
-dormant.
+arithmetic on value and effort, so it doesn't drift. A run may merge only its
+own pull requests, and only the ones a configured policy covers - never a
+proposal, and never anything at a lifecycle stage the policy doesn't name. It
+never creates an initiative, never edits a wish, and never declares an
+initiative dormant.
 
 @fact sweep.budget as table

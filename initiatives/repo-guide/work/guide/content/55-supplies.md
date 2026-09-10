@@ -16,8 +16,11 @@ those is structure, and the agents supply it.
 Agents write the objectives, the specification, the plan, and the tests. They
 weigh alternatives and record the ones they rejected. They cut the work into
 increments small enough to review, answer review comments, and propose answers
-to open questions. What they never do is merge. A pull request is a proposal,
-and merging it is your act.
+to open questions. They may also merge their own pull request, but only within
+a narrow, configured policy: their own branch, at a lifecycle stage the policy
+names, held open long enough to close, with CI green and no open comment.
+Everything outside that policy - a proposal above all - is a pull request only
+you can merge.
 
 When work is stuck, the todo item says why, using one of a fixed set of
 labels. The label decides who may act.
@@ -49,7 +52,9 @@ digest workflow is described in the technical document](source:INITIATIVES_TECHD
 ## What you supply, and what the agents supply
 
 You supply intent, outside facts, and authority. Agents supply the documents,
-the increments, the review replies, and proposed answers. They never merge.
+the increments, the review replies, and proposed answers. They may merge what
+a narrow policy already covers; everything else, a proposal above all, is
+yours to merge.
 
 @figure division-of-labor
 

@@ -104,9 +104,12 @@ export function buildSimulatorSteps(facts) {
   const budget = vocabulary.items_per_run;
   const phases = vocabulary.phases;
   const firstPhase = phases[0];
-  const respondPhase = phases[Math.min(1, phases.length - 1)];
-  const proposePhase = phases[Math.min(2, phases.length - 1)];
-  const workPhase = phases.at(-1);
+  // The real sweep names these phases explicitly; use the name when it is
+  // present, and only fall back to position for a fixture repo whose phase
+  // list uses different words (§ "review and merge" is not one of them).
+  const respondPhase = phases.includes('respond') ? 'respond' : phases[Math.min(1, phases.length - 1)];
+  const proposePhase = phases.includes('propose') ? 'propose' : phases[Math.min(2, phases.length - 1)];
+  const workPhase = phases.includes('work') ? 'work' : phases.at(-1);
 
   const phaseStatus = (active, completed = []) => Object.fromEntries(phases.map(phase => [
     phase,

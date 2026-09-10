@@ -241,3 +241,27 @@ the self-contained simulator and expanded its Node and browser regression checks
 ## 2026-09-03 — Redesign the simulator to match the new guide, following the list in notes.md
 
 The user declared the Repo Guide dormant after the completed simulator redesign and review rounds.
+
+## 2026-09-10 — Correct stale merge-phase claims after the sweep gained a merge phase
+
+An agent reading the published guide flagged a contradiction: the guide said the
+sweep never merges, while `sweep.json` has carried a `merge` phase and an
+`auto_merge` policy for some time. Corrected `content/55-supplies.md` and
+`content/60-sweep.md` to describe the bounded policy instead of an absolute
+"never," added the missing `merge`, `deploy` and `brief` phase captions to the
+sweep-run figure, and reworded the two figures that still called merging
+solely a person's act.
+
+Also fixed a real bug the same drift caused: `simulator.mjs` picked the
+"respond", "propose" and "work" phases to highlight by position
+(`phases[1]`, `phases[2]`, `phases.at(-1)`), which was correct only while
+`work` was the last phase. With `merge`, `deploy` and `brief` added after it,
+the simulator was highlighting the wrong phase in its sweep-run animation.
+Switched to looking up those phases by name, falling back to position only
+for a fixture repo that uses different phase names. Updated the one test
+that hardcoded the old phase count (4 → 7).
+
+Regenerated `out/description.html`, `out/deck.html` and `out/simulator.html`
+and reran every generator's browser check; all pass. The published copy under
+`demos/Guide to Initiatives/` was not touched - that needs a release, which is
+the user's call, not this fix's.
