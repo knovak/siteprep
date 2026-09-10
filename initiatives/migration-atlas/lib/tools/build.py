@@ -50,7 +50,7 @@ body = subprocess.run(
 ).stdout
 body = body.replace('<div class="table-scroll">',
                     '<div class="table-scroll" role="region" tabindex="0" '
-                    'aria-label="Editorial findings for all 48 migrations; scroll horizontally on narrow screens">')
+                    'aria-label="Editorial evidence and findings; scroll horizontally on narrow screens">')
 editorial = read("src/editorial.html").replace("<!--REPORT-->", body)
 report_out = initiative / "work/editorial.html"
 report_out.write_text(editorial, encoding="utf-8")

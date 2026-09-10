@@ -112,3 +112,42 @@ Final reruns under that requirement passed 91 Chromium checks and 90 each
 in Firefox and WebKit. Median frame times were 16.7, 20 and 20 ms, with
 p95 of 16.8, 21 and 21 ms respectively. All three meet the acceptable target
 on this test machine; no golden images were changed.
+
+## September 10, 2026 source and destination continuation
+
+Six records have revised source/quantity notes. The Rohingya Bangladesh
+destination's two population fields now use the same registered December 2024
+stock, 1,005,520; all other population values and every coordinate are preserved.
+The Filipino confidence change intentionally draws its routes as uncertain.
+T8 remains open for untraced allocations, historical descendant figures,
+confidence exceptions and corrections to the schematic geography.
+
+The 44 remaining destination records were captured at 6× and inspected in
+four contact sheets; the original 48 first-destination checks remain the
+earlier run's evidence. The [new observation receipt](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/destination-inspection-20260910.json)
+records the baseline dataset hash, sample years, cameras and findings. No
+geographic acceptance is inferred from the absence of rendering errors.
+
+Verification on macOS arm64 with Playwright 1.57.0:
+
+- 551 core assertions passed.
+- 91 Chromium, 90 Firefox and 90 WebKit browser checks passed, including the
+  existing interaction, accessibility, performance and visual gates.
+- [Packaging receipt](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/packaging-20260910.json):
+  all 18 same-engine file/HTTP screenshot comparisons were identical; all 60
+  keyboard checks passed.
+- [Detail and report receipt](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/detail-and-report-20260910.json):
+  36 detail checks and six report journeys passed at 1440px and 390px across
+  all three engines with HTTP/HTTPS requests blocked. Source dates, population
+  caveats, the low-confidence badge, report links and all 98 rows (6 source,
+  44 destination, 48 original audit) were present without horizontal page or
+  detail-panel overflow or uncaught JavaScript errors.
+
+Only Chromium's `g8_2015_region_legend.png` was refreshed, explicitly, after
+inspection. The old golden already differed from unchanged main by 0.430%
+(including the previously changed legend and Venezuelan route); the intended
+Filipino uncertainty styling brought the difference to 0.519%, above the
+unchanged 0.5% limit. The new frame was inspected and a separate full Chromium
+run passed against it. The other 23 reference images and all thresholds were
+left alone. Actual screen-reader observations and Windows/Linux packaging
+remain outside these macOS checks.

@@ -1,0 +1,68 @@
+[
+  {
+    "engine": "chromium",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "detail_cases": 6,
+    "report_rows": 98,
+    "network": "HTTP and HTTPS requests blocked",
+    "page_errors": []
+  },
+  {
+    "engine": "chromium",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "detail_cases": 6,
+    "report_rows": 98,
+    "network": "HTTP and HTTPS requests blocked",
+    "page_errors": []
+  },
+  {
+    "engine": "firefox",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "detail_cases": 6,
+    "report_rows": 98,
+    "network": "HTTP and HTTPS requests blocked",
+    "page_errors": []
+  },
+  {
+    "engine": "firefox",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "detail_cases": 6,
+    "report_rows": 98,
+    "network": "HTTP and HTTPS requests blocked",
+    "page_errors": []
+  },
+  {
+    "engine": "webkit",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "detail_cases": 6,
+    "report_rows": 98,
+    "network": "HTTP and HTTPS requests blocked",
+    "page_errors": []
+  },
+  {
+    "engine": "webkit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "detail_cases": 6,
+    "report_rows": 98,
+    "network": "HTTP and HTTPS requests blocked",
+    "page_errors": []
+  }
+]

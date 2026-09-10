@@ -26,6 +26,16 @@ both HTML files together for offline reading; the app itself remains
 self-contained. Edit the Markdown or template and rebuild, rather than
 editing the generated report.
 
+The report can contain several tables (source checks, destination inspections
+and the original 48-entry audit). Each table's scroll region has a general
+editorial-evidence label rather than claiming that every table has 48 rows.
+The September 10 source notes distinguish verified dated populations from
+untraced allocations; numerical changes require a source locator and an
+observation date in the entry and report. The 44 remaining destination
+close-ups and their camera/input receipt are under
+`notes/destination-inspection-20260910*`; inspection coverage does not imply
+that a schematic multi-country endpoint is geographically accepted.
+
 The build is deterministic: running it over an unchanged source rewrites the
 same bytes. That is worth checking after any change, because it is what lets a
 reader confirm the published bundle came from this source:
