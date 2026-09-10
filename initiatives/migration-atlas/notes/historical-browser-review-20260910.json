@@ -1,0 +1,62 @@
+[
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "height": 1000,
+    "detail_and_report_journeys": 4,
+    "report_rows": 102,
+    "network": "HTTP and HTTPS blocked",
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "height": 844,
+    "detail_and_report_journeys": 4,
+    "report_rows": 102,
+    "network": "HTTP and HTTPS blocked",
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "engine": "firefox",
+    "width": 1440,
+    "height": 1000,
+    "detail_and_report_journeys": 4,
+    "report_rows": 102,
+    "network": "HTTP and HTTPS blocked",
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "engine": "firefox",
+    "width": 390,
+    "height": 844,
+    "detail_and_report_journeys": 4,
+    "report_rows": 102,
+    "network": "HTTP and HTTPS blocked",
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "height": 1000,
+    "detail_and_report_journeys": 4,
+    "report_rows": 102,
+    "network": "HTTP and HTTPS blocked",
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "height": 844,
+    "detail_and_report_journeys": 4,
+    "report_rows": 102,
+    "network": "HTTP and HTTPS blocked",
+    "page_errors": [],
+    "horizontal_overflow": false
+  }
+]

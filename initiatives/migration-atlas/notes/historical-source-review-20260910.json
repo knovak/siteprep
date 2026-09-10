@@ -1,0 +1,67 @@
+{
+  "baseline_commit": "82847f9ce548c0d384d15af883fcb8c2e9794bad",
+  "baseline_data_sha256": "a27a5b130f4628acc0aab62322d95d370309a81d889052b6bdbb95e128cb8119",
+  "revised_data_sha256": "6b97e2a3b0b0795d983d18c333c134767d20afe107e1f84464045c5f445ce35f",
+  "review_date": "2026-09-10",
+  "changes": [
+    {
+      "id": "atlantic-slave-trade",
+      "changed_fields": [
+        "migrants_note"
+      ],
+      "old_confidence": "high",
+      "new_confidence": "high",
+      "old_headline": 12500000,
+      "new_headline": 12500000
+    },
+    {
+      "id": "puritan-great-migration",
+      "changed_fields": [
+        "name",
+        "migrants",
+        "confidence",
+        "references",
+        "migrants_note"
+      ],
+      "old_confidence": "high",
+      "new_confidence": "medium",
+      "old_headline": 21000,
+      "new_headline": 20000
+    },
+    {
+      "id": "acadian-expulsion",
+      "changed_fields": [
+        "confidence",
+        "references",
+        "migrants_note"
+      ],
+      "old_confidence": "high",
+      "new_confidence": "low",
+      "old_headline": 11500,
+      "new_headline": 11500
+    },
+    {
+      "id": "convict-australia",
+      "changed_fields": [
+        "references",
+        "migrants_note"
+      ],
+      "old_confidence": "high",
+      "new_confidence": "high",
+      "old_headline": 162000,
+      "new_headline": 162000
+    }
+  ],
+  "all_coordinates_and_destination_values_preserved": true,
+  "high_confidence_pre_1800_before": [
+    "atlantic-slave-trade",
+    "puritan-great-migration",
+    "acadian-expulsion",
+    "convict-australia"
+  ],
+  "high_confidence_pre_1800_after": [
+    "atlantic-slave-trade",
+    "convict-australia"
+  ],
+  "acceptance": "This closes the review of the four inherited high-confidence pre-1800-start entries, not T8. Two headline exceptions have source-specific rationales; allocation, descendant and geographic evidence remains open."
+}

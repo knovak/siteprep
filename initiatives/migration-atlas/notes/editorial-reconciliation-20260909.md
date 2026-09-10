@@ -1,6 +1,41 @@
 # Editorial reconciliation — September 9, 2026
 
-## Current continuation — September 10, 2026 (UTC)
+## Historical headline and confidence continuation — September 10, 2026 (UTC)
+
+This review addresses all four entries that still carried high confidence
+and began before 1800. It supersedes their confidence/source dispositions in
+the older audit below. The New England headline is now approximately 20,000,
+with medium confidence and a title matching the source's English-settler
+cohort. Acadian confidence is now low. The transatlantic and Australian convict
+headlines retain high confidence with explicit, limited source rationales.
+No coordinate, destination allocation, descendant figure or period was changed.
+
+Accessed September 10, 2026. The following pages were read directly. Population
+estimates and confidence judgments are distinguished from the remaining
+unverified fields; none of these four entries passes all of T8 yet.
+
+| Entry | Evidence and locator | Disposition and remaining evidence |
+|---|---|---|
+| `puritan-great-migration` | [American Ancestors Great Migration Study Project](https://www.americanancestors.org/projects/great-migration-study-project), opening scope statement and Methodology: approximately 20,000 English settlers in 1620-1640; the project correlates genealogical accounts with original records. The Directory subsection describes records by head of household; its roughly 5,700 entries are not the number of all people. | Replaced 21,000 with the source's rounded 20,000; existing settlement field is the same cohort. Renamed to English Great Migration to New England because the source does not count religious affiliation. High becomes medium for an approximate historical reconstruction. The inherited 30M descendants are unverified. The bibliography now distinguishes Virginia DeJohn Anderson from Robert Charles Anderson's study project; the book's quantitative tables were not read. East Anglia/Boston remain schematic points. |
+| `acadian-expulsion` | [Parks Canada, Fort Anne history](https://parks.canada.ca/lhn-nhs/ns/fortanne/culture/histoire-history), The Acadian Deportation: about 10,000 deported in 1755-1762. [Grand-Pre history](https://parks.canada.ca/lhn-nhs/ns/grandpre/culture/histoire-history) separates nearly 6,000 removed from Nova Scotia in 1755 from permission to return in 1764. | High becomes low: the inherited 11,500 for 1755-1764 has no verified page-level locator. Do not turn the different scope/date summaries into a statistical range or overwrite the total as if they matched. The 9,000 destination sum is an unverified later settlement allocation, not a survival count. Louisiana's 900,000 descendants need a date and cohort; France is not located by the North American point. |
+| `convict-australia` | [National Museum of Australia, Convict transportation peaks](https://www.nma.gov.au/defining-moments/resources/convict-transportation-peaks), opening summary and final section: more than 162,000 transported in 1788-1868; 1833 was the peak. | Retained high for the rounded transportation headline and documented period, with an explicit exception rationale for the pre-1800 start. It does not certify 150,000 settled or 5M descendants. The Sydney-area point combines New South Wales/Van Diemen's Land and omits Western Australia. The arithmetic gap does not identify the missing geographic allocation, permanent settlement, returns or mortality. |
+| `atlantic-slave-trade` | [SlaveVoyages methodology](https://legacy.slavevoyages.org/blog/methodology-trans-atlantic), Coverage of the Slave Trade, paragraph beginning with the database's 36,000 voyages: estimated 12,520,000 departures and roughly 10.7M disembarkations, incorporating reconstruction beyond recorded voyages. | Retained the rounded 12.5M headline and high confidence for its order of magnitude. This is an explicit pre-1800 exception, not exact enumeration or confidence in all destination/descendant fields. The inherited 10.6M allocation sum remains unreconciled; its 0.1M gap from arrivals is not a death toll. Embarkations, disembarkations and modern descendants remain separate quantities. |
+
+The [Great Migration Parish Map](https://www.americanancestors.org/publications/great-migration-study-project/parish-map)
+was also read. Its smaller map/directory coverage does not replace the project
+population estimate. [Cambridge's book landing page](https://www.cambridge.org/core/books/new-englands-generation/D9D12C32D8A5ACE1B714E5586CC6EED7) and bibliography could not
+be fetched in this session; indexed publisher metadata identifies Virginia
+DeJohn Anderson's *New England's Generation* (1991), but supplies no verified
+numeric table. No claim here treats the book as directly read.
+
+The source-specific confidence judgments apply to the headlines. The existing
+single confidence field cannot express separate certainty for each destination
+or descendant estimate, so the detail notes explicitly state those limits.
+The remaining nine entries beginning before 1800 were already medium or low;
+this pass does not certify them. The full T8 item remains actionable for their
+field-level sources and for all unresolved quantity and geographic findings.
+
+## Recent populations and destination inspection — September 10, 2026 (UTC)
 
 Six recent entries now distinguish a dated source from an inherited estimate.
 Syria, Venezuela and Ukraine retain their rounded headline numbers with exact
