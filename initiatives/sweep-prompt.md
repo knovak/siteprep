@@ -233,16 +233,37 @@ Only if `phases` includes `"work"`.
    - Open a pull request.
 3. Report what was done, with links.
 4. **Then land it and carry on.** If `phases` includes `"merge"` and budget
-   remains, wait for the checks on the pull requests you just opened and for
-   `auto_merge.min_age_minutes` to pass, run Phase 2 over those pull requests,
-   and return to step 1 of this phase with what is left of the budget. This is
-   the point of the merge phase: step N lands and step N+1 starts from the merged
-   tree, in one run, rather than one step per run.
+   remains, wait for the pull request you just opened to clear both gates, then
+   run Phase 2 over it, and return to step 1 of this phase with what is left of
+   the budget. This is the point of the merge phase: step N lands and step N+1
+   starts from the merged tree, in one run, rather than one step per run.
 
-   Stop looping when the budget is spent, when `select` returns nothing, or when
-   nothing merged. A pull request whose checks are still running is left alone —
-   the next run's Phase 2 picks it up, which is where it would have been handled
-   anyway. Do not spend more than about half an hour of a run waiting.
+   Waiting means polling on a schedule, not guessing once and giving up. CI on
+   this repository normally finishes in 5-10 minutes; `auto_merge.min_age_minutes`
+   (15 by default) is usually the longer of the two gates:
+
+   - Check `get_check_runs` on the pull request every 2-3 minutes (`sleep 180`
+     between checks) until every check has concluded, one way or the other.
+   - Once CI is green, run
+     `node scripts/initiatives.mjs automerge <branch> --opened-at <iso> --base main`.
+     If its only blocker is the age hold, it names how many minutes remain —
+     `sleep` for exactly that long in one call, then run it again rather than
+     polling in smaller steps.
+   - Budget at most 25 minutes of this per pull request, inside the run's
+     overall half-hour waiting cap. If CI is still running, or the hold has not
+     cleared, when that runs out, stop and leave the pull request for the next
+     scheduled run — that is a normal outcome, not a failure, and the run is
+     scheduled again in a few hours.
+
+   Never describe a pull request left this way as blocked by an instruction not
+   to merge — the merge phase has no such setting, and no run may invent one.
+   Say plainly what happened: CI was still running, or the hold had not
+   elapsed, when the run's waiting budget ran out.
+
+   Stop looping when the item budget is spent, when `select` returns nothing, or
+   when nothing merged. A pull request whose checks are still running past the
+   waiting cap is left alone — the next run's Phase 2 picks it up, which is where
+   it would have been handled anyway.
 
 ## Phase 6 — Deploy to test
 
