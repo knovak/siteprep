@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — World Migration Atlas</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — World Migration Atlas</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to World Migration Atlas</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<h3>2026-09-07 — Adopt the existing atlas as an initiative</h3>
+<p>The user requested an initiative for the working World Migration Atlas in <code>demos/world_migration_atlas/</code>, with “all the relevant documents” and “no code changes, just file migrations.” The supplied implementation plan and specification must be adopted without modification. The README may be reorganized if all its content is preserved. The wish is the supplied text and must link to <code>prompts.html</code>.</p>
+<p><strong>What this settles.</strong> The supplied <code>SPECIFICATION.md</code> becomes <code>spec.md</code>, and <code>IMPLEMENTATION_PLAN.md</code> becomes <code>plan.md</code>, with identical bytes. The supplied README is preserved in full within the initiative README. Existing development instructions and test reports in those documents are historical project records; the current request does not authorize reimplementation, new research, image generation, or a new tutorial.</p>
+<p><strong>Migration arrangement.</strong> The agent uses <code>migration-atlas</code> as the initiative slug and the default medium value. The existing demo is recorded as an output, and an unchanged copy of its nine files becomes the initiative&#39;s <code>work/</code> source. Keeping the released snapshot in <code>demos/</code> preserves its URL and prevents this adoption from removing or replacing production. The copies may diverge only through later authorized work and release; the production demo does not load anything from <code>initiatives/</code>.</p>
+<p>The repository source takes precedence over other code in the local download folder. The three named Markdown documents are the adopted attachments. Build scripts and tests described by the historical README are absent from the repository demo and are not reconstructed or imported as part of this request.</p>
+<h3>2026-09-07 — Test first, production later</h3>
+<p>The user requested: “proceed to do a test deployment as part of this PR. we&#39;ll do a prod deployment only after testing”.</p>
+<p><strong>What this settles.</strong> Use the existing demo deployment kind, with <code>initiatives/migration-atlas/work</code> as source and <code>world_migration_atlas</code> as destination. The repository build publishes the source to a separate Pages preview. This adopts the existing public demo&#39;s deployment model; it does not create a separate hosted application.</p>
+<p><strong>What remains open.</strong> The user&#39;s test findings and explicit authorization for a production release. The initiative rests at <code>dormant</code> after adoption, with blocked testing/release follow-ups, because no additional implementation work was requested. Resume it when those inputs arrive. Historical implementation phases are retained as history, not seeded as new actionable build tasks.</p>
+<h3>2026-09-07 — The development package arrived, and where it goes</h3>
+<p>The user supplied <code>migrationatlascomplete2.zip</code> as the complete July 2026 code base, two months after the atlas was written. It holds what the first adoption looked for and could not find: <code>src/core.js</code>, <code>src/app.js</code>, <code>tools/build.py</code>, the vendored d3 modules, the T1-T7 test suites with their eight goldens, and the T8 editorial checklist.</p>
+<p><strong>What this settles.</strong> The package is committed under <code>lib/</code>, which is where AGENTS.md puts an initiative&#39;s capability. The atlas can be changed again: edit <code>lib/data/migrations.json</code>, run the tests, rebuild. The blocker recorded in <code>test-plan.md</code> as &quot;recovering the development package is separate work&quot; is closed.</p>
+<p><strong>The bundle is reproducible.</strong> The package&#39;s own build produced a file 195 bytes short of the published one, differing in four places: the <code>&lt;title&gt;</code>, one CSS rule for the header link, the header line carrying the tutorial links, and a comment in <code>app.js</code> - branding edits made to the bundle after the snapshot was taken. They are ported into <code>lib/src/</code>, so <code>python3 lib/tools/build.py</code> now rewrites <code>work/index.html</code> byte for byte. The published atlas is provably the output of the committed source, which is the property that makes the source worth keeping.</p>
+<p><strong>Why <code>work/</code> was trimmed.</strong> <code>work/</code> is the deployment source: the branch preview publishes it and a release copies it to <code>demos/world_migration_atlas/</code>. It now holds only what is served - <code>index.html</code>, <code>prompts.html</code>, <code>prompts.txt</code>. Four things left it. <code>index-initial.html</code> was byte-identical to <code>index.html</code>, so the &quot;initial version&quot; was not one. <code>dist/migration-atlas.html</code> was an older build than the file beside it, and is now a build output rather than a committed file. <code>src/index.html</code> was a shell with no JavaScript, superseded by the real sources. <code>data/</code> is a build input, and belongs with the build. This cuts the published preview from 4.8 MB to 1.27 MB.</p>
+<p><strong>What that means for the next release.</strong> A release removes those four from <code>demos/world_migration_atlas/</code> as well. Nothing links to them: the demo&#39;s index entry is hardcoded in <code>scripts/build.sh</code> and points at the demo root and the two tutorial documents. Until someone releases, production keeps serving them, and the atlas it serves is byte-identical either way.</p>
+<p><strong>What was not done.</strong> <code>spec.md</code> and <code>plan.md</code> remain the preserved originals. The package&#39;s <code>README.md</code> matches the one already preserved in <code>README.md</code>, hash for hash, so nothing was re-adopted. No application behavior changed: the only edits to source files are the four that reconcile the build with the already-published bundle.</p>
+<h3>2026-09-09 — Keep a blank opening map at 1000 AD</h3>
+<p><strong>Move the two start dates to 1001.</strong> The user chose this after the sweep explained that starting the timeline at 1001 would still show two ongoing migrations.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td>Open at 999, preserving dates</td><td>Provides a blank map before the earliest recorded movements</td><td>Changes the desired opening year</td></tr><tr><td>Move the two approximate starts to 1001, opening at 1000 — chosen</td><td>Keeps the desired opening year with no flows or circles</td><td>Changes an approximate date for presentation, without new historical evidence</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>Romani migration and Indian Ocean slave trades now start at 1001; population values, end dates and coordinates stay as recorded.</li><li>The timeline includes the year before the first migration, so Home and the opening view are blank and the first event jump reaches 1001.</li><li>This is a display convention, not independent source verification or a production-release decision.</li></ul>
+<h3>2026-09-09 — Playback frame-rate target</h3>
+<p><strong>60 fps is preferred, 30 fps is acceptable.</strong> The user supplied this exact wording after asking about the inherited 17 ms threshold.</p>
+<h4>What this settles, and what it does not</h4>
+<ul><li>The specification and current README use the requested wording.</li><li>Performance acceptance permits frame times up to 1000/30 ms for the median and p95, while reporting the measured frame rate against the 60 fps preference.</li><li>Browser-specific results describe the test machine; the requirement does not certify performance on untested physical devices or authorize a release.</li></ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/flings/build-access-foundations" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
