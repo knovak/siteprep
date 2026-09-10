@@ -253,3 +253,12 @@ inspections and added exact source locators for six recent entries. Phase 5
 still requires the numerical and geographic corrections identified by those
 inspections: coverage of the checklist is not acceptance of its findings.
 The original reconciliation todo remains actionable for that work.
+
+The later September 10 historical pass reviewed the four remaining high-confidence
+entries whose periods begin before 1800. The English Great Migration headline
+now follows the American Ancestors cohort estimate; Acadian confidence is lower,
+and the two retained high-confidence headlines have specific source rationales.
+This completes that exception inventory. T8 still needs the unverified
+settlement and descendant sources, other historical quantities and geographic
+corrections recorded in the report. The source review receipt preserves the
+baseline and revised dataset hashes and each changed field.

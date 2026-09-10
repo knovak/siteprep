@@ -6,27 +6,28 @@
 
 ## Done
 
-The atlas contains 48 migrations and 92 destination records. Six recent
-entries now have source and population-definition findings, including a
-corrected Bangladesh registration figure and a lower confidence rating for
-the untraced Filipino estimate. The editorial report includes all 44 remaining
-destination close-ups, with their findings and contact sheets.
+The atlas contains 48 migrations and 92 destination records. Source findings
+now cover six recent entries and the four formerly high-confidence entries
+beginning before 1800; the latter include a revised New England estimate and
+explicit reasons for the remaining headline confidence exceptions. The
+editorial report has 102 rows, including the completed destination inspections.
 
-Verification passed 551 core assertions, 271 browser checks across three
-engines, and 78 file/HTTP packaging checks on macOS. Additional desktop and
-phone checks verified the six revised details and the complete report with
-network requests blocked.
+The current revision passed 551 core assertions, 271 browser checks and 24
+desktop/phone detail-to-report journeys across three engines. Existing visual
+references passed unchanged; WebKit's performance check passed in an isolated
+rerun after exceeding the limit during concurrent browser execution.
 
 ## Remaining work
 
-Phase 5 and T8 still require field-level numeric sources, dated destination
-allocations, cohort-specific descendants, confidence exceptions and corrections
-to schematic multi-country endpoints. The destination inspection coverage is
-complete; historical and geographic acceptance remains open. T6/T7 still need
-manual screen-reader observations and Windows/Linux runs.
+Phase 5 and T8 still require field-level sources, dated destination allocations,
+cohort-specific descendants and corrections to schematic geographic points.
+The four historical confidence exceptions have been reviewed, but their
+remaining unverified quantities and the other historical entries still need
+acceptance evidence. T6/T7 still need manual screen-reader observations and
+Windows/Linux packaging runs.
 
 ## Optional later
 
 The plan retains an optional Tauri wrapper and an online alternative for
-street-level detail. New movements can follow the existing dataset-validation
-and rebuild path as research supplies them.
+street-level detail. New movements can follow the dataset-validation and
+rebuild path as research supplies them.

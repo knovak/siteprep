@@ -250,7 +250,7 @@
    "type": "forced-enslavement",
    "cause": "European colonial plantation economies (sugar, coffee, cotton, tobacco) demanded enslaved labor; captives were transported against their will",
    "migrants": 12500000,
-   "migrants_note": "\u224812.5M embarked from Africa; \u224810.7M survived the Middle Passage; the inherited destination allocations sum to 10.6M, so they are not a complete reconciliation to the 10.7M estimate. The modern descendant figures need separate, dated sources.",
+   "migrants_note": "SlaveVoyages methodology, Coverage of the Slave Trade, gives an estimated 12,520,000 departures from Africa and approximately 10.7M disembarkations; the headline rounds the departure estimate to 12.5M. These are reconstructed totals that include estimates for voyages missing from the database, not a complete register of named people. High confidence is retained for this documented order of magnitude despite the pre-1800 start; it does not certify each allocation or descendant figure. The inherited destination allocations total 10.6M and remain unreconciled to 10.7M; the 0.1M difference is not a mortality estimate. The inherited modern descendant estimates require separate dated, cohort-specific sources; all points remain schematic.",
    "source": {
     "name": "West & West-Central Africa",
     "lat": 5.0,
@@ -336,14 +336,14 @@
   },
   {
    "id": "puritan-great-migration",
-   "name": "English Puritan 'Great Migration' to New England",
+   "name": "English Great Migration to New England",
    "period": {
     "start": 1620,
     "end": 1640
    },
    "type": "religious",
    "cause": "Religious nonconformity under Charles I and Archbishop Laud; economic opportunity",
-   "migrants": 21000,
+   "migrants": 20000,
    "source": {
     "name": "England (East Anglia)",
     "lat": 52.2,
@@ -358,11 +358,13 @@
      "diaspora_today": 30000000
     }
    ],
-   "confidence": "high",
+   "confidence": "medium",
    "references": [
-    "Anderson, New England's Generation (1991)"
+    "American Ancestors, The Great Migration Study Project, opening scope statement and Methodology (accessed 10 September 2026; direct link in editorial report)",
+    "Virginia DeJohn Anderson, New England's Generation (1991), inherited bibliography; book's numerical tables not read in this review"
    ],
-   "region": "weur"
+   "region": "weur",
+   "migrants_note": "The approximately 20,000 English men, women and children who settled in New England in 1620-1640 are the cohort defined by the American Ancestors Great Migration Study Project. The headline replaces the untraced 21,000; the existing 20,000 settlement field represents the same approximate cohort, not an independent arrival count. The source covers English settlers, not a count of proven Puritan affiliation, so the title now reflects that scope; religious and economic motives varied. Medium confidence reflects a rounded historical reconstruction, not an exact register total. The inherited 30M descendant estimate is unverified and is not established by this project. East Anglia and the Boston-area point are schematic, not every origin parish or New England settlement."
   },
   {
    "id": "huguenot-exodus",
@@ -437,11 +439,13 @@
      "diaspora_today": null
     }
    ],
-   "confidence": "high",
+   "confidence": "low",
    "references": [
-    "Faragher, A Great and Noble Scheme (2005)"
+    "Faragher, A Great and Noble Scheme (2005)",
+    "Parks Canada, Fort Anne National Historic Site, History / The Acadian Deportation; Grand-Pre National Historic Site, History (accessed 10 September 2026; direct links in editorial report)"
    ],
-   "region": "namer"
+   "region": "namer",
+   "migrants_note": "The inherited 11,500 deported in the 1755-1764 envelope remains unverified at a page-level source; confidence is reduced to low. Parks Canada at Fort Anne describes about 10,000 deported in 1755-1762, while Grand-Pre distinguishes the 1755 removals from permission to return in 1764. These differently framed accounts do not establish the inherited 11,500 or a statistical range. The 3,000 Louisiana and 6,000 Atlantic-colonies/France allocations are later settlement claims, not a complete dated deportation breakdown; their 9,000 total is not a survival count. The inherited 900,000 Louisiana descendants need a separate definition, observation date and source. The North American point does not locate France, and later Louisiana resettlement must not be read as a direct route for every deportee."
   },
   {
    "id": "convict-australia",
@@ -469,9 +473,11 @@
    ],
    "confidence": "high",
    "references": [
-    "Hughes, The Fatal Shore (1986)"
+    "Hughes, The Fatal Shore (1986)",
+    "National Museum of Australia, Convict transportation peaks, opening summary and Convict transport peaks (updated 20 September 2022; accessed 10 September 2026; direct link in editorial report)"
    ],
-   "region": "weur"
+   "region": "weur",
+   "migrants_note": "The National Museum of Australia reports more than 162,000 convicts transported in 1788-1868. The 162,000 headline is a rounded transportation estimate, not an exact number of permanent settlers. High confidence is retained for that documented headline and period as an exception among movements beginning before 1800; it does not validate the other fields. The inherited 150,000 settlement allocation and 5M descendants remain unverified. New South Wales and Van Diemen's Land are represented by one Sydney-area point; Western Australia, where transportation continued to 1868, is absent from the allocation. The unallocated difference is not a measured death toll, return count or Western Australian total."
   },
   {
    "id": "trail-of-tears",

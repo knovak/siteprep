@@ -151,3 +151,32 @@ unchanged 0.5% limit. The new frame was inspected and a separate full Chromium
 run passed against it. The other 23 reference images and all thresholds were
 left alone. Actual screen-reader observations and Windows/Linux packaging
 remain outside these macOS checks.
+
+## September 10, 2026 historical headline review
+
+Four entries beginning before 1800 were reviewed against the high-confidence
+exception rule. The source receipt records their old/new confidence values,
+the single changed population field (New England 21,000 to 20,000), and the
+preservation of every coordinate and destination value. The editorial report
+contains four new evidence rows, bringing its total to 102.
+
+Verification on macOS arm64, using the existing pinned Playwright 1.57.0 suite:
+
+- 551 core assertions passed.
+- Chromium passed 91/91 and Firefox 90/90 browser checks. WebKit passed 90/90
+  when run alone. Its first concurrent run passed 89/90, missing only the
+  33.33 ms p95 frame-time limit at 40.0 ms while all three browser suites ran
+  together; the isolated rerun measured 21.0 ms with the same unchanged limit and code.
+- All 24 existing golden images passed comparison without replacement.
+- Four revised detail-to-report journeys at desktop and phone sizes in each
+  of the three engines passed with HTTP/HTTPS requests blocked: 24 journeys,
+  every new source row/link present, no page or detail horizontal overflow,
+  and no uncaught page errors. The review receipt is in
+  `notes/historical-browser-review-20260910.json`.
+
+The reviewed title, count and confidence badges are visible in the details;
+Acadian uncertainty uses the existing dashed-flow treatment. The geography and
+unverified descendant estimates are disclosed, not accepted. These macOS
+checks do not settle T8, manual screen-reader observations or Windows/Linux
+packaging acceptance. The prior packaging receipt remains evidence for its
+recorded dataset, not a new run on this revision.

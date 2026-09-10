@@ -193,3 +193,20 @@ golden for the intended uncertainty styling and independently rechecked it;
 the original threshold is unchanged. T8 and the original reconciliation todo
 remain open for the unsupported fields and geographic corrections. This is
 an increment, not completion of the editorial acceptance gate.
+
+## 2026-09-10 — Historical headline and confidence continuation
+
+Reviewed all four inherited high-confidence entries whose periods begin before
+1800. Aligned the English Great Migration headline and name with American
+Ancestors' approximately 20,000-person cohort and reduced confidence to medium;
+reduced the untraced Acadian total to low confidence. Added source-specific
+rationales for the retained transatlantic and Australian convict headline
+confidence. Preserved all destination values, coordinates and periods, recorded
+the baseline/revised hashes, and extended the editorial report to 102 rows.
+
+Core checks passed 551/551; Chromium 91/91, Firefox 90/90 and isolated WebKit
+90/90 passed with all reference images and thresholds unchanged. The initial
+concurrent WebKit run exceeded the frame-time limit; the same suite passed
+alone. Desktop/phone detail and report checks passed on all three engines with
+network requests blocked. T8 remains actionable for the source and geographic
+findings still recorded as unresolved.
