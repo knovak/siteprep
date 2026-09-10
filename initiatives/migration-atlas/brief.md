@@ -6,21 +6,24 @@
 
 ## Done
 
-The atlas contains 48 migrations and 92 destination records. Four confidence
-conflicts are corrected; stocks, repeated moves and internal displacement have
-distinct labels. About the data links to the full editorial report, including
-source locators and unresolved evidence, and the README explains the standards.
+The atlas contains 48 migrations and 92 destination records. Six recent
+entries now have source and population-definition findings, including a
+corrected Bangladesh registration figure and a lower confidence rating for
+the untraced Filipino estimate. The editorial report includes all 44 remaining
+destination close-ups, with their findings and contact sheets.
 
-The opening map is blank at 1000; two approximate starts moved to 1001 by the
-user's choice. Verification includes 551 core assertions and six desktop/phone
-offline journeys in Chromium, Firefox and WebKit. The performance requirement
-is “60 fps is preferred, 30 fps is acceptable” ([test plan](test-plan.html)).
+Verification passed 551 core assertions, 271 browser checks across three
+engines, and 78 file/HTTP packaging checks on macOS. Additional desktop and
+phone checks verified the six revised details and the complete report with
+network requests blocked.
 
 ## Remaining work
 
-Phase 5 and T8 still require field-level numeric sources, dated stock and
-cohort evidence, and the remaining destination-specific visual inspections.
-T6/T7 still need manual screen-reader observations and Windows/Linux runs.
+Phase 5 and T8 still require field-level numeric sources, dated destination
+allocations, cohort-specific descendants, confidence exceptions and corrections
+to schematic multi-country endpoints. The destination inspection coverage is
+complete; historical and geographic acceptance remains open. T6/T7 still need
+manual screen-reader observations and Windows/Linux runs.
 
 ## Optional later
 
