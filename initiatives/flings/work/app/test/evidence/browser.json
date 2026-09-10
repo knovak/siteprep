@@ -1,0 +1,152 @@
+{
+  "recorded_at": "2026-09-10T18:16:34.461Z",
+  "node": "v23.11.0",
+  "os": "darwin 25.6.0",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser_version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "passed": true,
+      "checks": [
+        "fragment-cleanup",
+        "two-fling-sessions",
+        "profile-save-by-keyboard",
+        "profile-isolation",
+        "http-only-cookies",
+        "preview-read-only",
+        "private-details-filtered",
+        "same-fling-stale-context",
+        "history-cleanup",
+        "no-code-in-request-urls-or-console",
+        "no-browser-errors",
+        "no-horizontal-overflow"
+      ],
+      "webmcp": "unsupported"
+    },
+    {
+      "engine": "chromium",
+      "browser_version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "fragment-cleanup",
+        "two-fling-sessions",
+        "profile-save-by-keyboard",
+        "profile-isolation",
+        "http-only-cookies",
+        "preview-read-only",
+        "private-details-filtered",
+        "same-fling-stale-context",
+        "history-cleanup",
+        "no-code-in-request-urls-or-console",
+        "no-browser-errors",
+        "no-horizontal-overflow"
+      ],
+      "webmcp": "unsupported"
+    },
+    {
+      "engine": "firefox",
+      "browser_version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "passed": true,
+      "checks": [
+        "fragment-cleanup",
+        "two-fling-sessions",
+        "profile-save-by-keyboard",
+        "profile-isolation",
+        "http-only-cookies",
+        "preview-read-only",
+        "private-details-filtered",
+        "same-fling-stale-context",
+        "history-cleanup",
+        "no-code-in-request-urls-or-console",
+        "no-browser-errors",
+        "no-horizontal-overflow"
+      ],
+      "webmcp": "unsupported"
+    },
+    {
+      "engine": "firefox",
+      "browser_version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "fragment-cleanup",
+        "two-fling-sessions",
+        "profile-save-by-keyboard",
+        "profile-isolation",
+        "http-only-cookies",
+        "preview-read-only",
+        "private-details-filtered",
+        "same-fling-stale-context",
+        "history-cleanup",
+        "no-code-in-request-urls-or-console",
+        "no-browser-errors",
+        "no-horizontal-overflow"
+      ],
+      "webmcp": "unsupported"
+    },
+    {
+      "engine": "webkit",
+      "browser_version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "passed": true,
+      "checks": [
+        "fragment-cleanup",
+        "two-fling-sessions",
+        "profile-save-by-keyboard",
+        "profile-isolation",
+        "http-only-cookies",
+        "preview-read-only",
+        "private-details-filtered",
+        "same-fling-stale-context",
+        "history-cleanup",
+        "no-code-in-request-urls-or-console",
+        "no-browser-errors",
+        "no-horizontal-overflow"
+      ],
+      "webmcp": "unsupported"
+    },
+    {
+      "engine": "webkit",
+      "browser_version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "fragment-cleanup",
+        "two-fling-sessions",
+        "profile-save-by-keyboard",
+        "profile-isolation",
+        "http-only-cookies",
+        "preview-read-only",
+        "private-details-filtered",
+        "same-fling-stale-context",
+        "history-cleanup",
+        "no-code-in-request-urls-or-console",
+        "no-browser-errors",
+        "no-horizontal-overflow"
+      ],
+      "webmcp": "unsupported"
+    }
+  ]
+}
