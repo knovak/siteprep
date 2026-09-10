@@ -48,3 +48,7 @@ Prepared phased implementation and objective-mapped test plans for isolated flin
 ## 2026-09-10 — Critique the Flings implementation and test plans before building the access foundations
 
 Critiqued the plan and revised atomic revocation, session context, secret retention and staged acceptance; queued Phase 1 access foundations.
+
+## 2026-09-10 — Build local Flings access foundations, member-code lifecycle and authorization projections
+
+Completed all four local access checkpoints: real D1 rollback and authority races, code/session lifecycle, browser session transport, and profile/preview projections. Evidence in work/app/test/evidence/phase-1.md; full organizer/member journeys follow in Phase 2.
