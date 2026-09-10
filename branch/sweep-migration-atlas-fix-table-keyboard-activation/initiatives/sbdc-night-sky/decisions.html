@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — SBDC Night-Sky Simulator</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — SBDC Night-Sky Simulator</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to SBDC Night-Sky Simulator</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<h3>2026-09-08 — Adopt the existing SBDC simulator as an initiative</h3>
+<p>The user requests an initiative for the working SBDC Night-Sky Simulator in <code>demos/</code>, with its attached code, markdown documents, and tutorial materials. The request says: &quot;It should not require code changes, just file migrations.&quot; The reference to &quot;migration map&quot; is interpreted as referring to the named SBDC simulator and the supplied SBDC wish and archive.</p>
+<p>The supplied wish is retained verbatim. <code>sbdc-night-sky</code>, medium value, and the index summary are implementation defaults for review, not answers attributed to the user. The existing demo is recorded as a published output. Once the adoption checks finish, the initiative rests at <code>dormant</code> pending user testing and production authorization; no new development work is inferred.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Consequence</th></tr></thead><tbody><tr><td>Preserve a development package and an independent preview snapshot</td><td>Retains the working demo, makes its source and history discoverable, and permits testing before release; chosen for this adoption.</td></tr><tr><td>Move or replace the production demo now</td><td>Would publish before the testing requested by the user; excluded.</td></tr><tr><td>Rewrite the supplied documents into new lifecycle prose</td><td>Would risk altering historical content and requires permission; excluded.</td></tr></tbody></table></div>
+<h3>2026-09-08 — Preserve all supplied documentation</h3>
+<p>The user instructs: &quot;all the attached documentation files should be adopted with minimal modification. ask me for permission if you need to modify them.&quot; They also permit changing the README provided its contents are preserved in the appropriate documents.</p>
+<p>All nine originals remain byte-identical under <code>lib/</code>. The supplied specification and implementation plan are copied unchanged to <code>spec.md</code> and <code>plan.md</code>. The initiative README adds navigation, then includes the original README and tutorial verbatim. <code>notes.md</code> adds provenance and reading context, then includes the phase reports, final report, and upgrade plan verbatim. This uses the existing document renderer without changing application or repository code. Historical inconsistencies remain visible and are explained outside the originals. No document modification permission is needed or assumed.</p>
+<p>Instructions and open questions inside the supplied documents belong to the historical record. They do not authorize upgrades, new research, changed defaults, source downloads, or rewritten documentation in this PR.</p>
+<h3>2026-09-08 — Test preview first; production only after testing</h3>
+<p>The user instructs: &quot;proceed to do a test deployment as part of this PR. we&#39;ll do a prod deployment only after testing&quot;.</p>
+<p>The existing output uses the repository&#39;s demo hosting, so <code>deploy-test</code> publishes the adopted <code>work/</code> snapshot through the branch preview. This is a public GitHub Pages preview under the existing hosting arrangement. No new hosting service is introduced. The existing production files are untouched.</p>
+<p>The two existing demo files are preserved in <code>work/</code>; the supplied assumptions sidecar is added there. A later release would publish that sidecar alongside the unchanged simulator and earlier demo snapshot. Production&#39;s empty <code>prod</code> record acknowledges the pre-initiative release without inventing deployment dates or currency metadata.</p>
+<h4>What remains open</h4>
+<ul><li>User findings from real devices, including pointer/pinch feel, PNG downloads, and performance on older phones.</li><li>Explicit production-release authorization after testing.</li><li>Any application or document corrections discovered during that testing, which need a separately agreed scope.</li></ul>
+<h3>2026-09-08 — Remove the duplicate archive and keep the initiative dormant</h3>
+<p>The user asks to remove <code>notes/sbdc-sim-final-source.zip</code> if it is unnecessary, &quot;to limit the use of binary files and duplicate files&quot;, and to set the initiative&#39;s status to dormant.</p>
+<p>All 29 regular files in the source ZIP were compared with their adopted <code>lib/</code> destinations and found byte-identical, with matching manifest hashes. The ZIP contains no additional source or documentation, so its 161,551-byte binary copy is removed. Its original size, checksum, and complete file inventory remain recorded in <code>adoption-manifest.json</code>. The original documents and all extracted source files remain unchanged.</p>
+<p>The initiative was already <code>dormant</code> and remains so, now explicitly confirmed by the user. User testing, any separately authorized fixes, and production release remain open under their existing blockers.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/migration-atlas/fix-table-keyboard-activation" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
