@@ -1,17 +1,17 @@
 {
   "title": "Flings",
   "summary": "A web-based manager for independent social-event series, with organizer tools, personal member pages, invitations, discussions, polls, coordinated payments, and AI-assisted messaging.",
-  "stage": "specified",
+  "stage": "planned",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-plan",
-      "title": "Draft plan.md and test-plan.md from the Flings specification, including provider activation prerequisites",
+      "id": "critique-plan",
+      "title": "Critique the Flings implementation and test plans before building the access foundations",
       "state": "actionable",
-      "value": "medium",
+      "value": "high",
       "effort": "medium",
-      "advances_stage": true
+      "advances_stage": false
     }
   ]
 }
