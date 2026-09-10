@@ -59,6 +59,32 @@ The running app also accepts a `migrations.json` dropped onto the window, which
 validates and loads it without a rebuild. That previews new research; it does
 not persist it.
 
+## Reproduce the endpoint geometry audit
+
+From the initiative directory, run:
+
+```sh
+python3 lib/tools/audit_geography.py --output /tmp/atlas-geography.json
+```
+
+This read-only command needs Python 3 and Node.js, with no added packages or
+network. It applies the vendored spherical `d3.geoContains` to every source and
+destination against both bundled land files, recording input hashes and counts.
+Without `--output` it writes JSON to stdout. It returns evidence for review;
+outside-polygon flags do not fail a build or certify a historical location.
+The plan's 300-km proximity requirement is a separate, still unimplemented
+check. The map scale names mean 1:50 million and 1:110 million, not metre-level
+accuracy; small islands and coasts can change classification between scales.
+
+The September 10 receipt covers 140 endpoints. Seventeen distinct coordinates
+(all flags plus the previously misdescribed Liberia point) were inspected at
+world zoom and 6×, using the blank opening year to isolate the basemap. The
+camera/application-hash receipt and contact sheets are under `notes/geography-*`.
+Pink rings in those screenshots are test annotations, not shipped UI. This
+corrects the report's offshore description of Liberia without changing any
+coordinate or population; migration playback and regional allocations remain
+separate T8 work.
+
 ## Tests
 
 | Command | Gate | Needs |

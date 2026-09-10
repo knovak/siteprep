@@ -1,0 +1,1421 @@
+{
+  "method": "Vendored d3.geoContains at stored longitude/latitude, without rounding",
+  "limits": "Polygon containment is not a settlement/source check, distance-to-land test or T8 acceptance. Coastline generalization can omit islands and coastal points. Scale names mean 1:110 million and 1:50 million, not metre precision.",
+  "input_sha256": {
+    "data/migrations.json": "6b97e2a3b0b0795d983d18c333c134767d20afe107e1f84464045c5f445ce35f",
+    "data/basemap/land110.json": "96f64eec21d930bc351a6b7bba2beae53b7718f6619ae96b374d10da23b60f15",
+    "data/basemap/land50.json": "780bb87cb426af925449786cf8b14cd4f9f1691fcca6ca91fd03c4dc3f55bc3a",
+    "vendor_d3array.js": "80aa70d0cd17dabddf6d056494ea17926a45a69da8b7850220aace331bad671d",
+    "vendor_d3geo.js": "23e574f1e8d4716d622bce45356a379b66a277162b145f5f147e4c8daefb73d2"
+  },
+  "counts": {
+    "points": 140,
+    "sources": 48,
+    "destinations": 92,
+    "outside_land110": 15,
+    "outside_land50": 16,
+    "scale_disagreements": 7
+  },
+  "points": [
+    {
+      "migration": "turkic-anatolia",
+      "role": "source",
+      "index": 1,
+      "name": "Central Asia / Transoxiana",
+      "lat": 40,
+      "lon": 65,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "turkic-anatolia",
+      "role": "destination",
+      "index": 1,
+      "name": "Anatolia",
+      "lat": 39,
+      "lon": 33,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "roma-migration",
+      "role": "source",
+      "index": 1,
+      "name": "Northwest India (Rajasthan/Punjab)",
+      "lat": 27,
+      "lon": 74,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "roma-migration",
+      "role": "destination",
+      "index": 1,
+      "name": "Balkans & Central Europe",
+      "lat": 45,
+      "lon": 20,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "mongol-displacements",
+      "role": "source",
+      "index": 1,
+      "name": "Central Asia & Persia",
+      "lat": 38,
+      "lon": 60,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "mongol-displacements",
+      "role": "destination",
+      "index": 1,
+      "name": "Anatolia, India, Mamluk Egypt",
+      "lat": 34,
+      "lon": 40,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "jewish-expulsions-medieval",
+      "role": "source",
+      "index": 1,
+      "name": "England & France",
+      "lat": 50,
+      "lon": 1,
+      "inside_land110": true,
+      "inside_land50": false
+    },
+    {
+      "migration": "jewish-expulsions-medieval",
+      "role": "destination",
+      "index": 1,
+      "name": "Holy Roman Empire, Poland, Iberia",
+      "lat": 50.5,
+      "lon": 19,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "sephardic-expulsion",
+      "role": "source",
+      "index": 1,
+      "name": "Iberia",
+      "lat": 40,
+      "lon": -4,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "sephardic-expulsion",
+      "role": "destination",
+      "index": 1,
+      "name": "Ottoman Empire (Salonika, Istanbul, Izmir)",
+      "lat": 40.6,
+      "lon": 23,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "sephardic-expulsion",
+      "role": "destination",
+      "index": 2,
+      "name": "North Africa (Morocco, Algiers)",
+      "lat": 33,
+      "lon": -6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "sephardic-expulsion",
+      "role": "destination",
+      "index": 3,
+      "name": "Italy & Netherlands",
+      "lat": 44,
+      "lon": 10,
+      "inside_land110": true,
+      "inside_land50": false
+    },
+    {
+      "migration": "spanish-colonization",
+      "role": "source",
+      "index": 1,
+      "name": "Spain (Castile, Andalusia, Extremadura)",
+      "lat": 39.5,
+      "lon": -4.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "spanish-colonization",
+      "role": "destination",
+      "index": 1,
+      "name": "Mexico & Central America",
+      "lat": 20,
+      "lon": -100,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "spanish-colonization",
+      "role": "destination",
+      "index": 2,
+      "name": "Andes & Southern Cone",
+      "lat": -12,
+      "lon": -75,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "source",
+      "index": 1,
+      "name": "West & West-Central Africa",
+      "lat": 5,
+      "lon": 5,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "destination",
+      "index": 1,
+      "name": "Brazil",
+      "lat": -14,
+      "lon": -41,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "destination",
+      "index": 2,
+      "name": "Caribbean",
+      "lat": 16.5,
+      "lon": -66,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "destination",
+      "index": 3,
+      "name": "Spanish Mainland America",
+      "lat": 8,
+      "lon": -75,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "destination",
+      "index": 4,
+      "name": "North America",
+      "lat": 33,
+      "lon": -81,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-ocean-slave-trades",
+      "role": "source",
+      "index": 1,
+      "name": "East Africa & Sahel",
+      "lat": -5,
+      "lon": 37,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-ocean-slave-trades",
+      "role": "destination",
+      "index": 1,
+      "name": "Middle East, North Africa, Persian Gulf",
+      "lat": 25,
+      "lon": 47,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-ocean-slave-trades",
+      "role": "destination",
+      "index": 2,
+      "name": "Indian Ocean islands & South Asia",
+      "lat": -18,
+      "lon": 55,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "puritan-great-migration",
+      "role": "source",
+      "index": 1,
+      "name": "England (East Anglia)",
+      "lat": 52.2,
+      "lon": 0.7,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "puritan-great-migration",
+      "role": "destination",
+      "index": 1,
+      "name": "New England",
+      "lat": 42.4,
+      "lon": -71.1,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "huguenot-exodus",
+      "role": "source",
+      "index": 1,
+      "name": "France",
+      "lat": 46.5,
+      "lon": 2.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "huguenot-exodus",
+      "role": "destination",
+      "index": 1,
+      "name": "Netherlands, England, Prussia",
+      "lat": 52,
+      "lon": 7,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "huguenot-exodus",
+      "role": "destination",
+      "index": 2,
+      "name": "Cape Colony",
+      "lat": -33.9,
+      "lon": 18.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "source",
+      "index": 1,
+      "name": "Acadia (Nova Scotia)",
+      "lat": 45.3,
+      "lon": -64.3,
+      "inside_land110": true,
+      "inside_land50": false
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "destination",
+      "index": 1,
+      "name": "Louisiana",
+      "lat": 30.2,
+      "lon": -92,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "destination",
+      "index": 2,
+      "name": "Atlantic colonies & France",
+      "lat": 40,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "convict-australia",
+      "role": "source",
+      "index": 1,
+      "name": "Britain & Ireland",
+      "lat": 53,
+      "lon": -2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "convict-australia",
+      "role": "destination",
+      "index": 1,
+      "name": "New South Wales & Van Diemen's Land",
+      "lat": -33.9,
+      "lon": 151.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "trail-of-tears",
+      "role": "source",
+      "index": 1,
+      "name": "US Southeast",
+      "lat": 34,
+      "lon": -85,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "trail-of-tears",
+      "role": "destination",
+      "index": 1,
+      "name": "Indian Territory (Oklahoma)",
+      "lat": 35.5,
+      "lon": -97.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "irish-famine",
+      "role": "source",
+      "index": 1,
+      "name": "Ireland",
+      "lat": 53.3,
+      "lon": -8,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "irish-famine",
+      "role": "destination",
+      "index": 1,
+      "name": "United States",
+      "lat": 40.7,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "irish-famine",
+      "role": "destination",
+      "index": 2,
+      "name": "Britain",
+      "lat": 53.5,
+      "lon": -2.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "irish-famine",
+      "role": "destination",
+      "index": 3,
+      "name": "Canada & Australia",
+      "lat": 45.5,
+      "lon": -73.6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "european-mass-migration",
+      "role": "source",
+      "index": 1,
+      "name": "Europe",
+      "lat": 48,
+      "lon": 12,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "european-mass-migration",
+      "role": "destination",
+      "index": 1,
+      "name": "United States",
+      "lat": 41,
+      "lon": -87,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "european-mass-migration",
+      "role": "destination",
+      "index": 2,
+      "name": "Argentina",
+      "lat": -34.6,
+      "lon": -58.4,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "european-mass-migration",
+      "role": "destination",
+      "index": 3,
+      "name": "Brazil",
+      "lat": -23.5,
+      "lon": -46.6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "european-mass-migration",
+      "role": "destination",
+      "index": 4,
+      "name": "Canada",
+      "lat": 49.9,
+      "lon": -97.1,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "source",
+      "index": 1,
+      "name": "India (UP, Bihar, Tamil Nadu)",
+      "lat": 25,
+      "lon": 83,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 1,
+      "name": "Mauritius",
+      "lat": -20.2,
+      "lon": 57.5,
+      "inside_land110": false,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 2,
+      "name": "Caribbean (Trinidad, Guyana, Suriname)",
+      "lat": 8,
+      "lon": -59,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 3,
+      "name": "Fiji",
+      "lat": -17.7,
+      "lon": 178,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 4,
+      "name": "South & East Africa",
+      "lat": -29.8,
+      "lon": 31,
+      "inside_land110": false,
+      "inside_land50": true
+    },
+    {
+      "migration": "chinese-diaspora-19c",
+      "role": "source",
+      "index": 1,
+      "name": "South China (Guangdong, Fujian)",
+      "lat": 23.5,
+      "lon": 114,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "chinese-diaspora-19c",
+      "role": "destination",
+      "index": 1,
+      "name": "Southeast Asia",
+      "lat": 3,
+      "lon": 105,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "chinese-diaspora-19c",
+      "role": "destination",
+      "index": 2,
+      "name": "Americas (US, Peru, Cuba, Canada)",
+      "lat": 37.7,
+      "lon": -122.4,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "chinese-diaspora-19c",
+      "role": "destination",
+      "index": 3,
+      "name": "Australasia & Pacific",
+      "lat": -34,
+      "lon": 145,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "chuang-guandong",
+      "role": "source",
+      "index": 1,
+      "name": "Shandong & Hebei",
+      "lat": 36.5,
+      "lon": 117,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "chuang-guandong",
+      "role": "destination",
+      "index": 1,
+      "name": "Manchuria (Northeast China)",
+      "lat": 43.8,
+      "lon": 125.3,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "circassian-expulsion",
+      "role": "source",
+      "index": 1,
+      "name": "Northwest Caucasus",
+      "lat": 44,
+      "lon": 39.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "circassian-expulsion",
+      "role": "destination",
+      "index": 1,
+      "name": "Ottoman Anatolia & Levant",
+      "lat": 39.5,
+      "lon": 35,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "russian-siberia",
+      "role": "source",
+      "index": 1,
+      "name": "European Russia & Ukraine",
+      "lat": 52,
+      "lon": 38,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "russian-siberia",
+      "role": "destination",
+      "index": 1,
+      "name": "Siberia & Russian Far East",
+      "lat": 55,
+      "lon": 83,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "jewish-pale-emigration",
+      "role": "source",
+      "index": 1,
+      "name": "Pale of Settlement (Russia/Poland/Ukraine)",
+      "lat": 51,
+      "lon": 27,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "jewish-pale-emigration",
+      "role": "destination",
+      "index": 1,
+      "name": "United States (esp. New York)",
+      "lat": 40.7,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "jewish-pale-emigration",
+      "role": "destination",
+      "index": 2,
+      "name": "Britain, Argentina, Palestine",
+      "lat": 51.5,
+      "lon": -0.1,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "armenian-genocide",
+      "role": "source",
+      "index": 1,
+      "name": "Ottoman Armenia (Eastern Anatolia)",
+      "lat": 39,
+      "lon": 41,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "armenian-genocide",
+      "role": "destination",
+      "index": 1,
+      "name": "Levant (Syria, Lebanon)",
+      "lat": 34,
+      "lon": 36,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "armenian-genocide",
+      "role": "destination",
+      "index": 2,
+      "name": "France, USA, South America",
+      "lat": 43.3,
+      "lon": 5.4,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "armenian-genocide",
+      "role": "destination",
+      "index": 3,
+      "name": "Soviet Armenia",
+      "lat": 40.2,
+      "lon": 44.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "greek-turkish-exchange",
+      "role": "source",
+      "index": 1,
+      "name": "Anatolia & Greek Macedonia",
+      "lat": 39.5,
+      "lon": 30,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "greek-turkish-exchange",
+      "role": "destination",
+      "index": 1,
+      "name": "Greece",
+      "lat": 39.5,
+      "lon": 22.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "greek-turkish-exchange",
+      "role": "destination",
+      "index": 2,
+      "name": "Turkey",
+      "lat": 39.5,
+      "lon": 32.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "white-emigres",
+      "role": "source",
+      "index": 1,
+      "name": "Russia",
+      "lat": 55,
+      "lon": 40,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "white-emigres",
+      "role": "destination",
+      "index": 1,
+      "name": "Paris, Berlin, Prague",
+      "lat": 48.9,
+      "lon": 2.3,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "white-emigres",
+      "role": "destination",
+      "index": 2,
+      "name": "Harbin & Shanghai",
+      "lat": 45.8,
+      "lon": 126.6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "us-great-migration",
+      "role": "source",
+      "index": 1,
+      "name": "US South",
+      "lat": 32.5,
+      "lon": -88,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "us-great-migration",
+      "role": "destination",
+      "index": 1,
+      "name": "Northern & Western cities",
+      "lat": 41.8,
+      "lon": -87.6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "german-expulsions",
+      "role": "source",
+      "index": 1,
+      "name": "East Prussia, Silesia, Sudetenland",
+      "lat": 51,
+      "lon": 17,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "german-expulsions",
+      "role": "destination",
+      "index": 1,
+      "name": "West & East Germany, Austria",
+      "lat": 50.5,
+      "lon": 9.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "holocaust-displacement",
+      "role": "source",
+      "index": 1,
+      "name": "Central & Eastern Europe",
+      "lat": 51,
+      "lon": 20,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "holocaust-displacement",
+      "role": "destination",
+      "index": 1,
+      "name": "Israel",
+      "lat": 32,
+      "lon": 34.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "holocaust-displacement",
+      "role": "destination",
+      "index": 2,
+      "name": "United States",
+      "lat": 40.7,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "india-partition",
+      "role": "source",
+      "index": 1,
+      "name": "Punjab & Bengal (both directions)",
+      "lat": 30.5,
+      "lon": 74,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "india-partition",
+      "role": "destination",
+      "index": 1,
+      "name": "India (Hindus & Sikhs from Pakistan)",
+      "lat": 28.6,
+      "lon": 77.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "india-partition",
+      "role": "destination",
+      "index": 2,
+      "name": "Pakistan (Muslims from India)",
+      "lat": 31.5,
+      "lon": 73,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "palestinian-nakba",
+      "role": "source",
+      "index": 1,
+      "name": "Mandatory Palestine",
+      "lat": 32,
+      "lon": 34.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "palestinian-nakba",
+      "role": "destination",
+      "index": 1,
+      "name": "West Bank, Gaza, Jordan, Lebanon, Syria",
+      "lat": 31.9,
+      "lon": 35.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "jews-from-arab-lands",
+      "role": "source",
+      "index": 1,
+      "name": "North Africa & Middle East",
+      "lat": 32,
+      "lon": 13,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "jews-from-arab-lands",
+      "role": "destination",
+      "index": 1,
+      "name": "Israel",
+      "lat": 32,
+      "lon": 34.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "jews-from-arab-lands",
+      "role": "destination",
+      "index": 2,
+      "name": "France & Americas",
+      "lat": 48.9,
+      "lon": 2.3,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "windrush-commonwealth",
+      "role": "source",
+      "index": 1,
+      "name": "Caribbean & South Asia",
+      "lat": 18,
+      "lon": -77,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "windrush-commonwealth",
+      "role": "destination",
+      "index": 1,
+      "name": "United Kingdom",
+      "lat": 52.5,
+      "lon": -1.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "vietnamese-boat-people",
+      "role": "source",
+      "index": 1,
+      "name": "Vietnam, Cambodia, Laos",
+      "lat": 12,
+      "lon": 107,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "vietnamese-boat-people",
+      "role": "destination",
+      "index": 1,
+      "name": "United States",
+      "lat": 34,
+      "lon": -118.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "vietnamese-boat-people",
+      "role": "destination",
+      "index": 2,
+      "name": "Australia, Canada, France",
+      "lat": -33.9,
+      "lon": 151.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "afghan-refugees",
+      "role": "source",
+      "index": 1,
+      "name": "Afghanistan",
+      "lat": 34.5,
+      "lon": 66,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "afghan-refugees",
+      "role": "destination",
+      "index": 1,
+      "name": "Pakistan",
+      "lat": 34,
+      "lon": 71.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "afghan-refugees",
+      "role": "destination",
+      "index": 2,
+      "name": "Iran",
+      "lat": 32.5,
+      "lon": 53.7,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "afghan-refugees",
+      "role": "destination",
+      "index": 3,
+      "name": "Europe & North America",
+      "lat": 51,
+      "lon": 10,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "soviet-jewish-emigration",
+      "role": "source",
+      "index": 1,
+      "name": "USSR / former USSR",
+      "lat": 53,
+      "lon": 32,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "soviet-jewish-emigration",
+      "role": "destination",
+      "index": 1,
+      "name": "Israel",
+      "lat": 32,
+      "lon": 34.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "soviet-jewish-emigration",
+      "role": "destination",
+      "index": 2,
+      "name": "United States & Germany",
+      "lat": 40.6,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": true
+    },
+    {
+      "migration": "mexico-us",
+      "role": "source",
+      "index": 1,
+      "name": "Mexico",
+      "lat": 21,
+      "lon": -102,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "mexico-us",
+      "role": "destination",
+      "index": 1,
+      "name": "United States (Southwest & beyond)",
+      "lat": 34,
+      "lon": -118.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "gulf-labor-migration",
+      "role": "source",
+      "index": 1,
+      "name": "India, Pakistan, Bangladesh, Philippines, Nepal",
+      "lat": 22,
+      "lon": 80,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "gulf-labor-migration",
+      "role": "destination",
+      "index": 1,
+      "name": "Gulf states (Saudi, UAE, Qatar, Kuwait)",
+      "lat": 24.5,
+      "lon": 51,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "rwandan-genocide-flight",
+      "role": "source",
+      "index": 1,
+      "name": "Rwanda",
+      "lat": -1.9,
+      "lon": 29.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "rwandan-genocide-flight",
+      "role": "destination",
+      "index": 1,
+      "name": "Zaire/DRC, Tanzania, Burundi",
+      "lat": -2.5,
+      "lon": 28.9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "yugoslav-wars",
+      "role": "source",
+      "index": 1,
+      "name": "Bosnia, Croatia, Kosovo",
+      "lat": 43.9,
+      "lon": 18.4,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "yugoslav-wars",
+      "role": "destination",
+      "index": 1,
+      "name": "Germany, Austria, Sweden, USA",
+      "lat": 50,
+      "lon": 10,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "syrian-civil-war",
+      "role": "source",
+      "index": 1,
+      "name": "Syria",
+      "lat": 35,
+      "lon": 38,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "syrian-civil-war",
+      "role": "destination",
+      "index": 1,
+      "name": "Türkiye",
+      "lat": 37,
+      "lon": 35.3,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "syrian-civil-war",
+      "role": "destination",
+      "index": 2,
+      "name": "Lebanon & Jordan",
+      "lat": 33.5,
+      "lon": 36,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "syrian-civil-war",
+      "role": "destination",
+      "index": 3,
+      "name": "Europe (esp. Germany)",
+      "lat": 51,
+      "lon": 10,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "venezuelan-exodus",
+      "role": "source",
+      "index": 1,
+      "name": "Venezuela",
+      "lat": 8,
+      "lon": -66,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "venezuelan-exodus",
+      "role": "destination",
+      "index": 1,
+      "name": "Colombia",
+      "lat": 4.7,
+      "lon": -74.1,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "venezuelan-exodus",
+      "role": "destination",
+      "index": 2,
+      "name": "Peru, Ecuador, Chile, Brazil",
+      "lat": -12,
+      "lon": -77,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "venezuelan-exodus",
+      "role": "destination",
+      "index": 3,
+      "name": "USA & Caribbean",
+      "lat": 25.8,
+      "lon": -80.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "rohingya-exodus",
+      "role": "source",
+      "index": 1,
+      "name": "Rakhine State, Myanmar",
+      "lat": 20.5,
+      "lon": 92.8,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "rohingya-exodus",
+      "role": "destination",
+      "index": 1,
+      "name": "Bangladesh (Cox's Bazar and Bhasan Char camps)",
+      "lat": 21.4,
+      "lon": 92,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "ukraine-war",
+      "role": "source",
+      "index": 1,
+      "name": "Ukraine",
+      "lat": 49,
+      "lon": 32,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "ukraine-war",
+      "role": "destination",
+      "index": 1,
+      "name": "Poland & Central Europe",
+      "lat": 52.2,
+      "lon": 21,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "ukraine-war",
+      "role": "destination",
+      "index": 2,
+      "name": "Germany & Western Europe",
+      "lat": 51.2,
+      "lon": 9,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "ukraine-war",
+      "role": "destination",
+      "index": 3,
+      "name": "North America",
+      "lat": 43.7,
+      "lon": -79.4,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "sudan-crisis",
+      "role": "source",
+      "index": 1,
+      "name": "Sudan (Khartoum, Darfur)",
+      "lat": 14.5,
+      "lon": 30,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "sudan-crisis",
+      "role": "destination",
+      "index": 1,
+      "name": "Egypt, Chad, South Sudan",
+      "lat": 15,
+      "lon": 22,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "source",
+      "index": 1,
+      "name": "Philippines",
+      "lat": 13,
+      "lon": 122,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "destination",
+      "index": 1,
+      "name": "Gulf states",
+      "lat": 24.5,
+      "lon": 51,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "destination",
+      "index": 2,
+      "name": "USA & Canada",
+      "lat": 34,
+      "lon": -118.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "destination",
+      "index": 3,
+      "name": "East & Southeast Asia",
+      "lat": 22.3,
+      "lon": 114.2,
+      "inside_land110": true,
+      "inside_land50": false
+    },
+    {
+      "migration": "highland-clearances",
+      "role": "source",
+      "index": 1,
+      "name": "Scottish Highlands & Islands",
+      "lat": 57.5,
+      "lon": -5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "highland-clearances",
+      "role": "destination",
+      "index": 1,
+      "name": "Canada (Nova Scotia, Ontario)",
+      "lat": 45,
+      "lon": -63,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "highland-clearances",
+      "role": "destination",
+      "index": 2,
+      "name": "Lowland cities & Australia",
+      "lat": 55.9,
+      "lon": -3.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "korean-colonial-migration",
+      "role": "source",
+      "index": 1,
+      "name": "Korea",
+      "lat": 36.5,
+      "lon": 127.8,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "korean-colonial-migration",
+      "role": "destination",
+      "index": 1,
+      "name": "Japan",
+      "lat": 34.7,
+      "lon": 135.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "korean-colonial-migration",
+      "role": "destination",
+      "index": 2,
+      "name": "Manchuria (Jiandao/Yanbian)",
+      "lat": 42.9,
+      "lon": 129.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "source",
+      "index": 1,
+      "name": "Mount Lebanon",
+      "lat": 33.9,
+      "lon": 35.6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 1,
+      "name": "Brazil & Argentina",
+      "lat": -23.5,
+      "lon": -46.6,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 2,
+      "name": "United States",
+      "lat": 40.7,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 3,
+      "name": "West Africa",
+      "lat": 6.5,
+      "lon": -10,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "cuban-exodus",
+      "role": "source",
+      "index": 1,
+      "name": "Cuba",
+      "lat": 22,
+      "lon": -79.5,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "cuban-exodus",
+      "role": "destination",
+      "index": 1,
+      "name": "United States (Miami)",
+      "lat": 25.8,
+      "lon": -80.2,
+      "inside_land110": true,
+      "inside_land50": true
+    },
+    {
+      "migration": "cuban-exodus",
+      "role": "destination",
+      "index": 2,
+      "name": "Spain & Latin America",
+      "lat": 40.4,
+      "lon": -3.7,
+      "inside_land110": true,
+      "inside_land50": true
+    }
+  ]
+}

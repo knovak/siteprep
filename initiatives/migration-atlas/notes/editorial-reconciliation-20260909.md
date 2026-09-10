@@ -1,5 +1,66 @@
 # Editorial reconciliation — September 9, 2026
 
+## Endpoint geometry review — September 10, 2026 (UTC)
+
+The earlier destination review incorrectly called the Lebanese entry's West
+Africa point **offshore**. Its stored coordinate, 6.5 N, 10 W, is on land in
+Liberia in both bundled basemaps; the 6× view confirms that placement. The point
+is preserved. This corrects the review, not the underlying regional allocation:
+it still cannot locate all West African communities or substantiate their
+population estimates.
+
+A new reproducible audit covers **all 140 endpoints: 48 sources and 92
+destinations**. It uses the atlas's vendored `d3.geoContains` and the exact
+stored coordinates with both bundled land datasets. Fifteen points are outside
+the 1:110 million polygons, sixteen are outside the 1:50 million polygons, and
+seven change classification between scales. Nineteen endpoint records are
+outside at least one scale; repeated coordinates account for four New York
+records. Adding the corrected Liberia point gives 17 distinct coordinates for
+visual inspection, each captured at world zoom and 6× (34 captures).
+
+**Outside a polygon does not prove an incorrect historical location.**
+[Natural Earth's land documentation](https://www.naturalearthdata.com/downloads/50m-physical-vectors/50m-land/)
+describes generalized land polygons including major islands. The filenames
+`land50` and `land110` refer to map scales, not 50/110-metre positional precision.
+Coastal rounding and omitted small islands can change containment; a point on
+land can still misrepresent a multi-country label. These flags require review,
+not automatic relocation or a new population allocation.
+
+The captures use the unchanged app at its blank opening year, 1000, to isolate
+the coastline. A pink ring marks the projected coordinate for inspection; it
+is a test annotation, not an application change. The following observations
+were checked in both contact sheets. They do not substitute for T8's separate
+migration-period playback, source evidence or settlement-allocation checks.
+
+| Endpoint(s), stored latitude/longitude | Inside 110m / 50m polygons | Visual finding and disposition |
+|---|---|---|
+| Medieval Jewish expulsions, source (50, 1) | Yes / No | Channel/coastal boundary differs by scale. Keep the combined England/France source unresolved; do not move it merely to make containment pass. |
+| Sephardic expulsion, destination 3 (44, 10) | Yes / No | Near the northwestern Italian coastline at 6×. Coastal precision needs evidence; the Netherlands is still not separately located. |
+| Transatlantic slave trade, source (5, 5) | No / No | Offshore near the Niger Delta coastline. The broad West/West-Central African source remains schematic; no embarkation-port breakdown was verified. |
+| Transatlantic slave trade, destination 2 (16.5, -66) | No / No | Caribbean sea point south of the larger islands. Individual island allocations remain unresolved. |
+| Indian Ocean slave trades, destination 2 (-18, 55) | No / No | Sea point east of Madagascar and north of the smaller islands. It does not separately place South Asian destinations. |
+| Acadian expulsion, source (45.3, -64.3) | Yes / No | Bay/estuary coastline changes between scales. A settlement-specific source is still needed. |
+| Acadian expulsion, destination 2 (40, -74) | No / No | Offshore beside the New Jersey coast. The earlier New York-area description was approximate; France remains unlocated. |
+| Irish Famine destination 1; Jewish Pale emigration destination 1; Holocaust displacement destination 2; Lebanese diaspora destination 2 (40.7, -74) | No / No | Shared New York harbor/coastal coordinate. A false containment result here is not enough to reject New York or infer an offshore settlement. All four records remain separate in the receipt. |
+| Indian indenture, destination 1 (-20.2, 57.5) | No / Yes | Mauritius appears at the detailed scale and is omitted at the coarse scale. Preserve this point; coarse containment alone would create a false correction. |
+| Indian indenture, destination 2 (8, -59) | No / No | Sea point off the northern Guyana coast. It does not individually locate Trinidad, Guyana and Suriname. |
+| Indian indenture, destination 4 (-29.8, 31) | No / Yes | Durban-area coastal detail differs by scale. East Africa is still not separately represented. |
+| Chinese emigration, destination 1 (3, 105) | No / No | Sea point east of the Malay Peninsula. Replacing it with one city would still need a defensible regional representation and must not attribute the whole 12M allocation to that city. |
+| Soviet Jewish emigration, destination 2 (40.6, -74) | No / Yes | New York coastal detail differs by scale. Germany remains unlocated by this shared endpoint. |
+| Rohingya exodus, destination 1 (21.4, 92) | No / No | Coastal Cox's Bazar-area reference. Check a detailed camp source before moving it; Bhasan Char is still not separately located. |
+| Filipino overseas migration, source (13, 122) | No / No | Archipelago/inter-island point. A land-only rule would not solve the missing distribution of source communities. |
+| Filipino overseas migration, destination 3 (22.3, 114.2) | Yes / No | Hong Kong harbor/coastal detail differs by scale. Wider East/Southeast Asia remains unlocated. |
+| Lebanese diaspora, destination 3 (6.5, -10) | Yes / Yes | Inland Liberia point. Correct the prior offshore finding; leave regional population and community placement unresolved. |
+
+The receipt records hashes of the dataset, both land files and both vendored
+geometry modules; the browser receipt records the application hash and each
+camera/coordinate. Re-running `lib/tools/audit_geography.py` produces identical
+JSON from the same inputs. Dataset, coordinates, application sources and
+`work/index.html` are unchanged in this increment. The report and reproducible
+inspection evidence advance the existing reconciliation item; **T8 remains
+open**, including field-level sources, regional splits and the plan's distinct
+300-km proximity check, which polygon containment does not implement.
+
 ## Historical headline and confidence continuation — September 10, 2026 (UTC)
 
 This review addresses all four entries that still carried high confidence
@@ -134,7 +195,7 @@ No point was moved and no destination total was split without evidence.
 | `highland-clearances` / 2 | Lowland cities & Australia (55.9, -3.2) | Edinburgh area reference point; Australia is not located by it. |
 | `korean-colonial-migration` / 2 | Manchuria (Jiandao/Yanbian) (42.9, 129.5) | Yanbian area reference point; wider Manchuria is not separately located. |
 | `lebanese-diaspora` / 2 | United States (40.7, -74) | New York area reference point; broader United States allocation. |
-| `lebanese-diaspora` / 3 | West Africa (6.5, -10) | Offshore West African aggregate; not a specific settlement. |
+| `lebanese-diaspora` / 3 | West Africa (6.5, -10) | Inland Liberia reference point; the earlier offshore description was incorrect, as corrected in the September 10 endpoint review above. Regional settlement remains schematic. |
 | `cuban-exodus` / 2 | Spain & Latin America (40.4, -3.7) | Madrid area reference point; Latin America is not located by it. |
 
 ## September 9 increment
