@@ -1,5 +1,22 @@
 # Editorial reconciliation — September 9, 2026
 
+## Indochinese and Afghan headline review — September 10, 2026 (UTC)
+
+This continuation corrects one population headline and qualifies another.
+It supersedes these two entries' older dispositions below. All periods,
+coordinates, destination allocations and descendant values remain unchanged;
+the original T8 reconciliation item remains actionable.
+
+| Entry | Source and access evidence | Correction and remaining work |
+|---|---|---|
+| `vietnamese-boat-people` | [UNHCR's 2000 chapter 4](https://www.unhcr.org/africa/sites/afr/files/legacy-pdf/3ebf9bad0.pdf), printed p. 79, opening paragraph; corroborated by [its 2019 resettlement history](https://www.unhcr.org/africa/sites/afr/files/legacy-pdf/5d1633657_63.pdf), printed p. 7. Both official PDF texts were retrieved directly. | Renamed to Indochinese refugee crisis and replaced 2M with 3M, explicitly a rounded lower-bound figure: the source says more than 3M fled during the two decades after 1975. The cohort includes land and sea flight. Medium confidence applies to this broad headline; boat arrivals, sea deaths, allocations and descendants still need distinct evidence. |
+| `afghan-refugees` | [UNHCR's 2000 chapter 5](https://www.unhcr.org/sites/default/files/legacy-pdf/3ebf9baf0.pdf), printed p. 116, was available only as indexed text; direct retrieval failed. It identifies a December 1990 population stock. | Retained the 8M headline as an explicitly unverified cumulative estimate and reduced high confidence to low. A dated stock does not establish unique people across repeated flight and return. The undated destination and diaspora sums and the combined Germany/North America endpoint remain unresolved. |
+
+Subsequent downloads and PDF rendering requests returned access/rate-limit
+errors. No table screenshot inspection is claimed. The source receipt records
+that boundary, exact changed fields and dataset hashes. These corrections do
+not certify the unchanged settlement circles or geographic allocations.
+
 ## Endpoint geometry review — September 10, 2026 (UTC)
 
 The earlier destination review incorrectly called the Lebanese entry's West

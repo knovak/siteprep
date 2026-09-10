@@ -1,0 +1,98 @@
+{
+  "url": "file:///Users/ken/projects/siteprep-sweep-20260910/initiatives/migration-atlas/work/index.html",
+  "network_blocked": true,
+  "application_sha256": "abba7d964607a9a44c10c106afa40d97fa94e30977e63eec80b287a88c0766d9",
+  "report_sha256": "00fb8c00020ee714feb4662855cbd7a77cc20acfb90563853bd375d381fbd7b3",
+  "journeys": [
+    {
+      "engine": "chromium",
+      "viewport": [
+        1280,
+        900
+      ],
+      "entries_opened_by_pointer": 2,
+      "corrected_values_notes_and_confidence": true,
+      "detail_and_report_no_horizontal_overflow": true,
+      "playback_advances": true,
+      "report_rows": 121,
+      "report_and_return": true,
+      "serious_critical_axe_violations": [],
+      "page_errors": []
+    },
+    {
+      "engine": "chromium",
+      "viewport": [
+        390,
+        844
+      ],
+      "entries_opened_by_pointer": 2,
+      "corrected_values_notes_and_confidence": true,
+      "detail_and_report_no_horizontal_overflow": true,
+      "playback_advances": true,
+      "report_rows": 121,
+      "report_and_return": true,
+      "serious_critical_axe_violations": [],
+      "page_errors": []
+    },
+    {
+      "engine": "firefox",
+      "viewport": [
+        1280,
+        900
+      ],
+      "entries_opened_by_pointer": 2,
+      "corrected_values_notes_and_confidence": true,
+      "detail_and_report_no_horizontal_overflow": true,
+      "playback_advances": true,
+      "report_rows": 121,
+      "report_and_return": true,
+      "serious_critical_axe_violations": [],
+      "page_errors": []
+    },
+    {
+      "engine": "firefox",
+      "viewport": [
+        390,
+        844
+      ],
+      "entries_opened_by_pointer": 2,
+      "corrected_values_notes_and_confidence": true,
+      "detail_and_report_no_horizontal_overflow": true,
+      "playback_advances": true,
+      "report_rows": 121,
+      "report_and_return": true,
+      "serious_critical_axe_violations": [],
+      "page_errors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": [
+        1280,
+        900
+      ],
+      "entries_opened_by_pointer": 2,
+      "corrected_values_notes_and_confidence": true,
+      "detail_and_report_no_horizontal_overflow": true,
+      "playback_advances": true,
+      "report_rows": 121,
+      "report_and_return": true,
+      "serious_critical_axe_violations": [],
+      "page_errors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": [
+        390,
+        844
+      ],
+      "entries_opened_by_pointer": 2,
+      "corrected_values_notes_and_confidence": true,
+      "detail_and_report_no_horizontal_overflow": true,
+      "playback_advances": true,
+      "report_rows": 121,
+      "report_and_return": true,
+      "serious_critical_axe_violations": [],
+      "page_errors": []
+    }
+  ]
+}

@@ -6,16 +6,15 @@
 
 ## Done
 
-The atlas contains 48 migrations and 92 destination records; its editorial
-report has 119 evidence rows, including recent/historical source findings and
-a new geometry audit of all 140 endpoints. Thirty-four inspected views support
-the geometry findings and correct the report's offshore description of the
-Liberia point; all application data and coordinates remain unchanged.
+The atlas contains 48 migrations and 92 destinations; its editorial report
+has 121 evidence rows. The latest source review corrects the Indochinese
+headline and qualifies the Afghan estimate; all coordinates and destination
+values are preserved. The earlier geometry audit covers all 140 endpoints.
 
-The latest increment passed 551 core assertions and six offline report-and-return
-journeys across desktop/phone widths in Chromium, Firefox and WebKit, with no
-serious or critical automated accessibility findings. Basemap containment is
-reproducible evidence, not historical settlement or proximity acceptance.
+The existing suites pass 551 core assertions and 271 browser checks. Six
+offline desktop/phone detail-and-report journeys also pass across Chromium,
+Firefox and WebKit. A separate check identifies an existing table keyboard
+defect in Chromium and Firefox.
 
 ## Remaining work
 
@@ -23,8 +22,8 @@ Phase 5 and T8 still require field-level sources, dated destination allocations,
 cohort-specific descendants and corrections to schematic geographic points.
 The four historical confidence exceptions have been reviewed, but their
 remaining unverified quantities and the other historical entries still need
-acceptance evidence. T6/T7 still need manual screen-reader observations and
-Windows/Linux packaging runs.
+acceptance evidence. T6/T7 still need the table keyboard correction, manual
+screen-reader observations and Windows/Linux packaging runs.
 
 ## Optional later
 
