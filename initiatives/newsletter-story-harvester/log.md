@@ -330,3 +330,20 @@ Recorded five optional refinements with value, size, privacy boundaries, and evi
 ## 2026-09-07 — Choose a Newsletter Story Harvester improvement, request another proposal round, or declare the initiative dormant
 
 Proposed a dedicated harvest skill as the next refinement; merging accepts the recommendation and makes that implementation item actionable.
+
+## 2026-09-09 — Prepare and rehearse the dedicated harvest skill
+
+Prepared the complete workflow and agent manifest in
+`notes/harvest-skill-draft.md`, reusing the maintained harvest, merge and store
+modules. The skill validator and 44 relevant existing contract tests passed. A
+synthetic repeat run grew 49 stories to 74 with 49 matches, preserved existing
+IDs and two judgments, rejected a sender mismatch before reading its body, and
+kept the saved store and review file unchanged after an injected extraction
+failure. A pre-rename crash and owner-only file permissions were also checked;
+`notes/harvest-skill-rehearsal.json` records the evidence and limits.
+
+The skill is not installed. Its required repository-wide location, Codex
+symlink and generated README index fall outside this sweep's initiative-only
+write scope. Recorded that installation boundary on the existing refinement
+item without completing it or creating an initiative-only substitute. No real
+mailbox, private collection or deployment was touched.
