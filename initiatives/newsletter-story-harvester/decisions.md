@@ -885,3 +885,30 @@ naming any other option in a review comment is enough to redirect it.
   production release.
 - All other menu entries remain optional in `notes.md` and can be promoted in a
   later round.
+
+## 2026-09-09 — Implement the dedicated harvest skill
+
+The user instructed: “Proceed to implement harvest-newsletter-stories”. They
+also requested a user-facing description of inputs and outputs, definitions
+of “store” and “inventory”, the choices currently supported, and a well-defined
+way for future revisions to add choices.
+
+This authorizes the repository-wide skill directory, its agent manifest and
+Codex discovery symlink, and regeneration of the root README skill index. The
+earlier installation blocker was the sweep's write scope; this is a manual
+implementation explicitly requested by the user. The implementation reuses
+the existing harvester modules and replaces the review Help's long loading
+prompt with the named skill and an explanation of the inputs and outputs.
+
+The skill's usage guide defines a v1 assistant invocation contract separately
+from store schema version 1. It documents configured or explicit existing
+local files, source selection, bounded dates, the three extraction shapes,
+matcher combinations and optional review/tagging/test handoffs. Extension
+rules require validation, implementation, tests and documentation together;
+changes to existing meanings or defaults require an explicit compatibility
+contract. These details implement the requested documentation requirement.
+
+This settles installation and usage documentation. It does not request a live
+mailbox run, test deployment or production release. The remaining menu entries
+stay optional. After this last accepted refinement is complete, the initiative
+can rest dormant without inventing another implementation commitment.

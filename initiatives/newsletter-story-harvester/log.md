@@ -347,3 +347,7 @@ symlink and generated README index fall outside this sweep's initiative-only
 write scope. Recorded that installation boundary on the existing refinement
 item without completing it or creating an initiative-only substitute. No real
 mailbox, private collection or deployment was touched.
+
+## 2026-09-10 — Add a dedicated harvest skill for repeat Newsletter Story Harvester runs
+
+Implemented harvest-newsletter-stories as a repository-wide skill with Codex discovery, a v1 user guide defining store/inventory and supported choices, extension rules, and updated review Help. The skill validator, all 137 harvester tests, and a synthetic 49-to-74-story repeat harvest passed; all prior records and two judgments survived. Failure/crash recovery, protected file modes, explicit lookback override, and bridge slug/shape mapping were verified. No live mailbox data was read or Site deployed. Other refinement proposals remain optional.

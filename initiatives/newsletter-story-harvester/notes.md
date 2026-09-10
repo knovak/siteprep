@@ -8,6 +8,10 @@ when it stops being optional. See `INITIATIVES_VISION.md` §6.6.
 
 ## Optional improvement menu — 2026-09-06
 
+**2026-09-09 update:** the dedicated harvest skill was selected and implemented.
+Its usage guide defines inputs, outputs and extension rules. The original menu
+below is retained for context; the other candidates remain optional.
+
 These are proposals, not a plan. Any one can be selected as a real todo item,
 redirected in review, or left here indefinitely. Closing the proposal pull
 request unmerged is also a complete answer.
