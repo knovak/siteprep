@@ -229,3 +229,13 @@ includes a manual manifest fallback and an independent organizer/member sitting.
 If the computer-control route fails acceptance, retain the observations and
 return a `human:` choice between improving it and planning an API adapter.
 Do not silently implement the deferred API, an in-app model or encrypted exports.
+
+## Phase 1 implementation record — September 10, 2026
+
+The local access increment is implemented in `work/app/`. All four Phase 1
+checkpoints have evidence in
+[the Phase 1 receipt](work/app/test/evidence/phase-1.md): 16 real-D1 domain/HTTP
+tests and six desktop/phone browser journeys. The next increment is Phase 2's
+organizer/member journeys; seeded invitations here do not complete those
+interface tests. The pinned scaffold's dependency audit remains recorded for
+refresh and re-verification before Phase 6 hosting.
