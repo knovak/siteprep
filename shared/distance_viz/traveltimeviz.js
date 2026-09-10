@@ -1,6 +1,6 @@
 /**
  * TravelTimeViz - Geographic Travel Time Visualization Component
- * Version: 2.1.0
+ * Version: 2.2.0
  *
  * A JavaScript library for visualizing travel times between locations using:
  * - Interactive network graphs with geographic positioning
@@ -167,6 +167,16 @@ class TravelTimeViz {
       .attr('height', height)
       .attr('class', 'traveltimeviz-network');
 
+    container.append('p')
+      .attr('class', 'traveltimeviz-selection-help')
+      .text('Click or tap routes to add their times. Select a route again to remove it.');
+    const selectionTotal = container.append('p')
+      .attr('class', 'traveltimeviz-selection-total')
+      .attr('role', 'status')
+      .attr('aria-live', 'polite')
+      .attr('aria-atomic', 'true')
+      .text('Selected travel time: 0m');
+
     const g = svg.append('g');
 
     // Zoom behavior
@@ -189,6 +199,34 @@ class TravelTimeViz {
       time: d.time,
       minutes: d.minutes
     }));
+    const selectedLinks = new Set();
+    let hoveredLink = null;
+    let focusedLink = null;
+
+    const isHighlighted = d => selectedLinks.has(d) || d === hoveredLink || d === focusedLink;
+    const updateHighlights = () => {
+      link.classed('is-highlighted', isHighlighted)
+        .attr('aria-pressed', d => selectedLinks.has(d) ? 'true' : 'false');
+      linkLabel.classed('is-highlighted', isHighlighted);
+      // Keep highlighted times readable where several routes cross.
+      linkLabel.filter(isHighlighted).raise();
+    };
+    const toggleLink = d => {
+      if (selectedLinks.has(d)) {
+        selectedLinks.delete(d);
+        // Show deselection immediately, even before the pointer moves away.
+        if (hoveredLink === d) hoveredLink = null;
+        if (focusedLink === d) focusedLink = null;
+      } else {
+        selectedLinks.add(d);
+      }
+      updateHighlights();
+      const minutes = Array.from(selectedLinks).reduce((sum, route) => sum + route.minutes, 0);
+      const hours = Math.floor(minutes / 60);
+      const remainder = minutes % 60;
+      const time = hours ? `${hours}h${remainder ? `${remainder}m` : ''}` : `${minutes}m`;
+      selectionTotal.text(`Selected travel time: ${time}`);
+    };
 
     // Scale stroke width to the range of this data set so that a single very
     // long route cannot swamp the graph with an unreadably thick line.
@@ -225,23 +263,45 @@ class TravelTimeViz {
       .data(links)
       .join('path')
       .attr('class', 'traveltimeviz-link')
+      .attr('role', 'button')
+      .attr('tabindex', 0)
+      .attr('aria-label', d => `${d.source.id} → ${d.target.id}: ${d.time}`)
+      .attr('aria-pressed', 'false')
       .attr('stroke', '#95a5a6')
       .attr('stroke-width', d => linkWidth(d.minutes))
       .attr('fill', 'none')
       .attr('opacity', 0.6)
       .attr('marker-end', this.config.network.showArrows ? 'url(#arrowhead)' : null)
       .on('mouseover', (event, d) => {
-        d3.select(event.currentTarget)
-          .attr('stroke', '#3498db')
-          .attr('stroke-width', 3)
-          .attr('opacity', 1);
+        hoveredLink = d;
+        updateHighlights();
         this.emit('linkHover', d);
       })
       .on('mouseout', (event, d) => {
-        d3.select(event.currentTarget)
-          .attr('stroke', '#95a5a6')
-          .attr('stroke-width', linkWidth(d.minutes))
-          .attr('opacity', 0.6);
+        if (hoveredLink === d) hoveredLink = null;
+        updateHighlights();
+      })
+      .on('focus', (event, d) => {
+        focusedLink = d;
+        updateHighlights();
+      })
+      .on('blur', (event, d) => {
+        if (focusedLink === d) focusedLink = null;
+        updateHighlights();
+      })
+      .on('touchstart', event => {
+        // Route taps belong to selection; do not let zoom consume a second
+        // quick tap as a double-tap gesture and suppress its click.
+        event.stopPropagation();
+      })
+      .on('click', (event, d) => {
+        toggleLink(d);
+      })
+      .on('keydown', (event, d) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          if (!event.repeat) toggleLink(d);
+        }
       });
 
     // Arrowhead marker
@@ -271,6 +331,7 @@ class TravelTimeViz {
       .attr('font-size', '12px')
       .attr('fill', '#7f8c8d')
       .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central')
       .attr('font-weight', '600')
       .text(d => d.time);
 
@@ -327,9 +388,13 @@ class TravelTimeViz {
         return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
       });
 
+      // Each arc has radius equal to its chord length. Its midpoint is offset
+      // by (1 - sqrt(3) / 2) times the perpendicular chord vector, separating
+      // the labels for the two directions instead of stacking them together.
+      const arcOffset = 1 - Math.sqrt(3) / 2;
       linkLabel
-        .attr('x', d => (d.source.x + d.target.x) / 2)
-        .attr('y', d => (d.source.y + d.target.y) / 2);
+        .attr('x', d => (d.source.x + d.target.x) / 2 + (d.target.y - d.source.y) * arcOffset)
+        .attr('y', d => (d.source.y + d.target.y) / 2 - (d.target.x - d.source.x) * arcOffset);
 
       node
         .attr('cx', d => d.x)
