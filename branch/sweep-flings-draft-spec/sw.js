@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1789023723';
+const CACHE_VERSION = 'v1789026977';
 const ROOT_PATH = (() => {
   const { pathname } = new URL(self.registration.scope);
   return pathname.endsWith('/') ? pathname : `${pathname}/`;
