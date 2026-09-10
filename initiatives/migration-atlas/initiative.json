@@ -49,6 +49,14 @@
       "effort": "large",
       "advances_stage": false,
       "blocked_by": "external:manual screen-reader observations and Windows/Linux file-versus-HTTP packaging results; this run verifies macOS engines and keyboard behavior only"
+    },
+    {
+      "id": "fix-table-keyboard-activation",
+      "title": "Fix Enter activation of a data-table row reopening the table over the selected detail",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": false
     }
   ],
   "brief": {

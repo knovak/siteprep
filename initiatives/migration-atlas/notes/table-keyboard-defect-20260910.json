@@ -1,0 +1,55 @@
+{
+  "baseline_commit": "f11ffe7fce8bbb4e2f2f835c0415312059065537",
+  "reproduction": "Open Data table; focus the Afghan row; press Enter. The detail opens but the table reopens over it in engines where table_visible_after_enter is true. Pointer activation is tested separately.",
+  "observations": [
+    {
+      "engine": "chromium",
+      "source": "main",
+      "file_sha256": "f99bc689805595df865596028a4d16b31cce04745d2fdc10337d937dae057db2",
+      "table_visible_after_enter": true,
+      "detail_visible_behind_table": true,
+      "selected_title": "Afghan refugee waves"
+    },
+    {
+      "engine": "chromium",
+      "source": "revised",
+      "file_sha256": "abba7d964607a9a44c10c106afa40d97fa94e30977e63eec80b287a88c0766d9",
+      "table_visible_after_enter": true,
+      "detail_visible_behind_table": true,
+      "selected_title": "Afghan refugee waves"
+    },
+    {
+      "engine": "firefox",
+      "source": "main",
+      "file_sha256": "f99bc689805595df865596028a4d16b31cce04745d2fdc10337d937dae057db2",
+      "table_visible_after_enter": true,
+      "detail_visible_behind_table": true,
+      "selected_title": "Afghan refugee waves"
+    },
+    {
+      "engine": "firefox",
+      "source": "revised",
+      "file_sha256": "abba7d964607a9a44c10c106afa40d97fa94e30977e63eec80b287a88c0766d9",
+      "table_visible_after_enter": true,
+      "detail_visible_behind_table": true,
+      "selected_title": "Afghan refugee waves"
+    },
+    {
+      "engine": "webkit",
+      "source": "main",
+      "file_sha256": "f99bc689805595df865596028a4d16b31cce04745d2fdc10337d937dae057db2",
+      "table_visible_after_enter": false,
+      "detail_visible_behind_table": true,
+      "selected_title": "Afghan refugee waves"
+    },
+    {
+      "engine": "webkit",
+      "source": "revised",
+      "file_sha256": "abba7d964607a9a44c10c106afa40d97fa94e30977e63eec80b287a88c0766d9",
+      "table_visible_after_enter": false,
+      "detail_visible_behind_table": true,
+      "selected_title": "Afghan refugee waves"
+    }
+  ],
+  "status": "Existing issue reproduced against main and revised data; no application code changed in this editorial PR."
+}

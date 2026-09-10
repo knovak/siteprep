@@ -1209,15 +1209,15 @@
   },
   {
    "id": "vietnamese-boat-people",
-   "name": "Indochinese refugee crisis (boat people)",
+   "name": "Indochinese refugee crisis",
    "period": {
     "start": 1975,
     "end": 1995
    },
    "type": "refugee-flight",
    "cause": "Fall of Saigon, persecution, re-education camps, Sino-Vietnamese war; Cambodian genocide and Laotian conflict",
-   "migrants": 2000000,
-   "migrants_note": "~800K by boat; 200K\u2013400K died at sea",
+   "migrants": 3000000,
+   "migrants_note": "UNHCR reports more than 3M people fleeing Vietnam, Cambodia and Laos over the two decades after 1975; 3M is a rounded lower-bound display figure, not an exact total. This includes land and sea flight. The inherited ~800K boat-arrival and 200K–400K sea-death estimates remain unverified here. The 1.5M settlement allocation and 3.5M descendant sum also remain unverified and are not a breakdown of the headline. Medium confidence applies to the broad headline, not those fields; Sydney does not locate Canada or France.",
    "source": {
     "name": "Vietnam, Cambodia, Laos",
     "lat": 12.0,
@@ -1239,9 +1239,10 @@
      "diaspora_today": 1200000
     }
    ],
-   "confidence": "high",
+   "confidence": "medium",
    "references": [
-    "UNHCR, The State of the World's Refugees (2000)"
+    "UNHCR, The State of the World’s Refugees (2000), chapter 4, Flight from Indochina, printed p. 79, opening paragraph: https://www.unhcr.org/africa/sites/afr/files/legacy-pdf/3ebf9bad0.pdf",
+    "UNHCR, The History of Resettlement: Celebrating 25 Years of the ATCR (2019), printed p. 7, 1975–1995 section: https://www.unhcr.org/africa/sites/afr/files/legacy-pdf/5d1633657_63.pdf"
    ],
    "region": "seasia"
   },
@@ -1255,7 +1256,7 @@
    "type": "refugee-flight",
    "cause": "Soviet invasion (1979), civil war, Taliban rule, US war, 2021 collapse",
    "migrants": 8000000,
-   "migrants_note": "Cumulative; ~6M at peak in early 1990s; large return waves and re-displacements",
+   "migrants_note": "The inherited 8M cumulative estimate for 1979–2026 is unverified: no field-level table or method has been verified for counting unique people across return and renewed-flight waves. UNHCR’s indexed 2000 chapter 5, printed p. 116, describes over 6.3M refugees in neighboring countries in December 1990, a dated population stock; direct PDF retrieval failed in this review. That stock cannot verify the cumulative headline, the undated 6.5M settlement sum or 8M diaspora sum. Low confidence reflects these missing field-level sources. The Germany point does not locate North American communities.",
    "source": {
     "name": "Afghanistan",
     "lat": 34.5,
@@ -1284,9 +1285,10 @@
      "diaspora_today": 1500000
     }
    ],
-   "confidence": "high",
+   "confidence": "low",
    "references": [
-    "UNHCR Refugee Data Finder"
+    "UNHCR Refugee Data Finder",
+    "UNHCR, The State of the World’s Refugees (2000), chapter 5, printed p. 116 (indexed text only; direct retrieval failed September 10, 2026): https://www.unhcr.org/sites/default/files/legacy-pdf/3ebf9baf0.pdf"
    ],
    "region": "casia"
   },

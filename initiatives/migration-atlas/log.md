@@ -229,3 +229,21 @@ rows. The audit output reproduced byte-for-byte; the original T8 reconciliation
 item stays actionable for quantitative sources, regional allocations and
 remaining geographic acceptance. Polygon containment does not implement the
 plan's separate 300-km proximity check.
+
+## 2026-09-10 — Reconcile Indochinese and Afghan headline evidence
+
+Corrected the Indochinese headline and cohort label against two directly read
+UNHCR texts, with an explicit lower-bound note and medium confidence. Retained
+the unverified Afghan cumulative estimate with low confidence and an explicit
+indexed-source access limitation. All periods, coordinates, destination
+allocations and descendant values remain unchanged. The report has 121 rows;
+the source receipt records changed fields and dataset hashes. The original T8
+reconciliation item remains actionable for its unresolved evidence.
+
+Core checks passed 551/551; the existing browser suites passed Chromium 91/91,
+Firefox 90/90 and WebKit 90/90 without changing reference images or thresholds.
+Six offline desktop/phone pointer/detail/report/return journeys passed on all
+three engines. Visual inspection also reproduced a pre-existing Enter-selection
+defect against main and the revised bundle in Chromium/Firefox; WebKit passed.
+Recorded the exact observations and queued `fix-table-keyboard-activation`
+without changing application code or claiming complete keyboard acceptance.

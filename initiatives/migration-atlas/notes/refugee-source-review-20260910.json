@@ -1,0 +1,49 @@
+{
+  "review_date": "2026-09-10",
+  "baseline_commit": "f11ffe7fce8bbb4e2f2f835c0415312059065537",
+  "baseline_data_sha256": "6b97e2a3b0b0795d983d18c333c134767d20afe107e1f84464045c5f445ce35f",
+  "revised_data_sha256": "dc4e9ff32b29771e7cf9e43bd8f159891591f4cb2389b4b84ae35cfb04d87c3d",
+  "changes": [
+    {
+      "id": "vietnamese-boat-people",
+      "changed_fields": [
+        "name",
+        "migrants",
+        "migrants_note",
+        "confidence",
+        "references"
+      ],
+      "before": {
+        "name": "Indochinese refugee crisis (boat people)",
+        "migrants": 2000000,
+        "confidence": "high"
+      },
+      "after": {
+        "name": "Indochinese refugee crisis",
+        "migrants": 3000000,
+        "confidence": "medium"
+      }
+    },
+    {
+      "id": "afghan-refugees",
+      "changed_fields": [
+        "migrants_note",
+        "confidence",
+        "references"
+      ],
+      "before": {
+        "confidence": "high"
+      },
+      "after": {
+        "confidence": "low"
+      }
+    }
+  ],
+  "all_coordinates_destination_values_and_periods_preserved": true,
+  "source_access": {
+    "indochina_2000": "Official PDF text directly retrieved; printed page 79 opening paragraph. Subsequent PDF screenshot/download requests were rate-limited or denied. No visual table inspection claimed.",
+    "indochina_2019": "Official PDF text directly retrieved; printed page 7, 1975–1995 section. Rendering request was rate-limited.",
+    "afghanistan_2000": "Search-indexed official PDF text only; direct download failed. No new numeric value is accepted from it."
+  },
+  "acceptance": "Two headline/confidence findings addressed. Destination allocations, descendants, mortality and geographic acceptance remain open; T8 is not complete."
+}

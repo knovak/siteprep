@@ -180,3 +180,28 @@ unverified descendant estimates are disclosed, not accepted. These macOS
 checks do not settle T8, manual screen-reader observations or Windows/Linux
 packaging acceptance. The prior packaging receipt remains evidence for its
 recorded dataset, not a new run on this revision.
+
+## September 10, 2026 Indochinese and Afghan source review
+
+The source receipt in `notes/refugee-source-review-20260910.json` records the
+two edited entries and direct-versus-indexed access limits. One headline
+changes; all periods, source coordinates and destination values are preserved.
+The 121-row report retains the previous findings and the two new dispositions.
+T8 remains open for the unverified fields and geographic acceptance.
+
+The existing suites passed 551 core assertions, 91 Chromium browser checks and
+90 each in Firefox and WebKit; no reference image or threshold changed. Six
+offline pointer-selection/detail/report/return journeys at 1280px and 390px
+passed across the same three engines, with no page errors, horizontal overflow
+or serious/critical automated accessibility findings in the report. The receipt
+is `notes/refugee-browser-review-20260910.json`. Prior platform-packaging results
+remain evidence for their recorded hashes; no Windows/Linux result is added.
+
+Visual inspection exposed a gap in the existing keyboard assertions: Enter on
+a focused table row opens its detail, then the table reappears over it in
+Chromium and Firefox. This reproduces on unchanged main and the revised bundle;
+WebKit dismisses the table correctly. `notes/table-keyboard-defect-20260910.json`
+records all six observations and both hashes. The dedicated
+`fix-table-keyboard-activation` todo must verify that the table stays hidden and
+focus moves to a usable detail control, rather than checking only that a detail
+exists behind it. The editorial change does not claim full keyboard acceptance.
