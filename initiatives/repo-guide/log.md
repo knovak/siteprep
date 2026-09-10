@@ -265,3 +265,7 @@ Regenerated `out/description.html`, `out/deck.html` and `out/simulator.html`
 and reran every generator's browser check; all pass. The published copy under
 `demos/Guide to Initiatives/` was not touched - that needs a release, which is
 the user's call, not this fix's.
+
+## 2026-09-10 — Release
+
+Released to production — Demo, `f15388f`. 2 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/Guide%20to%20Initiatives/> See releases.md.
