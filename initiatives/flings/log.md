@@ -44,3 +44,7 @@ wish, objectives and lifecycle stage are unchanged by this response.
 ## 2026-09-10 — Draft plan.md and test-plan.md from the Flings specification, including provider activation prerequisites
 
 Prepared phased implementation and objective-mapped test plans for isolated flings, member codes and sessions, coordination, reviewed computer-control sending, editable recovery and separately authorized hosted/live acceptance; queued critique-plan.
+
+## 2026-09-10 — Critique the Flings implementation and test plans before building the access foundations
+
+Critiqued the plan and revised atomic revocation, session context, secret retention and staged acceptance; queued Phase 1 access foundations.

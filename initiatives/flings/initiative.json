@@ -6,12 +6,12 @@
   "outputs": [],
   "todo": [
     {
-      "id": "critique-plan",
-      "title": "Critique the Flings implementation and test plans before building the access foundations",
+      "id": "build-access-foundations",
+      "title": "Build local Flings access foundations, member-code lifecycle and authorization projections",
       "state": "actionable",
       "value": "high",
-      "effort": "medium",
-      "advances_stage": false
+      "effort": "large",
+      "advances_stage": true
     }
   ]
 }

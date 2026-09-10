@@ -24,6 +24,14 @@ pass/fail counts and redacted findings under `work/` or `notes/`. Never commit
 member capabilities, contacts from the live pilot, credentials or copied prompts.
 Record manual observations separately from automation and provider reports.
 
+## Evidence by implementation stage
+
+Phase 1 proves T1/T3 domain and HTTP rules with seeded invitations and a minimal
+browser harness for T2 exchange/session behavior. Full organizer/member/preview
+screens and the associated T1/T3 browser journeys remain Phase 2 work. Every
+receipt names the layer exercised and lists deferred journeys. Test groups are
+not marked wholly passed when only the domain or HTTP portion exists.
+
 ## T1 — Independent flings and roles
 
 **Objectives 2, 4, 5, 10; Phase 1.** For every read and write, exercise assigned
@@ -37,6 +45,13 @@ from the wedding immediately revokes that assignment while the outing and
 concert membership continue to work. Removing the final organizer is rejected
 until another is appointed. Test stale signed-in tabs and direct API calls.
 Production/test hosting cannot accidentally enable the development identity.
+
+Race two removals of the last two organizers: exactly one organizer remains.
+Race a protected write or session creation with revocation/removal. An operation
+that commits after revocation must fail its current-authority check and leave no
+partial records. Exercise both orderings against the actual database. Inject
+both an SQL failure and a normal failed revision/generation precondition midway
+through a compound change; both must roll back earlier effects.
 
 ## T2 — Member codes, sessions and revocation
 
@@ -59,6 +74,12 @@ outbound referrers for raw codes. Check HTTPS exchange, HttpOnly/secure session
 cookies, request-forgery protection and invalid-code rate limiting. Unknown,
 expired, removed and revoked links give the same non-disclosing page. A
 forwarded valid link behaves as that member, with the stated limitation visible.
+
+Open member links for two flings in one browser, keep both tabs open, and submit
+from each after exchanging the other link. Each acts only in its original fling.
+Replace the session context with another member link in the same fling: a stale
+page must reload or fail, never act as the new member silently. Test back/forward
+navigation and cached responses without exposing the earlier profile.
 
 ## T3 — Profiles and preview
 
@@ -153,6 +174,13 @@ unknown/duplicate delivery IDs and malformed statuses atomically. Preserve
 reported evidence and actor; missing results stay unknown. Retrying needs
 explicit delivery selection after the organizer checks account history.
 No simulated result counts as recipient receipt or as proven duplicate safety.
+
+Expire or revoke a code after approval and inspect every stored representation:
+encrypted handoff bodies, raw-link fields, revision snapshots, audit events and
+staging. Secret material is unavailable even if cleanup has not run, while the
+redacted approval and imported outcome history remain readable. An eligible
+reconstruction matches the approved payload fingerprint byte-for-byte; a purged
+payload cannot be recopied or reconstructed from history without renewed review.
 
 ## T10 — Direct message plus discussion
 

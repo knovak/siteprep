@@ -1,7 +1,7 @@
 # Flings implementation plan
 
 September 10, 2026. Implements the reviewed [specification](spec.html) and
-[objectives](objectives.html). This PR prepares the plan; no application or
+[objectives](objectives.html). The plan has been critiqued; no application or
 live sending integration exists yet. Acceptance is defined in the
 [test plan](test-plan.html).
 
@@ -47,16 +47,16 @@ phase complete early. Nothing below authorizes a real recipient message.
 | Phase / todo ID | Deliverable and exit condition | Depends on |
 |---|---|---|
 | 0 / `critique-plan` | Critique permissions, code/session timing, concurrent approval, editable restore and activation boundaries. Record defects and revise the plan before implementation. | This plan merges |
-| 1 / `build-access-foundations` | Local server, relational migrations, organizer assignments, membership profiles, capability/session lifecycle and authorization projections; T1-T3 pass. | Phase 0 |
-| 2 / `build-member-journeys` | Organizer and member views, events, invitations, read-only preview, closure/reopening and timezone handling; T4-T5 pass on all three gathering fixtures. | Phase 1 |
+| 1 / `build-access-foundations` | Local server, relational migrations, organizer assignments, membership profiles, capability/session lifecycle and authorization projections; T1-T3 domain/HTTP checks and the T2 browser exchange harness pass. | Phase 0 |
+| 2 / `build-member-journeys` | Organizer and member views, events, invitations, read-only preview, closure/reopening and timezone handling; T1/T3 interface journeys and T4-T5 pass on all three gathering fixtures. | Phase 1 |
 | 3 / `build-coordination` | Discussions, polls and attributed payment ledger; T6-T7 pass, including concurrency and stale tabs. | Phase 2 |
 | 4 / `build-message-handoff` | Reviewed audience resolution, exact prompt export, one optional discussion post and reported outcomes; simulated T8-T10 pass. | Phase 3 |
 | 5 / `build-recovery` | Documented versioned JSON export, edited-file validation and isolated restore to a new fling; T11 passes without sends or old credentials. | Phase 4 |
 | 6 / `verify-hosted-test` | Private fictional-data test deployment, real managed organizer identity, hosted authorization and recovery checks, responsive/keyboard evidence; T1-T12 pass where automatable. | Phase 5 and test-host prerequisites |
 | 7 / `run-authorized-pilot` | Authorized organizers and test recipients complete email/text receipt and representative use; T13 evidence records actual setup, failures and limits. | Phase 6 and live-pilot prerequisites |
 
-Queue `critique-plan` when this planning item completes. Its next item is
-`build-access-foundations`, taken from the table. Subsequent phases retain the
+The [September 10 critique](notes/plan-critique-20260910.html) completes Phase 0.
+The next item is `build-access-foundations`, taken from the table. Subsequent phases retain the
 listed order. Missing activation inputs become separately named blocked items
 when reached; they do not prevent earlier fictional-data implementation.
 After the pilot, record outstanding defects or a request for the user's release
@@ -93,6 +93,39 @@ defenses, generic invalid-link responses, rate limiting, safe link handling and
 redacted request/application logs. Preview uses a separate read-only server
 context and never acquires a member code.
 
+### Phase 1 checkpoints
+
+Complete these in order within `build-access-foundations`; keep the item open
+until all four checkpoints pass. Each may produce a separate PR.
+
+1. **Database and permission proof.** Pin the local runtime and schema. Enforce
+   parent/fling relationships and unique assignments in the database. Demonstrate
+   all-or-none mutation with an actual failed constraint and with an ordinary
+   rejected precondition; a conditional write affecting zero rows must not leave
+   earlier writes committed. Race final-organizer removals and member generation
+   changes against protected writes. Document the mechanism the chosen runtime
+   actually supports before relying on it in later phases.
+2. **Codes and revocation.** Implement issuance, reuse, first exchange, expiry
+   and removal with the injectable clock. Read the current membership generation
+   and originating code's revocation state in the same atomic operation that
+   creates a session or performs a protected mutation. A stale authorization
+   read must not permit a later write after revocation has committed. Test both
+   operation orderings; never describe already completed work as recalled.
+3. **Session transport.** Use a minimal browser harness for the fragment exchange,
+   immediate address cleanup, cookies, request-forgery protection and two-fling
+   sessions. Every page and mutation carries its expected fling and membership;
+   the server verifies both against session authority. Opening another link
+   cannot change a stale page's actor silently. Clear any per-member client cache
+   on a context change; scope private responses against shared-cache reuse.
+4. **Profiles and projections.** Exercise T1/T3 through domain and HTTP fixtures,
+   including invitation-state read projections and read-only preview. Seed fixture
+   invitations directly here; the organizer's full event/invitation screens and
+   T1/T3 browser journeys belong to Phase 2. Carry those pending checks explicitly
+   in the evidence record, so passing Phase 1 is not reported as all T1-T3 passing.
+
+The browser harness uses fictional records and local identity only. Hosted
+identity and outside-member access still require the existing Phase 6/7 inputs.
+
 ## Phases 2-3: gathering and coordination
 
 The organizer starts on assigned flings; the member starts on their own fling's
@@ -127,6 +160,16 @@ after renewed eligibility and sending-window checks. Both channels use the same
 current membership code. A changed contact, response, role, closure or expired
 sending window invalidates the handoff and requires renewed review. Use revision
 checks and a single active handoff claim to reject competing organizer exports.
+
+Separate the immutable approved revision from its expiring secret material.
+Keep approved non-secret text, stable delivery IDs, link placeholders and a
+fingerprint of the exact approved payload; keep recoverable codes and complete
+handoff bodies only in encrypted, expiring storage. Render the exact approved
+payload while eligible and verify its fingerprint. Purging secret material must
+leave redacted approval/result history usable, without recreating an old raw link
+from an audit field or immutable snapshot. After expiry, recopy requires renewed
+review. This preserves the specification's purge requirement without rewriting
+approved history or claiming the full secret payload is retained forever.
 
 Export properly escaped JSON with exact subject, core text, individual suffix
 and destination. Mark copying as exported for sending, never sent. Explain
