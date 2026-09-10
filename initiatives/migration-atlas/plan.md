@@ -262,3 +262,13 @@ This completes that exception inventory. T8 still needs the unverified
 settlement and descendant sources, other historical quantities and geographic
 corrections recorded in the report. The source review receipt preserves the
 baseline and revised dataset hashes and each changed field.
+
+
+## September 10 keyboard and population-label follow-up
+
+Consume Enter's default action before returning data-table focus to the opener.
+The keyboard test must cover the complete press/release, selected detail,
+Escape close and a later deliberate reopen. Keep the existing focus return.
+The shared quantity labels also distinguish a post-migration population from
+unique movers; the Partition report records the census definition. Continue
+T8's remaining field-level source and geography work after this increment.

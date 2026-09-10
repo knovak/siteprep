@@ -718,7 +718,13 @@
         <td class="r">${fmt(m.migrants)}<br><small>${quantityLabel(m)}</small></td><td>${m.confidence}</td>`;
       const open = () => { closeModal($("tableModal")); openDetail(m); focusOn(m); };
       tr.onclick = open;
-      tr.onkeydown = ev => { if (ev.key === "Enter") open(); };
+      tr.onkeydown = ev => {
+        if (ev.key === "Enter") {
+          // Closing restores button focus; consume Enter before its native click.
+          ev.preventDefault();
+          open();
+        }
+      };
       tb.appendChild(tr);
     }
   }

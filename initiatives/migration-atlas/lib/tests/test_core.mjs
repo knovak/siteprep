@@ -28,6 +28,7 @@ for (const m of data.migrations) {
 for (const id of ['syrian-civil-war','venezuelan-exodus','rohingya-exodus','ukraine-war','filipino-overseas'])
   ok(quantityLabel(data.migrations.find(m=>m.id===id)) === 'Reported population abroad', `stock is not called people moved: ${id}`);
 ok(quantityLabel({}) === 'People moved', 'legacy datasets retain mover label');
+ok(quantityLabel(data.migrations.find(m=>m.id==='india-partition')) === 'Post-migration population', 'Partition census cohort is not labelled unique border crossers');
 ok(validateData({...data,migrations:[{...data.migrations[0],quantity_kind:'invented'}]}).errors.some(e=>e.includes('quantity kind')), 'unsupported quantity definitions are rejected');
 for (const m of data.migrations) {
   ok(!ids.has(m.id), `unique id: ${m.id}`); ids.add(m.id);

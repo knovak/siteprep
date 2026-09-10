@@ -7,23 +7,23 @@
 ## Done
 
 The atlas contains 48 migrations and 92 destinations; its editorial report
-has 121 evidence rows. The latest source review corrects the Indochinese
-headline and qualifies the Afghan estimate; all coordinates and destination
-values are preserved. The earlier geometry audit covers all 140 endpoints.
+has 122 evidence rows. The latest source review distinguishes the Partition
+census population from unique movers. Earlier reviews cover recent refugee
+headlines and all 140 endpoint coordinates.
 
-The existing suites pass 551 core assertions and 271 browser checks. Six
-offline desktop/phone detail-and-report journeys also pass across Chromium,
-Firefox and WebKit. A separate check identifies an existing table keyboard
-defect in Chromium and Firefox.
+Data-table Enter activation now opens the selected detail without reopening
+the table. Validation passes 552 core assertions, 286 browser checks and six
+final offline desktop/phone keyboard, detail and report journeys across
+Chromium, Firefox and WebKit.
 
 ## Remaining work
 
 Phase 5 and T8 still require field-level sources, dated destination allocations,
 cohort-specific descendants and corrections to schematic geographic points.
 The four historical confidence exceptions have been reviewed, but their
-remaining unverified quantities and the other historical entries still need
-acceptance evidence. T6/T7 still need the table keyboard correction, manual
-screen-reader observations and Windows/Linux packaging runs.
+remaining quantities and the other historical entries still need evidence.
+T6/T7 still require manual screen-reader observations and Windows/Linux
+packaging runs.
 
 ## Optional later
 
