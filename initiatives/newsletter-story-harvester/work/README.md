@@ -413,20 +413,30 @@ There is no production deployment recorded for this initiative.
 
 ## Load new stories with an LLM assistant
 
-In an assistant with this repository and connected Gmail, ask:
+Use the repository-wide
+[`harvest-newsletter-stories`](../../../.claude/skills/harvest-newsletter-stories/SKILL.md)
+skill in an assistant with this repository and connected Gmail. Its
+[usage guide](../../../.claude/skills/harvest-newsletter-stories/README.md)
+defines **store** (the durable story collection), **inventory** (the source
+configuration), all v1 inputs and defaults, outputs, examples, and the extension
+contract for adding choices. For example:
 
-> Harvest newsletter stories from the configured sources for the last 30 days,
-> merge them into the existing private store, and refresh the private test site.
+> Use $harvest-newsletter-stories for all configured sources for the last 30 days,
+> then refresh the existing private test site.
 
 Name particular sources or a date range when desired. An explicit range overrides
-the inventory's default lookback periods. The Help dialog lists the current
-source names and Gmail search expressions. There is no dedicated harvest skill
-yet: loading uses the private extraction workflow documented above.
+the inventory's default lookback periods, while respecting each source's
+earliest eligible `since` date. The Help dialog lists current source names and
+Gmail search expressions and explains the store, inventory and optional outputs.
+The skill orchestrates the maintained modules below; it does not add another
+store format or a standalone Gmail CLI. Harvest alone updates the local store;
+offline review, tagging and test deployment are requested follow-ups.
 
 Search every configured source, follow pagination, verify the actual sender and
 subject constraints, and use each source's extraction contract. Keep full MIME
-and newsletter bodies in memory only. Known issue IDs already represented in
-the existing store can be skipped; count them separately. The finalizer creates
+and newsletter bodies in memory only. Reprocess bounded overlaps: one stored
+story does not prove an issue was completely processed, and the identity merge
+recovers missed stories without discarding existing ones. The finalizer creates
 a **new** store and refuses replacement, so a refresh must merge extracted
 records into the existing store with `mergeRecords(..., {mode: 'harvest'})`,
 record the run and exact range, and save atomically with mode 0600 and a protected
@@ -438,6 +448,15 @@ export/import is needed only to synchronize judgments back to the local story
 store for offline review or publishing; redeployment itself preserves D1 choices.
 The `tag-newsletter-stories` skill optionally adds themes and event clusters after
 harvesting. The `deploy-test` skill rebuilds the existing private test Site.
+
+The skill's connector wrapper verifies subject/label groups and effective date
+ranges as well as sender attribution; `runHarvest` itself only adds the sender
+check. The two-turn bridge needs the validated source slug in `entry.key` and
+any inventory shape override in `message.shape_override`. The workflow also
+preflights protected files, existing store identity and version, and output
+aliases, runs against a clone, and checks for intervening store changes before
+`saveStore`. These orchestration requirements are in the skill; the underlying
+generic JSON and review-file helpers do not independently enforce all of them.
 
 ## Hosted judgment database
 

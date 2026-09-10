@@ -6,26 +6,22 @@
 
 ## Done
 
-All nine phases in `plan.md` are built across 17 source modules and 17 test
-files under `work/`: bounded Gmail harvesting, structural identity and merging,
-the portable JSON store, tagging and event clusters, offline review, and the
-provenance-safe kept-and-emphasised page. The private hosted review adds D1
-judgment persistence with stale-tab protection while retaining the explicit
-export/import path for synchronising the local store.
+The harvester provides bounded Gmail extraction, identity-preserving merges,
+a portable story store, tagging and clusters, offline review and a shareable
+kept-and-emphasised page. Hosted review adds durable judgments with stale-tab
+protection and an export/import path to the local store.
 
-The review surface has six paginated layouts, Day and Night displays, complete
-scrollable story text, per-story and clustered judgments, page-scoped bulk
-judgment, Undo, tag filtering, and source-search help. The latest recorded gating run
-passed 137 tests and the latest recorded real harvest preserved 321 stories
-without committing the mailbox inventory, message bodies, or private store.
+The repository-wide `harvest-newsletter-stories` skill now includes Codex
+discovery, updated review Help and a user guide defining store, inventory,
+v1 inputs, outputs, supported choices and extension rules. All 137 tests pass;
+a synthetic repeat run grew 49 stories to 74 while preserving every prior
+record and two judgments, with failure/crash and protected-file checks.
 
 ## Remaining work
 
-A dedicated repeat-harvest workflow and agent manifest are drafted and validated
-in [the skill draft](https://github.com/knovak/siteprep/blob/ec1eda732/initiatives/newsletter-story-harvester/notes/harvest-skill-draft.md). Its synthetic rehearsal grew
-49 stories to 74 while preserving existing judgments; installation in the
-repository's discoverable skill directory and discovery checks remain incomplete
-([recorded refinement](decisions.html)).
+The accepted harvest-skill refinement is complete and the initiative is dormant.
+The implementation was checked using synthetic data; live connector compatibility
+is checked during the next user-requested harvest, as specified by the skill.
 
 ## Optional later
 

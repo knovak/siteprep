@@ -101,6 +101,7 @@ conventions they follow.
 - [`deploy-test`](.claude/skills/deploy-test/SKILL.md) — Refresh an initiative's test deployment from the source directory recorded in its initiative.json, then report both the test and the production URL.
 - [`deploy-to-chatgpt-sites`](.claude/skills/deploy-to-chatgpt-sites/SKILL.md) — Deploy an already-built static website directory containing index.html and optional CSS, JavaScript, images, or data files to ChatGPT Sites.
 - [`generate-guide`](.claude/skills/generate-guide/SKILL.md) — Generate and verify the repository guide description, slide deck, and lifecycle simulator.
+- [`harvest-newsletter-stories`](.claude/skills/harvest-newsletter-stories/SKILL.md) — Harvest newsletter stories from configured Gmail sources over a bounded date range into the existing Newsletter Story Harvester store, preserving identities and judgments.
 - [`merge-prs`](.claude/skills/merge-prs/SKILL.md) — Merge one or more pull requests after checking CI, mergeability, and review threads.
 - [`new-initiative`](.claude/skills/new-initiative/SKILL.md) — Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list.
 - [`release-initiative`](.claude/skills/release-initiative/SKILL.md) — Release an initiative's committed source to its production deployment - a ChatGPT Site or a demo under demos/ - and report both the test and the production URL.

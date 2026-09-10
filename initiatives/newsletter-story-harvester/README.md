@@ -39,18 +39,32 @@ offline review, or publication. Protect the downloaded JSON as private data.
 
 ## Load new stories
 
-The Site does not read Gmail itself. Ask an assistant that has access to this
-repository and the connected Gmail account to run the private harvest workflow.
-Open **Help** on the Site to see the current source names and Gmail searches,
-then send this request with real dates:
+The Site does not read Gmail itself. Ask an assistant with this repository and
+connected Gmail to use the `harvest-newsletter-stories` skill:
 
-> Load new Newsletter Story Harvester stories from the sources listed in Help
-> for [start date] through [end date]. Follow the private harvest workflow in
-> initiatives/newsletter-story-harvester/work/README.md. Merge into the existing
-> private store, preserving its store ID, story IDs, and judgments. Refresh the
-> existing private test site.
+> Use $harvest-newsletter-stories for all configured sources for the last 30 days,
+> then refresh the existing private test site.
 
-The request must name a bounded date range. Re-harvesting adds or merges stories
+The **store** is the saved story collection, including stable IDs, tags, local
+judgments and run history. The **inventory** is a separate configuration file
+listing newsletters, their Gmail matchers, extraction shapes and default date
+limits. The usual files are `work/private/store.json` and
+`work/private/inventory.json`; you can supply other existing private JSON files.
+
+Choose all sources or particular source names from **Help**, then an explicit
+date range, “last N days”, or configured lookbacks. “Last N days” includes today;
+an explicit “through” date includes that date. A harvest updates the same store,
+retains a `.prev` backup, and reports dates, issue/story counts, flags, preserved
+judgments and output paths. An offline review file, themes/event clusters and a
+test refresh are optional; the example requests the refresh so results appear
+on the Site.
+
+The [skill usage guide](https://github.com/knovak/siteprep/blob/main/.claude/skills/harvest-newsletter-stories/README.md)
+lists every supported input and default, defines the three extraction shapes
+and matcher choices, and sets out how future revisions add choices while
+preserving existing requests.
+
+The request must resolve to a bounded date range. Re-harvesting adds or merges stories
 rather than replacing the collection. The workflow checks the actual sender,
 uses read-only Gmail operations, keeps raw message bodies in memory only, and
 writes mailbox-specific files under the ignored owner-only `work/private/`

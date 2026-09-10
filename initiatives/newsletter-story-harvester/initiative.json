@@ -1,20 +1,10 @@
 {
   "title": "Newsletter Story Harvester",
   "summary": "Harvest, organize, review, retain, and publish newsletter stories from Gmail.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [],
-  "todo": [
-    {
-      "id": "add-dedicated-harvest-skill",
-      "title": "Add a dedicated harvest skill for repeat Newsletter Story Harvester runs",
-      "state": "blocked",
-      "value": "high",
-      "effort": "medium",
-      "advances_stage": false,
-      "blocked_by": "permission:allow repository-wide harvest skill installation in .claude/skills/harvest-newsletter-stories/, its .agents/skills/harvest-newsletter-stories symlink, and the generated README.md skill index; the tested draft is in notes/harvest-skill-draft.md"
-    }
-  ],
+  "todo": [],
   "deployments": [
     {
       "kind": "chatgpt-site",
@@ -32,8 +22,8 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-09-09T19:40:04Z",
-    "commit": "6b0cbbb0d8816e50fb82b6a7c4f5594f5a742374",
-    "digest": "bd11ce87582d05be11b265dc60c0bd735dd16863"
+    "generated_at": "2026-09-10T04:44:58Z",
+    "commit": "69900afa857b741e27368654c66d538fbd9e2714",
+    "digest": "b6ee6ff39b40447043f41a01462666ae6295ad03"
   }
 }

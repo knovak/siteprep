@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harvest Newsletter Stories"
+  short_description: "Add newsletter stories while preserving judgments"
+  default_prompt: "Use $harvest-newsletter-stories to harvest my configured newsletters for the requested date range into the existing private store."
