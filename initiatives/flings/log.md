@@ -25,3 +25,18 @@ and [unencrypted, potentially editable backup exports before considering an
 encrypted format](https://github.com/knovak/siteprep/pull/498#discussion_r3976757289).
 The provider and backup choices in the specification are still pending that
 review; this revision does not claim to settle either request.
+
+## 2026-09-10 — Complete the two carried-over specification reviews
+
+Addressed the two requests explicitly deferred by the prior four-thread pass.
+The specification now proposes a computer-control prompt as the first sending
+path, with organizer-supplied core text, resolved preference-aware recipients,
+personal links, an escaped manifest, per-delivery results and a discussion post
+whose status does not overstate sending. It compares the benefits and limits
+against manual/API delivery and records improvements and pilot acceptance.
+
+Recovery now starts with editable, unencrypted versioned JSON, excludes live
+credentials, validates an isolated restore and cannot resume old sends or
+sessions. Encryption is deferred until useful production experience. The
+recommendations and remaining decisions are recorded in decisions.md. The
+wish, objectives and lifecycle stage are unchanged by this response.
