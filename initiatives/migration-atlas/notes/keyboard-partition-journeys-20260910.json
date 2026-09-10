@@ -1,0 +1,62 @@
+{
+  "date": "2026-09-10",
+  "app_sha256": "d513f11d8005a974462c81915b724523de6c5cafebadf4f2f928fcaaad469f65",
+  "report_sha256": "9cb12e2afc71ba820dfc2dccd2c9fee11713f81a217ce27c5520517ca28d1a9b",
+  "network": "HTTP and HTTPS requests aborted",
+  "journeys": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 1280,
+      "height": 900,
+      "status": "passed",
+      "report_rows": 122,
+      "page_errors": []
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 390,
+      "height": 900,
+      "status": "passed",
+      "report_rows": 122,
+      "page_errors": []
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "width": 1280,
+      "height": 900,
+      "status": "passed",
+      "report_rows": 122,
+      "page_errors": []
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "width": 390,
+      "height": 900,
+      "status": "passed",
+      "report_rows": 122,
+      "page_errors": []
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 1280,
+      "height": 900,
+      "status": "passed",
+      "report_rows": 122,
+      "page_errors": []
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 390,
+      "height": 900,
+      "status": "passed",
+      "report_rows": 122,
+      "page_errors": []
+    }
+  ]
+}

@@ -247,3 +247,29 @@ three engines. Visual inspection also reproduced a pre-existing Enter-selection
 defect against main and the revised bundle in Chromium/Firefox; WebKit passed.
 Recorded the exact observations and queued `fix-table-keyboard-activation`
 without changing application code or claiming complete keyboard acceptance.
+
+## 2026-09-10 — Fix Enter activation of a data-table row reopening the table over the selected detail
+
+Consume Enter before restoring toolbar focus; add a full keyboard activation/close/reopen regression.
+
+## 2026-09-10 — Keyboard activation and Partition source continuation
+
+Fixed data-table Enter activation reopening the table after focus returns to
+its toolbar button. The regression covers real press/release, selected detail,
+focus return, Escape close and a later deliberate reopen on all three engines.
+
+Read the Partition entry's cited research directly and recorded exact locators.
+The dataset now uses its 14.5M census-based population with an explicit
+post-migration label, medium confidence and a note that includes subsequent
+births. The existing headline formatter rounds to 15M; the note retains 14.5M.
+Removed the untraced range, superlative and numeric death claim. All destination
+values, dates and coordinates remain unchanged. The report has 122 evidence
+rows; the receipt preserves prior fields and hashes. This is an increment of
+`reconcile-editorial-findings`, which remains actionable for the unresolved
+sources, allocations, descendants and geography.
+
+Validation: 552 core assertions; 96 Chromium, 95 Firefox and 95 WebKit browser
+checks with unchanged goldens and thresholds. Six final offline desktop/phone
+keyboard/detail/report/return journeys passed with network requests blocked
+and no page errors. Full T6/T7 still require manual screen-reader observations
+and Windows/Linux packaging evidence. T8 is not complete.

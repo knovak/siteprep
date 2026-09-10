@@ -1,0 +1,56 @@
+{
+  "reviewed_at": "2026-09-10",
+  "baseline_commit": "a0089296176ceca67beae9ed1ece1c8ba5d20109",
+  "source_url": "https://atif.scholar.princeton.edu/sites/g/files/toruqf3691/files/SSRN-id1124093_0.pdf",
+  "source_locator": "printed pages 1, 4 and 6; section 3.1.1 and footnote 14",
+  "access": "Official author-hosted PDF text retrieved directly; no PDF table image inspection claimed.",
+  "entry_id": "india-partition",
+  "dataset_sha256_before": "dc4e9ff32b29771e7cf9e43bd8f159891591f4cb2389b4b84ae35cfb04d87c3d",
+  "dataset_sha256_after": "4614c20cb0c3b476de10a86ad3ee665cf609667b7c24d9f3b5d99d9c086bbbae",
+  "changed_fields": {
+    "cause": {
+      "before": "Partition of British India along religious lines; communal violence killed 200K–2M",
+      "after": "Partition of British India along religious lines and communal violence"
+    },
+    "confidence": {
+      "before": "high",
+      "after": "medium"
+    },
+    "references": {
+      "before": [
+        "Khan, The Great Partition (2007); Bharadwaj et al., 'The Big March' (2008)"
+      ],
+      "after": [
+        "Khan, The Great Partition (2007); Bharadwaj et al., 'The Big March' (2008)",
+        "Bharadwaj, Khwaja and Mian, The Big March, RWP08-029 (2008), pp. 1, 4, 6; section 3.1.1 and footnote 14: https://atif.scholar.princeton.edu/sites/g/files/toruqf3691/files/SSRN-id1124093_0.pdf"
+      ]
+    },
+    "migrants": {
+      "before": 15000000,
+      "after": 14500000
+    },
+    "migrants_note": {
+      "before": "Largest single migration event in recorded history",
+      "after": "The source estimate is 14.5M (the headline rounds to whole millions): a 1951 census-based population after Partition, including children born after migration (The Big March, section 3.1.1 and footnote 14). Its separately modelled outflows are not uncertainty bounds. Medium confidence reflects this cohort definition. The inherited destination allocations and descendant estimates remain unverified; the Punjab-centred geometry omits Bengal. No death estimate is established here."
+    },
+    "migrants_range": {
+      "before": [
+        14000000,
+        18000000
+      ],
+      "after": null
+    },
+    "quantity_kind": {
+      "before": null,
+      "after": "post-migration-population"
+    }
+  },
+  "preserved": [
+    "period",
+    "source",
+    "destinations",
+    "type",
+    "region"
+  ],
+  "remaining": "Destination allocations, descendant attribution, Bengal geometry and full T8 acceptance remain open."
+}

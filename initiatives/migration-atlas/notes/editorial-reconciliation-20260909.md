@@ -1,5 +1,18 @@
 # Editorial reconciliation — September 9, 2026
 
+## Partition population definition — September 10, 2026
+
+This supersedes the older Partition disposition below. Coordinates, destination
+values and dates remain unchanged; the broader T8 item remains actionable.
+
+| Entry | Source and locator | Correction and remaining evidence |
+|---|---|---|
+| `india-partition` | [Bharadwaj, Khwaja and Mian, The Big March](https://atif.scholar.princeton.edu/sites/g/files/toruqf3691/files/SSRN-id1124093_0.pdf), printed pp. 1, 4, 6, section 3.1.1 and footnote 14; author-hosted PDF text read directly. | Use 14.5M and label the 1951 population after migration, including subsequent births. Remove the unsupported superlative, untraced range and death toll. Modelled departures are a different measure. Medium confidence does not certify the retained allocations or descendants. |
+
+The source receipt preserves the previous fields and input/output hashes.
+The existing two destination points still omit the Bengal route. A matching
+allocation sum does not establish the component values or their geography.
+
 ## Indochinese and Afghan headline review — September 10, 2026 (UTC)
 
 This continuation corrects one population headline and qualifies another.
