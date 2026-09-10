@@ -210,3 +210,22 @@ concurrent WebKit run exceeded the frame-time limit; the same suite passed
 alone. Desktop/phone detail and report checks passed on all three engines with
 network requests blocked. T8 remains actionable for the source and geographic
 findings still recorded as unresolved.
+
+## 2026-09-10 — Audit endpoint geometry and correct the Liberia finding
+
+Added a reproducible, read-only audit of all 140 endpoints against the two
+bundled land datasets, with hashed inputs and explicit containment limits.
+Fifteen endpoints fall outside the coarse polygons, sixteen outside the
+detailed polygons, and seven differ between scales. Inspected all 17 distinct
+flagged/correction coordinates at world zoom and 6× in 34 local-file Chromium
+captures, with no page errors and network access blocked.
+
+Corrected the report's inaccurate offshore description of the Lebanese
+West Africa point: the unchanged coordinate is inland in Liberia. Recorded
+coastal and island ambiguities rather than moving endpoints to force a pass.
+The data, all coordinates and populations, application sources and application
+bundle remain byte-identical to the baseline. The report now has 119 evidence
+rows. The audit output reproduced byte-for-byte; the original T8 reconciliation
+item stays actionable for quantitative sources, regional allocations and
+remaining geographic acceptance. Polygon containment does not implement the
+plan's separate 300-km proximity check.

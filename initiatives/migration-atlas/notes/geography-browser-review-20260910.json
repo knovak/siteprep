@@ -1,0 +1,893 @@
+{
+  "application_sha256": "f99bc689805595df865596028a4d16b31cce04745d2fdc10337d937dae057db2",
+  "distinct_points": 17,
+  "captures": 34,
+  "method": "Local-file Chromium at year 1000 (blank opening), 1x and centered 6x; pink circle is a test annotation at the projected coordinate. Network blocked. This inspects basemap placement, not migration playback.",
+  "page_errors": [],
+  "shots": [
+    {
+      "migration": "jewish-expulsions-medieval",
+      "role": "source",
+      "index": 1,
+      "name": "England & France",
+      "lat": 50,
+      "lon": 1,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        482.0896824845911,
+        95.3738303383223
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-01-1x.png"
+    },
+    {
+      "migration": "jewish-expulsions-medieval",
+      "role": "source",
+      "index": 1,
+      "name": "England & France",
+      "lat": 50,
+      "lon": 1,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -1,
+        "k": 6,
+        "ty": 1205.757017970066
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-01-6x.png"
+    },
+    {
+      "migration": "sephardic-expulsion",
+      "role": "destination",
+      "index": 3,
+      "name": "Italy & Netherlands",
+      "lat": 44,
+      "lon": 10,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        501.8661985855542,
+        111.90260904999184
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-02-1x.png"
+    },
+    {
+      "migration": "sephardic-expulsion",
+      "role": "destination",
+      "index": 3,
+      "name": "Italy & Netherlands",
+      "lat": 44,
+      "lon": 10,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -10,
+        "k": 6,
+        "ty": 1106.584345700049
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-02-6x.png"
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "source",
+      "index": 1,
+      "name": "West & West-Central Africa",
+      "lat": 5,
+      "lon": 5,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        492.64363547159013,
+        236.94639726261383
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-03-1x.png"
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "source",
+      "index": 1,
+      "name": "West & West-Central Africa",
+      "lat": 5,
+      "lon": 5,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -5,
+        "k": 6,
+        "ty": 356.3216164243171
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-03-6x.png"
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "destination",
+      "index": 2,
+      "name": "Caribbean",
+      "lat": 16.5,
+      "lon": -66,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        316.09914285759373,
+        198.09479939641352
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-04-1x.png"
+    },
+    {
+      "migration": "atlantic-slave-trade",
+      "role": "destination",
+      "index": 2,
+      "name": "Caribbean",
+      "lat": 16.5,
+      "lon": -66,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": 66,
+        "k": 6,
+        "ty": 589.4312036215189
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-04-6x.png"
+    },
+    {
+      "migration": "indian-ocean-slave-trades",
+      "role": "destination",
+      "index": 2,
+      "name": "Indian Ocean islands & South Asia",
+      "lat": -18,
+      "lon": 55,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        616.0638934935669,
+        314.90204712118833
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-05-1x.png"
+    },
+    {
+      "migration": "indian-ocean-slave-trades",
+      "role": "destination",
+      "index": 2,
+      "name": "Indian Ocean islands & South Asia",
+      "lat": -18,
+      "lon": 55,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -55,
+        "k": 6,
+        "ty": -111.4122827271301
+      },
+      "projected": [
+        480,
+        253.99999999999994
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-05-6x.png"
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "source",
+      "index": 1,
+      "name": "Acadia (Nova Scotia)",
+      "lat": 45.3,
+      "lon": -64.3,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        340.69421774262196,
+        108.2289457389735
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-06-1x.png"
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "source",
+      "index": 1,
+      "name": "Acadia (Nova Scotia)",
+      "lat": 45.3,
+      "lon": -64.3,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": 64.3,
+        "k": 6,
+        "ty": 1128.6263255661588
+      },
+      "projected": [
+        480,
+        253.9999999999999
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-06-6x.png"
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "destination",
+      "index": 2,
+      "name": "Atlantic colonies & France",
+      "lat": 40,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        313.8470640196503,
+        123.49554705786647
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-07-1x.png"
+    },
+    {
+      "migration": "acadian-expulsion",
+      "role": "destination",
+      "index": 2,
+      "name": "Atlantic colonies & France",
+      "lat": 40,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": 74,
+        "k": 6,
+        "ty": 1037.0267176528012
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-07-6x.png"
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 2,
+      "name": "United States",
+      "lat": 40.7,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        314.5805980836456,
+        121.43673841076546
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-08-1x.png"
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 2,
+      "name": "United States",
+      "lat": 40.7,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": 74,
+        "k": 6,
+        "ty": 1049.3795695354074
+      },
+      "projected": [
+        480,
+        254.0000000000001
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-08-6x.png"
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 1,
+      "name": "Mauritius",
+      "lat": -20.2,
+      "lon": 57.5,
+      "inside_land110": false,
+      "inside_land50": true,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        621.3672740149782,
+        322.189425388274
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-09-1x.png"
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 1,
+      "name": "Mauritius",
+      "lat": -20.2,
+      "lon": 57.5,
+      "inside_land110": false,
+      "inside_land50": true,
+      "zoom": 6,
+      "camera": {
+        "rot": -57.5,
+        "k": 6,
+        "ty": -155.13655232964402
+      },
+      "projected": [
+        480,
+        254.00000000000006
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-09-6x.png"
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 2,
+      "name": "Caribbean (Trinidad, Guyana, Suriname)",
+      "lat": 8,
+      "lon": -59,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        331.2286823564773,
+        226.74252885335952
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-10-1x.png"
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 2,
+      "name": "Caribbean (Trinidad, Guyana, Suriname)",
+      "lat": 8,
+      "lon": -59,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": 59,
+        "k": 6,
+        "ty": 417.54482687984296
+      },
+      "projected": [
+        480,
+        254.00000000000003
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-10-6x.png"
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 4,
+      "name": "South & East Africa",
+      "lat": -29.8,
+      "lon": 31,
+      "inside_land110": false,
+      "inside_land50": true,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        553.5243137405275,
+        353.2625164894673
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-11-1x.png"
+    },
+    {
+      "migration": "indian-indenture",
+      "role": "destination",
+      "index": 4,
+      "name": "South & East Africa",
+      "lat": -29.8,
+      "lon": 31,
+      "inside_land110": false,
+      "inside_land50": true,
+      "zoom": 6,
+      "camera": {
+        "rot": -31,
+        "k": 6,
+        "ty": -341.5750989368039
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-11-6x.png"
+    },
+    {
+      "migration": "chinese-diaspora-19c",
+      "role": "destination",
+      "index": 1,
+      "name": "Southeast Asia",
+      "lat": 3,
+      "lon": 105,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        745.8258455956188,
+        243.7634908569444
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-12-1x.png"
+    },
+    {
+      "migration": "chinese-diaspora-19c",
+      "role": "destination",
+      "index": 1,
+      "name": "Southeast Asia",
+      "lat": 3,
+      "lon": 105,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -105,
+        "k": 6,
+        "ty": 315.4190548583336
+      },
+      "projected": [
+        480,
+        254
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-12-6x.png"
+    },
+    {
+      "migration": "soviet-jewish-emigration",
+      "role": "destination",
+      "index": 2,
+      "name": "United States & Germany",
+      "lat": 40.6,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": true,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        314.47511051245385,
+        121.73010131984935
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-13-1x.png"
+    },
+    {
+      "migration": "soviet-jewish-emigration",
+      "role": "destination",
+      "index": 2,
+      "name": "United States & Germany",
+      "lat": 40.6,
+      "lon": -74,
+      "inside_land110": false,
+      "inside_land50": true,
+      "zoom": 6,
+      "camera": {
+        "rot": 74,
+        "k": 6,
+        "ty": 1047.6193920809037
+      },
+      "projected": [
+        480,
+        253.9999999999999
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-13-6x.png"
+    },
+    {
+      "migration": "rohingya-exodus",
+      "role": "destination",
+      "index": 1,
+      "name": "Bangladesh (Cox's Bazar and Bhasan Char camps)",
+      "lat": 21.4,
+      "lon": 92,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        705.3516695304018,
+        181.85832157185
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-14-1x.png"
+    },
+    {
+      "migration": "rohingya-exodus",
+      "role": "destination",
+      "index": 1,
+      "name": "Bangladesh (Cox's Bazar and Bhasan Char camps)",
+      "lat": 21.4,
+      "lon": 92,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -92,
+        "k": 6,
+        "ty": 686.8500705689
+      },
+      "projected": [
+        480,
+        254.00000000000006
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-14-6x.png"
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "source",
+      "index": 1,
+      "name": "Philippines",
+      "lat": 13,
+      "lon": 122,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        785.2754745307,
+        209.83079105858081
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-15-1x.png"
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "source",
+      "index": 1,
+      "name": "Philippines",
+      "lat": 13,
+      "lon": 122,
+      "inside_land110": false,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -122,
+        "k": 6,
+        "ty": 519.0152536485152
+      },
+      "projected": [
+        480,
+        254.00000000000006
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-15-6x.png"
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "destination",
+      "index": 3,
+      "name": "East & Southeast Asia",
+      "lat": 22.3,
+      "lon": 114.2,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        758.913537916226,
+        178.9054475947365
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-16-1x.png"
+    },
+    {
+      "migration": "filipino-overseas",
+      "role": "destination",
+      "index": 3,
+      "name": "East & Southeast Asia",
+      "lat": 22.3,
+      "lon": 114.2,
+      "inside_land110": true,
+      "inside_land50": false,
+      "zoom": 6,
+      "camera": {
+        "rot": -114.2,
+        "k": 6,
+        "ty": 704.567314431581
+      },
+      "projected": [
+        480,
+        254.00000000000006
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-16-6x.png"
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 3,
+      "name": "West Africa",
+      "lat": 6.5,
+      "lon": -10,
+      "inside_land110": true,
+      "inside_land50": true,
+      "zoom": 1,
+      "camera": {
+        "rot": 0,
+        "k": 1,
+        "ty": 254
+      },
+      "projected": [
+        454.74449346439525,
+        231.84047941199034
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-17-1x.png"
+    },
+    {
+      "migration": "lebanese-diaspora",
+      "role": "destination",
+      "index": 3,
+      "name": "West Africa",
+      "lat": 6.5,
+      "lon": -10,
+      "inside_land110": true,
+      "inside_land50": true,
+      "zoom": 6,
+      "camera": {
+        "rot": 10,
+        "k": 6,
+        "ty": 386.957123528058
+      },
+      "projected": [
+        480,
+        254.00000000000003
+      ],
+      "viewport": {
+        "width": 960,
+        "height": 600
+      },
+      "mapHeight": 508,
+      "image": "geography-inspection-20260910/point-17-6x.png"
+    }
+  ]
+}
