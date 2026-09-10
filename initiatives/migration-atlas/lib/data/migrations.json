@@ -1458,7 +1458,7 @@
    "type": "refugee-flight",
    "cause": "Civil war following 2011 uprising; sieges, barrel bombs, ISIS",
    "migrants": 6800000,
-   "migrants_note": "Peak refugees abroad; ~1.3M returned during 2025 after the fall of the Assad government (refugees abroad ~4.9M at end-2025); plus ~6\u20137M internally displaced at peak",
+   "migrants_note": "The 6.8M headline is the rounded end-2021 refugee population in UNHCR Global Trends 2021, p. 17 (6,848,900 in Figure 5), not cumulative departures or a verified all-time peak. Its population includes births and new recognitions. The inherited destination figures total 5.6M and are not a matching end-2021 breakdown: the report gives 3.7M in T\u00fcrkiye, 840,900 in Lebanon and 673,000 in Jordan. The high confidence label applies to the sourced headline, not the unreconciled destination estimates. Later stocks must not be subtracted from this value to infer returns.",
    "source": {
     "name": "Syria",
     "lat": 35.0,
@@ -1489,7 +1489,7 @@
    ],
    "confidence": "high",
    "references": [
-    "UNHCR Global Trends 2025 (June 2026)"
+    "UNHCR, Global Trends 2021, p. 17, By country of origin and Figure 5 (end-2021); direct PDF link in the editorial report"
    ],
    "region": "mena",
    "quantity_kind": "stock"
@@ -1534,11 +1534,11 @@
    ],
    "confidence": "high",
    "references": [
-    "R4V Inter-Agency Platform; UNHCR"
+    "R4V, End-Year Report 2023, Regional Overview; direct report link in the editorial report"
    ],
    "region": "lamer",
    "quantity_kind": "stock",
-   "migrants_note": "The inherited 7.7M figure is a reported population outside Venezuela, associated with R4V reporting in 2023; it is not unique cumulative departures through 2026. Destination figures require matching observation dates and coverage before comparison."
+   "migrants_note": "The 7.7M headline is the population outside Venezuela reported in R4V's 2023 end-year Regional Overview, not cumulative departures through 2026. The inherited destination figures total 6.9M, leaving 0.8M unallocated relative to that rounded headline; this arithmetic is not evidence for where the remainder lives. Their observation dates and group coverage remain unverified. The high confidence label applies to the sourced headline, not those allocations."
   },
   {
    "id": "rohingya-exodus",
@@ -1549,7 +1549,7 @@
     "peak": 2017
    },
    "type": "refugee-flight",
-   "cause": "Statelessness and military 'clearance operations' in Rakhine State (2017), characterized by the UN as ethnic cleansing/genocide",
+   "cause": "Statelessness and Myanmar military violence in Rakhine State, including the 2017 clearance operations; the UN Fact-Finding Mission identified evidence of genocidal intent",
    "migrants": 1100000,
    "source": {
     "name": "Rakhine State, Myanmar",
@@ -1558,19 +1558,22 @@
    },
    "destinations": [
     {
-     "name": "Bangladesh (Cox's Bazar)",
+     "name": "Bangladesh (Cox's Bazar and Bhasan Char camps)",
      "lat": 21.4,
      "lon": 92.0,
-     "settled": 950000,
-     "diaspora_today": 1000000
+     "settled": 1005520,
+     "diaspora_today": 1005520
     }
    ],
    "confidence": "high",
    "references": [
-    "UNHCR; end-2024 total Rohingya abroad >1.1M"
+    "UNHCR, Projected Global Resettlement Needs 2026, pp. 47-48 (end-2024 Rohingya population in Asia and the Pacific)",
+    "Government of Bangladesh and UN partners, Joint Response Plan 2025-26, p. 14 (registered population at 31 December 2024)",
+    "UN Independent International Fact-Finding Mission on Myanmar, OHCHR release of 22 August 2019 (genocidal-intent finding); direct links in the editorial report"
    ],
    "region": "seasia",
-   "quantity_kind": "stock"
+   "quantity_kind": "stock",
+   "migrants_note": "The 1.1M headline represents the lower, rounded scale of over 1.1M Rohingya refugees in Asia and the Pacific at end-2024 (UNHCR Projected Global Resettlement Needs 2026, pp. 47-48), not an exact worldwide total or cumulative departures. Bangladesh registered 1,005,520 Rohingya as of 31 December 2024 (Joint Response Plan 2025-26, p. 14). Both destination fields now carry that same registered population; they are not separate settlement and descendant counts. The point near Cox's Bazar also represents camps on Bhasan Char. Other destinations and unregistered arrivals are not allocated."
   },
   {
    "id": "ukraine-war",
@@ -1582,7 +1585,7 @@
    "type": "refugee-flight",
    "cause": "Russian full-scale invasion of Ukraine (Feb 2022)",
    "migrants": 5900000,
-   "migrants_note": "~5.86M refugees recorded globally at end-2025 (~5.3M in Europe), plus ~3.7M internally displaced",
+   "migrants_note": "The 5.9M headline rounds the 5.86M refugees outside Ukraine in UNHCR's 2026 plans, p. 11, which also reports 5.3M across Europe. This is a refugee population at the reporting date, not cumulative departures. The inherited three destination groups total 5.0M: 0.86M below the cited 5.86M, or 0.9M below the rounded display. The source does not establish these grouped allocations, their observation dates or a separate descendant population; high confidence applies only to the headline scale.",
    "source": {
     "name": "Ukraine",
     "lat": 49.0,
@@ -1613,7 +1616,7 @@
    ],
    "confidence": "high",
    "references": [
-    "UNHCR Ukraine Situation, 2026 plans"
+    "UNHCR, Ukraine Situation: 2026 plans and financial requirements, p. 11, Refugee response; direct PDF link in the editorial report"
    ],
    "region": "eeur",
    "quantity_kind": "stock"
@@ -1628,7 +1631,7 @@
    "type": "refugee-flight",
    "cause": "SAF\u2013RSF civil war from April 2023, including violence in Khartoum and Darfur",
    "migrants": 13000000,
-   "migrants_note": "~13.4M total displaced at mid-2025, of which ~9\u201310M internal; ~3\u20134M crossed borders; the international destination point represents only the cross-border component, not all displaced people. The inherited source date and allocations require verification.",
+   "migrants_note": "The 13M display is a coarse rounding of the 13.4M refugees, asylum-seekers and internally displaced people in UNHCR Mid-Year Trends 2025. That report places 10M inside Sudan at mid-2025. These are population stocks; internally displaced people must not be interpreted as crossing the international arrow. The inherited 3.5M destination estimate is still unverified and must not be derived by subtracting independently rounded headlines. Direct source retrieval was blocked during this review; the report page's indexed summary was readable.",
    "source": {
     "name": "Sudan (Khartoum, Darfur)",
     "lat": 14.5,
@@ -1645,7 +1648,7 @@
    ],
    "confidence": "high",
    "references": [
-    "UNHCR Mid-Year Trends 2025; Global Trends 2025"
+    "UNHCR, Mid-Year Trends 2025, Sudan displacement situation and Internally Displaced People sections; indexed summary checked, direct retrieval blocked"
    ],
    "region": "afr",
    "quantity_kind": "displacement"
@@ -1660,7 +1663,7 @@
    "type": "voluntary-economic",
    "cause": "State-organized labor export policy; global demand for seafarers, nurses, domestic workers",
    "migrants": 12000000,
-   "migrants_note": "Current overseas Filipino stock ~10\u201312M across 100+ countries",
+   "migrants_note": "The inherited 12M headline has no verified observation date or field-level source and must not be read as a current count or cumulative labor departures. CFO's December 2013 estimate was 10,238,614 overseas Filipinos across permanent, temporary and irregular categories; PSA's April-September 2023 worker survey counted 2.16M people in a different population. Neither establishes 12M or the inherited destination totals (8.5M combined). Confidence is low because the headline and allocations remain untraced, not because the official statistics are interchangeable or unreliable.",
    "source": {
     "name": "Philippines",
     "lat": 13.0,
@@ -1689,9 +1692,10 @@
      "diaspora_today": 1500000
     }
    ],
-   "confidence": "high",
+   "confidence": "low",
    "references": [
-    "Philippine Statistics Authority; Commission on Filipinos Overseas"
+    "CFO, 2014 Compendium of Statistics, pp. 10 and 22 (December 2013 stock; definition and limitations)",
+    "PSA, 2023 Overseas Filipino Workers (Final Results), 13 September 2024, Table 1 / Figure 1; these are comparison sources, not support for the inherited 12M"
    ],
    "region": "seasia",
    "quantity_kind": "stock"

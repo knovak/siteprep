@@ -247,3 +247,9 @@ created Firefox/WebKit goldens. `test_packaging.py` compares six same-engine
 file/HTTP scenes and keyboard paths across three engines on the current host.
 A named screen-reader walkthrough and actual Windows/Linux packaging results
 remain external acceptance inputs; they cannot be certified from macOS runs.
+
+The September 10 continuation completed the 44 remaining destination close-up
+inspections and added exact source locators for six recent entries. Phase 5
+still requires the numerical and geographic corrections identified by those
+inspections: coverage of the checklist is not acceptance of its findings.
+The original reconciliation todo remains actionable for that work.

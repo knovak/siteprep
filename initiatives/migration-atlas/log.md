@@ -170,3 +170,26 @@ also covers engines where axe could not classify the translucent background.
 WebKit used macOS Option-Tab to reach the link. These focused checks cover
 the styling revision; the earlier full-suite evidence remains tied to its
 recorded application hash. Production is unchanged.
+
+## 2026-09-10 — Trace recent stocks and finish remaining destination inspections
+
+Continued `reconcile-editorial-findings` with dated source locators and explicit
+population definitions for Syria, Venezuela, Rohingya, Ukraine, Sudan and
+Filipino overseas migration. Corrected the Bangladesh destination to the
+1,005,520 registered population at December 31, 2024, qualified regional/global
+coverage, attributed the Rohingya violence finding to the UN fact-finding
+mission, and lowered the untraced Filipino estimate's confidence. Recorded the
+Sudan retrieval limit rather than claiming a direct source-table check.
+
+Captured and inspected all 44 remaining destination close-ups at 6×; their
+findings, contact sheets and camera/input receipt are committed under `notes/`.
+The report now includes six source rows, 44 destination observations and the
+original 48-entry audit. Rebuilt both HTML outputs from their sources.
+
+Validation passed 551 core assertions, 91 Chromium and 90 each Firefox/WebKit
+browser checks, 78 file/HTTP packaging checks, 36 detail checks and six offline
+report journeys. Explicitly refreshed only the Chromium 2015 region-legend
+golden for the intended uncertainty styling and independently rechecked it;
+the original threshold is unchanged. T8 and the original reconciliation todo
+remain open for the unsupported fields and geographic corrections. This is
+an increment, not completion of the editorial acceptance gate.

@@ -1,5 +1,109 @@
 # Editorial reconciliation — September 9, 2026
 
+## Current continuation — September 10, 2026 (UTC)
+
+Six recent entries now distinguish a dated source from an inherited estimate.
+Syria, Venezuela and Ukraine retain their rounded headline numbers with exact
+source locators. Rohingya coverage is qualified as regional, its Bangladesh
+destination now uses the registered December 2024 population, and the violence
+description names the UN fact-finding body. The Filipino entry no longer claims
+its untraced total is current and carries low confidence. Sudan's source-access
+limit is explicit. The figures and unresolved fields are detailed below.
+
+The 44 destination close-ups left after the earlier review have now been
+captured and inspected at 6×. This completes that inspection coverage, not
+geographic acceptance: combined labels still put distant places at a single
+point. T8 remains open for those corrections and the unresolved numerical
+sources. The September 9 sections below remain the record of the earlier
+increment; this continuation supersedes their six entry dispositions and the
+statement that 44 destination inspections have not been performed.
+
+### Source and quantity reconciliation
+
+Accessed September 10, 2026 (UTC). A verified headline does not certify its
+destination allocations, period, descendant attribution or every historical
+claim. In particular, a stock includes people present on a date and cannot be
+summed across years to obtain unique departures.
+
+| Entry | Exact source and supported field | Disposition and remaining evidence |
+|---|---|---|
+| `syrian-civil-war` | [UNHCR Global Trends 2021](https://www.unhcr.org/my/sites/en-my/files/legacy-pdf/62a9d1494.pdf), printed p. 17, “By country of origin” and Figure 5: 6,848,900 refugees at end-2021, rounded to 6.8M. The accompanying paragraph identifies births and recognitions as components of change. PDF text read directly. | Replaced the undated peak claim with this observation date. The 5.6M destination sum is not its breakdown: the source gives Türkiye 3.7M, Lebanon 840,900 and Jordan 673,000. Those do not support the inherited 2.9M and 1.4M groups. Allocation dates remain open. Removed the later return/stock comparison from the entry because different snapshots do not measure returns by subtraction. |
+| `venezuelan-exodus` | [R4V End-Year Report 2023](https://rmrp.r4v.info/eyr2023/), “Regional Overview”: 7.7M refugees and migrants outside Venezuela, including 6.5M in Latin America and the Caribbean. Report text read directly. | Kept the 2023 reporting frame. The atlas allocates 6.9M, leaving 0.8M relative to its rounded headline; neither that subtraction nor the source locates the remainder. The broad regional groups need dated country-level tables. |
+| `rohingya-exodus` | [UNHCR Projected Global Resettlement Needs 2026](https://www.unhcr.org/asia/sites/asia/files/2025-06/projected-global-resettlement-needs-2026_3.pdf), printed pp. 47–48, Asia and the Pacific: over 1.1M Rohingya refugees in the region at end-2024. [Joint Response Plan 2025–26](https://bangladesh.un.org/sites/default/files/2025-03/JRP-2025-26.pdf), printed p. 14, “Situation Overview”: 1,005,520 Rohingya registered in Bangladesh at December 31, 2024, in Cox's Bazar and Bhasan Char camps. Both PDF texts read directly. | Headline 1.1M is a lower, rounded regional scale, not an exact global count. Both Bangladesh fields now equal the same registered stock, 1,005,520, replacing the undated 950K and 1M; this does not create a descendant estimate. The destination label includes Bhasan Char, which its existing point does not separately locate. Other countries and unregistered arrivals remain unallocated. |
+| `ukraine-war` | [UNHCR Ukraine Situation: 2026 plans and financial requirements](https://data.unhcr.org/ar/documents/download/120716), printed p. 11, “Refugee response”: 5.86M refugees outside Ukraine, including 5.3M across Europe. PDF text read directly. | Headline 5.9M is the rounded reported stock. Three inherited destinations total 5M: 0.86M below the source, or 0.9M below the display. Their groups and dates are not established by this paragraph. A planning report's assistance target is also a different measure; it must not replace the refugee population. |
+| `sudan-crisis` | [UNHCR Mid-Year Trends 2025](https://www.unhcr.org/mid-year-trends), Sudan situation and internally displaced people sections: 13.4M refugees, asylum-seekers and IDPs; 10M displaced within Sudan at mid-2025. **Indexed summary only:** direct web retrieval returned 429 and a direct download attempt returned 403. | The 13M display is a coarse rounding of the combined stock. Its internal component is not an international movement. The 3.5M destination remains unverified: subtracting two rounded totals is not a source for this grouped allocation. No new population value is inferred. |
+| `filipino-overseas` | [CFO 2014 Compendium of Statistics](https://cms-cdn.e.gov.ph/CFO/pdf/30.%202014-CFO-Statistical-Compendium.pdf), printed pp. 10 and 22: December 2013 stock 10,238,614; permanent, temporary and irregular populations, with incomplete return and status-change coverage. PDF downloaded, text read and those two pages visually inspected. [PSA 2023 OFW final results](https://psa.gov.ph/content/2023-overseas-filipino-workers-final-results?vcode=x5txXT), Table 1 / Figure 1: 2.16M workers during April–September 2023. Page read directly. | Neither measure supplies the atlas's 12M or its 8.5M destination sum. Retained those inherited figures with an explicit unresolved-source warning and changed high to low confidence. The older CFO stock and narrower PSA worker population are comparisons, not replacement estimates for a 2026 total. |
+
+The Rohingya cause now attributes the finding to the **UN Independent
+International Fact-Finding Mission on Myanmar**. Its [August 22, 2019 OHCHR
+release](https://bangkok.ohchr.org/news/2019/news-release-un-fact-finding-mission-myanmar-calls-justice-victims-sexual-and-gender)
+connects the military's 2017 sexual violence to evidence of genocidal intent.
+This replaces the imprecise “UN … ethnic cleansing/genocide” attribution; it
+does not soften the account or claim a separate court judgment.
+
+### Remaining destination inspections
+
+The 44 additional destination records were each centered at 6× at the recorded
+peak year, or the midpoint when no peak exists, with the relevant migration
+selected by its ID. All 44 captures rendered without an uncaught JavaScript
+error; the JSON receipt records coordinates, camera, year and the input hash.
+The 44 captures were visually inspected in four contact sheets. Coordinate
+placement on the bundled basemap is an observation, not proof of a historical
+population distribution.
+
+[Observation receipt](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/destination-inspection-20260910.json). Contact sheets: [1](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/destination-inspection-20260910/contact-1.jpg), [2](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/destination-inspection-20260910/contact-2.jpg), [3](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/destination-inspection-20260910/contact-3.jpg), [4](https://github.com/knovak/siteprep/blob/sweep/migration-atlas/reconcile-editorial-findings-20260910/initiatives/migration-atlas/notes/destination-inspection-20260910/contact-4.jpg).
+
+No point was moved and no destination total was split without evidence.
+
+| Entry / destination | Name and coordinate (latitude, longitude) | 6× observation |
+|---|---|---|
+| `sephardic-expulsion` / 2 | North Africa (Morocco, Algiers) (33, -6) | Morocco reference point; does not separately locate Algiers. |
+| `sephardic-expulsion` / 3 | Italy & Netherlands (44, 10) | Northern Italy reference point; the Netherlands is not located by it. |
+| `spanish-colonization` / 2 | Andes & Southern Cone (-12, -75) | Peruvian Andes reference point; Southern Cone destinations are not separately located. |
+| `atlantic-slave-trade` / 2 | Caribbean (16.5, -66) | Offshore Caribbean aggregate; not an island or a specific settlement. |
+| `atlantic-slave-trade` / 3 | Spanish Mainland America (8, -75) | Northern South America reference point; does not represent the whole Spanish mainland allocation geographically. |
+| `atlantic-slave-trade` / 4 | North America (33, -81) | Southeastern United States reference point; wider North American settlement remains schematic. |
+| `indian-ocean-slave-trades` / 2 | Indian Ocean islands & South Asia (-18, 55) | Offshore east of Madagascar; does not locate the named South Asian destinations. |
+| `huguenot-exodus` / 2 | Cape Colony (-33.9, 18.9) | Cape Town area reference point; region remains schematic. |
+| `acadian-expulsion` / 2 | Atlantic colonies & France (40, -74) | New York area reference point; France and other Atlantic colonies are not separately located. |
+| `irish-famine` / 2 | Britain (53.5, -2.2) | Britain reference point; broad national rather than community coverage. |
+| `irish-famine` / 3 | Canada & Australia (45.5, -73.6) | Montreal area reference point; Australia is not located by it. |
+| `european-mass-migration` / 2 | Argentina (-34.6, -58.4) | Buenos Aires area reference point; broad Argentina allocation. |
+| `european-mass-migration` / 3 | Brazil (-23.5, -46.6) | Sao Paulo area reference point; broad Brazil allocation. |
+| `european-mass-migration` / 4 | Canada (49.9, -97.1) | Winnipeg area reference point; broad Canada allocation. |
+| `indian-indenture` / 2 | Caribbean (Trinidad, Guyana, Suriname) (8, -59) | Offshore Atlantic point north of Guyana; does not locate Trinidad, Guyana and Suriname individually. |
+| `indian-indenture` / 3 | Fiji (-17.7, 178) | Fiji reference point on the island group; local destination remains schematic. |
+| `indian-indenture` / 4 | South & East Africa (-29.8, 31) | Durban area reference point; East Africa is not separately located. |
+| `chinese-diaspora-19c` / 2 | Americas (US, Peru, Cuba, Canada) (37.7, -122.4) | San Francisco area reference point; Peru, Cuba and Canada are not located by it. |
+| `chinese-diaspora-19c` / 3 | Australasia & Pacific (-34, 145) | Inland southeastern Australia reference point; Pacific destinations are not separately located. |
+| `jewish-pale-emigration` / 2 | Britain, Argentina, Palestine (51.5, -0.1) | London area reference point; Argentina and Palestine are not located by it. |
+| `armenian-genocide` / 2 | France, USA, South America (43.3, 5.4) | Marseille area reference point; the Americas are not located by it. |
+| `armenian-genocide` / 3 | Soviet Armenia (40.2, 44.5) | Armenia reference point; the quantity still needs cohort evidence. |
+| `greek-turkish-exchange` / 2 | Turkey (39.5, 32.5) | Anatolia reference point, but this reverse movement incorrectly shares the Anatolian source of the Greece-bound movement. |
+| `white-emigres` / 2 | Harbin & Shanghai (45.8, 126.6) | Harbin area reference point; Shanghai is not separately located. |
+| `holocaust-displacement` / 2 | United States (40.7, -74) | New York area reference point; broader United States allocation. |
+| `india-partition` / 2 | Pakistan (Muslims from India) (31.5, 73) | Punjab reference point; the Bengal direction is absent. |
+| `jews-from-arab-lands` / 2 | France & Americas (48.9, 2.3) | Paris area reference point; the Americas are not located by it. |
+| `vietnamese-boat-people` / 2 | Australia, Canada, France (-33.9, 151.2) | Sydney area reference point; Canada and France are not located by it. |
+| `afghan-refugees` / 2 | Iran (32.5, 53.7) | Iran reference point; national aggregate, not a camp or community. |
+| `afghan-refugees` / 3 | Europe & North America (51, 10) | Germany reference point; North America is not located by it. |
+| `soviet-jewish-emigration` / 2 | United States & Germany (40.6, -74) | New York area reference point; Germany is not located by it. |
+| `syrian-civil-war` / 2 | Lebanon & Jordan (33.5, 36) | Near the Lebanon-Syria border; cannot locate both Lebanon and Jordan at community scale. |
+| `syrian-civil-war` / 3 | Europe (esp. Germany) (51, 10) | Germany reference point; broad European allocation. |
+| `venezuelan-exodus` / 2 | Peru, Ecuador, Chile, Brazil (-12, -77) | Lima area reference point; Ecuador, Chile and Brazil are not separately located. |
+| `venezuelan-exodus` / 3 | USA & Caribbean (25.8, -80.2) | Miami area reference point; Caribbean destinations are not separately located. |
+| `ukraine-war` / 2 | Germany & Western Europe (51.2, 9) | Germany reference point; broader Western Europe is not separately located. |
+| `ukraine-war` / 3 | North America (43.7, -79.4) | Toronto area reference point; broader North America is not separately located. |
+| `filipino-overseas` / 2 | USA & Canada (34, -118.2) | Los Angeles area reference point; Canada is not located by it. |
+| `filipino-overseas` / 3 | East & Southeast Asia (22.3, 114.2) | Hong Kong area reference point; broader East and Southeast Asia is not separately located. |
+| `highland-clearances` / 2 | Lowland cities & Australia (55.9, -3.2) | Edinburgh area reference point; Australia is not located by it. |
+| `korean-colonial-migration` / 2 | Manchuria (Jiandao/Yanbian) (42.9, 129.5) | Yanbian area reference point; wider Manchuria is not separately located. |
+| `lebanese-diaspora` / 2 | United States (40.7, -74) | New York area reference point; broader United States allocation. |
+| `lebanese-diaspora` / 3 | West Africa (6.5, -10) | Offshore West African aggregate; not a specific settlement. |
+| `cuban-exodus` / 2 | Spain & Latin America (40.4, -3.7) | Madrid area reference point; Latin America is not located by it. |
+
+## September 9 increment
+
 The inherited audit covers 48 entries. This increment fixes four confidence-rule conflicts, distinguishes the quantities already described in the dataset, and makes schematic geography and unreconciled allocations visible. It does not certify the historical values, replace unverified numbers, or claim that all T8 criteria pass. The original reconciliation todo remains actionable.
 
 ## Verified source passages
