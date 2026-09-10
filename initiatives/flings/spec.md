@@ -31,7 +31,7 @@ outside this version. Organizers may enter repeated events individually.
 | Application | A static/browser-only app is easy to distribute but cannot enforce shared private data or coordinate concurrent organizers. A server with a relational database supports access checks and transactions, with hosting and recovery work. | A web client, server-controlled permissions and a relational database. The plan selects the framework and host; no full private dataset is shipped to the browser. |
 | Organizer sign-in | Managed identity avoids implementing password recovery but requires provider setup. Email sign-in links depend on email delivery and mailbox access. Application passwords require recovery and credential operations. | Managed identity for organizers, using a provider adapter and secure server session. A local development identity is restricted to local/test environments. |
 | Shared authority | A single owner simplifies administration but conflicts with shared organizing. Equal organizers avoid owner hand-offs but allow every organizer to make consequential changes. Fine-grained roles add complexity. | Equal organizers within each fling, with explicit confirmation for closure, member-link replacement and adding/removing organizers. The last organizer cannot be removed without first appointing another. |
-| Member access | Accounts improve identity assurance but contradict login-free access. One shared fling code cannot distinguish members. Individual bearer links meet the wish but can be forwarded. | A distinct, revocable capability for each membership; possession gives that membership's access. Link replacement invalidates earlier capabilities and sessions. |
+| Member access | Accounts improve identity assurance but contradict login-free access. One shared fling code cannot distinguish members. Individual bearer links meet the wish but can be forwarded. Immediately invalidating each previous link makes recent messages frustrating to use. | Multiple revocable codes per membership, issued in overlapping 14-day sending windows and valid for 35 days from first issue. Routine rotation preserves recent links; emergency replacement invalidates all earlier codes and sessions. |
 | Invitations and discussions | Showing everything to every invitee is simple but defeats acceptance-dependent disclosure. Independent event invitations add another response hierarchy. | Invitations belong to activities; accepted members gain participant detail and activity/event discussions. A fling discussion serves all active fling memberships. |
 | Polls | Free-form answers are flexible but hard to tally. Ranked voting adds election rules. | Single-choice and multiple-choice event polls, one current response per eligible member, editable until closure. |
 | Payments | A ledger records coordination without handling funds. Outside payment links can accompany it. Integrated collection adds settlement, refund and provider responsibilities. | Fixed per-member requests and an organizer-confirmed ledger, with optional outside payment links. The application does not collect money. |
@@ -53,7 +53,9 @@ completed integration. The proposed choices are design judgments.
 |---|---|
 | Organizer | Authentication subject and display name; access comes from explicit organizer-to-fling assignments. |
 | Fling | Identifier, title, description, default time zone, open/closed state and organizer assignments. |
-| Membership | Fling, local display name, optional email/phone, channel preference, active/removed state and capability generation. Duplicate contact details do not merge memberships across flings. |
+| Membership and profile | Fling, display name, email address, text-capable phone number, notification preference (email, text or both), active/removed state, profile revision and access-revocation generation. The organizer creates the initial profile; the member can edit their own. Duplicate contact details do not merge memberships across flings. |
+| Member access code | One membership, token digest, protected value while eligible for sending, first-issued time, first-use time (initially empty), sending-window end, expiry and optional revocation time/reason. Several records may be valid simultaneously. |
+| Member session | One membership, originating access-code record, membership revocation generation, creation time and fixed expiry. |
 | Activity | One parent fling, title, invitation summary, participant details, published/cancelled state and a display order. |
 | Event | One activity, title, start and end, IANA time zone, location name/address/link, invitation-visible summary and accepted-participant details. |
 | Invitation | Unique activity/membership pair, invited/accepted/declined/withdrawn state, response time and revision. |
@@ -69,30 +71,95 @@ before returning content or producing a side effect. Database constraints and
 transactions enforce unique memberships/invitations/responses and valid parent
 relationships. Non-secret identifiers identify records; they never grant access.
 
+Profiles belong to memberships in this first version. A member can edit their
+own display name, email address, text number and notification preference from
+their member page, without a separate login. Assigned organizers can create
+and maintain those profiles in their fling. Other members cannot read or edit
+them. Email-only requires an email address, text-only requires a text number,
+and both requires both; a profile without a usable selected destination may
+be saved as incomplete, with notifications unavailable until corrected. Never
+silently substitute an unselected channel. Validate contact syntax, show the
+saved values and preference, and record the actor and revision of changes.
+Editing contacts does not automatically send a message or change invitations,
+roles or member codes. It requires renewed review of affected queued messages
+as described in section 7. A member can also correct their profile while the
+fling is closed; closure still prevents new messages and coordination writes.
+
+The same person commonly organizes several flings and participates as an
+ordinary member in several others. Organizer assignments and memberships are
+independent: being an organizer anywhere gives no organizer access elsewhere,
+and removing one assignment leaves other assignments and memberships intact.
+An organizer may also have a membership in a fling they organize, for their
+own invitations and responses. Organizer sign-in and a member link never
+implicitly grant each other's authority. Membership profiles are not linked
+by matching names, email addresses or phone numbers; a profile edit applies
+to the displayed fling only. This preserves the existing per-fling boundary
+but means a person updates their contact details separately in each fling.
+A shared cross-fling profile remains outside this version.
+
 ## 4. Access and member links
 
 Organizers sign in and see their assigned flings in an organizer interface.
 Members receive a URL such as `/f/<fling-id>/member#code=<random-code>`.
 The client exchanges the fragment over HTTPS for a membership session and
 removes it from the displayed URL. Fragments keep the raw code out of the
-initial HTTP URL. The server stores only a one-way token digest, generated
-from at least 128 bits of cryptographically random entropy, and never logs the
-raw code. Member pages contain no third-party scripts or tracking assets.
+initial HTTP URL. Each code uses at least 128 bits of cryptographically random
+entropy. Verification uses a one-way token digest. To append the same current
+code to several messages, the sender additionally retains its value encrypted
+with a server-managed key outside the database, accessible only to the code
+issuance/sending path. Remove this recoverable copy when its sending window
+ends or it is revoked; its digest remains for access checks until expiry.
+Retain the code record and revocation state while any originating session can
+still be active. Never log raw codes. Member pages contain no third-party scripts or tracking
+assets.
 
-The session is bound to one fling, membership and capability generation. It
-uses secure, HttpOnly cookies, request-forgery protection and a 14-day lifetime;
-reopening an active original member link starts a new session without login.
-Server checks of membership state and generation happen on every request.
+Each code records `first_issued_at` when it is first made available for member
+delivery, and `first_used_at` on its first successful session exchange. First
+use is recorded once; failed lookups and later visits do not change it. The
+server applies these fixed windows using elapsed time in UTC:
+
+- Reuse the newest eligible code in outgoing messages for 14 days from first
+  issue. At or after that boundary, prepare a new code when the next message
+  or explicit link issuance needs one. Concurrent preparations share one new
+  current code. Rotation alone never sends a message.
+- Accept each code for 35 days from its first issue, irrespective of first
+  use or subsequent sends. Routine issuance of a newer code does not revoke
+  older unexpired codes. At the exact expiry boundary it cannot open a new
+  session, and an unused code expires on the same schedule.
+- For example, codes issued on days 0, 14 and 28 may all work on day 28. The
+  day-0 code expires on day 35; the other two expire on days 49 and 63. A first
+  visit on day 34 does not extend the day-0 code's lifetime.
+- Recheck the code's sending window before dispatch. If a reviewed message
+  waited beyond that window, pause it and prepare a current link for renewed
+  review; do not send the old code or silently change an approved message.
+
+The session is bound to one fling, membership, originating code and membership
+revocation generation. It uses secure, HttpOnly cookies, request-forgery
+protection and a fixed 35-day lifetime from session creation; ordinary visits
+do not extend it. Reopening any unexpired, non-revoked member link starts a new
+35-day session without login. Routine code expiry stops new exchanges but
+does not end an already established session: opening a code on day 34 may
+therefore keep that session usable until day 69. Server checks of membership
+state, session expiry, generation and explicit code revocation happen on every
+request. The longer session is a convenience choice; forwarding a code still
+grants access for the lifetimes described here.
 Opening another fling's link does not create a combined member dashboard or
 silently switch an action to that fling.
 
-Links remain usable until replaced or membership is removed. Closing a fling
-makes an otherwise valid link read-only. A forwarded link grants the same
+Closing a fling makes coordination read-only; profile corrections remain
+available as specified in section 3. A forwarded link grants the same
 member access; it does not prove who is holding it. The invitation explains
-this plainly. An organizer can replace a lost or exposed link after checking
-the intended member through an existing contact channel. Replacement revokes
-all earlier sessions immediately. Unknown, removed and revoked links show a
-generic unavailable-page message without exposing membership details.
+this plainly. An organizer can explicitly revoke one code and all sessions
+created from it. For a lost or exposed set of links, the organizer checks the
+intended member through an existing contact channel, then uses emergency
+replacement: revoke every existing code and session for that membership,
+advance its revocation generation and issue a fresh code. Membership removal
+also revokes all its codes and sessions immediately. Routine rotation and
+emergency replacement are distinct controls, with replacement requiring
+confirmation. Unknown, expired, removed and revoked links show the same
+unavailable-page message with instructions to request a recent link from an
+organizer, without exposing membership details. Expiry does not send one
+automatically.
 
 | Viewer | Fling summary and discussion | Activity invitation summary | Participant details and activity/event discussions | Organizer tools and other members' contacts |
 |---|---|---|---|---|
@@ -113,8 +180,8 @@ invited members a visible cancellation notice.
 Member preview uses the same server-side read projection as real member
 access, with a separate organizer preview context. It never obtains or displays
 the member's access code. The selected name and a persistent preview notice
-remain visible. Preview credentials cannot accept invitations, vote, claim a
-payment, post or send; these requests fail on the server as well as being
+remain visible. Preview credentials cannot edit a profile, accept invitations,
+vote, claim a payment, post or send; these requests fail on the server as well as being
 absent from the interface.
 
 ## 5. Invitations, event changes and closure
@@ -181,13 +248,17 @@ payment success. Do not store bank credentials or payment-card details.
 
 ## 7. Drafting and sending direct messages
 
-The organizer chooses one fling, a context, an email or text channel, and an
-individual or subgroup. Initial subgroup choices are all active members,
+The organizer chooses one fling, a context, permitted notification channels,
+and an individual or subgroup. Initial subgroup choices are all active members,
 activity invitees, accepted members, unanswered invitees, unanswered poll
 members and members with outstanding payment requests. The composer displays
-the actual recipients and omissions, including missing contacts and channel
-opt-outs. Each recipient receives an individual message so other members'
-contact details are not disclosed.
+the actual recipients and omissions, including incomplete profiles and channel
+opt-outs. By default it follows each member's profile preference: one email,
+one text or both. A channel-restricted message reaches only members whose
+preferences include that channel, with omissions shown before approval. Both
+means two separate deliveries, using the same current member code when a
+member link is included. Each recipient receives an individual message so
+other members' contact details are not disclosed.
 
 AI receives only the organizer-selected context needed for that draft. Raw
 member codes, provider secrets and other flings are excluded. Private payment
@@ -202,7 +273,7 @@ Before sending, the organizer reviews the edited content, final recipient list,
 channel, omissions and any discussion audience. Changing the content, scope
 or recipient selection invalidates approval. The server freezes the approved
 revision and recipients, then checks their current eligibility at dispatch.
-If membership, invitations, contact details or relevant source content changed
+If membership, invitations, profile contacts/preferences or relevant source content changed
 since review, pause the affected send for renewed review; never add newly
 eligible recipients to an approved batch. Removed or opted-out members are
 suppressed even if previously approved. The send action is explicit and remains
@@ -262,8 +333,14 @@ invitation response, poll, payment claim and discussion flows must work by
 keyboard and on a narrow phone display.
 
 The next plan and test plan must map every objective to a complete journey,
-including two organizers/two flings/one overlapping person; accepted versus
-invited detail; forwarded/revoked links; forged cross-fling requests; preview
+including people organizing multiple flings while holding ordinary memberships
+in several others, and an organizer with their own membership in a managed
+fling; organizer-created and member-edited profiles; email/text/both preferences,
+incomplete contacts, changes after message review and profile isolation;
+accepted versus invited detail; forwarded/revoked links; first-use recording,
+overlapping codes at days 14/28, exact day-35 expiry, unused-code expiry,
+independent 35-day sessions, concurrent issuance, queued-message rotation and
+emergency revocation of every old code/session; forged cross-fling requests; preview
 write denial; daylight-saving ambiguity; concurrent invitation/vote edits;
 partial payments; changed recipients after review; model failure; provider
 timeout; duplicate callbacks; discussion success with delivery failure; and
