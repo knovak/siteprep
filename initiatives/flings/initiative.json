@@ -1,0 +1,17 @@
+{
+  "title": "Flings",
+  "summary": "A web-based manager for independent social-event series, with organizer tools, personal member pages, invitations, discussions, polls, coordinated payments, and AI-assisted messaging.",
+  "stage": "wish",
+  "value": "medium",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "draft-objectives",
+      "title": "Draft objectives.md - what \"done\" would mean",
+      "state": "actionable",
+      "value": "medium",
+      "effort": "small",
+      "advances_stage": true
+    }
+  ]
+}
