@@ -6,16 +6,16 @@
 
 ## Done
 
-The atlas contains 48 migrations and 92 destination records. Source findings
-now cover six recent entries and the four formerly high-confidence entries
-beginning before 1800; the latter include a revised New England estimate and
-explicit reasons for the remaining headline confidence exceptions. The
-editorial report has 102 rows, including the completed destination inspections.
+The atlas contains 48 migrations and 92 destination records; its editorial
+report has 119 evidence rows, including recent/historical source findings and
+a new geometry audit of all 140 endpoints. Thirty-four inspected views support
+the geometry findings and correct the report's offshore description of the
+Liberia point; all application data and coordinates remain unchanged.
 
-The current revision passed 551 core assertions, 271 browser checks and 24
-desktop/phone detail-to-report journeys across three engines. Existing visual
-references passed unchanged; WebKit's performance check passed in an isolated
-rerun after exceeding the limit during concurrent browser execution.
+The latest increment passed 551 core assertions and six offline report-and-return
+journeys across desktop/phone widths in Chromium, Firefox and WebKit, with no
+serious or critical automated accessibility findings. Basemap containment is
+reproducible evidence, not historical settlement or proximity acceptance.
 
 ## Remaining work
 
