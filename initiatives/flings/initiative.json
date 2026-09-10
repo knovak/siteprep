@@ -13,5 +13,10 @@
       "effort": "large",
       "advances_stage": false
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-09-10T18:19:15Z",
+    "commit": "fda57c8450c620ff7238b844d764f93a39231a62",
+    "digest": "373808f61d05cd2f1037ae76222b7a393de74bb8"
+  }
 }
