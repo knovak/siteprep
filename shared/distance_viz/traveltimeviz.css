@@ -1,6 +1,6 @@
 /**
  * TravelTimeViz - Component Styles
- * Version: 2.1.0
+ * Version: 2.2.0
  */
 
 /* Network Graph Styles */
@@ -28,19 +28,37 @@
 }
 
 .traveltimeviz-link {
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease, opacity 0.2s ease;
 }
 
-.traveltimeviz-link:hover {
-  stroke: #3498db !important;
-  stroke-width: 3 !important;
-  opacity: 1 !important;
+.traveltimeviz-link.is-highlighted {
+  stroke: #3498db;
+  stroke-width: 3;
+  opacity: 1;
 }
 
 .traveltimeviz-link-label {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   pointer-events: none;
   user-select: none;
+}
+
+.traveltimeviz-link-label.is-highlighted {
+  fill: #3498db;
+  stroke: white;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.traveltimeviz-selection-help {
+  margin: 0.5rem 0;
+}
+
+.traveltimeviz-selection-total {
+  margin: 0.5rem 0 1rem;
+  font-weight: 600;
 }
 
 /* Matrix Styles */
@@ -89,6 +107,15 @@
 }
 
 /* Accessibility */
+.traveltimeviz-link:focus {
+  /* SVG's default outline boxes in the whole arc instead of following it. */
+  outline: none;
+}
+
+.traveltimeviz-link:focus-visible {
+  stroke-dasharray: 6 3;
+}
+
 .traveltimeviz-node:focus,
 .traveltimeviz-matrix-cell:focus {
   outline: 2px solid #3498db;
@@ -98,6 +125,7 @@
 /* Print styles */
 @media print {
   .traveltimeviz-node,
+  .traveltimeviz-link,
   .traveltimeviz-matrix-cell {
     cursor: default;
   }
