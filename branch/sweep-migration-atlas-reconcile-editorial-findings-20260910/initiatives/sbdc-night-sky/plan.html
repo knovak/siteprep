@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Implementation plan — SBDC Night-Sky Simulator</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Implementation plan — SBDC Night-Sky Simulator</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to SBDC Night-Sky Simulator</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Implementation plan</h2>
+    </div>
+    <div class="card-content">
+<h2>SBDC Night-Sky Simulator — Implementation Plan</h2>
+<p><em>Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</em></p>
+<p>Companion to SPECIFICATION.md · July 9, 2026</p>
+<blockquote><p><strong>Status: complete.</strong> All phases executed; see PHASE1/PHASE23/PHASE4 reports and FINAL_REPORT.md. Deviations from this plan are listed in the SPECIFICATION.md addendum.</p></blockquote>
+<h3>0. Development shape</h3>
+<p>Source is developed as separable files, then a tiny build step inlines them into the single deliverable:</p>
+<pre><code>sbdc-sim/
+  data/sbdc-data.json          # all constants &amp; assumptions (spec §5)
+  data/bsc-reduced.json        # Yale BSC subset (generated once, §1.3)
+  src/model.js                 # pure functions — the tested core
+  src/render.js                # canvas splatting, projections, styles
+  src/ui.js                    # controls, pan/zoom, tooltips, readouts
+  src/app.css / index.html     # shell
+  test/model.test.js           # Node-run unit + property tests
+  test/scenarios.test.js       # acceptance scenarios (spec §2.4)
+  test/golden/                 # seeded golden-count fixtures
+  build.js                     # inline everything → sbdc-sky-simulator.html</code></pre>
+<p>Node is used only for testing and building; the artifact itself has zero dependencies. <code>model.js</code> is written dual-environment (ES module, no DOM references) so the identical file runs in the browser and under <code>node --test</code>.</p>
+<h3>1. Phase 1 — Model core (est. the largest phase)</h3>
+<p>1.1 <strong>PRNG + utilities.</strong> mulberry32 seeded PRNG; vector/rotation helpers; angle wrapping. <em>Tests:</em> PRNG determinism (same seed → same sequence), rotation round-trips.</p>
+<p>1.2 <strong>Solar ephemeris.</strong> Meeus short-form: JD → solar declination, equation of time → altitude/azimuth for (lat, solar time); twilight crossing solver. <em>Tests:</em> declination ≈ +23.44° at Jun-21 and ≈ 0 at equinoxes (±0.3°); sunset at equator on equinox ≈ 18:00 local solar (±3 min); polar-day detection at 70°N in June (no sunset found — must return the flag, not NaN).</p>
+<p>1.3 <strong>Star catalog pipeline.</strong> One-off Python script downloads/parses the Yale BSC (or uses the bundled copy), emits <code>bsc-reduced.json</code> [ra, dec, vmag] with magnitudes quantized to 0.1. <em>Tests:</em> record count 9,000–9,110; Sirius present at V ≈ −1.46; file &lt; 150 KB. RA/Dec → alt-az transform tested against two hand-computed cases (Sirius from 40°N at a known sidereal time; Polaris altitude ≈ observer latitude).</p>
+<p>1.4 <strong>Constellation generator.</strong> Shell spec → satellite positions in the sun-referenced Earth-fixed frame (spec §4.2), including the SSO inclination-from-altitude formula and LTAN spread. <em>Tests:</em> SSO inclination(550 km) ≈ 97.6° ±0.3; generated SSO positions cluster about the terminator plane (mean |angle from plane| below the configured spread); 30°-shell latitudes never exceed 30.0°+ε; count conservation (requested N = generated N); determinism under seed.</p>
+<p>1.5 <strong>Geometry &amp; shadow.</strong> Observer-relative topocentric conversion (elevation, azimuth, range); Earth-shadow cone test. <em>Tests:</em> satellite directly overhead at 600 km → elevation 90°, range 600 km; satellite over the antipode → below horizon; shadow: satellite at anti-solar point at 600 km → eclipsed, at the subsolar point → sunlit; cone vs cylinder flag changes results only near the shadow boundary; shadow-exit altitude increases with shell height (property test: higher shell → sunlit later into the night).</p>
+<p>1.6 <strong>Photometry &amp; sky brightness.</strong> Magnitude model (spec §4.4), twilight sky-brightness interpolation, limiting-magnitude threshold. <em>Tests:</em> range doubling adds ~1.5 mag; extinction grows with airmass; population percentiles of m under defaults land in −2…+4; mitigation slider at max shifts median ≥ +4.5 mag; sky brightness monotonically darkens as sun depression grows; limiting magnitude ≈ 6.0–6.5 at −18° and ≤ 3 at −4° (table sanity).</p>
+<p>1.7 <strong>Aggregate counts API.</strong> <code>summarize(state) → {aboveHorizon, sunlitAbove, visible, visibleStars, brightest}</code> — the function both the UI readouts and the acceptance tests consume.</p>
+<h4>Acceptance scenario tests (from spec §2.4 — written before the UI exists)</h4>
+<div class="table-scroll"><table><thead><tr><th>#</th><th>Scenario (lat, date, time)</th><th>Assertion</th></tr></thead><tbody><tr><td>A1</td><td>0°, equinox, sunset+30 min</td><td>SSO band visible; visible satellites &gt; visible stars for N=300k unmitigated</td></tr><tr><td>A2</td><td>0°, equinox, local midnight</td><td>SSO visible count ≈ 0; 30°-shell partially eclipsed, some visible early night, none deep night at low altitudes</td></tr><tr><td>A3</td><td>40°N, Jun 21, sunset+30</td><td>band visible, oriented ~N–S</td></tr><tr><td>A4</td><td>40°N, Jun 21 vs Dec 21, same depression angle</td><td>comparable visible counts (twilight-pass latitude independence)</td></tr><tr><td>A5</td><td>65°N, Jun 21, local midnight</td><td>SSO satellites visible (all-night visibility) — count ≫ 0</td></tr><tr><td>A6</td><td>65°S, Dec 21, local midnight</td><td>mirror of A5</td></tr><tr><td>A7</td><td>50°N, any date</td><td>zero 30°-shell satellites above ~10° elevation beyond footprint bound</td></tr><tr><td>A8</td><td>any, noon</td><td>visible count = 0 with default settings</td></tr><tr><td>A9</td><td>N scaling</td><td>aboveHorizon(600k) ≈ 2× aboveHorizon(300k) ± 5%</td></tr><tr><td>A10</td><td>footprint sanity</td><td>aboveHorizon fraction ≈ analytic cap-area fraction for a single shell ± 15%</td></tr></tbody></table></div>
+<p>Golden-count regression: for 5 fixed (seed, state) tuples, <code>summarize</code> outputs are frozen in <code>test/golden/</code> and compared exactly; any model change that alters them must be intentional.</p>
+<h3>2. Phase 2 — Renderer</h3>
+<p>2.1 Projections: horizon panorama (az × alt, pan = rotate azimuth / tilt, zoom = FOV) and all-sky fisheye (equal-area). 2.2 PSF splatting: additive Gaussian core+skirt per point, parameters from <code>renderCalibration</code>, per chosen style; density-cap fallback for ultra-dense fields. 2.3 Sky background: per-pixel twilight gradient from the sky-brightness model (this makes the western glow physically driven, not painted). 2.4 Ground silhouette, cardinal labels, style-specific chrome.</p>
+<p><em>Tests (renderer):</em> mostly visual + a few automatable ones under node-canvas: (a) golden-image hash for 3 fixed states per style at 400×250 (loose perceptual-hash comparison, not byte equality); (b) no NaN pixels; (c) render time budget measured and logged. Manual visual checklist: no double-ring halos; stars absent at noon; band densest near horizon; extinction dimming visible at &lt; 10° elevation.</p>
+<h3>3. Phase 3 — UI &amp; interaction</h3>
+<p>Controls per spec §2.2 (plain HTML inputs, styled); readout strip; tooltips via nearest-point search in screen space (k-d bucket grid); quick-jump time buttons; play/animate; seed field; assumptions panel rendering <code>sbdc-data.json</code>; PNG snapshot button (canvas.toBlob). Keyboard: arrows pan, +/- zoom, all inputs tabbable.</p>
+<p><em>Tests:</em> Playwright (if available) or manual scripted checklist — slider events update readouts; pan/zoom bounds respected; offline mode (no network panel entries); tooltip correctness spot-check against model output for a clicked satellite.</p>
+<h3>4. Phase 4 — Build, validation pass, packaging</h3>
+<p><code>build.js</code> inlines CSS/JS/JSON → <code>sbdc-sky-simulator.html</code>; asserts final size &lt; 600 KB and that the file contains no <code>http(s)://</code> fetches. Full test suite re-run against the built file&#39;s extracted model block (guards against inlining drift). Cross-browser smoke: Chrome + Firefox + Safari (manual). Final deliverables: the HTML file, <code>sbdc-data.json</code> sidecar, and a 1-page README (how to open, how to change assumptions).</p>
+<h3>5. Validation beyond tests (credibility checks)</h3>
+<ul><li>Compare simulated visible-satellite counts at dusk against the conversation&#39;s calibration point (~2,600 satellites vs ~2,200 stars for several hundred thousand SBDCs) — should reproduce within ~30%.</li><li>Compare a &quot;today&#39;s Starlink&quot; configuration (N≈7,000, 550 km, 53°) against the qualitative literature (dozens visible at dusk, not thousands) as an external sanity anchor.</li><li>Reviewer pass over <code>sbdc-data.json</code> (this is where a domain expert audits the tool without reading code).</li></ul>
+<h3>6. Risks &amp; mitigations</h3>
+<div class="table-scroll"><table><thead><tr><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Canvas 2D too slow at 1M points</td><td>Frustum + statistical density rendering first; WebGL point-sprite fallback is a contained change inside render.js</td></tr><tr><td>Magnitude model challenged by reviewers</td><td>All photometry constants isolated + confidence-flagged; UI banner &quot;illustrative, not photometric&quot; mirroring the report caveat</td></tr><tr><td>Sunset-slider expectation mismatch (open question 1)</td><td>Resolved at plan review before Phase 3</td></tr><tr><td>BSC licensing/packaging</td><td>Yale BSC is public domain; script keeps a checksum of the source file</td></tr><tr><td>Single-file bloat</td><td>Size assertion in build; magnitudes quantized; JSON minified with a pretty sidecar</td></tr></tbody></table></div>
+<h3>7. Sequence &amp; effort (rough)</h3>
+<p>Phase 1 model+tests ≈ 45% of effort → Phase 2 renderer ≈ 25% → Phase 3 UI ≈ 20% → Phase 4 build/validation ≈ 10%. Phases 1 and 2 can begin immediately after style selection and answers to the open questions; the style choice affects only <code>renderCalibration</code> and chrome, so it does not block Phase 1.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/migration-atlas/reconcile-editorial-findings-20260910" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
