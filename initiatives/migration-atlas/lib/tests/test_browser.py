@@ -212,6 +212,23 @@ async def main():
         check("T4 table row opens detail", await pg.locator("#detailPanel").is_visible())
         await pg.keyboard.press("Escape")
 
+        # A real Enter press must not activate the opener after focus restoration.
+        await pg.locator("#tableBtn").focus()
+        await pg.keyboard.press("Enter")
+        row = pg.locator("#dataTable tbody tr").first
+        selected_name = await row.locator("td").first.text_content()
+        await row.focus()
+        await pg.keyboard.press("Enter")
+        check("T4 Enter keeps table closed", not await pg.locator("#tableModal").is_visible())
+        check("T4 Enter opens selected detail", await pg.locator("#detailPanel").is_visible()
+              and selected_name in await pg.locator("#detailPanel").text_content())
+        check("T4 Enter restores toolbar focus", await pg.evaluate("document.activeElement.id") == "tableBtn")
+        await pg.keyboard.press("Escape")
+        check("T4 Escape closes keyboard-selected detail", not await pg.locator("#detailPanel").is_visible())
+        await pg.keyboard.press("Enter")
+        check("T4 next Enter can reopen table", await pg.locator("#tableModal").is_visible())
+        await pg.keyboard.press("Escape")
+
         # drag-drop dataset: valid extra migration accepted; bad one rejected
         good = {"type_legend": {"religious": "x"}, "region_legend": {"weur": "Western Europe"},
                 "migrations": [{"id": "test-flow", "name": "Test Flow",

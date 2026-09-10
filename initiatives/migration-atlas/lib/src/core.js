@@ -179,6 +179,7 @@ export const REGION_SPECTRUM = {
 // Stocks and repeated movements must not be labelled as unique people moved.
 export const QUANTITY_LABELS = {
   movers: 'People moved', stock: 'Reported population abroad',
+  'post-migration-population': 'Post-migration population',
   displacement: 'Displaced people, including internal displacement',
   circular: 'Cumulative movements, including repeat moves',
 };

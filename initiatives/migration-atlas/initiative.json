@@ -49,19 +49,11 @@
       "effort": "large",
       "advances_stage": false,
       "blocked_by": "external:manual screen-reader observations and Windows/Linux file-versus-HTTP packaging results; this run verifies macOS engines and keyboard behavior only"
-    },
-    {
-      "id": "fix-table-keyboard-activation",
-      "title": "Fix Enter activation of a data-table row reopening the table over the selected detail",
-      "state": "actionable",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false
     }
   ],
   "brief": {
-    "generated_at": "2026-09-10T15:15:10Z",
-    "commit": "7a3c32b22a595c72fd06479bcaa164503c55f6d0",
-    "digest": "5bbba986019d669f468941badf88e2f014a932cc"
+    "generated_at": "2026-09-10T15:45:36Z",
+    "commit": "f0410f60aa49ee25239bc1eee3d687af93d76019",
+    "digest": "d18cb094dfd9ef39f0c03274e276420579c6da7c"
   }
 }

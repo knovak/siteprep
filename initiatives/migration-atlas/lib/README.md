@@ -171,3 +171,15 @@ Other engines report frame cadence without claiming those thresholds, and cannot
 use Chromium-only `performance.memory` or forced GC. About, legend and stock
 detail states join the existing axe checks. Actual assistive-technology speech
 and Windows/Linux remain separate acceptance evidence.
+
+## September 10 keyboard and Partition continuation
+
+Data-table Enter activation consumes the browser's default key action before
+closing the modal restores focus to its toolbar button. The T4 regression uses
+real key presses, checks the selected detail and restored focus, closes it,
+and verifies that a later Enter still opens the table normally.
+
+The `post-migration-population` quantity kind labels a census cohort that can
+include children born after arrival. The Partition source receipt records its
+field changes; the report explains the population definition and unresolved
+allocations. This label is shared by detail, tooltip and table presentation.
