@@ -158,7 +158,10 @@ test('controls stay fixed, the title condenses, and the color key explains state
   expect(await activePhase.evaluate(node => getComputedStyle(node).backgroundColor)).toBe('rgb(30, 75, 184)');
 
   await page.evaluate(() => window.simulatorState.show(window.simulatorState.indexOf('answer-recorded'), {animate: false}));
-  await expect(page.locator('#phase-row .phase.waiting')).toHaveCount(4);
+  // Before the sweep runs, every phase in sweep.json shows as waiting - keep
+  // this in step with sweep.phases (currently 7: survey, merge, respond,
+  // propose, work, deploy, brief).
+  await expect(page.locator('#phase-row .phase.waiting')).toHaveCount(7);
   await expect(page.locator('#phase-row .phase.complete')).toHaveCount(0);
   await expect(page.locator('#meter .slot[data-spent="true"]')).toHaveCount(0);
 

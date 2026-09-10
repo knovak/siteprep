@@ -831,7 +831,11 @@ is the whole point of paying for the isolation rule.
 
 ### 7.7 Guardrails
 
-- **Never exceeds the configured budget**, and never merges its own work.
+- **Never exceeds the configured budget.** Merging is bounded rather than
+  absolute - see §7.9: it may land only its own `sweep/*` pull request, only
+  at a stage `auto_merge.stages` names, held open for `min_age_minutes`, green,
+  mergeable, and with no open thread. A proposal never merges unattended,
+  whatever the stage.
 - **Never writes outside its write scope** (§7.6).
 - **Never opens a second PR for an item that already has one open** (§7.7.1).
 - **Never invents a wish.** It elaborates existing intent; it does not create new
@@ -1496,9 +1500,10 @@ this existed, a rewritten history, or a source moved to a new path degrades to
 
 Unreleased work appears in the digest (§7.1) and stops there. Releasing is a person's
 decision, and a sweep that appended to `releases.md` on every run would turn a list of
-releases into churn. This is the same rule as §7.7's "never merges", applied to the
-other end of the pipeline: the automation may do the work and may say the work is ready,
-but the act that makes something public belongs to a person.
+releases into churn. Unlike merging (§7.7, §7.9), which a narrow policy now lets the
+sweep do for its own work, releasing has no such policy and never gets one: the
+automation may do the work and may say the work is ready, but the act that makes
+something public belongs to a person, absolutely, at this end of the pipeline.
 
 ## 9. Validation
 

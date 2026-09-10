@@ -427,14 +427,14 @@ function divisionOfLabour(facts) {
     'Facts only you can observe',
     'Authority: spending, access, policy',
     'Answers to blocked questions',
-    'The merge, every time',
+    'The merge, outside its policy',
   ];
   const agentLines = [
     'Objectives, spec, plan, test plan',
     'Alternatives, and the ones rejected',
     'One reviewable increment at a time',
     'Replies to every review comment',
-    'Proposed answers to judgment calls',
+    'Proposed answers; merges what a policy covers',
   ];
   const laneWidth = 330;
   const lineHeight = 24;
@@ -454,7 +454,7 @@ function divisionOfLabour(facts) {
     uses: ['blockers.human'],
     html: svg({
       width: WIDTH, height,
-      title: `You supply intent, facts, authority, and the merge; the agents supply the documents, the increments, and the replies. Items labeled ${humanClasses.join(', ')} wait for a person.`,
+      title: `You supply intent, facts, authority, and the merge outside its policy; the agents supply the documents, the increments, the replies, and the merges a policy already covers. Items labeled ${humanClasses.join(', ')} wait for a person.`,
       className: 'figure-svg--wide',
       body: `${ARROW_DEFS}
         ${lane(0, 'You supply', 'Intent, facts, authority', personLines, 'person')}
@@ -525,9 +525,12 @@ function blockerTriage(facts) {
 
 const PHASE_MEANINGS = {
   survey: 'Read everything and report',
+  merge: 'Land what a policy already covers',
   respond: 'Answer review comments',
   propose: 'Propose answers to open questions',
   work: 'Start new items from the todo lists',
+  deploy: 'Refresh a test preview',
+  brief: 'Rewrite a stale "where this stands"',
 };
 
 // One sweep run: the phases in order, and the budget they share.
@@ -554,15 +557,15 @@ function sweepRun(facts) {
     uses: ['sweep.phases', 'sweep.budget'],
     html: svg({
       width: WIDTH, height,
-      title: `A run moves through ${phases.join(', then ')}, sharing one budget of ${slots} items per run.`,
+      title: `A run moves through ${phases.join(', then ')}. Respond, propose and work share one budget of ${slots} items per run; merge, deploy and brief cost none of it.`,
       className: 'figure-svg--wide',
       body: `${ARROW_DEFS}
         ${text(0, 16, 'Every run, in this order', {variant: 'eyebrow'})}
         ${boxes.map(box => box.html).join('')}${arrows}
-        ${text(0, meterTop - 14, `One budget, currently ${slots} items per run, spent in phase order`, {variant: 'eyebrow'})}
+        ${text(0, meterTop - 14, `One budget, currently ${slots} items per run, shared by respond, propose and work`, {variant: 'eyebrow'})}
         ${meter}
         ${text(0, meterTop + 46, `At most ${budget.max_items_per_initiative} from any one initiative; the run stops at ${budget.max_open_prs} open pull requests.`, {variant: 'caption'})}
-        ${text(0, meterTop + 66, 'Every result is a pull request. Nothing is merged by a run.', {variant: 'caption'})}`,
+        ${text(0, meterTop + 66, 'Merge lands only its own pull requests, under a stage-and-hold-time policy. A proposal never merges unattended.', {variant: 'caption'})}`,
     }),
   };
 }
