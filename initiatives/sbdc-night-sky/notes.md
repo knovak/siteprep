@@ -1,5 +1,19 @@
 # Adoption notes and supplied reports
 
+## User-test outcome and optional later work — 2026-09-11
+
+The user reports that the test preview had a satisfactory outcome.
+`user-test-preview` is complete; no device-by-device findings were supplied.
+
+`mobile-sky-follow-up` is an optional later todo: revisit the inherited mobile
+sky positioning described below if the user chooses to resume it. It is not a
+required correction or a release requirement. The todo remains blocked on
+explicit user permission, so the sweep cannot start it automatically.
+
+The initiative remains `dormant`, with no additional releases planned, as
+instructed by the user. The existing simulator and preserved source and reports
+remain unchanged.
+
 ## Provenance — 2026-09-08
 
 The supplied `sbdc.zip` contains 12 files: a standalone application, nine

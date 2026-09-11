@@ -56,3 +56,15 @@ At the user's request, compared all 29 source-archive files with their adopted
 extracted-file inventory in the manifest, and updated the adoption guidance.
 The source, original documents, and simulator snapshots remain unchanged.
 Confirmed the initiative is already `dormant` and retained that status.
+
+## 2026-09-11 — Review the test preview on real devices and record findings
+
+The user reports that user-test-preview had a satisfactory outcome and is complete. No device-by-device findings were supplied. The initiative remains dormant; no additional releases are requested.
+
+## 2026-09-11 — Deferred mobile follow-up; retained dormancy
+
+Converted `mobile-sky-follow-up` to an optional later todo and recorded it in
+`notes.md`. It remains blocked on explicit user permission to resume the work.
+Recorded the user's direction in `decisions.md`: keep the initiative dormant
+and make no additional releases. The release item remains permission-blocked;
+no application, preserved source, or production demo files were changed.

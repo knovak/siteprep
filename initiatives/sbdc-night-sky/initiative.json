@@ -12,15 +12,6 @@
   ],
   "todo": [
     {
-      "id": "user-test-preview",
-      "title": "Review the test preview on real devices and record findings",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "data:user test findings, including pointer/pinch feel, PNG downloads, and older-phone performance"
-    },
-    {
       "id": "release-after-testing",
       "title": "Release the adopted simulator after testing and explicit approval",
       "state": "blocked",
@@ -28,17 +19,17 @@
       "effort": "small",
       "advances_stage": false,
       "blocked_by": "permission:explicit production release authorization after user testing",
-      "note": "The current simulator and index-initial.html are preserved. A future release would also add the supplied sbdc-data.json sidecar. This adoption PR changes no files in demos/."
+      "note": "2026-09-11: User testing had a satisfactory outcome. The user requests that the initiative remain dormant with no additional releases. This item remains blocked unless the user later explicitly authorizes a release. The current simulator and index-initial.html are preserved; a future release would also add the supplied sbdc-data.json sidecar."
     },
     {
       "id": "mobile-sky-follow-up",
-      "title": "Decide whether to correct the inherited mobile sky positioning",
+      "title": "Optional later: revisit the inherited mobile sky positioning",
       "state": "blocked",
       "value": "medium",
       "effort": "small",
       "advances_stage": false,
-      "blocked_by": "permission:separate authorization for an application change beyond this file-only adoption",
-      "note": "Chromium at 390 × 844 shows position: relative; the sky scrolls away despite the preserved tutorial describing a sticky sky. See notes.md."
+      "blocked_by": "permission:the user must explicitly choose to resume this optional later work",
+      "note": "2026-09-11: Retained as an optional later todo at the user's request, with no current commitment or release requirement. It remains non-actionable while the initiative is dormant. Chromium at 390 × 844 shows position: relative; the sky scrolls away despite the preserved tutorial describing a sticky sky. See notes.md."
     }
   ],
   "deployments": [
