@@ -297,6 +297,11 @@ These interactions require no changes to existing deck pages.
 Browser coverage in `tests/e2e/travel-time-viz.spec.js` checks hover, persistent
 selection, multiple-route addition and subtraction, return trips, keyboard and
 touch input, and isolation between graphs using the built shared library.
+The pointer helper finds an exposed point on the SVG route, then subtracts the
+visual viewport's offsets before sending real mouse or touch input. Mobile
+scrolling can pan that viewport independently of the layout viewport used by
+SVG geometry and hit testing; omitting this conversion taps below the route
+even when the calculated point passes `elementFromPoint`.
 
 #### `resetNetwork()`
 Resets all node positions to their default geographic layout.
