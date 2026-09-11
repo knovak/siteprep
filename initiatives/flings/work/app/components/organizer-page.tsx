@@ -35,11 +35,13 @@ type Activity = {
   details: string;
   state: string;
 };
+type Organizer = { id: string; name: string };
 type Snapshot = {
   organizer: string;
   csrf: string;
   fling: Fling;
   members: Member[];
+  organizers: Organizer[];
   activities: Activity[];
   events: {
     id: string;
@@ -69,6 +71,11 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     [busy, setBusy] = useState(false);
   const [form, setForm] = useState(blank),
     [confirmation, setConfirmation] = useState(false);
+  const [profileName, setProfileName] = useState('');
+  const [newOrganizer, setNewOrganizer] = useState('');
+  const [removeOrganizer, setRemoveOrganizer] = useState<Organizer | null>(
+    null,
+  );
   const auth = useRef<{ id: string; csrf: string } | null>(null);
   const request = useCallback(
     async (path: string, method = 'GET', body?: unknown) => {
@@ -90,6 +97,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
       const value = (await r.json()) as Snapshot & {
         id: string;
         flings: Fling[];
+        name: string;
         url: string;
         error?: string;
       };
@@ -117,7 +125,10 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     if (run !== refreshRun.current) return;
     auth.current = { id: value.organizer, csrf: value.csrf };
     if (fling) setData(value);
-    else setList(value.flings);
+    else {
+      setList(value.flings);
+      setProfileName(value.name);
+    }
     setInitializing(false);
   }, [fling, request]);
 
@@ -228,6 +239,39 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
           ))}
           {!list.length && <p>No assigned gatherings.</p>}
         </div>
+      )}
+      {!fling && list && (
+        <form
+          className="profile-panel"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void act(async () => {
+              await request('workspace/organizer/profile', 'POST', {
+                name: profileName,
+              });
+              setNotice('Organizer name saved.');
+            });
+          }}
+        >
+          <h2>Your organizer profile</h2>
+          <p className="muted">
+            This name appears to members and co-organizers across every fling
+            you organize.
+          </p>
+          <fieldset disabled={busy || initializing}>
+            <div className="field">
+              <Label htmlFor="organizer-name">Organizer name</Label>
+              <Input
+                id="organizer-name"
+                required
+                maxLength={100}
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+              />
+            </div>
+            <Button type="submit">Save name</Button>
+          </fieldset>
+        </form>
       )}
       {!fling && list && (
         <form
@@ -400,6 +444,96 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
               ))}
             </section>
             <aside>
+              <section className="profile-panel">
+                <h2>Organizers</h2>
+                <ul className="organizer-list">
+                  {data.organizers.map((o) => (
+                    <li key={o.id}>
+                      <span>
+                        {o.name}
+                        {o.id === data.organizer ? ' (you)' : ''}
+                      </span>
+                      <Button
+                        variant="outline"
+                        disabled={busy || data.organizers.length <= 1}
+                        onClick={() => setRemoveOrganizer(o)}
+                      >
+                        Remove
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+                {data.organizers.length <= 1 && (
+                  <p className="muted">
+                    A fling always needs at least one organizer, so the last one
+                    cannot be removed here.
+                  </p>
+                )}
+                <AlertDialog
+                  open={!!removeOrganizer}
+                  onOpenChange={(open) => !open && setRemoveOrganizer(null)}
+                >
+                  <AlertDialogContent>
+                    <AlertDialogTitle>
+                      Remove {removeOrganizer?.name} as an organizer?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      They lose organizer access to this fling immediately. This
+                      does not affect their access to any other fling, and
+                      nothing is sent to them.
+                    </AlertDialogDescription>
+                    <AlertDialogCancel>Keep organizer</AlertDialogCancel>
+                    <Button
+                      disabled={busy}
+                      onClick={() =>
+                        void act(async () => {
+                          await request(
+                            fling + '/organizer/assignments/remove',
+                            'POST',
+                            { organizer: removeOrganizer!.id, confirm: true },
+                          );
+                          setRemoveOrganizer(null);
+                          await refresh();
+                          setNotice('Organizer removed.');
+                        })
+                      }
+                    >
+                      Confirm removal
+                    </Button>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void act(async () => {
+                      await request(fling + '/organizer/assignments', 'POST', {
+                        organizer: newOrganizer.trim(),
+                        confirm: true,
+                      });
+                      setNewOrganizer('');
+                      await refresh();
+                      setNotice(
+                        'Organizer added. They see this fling next time they open their workspace.',
+                      );
+                    });
+                  }}
+                >
+                  <fieldset disabled={busy}>
+                    <div className="field">
+                      <Label htmlFor="new-organizer">
+                        Existing organizer ID
+                      </Label>
+                      <Input
+                        id="new-organizer"
+                        required
+                        value={newOrganizer}
+                        onChange={(e) => setNewOrganizer(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit">Add organizer</Button>
+                  </fieldset>
+                </form>
+              </section>
               <section className="profile-panel">
                 <h2>Add a member</h2>
                 <p className="muted">

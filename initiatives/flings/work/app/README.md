@@ -5,8 +5,10 @@ first Phase 2 organizer/member journeys. Organizers can list assigned gatherings
 add member profiles, invite or withdraw members from existing activities, open
 read-only previews, and close or reopen a gathering. Members accept or decline
 invitations, see permitted details and correct their own profiles. Organizers can also create and rename flings, draft/publish/cancel and reorder
-activities, and create or edit events with explicit timezone handling. Organizer
-profile/assignment maintenance and the remaining Phase 2 checks are pending.
+activities, and create or edit events with explicit timezone handling. Organizers
+can rename themselves and add or remove co-organizers, with the last-organizer
+protection enforced on the server regardless of the interface. The final
+independent-gathering acceptance matrix remains pending.
 
 ## Run locally
 
@@ -175,7 +177,6 @@ fictional contacts only. Tests for polls, messages and payments on closure
 remain with those later implementations; this increment does not claim full
 T4/T5 or Phase 2 acceptance. See `test/evidence/phase-2.md`.
 
-
 ## Phase 2 authoring increment — September 11, 2026
 
 The organizer workspace creates a new independent fling and its initial
@@ -205,7 +206,6 @@ for organizer profile/assignment controls, the specified event end/location
 fields and fling description/default zone, and final acceptance across independent
 gatherings. No action here sends, creates a hosted resource or changes identity
 configuration.
-
 
 Organizer focus rechecks preserve an open authoring draft while verifying the
 same expected organizer with the server. Only the newest refresh may replace
@@ -244,3 +244,33 @@ is `test/evidence/event-details-20260911.json`. The prior Phase 2 evidence is
 historical; organizer profile/assignment controls and final independent-gathering
 acceptance are still pending. Hosting and later coordination capabilities remain
 separate plan steps.
+
+## Organizer profile and assignment controls — September 11, 2026
+
+Any organizer can rename themselves from the workspace page (`Your organizer
+profile`); the name is not fling-scoped and appears next to them wherever a
+fling lists its organizers. An organizer's own overview now also lists every
+organizer assigned to that fling, so a co-organizer's name is visible without
+guessing.
+
+**Assignment controls** let an organizer add a co-organizer by their existing
+organizer ID and remove one, both behind a confirmation. Adding checks the
+target ID actually exists and is not already assigned, in the same guarded
+transaction as the insert; removing keeps the existing last-organizer
+protection (`removeOrganizer` in `lib/access.ts`, unchanged by this increment)
+so the interface disables that button for a sole organizer and the server
+refuses the same removal if it is attempted directly. Like every other guarded
+precondition in this app, a rejected assignment change returns the same
+generic 409 and resets the workspace view rather than a specific inline error
+
+- reloading shows the unchanged list, never a half-applied assignment.
+
+Run `node test/assignments-browser.mjs` for these journeys. **Only Chromium is
+exercised here** - Firefox and WebKit, run for every earlier Phase 1/2
+increment, are not provisioned in this build environment (`npm run
+setup:browsers` installs Chromium only). The receipt is
+`test/evidence/assignments-20260911.json`; re-run across the other two engines
+before this counts toward the plan's final T1/T3/T4 interface matrix.
+
+`build-member-journeys` remains actionable for that final independent-gathering
+matrix. The later T5 poll/payment/message closure checks stay with Phases 3-4.

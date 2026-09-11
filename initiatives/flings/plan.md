@@ -286,3 +286,23 @@ The selected `build-member-journeys` item remains open for organizer profile
 maintenance and assignment controls, followed by the final independent-gathering
 T1/T3/T4 interface matrix. The later T5 poll/payment/message checks remain with
 Phases 3-4. This increment does not activate hosting or complete Phase 2.
+
+## Phase 2 organizer profile and assignment increment — September 11, 2026
+
+Organizers can rename themselves from the workspace page, and a fling's
+overview now lists its assigned organizers by name. Assignment controls let an
+organizer add a co-organizer by existing ID or remove one, both behind
+confirmation; adding validates the target ID exists and is not already
+assigned, and removal keeps the existing last-organizer protection, enforced
+server-side regardless of the interface.
+
+This increment's browser evidence covers Chromium only - Firefox and WebKit
+are not provisioned in the build environment that produced it, unlike every
+earlier Phase 1/2 browser receipt. Re-run `test/assignments-browser.mjs` on
+those two engines before treating this as complete evidence toward the final
+T1/T3/T4 matrix.
+
+`build-member-journeys` remains open for the final independent-gathering
+T1/T3/T4 interface matrix across all three gathering fixtures. The later T5
+poll/payment/message checks remain with Phases 3-4. This increment does not
+activate hosting or complete Phase 2.
