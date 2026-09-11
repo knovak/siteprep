@@ -292,3 +292,25 @@ separates US arrivals, worldwide departures and modern self-reported ancestry.
 The three new source rows preserve the limits of the directly read material;
 no quantity, coordinate or period changes. Continue the original T8 todo for
 field-level numerical sources and geographic corrections.
+
+## September 11 user acceptance and optional later work
+
+The user reported successful preview testing, requested dormancy and authorized
+a production release with DUM. This decision supersedes the earlier statements
+that the remaining Phase 5/T8 and T6/T7 work is actionable or blocks this
+release. No implementation step remains scheduled.
+
+The following work is optional and retained in `notes.md`, outside the todo list:
+
+- **Editorial reconciliation** (`reconcile-editorial-findings`): obtain
+  field-level sources, dated destination allocations and cohort-specific
+  descendant evidence; reconcile remaining historical quantities, confidence
+  and schematic geographic points using the existing editorial findings.
+- **Accessibility and packaging acceptance** (`extend-packaging-acceptance`):
+  collect manual screen-reader observations and Windows/Linux comparisons of
+  local-file and HTTP packages. Existing macOS evidence retains its stated
+  scope; these additional results have not been established.
+
+The previously optional Tauri wrapper, online street-level alternative and new
+movements remain optional. Restart any of these only when the user chooses it
+and a new actionable todo is recorded.

@@ -1,7 +1,7 @@
 {
   "title": "World Migration Atlas",
   "summary": "An interactive, offline-capable map of historical migrations and diasporas from 1000 AD onward.",
-  "stage": "refining",
+  "stage": "dormant",
   "value": "medium",
   "outputs": [
     {
@@ -17,40 +17,13 @@
       "destination": "world_migration_atlas",
       "root_html": "index.html",
       "prod": {
-        "deployed_at": "2026-09-09T06:37:20Z",
-        "commit": "e567057673a39469dfd0c0b5c8581722f0ad4f77",
-        "tree": "78c17c6162c4fec4e954a0974d7346501f4d8fd1"
+        "deployed_at": "2026-09-11T07:54:52Z",
+        "commit": "023bee1fac53c01c5fd5eaf3f57c5bfbd982b51d",
+        "tree": "b2882e3ce55592797801a39772f59fd7e00dfcf4"
       }
     }
   ],
-  "todo": [
-    {
-      "id": "user-test-preview",
-      "title": "Review the test preview and record findings",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "small",
-      "advances_stage": false,
-      "blocked_by": "data:user test findings for the World Migration Atlas preview"
-    },
-    {
-      "id": "reconcile-editorial-findings",
-      "title": "Reconcile the T8 source, quantity, confidence and geography findings",
-      "state": "actionable",
-      "value": "high",
-      "effort": "large",
-      "advances_stage": false
-    },
-    {
-      "id": "extend-packaging-acceptance",
-      "title": "Complete the remaining T6/T7 manual accessibility and cross-platform packaging gates",
-      "state": "blocked",
-      "value": "medium",
-      "effort": "large",
-      "advances_stage": false,
-      "blocked_by": "external:manual screen-reader observations and Windows/Linux file-versus-HTTP packaging results; this run verifies macOS engines and keyboard behavior only"
-    }
-  ],
+  "todo": [],
   "brief": {
     "generated_at": "2026-09-11T07:17:15Z",
     "commit": "ec5de6d284ab57b4bc036ce3e929717d68c95e15",
