@@ -205,3 +205,17 @@ records all six observations and both hashes. The dedicated
 `fix-table-keyboard-activation` todo must verify that the table stays hidden and
 focus moves to a usable detail control, rather than checking only that a detail
 exists behind it. The editorial change does not claim full keyboard acceptance.
+
+## September 11 distance-audit evidence
+
+The new seven-test geometry suite passes, including 60 deterministic random
+segments independently checked by dense spherical interpolation. Repeating the
+all-140-endpoint audit produces a byte-identical receipt. Two endpoint records
+are flagged at either scale: the Indian Ocean regional destination at both,
+and Mauritius only at the scale that omits the island. See
+`notes/land-proximity-20260911.json` for every point and input/tool hashes.
+The original 552 core assertions pass. Dataset, coordinates, application source
+and `work/index.html` are unchanged; only the editorial companion is rebuilt.
+This supplies the distance measurement the older containment audit lacked.
+Historical placement, source quantities, regional allocations and all of T8
+are still open. The audit is a reporting command, not a new CI gate.

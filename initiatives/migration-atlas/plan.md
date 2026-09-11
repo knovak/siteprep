@@ -272,3 +272,13 @@ Escape close and a later deliberate reopen. Keep the existing focus return.
 The shared quantity labels also distinguish a post-migration population from
 unique movers; the Partition report records the census definition. Continue
 T8's remaining field-level source and geography work after this increment.
+
+## September 11 land-proximity continuation
+
+The separate 300-km proximity measurement now exists as a reproducible audit
+of all 140 stored endpoints against both bundled land scales. The Indian Ocean
+regional destination is flagged on both; Mauritius is flagged only on the
+coarse map that omits the island. The report records the distinction and leaves
+coordinates unchanged. This supplies the missing distance evidence; it does
+not complete regional allocation, historical placement or all of T8. The
+original reconciliation item remains actionable for those recorded findings.
