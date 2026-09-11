@@ -273,3 +273,18 @@ checks with unchanged goldens and thresholds. Six final offline desktop/phone
 keyboard/detail/report/return journeys passed with network requests blocked
 and no page errors. Full T6/T7 still require manual screen-reader observations
 and Windows/Linux packaging evidence. T8 is not complete.
+
+## 2026-09-11 — Measure all endpoint distances to bundled land
+
+Added a reproducible 300-km proximity audit for all 140 endpoints using both
+bundled land surfaces. Two records are flagged: the Indian Ocean regional
+destination at both scales, and Mauritius only on the coarse map that omits
+it. Recorded the distinction, nearest points and input/tool hashes without
+changing data, coordinates, application code or the atlas bundle. The editorial
+report now has 124 evidence rows.
+
+Seven geometry tests pass, including independent dense interpolation checks;
+the receipt repeats byte-for-byte, and all 552 core assertions pass. The
+original editorial reconciliation todo remains actionable for unverified
+quantities, allocations and historical placement. No production release or T8
+completion is claimed.

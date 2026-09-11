@@ -1,5 +1,47 @@
 # Editorial reconciliation — September 9, 2026
 
+
+## Distance to bundled land — September 11, 2026 (UTC)
+
+The earlier containment audit did not measure the plan's separate 300-km
+proximity condition. A new read-only audit now measures all **140 endpoints**
+(48 sources and 92 destinations) against both bundled land surfaces. It leaves
+all coordinates, populations, periods and application bytes unchanged.
+
+Contained points have zero distance to the land surface. For an outside point,
+the audit finds the nearest point across every polygon edge, using minor
+great-circle arcs on a sphere of radius 6,371.0088 km. It checks each edge's
+endpoints and interior perpendicular projection; measuring only vertices would
+overestimate coastal distances. Flags use the unrounded distance and a strict
+`> 300 km` comparison. Equality is within the specified limit.
+
+Two endpoint records exceed 300 km at one or both scales:
+
+| Endpoint | 1:110 million land | 1:50 million land | Disposition |
+|---|---|---|---|
+| `indian-ocean-slave-trades`, destination 2: Indian Ocean islands & South Asia, 18 S, 55 E | 553.63 km | 322.60 km | Flagged at both scales. The point is beyond the stated limit for the bundled geometry. Regional allocation and historical placement still need evidence; no automatic move is justified. |
+| `indian-indenture`, destination 1: Mauritius, 20.2 S, 57.5 E | 883.06 km | 0 km (inside land) | Flagged only at coarse scale, which omits Mauritius. Preserve the coordinate and record this map-resolution exception. This does not validate the population figure. |
+
+The remaining 138 endpoints are within 300 km at both scales. Of the 19 records
+outside at least one polygon, all 17 remaining records are within the limit at
+both scales. Their detailed-map distances range from zero to 161.92 km. This
+resolves the distance measurement gap, not the separate question of whether
+regional labels and historical communities are accurately located.
+
+[Natural Earth's land documentation](https://www.naturalearthdata.com/downloads/50m-physical-vectors/50m-land/)
+describes land polygons including major islands, derived from a more detailed
+coastline. These distances are to the atlas's simplified bundled geometry,
+not surveyed coastlines. An omitted island can change a flag, as Mauritius
+demonstrates. Neither passing this check nor polygon containment establishes
+historical settlement, source allocation or full T8 acceptance.
+
+`notes/land-proximity-20260911.json` records every endpoint, both distances,
+nearest boundary coordinates, scale-specific flags and input/tool hashes.
+`lib/tools/audit_land_proximity.py` reproduces the receipt byte-for-byte. Seven
+geometric tests include dateline and polar arcs, endpoint and interior minima,
+degenerate segments, polygon holes, threshold distances and independent dense
+spherical interpolation for 60 deterministic random cases.
+
 ## Partition population definition — September 10, 2026
 
 This supersedes the older Partition disposition below. Coordinates, destination

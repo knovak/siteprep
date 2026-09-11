@@ -183,3 +183,26 @@ The `post-migration-population` quantity kind labels a census cohort that can
 include children born after arrival. The Partition source receipt records its
 field changes; the report explains the population definition and unresolved
 allocations. This label is shared by detail, tooltip and table presentation.
+
+## Endpoint distance audit
+
+From the repository root, run:
+
+```sh
+python3 initiatives/migration-atlas/lib/tests/test_land_proximity.py
+python3 initiatives/migration-atlas/lib/tools/audit_land_proximity.py --output /tmp/atlas-land-proximity.json
+```
+
+The audit uses the vendored D3 containment result and measures outside points
+against the minor great-circle segments of both bundled polygon sets. It checks
+interior minima as well as vertices, records nearest coordinates, and flags any
+unrounded distance greater than 300 km. A contained point has zero land distance;
+this is distinct from its distance to a coastline. Rings must be closed and
+nonempty; antipodal segment endpoints are rejected because they do not define
+a unique minor arc. Distances use a fixed mean-Earth radius of 6,371.0088 km.
+
+This is a read-only editorial report, not a CI pass/fail gate. It neither moves
+coordinates nor changes source data. The two-scale receipt exposes island
+omissions and has hashes for its geometry, data and tools. The September 11
+report explains the Indian Ocean flag and Mauritius's coarse-scale exception.
+No extra package, network access or protected repository script is required.
