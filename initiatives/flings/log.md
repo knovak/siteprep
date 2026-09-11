@@ -69,3 +69,28 @@ overflow found by those journeys. Type and lint checks pass. The original
 `build-member-journeys` item remains actionable for event authoring, ordering,
 draft/cancellation, organizer maintenance and DST-entry acceptance. This is a
 Phase 2 increment, not completion; the plan records the next checkpoints.
+
+## 2026-09-11 — Add gathering and event authoring
+
+Added new fling creation/renaming, draft/published/cancelled activity editing,
+activity order, and event creation/editing. Saves check current organizer
+assignment, fling revision, open state and child relationships in the same
+transaction. Event input rejects timezone gaps and requires an explicit offset
+for repeated local times; edits preserve the chosen instant and zone.
+
+Browser verification exposed a focus-refresh interaction that could consume an
+edit click. Focus rechecks now preserve the editor and only the newest response
+updates its snapshot. Each draft retains its opening revision, so a concurrent
+save still rejects it. Six new desktop/phone authoring journeys passed across
+Chromium, Firefox and WebKit, including this stale-draft regression. All 26
+real-database/domain/HTTP and timezone tests pass.
+
+The original member-journey todo remains open for organizer maintenance,
+assignment controls, event end/location fields, fling description/default zone
+and the final independent-gathering acceptance matrix. This remains local
+fictional-data work; no hosting, live identity or sending was activated.
+
+After the focus fix, the existing six access and 18 invitation/closure browser
+journeys also passed against a fresh local fixture database. The final browser
+evidence therefore covers 30 journeys, with the application build, TypeScript
+and lint passing on the final implementation.

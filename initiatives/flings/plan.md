@@ -257,3 +257,19 @@ entry and round-trip evidence. Then build all three gatherings through the
 interface for full T1/T3/T4 acceptance. T5's poll/payment/message checks remain
 with the later capabilities they exercise. Do not mark Phase 2 complete based
 only on the seeded gathering journeys in this receipt.
+
+
+## Phase 2 authoring increment — September 11, 2026
+
+Fling creation/renaming, activity creation/editing and ordering, draft/published/
+cancelled states, and event creation/editing now exist. Event input round-trips
+an instant and IANA zone, rejects daylight-saving gaps and requires an explicit
+choice for repeated times. The authoring browser receipt builds the three
+planned gathering shapes in fresh fictional flings; it does not complete the
+full independent-gathering acceptance checklist.
+
+`build-member-journeys` remains actionable for organizer profile maintenance,
+assignment controls, the specified event end/location fields and fling
+description/default zone, and the final T1/T3/T4 interface matrix. The remaining T5
+poll/payment/message closure checks stay with their later capabilities. Phase 2
+is not marked complete.

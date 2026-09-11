@@ -2,6 +2,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import GatheringEditor from './gathering-editor';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -20,19 +21,35 @@ type Member = {
   phone: string;
   preference: string;
 };
-type Activity = { id: string; title: string; summary: string; state: string };
+type Activity = {
+  id: string;
+  title: string;
+  summary: string;
+  details: string;
+  state: string;
+};
 type Snapshot = {
   organizer: string;
   csrf: string;
   fling: Fling;
   members: Member[];
   activities: Activity[];
+  events: {
+    id: string;
+    activity: string;
+    title: string;
+    starts: string;
+    zone: string;
+    summary: string;
+    details: string;
+  }[];
   invitations: { member: string; activity: string; state: string }[];
 };
 const blank = { name: '', email: '', phone: '', preference: 'email' };
 export default function OrganizerPage({ fling }: { fling?: string }) {
   const [data, setData] = useState<Snapshot | null>(null),
     [list, setList] = useState<Fling[] | null>(null);
+  const [newTitle, setNewTitle] = useState('');
   const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState(''),
     [notice, setNotice] = useState(''),
@@ -58,6 +75,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         ...(body ? { body: JSON.stringify(body) } : {}),
       });
       const value = (await r.json()) as Snapshot & {
+        id: string;
         flings: Fling[];
         url: string;
         error?: string;
@@ -73,22 +91,30 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     },
     [],
   );
+  const refreshRun = useRef(0);
   const refresh = useCallback(async () => {
-    const value = await request((fling || 'workspace') + '/organizer');
+    const run = ++refreshRun.current;
+    if (!auth.current) setInitializing(true);
+    const value = await request((fling || 'workspace') + '/organizer').catch(
+      (error) => {
+        if (run === refreshRun.current) setInitializing(false);
+        throw error;
+      },
+    );
+    if (run !== refreshRun.current) return;
     auth.current = { id: value.organizer, csrf: value.csrf };
     if (fling) setData(value);
     else setList(value.flings);
+    setInitializing(false);
   }, [fling, request]);
+
   useEffect(() => {
     void Promise.resolve()
       .then(refresh)
       .catch((e) => {
         if (fling) setError(e.message);
-      })
-      .finally(() => setInitializing(false));
+      });
     const recheck = () => {
-      setData(null);
-      setList(null);
       void refresh().catch((e) => setError(e.message));
     };
     window.addEventListener('focus', recheck);
@@ -189,9 +215,38 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
           {!list.length && <p>No assigned gatherings.</p>}
         </div>
       )}
+      {!fling && list && (
+        <form
+          className="profile-panel"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void act(async () => {
+              const result = await request('workspace/organizer', 'POST', {
+                title: newTitle,
+              });
+              window.location.assign('/organizer/' + result.id);
+            });
+          }}
+        >
+          <h2>Create a fling</h2>
+          <fieldset disabled={busy || initializing}>
+            <div className="field">
+              <Label htmlFor="fling-title">New fling title</Label>
+              <Input
+                id="fling-title"
+                required
+                maxLength={4000}
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+              />
+            </div>
+            <Button type="submit">Create fling</Button>
+          </fieldset>
+        </form>
+      )}
       {fling && !data && !error && <output>Opening your gathering…</output>}
       {data && (
-        <>
+        <div hidden={initializing}>
           <div className="gathering-state">
             <span className="badge">{data.fling.state}</span>
             <Button
@@ -240,6 +295,28 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
               </Button>
             </AlertDialogContent>
           </AlertDialog>
+          <GatheringEditor
+            data={data}
+            busy={busy || initializing}
+            save={async (kind, input) => {
+              setBusy(true);
+              setError('');
+              setNotice('');
+              try {
+                await request(fling + '/organizer/' + kind, 'POST', {
+                  ...input,
+                  revision: input.revision ?? data.fling.revision,
+                });
+                await refresh();
+                setNotice('Gathering plan saved. No message was sent.');
+              } catch (e) {
+                setError((e as Error).message);
+                throw e;
+              } finally {
+                setBusy(false);
+              }
+            }}
+          />
           <div className="member-grid">
             <section aria-labelledby="members-title">
               <h2 id="members-title">Members & invitations</h2>
@@ -375,7 +452,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
               </section>
             </aside>
           </div>
-        </>
+        </div>
       )}
     </main>
   );
