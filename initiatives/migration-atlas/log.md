@@ -328,3 +328,7 @@ links. Their source is `notes/destination-inspection-20260910*` from commit
 `82847f9ce548c0d384d15af883fcb8c2e9794bad`. The app, dataset and research
 findings are unchanged. The failed attempt's unpublished release receipt was
 withdrawn before generating the final one.
+
+## 2026-09-11 — Release
+
+Released to production — Demo, `92983b6`. 9 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/world_migration_atlas/> See releases.md.
