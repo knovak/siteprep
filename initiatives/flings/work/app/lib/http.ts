@@ -288,7 +288,7 @@ export async function handle(req: Request, env: Bindings) {
         });
       if (
         req.method === 'POST' &&
-        ['title', 'activity', 'event', 'order'].includes(member)
+        ['title', 'settings', 'activity', 'event', 'order'].includes(member)
       )
         return json(await store.author(actor, fling, member, await body(req)));
       if (req.method === 'POST' && ['invitation', 'state'].includes(member)) {

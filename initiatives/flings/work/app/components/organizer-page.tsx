@@ -13,7 +13,14 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 
-type Fling = { id: string; title: string; state: string; revision: number };
+type Fling = {
+  id: string;
+  title: string;
+  description: string;
+  default_zone: string;
+  state: string;
+  revision: number;
+};
 type Member = {
   id: string;
   name: string;
@@ -39,6 +46,12 @@ type Snapshot = {
     activity: string;
     title: string;
     starts: string;
+    ends: string | null;
+    invitation_location: string;
+    location_name: string;
+    location_address: string;
+    location_url: string;
+    changed_at: number | null;
     zone: string;
     summary: string;
     details: string;
@@ -167,6 +180,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
       <section className="intro">
         <p className="eyebrow">Organizer</p>
         <h1>{data?.fling.title || 'Your gatherings'}</h1>
+        {data?.fling.description && <p>{data.fling.description}</p>}
       </section>
       {error && (
         <div className="notice error" role="alert">

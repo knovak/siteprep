@@ -59,6 +59,22 @@ export class JourneyStore extends AccessStore {
           fling,
         ),
       );
+    } else if (kind === 'settings') {
+      const zone = this.text(input, 'default_zone', true);
+      try {
+        new Intl.DateTimeFormat('en', { timeZone: zone }).format(0);
+      } catch {
+        throw new AccessError(400, 'Enter an IANA time zone.');
+      }
+      steps.push(
+        this.q(
+          'UPDATE flings SET title=?,description=?,default_zone=? WHERE id=?',
+          this.text(input, 'title', true),
+          this.text(input, 'description'),
+          zone,
+          fling,
+        ),
+      );
     } else if (kind === 'activity') {
       const id = typeof input.id === 'string' ? input.id : crypto.randomUUID();
       const title = this.text(input, 'title', true),
@@ -136,8 +152,39 @@ export class JourneyStore extends AccessStore {
       const zone = this.text(input, 'zone', true),
         local = this.text(input, 'local', true);
       let starts: string;
+      let ends: string | null = null;
+      const optional = (key: string) =>
+        this.text({ [key]: input[key] ?? '' }, key);
+      const invitationLocation = optional('invitation_location'),
+        locationName = optional('location_name'),
+        locationAddress = optional('location_address'),
+        endLocal = optional('end_local');
+      let locationUrl = optional('location_url');
+      if (locationUrl) {
+        try {
+          const url = new URL(locationUrl);
+          if (
+            !['https:', 'http:'].includes(url.protocol) ||
+            url.username ||
+            url.password
+          )
+            throw new Error();
+          locationUrl = url.href;
+        } catch {
+          throw new AccessError(
+            400,
+            'Use an http or https location link without credentials.',
+          );
+        }
+      }
       try {
         starts = resolveTime(local, zone, input.starts);
+        if (endLocal) {
+          ends = resolveTime(endLocal, zone, input.ends);
+          if (Date.parse(ends) <= Date.parse(starts))
+            throw new Error('The end must be after the start.');
+        } else if (input.ends)
+          throw new Error('Enter a local end time for the selected end.');
       } catch (error) {
         throw new AccessError(400, (error as Error).message);
       }
@@ -152,17 +199,23 @@ export class JourneyStore extends AccessStore {
       steps.push(
         input.id
           ? this.q(
-              'UPDATE events SET title=?,starts=?,zone=?,summary=?,details=? WHERE id=? AND fling=?',
+              'UPDATE events SET title=?,starts=?,zone=?,summary=?,details=?,ends=?,invitation_location=?,location_name=?,location_address=?,location_url=?,changed_at=? WHERE id=? AND fling=?',
               title,
               starts,
               zone,
               summary,
               details,
+              ends,
+              invitationLocation,
+              locationName,
+              locationAddress,
+              locationUrl,
+              this.clock(),
               id,
               fling,
             )
           : this.q(
-              'INSERT INTO events(id,fling,activity,title,starts,zone,summary,details) VALUES(?,?,?,?,?,?,?,?)',
+              'INSERT INTO events(id,fling,activity,title,starts,zone,summary,details,ends,invitation_location,location_name,location_address,location_url,changed_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
               id,
               fling,
               activity,
@@ -171,6 +224,12 @@ export class JourneyStore extends AccessStore {
               zone,
               summary,
               details,
+              ends,
+              invitationLocation,
+              locationName,
+              locationAddress,
+              locationUrl,
+              this.clock(),
             ),
       );
     } else throw new AccessError(400, 'Unknown gathering action.');
@@ -197,7 +256,10 @@ export class JourneyStore extends AccessStore {
     if (actor.kind !== 'organizer')
       throw new AccessError(403, 'Organizer access is required.');
     const r = await this.batch(actor, fling, [
-      this.q('SELECT id,title,state,revision FROM flings WHERE id=?', fling),
+      this.q(
+        'SELECT id,title,description,default_zone,state,revision FROM flings WHERE id=?',
+        fling,
+      ),
       this.q(
         "SELECT id,name,email,phone,preference,revision FROM members WHERE fling=? AND state='active' ORDER BY name,id",
         fling,
@@ -211,7 +273,7 @@ export class JourneyStore extends AccessStore {
         fling,
       ),
       this.q(
-        'SELECT id,activity,title,starts,zone,summary,details FROM events WHERE fling=? ORDER BY starts,id',
+        'SELECT id,activity,title,starts,ends,zone,summary,details,invitation_location,location_name,location_address,location_url,changed_at FROM events WHERE fling=? ORDER BY starts,id',
         fling,
       ),
     ]);

@@ -1240,3 +1240,173 @@ void test('events reject gaps and ambiguous inputs, preserve chosen instant and 
     ['save-event', 'save-event'],
   );
 });
+
+void test('fling settings validate zones and revisions without changing existing event instants', async () => {
+  const before = await rows('SELECT * FROM events ORDER BY id');
+  const settings = {
+    title: 'Weekend',
+    description: 'For all members',
+    default_zone: 'Australia/Brisbane',
+    revision: 0,
+  };
+  await store.author(org, 'wedding', 'settings', settings);
+  assert.deepEqual(await rows('SELECT * FROM events ORDER BY id'), before);
+  const projection = await store.projection(
+    (await member('wedding', 'jordan-wedding')).actor,
+    'wedding',
+    'jordan-wedding',
+  );
+  assert.equal(
+    (projection.fling as Record<string, unknown>).description,
+    settings.description,
+  );
+  assert.equal(
+    (projection.fling as Record<string, unknown>).default_zone,
+    settings.default_zone,
+  );
+  const audit = await rows('SELECT * FROM audit ORDER BY id');
+  await rejects(
+    store.author(org, 'wedding', 'settings', {
+      ...settings,
+      default_zone: 'Invalid/Zone',
+      revision: 1,
+    }),
+  );
+  await rejects(store.author(org, 'wedding', 'settings', settings));
+  await rejects(
+    store.author({ kind: 'organizer', id: 'c' }, 'wedding', 'settings', {
+      ...settings,
+      revision: 1,
+    }),
+  );
+  assert.deepEqual(await rows('SELECT * FROM audit ORDER BY id'), audit);
+});
+void test('event ranges reject gap, ambiguous, backwards and unsafe link input without partial writes', async () => {
+  const event = {
+    activity: 'movie',
+    title: 'Screening',
+    summary: 'Welcome',
+    details: 'Participant details',
+    local: '2026-11-01T00:30',
+    end_local: '2026-11-01T01:30',
+    zone: 'America/Los_Angeles',
+    ends: '2026-11-01T09:30:00.000Z',
+    invitation_location: 'Downtown',
+    location_name: 'Fictional cinema',
+    location_address: '123 Fictional Lane',
+    location_url: 'https://example.invalid/venue',
+    revision: 0,
+  };
+  for (const override of [
+    { ends: '' },
+    { ends: '2026-11-01T10:30:00.000Z' },
+    { local: '2026-03-08T00:30', end_local: '2026-03-08T02:30', ends: '' },
+    { local: '2026-11-01T02:30' },
+    { location_url: 'javascript:alert(1)' },
+    { location_url: 'https://user:password@example.invalid' },
+    { location_url: '//example.invalid' },
+    { end_local: '', ends: '2026-11-01T09:30:00.000Z' },
+  ]) {
+    const before = await rows('SELECT * FROM events ORDER BY id'),
+      audit = await rows('SELECT * FROM audit ORDER BY id');
+    await rejects(
+      store.author(org, 'outing', 'event', { ...event, ...override }),
+    );
+    assert.deepEqual(await rows('SELECT * FROM events ORDER BY id'), before);
+    assert.deepEqual(await rows('SELECT * FROM audit ORDER BY id'), audit);
+  }
+  const saved = await store.author(org, 'outing', 'event', event);
+  const first = (await rows('SELECT * FROM events WHERE id=?', saved.id))[0];
+  assert.equal(first.starts, '2026-11-01T07:30:00.000Z');
+  assert.equal(first.ends, '2026-11-01T09:30:00.000Z');
+  assert.equal(first.changed_at, now);
+  now += 60000;
+  await store.author(org, 'outing', 'event', {
+    ...event,
+    id: saved.id,
+    end_local: '',
+    ends: '',
+    revision: 1,
+  });
+  const changed = (await rows('SELECT * FROM events WHERE id=?', saved.id))[0];
+  assert.equal(changed.ends, null);
+  assert.equal(changed.changed_at, now);
+  assert.equal(changed.location_url, event.location_url);
+  assert.deepEqual(await rows('SELECT * FROM guards'), []);
+});
+void test('private event locations follow accepted member and preview projections in every invitation state', async () => {
+  const { actor } = await member();
+  const event = {
+    activity: 'movie',
+    title: 'Private venue event',
+    summary: 'Welcome',
+    details: 'Participant details',
+    local: '2026-12-01T18:00',
+    end_local: '2026-12-01T20:00',
+    zone: 'Australia/Brisbane',
+    invitation_location: 'Public neighborhood',
+    location_name: 'SECRET-NAME',
+    location_address: 'SECRET-ADDRESS',
+    location_url: 'https://example.invalid/SECRET-LINK',
+    revision: 0,
+  };
+  const saved = await store.author(org, 'outing', 'event', event);
+  const preview: Actor = { kind: 'preview', id: 'a', member: 'alex-outing' };
+  for (const state of ['invited', 'accepted', 'declined', 'withdrawn']) {
+    await store
+      .q(
+        "UPDATE invitations SET state=? WHERE member='alex-outing' AND activity='movie'",
+        state,
+      )
+      .run();
+    const memberView = await store.projection(actor, 'outing', 'alex-outing');
+    const previewView = await store.projection(
+      preview,
+      'outing',
+      'alex-outing',
+    );
+    assert.deepEqual(memberView.events, previewView.events);
+    const item = memberView.events.find((e) => e.id === saved.id);
+    if (state === 'withdrawn') assert.equal(item, undefined);
+    else {
+      assert.equal(item!.invitation_location, event.invitation_location);
+      assert.equal(item!.ends, '2026-12-01T10:00:00.000Z');
+      for (const field of ['location_name', 'location_address', 'location_url'])
+        assert.equal(
+          item![field],
+          state === 'accepted' ? event[field as keyof typeof event] : null,
+        );
+    }
+    if (state !== 'accepted')
+      assert.equal(JSON.stringify(memberView).includes('SECRET-'), false);
+  }
+  await store
+    .q(
+      "UPDATE invitations SET state='accepted' WHERE member='alex-outing' AND activity='movie'",
+    )
+    .run();
+  await store
+    .q("UPDATE activities SET state='cancelled' WHERE id='movie'")
+    .run();
+  assert.equal(
+    JSON.stringify(
+      await store.projection(actor, 'outing', 'alex-outing'),
+    ).includes('SECRET-'),
+    false,
+  );
+  const audit = await rows('SELECT * FROM audit ORDER BY id');
+  await rejects(
+    store.author(actor, 'outing', 'event', { ...event, revision: 1 }),
+  );
+  await rejects(
+    store.author(preview, 'outing', 'event', { ...event, revision: 1 }),
+  );
+  await rejects(
+    store.author(org, 'wedding', 'event', {
+      ...event,
+      id: saved.id,
+      revision: 0,
+    }),
+  );
+  assert.deepEqual(await rows('SELECT * FROM audit ORDER BY id'), audit);
+});

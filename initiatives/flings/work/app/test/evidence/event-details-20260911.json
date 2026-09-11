@@ -1,0 +1,151 @@
+{
+  "recorded_at": "2026-09-11T10:28:42.811Z",
+  "node": "v23.11.0",
+  "os": "darwin 25.6.0",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "description",
+        "default-zone-prefill",
+        "existing-event-zone-preserved",
+        "end-repeat-choice",
+        "end-range-rejection",
+        "end-gap-rejection",
+        "round-trip-end-and-location",
+        "updated-time",
+        "invitation-location",
+        "participant-only-location",
+        "preview-parity",
+        "decline-redaction",
+        "external-link-referrer",
+        "tokyo-viewer-event-zone",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "description",
+        "default-zone-prefill",
+        "existing-event-zone-preserved",
+        "end-repeat-choice",
+        "end-range-rejection",
+        "end-gap-rejection",
+        "round-trip-end-and-location",
+        "updated-time",
+        "invitation-location",
+        "participant-only-location",
+        "preview-parity",
+        "decline-redaction",
+        "external-link-referrer",
+        "tokyo-viewer-event-zone",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "description",
+        "default-zone-prefill",
+        "existing-event-zone-preserved",
+        "end-repeat-choice",
+        "end-range-rejection",
+        "end-gap-rejection",
+        "round-trip-end-and-location",
+        "updated-time",
+        "invitation-location",
+        "participant-only-location",
+        "preview-parity",
+        "decline-redaction",
+        "external-link-referrer",
+        "tokyo-viewer-event-zone",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "description",
+        "default-zone-prefill",
+        "existing-event-zone-preserved",
+        "end-repeat-choice",
+        "end-range-rejection",
+        "end-gap-rejection",
+        "round-trip-end-and-location",
+        "updated-time",
+        "invitation-location",
+        "participant-only-location",
+        "preview-parity",
+        "decline-redaction",
+        "external-link-referrer",
+        "tokyo-viewer-event-zone",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "description",
+        "default-zone-prefill",
+        "existing-event-zone-preserved",
+        "end-repeat-choice",
+        "end-range-rejection",
+        "end-gap-rejection",
+        "round-trip-end-and-location",
+        "updated-time",
+        "invitation-location",
+        "participant-only-location",
+        "preview-parity",
+        "decline-redaction",
+        "external-link-referrer",
+        "tokyo-viewer-event-zone",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "description",
+        "default-zone-prefill",
+        "existing-event-zone-preserved",
+        "end-repeat-choice",
+        "end-range-rejection",
+        "end-gap-rejection",
+        "round-trip-end-and-location",
+        "updated-time",
+        "invitation-location",
+        "participant-only-location",
+        "preview-parity",
+        "decline-redaction",
+        "external-link-referrer",
+        "tokyo-viewer-event-zone",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}

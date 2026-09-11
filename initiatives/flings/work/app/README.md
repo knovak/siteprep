@@ -214,3 +214,33 @@ refreshing never gives that draft a newer revision. A competing save therefore
 causes a conflict and requires reopening the editor. Authorization failures
 still clear the workspace. This avoids losing a click or draft to a transient
 focus refresh and prevents stale-form overwrites.
+
+## Event details and fling settings — September 11, 2026
+
+**Edit fling details** saves the title, member-visible description and default
+IANA time zone. The default pre-fills new events; it never converts an existing
+event. Existing and new flings initially retain the earlier form default,
+`America/Los_Angeles`, until an organizer changes it.
+
+Events have an optional end date/time in the event's zone, invitation-visible
+location text, and separate participant-only location name, address and link.
+Both endpoints use the same gap/repeated-time resolver. An end must resolve to
+an instant strictly after the start; omitting it leaves the duration unknown.
+The server validates these fields before the guarded transaction. Links accept
+only absolute HTTP/HTTPS URLs without embedded credentials and open with no
+referrer. Member and preview responses return participant location fields only
+for accepted invitations to published activities. Decline, cancellation and
+withdrawal apply the same redaction as participant details.
+
+Migration `0003` adds fields without rewriting legacy event instants, zones or
+free text. Existing ends and update times remain unknown (`NULL`); new saves
+record the injected server clock in `changed_at`. Member pages display both
+endpoints and the latest save time in the event's zone. Saving updates the
+fling revision and audit atomically and creates no code or outbound message.
+
+Run `node test/event-details-browser.mjs` for six additional desktop/phone
+journeys across Chromium, Firefox and WebKit, with a Tokyo viewer. The receipt
+is `test/evidence/event-details-20260911.json`. The prior Phase 2 evidence is
+historical; organizer profile/assignment controls and final independent-gathering
+acceptance are still pending. Hosting and later coordination capabilities remain
+separate plan steps.

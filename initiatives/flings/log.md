@@ -94,3 +94,17 @@ After the focus fix, the existing six access and 18 invitation/closure browser
 journeys also passed against a fresh local fixture database. The final browser
 evidence therefore covers 30 journeys, with the application build, TypeScript
 and lint passing on the final implementation.
+
+## 2026-09-11 — Extend event details and fling settings
+
+Implemented member-visible fling descriptions/default zones and event end times,
+invitation location text, accepted-participant name/address/link fields and
+server-recorded update times. Existing event times are preserved when changing
+the default zone. The server rejects invalid/ambiguous ends, backwards ranges
+and unsafe links before the current-authority/revision transaction. Participant
+locations use the same member/preview redaction as other private event details.
+
+The original member-journey todo remains actionable for organizer maintenance,
+assignment controls and final independent-gathering acceptance. This is the
+next bounded Phase 2 increment, without a lifecycle change. Test results and
+limits are recorded in `work/app/test/evidence/event-details-20260911.md`.

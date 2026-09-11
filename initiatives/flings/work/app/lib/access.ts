@@ -355,14 +355,17 @@ export class AccessStore {
         member,
         fling,
       ),
-      this.q('SELECT id,title,state,revision FROM flings WHERE id=?', fling),
+      this.q(
+        'SELECT id,title,description,default_zone,state,revision FROM flings WHERE id=?',
+        fling,
+      ),
       this.q(
         `SELECT a.id,a.title,a.summary,a.state,i.state invitation,CASE WHEN i.state='accepted' AND a.state='published' THEN a.details ELSE NULL END details FROM activities a JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND a.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY a.position,a.id`,
         member,
         fling,
       ),
       this.q(
-        `SELECT e.id,e.activity,e.title,e.starts,e.zone,e.summary,CASE WHEN i.state='accepted' AND a.state='published' THEN e.details ELSE NULL END details FROM events e JOIN activities a ON a.id=e.activity AND a.fling=e.fling JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND e.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY e.starts`,
+        `SELECT e.id,e.activity,e.title,e.starts,e.ends,e.zone,e.summary,e.invitation_location,e.changed_at,CASE WHEN i.state='accepted' AND a.state='published' THEN e.location_name ELSE NULL END location_name,CASE WHEN i.state='accepted' AND a.state='published' THEN e.location_address ELSE NULL END location_address,CASE WHEN i.state='accepted' AND a.state='published' THEN e.location_url ELSE NULL END location_url,CASE WHEN i.state='accepted' AND a.state='published' THEN e.details ELSE NULL END details FROM events e JOIN activities a ON a.id=e.activity AND a.fling=e.fling JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND e.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY e.starts`,
         member,
         fling,
       ),
