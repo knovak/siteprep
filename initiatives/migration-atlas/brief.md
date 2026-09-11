@@ -9,7 +9,8 @@
 The user reported successful preview testing on September 11, 2026; the
 initiative is dormant with no scheduled work. The atlas contains 48 migrations
 and 92 destinations, and its editorial report has 127 evidence rows covering
-source qualifications, population definitions and geographic findings.
+source qualifications, population definitions and geographic findings; the
+report includes local copies of its inspection receipt and four contact sheets.
 
 The core suite passes 552 assertions. The recorded Chromium, Firefox and
 WebKit suites pass 96, 95 and 95 checks with unchanged reference images,
