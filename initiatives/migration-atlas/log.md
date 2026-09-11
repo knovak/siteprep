@@ -303,3 +303,32 @@ The report now contains 127 evidence rows.
 Validation passed 552 core assertions and 96/95/95 Chromium/Firefox/WebKit
 checks without changing reference images or thresholds. The original editorial
 reconciliation todo remains actionable; T8 is not complete.
+
+
+## 2026-09-11 — Defer remaining work at the user's request
+
+Moved `reconcile-editorial-findings` and `extend-packaging-acceptance` from the
+todo list into Optional later in `notes.md` and the plan. Preserved the original
+findings, test limitations and task identifiers; neither deferred item is
+recorded as completed. The user reported successful preview testing and
+requested dormancy and a production release through DUM; the decision is
+recorded in `decisions.md`.
+
+## 2026-09-11 — Review the test preview and record findings
+
+The user reported that preview testing was successful on September 11, 2026, and asked for this item to be marked done. Remaining work is optional later; the user requested dormancy and authorized release through DUM.
+
+
+## 2026-09-11 — Package editorial evidence for release
+
+The release build detected five editorial links into the initiative directory.
+The builder now includes the existing observation receipt and four contact
+sheets as byte-preserved local evidence, and rewrites those five generated
+links. Their source is `notes/destination-inspection-20260910*` from commit
+`82847f9ce548c0d384d15af883fcb8c2e9794bad`. The app, dataset and research
+findings are unchanged. The failed attempt's unpublished release receipt was
+withdrawn before generating the final one.
+
+## 2026-09-11 — Release
+
+Released to production — Demo, `92983b6`. 9 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/world_migration_atlas/> See releases.md.

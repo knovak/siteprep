@@ -98,3 +98,24 @@ wording after asking about the inherited 17 ms threshold.
   and p95, while reporting the measured frame rate against the 60 fps preference.
 - Browser-specific results describe the test machine; the requirement does not
   certify performance on untested physical devices or authorize a release.
+
+## 2026-09-11 — Successful preview testing, optional follow-ups and dormancy
+
+The user instructed: “change the remaining work into optional later items”,
+“for user-test-preview, record that testing was successful, mark the item done”,
+“mark the initiative dormant”, and “DUM”.
+
+**What this settles.** User preview testing was successful and
+`user-test-preview` is complete. The remaining `reconcile-editorial-findings`
+and `extend-packaging-acceptance` work moves out of the todo list into
+[Optional later](notes.html). The initiative
+is dormant, with no scheduled implementation work. DUM authorizes releasing
+the committed preview source to production, recording that release in the PR,
+and merging after the required GitHub Actions succeed.
+
+**What remains optional.** Field-level editorial research, remaining quantity
+and geographic reconciliation, manual screen-reader observations and actual
+Windows/Linux packaging comparisons may be resumed later. Deferral does not
+establish those results or change the limitations already recorded in the
+editorial report. The user reported successful preview testing without supplying
+an itemized device or assistive-technology test record.

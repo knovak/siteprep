@@ -57,6 +57,13 @@ the Playwright suite because a guard inside `build_tests.sh` could not catch its
 own suite no longer being called. If the invocation is ever removed on purpose,
 restore an explicit build-test step in the workflow and update this document.
 
+The TravelTimeViz pointer tests locate an exposed point on each SVG route,
+then subtract the visual viewport's offsets before sending browser input.
+Mobile scrolling can shift that viewport independently of DOM hit-test
+coordinates; using the unadjusted point taps below the route. The tests still
+use real mouse/touch input and assert selection, deselection, highlight and
+the cumulative travel time.
+
 ## What the build publishes beyond `decks/` and `demos/`
 
 Two directories in `gh-pages/` have no counterpart in the repository:

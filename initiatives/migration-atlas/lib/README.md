@@ -26,6 +26,16 @@ both HTML files together for offline reading; the app itself remains
 self-contained. Edit the Markdown or template and rebuild, rather than
 editing the generated report.
 
+The report's destination-inspection receipt and four contact sheets are copied
+byte-for-byte from `notes/destination-inspection-20260910*` into
+`work/evidence/`. The builder changes those five repository citation links to
+local evidence links in the generated page. Keep the evidence directory with
+the HTML files for offline reading; production never loads initiative files.
+Only this explicit five-file list is copied, and a missing or duplicate report
+link fails the build. The original evidence was committed as
+`82847f9ce548c0d384d15af883fcb8c2e9794bad`; its observations and hashes remain
+unchanged.
+
 The report can contain several tables (source checks, destination inspections
 and the original 48-entry audit). Each table's scroll region has a general
 editorial-evidence label rather than claiming that every table has 48 rows.

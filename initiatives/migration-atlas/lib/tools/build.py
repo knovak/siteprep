@@ -6,7 +6,7 @@ publishes and the file a release copies to demos/world_migration_atlas/. Running
 this script is the only supported way to change the atlas; the bundle is never
 edited by hand.
 """
-import json, re, os, subprocess
+import json, re, os, subprocess, shutil
 from pathlib import Path
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,6 +51,24 @@ body = subprocess.run(
 body = body.replace('<div class="table-scroll">',
                     '<div class="table-scroll" role="region" tabindex="0" '
                     'aria-label="Editorial evidence and findings; scroll horizontally on narrow screens">')
+
+# Bundle only the five reviewed evidence files. The report keeps repository
+# citations in its source; the published page reads independent local copies.
+evidence_files = ["destination-inspection-20260910.json"] + [
+    f"destination-inspection-20260910/contact-{n}.jpg" for n in range(1, 5)
+]
+for relative in evidence_files:
+    target = initiative / "work/evidence" / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(initiative / "notes" / relative, target)
+    body, count = re.subn(
+        r'href="https://github\.com/knovak/siteprep/blob/[^"\s]+/'
+        r'initiatives/migration-atlas/notes/' + re.escape(relative) + '"',
+        'href="evidence/' + relative + '"', body,
+    )
+    if count != 1:
+        raise ValueError(f"Expected one report link for {relative}, found {count}")
+
 editorial = read("src/editorial.html").replace("<!--REPORT-->", body)
 report_out = initiative / "work/editorial.html"
 report_out.write_text(editorial, encoding="utf-8")

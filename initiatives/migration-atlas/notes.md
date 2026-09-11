@@ -290,3 +290,29 @@ headless Firefox/WebKit frame cadence is about 20 ms; their 17 ms median
 performance target is not established. T5 assertions continue to use the
 original fixed Chromium runner; other engines report timing without claiming
 that target or Chromium-only heap evidence.
+
+
+## Optional later — September 11, 2026
+
+The user requested that all remaining work become optional and that the
+initiative go dormant after successful preview testing. These ideas are kept
+outside `initiative.json` so a sweep does not schedule them. Their earlier
+findings remain available in the dated reports.
+
+- **Editorial reconciliation** (formerly `reconcile-editorial-findings`):
+  source the remaining numerical fields, destination allocations and observation
+  dates; distinguish cohort descendants from modern ancestry; reconcile the
+  remaining confidence and geographic findings, including schematic regional
+  endpoints. Use `notes/editorial-reconciliation-20260909.md` and its source
+  and geometry receipts when this work resumes.
+- **Accessibility and packaging acceptance** (formerly
+  `extend-packaging-acceptance`): obtain named screen-reader walkthroughs and
+  actual Windows/Linux file-versus-HTTP comparisons. The existing macOS
+  automation is evidence only for the environments and behaviors it tested.
+- **Optional packaging and map detail:** a Tauri wrapper or an online
+  alternative for street-level detail, as described in the original plan.
+- **Additional movements:** add researched movements through the existing
+  dataset-validation and rebuild workflow when the user chooses to resume.
+
+The first two items were deferred, not completed. None is a release blocker or
+an active obligation after the September 11 decision.

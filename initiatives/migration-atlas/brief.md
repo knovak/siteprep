@@ -6,28 +6,22 @@
 
 ## Done
 
-The atlas contains 48 migrations and 92 destinations; its editorial report has
-127 evidence rows. The latest source review qualifies the Irish Famine entry's
-untraced total and distinguishes US arrivals from worldwide departures and
-modern ancestry responses. All numeric values, dates and coordinates remain
-unchanged in this increment.
+The user reported successful preview testing on September 11, 2026; the
+initiative is dormant with no scheduled work. The atlas contains 48 migrations
+and 92 destinations, and its editorial report has 127 evidence rows covering
+source qualifications, population definitions and geographic findings; the
+report includes local copies of its inspection receipt and four contact sheets.
 
-The core suite passes 552 assertions; Chromium, Firefox and WebKit pass
-96, 95 and 95 browser checks with unchanged reference images. Earlier source
-and endpoint-distance audits, their limitations, and the keyboard fix remain
-in the record.
-
-## Remaining work
-
-Phase 5 and T8 still require field-level sources, dated destination allocations,
-cohort-specific descendants and corrections to schematic geographic points.
-The four historical confidence exceptions have been reviewed, but their
-remaining quantities and the other historical entries still need evidence.
-T6/T7 still require manual screen-reader observations and Windows/Linux
-packaging runs.
+The core suite passes 552 assertions. The recorded Chromium, Firefox and
+WebKit suites pass 96, 95 and 95 checks with unchanged reference images,
+including the data-table keyboard fix; their documented limitations remain.
 
 ## Optional later
 
-The plan retains an optional Tauri wrapper and an online alternative for
-street-level detail. New movements can follow the dataset-validation and
-rebuild path as research supplies them.
+- Field-level sources, dated destination allocations, cohort-specific
+  descendants and remaining historical quantity, confidence and geographic
+  reconciliation, using the existing editorial report.
+- Manual screen-reader observations and Windows/Linux file-versus-HTTP
+  packaging comparisons.
+- The optional Tauri wrapper and online alternative for street-level detail.
+- New movements through the existing dataset-validation and rebuild workflow.
