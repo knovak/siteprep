@@ -52,3 +52,20 @@ Critiqued the plan and revised atomic revocation, session context, secret retent
 ## 2026-09-10 — Build local Flings access foundations, member-code lifecycle and authorization projections
 
 Completed all four local access checkpoints: real D1 rollback and authority races, code/session lifecycle, browser session transport, and profile/preview projections. Evidence in work/app/test/evidence/phase-1.md; full organizer/member journeys follow in Phase 2.
+
+## 2026-09-11 — Build the first organizer/member interface journeys
+
+Added assigned-gathering lists, profile creation, invitation/withdrawal controls,
+read-only member previews, acceptance/decline/reacceptance, and confirmed
+closure/reopening. Events show their stored instant in their own IANA zone.
+Invitation and closure writes check current authority and the fling revision
+inside the existing atomic D1 batches. Stale requests fail without partial
+invitation or audit changes; closed profiles remain editable.
+
+Validation passed 21 real-D1 domain/HTTP tests, 18 new organizer/member browser
+journeys and all six existing access journeys across Chromium, Firefox and
+WebKit at desktop/phone sizes. Corrected startup hydration and long-name phone
+overflow found by those journeys. Type and lint checks pass. The original
+`build-member-journeys` item remains actionable for event authoring, ordering,
+draft/cancellation, organizer maintenance and DST-entry acceptance. This is a
+Phase 2 increment, not completion; the plan records the next checkpoints.

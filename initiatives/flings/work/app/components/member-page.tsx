@@ -18,7 +18,7 @@ type Profile = {
 };
 type Projection = {
   profile: Profile;
-  fling: { id: string; title: string; state: string };
+  fling: { id: string; title: string; state: string; revision: number };
   activities: {
     id: string;
     title: string;
@@ -30,6 +30,8 @@ type Projection = {
   events: {
     id: string;
     activity: string;
+    starts: string;
+    zone: string;
     title: string;
     summary: string;
     details: string | null;
@@ -237,6 +239,28 @@ export default function MemberPage({
     }
     return () => lifecycle.abort();
   }, [previewMember, save]);
+  async function respond(activity: string, state: string) {
+    if (!current.current || !credentials.current || previewMember) return;
+    setSaving(true);
+    setError('');
+    setNotice('');
+    try {
+      apply(
+        await call<Projection>(
+          'member/' +
+            encodeURIComponent(credentials.current.member) +
+            '/respond',
+          'POST',
+          { activity, state, revision: current.current.fling.revision },
+        ),
+      );
+      setNotice('Your invitation response is saved.');
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  }
   const fields = ['name', 'email', 'phone'] as const;
   return (
     <main className="workspace member-workspace">
@@ -297,15 +321,43 @@ export default function MemberPage({
                     .map((e) => (
                       <div className="event" key={e.id}>
                         <h3>{e.title}</h3>
+                        <p>
+                          <time dateTime={e.starts}>
+                            {new Intl.DateTimeFormat('en-US', {
+                              timeZone: e.zone,
+                              dateStyle: 'medium',
+                              timeStyle: 'short',
+                            }).format(new Date(e.starts))}
+                          </time>{' '}
+                          · {e.zone}
+                        </p>
                         <p>{e.summary}</p>
                         {e.details && <p>{e.details}</p>}
                       </div>
                     ))}
-                  {a.invitation === 'invited' && a.state !== 'cancelled' && (
-                    <p className="muted">
-                      Responding to invitations comes in the next increment.
-                    </p>
-                  )}
+                  {!previewMember &&
+                    data.fling.state === 'open' &&
+                    a.state === 'published' && (
+                      <div className="actions">
+                        {a.invitation !== 'accepted' && (
+                          <Button
+                            disabled={saving}
+                            onClick={() => void respond(a.id, 'accepted')}
+                          >
+                            Accept invitation
+                          </Button>
+                        )}
+                        {a.invitation !== 'declined' && (
+                          <Button
+                            disabled={saving}
+                            variant="outline"
+                            onClick={() => void respond(a.id, 'declined')}
+                          >
+                            Decline invitation
+                          </Button>
+                        )}
+                      </div>
+                    )}
                 </article>
               ))}
             </section>

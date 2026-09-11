@@ -424,3 +424,66 @@ fieldset:disabled {
 output {
   display: block;
 }
+
+/* Organizer journeys extend the member page's gathering and profile surfaces. */
+.actions,
+.gathering-state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 18px 0;
+}
+.organizer-entry {
+  margin-bottom: 24px;
+  text-decoration: underline;
+}
+.organizer-workspace .intro {
+  padding: 28px 0 12px;
+}
+.organizer-workspace .identity {
+  margin: 0 0 28px;
+}
+.organizer-workspace .gatherings a {
+  text-decoration: underline;
+}
+.invitation-list {
+  margin-top: 18px;
+}
+.invitation-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding: 16px 0;
+}
+.invitation-row p {
+  margin: 5px 0 0;
+}
+.activity,
+.profile-panel {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.organizer-workspace header {
+  flex-wrap: wrap;
+}
+.organizer-workspace .field label,
+.organizer-workspace .muted,
+.member-workspace .badge,
+.member-workspace .event p {
+  font-size: 14px;
+}
+.organizer-workspace .eyebrow {
+  font-size: 12px;
+}
+.organizer-workspace .member-grid > * {
+  min-width: 0;
+}
+.organizer-workspace .activity button {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

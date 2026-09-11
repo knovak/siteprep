@@ -1,5 +1,6 @@
-import { AccessStore, AccessError, digest, mac, validMac } from './access.ts';
+import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
+import { JourneyStore } from './journeys.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -105,7 +106,7 @@ export async function handle(req: Request, env: Bindings) {
       throw new AccessError(503, 'This Flings workspace is not configured.');
     if (new URL(req.url).protocol !== 'https:' && !local(req, env))
       throw new AccessError(403, 'Use a secure Flings address.');
-    const store = new AccessStore(env.DB, env.FLINGS_SECRET),
+    const store = new JourneyStore(env.DB, env.FLINGS_SECRET),
       parts = new URL(req.url).pathname
         .replace(/^\/api\/flings\//, '')
         .split('/'),
@@ -210,6 +211,11 @@ export async function handle(req: Request, env: Bindings) {
       const t = await readTicket(env.FLINGS_SECRET, credential);
       if (t.role !== 'organizer')
         throw new AccessError(403, 'Organizer access is required.');
+      if (
+        req.headers.has('x-flings-organizer') &&
+        req.headers.get('x-flings-organizer') !== t.id
+      )
+        throw new AccessError(409, 'Organizer changed. Reopen your workspace.');
       actor = { kind: 'organizer', id: t.id };
     } else {
       credential = cookie(req, cookieName(fling));
@@ -237,7 +243,18 @@ export async function handle(req: Request, env: Bindings) {
         member: actor.kind === 'member' ? actor.member : null,
         csrf: await mac(env.FLINGS_SECRET, credential),
       });
+    if (fling === 'workspace' && action === 'organizer' && req.method === 'GET')
+      return json({
+        organizer: actor.kind === 'organizer' ? actor.id : null,
+        csrf: await mac(env.FLINGS_SECRET, credential),
+        flings: await store.assigned(actor),
+      });
     if (action === 'member' && member) {
+      if (sub === 'respond' && req.method === 'POST') {
+        const input = await body(req);
+        await store.respond(actor, fling, member, input);
+        return json(await store.projection(actor, fling, member));
+      }
       if (req.method === 'GET')
         return json(await store.projection(actor, fling, member));
       if (req.method === 'PUT') {
@@ -257,6 +274,18 @@ export async function handle(req: Request, env: Bindings) {
     }
     if (action === 'organizer') {
       await store.assertOrganizer(actor, fling);
+      if (req.method === 'GET' && !member)
+        return json({
+          ...(await store.overview(actor, fling)),
+          organizer: actor.kind === 'organizer' ? actor.id : null,
+          csrf: await mac(env.FLINGS_SECRET, credential),
+        });
+      if (req.method === 'POST' && ['invitation', 'state'].includes(member)) {
+        const input = await body(req);
+        if (member === 'invitation') await store.invite(actor, fling, input);
+        else await store.setState(actor, fling, input);
+        return json({ ok: true });
+      }
       if (sub === 'preview' && req.method === 'POST') {
         await store.projection(actor, fling, member);
         const token = await ticket(env.FLINGS_SECRET, {
