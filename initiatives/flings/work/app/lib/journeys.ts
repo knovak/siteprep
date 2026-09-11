@@ -245,12 +245,46 @@ export class JourneyStore extends AccessStore {
   async assigned(actor: Actor) {
     if (actor.kind !== 'organizer')
       throw new AccessError(403, 'Organizer access is required.');
-    return (
-      await this.q(
+    const [flings, self] = await Promise.all([
+      this.q(
         'SELECT f.id,f.title,f.state FROM flings f JOIN assignments a ON a.fling=f.id WHERE a.organizer=? ORDER BY f.title',
         actor.id,
-      ).all()
-    ).results;
+      ).all(),
+      this.q('SELECT name FROM organizers WHERE id=?', actor.id).first<{
+        name: string;
+      }>(),
+    ]);
+    return { flings: flings.results, name: self?.name ?? '' };
+  }
+  async updateOrganizerProfile(actor: Actor, input: Input) {
+    if (actor.kind !== 'organizer')
+      throw new AccessError(403, 'Organizer access is required.');
+    const name = this.text(input, 'name', true);
+    if (name.length > 100)
+      throw new AccessError(
+        400,
+        'Enter an organizer name up to 100 characters.',
+      );
+    const g = crypto.randomUUID();
+    try {
+      // The audit table is fling-scoped (its `fling` column has a foreign key
+      // into `flings`), and an organizer's own display name is not attached to
+      // any one fling, so this write has no audit row - unlike every
+      // fling-scoped action above and in access.ts.
+      await this.db.batch([
+        this.guard(g, 'EXISTS(SELECT 1 FROM organizers WHERE id=?)', [
+          actor.id,
+        ]),
+        this.q('UPDATE organizers SET name=? WHERE id=?', name, actor.id),
+        this.q('DELETE FROM guards WHERE id=?', g),
+      ]);
+    } catch {
+      throw new AccessError(
+        409,
+        'Organizer access changed. Reopen your workspace.',
+      );
+    }
+    return { id: actor.id, name };
   }
   async overview(actor: Actor, fling: string) {
     if (actor.kind !== 'organizer')
@@ -276,6 +310,10 @@ export class JourneyStore extends AccessStore {
         'SELECT id,activity,title,starts,ends,zone,summary,details,invitation_location,location_name,location_address,location_url,changed_at FROM events WHERE fling=? ORDER BY starts,id',
         fling,
       ),
+      this.q(
+        'SELECT o.id,o.name FROM organizers o JOIN assignments a ON a.organizer=o.id WHERE a.fling=? ORDER BY o.name,o.id',
+        fling,
+      ),
     ]);
     return {
       fling: r[0].results[0],
@@ -283,6 +321,7 @@ export class JourneyStore extends AccessStore {
       activities: r[2].results,
       invitations: r[3].results,
       events: r[4].results,
+      organizers: r[5].results,
     };
   }
   revisionGuard(fling: string, revision: unknown, open = true) {

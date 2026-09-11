@@ -1,0 +1,41 @@
+{
+  "recorded_at": "2026-09-11T21:25:49.464Z",
+  "node": "v22.22.2",
+  "os": "linux 6.18.44-fc-v24",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser": "141.0.7390.37",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "add-organizer",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "141.0.7390.37",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "add-organizer",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}

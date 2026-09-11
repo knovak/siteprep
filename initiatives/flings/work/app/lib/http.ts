@@ -243,18 +243,29 @@ export async function handle(req: Request, env: Bindings) {
         member: actor.kind === 'member' ? actor.member : null,
         csrf: await mac(env.FLINGS_SECRET, credential),
       });
-    if (fling === 'workspace' && action === 'organizer' && req.method === 'GET')
+    if (
+      fling === 'workspace' &&
+      action === 'organizer' &&
+      req.method === 'GET'
+    ) {
+      const assigned = await store.assigned(actor);
       return json({
         organizer: actor.kind === 'organizer' ? actor.id : null,
+        name: assigned.name,
         csrf: await mac(env.FLINGS_SECRET, credential),
-        flings: await store.assigned(actor),
+        flings: assigned.flings,
       });
+    }
     if (
       fling === 'workspace' &&
       action === 'organizer' &&
       req.method === 'POST'
-    )
-      return json(await store.createFling(actor, await body(req)), 201);
+    ) {
+      const input = await body(req);
+      if (member === 'profile')
+        return json(await store.updateOrganizerProfile(actor, input));
+      return json(await store.createFling(actor, input), 201);
+    }
     if (action === 'member' && member) {
       if (sub === 'respond' && req.method === 'POST') {
         const input = await body(req);

@@ -542,16 +542,26 @@ export class AccessStore {
   async assignOrganizer(actor: Actor, fling: string, organizer: string) {
     if (actor.kind !== 'organizer')
       throw new AccessError(403, 'Organizer access is required.');
+    const g = crypto.randomUUID();
     await this.batch(
       actor,
       fling,
       [
+        // Both the existence check and the duplicate check share this guard,
+        // so an unknown organizer id and an already-assigned one fail the same
+        // way as any other stale precondition, through the batch's rollback.
+        this.guard(
+          g,
+          'EXISTS(SELECT 1 FROM organizers WHERE id=?) AND NOT EXISTS(SELECT 1 FROM assignments WHERE fling=? AND organizer=?)',
+          [organizer, fling, organizer],
+        ),
         this.q(
           'INSERT INTO assignments(fling,organizer) VALUES(?,?)',
           fling,
           organizer,
         ),
         this.audit(actor, fling, 'assign-organizer', organizer),
+        this.q('DELETE FROM guards WHERE id=?', g),
       ],
       true,
     );

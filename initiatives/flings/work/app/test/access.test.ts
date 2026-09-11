@@ -193,6 +193,61 @@ void test('organizer authority is per fling, independent of matching contacts an
     'Alex Morgan',
   );
 });
+void test('assigning an organizer rejects an unknown id and a duplicate assignment without partial state', async () => {
+  const before = await rows(
+    'SELECT * FROM assignments ORDER BY fling,organizer',
+  );
+  await rejects(store.assignOrganizer(org, 'outing', 'unknown-organizer'));
+  await rejects(store.assignOrganizer(org, 'outing', 'a'));
+  assert.deepEqual(
+    await rows('SELECT * FROM assignments ORDER BY fling,organizer'),
+    before,
+  );
+  await rejects(
+    store.assignOrganizer({ kind: 'organizer', id: 'c' }, 'outing', 'b'),
+  );
+  assert.deepEqual(await rows('SELECT * FROM guards'), []);
+  await store.assignOrganizer(org, 'outing', 'b');
+  assert.deepEqual(
+    await rows(
+      "SELECT organizer FROM assignments WHERE fling='outing' ORDER BY organizer",
+    ),
+    [{ organizer: 'a' }, { organizer: 'b' }],
+  );
+});
+void test('an organizer edits only their own display name, seen across every fling they organize', async () => {
+  await rejects(
+    store.updateOrganizerProfile((await member()).actor, { name: 'Nope' }),
+  );
+  await rejects(store.updateOrganizerProfile(org, { name: '' }));
+  await rejects(store.updateOrganizerProfile(org, { name: 'x'.repeat(101) }));
+  const result = await store.updateOrganizerProfile(org, {
+    name: '  Casey Renamed  ',
+  });
+  assert.deepEqual(result, { id: 'a', name: 'Casey Renamed' });
+  assert.equal((await store.assigned(org)).name, 'Casey Renamed');
+  const weddingOrganizers = (await store.overview(org, 'wedding'))
+    .organizers as { id: string; name: string }[];
+  assert.equal(
+    weddingOrganizers.find((o) => o.id === 'a')?.name,
+    'Casey Renamed',
+  );
+  // Editing your own name never touches another organizer's row or assignments.
+  assert.equal(weddingOrganizers.find((o) => o.id === 'b')?.name, 'Rowan');
+});
+void test('an overview lists every organizer assigned to that fling, in name order', async () => {
+  assert.deepEqual(
+    (await store.overview(org, 'wedding')).organizers as unknown,
+    [
+      { id: 'a', name: 'Casey' },
+      { id: 'b', name: 'Rowan' },
+    ],
+  );
+  assert.deepEqual(
+    (await store.overview(org, 'outing')).organizers as unknown,
+    [{ id: 'a', name: 'Casey' }],
+  );
+});
 void test('codes have 256 random bits, reuse for 14 days, overlap for 35 and purge ciphertext on read', async () => {
   const first = await store.issue(org, 'outing', 'alex-outing');
   assert.match(first.code, /^[\w-]{43}$/);
@@ -743,11 +798,12 @@ void test('day 0, 14 and 28 codes have exact independent boundaries and audits r
 
 void test('organizer workspace lists only assignments and denies other roles', async () => {
   assert.deepEqual(
-    (await store.assigned(org))
+    (await store.assigned(org)).flings
       .map((x) => String(x.id))
       .sort((a, b) => a.localeCompare(b)),
     ['outing', 'wedding'],
   );
+  assert.equal((await store.assigned(org)).name, 'Casey');
   const { actor } = await member('concerts', 'casey-concerts', {
     kind: 'organizer',
     id: 'c',
@@ -1057,6 +1113,123 @@ void test('HTTP workspace, invitation, closure and member responses enforce acto
       )
     ).status,
     503,
+  );
+});
+
+void test('HTTP organizer profile and assignment endpoints validate, authorize and reflect changes', async () => {
+  const signIn = async (organizer: string) => {
+    const res = await api(
+      request(
+        'local/organizer',
+        'POST',
+        { organizer },
+        { 'x-flings-local': '1' },
+      ),
+    );
+    const cookie = res.headers.get('set-cookie')!.split(';')[0];
+    const { csrf } = (await res.json()) as { csrf: string };
+    return {
+      Cookie: cookie,
+      'x-flings-csrf': csrf,
+      'x-flings-organizer': organizer,
+    };
+  };
+  const a = await signIn('a'),
+    b = await signIn('b');
+  const workspace = await api(
+    request('workspace/organizer', 'GET', undefined, a),
+  );
+  assert.equal(((await workspace.json()) as { name: string }).name, 'Casey');
+  const renamed = await api(
+    request(
+      'workspace/organizer/profile',
+      'POST',
+      { name: 'Casey Renamed' },
+      a,
+    ),
+  );
+  assert.equal(renamed.status, 200);
+  assert.deepEqual(await renamed.json(), { id: 'a', name: 'Casey Renamed' });
+  assert.equal(
+    (await api(request('workspace/organizer/profile', 'POST', { name: '' }, a)))
+      .status,
+    400,
+  );
+  const overview = (await (
+    await api(request('wedding/organizer', 'GET', undefined, a))
+  ).json()) as { organizers: unknown };
+  assert.deepEqual(overview.organizers, [
+    { id: 'a', name: 'Casey Renamed' },
+    { id: 'b', name: 'Rowan' },
+  ]);
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/organizer/assignments',
+          'POST',
+          { organizer: 'missing', confirm: true },
+          a,
+        ),
+      )
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await api(
+        request('outing/organizer/assignments', 'POST', { organizer: 'b' }, a),
+      )
+    ).status,
+    400,
+    'unconfirmed organizer changes are refused',
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/organizer/assignments',
+          'POST',
+          { organizer: 'b', confirm: true },
+          a,
+        ),
+      )
+    ).status,
+    200,
+  );
+  const withB = (await (
+    await api(request('outing/organizer', 'GET', undefined, a))
+  ).json()) as { organizers: unknown };
+  assert.deepEqual(withB.organizers, [
+    { id: 'a', name: 'Casey Renamed' },
+    { id: 'b', name: 'Rowan' },
+  ]);
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/organizer/assignments/remove',
+          'POST',
+          { organizer: 'a', confirm: true },
+          b,
+        ),
+      )
+    ).status,
+    200,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/organizer/assignments/remove',
+          'POST',
+          { organizer: 'b', confirm: true },
+          b,
+        ),
+      )
+    ).status,
+    409,
+    'the last organizer of a fling cannot remove themselves',
   );
 });
 
