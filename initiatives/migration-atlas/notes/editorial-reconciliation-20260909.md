@@ -1,6 +1,30 @@
 # Editorial reconciliation — September 9, 2026
 
 
+## Irish Famine quantity and ancestry definitions — September 11, 2026
+
+The entry's high confidence had no verified locator for the exact 1845-1855
+headline or its allocations. Confidence is now low, and the detail note explains
+which evidence is missing. This does not question the documented famine flight.
+All stored quantities, periods and coordinates are preserved.
+
+| Field | Source and locator | Finding and disposition |
+|---|---|---|
+| `irish-famine` / worldwide headline | [Library of Congress, Irish Immigration](https://www.loc.gov/exhibits/british/brit-1.html#obj13), opening paragraph; direct HTML read. | Describes more than 1M US arrivals in the decade after 1845. This geographically limited statement does not establish the inherited 1.8M worldwide total. The original 1999 book's quantitative tables were not inspected. |
+| `irish-famine` / settlement allocations | [Mark Holan, NARA Prologue, Winter 2017-18](https://www.archives.gov/publications/prologue/2017/winter/irish-births), paragraph beginning The 410,000 documented arrivals and the database provenance discussion; direct HTML read. | Describes up to 1.5M US arrivals in 1845-1855, including people arriving via Canada. The narrower New York passenger database is not the whole cohort. Neither number verifies the retained destination split; a matching sum is insufficient, and onward migration can overlap destinations. |
+| `irish-famine` / descendants | [US Census Bureau ancestry article](https://www.census.gov/library/stories/2021/03/happy-saint-patricks-day-to-one-of-ten-americans-who-claim-irish-ancestry.html), March 16, 2021, opening paragraph and linked 2019 ACS B04006 table. Article read directly; table values were unavailable. | An ancestry response does not establish descent from the famine cohort. Publication date is not observation date. No value is substituted for the inherited 31M US figure; that and the Britain and Canada/Australia figures remain undated and unverified. |
+
+The two US arrival descriptions are differently framed accounts, not endpoints
+of a statistical interval. No new range, worldwide total or allocation is
+inferred. The old 6M total-emigration and 1M-death aside is removed from the
+entry's short note because it did not substantiate the displayed 1.8M cohort.
+The original geography finding also remains: Montreal cannot locate Australia.
+
+`notes/irish-source-20260911.json` records access limits, previous fields and
+input/output hashes. The original reconciliation todo remains actionable;
+this increment does not complete T8 or establish any descendant count.
+
+
 ## Distance to bundled land — September 11, 2026 (UTC)
 
 The earlier containment audit did not measure the plan's separate 300-km

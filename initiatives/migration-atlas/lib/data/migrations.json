@@ -520,7 +520,7 @@
    "type": "refugee-flight",
    "cause": "The Great Famine (An Gorta M\u00f3r): potato blight, mass starvation, evictions under British rule",
    "migrants": 1800000,
-   "migrants_note": "Part of ~6M total Irish emigration 1815\u20131914; ~1M died in the famine itself",
+   "migrants_note": "The inherited 1.8M emigrants for 1845-1855 has no verified page-level locator in the cited 1999 book. Low confidence applies to this unresolved quantity, not to the occurrence of famine flight. The Library of Congress describes more than 1M arrivals in the United States in the decade after 1845; NARA's passenger-record article describes up to 1.5M US arrivals in 1845-1855, including arrivals via Canada. Neither establishes a worldwide departure total or the retained 1.3M/0.3M/0.2M settlement allocation. Modern self-reported Irish ancestry does not identify descendants of this particular famine cohort: the retained 31M US, 6M Britain and 4.5M Canada/Australia figures remain undated and unverified. Do not add them as unique descendants or treat Canada-to-US journeys as separate people without a method. The Montreal point does not locate Australia. This entry overlaps the broader European mass-migration period.",
    "source": {
     "name": "Ireland",
     "lat": 53.3,
@@ -549,9 +549,12 @@
      "diaspora_today": 4500000
     }
    ],
-   "confidence": "high",
+   "confidence": "low",
    "references": [
-    "\u00d3 Gr\u00e1da, Black '47 and Beyond (1999)"
+    "\u00d3 Gr\u00e1da, Black '47 and Beyond (1999)",
+    "Library of Congress, John Bull and Uncle Sam, Irish Immigration (directly read 11 September 2026): https://www.loc.gov/exhibits/british/brit-1.html#obj13",
+    "Mark Holan, Ireland's Famine Children Born at Sea, NARA Prologue, Winter 2017-18; paragraph beginning The 410,000 documented arrivals (directly read 11 September 2026): https://www.archives.gov/publications/prologue/2017/winter/irish-births",
+    "US Census Bureau, Residents With Irish Ancestry, 16 March 2021; opening paragraph and linked 2019 ACS B04006 table (article read; table values not retrieved): https://www.census.gov/library/stories/2021/03/happy-saint-patricks-day-to-one-of-ten-americans-who-claim-irish-ancestry.html"
    ],
    "region": "weur"
   },

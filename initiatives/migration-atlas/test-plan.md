@@ -219,3 +219,17 @@ and `work/index.html` are unchanged; only the editorial companion is rebuilt.
 This supplies the distance measurement the older containment audit lacked.
 Historical placement, source quantities, regional allocations and all of T8
 are still open. The audit is a reporting command, not a new CI gate.
+
+
+## September 11 Irish Famine source review
+
+Only `irish-famine` confidence, note and references changed in the dataset.
+All numeric values, dates, coordinates and other entries compare equal to the
+baseline. The report now has 127 evidence rows. The source receipt records
+which HTML paragraphs were read and that the linked census table did not
+return values. The 1999 book's tables were not verified.
+
+The unchanged core suite passes 552 assertions. Existing browser suites pass
+96 Chromium, 95 Firefox and 95 WebKit checks, with reference images and
+thresholds unchanged. These results do not settle the remaining T8 quantities,
+manual screen-reader observations or Windows/Linux packaging acceptance.

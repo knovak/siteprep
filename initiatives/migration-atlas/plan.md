@@ -282,3 +282,13 @@ coarse map that omits the island. The report records the distinction and leaves
 coordinates unchanged. This supplies the missing distance evidence; it does
 not complete regional allocation, historical placement or all of T8. The
 original reconciliation item remains actionable for those recorded findings.
+
+
+## September 11 Irish Famine evidence continuation
+
+The Irish Famine confidence label is now low because no exact-period source
+locator establishes its inherited total or allocation. The evidence report
+separates US arrivals, worldwide departures and modern self-reported ancestry.
+The three new source rows preserve the limits of the directly read material;
+no quantity, coordinate or period changes. Continue the original T8 todo for
+field-level numerical sources and geographic corrections.

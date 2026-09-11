@@ -288,3 +288,18 @@ the receipt repeats byte-for-byte, and all 552 core assertions pass. The
 original editorial reconciliation todo remains actionable for unverified
 quantities, allocations and historical placement. No production release or T8
 completion is claimed.
+
+
+## 2026-09-11 — Qualify Irish Famine quantities and ancestry evidence
+
+Read the Library of Congress arrival account, NARA passenger-record discussion
+and Census Bureau ancestry article directly. Reduced the untraced Irish
+Famine headline from high to low confidence and explained why US arrivals,
+worldwide departures and ancestry responses cannot verify the inherited
+allocations or famine-cohort descendants. Preserved all numeric values, dates
+and coordinates; recorded exact field changes, source limits and dataset hashes.
+The report now contains 127 evidence rows.
+
+Validation passed 552 core assertions and 96/95/95 Chromium/Firefox/WebKit
+checks without changing reference images or thresholds. The original editorial
+reconciliation todo remains actionable; T8 is not complete.
