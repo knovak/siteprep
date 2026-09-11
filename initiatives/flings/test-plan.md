@@ -270,3 +270,15 @@ fixtures through event-authoring screens. Those screens, ordering, draft and
 cancellation controls, DST-gap/repeated-time entry and later poll/payment/message
 closure checks remain unimplemented acceptance work. Hosted/pilot verification
 and the recorded dependency advisories remain separate from these local results.
+
+## September 11 event details receipt
+
+The event-details increment adds database-backed checks for settings validation,
+unchanged existing event instants, end-time gaps/repeats and ordering, unsafe
+location links, atomic rejection, and location projection across invitation
+states and read-only previews. Browser evidence exercises actual forms at
+desktop/phone sizes in Chromium, Firefox and WebKit with a Tokyo viewer; it
+checks default-zone prefill, unchanged existing events, end-time round-trip,
+participant-only location access, preview parity, decline redaction and layout.
+See `work/app/test/evidence/event-details-20260911.md` for the final run counts
+and remaining acceptance work. This is local fictional-data evidence.

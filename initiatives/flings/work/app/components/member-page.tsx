@@ -18,7 +18,14 @@ type Profile = {
 };
 type Projection = {
   profile: Profile;
-  fling: { id: string; title: string; state: string; revision: number };
+  fling: {
+    id: string;
+    title: string;
+    description: string;
+    default_zone: string;
+    state: string;
+    revision: number;
+  };
   activities: {
     id: string;
     title: string;
@@ -31,6 +38,12 @@ type Projection = {
     id: string;
     activity: string;
     starts: string;
+    ends: string | null;
+    invitation_location: string;
+    location_name: string | null;
+    location_address: string | null;
+    location_url: string | null;
+    changed_at: number | null;
     zone: string;
     title: string;
     summary: string;
@@ -289,6 +302,7 @@ export default function MemberPage({
           <section className="intro">
             <p className="eyebrow">Your fling</p>
             <h1>{data.fling.title}</h1>
+            {data.fling.description && <p>{data.fling.description}</p>}
             <p>Welcome, {data.profile.name}. Here’s what you’re invited to.</p>
           </section>
           {data.fling.state === 'closed' && (
@@ -329,9 +343,48 @@ export default function MemberPage({
                               timeStyle: 'short',
                             }).format(new Date(e.starts))}
                           </time>{' '}
+                          {e.ends && (
+                            <>
+                              {' '}
+                              –{' '}
+                              <time dateTime={e.ends}>
+                                {new Intl.DateTimeFormat('en-US', {
+                                  timeZone: e.zone,
+                                  dateStyle: 'medium',
+                                  timeStyle: 'short',
+                                }).format(new Date(e.ends))}
+                              </time>{' '}
+                            </>
+                          )}
                           · {e.zone}
                         </p>
                         <p>{e.summary}</p>
+                        {e.invitation_location && (
+                          <p>{e.invitation_location}</p>
+                        )}
+                        {e.location_name && <p>{e.location_name}</p>}
+                        {e.location_address && <p>{e.location_address}</p>}
+                        {e.location_url && (
+                          <a
+                            href={e.location_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            referrerPolicy="no-referrer"
+                          >
+                            Location link
+                          </a>
+                        )}
+                        {e.changed_at !== null && (
+                          <p className="muted small">
+                            Updated{' '}
+                            {new Intl.DateTimeFormat('en-US', {
+                              timeZone: e.zone,
+                              dateStyle: 'medium',
+                              timeStyle: 'short',
+                            }).format(new Date(e.changed_at))}{' '}
+                            · {e.zone}
+                          </p>
+                        )}
                         {e.details && <p>{e.details}</p>}
                       </div>
                     ))}

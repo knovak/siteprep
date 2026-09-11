@@ -273,3 +273,16 @@ assignment controls, the specified event end/location fields and fling
 description/default zone, and the final T1/T3/T4 interface matrix. The remaining T5
 poll/payment/message closure checks stay with their later capabilities. Phase 2
 is not marked complete.
+
+## Phase 2 event details increment — September 11, 2026
+
+Fling description/default zone, event end times, separate invitation and
+participant location fields, safe location links, and visible event update times
+now exist. The default zone applies only when starting a new event. End times
+resolve independently across daylight-saving transitions and must follow the
+start instant. Existing records retain unknown ends/update times until edited.
+
+The selected `build-member-journeys` item remains open for organizer profile
+maintenance and assignment controls, followed by the final independent-gathering
+T1/T3/T4 interface matrix. The later T5 poll/payment/message checks remain with
+Phases 3-4. This increment does not activate hosting or complete Phase 2.

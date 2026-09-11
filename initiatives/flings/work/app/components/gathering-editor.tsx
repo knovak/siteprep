@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { NativeSelect } from '@/components/ui/native-select';
-import { localTime, timeChoices } from '@/lib/event-time';
+import { localTime, timeChoices, resolveTime } from '@/lib/event-time';
 
 type Activity = {
   id: string;
@@ -19,6 +19,12 @@ type Event = {
   activity: string;
   title: string;
   starts: string;
+  ends: string | null;
+  invitation_location: string;
+  location_name: string;
+  location_address: string;
+  location_url: string;
+  changed_at: number | null;
   zone: string;
   summary: string;
   details: string;
@@ -30,7 +36,13 @@ export default function GatheringEditor({
   save,
 }: {
   data: {
-    fling: { title: string; state: string; revision: number };
+    fling: {
+      title: string;
+      description: string;
+      default_zone: string;
+      state: string;
+      revision: number;
+    };
     activities: Activity[];
     events: Event[];
   };
@@ -48,7 +60,7 @@ export default function GatheringEditor({
     setEditor({ kind, draft, revision: data.fling.revision });
     setTimeError('');
   }
-  function field(key: string, label: string, type = 'text') {
+  function field(key: string, label: string, type = 'text', required = true) {
     const id = 'author-' + key;
     return (
       <div className="field" key={key}>
@@ -64,7 +76,7 @@ export default function GatheringEditor({
           <Input
             id={id}
             type={type}
-            required
+            required={required}
             value={editor!.draft[key] || ''}
             maxLength={4000}
             onChange={(e) => change(key, e.target.value)}
@@ -80,6 +92,7 @@ export default function GatheringEditor({
         ...editor!.draft,
         [key]: value,
         ...(['local', 'zone'].includes(key) ? { starts: '' } : {}),
+        ...(['end_local', 'zone'].includes(key) ? { ends: '' } : {}),
       },
     });
     setTimeError('');
@@ -92,16 +105,24 @@ export default function GatheringEditor({
       /* Save explains invalid input. */
     }
   }
+  let endChoices: ReturnType<typeof timeChoices> = [];
+  if (editor?.kind === 'event' && editor.draft.end_local && editor.draft.zone) {
+    try {
+      endChoices = timeChoices(editor.draft.end_local, editor.draft.zone);
+    } catch {
+      /* Save explains invalid input. */
+    }
+  }
   async function submit() {
     if (editor!.kind === 'event') {
       try {
-        const options = timeChoices(editor!.draft.local, editor!.draft.zone);
-        if (!options.length)
-          throw new Error(
-            'That local time does not exist in this zone. Choose another time.',
-          );
-        if (options.length > 1 && !editor!.draft.starts)
-          throw new Error('This time occurs twice. Choose a UTC offset.');
+        const d = editor!.draft;
+        const start = resolveTime(d.local, d.zone, d.starts);
+        if (d.end_local) {
+          const end = resolveTime(d.end_local, d.zone, d.ends);
+          if (Date.parse(end) <= Date.parse(start))
+            throw new Error('The end must be after the start.');
+        }
       } catch (error) {
         setTimeError((error as Error).message);
         return;
@@ -117,9 +138,15 @@ export default function GatheringEditor({
         <Button
           variant="outline"
           disabled={disabled}
-          onClick={() => open('title', { title: data.fling.title })}
+          onClick={() =>
+            open('settings', {
+              title: data.fling.title,
+              description: data.fling.description,
+              default_zone: data.fling.default_zone,
+            })
+          }
         >
-          Rename fling
+          Edit fling details
         </Button>
         <Button
           disabled={disabled}
@@ -144,8 +171,8 @@ export default function GatheringEditor({
           }}
         >
           <h3>
-            {editor.draft.id ? 'Edit ' : 'New '}
-            {editor.kind === 'title' ? 'fling name' : editor.kind}
+            {editor.draft.id || editor.kind === 'settings' ? 'Edit ' : 'New '}
+            {editor.kind === 'settings' ? 'fling details' : editor.kind}
           </h3>
           <fieldset disabled={disabled}>
             {field(
@@ -156,7 +183,7 @@ export default function GatheringEditor({
                   ? 'Activity title'
                   : 'Fling title',
             )}
-            {editor.kind !== 'title' && (
+            {editor.kind !== 'settings' && (
               <>
                 {field('summary', 'Invitation summary', 'textarea')}
                 {field(
@@ -164,6 +191,19 @@ export default function GatheringEditor({
                   'Accepted members only: place and details',
                   'textarea',
                 )}
+              </>
+            )}
+            {editor.kind === 'settings' && (
+              <>
+                {field(
+                  'description',
+                  'Fling description (visible to every member)',
+                  'textarea',
+                )}
+                {field('default_zone', 'Default time zone')}
+                <p className="muted">
+                  Used for new events. Existing events keep their own time zone.
+                </p>
               </>
             )}
             {editor.kind === 'activity' && (
@@ -187,7 +227,35 @@ export default function GatheringEditor({
             {editor.kind === 'event' && (
               <>
                 {field('local', 'Local date and time', 'datetime-local')}
+                {field(
+                  'end_local',
+                  'Local end date and time (optional)',
+                  'datetime-local',
+                  false,
+                )}
                 {field('zone', 'Event time zone')}
+                {field(
+                  'invitation_location',
+                  'Invitation location (visible before acceptance)',
+                  'textarea',
+                )}
+                {field(
+                  'location_name',
+                  'Accepted members only: location name',
+                  'text',
+                  false,
+                )}
+                {field(
+                  'location_address',
+                  'Accepted members only: street address',
+                  'textarea',
+                )}
+                {field(
+                  'location_url',
+                  'Accepted members only: location link',
+                  'url',
+                  false,
+                )}
                 <p className="muted">
                   Use an IANA zone such as America/Los_Angeles or
                   Australia/Brisbane.
@@ -212,12 +280,33 @@ export default function GatheringEditor({
                     </NativeSelect>
                   </div>
                 )}
+                {endChoices.length > 1 && (
+                  <div className="field">
+                    <Label htmlFor="author-ends">
+                      End time occurs twice: choose UTC offset
+                    </Label>
+                    <NativeSelect
+                      id="author-ends"
+                      required
+                      value={editor.draft.ends || ''}
+                      onChange={(e) => change('ends', e.target.value)}
+                    >
+                      <option value="">Choose an occurrence</option>
+                      {endChoices.map((c) => (
+                        <option key={c.starts} value={c.starts}>
+                          {c.label} · {c.starts}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                  </div>
+                )}
                 {timeError && <p role="alert">{timeError}</p>}
               </>
             )}
             <div className="actions">
               <Button type="submit">
-                Save {editor.kind === 'title' ? 'fling name' : editor.kind}
+                Save{' '}
+                {editor.kind === 'settings' ? 'fling details' : editor.kind}
               </Button>
               <Button
                 type="button"
@@ -264,7 +353,13 @@ export default function GatheringEditor({
                     summary: '',
                     details: '',
                     local: '',
-                    zone: 'America/Los_Angeles',
+                    zone: data.fling.default_zone,
+                    end_local: '',
+                    ends: '',
+                    invitation_location: '',
+                    location_name: '',
+                    location_address: '',
+                    location_url: '',
                     starts: '',
                   })
                 }
@@ -278,16 +373,57 @@ export default function GatheringEditor({
                 <div className="event" key={event.id}>
                   <h4>{event.title}</h4>
                   <p>
-                    {localTime(event.starts, event.zone).replace('T', ' ')} ·{' '}
+                    {localTime(event.starts, event.zone).replace('T', ' ')}
+                    {event.ends && (
+                      <>
+                        {' '}
+                        –{' '}
+                        {localTime(event.ends, event.zone).replace(
+                          'T',
+                          ' ',
+                        )}{' '}
+                      </>
+                    )}
+                    {' · '}
                     {event.zone}
                   </p>
                   <p>{event.details}</p>
+                  {event.invitation_location && (
+                    <p>Invitation: {event.invitation_location}</p>
+                  )}
+                  {event.location_name && <p>{event.location_name}</p>}
+                  {event.location_address && <p>{event.location_address}</p>}
+                  {event.location_url && (
+                    <a
+                      href={event.location_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      referrerPolicy="no-referrer"
+                    >
+                      Location link
+                    </a>
+                  )}
                   <Button
                     variant="outline"
                     disabled={disabled}
                     onClick={() =>
                       open('event', {
-                        ...event,
+                        id: event.id,
+                        activity: event.activity,
+                        title: event.title,
+                        zone: event.zone,
+                        summary: event.summary,
+                        details: event.details,
+                        invitation_location: event.invitation_location,
+                        location_name: event.location_name,
+                        location_address: event.location_address,
+                        location_url: event.location_url,
+                        end_local: event.ends
+                          ? localTime(event.ends, event.zone)
+                          : '',
+                        ends: event.ends
+                          ? new Date(event.ends).toISOString()
+                          : '',
                         local: localTime(event.starts, event.zone),
                         starts: new Date(event.starts).toISOString(),
                       })
