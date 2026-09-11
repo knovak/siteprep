@@ -6,15 +6,15 @@
 
 ## Done
 
-The atlas contains 48 migrations and 92 destinations; its editorial report
-has 122 evidence rows. The latest source review distinguishes the Partition
-census population from unique movers. Earlier reviews cover recent refugee
-headlines and all 140 endpoint coordinates.
+The atlas contains 48 migrations and 92 destinations; its editorial report has
+124 evidence rows. A reproducible distance audit covers all 140 endpoints and
+flags one Indian Ocean point at both map scales plus Mauritius only at the
+coarse scale that omits the island. Seven geometry tests and 552 core assertions
+pass; coordinates, quantities and the application bundle are unchanged.
 
-Data-table Enter activation now opens the selected detail without reopening
-the table. Validation passes 552 core assertions, 286 browser checks and six
-final offline desktop/phone keyboard, detail and report journeys across
-Chromium, Firefox and WebKit.
+Earlier source reviews distinguish the Partition census population from unique
+movers and qualify refugee headlines. The existing data-table keyboard fix and
+its recorded browser evidence remain in place.
 
 ## Remaining work
 
