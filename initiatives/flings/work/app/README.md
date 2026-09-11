@@ -4,8 +4,9 @@ A local, fictional-data application with the Phase 1 access foundation and the
 first Phase 2 organizer/member journeys. Organizers can list assigned gatherings,
 add member profiles, invite or withdraw members from existing activities, open
 read-only previews, and close or reopen a gathering. Members accept or decline
-invitations, see permitted details and correct their own profiles. Event
-creation/editing and the remaining Phase 2 checks are still pending.
+invitations, see permitted details and correct their own profiles. Organizers can also create and rename flings, draft/publish/cancel and reorder
+activities, and create or edit events with explicit timezone handling. Organizer
+profile/assignment maintenance and the remaining Phase 2 checks are pending.
 
 ## Run locally
 
@@ -173,3 +174,43 @@ three fixtures, three browser engines and desktop/phone sizes. Its profiles use
 fictional contacts only. Tests for polls, messages and payments on closure
 remain with those later implementations; this increment does not claim full
 T4/T5 or Phase 2 acceptance. See `test/evidence/phase-2.md`.
+
+
+## Phase 2 authoring increment — September 11, 2026
+
+The organizer workspace creates a new independent fling and its initial
+assignment in one guarded transaction. `JourneyStore.author()` handles title,
+activity, order and event mutations using the same current-authority, open-fling
+and revision checks as invitations. Rejected cross-fling children, stale
+revisions and closed-fling writes leave no partial record or audit event.
+Activity ordering validates the complete unique ID set inside the transaction.
+The generated third migration adds a constant-default `position` column;
+existing activities retain their prior ID order until explicitly reordered.
+
+Event forms store a UTC instant and IANA zone. `lib/event-time.ts` resolves
+minute-precision local input independently of the viewer's zone and checks each
+candidate by round-trip. Gaps are rejected; repeated times require choosing an
+explicit UTC offset. Editing retains that chosen occurrence. Dates from 1900
+onward are supported. Shared use in the form is convenience only; the server
+revalidates the input. All event places/private details use the existing accepted
+member projection; invitations show only summaries. Drafts remain organizer-only,
+and cancellation preserves a notice while hiding participant details.
+
+Run `node test/authoring-browser.mjs` after the existing browser suites. It creates
+fresh fictional flings and exercises movie/meal grouping, a three-activity
+weekend and concerts months apart, including real form saves, order, DST gap and
+repeat handling, acceptance and cancellation redaction. It writes
+`test/evidence/authoring-20260911.json`. The full member-journey todo stays open
+for organizer profile/assignment controls, the specified event end/location
+fields and fling description/default zone, and final acceptance across independent
+gatherings. No action here sends, creates a hosted resource or changes identity
+configuration.
+
+
+Organizer focus rechecks preserve an open authoring draft while verifying the
+same expected organizer with the server. Only the newest refresh may replace
+the snapshot. Every draft keeps the revision captured when editing began;
+refreshing never gives that draft a newer revision. A competing save therefore
+causes a conflict and requires reopening the editor. Authorization failures
+still clear the workspace. This avoids losing a click or draft to a transient
+focus refresh and prevents stale-form overwrites.

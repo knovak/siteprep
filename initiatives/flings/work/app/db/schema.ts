@@ -112,6 +112,7 @@ export const activities = sqliteTable(
     summary: text().notNull(),
     details: text().notNull(),
     state: text().notNull().default('published'),
+    position: integer().notNull().default(0),
   },
   (t) => [
     unique().on(t.id, t.fling),

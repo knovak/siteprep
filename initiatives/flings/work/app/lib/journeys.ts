@@ -1,7 +1,188 @@
 import { AccessError, AccessStore, type Actor } from './access.ts';
+import { resolveTime } from './event-time.ts';
 type Input = Record<string, unknown>;
 
 export class JourneyStore extends AccessStore {
+  text(input: Input, key: string, required = false) {
+    const value = input[key];
+    if (
+      typeof value !== 'string' ||
+      value.length > 4000 ||
+      (required && !value.trim())
+    )
+      throw new AccessError(
+        400,
+        'Enter a valid ' + key + ' (up to 4,000 characters).',
+      );
+    return value.trim();
+  }
+  async createFling(actor: Actor, input: Input) {
+    if (actor.kind !== 'organizer')
+      throw new AccessError(403, 'Organizer access is required.');
+    const title = this.text(input, 'title', true),
+      id = crypto.randomUUID(),
+      guard = crypto.randomUUID();
+    try {
+      await this.db.batch([
+        this.guard(guard, 'EXISTS(SELECT 1 FROM organizers WHERE id=?)', [
+          actor.id,
+        ]),
+        this.q('INSERT INTO flings(id,title) VALUES(?,?)', id, title),
+        this.q(
+          'INSERT INTO assignments(fling,organizer) VALUES(?,?)',
+          id,
+          actor.id,
+        ),
+        this.audit(actor, id, 'create-fling', id),
+        this.q('DELETE FROM guards WHERE id=?', guard),
+      ]);
+    } catch {
+      throw new AccessError(
+        409,
+        'Organizer access changed. Reopen your workspace.',
+      );
+    }
+    return { id };
+  }
+  async author(actor: Actor, fling: string, kind: string, input: Input) {
+    if (actor.kind !== 'organizer')
+      throw new AccessError(403, 'Organizer access is required.');
+    const g = this.revisionGuard(fling, input.revision),
+      child = crypto.randomUUID();
+    const steps: D1PreparedStatement[] = [g.statement];
+    let object = fling;
+    if (kind === 'title') {
+      steps.push(
+        this.q(
+          'UPDATE flings SET title=? WHERE id=?',
+          this.text(input, 'title', true),
+          fling,
+        ),
+      );
+    } else if (kind === 'activity') {
+      const id = typeof input.id === 'string' ? input.id : crypto.randomUUID();
+      const title = this.text(input, 'title', true),
+        summary = this.text(input, 'summary'),
+        details = this.text(input, 'details');
+      if (!['draft', 'published', 'cancelled'].includes(String(input.state)))
+        throw new AccessError(400, 'Choose an activity status.');
+      object = id;
+      if (input.id) {
+        steps.push(
+          this.guard(
+            child,
+            'EXISTS(SELECT 1 FROM activities WHERE id=? AND fling=?)',
+            [id, fling],
+          ),
+        );
+        steps.push(
+          this.q(
+            'UPDATE activities SET title=?,summary=?,details=?,state=? WHERE id=? AND fling=?',
+            title,
+            summary,
+            details,
+            input.state,
+            id,
+            fling,
+          ),
+        );
+      } else {
+        steps.push(
+          this.q(
+            'INSERT INTO activities(id,fling,title,summary,details,state,position) VALUES(?,?,?,?,?,?,(SELECT COALESCE(MAX(position),-1)+1 FROM activities WHERE fling=?))',
+            id,
+            fling,
+            title,
+            summary,
+            details,
+            input.state,
+            fling,
+          ),
+        );
+      }
+    } else if (kind === 'order') {
+      if (
+        !Array.isArray(input.ids) ||
+        !input.ids.length ||
+        input.ids.length > 500 ||
+        input.ids.some((id) => typeof id !== 'string') ||
+        new Set(input.ids).size !== input.ids.length
+      )
+        throw new AccessError(400, 'Supply every activity once.');
+      const ids = input.ids as string[];
+      steps.push(
+        this.guard(
+          child,
+          `(SELECT COUNT(*) FROM activities WHERE fling=?)=? AND (SELECT COUNT(*) FROM activities WHERE fling=? AND id IN (${ids.map(() => '?').join(',')}))=?`,
+          [fling, ids.length, fling, ...ids, ids.length],
+        ),
+      );
+      ids.forEach((id, i) =>
+        steps.push(
+          this.q(
+            'UPDATE activities SET position=? WHERE id=? AND fling=?',
+            i,
+            id,
+            fling,
+          ),
+        ),
+      );
+    } else if (kind === 'event') {
+      const id = typeof input.id === 'string' ? input.id : crypto.randomUUID();
+      const activity = this.text(input, 'activity', true),
+        title = this.text(input, 'title', true),
+        summary = this.text(input, 'summary'),
+        details = this.text(input, 'details');
+      const zone = this.text(input, 'zone', true),
+        local = this.text(input, 'local', true);
+      let starts: string;
+      try {
+        starts = resolveTime(local, zone, input.starts);
+      } catch (error) {
+        throw new AccessError(400, (error as Error).message);
+      }
+      object = id;
+      steps.push(
+        this.guard(
+          child,
+          `EXISTS(SELECT 1 FROM activities WHERE id=? AND fling=?) ${input.id ? 'AND EXISTS(SELECT 1 FROM events WHERE id=? AND activity=? AND fling=?)' : ''}`,
+          [activity, fling, ...(input.id ? [id, activity, fling] : [])],
+        ),
+      );
+      steps.push(
+        input.id
+          ? this.q(
+              'UPDATE events SET title=?,starts=?,zone=?,summary=?,details=? WHERE id=? AND fling=?',
+              title,
+              starts,
+              zone,
+              summary,
+              details,
+              id,
+              fling,
+            )
+          : this.q(
+              'INSERT INTO events(id,fling,activity,title,starts,zone,summary,details) VALUES(?,?,?,?,?,?,?,?)',
+              id,
+              fling,
+              activity,
+              title,
+              starts,
+              zone,
+              summary,
+              details,
+            ),
+      );
+    } else throw new AccessError(400, 'Unknown gathering action.');
+    steps.push(
+      this.q('UPDATE flings SET revision=revision+1 WHERE id=?', fling),
+      this.audit(actor, fling, 'save-' + kind, object),
+      this.q('DELETE FROM guards WHERE id IN (?,?)', g.id, child),
+    );
+    await this.batch(actor, fling, steps, true);
+    return { id: object };
+  }
+
   async assigned(actor: Actor) {
     if (actor.kind !== 'organizer')
       throw new AccessError(403, 'Organizer access is required.');
@@ -22,7 +203,7 @@ export class JourneyStore extends AccessStore {
         fling,
       ),
       this.q(
-        'SELECT id,title,summary,details,state FROM activities WHERE fling=? ORDER BY id',
+        'SELECT id,title,summary,details,state,position FROM activities WHERE fling=? ORDER BY position,id',
         fling,
       ),
       this.q(

@@ -357,7 +357,7 @@ export class AccessStore {
       ),
       this.q('SELECT id,title,state,revision FROM flings WHERE id=?', fling),
       this.q(
-        `SELECT a.id,a.title,a.summary,a.state,i.state invitation,CASE WHEN i.state='accepted' AND a.state='published' THEN a.details ELSE NULL END details FROM activities a JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND a.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY a.id`,
+        `SELECT a.id,a.title,a.summary,a.state,i.state invitation,CASE WHEN i.state='accepted' AND a.state='published' THEN a.details ELSE NULL END details FROM activities a JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND a.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY a.position,a.id`,
         member,
         fling,
       ),

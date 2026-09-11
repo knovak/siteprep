@@ -1059,3 +1059,184 @@ void test('HTTP workspace, invitation, closure and member responses enforce acto
     503,
   );
 });
+
+void test('new fling creation assigns only its creator and rejects non-organizers atomically', async () => {
+  const created = await store.createFling(org, {
+    title: 'Independent test gathering',
+  });
+  assert.deepEqual(
+    await rows('SELECT * FROM assignments WHERE fling=?', created.id),
+    [{ fling: created.id, organizer: 'a' }],
+  );
+  await rejects(store.overview(orgB, created.id));
+  const before = await rows('SELECT * FROM flings ORDER BY id');
+  await rejects(
+    store.createFling(
+      { kind: 'organizer', id: 'missing' },
+      { title: 'No assignment' },
+    ),
+  );
+  await rejects(
+    store.createFling((await member()).actor, { title: 'No authority' }),
+  );
+  assert.deepEqual(await rows('SELECT * FROM flings ORDER BY id'), before);
+});
+void test('activity editing, draft hiding, cancellation and ordering share actual member projections', async () => {
+  const { actor } = await member();
+  const save = async (kind: string, input: Record<string, unknown>) => {
+    const overview = await store.overview(org, 'outing');
+    return store.author(org, 'outing', kind, {
+      ...input,
+      revision: (overview.fling as { revision: number }).revision,
+    });
+  };
+  const a = await save('activity', {
+    title: 'Second activity',
+    summary: 'Public summary',
+    details: 'Private meeting',
+    state: 'draft',
+  });
+  await store
+    .q(
+      "INSERT INTO invitations VALUES(?,?,?,'accepted')",
+      'alex-outing',
+      a.id,
+      'outing',
+    )
+    .run();
+  assert.equal(
+    (await store.projection(actor, 'outing', 'alex-outing')).activities.length,
+    1,
+  );
+  await save('activity', {
+    id: a.id,
+    title: 'Second activity',
+    summary: 'Public summary',
+    details: 'Private meeting',
+    state: 'published',
+  });
+  await save('order', { ids: [a.id, 'movie'] });
+  const projection = await store.projection(actor, 'outing', 'alex-outing');
+  assert.deepEqual(
+    projection.activities.map((a) => a.id),
+    [a.id, 'movie'],
+  );
+  assert.equal(projection.activities[0].details, 'Private meeting');
+  await save('activity', {
+    id: a.id,
+    title: 'Second activity',
+    summary: 'Public summary',
+    details: 'Private meeting',
+    state: 'cancelled',
+  });
+  const cancelled = (await store.projection(actor, 'outing', 'alex-outing'))
+    .activities[0];
+  assert.equal(cancelled.state, 'cancelled');
+  assert.equal(cancelled.details, null);
+});
+void test('authoring rejects cross-fling, stale, closed, member and preview writes without partial state', async () => {
+  const { actor } = await member();
+  const before = await rows('SELECT * FROM activities ORDER BY id');
+  const auditBefore = await rows('SELECT * FROM audit ORDER BY id');
+  const input = {
+    id: 'ceremony',
+    title: 'Wrong parent',
+    summary: '',
+    details: '',
+    state: 'published',
+    revision: 0,
+  };
+  for (const a of [
+    org,
+    orgB,
+    actor,
+    { kind: 'preview', id: 'a', member: 'alex-outing' } as Actor,
+  ])
+    await rejects(store.author(a, 'outing', 'activity', input));
+  await rejects(
+    store.author(org, 'outing', 'order', {
+      ids: ['movie', 'ceremony'],
+      revision: 0,
+    }),
+  );
+  await rejects(
+    store.author(org, 'outing', 'order', {
+      ids: ['movie', 'movie'],
+      revision: 0,
+    }),
+  );
+  assert.deepEqual(await rows('SELECT * FROM activities ORDER BY id'), before);
+  assert.deepEqual(await rows('SELECT * FROM audit ORDER BY id'), auditBefore);
+  const result = await Promise.allSettled(
+    ['One', 'Two'].map((title) =>
+      store.author(org, 'outing', 'title', { title, revision: 0 }),
+    ),
+  );
+  assert.equal(result.filter((r) => r.status === 'fulfilled').length, 1);
+  await store.setState(org, 'outing', {
+    state: 'closed',
+    revision: 1,
+    confirm: true,
+  });
+  const closed = await rows('SELECT * FROM flings ORDER BY id');
+  await rejects(
+    store.author(org, 'outing', 'title', { title: 'Closed edit', revision: 2 }),
+  );
+  assert.deepEqual(await rows('SELECT * FROM flings ORDER BY id'), closed);
+});
+void test('events reject gaps and ambiguous inputs, preserve chosen instant and zone, and update visible details', async () => {
+  const { actor } = await member();
+  const input = {
+    activity: 'movie',
+    title: 'Late movie',
+    summary: 'Evening',
+    details: 'Private location',
+    zone: 'America/Los_Angeles',
+    local: '2026-11-01T01:30',
+    revision: 0,
+  };
+  const before = await rows('SELECT * FROM events ORDER BY id');
+  const auditBefore = await rows('SELECT * FROM audit ORDER BY id');
+  for (const extra of [
+    {},
+    { local: '2026-03-08T02:30' },
+    { local: '2026-02-30T12:00' },
+    { zone: 'invalid' },
+    { starts: '2026-11-01T11:30:00.000Z' },
+    { activity: 'ceremony', starts: '2026-11-01T09:30:00.000Z' },
+  ])
+    await rejects(store.author(org, 'outing', 'event', { ...input, ...extra }));
+  assert.deepEqual(await rows('SELECT * FROM events ORDER BY id'), before);
+  const saved = await store.author(org, 'outing', 'event', {
+    ...input,
+    starts: '2026-11-01T09:30:00.000Z',
+  });
+  let event = (
+    await store.projection(actor, 'outing', 'alex-outing')
+  ).events.find((e) => e.id === saved.id)!;
+  assert.equal(event.starts, '2026-11-01T09:30:00.000Z');
+  assert.equal(event.zone, input.zone);
+  await store.author(org, 'outing', 'event', {
+    ...input,
+    id: saved.id,
+    local: '2026-11-02T19:00',
+    revision: 1,
+    details: 'New private location',
+  });
+  event = (await store.projection(actor, 'outing', 'alex-outing')).events.find(
+    (e) => e.id === saved.id,
+  )!;
+  assert.equal(event.starts, '2026-11-03T03:00:00.000Z');
+  assert.equal(event.details, 'New private location');
+  const invited = (
+    await store.projection(org, 'outing', 'another-outing')
+  ).events.find((e) => e.id === saved.id)!;
+  assert.equal(invited.details, null);
+  const added = (await rows('SELECT * FROM audit ORDER BY id')).filter(
+    (a) => !auditBefore.some((b) => b.id === a.id),
+  );
+  assert.deepEqual(
+    added.map((a) => a.action),
+    ['save-event', 'save-event'],
+  );
+});

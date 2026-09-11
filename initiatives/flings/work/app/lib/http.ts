@@ -249,6 +249,12 @@ export async function handle(req: Request, env: Bindings) {
         csrf: await mac(env.FLINGS_SECRET, credential),
         flings: await store.assigned(actor),
       });
+    if (
+      fling === 'workspace' &&
+      action === 'organizer' &&
+      req.method === 'POST'
+    )
+      return json(await store.createFling(actor, await body(req)), 201);
     if (action === 'member' && member) {
       if (sub === 'respond' && req.method === 'POST') {
         const input = await body(req);
@@ -280,6 +286,11 @@ export async function handle(req: Request, env: Bindings) {
           organizer: actor.kind === 'organizer' ? actor.id : null,
           csrf: await mac(env.FLINGS_SECRET, credential),
         });
+      if (
+        req.method === 'POST' &&
+        ['title', 'activity', 'event', 'order'].includes(member)
+      )
+        return json(await store.author(actor, fling, member, await body(req)));
       if (req.method === 'POST' && ['invitation', 'state'].includes(member)) {
         const input = await body(req);
         if (member === 'invitation') await store.invite(actor, fling, input);
