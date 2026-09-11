@@ -7,14 +7,15 @@
 ## Done
 
 The atlas contains 48 migrations and 92 destinations; its editorial report has
-124 evidence rows. A reproducible distance audit covers all 140 endpoints and
-flags one Indian Ocean point at both map scales plus Mauritius only at the
-coarse scale that omits the island. Seven geometry tests and 552 core assertions
-pass; coordinates, quantities and the application bundle are unchanged.
+127 evidence rows. The latest source review qualifies the Irish Famine entry's
+untraced total and distinguishes US arrivals from worldwide departures and
+modern ancestry responses. All numeric values, dates and coordinates remain
+unchanged in this increment.
 
-Earlier source reviews distinguish the Partition census population from unique
-movers and qualify refugee headlines. The existing data-table keyboard fix and
-its recorded browser evidence remain in place.
+The core suite passes 552 assertions; Chromium, Firefox and WebKit pass
+96, 95 and 95 browser checks with unchanged reference images. Earlier source
+and endpoint-distance audits, their limitations, and the keyboard fix remain
+in the record.
 
 ## Remaining work
 
