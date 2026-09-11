@@ -1,0 +1,382 @@
+/* oxlint-disable next/no-html-link-for-pages -- Navigation discards the current authority context. */
+'use client';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog';
+
+type Fling = { id: string; title: string; state: string; revision: number };
+type Member = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  preference: string;
+};
+type Activity = { id: string; title: string; summary: string; state: string };
+type Snapshot = {
+  organizer: string;
+  csrf: string;
+  fling: Fling;
+  members: Member[];
+  activities: Activity[];
+  invitations: { member: string; activity: string; state: string }[];
+};
+const blank = { name: '', email: '', phone: '', preference: 'email' };
+export default function OrganizerPage({ fling }: { fling?: string }) {
+  const [data, setData] = useState<Snapshot | null>(null),
+    [list, setList] = useState<Fling[] | null>(null);
+  const [initializing, setInitializing] = useState(true);
+  const [error, setError] = useState(''),
+    [notice, setNotice] = useState(''),
+    [busy, setBusy] = useState(false);
+  const [form, setForm] = useState(blank),
+    [confirmation, setConfirmation] = useState(false);
+  const auth = useRef<{ id: string; csrf: string } | null>(null);
+  const request = useCallback(
+    async (path: string, method = 'GET', body?: unknown) => {
+      const r = await fetch('/api/flings/' + path, {
+        method,
+        cache: 'no-store',
+        headers: {
+          ...(body ? { 'Content-Type': 'application/json' } : {}),
+          ...(path.startsWith('local/') ? { 'x-flings-local': '1' } : {}),
+          ...(auth.current && !path.startsWith('local/')
+            ? {
+                'x-flings-csrf': auth.current.csrf,
+                'x-flings-organizer': auth.current.id,
+              }
+            : {}),
+        },
+        ...(body ? { body: JSON.stringify(body) } : {}),
+      });
+      const value = (await r.json()) as Snapshot & {
+        flings: Fling[];
+        url: string;
+        error?: string;
+      };
+      if (!r.ok) {
+        if ([401, 403, 409].includes(r.status)) {
+          setData(null);
+          setList(null);
+        }
+        throw new Error(value.error);
+      }
+      return value;
+    },
+    [],
+  );
+  const refresh = useCallback(async () => {
+    const value = await request((fling || 'workspace') + '/organizer');
+    auth.current = { id: value.organizer, csrf: value.csrf };
+    if (fling) setData(value);
+    else setList(value.flings);
+  }, [fling, request]);
+  useEffect(() => {
+    void Promise.resolve()
+      .then(refresh)
+      .catch((e) => {
+        if (fling) setError(e.message);
+      })
+      .finally(() => setInitializing(false));
+    const recheck = () => {
+      setData(null);
+      setList(null);
+      void refresh().catch((e) => setError(e.message));
+    };
+    window.addEventListener('focus', recheck);
+    return () => window.removeEventListener('focus', recheck);
+  }, [refresh, fling]);
+  async function act(action: () => Promise<void>) {
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      await action();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function signIn(organizer: string) {
+    await request('local/organizer', 'POST', { organizer });
+    auth.current = null;
+    await refresh();
+  }
+  async function changeInvitation(
+    member: string,
+    activity: string,
+    state: string,
+  ) {
+    await request(fling + '/organizer/invitation', 'POST', {
+      member,
+      activity,
+      state,
+      revision: data!.fling.revision,
+    });
+    await refresh();
+    setNotice(
+      state === 'withdrawn'
+        ? 'Invitation withdrawn.'
+        : 'Invitation saved. No message was sent.',
+    );
+  }
+  return (
+    <main className="workspace organizer-workspace">
+      <header>
+        <a className="wordmark" href="/">
+          flings<span>✳</span>
+        </a>
+        <a href="/organizer">Organizer workspace</a>
+        <span className="rehearsal">Local rehearsal · fictional people</span>
+      </header>
+      <section className="intro">
+        <p className="eyebrow">Organizer</p>
+        <h1>{data?.fling.title || 'Your gatherings'}</h1>
+      </section>
+      {error && (
+        <div className="notice error" role="alert">
+          {error}{' '}
+          <Button
+            variant="outline"
+            disabled={busy || initializing}
+            onClick={() => void act(refresh)}
+          >
+            Reload workspace
+          </Button>
+        </div>
+      )}
+      <output aria-live="polite">{notice}</output>
+      {!fling && (
+        <section className="identity">
+          <h2>Choose a fictional organizer</h2>
+          <div className="actions">
+            {[
+              ['a', 'Casey'],
+              ['b', 'Rowan'],
+              ['c', 'Sam'],
+            ].map(([id, name]) => (
+              <Button
+                key={id}
+                disabled={busy || initializing}
+                onClick={() => void act(() => signIn(id))}
+              >
+                {name}
+              </Button>
+            ))}
+          </div>
+          <p className="muted">Only that organizer’s assigned flings appear.</p>
+        </section>
+      )}
+      {!fling && list && (
+        <div className="gatherings">
+          {list.map((f) => (
+            <article key={f.id}>
+              <span className="badge">{f.state}</span>
+              <h2>
+                <a href={'/organizer/' + f.id}>{f.title}</a>
+              </h2>
+            </article>
+          ))}
+          {!list.length && <p>No assigned gatherings.</p>}
+        </div>
+      )}
+      {fling && !data && !error && <output>Opening your gathering…</output>}
+      {data && (
+        <>
+          <div className="gathering-state">
+            <span className="badge">{data.fling.state}</span>
+            <Button
+              variant="outline"
+              disabled={busy || initializing}
+              onClick={() => setConfirmation(true)}
+            >
+              {data.fling.state === 'open' ? 'Close fling' : 'Reopen fling'}
+            </Button>
+          </div>
+          {data.fling.state === 'closed' && (
+            <p className="notice">
+              This fling is closed. Invitation responses are preserved and
+              contact corrections remain available.
+            </p>
+          )}
+          <AlertDialog open={confirmation} onOpenChange={setConfirmation}>
+            <AlertDialogContent>
+              <AlertDialogTitle>
+                {data.fling.state === 'open'
+                  ? 'Close this fling?'
+                  : 'Reopen this fling?'}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {data.fling.state === 'open'
+                  ? 'Invitations and responses stop. Members can still read permitted history and correct their contact details.'
+                  : 'Invitations and responses become available again. Existing responses are preserved and nothing is sent.'}
+              </AlertDialogDescription>
+              <AlertDialogCancel>Keep current state</AlertDialogCancel>
+              <Button
+                disabled={busy || initializing}
+                onClick={() =>
+                  void act(async () => {
+                    await request(fling + '/organizer/state', 'POST', {
+                      state: data.fling.state === 'open' ? 'closed' : 'open',
+                      revision: data.fling.revision,
+                      confirm: true,
+                    });
+                    setConfirmation(false);
+                    await refresh();
+                    setNotice('Gathering state saved.');
+                  })
+                }
+              >
+                Confirm {data.fling.state === 'open' ? 'closure' : 'reopening'}
+              </Button>
+            </AlertDialogContent>
+          </AlertDialog>
+          <div className="member-grid">
+            <section aria-labelledby="members-title">
+              <h2 id="members-title">Members & invitations</h2>
+              {data.members.map((m) => (
+                <article className="activity" key={m.id}>
+                  <h2>{m.name}</h2>
+                  <p className="muted">
+                    {m.preference === 'both' ? 'Email and text' : m.preference}{' '}
+                    · {m.email || 'No email'} · {m.phone || 'No phone'}
+                  </p>
+                  <Button
+                    variant="outline"
+                    disabled={busy || initializing}
+                    onClick={() =>
+                      void act(async () => {
+                        const result = await request(
+                          fling + '/organizer/' + m.id + '/preview',
+                          'POST',
+                          {},
+                        );
+                        window.location.assign(result.url);
+                      })
+                    }
+                  >
+                    Preview {m.name}
+                  </Button>
+                  <div className="invitation-list">
+                    {data.activities
+                      .filter((a) => a.state === 'published')
+                      .map((a) => {
+                        const state = data.invitations.find(
+                          (i) => i.member === m.id && i.activity === a.id,
+                        )?.state;
+                        const active = !!state && state !== 'withdrawn';
+                        return (
+                          <div className="invitation-row" key={a.id}>
+                            <div>
+                              <strong>{a.title}</strong>
+                              <p className="muted">{state || 'Not invited'}</p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              disabled={busy || data.fling.state === 'closed'}
+                              aria-label={
+                                (active ? 'Withdraw ' : 'Invite ') +
+                                m.name +
+                                ' · ' +
+                                a.title
+                              }
+                              onClick={() =>
+                                void act(() =>
+                                  changeInvitation(
+                                    m.id,
+                                    a.id,
+                                    active ? 'withdrawn' : 'invited',
+                                  ),
+                                )
+                              }
+                            >
+                              {active ? 'Withdraw' : 'Invite'}
+                            </Button>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </article>
+              ))}
+            </section>
+            <aside>
+              <section className="profile-panel">
+                <h2>Add a member</h2>
+                <p className="muted">
+                  This creates a profile for this fling. Invitations and sending
+                  remain separate actions.
+                </p>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void act(async () => {
+                      await request(fling + '/organizer/members', 'POST', form);
+                      setForm(blank);
+                      await refresh();
+                      setNotice('Member profile created. No message was sent.');
+                    });
+                  }}
+                >
+                  <fieldset disabled={busy || data.fling.state === 'closed'}>
+                    {(['name', 'email', 'phone'] as const).map((f) => (
+                      <div className="field" key={f}>
+                        <Label htmlFor={'new-' + f}>
+                          {f === 'name'
+                            ? 'Member name'
+                            : f === 'email'
+                              ? 'Member email'
+                              : 'Member phone'}
+                        </Label>
+                        <Input
+                          id={'new-' + f}
+                          value={form[f]}
+                          required={f === 'name'}
+                          type={
+                            f === 'email'
+                              ? 'email'
+                              : f === 'phone'
+                                ? 'tel'
+                                : 'text'
+                          }
+                          onChange={(e) =>
+                            setForm({ ...form, [f]: e.target.value })
+                          }
+                        />
+                      </div>
+                    ))}
+                    <div className="field">
+                      <Label htmlFor="new-preference">
+                        Receive messages by
+                      </Label>
+                      <select
+                        id="new-preference"
+                        value={form.preference}
+                        onChange={(e) =>
+                          setForm({ ...form, preference: e.target.value })
+                        }
+                      >
+                        <option value="email">Email</option>
+                        <option value="text">Text</option>
+                        <option value="both">Email and text</option>
+                      </select>
+                    </div>
+                    <Button type="submit">Create member</Button>
+                  </fieldset>
+                </form>
+              </section>
+            </aside>
+          </div>
+        </>
+      )}
+    </main>
+  );
+}

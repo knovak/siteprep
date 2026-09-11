@@ -2,7 +2,8 @@ import { after, before, beforeEach, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { Miniflare } from 'miniflare';
-import { AccessStore, DAY, digest } from '../lib/access.ts';
+import { DAY, digest } from '../lib/access.ts';
+import { JourneyStore } from '../lib/journeys.ts';
 import { seed } from '../lib/fixtures.ts';
 import { handle } from '../lib/http.ts';
 import type { Actor } from '../lib/access.ts';
@@ -16,7 +17,7 @@ const profile = {
   phone: '+12025550123',
   preference: 'both',
 };
-let mf: Miniflare, store: AccessStore, now: number;
+let mf: Miniflare, store: JourneyStore, now: number;
 before(async () => {
   mf = new Miniflare({
     modules: true,
@@ -25,7 +26,7 @@ before(async () => {
     d1Databases: ['DB'],
   });
   const db = await mf.getD1Database('DB');
-  store = new AccessStore(db as unknown as D1Database, secret, () => now);
+  store = new JourneyStore(db as unknown as D1Database, secret, () => now);
   const dir = new URL('../drizzle/', import.meta.url);
   for (const name of (await readdir(dir))
     .filter((n) => n.endsWith('.sql'))
@@ -737,5 +738,324 @@ void test('day 0, 14 and 28 codes have exact independent boundaries and audits r
       .map((x) => Number(x.revision))
       .sort((a, b) => a - b),
     [0, 1],
+  );
+});
+
+void test('organizer workspace lists only assignments and denies other roles', async () => {
+  assert.deepEqual(
+    (await store.assigned(org))
+      .map((x) => String(x.id))
+      .sort((a, b) => a.localeCompare(b)),
+    ['outing', 'wedding'],
+  );
+  const { actor } = await member('concerts', 'casey-concerts', {
+    kind: 'organizer',
+    id: 'c',
+  });
+  await rejects(store.assigned(actor));
+  await rejects(store.overview(org, 'concerts'));
+  await rejects(
+    store.overview(
+      { kind: 'preview', id: 'a', member: 'alex-outing' },
+      'outing',
+    ),
+  );
+});
+void test('invite, respond, decline, reaccept and withdraw preserve independent projections', async () => {
+  for (const [fling, id, activity, organizer] of [
+    ['outing', 'another-outing', 'movie', 'a'],
+    ['wedding', 'jordan-wedding', 'ceremony', 'a'],
+    ['concerts', 'casey-concerts', 'autumn', 'c'],
+  ]) {
+    const o: Actor = { kind: 'organizer', id: organizer };
+    const { actor } = await member(fling, id, o);
+    let revision = 0;
+    for (const state of ['accepted', 'declined', 'accepted']) {
+      await store.respond(actor, fling, id, {
+        activity,
+        state,
+        revision: revision++,
+      });
+      const view = await store.projection(actor, fling, id);
+      assert.equal(
+        !!view.activities.find((a) => a.id === activity)?.details,
+        state === 'accepted',
+      );
+      const preview = await store.projection(
+        { kind: 'preview', id: organizer, member: id },
+        fling,
+        id,
+      );
+      assert.deepEqual(preview.activities, view.activities);
+    }
+    await store.invite(o, fling, {
+      member: id,
+      activity,
+      state: 'invited',
+      revision: revision++,
+    });
+    assert.equal(
+      (await store.projection(actor, fling, id)).activities.find(
+        (a) => a.id === activity,
+      )?.invitation,
+      'accepted',
+    );
+    await store.invite(o, fling, {
+      member: id,
+      activity,
+      state: 'withdrawn',
+      revision: revision++,
+    });
+    assert.ok(
+      !(await store.projection(actor, fling, id)).activities.find(
+        (a) => a.id === activity,
+      ),
+    );
+    await rejects(
+      store.respond(actor, fling, id, {
+        activity,
+        state: 'accepted',
+        revision,
+      }),
+    );
+    await store.invite(o, fling, {
+      member: id,
+      activity,
+      state: 'invited',
+      revision: revision++,
+    });
+    assert.equal(
+      (await store.projection(actor, fling, id)).activities.find(
+        (a) => a.id === activity,
+      )?.details,
+      null,
+    );
+  }
+});
+void test('closed and stale writes fail atomically; reopening preserves history and permits profiles', async () => {
+  const { actor } = await member('wedding', 'jordan-wedding');
+  await store.setState(org, 'wedding', {
+    state: 'closed',
+    revision: 0,
+    confirm: true,
+  });
+  const before = await rows(
+    'SELECT * FROM invitations ORDER BY member,activity',
+  );
+  const auditBefore = await rows('SELECT * FROM audit ORDER BY id');
+  for (const revision of [0, 1]) {
+    await rejects(
+      store.respond(actor, 'wedding', 'jordan-wedding', {
+        activity: 'ceremony',
+        state: 'accepted',
+        revision,
+      }),
+    );
+    await rejects(
+      store.invite(org, 'wedding', {
+        member: 'lee-wedding',
+        activity: 'ceremony',
+        state: 'invited',
+        revision,
+      }),
+    );
+  }
+  assert.deepEqual(
+    await rows('SELECT * FROM invitations ORDER BY member,activity'),
+    before,
+  );
+  assert.deepEqual(await rows('SELECT * FROM audit ORDER BY id'), auditBefore);
+  await store.updateProfile(
+    actor,
+    'wedding',
+    'jordan-wedding',
+    { ...profile, name: 'Jordan corrected' },
+    0,
+  );
+  await rejects(
+    store.setState(org, 'wedding', {
+      state: 'open',
+      revision: 0,
+      confirm: true,
+    }),
+  );
+  await store.setState(org, 'wedding', {
+    state: 'open',
+    revision: 1,
+    confirm: true,
+  });
+  assert.deepEqual(
+    await rows('SELECT * FROM invitations ORDER BY member,activity'),
+    before,
+  );
+  await store.respond(actor, 'wedding', 'jordan-wedding', {
+    activity: 'ceremony',
+    state: 'accepted',
+    revision: 2,
+  });
+});
+void test('concurrent responses serialize; child and authority failures leave no state or audit writes', async () => {
+  const { actor } = await member('wedding', 'jordan-wedding');
+  const race = await Promise.allSettled(
+    ['accepted', 'declined'].map((state) =>
+      store.respond(actor, 'wedding', 'jordan-wedding', {
+        activity: 'ceremony',
+        state,
+        revision: 0,
+      }),
+    ),
+  );
+  assert.equal(race.filter((r) => r.status === 'fulfilled').length, 1);
+  const before = await rows('SELECT * FROM audit ORDER BY id');
+  for (const input of [
+    { member: 'alex-outing', activity: 'ceremony' },
+    { member: 'jordan-wedding', activity: 'movie' },
+    { member: 'jordan-wedding', activity: 'draft' },
+    { member: 'jordan-wedding', activity: 'cancelled' },
+  ])
+    await rejects(
+      store.invite(org, 'wedding', { ...input, state: 'invited', revision: 1 }),
+    );
+  await rejects(
+    store.respond(
+      { kind: 'preview', id: 'a', member: 'jordan-wedding' },
+      'wedding',
+      'jordan-wedding',
+      { activity: 'ceremony', state: 'accepted', revision: 1 },
+    ),
+  );
+  await store.removeOrganizer(orgB, 'wedding', 'a');
+  await rejects(
+    store.invite(org, 'wedding', {
+      member: 'lee-wedding',
+      activity: 'ceremony',
+      state: 'invited',
+      revision: 1,
+    }),
+  );
+  assert.equal(
+    (await rows('SELECT * FROM audit ORDER BY id')).length,
+    before.length + 1,
+  );
+  assert.deepEqual(await rows('SELECT * FROM guards'), []);
+});
+void test('HTTP workspace, invitation, closure and member responses enforce actor and forgery checks', async () => {
+  const organizer = await api(
+    request(
+      'local/organizer',
+      'POST',
+      { organizer: 'a' },
+      { 'x-flings-local': '1' },
+    ),
+  );
+  const cookie = organizer.headers.get('set-cookie')!.split(';')[0];
+  const { csrf } = (await organizer.json()) as { csrf: string };
+  const headers = {
+    Cookie: cookie,
+    'x-flings-csrf': csrf,
+    'x-flings-organizer': 'a',
+  };
+  assert.equal(
+    (await api(request('workspace/organizer', 'GET', undefined, headers)))
+      .status,
+    200,
+  );
+  assert.equal(
+    (await api(request('concerts/organizer', 'GET', undefined, headers)))
+      .status,
+    409,
+  );
+  assert.equal(
+    (
+      await api(
+        request('wedding/organizer', 'GET', undefined, {
+          ...headers,
+          'x-flings-organizer': 'b',
+        }),
+      )
+    ).status,
+    409,
+  );
+  const invitation = {
+    member: 'lee-wedding',
+    activity: 'ceremony',
+    state: 'invited',
+    revision: 0,
+  };
+  assert.equal(
+    (
+      await api(
+        request('wedding/organizer/invitation', 'POST', invitation, {
+          Cookie: cookie,
+        }),
+      )
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await api(
+        request('wedding/organizer/invitation', 'POST', invitation, headers),
+      )
+    ).status,
+    200,
+  );
+  const m = await httpMember('wedding', 'jordan-wedding');
+  const mh = { Cookie: m.cookie, 'x-flings-csrf': m.csrf };
+  assert.equal(
+    (
+      await api(
+        request(
+          'wedding/member/jordan-wedding/respond',
+          'POST',
+          { activity: 'ceremony', state: 'accepted', revision: 1 },
+          mh,
+        ),
+      )
+    ).status,
+    200,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'wedding/organizer/state',
+          'POST',
+          { state: 'closed', revision: 2, confirm: true },
+          headers,
+        ),
+      )
+    ).status,
+    200,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'wedding/member/jordan-wedding/respond',
+          'POST',
+          { activity: 'ceremony', state: 'declined', revision: 2 },
+          mh,
+        ),
+      )
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'wedding/organizer',
+          'GET',
+          undefined,
+          headers,
+          'https://flings.example',
+        ),
+        {
+          FLINGS_MODE: 'hosted',
+        },
+      )
+    ).status,
+    503,
   );
 });

@@ -63,6 +63,9 @@ export default function Home() {
           together.
         </p>
       </section>
+      <p className="organizer-entry">
+        <a href="/organizer">Open the organizer rehearsal →</a>
+      </p>
       <div className="gatherings">
         {gatherings.map((g, i) => (
           <article key={g.id}>

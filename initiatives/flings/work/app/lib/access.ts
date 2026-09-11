@@ -355,7 +355,7 @@ export class AccessStore {
         member,
         fling,
       ),
-      this.q('SELECT id,title,state FROM flings WHERE id=?', fling),
+      this.q('SELECT id,title,state,revision FROM flings WHERE id=?', fling),
       this.q(
         `SELECT a.id,a.title,a.summary,a.state,i.state invitation,CASE WHEN i.state='accepted' AND a.state='published' THEN a.details ELSE NULL END details FROM activities a JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND a.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY a.id`,
         member,
@@ -381,8 +381,8 @@ export class AccessStore {
         complete: boolean;
       },
       fling: results[2].results[0],
-      activities: results[3].results,
-      events: results[4].results,
+      activities: results[3].results as Row[],
+      events: results[4].results as Row[],
       preview: actor.kind === 'preview',
     };
   }

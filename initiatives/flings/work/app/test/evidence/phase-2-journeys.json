@@ -1,0 +1,457 @@
+{
+  "recorded_at": "2026-09-11T06:37:55.126Z",
+  "node": "v23.11.0",
+  "os": "darwin 25.6.0",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "outing",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "wedding",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "concerts",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "outing",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "wedding",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "concerts",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "outing",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "wedding",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "concerts",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "outing",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "wedding",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "concerts",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "outing",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "wedding",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "fling": "concerts",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "outing",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "wedding",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "fling": "concerts",
+      "passed": true,
+      "checks": [
+        "assigned-flings",
+        "profile-created",
+        "invite",
+        "accept-by-keyboard",
+        "decline-redaction",
+        "event-zone",
+        "preview-read-only",
+        "close-stale-write",
+        "closed-profile-correction",
+        "reopen-preserves-response",
+        "withdraw-redaction",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}

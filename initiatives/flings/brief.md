@@ -6,18 +6,20 @@
 
 ## Done
 
-Three fictional gathering rehearsals now open member pages with independent
-profiles, invitation-dependent detail and read-only preview. The access
-foundations passed 16 real-database/API tests and six desktop/phone browser
-journeys, including link expiry, revocation, competing writes and stale tabs.
+Three fictional gathering rehearsals have independent member pages and an
+organizer workspace for assigned flings, profile creation, invitations,
+read-only previews and closure/reopening. Members can accept or decline and see
+event times in the event's zone. Validation passes 21 real-database/API tests,
+18 new organizer/member browser journeys and six existing access journeys
+across three engines at desktop/phone sizes.
 
 ## Remaining work
 
-Next are the full organizer/member journeys: creating events and invitations,
-responding, closing/reopening and handling time zones. Later phases cover
-discussions, polls, payment records, reviewed message handoff, recovery and
-hosted/pilot acceptance; the recorded dependency findings need attention before
-hosting.
+Phase 2 continues with fling/activity/event authoring, activity order,
+draft/cancellation and organizer maintenance controls, and daylight-saving
+time-entry checks. Later phases cover discussions, polls, payment records,
+reviewed message handoff, recovery and hosted/pilot acceptance; the recorded
+dependency findings need attention before hosting.
 
 ## Optional later
 

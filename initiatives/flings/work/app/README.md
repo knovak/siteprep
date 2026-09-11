@@ -1,9 +1,11 @@
-# Flings access foundations
+# Flings local gathering journeys
 
-A local, fictional-data increment for Phase 1 of the Flings plan. Three
-rehearsals open a member page, show invitation-dependent information and save a
-profile independently for that fling. Event/invitation editing and the full
-organizer interface are Phase 2. This folder is not a production deployment.
+A local, fictional-data application with the Phase 1 access foundation and the
+first Phase 2 organizer/member journeys. Organizers can list assigned gatherings,
+add member profiles, invite or withdraw members from existing activities, open
+read-only previews, and close or reopen a gathering. Members accept or decline
+invitations, see permitted details and correct their own profiles. Event
+creation/editing and the remaining Phase 2 checks are still pending.
 
 ## Run locally
 
@@ -101,8 +103,9 @@ receive summaries; accepted members receive participant detail; cancelled
 activities retain a cancellation notice. Other members' contacts and code
 records are absent. Preview uses a separate short-lived, read-only ticket and
 cannot acquire member credentials or mutate even if an organizer cookie is
-also present. The full organizer interface will supply the preview entry action
-in Phase 2; this increment exercises it through the local organizer API.
+also present. The organizer interface now supplies the preview entry action. Preview
+navigation acquires a separate ticket and never exchanges it for a member
+session.
 
 The member page registers the optional `update_member_profile` WebMCP tool. It
 validates the four form fields, uses the same save function and revision checks,
@@ -136,3 +139,37 @@ all checks. Do not use force-fix suggestions that downgrade Drizzle or switch
 Miniflare to an alpha without verifying compatibility. Provider identity,
 backups/retention, recovery, outside-member access and real recipients remain
 the plan's later prerequisites.
+
+## First Phase 2 increment
+
+Open `/organizer` and select fictional Casey, Rowan or Sam. The server returns
+only assigned flings; ordinary membership does not confer organizer access.
+Every organizer page keeps its expected organizer identity in memory and sends
+it with requests. A changed organizer cookie is rejected instead of silently
+changing the actor of a stale page. Initial actions wait until hydration and
+the first workspace check finish. No hosted identity has been enabled.
+
+`lib/journeys.ts` extends the existing authorization batches. Invitations,
+member responses and closure/reopening check the fling's current revision in
+the same transaction as their writes, then increment it. This deliberately
+serializes coordination across a fling: an intervening change requires reload,
+even on another activity. Profile corrections retain their own independent
+member revision. Child/fling relationships, current member activity and
+published activity state are checked inside the invitation transaction.
+
+Reinviting an accepted/declined member preserves their answer. Withdrawal
+removes the activity from actual member responses immediately; reinviting a
+withdrawn member returns to invited without revealing participant details.
+Accept, decline and reaccept use the same protected projection as preview.
+Closed flings reject invitation/response writes even from stale tabs; permitted
+history and profile correction remain usable. Reopening preserves responses.
+No coordination operation issues a member code, sends a message or changes a
+payment. Events display the stored instant in the event's IANA zone even when
+the browser is in another zone; authoring ambiguous local times is not yet built.
+
+Run `node test/journeys-browser.mjs` against the local server in addition to
+`npm run test:browser`. It records 18 organizer/member journeys across the
+three fixtures, three browser engines and desktop/phone sizes. Its profiles use
+fictional contacts only. Tests for polls, messages and payments on closure
+remain with those later implementations; this increment does not claim full
+T4/T5 or Phase 2 acceptance. See `test/evidence/phase-2.md`.

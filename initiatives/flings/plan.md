@@ -239,3 +239,21 @@ tests and six desktop/phone browser journeys. The next increment is Phase 2's
 organizer/member journeys; seeded invitations here do not complete those
 interface tests. The pinned scaffold's dependency audit remains recorded for
 refresh and re-verification before Phase 6 hosting.
+
+## Phase 2 first increment — September 11, 2026 (UTC)
+
+Organizer assigned-fling lists, member creation, invitation/withdrawal,
+read-only preview entry, member acceptance/decline/reacceptance, and confirmed
+closure/reopening are implemented. Events display their existing instant and
+IANA zone. The first interface receipt covers all three gathering fixtures,
+with 18 new desktop/phone journeys across three engines and 21 domain/HTTP
+checks. Invitation and closure writes share a transaction-checked fling revision;
+stale writes fail without partial state or audit records.
+
+`build-member-journeys` remains actionable. Next complete fling/activity/event
+creation and editing, activity order, draft/cancellation interface actions,
+organizer profile maintenance/assignment controls, and timezone gap/ambiguity
+entry and round-trip evidence. Then build all three gatherings through the
+interface for full T1/T3/T4 acceptance. T5's poll/payment/message checks remain
+with the later capabilities they exercise. Do not mark Phase 2 complete based
+only on the seeded gathering journeys in this receipt.

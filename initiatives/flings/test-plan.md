@@ -252,3 +252,21 @@ No unintended recipient, mixed-up personal link or hidden duplicate is acceptabl
 Unexplained outcomes or missing receipt leave the journey incomplete. Report
 observed usability/reliability and any reasons to reconsider API delivery; do
 not change the delivery design or call production ready without that review.
+
+## September 11 Phase 2 first-increment receipt
+
+The 21 domain/HTTP tests pass on real local D1, including assignment-only
+workspace reads, invitation projections, stale/concurrent response rollback,
+closure and reopening, preview/member denial and cross-fling child substitution.
+Eighteen new browser journeys pass across Chromium/Firefox/WebKit at 1280×900
+and 390×844, exercising the three seeded gathering fixtures from organizer
+member creation through invite, accept, decline, preview, closure, closed
+profile correction, reopening and withdrawal. A Tokyo viewer still sees each
+event's America/Los_Angeles zone. Startup and long-name phone-layout defects
+were corrected and retested. The receipt is `work/app/test/evidence/phase-2-journeys.json`.
+
+These are seeded-activity journeys, not proof of constructing all three
+fixtures through event-authoring screens. Those screens, ordering, draft and
+cancellation controls, DST-gap/repeated-time entry and later poll/payment/message
+closure checks remain unimplemented acceptance work. Hosted/pilot verification
+and the recorded dependency advisories remain separate from these local results.
