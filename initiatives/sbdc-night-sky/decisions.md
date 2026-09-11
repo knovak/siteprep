@@ -82,3 +82,21 @@ extracted source files remain unchanged.
 The initiative was already `dormant` and remains so, now explicitly confirmed
 by the user. User testing, any separately authorized fixes, and production
 release remain open under their existing blockers.
+
+## 2026-09-11 — Satisfactory user testing; optional mobile follow-up; remain dormant
+
+The user reports that `user-test-preview` had a satisfactory outcome and
+instructs that the item is complete. This settles the pending user-test
+outcome; no device-by-device findings were supplied.
+
+The user asks to convert `mobile-sky-follow-up` to an optional later todo and
+record it in `notes.md`. The inherited mobile sky positioning observation
+remains available for a later revisit. The item is retained as requested, but
+stays blocked on explicit user permission to resume it, so it cannot be
+selected by the sweep. No mobile correction is currently committed to.
+
+The user instructs: "remain in dormant state, no additional releases".
+The initiative remains `dormant`. Completing testing does not authorize a
+release; `release-after-testing` remains permission-blocked, with no release
+currently planned. Any later mobile work or release requires a new explicit
+instruction from the user.

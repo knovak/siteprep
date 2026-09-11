@@ -11,5 +11,7 @@ the [README and tutorial](README.html), then use the
 The [notes and reports](notes.html) retain the development history; the
 [test plan](test-plan.html) separates adoption checks from real-device testing.
 
-Application and documentation corrections are outside this PR. Production
-release follows testing and an explicit instruction from the user.
+The user reports a satisfactory test-preview outcome as of 2026-09-11, and
+`user-test-preview` is complete. The mobile sky positioning follow-up is an
+optional later todo, recorded in the [notes](notes.html). The initiative
+remains dormant, with no additional releases planned at the user's request.
