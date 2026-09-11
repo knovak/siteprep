@@ -31,6 +31,10 @@
     </div>
     <div class="card-content">
 <h2>Adoption notes and supplied reports</h2>
+<h3>User-test outcome and optional later work — 2026-09-11</h3>
+<p>The user reports that the test preview had a satisfactory outcome. <code>user-test-preview</code> is complete; no device-by-device findings were supplied.</p>
+<p><code>mobile-sky-follow-up</code> is an optional later todo: revisit the inherited mobile sky positioning described below if the user chooses to resume it. It is not a required correction or a release requirement. The todo remains blocked on explicit user permission, so the sweep cannot start it automatically.</p>
+<p>The initiative remains <code>dormant</code>, with no additional releases planned, as instructed by the user. The existing simulator and preserved source and reports remain unchanged.</p>
 <h3>Provenance — 2026-09-08</h3>
 <p>The supplied <code>sbdc.zip</code> contains 12 files: a standalone application, nine markdown documents, an assumptions sidecar, and a complete source archive. The nested archive contains 29 files, all adopted unchanged into <code>lib/</code>. Its nine documents are byte-identical to the corresponding outer files. <a href="https://github.com/knovak/siteprep/blob/codex/adopt-sbdc-night-sky/initiatives/sbdc-night-sky/adoption-manifest.json">adoption-manifest.json</a> records the archive hashes and every mapping. All 29 nested source files were verified byte-for-byte against the ZIP before the redundant binary archive was removed at the user&#39;s request. The manifest retains the ZIP&#39;s original size, checksum, and extracted-file inventory; <code>lib/</code> retains its complete contents.</p>
 <p><code>work/index.html</code> is byte-identical to both the supplied <code>sbdc-sky-simulator.html</code> and the existing <code>demos/SBDC Night Sky/index.html</code>. The demo&#39;s <code>index-initial.html</code> is retained in <code>work/</code> as well. The supplied assumptions sidecar is added as <code>work/sbdc-data.json</code> and matches the source package&#39;s <code>lib/data/sbdc-data.json</code>. The original builder reproduces the adopted application byte-for-byte.</p>

@@ -45,7 +45,7 @@
     </div>
     <div class="card-content">
       <ul>
-        <li>Stage: <span class="tag">refining</span></li>
+        <li>Stage: <span class="tag">dormant</span></li>
         <li>Value: medium</li>
         <li>Last activity: today</li>
       </ul>
@@ -58,21 +58,14 @@
     <div class="card-content">
       <dl class="stands">
         <dt>Needs from you</dt>
-        <dd><ul>
-          <li>user test findings for the World Migration Atlas preview <em>(Review the test preview and record findings — <code>data:</code>)</em></li>
-        </ul></dd>
+        <dd><p>Nothing.</p></dd>
         <dt>Scheduled</dt>
-        <dd><ul>
-          <li>Reconcile the T8 source, quantity, confidence and geography findings</li>
-          <li>Complete the remaining T6/T7 manual accessibility and cross-platform packaging gates — <code>external:manual screen-reader observations and Windows/Linux file-versus-HTTP packaging results; this run verifies macOS engines and keyboard behavior only</code> <em>(clears on its own)</em></li>
-        </ul></dd>
+        <dd><p>Nothing actionable.</p></dd>
         <dt>Done</dt>
-        <dd><p>The atlas contains 48 migrations and 92 destinations; its editorial report has 124 evidence rows. A reproducible distance audit covers all 140 endpoints and flags one Indian Ocean point at both map scales plus Mauritius only at the coarse scale that omits the island. Seven geometry tests and 552 core assertions pass; coordinates, quantities and the application bundle are unchanged.</p>
-<p>Earlier source reviews distinguish the Partition census population from unique movers and qualify refugee headlines. The existing data-table keyboard fix and its recorded browser evidence remain in place.</p></dd>
-        <dt>Remaining work</dt>
-        <dd><p>Phase 5 and T8 still require field-level sources, dated destination allocations, cohort-specific descendants and corrections to schematic geographic points. The four historical confidence exceptions have been reviewed, but their remaining quantities and the other historical entries still need evidence. T6/T7 still require manual screen-reader observations and Windows/Linux packaging runs.</p></dd>
+        <dd><p>The user reported successful preview testing on September 11, 2026; the initiative is dormant with no scheduled work. The atlas contains 48 migrations and 92 destinations, and its editorial report has 127 evidence rows covering source qualifications, population definitions and geographic findings; the report includes local copies of its inspection receipt and four contact sheets.</p>
+<p>The core suite passes 552 assertions. The recorded Chromium, Firefox and WebKit suites pass 96, 95 and 95 checks with unchanged reference images, including the data-table keyboard fix; their documented limitations remain.</p></dd>
         <dt>Optional later</dt>
-        <dd><p>The plan retains an optional Tauri wrapper and an online alternative for street-level detail. New movements can follow the dataset-validation and rebuild path as research supplies them.</p></dd>
+        <dd><ul><li>Field-level sources, dated destination allocations, cohort-specific descendants and remaining historical quantity, confidence and geographic reconciliation, using the existing editorial report.</li><li>Manual screen-reader observations and Windows/Linux file-versus-HTTP packaging comparisons.</li><li>The optional Tauri wrapper and online alternative for street-level detail.</li><li>New movements through the existing dataset-validation and rebuild workflow.</li></ul></dd>
       </dl>
       <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-09-11). Correct the document it summarises rather than the summary.</p>
     </div>
@@ -85,13 +78,13 @@
       <p><strong>Demo</strong></p>
       <ul>
         <li>Test — <a href="https://knovak.github.io/siteprep/preview/initiatives/migration-atlas/index.html">https://knovak.github.io/siteprep/preview/initiatives/migration-atlas/index.html</a> <em>(built from the initiative source)</em></li>
-        <li>Production — <a href="https://knovak.github.io/siteprep/demos/world_migration_atlas/">https://knovak.github.io/siteprep/demos/world_migration_atlas/</a> <em>(deployed 2026-09-09)</em></li>
+        <li>Production — <a href="https://knovak.github.io/siteprep/demos/world_migration_atlas/">https://knovak.github.io/siteprep/demos/world_migration_atlas/</a> <em>(deployed 2026-09-11)</em></li>
       </ul>
       <ul class="currency">
         <li><strong>Test</strong> <span class="verdict verdict-current">current with main</span> — built from the source on every build</li>
-        <li><strong>Production</strong> <span class="verdict verdict-behind">behind main</span> — 7 commits behind main</li>
+        <li><strong>Production</strong> <span class="verdict verdict-current">current with main</span> — matches main</li>
       </ul>
-      <p class="deployment-status">main is on test, not released · 7 commit(s) unreleased</p>
+      <p class="deployment-status">main is on both test and production · production is current</p>
     </div>
   </main>
   <main class="card" aria-labelledby="initiative-outputs">
