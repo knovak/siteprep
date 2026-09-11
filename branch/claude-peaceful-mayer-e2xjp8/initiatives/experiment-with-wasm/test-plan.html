@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test plan — Experiment with Wasm</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Test plan — Experiment with Wasm</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Experiment with Wasm</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Test plan</h2>
+    </div>
+    <div class="card-content">
+<h2>Test plan</h2>
+<ul><li>Run actual WASM SQLite, checking SQL selection results against the original JavaScript reference across exact/prefix/contains/Unicode/boolean cases.</li><li>Test HTML/JSON deduplication and round trip; collections; verdicts/tags/undo; saved/history selections; sitting reports; local images and database backup/restore.</li><li>Import a mixed legacy HTML export containing web links, bookmarklets, local files, mail links and browser-internal bookmarks. Retain all entries through JSON export/import, reload and full backup/restore; verify only HTTP(S) titles link anywhere and non-web records execute nothing. Malformed URLs must still roll back the entire file.</li><li>Verify invalid imports and failed saves are atomic; stale revisions cannot overwrite another window&#39;s changes; corrupt/wrong-schema backups are rejected.</li><li>Open the generated HTML through file:// with all network blocked. Import, filter, tag, judge, undo, export, reload and verify data is retained. Exercise desktop and phone layouts and local pictures.</li><li>Confirm the bundle contains a real validated WASM binary; remove/disable WebAssembly and require a clear startup failure rather than a JavaScript fallback.</li><li>Measure a generated 5,600-bookmark workload and record actual timings.</li><li>Run npm run build at repository root after the final source changes. Capture and inspect desktop and phone screenshots after that build.</li></ul>
+<h3>Tide Here</h3>
+<ul><li>Validate checksums of all 376 source tiles before packing and of committed data before each normal build. Confirm 65,203 points and 34 constituents without synthetic fixtures.</li><li>Compare real WASM against recorded original full-precision FES forecasts for 12 cases covering the Americas, Europe, Africa, Asia, Oceania and a 2036 date. Require matching event types/counts, times within one second and heights within 0.00001 m. These are implementation parity checks, not new empirical model-accuracy validation.</li><li>Exercise five coast-local days across 23/25-hour DST days and the date line; polar sun never-rise/set states; finite geographic coverage; invalid coordinates and unknown/ambiguous names.</li><li>Copy only the HTML into an unrelated directory, disable networking, and calculate five different coasts. Require five cards, tide events, astronomy and zero HTTP(S) requests.</li><li>Verify alternate-point selection, future dates, geolocation rejection, history reload/export/restore, storage-quota failure and startup failure without a tide fallback. Clear browser storage and require the embedded model still to calculate.</li><li>Inspect desktop and phone screenshots after the final repository build. Chromium is the currently verified engine; Safari and Firefox acceptance remains an actionable follow-up.</li></ul>
+<h3>Static demo</h3>
+<p>Four website checks compare every release file against <code>work/site/</code> except <code>demo.json</code>, verify the complete wish and local links/anchors, follow both app links through a plain static HTTP server and exercise them after networking is disabled, and check a 390-pixel layout with contained table scrolling. App HTML hashes must remain unchanged. Capture the final landing, findings and Demo TOC screenshots after the root build, then verify the branch preview after CI publishes it.</p>
+<p>Before a production release, CI sets <code>WASM_DEMO_ROOT</code> to the absolute <code>work/site/</code> directory to exercise the staged preview without requiring <code>demos/</code> to change. Use the default target for the complete release comparison when publishing to production.</p>
+<h3>Browser compatibility follow-up</h3>
+<ul><li>Run all three Playwright suites with <code>WASM_BROWSER=firefox</code>; keep the default Chromium projects unchanged for CI.</li><li>Run the static demo with <code>WASM_BROWSER=webkit WASM_DEVICE=&#39;iPad Pro 11&#39;</code> to exercise its mobile user agent, 834 × 1194 viewport, touch input, offline post-load actions and reload persistence.</li><li>Test downloaded files in the installed Safari and Firefox applications, including a separate-copy backup restore, before claiming direct-file compatibility.</li><li>Treat Playwright WebKit as engine evidence, not as an installed Safari or physical-iPad result. Keep actual-iPad Files/Home Screen testing open until a person supplies that result.</li></ul>
+<h3>Online controls</h3>
+<ul><li>Import an export URL, fetch inert website metadata and a real image, and verify reload/full-backup retention without changing original fields or attached pictures.</li><li>Exercise explicit Microlink screenshot mode, blocked direct websites, HTTP 429, cancellation and phone layout. Embedded remote HTML must not execute scripts or request tracking images.</li><li>Search an online address, choose NOAA and CHS stations, verify five-day output and the correct provider/datum, then exercise cached fallback and return to the local model.</li><li>Cancel a slow station request, choose a new coast, and verify the old request cannot replace the new location.</li><li>Check transport timeouts, download limits, credential omission, malformed provider data, partial catalogue failure, cache limits and quota failures.</li><li>Preserve all existing WASM parity and offline tests. Check live NOAA, Photon and Microlink separately from deterministic fixtures, and report provider/browser failures explicitly.</li></ul>
+<h4>Default online regression checks</h4>
+<ul><li>Submit San Diego through Show tides; verify Photon and NOAA requests, station 9410170, MLLW, and five days without clicking separate online controls.</li><li>Resolve a beach/street address absent from the bundled catalogue through the same form.</li><li>Distinguish city/county labels, use provider ranking for online places, retain choices for ambiguous offline names/stations, and preserve the 25 km / 0.6 automatic match thresholds.</li><li>Verify CHS automatic selection with controlled responses, failed search/prediction fallback, no-network local-only use, and late/cancelled requests.</li><li>Verify coordinates, deep links, geolocation, Today/history and return to the model use the intended source path. Offline tests explicitly disable online availability; they do not rely on the default being offline.</li></ul>
+<h4>Website parity corrections</h4>
+<ul><li>Submit plain San Diego with ranked California city, county, Texas city and university results; load NOAA Broadway automatically and keep alternative places in collapsed options.</li><li>Confirm First day/Today controls are absent and old date fragments cannot move the forecast away from coast-local today.</li><li>Submit Maroochydore online and offline; require Mooloolaba, Bureau attribution, LAT and Australia/Brisbane today. Compare all five days with the hosted provider, including additional Sydney DST and Cocos cases.</li><li>Move the clock to a five-day window crossing December 31; require an explicit annual-coverage explanation and a full model forecast.</li></ul>
+<h4>Repeatable live-coast evidence</h4>
+<p>From <code>work/tide-here/</code>, run <code>node test/live-coasts.mjs /tmp/wasm-live-coasts.json</code> after root <code>npm ci</code>. This opt-in network collector is outside deterministic CI. It covers San Diego, Seattle, Boston, Pensacola, Honolulu, Anchorage, Victoria, Halifax and St. John&#39;s in Chromium/Firefox, including provider event parity and coast-local calendar placement. It records provider failures and explicit local choices; a safe model result does not count as successful official coverage. See the dated run in <code>verification.md</code> for limitations and evidence.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="claude/peaceful-mayer-e2xjp8" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
