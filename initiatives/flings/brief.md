@@ -6,24 +6,22 @@
 
 ## Done
 
-Organizers can create and rename flings, edit and reorder activities, manage
-invitations and previews, and close or reopen a gathering. Event forms reject
-nonexistent local times and require a UTC offset for repeated times; member
-views show the event's zone and only permitted details. Focus refreshes preserve
-an open draft, while a competing save rejects its original revision.
+Organizers can create and edit gatherings, descriptions and default time zones;
+manage activities, invitations and previews; and close or reopen a fling. Events
+support start/end times, invitation location text and participant-only addresses
+and links, with daylight-saving validation and visible update times.
 
-Validation passes 26 database/domain/HTTP/time tests and 30 browser journeys
-across three engines at desktop/phone sizes. The authoring rehearsals build
-five activities and seven events in each fresh fictional fling, covering the
-movie/meal, weekend and concert shapes.
+Validation passes 29 database/domain/HTTP/time tests and 36 browser journeys
+across three engines at desktop/phone sizes. Member and preview responses hide
+participant locations after decline or cancellation, and changing a fling's
+default time zone leaves existing events unchanged.
 
 ## Remaining work
 
-Phase 2 still includes organizer profile and assignment controls, event end and
-location fields, fling description/default zone and final independent-gathering
-acceptance. Later phases cover discussions, polls, payment records, reviewed
-message handoff, recovery and hosted/pilot acceptance; the recorded dependency
-findings need attention before hosting.
+Phase 2 still includes organizer profile and assignment controls and final
+independent-gathering acceptance. Later phases cover discussions, polls, payment
+records, reviewed message handoff, recovery and hosted/pilot acceptance; the
+recorded dependency findings need attention before hosting.
 
 ## Optional later
 
