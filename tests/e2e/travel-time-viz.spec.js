@@ -22,17 +22,16 @@ function route(page, from, to, time) {
 async function routePoint(line) {
   await line.scrollIntoViewIfNeeded();
   return line.evaluate(element => {
+    const viewport = window.visualViewport;
     for (const fraction of [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8]) {
       const point = element.getPointAtLength(element.getTotalLength() * fraction)
         .matrixTransform(element.getScreenCTM());
-      if (document.elementFromPoint(point.x, point.y) === element) {
-        // DOM hit testing uses the layout viewport; browser pointer input uses
-        // the visual viewport, which can shift independently after mobile scroll.
-        return {
-          x: point.x - (window.visualViewport?.offsetLeft || 0),
-          y: point.y - (window.visualViewport?.offsetTop || 0),
-        };
-      }
+      // SVG geometry and hit testing use the layout viewport, while browser
+      // input uses the visual viewport, which can pan separately on mobile.
+      const x = point.x - (viewport?.offsetLeft ?? 0);
+      const y = point.y - (viewport?.offsetTop ?? 0);
+      if (x < 0 || y < 0 || x >= (viewport?.width ?? innerWidth) || y >= (viewport?.height ?? innerHeight)) continue;
+      if (document.elementFromPoint(point.x, point.y) === element) return { x, y };
     }
     throw new Error(`No exposed point on ${element.getAttribute('aria-label')}`);
   });
