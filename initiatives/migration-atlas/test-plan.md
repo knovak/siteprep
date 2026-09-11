@@ -2,6 +2,12 @@
 
 ## What runs today
 
+**Current acceptance status, September 11, 2026:** the user reported successful
+preview testing. The remaining editorial, manual screen-reader and Windows/Linux
+packaging work is optional later work, as recorded in `decisions.md` and
+`notes.md`. The initiative is dormant; the dated evidence below retains its
+original scope and limitations.
+
 The development package restored on 2026-09-07 brought the original suites with
 it, so the inherited gates are runnable rather than historical. `lib/README.md`
 has the commands.
@@ -15,8 +21,8 @@ has the commands.
 | T4 | Timeline, selection, filtering, zoom and pan, keyboard, legends, WebView guards, responsive controls | Runs with the same pinned packages |
 | T5 | Playback frame time, first render, bundle size, memory stability | Runs with the same pinned packages |
 | T6 | Accessibility automation, contrast, reduced motion; `tests/axe.min.js` is vendored | Runs with the same pinned packages |
-| T7 | Chromium, Firefox and WebKit, local file against served | 24/24 inherited smoke checks pass on all three engines; broader packaging gates remain open |
-| T8 | Cited-source review, justified confidence and type | 48-entry review recorded; T8 acceptance remains open |
+| T7 | Chromium, Firefox and WebKit, local file against served | Recorded macOS checks pass; further Windows/Linux acceptance is optional later work |
+| T8 | Cited-source review, justified confidence and type | 48-entry review recorded; remaining editorial reconciliation is optional later work |
 
 T1, T2, E2 and E6 use the repository's Node installation. Browser dependencies
 are pinned in `lib/tests/requirements.txt` and installed in a Python virtual
@@ -58,11 +64,11 @@ substitute for the gates above.
 
 ## User testing and release
 
-The user tests the deployed preview - timeline navigation, zoom and pan, what
-the flows and circles mean, legends, filters, details, and the touch layout -
-and records findings. Any fixes belong in a later scoped change. Production
-needs a separate explicit release instruction; see the `release-rebuilt-source`
-item in `initiative.json` for what a release changes.
+On September 11, 2026, the user reported successful preview testing and asked
+for `user-test-preview` to be marked done. The user also authorized production
+release through DUM. No itemized device or assistive-technology findings were
+supplied. The remaining specialist acceptance work is optional, with its
+unverified results preserved in the record.
 
 
 ## September 9, 2026 extension
