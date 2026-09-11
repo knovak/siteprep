@@ -314,3 +314,9 @@ The following work is optional and retained in `notes.md`, outside the todo list
 The previously optional Tauri wrapper, online street-level alternative and new
 movements remain optional. Restart any of these only when the user chooses it
 and a new actionable todo is recorded.
+
+The release packages the existing destination-inspection receipt and four
+contact sheets with the editorial page. The builder preserves those evidence
+files byte-for-byte and rewrites their report links to local copies, so the
+published demo and an offline download do not depend on initiative paths.
+This packaging correction changes no map behavior, dataset or research finding.

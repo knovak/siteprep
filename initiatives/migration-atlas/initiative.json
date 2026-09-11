@@ -17,9 +17,9 @@
       "destination": "world_migration_atlas",
       "root_html": "index.html",
       "prod": {
-        "deployed_at": "2026-09-11T07:54:52Z",
-        "commit": "023bee1fac53c01c5fd5eaf3f57c5bfbd982b51d",
-        "tree": "b2882e3ce55592797801a39772f59fd7e00dfcf4"
+        "deployed_at": "2026-09-09T06:37:20Z",
+        "commit": "e567057673a39469dfd0c0b5c8581722f0ad4f77",
+        "tree": "78c17c6162c4fec4e954a0974d7346501f4d8fd1"
       }
     }
   ],

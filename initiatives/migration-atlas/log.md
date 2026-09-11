@@ -318,6 +318,13 @@ recorded in `decisions.md`.
 
 The user reported that preview testing was successful on September 11, 2026, and asked for this item to be marked done. Remaining work is optional later; the user requested dormancy and authorized release through DUM.
 
-## 2026-09-11 — Release
 
-Released to production — Demo, `023bee1`. 8 commit(s) since the previous release. <https://knovak.github.io/siteprep/demos/world_migration_atlas/> See releases.md.
+## 2026-09-11 — Package editorial evidence for release
+
+The release build detected five editorial links into the initiative directory.
+The builder now includes the existing observation receipt and four contact
+sheets as byte-preserved local evidence, and rewrites those five generated
+links. Their source is `notes/destination-inspection-20260910*` from commit
+`82847f9ce548c0d384d15af883fcb8c2e9794bad`. The app, dataset and research
+findings are unchanged. The failed attempt's unpublished release receipt was
+withdrawn before generating the final one.
