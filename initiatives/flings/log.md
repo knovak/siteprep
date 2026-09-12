@@ -108,3 +108,7 @@ The original member-journey todo remains actionable for organizer maintenance,
 assignment controls and final independent-gathering acceptance. This is the
 next bounded Phase 2 increment, without a lifecycle change. Test results and
 limits are recorded in `work/app/test/evidence/event-details-20260911.md`.
+
+## 2026-09-12 — Build organizer and member journeys, events, invitations, preview and closure
+
+Completed local Phase 2 acceptance across three independently authored flings: fixed organizer addition confirmation and member-profile correction forms; 33 real-D1/HTTP/time tests and 60 browser journeys passed across Chromium, Firefox and WebKit at desktop/phone sizes. Later poll/payment/message closure checks stay with their planned capabilities; hosted and human acceptance remain Phases 6/7.

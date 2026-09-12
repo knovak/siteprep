@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-member-journeys",
-      "title": "Build organizer and member journeys, events, invitations, preview and closure",
+      "id": "build-coordination",
+      "title": "Build discussions, polls and attributed payment coordination",
       "state": "actionable",
       "value": "high",
       "effort": "large",
@@ -15,8 +15,8 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-09-11T10:29:32Z",
-    "commit": "4d15b3c7858fd0ad0f8bbf4d7229f21899155d36",
-    "digest": "8d270163d9a54dfa9b3a0d202b08082ae6bc35c1"
+    "generated_at": "2026-09-12T02:51:02Z",
+    "commit": "b9f835aaf4df0299499a20391ea9f72ca8edd424",
+    "digest": "bbc6325427ad946e935c475a286d284da642beca"
   }
 }

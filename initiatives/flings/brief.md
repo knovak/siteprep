@@ -6,22 +6,22 @@
 
 ## Done
 
-Organizers can create and edit gatherings, descriptions and default time zones;
-manage activities, invitations and previews; and close or reopen a fling. Events
-support start/end times, invitation location text and participant-only addresses
-and links, with daylight-saving validation and visible update times.
+Organizers can create and edit gatherings, activities, events and member
+profiles; manage invitations and organizers; preview a member's page; and
+close or reopen a fling. Adding an organizer requires confirmation, and stale
+profile edits cannot overwrite newer corrections.
 
-Validation passes 29 database/domain/HTTP/time tests and 36 browser journeys
-across three engines at desktop/phone sizes. Member and preview responses hide
-participant locations after decline or cancellation, and changing a fling's
-default time zone leaves existing events unchanged.
+Phase 2 acceptance passes 33 database/HTTP/time tests and 60 browser journeys
+across three engines at desktop/phone sizes. The final matrix creates three
+independent gatherings and verifies separate member sessions, private-detail
+access, timezone handling and organizer removal scoped to one fling.
 
 ## Remaining work
 
-Phase 2 still includes organizer profile and assignment controls and final
-independent-gathering acceptance. Later phases cover discussions, polls, payment
-records, reviewed message handoff, recovery and hosted/pilot acceptance; the
-recorded dependency findings need attention before hosting.
+Phase 3 adds discussions, polls and attributed payment records. Later phases
+cover reviewed message handoff, editable recovery and hosted/pilot acceptance,
+including the remaining poll/payment/message closure checks; the recorded
+dependency findings need attention before hosting.
 
 ## Optional later
 

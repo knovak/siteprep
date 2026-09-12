@@ -27,6 +27,7 @@ type Member = {
   email: string;
   phone: string;
   preference: string;
+  revision: number;
 };
 type Activity = {
   id: string;
@@ -73,6 +74,8 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     [confirmation, setConfirmation] = useState(false);
   const [profileName, setProfileName] = useState('');
   const [newOrganizer, setNewOrganizer] = useState('');
+  const [memberDraft, setMemberDraft] = useState<Member | null>(null);
+  const [addOrganizer, setAddOrganizer] = useState<string | null>(null);
   const [removeOrganizer, setRemoveOrganizer] = useState<Organizer | null>(
     null,
   );
@@ -105,6 +108,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         if ([401, 403, 409].includes(r.status)) {
           setData(null);
           setList(null);
+          setMemberDraft(null);
         }
         throw new Error(value.error);
       }
@@ -401,6 +405,99 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
                   >
                     Preview {m.name}
                   </Button>
+                  <Button
+                    variant="outline"
+                    disabled={busy || initializing}
+                    onClick={() => setMemberDraft({ ...m })}
+                  >
+                    Edit profile for {m.name}
+                  </Button>
+                  {memberDraft?.id === m.id && (
+                    <form
+                      className="profile-editor"
+                      aria-label={'Edit profile for ' + m.name}
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        void act(async () => {
+                          await request(
+                            fling + '/organizer/' + memberDraft.id,
+                            'PUT',
+                            {
+                              name: memberDraft.name,
+                              email: memberDraft.email,
+                              phone: memberDraft.phone,
+                              preference: memberDraft.preference,
+                              revision: memberDraft.revision,
+                            },
+                          );
+                          setMemberDraft(null);
+                          await refresh();
+                          setNotice(
+                            'Member profile saved for this fling. No message was sent.',
+                          );
+                        });
+                      }}
+                    >
+                      <p>
+                        Changes apply only to this membership. Missing contact
+                        details can be added later.
+                      </p>
+                      <fieldset disabled={busy}>
+                        {(['name', 'email', 'phone'] as const).map((field) => (
+                          <div className="field" key={field}>
+                            <Label htmlFor={'edit-member-' + field}>
+                              Edit member {field}
+                            </Label>
+                            <Input
+                              id={'edit-member-' + field}
+                              required={field === 'name'}
+                              type={
+                                field === 'email'
+                                  ? 'email'
+                                  : field === 'phone'
+                                    ? 'tel'
+                                    : 'text'
+                              }
+                              value={memberDraft[field]}
+                              onChange={(e) =>
+                                setMemberDraft({
+                                  ...memberDraft,
+                                  [field]: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                        ))}
+                        <div className="field">
+                          <Label htmlFor="edit-member-preference">
+                            Edit member message preference
+                          </Label>
+                          <select
+                            id="edit-member-preference"
+                            value={memberDraft.preference}
+                            onChange={(e) =>
+                              setMemberDraft({
+                                ...memberDraft,
+                                preference: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="email">Email</option>
+                            <option value="text">Text</option>
+                            <option value="both">Email and text</option>
+                          </select>
+                        </div>
+                        <Button type="submit">Save member profile</Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setMemberDraft(null)}
+                        >
+                          Cancel profile edit
+                        </Button>
+                      </fieldset>
+                    </form>
+                  )}
                   <div className="invitation-list">
                     {data.activities
                       .filter((a) => a.state === 'published')
@@ -505,17 +602,8 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    void act(async () => {
-                      await request(fling + '/organizer/assignments', 'POST', {
-                        organizer: newOrganizer.trim(),
-                        confirm: true,
-                      });
-                      setNewOrganizer('');
-                      await refresh();
-                      setNotice(
-                        'Organizer added. They see this fling next time they open their workspace.',
-                      );
-                    });
+                    if (newOrganizer.trim())
+                      setAddOrganizer(newOrganizer.trim());
                   }}
                 >
                   <fieldset disabled={busy}>
@@ -533,6 +621,49 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
                     <Button type="submit">Add organizer</Button>
                   </fieldset>
                 </form>
+                <AlertDialog
+                  open={addOrganizer !== null}
+                  onOpenChange={(open) => !open && setAddOrganizer(null)}
+                >
+                  <AlertDialogContent>
+                    <AlertDialogTitle>
+                      Add organizer {addOrganizer} to this fling?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      They will have full organizer access, including member
+                      contact details and the ability to change other
+                      organizers. This applies only to this fling. Nothing is
+                      sent to them.
+                    </AlertDialogDescription>
+                    <AlertDialogCancel>
+                      Keep current organizers
+                    </AlertDialogCancel>
+                    <Button
+                      disabled={busy}
+                      onClick={() =>
+                        void act(async () => {
+                          const organizer = addOrganizer;
+                          setAddOrganizer(null);
+                          await request(
+                            fling + '/organizer/assignments',
+                            'POST',
+                            {
+                              organizer,
+                              confirm: true,
+                            },
+                          );
+                          setNewOrganizer('');
+                          await refresh();
+                          setNotice(
+                            'Organizer added. They see this fling next time they open their workspace.',
+                          );
+                        })
+                      }
+                    >
+                      Confirm addition
+                    </Button>
+                  </AlertDialogContent>
+                </AlertDialog>
               </section>
               <section className="profile-panel">
                 <h2>Add a member</h2>
