@@ -38,7 +38,7 @@ returns unavailable until the managed identity adapter in Phase 6 exists.
 
 ## Database and permission model
 
-`db/schema.ts` and `drizzle/` define nineteen tables. Compound foreign keys prevent
+`db/schema.ts` and `drizzle/` define 21 tables. Compound foreign keys prevent
 cross-fling member/code/session and activity/event/invitation relationships.
 Assignments and invitations have unique composite keys. Profiles use revisions;
 organizer assignments never arise from matching email addresses or membership.
@@ -460,3 +460,32 @@ preserves the six existing coordination journeys without replacing their earlier
 record. Screenshot-only context state stays in ignored owner-only files under
 `.wrangler/qa/`. The former 60 gathering/access regression journeys remain the
 Phase 3 receipt; this increment does not claim to have rerun all of them.
+
+## Exact message review and prompt export — September 12, 2026
+
+After reviewing recipients, enter a single-line email subject, exact shared
+text and optional personal notes. **Review exact messages** prepares a batch
+with one to five individual deliveries and shows each destination, message and
+personal link. Email and text for the same membership use one current code.
+Review omissions and explicitly acknowledge shared destinations before
+**Approve these exact messages**. **Copy sending prompt** then rechecks the batch
+and exports escaped JSON with fixed instructions. It never starts another app
+or reports a message sent. If clipboard access fails, select the returned text
+manually. Clipboard/LLM exposure, the sending boundary, wrong-account checks and
+unknown-outcome precautions appear beside the action.
+
+Message history survives reloads; it retains redacted content, approval/export
+times and unknown outcomes. Only the preparing organizer may copy that batch.
+Another organizer may read its redacted history but cannot acquire a competing
+handoff for it. An approved batch can be recopied while current. Changed
+recipients/permissions, closure, code expiry/revocation or a poll deadline require
+new review. Preparing again creates another batch; it is never an automatic
+retry. An exported copy cannot be recalled by Flings.
+
+Implementation and API details are in [the message technical document](../../MESSAGES_TECHDOC.md).
+Run `npm test` and `node test/messages-browser.mjs` with the local server, plus
+the existing audience and coordination browser suites. Screenshot-only state
+stays in ignored owner-only `.wrangler/qa/` files. The new browser test stubs
+clipboard access and saves no contact or bearer-link values in its receipt.
+The schema now has 21 tables. Optional linked discussion posts, imported result
+preview/reporting and explicit selected retries remain the next Phase 4 work.

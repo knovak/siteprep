@@ -127,3 +127,18 @@ and returns no access codes or approved handoff records. The larger
 `build-message-handoff` item stays open for approval, exact prompt export,
 optional discussion posting and reported outcomes. Evidence is recorded in
 `work/app/test/evidence/audience-20260912.md`.
+
+## 2026-09-12 — Exact message review and prompt export increment
+
+Added organizer-owned message batches, exact per-recipient review, explicit
+shared-destination approval, encrypted expiring personal-link payloads and
+copyable JSON sending prompts. Recopy preserves the approved text and delivery
+IDs; outcomes remain unknown. Current recipient/authority/state and code/poll
+window checks reject stale exports, including changes between verification and
+the final transaction. Fixed the workspace error display when a rejected action
+clears a stale child view. Evidence: 70 D1/domain/HTTP/time tests and 18 browser
+journeys in `work/app/test/evidence/messages-20260912.md`.
+
+The selected `build-message-handoff` todo stays actionable for optional atomic
+discussion posting, result preview/reporting and explicit selected retries.
+No lifecycle change, real message, provider account or deployment was made.

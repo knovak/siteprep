@@ -1,0 +1,144 @@
+{
+  "recorded_at": "2026-09-12T10:29:31.240Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "exact-quoted-multiline-data",
+        "per-member-both-channel-links",
+        "explicit-duplicate-review",
+        "keyboard-approval",
+        "copy-is-exported-not-sent",
+        "stable-recopy",
+        "redacted-history-after-reload",
+        "stale-contact-export-rejected",
+        "old-prompt-cleared-on-error",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "exact-quoted-multiline-data",
+        "per-member-both-channel-links",
+        "explicit-duplicate-review",
+        "keyboard-approval",
+        "copy-is-exported-not-sent",
+        "stable-recopy",
+        "redacted-history-after-reload",
+        "stale-contact-export-rejected",
+        "old-prompt-cleared-on-error",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "exact-quoted-multiline-data",
+        "per-member-both-channel-links",
+        "explicit-duplicate-review",
+        "keyboard-approval",
+        "copy-is-exported-not-sent",
+        "stable-recopy",
+        "redacted-history-after-reload",
+        "stale-contact-export-rejected",
+        "old-prompt-cleared-on-error",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "exact-quoted-multiline-data",
+        "per-member-both-channel-links",
+        "explicit-duplicate-review",
+        "keyboard-approval",
+        "copy-is-exported-not-sent",
+        "stable-recopy",
+        "redacted-history-after-reload",
+        "stale-contact-export-rejected",
+        "old-prompt-cleared-on-error",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "exact-quoted-multiline-data",
+        "per-member-both-channel-links",
+        "explicit-duplicate-review",
+        "keyboard-approval",
+        "copy-is-exported-not-sent",
+        "stable-recopy",
+        "redacted-history-after-reload",
+        "stale-contact-export-rejected",
+        "old-prompt-cleared-on-error",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "exact-quoted-multiline-data",
+        "per-member-both-channel-links",
+        "explicit-duplicate-review",
+        "keyboard-approval",
+        "copy-is-exported-not-sent",
+        "stable-recopy",
+        "redacted-history-after-reload",
+        "stale-contact-export-rejected",
+        "old-prompt-cleared-on-error",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    }
+  ]
+}

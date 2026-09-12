@@ -71,7 +71,7 @@ async function encryptionKey(secret: string) {
     ['encrypt', 'decrypt'],
   );
 }
-async function encrypt(secret: string, value: string) {
+export async function encrypt(secret: string, value: string) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const data = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
@@ -80,7 +80,7 @@ async function encrypt(secret: string, value: string) {
   );
   return b64(iv) + '.' + b64(new Uint8Array(data));
 }
-async function decrypt(secret: string, value: string) {
+export async function decrypt(secret: string, value: string) {
   const [iv, data] = value.split('.');
   return new TextDecoder().decode(
     await crypto.subtle.decrypt(
@@ -175,9 +175,17 @@ export class AccessStore {
             this.clock(),
           ),
           ...stmts,
+          this.q(
+            `UPDATE message_batches SET ciphertext=NULL WHERE fling=? AND
+            (send_until<=? OR EXISTS(SELECT 1 FROM message_deliveries d JOIN codes c ON c.id=d.code
+              WHERE d.batch=message_batches.id AND (c.revoked IS NOT NULL OR c.send_until<=?)))`,
+            fling,
+            this.clock(),
+            this.clock(),
+          ),
           this.q('DELETE FROM guards WHERE id=?', id),
         ])
-      ).slice(2, -1);
+      ).slice(2, -2);
     } catch {
       throw new AccessError(
         409,

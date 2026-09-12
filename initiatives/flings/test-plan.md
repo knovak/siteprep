@@ -299,3 +299,14 @@ profile-revision rejection. The unchanged backend suite passes 33 local D1,
 HTTP and time tests. See `work/app/test/evidence/independent-gatherings-20260912.md`
 and its JSON receipts for commands, evidence and limits. These results do not
 complete T5's future poll/payment/message cases or hosted and human acceptance.
+
+## September 12 exact-review/export receipt (UTC)
+
+The [message receipt](work/app/test/evidence/messages-20260912.html) covers
+70 real-database/domain/HTTP/time tests and six new browser journeys, plus six
+audience and six coordination regressions. It adds T8 exact-payload, review,
+expiry/revocation and race evidence, and T5 message-export rejection after
+closure/reopening. Browser copy is stubbed and all profiles are fictional.
+T9's optional post, T10's result import/preview and selected retries, and actual
+external-account/pilot observations remain pending. No sent/received state is
+inferred from an exported prompt.

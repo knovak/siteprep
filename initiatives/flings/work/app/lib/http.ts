@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { AudienceStore } from './audience.ts';
+import { MessageStore } from './messages.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -106,7 +106,7 @@ export async function handle(req: Request, env: Bindings) {
       throw new AccessError(503, 'This Flings workspace is not configured.');
     if (new URL(req.url).protocol !== 'https:' && !local(req, env))
       throw new AccessError(403, 'Use a secure Flings address.');
-    const store = new AudienceStore(env.DB, env.FLINGS_SECRET),
+    const store = new MessageStore(env.DB, env.FLINGS_SECRET),
       parts = new URL(req.url).pathname
         .replace(/^\/api\/flings\//, '')
         .split('/'),
@@ -272,6 +272,28 @@ export async function handle(req: Request, env: Bindings) {
       req.method === 'POST'
     )
       return json(await store.audience(actor, fling, await body(req)));
+    if (action === 'organizer' && member === 'messages') {
+      if (req.method === 'GET' && !sub)
+        return json(await store.history(actor, fling));
+      if (req.method === 'POST') {
+        const input = await body(req);
+        if (sub === 'prepare') {
+          if (
+            !env.FLINGS_ORIGIN ||
+            new URL(req.url).origin !== env.FLINGS_ORIGIN
+          )
+            throw new AccessError(503, 'The message origin is not configured.');
+          return json(
+            await store.prepare(actor, fling, input, env.FLINGS_ORIGIN),
+          );
+        }
+        if (sub === 'approve')
+          return json(await store.approve(actor, fling, input));
+        if (sub === 'export')
+          return json(await store.exportPrompt(actor, fling, input));
+      }
+      throw new AccessError(405, 'Use the message review form.');
+    }
     const coordination =
       (action === 'organizer' && member === 'coordination') ||
       (action === 'member' && sub === 'coordination');
