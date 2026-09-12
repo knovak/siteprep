@@ -337,3 +337,20 @@ maps 45 domain/HTTP/time checks and six new browser journeys to T6/T7 and the
 coordination portion of T5. The next item is Phase 4's `build-message-handoff`.
 The remaining message closure cases, editable recovery, hosting and independent
 pilot evidence retain their later phases and activation prerequisites.
+
+## Phase 4 audience-review increment — September 12, 2026 (UTC)
+
+The organizer can review all three planned recipient groups and the individual,
+unanswered-invitation, unanswered-poll and outstanding-payment refinements.
+One database snapshot applies current assignment, open state, profiles,
+invitation generations, poll subsets and attributed balances. Delivery
+preferences produce separate membership/channel rows; incomplete profiles and
+shared destinations remain visible for review. The preview returns no codes,
+member links or approved delivery records.
+
+`build-message-handoff` remains actionable. Next implement the immutable message
+review/approval record and exact text, protected expiring link material and prompt
+export, then the optional discussion post and reported-outcome reconciliation.
+The current receipt covers only the audience portion of T8. The remaining T8
+approval/expiry cases, T9/T10 and message-specific T5 checks stay open; no actual
+sending, hosting or pilot acceptance is implied.

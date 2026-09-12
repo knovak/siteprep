@@ -116,3 +116,14 @@ Completed local Phase 2 acceptance across three independently authored flings: f
 ## 2026-09-12 — Build discussions, polls and attributed payment coordination
 
 Built and verified local scoped discussions, replacement polls and attributed payment records; 45 real-D1/domain/HTTP/time tests and six coordination browser journeys pass. Preserved independent regression receipts and queued Phase 4 reviewed message handoff.
+
+## 2026-09-12 — Message audience review increment
+
+Added organizer-only recipient review for the three planned groups and their
+individual, unanswered-invitation/poll and outstanding-payment refinements.
+Current profile preferences preserve separate membership/channel rows, expose
+omissions and flag shared destinations. The read uses one guarded D1 snapshot
+and returns no access codes or approved handoff records. The larger
+`build-message-handoff` item stays open for approval, exact prompt export,
+optional discussion posting and reported outcomes. Evidence is recorded in
+`work/app/test/evidence/audience-20260912.md`.

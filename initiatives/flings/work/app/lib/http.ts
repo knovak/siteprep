@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { CoordinationStore } from './coordination.ts';
+import { AudienceStore } from './audience.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -106,7 +106,7 @@ export async function handle(req: Request, env: Bindings) {
       throw new AccessError(503, 'This Flings workspace is not configured.');
     if (new URL(req.url).protocol !== 'https:' && !local(req, env))
       throw new AccessError(403, 'Use a secure Flings address.');
-    const store = new CoordinationStore(env.DB, env.FLINGS_SECRET),
+    const store = new AudienceStore(env.DB, env.FLINGS_SECRET),
       parts = new URL(req.url).pathname
         .replace(/^\/api\/flings\//, '')
         .split('/'),
@@ -266,6 +266,12 @@ export async function handle(req: Request, env: Bindings) {
         return json(await store.updateOrganizerProfile(actor, input));
       return json(await store.createFling(actor, input), 201);
     }
+    if (
+      action === 'organizer' &&
+      member === 'audience' &&
+      req.method === 'POST'
+    )
+      return json(await store.audience(actor, fling, await body(req)));
     const coordination =
       (action === 'organizer' && member === 'coordination') ||
       (action === 'member' && sub === 'coordination');

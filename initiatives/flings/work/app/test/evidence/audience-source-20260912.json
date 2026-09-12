@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "path": "lib/audience.ts",
+      "sha256": "33a5d477f4f46d7e97e9a7db4b32a1b2f77843c2e9be6a1481b0000771c7de66"
+    },
+    {
+      "path": "lib/http.ts",
+      "sha256": "c6c19987354456a89ec59f0fe1e63f156f7a964db8ac08695c7e3b343ba1697e"
+    },
+    {
+      "path": "components/audience-panel.tsx",
+      "sha256": "ec1bb805d0354f59ffbc38debf79aac8165e9ebdc5def97738a597dc693790fe"
+    },
+    {
+      "path": "components/organizer-page.tsx",
+      "sha256": "d919a9c0c38acf53107dc4021d8765dd972b6bd94d7aea3d641758311dd4d925"
+    },
+    {
+      "path": "app/globals.css",
+      "sha256": "fcde296f6d82d9a6c1472b2a2dde8d22de51d220f429e1bdacfa969ae09716d3"
+    },
+    {
+      "path": "test/audience.test.ts",
+      "sha256": "7d3782e689a87527b1b7a89a3ea46262f02841a6a47fa648ca171fcbb2c2c0e1"
+    },
+    {
+      "path": "test/audience-browser.mjs",
+      "sha256": "21be8cb6235f65e9742fbe6f80bc57549d021cc4895f32f6c162bd9f505d494f"
+    }
+  ]
+}

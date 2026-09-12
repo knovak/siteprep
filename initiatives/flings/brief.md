@@ -6,20 +6,20 @@
 
 ## Done
 
-Organizers and members can manage gatherings, invitations, profiles and events,
-then use scoped discussions, event polls and attributed payment records.
-Poll replacements retain earlier responses; payment reports remain separate
-from confirmations, corrections, waivers and refunds.
+Gatherings support invitations, event details, scoped discussions, polls and
+attributed payment records. Organizers can now review message recipients by
+invitation, poll response, payment balance and delivery preference, with visible
+contact omissions and shared destinations.
 
-Phase 3 passes 45 database/HTTP/time tests and 66 browser journeys across
-three engines at desktop/phone sizes. Access changes and closure reject stale
-writes; reopening preserves history and closed polls.
+The latest increment passes 55 database/HTTP/time tests and 12 browser journeys
+across three engines at desktop/phone sizes. A changed profile clears its prior
+recipient preview; no message is approved or sent by that preview.
 
 ## Remaining work
 
-Phase 4 adds reviewed message audiences, exact sending-prompt export and
-reported outcomes. Editable recovery, hosted identity, dependency remediation
-and independent pilot acceptance follow in the existing plan.
+Finish Phase 4's immutable message approval, exact sending-prompt export,
+optional discussion post and reported outcomes. Editable recovery, hosted
+identity, dependency remediation and independent pilot acceptance follow.
 
 ## Optional later
 
