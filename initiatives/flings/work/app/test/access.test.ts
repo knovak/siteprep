@@ -46,6 +46,13 @@ after(async () => {
 beforeEach(async () => {
   now = Date.UTC(2026, 8, 10);
   for (const table of [
+    'payment_ledger',
+    'payment_requests',
+    'votes',
+    'poll_audience',
+    'polls',
+    'post_history',
+    'posts',
     'sessions',
     'codes',
     'invitations',
@@ -91,14 +98,14 @@ void test('database constraints enforce fling parents and unique assignments/inv
   await rejects(
     store
       .q(
-        "INSERT INTO invitations VALUES('alex-outing','ceremony','wedding','invited')",
+        "INSERT INTO invitations(member,activity,fling,state) VALUES('alex-outing','ceremony','wedding','invited')",
       )
       .run(),
   );
   await rejects(
     store
       .q(
-        "INSERT INTO invitations VALUES('alex-outing','movie','outing','invited')",
+        "INSERT INTO invitations(member,activity,fling,state) VALUES('alex-outing','movie','outing','invited')",
       )
       .run(),
   );
@@ -1271,7 +1278,7 @@ void test('activity editing, draft hiding, cancellation and ordering share actua
   });
   await store
     .q(
-      "INSERT INTO invitations VALUES(?,?,?,'accepted')",
+      "INSERT INTO invitations(member,activity,fling,state) VALUES(?,?,?,'accepted')",
       'alex-outing',
       a.id,
       'outing',

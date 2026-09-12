@@ -1,0 +1,1591 @@
+{
+  "recorded_at": "2026-09-12T04:00:13.065270+00:00",
+  "suites": [
+    {
+      "suite": "browser.mjs",
+      "receipt": {
+        "recorded_at": "2026-09-12T03:51:46.271Z",
+        "node": "v23.11.0",
+        "os": "darwin 25.6.0",
+        "base": "http://localhost:5187",
+        "receipts": [
+          {
+            "engine": "chromium",
+            "browser_version": "143.0.7499.4",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "passed": true,
+            "checks": [
+              "fragment-cleanup",
+              "two-fling-sessions",
+              "profile-save-by-keyboard",
+              "profile-isolation",
+              "http-only-cookies",
+              "preview-read-only",
+              "private-details-filtered",
+              "same-fling-stale-context",
+              "history-cleanup",
+              "no-code-in-request-urls-or-console",
+              "no-browser-errors",
+              "no-horizontal-overflow"
+            ],
+            "webmcp": "unsupported"
+          },
+          {
+            "engine": "chromium",
+            "browser_version": "143.0.7499.4",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "passed": true,
+            "checks": [
+              "fragment-cleanup",
+              "two-fling-sessions",
+              "profile-save-by-keyboard",
+              "profile-isolation",
+              "http-only-cookies",
+              "preview-read-only",
+              "private-details-filtered",
+              "same-fling-stale-context",
+              "history-cleanup",
+              "no-code-in-request-urls-or-console",
+              "no-browser-errors",
+              "no-horizontal-overflow"
+            ],
+            "webmcp": "unsupported"
+          },
+          {
+            "engine": "firefox",
+            "browser_version": "144.0.2",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "passed": true,
+            "checks": [
+              "fragment-cleanup",
+              "two-fling-sessions",
+              "profile-save-by-keyboard",
+              "profile-isolation",
+              "http-only-cookies",
+              "preview-read-only",
+              "private-details-filtered",
+              "same-fling-stale-context",
+              "history-cleanup",
+              "no-code-in-request-urls-or-console",
+              "no-browser-errors",
+              "no-horizontal-overflow"
+            ],
+            "webmcp": "unsupported"
+          },
+          {
+            "engine": "firefox",
+            "browser_version": "144.0.2",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "passed": true,
+            "checks": [
+              "fragment-cleanup",
+              "two-fling-sessions",
+              "profile-save-by-keyboard",
+              "profile-isolation",
+              "http-only-cookies",
+              "preview-read-only",
+              "private-details-filtered",
+              "same-fling-stale-context",
+              "history-cleanup",
+              "no-code-in-request-urls-or-console",
+              "no-browser-errors",
+              "no-horizontal-overflow"
+            ],
+            "webmcp": "unsupported"
+          },
+          {
+            "engine": "webkit",
+            "browser_version": "26.0",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "passed": true,
+            "checks": [
+              "fragment-cleanup",
+              "two-fling-sessions",
+              "profile-save-by-keyboard",
+              "profile-isolation",
+              "http-only-cookies",
+              "preview-read-only",
+              "private-details-filtered",
+              "same-fling-stale-context",
+              "history-cleanup",
+              "no-code-in-request-urls-or-console",
+              "no-browser-errors",
+              "no-horizontal-overflow"
+            ],
+            "webmcp": "unsupported"
+          },
+          {
+            "engine": "webkit",
+            "browser_version": "26.0",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "passed": true,
+            "checks": [
+              "fragment-cleanup",
+              "two-fling-sessions",
+              "profile-save-by-keyboard",
+              "profile-isolation",
+              "http-only-cookies",
+              "preview-read-only",
+              "private-details-filtered",
+              "same-fling-stale-context",
+              "history-cleanup",
+              "no-code-in-request-urls-or-console",
+              "no-browser-errors",
+              "no-horizontal-overflow"
+            ],
+            "webmcp": "unsupported"
+          }
+        ]
+      }
+    },
+    {
+      "suite": "journeys-browser.mjs",
+      "receipt": {
+        "recorded_at": "2026-09-12T03:53:02.104Z",
+        "node": "v23.11.0",
+        "os": "darwin 25.6.0",
+        "receipts": [
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "outing",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "wedding",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "concerts",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "outing",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "wedding",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "concerts",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "outing",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "wedding",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "concerts",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "outing",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "wedding",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "concerts",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "outing",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "wedding",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            },
+            "fling": "concerts",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "outing",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "wedding",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "fling": "concerts",
+            "passed": true,
+            "checks": [
+              "assigned-flings",
+              "profile-created",
+              "invite",
+              "accept-by-keyboard",
+              "decline-redaction",
+              "event-zone",
+              "preview-read-only",
+              "close-stale-write",
+              "closed-profile-correction",
+              "reopen-preserves-response",
+              "withdraw-redaction",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "suite": "authoring-browser.mjs",
+      "receipt": {
+        "recorded_at": "2026-09-12T03:53:57.306Z",
+        "node": "v23.11.0",
+        "os": "darwin 25.6.0",
+        "receipts": [
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 1280,
+            "activities": 5,
+            "events": 7,
+            "passed": true,
+            "checks": [
+              "creation-assignment",
+              "movie-meal",
+              "weekend-grouping",
+              "concert-months",
+              "order",
+              "gap-rejection",
+              "explicit-repeated-offset",
+              "round-trip",
+              "draft-hidden",
+              "accept-private-details",
+              "cancel-redaction",
+              "viewer-zone",
+              "no-overflow",
+              "no-page-errors",
+              "focus-preserves-draft",
+              "stale-draft-rejected"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 390,
+            "activities": 5,
+            "events": 7,
+            "passed": true,
+            "checks": [
+              "creation-assignment",
+              "movie-meal",
+              "weekend-grouping",
+              "concert-months",
+              "order",
+              "gap-rejection",
+              "explicit-repeated-offset",
+              "round-trip",
+              "draft-hidden",
+              "accept-private-details",
+              "cancel-redaction",
+              "viewer-zone",
+              "no-overflow",
+              "no-page-errors",
+              "focus-preserves-draft",
+              "stale-draft-rejected"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 1280,
+            "activities": 5,
+            "events": 7,
+            "passed": true,
+            "checks": [
+              "creation-assignment",
+              "movie-meal",
+              "weekend-grouping",
+              "concert-months",
+              "order",
+              "gap-rejection",
+              "explicit-repeated-offset",
+              "round-trip",
+              "draft-hidden",
+              "accept-private-details",
+              "cancel-redaction",
+              "viewer-zone",
+              "no-overflow",
+              "no-page-errors",
+              "focus-preserves-draft",
+              "stale-draft-rejected"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 390,
+            "activities": 5,
+            "events": 7,
+            "passed": true,
+            "checks": [
+              "creation-assignment",
+              "movie-meal",
+              "weekend-grouping",
+              "concert-months",
+              "order",
+              "gap-rejection",
+              "explicit-repeated-offset",
+              "round-trip",
+              "draft-hidden",
+              "accept-private-details",
+              "cancel-redaction",
+              "viewer-zone",
+              "no-overflow",
+              "no-page-errors",
+              "focus-preserves-draft",
+              "stale-draft-rejected"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 1280,
+            "activities": 5,
+            "events": 7,
+            "passed": true,
+            "checks": [
+              "creation-assignment",
+              "movie-meal",
+              "weekend-grouping",
+              "concert-months",
+              "order",
+              "gap-rejection",
+              "explicit-repeated-offset",
+              "round-trip",
+              "draft-hidden",
+              "accept-private-details",
+              "cancel-redaction",
+              "viewer-zone",
+              "no-overflow",
+              "no-page-errors",
+              "focus-preserves-draft",
+              "stale-draft-rejected"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 390,
+            "activities": 5,
+            "events": 7,
+            "passed": true,
+            "checks": [
+              "creation-assignment",
+              "movie-meal",
+              "weekend-grouping",
+              "concert-months",
+              "order",
+              "gap-rejection",
+              "explicit-repeated-offset",
+              "round-trip",
+              "draft-hidden",
+              "accept-private-details",
+              "cancel-redaction",
+              "viewer-zone",
+              "no-overflow",
+              "no-page-errors",
+              "focus-preserves-draft",
+              "stale-draft-rejected"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "suite": "event-details-browser.mjs",
+      "receipt": {
+        "recorded_at": "2026-09-12T03:54:25.199Z",
+        "node": "v23.11.0",
+        "os": "darwin 25.6.0",
+        "receipts": [
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 1280,
+            "passed": true,
+            "checks": [
+              "description",
+              "default-zone-prefill",
+              "existing-event-zone-preserved",
+              "end-repeat-choice",
+              "end-range-rejection",
+              "end-gap-rejection",
+              "round-trip-end-and-location",
+              "updated-time",
+              "invitation-location",
+              "participant-only-location",
+              "preview-parity",
+              "decline-redaction",
+              "external-link-referrer",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 390,
+            "passed": true,
+            "checks": [
+              "description",
+              "default-zone-prefill",
+              "existing-event-zone-preserved",
+              "end-repeat-choice",
+              "end-range-rejection",
+              "end-gap-rejection",
+              "round-trip-end-and-location",
+              "updated-time",
+              "invitation-location",
+              "participant-only-location",
+              "preview-parity",
+              "decline-redaction",
+              "external-link-referrer",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 1280,
+            "passed": true,
+            "checks": [
+              "description",
+              "default-zone-prefill",
+              "existing-event-zone-preserved",
+              "end-repeat-choice",
+              "end-range-rejection",
+              "end-gap-rejection",
+              "round-trip-end-and-location",
+              "updated-time",
+              "invitation-location",
+              "participant-only-location",
+              "preview-parity",
+              "decline-redaction",
+              "external-link-referrer",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 390,
+            "passed": true,
+            "checks": [
+              "description",
+              "default-zone-prefill",
+              "existing-event-zone-preserved",
+              "end-repeat-choice",
+              "end-range-rejection",
+              "end-gap-rejection",
+              "round-trip-end-and-location",
+              "updated-time",
+              "invitation-location",
+              "participant-only-location",
+              "preview-parity",
+              "decline-redaction",
+              "external-link-referrer",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 1280,
+            "passed": true,
+            "checks": [
+              "description",
+              "default-zone-prefill",
+              "existing-event-zone-preserved",
+              "end-repeat-choice",
+              "end-range-rejection",
+              "end-gap-rejection",
+              "round-trip-end-and-location",
+              "updated-time",
+              "invitation-location",
+              "participant-only-location",
+              "preview-parity",
+              "decline-redaction",
+              "external-link-referrer",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 390,
+            "passed": true,
+            "checks": [
+              "description",
+              "default-zone-prefill",
+              "existing-event-zone-preserved",
+              "end-repeat-choice",
+              "end-range-rejection",
+              "end-gap-rejection",
+              "round-trip-end-and-location",
+              "updated-time",
+              "invitation-location",
+              "participant-only-location",
+              "preview-parity",
+              "decline-redaction",
+              "external-link-referrer",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "suite": "assignments-browser.mjs",
+      "receipt": {
+        "recorded_at": "2026-09-12T03:54:50.797Z",
+        "node": "v23.11.0",
+        "os": "darwin 25.6.0",
+        "receipts": [
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 1280,
+            "passed": true,
+            "checks": [
+              "organizer-name-save",
+              "organizer-list-shows-self-and-co-organizers",
+              "unknown-organizer-id-rejected",
+              "cancel-addition-without-granting-access",
+              "add-organizer-after-keyboard-confirmation",
+              "remove-organizer-with-confirmation",
+              "sole-organizer-remove-disabled-in-ui",
+              "sole-organizer-remove-refused-by-server",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 390,
+            "passed": true,
+            "checks": [
+              "organizer-name-save",
+              "organizer-list-shows-self-and-co-organizers",
+              "unknown-organizer-id-rejected",
+              "cancel-addition-without-granting-access",
+              "add-organizer-after-keyboard-confirmation",
+              "remove-organizer-with-confirmation",
+              "sole-organizer-remove-disabled-in-ui",
+              "sole-organizer-remove-refused-by-server",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 1280,
+            "passed": true,
+            "checks": [
+              "organizer-name-save",
+              "organizer-list-shows-self-and-co-organizers",
+              "unknown-organizer-id-rejected",
+              "cancel-addition-without-granting-access",
+              "add-organizer-after-keyboard-confirmation",
+              "remove-organizer-with-confirmation",
+              "sole-organizer-remove-disabled-in-ui",
+              "sole-organizer-remove-refused-by-server",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 390,
+            "passed": true,
+            "checks": [
+              "organizer-name-save",
+              "organizer-list-shows-self-and-co-organizers",
+              "unknown-organizer-id-rejected",
+              "cancel-addition-without-granting-access",
+              "add-organizer-after-keyboard-confirmation",
+              "remove-organizer-with-confirmation",
+              "sole-organizer-remove-disabled-in-ui",
+              "sole-organizer-remove-refused-by-server",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 1280,
+            "passed": true,
+            "checks": [
+              "organizer-name-save",
+              "organizer-list-shows-self-and-co-organizers",
+              "unknown-organizer-id-rejected",
+              "cancel-addition-without-granting-access",
+              "add-organizer-after-keyboard-confirmation",
+              "remove-organizer-with-confirmation",
+              "sole-organizer-remove-disabled-in-ui",
+              "sole-organizer-remove-refused-by-server",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 390,
+            "passed": true,
+            "checks": [
+              "organizer-name-save",
+              "organizer-list-shows-self-and-co-organizers",
+              "unknown-organizer-id-rejected",
+              "cancel-addition-without-granting-access",
+              "add-organizer-after-keyboard-confirmation",
+              "remove-organizer-with-confirmation",
+              "sole-organizer-remove-disabled-in-ui",
+              "sole-organizer-remove-refused-by-server",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "suite": "independent-gatherings-browser.mjs",
+      "receipt": {
+        "recorded_at": "2026-09-12T04:00:13.027Z",
+        "source_base": "f20e9bb31ac4b2637aa6e8499d1d0679759af6f1",
+        "node": "v23.11.0",
+        "os": "darwin 25.6.0",
+        "receipts": [
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 1280,
+            "gathering": "outing",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 1280,
+            "gathering": "wedding",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 1280,
+            "gathering": "concerts",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 390,
+            "gathering": "outing",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 390,
+            "gathering": "wedding",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "chromium",
+            "browser": "143.0.7499.4",
+            "width": 390,
+            "gathering": "concerts",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 1280,
+            "gathering": "outing",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 1280,
+            "gathering": "wedding",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 1280,
+            "gathering": "concerts",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 390,
+            "gathering": "outing",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 390,
+            "gathering": "wedding",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "firefox",
+            "browser": "144.0.2",
+            "width": 390,
+            "gathering": "concerts",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 1280,
+            "gathering": "outing",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 1280,
+            "gathering": "wedding",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 1280,
+            "gathering": "concerts",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 390,
+            "gathering": "outing",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 390,
+            "gathering": "wedding",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          },
+          {
+            "engine": "webkit",
+            "browser": "26.0",
+            "width": 390,
+            "gathering": "concerts",
+            "passed": true,
+            "checks": [
+              "independent-interface-authoring",
+              "distinct-event-times-and-places",
+              "confirmed-organizer-assignment",
+              "organizer-member-profile-edit-and-cancel",
+              "closed-organizer-profile-correction",
+              "stale-organizer-profile-edit-rejected",
+              "invited-accepted-declined-withdrawn-preview-parity",
+              "preview-write-denial",
+              "draft-hiding-cancellation-notice",
+              "closure-stale-response",
+              "closed-profile-correction",
+              "reopen-preserves-responses",
+              "unrelated-role-denial",
+              "three-member-sessions",
+              "matching-contact-independence",
+              "cross-fling-child-denial",
+              "scoped-organizer-revocation",
+              "tokyo-viewer-event-zone",
+              "no-overflow",
+              "no-page-errors"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

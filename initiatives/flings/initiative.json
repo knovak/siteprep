@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-coordination",
-      "title": "Build discussions, polls and attributed payment coordination",
+      "id": "build-message-handoff",
+      "title": "Build reviewed message audiences, exact sending-prompt export and reported outcomes",
       "state": "actionable",
       "value": "high",
       "effort": "large",

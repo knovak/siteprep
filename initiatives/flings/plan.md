@@ -322,3 +322,18 @@ the interface, HTTP and real-database evidence to T1/T3/T4 and the currently
 implemented parts of T5. Later poll/payment/message closure checks remain with
 Phases 3/4. The next planned item is `build-coordination`; hosting and human
 acceptance retain the Phase 6/7 prerequisites above.
+
+## Phase 3 coordination acceptance — September 12, 2026 (UTC)
+
+The local app now provides scoped discussions with attributed edits and hiding,
+event polls with reviewed member subsets and immutable replacement, and explicit
+member payment allocations with append-only reports, confirmations, corrections,
+waivers and refunds. All operations use current authority and fling revision
+checks in the actual D1 transaction. Decline/withdrawal invalidates old votes;
+closure rejects stale coordination writes and reopening preserves history.
+
+The [coordination receipt](work/app/test/evidence/coordination-20260912.html)
+maps 45 domain/HTTP/time checks and six new browser journeys to T6/T7 and the
+coordination portion of T5. The next item is Phase 4's `build-message-handoff`.
+The remaining message closure cases, editable recovery, hosting and independent
+pilot evidence retain their later phases and activation prerequisites.

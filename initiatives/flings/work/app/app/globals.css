@@ -541,3 +541,25 @@ output {
   max-width: 100%;
   font-size: 14px;
 }
+
+.coordination { margin: 28px 0 48px; border-top: 2px solid var(--border); padding-top: 24px; }
+.coord-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+.coordination h2 { font-size:26px; }
+.coordination h3 { font-size:22px; margin:18px 0; }
+.coordination h4 { font-size:18px; margin:0 0 10px; }
+.coord-columns { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr)); gap:24px; }
+.coord-columns > section { min-width:0; }
+.coord-card { border:1px solid var(--border); border-radius:16px; padding:20px; margin:16px 0; overflow-wrap:anywhere; }
+.coord-card p { margin:8px 0; }
+.coordination .post-text { white-space:pre-wrap; line-height:1.55; }
+.coordination a { text-decoration:underline; }
+.coordination .choice { display:flex; align-items:center; gap:10px; padding:10px 0; font-size:16px; }
+.coordination-form { max-width:720px; margin-top:24px; }
+.coordination input,.coordination textarea,.coordination select { font-size:16px; max-width:100%; }
+.coordination [data-slot='native-select-wrapper'] { width:100%; }
+.coordination fieldset { min-width:0; }
+.coordination button { height:auto; white-space:normal; max-width:100%; }
+.coordination .balance { font-weight:650; }
+.ledger { padding-left:20px; }
+.ledger li { margin:12px 0; }
+.coordination summary { cursor:pointer; margin:12px 0; }

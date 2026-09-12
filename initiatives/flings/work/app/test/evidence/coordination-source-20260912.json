@@ -1,0 +1,48 @@
+{
+  "files": [
+    {
+      "path": "lib/coordination.ts",
+      "sha256": "0cca3b0d74f8681e4a13569bcf49f6856489be524a93040ed6aad598f647f61f"
+    },
+    {
+      "path": "lib/http.ts",
+      "sha256": "d3992a30b3563a508e61aa8167f9d5ba4925df905d2e3b277345f7d402508a17"
+    },
+    {
+      "path": "lib/journeys.ts",
+      "sha256": "d68ab0e8ffd5709dd184636216baf11e28ec1902821d2f312198fbdf7571b3b5"
+    },
+    {
+      "path": "db/schema.ts",
+      "sha256": "66b12e51528cd3e86c2b83764b2faca6d4b336617ee3554236e08ab63ad74b98"
+    },
+    {
+      "path": "components/coordination-panel.tsx",
+      "sha256": "4a02cdaf9b180470bc48d9e91dec68160409cbf1e49b2be236b6a284f8253942"
+    },
+    {
+      "path": "components/member-page.tsx",
+      "sha256": "4e8ad9c86cf28bb847d39e05e5017e7b1a5921ca8978fa94d4e1c9770d5192d4"
+    },
+    {
+      "path": "components/organizer-page.tsx",
+      "sha256": "81c7161114cd5d9717c08c94b62c1b5662b000adeb2c5f0cef298c665f18f18f"
+    },
+    {
+      "path": "app/globals.css",
+      "sha256": "9f78a0a8edae0bfb2530fcf9071ccc60acedbb4959817a3b223a93c0276c19bd"
+    },
+    {
+      "path": "drizzle/0004_tired_ares.sql",
+      "sha256": "3c96a7affeeb0cc6369be57cafb621abd254bc3ea4e797d917c9238cedaedbc7"
+    },
+    {
+      "path": "test/coordination.test.ts",
+      "sha256": "afd6fa8af101701849518605ae8f97f9eac9b2a4ab80df6366fe17b5d2693111"
+    },
+    {
+      "path": "test/coordination-browser.mjs",
+      "sha256": "63f6b1ff7ce0751e8d9f2e4f508730e0876d9702421968a0805a61b557801567"
+    }
+  ]
+}

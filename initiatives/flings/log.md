@@ -112,3 +112,7 @@ limits are recorded in `work/app/test/evidence/event-details-20260911.md`.
 ## 2026-09-12 — Build organizer and member journeys, events, invitations, preview and closure
 
 Completed local Phase 2 acceptance across three independently authored flings: fixed organizer addition confirmation and member-profile correction forms; 33 real-D1/HTTP/time tests and 60 browser journeys passed across Chromium, Firefox and WebKit at desktop/phone sizes. Later poll/payment/message closure checks stay with their planned capabilities; hosted and human acceptance remain Phases 6/7.
+
+## 2026-09-12 — Build discussions, polls and attributed payment coordination
+
+Built and verified local scoped discussions, replacement polls and attributed payment records; 45 real-D1/domain/HTTP/time tests and six coordination browser journeys pass. Preserved independent regression receipts and queued Phase 4 reviewed message handoff.

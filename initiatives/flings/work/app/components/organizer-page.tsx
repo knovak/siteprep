@@ -2,6 +2,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import CoordinationPanel from './coordination-panel';
 import GatheringEditor from './gathering-editor';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -309,6 +310,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
       {fling && !data && !error && <output>Opening your gathering…</output>}
       {data && (
         <div hidden={initializing}>
+          <CoordinationPanel endpoint={fling + '/organizer/coordination'} parentRevision={data.fling.revision} request={request} refresh={refresh} organizer members={data.members} invitations={data.invitations}/>
           <div className="gathering-state">
             <span className="badge">{data.fling.state}</span>
             <Button
