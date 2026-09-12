@@ -7,8 +7,10 @@ read-only previews, and close or reopen a gathering. Members accept or decline
 invitations, see permitted details and correct their own profiles. Organizers can also create and rename flings, draft/publish/cancel and reorder
 activities, and create or edit events with explicit timezone handling. Organizers
 can rename themselves and add or remove co-organizers, with the last-organizer
-protection enforced on the server regardless of the interface. The final
-independent-gathering acceptance matrix remains pending.
+protection enforced on the server regardless of the interface. Organizers can
+correct member profiles, with stale drafts rejected instead of overwriting a
+newer edit. The acceptance receipts below separate local journeys from the later
+hosted and pilot checks.
 
 ## Run locally
 
@@ -201,10 +203,9 @@ Run `node test/authoring-browser.mjs` after the existing browser suites. It crea
 fresh fictional flings and exercises movie/meal grouping, a three-activity
 weekend and concerts months apart, including real form saves, order, DST gap and
 repeat handling, acceptance and cancellation redaction. It writes
-`test/evidence/authoring-20260911.json`. The full member-journey todo stays open
-for organizer profile/assignment controls, the specified event end/location
-fields and fling description/default zone, and final acceptance across independent
-gatherings. No action here sends, creates a hosted resource or changes identity
+`test/evidence/authoring-20260911.json`. This historical receipt constructs the
+three gathering shapes inside one fling. The separate independent-gathering
+matrix below checks three different flings and the subsequent profile controls. No action here sends, creates a hosted resource or changes identity
 configuration.
 
 Organizer focus rechecks preserve an open authoring draft while verifying the
@@ -240,10 +241,9 @@ fling revision and audit atomically and creates no code or outbound message.
 
 Run `node test/event-details-browser.mjs` for six additional desktop/phone
 journeys across Chromium, Firefox and WebKit, with a Tokyo viewer. The receipt
-is `test/evidence/event-details-20260911.json`. The prior Phase 2 evidence is
-historical; organizer profile/assignment controls and final independent-gathering
-acceptance are still pending. Hosting and later coordination capabilities remain
-separate plan steps.
+is `test/evidence/event-details-20260911.json`. These event-specific checks
+complement the independent-gathering matrix below. Hosting and later
+coordination capabilities remain separate plan steps.
 
 ## Organizer profile and assignment controls — September 11, 2026
 
@@ -265,12 +265,45 @@ generic 409 and resets the workspace view rather than a specific inline error
 
 - reloading shows the unchanged list, never a half-applied assignment.
 
-Run `node test/assignments-browser.mjs` for these journeys. **Only Chromium is
-exercised here** - Firefox and WebKit, run for every earlier Phase 1/2
-increment, are not provisioned in this build environment (`npm run
-setup:browsers` installs Chromium only). The receipt is
-`test/evidence/assignments-20260911.json`; re-run across the other two engines
-before this counts toward the plan's final T1/T3/T4 interface matrix.
+Run `node test/assignments-browser.mjs` for six desktop/phone journeys across
+Chromium, Firefox and WebKit. The current receipt is
+`test/evidence/assignments-20260912.json`; the September 11 receipt remains the
+historical Chromium-only result. The suite cancels an addition, confirms that
+no assignment appeared, then adds by keyboard confirmation. Removing the last
+organizer remains rejected by the server.
 
-`build-member-journeys` remains actionable for that final independent-gathering
-matrix. The later T5 poll/payment/message closure checks stay with Phases 3-4.
+## Independent gatherings and member corrections — September 12, 2026 (UTC)
+
+**Edit profile for …** opens a membership's name, email, phone and delivery
+preference. Cancelling leaves the record unchanged. Saving uses the existing
+organizer-authorized profile endpoint and the revision captured when editing
+began, including when the fling is closed. Focus refresh preserves that draft's
+revision; an intervening member edit rejects the stale save and clears the
+editor. Reload shows the current record. All corrections apply only to the
+selected membership and send nothing.
+
+Adding a co-organizer first opens an explicit confirmation identifying the
+entered organizer ID and the access it grants. Cancelling issues no assignment
+request. The selected ID is held in the confirmation until the organizer
+confirms or cancels; the existing server checks still validate the assignment.
+
+Run `node test/independent-gatherings-browser.mjs` against the local server.
+It creates three independent flings per browser/viewport pair: a movie and meal,
+a wedding weekend with separately invited activities, and concerts months apart.
+It authors their activities, times, end times and locations through forms, then
+exercises member responses, profiles, preview parity, closure and role isolation.
+The same browser keeps three membership sessions open with matching initial
+contacts. Cross-fling child substitution, preview writes, and writes from a
+removed organizer are refused. Its receipt records 18 gathering journeys in
+`test/evidence/independent-gatherings-20260912.json`; raw member/preview links
+and session credentials never enter that receipt.
+
+Use the pinned Playwright installation and all three browser binaries. Existing
+`browser.mjs`, `journeys-browser.mjs`, `authoring-browser.mjs`, and
+`event-details-browser.mjs` remain the access, seeded invitation/closure,
+daylight-saving entry, and event-detail regression suites. Run browser suites
+sequentially against one fictional local database; the assignment suite restores
+the fixture organizer's display name after each journey. No part of this harness
+activates hosting or sends to recipients. Later T5 poll/payment/message closure
+checks stay with their Phase 3/4 capabilities, and human acceptance stays in
+Phases 6/7.

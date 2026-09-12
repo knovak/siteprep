@@ -306,3 +306,19 @@ T1/T3/T4 matrix.
 T1/T3/T4 interface matrix across all three gathering fixtures. The later T5
 poll/payment/message checks remain with Phases 3-4. This increment does not
 activate hosting or complete Phase 2.
+
+## Phase 2 independent-gathering acceptance — September 12, 2026 (UTC)
+
+The final interface matrix now constructs three independent flings for each
+browser/viewport pair, rather than three shapes inside one fling. Eighteen
+gathering journeys pass across Chromium, Firefox and WebKit at desktop/phone
+sizes; six assignment journeys close the previous two-engine evidence gap.
+The matrix also exposed and fixed missing organizer member-profile correction
+forms and the immediate grant from the add-organizer form. Corrections retain
+the opening profile revision; organizer addition requires separate confirmation.
+
+The receipt at `work/app/test/evidence/independent-gatherings-20260912.md` maps
+the interface, HTTP and real-database evidence to T1/T3/T4 and the currently
+implemented parts of T5. Later poll/payment/message closure checks remain with
+Phases 3/4. The next planned item is `build-coordination`; hosting and human
+acceptance retain the Phase 6/7 prerequisites above.

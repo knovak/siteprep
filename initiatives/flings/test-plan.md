@@ -282,3 +282,20 @@ checks default-zone prefill, unchanged existing events, end-time round-trip,
 participant-only location access, preview parity, decline redaction and layout.
 See `work/app/test/evidence/event-details-20260911.md` for the final run counts
 and remaining acceptance work. This is local fictional-data evidence.
+
+## September 12 independent-gathering receipt (UTC)
+
+The final local Phase 2 matrix has 18 gathering journeys across Chromium,
+Firefox and WebKit at desktop/phone widths. It creates three separate flings
+through forms per engine/size pair, tests invitation-state and preview parity,
+organizer/member profile corrections, cancellation, closure/reopening and
+independent roles and matching-contact profiles. The assignment suite adds
+six journeys including the previously missing Firefox/WebKit results.
+
+Acceptance found two interface gaps: adding an organizer lacked a separate
+confirmation, and organizers could not correct existing member profiles. Both
+now have browser coverage, including cancellation without writes and stale
+profile-revision rejection. The unchanged backend suite passes 33 local D1,
+HTTP and time tests. See `work/app/test/evidence/independent-gatherings-20260912.md`
+and its JSON receipts for commands, evidence and limits. These results do not
+complete T5's future poll/payment/message cases or hosted and human acceptance.

@@ -1,17 +1,22 @@
-import { chromium, expect as baseExpect } from '@playwright/test';
+import {
+  chromium,
+  firefox,
+  webkit,
+  expect as baseExpect,
+} from '@playwright/test';
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import os from 'node:os';
 const base = process.env.FLINGS_TEST_URL || 'http://localhost:5187';
 const expect = baseExpect.configure({ timeout: 15000 });
 const receipts = [];
-// Only Chromium is provisioned in this build environment (`npm run
-// setup:browsers` installs Chromium only); Firefox and WebKit, run for every
-// earlier Phase 1/2 increment, are not available here. See the evidence file
-// and the plan for this gap.
-for (const [engine, launcher] of Object.entries({ chromium })) {
+for (const [engine, launcher] of Object.entries({
+  chromium,
+  firefox,
+  webkit,
+})) {
   const browser = await launcher.launch(
-    process.env.FLINGS_CHROMIUM_PATH
+    engine === 'chromium' && process.env.FLINGS_CHROMIUM_PATH
       ? { executablePath: process.env.FLINGS_CHROMIUM_PATH }
       : {},
   );
@@ -64,6 +69,9 @@ for (const [engine, launcher] of Object.entries({ chromium })) {
       await page
         .getByRole('button', { name: 'Add organizer', exact: true })
         .click();
+      await page
+        .getByRole('button', { name: 'Confirm addition', exact: true })
+        .click();
       await expect(page.getByRole('alert')).toContainText(
         'Access or the record changed',
       );
@@ -85,6 +93,27 @@ for (const [engine, launcher] of Object.entries({ chromium })) {
         await page
           .getByRole('button', { name: 'Add organizer', exact: true })
           .click();
+        await expect(page.getByRole('alertdialog')).toContainText(
+          'full organizer access',
+        );
+        const pending = await context.request.get(
+          `${base}/api/flings/${page.url().split('/').pop()}/organizer`,
+        );
+        assert.equal(pending.status(), 200);
+        assert.equal(
+          (await pending.json()).organizers.length,
+          id === 'b' ? 1 : 2,
+        );
+        await page
+          .getByRole('button', { name: 'Keep current organizers', exact: true })
+          .click();
+        await expect(removeButtons).toHaveCount(id === 'b' ? 1 : 2);
+        await page
+          .getByRole('button', { name: 'Add organizer', exact: true })
+          .click();
+        await page
+          .getByRole('button', { name: 'Confirm addition', exact: true })
+          .press('Enter');
         await expect(
           page.getByText('Organizer added. They see this fling next time'),
         ).toBeVisible();
@@ -149,7 +178,8 @@ for (const [engine, launcher] of Object.entries({ chromium })) {
           'organizer-name-save',
           'organizer-list-shows-self-and-co-organizers',
           'unknown-organizer-id-rejected',
-          'add-organizer',
+          'cancel-addition-without-granting-access',
+          'add-organizer-after-keyboard-confirmation',
           'remove-organizer-with-confirmation',
           'sole-organizer-remove-disabled-in-ui',
           'sole-organizer-remove-refused-by-server',
@@ -157,6 +187,12 @@ for (const [engine, launcher] of Object.entries({ chromium })) {
           'no-page-errors',
         ],
       });
+      await page.goto(base + '/organizer');
+      await page.getByLabel('Organizer name', { exact: true }).fill('Casey');
+      await page
+        .getByRole('button', { name: 'Save name', exact: true })
+        .click();
+      await expect(page.getByText('Organizer name saved.')).toBeVisible();
       await context.close();
     }
   } finally {
@@ -164,7 +200,7 @@ for (const [engine, launcher] of Object.entries({ chromium })) {
   }
 }
 await writeFile(
-  'test/evidence/assignments-20260911.json',
+  'test/evidence/assignments-20260912.json',
   JSON.stringify(
     {
       recorded_at: new Date().toISOString(),

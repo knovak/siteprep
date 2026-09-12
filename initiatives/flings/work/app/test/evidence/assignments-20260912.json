@@ -1,0 +1,115 @@
+{
+  "recorded_at": "2026-09-12T02:45:50.511Z",
+  "node": "v23.11.0",
+  "os": "darwin 25.6.0",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "cancel-addition-without-granting-access",
+        "add-organizer-after-keyboard-confirmation",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "cancel-addition-without-granting-access",
+        "add-organizer-after-keyboard-confirmation",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "cancel-addition-without-granting-access",
+        "add-organizer-after-keyboard-confirmation",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "cancel-addition-without-granting-access",
+        "add-organizer-after-keyboard-confirmation",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "cancel-addition-without-granting-access",
+        "add-organizer-after-keyboard-confirmation",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "organizer-name-save",
+        "organizer-list-shows-self-and-co-organizers",
+        "unknown-organizer-id-rejected",
+        "cancel-addition-without-granting-access",
+        "add-organizer-after-keyboard-confirmation",
+        "remove-organizer-with-confirmation",
+        "sole-organizer-remove-disabled-in-ui",
+        "sole-organizer-remove-refused-by-server",
+        "no-overflow",
+        "no-page-errors"
+      ]
+    }
+  ]
+}
