@@ -372,3 +372,56 @@ export const paymentLedger = sqliteTable(
     ),
   ],
 );
+
+export const messageBatches = sqliteTable(
+  'message_batches',
+  {
+    id: text().primaryKey(),
+    fling: text()
+      .notNull()
+      .references(() => flings.id),
+    owner: text()
+      .notNull()
+      .references(() => organizers.id),
+    revision: integer().notNull().default(1),
+    selection: text().notNull(),
+    context: text().notNull(),
+    audienceHash: text('audience_hash').notNull(),
+    manifest: text().notNull(),
+    payloadHash: text('payload_hash').notNull(),
+    ciphertext: text(),
+    sendUntil: integer('send_until').notNull(),
+    created: integer().notNull(),
+    approved: integer(),
+    exported: integer(),
+  },
+  (t) => [
+    unique().on(t.id, t.fling),
+    index('message_batches_fling').on(t.fling),
+    check('message_revision', sql`${t.revision}=1`),
+  ],
+);
+export const messageDeliveries = sqliteTable(
+  'message_deliveries',
+  {
+    id: text().primaryKey(),
+    batch: text().notNull(),
+    fling: text().notNull(),
+    member: text().notNull(),
+    code: text().notNull(),
+    channel: text().notNull(),
+  },
+  (t) => [
+    foreignKey({
+      columns: [t.batch, t.fling],
+      foreignColumns: [messageBatches.id, messageBatches.fling],
+    }),
+    foreignKey({
+      columns: [t.code, t.member, t.fling],
+      foreignColumns: [codes.id, codes.member, codes.fling],
+    }),
+    unique().on(t.batch, t.member, t.channel),
+    index('message_deliveries_code').on(t.code),
+    check('delivery_channel', sql`${t.channel} IN ('email','text')`),
+  ],
+);

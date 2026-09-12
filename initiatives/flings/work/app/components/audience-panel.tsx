@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import MessagePanel from './message-panel';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -234,6 +235,13 @@ export default function AudiencePanel({
               </Button>
             </fieldset>
           </form>
+          <MessagePanel
+            key={result ? JSON.stringify(form) + ':reviewed' : 'unreviewed'}
+            fling={fling}
+            selection={{ ...form, revision }}
+            deliveries={result?.deliveries ?? []}
+            request={request}
+          />
           {result && (
             <div className="audience-result" aria-live="polite">
               <h3>

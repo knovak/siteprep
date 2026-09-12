@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-09-12T10:37:33.094745+00:00",
+  "files": {
+    "lib/messages.ts": "94db5fedaec63d0c0d02f8a49cc9b5615ac4e8cb5c2b84ba1ac9d589093e74a7",
+    "lib/access.ts": "2f1440ee918229c6afbfde06684cd720f82533a89d95b1046e375b237ac1c298",
+    "lib/http.ts": "df42a67a3f6ac4201ad0855deef89ee3607b16f1c1a31ee1ec631be7cdfa7895",
+    "db/schema.ts": "fbc59924cda82302c02b0c2d5f2a40bc3ff11e343d2e268fa2bf4e182886847e",
+    "drizzle/0005_workable_roulette.sql": "07d6ccdbf53e7e6e1b6479090e1ea5e34a4a18a773407e14128f077e1c28501c",
+    "components/message-panel.tsx": "22635124d31877b0fbce97407bfb47aca43f91b133e9e51b313af86bd3e944cd",
+    "components/audience-panel.tsx": "310c028b27742f8da006b48b33d58d41d280754bcbc16aa0367c202826a576ba",
+    "components/organizer-page.tsx": "fe9b173e96b1d0c6124e25d5cbd15948730173b70f22cf37847b33a0f9199bbd",
+    "app/globals.css": "4ffaa8fabc84a824749a6c2b0b1c47544d1b6ff3209a0d1ac937221ef8f1f1d0",
+    "test/messages.test.ts": "7d8ce04473b2d3c23c5da472c4a9667017e2f8612aa55a09fc9c8c9a126a3468",
+    "test/messages-browser.mjs": "0fc06c577cebf0dc9f1f55dee35fda77c01c832dd889526160b5d93c887d43ab"
+  }
+}

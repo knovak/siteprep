@@ -574,3 +574,13 @@ output {
 .audience-panel select { font-size:16px; max-width:100%; }
 .audience-panel li { margin:16px 0; overflow-wrap:anywhere; }
 .audience-panel .choice { display:flex; align-items:center; gap:10px; padding:10px 0; font-size:16px; }
+
+.message-panel { border-top:1px solid var(--border); margin:24px 0; padding-top:8px; }
+.message-panel input,.message-panel textarea { font-size:16px; max-width:100%; }
+.message-panel button { max-width:100%; white-space:normal; height:auto; min-height:40px; }
+.message-delivery { padding:18px; border:1px solid var(--border); border-radius:10px; margin:16px 0; overflow-wrap:anywhere; }
+.message-delivery h4 { font-weight:650; }
+.message-delivery pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; line-height:1.6; margin:12px 0; }
+.message-exposure { margin:20px 0; line-height:1.6; }
+.message-history summary { cursor:pointer; margin:20px 0; }
+#sending-prompt { max-height:360px; overflow:auto; field-sizing:fixed; height:300px; }

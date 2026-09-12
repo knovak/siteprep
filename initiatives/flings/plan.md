@@ -354,3 +354,29 @@ export, then the optional discussion post and reported-outcome reconciliation.
 The current receipt covers only the audience portion of T8. The remaining T8
 approval/expiry cases, T9/T10 and message-specific T5 checks stay open; no actual
 sending, hosting or pilot acceptance is implied.
+
+## Phase 4 exact-review/export increment — September 12, 2026 (UTC)
+
+The organizer now writes the core text, email subject and optional per-member
+notes, reviews exact destinations and personal links, explicitly acknowledges
+shared destinations, approves the immutable revision and copies a sending
+prompt. Each batch is limited to five individual deliveries. A fresh check of
+current authority, gathering/profile/assignment revisions, audience and code
+windows precedes approval/export; the final transaction repeats the relevant
+checks. A batch belongs to its preparing organizer. Recopy uses the same IDs
+and text, and remains exported with unknown outcomes.
+
+Non-secret history uses link placeholders and an exact-payload fingerprint;
+recoverable raw payloads are encrypted and purged on authorized access after
+sending expiry, or in the same transaction as code revocation. Browser state is
+transient. The [message receipt](work/app/test/evidence/messages-20260912.html)
+records 70 domain/HTTP/time tests and 18 browser journeys across three engines
+and two screen sizes, including audience/coordination regressions.
+
+`build-message-handoff` remains actionable. Next implement the optional
+same-fling discussion post as part of the atomic approval transaction, then
+structured result preview/reporting and explicit selected retries after account
+history inspection. Current approval has no discussion target, so it creates
+no post. Imported results and discussion counts are not yet available. Phase 4
+is not complete; recovery and hosted/pilot acceptance follow in their existing
+order. No sending permission or real account setup is inferred from this work.

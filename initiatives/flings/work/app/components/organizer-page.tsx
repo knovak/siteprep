@@ -108,6 +108,10 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
       };
       if (!r.ok) {
         if ([401, 403, 409].includes(r.status)) {
+          setError(
+            value.error ||
+              'Access or the record changed. Reload this workspace.',
+          );
           setData(null);
           setList(null);
           setMemberDraft(null);
