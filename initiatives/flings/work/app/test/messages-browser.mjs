@@ -81,6 +81,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
           name: 'Exact message review',
           exact: true,
         });
+      await expect(
+        panel.getByLabel('Core message', { exact: true }),
+      ).toBeDisabled();
       await audience
         .getByRole('button', { name: 'Review recipients', exact: true })
         .click();
@@ -231,6 +234,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
           'per-member-both-channel-links',
           'explicit-duplicate-review',
           'keyboard-approval',
+          'composer-waits-for-reviewed-recipients',
           'copy-is-exported-not-sent',
           'stable-recopy',
           'redacted-history-after-reload',

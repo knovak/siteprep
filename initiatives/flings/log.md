@@ -136,7 +136,8 @@ copyable JSON sending prompts. Recopy preserves the approved text and delivery
 IDs; outcomes remain unknown. Current recipient/authority/state and code/poll
 window checks reject stale exports, including changes between verification and
 the final transaction. Fixed the workspace error display when a rejected action
-clears a stale child view. Evidence: 70 D1/domain/HTTP/time tests and 18 browser
+clears a stale child view, and disabled composition until recipient review is
+ready to prevent a loading result from resetting newly entered text. Evidence: 70 D1/domain/HTTP/time tests and 18 browser
 journeys in `work/app/test/evidence/messages-20260912.md`.
 
 The selected `build-message-handoff` todo stays actionable for optional atomic

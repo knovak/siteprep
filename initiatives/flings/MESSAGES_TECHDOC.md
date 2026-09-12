@@ -80,7 +80,8 @@ hosted activation; local cleanup occurs on authorized access and revocation.
 ## Interface and verification
 
 `components/message-panel.tsx` composes existing form primitives inside the
-recipient panel. It clears transient review/prompt state after edits and errors;
+recipient panel. Composition stays disabled until recipient review is ready.
+It clears transient review/prompt state after edits and errors;
 workspace context changes remount the panel. The parent retains the error when
 an access/revision failure removes the old view. History remains available
 without composing a new batch. No prompt or code goes into browser storage.

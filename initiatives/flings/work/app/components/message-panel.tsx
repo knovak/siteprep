@@ -142,7 +142,7 @@ export default function MessagePanel({
           void prepare();
         }}
       >
-        <fieldset disabled={busy}>
+        <fieldset disabled={busy || !deliveries.length}>
           <div className="field">
             <Label htmlFor="message-subject">Email subject</Label>
             <Input
