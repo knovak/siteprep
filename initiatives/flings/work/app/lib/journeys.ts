@@ -393,7 +393,7 @@ export class JourneyStore extends AccessStore {
         ),
         // Reinviting an accepted/declined member does not overwrite their response.
         this.q(
-          "INSERT INTO invitations(member,activity,fling,state) VALUES(?,?,?,?) ON CONFLICT(member,activity) DO UPDATE SET state=CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN excluded.state ELSE invitations.state END",
+          "INSERT INTO invitations(member,activity,fling,state) VALUES(?,?,?,?) ON CONFLICT(member,activity) DO UPDATE SET generation=invitations.generation+CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN 1 ELSE 0 END,state=CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN excluded.state ELSE invitations.state END",
           input.member,
           input.activity,
           fling,
@@ -432,7 +432,8 @@ export class JourneyStore extends AccessStore {
           [member, fling, input.activity],
         ),
         this.q(
-          'UPDATE invitations SET state=? WHERE member=? AND activity=? AND fling=?',
+          'UPDATE invitations SET generation=generation+CASE WHEN state!=? THEN 1 ELSE 0 END,state=? WHERE member=? AND activity=? AND fling=?',
+          input.state,
           input.state,
           member,
           input.activity,

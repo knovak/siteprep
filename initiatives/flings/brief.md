@@ -6,25 +6,23 @@
 
 ## Done
 
-Organizers can create and edit gatherings, activities, events and member
-profiles; manage invitations and organizers; preview a member's page; and
-close or reopen a fling. Adding an organizer requires confirmation, and stale
-profile edits cannot overwrite newer corrections.
+Organizers and members can manage gatherings, invitations, profiles and events,
+then use scoped discussions, event polls and attributed payment records.
+Poll replacements retain earlier responses; payment reports remain separate
+from confirmations, corrections, waivers and refunds.
 
-Phase 2 acceptance passes 33 database/HTTP/time tests and 60 browser journeys
-across three engines at desktop/phone sizes. The final matrix creates three
-independent gatherings and verifies separate member sessions, private-detail
-access, timezone handling and organizer removal scoped to one fling.
+Phase 3 passes 45 database/HTTP/time tests and 66 browser journeys across
+three engines at desktop/phone sizes. Access changes and closure reject stale
+writes; reopening preserves history and closed polls.
 
 ## Remaining work
 
-Phase 3 adds discussions, polls and attributed payment records. Later phases
-cover reviewed message handoff, editable recovery and hosted/pilot acceptance,
-including the remaining poll/payment/message closure checks; the recorded
-dependency findings need attention before hosting.
+Phase 4 adds reviewed message audiences, exact sending-prompt export and
+reported outcomes. Editable recovery, hosted identity, dependency remediation
+and independent pilot acceptance follow in the existing plan.
 
 ## Optional later
 
 Direct delivery APIs, an in-app drafting model and encrypted export files
-remain deferred in the specification. The planned first sending path is a
-reviewed prompt for the organizer's external tool, with manual sending fallback.
+remain deferred. The planned first sending path is a reviewed prompt for the
+organizer's external tool, with manual sending fallback.

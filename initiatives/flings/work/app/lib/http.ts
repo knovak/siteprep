@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { JourneyStore } from './journeys.ts';
+import { CoordinationStore } from './coordination.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -106,7 +106,7 @@ export async function handle(req: Request, env: Bindings) {
       throw new AccessError(503, 'This Flings workspace is not configured.');
     if (new URL(req.url).protocol !== 'https:' && !local(req, env))
       throw new AccessError(403, 'Use a secure Flings address.');
-    const store = new JourneyStore(env.DB, env.FLINGS_SECRET),
+    const store = new CoordinationStore(env.DB, env.FLINGS_SECRET),
       parts = new URL(req.url).pathname
         .replace(/^\/api\/flings\//, '')
         .split('/'),
@@ -265,6 +265,43 @@ export async function handle(req: Request, env: Bindings) {
       if (member === 'profile')
         return json(await store.updateOrganizerProfile(actor, input));
       return json(await store.createFling(actor, input), 201);
+    }
+    const coordination =
+      (action === 'organizer' && member === 'coordination') ||
+      (action === 'member' && sub === 'coordination');
+    if (coordination) {
+      if (
+        action === 'member' &&
+        actor.kind === 'preview' &&
+        actor.member !== member
+      )
+        throw new AccessError(403, 'Open the selected member preview.');
+      if (action === 'organizer') await store.assertOrganizer(actor, fling);
+      if (req.method === 'GET')
+        return json(await store.coordination(actor, fling));
+      if (req.method === 'POST') {
+        const input = await body(req);
+        const method = input.kind;
+        if (method === 'post')
+          return json(await store.post(actor, fling, input));
+        if (method === 'poll')
+          return json(await store.poll(actor, fling, input));
+        if (method === 'vote') {
+          await store.vote(actor, fling, input);
+          return json({ ok: true });
+        }
+        if (method === 'payment')
+          return json(await store.payment(actor, fling, input));
+        if (method === 'ledger')
+          return json(
+            await store.ledger(actor, fling, {
+              ...input,
+              kind: input.entry_kind,
+            }),
+          );
+        throw new AccessError(400, 'Choose a coordination action.');
+      }
+      throw new AccessError(405, 'Use the coordination form.');
     }
     if (action === 'member' && member) {
       if (sub === 'respond' && req.method === 'POST') {

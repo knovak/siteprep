@@ -1,7 +1,7 @@
 # Flings local gathering journeys
 
-A local, fictional-data application with the Phase 1 access foundation and the
-first Phase 2 organizer/member journeys. Organizers can list assigned gatherings,
+A local, fictional-data application with organizer/member gathering journeys,
+scoped discussions, event polls and attributed payment records. Organizers can list assigned gatherings,
 add member profiles, invite or withdraw members from existing activities, open
 read-only previews, and close or reopen a gathering. Members accept or decline
 invitations, see permitted details and correct their own profiles. Organizers can also create and rename flings, draft/publish/cancel and reorder
@@ -38,7 +38,7 @@ returns unavailable until the managed identity adapter in Phase 6 exists.
 
 ## Database and permission model
 
-`db/schema.ts` and `drizzle/` define twelve tables. Compound foreign keys prevent
+`db/schema.ts` and `drizzle/` define nineteen tables. Compound foreign keys prevent
 cross-fling member/code/session and activity/event/invitation relationships.
 Assignments and invitations have unique composite keys. Profiles use revisions;
 organizer assignments never arise from matching email addresses or membership.
@@ -57,7 +57,7 @@ deletes within that same batch.
 D1 documents transactional rollback for failed statements in
 [`batch()`](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch).
 Tests run the actual [Miniflare D1 implementation](https://developers.cloudflare.com/workers/testing/miniflare/storage/d1/),
-apply both migrations and compare persisted records after failures and races.
+apply all committed migrations and compare persisted records after failures and races.
 No database mock establishes this proof. An operation committed before removal
 can remain in history; removal prevents later authorized writes and does not
 recall completed work.
@@ -307,3 +307,99 @@ the fixture organizer's display name after each journey. No part of this harness
 activates hosting or sends to recipients. Later T5 poll/payment/message closure
 checks stay with their Phase 3/4 capabilities, and human acceptance stays in
 Phases 6/7.
+
+## Phase 3 coordination — September 12, 2026 (UTC)
+
+The coordination panel is available on organizer, member and read-only preview
+pages. It contains discussions for the whole fling, an activity, or an event;
+event polls; and individual event payment allocations. The same existing
+session, expected-member, organizer-assignment and request-forgery checks protect
+its API. `lib/coordination.ts` adds domain operations to the gathering store.
+
+Every coordination mutation checks current authority, open-fling state, the
+form's opening fling revision, parent relationships and the operation's
+preconditions within one D1 batch. It increments the fling revision and records
+its audit event in that batch. A newer invitation, vote, post, ledger change or
+closure invalidates a stale draft; reloading does not update that draft's
+opening revision. Forms cannot be started while the preceding save is pending.
+Read projections take one authority-checked database snapshot. A read-only
+preview receives its selected member's projection, never organizer history.
+
+### Discussions
+
+Whole-fling posts are readable by every active member. Activity/event posts
+require an accepted invitation to the published activity. An assigned organizer
+can use every scope in their fling, including drafts. Posts retain the author's
+name at posting and creation time. The author may edit while open; the old body
+and editor remain in organizer-only history, and members see an edited marker.
+An organizer can hide a post only with a reason. Members then receive an empty
+body and a hidden notice; organizers retain the body and audit history.
+
+Text is rendered as text, with only absolute HTTP/HTTPS links made clickable.
+Links reject embedded credentials and use no-referrer/no-opener behavior.
+Personal member/preview URLs and code fragments, including percent-encoded
+forms, are rejected in shared text and payment links/notes. This is not a
+promise to recognize arbitrary secrets pasted without a recognizable URL.
+
+### Polls
+
+An organizer chooses an event, a single- or multiple-choice question, 2–20
+unique options, an optional future deadline and an explicit subset of accepted
+members. The server rechecks that subset when saving. The deadline is entered
+in the organizer browser's local time and stored as a UTC timestamp.
+
+Members see their own current choices; aggregate totals appear only after
+explicit closure or the deadline. Organizers see named current and historical
+responses. Votes append immutable submissions, with the fling revision and
+invitation generation. Decline/withdrawal changes that generation; reacceptance
+never reactivates an old vote. Reinviting an already accepted member preserves
+their answer and vote. Removing a member also excludes their current tally.
+
+Option changes use **Replace poll**, preserving and closing the predecessor and
+starting a new poll without responses. This preservation rule also applies
+before the first vote. Closed polls reject writes and stay closed when the
+fling reopens. The page refreshes deadline status on refresh; the server checks
+the current clock for every attempted vote.
+
+### Payment records
+
+Each allocation names one accepted member, event, amount and supported currency
+code. Amounts are explicit integer minor units, such as USD cents or JPY yen;
+there is no automatic split or conversion. Each amount and resulting balance
+is bounded to 1,000,000,000 units. To allocate different amounts to several
+members, create one request for each member. Optional outside payment links
+open the external service and never record success.
+
+A member sees only their own requests and can append a report. An organizer
+confirms all or part of a particular report, with a reason/reference. Confirmed
+amounts cannot exceed that report or make the balance negative. Reports show
+their confirmed and still-unconfirmed portions. Corrections (signed balance
+adjustments), waivers and refunds are separate attributed records. Refunds
+cannot exceed confirmed money less previously recorded refunds. Corrections
+repair the obligation; they do not rewrite or erase a prior claim.
+
+Decline, withdrawal and cancellation retain the member's payment history and
+balance. They do not confirm, refund or delete anything. A closed fling rejects
+all ledger mutations, including reports; reopening restores the ability to act
+without changing history. The application does not collect funds or store
+bank/card credentials.
+
+### Schema and verification
+
+Migration `0004` adds seven coordination tables and an invitation generation.
+Compound foreign keys enforce each event's fling/activity, each poll's members,
+and each payment allocation's fling. Older invitations start at generation zero;
+there are no old votes to reinterpret. Historical post revisions, poll responses
+and ledger entries are append-only through the application API. Future authorized
+whole-fling deletion and recovery remain Phase 5 work.
+
+Run `npm test` and `node test/coordination-browser.mjs` with the local server
+running, in addition to the existing regression suites. The new suite uses
+fresh fictional flings and three engines at desktop/phone sizes. Its receipt is
+`test/evidence/coordination-20260912.json`. It keeps temporary screenshot
+credentials only in the ignored `.wrangler/qa/` directory with owner-only files;
+no member code, contact, cookie or preview URL is written to the receipt.
+
+Phase 4's reviewed-message handoff is next. Hosted identity, dependency
+remediation, outside-member access and human pilot evidence retain the later
+plan gates. This increment creates no Site and has no sending integration.

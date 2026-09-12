@@ -5,6 +5,7 @@ import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import CoordinationPanel from './coordination-panel';
 import { profile as validateProfile } from '@/lib/access';
 
 type Profile = {
@@ -310,6 +311,7 @@ export default function MemberPage({
               This fling is closed. You can still correct your contact details.
             </div>
           )}
+          <CoordinationPanel endpoint={'member/' + encodeURIComponent(data.profile.id) + '/coordination'} parentRevision={data.fling.revision} request={call} refresh={refresh} preview={!!previewMember}/>
           <div className="member-grid">
             <section aria-labelledby="activities-title">
               <h2 id="activities-title" className="section-title">

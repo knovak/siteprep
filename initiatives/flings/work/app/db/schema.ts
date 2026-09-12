@@ -148,6 +148,8 @@ export const events = sqliteTable(
       foreignColumns: [activities.id, activities.fling],
     }),
     index('events_activity').on(t.activity),
+    unique().on(t.id, t.activity, t.fling),
+    unique().on(t.id, t.fling),
   ],
 );
 export const invitations = sqliteTable(
@@ -157,6 +159,7 @@ export const invitations = sqliteTable(
     activity: text().notNull(),
     fling: text().notNull(),
     state: text().notNull(),
+    generation: integer().notNull().default(0),
   },
   (t) => [
     primaryKey({ columns: [t.member, t.activity] }),
@@ -196,3 +199,176 @@ export const attempts = sqliteTable('attempts', {
   bucket: integer().notNull(),
   count: integer().notNull(),
 });
+
+export const posts = sqliteTable(
+  'posts',
+  {
+    id: text().primaryKey(),
+    fling: text()
+      .notNull()
+      .references(() => flings.id),
+    activity: text(),
+    event: text(),
+    actor: text().notNull(),
+    actorKind: text('actor_kind').notNull(),
+    author: text().notNull(),
+    body: text().notNull(),
+    created: integer().notNull(),
+    edited: integer(),
+    hidden: integer().notNull().default(0),
+    revision: integer().notNull().default(0),
+  },
+  (t) => [
+    foreignKey({
+      columns: [t.activity, t.fling],
+      foreignColumns: [activities.id, activities.fling],
+    }),
+    foreignKey({
+      columns: [t.event, t.activity, t.fling],
+      foreignColumns: [events.id, events.activity, events.fling],
+    }),
+    check(
+      'post_event_parent',
+      sql`${t.event} IS NULL OR ${t.activity} IS NOT NULL`,
+    ),
+    check('post_actor_kind', sql`${t.actorKind} IN ('organizer','member')`),
+    check('post_hidden', sql`${t.hidden} IN (0,1)`),
+  ],
+);
+export const postHistory = sqliteTable('post_history', {
+  id: text().primaryKey(),
+  post: text()
+    .notNull()
+    .references(() => posts.id),
+  actor: text().notNull(),
+  action: text().notNull(),
+  body: text().notNull(),
+  reason: text().notNull(),
+  at: integer().notNull(),
+});
+export const polls = sqliteTable(
+  'polls',
+  {
+    id: text().primaryKey(),
+    fling: text()
+      .notNull()
+      .references(() => flings.id),
+    activity: text().notNull(),
+    event: text().notNull(),
+    title: text().notNull(),
+    options: text().notNull(),
+    multiple: integer().notNull(),
+    deadline: integer(),
+    closed: integer().notNull().default(0),
+    replaces: text(),
+    created: integer().notNull(),
+  },
+  (t) => [
+    unique().on(t.id, t.fling),
+    foreignKey({
+      columns: [t.activity, t.fling],
+      foreignColumns: [activities.id, activities.fling],
+    }),
+    foreignKey({
+      columns: [t.event, t.activity, t.fling],
+      foreignColumns: [events.id, events.activity, events.fling],
+    }),
+    check('poll_multiple', sql`${t.multiple} IN (0,1)`),
+    check('poll_closed', sql`${t.closed} IN (0,1)`),
+  ],
+);
+export const pollAudience = sqliteTable(
+  'poll_audience',
+  {
+    poll: text().notNull(),
+    fling: text().notNull(),
+    member: text().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.poll, t.member] }),
+    foreignKey({
+      columns: [t.poll, t.fling],
+      foreignColumns: [polls.id, polls.fling],
+    }),
+    foreignKey({
+      columns: [t.member, t.fling],
+      foreignColumns: [members.id, members.fling],
+    }),
+  ],
+);
+export const votes = sqliteTable(
+  'votes',
+  {
+    id: text().primaryKey(),
+    poll: text().notNull(),
+    fling: text().notNull(),
+    member: text().notNull(),
+    choices: text().notNull(),
+    generation: integer().notNull(),
+    revision: integer().notNull(),
+    at: integer().notNull(),
+  },
+  (t) => [
+    foreignKey({
+      columns: [t.poll, t.fling],
+      foreignColumns: [polls.id, polls.fling],
+    }),
+    foreignKey({
+      columns: [t.member, t.fling],
+      foreignColumns: [members.id, members.fling],
+    }),
+    unique().on(t.poll, t.member, t.revision),
+  ],
+);
+export const paymentRequests = sqliteTable(
+  'payment_requests',
+  {
+    id: text().primaryKey(),
+    fling: text().notNull(),
+    event: text().notNull(),
+    member: text().notNull(),
+    title: text().notNull(),
+    currency: text().notNull(),
+    amount: integer().notNull(),
+    link: text().notNull(),
+    actor: text().notNull(),
+    at: integer().notNull(),
+  },
+  (t) => [
+    foreignKey({
+      columns: [t.member, t.fling],
+      foreignColumns: [members.id, members.fling],
+    }),
+    foreignKey({
+      columns: [t.event, t.fling],
+      foreignColumns: [events.id, events.fling],
+    }),
+    check('request_amount', sql`${t.amount}>0 AND ${t.amount}<=1000000000`),
+  ],
+);
+export const paymentLedger = sqliteTable(
+  'payment_ledger',
+  {
+    id: text().primaryKey(),
+    request: text()
+      .notNull()
+      .references(() => paymentRequests.id),
+    kind: text().notNull(),
+    amount: integer().notNull(),
+    report: text(),
+    note: text().notNull(),
+    actor: text().notNull(),
+    author: text().notNull(),
+    at: integer().notNull(),
+  },
+  (t) => [
+    check(
+      'ledger_kind',
+      sql`${t.kind} IN ('report','confirm','correction','waiver','refund')`,
+    ),
+    check(
+      'ledger_amount',
+      sql`${t.amount}!=0 AND ABS(${t.amount})<=1000000000`,
+    ),
+  ],
+);
