@@ -1,0 +1,144 @@
+{
+  "recorded_at": "2026-09-12T04:29:05.114Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "group-selection",
+        "channel-restriction",
+        "duplicate-memberships-retained",
+        "incomplete-profile-omission",
+        "poll-subset-and-current-vote",
+        "unanswered-invitation",
+        "outstanding-balance",
+        "individual-selection",
+        "stale-profile-result-cleared",
+        "keyboard-review",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "group-selection",
+        "channel-restriction",
+        "duplicate-memberships-retained",
+        "incomplete-profile-omission",
+        "poll-subset-and-current-vote",
+        "unanswered-invitation",
+        "outstanding-balance",
+        "individual-selection",
+        "stale-profile-result-cleared",
+        "keyboard-review",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "group-selection",
+        "channel-restriction",
+        "duplicate-memberships-retained",
+        "incomplete-profile-omission",
+        "poll-subset-and-current-vote",
+        "unanswered-invitation",
+        "outstanding-balance",
+        "individual-selection",
+        "stale-profile-result-cleared",
+        "keyboard-review",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "group-selection",
+        "channel-restriction",
+        "duplicate-memberships-retained",
+        "incomplete-profile-omission",
+        "poll-subset-and-current-vote",
+        "unanswered-invitation",
+        "outstanding-balance",
+        "individual-selection",
+        "stale-profile-result-cleared",
+        "keyboard-review",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "group-selection",
+        "channel-restriction",
+        "duplicate-memberships-retained",
+        "incomplete-profile-omission",
+        "poll-subset-and-current-vote",
+        "unanswered-invitation",
+        "outstanding-balance",
+        "individual-selection",
+        "stale-profile-result-cleared",
+        "keyboard-review",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "group-selection",
+        "channel-restriction",
+        "duplicate-memberships-retained",
+        "incomplete-profile-omission",
+        "poll-subset-and-current-vote",
+        "unanswered-invitation",
+        "outstanding-balance",
+        "individual-selection",
+        "stale-profile-result-cleared",
+        "keyboard-review",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    }
+  ]
+}

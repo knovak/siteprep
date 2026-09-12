@@ -403,3 +403,60 @@ no member code, contact, cookie or preview URL is written to the receipt.
 Phase 4's reviewed-message handoff is next. Hosted identity, dependency
 remediation, outside-member access and human pilot evidence retain the later
 plan gates. This increment creates no Site and has no sending integration.
+
+## Phase 4 first increment: message audience review — September 12, 2026
+
+The organizer page's **Message audience** form resolves the current recipients
+before any message is prepared. Choose all active members, current activity
+invitees (including accepted and declined responses), or accepted activity
+members. Further restrict the group to individuals, unanswered invitations,
+unanswered members of an open poll, or outstanding payments. Individual
+selection intersects the chosen group; it never expands it. Activity groups
+consider payment obligations in that activity, while the all-active group can
+include outstanding obligations anywhere in the fling.
+
+Delivery channels either follow each profile's preference or restrict the
+result to email or text. A restriction never substitutes another channel.
+An incomplete notification profile is omitted as a whole, with a visible reason;
+this includes a both-channel profile missing one required contact. Each complete
+membership/channel stays separate. Duplicate email destinations compare without
+case; phone numbers use their stored international form. The interface names
+shared destinations for review and never merges memberships.
+
+`AudienceStore.audience()` in `lib/audience.ts` uses one authority-checked D1
+snapshot for profiles, invitations, poll eligibility/votes and ledger balances.
+An unanswered-poll filter intersects the poll's reviewed subset with current
+accepted invitations; an empty, absent or retired vote counts as unanswered.
+Closed/expired polls are unavailable for this filter. Payment reports do not
+reduce outstanding balances until confirmed. Declined members may still appear
+in an all-active payment audience, because their debt remains in history.
+
+The organizer-only `POST /api/flings/<fling>/organizer/audience` uses the existing
+origin, CSRF and expected-organizer checks. Its inputs are `revision`, `group`
+(`all`, `invitees`, `accepted`), `filter` (`none`, `individuals`,
+`unanswered-invitation`, `unanswered-poll`, `outstanding-payment`), `channel`
+(`preference`, `email`, `text`), and the applicable `activity`, `poll` or
+`individuals` IDs. Current assignment, open state and the supplied fling revision
+are checked in the snapshot. Unsupported choices, foreign IDs, repeated IDs and
+missing required selections are refused.
+
+The result contains selected-membership counts, individual membership/channel
+rows with current profile revisions and destinations, explicit omissions, shared
+contact groups, and the permitted form choices. It contains no member code,
+preview token or member link. Display keys identify the membership/channel in
+this preview; they are not approved delivery IDs. A fling revision or member
+profile revision change clears the previous result when the workspace refreshes.
+
+This increment creates no message batch, approval, prompt, code or send outcome.
+The existing access-store cleanup may still purge expired code ciphertext during
+an authorized read. The result is transient and cannot authorize later export:
+Phase 4 still needs immutable approved text/revisions, protected link material,
+exact prompt export, the optional discussion post and reconciled result reporting.
+No new account, secret, schema migration or deployment target is introduced.
+
+Run `npm test` and `node test/audience-browser.mjs`. The new browser receipt is
+`test/evidence/audience-20260912.json`; a separate coordination regression receipt
+preserves the six existing coordination journeys without replacing their earlier
+record. Screenshot-only context state stays in ignored owner-only files under
+`.wrangler/qa/`. The former 60 gathering/access regression journeys remain the
+Phase 3 receipt; this increment does not claim to have rerun all of them.

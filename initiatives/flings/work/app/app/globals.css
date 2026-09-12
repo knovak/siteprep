@@ -563,3 +563,14 @@ output {
 .ledger { padding-left:20px; }
 .ledger li { margin:12px 0; }
 .coordination summary { cursor:pointer; margin:12px 0; }
+
+.audience-panel { margin:32px 0 48px; padding:28px 0; border-top:2px solid var(--border); }
+.audience-panel h2 { font-size:26px; margin-bottom:12px; }
+.audience-panel h3 { font-size:20px; margin:18px 0 12px; }
+.audience-panel form { margin-top:24px; }
+.audience-fields,.audience-columns { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr)); gap:24px; }
+.audience-panel fieldset { min-width:0; }
+.audience-panel [data-slot='native-select-wrapper'] { width:100%; }
+.audience-panel select { font-size:16px; max-width:100%; }
+.audience-panel li { margin:16px 0; overflow-wrap:anywhere; }
+.audience-panel .choice { display:flex; align-items:center; gap:10px; padding:10px 0; font-size:16px; }
