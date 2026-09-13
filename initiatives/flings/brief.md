@@ -7,18 +7,18 @@
 ## Done
 
 Gatherings support invitations, event details, scoped discussions, polls and
-attributed payment records. Organizers can review recipients, approve exact
-individual messages and copy a sending prompt; changed recipients, permissions
-or expired links require renewed review.
+attributed payments. Organizers can approve exact individual messages, export
+a sending prompt, then preview and record reported outcomes with correction
+history; those reports do not verify recipient receipt.
 
-The latest increment passes 70 database/HTTP/time tests and 18 browser journeys
-across three engines at desktop/phone sizes. Approval history survives reloads
-with personal links removed; copying records export and leaves outcomes unknown.
+The reporting increment passes 83 database/HTTP/time tests and 18 browser
+journeys across three engines at desktop/phone sizes. Approval and report
+history preserve attribution with personal links removed.
 
 ## Remaining work
 
-Finish Phase 4's optional discussion post, result preview/reporting and explicit
-selected retries after account-history inspection. Editable recovery, hosted
+Finish Phase 4's optional discussion post and explicit selected retries with
+account-history inspection and attempt tracking. Editable recovery, hosted
 identity, dependency remediation and independent pilot acceptance follow.
 
 ## Optional later
