@@ -196,7 +196,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
           flings<span>✳</span>
         </a>
         <a href="/organizer">Organizer workspace</a>
-        <span className="rehearsal">Local rehearsal · fictional people</span>
+        <span className="rehearsal">Test rehearsal · fictional people</span>
       </header>
       <section className="intro">
         <p className="eyebrow">Organizer</p>

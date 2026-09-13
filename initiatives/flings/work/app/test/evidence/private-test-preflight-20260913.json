@@ -1,0 +1,33 @@
+{
+  "recorded_at": "2026-09-13T16:04:22.843267+00:00",
+  "tests": 87,
+  "production_dependency_audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "full_dependency_audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 6,
+    "high": 4,
+    "critical": 0,
+    "total": 10
+  },
+  "remaining_development_packages": {
+    "@cloudflare/vite-plugin": "moderate",
+    "@esbuild-kit/core-utils": "moderate",
+    "@esbuild-kit/esm-loader": "moderate",
+    "drizzle-kit": "moderate",
+    "esbuild": "moderate",
+    "miniflare": "high",
+    "sharp": "high",
+    "undici": "high",
+    "wrangler": "moderate",
+    "ws": "high"
+  },
+  "boundary": "Fictional private rehearsal; live independent organizer identity and full Phase 6 acceptance remain pending."
+}

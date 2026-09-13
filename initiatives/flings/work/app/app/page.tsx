@@ -53,7 +53,7 @@ export default function Home() {
         <a className="wordmark" href="/">
           flings<span>✳</span>
         </a>
-        <span className="rehearsal">Local rehearsal · fictional people</span>
+        <span className="rehearsal">Test rehearsal · fictional people</span>
       </header>
       <section className="intro">
         <p className="eyebrow">Gather together</p>

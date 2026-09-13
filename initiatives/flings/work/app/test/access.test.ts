@@ -1590,3 +1590,245 @@ void test('private event locations follow accepted member and preview projection
   );
   assert.deepEqual(await rows('SELECT * FROM audit ORDER BY id'), audit);
 });
+
+const testOrigin = 'https://flings-test.example.invalid';
+const hostedTestEnv = {
+  FLINGS_MODE: 'private-test',
+  FLINGS_ORIGIN: testOrigin,
+};
+const viewerHeaders = {
+  'oai-authenticated-user-id': 'site-scoped-fictional-viewer',
+  'x-flings-local': '1',
+};
+async function testOrganizer() {
+  const response = await api(
+    request(
+      'local/organizer',
+      'POST',
+      { organizer: 'a' },
+      viewerHeaders,
+      testOrigin,
+    ),
+    hostedTestEnv,
+  );
+  assert.equal(response.status, 200);
+  assert.match(
+    response.headers.get('Set-Cookie')!,
+    /HttpOnly; SameSite=Strict;.*Secure/,
+  );
+  const { csrf } = (await response.json()) as { csrf: string };
+  return {
+    Cookie: response.headers.get('Set-Cookie')!.split(';')[0],
+    'x-flings-csrf': csrf,
+    'x-flings-organizer': 'a',
+    ...viewerHeaders,
+  };
+}
+void test('private test requires dispatch identity, exact HTTPS origin and explicit test mode', async () => {
+  for (const [host, headers, extra] of [
+    [testOrigin, { 'x-flings-local': '1' }, hostedTestEnv],
+    ['https://another.example.invalid', viewerHeaders, hostedTestEnv],
+    [
+      'http://flings-test.example.invalid',
+      viewerHeaders,
+      { ...hostedTestEnv, FLINGS_ORIGIN: 'http://flings-test.example.invalid' },
+    ],
+    [testOrigin, viewerHeaders, { ...hostedTestEnv, FLINGS_MODE: 'hosted' }],
+    [testOrigin, viewerHeaders, { ...hostedTestEnv, FLINGS_MODE: 'local' }],
+  ] as [string, Record<string, string>, Record<string, string>][]) {
+    const response = await api(
+      request('local/organizer', 'POST', { organizer: 'a' }, headers, host),
+      extra,
+    );
+    assert.notEqual(response.status, 200);
+  }
+  assert.equal(
+    (
+      await api(
+        request(
+          'local/organizer',
+          'POST',
+          { organizer: 'a' },
+          { ...viewerHeaders, Origin: 'https://foreign.invalid' },
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    403,
+  );
+  await testOrganizer();
+});
+void test('private test organizer and preview tickets remain bound to their signed-in visitor', async () => {
+  const h = await testOrganizer();
+  const workspace = await api(
+    request('workspace/organizer', 'GET', undefined, h, testOrigin),
+    hostedTestEnv,
+  );
+  assert.equal(workspace.status, 200);
+  assert.equal(
+    ((await workspace.json()) as { organizer: string }).organizer,
+    'a',
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'workspace/organizer',
+          'GET',
+          undefined,
+          { ...h, 'oai-authenticated-user-id': 'different-visitor' },
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    401,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'workspace/organizer',
+          'GET',
+          undefined,
+          { ...h, 'oai-authenticated-user-id': '' },
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    401,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'workspace/organizer',
+          'GET',
+          undefined,
+          { ...h, 'x-flings-organizer': 'b' },
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    409,
+  );
+  const prepared = await api(
+    request('outing/organizer/alex-outing/preview', 'POST', {}, h, testOrigin),
+    hostedTestEnv,
+  );
+  assert.equal(prepared.status, 200);
+  const { url } = (await prepared.json()) as { url: string },
+    preview = url.split('#preview=')[1];
+  const p = { ...viewerHeaders, Authorization: 'Bearer ' + preview };
+  const member = await api(
+    request('outing/member/alex-outing', 'GET', undefined, p, testOrigin),
+    hostedTestEnv,
+  );
+  assert.equal(member.status, 200);
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/member/alex-outing',
+          'GET',
+          undefined,
+          { ...p, 'oai-authenticated-user-id': 'different-visitor' },
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/member/alex-outing',
+          'PUT',
+          { name: 'No write' },
+          p,
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    403,
+  );
+});
+void test('private test rehearsal member links exchange over HTTPS and still require a real capability', async () => {
+  const r = await api(
+    request(
+      'local/open',
+      'POST',
+      { example: 'outing' },
+      viewerHeaders,
+      testOrigin,
+    ),
+    hostedTestEnv,
+  );
+  assert.equal(r.status, 200);
+  const { url } = (await r.json()) as { url: string },
+    code = url.split('#code=')[1];
+  const h = {
+    ...viewerHeaders,
+    'x-flings-exchange': '1',
+    'cf-connecting-ip': '192.0.2.3',
+  };
+  const exchanged = await api(
+    request('outing/exchange', 'POST', { code }, h, testOrigin),
+    hostedTestEnv,
+  );
+  assert.equal(exchanged.status, 200);
+  assert.equal(
+    ((await exchanged.json()) as { member: string }).member,
+    'alex-outing',
+  );
+  assert.equal(
+    (
+      await api(
+        request(
+          'outing/exchange',
+          'POST',
+          { code: 'x'.repeat(43) },
+          h,
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    401,
+  );
+});
+void test('private test still enforces CSRF and assignment removal on existing organizer tickets', async () => {
+  const h = await testOrganizer();
+  assert.equal(
+    (
+      await api(
+        request(
+          'workspace/organizer',
+          'POST',
+          { title: 'Forged' },
+          { ...h, 'x-flings-csrf': '' },
+          testOrigin,
+        ),
+        hostedTestEnv,
+      )
+    ).status,
+    403,
+  );
+  await store.assignOrganizer(org, 'outing', 'b');
+  await store.removeOrganizer(orgB, 'outing', 'a');
+  assert.notEqual(
+    (
+      await api(
+        request('outing/organizer', 'GET', undefined, h, testOrigin),
+        hostedTestEnv,
+      )
+    ).status,
+    200,
+  );
+});

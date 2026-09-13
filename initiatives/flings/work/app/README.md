@@ -1,6 +1,6 @@
-# Flings local gathering journeys
+# Flings gathering rehearsal
 
-A local, fictional-data application with organizer/member gathering journeys,
+A fictional-data application with organizer/member gathering journeys,
 scoped discussions, event polls and attributed payment records. Organizers can list assigned gatherings,
 add member profiles, invite or withdraw members from existing activities, open
 read-only previews, and close or reopen a gathering. Members accept or decline
@@ -31,14 +31,14 @@ reset when a rehearsal opens again.
 
 The installed `@openai/create-sites` 0.3.0 scaffold supplies Vinext, React, D1 and
 shadcn. `package-lock.json` pins the installation. `.openai/hosting.json` declares
-only the logical `DB` binding; it has no deployed project ID. The placeholder
+the logical `DB` binding and this initiative’s separate test Site project ID. The placeholder
 UUID in the local configuration selects local storage only. Runtime state,
-secrets and generated builds are ignored. Hosted organizer sign-in deliberately
-returns unavailable until the managed identity adapter in Phase 6 exists.
+secrets and generated builds are ignored. Outside explicit private-test mode, hosted organizer sign-in remains unavailable
+until the live identity adapter in Phase 6 exists.
 
 ## Database and permission model
 
-`db/schema.ts` and `drizzle/` define 21 tables. Compound foreign keys prevent
+`db/schema.ts` and `drizzle/` define 23 tables. Compound foreign keys prevent
 cross-fling member/code/session and activity/event/invitation relationships.
 Assignments and invitations have unique composite keys. Profiles use revisions;
 organizer assignments never arise from matching email addresses or membership.
@@ -509,3 +509,49 @@ See `../../MESSAGES_TECHDOC.md` for the result JSON contract, migration `0006`,
 preview-token lifetime, attribution and history rules. Run `npm test` and
 `node test/message-results-browser.mjs` with the local server. No result or test
 starts Gmail, Messages, an external LLM or a real send.
+
+
+## Private test deployment — September 13, 2026
+
+**Test:** https://flings-test.ken-novak.chatgpt.site (owner-only). Sign in with
+ChatGPT, then choose an example member or open the organizer rehearsal and
+choose Casey, Rowan or Sam. The three original gatherings contain fictional
+people and contacts. Edits persist in this test Site’s separate D1 database;
+opening the rehearsal again never resets them. Use fictional data here.
+**Production:** not released yet.
+
+The requested deployment uses `build: sites-app` from this directory. The
+`.openai/hosting.json` test project ID and logical `DB` binding identify the
+separate host/database; they are not secret or a production target. All seven
+committed Drizzle migrations travel in the Sites archive. Sites manages
+`FLINGS_MODE=private-test`, the exact `FLINGS_ORIGIN`, and a generated secret
+`FLINGS_SECRET` outside source control. Local development still uses explicit
+loopback-only `local` mode and its own secret/database.
+
+Private Sites require ChatGPT sign-in before the Worker. In `private-test` mode,
+every API request also requires the dispatch-provided stable Site user ID and
+the configured HTTPS origin. Test organizer/preview tickets bind to that user ID;
+changing the visitor invalidates them. Existing assignment, member capability,
+CSRF, current-state and preview read-only guards still apply. Never expose this
+Worker through an alternative proxy that accepts caller-supplied identity
+headers. Keep this Site owner-only; sharing/publication or real-user onboarding
+requires the later plan’s explicit access and identity work.
+
+Choosing a fictional organizer is a rehearsal feature, not an implementation of
+independent real-organizer sign-in. Member links on this private test Site still
+encounter the platform sign-in gate, so this does not prove login-free outside
+member access. It does not complete Phase 6, recovery, the authorized pilot,
+selected message retries or the optional linked discussion post. No messages
+are sent by opening, editing or reviewing the test app.
+
+The hosting update pins React/React DOM/React Server DOM to 19.2.8, Vinext to
+1.0.0-beta.9, its RSC plugin to 0.5.34, and Vite to 8.0.16. The dotenvx tool’s
+compatible Undici dependency is constrained to 7.29.1. This removes the current
+production dependency audit findings; remaining development-only toolchain
+findings are documented in the deployment receipt. The React update addresses
+[the server-function denial-of-service advisory](https://github.com/advisories/GHSA-wx67-qw84-cm4g).
+
+Use the repo’s `deploy-test` skill for future refreshes, preserving this private
+test target. Build and package from an isolated copy rooted at the Sites source
+repository, then record the actual successful test deployment with the initiative
+CLI. Never point this manifest at another initiative’s Site or database.

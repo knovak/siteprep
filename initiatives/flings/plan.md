@@ -395,3 +395,14 @@ prevent partial or competing reports. Full-batch recopy stops after reporting.
 post and explicit selected retries with account-history inspection and attempt
 tracking. The reporting increment does not complete Phase 4 or T9-T10. Recovery,
 hosted configuration and authorized pilot work retain their existing sequence.
+
+
+## Private rehearsal deployment — September 13, 2026
+
+The user requested a test deployment before the remaining Phase 4 and recovery
+work. A separate owner-only Sites test environment now hosts the fictional
+rehearsal through platform ChatGPT sign-in, with Site-user-bound organizer and
+preview tickets. This early review surface does not change phase ordering or
+complete Phase 6: independent real-organizer identity, recovery and the full
+hosted acceptance matrix remain pending. No real member data or sends are
+inferred from this test deployment.

@@ -282,7 +282,7 @@ export default function MemberPage({
         <a className="wordmark" href="/">
           flings<span>✳</span>
         </a>
-        <span className="rehearsal">Local rehearsal · fictional people</span>
+        <span className="rehearsal">Test rehearsal · fictional people</span>
       </header>
       {error && (
         <div className="notice error" role="alert">

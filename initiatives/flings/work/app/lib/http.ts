@@ -20,6 +20,16 @@ const local = (req: Request, env: Bindings) =>
   env.FLINGS_MODE === 'local' &&
   new URL(req.url).origin === env.FLINGS_ORIGIN &&
   ['localhost', '127.0.0.1', '[::1]'].includes(new URL(req.url).hostname);
+// Private Sites inject this identity after their access gate. Never expose this
+// rehearsal Worker through a proxy that accepts caller-supplied identity headers.
+const testViewer = (req: Request, env: Bindings) =>
+  env.FLINGS_MODE === 'private-test' &&
+  new URL(req.url).protocol === 'https:' &&
+  new URL(req.url).origin === env.FLINGS_ORIGIN
+    ? req.headers.get('oai-authenticated-user-id')?.trim() || ''
+    : '';
+const rehearsal = (req: Request, env: Bindings) =>
+  local(req, env) || !!testViewer(req, env);
 const headers = {
   'Cache-Control': 'no-store, private',
   'Referrer-Policy': 'no-referrer',
@@ -106,13 +116,16 @@ export async function handle(req: Request, env: Bindings) {
       throw new AccessError(503, 'This Flings workspace is not configured.');
     if (new URL(req.url).protocol !== 'https:' && !local(req, env))
       throw new AccessError(403, 'Use a secure Flings address.');
+    const viewer = testViewer(req, env);
+    if (env.FLINGS_MODE === 'private-test' && !viewer)
+      throw new AccessError(401, 'Sign in to this private Flings test Site.');
     const store = new MessageStore(env.DB, env.FLINGS_SECRET),
       parts = new URL(req.url).pathname
         .replace(/^\/api\/flings\//, '')
         .split('/'),
       [fling, action, member, sub] = parts;
     if (fling === 'local') {
-      if (!local(req, env) || req.method !== 'POST')
+      if (!rehearsal(req, env) || req.method !== 'POST')
         throw new AccessError(403, 'Local rehearsal is unavailable here.');
       sameOrigin(req);
       if (req.headers.get('x-flings-local') !== '1')
@@ -138,6 +151,7 @@ export async function handle(req: Request, env: Bindings) {
         const value = await ticket(env.FLINGS_SECRET, {
           role: 'organizer',
           id: input.organizer,
+          viewer: viewer || null,
           expires: Date.now() + 3600000,
         });
         return json({ csrf: await mac(env.FLINGS_SECRET, value) }, 200, {
@@ -197,12 +211,17 @@ export async function handle(req: Request, env: Bindings) {
         env.FLINGS_SECRET,
         preview.replace(/^Bearer /, ''),
       );
-      if (t.role !== 'preview' || t.fling !== fling || !local(req, env))
+      if (
+        t.role !== 'preview' ||
+        t.fling !== fling ||
+        !rehearsal(req, env) ||
+        (viewer && t.viewer !== viewer)
+      )
         throw new AccessError(403, 'Member preview is unavailable.');
       actor = { kind: 'preview', id: t.id, member: t.member };
       credential = preview;
     } else if (action === 'organizer') {
-      if (!local(req, env))
+      if (!rehearsal(req, env))
         throw new AccessError(
           503,
           'Organizer sign-in has not been configured.',
@@ -211,6 +230,11 @@ export async function handle(req: Request, env: Bindings) {
       const t = await readTicket(env.FLINGS_SECRET, credential);
       if (t.role !== 'organizer')
         throw new AccessError(403, 'Organizer access is required.');
+      if (viewer && t.viewer !== viewer)
+        throw new AccessError(
+          401,
+          'Organizer sign-in changed. Choose your test organizer again.',
+        );
       if (
         req.headers.has('x-flings-organizer') &&
         req.headers.get('x-flings-organizer') !== t.id
@@ -381,6 +405,7 @@ export async function handle(req: Request, env: Bindings) {
         await store.projection(actor, fling, member);
         const token = await ticket(env.FLINGS_SECRET, {
           role: 'preview',
+          viewer: viewer || null,
           id: (actor as { id: string }).id,
           fling,
           member,

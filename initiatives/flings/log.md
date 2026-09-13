@@ -160,3 +160,15 @@ The selected `build-message-handoff` todo remains actionable for the optional
 atomic discussion post and selected retries with attempt tracking. Evidence is
 in `work/app/test/evidence/message-results-20260913.md`; no lifecycle completion,
 real send or deployment is claimed.
+
+
+## 2026-09-13 — Prepare the requested private test rehearsal
+
+Added an explicit private-test mode using the Sites-dispatched signed-in user
+ID and exact HTTPS origin. Fictional organizer and preview tickets bind to that
+visitor; the local mode remains loopback-only. Registered the separate Flings
+test target and D1 binding, and kept runtime secrets outside source control.
+Updated the server/build dependencies required for hosting; the production
+dependency audit is clear. All 87 database/domain/HTTP/time tests pass, including
+four new hosted-rehearsal boundary tests. This is an early review deployment,
+not Phase 6 completion or authorization for real data, real sends or production.
