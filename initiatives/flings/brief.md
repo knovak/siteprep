@@ -11,15 +11,17 @@ attributed payments. Organizers can approve exact individual messages, export
 a sending prompt, then preview and record reported outcomes with correction
 history; those reports do not verify recipient receipt.
 
-The reporting increment passes 83 database/HTTP/time tests and 18 browser
-journeys across three engines at desktop/phone sizes. Approval and report
-history preserve attribution with personal links removed.
+The private rehearsal binds fictional organizer and preview sessions to the
+signed-in Site visitor. The current stack passes 87 database/HTTP/time tests
+and six member browser regressions across three engines at desktop/phone sizes;
+real hosted sign-in, organizer views and member entry have been checked.
 
 ## Remaining work
 
 Finish Phase 4's optional discussion post and explicit selected retries with
-account-history inspection and attempt tracking. Editable recovery, hosted
-identity, dependency remediation and independent pilot acceptance follow.
+account-history inspection and attempt tracking. Editable recovery, independent
+organizer identity, development-toolchain remediation and full hosted/pilot
+acceptance follow.
 
 ## Optional later
 
