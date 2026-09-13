@@ -143,3 +143,20 @@ journeys in `work/app/test/evidence/messages-20260912.md`.
 The selected `build-message-handoff` todo stays actionable for optional atomic
 discussion posting, result preview/reporting and explicit selected retries.
 No lifecycle change, real message, provider account or deployment was made.
+
+
+## 2026-09-13 — Attributed result preview and reporting increment
+
+Added strict result JSON validation, signed previews, explicit confirmation,
+per-delivery reported/failed/suppressed/unknown states and append-only corrections
+with reporting organizer, server time and claimed evidence. Missing rows preserve
+prior outcomes. Current authority/context/results-revision guards reject stale or
+competing reports; an injected later insert failure rolls back the full report.
+Reporting uses redacted approval history after link expiry/revocation and stops
+full-batch recopy after any report. The interface shows preview changes, counts,
+provenance and prior reports, and clears a displayed prompt after recording.
+
+The selected `build-message-handoff` todo remains actionable for the optional
+atomic discussion post and selected retries with attempt tracking. Evidence is
+in `work/app/test/evidence/message-results-20260913.md`; no lifecycle completion,
+real send or deployment is claimed.

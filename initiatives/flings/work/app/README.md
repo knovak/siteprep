@@ -489,3 +489,23 @@ stays in ignored owner-only `.wrangler/qa/` files. The new browser test stubs
 clipboard access and saves no contact or bearer-link values in its receipt.
 The schema now has 21 tables. Optional linked discussion posts, imported result
 preview/reporting and explicit selected retries remain the next Phase 4 work.
+
+
+## Reported delivery outcomes — September 13, 2026
+
+Open **Message review history**, then **Report delivery results** for an exported
+batch. Paste the external result JSON or use the template, inspect the preview,
+and confirm the reported outcomes and claimed evidence. Missing rows keep their
+previous outcome, initially unknown. A correction appends a new attributed report;
+older reports stay in history. These are reports, not verified recipient receipts.
+
+The server rejects duplicate imports, invalid IDs/statuses, changed previews and
+competing confirmations without partial writes. History survives personal-link
+expiry/revocation, and recording clears a displayed prompt. Full-batch recopy stops
+after any report; selected retries and the optional linked discussion post are
+still pending Phase 4 work. Check account history before preparing further sending.
+
+See `../../MESSAGES_TECHDOC.md` for the result JSON contract, migration `0006`,
+preview-token lifetime, attribution and history rules. Run `npm test` and
+`node test/message-results-browser.mjs` with the local server. No result or test
+starts Gmail, Messages, an external LLM or a real send.

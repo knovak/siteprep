@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Manifest } from '../lib/messages';
+import type { MessageResultStore } from '../lib/message-results';
+import MessageResultsPanel from './message-results-panel';
 type Row = Record<string, unknown>;
 type Props = {
   fling: string;
@@ -19,19 +21,9 @@ type Review = {
   omissions: { member: string; name: string; reason: string }[];
   duplicates: { destination: string; channel: string }[];
 };
-type History = {
-  id: string;
-  owner: string;
-  payload_hash: string;
-  revision: number;
-  approved: number | null;
-  exported: number | null;
-  send_until: number;
-  manifest: Manifest;
-  state: string;
-  outcome: string;
-  needs_renewed_review: boolean;
-};
+type History = Awaited<
+  ReturnType<MessageResultStore['history']>
+>['batches'][number];
 export default function MessagePanel({
   fling,
   selection,
@@ -281,11 +273,18 @@ export default function MessagePanel({
               Approved. Ready to copy; nothing has been sent.
             </p>
           )}
-          {approved && (
-            <Button disabled={busy} onClick={() => void copy(identity(review))}>
-              Copy sending prompt
-            </Button>
-          )}
+          {approved &&
+            !history.some(
+              (h) =>
+                h.id === review.manifest.batch_id && h.results_revision > 0,
+            ) && (
+              <Button
+                disabled={busy}
+                onClick={() => void copy(identity(review))}
+              >
+                Copy sending prompt
+              </Button>
+            )}
         </div>
       )}
       <p className="message-exposure">
@@ -310,19 +309,21 @@ export default function MessagePanel({
       <details className="message-history">
         <summary>Message review history ({history.length})</summary>
         {history.map((h) => (
-          <article key={h.id} className="message-delivery">
+          <article key={String(h.id)} className="message-delivery">
             <h4>{h.manifest.deliveries[0]?.subject || 'Message batch'}</h4>
             <p>
               {h.state} · outcomes {h.outcome} · {h.manifest.deliveries.length}{' '}
               deliveries
             </p>
-            <p>Send before {new Date(h.send_until).toLocaleString()}.</p>
+            <p>
+              Send before {new Date(Number(h.send_until)).toLocaleString()}.
+            </p>
             <p className="muted">
               Personal links are removed from this history.
               {h.needs_renewed_review &&
                 ' Prepare a new review before sending.'}
             </p>
-            {h.approved !== null && (
+            {h.approved !== null && h.results_revision === 0 && (
               <Button
                 variant="outline"
                 disabled={busy}
@@ -337,6 +338,15 @@ export default function MessagePanel({
                 Recheck and copy approved prompt
               </Button>
             )}
+            <MessageResultsPanel
+              batch={h}
+              endpoint={endpoint}
+              request={request}
+              refresh={async () => {
+                clearReview();
+                await refreshHistory();
+              }}
+            />
           </article>
         ))}
       </details>

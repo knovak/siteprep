@@ -310,3 +310,18 @@ closure/reopening. Browser copy is stubbed and all profiles are fictional.
 T9's optional post, T10's result import/preview and selected retries, and actual
 external-account/pilot observations remain pending. No sent/received state is
 inferred from an exported prompt.
+
+
+## September 13 result-reporting receipt (UTC)
+
+The local reporting increment adds T9 evidence for strict batch/revision/delivery
+validation, preview and explicit confirmation, attribution, mixed/unknown outcomes,
+immutable corrections and duplicate-report rejection. D1 tests also cover competing
+confirmations, injected rollback and late closure/assignment changes, T1 access
+boundaries, T5 closed-state behavior and retained redacted history after expiry.
+The dated receipt is `work/app/test/evidence/message-results-20260913.md`.
+
+These checks use fictional records and simulated observations. They do not prove
+recipient receipt, external-account inspection, selected retry/attempt behavior
+or T10's optional linked discussion post. Those remain pending with the later
+hosted and human pilot acceptance.

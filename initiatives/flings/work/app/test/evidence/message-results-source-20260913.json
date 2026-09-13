@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-09-13T10:32:08.386111+00:00",
+  "base_commit": "847d9d06b9324cea3876a8e80a620064135ad8a1",
+  "node": "v23.11.0",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "files": {
+    "lib/message-results.ts": "2a998a375295485e026b6593211194699e0fe3b5ff15c4714d31456381edf46d",
+    "lib/messages.ts": "55a3d09f3336d53cf3dabcb7e5ff05d0c79947dde775c31ae367606384a96555",
+    "lib/http.ts": "66e81d257010bf60db63c0e9718dad6dcc10f34d5f7287e72945e77bb823ae3d",
+    "components/message-results-panel.tsx": "773350a5f883dc4d971a53a2fba9c37a26fa5475df4e3a0bcfd8cd28cdcfe23c",
+    "components/message-panel.tsx": "42e2e034b473b2e14963530c78234764a94043c85fe1ad250291d3154bd421f8",
+    "db/schema.ts": "71f8805a072e9ccf17596e0a67b16f8e0c4e6b7e8fbd481e3c0386bf258da8d1",
+    "drizzle/0006_nasty_sandman.sql": "32836699511b9b651131de46200e6a3b3261215d0bad725bec13b3ab67dc1527",
+    "test/message-results.test.ts": "101fa6a67e84f89023fc8aa3b74415e89c96d8c8c715e8cc76c4f037de887cb8",
+    "test/message-results-browser.mjs": "e94eae5228e70d395f5eeaccd2de13576a16d69988e082bcf058181d5e098f29"
+  }
+}

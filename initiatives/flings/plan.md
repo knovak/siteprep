@@ -380,3 +380,18 @@ history inspection. Current approval has no discussion target, so it creates
 no post. Imported results and discussion counts are not yet available. Phase 4
 is not complete; recovery and hosted/pilot acceptance follow in their existing
 order. No sending permission or real account setup is inferred from this work.
+
+
+## Phase 4 result-reporting increment — September 13, 2026
+
+Exported batches now accept strict result JSON through a signed preview and
+explicit confirmation. Reports retain organizer/time/evidence provenance and
+append corrections while omitted deliveries keep their previous outcome,
+initially unknown. Expired/revoked personal links remain purged; reporting uses
+only redacted history. Current authority, context and results-revision guards
+prevent partial or competing reports. Full-batch recopy stops after reporting.
+
+`build-message-handoff` remains actionable for the optional atomic discussion
+post and explicit selected retries with account-history inspection and attempt
+tracking. The reporting increment does not complete Phase 4 or T9-T10. Recovery,
+hosted configuration and authorized pilot work retain their existing sequence.

@@ -394,6 +394,7 @@ export const messageBatches = sqliteTable(
     created: integer().notNull(),
     approved: integer(),
     exported: integer(),
+    resultsRevision: integer('results_revision').notNull().default(0),
   },
   (t) => [
     unique().on(t.id, t.fling),
@@ -421,7 +422,68 @@ export const messageDeliveries = sqliteTable(
       foreignColumns: [codes.id, codes.member, codes.fling],
     }),
     unique().on(t.batch, t.member, t.channel),
+    unique().on(t.id, t.batch, t.fling),
     index('message_deliveries_code').on(t.code),
     check('delivery_channel', sql`${t.channel} IN ('email','text')`),
+  ],
+);
+
+export const messageReports = sqliteTable(
+  'message_reports',
+  {
+    id: text().primaryKey(),
+    batch: text().notNull(),
+    fling: text().notNull(),
+    sequence: integer().notNull(),
+    fingerprint: text().notNull(),
+    reporter: text()
+      .notNull()
+      .references(() => organizers.id),
+    reportedAt: integer('reported_at').notNull(),
+  },
+  (t) => [
+    unique().on(t.id, t.batch, t.fling),
+    unique().on(t.batch, t.sequence),
+    unique().on(t.batch, t.fingerprint),
+    foreignKey({
+      columns: [t.batch, t.fling],
+      foreignColumns: [messageBatches.id, messageBatches.fling],
+    }),
+    check('report_sequence', sql`${t.sequence}>0`),
+  ],
+);
+
+export const messageResults = sqliteTable(
+  'message_results',
+  {
+    report: text().notNull(),
+    delivery: text().notNull(),
+    batch: text().notNull(),
+    fling: text().notNull(),
+    status: text().notNull(),
+    evidence: text().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.report, t.delivery] }),
+    foreignKey({
+      columns: [t.report, t.batch, t.fling],
+      foreignColumns: [
+        messageReports.id,
+        messageReports.batch,
+        messageReports.fling,
+      ],
+    }),
+    foreignKey({
+      columns: [t.delivery, t.batch, t.fling],
+      foreignColumns: [
+        messageDeliveries.id,
+        messageDeliveries.batch,
+        messageDeliveries.fling,
+      ],
+    }),
+    check(
+      'reported_status',
+      sql`${t.status} IN ('reported_sent','reported_failed','suppressed','unknown')`,
+    ),
   ],
 );

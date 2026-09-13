@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { MessageStore } from './messages.ts';
+import { MessageResultStore as MessageStore } from './message-results.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -291,6 +291,10 @@ export async function handle(req: Request, env: Bindings) {
           return json(await store.approve(actor, fling, input));
         if (sub === 'export')
           return json(await store.exportPrompt(actor, fling, input));
+        if (sub === 'results-preview')
+          return json(await store.previewResults(actor, fling, input));
+        if (sub === 'results-record')
+          return json(await store.recordResults(actor, fling, input));
       }
       throw new AccessError(405, 'Use the message review form.');
     }
