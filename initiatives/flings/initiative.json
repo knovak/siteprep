@@ -23,7 +23,16 @@
     {
       "kind": "chatgpt-site",
       "build": "sites-app",
-      "source": "initiatives/flings/work/app"
+      "source": "initiatives/flings/work/app",
+      "test": {
+        "slug": "flings-test",
+        "url": "https://flings-test.ken-novak.chatgpt.site",
+        "access": "private",
+        "deployed_at": "2026-09-13T16:11:32Z",
+        "version": 1,
+        "commit": "8ee0421b20a0ac19960c1b0d9291113075652a35",
+        "tree": "6f5fc99c9415c3ca8faa6e11cc5efa80223ec36e"
+      }
     }
   ]
 }
