@@ -1,0 +1,138 @@
+{
+  "recorded_at": "2026-09-14T04:40:48.675Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "separate-shared-text-and-audience-review",
+        "independent-discussion-confirmation",
+        "keyboard-approval",
+        "single-atomic-post",
+        "copy-and-recopy-do-not-duplicate",
+        "shared-post-contains-no-personal-suffix-or-contact",
+        "reported-counts-on-reload",
+        "organizer-link-opens-review-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "separate-shared-text-and-audience-review",
+        "independent-discussion-confirmation",
+        "keyboard-approval",
+        "single-atomic-post",
+        "copy-and-recopy-do-not-duplicate",
+        "shared-post-contains-no-personal-suffix-or-contact",
+        "reported-counts-on-reload",
+        "organizer-link-opens-review-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "separate-shared-text-and-audience-review",
+        "independent-discussion-confirmation",
+        "keyboard-approval",
+        "single-atomic-post",
+        "copy-and-recopy-do-not-duplicate",
+        "shared-post-contains-no-personal-suffix-or-contact",
+        "reported-counts-on-reload",
+        "organizer-link-opens-review-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "separate-shared-text-and-audience-review",
+        "independent-discussion-confirmation",
+        "keyboard-approval",
+        "single-atomic-post",
+        "copy-and-recopy-do-not-duplicate",
+        "shared-post-contains-no-personal-suffix-or-contact",
+        "reported-counts-on-reload",
+        "organizer-link-opens-review-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "separate-shared-text-and-audience-review",
+        "independent-discussion-confirmation",
+        "keyboard-approval",
+        "single-atomic-post",
+        "copy-and-recopy-do-not-duplicate",
+        "shared-post-contains-no-personal-suffix-or-contact",
+        "reported-counts-on-reload",
+        "organizer-link-opens-review-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "separate-shared-text-and-audience-review",
+        "independent-discussion-confirmation",
+        "keyboard-approval",
+        "single-atomic-post",
+        "copy-and-recopy-do-not-duplicate",
+        "shared-post-contains-no-personal-suffix-or-contact",
+        "reported-counts-on-reload",
+        "organizer-link-opens-review-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "clipboard": "stubbed; no real clipboard or external sending"
+    }
+  ]
+}

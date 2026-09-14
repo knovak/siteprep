@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import MessageRetryPanel from './message-retry-panel';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -74,7 +75,7 @@ export default function MessageResultsPanel({
       {batch.results.deliveries.map((d) => (
         <div key={d.id} className="message-delivery">
           <strong>
-            {d.name} · {d.channel}: {label(d.status)}
+            {d.name} · {d.channel}: {label(d.status)} (attempt {d.attempt})
           </strong>
           <p className="muted">Delivery ID: {d.id}</p>
           {d.reported_at !== null && (
@@ -149,6 +150,7 @@ export default function MessageResultsPanel({
                             delivery_id: d.id,
                             status: 'unknown',
                             evidence: '',
+                            ...(d.attempt > 1 ? { attempt: d.attempt } : {}),
                           })),
                         },
                         null,
@@ -252,7 +254,8 @@ export default function MessageResultsPanel({
               </p>
               {r.results.map((item) => (
                 <p key={item.delivery_id} style={{ whiteSpace: 'pre-wrap' }}>
-                  {item.delivery_id}: {label(item.status)}. Claimed evidence:{' '}
+                  {item.delivery_id} (attempt {item.attempt}):{' '}
+                  {label(item.status)}. Claimed evidence:{' '}
                   {item.evidence || 'None'}
                 </p>
               ))}
@@ -262,10 +265,17 @@ export default function MessageResultsPanel({
       )}
       {batch.results_revision > 0 && (
         <p className="notice">
-          Full-batch recopy stops after results are recorded. Check account
-          history before preparing any further sending. Selected retries are not
-          available yet.
+          Full-batch recopy stops after results or a selected retry are recorded. Check account
+          history before preparing any further sending.
         </p>
+      )}
+      {batch.exported !== null && (
+        <MessageRetryPanel
+          batch={batch}
+          endpoint={endpoint}
+          request={request}
+          refresh={refresh}
+        />
       )}
     </section>
   );

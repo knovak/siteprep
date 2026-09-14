@@ -482,6 +482,7 @@ export const messageResults = sqliteTable(
     fling: text().notNull(),
     status: text().notNull(),
     evidence: text().notNull(),
+    attempt: integer().notNull().default(1),
   },
   (t) => [
     primaryKey({ columns: [t.report, t.delivery] }),
@@ -505,5 +506,58 @@ export const messageResults = sqliteTable(
       'reported_status',
       sql`${t.status} IN ('reported_sent','reported_failed','suppressed','unknown')`,
     ),
+  ],
+);
+
+export const messageRetries = sqliteTable(
+  'message_retries',
+  {
+    batch: text().notNull(),
+    fling: text().notNull(),
+    attempt: integer().notNull(),
+    owner: text()
+      .notNull()
+      .references(() => organizers.id),
+    exported: integer().notNull(),
+    payloadHash: text('payload_hash').notNull(),
+    resultsRevision: integer('results_revision').notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.batch, t.attempt] }),
+    unique().on(t.batch, t.attempt, t.fling),
+    foreignKey({
+      columns: [t.batch, t.fling],
+      foreignColumns: [messageBatches.id, messageBatches.fling],
+    }),
+    check('retry_attempt', sql`${t.attempt}>1`),
+  ],
+);
+export const messageRetryDeliveries = sqliteTable(
+  'message_retry_deliveries',
+  {
+    batch: text().notNull(),
+    fling: text().notNull(),
+    attempt: integer().notNull(),
+    delivery: text().notNull(),
+    evidence: text().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.batch, t.attempt, t.delivery] }),
+    foreignKey({
+      columns: [t.batch, t.attempt, t.fling],
+      foreignColumns: [
+        messageRetries.batch,
+        messageRetries.attempt,
+        messageRetries.fling,
+      ],
+    }),
+    foreignKey({
+      columns: [t.delivery, t.batch, t.fling],
+      foreignColumns: [
+        messageDeliveries.id,
+        messageDeliveries.batch,
+        messageDeliveries.fling,
+      ],
+    }),
   ],
 );

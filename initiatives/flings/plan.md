@@ -421,3 +421,20 @@ Post edits preserve the original approved discussion text in message history.
 account-history inspection and attempt tracking. The optional-post portion of
 T10 has local simulated evidence; this does not complete Phase 4, full T9 or
 independent hosted/pilot acceptance. Recovery follows after Phase 4.
+
+## Phase 4 selected-retry increment — September 14, 2026
+
+Selected retries now require per-delivery account-history observations, an
+explicit stopped-run confirmation, exact selected-message review and atomic
+export. Attempts preserve original delivery IDs and approved content; selected
+outcomes become unknown until a report names the current attempt. Competing
+exports, later reports, stale context and expired/revoked links are rejected.
+Retry and report history remain attributed and redacted, and the original linked
+discussion is preserved once.
+
+The receipt at `work/app/test/evidence/message-retries-20260914.md` combines this
+increment's simulated T9 retry checks with the existing T8 exact-review and T10
+discussion evidence. This completes local Phase 4 implementation; it does not
+establish real sending, account inspection, receipt or external duplicate safety.
+Phase 5's versioned editable export, validation, isolated restore and deletion
+follow in the existing sequence.

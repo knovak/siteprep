@@ -12,6 +12,7 @@ type ReportEntry = {
   delivery: string;
   status: ReportedStatus;
   evidence: string;
+  attempt: number;
 };
 export type ReportedStatus =
   | 'reported_sent'
@@ -21,7 +22,12 @@ export type ReportedStatus =
 export type ResultReport = {
   batch_id: string;
   revision: number;
-  results: { delivery_id: string; status: ReportedStatus; evidence: string }[];
+  results: {
+    delivery_id: string;
+    status: ReportedStatus;
+    evidence: string;
+    attempt?: number;
+  }[];
 };
 export const statusLabels: Record<ReportedStatus, string> = {
   reported_sent: 'Reported sent',
@@ -55,7 +61,12 @@ export function normalizeReport(value: unknown): ResultReport {
     );
   const results = r.results
     .map((value) => {
-      const item = object(value, ['delivery_id', 'status', 'evidence']);
+      const item = object(value, [
+        'delivery_id',
+        'status',
+        'evidence',
+        'attempt',
+      ]);
       if (
         typeof item.delivery_id !== 'string' ||
         !/^[a-zA-Z0-9-]{1,80}$/.test(item.delivery_id) ||
@@ -66,11 +77,20 @@ export function normalizeReport(value: unknown): ResultReport {
           400,
           'Use a known delivery ID and documented reported status.',
         );
+      if (
+        item.attempt !== undefined &&
+        (!Number.isSafeInteger(item.attempt) || Number(item.attempt) < 1)
+      )
+        throw new AccessError(
+          400,
+          'Use the delivery attempt shown in the current result template.',
+        );
       safeText(item.evidence, false);
       return {
         delivery_id: item.delivery_id,
         status: item.status as ReportedStatus,
         evidence: item.evidence as string,
+        ...(Number(item.attempt) > 1 ? { attempt: Number(item.attempt) } : {}),
       };
     })
     .sort((a, b) => a.delivery_id.localeCompare(b.delivery_id));
@@ -96,9 +116,16 @@ export class MessageResultStore extends MessageStore {
       this.q('SELECT * FROM message_batches WHERE id=? AND fling=?', id, fling),
       this.q(
         `SELECT r.id,r.sequence,r.fingerprint,r.reporter,o.name reporter_name,r.reported_at,
-        e.delivery,e.status,e.evidence FROM message_reports r
+        e.delivery,e.status,e.evidence,e.attempt FROM message_reports r
         JOIN organizers o ON o.id=r.reporter JOIN message_results e ON e.report=r.id
         WHERE r.batch=? AND r.fling=? ORDER BY r.sequence,e.delivery`,
+        id,
+        fling,
+      ),
+      this.q(
+        `SELECT d.*,r.owner,r.exported,r.payload_hash,r.results_revision,o.name owner_name
+        FROM message_retry_deliveries d JOIN message_retries r ON r.batch=d.batch AND r.attempt=d.attempt
+        JOIN organizers o ON o.id=r.owner WHERE d.batch=? AND d.fling=? ORDER BY d.attempt,d.delivery`,
         id,
         fling,
       ),
@@ -108,12 +135,22 @@ export class MessageResultStore extends MessageStore {
     // Use only the redacted immutable manifest; reporting never decrypts a link.
     const manifest = JSON.parse(String(row.manifest)) as Manifest;
     const entries = r[1].results as ReportEntry[];
+    const retries = r[2].results as Row[];
     const deliveries = manifest.deliveries.map((d) => {
-      const last = entries.filter((e) => e.delivery === d.id).at(-1);
+      const attempt = Math.max(
+        1,
+        ...retries
+          .filter((r) => r.delivery === d.id)
+          .map((r) => Number(r.attempt)),
+      );
+      const last = entries
+        .filter((e) => e.delivery === d.id && e.attempt === attempt)
+        .at(-1);
       return {
         id: d.id,
         name: d.name,
         channel: d.channel,
+        attempt,
         status: (last?.status ?? 'unknown') as ReportedStatus,
         evidence: String(last?.evidence ?? ''),
         reporter: last?.reporter ?? null,
@@ -134,6 +171,7 @@ export class MessageResultStore extends MessageStore {
           delivery_id: String(e.delivery),
           status: e.status as ReportedStatus,
           evidence: String(e.evidence),
+          attempt: e.attempt,
         })),
       };
     });
@@ -144,7 +182,7 @@ export class MessageResultStore extends MessageStore {
       unknown: 0,
     };
     for (const d of deliveries) counts[d.status]++;
-    return { row, manifest, entries, deliveries, reports, counts };
+    return { row, manifest, entries, deliveries, reports, counts, retries };
   }
   async reportReview(actor: Actor, fling: string, value: unknown) {
     const report = normalizeReport(value),
@@ -165,6 +203,17 @@ export class MessageResultStore extends MessageStore {
       throw new AccessError(
         400,
         'A delivery ID does not belong to this batch.',
+      );
+    if (
+      report.results.some(
+        (r) =>
+          (r.attempt ?? 1) !==
+          state.deliveries.find((d) => d.id === r.delivery_id)!.attempt,
+      )
+    )
+      throw new AccessError(
+        409,
+        'A newer attempt exists. Check account history and use the current result template.',
       );
     const fingerprint = await digest(JSON.stringify(report));
     if (state.entries.some((e) => e.fingerprint === fingerprint))
@@ -290,13 +339,14 @@ export class MessageResultStore extends MessageStore {
         ),
         ...review.report.results.map((r) =>
           this.q(
-            'INSERT INTO message_results(report,delivery,batch,fling,status,evidence) VALUES(?,?,?,?,?,?)',
+            'INSERT INTO message_results(report,delivery,batch,fling,status,evidence,attempt) VALUES(?,?,?,?,?,?,?)',
             id,
             r.delivery_id,
             review.report.batch_id,
             fling,
             r.status,
             r.evidence,
+            r.attempt ?? 1,
           ),
         ),
         this.audit(actor, fling, 'report-message-results', id),
@@ -317,10 +367,28 @@ export class MessageResultStore extends MessageStore {
       const state = await this.resultState(actor, fling, String(batch.id));
       batches.push({
         ...batch,
-        outcome: state.row.results_revision
+        outcome: state.reports.length
           ? 'reported results; receipt unverified'
           : 'unknown',
         results_revision: Number(state.row.results_revision),
+        retries: [...new Set(state.retries.map((r) => Number(r.attempt)))].map(
+          (attempt) => {
+            const checks = state.retries.filter((r) => r.attempt === attempt),
+              first = checks[0];
+            return {
+              attempt,
+              owner: String(first.owner),
+              owner_name: String(first.owner_name),
+              exported: Number(first.exported),
+              can_recopy:
+                Number(first.results_revision) === state.row.results_revision,
+              checks: checks.map((r) => ({
+                delivery_id: String(r.delivery),
+                evidence: String(r.evidence),
+              })),
+            };
+          },
+        ),
         results: {
           deliveries: state.deliveries,
           reports: state.reports,

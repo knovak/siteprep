@@ -238,3 +238,73 @@ server. The dated receipt records rollback, concurrency, independent audiences,
 privacy, reporting and three-engine desktop/phone interface checks. Selected
 retries with account-history inspection and attempt tracking remain Phase 4
 work; this increment does not mark the larger item complete.
+
+## Selected retries and attempt history — September 14, 2026
+
+`lib/message-retries.ts` extends the result store with three organizer endpoints.
+The original batch owner retains the handoff claim. No endpoint inspects an
+external account or starts sending. Failed and unknown deliveries become
+retryable only after explicit selection, a nonempty account-history observation
+for each delivery, confirmation that each was not sent, and confirmation that
+the previous external run stopped. Reported-sent and suppressed deliveries are
+excluded. An unresolved external outcome must be left alone.
+
+- `POST /retry-preview` takes the original `batch_id`, `revision`, `fingerprint`,
+  `history_checked: true`, `prior_run_stopped: true`, and `checks`, a list of
+  `{ delivery_id, evidence }`. Select one to five distinct deliveries. Each
+  observation is at most 4,000 characters and the complete list is at most
+  8,000 UTF-8 bytes. Recognizable raw/encoded bearer links are rejected. The
+  response shows the exact selected manifest, account checks, next `attempt`,
+  `retry_fingerprint`, current `results_revision`, expiry and an HMAC token.
+  Preview writes no attempt and preserves the original delivery IDs, contact,
+  subject, core text, suffix and sending boundary.
+- `POST /retry-export` takes those returned review fields, the two history/run
+  confirmations and `confirm: true`. The ten-minute token binds the actor,
+  original context, exact selected payload, inspection notes and results
+  revision. Rechecking and atomically inserting the retry header, selected
+  deliveries, attribution, revision increment and audit either all succeed or
+  all roll back. A concurrent result report or retry invalidates the preview.
+  The new attempt becomes unknown only for the selected deliveries. No new
+  discussion post, code, contact or batch is created.
+- `POST /retry-recopy` takes the original identity plus `attempt`. It reconstructs
+  only that selected subset from the still-eligible original encrypted payload
+  and checks its stored fingerprint. Any later report or retry stops recopy,
+  including a change racing the final transaction. Recopy does not add an
+  attempt. Expiry, revocation, closure, profile/recipient/role changes or an
+  unavailable payload require a newly prepared message review.
+
+The prompt's manifest adds `attempt` for a retry. Each result row must copy that
+number into its own `attempt` field. Original rows may omit it, meaning attempt
+1; existing report fingerprints stay compatible. Mixed reports may cover an
+unretried delivery's attempt 1 and another delivery's current retry. Older
+attempt reports are rejected once that delivery has a newer attempt; inspect
+external history and reconcile the current attempt rather than rewriting an
+old attempt. Prior attributed reports remain visible. Retry numbers belong to
+the batch, so an individual delivery can move from attempt 1 to attempt 3 when
+attempt 2 selected different deliveries.
+
+Migration `0008` adds `message_retries`, `message_retry_deliveries`, and an
+`attempt` column defaulting to 1 on existing result rows. Compound foreign keys
+bind each selected delivery and attempt to its batch/fling. The original export
+is implicit attempt 1; retry headers retain the actor, time, payload fingerprint
+and results revision. Inspection evidence is stored per selected delivery. The
+application now has 26 tables and nine migrations. Retry history stores no
+second encrypted/raw manifest. Existing expiry/revocation cleanup therefore
+also removes the only reconstructible personal links for every attempt.
+
+Both organizer history and privacy-filtered discussion counts use each
+delivery's latest attempt. Original result evidence stays in the report history
+when a retry starts. The results revision also advances on retry exports to
+serialize reporting and retries; it is no longer a count of reports. A retry
+without any report still has unknown outcomes, not a reported receipt.
+
+The interface clears a retry review after edits and hides a displayed prompt
+when the batch's results revision changes. It shows a separate exact review,
+clipboard exposure, the sending deadline, and retained retry attribution. Full
+batch recopy remains unavailable after any report or retry. A copied external
+prompt cannot be recalled; these controls establish local review/concurrency,
+not end-to-end duplicate-send prevention or independently verified account checks.
+
+Run `npm test` and `node test/message-retries-browser.mjs` against `dev:local`.
+The dated receipt records fictional local evidence; the later authorized pilot
+still supplies real account, sender and recipient observations.

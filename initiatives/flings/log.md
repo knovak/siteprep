@@ -184,3 +184,7 @@ in `notes/private-test-deployment-20260913.md`. The Phase 4 todo remains open;
 production has not been released.
 
 - 2026-09-14: Advanced `build-message-handoff` with separately reviewed optional discussion content/readers, atomic single-post approval and privacy-filtered reported outcome counts. Added failure/concurrency and interface evidence; the item remains actionable for selected retries and attempt tracking. No real messages or production release.
+
+## 2026-09-14 — Build reviewed message audiences, exact sending-prompt export and reported outcomes
+
+Completed local Phase 4 with reviewed selected retries, per-delivery account-history observations, atomic attempt exports and attempt-specific outcome history. Simulated tests do not establish real sending or receipt; Phase 5 recovery follows.

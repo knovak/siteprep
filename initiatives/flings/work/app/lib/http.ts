@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { MessageResultStore as MessageStore } from './message-results.ts';
+import { MessageRetryStore as MessageStore } from './message-retries.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -301,6 +301,12 @@ export async function handle(req: Request, env: Bindings) {
         return json(await store.history(actor, fling));
       if (req.method === 'POST') {
         const input = await body(req);
+        if (sub === 'retry-preview')
+          return json(await store.previewRetry(actor, fling, input));
+        if (sub === 'retry-export')
+          return json(await store.exportRetry(actor, fling, input));
+        if (sub === 'retry-recopy')
+          return json(await store.recopyRetry(actor, fling, input));
         if (sub === 'prepare') {
           if (
             !env.FLINGS_ORIGIN ||

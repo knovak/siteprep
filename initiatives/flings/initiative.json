@@ -6,8 +6,8 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-message-handoff",
-      "title": "Build reviewed message audiences, exact sending-prompt export and reported outcomes",
+      "id": "build-recovery",
+      "title": "Build versioned editable export, isolated restore and deletion",
       "state": "actionable",
       "value": "high",
       "effort": "large",

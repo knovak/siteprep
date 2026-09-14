@@ -325,3 +325,13 @@ These checks use fictional records and simulated observations. They do not prove
 recipient receipt, external-account inspection, selected retry/attempt behavior
 or T10's optional linked discussion post. Those remain pending with the later
 hosted and human pilot acceptance.
+
+## September 14 selected-retry receipt (UTC)
+
+`work/app/test/evidence/message-retries-20260914.md` records simulated T9
+selection, account-history acknowledgements, exact subset export, stable IDs,
+attempt-specific reports, stale/concurrent rejection, rollback and redacted
+history. T10 checks confirm retries preserve one post and privacy-filtered counts.
+The desktop/phone interface matrix covers Chromium, Firefox and WebKit, including
+keyboard review and stale prompt removal. Account-history text and sender results
+are fictional claims; T13's authorized human pilot remains pending.

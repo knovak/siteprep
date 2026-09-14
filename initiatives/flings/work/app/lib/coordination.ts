@@ -149,11 +149,11 @@ export class CoordinationStore extends JourneyStore {
         fling,
       ),
       this.q(
-        `SELECT p.*,md.batch notification_batch,b.results_revision notification_revision,
+        `SELECT p.*,md.batch notification_batch,EXISTS(SELECT 1 FROM message_reports WHERE batch=md.batch) notification_revision,
         (SELECT json_group_object(status,n) FROM (
           SELECT status,COUNT(*) n FROM (
             SELECT COALESCE((SELECT e.status FROM message_results e JOIN message_reports r ON r.id=e.report
-              WHERE e.delivery=d.id ORDER BY r.sequence DESC LIMIT 1),'unknown') status
+              WHERE e.delivery=d.id AND e.attempt=COALESCE((SELECT MAX(attempt) FROM message_retry_deliveries WHERE delivery=d.id),1) ORDER BY r.sequence DESC LIMIT 1),'unknown') status
             FROM message_deliveries d WHERE d.batch=md.batch
           ) GROUP BY status
         )) notification_counts

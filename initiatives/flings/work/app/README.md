@@ -571,3 +571,25 @@ notes, personal links or app evidence to members. Organizers can open the linked
 batch history. Post edits do not alter approved message history. Selected
 retries remain pending; no real sending is performed by these controls.
 See `../../MESSAGES_TECHDOC.md` and `test/evidence/message-discussions-20260914.md`.
+
+## Retry selected deliveries — September 14, 2026
+
+In an exported batch's **Message review history**, use **Retry selected
+ deliveries** after stopping the external run. Select only deliveries you have
+confirmed were not sent by inspecting the correct Sent or conversation history.
+Write what you checked for each delivery, confirm both checks, then choose
+**Review selected retry**. Review the exact selected messages and destinations
+before **Confirm and copy selected retry**. Leave uncertain outcomes alone.
+
+The retry keeps the original messages and delivery IDs, adds an attempt number,
+and leaves the existing discussion post in place. Copying changes selected
+outcomes to unknown; it sends nothing. The result template carries the current
+attempt for each delivery. Old reports cannot overwrite newer attempts. Retry
+history records who exported it, when, and their inspection observations; these
+are claims, not independent verification. Recopy is available only while that
+attempt has no later report/retry and the original review and links remain valid.
+
+The database now has 26 tables and nine additive migrations. See
+`../../MESSAGES_TECHDOC.md` for the JSON contract and compatibility rules, and
+`test/evidence/message-retries-20260914.md` for local checks. Editable recovery
+and the later hosted/pilot acceptance remain separate work.
