@@ -6,25 +6,24 @@
 
 ## Done
 
-Gatherings support invitations, event details, scoped discussions, polls and
-attributed payments. Organizers can approve exact individual messages, export
-a sending prompt, then preview and record reported outcomes with correction
-history; those reports do not verify recipient receipt.
+Gatherings support invitations, event details, discussions, polls and attributed
+payments. Organizers review exact messages and an optional discussion post,
+export a sending prompt, and record reported outcomes with correction history;
+those reports do not verify recipient receipt.
 
-The private rehearsal binds fictional organizer and preview sessions to the
-signed-in Site visitor. The current stack passes 87 database/HTTP/time tests
-and six member browser regressions across three engines at desktop/phone sizes;
-real hosted sign-in, organizer views and member entry have been checked.
+Approval creates the discussion post once. Member-visible counts exclude private
+message content; the current increment passes 96 database/HTTP/time tests and
+24 browser journeys across three engines at desktop and phone sizes.
 
 ## Remaining work
 
-Finish Phase 4's optional discussion post and explicit selected retries with
-account-history inspection and attempt tracking. Editable recovery, independent
-organizer identity, development-toolchain remediation and full hosted/pilot
-acceptance follow.
+Finish Phase 4's selected retries with account-history inspection and attempt
+tracking. Editable recovery, independent organizer identity, development-toolchain
+remediation and full hosted/pilot acceptance follow; the current fictional
+rehearsal uses visitor-bound organizer and preview sessions.
 
 ## Optional later
 
-Direct delivery APIs, an in-app drafting model and encrypted export files
-remain deferred. The planned first sending path is a reviewed prompt for the
-organizer's external tool, with manual sending fallback.
+Direct delivery APIs, an in-app drafting model and encrypted export files remain
+deferred. The planned first sending path is a reviewed prompt for the organizer's
+external tool, with manual sending fallback.
