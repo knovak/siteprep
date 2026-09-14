@@ -1,12 +1,14 @@
 # Gathering recovery export
 
-September 14, 2026 — first Phase 5 increment. Assigned organizers can prepare an
+September 14, 2026 — Phase 5 local implementation. Assigned organizers can prepare an
 unencrypted per-gathering JSON snapshot, then save it through the browser.
 The format, field guide and complete fictional example live in
 `work/app/public/recovery/`. The second increment adds an in-memory edited-file
 checker. A third increment adds explicit organizer mapping and a read-only
-restore preview. Confirmed isolated restore and deletion remain pending; the
-`build-recovery` todo stays actionable.
+restore preview. Confirmed atomic restore and permanent active-storage deletion
+are now implemented, as described in the final section below. Independent hosted
+identity, provider retention/recovery evidence and real-data activation remain
+separate acceptance work.
 
 ## Contract and data
 
@@ -246,3 +248,77 @@ prototype-like IDs, late authority changes and HTTP boundaries. The dated
 receipt records actual results. T11 remains incomplete until atomic restore,
 fresh relationship mapping, failure rollback, deletion and retention evidence
 are implemented.
+
+## Confirmed restore and deletion — September 14, 2026
+
+The sections above record the earlier increments. `RecoveryRestoreStore` now
+adds confirmation to the existing preview and implements the final mutations.
+A valid mapped preview includes a ten-minute HMAC ticket binding its purpose,
+nonce, current organizer, authorized source-page gathering, exact parsed file,
+mapping and offered account roster. Only hashes and internal IDs appear in the
+ticket; no uploaded contact or text is persisted. A checksum does not establish
+trust in edited data: the signer proves only which review was issued.
+
+`POST /api/flings/:fling/organizer/recovery/restore` accepts `file`,
+`organizer_mapping`, `ticket` and `confirm_restore:true`. The existing transport
+enforces same origin, session/CSRF, expected organizer and an 8 MiB total request.
+It verifies the ticket, reruns the semantic checker and mapping preview, then
+checks current assignment and the exact account roster inside the transaction.
+The response is a no-store 201 with the new gathering ID, title and import time.
+Invalid consent fails 400; invalid/stale reviews, replay or database failures
+fail 409 without a partial gathering. An uncertain network result requires
+checking the gathering list before preparing another review.
+
+Every imported primary ID receives a fresh UUID. Table-scoped maps rewrite
+parents, invitations, poll votes, payment references, historical actors, message
+deliveries, manifests, audience selections, discussion readers and retry/report
+relationships. Roleless historical actor IDs shared by a member and organizer
+are rejected rather than guessed. Unknown historical audit targets receive fresh
+inert IDs, including omitted access-record references. Names, contacts and
+ordinary text never become SQL, account matches or authentication subjects.
+The current importer is always assigned, alongside explicitly selected eligible
+accounts; historical organizers are separate rows in a reserved `recovery:`
+subject namespace, with no assignments. Authority, account assignment, profile
+updates and gathering creation reject those historical identities. Existing
+gatherings, including their expired ciphertext, are not modified by restore.
+
+All statements run in one D1 batch with a failing-CHECK authority guard. Fixed
+columns from the reviewed format and bound JSON chunks perform inserts without
+interpolating uploaded values. `recovery_imports` records local provenance;
+`recovery_tokens` consumes the signed nonce in the same transaction, so concurrent
+confirmations produce at most one gathering. A failed import rolls back the
+nonce as well. Nonce tombstones contain only an ID and expiry, no account,
+gathering or uploaded data; expired tombstones are purged on the next successful
+restore. Keeping the tombstone after deletion prevents replay while its ticket
+remains valid. There is no persisted upload/staging object to recover or expire:
+request buffers end with the request and the browser discards the parsed review
+on changes, failure, completion or unmount. The original browser-selected File
+remains under the user's control until cleared or the page is left.
+
+Migration 0009 preserves existing delivery rows while allowing their access-code
+reference to be null for imported history, adds an independent member/fling
+foreign key, adds `message_batches.imported_at` and creates provenance storage.
+Migration 0010 creates replay tombstones. The generated table rebuild uses
+[D1's documented deferred foreign keys](https://developers.cloudflare.com/d1/sql-api/foreign-keys/)
+inside its migration transaction; populated upgrade tests preserve delivery
+reports and verify all foreign keys afterward. No applied migration is edited.
+No imported code or session is inserted. Imported batches have no ciphertext,
+context or payload fingerprint, carry `imported_at`, and are explicitly labelled
+read-only imported history with cancelled handoffs in organizer history. Server
+paths reject sending, retrying and reporting them, and the corresponding UI
+actions are hidden. Re-export keeps the version-1 business-field contract;
+restoring any exported batch always marks it imported again.
+
+`POST /api/flings/:fling/organizer/recovery/delete` accepts the exact current
+`title`, `revision` and `confirm_delete:true`. A current-assignment/title/revision
+guard and child-first deletion share one transaction, removing member contacts,
+access codes/sessions, posts/history, polls/votes, payments/ledger, message
+history, assignments, import provenance and that copy's historical organizers.
+Real organizer accounts and other gatherings remain. Failure rolls everything
+back; a removed assignment cannot authorize a stale deletion. The UI uses an
+alert dialog, exact-title entry, separate acknowledgement and a cancel action.
+Downloaded exports, external messages, host backups and unrelated rate-limit
+metadata are outside this active-record deletion. Provider-specific retention,
+backup recovery/deletion procedures and audit retention must be recorded and
+rehearsed before real personal data; local success makes no claim of backup
+erasure. Closed gatherings remain stored until this explicit action.

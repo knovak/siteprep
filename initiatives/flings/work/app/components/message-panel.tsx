@@ -453,21 +453,23 @@ export default function MessagePanel({
                 <p>Later post edits do not change this approved text.</p>
               </details>
             )}
-            {h.approved !== null && h.results_revision === 0 && (
-              <Button
-                variant="outline"
-                disabled={busy}
-                onClick={() =>
-                  void copy({
-                    batch_id: h.id,
-                    revision: h.revision,
-                    fingerprint: h.payload_hash,
-                  })
-                }
-              >
-                Recheck and copy approved prompt
-              </Button>
-            )}
+            {h.imported_at === null &&
+              h.approved !== null &&
+              h.results_revision === 0 && (
+                <Button
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() =>
+                    void copy({
+                      batch_id: h.id,
+                      revision: h.revision,
+                      fingerprint: h.payload_hash,
+                    })
+                  }
+                >
+                  Recheck and copy approved prompt
+                </Button>
+              )}
             <MessageResultsPanel
               batch={h}
               endpoint={endpoint}

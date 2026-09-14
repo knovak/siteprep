@@ -7,6 +7,7 @@ import CoordinationPanel from './coordination-panel';
 import GatheringEditor from './gathering-editor';
 import RecoveryExportPanel from './recovery-export-panel';
 import RecoveryCheckPanel from './recovery-check-panel';
+import RecoveryDeletePanel from './recovery-delete-panel';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -345,6 +346,13 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
           <RecoveryCheckPanel
             key={'check:' + fling + ':' + data.organizer}
             fling={fling!}
+            request={request}
+          />
+          <RecoveryDeletePanel
+            key={'delete:' + fling + ':' + data.organizer}
+            fling={fling!}
+            title={data.fling.title}
+            revision={data.fling.revision}
             request={request}
           />
           <div className="gathering-state">

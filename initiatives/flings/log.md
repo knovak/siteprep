@@ -220,3 +220,7 @@ checking and export journeys pass, including unchanged application storage and
 late account/file changes. Confirmed atomic restore, rollback and deletion stay
 on the actionable recovery item; no phase completion or production release is
 claimed. Evidence is in `work/app/test/evidence/recovery-preview-20260914.md`.
+
+## 2026-09-14 — Build versioned editable export, isolated restore and deletion
+
+Implemented confirmed atomic restore with fresh identities, imported-only message history, replay protection and permanent active-record deletion; local T11 evidence passes, with independent hosted identity and provider retention evidence carried in verify-hosted-test.

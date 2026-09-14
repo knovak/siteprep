@@ -149,7 +149,7 @@ export class AccessStore {
       throw new AccessError(403, 'Member preview is read-only.');
     if (actor.kind === 'organizer' || actor.kind === 'preview')
       return [
-        'EXISTS(SELECT 1 FROM assignments WHERE fling=? AND organizer=?)',
+        "EXISTS(SELECT 1 FROM assignments a JOIN organizers o ON o.id=a.organizer WHERE a.fling=? AND a.organizer=? AND o.subject NOT LIKE 'recovery:%')",
         [fling, actor.id],
       ];
     return [
@@ -560,7 +560,7 @@ export class AccessStore {
         // way as any other stale precondition, through the batch's rollback.
         this.guard(
           g,
-          'EXISTS(SELECT 1 FROM organizers WHERE id=?) AND NOT EXISTS(SELECT 1 FROM assignments WHERE fling=? AND organizer=?)',
+          "EXISTS(SELECT 1 FROM organizers WHERE id=? AND subject NOT LIKE 'recovery:%') AND NOT EXISTS(SELECT 1 FROM assignments WHERE fling=? AND organizer=?)",
           [organizer, fling, organizer],
         ),
         this.q(

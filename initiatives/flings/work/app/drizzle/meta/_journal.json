@@ -64,6 +64,20 @@
       "when": 1789360273365,
       "tag": "0008_cooing_caretaker",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1789418283950,
+      "tag": "0009_serious_sleepwalker",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1789418327134,
+      "tag": "0010_exotic_thor_girl",
+      "breakpoints": true
     }
   ]
 }

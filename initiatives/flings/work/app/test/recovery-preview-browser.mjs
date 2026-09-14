@@ -128,7 +128,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
         panel.getByRole('button', {
           name: /confirm|create|restore gathering/i,
         }),
-      ).toHaveCount(0);
+      ).toBeDisabled();
       assert.ok(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,

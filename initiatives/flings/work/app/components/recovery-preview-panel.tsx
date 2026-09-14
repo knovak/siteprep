@@ -1,6 +1,8 @@
+/* oxlint-disable next/no-html-link-for-pages -- Navigation clears the recovery upload and authority context. */
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import type { RecoveryPreview } from '../lib/recovery-preview';
 
 export default function RecoveryPreviewPanel({
@@ -15,13 +17,19 @@ export default function RecoveryPreviewPanel({
   const [result, setResult] = useState<RecoveryPreview | null>(null),
     [choices, setChoices] = useState<Record<string, string>>({}),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState('');
+    [error, setError] = useState(''),
+    [confirmed, setConfirmed] = useState(false),
+    [created, setCreated] = useState<{ id: string; title: string } | null>(
+      null,
+    );
   const sequence = useRef(0);
+  const reviewed = useRef<Record<string, unknown> | null>(null);
   const choice = (id: string) =>
     Object.hasOwn(choices, id) ? choices[id] : '';
   useEffect(
     () => () => {
       sequence.current++;
+      reviewed.current = null;
     },
     [],
   );
@@ -29,6 +37,8 @@ export default function RecoveryPreviewPanel({
     const current = ++sequence.current;
     setBusy(true);
     setError('');
+    setConfirmed(false);
+    reviewed.current = null;
     setResult((previous) =>
       withMapping && previous ? { ...previous, plan: null } : null,
     );
@@ -66,6 +76,7 @@ export default function RecoveryPreviewPanel({
         );
       }
       setResult(next);
+      if (withMapping) reviewed.current = body;
     } catch (e) {
       if (current === sequence.current) {
         setResult(null);
@@ -76,7 +87,55 @@ export default function RecoveryPreviewPanel({
       if (current === sequence.current) setBusy(false);
     }
   }
+  async function restore() {
+    if (!confirmed || !result?.confirmation || !reviewed.current) return;
+    const current = ++sequence.current;
+    setBusy(true);
+    setError('');
+    try {
+      const value = (await request(
+        fling + '/organizer/recovery/restore',
+        'POST',
+        {
+          ...reviewed.current,
+          ticket: result.confirmation.ticket,
+          confirm_restore: true,
+        },
+      )) as { id: string; title: string };
+      if (current !== sequence.current) return;
+      setCreated(value);
+      setResult(null);
+      setChoices({});
+      reviewed.current = null;
+    } catch (e) {
+      if (current === sequence.current) {
+        setError((e as Error).message);
+        setConfirmed(false);
+        setResult((previous) =>
+          previous ? { ...previous, plan: null, confirmation: null } : null,
+        );
+        reviewed.current = null;
+      }
+    } finally {
+      if (current === sequence.current) setBusy(false);
+    }
+  }
   const plan = result?.plan;
+  if (created)
+    return (
+      <section className="profile-panel" aria-label="Restored gathering">
+        <h3>Gathering restored</h3>
+        <p>
+          <strong>{created.title}</strong> is a separate gathering. Existing
+          gatherings have no changes.
+        </p>
+        <p>
+          No member links were created and no messages were sent. Imported
+          message outcomes are history.
+        </p>
+        <a href={'/organizer/' + created.id}>Open restored gathering</a>
+      </section>
+    );
   return (
     <section className="profile-panel" aria-label="Preview a new gathering">
       <h3>Preview a new gathering</h3>
@@ -86,7 +145,8 @@ export default function RecoveryPreviewPanel({
         account.
       </p>
       <p className="notice">
-        Preview only. Creating the restored gathering is not available yet.
+        Review the additions and account access, then confirm a separate new
+        gathering.
       </p>
       <Button
         variant="outline"
@@ -129,8 +189,10 @@ export default function RecoveryPreviewPanel({
                   sequence.current++;
                   setBusy(false);
                   setError('');
+                  setConfirmed(false);
+                  reviewed.current = null;
                   setChoices({ ...choices, [identity.id]: e.target.value });
-                  setResult({ ...result, plan: null });
+                  setResult({ ...result, plan: null, confirmation: null });
                 }}
               >
                 <option value="" disabled>
@@ -211,11 +273,37 @@ export default function RecoveryPreviewPanel({
               ))}
             </ul>
           </details>
-          <p>
-            This preview is temporary and grants no access. The future restore
-            step must check the file and account choices again before explicit
-            confirmation.
-          </p>
+          {result.confirmation && (
+            <>
+              <p>
+                This review expires at{' '}
+                {new Date(result.confirmation.expires).toLocaleTimeString()}.
+                The file and current account access are checked again when you
+                confirm.
+              </p>
+              <label
+                htmlFor="restore-gathering-confirm"
+                className="flex gap-2 my-3 items-start"
+              >
+                <Checkbox
+                  id="restore-gathering-confirm"
+                  checked={confirmed}
+                  disabled={busy}
+                  onCheckedChange={(value) => setConfirmed(value === true)}
+                />
+                I reviewed this file and organizer access and want to create a
+                new gathering.
+              </label>
+              <Button
+                disabled={busy || !confirmed}
+                onClick={() => void restore()}
+              >
+                {busy
+                  ? 'Restoring gathering…'
+                  : 'Confirm and create restored gathering'}
+              </Button>
+            </>
+          )}
         </div>
       )}
     </section>

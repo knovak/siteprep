@@ -24,9 +24,11 @@ export class JourneyStore extends AccessStore {
       guard = crypto.randomUUID();
     try {
       await this.db.batch([
-        this.guard(guard, 'EXISTS(SELECT 1 FROM organizers WHERE id=?)', [
-          actor.id,
-        ]),
+        this.guard(
+          guard,
+          "EXISTS(SELECT 1 FROM organizers WHERE id=? AND subject NOT LIKE 'recovery:%')",
+          [actor.id],
+        ),
         this.q('INSERT INTO flings(id,title) VALUES(?,?)', id, title),
         this.q(
           'INSERT INTO assignments(fling,organizer) VALUES(?,?)',
@@ -272,9 +274,11 @@ export class JourneyStore extends AccessStore {
       // any one fling, so this write has no audit row - unlike every
       // fling-scoped action above and in access.ts.
       await this.db.batch([
-        this.guard(g, 'EXISTS(SELECT 1 FROM organizers WHERE id=?)', [
-          actor.id,
-        ]),
+        this.guard(
+          g,
+          "EXISTS(SELECT 1 FROM organizers WHERE id=? AND subject NOT LIKE 'recovery:%')",
+          [actor.id],
+        ),
         this.q('UPDATE organizers SET name=? WHERE id=?', name, actor.id),
         this.q('DELETE FROM guards WHERE id=?', g),
       ]);

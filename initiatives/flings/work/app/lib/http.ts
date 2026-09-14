@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { RecoveryPreviewStore as MessageStore } from './recovery-preview.ts';
+import { RecoveryRestoreStore as MessageStore } from './recovery-restore.ts';
 import { EXPORT_MAX_BYTES } from './recovery-export.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
@@ -334,6 +334,23 @@ export async function handle(req: Request, env: Bindings) {
           await body(req, EXPORT_MAX_BYTES),
         ),
       );
+    if (
+      action === 'organizer' &&
+      member === 'recovery' &&
+      req.method === 'POST'
+    ) {
+      if (sub === 'restore')
+        return json(
+          await store.restoreRecovery(
+            actor,
+            fling,
+            await body(req, EXPORT_MAX_BYTES),
+          ),
+          201,
+        );
+      if (sub === 'delete')
+        return json(await store.deleteRecovery(actor, fling, await body(req)));
+    }
     if (action === 'organizer' && member === 'messages') {
       if (req.method === 'GET' && !sub)
         return json(await store.history(actor, fling));

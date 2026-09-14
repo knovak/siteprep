@@ -6,12 +6,13 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-recovery",
-      "title": "Build versioned editable export, isolated restore and deletion",
-      "state": "actionable",
+      "id": "verify-hosted-test",
+      "title": "Verify managed organizer identity, hosted acceptance and recovery retention",
+      "state": "blocked",
       "value": "high",
       "effort": "large",
-      "advances_stage": false
+      "advances_stage": false,
+      "blocked_by": "data:managed organizer identity issuer/client, callback configuration and allowed accounts; provider backup retention and recovery/deletion procedure and approved audit retention before real personal data"
     }
   ],
   "brief": {

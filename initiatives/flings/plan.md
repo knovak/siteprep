@@ -486,3 +486,30 @@ confirmed deletion. The preview describes those required semantics; it does
 not implement the final import or complete T11. The later importer must bind
 the exact reviewed file/mappings to explicit confirmation and recheck authority
 inside its transaction. Hosted and pilot work retain the existing sequence.
+
+## Phase 5 confirmed restore and deletion — September 14, 2026
+
+The remaining local recovery implementation is complete. A signed ten-minute
+review binds the exact file, organizer mapping, importer and current account
+roster. Confirmation creates a separate gathering with fresh identities in one
+D1 transaction; a consumed review cannot create duplicate copies. Historical
+organizers retain attribution without account access. Imported message history
+has no credentials or sendable payload and is labelled as imported for organizers
+and members. Confirmed deletion removes the gathering's active records and
+member access together, retaining other gatherings and real organizer accounts.
+
+Local T11 evidence includes the edited round trip, relationship checks, preserved
+source records, concurrent confirmation, mid-import and mid-deletion rollback,
+late organizer removal, no restored credentials, separate new-link issuance and
+deletion invalidation. The populated migration preserves existing delivery
+reports. The browser receipt covers explicit consent, consent reset, keyboard
+confirmation, desktop/phone restore and exact-title deletion on three engines.
+
+`build-recovery` is complete for this local fictional-data implementation.
+`verify-hosted-test` now carries the next Phase 6 work and its unavailable inputs:
+managed identity issuer/client, callback settings and allowed accounts, plus
+provider backup retention, recovery/deletion procedure and approved audit
+retention. The existing private rehearsal is usable for this review but does not
+satisfy independent organizer identity or all T11/T12 hosted evidence. Provider
+backup recovery/deletion remains unverified; no real-data, sending, access-change,
+pilot or production approval is inferred.

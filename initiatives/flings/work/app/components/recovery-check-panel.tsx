@@ -133,9 +133,8 @@ export default function RecoveryCheckPanel({
                 personal-link fields were removed in the export.
               </p>
               <p>
-                Message records describe historical claims only. A future
-                restore must cancel unfinished handoffs and issue fresh access
-                separately.
+                Message records describe historical claims only. Restore cancels
+                unfinished handoffs. New member links require a separate action.
               </p>
               <p>
                 No gathering was created or changed. Passing these checks does

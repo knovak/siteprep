@@ -91,7 +91,7 @@ export default function MessageResultsPanel({
           )}
         </div>
       ))}
-      {batch.exported !== null && (
+      {batch.imported_at === null && batch.exported !== null && (
         <>
           <Button
             variant="outline"
@@ -265,11 +265,11 @@ export default function MessageResultsPanel({
       )}
       {batch.results_revision > 0 && (
         <p className="notice">
-          Full-batch recopy stops after results or a selected retry are recorded. Check account
-          history before preparing any further sending.
+          Full-batch recopy stops after results or a selected retry are
+          recorded. Check account history before preparing any further sending.
         </p>
       )}
-      {batch.exported !== null && (
+      {batch.imported_at === null && batch.exported !== null && (
         <MessageRetryPanel
           batch={batch}
           endpoint={endpoint}

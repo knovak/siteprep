@@ -10,6 +10,7 @@ type Account = { id: string; name: string };
 type Identity = { id: string; name: string; assigned: boolean };
 type Mapping = { source: string; target: string | null };
 export type RecoveryPreview = {
+  confirmation?: { ticket: string; expires: number } | null;
   check: RecoveryCheck;
   identities: Identity[];
   accounts: Account[];

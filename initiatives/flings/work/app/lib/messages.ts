@@ -308,6 +308,11 @@ export class MessageStore extends AudienceStore {
   }
   async verified(actor: Actor, fling: string, input: Row) {
     const row = await this.load(actor, fling, input.batch_id);
+    if (row.imported_at !== null)
+      throw new AccessError(
+        409,
+        'Imported message history cannot be sent or resumed. Prepare a new batch.',
+      );
     if (row.owner !== organizer(actor))
       throw new AccessError(
         409,
@@ -454,7 +459,7 @@ export class MessageStore extends AudienceStore {
     organizer(actor);
     const r = await this.batch(actor, fling, [
       this.q(
-        `SELECT id,owner,revision,manifest,payload_hash,created,approved,exported,send_until,discussion,
+        `SELECT id,owner,revision,manifest,payload_hash,created,approved,exported,send_until,discussion,imported_at,
         (ciphertext IS NOT NULL AND send_until>? AND context=(${contextSql}) AND NOT EXISTS(
           SELECT 1 FROM message_deliveries d JOIN codes c ON c.id=d.code WHERE d.batch=message_batches.id AND c.revoked IS NOT NULL)) available
         FROM message_batches WHERE fling=? ORDER BY created DESC,id LIMIT 50`,
@@ -467,6 +472,7 @@ export class MessageStore extends AudienceStore {
       batches: (r[0].results as Row[]).map((row) => ({
         id: row.id,
         owner: row.owner,
+        imported_at: row.imported_at,
         revision: row.revision,
         payload_hash: row.payload_hash,
         created: row.created,
@@ -478,11 +484,14 @@ export class MessageStore extends AudienceStore {
         discussion: row.discussion
           ? (JSON.parse(row.discussion as string) as DiscussionReview)
           : null,
-        state: row.exported
-          ? 'exported for sending'
-          : row.approved
-            ? 'ready to copy'
-            : 'awaiting review',
+        state:
+          row.imported_at !== null
+            ? 'imported history; handoffs cancelled'
+            : row.exported
+              ? 'exported for sending'
+              : row.approved
+                ? 'ready to copy'
+                : 'awaiting review',
         outcome: 'unknown',
       })),
     };

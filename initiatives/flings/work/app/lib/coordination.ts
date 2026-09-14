@@ -149,7 +149,7 @@ export class CoordinationStore extends JourneyStore {
         fling,
       ),
       this.q(
-        `SELECT p.*,md.batch notification_batch,EXISTS(SELECT 1 FROM message_reports WHERE batch=md.batch) notification_revision,
+        `SELECT p.*,md.batch notification_batch,b.imported_at notification_imported,EXISTS(SELECT 1 FROM message_reports WHERE batch=md.batch) notification_revision,
         (SELECT json_group_object(status,n) FROM (
           SELECT status,COUNT(*) n FROM (
             SELECT COALESCE((SELECT e.status FROM message_results e JOIN message_reports r ON r.id=e.report
@@ -220,6 +220,7 @@ export class CoordinationStore extends JourneyStore {
           ({
             notification_batch,
             notification_revision,
+            notification_imported,
             notification_counts,
             ...p
           }) => ({
@@ -232,9 +233,12 @@ export class CoordinationStore extends JourneyStore {
               notification_batch && !(p.hidden && member)
                 ? {
                     ...(member ? {} : { batch: notification_batch }),
-                    state: notification_revision
-                      ? 'Reported outcomes'
-                      : 'Notification prepared',
+                    state:
+                      notification_imported !== null
+                        ? 'Imported history; receipt unverified'
+                        : notification_revision
+                          ? 'Reported outcomes'
+                          : 'Notification prepared',
                     counts: {
                       reported_sent: 0,
                       reported_failed: 0,

@@ -346,3 +346,20 @@ The local suite passes 118 database/API/time tests and 18 browser journeys acros
 three engines at desktop/phone sizes. Edited-file semantic validation, staged
 identity mapping, atomic restore, rollback and deletion remain pending; T11 is
 not complete. No real data, sends or production release were exercised.
+
+## September 14 confirmed recovery receipt
+
+`work/app/test/evidence/recovery-restore-20260914.md` records the local T11
+completion boundary: edited-file restore, fresh relationships and historical
+identity separation, unchanged source records, atomic failures, duplicate
+confirmation prevention, no restored access credentials, explicit new-link
+issuance and confirmed deletion. The populated D1 upgrade preserves existing
+message reports. Six complete desktop/phone restore/delete journeys plus the
+existing six preview and six export journeys pass across Chromium, Firefox and
+WebKit. Imported discussion notifications and organizer outcomes remain labelled
+history rather than live evidence.
+
+This completes Phase 5's local implementation. T11 provider-backup recovery and
+deletion evidence and the independent managed identity/full hosted T12 matrix
+remain part of `verify-hosted-test`. No live receipt, real-data retention,
+external access, pilot or production acceptance is claimed.

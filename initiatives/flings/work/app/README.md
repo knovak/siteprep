@@ -627,8 +627,8 @@ message manifests/retries, redaction paths and personal links. Unsupported
 versions, more than 10,000 records and files over 8 MiB fail. This is not an
 importer or proof that an edited file is trustworthy. It creates no records,
 grants no organizer authority, revives no access links and sends nothing.
-Identity mapping, atomic restore, deletion and full T11 recovery evidence remain
-on the existing `build-recovery` item. See `../../RECOVERY_TECHDOC.md` for the
+The separate mapping and confirmation flow below performs an atomic restore.
+Provider backup retention and the remaining hosted T11/T12 evidence stay in Phase 6. See `../../RECOVERY_TECHDOC.md` for the
 contract and limitations. Run `node test/recovery-check-browser.mjs` against the
 local server for six desktop/phone journeys in Chromium, Firefox and WebKit.
 
@@ -644,6 +644,28 @@ proposed access and exclusions. No gathering or access grant is created yet.
 
 Changing a choice clears the old preview; replacing/clearing the file or changing
 organizer also clears choices and ignores late responses. Nothing is saved to
-the server or browser storage. Confirmed atomic restore and deletion are the
-remaining Phase 5 work. See `../../RECOVERY_TECHDOC.md` and run
+the server or browser storage. Confirmed restore and deletion are described below. See `../../RECOVERY_TECHDOC.md` and run
 `node test/recovery-preview-browser.mjs` for the new interface checks.
+
+
+## Confirm restore and delete a gathering — September 14, 2026
+
+After reviewing the proposed inventory and accounts, check the acknowledgement
+and choose **Confirm and create restored gathering**. Reviews expire after ten
+minutes and are invalidated by changing the file or organizer choices. The
+server rechecks the file and current accounts and creates all records or none.
+Open the resulting link to manage the separate gathering. No old member access
+is revived; issue a new member link only when deliberately needed. Imported
+message outcomes are read-only history and cannot be sent, retried or reported.
+
+**Delete this gathering…** requires its exact title and explicit confirmation.
+Deletion removes active records and access for that gathering together; it keeps
+other gatherings and real organizer accounts. Save a backup beforehand if needed.
+This does not remove downloaded copies, external messages or provider backups.
+Uploads are never persisted on the server. The provider-specific backup retention
+and recovery/deletion procedure remains a prerequisite to real personal data.
+
+See `../../RECOVERY_TECHDOC.md` for the signed review, identity mapping, migration,
+transaction and replay controls. `test/recovery-restore.test.ts` checks actual D1
+rollback, access races, isolated records, no credentials, replay and deletion;
+`node test/recovery-restore-browser.mjs` covers the complete desktop/phone flow.

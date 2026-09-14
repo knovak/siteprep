@@ -397,6 +397,7 @@ export const messageBatches = sqliteTable(
     exported: integer(),
     resultsRevision: integer('results_revision').notNull().default(0),
     discussion: text(),
+    importedAt: integer('imported_at'),
   },
   (t) => [
     unique().on(t.id, t.fling),
@@ -429,7 +430,7 @@ export const messageDeliveries = sqliteTable(
     batch: text().notNull(),
     fling: text().notNull(),
     member: text().notNull(),
-    code: text().notNull(),
+    code: text(),
     channel: text().notNull(),
   },
   (t) => [
@@ -440,6 +441,10 @@ export const messageDeliveries = sqliteTable(
     foreignKey({
       columns: [t.code, t.member, t.fling],
       foreignColumns: [codes.id, codes.member, codes.fling],
+    }),
+    foreignKey({
+      columns: [t.member, t.fling],
+      foreignColumns: [members.id, members.fling],
     }),
     unique().on(t.batch, t.member, t.channel),
     unique().on(t.id, t.batch, t.fling),
@@ -561,3 +566,22 @@ export const messageRetryDeliveries = sqliteTable(
     }),
   ],
 );
+
+// A consumed preview creates at most one gathering, including concurrent retries.
+export const recoveryImports = sqliteTable('recovery_imports', {
+  id: text().primaryKey(),
+  fling: text()
+    .notNull()
+    .unique()
+    .references(() => flings.id),
+  importer: text()
+    .notNull()
+    .references(() => organizers.id),
+  importedAt: integer('imported_at').notNull(),
+});
+
+// Short-lived replay tombstones contain no gathering, account or uploaded data.
+export const recoveryTokens = sqliteTable('recovery_tokens', {
+  id: text().primaryKey(),
+  expires: integer().notNull(),
+});

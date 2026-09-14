@@ -188,6 +188,11 @@ export class MessageResultStore extends MessageStore {
     const report = normalizeReport(value),
       context = await this.context(actor, fling);
     const state = await this.resultState(actor, fling, report.batch_id);
+    if (state.row.imported_at !== null)
+      throw new AccessError(
+        409,
+        'Imported outcomes are read-only history. Report new messages in a new batch.',
+      );
     if (JSON.parse(context).state !== 'open')
       throw new AccessError(
         409,
@@ -367,9 +372,12 @@ export class MessageResultStore extends MessageStore {
       const state = await this.resultState(actor, fling, String(batch.id));
       batches.push({
         ...batch,
-        outcome: state.reports.length
-          ? 'reported results; receipt unverified'
-          : 'unknown',
+        outcome:
+          batch.imported_at !== null
+            ? 'imported history; not live sending evidence'
+            : state.reports.length
+              ? 'reported results; receipt unverified'
+              : 'unknown',
         results_revision: Number(state.row.results_revision),
         retries: [...new Set(state.retries.map((r) => Number(r.attempt)))].map(
           (attempt) => {
