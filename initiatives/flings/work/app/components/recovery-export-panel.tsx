@@ -45,8 +45,9 @@ export default function RecoveryExportPanel({
       </p>
       <p className="notice">
         The file is unencrypted personal data. Keep it somewhere you control.
-        Preserve the original before editing a copy. Restoring an edited file
-        and deleting a gathering are still being built.
+        Preserve the original before editing a copy. Use the checker and
+        organizer review below to restore a separate gathering. Deletion
+        requires its own confirmation.
       </p>
       <p>
         <a href="/recovery/format-v1.html" target="_blank" rel="noreferrer">
