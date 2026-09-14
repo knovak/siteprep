@@ -8,17 +8,17 @@
 
 Gatherings support invitations, events, discussions, polls, attributed payments,
 reviewed message prompts and reported outcomes with selected retry attempts.
-Organizers can save and check versioned JSON copies of 22 record collections,
-then explicitly map historical organizer names to current accounts and preview
-a new gathering without changing stored data. All 160 local tests and 18
-desktop/phone preview, checking and export journeys pass.
+Organizers can export, check and restore edited backups into separate gatherings
+with fresh identities and imported-only message history, or explicitly delete a
+gathering's active records. All 170 local tests and 18 desktop/phone recovery,
+preview and export journeys pass.
 
 ## Remaining work
 
-Phase 5 continues with confirmed atomic restore into a new gathering, fresh
-record and relationship mapping, rollback evidence and deletion. Independent organizer identity,
-development-toolchain remediation and full hosted/pilot acceptance follow;
-reported message outcomes do not establish recipient receipt.
+Phase 6 covers independent organizer identity, the full hosted acceptance matrix
+and provider-specific retention and backup recovery/deletion evidence.
+Development-toolchain remediation and the authorized pilot follow; reported
+message outcomes do not establish recipient receipt.
 
 ## Optional later
 
