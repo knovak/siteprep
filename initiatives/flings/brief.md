@@ -9,13 +9,14 @@
 Gatherings support invitations, events, discussions, polls, attributed payments,
 reviewed message prompts and reported outcomes with selected retry attempts.
 Organizers can now save a versioned JSON copy of 22 record collections, with a
-file guide, fictional example and personal-link redaction. The export increment
-passes 118 local tests and 18 desktop/phone browser journeys.
+file guide, fictional example and personal-link redaction. Edited copies can be
+checked for record, relationship and history errors without changing active data;
+149 local tests and 18 desktop/phone validation/regression journeys pass.
 
 ## Remaining work
 
-Phase 5 continues with edited-file validation, isolated restore into a new
-gathering and confirmed deletion. Independent organizer identity,
+Phase 5 continues with explicit organizer identity mapping, atomic restore into
+a new gathering and confirmed deletion. Independent organizer identity,
 development-toolchain remediation and full hosted/pilot acceptance follow;
 reported message outcomes do not establish recipient receipt.
 
