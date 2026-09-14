@@ -6,21 +6,18 @@
 
 ## Done
 
-Gatherings support invitations, events, discussions, polls and attributed
-payments. Organizers review exact messages and an optional discussion post,
-export a sending prompt, record reported outcomes and retry selected deliveries
-after recording account-history checks.
-
-Selected retries preserve message content and delivery IDs, track attempts and
-keep the discussion post once. Local Phase 4 is complete, with 107 database/API/time
-tests and 24 browser journeys; reported outcomes do not verify recipient receipt.
+Gatherings support invitations, events, discussions, polls, attributed payments,
+reviewed message prompts and reported outcomes with selected retry attempts.
+Organizers can now save a versioned JSON copy of 22 record collections, with a
+file guide, fictional example and personal-link redaction. The export increment
+passes 118 local tests and 18 desktop/phone browser journeys.
 
 ## Remaining work
 
-Phase 5 adds versioned editable export, validation, isolated restore and deletion.
-Independent organizer identity, development-toolchain remediation and full
-hosted/pilot acceptance follow; the fictional rehearsal currently uses
-visitor-bound organizer and preview sessions.
+Phase 5 continues with edited-file validation, isolated restore into a new
+gathering and confirmed deletion. Independent organizer identity,
+development-toolchain remediation and full hosted/pilot acceptance follow;
+reported message outcomes do not establish recipient receipt.
 
 ## Optional later
 
