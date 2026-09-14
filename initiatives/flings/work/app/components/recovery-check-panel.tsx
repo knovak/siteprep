@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { RecoveryCheck } from '../lib/recovery-check';
+import RecoveryPreviewPanel from './recovery-preview-panel';
 const MAX_BYTES = 8 * 1024 * 1024;
 export default function RecoveryCheckPanel({
   fling,
@@ -179,6 +180,9 @@ export default function RecoveryCheckPanel({
             </>
           )}
         </output>
+      )}
+      {file && result?.valid && (
+        <RecoveryPreviewPanel file={file} fling={fling} request={request} />
       )}
     </section>
   );

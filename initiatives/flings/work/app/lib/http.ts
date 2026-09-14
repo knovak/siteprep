@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { RecoveryCheckStore as MessageStore } from './recovery-check.ts';
+import { RecoveryPreviewStore as MessageStore } from './recovery-preview.ts';
 import { EXPORT_MAX_BYTES } from './recovery-export.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
@@ -321,6 +321,19 @@ export async function handle(req: Request, env: Bindings) {
         ),
       );
     }
+    if (
+      action === 'organizer' &&
+      member === 'recovery' &&
+      sub === 'restore-preview' &&
+      req.method === 'POST'
+    )
+      return json(
+        await store.recoveryPreview(
+          actor,
+          fling,
+          await body(req, EXPORT_MAX_BYTES),
+        ),
+      );
     if (action === 'organizer' && member === 'messages') {
       if (req.method === 'GET' && !sub)
         return json(await store.history(actor, fling));

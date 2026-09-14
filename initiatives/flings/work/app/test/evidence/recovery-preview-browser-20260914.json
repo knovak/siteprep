@@ -1,0 +1,143 @@
+{
+  "at": "2026-09-14T17:14:46.740Z",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "explicit choices without name matching",
+        "history-only actor",
+        "prototype-like identifier",
+        "importer retained",
+        "new gathering inventory",
+        "keyboard preview",
+        "text-only uploaded names",
+        "active gathering unchanged",
+        "late changed mapping",
+        "late cleared response",
+        "replacement clears preview",
+        "late organizer response",
+        "phone and 200 percent text containment",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "explicit choices without name matching",
+        "history-only actor",
+        "prototype-like identifier",
+        "importer retained",
+        "new gathering inventory",
+        "keyboard preview",
+        "text-only uploaded names",
+        "active gathering unchanged",
+        "late changed mapping",
+        "late cleared response",
+        "replacement clears preview",
+        "late organizer response",
+        "phone and 200 percent text containment",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "explicit choices without name matching",
+        "history-only actor",
+        "prototype-like identifier",
+        "importer retained",
+        "new gathering inventory",
+        "keyboard preview",
+        "text-only uploaded names",
+        "active gathering unchanged",
+        "late changed mapping",
+        "late cleared response",
+        "replacement clears preview",
+        "late organizer response",
+        "phone and 200 percent text containment",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "explicit choices without name matching",
+        "history-only actor",
+        "prototype-like identifier",
+        "importer retained",
+        "new gathering inventory",
+        "keyboard preview",
+        "text-only uploaded names",
+        "active gathering unchanged",
+        "late changed mapping",
+        "late cleared response",
+        "replacement clears preview",
+        "late organizer response",
+        "phone and 200 percent text containment",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "explicit choices without name matching",
+        "history-only actor",
+        "prototype-like identifier",
+        "importer retained",
+        "new gathering inventory",
+        "keyboard preview",
+        "text-only uploaded names",
+        "active gathering unchanged",
+        "late changed mapping",
+        "late cleared response",
+        "replacement clears preview",
+        "late organizer response",
+        "phone and 200 percent text containment",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "explicit choices without name matching",
+        "history-only actor",
+        "prototype-like identifier",
+        "importer retained",
+        "new gathering inventory",
+        "keyboard preview",
+        "text-only uploaded names",
+        "active gathering unchanged",
+        "late changed mapping",
+        "late cleared response",
+        "replacement clears preview",
+        "late organizer response",
+        "phone and 200 percent text containment",
+        "no page errors"
+      ]
+    }
+  ]
+}

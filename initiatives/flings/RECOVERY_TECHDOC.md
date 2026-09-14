@@ -4,8 +4,9 @@ September 14, 2026 — first Phase 5 increment. Assigned organizers can prepare 
 unencrypted per-gathering JSON snapshot, then save it through the browser.
 The format, field guide and complete fictional example live in
 `work/app/public/recovery/`. The second increment adds an in-memory edited-file
-checker. Identity mapping, confirmed isolated restore and deletion remain
-pending; the `build-recovery` todo stays actionable.
+checker. A third increment adds explicit organizer mapping and a read-only
+restore preview. Confirmed isolated restore and deletion remain pending; the
+`build-recovery` todo stays actionable.
 
 ## Contract and data
 
@@ -187,3 +188,61 @@ checks with expired ciphertext present, and injected assignment loss at the fina
 read. The complete suite now passes 149 tests. Six new browser journeys cover
 edited and malformed files, errors, keyboard operation, oversized uploads,
 clear/replace lifetime, late organizer responses and desktop/phone layout.
+
+## Organizer mapping preview — September 14, 2026
+
+`POST /api/flings/:fling/organizer/recovery/restore-preview` accepts
+`{"file":<version-1 export>}` to load historical identities and available
+organizer accounts. Add `organizer_mapping:[{"source":"<file organizer id>",
+"target":"<current account id>"}]` to review the proposed assignment plan;
+`target:null` explicitly keeps an identity as history only. The whole request,
+including choices, is bounded to 8 MiB. Unknown wrapper/mapping fields, missing
+choices, duplicate/foreign source IDs and unavailable target accounts fail.
+
+`lib/recovery-preview.ts` extends the checker. Every call revalidates the file,
+even if the browser previously received a successful check. Invalid files return
+the existing bounded issue report with no identities, accounts or plan. Valid
+files return historical names and IDs as text, never authentication subjects.
+Available real accounts come only from the caller's currently assigned gathering,
+not the gathering named in the upload or the global organizer directory. Names
+and identifiers that happen to match do not select an account automatically.
+Only historical organizers assigned in the file may map to a current account;
+unassigned historical actors can only be kept as history. The current importer
+is always included in proposed access. Multiple historical labels may explicitly
+map to one account without merging their historical attribution.
+
+The response's `plan` inventories the imported records, source title/state,
+organizer choices, personal-link redactions, unfinished handoffs and historical
+result count. Collection counts describe the imported inventory, not a promise
+of an identical number of future database inserts: fresh assignment/provenance
+records are still required by the importer. It describes a new private gathering,
+fresh record identities, unchanged existing gatherings, cancelled unfinished
+handoffs and imported-only results. It never creates a gathering, reserves IDs,
+issues a credential, collects a payment or sends a message. This is not a signed
+confirmation ticket or a claim that the file is trustworthy.
+
+All database operations are SELECTs. The authorized current account roster is
+read before and after validation/mapping; loss of the importer, a co-organizer
+removal, or a changed account name rejects the response. No purge-on-read batch,
+upload staging row, audit event or persisted preview is created. The roster can
+change after the response, so the later atomic importer must independently
+validate file, mappings and current authority at confirmation, bind the exact
+review to that action, and commit all restored records or none. This preview
+alone cannot authorize a subsequent write.
+
+`components/recovery-preview-panel.tsx` appears after a successful file check.
+**Load organizer choices** reads the selected file again; every identity starts
+with an unselected choice. **Review restore preview** submits explicit choices
+and displays the additions/omissions and proposed account access. Uploaded names
+render as escaped text. Choices and previews live only in component memory:
+changing a choice, replacing/clearing the file, leaving the page or changing
+organizer invalidates pending responses. No localStorage or browser download
+is used. There is no inactive or misleading restore-confirmation button.
+
+Run `node test/recovery-preview-browser.mjs` for the six desktop/phone journeys.
+`test/recovery-preview.test.ts` exercises real D1 isolation across all application
+tables, foreign/duplicate/incomplete mappings, historical role constraints,
+prototype-like IDs, late authority changes and HTTP boundaries. The dated
+receipt records actual results. T11 remains incomplete until atomic restore,
+fresh relationship mapping, failure rollback, deletion and retention evidence
+are implemented.

@@ -631,3 +631,19 @@ Identity mapping, atomic restore, deletion and full T11 recovery evidence remain
 on the existing `build-recovery` item. See `../../RECOVERY_TECHDOC.md` for the
 contract and limitations. Run `node test/recovery-check-browser.mjs` against the
 local server for six desktop/phone journeys in Chromium, Firefox and WebKit.
+
+## Preview organizer access for a restore — September 14, 2026
+
+After checking a backup, choose **Load organizer choices**. For each historical
+organizer, explicitly choose **History only** or one of the existing organizer
+accounts assigned to the gathering you opened. Matching names never grant
+access. Historical names without assignments in the backup stay as history;
+your current organizer account remains included so the proposed copy would be
+manageable. Choose **Review restore preview** to see the imported inventory,
+proposed access and exclusions. No gathering or access grant is created yet.
+
+Changing a choice clears the old preview; replacing/clearing the file or changing
+organizer also clears choices and ignores late responses. Nothing is saved to
+the server or browser storage. Confirmed atomic restore and deletion are the
+remaining Phase 5 work. See `../../RECOVERY_TECHDOC.md` and run
+`node test/recovery-preview-browser.mjs` for the new interface checks.

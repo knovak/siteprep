@@ -1,0 +1,162 @@
+{
+  "recorded_at": "2026-09-14T17:16:18.349Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "plain-data-confirmation",
+        "keyboard-prepare",
+        "actual-browser-download",
+        "schema-valid-file",
+        "exact-unicode-and-record-ids",
+        "22-collection-counts",
+        "credentials-excluded",
+        "uncheck-revokes-URL",
+        "fresh-snapshot",
+        "organizer-change-removes-download",
+        "late-response-cannot-restore-download",
+        "guide-and-reference-downloads",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "data": "New fictional gathering and contacts; no real sending, restore or deletion."
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "plain-data-confirmation",
+        "keyboard-prepare",
+        "actual-browser-download",
+        "schema-valid-file",
+        "exact-unicode-and-record-ids",
+        "22-collection-counts",
+        "credentials-excluded",
+        "uncheck-revokes-URL",
+        "fresh-snapshot",
+        "organizer-change-removes-download",
+        "late-response-cannot-restore-download",
+        "guide-and-reference-downloads",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "data": "New fictional gathering and contacts; no real sending, restore or deletion."
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "plain-data-confirmation",
+        "keyboard-prepare",
+        "actual-browser-download",
+        "schema-valid-file",
+        "exact-unicode-and-record-ids",
+        "22-collection-counts",
+        "credentials-excluded",
+        "uncheck-revokes-URL",
+        "fresh-snapshot",
+        "organizer-change-removes-download",
+        "late-response-cannot-restore-download",
+        "guide-and-reference-downloads",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "data": "New fictional gathering and contacts; no real sending, restore or deletion."
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "plain-data-confirmation",
+        "keyboard-prepare",
+        "actual-browser-download",
+        "schema-valid-file",
+        "exact-unicode-and-record-ids",
+        "22-collection-counts",
+        "credentials-excluded",
+        "uncheck-revokes-URL",
+        "fresh-snapshot",
+        "organizer-change-removes-download",
+        "late-response-cannot-restore-download",
+        "guide-and-reference-downloads",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "data": "New fictional gathering and contacts; no real sending, restore or deletion."
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "plain-data-confirmation",
+        "keyboard-prepare",
+        "actual-browser-download",
+        "schema-valid-file",
+        "exact-unicode-and-record-ids",
+        "22-collection-counts",
+        "credentials-excluded",
+        "uncheck-revokes-URL",
+        "fresh-snapshot",
+        "organizer-change-removes-download",
+        "late-response-cannot-restore-download",
+        "guide-and-reference-downloads",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "data": "New fictional gathering and contacts; no real sending, restore or deletion."
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "plain-data-confirmation",
+        "keyboard-prepare",
+        "actual-browser-download",
+        "schema-valid-file",
+        "exact-unicode-and-record-ids",
+        "22-collection-counts",
+        "credentials-excluded",
+        "uncheck-revokes-URL",
+        "fresh-snapshot",
+        "organizer-change-removes-download",
+        "late-response-cannot-restore-download",
+        "guide-and-reference-downloads",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "data": "New fictional gathering and contacts; no real sending, restore or deletion."
+    }
+  ]
+}

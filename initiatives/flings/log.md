@@ -209,3 +209,14 @@ unexpected fields and encoded personal links without persisting uploads or
 changing application tables. Local validation passed 149 tests and six new
 three-engine desktop/phone journeys. Identity mapping, atomic restore, deletion
 and full T11 remain on the actionable recovery item.
+
+## 2026-09-14 — Preview recovery organizer mappings
+
+Advanced `build-recovery` with explicit historical-organizer choices and a
+read-only new-gathering preview. Current account choices are scoped to the
+authorized gathering; names never grant authority and the importer stays in
+the proposed organizer set. All 160 local tests and 18 desktop/phone preview,
+checking and export journeys pass, including unchanged application storage and
+late account/file changes. Confirmed atomic restore, rollback and deletion stay
+on the actionable recovery item; no phase completion or production release is
+claimed. Evidence is in `work/app/test/evidence/recovery-preview-20260914.md`.

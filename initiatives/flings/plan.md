@@ -470,3 +470,19 @@ mapping and confirmed atomic restore to a new private gathering, followed by
 confirmed deletion and the remaining T11 rollback/retention evidence. Passing
 file checks is not evidence that a file can already be restored, and does not
 advance the initiative to hosted or pilot acceptance.
+
+## Phase 5 organizer-mapping preview — September 14, 2026
+
+Organizers can now load current account choices for a checked export, explicitly
+map each historical organizer to history-only or an eligible current account,
+and inspect the proposed new-gathering inventory and exclusions. No matching
+name or ID grants authority; the importer remains in the proposed organizer
+set, while historical attribution stays separate. File and roster checks run
+again for every preview, with no persisted upload or active-record mutation.
+
+`build-recovery` remains actionable for confirmed atomic restore to a new
+private gathering, fresh record/relationship mapping, rollback evidence and
+confirmed deletion. The preview describes those required semantics; it does
+not implement the final import or complete T11. The later importer must bind
+the exact reviewed file/mappings to explicit confirmation and recheck authority
+inside its transaction. Hosted and pilot work retain the existing sequence.
