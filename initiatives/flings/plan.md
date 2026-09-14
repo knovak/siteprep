@@ -455,3 +455,18 @@ and confirmed deletion. The export's basic JSON-schema checks do not establish
 valid references, role semantics or currency arithmetic in an edited file. T11's
 remaining restore, rollback, no-send and deletion acceptance stays open. See
 `RECOVERY_TECHDOC.md` and the dated export test receipt for implementation detail.
+
+
+## Phase 5 edited-file checking increment — September 14, 2026
+
+Organizers can now check a separate edited version-1 export without storing the
+upload or changing active records. Checks cover structure, identities,
+relationships, times, historical roles, polls, payment arithmetic, message
+history and access-link exclusion, with bounded record-level errors and a
+counts-only summary. The original export remains separate and unchanged.
+
+`build-recovery` remains actionable. Next implement explicit organizer identity
+mapping and confirmed atomic restore to a new private gathering, followed by
+confirmed deletion and the remaining T11 rollback/retention evidence. Passing
+file checks is not evidence that a file can already be restored, and does not
+advance the initiative to hosted or pilot acceptance.

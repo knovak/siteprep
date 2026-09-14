@@ -605,7 +605,29 @@ complete fictional example. Closed gatherings may be exported.
 
 The snapshot includes 22 business-record collections, with credentials and
 personal links excluded. Preparing again or changing organizer clears the
-in-memory link. A saved file cannot be recalled. Restore, semantic validation
-and deletion remain pending, so this is not yet a proven restore path. See
+in-memory link. A saved file cannot be recalled. Restore and deletion remain pending, so this is not yet a proven restore path.
+The edited-file checker described below is available. See
 `../../RECOVERY_TECHDOC.md`. Run `node test/recovery-export-browser.mjs` with the
 local server to verify downloads on desktop/phone in Chromium, Firefox and WebKit.
+
+
+## Check an edited backup — September 14, 2026
+
+Open **Check an edited backup** in an assigned gathering, choose an edited copy
+of a version-1 JSON export, and press **Check backup file**. The original should
+remain saved separately. The upload is checked in memory and not stored. A valid
+file returns counts; invalid files return up to 100 field paths and explanations
+without echoing uploaded text. Paths count array positions from zero. Clear the
+file/result before leaving a shared screen. Replacing the file, clearing it,
+leaving the page or changing organizer invalidates a pending result.
+
+Checks cover declared fields/types, record identities and relationships,
+gathering boundaries, times/zones, historical roles, polls/votes, payment history,
+message manifests/retries, redaction paths and personal links. Unsupported
+versions, more than 10,000 records and files over 8 MiB fail. This is not an
+importer or proof that an edited file is trustworthy. It creates no records,
+grants no organizer authority, revives no access links and sends nothing.
+Identity mapping, atomic restore, deletion and full T11 recovery evidence remain
+on the existing `build-recovery` item. See `../../RECOVERY_TECHDOC.md` for the
+contract and limitations. Run `node test/recovery-check-browser.mjs` against the
+local server for six desktop/phone journeys in Chromium, Firefox and WebKit.

@@ -198,3 +198,14 @@ credentials and redacting personal links. Local validation passed 118 tests and
 18 desktop/phone browser journeys. The todo remains actionable for edited-file
 validation, isolated restore and deletion; T11 and later hosted/pilot acceptance
 remain open. No real messages or production release.
+
+
+## 2026-09-14 — Check edited gathering backups
+
+Advanced `build-recovery` with an organizer-only, in-memory file checker and
+record-level errors for the versioned export. The read-only path validates
+relationships, roles, times, polls, payment and message history, and rejects
+unexpected fields and encoded personal links without persisting uploads or
+changing application tables. Local validation passed 149 tests and six new
+three-engine desktop/phone journeys. Identity mapping, atomic restore, deletion
+and full T11 remain on the actionable recovery item.

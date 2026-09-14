@@ -1,6 +1,7 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { RecoveryExportStore as MessageStore } from './recovery-export.ts';
+import { RecoveryCheckStore as MessageStore } from './recovery-check.ts';
+import { EXPORT_MAX_BYTES } from './recovery-export.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -73,7 +74,7 @@ async function readTicket(secret: string, value: string) {
 function setCookie(req: Request, name: string, value: string) {
   return `${name}=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${35 * 86400}${new URL(req.url).protocol === 'https:' ? '; Secure' : ''}`;
 }
-async function body(req: Request) {
+async function body(req: Request, limit = 16384) {
   if (
     !req.headers
       .get('Content-Type')
@@ -85,19 +86,22 @@ async function body(req: Request) {
   if (!reader) throw new AccessError(400, 'Enter valid form data.');
   let size = 0,
     text = '';
-  const decoder = new TextDecoder();
+  const decoder = new TextDecoder('utf-8', { fatal: limit > 16384 });
   try {
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
       size += value.byteLength;
-      if (size > 16384) {
+      if (size > limit) {
         await reader.cancel();
         throw new AccessError(413, 'This request is too large.');
       }
       text += decoder.decode(value, { stream: true });
     }
     text += decoder.decode();
+  } catch (error) {
+    if (error instanceof AccessError) throw error;
+    throw new AccessError(400, 'Enter valid UTF-8 JSON.');
   } finally {
     reader.releaseLock();
   }
@@ -303,6 +307,20 @@ export async function handle(req: Request, env: Bindings) {
       req.method === 'POST'
     )
       return json(await store.exportRecovery(actor, fling, await body(req)));
+    if (
+      action === 'organizer' &&
+      member === 'recovery' &&
+      sub === 'check' &&
+      req.method === 'POST'
+    ) {
+      return json(
+        await store.checkRecovery(
+          actor,
+          fling,
+          await body(req, EXPORT_MAX_BYTES),
+        ),
+      );
+    }
     if (action === 'organizer' && member === 'messages') {
       if (req.method === 'GET' && !sub)
         return json(await store.history(actor, fling));

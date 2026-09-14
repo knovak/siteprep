@@ -7,6 +7,7 @@ import {
   containsAccessLink,
 } from '../lib/recovery-export.ts';
 import Ajv from 'ajv';
+import { checkRecoveryFile } from '../lib/recovery-check.ts';
 import { digest, type Actor } from '../lib/access.ts';
 import { seed } from '../lib/fixtures.ts';
 import { handle } from '../lib/http.ts';
@@ -217,6 +218,8 @@ void test('complete per-gathering snapshot validates independently and preserves
     };
   const { file, bytes, filename } = await exportFile();
   assert.ok(validate(file), JSON.stringify(validate.errors));
+  const checked = checkRecoveryFile(file);
+  assert.equal(checked.valid, true, JSON.stringify(checked.issues));
   assert.equal(Object.keys(file.records).length, 22);
   for (const [collection, values] of Object.entries(file.records)) {
     assert.ok(values.length > 0, collection + ' has a rich fixture');

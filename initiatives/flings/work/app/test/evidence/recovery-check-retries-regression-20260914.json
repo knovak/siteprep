@@ -1,0 +1,162 @@
+{
+  "recorded_at": "2026-09-14T15:03:35.806Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "explicit-selection",
+        "history-and-stopped-run-required",
+        "keyboard-review",
+        "exact-subset",
+        "editing-clears-review",
+        "copy-remains-unknown",
+        "one-discussion-post",
+        "attempt-result-template",
+        "record-clears-prompt",
+        "sent-not-retryable",
+        "reload-preserves-attempt-history",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "Fictional fixtures and stubbed clipboard; no real accounts or sending."
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "explicit-selection",
+        "history-and-stopped-run-required",
+        "keyboard-review",
+        "exact-subset",
+        "editing-clears-review",
+        "copy-remains-unknown",
+        "one-discussion-post",
+        "attempt-result-template",
+        "record-clears-prompt",
+        "sent-not-retryable",
+        "reload-preserves-attempt-history",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "Fictional fixtures and stubbed clipboard; no real accounts or sending."
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "explicit-selection",
+        "history-and-stopped-run-required",
+        "keyboard-review",
+        "exact-subset",
+        "editing-clears-review",
+        "copy-remains-unknown",
+        "one-discussion-post",
+        "attempt-result-template",
+        "record-clears-prompt",
+        "sent-not-retryable",
+        "reload-preserves-attempt-history",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "Fictional fixtures and stubbed clipboard; no real accounts or sending."
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "explicit-selection",
+        "history-and-stopped-run-required",
+        "keyboard-review",
+        "exact-subset",
+        "editing-clears-review",
+        "copy-remains-unknown",
+        "one-discussion-post",
+        "attempt-result-template",
+        "record-clears-prompt",
+        "sent-not-retryable",
+        "reload-preserves-attempt-history",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "Fictional fixtures and stubbed clipboard; no real accounts or sending."
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "explicit-selection",
+        "history-and-stopped-run-required",
+        "keyboard-review",
+        "exact-subset",
+        "editing-clears-review",
+        "copy-remains-unknown",
+        "one-discussion-post",
+        "attempt-result-template",
+        "record-clears-prompt",
+        "sent-not-retryable",
+        "reload-preserves-attempt-history",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "Fictional fixtures and stubbed clipboard; no real accounts or sending."
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "explicit-selection",
+        "history-and-stopped-run-required",
+        "keyboard-review",
+        "exact-subset",
+        "editing-clears-review",
+        "copy-remains-unknown",
+        "one-discussion-post",
+        "attempt-result-template",
+        "record-clears-prompt",
+        "sent-not-retryable",
+        "reload-preserves-attempt-history",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "Fictional fixtures and stubbed clipboard; no real accounts or sending."
+    }
+  ]
+}

@@ -3,8 +3,9 @@
 September 14, 2026 — first Phase 5 increment. Assigned organizers can prepare an
 unencrypted per-gathering JSON snapshot, then save it through the browser.
 The format, field guide and complete fictional example live in
-`work/app/public/recovery/`. Edited-file staging, semantic validation, isolated
-restore and deletion remain pending; the `build-recovery` todo stays actionable.
+`work/app/public/recovery/`. The second increment adds an in-memory edited-file
+checker. Identity mapping, confirmed isolated restore and deletion remain
+pending; the `build-recovery` todo stays actionable.
 
 ## Contract and data
 
@@ -76,8 +77,8 @@ selection, retaining the original and editing a separate migration copy.
 ## Compatibility and extension
 
 `schema-v1.json` is a strict draft-07 envelope, record and basic-type contract,
-with `additionalProperties:false`. Version 1 does not include an importer or
-full semantic validation. Ajv 8.20.0 is pinned as a development-only independent
+with `additionalProperties:false`. Version 1 does not include an importer. The separate checker below adds
+semantic checks without changing the version-1 field contract. Ajv 8.20.0 is pinned as a development-only independent
 schema validator. It checks actual export results and the committed fictional
 example; the server uses the small allowlisted projector and existing database
 constraints, not Ajv. Public schema/guide/example contain no real data.
@@ -109,3 +110,80 @@ The example can be deliberately regenerated with
 `FLINGS_WRITE_EXAMPLE=1 node --experimental-strip-types --test test/recovery-export.test.ts`.
 This opt-in writes only fictional seeded records. Ordinary tests do not rewrite
 it. Inspect the generated file for credential exclusion before committing.
+
+
+## Edited-file checker — September 14, 2026
+
+`POST /api/flings/:fling/organizer/recovery/check` accepts the recovery JSON file
+itself, not a wrapper object. It uses the existing expected-organizer, same-origin
+and CSRF transport. The caller must be an organizer currently assigned to the
+page's gathering; a backup can name another source gathering without acquiring
+access to it. Neither the source ID nor imported organizer names authorize any
+query. Assignment is read before and after checking. The request only performs
+those two SELECTs: it does not use the store's purge-on-read transaction or write
+business, audit, staging, code or session records.
+
+The HTTP reader stops at 8 MiB of incoming bytes (including whitespace) and
+rejects malformed UTF-8/JSON. Other JSON forms retain their 16 KiB limit. The
+checker also bounds serialized bytes and aggregates collection lengths before
+examining records, rejecting more than 10,000 records. Its fixed-schema walker
+supports every validation keyword currently present in the committed schema;
+a regression test fails if a new keyword requires implementation. It interprets
+no uploaded schema, SQL or code and requires no runtime code generation or new
+dependency. Ajv remains the export's independent development-only validator.
+
+A check returns `{valid, issues, truncated, summary}`. Invalid files have a null
+summary and at most 100 `{path,message}` issues. Paths are made from known schema
+fields and numeric array indexes; even an unexpected key's spelling is omitted
+because it may contain a secret. No uploaded values, names or contacts are
+returned. A valid summary contains collection counts, total records, redaction
+count, historical-organizer count and unfinished-handoff count. It is an
+inventory, not a signed restore ticket, checksum, permission grant or claim of
+trustworthiness. No byte buffer or parsed file is retained for a later request.
+
+The checker enforces the strict envelope/types and the following semantics:
+
+- Exact collection counts, one matching fling, primary/composite identities,
+  secondary history uniqueness, parent IDs and consistent fling/activity/event
+  and message-batch boundaries. Historical actors must exist in the file with
+  the required role; they do not map to authentication accounts.
+- Real UTC instants (event seconds with optional milliseconds), supported zones,
+  nonnegative millisecond timestamps/revisions, event end after start, recorded
+  state/role flags and HTTP(S) links without embedded credentials.
+- Distinct bounded poll options, matching vote choices, historical invitation
+  generations/audiences and acyclic same-event poll replacements. Declined,
+  removed or withdrawn members retain their historical records.
+- Supported currency codes, integer minor units, confirmation-to-report and
+  role constraints, confirmation totals, balances and refunds. BigInt sums avoid
+  rounding maliciously large aggregate values. Entries sharing a millisecond
+  are evaluated together: version 1 stores no ordering within that millisecond,
+  so the checker cannot establish an intermediate sequence within such a group.
+- Manifest/delivery agreement, audience references, discussion readers,
+  report/retry relationships, redaction paths and encoded access-link exclusion
+  in every declared string. Audit target IDs may refer to intentionally excluded
+  access records; those targets are retained as historical identifiers only.
+
+`recovery-check-panel.tsx` reads the selected file only on an explicit check,
+rejects oversized or malformed files, and renders summaries/errors as text.
+It keeps only the selected browser File and returned report in component state.
+Clearing, replacement, unmount and organizer changes invalidate in-flight reads
+and responses. It uses no localStorage and creates no download URL. React escapes
+text; the application never executes instruction-like content from an upload.
+
+### Completion boundary and extension
+
+This increment completes the read-only checking interface, not T11 or Phase 5.
+The next restore increment must explicitly map organizer authority, assign fresh
+identities, cancel unfinished handoffs, mark message outcomes imported, validate
+again at atomic confirmation, and prove all-or-none failure. It must not trust a
+client's prior `valid` response. Deletion and provider retention/recovery evidence
+remain later acceptance work. No restore/deletion endpoint or misleading inactive
+confirmation control is included here. Update this checker, the documented
+format, example and boundary tests together when introducing another version.
+
+Verification adds 31 adversarial/domain/HTTP tests using actual Miniflare D1,
+including an every-application-table comparison before/after valid and invalid
+checks with expired ciphertext present, and injected assignment loss at the final
+read. The complete suite now passes 149 tests. Six new browser journeys cover
+edited and malformed files, errors, keyboard operation, oversized uploads,
+clear/replace lifetime, late organizer responses and desktop/phone layout.

@@ -6,6 +6,7 @@ import AudiencePanel from './audience-panel';
 import CoordinationPanel from './coordination-panel';
 import GatheringEditor from './gathering-editor';
 import RecoveryExportPanel from './recovery-export-panel';
+import RecoveryCheckPanel from './recovery-check-panel';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -338,6 +339,11 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
           />
           <RecoveryExportPanel
             key={fling + ':' + data.organizer}
+            fling={fling!}
+            request={request}
+          />
+          <RecoveryCheckPanel
+            key={'check:' + fling + ':' + data.organizer}
             fling={fling!}
             request={request}
           />

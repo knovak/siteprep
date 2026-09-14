@@ -1,0 +1,125 @@
+{
+  "at": "2026-09-14T15:05:50.776Z",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "valid edited copy",
+        "malformed JSON",
+        "record-level parent error",
+        "keyboard submit",
+        "clear file",
+        "8 MiB browser limit",
+        "late cleared response",
+        "late organizer response",
+        "active gathering unchanged",
+        "no horizontal overflow",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "valid edited copy",
+        "malformed JSON",
+        "record-level parent error",
+        "keyboard submit",
+        "clear file",
+        "8 MiB browser limit",
+        "late cleared response",
+        "late organizer response",
+        "active gathering unchanged",
+        "no horizontal overflow",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "valid edited copy",
+        "malformed JSON",
+        "record-level parent error",
+        "keyboard submit",
+        "clear file",
+        "8 MiB browser limit",
+        "late cleared response",
+        "late organizer response",
+        "active gathering unchanged",
+        "no horizontal overflow",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "valid edited copy",
+        "malformed JSON",
+        "record-level parent error",
+        "keyboard submit",
+        "clear file",
+        "8 MiB browser limit",
+        "late cleared response",
+        "late organizer response",
+        "active gathering unchanged",
+        "no horizontal overflow",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "valid edited copy",
+        "malformed JSON",
+        "record-level parent error",
+        "keyboard submit",
+        "clear file",
+        "8 MiB browser limit",
+        "late cleared response",
+        "late organizer response",
+        "active gathering unchanged",
+        "no horizontal overflow",
+        "no page errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "valid edited copy",
+        "malformed JSON",
+        "record-level parent error",
+        "keyboard submit",
+        "clear file",
+        "8 MiB browser limit",
+        "late cleared response",
+        "late organizer response",
+        "active gathering unchanged",
+        "no horizontal overflow",
+        "no page errors"
+      ]
+    }
+  ]
+}
