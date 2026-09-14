@@ -593,3 +593,19 @@ The database now has 26 tables and nine additive migrations. See
 `../../MESSAGES_TECHDOC.md` for the JSON contract and compatibility rules, and
 `test/evidence/message-retries-20260914.md` for local checks. Editable recovery
 and the later hosted/pilot acceptance remain separate work.
+
+## Save a gathering copy — September 14, 2026
+
+In an assigned gathering, open **Save a copy of this gathering**, acknowledge
+that the file contains unencrypted personal data, and choose **Prepare JSON
+export**. Review its count/redactions, then **Save JSON file**; browser download
+settings or Save Link As choose the folder. Preserve the original before editing
+a migration copy. The panel links a field guide, strict version-1 schema and
+complete fictional example. Closed gatherings may be exported.
+
+The snapshot includes 22 business-record collections, with credentials and
+personal links excluded. Preparing again or changing organizer clears the
+in-memory link. A saved file cannot be recalled. Restore, semantic validation
+and deletion remain pending, so this is not yet a proven restore path. See
+`../../RECOVERY_TECHDOC.md`. Run `node test/recovery-export-browser.mjs` with the
+local server to verify downloads on desktop/phone in Chromium, Firefox and WebKit.

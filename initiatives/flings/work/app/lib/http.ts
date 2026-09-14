@@ -1,6 +1,6 @@
 import { AccessError, digest, mac, validMac } from './access.ts';
 import type { Actor } from './access.ts';
-import { MessageRetryStore as MessageStore } from './message-retries.ts';
+import { RecoveryExportStore as MessageStore } from './recovery-export.ts';
 import { seed } from './fixtures.ts';
 export type Bindings = {
   DB: D1Database;
@@ -296,6 +296,13 @@ export async function handle(req: Request, env: Bindings) {
       req.method === 'POST'
     )
       return json(await store.audience(actor, fling, await body(req)));
+    if (
+      action === 'organizer' &&
+      member === 'recovery' &&
+      sub === 'export' &&
+      req.method === 'POST'
+    )
+      return json(await store.exportRecovery(actor, fling, await body(req)));
     if (action === 'organizer' && member === 'messages') {
       if (req.method === 'GET' && !sub)
         return json(await store.history(actor, fling));

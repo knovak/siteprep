@@ -188,3 +188,13 @@ production has not been released.
 ## 2026-09-14 — Build reviewed message audiences, exact sending-prompt export and reported outcomes
 
 Completed local Phase 4 with reviewed selected retries, per-delivery account-history observations, atomic attempt exports and attempt-specific outcome history. Simulated tests do not establish real sending or receipt; Phase 5 recovery follows.
+
+## 2026-09-14 — Add a versioned gathering export
+
+Advanced `build-recovery` with an organizer-only JSON download, strict version-1
+field schema, complete fictional example and file guide. A single D1 transaction
+captures 22 business collections with stable IDs and history, excluding access
+credentials and redacting personal links. Local validation passed 118 tests and
+18 desktop/phone browser journeys. The todo remains actionable for edited-file
+validation, isolated restore and deletion; T11 and later hosted/pilot acceptance
+remain open. No real messages or production release.

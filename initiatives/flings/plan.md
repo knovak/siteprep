@@ -438,3 +438,20 @@ discussion evidence. This completes local Phase 4 implementation; it does not
 establish real sending, account inspection, receipt or external duplicate safety.
 Phase 5's versioned editable export, validation, isolated restore and deletion
 follow in the existing sequence.
+
+## Phase 5 export increment — September 14, 2026
+
+Assigned organizers can prepare and save a version-1 JSON snapshot with 22
+business-record collections, stable IDs, counts and redaction paths. A current
+assignment guard, record limit and all collection reads run in one D1 transaction.
+The strict field allowlist excludes authentication/code/session material and raw
+handoff bodies; personal links in stored text are replaced. The organizer sees
+an unencrypted-data acknowledgement, a separate save action, a field guide,
+JSON schema and complete fictional example.
+
+`build-recovery` remains actionable for edited-file semantic validation in isolated
+staging, a dry-run identity mapping, atomic restore into a new private gathering,
+and confirmed deletion. The export's basic JSON-schema checks do not establish
+valid references, role semantics or currency arithmetic in an edited file. T11's
+remaining restore, rollback, no-send and deletion acceptance stays open. See
+`RECOVERY_TECHDOC.md` and the dated export test receipt for implementation detail.

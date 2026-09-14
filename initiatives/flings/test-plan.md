@@ -335,3 +335,14 @@ history. T10 checks confirm retries preserve one post and privacy-filtered count
 The desktop/phone interface matrix covers Chromium, Firefox and WebKit, including
 keyboard review and stale prompt removal. Account-history text and sender results
 are fictional claims; T13's authorized human pilot remains pending.
+
+## September 14 recovery export receipt (UTC)
+
+`work/app/test/evidence/recovery-export-20260914.md` records the first T11 export
+checks: consistent concurrent snapshots, 22 scoped business collections, stable
+IDs/history, credential exclusion, encoded-link redaction, record/byte limits,
+late assignment loss, closed gathering access and actual browser downloads.
+The local suite passes 118 database/API/time tests and 18 browser journeys across
+three engines at desktop/phone sizes. Edited-file semantic validation, staged
+identity mapping, atomic restore, rollback and deletion remain pending; T11 is
+not complete. No real data, sends or production release were exercised.

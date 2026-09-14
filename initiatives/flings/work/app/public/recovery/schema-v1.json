@@ -1,0 +1,1534 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Flings editable recovery export version 1",
+  "description": "An unencrypted per-fling record export. This version documents export only; validated isolated restore and deletion are still pending.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schema_version",
+    "application_version",
+    "exported_at",
+    "fling_id",
+    "migration_notes",
+    "records",
+    "counts",
+    "redactions"
+  ],
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "flings-recovery"
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "application_version": {
+      "type": "string"
+    },
+    "exported_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "fling_id": {
+      "type": "string"
+    },
+    "migration_notes": {
+      "type": "string"
+    },
+    "records": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activities",
+        "assignments",
+        "audit",
+        "events",
+        "flings",
+        "invitations",
+        "members",
+        "message_batches",
+        "message_deliveries",
+        "message_discussions",
+        "message_reports",
+        "message_results",
+        "message_retries",
+        "message_retry_deliveries",
+        "organizers",
+        "payment_ledger",
+        "payment_requests",
+        "poll_audience",
+        "polls",
+        "post_history",
+        "posts",
+        "votes"
+      ],
+      "properties": {
+        "activities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/activities"
+          }
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/assignments"
+          }
+        },
+        "audit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/audit"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/events"
+          }
+        },
+        "flings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flings"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "invitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/invitations"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/members"
+          }
+        },
+        "message_batches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_batches"
+          }
+        },
+        "message_deliveries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_deliveries"
+          }
+        },
+        "message_discussions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_discussions"
+          }
+        },
+        "message_reports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_reports"
+          }
+        },
+        "message_results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_results"
+          }
+        },
+        "message_retries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_retries"
+          }
+        },
+        "message_retry_deliveries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/message_retry_deliveries"
+          }
+        },
+        "organizers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/organizers"
+          }
+        },
+        "payment_ledger": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/payment_ledger"
+          }
+        },
+        "payment_requests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/payment_requests"
+          }
+        },
+        "poll_audience": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/poll_audience"
+          }
+        },
+        "polls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/polls"
+          }
+        },
+        "post_history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/post_history"
+          }
+        },
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/posts"
+          }
+        },
+        "votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/votes"
+          }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activities",
+        "assignments",
+        "audit",
+        "events",
+        "flings",
+        "invitations",
+        "members",
+        "message_batches",
+        "message_deliveries",
+        "message_discussions",
+        "message_reports",
+        "message_results",
+        "message_retries",
+        "message_retry_deliveries",
+        "organizers",
+        "payment_ledger",
+        "payment_requests",
+        "poll_audience",
+        "polls",
+        "post_history",
+        "posts",
+        "votes"
+      ],
+      "properties": {
+        "activities": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "assignments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "audit": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "flings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invitations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "members": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_batches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_deliveries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_discussions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_reports": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_results": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "message_retry_deliveries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "organizers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "payment_ledger": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "payment_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "poll_audience": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "polls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "post_history": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "posts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "votes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "redactions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text_fields",
+        "paths"
+      ],
+      "properties": {
+        "text_fields": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "activities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "title",
+        "summary",
+        "details",
+        "state",
+        "position"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short descriptive text."
+        },
+        "details": {
+          "type": "string",
+          "description": "Detailed text."
+        },
+        "state": {
+          "type": "string",
+          "description": "Activity state: draft, published, or cancelled."
+        },
+        "position": {
+          "type": "integer",
+          "description": "Activity ordering index; lower values appear first."
+        }
+      },
+      "description": "Source activities. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "assignments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fling",
+        "organizer"
+      ],
+      "properties": {
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "organizer": {
+          "type": "string",
+          "description": "Organizer record identifier. This historical relation grants no authentication authority."
+        }
+      },
+      "description": "Source assignments. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "actor",
+        "revision",
+        "action",
+        "object",
+        "at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "actor": {
+          "type": "string",
+          "description": "Recorded actor identifier. Historical attribution only; does not grant access."
+        },
+        "revision": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Stored concurrency or content revision; preserve historical revision numbers."
+        },
+        "action": {
+          "type": "string",
+          "description": "Recorded operation name; retain with actor, object and time."
+        },
+        "object": {
+          "type": "string",
+          "description": "Historical target identifier for the audit action; excluded access-code rows are intentionally not recoverable."
+        },
+        "at": {
+          "type": "integer",
+          "description": "Recorded action time in Unix milliseconds."
+        }
+      },
+      "description": "Source audit. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "events": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "activity",
+        "title",
+        "starts",
+        "ends",
+        "invitation_location",
+        "location_name",
+        "location_address",
+        "location_url",
+        "changed_at",
+        "zone",
+        "summary",
+        "details"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "activity": {
+          "type": "string",
+          "description": "Parent activity identifier; null means the whole gathering when permitted."
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title."
+        },
+        "starts": {
+          "type": "string",
+          "description": "Event start instant as a UTC ISO timestamp."
+        },
+        "ends": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Event end instant as a UTC ISO timestamp, or null when absent."
+        },
+        "invitation_location": {
+          "type": "string",
+          "description": "Location summary visible with the invitation."
+        },
+        "location_name": {
+          "type": "string",
+          "description": "Participant location name."
+        },
+        "location_address": {
+          "type": "string",
+          "description": "Participant street address."
+        },
+        "location_url": {
+          "type": "string",
+          "description": "Participant map/location URL."
+        },
+        "changed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Last event-change time in Unix milliseconds, or null."
+        },
+        "zone": {
+          "type": "string",
+          "description": "IANA event time zone used for display and date entry; changing it must not silently shift an existing instant."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short descriptive text."
+        },
+        "details": {
+          "type": "string",
+          "description": "Detailed text."
+        }
+      },
+      "description": "Source events. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "flings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "description",
+        "default_zone",
+        "state",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title."
+        },
+        "description": {
+          "type": "string",
+          "description": "Gathering description."
+        },
+        "default_zone": {
+          "type": "string",
+          "description": "IANA default time zone for newly created events."
+        },
+        "state": {
+          "type": "string",
+          "description": "Gathering state: open or closed."
+        },
+        "revision": {
+          "type": "integer",
+          "description": "Stored concurrency or content revision; preserve historical revision numbers."
+        }
+      },
+      "description": "Source flings. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "invitations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "member",
+        "activity",
+        "fling",
+        "state",
+        "generation"
+      ],
+      "properties": {
+        "member": {
+          "type": "string",
+          "description": "Membership identifier in this gathering, not a global person or login."
+        },
+        "activity": {
+          "type": "string",
+          "description": "Parent activity identifier; null means the whole gathering when permitted."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "state": {
+          "type": "string",
+          "description": "Invitation state: invited, accepted, declined, or withdrawn."
+        },
+        "generation": {
+          "type": "integer",
+          "description": "Invitation lifecycle counter, retained to interpret invitation/vote history; never a member access generation."
+        }
+      },
+      "description": "Source invitations. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "members": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "name",
+        "email",
+        "phone",
+        "preference",
+        "state",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "name": {
+          "type": "string",
+          "description": "Recorded display name. May contain a redaction marker for a pasted personal link."
+        },
+        "email": {
+          "type": "string",
+          "description": "Membership email address, or an empty string when absent."
+        },
+        "phone": {
+          "type": "string",
+          "description": "International membership phone number, or an empty string when absent."
+        },
+        "preference": {
+          "type": "string",
+          "description": "Requested delivery channels: email, text, or both."
+        },
+        "state": {
+          "type": "string",
+          "description": "Membership state: active or removed."
+        },
+        "revision": {
+          "type": "integer",
+          "description": "Stored concurrency or content revision; preserve historical revision numbers."
+        }
+      },
+      "description": "Source members. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_batches": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "owner",
+        "revision",
+        "selection",
+        "manifest",
+        "send_until",
+        "created",
+        "approved",
+        "exported",
+        "results_revision",
+        "discussion"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Preparing/exporting organizer identifier; historical attribution only."
+        },
+        "revision": {
+          "type": "integer",
+          "description": "Stored concurrency or content revision; preserve historical revision numbers."
+        },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "revision",
+            "group",
+            "filter",
+            "channel"
+          ],
+          "properties": {
+            "revision": {
+              "type": "integer"
+            },
+            "group": {
+              "type": "string"
+            },
+            "filter": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            },
+            "activity": {
+              "type": "string"
+            },
+            "poll": {
+              "type": "string"
+            },
+            "individuals": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Structured audience-selection settings saved with the reviewed batch. No code-digest context is included."
+        },
+        "manifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "batch_id",
+            "revision",
+            "created_at",
+            "send_before",
+            "core_text",
+            "deliveries"
+          ],
+          "properties": {
+            "batch_id": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "integer",
+              "const": 1
+            },
+            "created_at": {
+              "type": "string"
+            },
+            "send_before": {
+              "type": "string"
+            },
+            "core_text": {
+              "type": "string"
+            },
+            "deliveries": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "member",
+                  "name",
+                  "channel",
+                  "destination",
+                  "suffix"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "member": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "channel": {
+                    "enum": [
+                      "email",
+                      "text"
+                    ],
+                    "type": "string"
+                  },
+                  "destination": {
+                    "type": "string"
+                  },
+                  "subject": {
+                    "type": "string"
+                  },
+                  "suffix": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Reviewed non-secret message record with stable delivery IDs, contacts and text. Personal links use placeholders; no copied sending prompt is included."
+        },
+        "send_until": {
+          "type": "integer",
+          "description": "Historical handoff deadline in Unix milliseconds. Recovery does not revive it."
+        },
+        "created": {
+          "type": "integer",
+          "description": "Creation time in Unix milliseconds."
+        },
+        "approved": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Message approval time in Unix milliseconds, or null if never approved."
+        },
+        "exported": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Prompt/retry export time in Unix milliseconds; export does not establish sending."
+        },
+        "results_revision": {
+          "type": "integer",
+          "description": "Stored batch results revision; it records which history a review/retry saw."
+        },
+        "discussion": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "activity",
+            "event",
+            "title",
+            "body",
+            "readers",
+            "organizers"
+          ],
+          "properties": {
+            "activity": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "event": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "readers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "organizers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Optional separately reviewed shared post and reader names. Null means no linked discussion was selected."
+        }
+      },
+      "description": "Source message batches. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_deliveries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "batch",
+        "fling",
+        "member",
+        "channel"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "batch": {
+          "type": "string",
+          "description": "Referenced message review batch identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "member": {
+          "type": "string",
+          "description": "Membership identifier in this gathering, not a global person or login."
+        },
+        "channel": {
+          "type": "string",
+          "description": "Individual delivery channel: email or text."
+        }
+      },
+      "description": "Source message deliveries. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_discussions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch",
+        "fling",
+        "post"
+      ],
+      "properties": {
+        "batch": {
+          "type": "string",
+          "description": "Referenced message review batch identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "post": {
+          "type": "string",
+          "description": "Referenced post identifier."
+        }
+      },
+      "description": "Source message discussions. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_reports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "batch",
+        "fling",
+        "sequence",
+        "fingerprint",
+        "reporter",
+        "reported_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "batch": {
+          "type": "string",
+          "description": "Referenced message review batch identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "sequence": {
+          "type": "integer",
+          "description": "Monotonically increasing report sequence within its batch; keep older corrections."
+        },
+        "fingerprint": {
+          "type": "string",
+          "description": "Stored result-report deduplication hash. It is not a signature proving a hand-edited file is trustworthy."
+        },
+        "reporter": {
+          "type": "string",
+          "description": "Organizer identifier that recorded the result report."
+        },
+        "reported_at": {
+          "type": "integer",
+          "description": "Organizer report time in Unix milliseconds; this is claimed delivery evidence."
+        }
+      },
+      "description": "Source message reports. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_results": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report",
+        "delivery",
+        "batch",
+        "fling",
+        "status",
+        "evidence",
+        "attempt"
+      ],
+      "properties": {
+        "report": {
+          "type": "string",
+          "description": "Report."
+        },
+        "delivery": {
+          "type": "string",
+          "description": "Referenced individual message-delivery identifier."
+        },
+        "batch": {
+          "type": "string",
+          "description": "Referenced message review batch identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "status": {
+          "type": "string",
+          "description": "Reported outcome: unknown, reported_sent, reported_failed, or suppressed. No value independently proves recipient receipt."
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Organizer-entered observation supporting a result or retry; historical claim, with personal links removed."
+        },
+        "attempt": {
+          "type": "integer",
+          "description": "Original delivery attempt is 1; each selected retry refers to a later batch attempt."
+        }
+      },
+      "description": "Source message results. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_retries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch",
+        "fling",
+        "attempt",
+        "owner",
+        "exported",
+        "results_revision"
+      ],
+      "properties": {
+        "batch": {
+          "type": "string",
+          "description": "Referenced message review batch identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "attempt": {
+          "type": "integer",
+          "description": "Original delivery attempt is 1; each selected retry refers to a later batch attempt."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Preparing/exporting organizer identifier; historical attribution only."
+        },
+        "exported": {
+          "type": "integer",
+          "description": "Prompt/retry export time in Unix milliseconds; export does not establish sending."
+        },
+        "results_revision": {
+          "type": "integer",
+          "description": "Stored batch results revision; it records which history a review/retry saw."
+        }
+      },
+      "description": "Source message retries. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "message_retry_deliveries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch",
+        "fling",
+        "attempt",
+        "delivery",
+        "evidence"
+      ],
+      "properties": {
+        "batch": {
+          "type": "string",
+          "description": "Referenced message review batch identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "attempt": {
+          "type": "integer",
+          "description": "Original delivery attempt is 1; each selected retry refers to a later batch attempt."
+        },
+        "delivery": {
+          "type": "string",
+          "description": "Referenced individual message-delivery identifier."
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Organizer-entered observation supporting a result or retry; historical claim, with personal links removed."
+        }
+      },
+      "description": "Source message retry deliveries. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "organizers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "name": {
+          "type": "string",
+          "description": "Recorded display name. May contain a redaction marker for a pasted personal link."
+        }
+      },
+      "description": "Source organizers. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "payment_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "request",
+        "kind",
+        "amount",
+        "report",
+        "note",
+        "actor",
+        "author",
+        "at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "request": {
+          "type": "string",
+          "description": "Referenced payment request identifier."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Ledger action: report, confirm, waiver, refund, or correction. Reports are claims; only confirm/waiver reduce the balance, refund/correction add to it."
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Whole minor currency units (for example 1000 = USD 10.00). Never a floating-point major-unit amount."
+        },
+        "report": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Report."
+        },
+        "note": {
+          "type": "string",
+          "description": "Attributed payment-history note; may be redacted for personal links."
+        },
+        "actor": {
+          "type": "string",
+          "description": "Recorded actor identifier. Historical attribution only; does not grant access."
+        },
+        "author": {
+          "type": "string",
+          "description": "Name recorded when the action was taken; preserve it with its history."
+        },
+        "at": {
+          "type": "integer",
+          "description": "Recorded action time in Unix milliseconds."
+        }
+      },
+      "description": "Source payment ledger. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "payment_requests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "event",
+        "member",
+        "title",
+        "currency",
+        "amount",
+        "link",
+        "actor",
+        "at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "event": {
+          "type": "string",
+          "description": "Parent event identifier; null means the broader discussion scope when permitted."
+        },
+        "member": {
+          "type": "string",
+          "description": "Membership identifier in this gathering, not a global person or login."
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Three-letter currency code recorded for this payment request."
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Whole minor currency units (for example 1000 = USD 10.00). Never a floating-point major-unit amount."
+        },
+        "link": {
+          "type": "string",
+          "description": "Optional external payment-information URL. No money movement is initiated by an export."
+        },
+        "actor": {
+          "type": "string",
+          "description": "Recorded actor identifier. Historical attribution only; does not grant access."
+        },
+        "at": {
+          "type": "integer",
+          "description": "Recorded action time in Unix milliseconds."
+        }
+      },
+      "description": "Source payment requests. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "poll_audience": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "poll",
+        "fling",
+        "member"
+      ],
+      "properties": {
+        "poll": {
+          "type": "string",
+          "description": "Referenced poll identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "member": {
+          "type": "string",
+          "description": "Membership identifier in this gathering, not a global person or login."
+        }
+      },
+      "description": "Source poll audience. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "polls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "activity",
+        "event",
+        "title",
+        "options",
+        "multiple",
+        "deadline",
+        "closed",
+        "replaces",
+        "created"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "activity": {
+          "type": "string",
+          "description": "Parent activity identifier; null means the whole gathering when permitted."
+        },
+        "event": {
+          "type": "string",
+          "description": "Parent event identifier; null means the broader discussion scope when permitted."
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title."
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ordered poll choice strings. Votes refer to zero-based indexes in this array."
+        },
+        "multiple": {
+          "type": "integer",
+          "description": "Poll allows multiple choices: 0 or 1."
+        },
+        "deadline": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Poll deadline in Unix milliseconds, or null when absent."
+        },
+        "closed": {
+          "type": "integer",
+          "description": "Poll closed flag: 0 or 1."
+        },
+        "replaces": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Previous poll identifier, or null. Preserve the prior poll and its votes as history."
+        },
+        "created": {
+          "type": "integer",
+          "description": "Creation time in Unix milliseconds."
+        }
+      },
+      "description": "Source polls. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "post_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "post",
+        "actor",
+        "action",
+        "body",
+        "reason",
+        "at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "post": {
+          "type": "string",
+          "description": "Referenced post identifier."
+        },
+        "actor": {
+          "type": "string",
+          "description": "Recorded actor identifier. Historical attribution only; does not grant access."
+        },
+        "action": {
+          "type": "string",
+          "description": "Recorded operation name; retain with actor, object and time."
+        },
+        "body": {
+          "type": "string",
+          "description": "Original or current text, as indicated by the collection. Personal access links are replaced."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Recorded reason for hiding or editing; may be empty."
+        },
+        "at": {
+          "type": "integer",
+          "description": "Recorded action time in Unix milliseconds."
+        }
+      },
+      "description": "Source post history. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "posts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fling",
+        "activity",
+        "event",
+        "actor",
+        "actor_kind",
+        "author",
+        "body",
+        "created",
+        "edited",
+        "hidden",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "activity": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Parent activity identifier; null means the whole gathering when permitted."
+        },
+        "event": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Parent event identifier; null means the broader discussion scope when permitted."
+        },
+        "actor": {
+          "type": "string",
+          "description": "Recorded actor identifier. Historical attribution only; does not grant access."
+        },
+        "actor_kind": {
+          "type": "string",
+          "description": "Post author role: organizer or member. This role is historical text, not authorization."
+        },
+        "author": {
+          "type": "string",
+          "description": "Name recorded when the action was taken; preserve it with its history."
+        },
+        "body": {
+          "type": "string",
+          "description": "Original or current text, as indicated by the collection. Personal access links are replaced."
+        },
+        "created": {
+          "type": "integer",
+          "description": "Creation time in Unix milliseconds."
+        },
+        "edited": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Last post-edit time in Unix milliseconds, or null."
+        },
+        "hidden": {
+          "type": "integer",
+          "description": "Post hidden flag: 0 or 1; organizer export still retains its text and history."
+        },
+        "revision": {
+          "type": "integer",
+          "description": "Stored concurrency or content revision; preserve historical revision numbers."
+        }
+      },
+      "description": "Source posts. Relationships refer to IDs in this file; this data does not activate access or sending."
+    },
+    "votes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "poll",
+        "fling",
+        "member",
+        "choices",
+        "generation",
+        "revision",
+        "at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable record identifier. Keep it unchanged when editing a copy."
+        },
+        "poll": {
+          "type": "string",
+          "description": "Referenced poll identifier."
+        },
+        "fling": {
+          "type": "string",
+          "description": "Parent gathering identifier; every such field must match fling_id."
+        },
+        "member": {
+          "type": "string",
+          "description": "Membership identifier in this gathering, not a global person or login."
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "Zero-based indexes into the referenced poll options."
+        },
+        "generation": {
+          "type": "integer",
+          "description": "Invitation lifecycle counter, retained to interpret invitation/vote history; never a member access generation."
+        },
+        "revision": {
+          "type": "integer",
+          "description": "Stored concurrency or content revision; preserve historical revision numbers."
+        },
+        "at": {
+          "type": "integer",
+          "description": "Recorded action time in Unix milliseconds."
+        }
+      },
+      "description": "Source votes. Relationships refer to IDs in this file; this data does not activate access or sending."
+    }
+  }
+}

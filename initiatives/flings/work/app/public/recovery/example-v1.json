@@ -1,0 +1,566 @@
+{
+  "format": "flings-recovery",
+  "schema_version": 1,
+  "application_version": "0.1.0",
+  "exported_at": "2026-09-13T00:00:00.000Z",
+  "fling_id": "outing",
+  "migration_notes": "",
+  "records": {
+    "activities": [
+      {
+        "id": "movie",
+        "fling": "outing",
+        "title": "Movie & dinner",
+        "summary": "Saturday, October 3 · city centre",
+        "details": "Meet at the fictional Cedar Cinema side entrance.",
+        "state": "published",
+        "position": 0
+      }
+    ],
+    "assignments": [
+      {
+        "fling": "outing",
+        "organizer": "a"
+      },
+      {
+        "fling": "outing",
+        "organizer": "b"
+      }
+    ],
+    "audit": [
+      {
+        "id": "019562a5-51c9-46e3-aa3d-ddba5f71a97b",
+        "fling": "outing",
+        "actor": "a",
+        "revision": 0,
+        "action": "prepare-link",
+        "object": "another-outing",
+        "at": 1789257600000
+      },
+      {
+        "id": "30403906-dbcf-4298-bfd9-88c10e9c03ff",
+        "fling": "outing",
+        "actor": "alex-outing",
+        "revision": null,
+        "action": "vote",
+        "object": "e9c27129-b23b-44d0-90ad-19f021d6200c",
+        "at": 1789257600000
+      },
+      {
+        "id": "3b5e8268-6987-4dcf-8d78-7f231ea5c9d9",
+        "fling": "outing",
+        "actor": "a",
+        "revision": 0,
+        "action": "prepare-link",
+        "object": "alex-outing",
+        "at": 1789257600000
+      },
+      {
+        "id": "3bfefa96-c67e-4159-b3b8-258e1e760542",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "create-post",
+        "object": "d62853c6-693f-4010-a940-2fd08e842f1c",
+        "at": 1789257600000
+      },
+      {
+        "id": "3c0fe347-ec23-40f1-8222-f502e481be18",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "payment-confirm",
+        "object": "cba1892a-ec8e-4527-81cd-0fa35bd696b1",
+        "at": 1789257600000
+      },
+      {
+        "id": "4d9d5935-5286-472b-88de-3cab1c0fe541",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "report-message-results",
+        "object": "fa33f049-d266-4043-9dcc-5b523b4768b2",
+        "at": 1789257600000
+      },
+      {
+        "id": "740638d6-d269-42f9-93d0-c203483f5e9d",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "review-message",
+        "object": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "at": 1789257600000
+      },
+      {
+        "id": "86e9d38d-51c1-4d54-8b8e-86a0470069a4",
+        "fling": "outing",
+        "actor": "alex-outing",
+        "revision": null,
+        "action": "payment-report",
+        "object": "cba1892a-ec8e-4527-81cd-0fa35bd696b1",
+        "at": 1789257600000
+      },
+      {
+        "id": "9c30cfbe-9c39-402e-a321-a6d5609f8170",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "assign-organizer",
+        "object": "b",
+        "at": 1789257600000
+      },
+      {
+        "id": "a4d31e45-efc6-431f-8d88-97d595806b30",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "edit-post",
+        "object": "d62853c6-693f-4010-a940-2fd08e842f1c",
+        "at": 1789257600000
+      },
+      {
+        "id": "afcc220d-1015-4c3b-9cda-208a26cb8d96",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "approve-message",
+        "object": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "at": 1789257600000
+      },
+      {
+        "id": "c7625766-e3e2-43d1-918a-022eab65ad96",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "create-poll",
+        "object": "e9c27129-b23b-44d0-90ad-19f021d6200c",
+        "at": 1789257600000
+      },
+      {
+        "id": "d1edebed-55a4-4212-9535-e6c43f3d2f9f",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "post-message-discussion",
+        "object": "670bd7f7-a347-428e-81f6-e7003c72d1df",
+        "at": 1789257600000
+      },
+      {
+        "id": "e07260b9-1ed1-4333-9f5e-3d47bb0ea90e",
+        "fling": "outing",
+        "actor": "a",
+        "revision": 0,
+        "action": "prepare-link",
+        "object": "alex-outing",
+        "at": 1789257600000
+      },
+      {
+        "id": "f84ac53c-a43d-4df1-8445-6bef54332706",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "export-message-retry",
+        "object": "0c7974a5-eb96-421d-a7fb-1dec63fbf305:2",
+        "at": 1789257600000
+      },
+      {
+        "id": "f84f486d-c5ca-4086-adc5-a5f3153687a7",
+        "fling": "outing",
+        "actor": "a",
+        "revision": null,
+        "action": "request-payment",
+        "object": "cba1892a-ec8e-4527-81cd-0fa35bd696b1",
+        "at": 1789257600000
+      }
+    ],
+    "events": [
+      {
+        "id": "dinner",
+        "fling": "outing",
+        "activity": "movie",
+        "title": "Dinner afterwards",
+        "starts": "2026-10-04T03:30:00Z",
+        "ends": null,
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": null,
+        "zone": "America/Los_Angeles",
+        "summary": "Saturday · 8:30 pm",
+        "details": "Fictional table reservation under Alex."
+      },
+      {
+        "id": "screening",
+        "fling": "outing",
+        "activity": "movie",
+        "title": "The movie",
+        "starts": "2026-10-04T01:00:00Z",
+        "ends": null,
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": null,
+        "zone": "America/Los_Angeles",
+        "summary": "Saturday · 6 pm",
+        "details": "Use the side entrance."
+      }
+    ],
+    "flings": [
+      {
+        "id": "outing",
+        "title": "A movie, then dinner",
+        "description": "",
+        "default_zone": "America/Los_Angeles",
+        "state": "open",
+        "revision": 8
+      }
+    ],
+    "invitations": [
+      {
+        "member": "alex-outing",
+        "activity": "movie",
+        "fling": "outing",
+        "state": "accepted",
+        "generation": 0
+      },
+      {
+        "member": "another-outing",
+        "activity": "movie",
+        "fling": "outing",
+        "state": "invited",
+        "generation": 0
+      }
+    ],
+    "members": [
+      {
+        "id": "alex-outing",
+        "fling": "outing",
+        "name": "Alex Morgan",
+        "email": "alex@example.invalid",
+        "phone": "+12025550123",
+        "preference": "both",
+        "state": "active",
+        "revision": 0
+      },
+      {
+        "id": "another-outing",
+        "fling": "outing",
+        "name": "Robin Reed",
+        "email": "robin@example.invalid",
+        "phone": "",
+        "preference": "email",
+        "state": "active",
+        "revision": 0
+      }
+    ],
+    "message_batches": [
+      {
+        "id": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "owner": "a",
+        "revision": 1,
+        "selection": {
+          "revision": 8,
+          "group": "all",
+          "filter": "none",
+          "channel": "preference"
+        },
+        "manifest": {
+          "batch_id": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+          "revision": 1,
+          "created_at": "2026-09-13T00:00:00.000Z",
+          "send_before": "2026-09-27T00:00:00.000Z",
+          "core_text": "Dinner together",
+          "deliveries": [
+            {
+              "id": "763a0035-b8c6-473c-8caa-ab58b0b2f844",
+              "member": "alex-outing",
+              "name": "Alex Morgan",
+              "channel": "email",
+              "destination": "alex@example.invalid",
+              "subject": "Dinner plans",
+              "suffix": "Check your page at [personal link removed]"
+            },
+            {
+              "id": "a378a1f9-082a-4e31-a331-5cb0e8c1961f",
+              "member": "alex-outing",
+              "name": "Alex Morgan",
+              "channel": "text",
+              "destination": "+12025550123",
+              "suffix": "Check your page at [personal link removed]"
+            },
+            {
+              "id": "a44f7fa4-9e22-4d8e-902c-d122edf39d15",
+              "member": "another-outing",
+              "name": "Robin Reed",
+              "channel": "email",
+              "destination": "robin@example.invalid",
+              "subject": "Dinner plans",
+              "suffix": "Check your page at [personal link removed]"
+            }
+          ]
+        },
+        "send_until": 1790467200000,
+        "created": 1789257600000,
+        "approved": 1789257600000,
+        "exported": 1789257600000,
+        "results_revision": 2,
+        "discussion": {
+          "activity": null,
+          "event": null,
+          "title": "Whole fling",
+          "body": "Fictional dinner discussion",
+          "readers": [
+            {
+              "id": "alex-outing",
+              "name": "Alex Morgan"
+            },
+            {
+              "id": "another-outing",
+              "name": "Robin Reed"
+            }
+          ],
+          "organizers": [
+            {
+              "id": "a",
+              "name": "Casey"
+            },
+            {
+              "id": "b",
+              "name": "Rowan"
+            }
+          ]
+        }
+      }
+    ],
+    "message_deliveries": [
+      {
+        "id": "763a0035-b8c6-473c-8caa-ab58b0b2f844",
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "member": "alex-outing",
+        "channel": "email"
+      },
+      {
+        "id": "a378a1f9-082a-4e31-a331-5cb0e8c1961f",
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "member": "alex-outing",
+        "channel": "text"
+      },
+      {
+        "id": "a44f7fa4-9e22-4d8e-902c-d122edf39d15",
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "member": "another-outing",
+        "channel": "email"
+      }
+    ],
+    "message_discussions": [
+      {
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "post": "670bd7f7-a347-428e-81f6-e7003c72d1df"
+      }
+    ],
+    "message_reports": [
+      {
+        "id": "fa33f049-d266-4043-9dcc-5b523b4768b2",
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "sequence": 1,
+        "fingerprint": "ldw1zm-xg_ojhJA952Awf9H5OhZBbuScCWIg1dXj4_s",
+        "reporter": "a",
+        "reported_at": 1789257600000
+      }
+    ],
+    "message_results": [
+      {
+        "report": "fa33f049-d266-4043-9dcc-5b523b4768b2",
+        "delivery": "763a0035-b8c6-473c-8caa-ab58b0b2f844",
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "status": "reported_failed",
+        "evidence": "Fictional failure observation",
+        "attempt": 1
+      }
+    ],
+    "message_retries": [
+      {
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "attempt": 2,
+        "owner": "a",
+        "exported": 1789257600000,
+        "results_revision": 2
+      }
+    ],
+    "message_retry_deliveries": [
+      {
+        "batch": "0c7974a5-eb96-421d-a7fb-1dec63fbf305",
+        "fling": "outing",
+        "attempt": 2,
+        "delivery": "763a0035-b8c6-473c-8caa-ab58b0b2f844",
+        "evidence": "Fictional account history checked; confirmed not sent."
+      }
+    ],
+    "organizers": [
+      {
+        "id": "a",
+        "name": "Casey"
+      },
+      {
+        "id": "b",
+        "name": "Rowan"
+      }
+    ],
+    "payment_ledger": [
+      {
+        "id": "52c3681a-29ab-4b6b-822a-7e1c1a3919a3",
+        "request": "cba1892a-ec8e-4527-81cd-0fa35bd696b1",
+        "kind": "confirm",
+        "amount": 1000,
+        "report": "6e84188e-89ad-426d-92c5-c6f041ab7abe",
+        "note": "Fictional organizer confirmation",
+        "actor": "a",
+        "author": "Casey",
+        "at": 1789257600000
+      },
+      {
+        "id": "6e84188e-89ad-426d-92c5-c6f041ab7abe",
+        "request": "cba1892a-ec8e-4527-81cd-0fa35bd696b1",
+        "kind": "report",
+        "amount": 1000,
+        "report": null,
+        "note": "Fictional transfer claim",
+        "actor": "alex-outing",
+        "author": "Alex Morgan",
+        "at": 1789257600000
+      }
+    ],
+    "payment_requests": [
+      {
+        "id": "cba1892a-ec8e-4527-81cd-0fa35bd696b1",
+        "fling": "outing",
+        "event": "dinner",
+        "member": "alex-outing",
+        "title": "Meal share",
+        "currency": "USD",
+        "amount": 1000,
+        "link": "https://example.invalid/pay",
+        "actor": "a",
+        "at": 1789257600000
+      }
+    ],
+    "poll_audience": [
+      {
+        "poll": "e9c27129-b23b-44d0-90ad-19f021d6200c",
+        "fling": "outing",
+        "member": "alex-outing"
+      }
+    ],
+    "polls": [
+      {
+        "id": "e9c27129-b23b-44d0-90ad-19f021d6200c",
+        "fling": "outing",
+        "activity": "movie",
+        "event": "dinner",
+        "title": "Dinner choice",
+        "options": [
+          "Soup",
+          "Salad"
+        ],
+        "multiple": 0,
+        "deadline": null,
+        "closed": 0,
+        "replaces": null,
+        "created": 1789257600000
+      }
+    ],
+    "post_history": [
+      {
+        "id": "178b23c0-249b-4a0e-9e06-061305a07b40",
+        "post": "d62853c6-693f-4010-a940-2fd08e842f1c",
+        "actor": "a",
+        "action": "edit",
+        "body": "Original café \"note\"\nSecond line",
+        "reason": "",
+        "at": 1789257600000
+      }
+    ],
+    "posts": [
+      {
+        "id": "670bd7f7-a347-428e-81f6-e7003c72d1df",
+        "fling": "outing",
+        "activity": null,
+        "event": null,
+        "actor": "a",
+        "actor_kind": "organizer",
+        "author": "Casey",
+        "body": "Fictional dinner discussion",
+        "created": 1789257600000,
+        "edited": null,
+        "hidden": 0,
+        "revision": 0
+      },
+      {
+        "id": "d62853c6-693f-4010-a940-2fd08e842f1c",
+        "fling": "outing",
+        "activity": "movie",
+        "event": "dinner",
+        "actor": "a",
+        "actor_kind": "organizer",
+        "author": "Casey",
+        "body": "Edited café \"note\"\nSecond line",
+        "created": 1789257600000,
+        "edited": 1789257600000,
+        "hidden": 0,
+        "revision": 1
+      }
+    ],
+    "votes": [
+      {
+        "id": "4a9c9601-7fc1-49ee-b8b4-5247276051f5",
+        "poll": "e9c27129-b23b-44d0-90ad-19f021d6200c",
+        "fling": "outing",
+        "member": "alex-outing",
+        "choices": [
+          1
+        ],
+        "generation": 0,
+        "revision": 3,
+        "at": 1789257600000
+      }
+    ]
+  },
+  "counts": {
+    "activities": 1,
+    "assignments": 2,
+    "audit": 16,
+    "events": 2,
+    "flings": 1,
+    "invitations": 2,
+    "members": 2,
+    "message_batches": 1,
+    "message_deliveries": 3,
+    "message_discussions": 1,
+    "message_reports": 1,
+    "message_results": 1,
+    "message_retries": 1,
+    "message_retry_deliveries": 1,
+    "organizers": 2,
+    "payment_ledger": 2,
+    "payment_requests": 1,
+    "poll_audience": 1,
+    "polls": 1,
+    "post_history": 1,
+    "posts": 2,
+    "votes": 1
+  },
+  "redactions": {
+    "text_fields": 0,
+    "paths": []
+  }
+}

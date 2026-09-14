@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import AudiencePanel from './audience-panel';
 import CoordinationPanel from './coordination-panel';
 import GatheringEditor from './gathering-editor';
+import RecoveryExportPanel from './recovery-export-panel';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -333,6 +334,11 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
             fling={fling!}
             revision={data.fling.revision}
             state={data.fling.state}
+            request={request}
+          />
+          <RecoveryExportPanel
+            key={fling + ':' + data.organizer}
+            fling={fling!}
             request={request}
           />
           <div className="gathering-state">
