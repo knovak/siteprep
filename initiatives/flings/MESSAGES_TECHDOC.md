@@ -188,3 +188,53 @@ stays in ignored owner-only `.wrangler/qa/` files. It uses fictional API-exporte
 batches and exercises result forms at desktop/phone widths in three engines.
 See the dated receipt for final checks and remaining acceptance. This work
 creates no linked discussion post, Site, account or real message.
+
+## Atomic discussion posting — September 14, 2026
+
+`POST /prepare` also accepts optional `discussion: { activity, event, body }`.
+Use null activity/event for the whole fling, an activity with null event for
+that activity, or a matching activity/event pair. The server rejects foreign
+or mismatched scopes and recognizable personal links. It preserves exact shared
+text and returns the scope title, current member readers and current organizers
+for separate review. Whole-fling readers are active members; activity/event
+readers are active accepted members of a published activity. Organizers retain
+the existing ability to post in draft or cancelled scopes, where no members
+currently read. Later readers follow existing discussion access rules.
+
+The optional discussion JSON is bound into the payload fingerprint alongside
+the exact encrypted direct-message manifest. Existing batches with a null
+discussion retain their original fingerprint format. Only direct deliveries
+enter an exported prompt; discussion text, readers and instructions are not
+added to the external sending task. The shared-text form never copies personal
+suffixes, contacts or generated links. The organizer must review its suitability
+for the independently displayed discussion audience.
+
+`POST /approve` requires an additional `confirm_discussion: true` when the
+batch includes a discussion. In the same current-authority/context/code-checked
+D1 transaction, approval creates exactly one attributed post and its unique
+batch link. A late failure rolls back approval, post, link, revision and audit.
+The post advances the fling revision; only this batch's eligibility context
+and selection revision move forward with that known internal change. Its
+approved content, audience and fingerprint stay fixed. Other prepared batches
+become stale. Later discussion edits also require renewed message review.
+
+Generated migration `0007` adds nullable `message_batches.discussion`, the
+`message_discussions` linking table and a post/fling unique key. Both sides of
+the link use compound foreign keys; one batch and one post may each occur only
+once. The application now has 24 tables and eight additive migrations.
+
+Coordination reads derive notification counts in the same authorized snapshot
+as the posts, using the latest reported status of each delivery. An unreported
+delivery counts as unknown. The initial label is Notification prepared, even
+after copying; reported counts remain claims and never verify receipt. Corrections
+and partial reports update the counts without rewriting the post or approved
+text. Members and previews receive counts only, with no batch link, delivery
+IDs, recipient contacts, personal suffixes or report evidence. The ordinary
+post scope and hidden-post rules apply. Organizers can open the linked review
+history. Editing/hiding a post does not rewrite its approved discussion text.
+
+Run `npm test` and `node test/message-discussions-browser.mjs` against the local
+server. The dated receipt records rollback, concurrency, independent audiences,
+privacy, reporting and three-engine desktop/phone interface checks. Selected
+retries with account-history inspection and attempt tracking remain Phase 4
+work; this increment does not mark the larger item complete.

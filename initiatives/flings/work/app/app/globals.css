@@ -580,7 +580,7 @@ output {
 .message-panel button { max-width:100%; white-space:normal; height:auto; min-height:40px; }
 .message-delivery { padding:18px; border:1px solid var(--border); border-radius:10px; margin:16px 0; overflow-wrap:anywhere; }
 .message-delivery h4 { font-weight:650; }
-.message-delivery pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; line-height:1.6; margin:12px 0; }
+.message-delivery pre,.message-discussion-review pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; line-height:1.6; margin:12px 0; }
 .message-exposure { margin:20px 0; line-height:1.6; }
 .message-history summary { cursor:pointer; margin:20px 0; }
 #sending-prompt { max-height:360px; overflow:auto; field-sizing:fixed; height:300px; }

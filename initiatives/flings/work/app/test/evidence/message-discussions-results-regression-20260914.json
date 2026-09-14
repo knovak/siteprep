@@ -1,0 +1,150 @@
+{
+  "recorded_at": "2026-09-14T02:14:04.484Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "invalid-duplicate-rejected-without-write",
+        "preview-before-confirmation",
+        "keyboard-preview",
+        "edited-input-clears-preview",
+        "mixed-outcomes-with-unreported-unknown",
+        "reported-evidence-not-receipt",
+        "reload-and-attribution",
+        "correction-preview-retains-history",
+        "full-batch-recopy-unavailable-after-report",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "fictional API-export fixture only; no external apps or real clipboard"
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "invalid-duplicate-rejected-without-write",
+        "preview-before-confirmation",
+        "keyboard-preview",
+        "edited-input-clears-preview",
+        "mixed-outcomes-with-unreported-unknown",
+        "reported-evidence-not-receipt",
+        "reload-and-attribution",
+        "correction-preview-retains-history",
+        "full-batch-recopy-unavailable-after-report",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "fictional API-export fixture only; no external apps or real clipboard"
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "invalid-duplicate-rejected-without-write",
+        "preview-before-confirmation",
+        "keyboard-preview",
+        "edited-input-clears-preview",
+        "mixed-outcomes-with-unreported-unknown",
+        "reported-evidence-not-receipt",
+        "reload-and-attribution",
+        "correction-preview-retains-history",
+        "full-batch-recopy-unavailable-after-report",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "fictional API-export fixture only; no external apps or real clipboard"
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "invalid-duplicate-rejected-without-write",
+        "preview-before-confirmation",
+        "keyboard-preview",
+        "edited-input-clears-preview",
+        "mixed-outcomes-with-unreported-unknown",
+        "reported-evidence-not-receipt",
+        "reload-and-attribution",
+        "correction-preview-retains-history",
+        "full-batch-recopy-unavailable-after-report",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "fictional API-export fixture only; no external apps or real clipboard"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "passed": true,
+      "checks": [
+        "invalid-duplicate-rejected-without-write",
+        "preview-before-confirmation",
+        "keyboard-preview",
+        "edited-input-clears-preview",
+        "mixed-outcomes-with-unreported-unknown",
+        "reported-evidence-not-receipt",
+        "reload-and-attribution",
+        "correction-preview-retains-history",
+        "full-batch-recopy-unavailable-after-report",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "fictional API-export fixture only; no external apps or real clipboard"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "invalid-duplicate-rejected-without-write",
+        "preview-before-confirmation",
+        "keyboard-preview",
+        "edited-input-clears-preview",
+        "mixed-outcomes-with-unreported-unknown",
+        "reported-evidence-not-receipt",
+        "reload-and-attribution",
+        "correction-preview-retains-history",
+        "full-batch-recopy-unavailable-after-report",
+        "redacted-history",
+        "no-overflow",
+        "no-page-errors"
+      ],
+      "sending": "fictional API-export fixture only; no external apps or real clipboard"
+    }
+  ]
+}

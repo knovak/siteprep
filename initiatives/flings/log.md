@@ -182,3 +182,5 @@ member browser journeys across three engines at desktop/phone sizes. Deployment
 identity, source consistency, validation and remaining limitations are recorded
 in `notes/private-test-deployment-20260913.md`. The Phase 4 todo remains open;
 production has not been released.
+
+- 2026-09-14: Advanced `build-message-handoff` with separately reviewed optional discussion content/readers, atomic single-post approval and privacy-filtered reported outcome counts. Added failure/concurrency and interface evidence; the item remains actionable for selected retries and attempt tracking. No real messages or production release.

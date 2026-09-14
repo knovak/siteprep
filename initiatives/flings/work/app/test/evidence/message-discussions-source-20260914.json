@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-09-14T02:16:04.066838+00:00",
+  "baseline": "7b480dbd256b424e5669ca343b4799ea78328f27",
+  "node": "v23.11.0",
+  "files": {
+    "app/globals.css": "d65d5102048298f99de51d94997ab52819e3697f06485715ff3ece90a830c4d4",
+    "components/message-panel.tsx": "3e43639f99bd32349ad9f1c5935b41a39d34425a556b24b1b558d5c562d40ec7",
+    "components/coordination-panel.tsx": "c05399229ced526205573faa0e172a164ef0572c3cd652b392acf577ea6f5a02",
+    "lib/messages.ts": "1a310ea5b31fe3257919b6d6333537821d6b3c90e9a70ef88bc1974aceee6c98",
+    "lib/coordination.ts": "23d299296df2f7b1185ebed05bed7e3f4d235498072e071aa3cf31abd52f9ccc",
+    "db/schema.ts": "ea3b45650772f0e2af3b3e814f8a5a252d49bf1936e35d3b5e991b83a3c4cb82",
+    "drizzle/0007_clever_valeria_richards.sql": "c8ae2922fa598c6e4254f7a9ea88e1cf6597600b1d321fc00ce67086398914b8",
+    "test/message-discussions.test.ts": "02ddea8e7afc0c3f86b34e4c659f16ea21426c28da4c7f7e3120fb6b410c4902",
+    "test/message-discussions-browser.mjs": "e890b9b7fb47a4f56970dc3b7acccf241d30c60ac7aff69d8ae1ccf62f1628fc"
+  }
+}

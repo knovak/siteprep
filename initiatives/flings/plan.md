@@ -406,3 +406,18 @@ preview tickets. This early review surface does not change phase ordering or
 complete Phase 6: independent real-organizer identity, recovery and the full
 hosted acceptance matrix remain pending. No real member data or sends are
 inferred from this test deployment.
+
+## Phase 4 atomic discussion increment — September 14, 2026
+
+The optional same-fling discussion post is implemented. The organizer reviews
+its shared text and current readers separately from direct recipients, then
+approval atomically records one post, its batch link and the approved state.
+Copying and result reporting do not duplicate it. Discussion counts follow the
+latest organizer reports, including unknowns and corrections, without exposing
+recipient contacts, suffixes, access links or claimed app evidence to members.
+Post edits preserve the original approved discussion text in message history.
+
+`build-message-handoff` remains actionable for explicit selected retries with
+account-history inspection and attempt tracking. The optional-post portion of
+T10 has local simulated evidence; this does not complete Phase 4, full T9 or
+independent hosted/pilot acceptance. Recovery follows after Phase 4.

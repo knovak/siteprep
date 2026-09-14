@@ -555,3 +555,19 @@ Use the repo’s `deploy-test` skill for future refreshes, preserving this priva
 test target. Build and package from an isolated copy rooted at the Sites source
 repository, then record the actual successful test deployment with the initiative
 CLI. Never point this manifest at another initiative’s Site or database.
+
+## Optional discussion with a reviewed message — September 14, 2026
+
+After reviewing recipients, select **Also post to one discussion**, choose the
+scope and enter shared discussion text. **Use core message in discussion**
+copies only the core text. Review current member readers, organizers and exact
+shared text separately from the direct messages, then confirm both reviews.
+Approval creates one attributed discussion post. Use **Refresh coordination**
+to see it; copying and reporting never create another post.
+
+The post starts with **Notification prepared** and unknown outcomes. Reported
+counts follow the latest delivery reports without revealing contacts, private
+notes, personal links or app evidence to members. Organizers can open the linked
+batch history. Post edits do not alter approved message history. Selected
+retries remain pending; no real sending is performed by these controls.
+See `../../MESSAGES_TECHDOC.md` and `test/evidence/message-discussions-20260914.md`.

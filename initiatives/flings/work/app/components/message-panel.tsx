@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { Manifest } from '../lib/messages';
+import { NativeSelect } from '@/components/ui/native-select';
+import type { Manifest, DiscussionReview } from '../lib/messages';
 import type { MessageResultStore } from '../lib/message-results';
 import MessageResultsPanel from './message-results-panel';
 type Row = Record<string, unknown>;
@@ -20,6 +21,7 @@ type Review = {
   fingerprint: string;
   omissions: { member: string; name: string; reason: string }[];
   duplicates: { destination: string; channel: string }[];
+  discussion: DiscussionReview | null;
 };
 type History = Awaited<
   ReturnType<MessageResultStore['history']>
@@ -43,6 +45,13 @@ export default function MessagePanel({
     [notice, setNotice] = useState(''),
     [history, setHistory] = useState<History[]>([]);
   const members = [...new Map(deliveries.map((d) => [d.member, d])).values()];
+  const [scopes, setScopes] = useState<
+      { activity: string | null; event: string | null; title: string }[]
+    >([]),
+    [postEnabled, setPostEnabled] = useState(false),
+    [postScope, setPostScope] = useState(0),
+    [postBody, setPostBody] = useState(''),
+    [postConfirmed, setPostConfirmed] = useState(false);
   const endpoint = fling + '/organizer/messages';
   async function refreshHistory() {
     const r = (await request(endpoint)) as { batches: History[] };
@@ -55,15 +64,21 @@ export default function MessagePanel({
         if (!cancelled) setHistory((r as { batches: History[] }).batches);
       })
       .catch(() => {});
+    void request(fling + '/organizer/coordination')
+      .then((r) => {
+        if (!cancelled) setScopes((r as { scopes: typeof scopes }).scopes);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, [endpoint, request]);
+  }, [endpoint, fling, request]);
   function clearReview() {
     setReview(null);
     setApproved(false);
     setConfirmed(false);
     setDuplicates(false);
+    setPostConfirmed(false);
     setPrompt('');
     setNotice('');
   }
@@ -90,6 +105,13 @@ export default function MessagePanel({
           core_text: core,
           subject,
           suffixes: notes,
+          discussion: postEnabled
+            ? {
+                activity: scopes[postScope]?.activity,
+                event: scopes[postScope]?.event,
+                body: postBody,
+              }
+            : null,
         })) as Review,
       ),
     );
@@ -179,6 +201,68 @@ export default function MessagePanel({
               </p>
             </div>
           ))}
+          <Label className="choice">
+            <Checkbox
+              checked={postEnabled}
+              disabled={!scopes.length}
+              onCheckedChange={(v) => {
+                setPostEnabled(v === true);
+                clearReview();
+              }}
+            />
+            Also post to one discussion
+          </Label>
+          {postEnabled && (
+            <>
+              <div className="field">
+                <Label htmlFor="message-discussion">Discussion</Label>
+                <NativeSelect
+                  id="message-discussion"
+                  value={postScope}
+                  onChange={(e) => {
+                    setPostScope(Number(e.target.value));
+                    clearReview();
+                  }}
+                >
+                  {scopes.map((s, i) => (
+                    <option key={i} value={i}>
+                      {s.title}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </div>
+              <div className="field">
+                <Label htmlFor="message-discussion-body">
+                  Shared discussion text
+                </Label>
+                <Textarea
+                  id="message-discussion-body"
+                  required
+                  maxLength={4000}
+                  value={postBody}
+                  onChange={(e) => {
+                    setPostBody(e.target.value);
+                    clearReview();
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setPostBody(core);
+                    clearReview();
+                  }}
+                >
+                  Use core message in discussion
+                </Button>
+                <p className="muted">
+                  Keep private notes, amounts, contacts and personal links in
+                  individual messages. Discussion readers can differ from direct
+                  recipients.
+                </p>
+              </div>
+            </>
+          )}
           <Button
             type="submit"
             disabled={!deliveries.length || deliveries.length > 5}
@@ -202,7 +286,10 @@ export default function MessagePanel({
           </p>
           <p>
             Only the core message and personal note/link below go to each
-            recipient. This batch creates no discussion post.
+            recipient.{' '}
+            {review.discussion
+              ? 'Approval also creates the discussion post reviewed below.'
+              : 'This batch creates no discussion post.'}
           </p>
           {review.omissions.map((m) => (
             <p key={m.member} className="notice">
@@ -223,6 +310,26 @@ export default function MessagePanel({
               <pre>{review.manifest.core_text + '\n\n' + d.suffix}</pre>
             </article>
           ))}
+          {review.discussion && (
+            <article className="message-discussion-review">
+              <h4>Discussion: {review.discussion.title}</h4>
+              <p>
+                Member readers now:{' '}
+                {review.discussion.readers.map((m) => m.name).join(', ') ||
+                  'None'}
+                .
+              </p>
+              <p>
+                Organizers:{' '}
+                {review.discussion.organizers.map((m) => m.name).join(', ')}.
+              </p>
+              <p>
+                Future readers follow the discussion’s membership and activity
+                access rules.
+              </p>
+              <pre>{review.discussion.body}</pre>
+            </article>
+          )}
           {!approved ? (
             <fieldset disabled={busy}>
               {review.duplicates.length > 0 && (
@@ -250,9 +357,20 @@ export default function MessagePanel({
                 I reviewed every destination, exact message, omission and
                 personal link.
               </Label>
+              {review.discussion && (
+                <Label className="choice">
+                  <Checkbox
+                    checked={postConfirmed}
+                    onCheckedChange={(v) => setPostConfirmed(v === true)}
+                  />
+                  I reviewed the discussion readers and shared text.
+                </Label>
+              )}
               <Button
                 disabled={
-                  !confirmed || (review.duplicates.length > 0 && !duplicates)
+                  !confirmed ||
+                  (review.duplicates.length > 0 && !duplicates) ||
+                  (!!review.discussion && !postConfirmed)
                 }
                 onClick={() =>
                   void run(async () => {
@@ -260,6 +378,7 @@ export default function MessagePanel({
                       ...identity(review),
                       confirm: true,
                       confirm_duplicates: duplicates,
+                      confirm_discussion: postConfirmed,
                     });
                     setApproved(true);
                   })
@@ -309,7 +428,11 @@ export default function MessagePanel({
       <details className="message-history">
         <summary>Message review history ({history.length})</summary>
         {history.map((h) => (
-          <article key={String(h.id)} className="message-delivery">
+          <article
+            id={'message-batch-' + h.id}
+            key={String(h.id)}
+            className="message-delivery"
+          >
             <h4>{h.manifest.deliveries[0]?.subject || 'Message batch'}</h4>
             <p>
               {h.state} · outcomes {h.outcome} · {h.manifest.deliveries.length}{' '}
@@ -323,6 +446,13 @@ export default function MessagePanel({
               {h.needs_renewed_review &&
                 ' Prepare a new review before sending.'}
             </p>
+            {h.discussion && (
+              <details>
+                <summary>Reviewed discussion: {h.discussion.title}</summary>
+                <pre>{h.discussion.body}</pre>
+                <p>Later post edits do not change this approved text.</p>
+              </details>
+            )}
             {h.approved !== null && h.results_revision === 0 && (
               <Button
                 variant="outline"

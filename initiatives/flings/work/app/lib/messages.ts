@@ -3,6 +3,14 @@ import { AudienceStore } from './audience.ts';
 import { safeText } from './coordination.ts';
 type Row = Record<string, unknown>;
 type Audience = Awaited<ReturnType<AudienceStore['audience']>>;
+export type DiscussionReview = {
+  activity: string | null;
+  event: string | null;
+  title: string;
+  body: string;
+  readers: { id: string; name: string }[];
+  organizers: { id: string; name: string }[];
+};
 export type Manifest = {
   batch_id: string;
   revision: number;
@@ -51,6 +59,65 @@ function exactText(value: unknown, required = true) {
   return value as string;
 }
 export class MessageStore extends AudienceStore {
+  async discussionReview(
+    actor: Actor,
+    fling: string,
+    value: unknown,
+  ): Promise<DiscussionReview | null> {
+    if (value === undefined || value === null) return null;
+    if (
+      typeof value !== 'object' ||
+      Array.isArray(value) ||
+      Object.keys(value).some((k) => !['activity', 'event', 'body'].includes(k))
+    )
+      throw new AccessError(400, 'Choose one discussion and its shared text.');
+    const input = value as Row,
+      activity = input.activity ?? null,
+      event = input.event ?? null;
+    if (activity === '' || event === '')
+      throw new AccessError(400, 'Choose a discussion in this fling.');
+    const body = exactText(input.body);
+    const r = await this.batch(actor, fling, [
+      ...this.scope(actor, fling, activity, event),
+      this.q(
+        `SELECT COALESCE((SELECT title FROM events WHERE id=? AND fling=?),
+        (SELECT title FROM activities WHERE id=? AND fling=?),'Whole fling') title`,
+        event,
+        fling,
+        activity,
+        fling,
+      ),
+      this.q(
+        `SELECT id,name FROM members m WHERE fling=? AND state='active' AND
+        (? IS NULL OR (EXISTS(SELECT 1 FROM activities WHERE id=? AND fling=? AND state='published') AND
+        EXISTS(SELECT 1 FROM invitations WHERE member=m.id AND activity=? AND fling=? AND state='accepted'))) ORDER BY id`,
+        fling,
+        activity,
+        activity,
+        fling,
+        activity,
+        fling,
+      ),
+      this.q(
+        'SELECT o.id,o.name FROM organizers o JOIN assignments a ON a.organizer=o.id WHERE a.fling=? ORDER BY o.id',
+        fling,
+      ),
+    ]);
+    const rows = r.slice(-3);
+    const readers = rows[1].results as { id: string; name: string }[],
+      organizers = rows[2].results as { id: string; name: string }[];
+    for (const person of [...readers, ...organizers]) safeText(person.name);
+    const title = String((rows[0].results[0] as Row).title);
+    safeText(title);
+    return {
+      activity: activity as string | null,
+      event: event as string | null,
+      title,
+      body,
+      readers,
+      organizers,
+    };
+  }
   async context(actor: Actor, fling: string) {
     const result = await this.batch(actor, fling, [this.q(contextSql, fling)]);
     return Object.values(result[0].results[0] as Row)[0] as string;
@@ -106,6 +173,11 @@ export class MessageStore extends AudienceStore {
       selection.individuals = input.individuals;
     const context = await this.context(actor, fling),
       a = await this.audience(actor, fling, selection);
+    const discussion = await this.discussionReview(
+      actor,
+      fling,
+      input.discussion,
+    );
     if (!a.deliveries.length || a.deliveries.length > 5)
       throw new AccessError(
         400,
@@ -161,7 +233,9 @@ export class MessageStore extends AudienceStore {
       })),
     };
     const raw = JSON.stringify(manifest),
-      hash = await digest(raw),
+      hash = await digest(
+        raw + (discussion ? '\n' + JSON.stringify(discussion) : ''),
+      ),
       sealed = await encrypt(this.secret, raw);
     const redacted = {
       ...manifest,
@@ -178,7 +252,7 @@ export class MessageStore extends AudienceStore {
       [
         ...this.currentGuard(fling, context),
         this.q(
-          'INSERT INTO message_batches(id,fling,owner,selection,context,audience_hash,manifest,payload_hash,ciphertext,send_until,created) VALUES(?,?,?,?,?,?,?,?,?,?,?)',
+          'INSERT INTO message_batches(id,fling,owner,selection,context,audience_hash,manifest,payload_hash,ciphertext,send_until,created,discussion) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
           id,
           fling,
           owner,
@@ -190,6 +264,7 @@ export class MessageStore extends AudienceStore {
           sealed,
           until,
           now,
+          discussion ? JSON.stringify(discussion) : null,
         ),
         ...manifest.deliveries.map((d) =>
           this.q(
@@ -212,6 +287,7 @@ export class MessageStore extends AudienceStore {
       fingerprint: hash,
       omissions: a.omissions,
       duplicates: a.duplicates,
+      discussion,
       state: 'awaiting review',
     };
   }
@@ -257,7 +333,11 @@ export class MessageStore extends AudienceStore {
         'Recipients or gathering details changed. Stop any external run and review a new batch.',
       );
     const raw = await decrypt(this.secret, row.ciphertext as string);
-    if ((await digest(raw)) !== row.payload_hash)
+    if (
+      (await digest(
+        raw + (row.discussion ? '\n' + (row.discussion as string) : ''),
+      )) !== row.payload_hash
+    )
       throw new AccessError(
         409,
         'The saved payload could not be verified. Review a new batch.',
@@ -266,14 +346,19 @@ export class MessageStore extends AudienceStore {
   }
   async approve(actor: Actor, fling: string, input: Row) {
     const { row, audience } = await this.verified(actor, fling, input);
+    const discussion = row.discussion
+      ? (JSON.parse(row.discussion as string) as DiscussionReview)
+      : null;
     if (
       input.confirm !== true ||
-      (audience.duplicates.length > 0 && input.confirm_duplicates !== true)
+      (audience.duplicates.length > 0 && input.confirm_duplicates !== true) ||
+      (discussion && input.confirm_discussion !== true)
     )
       throw new AccessError(
         400,
-        'Confirm the exact messages and any shared destinations.',
+        'Confirm the exact messages, shared destinations and optional discussion audience/text.',
       );
+    const postId = crypto.randomUUID();
     await this.batch(
       actor,
       fling,
@@ -289,6 +374,45 @@ export class MessageStore extends AudienceStore {
           this.clock(),
           row.id,
         ),
+        ...(discussion
+          ? [
+              ...this.scope(
+                actor,
+                fling,
+                discussion.activity,
+                discussion.event,
+              ),
+              this.q(
+                `INSERT INTO posts(id,fling,activity,event,actor,actor_kind,author,body,created)
+            SELECT ?,?,?,?,?,'organizer',name,?,? FROM organizers WHERE id=?`,
+                postId,
+                fling,
+                discussion.activity,
+                discussion.event,
+                organizer(actor),
+                discussion.body,
+                this.clock(),
+                organizer(actor),
+              ),
+              this.q(
+                'INSERT INTO message_discussions(batch,fling,post) VALUES(?,?,?)',
+                row.id,
+                fling,
+                postId,
+              ),
+              this.q('UPDATE flings SET revision=revision+1 WHERE id=?', fling),
+              // Only our own approved post advances this batch's eligibility snapshot.
+              // The approved text, audience and fingerprint remain immutable.
+              this.q(
+                `UPDATE message_batches SET context=(${contextSql}),
+            selection=json_set(selection,'$.revision',(SELECT revision FROM flings WHERE id=?)) WHERE id=?`,
+                fling,
+                fling,
+                row.id,
+              ),
+              this.audit(actor, fling, 'post-message-discussion', postId),
+            ]
+          : []),
         this.audit(actor, fling, 'approve-message', String(row.id)),
       ],
       true,
@@ -330,7 +454,7 @@ export class MessageStore extends AudienceStore {
     organizer(actor);
     const r = await this.batch(actor, fling, [
       this.q(
-        `SELECT id,owner,revision,manifest,payload_hash,created,approved,exported,send_until,
+        `SELECT id,owner,revision,manifest,payload_hash,created,approved,exported,send_until,discussion,
         (ciphertext IS NOT NULL AND send_until>? AND context=(${contextSql}) AND NOT EXISTS(
           SELECT 1 FROM message_deliveries d JOIN codes c ON c.id=d.code WHERE d.batch=message_batches.id AND c.revoked IS NOT NULL)) available
         FROM message_batches WHERE fling=? ORDER BY created DESC,id LIMIT 50`,
@@ -351,6 +475,9 @@ export class MessageStore extends AudienceStore {
         send_until: row.send_until,
         needs_renewed_review: !row.available,
         manifest: JSON.parse(String(row.manifest)),
+        discussion: row.discussion
+          ? (JSON.parse(row.discussion as string) as DiscussionReview)
+          : null,
         state: row.exported
           ? 'exported for sending'
           : row.approved

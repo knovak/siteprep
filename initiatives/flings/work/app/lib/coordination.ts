@@ -148,7 +148,20 @@ export class CoordinationStore extends JourneyStore {
         'SELECT member,activity,state,generation FROM invitations WHERE fling=?',
         fling,
       ),
-      this.q('SELECT * FROM posts WHERE fling=? ORDER BY created,id', fling),
+      this.q(
+        `SELECT p.*,md.batch notification_batch,b.results_revision notification_revision,
+        (SELECT json_group_object(status,n) FROM (
+          SELECT status,COUNT(*) n FROM (
+            SELECT COALESCE((SELECT e.status FROM message_results e JOIN message_reports r ON r.id=e.report
+              WHERE e.delivery=d.id ORDER BY r.sequence DESC LIMIT 1),'unknown') status
+            FROM message_deliveries d WHERE d.batch=md.batch
+          ) GROUP BY status
+        )) notification_counts
+        FROM posts p LEFT JOIN message_discussions md ON md.post=p.id AND md.fling=p.fling
+        LEFT JOIN message_batches b ON b.id=md.batch AND b.fling=p.fling
+        WHERE p.fling=? ORDER BY p.created,p.id`,
+        fling,
+      ),
       this.q(
         'SELECT h.* FROM post_history h JOIN posts p ON p.id=h.post WHERE p.fling=? ORDER BY h.at,h.id',
         fling,
@@ -203,17 +216,41 @@ export class CoordinationStore extends JourneyStore {
       ...flings[0],
       posts: posts
         .filter((p) => allowed(p.activity))
-        .map((p) => ({
-          ...p,
-          id: p.id,
-          hidden: p.hidden,
-          body: p.hidden && member ? '' : p.body,
-          can_edit:
-            actor.kind !== 'preview' &&
-            !p.hidden &&
-            p.actor === actorId(actor) &&
-            p.actor_kind === actor.kind,
-        })),
+        .map(
+          ({
+            notification_batch,
+            notification_revision,
+            notification_counts,
+            ...p
+          }) => ({
+            ...p,
+            id: p.id,
+            author: p.author,
+            hidden: p.hidden,
+            body: p.hidden && member ? '' : p.body,
+            notification:
+              notification_batch && !(p.hidden && member)
+                ? {
+                    ...(member ? {} : { batch: notification_batch }),
+                    state: notification_revision
+                      ? 'Reported outcomes'
+                      : 'Notification prepared',
+                    counts: {
+                      reported_sent: 0,
+                      reported_failed: 0,
+                      suppressed: 0,
+                      unknown: 0,
+                      ...JSON.parse(String(notification_counts)),
+                    },
+                  }
+                : null,
+            can_edit:
+              actor.kind !== 'preview' &&
+              !p.hidden &&
+              p.actor === actorId(actor) &&
+              p.actor_kind === actor.kind,
+          }),
+        ),
       post_history: member ? [] : history,
       polls: permittedPolls.map((p) => {
         const options = JSON.parse(String(p.options)) as string[];

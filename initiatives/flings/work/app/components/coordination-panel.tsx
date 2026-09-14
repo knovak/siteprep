@@ -16,6 +16,16 @@ type Post = Scope & {
   edited: number | null;
   hidden: number;
   can_edit: boolean;
+  notification?: {
+    batch?: string;
+    state: string;
+    counts: {
+      reported_sent: number;
+      reported_failed: number;
+      suppressed: number;
+      unknown: number;
+    };
+  } | null;
 };
 type Poll = {
   id: string;
@@ -645,6 +655,32 @@ export default function CoordinationPanel(props: Props) {
                           </p>
                         ))}
                     </details>
+                  )}
+                  {p.notification && (
+                    <div className="notice">
+                      <p>
+                        {p.notification.state} ·{' '}
+                        {p.notification.counts.reported_sent} reported sent ·{' '}
+                        {p.notification.counts.reported_failed} reported failed
+                        · {p.notification.counts.suppressed} suppressed ·{' '}
+                        {p.notification.counts.unknown} outcome unknown
+                      </p>
+                      <p>Organizer reports do not verify recipient receipt.</p>
+                      {organizer && p.notification.batch && (
+                        <a
+                          href={'#message-batch-' + p.notification.batch}
+                          onClick={() => {
+                            const target = document.getElementById(
+                              'message-batch-' + p.notification!.batch,
+                            );
+                            const history = target?.closest('details');
+                            if (history) history.open = true;
+                          }}
+                        >
+                          Review notification batch
+                        </a>
+                      )}
+                    </div>
                   )}
                   {open && !draft && !p.hidden && (
                     <div className="actions">

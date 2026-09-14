@@ -219,6 +219,7 @@ export const posts = sqliteTable(
     revision: integer().notNull().default(0),
   },
   (t) => [
+    unique().on(t.id, t.fling),
     foreignKey({
       columns: [t.activity, t.fling],
       foreignColumns: [activities.id, activities.fling],
@@ -395,11 +396,30 @@ export const messageBatches = sqliteTable(
     approved: integer(),
     exported: integer(),
     resultsRevision: integer('results_revision').notNull().default(0),
+    discussion: text(),
   },
   (t) => [
     unique().on(t.id, t.fling),
     index('message_batches_fling').on(t.fling),
     check('message_revision', sql`${t.revision}=1`),
+  ],
+);
+export const messageDiscussions = sqliteTable(
+  'message_discussions',
+  {
+    batch: text().primaryKey(),
+    fling: text().notNull(),
+    post: text().notNull().unique(),
+  },
+  (t) => [
+    foreignKey({
+      columns: [t.batch, t.fling],
+      foreignColumns: [messageBatches.id, messageBatches.fling],
+    }),
+    foreignKey({
+      columns: [t.post, t.fling],
+      foreignColumns: [posts.id, posts.fling],
+    }),
   ],
 );
 export const messageDeliveries = sqliteTable(
