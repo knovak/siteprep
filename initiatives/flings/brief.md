@@ -6,21 +6,21 @@
 
 ## Done
 
-Gatherings support invitations, event details, discussions, polls and attributed
+Gatherings support invitations, events, discussions, polls and attributed
 payments. Organizers review exact messages and an optional discussion post,
-export a sending prompt, and record reported outcomes with correction history;
-those reports do not verify recipient receipt.
+export a sending prompt, record reported outcomes and retry selected deliveries
+after recording account-history checks.
 
-Approval creates the discussion post once. Member-visible counts exclude private
-message content; the current increment passes 96 database/HTTP/time tests and
-24 browser journeys across three engines at desktop and phone sizes.
+Selected retries preserve message content and delivery IDs, track attempts and
+keep the discussion post once. Local Phase 4 is complete, with 107 database/API/time
+tests and 24 browser journeys; reported outcomes do not verify recipient receipt.
 
 ## Remaining work
 
-Finish Phase 4's selected retries with account-history inspection and attempt
-tracking. Editable recovery, independent organizer identity, development-toolchain
-remediation and full hosted/pilot acceptance follow; the current fictional
-rehearsal uses visitor-bound organizer and preview sessions.
+Phase 5 adds versioned editable export, validation, isolated restore and deletion.
+Independent organizer identity, development-toolchain remediation and full
+hosted/pilot acceptance follow; the fictional rehearsal currently uses
+visitor-bound organizer and preview sessions.
 
 ## Optional later
 
