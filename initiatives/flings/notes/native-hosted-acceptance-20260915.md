@@ -52,3 +52,13 @@ existing gatherings and their assignments were not modified. This proves one
 real owner session, creation, assignment isolation and export preparation. It
 does not prove Lucas's login, a signed-out sign-in round trip, provider backup
 restore, or the rest of the hosted acceptance matrix.
+
+## Follow-through recorded after PR #535 merged
+
+The preceding source receipt predates the final owner sign-out/sign-in check.
+Before #535 closed, the actual owner followed the Site's sign-out link, reached
+its private sign-in gate, selected the existing Ken account and returned to the
+same assigned gathering. That owner round trip passed; Lucas's independent
+login remains pending. The later [hosted workflow receipt](hosted-workflow-acceptance-20260915.md)
+adds actual event, preview, stale-closure and edited-backup observations without
+claiming the full acceptance matrix passed.

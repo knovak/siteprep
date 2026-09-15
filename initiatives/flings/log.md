@@ -244,3 +244,5 @@ impersonation and starts each real organizer with no inherited gathering access.
 Documented the simple JSON recovery path and the limits of managed-host backup
 evidence. Local native tests and six browser journeys pass; see the dated
 acceptance receipt. The full hosted item remains open.
+
+- 2026-09-15: After merging native sign-in PR #535, the sweep verified an actual owner-only hosted fictional workflow: draft/invited preview, DST validation, stale edit after closure, closed profile correction, reopening, invalid-schema rejection and explicit edited restore. Downloaded source records were unchanged; restored IDs/relationships and absence of member credentials were checked. See `notes/hosted-workflow-acceptance-20260915.md`. `verify-hosted-test` remains open for the rest of Phase 6; no app source, audience, messages or production changed.

@@ -552,3 +552,17 @@ cannot be established by simulating his identity or changing sharing silently.
 Managed-host backup retention and provider recovery/deletion remain unverified,
 as documented in `notes/host-backup-review-20260915.md`. These limits do not
 require a new user-defined backup policy and do not complete Phase 6 or the pilot.
+
+## Phase 6 hosted workflow increment — September 15, 2026
+
+The actual owner session now has hosted evidence for draft/invited read-only
+preview, DST gap/repeated-time handling, a stale edit denied after closure,
+closed-state profile correction, reopening and an edited JSON restore into a
+separate gathering. Downloaded before/after snapshots prove source-record
+preservation and fresh restored relationships; read-only hosted database
+inspection found no member codes or sessions for either new fixture. The
+[receipt](notes/hosted-workflow-acceptance-20260915.md) records exact limits.
+
+`verify-hosted-test` remains actionable. Continue interruption/retry checks,
+broader browser/accessibility coverage and populated hosted workflow acceptance;
+independent second-organizer and managed-host recovery evidence remain open.
