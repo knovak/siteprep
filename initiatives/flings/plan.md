@@ -536,3 +536,19 @@ behavior. No separate identity-provider registration or new user-defined backup
 policy is required to begin. The earlier Phase 5 record describes the inputs
 that were unavailable then; these decisions supersede that blocker without
 claiming Phase 6 implementation or acceptance is complete.
+
+## Phase 6 native identity increment — September 15, 2026
+
+Native mode now enrolls only the approved ChatGPT account list, pins the first
+Site-scoped identity, and applies current account and gathering checks to every
+organizer request and preview. It grants no fictional identity or pre-existing
+gathering assignment. Local evidence includes 176 real-D1/domain/HTTP tests and
+six desktop/phone native-identity browser journeys on three engines.
+
+`verify-hosted-test` remains actionable for the full hosted T1-T12 matrix,
+independent second-organizer acceptance, accessibility and interruption/restart
+checks. The current private Site allows only its owner; Lucas's real sign-in
+cannot be established by simulating his identity or changing sharing silently.
+Managed-host backup retention and provider recovery/deletion remain unverified,
+as documented in `notes/host-backup-review-20260915.md`. These limits do not
+require a new user-defined backup policy and do not complete Phase 6 or the pilot.

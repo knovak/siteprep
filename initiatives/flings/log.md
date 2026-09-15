@@ -234,3 +234,13 @@ and no additional backup preference, keeping recovery simple. Made
 `verify-hosted-test` actionable for implementation and hosted verification.
 Provider backup behavior remains an investigation task; acceptance is not yet
 complete. See the dated entry in `decisions.md`.
+
+## 2026-09-15 — Native ChatGPT identity increment
+
+Implemented explicit native organizer enrollment with approved-account checking,
+immutable Site-subject binding, account-bound anti-forgery checks, current
+assignment enforcement and viewer-bound previews. Native mode disables fictional
+impersonation and starts each real organizer with no inherited gathering access.
+Documented the simple JSON recovery path and the limits of managed-host backup
+evidence. Local native tests and six browser journeys pass; see the dated
+acceptance receipt. The full hosted item remains open.

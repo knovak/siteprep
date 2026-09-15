@@ -71,6 +71,12 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
   const [data, setData] = useState<Snapshot | null>(null),
     [list, setList] = useState<Fling[] | null>(null);
   const [newTitle, setNewTitle] = useState('');
+  const [identity, setIdentity] = useState<{
+    native: boolean;
+    rehearsal: boolean;
+    signedIn: boolean;
+    email: string;
+  } | null>(null);
   const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState(''),
     [notice, setNotice] = useState(''),
@@ -92,6 +98,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         cache: 'no-store',
         headers: {
           ...(body ? { 'Content-Type': 'application/json' } : {}),
+          ...(path.startsWith('native/') ? { 'x-flings-native': '1' } : {}),
           ...(path.startsWith('local/') ? { 'x-flings-local': '1' } : {}),
           ...(auth.current && !path.startsWith('local/')
             ? {
@@ -128,7 +135,19 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
   const refreshRun = useRef(0);
   const refresh = useCallback(async () => {
     const run = ++refreshRun.current;
-    if (!auth.current) setInitializing(true);
+    setInitializing(true);
+    const response = await fetch('/api/flings/native/status', {
+      cache: 'no-store',
+    });
+    if (!response.ok) {
+      if (run === refreshRun.current) setInitializing(false);
+      throw new Error('Sign-in status is unavailable.');
+    }
+    const currentIdentity = (await response.json()) as NonNullable<
+      typeof identity
+    >;
+    if (run !== refreshRun.current) return;
+    setIdentity(currentIdentity);
     const value = await request((fling || 'workspace') + '/organizer').catch(
       (error) => {
         if (run === refreshRun.current) setInitializing(false);
@@ -149,6 +168,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     void Promise.resolve()
       .then(refresh)
       .catch((e) => {
+        setInitializing(false);
         if (fling) setError(e.message);
       });
     const recheck = () => {
@@ -219,7 +239,43 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         </div>
       )}
       <output aria-live="polite">{notice}</output>
-      {!fling && (
+      {identity?.native && (
+        <section className="identity">
+          <h2>Your ChatGPT account</h2>
+          {identity.signedIn ? (
+            <>
+              <p>{identity.email}</p>
+              {!list && !data && (
+                <Button
+                  disabled={busy || initializing}
+                  onClick={() =>
+                    void act(async () => {
+                      await request('native/open', 'POST', {});
+                      auth.current = null;
+                      await refresh();
+                    })
+                  }
+                >
+                  Open my organizer workspace
+                </Button>
+              )}
+              <p>
+                <a
+                  href="/signout-with-chatgpt?return_to=%2Forganizer"
+                  target="_top"
+                >
+                  Sign out of ChatGPT
+                </a>
+              </p>
+            </>
+          ) : (
+            <a href="/signin-with-chatgpt?return_to=%2Forganizer" target="_top">
+              Sign in with ChatGPT
+            </a>
+          )}
+        </section>
+      )}
+      {!fling && identity?.rehearsal && (
         <section className="identity">
           <h2>Choose a fictional organizer</h2>
           <div className="actions">

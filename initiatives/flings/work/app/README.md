@@ -669,3 +669,20 @@ See `../../RECOVERY_TECHDOC.md` for the signed review, identity mapping, migrati
 transaction and replay controls. `test/recovery-restore.test.ts` checks actual D1
 rollback, access races, isolated records, no credentials, replay and deletion;
 `node test/recovery-restore-browser.mjs` covers the complete desktop/phone flow.
+
+## Native ChatGPT organizers — September 15, 2026
+
+In native mode, open the organizer workspace and use **Open my organizer
+workspace** with the approved ChatGPT account. The first visit registers that
+account; later visits reuse its pinned platform identity. Each account initially
+has no assigned gatherings. Create a fictional fling to test it; the fictional
+Casey/Rowan/Sam accounts are separate and cannot be selected in native mode.
+Sign-out uses ChatGPT's own top-level route. A private Site's audience still
+controls who may reach the app.
+
+`FLINGS_MODE=chatgpt` and the server-side `FLINGS_ORGANIZERS` enrollment list
+activate this path. Keep the exact HTTPS origin and existing secret. The legacy
+`private-test` mode retains the fictional selector for local regressions; it is
+not the native identity proof. See `../../NATIVE_AUTH_TECHDOC.md` for enrollment,
+pinning, authorization and test commands, and
+`../../notes/host-backup-review-20260915.md` for the documented recovery limits.

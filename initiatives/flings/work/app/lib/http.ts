@@ -3,11 +3,17 @@ import type { Actor } from './access.ts';
 import { RecoveryRestoreStore as MessageStore } from './recovery-restore.ts';
 import { EXPORT_MAX_BYTES } from './recovery-export.ts';
 import { seed } from './fixtures.ts';
+import {
+  nativeMode,
+  nativeViewer,
+  nativeOrganizer,
+} from './native-identity.ts';
 export type Bindings = {
   DB: D1Database;
   FLINGS_SECRET?: string;
   FLINGS_MODE?: string;
   FLINGS_ORIGIN?: string;
+  FLINGS_ORGANIZERS?: string;
 };
 const cookieName = (fling: string) => `flings_${fling}`;
 const cookie = (req: Request, name: string) =>
@@ -35,7 +41,7 @@ const headers = {
   'Cache-Control': 'no-store, private',
   'Referrer-Policy': 'no-referrer',
   'X-Content-Type-Options': 'nosniff',
-  Vary: 'Cookie, Authorization',
+  Vary: 'Cookie, Authorization, oai-authenticated-user-id, oai-authenticated-user-email',
 };
 function json(data: unknown, status = 200, extra: Record<string, string> = {}) {
   return Response.json(data, { status, headers: { ...headers, ...extra } });
@@ -120,7 +126,11 @@ export async function handle(req: Request, env: Bindings) {
       throw new AccessError(503, 'This Flings workspace is not configured.');
     if (new URL(req.url).protocol !== 'https:' && !local(req, env))
       throw new AccessError(403, 'Use a secure Flings address.');
-    const viewer = testViewer(req, env);
+    if (nativeMode(env) && new URL(req.url).origin !== env.FLINGS_ORIGIN)
+      throw new AccessError(403, 'Open the configured Flings address.');
+    const viewer = nativeMode(env)
+      ? nativeViewer(req, env)?.subject || ''
+      : testViewer(req, env);
     if (env.FLINGS_MODE === 'private-test' && !viewer)
       throw new AccessError(401, 'Sign in to this private Flings test Site.');
     const store = new MessageStore(env.DB, env.FLINGS_SECRET),
@@ -128,6 +138,28 @@ export async function handle(req: Request, env: Bindings) {
         .replace(/^\/api\/flings\//, '')
         .split('/'),
       [fling, action, member, sub] = parts;
+    if (fling === 'native' && action === 'status' && req.method === 'GET') {
+      const identity = nativeViewer(req, env);
+      return json({
+        native: nativeMode(env),
+        rehearsal: rehearsal(req, env),
+        signedIn: !!identity,
+        email: identity?.email || '',
+      });
+    }
+    if (fling === 'native' && action === 'open' && req.method === 'POST') {
+      if (!nativeMode(env))
+        throw new AccessError(
+          403,
+          'ChatGPT organizer sign-in is unavailable here.',
+        );
+      sameOrigin(req);
+      if (req.headers.get('x-flings-native') !== '1')
+        throw new AccessError(403, 'Open your organizer workspace.');
+      await body(req);
+      const identity = await nativeOrganizer(req, env, env.DB, true);
+      return json({ organizer: identity.id });
+    }
     if (fling === 'local') {
       if (!rehearsal(req, env) || req.method !== 'POST')
         throw new AccessError(403, 'Local rehearsal is unavailable here.');
@@ -218,12 +250,27 @@ export async function handle(req: Request, env: Bindings) {
       if (
         t.role !== 'preview' ||
         t.fling !== fling ||
-        !rehearsal(req, env) ||
+        !(rehearsal(req, env) || nativeMode(env)) ||
+        (nativeMode(env) && t.mode !== 'chatgpt') ||
         (viewer && t.viewer !== viewer)
       )
         throw new AccessError(403, 'Member preview is unavailable.');
+      if (nativeMode(env)) {
+        const identity = await nativeOrganizer(req, env, env.DB);
+        if (identity.id !== t.id || identity.viewer !== t.viewer)
+          throw new AccessError(403, 'Member preview is unavailable.');
+      }
       actor = { kind: 'preview', id: t.id, member: t.member };
       credential = preview;
+    } else if (action === 'organizer' && nativeMode(env)) {
+      const identity = await nativeOrganizer(req, env, env.DB);
+      if (
+        req.headers.has('x-flings-organizer') &&
+        req.headers.get('x-flings-organizer') !== identity.id
+      )
+        throw new AccessError(409, 'Organizer changed. Reopen your workspace.');
+      actor = { kind: 'organizer', id: identity.id };
+      credential = identity.credential;
     } else if (action === 'organizer') {
       if (!rehearsal(req, env))
         throw new AccessError(
@@ -466,6 +513,7 @@ export async function handle(req: Request, env: Bindings) {
         await store.projection(actor, fling, member);
         const token = await ticket(env.FLINGS_SECRET, {
           role: 'preview',
+          mode: nativeMode(env) ? 'chatgpt' : 'rehearsal',
           viewer: viewer || null,
           id: (actor as { id: string }).id,
           fling,

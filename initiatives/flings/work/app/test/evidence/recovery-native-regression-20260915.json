@@ -1,0 +1,125 @@
+{
+  "at": "2026-09-15T10:28:03.880Z",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "edited-file restore",
+        "explicit and reset consent",
+        "keyboard confirmation",
+        "fresh gathering",
+        "imported outcomes",
+        "cancel deletion",
+        "exact-title deletion",
+        "source isolation",
+        "no page errors",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "edited-file restore",
+        "explicit and reset consent",
+        "keyboard confirmation",
+        "fresh gathering",
+        "imported outcomes",
+        "cancel deletion",
+        "exact-title deletion",
+        "source isolation",
+        "no page errors",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "edited-file restore",
+        "explicit and reset consent",
+        "keyboard confirmation",
+        "fresh gathering",
+        "imported outcomes",
+        "cancel deletion",
+        "exact-title deletion",
+        "source isolation",
+        "no page errors",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "edited-file restore",
+        "explicit and reset consent",
+        "keyboard confirmation",
+        "fresh gathering",
+        "imported outcomes",
+        "cancel deletion",
+        "exact-title deletion",
+        "source isolation",
+        "no page errors",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "checks": [
+        "edited-file restore",
+        "explicit and reset consent",
+        "keyboard confirmation",
+        "fresh gathering",
+        "imported outcomes",
+        "cancel deletion",
+        "exact-title deletion",
+        "source isolation",
+        "no page errors",
+        "no horizontal overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": [
+        "edited-file restore",
+        "explicit and reset consent",
+        "keyboard confirmation",
+        "fresh gathering",
+        "imported outcomes",
+        "cancel deletion",
+        "exact-title deletion",
+        "source isolation",
+        "no page errors",
+        "no horizontal overflow"
+      ]
+    }
+  ]
+}

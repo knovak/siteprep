@@ -1,0 +1,90 @@
+{
+  "at": "2026-09-15T10:26:16.558Z",
+  "mode": "local fictional dispatch simulation",
+  "results": [
+    {
+      "engine": "chromium",
+      "size": "desktop",
+      "passed": true,
+      "checks": [
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "size": "phone",
+      "passed": true,
+      "checks": [
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "size": "desktop",
+      "passed": true,
+      "checks": [
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "size": "phone",
+      "passed": true,
+      "checks": [
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "size": "desktop",
+      "passed": true,
+      "checks": [
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "size": "phone",
+      "passed": true,
+      "checks": [
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    }
+  ]
+}
