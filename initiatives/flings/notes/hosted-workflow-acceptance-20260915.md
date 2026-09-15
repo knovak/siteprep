@@ -75,3 +75,21 @@ Chromium/Firefox/WebKit desktop/phone regression journeys pass with injected
 network, HTTP 503, invalid-JSON and invalid-shape failures, plus retry and identity
 switching. This correction changes the app after the version-9 observations
 above; its test deployment and subsequent smoke check are recorded separately.
+
+## Corrected test deployment and smoke check
+
+Application commit `4a71e7951` passed TypeScript, lint, all 176 app tests, the
+Sites app build and all six interruption/recovery browser journeys against that
+compiled build. All 235 tracked app files matched Sites source commit
+`28353120b5d53f4d068e7f1c516da0ef4932673f` byte-for-byte. Saved version 10 contains
+113 packaged files and 2,949,120 bytes. Deployment
+`appgdep_6aa96fd869408191848e7f6154575d32` succeeded at
+**2026-09-15T16:18:44.310649Z**, using existing runtime revision 2 and the same
+private test URL. No sharing or runtime changes were requested.
+
+After deployment the actual Ken session reloaded the restored gathering and
+returned to the workspace successfully, retaining both fictional fixtures.
+A requested 390×844 browser viewport reported 325 CSS pixels of inner width
+and 312 pixels of document width, with no horizontal overflow or alert. This
+is one narrow-browser smoke check, not a physical-phone or full accessibility
+acceptance result. The temporary viewport override was reset.
