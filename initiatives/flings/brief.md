@@ -10,9 +10,10 @@ Gatherings support invitations, events, discussions, polls, attributed payments,
 reviewed message prompts, reported outcomes and selected retries. Editable JSON
 backups can be checked and restored into separate gatherings with fresh identities;
 confirmed deletion removes active gathering records. Native ChatGPT organizer
-identity now pins approved accounts, and Ken's actual session passed creation,
-assignment isolation and export preparation; 176 local tests and 12 native/recovery
-browser journeys pass.
+identity now pins approved accounts, and 176 local tests plus 12 native/recovery browser journeys pass. Ken's actual
+hosted session also passed draft/invited preview, DST handling, stale-edit
+rejection after closure, profile correction, reopening and an edited restore;
+downloaded snapshots verified source preservation and fresh restored relationships.
 
 ## Remaining work
 
