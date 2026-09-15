@@ -7,19 +7,20 @@
 ## Done
 
 Gatherings support invitations, events, discussions, polls, attributed payments,
-reviewed message prompts and reported outcomes with selected retry attempts.
-Organizers can export, check and restore edited backups into separate gatherings
-with fresh identities and imported-only message history, or explicitly delete a
-gathering's active records. All 170 local tests and 18 desktop/phone recovery,
-preview and export journeys pass.
+reviewed message prompts, reported outcomes and selected retries. Editable JSON
+backups can be checked and restored into separate gatherings with fresh identities;
+confirmed deletion removes active gathering records. Native ChatGPT organizer
+identity now pins approved accounts, and Ken's actual session passed creation,
+assignment isolation and export preparation; 176 local tests and 12 native/recovery
+browser journeys pass.
 
 ## Remaining work
 
-Phase 6 implements native ChatGPT Sites sign-in for the two initial organizers
-and verifies their independent access, the full hosted acceptance matrix, and
-the existing host's backup and recovery/deletion behavior.
-Development-toolchain remediation and the authorized pilot follow; reported
-message outcomes do not establish recipient receipt.
+Phase 6 continues with independent second-organizer access, the full hosted
+acceptance matrix, accessibility and interruption/restart checks. Managed-host
+backup retention and database recovery/deletion remain unverified; the current
+JSON recovery approach adds no new backup service. Development-toolchain
+remediation and the authorized pilot follow.
 
 ## Optional later
 
