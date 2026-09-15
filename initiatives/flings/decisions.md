@@ -39,3 +39,43 @@ adapter. Production experience may justify an encrypted export format.
 The specific LLM, computer, host, sender accounts, retention and activation
 permissions remain open for the plan and authorized pilot. Naming another
 delivery or recovery option in review is enough to redirect this proposal.
+
+## 2026-09-15 — Organizer sign-in, initial accounts and retention
+
+The user supplied these answers and asked to record them and run a sweep:
+
+1. **Organizer sign-in:** "use chatgpt logon, native to chatgpt sites".
+2. **Initial organizer accounts:** Ken Novak, `krnovak@gmail.com`, and
+   Lucas Novak, `lucas.d.novak@gmail.com`.
+3. **Organizer action history:** keep it "until deleted".
+4. **Backup requirements:** "no preference at this time - keep it simple".
+
+### Alternatives considered
+
+| Choice | Selected approach | Consequence |
+|---|---|---|
+| Organizer identity | Native ChatGPT Sites sign-in | Replaces the separately registered OpenID Connect provider proposed in the initial plan; no external issuer/client or callback setup is needed from the user for that proposal. The native identity path still needs implementation and verification. |
+| Action-history retention | Until the gathering is explicitly deleted | No fixed-period automatic deletion of non-secret organizer action history. Existing access-code, session and raw-message expiry rules still apply. |
+| Backups | Keep the existing recovery approach simple | No additional backup service or custom retention policy is selected. The host's actual backup and recovery/deletion behavior remains to be documented. |
+
+### What this settles, and what it does not
+
+- These are the user's decisions. They supersede the earlier open organizer
+  provider and audit-retention choices in the specification and plan.
+- The two named accounts are the initial authorized organizers. Sign-in must
+  identify each organizer independently, and access to an existing gathering
+  still requires its organizer assignment. Recording these addresses does not
+  prove that either account has signed in or that hosted access works.
+- `verify-hosted-test` is actionable: implement and verify native ChatGPT
+  sign-in for the named accounts, repeat hosted acceptance, and investigate
+  provider backup retention and recovery/deletion. These checks are work for
+  the implementation; the user need not invent provider configuration or a
+  backup policy before that work can begin.
+- "Until deleted" applies to the gathering's action history in active
+  application storage. It does not extend credential or raw-handoff lifetimes
+  or promise deletion from downloaded exports, external messages or provider
+  backups. The provider's behavior must be recorded before real member data.
+- The existing login-free member-link requirement remains. Native organizer
+  sign-in does not decide the separate host-audience setting for outside
+  members. Hosted acceptance, pilot setup, actual message batches and a
+  production release retain their existing prerequisites.

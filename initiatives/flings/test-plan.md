@@ -218,8 +218,11 @@ distinguish active storage from downloaded files and external messages.
 
 **All objectives; Phase 6.** Repeat authorization, concurrent mutation, code
 expiry, approval rollback and restore against the actual test Worker/database.
-Reject invalid organizer issuer/audience/state and expired identity sessions;
-confirm missing configuration fails closed. Verify the host's access setting
+Verify native ChatGPT Sites sign-in for each of the two organizer accounts in
+the September 15 decisions. Reject missing or untrusted platform identity and
+signed-in visitors without organizer authority; confirm missing configuration
+fails closed. Verify that each account retains its own identity and only its
+assigned gatherings. Verify the host's access setting
 separately from app roles. An owner-only test Site cannot prove an outside
 member's login-free journey.
 

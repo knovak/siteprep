@@ -224,3 +224,13 @@ claimed. Evidence is in `work/app/test/evidence/recovery-preview-20260914.md`.
 ## 2026-09-14 — Build versioned editable export, isolated restore and deletion
 
 Implemented confirmed atomic restore with fresh identities, imported-only message history, replay protection and permanent active-record deletion; local T11 evidence passes, with independent hosted identity and provider retention evidence carried in verify-hosted-test.
+
+## 2026-09-15 — Record the user's hosted-test decisions
+
+Recorded native ChatGPT Sites organizer sign-in; Ken Novak
+(`krnovak@gmail.com`) and Lucas Novak (`lucas.d.novak@gmail.com`) as the initial
+organizers; organizer action history retained until the gathering is deleted;
+and no additional backup preference, keeping recovery simple. Made
+`verify-hosted-test` actionable for implementation and hosted verification.
+Provider backup behavior remains an investigation task; acceptance is not yet
+complete. See the dated entry in `decisions.md`.

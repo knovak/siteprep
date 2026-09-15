@@ -5,6 +5,10 @@ Draft for review, September 10, 2026 (UTC). This specifies the behavior in
 baseline for the implementation plan; no provider account, paid service,
 production deployment or real message sending is authorized by this document.
 
+Organizer sign-in and retention were settled by the user on September 15;
+see [Decisions](decisions.html). Those choices supersede the original proposal
+for a separately configured organizer identity provider.
+
 ## 1. Product and boundaries
 
 A fling contains activities; each activity contains one or more events. A
@@ -29,7 +33,7 @@ outside this version. Organizers may enter repeated events individually.
 | Area | Alternatives and consequences | Proposed baseline |
 |---|---|---|
 | Application | A static/browser-only app is easy to distribute but cannot enforce shared private data or coordinate concurrent organizers. A server with a relational database supports access checks and transactions, with hosting and recovery work. | A web client, server-controlled permissions and a relational database. The plan selects the framework and host; no full private dataset is shipped to the browser. |
-| Organizer sign-in | Managed identity avoids implementing password recovery but requires provider setup. Email sign-in links depend on email delivery and mailbox access. Application passwords require recovery and credential operations. | Managed identity for organizers, using a provider adapter and secure server session. A local development identity is restricted to local/test environments. |
+| Organizer sign-in | Native ChatGPT Sites sign-in uses the host's identity path. A separate managed provider requires account and callback setup. Email sign-in links depend on email delivery; application passwords require recovery operations. | User-selected September 15: native ChatGPT Sites sign-in, with Ken Novak and Lucas Novak as the initial organizers recorded in decisions.md. Enforce organizer assignments on the server. A development identity remains restricted to local/test environments. |
 | Shared authority | A single owner simplifies administration but conflicts with shared organizing. Equal organizers avoid owner hand-offs but allow every organizer to make consequential changes. Fine-grained roles add complexity. | Equal organizers within each fling, with explicit confirmation for closure, member-link replacement and adding/removing organizers. The last organizer cannot be removed without first appointing another. |
 | Member access | Accounts improve identity assurance but contradict login-free access. One shared fling code cannot distinguish members. Individual bearer links meet the wish but can be forwarded. Immediately invalidating each previous link makes recent messages frustrating to use. | Multiple revocable codes per membership, issued in overlapping 14-day sending windows and valid for 35 days from first issue. Routine rotation preserves recent links; emergency replacement invalidates all earlier codes and sessions. |
 | Invitations and discussions | Showing everything to every invitee is simple but defeats acceptance-dependent disclosure. Independent event invitations add another response hierarchy. | Invitations belong to activities; accepted members gain participant detail and activity/event discussions. A fling discussion serves all active fling memberships. |

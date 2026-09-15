@@ -16,9 +16,12 @@ scaffold's dependencies and migrations when implementation starts. Keep domain
 rules separate from request handlers and use the same rules in local and
 hosted tests. No private database is serialized into client assets.
 
-Use a managed OpenID Connect identity adapter for organizer sign-in, verified
-on the Worker before live activation. Its actual issuer, client registration
-and permitted organizer subjects must be supplied before the hosted pilot.
+Use native ChatGPT Sites sign-in for organizers, as selected in the
+[September 15 decisions](decisions.html). The initial organizers are Ken Novak
+and Lucas Novak, with their account addresses recorded there. Implement and
+verify independent platform identity and organizer assignments on the Worker;
+the user does not need to register a separate OpenID Connect issuer/client or
+configure an application-owned callback.
 Development identity works only in explicit local/test mode with fictional
 records; missing hosted identity configuration denies organizer access. Member
 capabilities remain an independent authentication path.
@@ -205,18 +208,22 @@ For local/private test work, use fictional data and clear temporary restore
 staging after completion/failure, or within 24 hours if interrupted. Purge raw
 code/handoff secrets at their defined eligibility boundary. Retain closed fling
 records until an organizer explicitly deletes them, as the specification says.
-Deletion removes contacts, posts, payment records and staged exports from active
+Keep non-secret organizer action history until the gathering is explicitly
+deleted, following the September 15 decision. Deletion removes contacts, posts, payment records and staged exports from active
 application storage after a clear confirmation. Explain that downloaded exports,
 external messages and provider backups have their own retention. Before real
 data, record the host backup retention and recovery/deletion procedure and the
-approved audit-history retention; these are activation prerequisites, not an
-invented promise of immediate erasure from provider backups.
+approved audit-history retention. The user selected no additional backup
+requirements and asked to keep this simple; investigate the existing host's
+behavior without adding a backup service or custom retention policy. Provider
+facts remain real-data activation prerequisites, not a request for the user to
+invent a retention period or a promise of immediate erasure from host backups.
 
 ## Phases 6-7: activation prerequisites
 
 | Before | Required record | If unavailable |
 |---|---|---|
-| Hosted private test | Separate Sites test target, approved resource use and server secret provisioning; an identity issuer/client, callback configuration and allowed organizer accounts | `data:` for account/configuration inputs; `cost:` for new spending approval |
+| Hosted private test | Separate Sites test target, approved resource use and server secret provisioning; verified native ChatGPT sign-in and independent organizer access for the two accounts recorded on September 15 | Implement and verify the selected native identity path; `data:` only for a concrete missing account fact, and `cost:` for new spending approval |
 | Real member access | Explicit host audience approval and proof that member entry works without platform login while organizer and data routes remain protected | `permission:` for audience change; do not make the Site public by default |
 | Real personal data | Recorded provider terms, host backups, export/deletion practice, audit retention and permitted pilot data | `data:` for facts; `legal:` if a required terms/data decision needs authority |
 | Live sending | Named organizer/computer/LLM, correct Gmail and Messages sender accounts, working text setup, named consenting test recipients and exact approved message batch | `data:` for setup/recipients and `permission:` for the actual sends |
@@ -513,3 +520,19 @@ retention. The existing private rehearsal is usable for this review but does not
 satisfy independent organizer identity or all T11/T12 hosted evidence. Provider
 backup recovery/deletion remains unverified; no real-data, sending, access-change,
 pilot or production approval is inferred.
+
+## Phase 6 decisions — September 15, 2026
+
+The user selected native ChatGPT Sites organizer sign-in, named Ken Novak and
+Lucas Novak as the initial organizers, chose to retain action history until
+the gathering is deleted, and asked to keep backups simple with no additional
+requirements. The dated entry in `decisions.md` records the account addresses
+and the scope of each answer.
+
+`verify-hosted-test` is now actionable. Implement the selected native identity
+path and verify the two organizers independently, then complete the hosted
+acceptance matrix and document the existing host's backup and recovery/deletion
+behavior. No separate identity-provider registration or new user-defined backup
+policy is required to begin. The earlier Phase 5 record describes the inputs
+that were unavailable then; these decisions supersede that blocker without
+claiming Phase 6 implementation or acceptance is complete.
