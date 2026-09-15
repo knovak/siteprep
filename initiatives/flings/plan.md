@@ -566,3 +566,8 @@ inspection found no member codes or sessions for either new fixture. The
 `verify-hosted-test` remains actionable. Continue interruption/retry checks,
 broader browser/accessibility coverage and populated hosted workflow acceptance;
 independent second-organizer and managed-host recovery evidence remain open.
+
+The next interruption probe found and fixed initial blank-state and disabled-retry
+behavior when the sign-in status request fails. Six local real-UI/D1 browser
+journeys now cover recovery and stale-state clearing. This is an incremental
+T12 correction; managed Worker restart/migration/backup recovery remains open.

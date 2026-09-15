@@ -92,7 +92,12 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
   );
   const auth = useRef<{ id: string; csrf: string } | null>(null);
   const request = useCallback(
-    async (path: string, method = 'GET', body?: unknown) => {
+    async (
+      path: string,
+      method = 'GET',
+      body?: unknown,
+      isCurrent: () => boolean = () => true,
+    ) => {
       const r = await fetch('/api/flings/' + path, {
         method,
         cache: 'no-store',
@@ -117,7 +122,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         error?: string;
       };
       if (!r.ok) {
-        if ([401, 403, 409].includes(r.status)) {
+        if ([401, 403, 409].includes(r.status) && isCurrent()) {
           setError(
             value.error ||
               'Access or the record changed. Reload this workspace.',
@@ -136,47 +141,65 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
   const refresh = useCallback(async () => {
     const run = ++refreshRun.current;
     setInitializing(true);
-    const response = await fetch('/api/flings/native/status', {
-      cache: 'no-store',
-    });
-    if (!response.ok) {
+    let statusConfirmed = false;
+    try {
+      const response = await fetch('/api/flings/native/status', {
+        cache: 'no-store',
+      });
+      if (!response.ok) throw new Error('Sign-in status is unavailable.');
+      const currentIdentity = (await response.json()) as NonNullable<
+        typeof identity
+      >;
+      if (
+        !currentIdentity ||
+        typeof currentIdentity.native !== 'boolean' ||
+        typeof currentIdentity.rehearsal !== 'boolean' ||
+        typeof currentIdentity.signedIn !== 'boolean' ||
+        typeof currentIdentity.email !== 'string'
+      )
+        throw new Error('Sign-in status is unavailable.');
+      if (run !== refreshRun.current) return;
+      statusConfirmed = true;
+      setIdentity(currentIdentity);
+      const value = await request(
+        (fling || 'workspace') + '/organizer',
+        'GET',
+        undefined,
+        () => run === refreshRun.current,
+      );
+      if (run !== refreshRun.current) return;
+      auth.current = { id: value.organizer, csrf: value.csrf };
+      if (fling) setData(value);
+      else {
+        setList(value.flings);
+        setProfileName(value.name);
+      }
+      setError('');
+    } catch (e) {
+      if (run !== refreshRun.current) return;
+      // A failed refresh cannot vouch for the identity or records on screen.
+      auth.current = null;
+      if (!statusConfirmed) setIdentity(null);
+      setData(null);
+      setList(null);
+      setMemberDraft(null);
+      setProfileName('');
+      setError(
+        e instanceof TypeError || e instanceof SyntaxError
+          ? 'Unable to refresh sign-in and gathering details. Try reloading the workspace.'
+          : (e as Error).message,
+      );
+    } finally {
       if (run === refreshRun.current) setInitializing(false);
-      throw new Error('Sign-in status is unavailable.');
     }
-    const currentIdentity = (await response.json()) as NonNullable<
-      typeof identity
-    >;
-    if (run !== refreshRun.current) return;
-    setIdentity(currentIdentity);
-    const value = await request((fling || 'workspace') + '/organizer').catch(
-      (error) => {
-        if (run === refreshRun.current) setInitializing(false);
-        throw error;
-      },
-    );
-    if (run !== refreshRun.current) return;
-    auth.current = { id: value.organizer, csrf: value.csrf };
-    if (fling) setData(value);
-    else {
-      setList(value.flings);
-      setProfileName(value.name);
-    }
-    setInitializing(false);
   }, [fling, request]);
 
   useEffect(() => {
-    void Promise.resolve()
-      .then(refresh)
-      .catch((e) => {
-        setInitializing(false);
-        if (fling) setError(e.message);
-      });
-    const recheck = () => {
-      void refresh().catch((e) => setError(e.message));
-    };
+    void Promise.resolve().then(refresh);
+    const recheck = () => void refresh();
     window.addEventListener('focus', recheck);
     return () => window.removeEventListener('focus', recheck);
-  }, [refresh, fling]);
+  }, [refresh]);
   async function act(action: () => Promise<void>) {
     setBusy(true);
     setError('');

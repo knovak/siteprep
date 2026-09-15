@@ -1,0 +1,120 @@
+{
+  "at": "2026-09-15T16:17:39.985Z",
+  "mode": "local fictional dispatch simulation",
+  "results": [
+    {
+      "engine": "chromium",
+      "size": "desktop",
+      "passed": true,
+      "checks": [
+        "initial network failure offers retry",
+        "gathering failure clears controls and retry restores them",
+        "network, 503, invalid JSON and invalid status shape clear stale account and records",
+        "retry restores same account without document reload",
+        "successful retry clears error",
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "size": "phone",
+      "passed": true,
+      "checks": [
+        "initial network failure offers retry",
+        "gathering failure clears controls and retry restores them",
+        "network, 503, invalid JSON and invalid status shape clear stale account and records",
+        "retry restores same account without document reload",
+        "successful retry clears error",
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "size": "desktop",
+      "passed": true,
+      "checks": [
+        "initial network failure offers retry",
+        "gathering failure clears controls and retry restores them",
+        "network, 503, invalid JSON and invalid status shape clear stale account and records",
+        "retry restores same account without document reload",
+        "successful retry clears error",
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "size": "phone",
+      "passed": true,
+      "checks": [
+        "initial network failure offers retry",
+        "gathering failure clears controls and retry restores them",
+        "network, 503, invalid JSON and invalid status shape clear stale account and records",
+        "retry restores same account without document reload",
+        "successful retry clears error",
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "size": "desktop",
+      "passed": true,
+      "checks": [
+        "initial network failure offers retry",
+        "gathering failure clears controls and retry restores them",
+        "network, 503, invalid JSON and invalid status shape clear stale account and records",
+        "retry restores same account without document reload",
+        "successful retry clears error",
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "size": "phone",
+      "passed": true,
+      "checks": [
+        "initial network failure offers retry",
+        "gathering failure clears controls and retry restores them",
+        "network, 503, invalid JSON and invalid status shape clear stale account and records",
+        "retry restores same account without document reload",
+        "successful retry clears error",
+        "keyboard enrollment",
+        "no fictional chooser",
+        "create own gathering",
+        "account switch clears stale data",
+        "independent assignments",
+        "top-level signout",
+        "no overflow"
+      ]
+    }
+  ]
+}

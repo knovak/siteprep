@@ -63,3 +63,15 @@ Worker, server/migration recovery and provider backup retention/deletion still
 need their own evidence. The existing backup review remains authoritative about
 what the available hosting tools do not establish. Real member access, real
 sending, the pilot and production remain under their recorded prerequisites.
+
+## Local interruption finding and correction
+
+While the hosted receipt's PR was waiting for CI, a local real-UI/real-D1 probe
+found that an initial status-network failure produced a blank workspace with no
+retry, and a focus recheck failure left one stale gathering link visible while
+Reload workspace was disabled. The organizer page now clears unverifiable
+account/record state, always exits loading and permits an explicit retry. Six
+Chromium/Firefox/WebKit desktop/phone regression journeys pass with injected
+network, HTTP 503, invalid-JSON and invalid-shape failures, plus retry and identity
+switching. This correction changes the app after the version-9 observations
+above; its test deployment and subsequent smoke check are recorded separately.

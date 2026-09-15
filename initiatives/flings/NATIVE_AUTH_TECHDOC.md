@@ -81,3 +81,21 @@ Current platform guidance:
 The installed Sites authentication reference further specifies that the user
 ID is stable within one Site; account-user sharing IDs are not assumed to be
 that Site-scoped identity.
+
+## Failed refresh and retry
+
+The organizer page treats a failed identity/workspace refresh as unavailable
+current authority: it clears the gathering snapshot, profile editor and cached
+anti-forgery credentials. A failed status read also clears the displayed account.
+Network failure, HTTP failure, invalid JSON and an invalid status shape all leave
+an enabled Reload workspace action. The refresh's `finally` clears its loading
+state; a successful retry clears the error. Request generation checks prevent an
+older refresh from replacing a newer result or clearing it on an old denial.
+
+`node --experimental-strip-types test/native-resilience-browser.mts` exercises
+six real-UI/local-D1 journeys across Chromium, Firefox and WebKit at desktop and
+phone widths. It covers a failed initial status request, failure while a gathering
+is open, four status failure modes while listing gatherings, recovery without a
+document reload and the existing identity-switch isolation checks. These are
+injected local failures; they do not establish an outage or Worker restart on
+the managed Site. The dated evidence JSON names the layer explicitly.
