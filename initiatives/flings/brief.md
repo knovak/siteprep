@@ -14,6 +14,8 @@ identity now pins approved accounts, and 176 local tests plus 12 native/recovery
 hosted session also passed draft/invited preview, DST handling, stale-edit
 rejection after closure, profile correction, reopening and an edited restore;
 downloaded snapshots verified source preservation and fresh restored relationships.
+Interrupted identity refreshes now clear stale data and offer a working retry,
+covered by six additional browser regression journeys.
 
 ## Remaining work
 
