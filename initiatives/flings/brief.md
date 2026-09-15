@@ -15,8 +15,9 @@ preview and export journeys pass.
 
 ## Remaining work
 
-Phase 6 covers independent organizer identity, the full hosted acceptance matrix
-and provider-specific retention and backup recovery/deletion evidence.
+Phase 6 implements native ChatGPT Sites sign-in for the two initial organizers
+and verifies their independent access, the full hosted acceptance matrix, and
+the existing host's backup and recovery/deletion behavior.
 Development-toolchain remediation and the authorized pilot follow; reported
 message outcomes do not establish recipient receipt.
 
