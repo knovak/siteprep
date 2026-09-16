@@ -366,3 +366,15 @@ This completes Phase 5's local implementation. T11 provider-backup recovery and
 deletion evidence and the independent managed identity/full hosted T12 matrix
 remain part of `verify-hosted-test`. No live receipt, real-data retention,
 external access, pilot or production acceptance is claimed.
+
+## September 16 hosted populated-recovery receipt (UTC)
+
+`notes/hosted-populated-recovery-20260916.md` adds actual version-10 hosted
+T11 evidence for a backup with all 22 business collections populated, including
+poll/vote, payment ledger, message report/result and selected retry history.
+The restored export passed fresh-identity, 36-relationship and preserved-history
+checks; imported outcomes stayed separate from live totals and no credentials
+were created. Accepted/invited read-only previews exercised T1/T3/T6/T7 visibility
+and narrow layouts. This is one native organizer in the in-app browser, not full
+T1–T12, a member-code journey, hosted concurrency/rollback, screen-reader or
+managed-provider recovery acceptance. Phase 6 remains open.

@@ -1,0 +1,48 @@
+{
+  "observed_at": "2026-09-16T02:05:39.993Z",
+  "environment": "private Flings test Site, version 10",
+  "source_commit": "ac9e385b7d4e861b9994507d48d6dce57f1bc652",
+  "input_records": 46,
+  "export_records": 47,
+  "collections": 22,
+  "export_bytes": 18892,
+  "export_sha256": "b86319655dd42ae037739af221d9641d83fb06e864aa5905e4297a8249e655ee",
+  "record_counts": {
+    "activities": 1,
+    "assignments": 1,
+    "audit": 17,
+    "events": 2,
+    "flings": 1,
+    "invitations": 2,
+    "members": 2,
+    "message_batches": 1,
+    "message_deliveries": 3,
+    "message_discussions": 1,
+    "message_reports": 1,
+    "message_results": 1,
+    "message_retries": 1,
+    "message_retry_deliveries": 1,
+    "organizers": 3,
+    "payment_ledger": 2,
+    "payment_requests": 1,
+    "poll_audience": 1,
+    "polls": 1,
+    "post_history": 1,
+    "posts": 2,
+    "votes": 1
+  },
+  "checks": {
+    "fresh_identifiers": true,
+    "single_restored_fling_scope": true,
+    "foreign_key_references_checked": 36,
+    "preserved_vote_choices": true,
+    "preserved_payment_ledger": true,
+    "preserved_historical_result_claim": true,
+    "no_authentication_collections": true
+  },
+  "limits": [
+    "Export retains historical result claims; browser labels them imported and excludes them from live outcome totals.",
+    "No member code issued, no live send, no payment-service action.",
+    "This receipt is not full T1-T12 or Phase 6 completion."
+  ]
+}
