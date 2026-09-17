@@ -253,3 +253,10 @@ acceptance receipt. The full hosted item remains open.
 - 2026-09-17: Verified actual hosted two-tab stale-edit rejection and recovery on a new empty fictional gathering. The stale form could not overwrite the first save; Reload workspace preserved it, a fresh Enter-activated save succeeded, and the first tab's reload showed the new value. See `notes/hosted-conflict-recovery-20260917.md`. This is ordered stale-form evidence with one native owner, not simultaneous transactions or full Phase 6 acceptance. No source, deployment, sharing or sending changed.
 
 - 2026-09-17: Hosted keyboard acceptance found Add event skipped its inserted form and Save lost focus. Corrected gathering-editor focus on explicit open and save/cancel return, with six desktop/phone browser journeys across three engines and all 176 existing application tests passing. See `notes/authoring-focus-20260917.md`; full Phase 6 remains open.
+
+- 2026-09-17: Continued `verify-hosted-test` with an actual fictional hosted
+  member-code exchange. Fixed the indefinite loading state after a denied
+  coordination write; retry stays bound to the original membership. All 176
+  tests and six browser journeys passed; private test version 12 verified
+  closure/reload/vote preservation. See `notes/member-recovery-20260917.md`.
+  Full hosted acceptance remains open; no messages sent or production release.

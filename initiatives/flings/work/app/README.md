@@ -701,3 +701,19 @@ Chromium, Firefox and WebKit at desktop/phone widths. It checks title entry,
 Tab order, focus while typing, save/cancel return, renamed event triggers and
 switching between editors. It does not establish screen-reader or full hosted
 accessibility acceptance.
+
+## Member recovery after a denied coordination request
+
+A coordination request can fail after closure, a stale revision or revoked access.
+The member page clears its stale projection and retains the error outside the
+unmounted coordination panel. Reload member page rechecks the original member
+identity using the current session; it never adopts a different member from a
+new cookie. A successful refresh clears the old error, while revoked or mismatched
+sessions stay denied. This allows permitted contact corrections in a closed fling
+without allowing coordination writes.
+
+`node test/member-recovery-browser.mjs` is a local-only fictional test using the
+actual HTTP layer and local D1. Six desktop/phone journeys across three engines
+cover rejected stale votes, unchanged poll records, reload, closed profile edits,
+reopening, revoked credentials and a different membership cookie. Credentials
+remain in memory and are excluded from the recorded receipt.

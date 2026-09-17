@@ -1,0 +1,97 @@
+{
+  "recorded_at": "2026-09-17T21:00:27.681Z",
+  "node": "v23.11.0",
+  "os": "darwin 25.6.0",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "stale-closed-vote-error",
+        "same-member-retry",
+        "poll-unchanged",
+        "closed-profile-correction",
+        "reopen-preserves-vote",
+        "revocation-remains-denied",
+        "different-session-never-adopted"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "stale-closed-vote-error",
+        "same-member-retry",
+        "poll-unchanged",
+        "closed-profile-correction",
+        "reopen-preserves-vote",
+        "revocation-remains-denied",
+        "different-session-never-adopted"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "stale-closed-vote-error",
+        "same-member-retry",
+        "poll-unchanged",
+        "closed-profile-correction",
+        "reopen-preserves-vote",
+        "revocation-remains-denied",
+        "different-session-never-adopted"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "stale-closed-vote-error",
+        "same-member-retry",
+        "poll-unchanged",
+        "closed-profile-correction",
+        "reopen-preserves-vote",
+        "revocation-remains-denied",
+        "different-session-never-adopted"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "stale-closed-vote-error",
+        "same-member-retry",
+        "poll-unchanged",
+        "closed-profile-correction",
+        "reopen-preserves-vote",
+        "revocation-remains-denied",
+        "different-session-never-adopted"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "stale-closed-vote-error",
+        "same-member-retry",
+        "poll-unchanged",
+        "closed-profile-correction",
+        "reopen-preserves-vote",
+        "revocation-remains-denied",
+        "different-session-never-adopted"
+      ]
+    }
+  ]
+}

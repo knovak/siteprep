@@ -397,3 +397,12 @@ Chromium/Firefox/WebKit desktop/phone journeys covering settings, activity and
 event entry, typing, save/cancel return and renamed triggers. This is targeted
 T12 regression evidence, not full screen-reader or independent native-account
 acceptance. `verify-hosted-test` remains open.
+
+## September 17 member denial-recovery receipt
+
+`notes/member-recovery-20260917.md` records an actual hosted member-code journey
+and a T6/T12 stale-vote failure corrected in test version 12. Six local browser
+journeys cover closure, same-member retry, preserved votes, profile correction,
+revocation and session switching. Hosted retry preserved the saved Tea vote and
+restored the closed view; the fictional gathering was reopened afterwards.
+Independent native-account and full hosted acceptance remain open.

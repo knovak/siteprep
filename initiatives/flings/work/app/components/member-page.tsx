@@ -80,7 +80,8 @@ export default function MemberPage({
     [form, setForm] = useState<Profile | null>(null),
     [error, setError] = useState(''),
     [notice, setNotice] = useState(''),
-    [saving, setSaving] = useState(false);
+    [saving, setSaving] = useState(false),
+    [reloading, setReloading] = useState(false);
   const credentials = useRef<Credentials | null>(null),
     started = useRef(false),
     current = useRef<Projection | null>(null);
@@ -107,8 +108,14 @@ export default function MemberPage({
       );
       const result = (await r.json()) as T & { error?: string };
       if (!r.ok) {
-        if ([401, 403, 409].includes(r.status)) apply(null);
-        throw new Error(result.error);
+        const message = result.error || 'Unable to load this member page.';
+        if ([401, 403, 409].includes(r.status)) {
+          // The caller may be a child panel that disappears when data clears.
+          // Keep its denial visible in this surviving member-page boundary.
+          apply(null);
+          setError(message);
+        }
+        throw new Error(message);
       }
       return result as T;
     },
@@ -118,6 +125,7 @@ export default function MemberPage({
     const c = credentials.current;
     if (!c) return;
     apply(await call<Projection>('member/' + encodeURIComponent(c.member)));
+    setError('');
   }, [call, apply]);
   useEffect(() => {
     if (started.current) return;
@@ -275,6 +283,19 @@ export default function MemberPage({
       setSaving(false);
     }
   }
+  async function reloadMember() {
+    if (reloading || !credentials.current) return;
+    setReloading(true);
+    setError('');
+    try {
+      // Keep the original membership; do not adopt a different session actor.
+      await refresh();
+    } catch (e) {
+      setError((e as Error).message || 'Unable to reload this member page.');
+    } finally {
+      setReloading(false);
+    }
+  }
   const fields = ['name', 'email', 'phone'] as const;
   return (
     <main className="workspace member-workspace">
@@ -287,7 +308,16 @@ export default function MemberPage({
       {error && (
         <div className="notice error" role="alert">
           <p>{error}</p>
-          {!data && <a href="/">Return to the rehearsals</a>}
+          {!data && (
+            <div className="actions">
+              {credentials.current && (
+                <Button disabled={reloading} onClick={() => void reloadMember()}>
+                  Reload member page
+                </Button>
+              )}
+              <a href="/">Return to the rehearsals</a>
+            </div>
+          )}
         </div>
       )}
       {!data && !error && (
