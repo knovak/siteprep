@@ -46,3 +46,22 @@ they do not substitute for independent native-account acceptance. Actual
 screen-reader use, hosted member/coordination workflows, simultaneous writes,
 expiry/rollback and managed-host restart/backup recovery remain open.
 `verify-hosted-test` stays actionable and Phase 6 remains incomplete.
+
+## Private test deployment and hosted recheck
+
+Test version 11 deployed successfully at 2026-09-17T20:19:01.706314Z to
+https://flings-test.ken-novak.chatgpt.site, preserving owner-only access. Sites
+source commit `ca1411f454f4053f38539d7f8afbaa421d7a8554` packages 107 files,
+2,856,960 bytes, archive SHA-256
+`c8555247846f105eaac4740fd1924269e1470ee3de34b920c6647102999a2070`.
+The corresponding Siteprep app source is committed in `359d4448c`.
+
+After a fresh reload of the retained fictional fixture, Enter on Add event
+focused Event title. Typing followed by Tab focused Invitation summary.
+Cancel removed the unsaved probe and returned focus to Add event. Enter on
+Edit activity focused Activity title; four Tab presses reached Save, and Enter
+saved the existing fictional values. After the request finished, focus returned
+to Edit Keyboard dinner — fictional and the success message was visible.
+This is actual hosted owner-session evidence for the corrected entry/exit path.
+Production remains unreleased; no audience, runtime secret or database schema
+change was made.
