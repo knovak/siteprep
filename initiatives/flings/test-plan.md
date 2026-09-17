@@ -406,3 +406,12 @@ journeys cover closure, same-member retry, preserved votes, profile correction,
 revocation and session switching. Hosted retry preserved the saved Tea vote and
 restored the closed view; the fictional gathering was reopened afterwards.
 Independent native-account and full hosted acceptance remain open.
+
+## September 17 hosted missing-identity receipt
+
+`notes/hosted-access-boundary-20260917.md` records eight real Worker requests
+without application identity. Organizer and member reads were denied, hosted
+rehearsal sign-in was disabled, and native-open required ChatGPT identity.
+The existing owner-only host policy was inspected separately. This covers
+missing identity only; independent organizer and unassigned-visitor acceptance
+remain open. No business records or access settings changed.

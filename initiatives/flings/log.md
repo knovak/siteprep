@@ -260,3 +260,9 @@ acceptance receipt. The full hosted item remains open.
   tests and six browser journeys passed; private test version 12 verified
   closure/reload/vote preservation. See `notes/member-recovery-20260917.md`.
   Full hosted acceptance remains open; no messages sent or production release.
+
+- 2026-09-17: Continued hosted acceptance with eight missing-identity requests
+  against test version 12. Organizer/member reads and sign-in attempts failed
+  closed as expected; owner-only policy unchanged. Recorded the platform versus
+  application identity boundary in `notes/hosted-access-boundary-20260917.md`.
+  Independent identities and full Phase 6 acceptance remain open.
