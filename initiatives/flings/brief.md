@@ -19,6 +19,8 @@ populated hosted restore also preserved polls, payment and message history with
 fresh identifiers and no credentials; accepted/invited previews kept their
 visibility boundaries at narrow widths. Two hosted owner-session tabs also
 verified stale-edit rejection, reload recovery and persistence of a fresh save.
+Gathering editors now focus the title on opening and return to the opening
+button after Save or Cancel, verified locally on three browsers and on the hosted owner session.
 
 ## Remaining work
 
