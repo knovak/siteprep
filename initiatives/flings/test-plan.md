@@ -378,3 +378,13 @@ were created. Accepted/invited read-only previews exercised T1/T3/T6/T7 visibili
 and narrow layouts. This is one native organizer in the in-app browser, not full
 T1–T12, a member-code journey, hosted concurrency/rollback, screen-reader or
 managed-provider recovery acceptance. Phase 6 remains open.
+
+## September 17 hosted conflict-recovery receipt
+
+`notes/hosted-conflict-recovery-20260917.md` adds actual T12 evidence for two
+owner-session forms opened before a save: the second stale edit was rejected,
+Reload workspace preserved the committed description, a fresh keyboard-activated
+save succeeded and a separate tab reload displayed the final value. This is an
+ordered stale-form test on an empty fictional gathering, not simultaneous
+transactions, two independent identities, database rollback inspection or full
+accessibility coverage. Phase 6 and `verify-hosted-test` remain open.
