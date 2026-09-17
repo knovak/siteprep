@@ -26,6 +26,9 @@ Actual member-code entry and stale-vote rejection now recover through a visible
 reload button, preserving the saved vote after closure and reopening. Six local
 browser journeys also verify that revoked or switched sessions remain denied.
 
+Eight hosted missing-identity requests verified organizer/member denial and
+disabled rehearsal sign-in behind the separately checked private host gate.
+
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, the full hosted
