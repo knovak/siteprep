@@ -686,3 +686,18 @@ activate this path. Keep the exact HTTPS origin and existing secret. The legacy
 not the native identity proof. See `../../NATIVE_AUTH_TECHDOC.md` for enrollment,
 pinning, authorization and test commands, and
 `../../notes/host-backup-review-20260915.md` for the documented recovery limits.
+
+## Gathering editor keyboard focus
+
+Opening the gathering, activity or event editor focuses its title input, including
+forms inserted before their trigger in document order. Typing and background
+updates do not repeatedly refocus the title. Save and Cancel return focus to the
+opening button once saving finishes; a removed or disabled trigger falls back
+to the Activities & events heading. Authorization failures still clear stale
+workspace data through the existing organizer-page behavior.
+
+`node test/authoring-focus-browser.mjs` runs six local D1-backed journeys in
+Chromium, Firefox and WebKit at desktop/phone widths. It checks title entry,
+Tab order, focus while typing, save/cancel return, renamed event triggers and
+switching between editors. It does not establish screen-reader or full hosted
+accessibility acceptance.

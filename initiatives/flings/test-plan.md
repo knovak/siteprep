@@ -388,3 +388,12 @@ save succeeded and a separate tab reload displayed the final value. This is an
 ordered stale-form test on an empty fictional gathering, not simultaneous
 transactions, two independent identities, database rollback inspection or full
 accessibility coverage. Phase 6 and `verify-hosted-test` remain open.
+
+## September 17 authoring keyboard-focus receipt
+
+The hosted keyboard check exposed event-form entry and save-return focus gaps.
+`notes/authoring-focus-20260917.md` records the correction and six local
+Chromium/Firefox/WebKit desktop/phone journeys covering settings, activity and
+event entry, typing, save/cancel return and renamed triggers. This is targeted
+T12 regression evidence, not full screen-reader or independent native-account
+acceptance. `verify-hosted-test` remains open.

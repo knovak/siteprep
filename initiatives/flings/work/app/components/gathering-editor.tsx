@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,8 +55,24 @@ export default function GatheringEditor({
     revision: number;
   } | null>(null);
   const [timeError, setTimeError] = useState('');
+  const [focusRequest, setFocusRequest] = useState(0);
+  const titleInput = useRef<HTMLInputElement>(null);
+  const returnFocus = useRef<HTMLButtonElement | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  useLayoutEffect(() => {
+    titleInput.current?.focus();
+  }, [focusRequest]);
+  useLayoutEffect(() => {
+    if (editor || busy || !returnFocus.current) return;
+    const trigger = returnFocus.current;
+    returnFocus.current = null;
+    if (trigger.isConnected && !trigger.disabled) trigger.focus();
+    else heading.current?.focus();
+  }, [editor, busy]);
   const disabled = busy || data.fling.state === 'closed';
-  function open(kind: string, draft: Draft) {
+  function open(trigger: HTMLButtonElement, kind: string, draft: Draft) {
+    returnFocus.current = trigger;
+    setFocusRequest((request) => request + 1);
     setEditor({ kind, draft, revision: data.fling.revision });
     setTimeError('');
   }
@@ -74,6 +90,7 @@ export default function GatheringEditor({
           />
         ) : (
           <Input
+            ref={key === 'title' ? titleInput : undefined}
             id={id}
             type={type}
             required={required}
@@ -134,12 +151,14 @@ export default function GatheringEditor({
   return (
     <section className="gathering-editor" aria-label="Gathering plan">
       <div className="actions">
-        <h2>Activities & events</h2>
+        <h2 ref={heading} tabIndex={-1}>
+          Activities & events
+        </h2>
         <Button
           variant="outline"
           disabled={disabled}
-          onClick={() =>
-            open('settings', {
+          onClick={(e) =>
+            open(e.currentTarget, 'settings', {
               title: data.fling.title,
               description: data.fling.description,
               default_zone: data.fling.default_zone,
@@ -150,8 +169,8 @@ export default function GatheringEditor({
         </Button>
         <Button
           disabled={disabled}
-          onClick={() =>
-            open('activity', {
+          onClick={(e) =>
+            open(e.currentTarget, 'activity', {
               title: '',
               summary: '',
               details: '',
@@ -329,7 +348,9 @@ export default function GatheringEditor({
               <Button
                 variant="outline"
                 disabled={disabled}
-                onClick={() => open('activity', { ...activity })}
+                onClick={(e) =>
+                  open(e.currentTarget, 'activity', { ...activity })
+                }
               >
                 Edit {activity.title}
               </Button>
@@ -346,8 +367,8 @@ export default function GatheringEditor({
               </Button>
               <Button
                 disabled={disabled}
-                onClick={() =>
-                  open('event', {
+                onClick={(e) =>
+                  open(e.currentTarget, 'event', {
                     activity: activity.id,
                     title: '',
                     summary: '',
@@ -406,8 +427,8 @@ export default function GatheringEditor({
                   <Button
                     variant="outline"
                     disabled={disabled}
-                    onClick={() =>
-                      open('event', {
+                    onClick={(e) =>
+                      open(e.currentTarget, 'event', {
                         id: event.id,
                         activity: event.activity,
                         title: event.title,

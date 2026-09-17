@@ -1,0 +1,43 @@
+{
+  "recorded_at": "2026-09-17T20:16:51.363Z",
+  "node": "v23.11.0",
+  "os": "darwin 25.6.0",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 1280,
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "browser": "143.0.7499.4",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 1280,
+      "passed": true
+    },
+    {
+      "engine": "firefox",
+      "browser": "144.0.2",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 1280,
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "browser": "26.0",
+      "width": 390,
+      "passed": true
+    }
+  ]
+}
