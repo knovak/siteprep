@@ -17,7 +17,8 @@ downloaded snapshots verified source preservation and fresh restored relationshi
 Interrupted identity refreshes clear stale data and offer a working retry. A
 populated hosted restore also preserved polls, payment and message history with
 fresh identifiers and no credentials; accepted/invited previews kept their
-visibility boundaries at narrow widths.
+visibility boundaries at narrow widths. Two hosted owner-session tabs also
+verified stale-edit rejection, reload recovery and persistence of a fresh save.
 
 ## Remaining work
 
