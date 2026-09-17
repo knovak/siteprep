@@ -22,6 +22,10 @@ verified stale-edit rejection, reload recovery and persistence of a fresh save.
 Gathering editors now focus the title on opening and return to the opening
 button after Save or Cancel, verified locally on three browsers and on the hosted owner session.
 
+Actual member-code entry and stale-vote rejection now recover through a visible
+reload button, preserving the saved vote after closure and reopening. Six local
+browser journeys also verify that revoked or switched sessions remain denied.
+
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, the full hosted
