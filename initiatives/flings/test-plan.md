@@ -415,3 +415,13 @@ rehearsal sign-in was disabled, and native-open required ChatGPT identity.
 The existing owner-only host policy was inspected separately. This covers
 missing identity only; independent organizer and unassigned-visitor acceptance
 remain open. No business records or access settings changed.
+
+## September 18 hosted reflow receipt (UTC)
+
+`notes/hosted-reflow-20260918.md` records twelve T12 layout observations across
+320, 390 and 1280 pixels: organizer, expanded message history, accepted preview
+and invited preview. No horizontal overflow or missing label candidates were
+found by the documented structural probe. Targeted keyboard activation and
+read-only preview boundaries also passed. This is one hosted owner session in
+the in-app browser; text zoom, axe, screen-reader and full hosted browser-matrix
+acceptance remain open. No business records or deployment changed.

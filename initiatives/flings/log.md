@@ -266,3 +266,10 @@ acceptance receipt. The full hosted item remains open.
   closed as expected; owner-only policy unchanged. Recorded the platform versus
   application identity boundary in `notes/hosted-access-boundary-20260917.md`.
   Independent identities and full Phase 6 acceptance remain open.
+
+- 2026-09-18 (UTC): Continued hosted T12 acceptance with twelve layout checks
+  across 320, 390 and 1280 pixels, including expanded message history and both
+  member-preview states. Documented label probes and targeted keyboard checks
+  in `notes/hosted-reflow-20260918.md`. No overflow or missing label candidates
+  were found; no business records, source, audience or deployment changed.
+  `verify-hosted-test` remains actionable for the rest of Phase 6.
