@@ -6,28 +6,17 @@
 
 ## Done
 
-Gatherings support invitations, events, discussions, polls, attributed payments,
-reviewed message prompts, reported outcomes and selected retries. Editable JSON
-backups can be checked and restored into separate gatherings with fresh identities;
-confirmed deletion removes active gathering records. Native ChatGPT organizer
-identity now pins approved accounts, and 176 local tests plus 12 native/recovery browser journeys pass. Ken's actual
-hosted session also passed draft/invited preview, DST handling, stale-edit
-rejection after closure, profile correction, reopening and an edited restore;
-downloaded snapshots verified source preservation and fresh restored relationships.
-Interrupted identity refreshes clear stale data and offer a working retry. A
-populated hosted restore also preserved polls, payment and message history with
-fresh identifiers and no credentials; accepted/invited previews kept their
-visibility boundaries at narrow widths. Two hosted owner-session tabs also
-verified stale-edit rejection, reload recovery and persistence of a fresh save.
-Gathering editors now focus the title on opening and return to the opening
-button after Save or Cancel, verified locally on three browsers and on the hosted owner session.
-
-Actual member-code entry and stale-vote rejection now recover through a visible
-reload button, preserving the saved vote after closure and reopening. Six local
-browser journeys also verify that revoked or switched sessions remain denied.
-
-Eight hosted missing-identity requests verified organizer/member denial and
-disabled rehearsal sign-in behind the separately checked private host gate.
+- Gatherings support invitations, events, discussions, polls, attributed
+  payments, reviewed message prompts, reported outcomes and selected retries.
+- Editable JSON backups restore into separate gatherings with fresh identities
+  and no credentials; confirmed deletion removes active records. Hosted
+  fictional checks cover populated recovery, invitation visibility, event-time
+  validation, stale edits, closure/reopening and preserved vote history.
+- Native ChatGPT organizer identity pins approved accounts. Interrupted reads
+  and denied member writes offer recovery, editors manage opening/return focus,
+  and missing-identity requests are denied. Twelve hosted layout checks across
+  320, 390 and 1280 pixels found no horizontal overflow or missing label
+  candidates; targeted preview, refresh and history keyboard checks passed.
 
 ## Remaining work
 
