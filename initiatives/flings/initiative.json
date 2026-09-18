@@ -27,11 +27,11 @@
       "test": {
         "slug": "flings-test",
         "url": "https://flings-test.ken-novak.chatgpt.site",
-        "access": "private",
-        "deployed_at": "2026-09-17T21:05:30Z",
-        "version": 12,
-        "commit": "19407fc51d53f60094b0d74b5950629920a99c2d",
-        "tree": "69b99f0e441436e27ae56a5191f38a47d53e25e2"
+        "access": "public",
+        "deployed_at": "2026-09-18T10:29:11Z",
+        "version": 13,
+        "commit": "fc6071dfe8ef8630334dfd634eb860d6bc79006e",
+        "tree": "835e719fe72cc5637d7d725e3cc2095e7a208218"
       }
     }
   ]

@@ -65,3 +65,33 @@ browser and authorization matrix, independent organizer access, expiry/rollback,
 managed-host recovery and provider backup/deletion evidence remain open.
 `verify-hosted-test` stays actionable; no phase completion, pilot or production
 release is claimed.
+
+## Test deployment and hosted recheck
+
+Version 13 succeeded at 2026-09-18T10:28:36.923452Z on
+https://flings-test.ken-novak.chatgpt.site, with runtime revision 2. The existing
+public audience was preserved; production remains unreleased. The deployment
+record now reflects the observed public access rather than the stale private
+label. No secret, schema or host access setting was changed.
+
+Siteprep app source: `fc6071dfe8ef8630334dfd634eb860d6bc79006e`.
+The isolated Sites source commit is
+`9058f3e64e0cfe1983d254d796790728ea326c07`; all 240 tracked app files matched
+byte-for-byte. The Sites build passed. The saved version contains 107 packaged
+files and 2,867,200 bytes, with recorded content hash
+`sha256:74e773d21055b0c12eee6f8b678187963d4620eb5db1d4043e32aa2270e37c34`.
+
+After reloading the actual owner session, twelve hosted checks passed: Write a
+post, Create a poll, Request a payment, Replace poll, Record adjustment and Hide
+post, each at 1280 and 390 pixels wide (844 high). Enter focused Discussion
+audience, Event, Ledger action or Reason for hiding as appropriate; the next Tab
+reached the next field or form action. Cancel removed the form and returned
+focus to its opening button. The focused first field was in view and neither
+layout had horizontal overflow. Buttons were targeted with browser locators
+before Enter, so these twelve checks are targeted regression evidence rather
+than an end-to-end sequential traversal.
+
+All hosted forms were cancelled. No member, discussion, poll, payment, message,
+backup or organizer assignment was changed. Successful save, member-form and
+removed-trigger fallback checks are from the local browser journeys, not
+claimed as new hosted observations.

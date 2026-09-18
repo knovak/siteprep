@@ -282,3 +282,10 @@ acceptance receipt. The full hosted item remains open.
   `notes/coordination-focus-20260918.md`. The live test Site reported public
   access before any deployment; this run preserves that existing audience.
   Full hosted acceptance remains open.
+
+- 2026-09-18 (UTC): Refreshed Flings test version 13 and verified twelve hosted
+  coordination-form opening/cancellation checks at desktop and phone widths.
+  Corrected the recorded test access to public to match the live policy already
+  present before deployment; no access-setting call was made. Hosted business
+  records and production remain unchanged. See the same coordination-focus
+  receipt for source, build and deployment evidence.
