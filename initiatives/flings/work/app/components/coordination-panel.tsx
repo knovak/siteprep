@@ -1,5 +1,11 @@
 'use client';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -176,6 +182,32 @@ export default function CoordinationPanel(props: Props) {
     [draft, setDraft] = useState<Draft | null>(null);
   const [scope, setScope] = useState(0),
     [audience, setAudience] = useState<string[]>([]);
+  const panel = useRef<HTMLElement>(null);
+  const form = useRef<HTMLFormElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const returnAction = useRef<string | null>(null);
+  useLayoutEffect(() => {
+    if (draft) {
+      form.current
+        ?.querySelector<HTMLElement>(
+          'input:not(:disabled), select:not(:disabled), textarea:not(:disabled)',
+        )
+        ?.focus();
+      return;
+    }
+    if (busy || !returnAction.current) return;
+    // Opening a form unmounts its buttons; find the newly rendered instance.
+    const trigger = Array.from(
+      panel.current?.querySelectorAll<HTMLButtonElement>(
+        '[data-coordination-action]',
+      ) ?? [],
+    ).find(
+      (button) => button.dataset.coordinationAction === returnAction.current,
+    );
+    returnAction.current = null;
+    if (trigger && !trigger.disabled) trigger.focus();
+    else heading.current?.focus();
+  }, [draft, busy]);
   useEffect(() => {
     let cancelled = false;
     void api.current
@@ -194,8 +226,12 @@ export default function CoordinationPanel(props: Props) {
     };
   }, [endpoint, parentRevision]);
   const open = !!data && data.state === 'open' && !preview;
-  const begin = (value: Omit<Draft, 'revision'>) => {
+  const begin = (
+    trigger: HTMLButtonElement,
+    value: Omit<Draft, 'revision'>,
+  ) => {
     if (!data || busy) return;
+    returnAction.current = trigger.dataset.coordinationAction ?? null;
     setScope(
       value.poll
         ? data.scopes.findIndex((s) => s.event === value.poll!.event)
@@ -284,9 +320,11 @@ export default function CoordinationPanel(props: Props) {
     void save(input);
   };
   return (
-    <section className="coordination" aria-label="Coordination">
+    <section ref={panel} className="coordination" aria-label="Coordination">
       <div className="coord-heading">
-        <h2>Discussions, polls & payments</h2>
+        <h2 ref={heading} tabIndex={-1}>
+          Discussions, polls & payments
+        </h2>
         <Button
           variant="outline"
           disabled={busy}
@@ -315,7 +353,11 @@ export default function CoordinationPanel(props: Props) {
           )}
           {open && !draft && (
             <div className="actions">
-              <Button disabled={busy} onClick={() => begin({ kind: 'post' })}>
+              <Button
+                data-coordination-action="post:new"
+                disabled={busy}
+                onClick={(e) => begin(e.currentTarget, { kind: 'post' })}
+              >
                 Write a post
               </Button>
               {organizer && (
@@ -323,14 +365,16 @@ export default function CoordinationPanel(props: Props) {
                   <Button
                     variant="outline"
                     disabled={busy}
-                    onClick={() => begin({ kind: 'poll' })}
+                    data-coordination-action="poll:new"
+                    onClick={(e) => begin(e.currentTarget, { kind: 'poll' })}
                   >
                     Create a poll
                   </Button>
                   <Button
                     variant="outline"
                     disabled={busy}
-                    onClick={() => begin({ kind: 'payment' })}
+                    data-coordination-action="payment:new"
+                    onClick={(e) => begin(e.currentTarget, { kind: 'payment' })}
                   >
                     Request a payment
                   </Button>
@@ -340,6 +384,7 @@ export default function CoordinationPanel(props: Props) {
           )}
           {draft && (
             <form
+              ref={form}
               className="profile-panel coordination-form"
               onSubmit={(e) => {
                 e.preventDefault();
@@ -688,7 +733,10 @@ export default function CoordinationPanel(props: Props) {
                         <Button
                           variant="outline"
                           disabled={busy}
-                          onClick={() => begin({ kind: 'post', post: p })}
+                          data-coordination-action={'post:edit:' + p.id}
+                          onClick={(e) =>
+                            begin(e.currentTarget, { kind: 'post', post: p })
+                          }
                         >
                           Edit post
                         </Button>
@@ -697,8 +745,13 @@ export default function CoordinationPanel(props: Props) {
                         <Button
                           variant="outline"
                           disabled={busy}
-                          onClick={() =>
-                            begin({ kind: 'post', post: p, hide: true })
+                          data-coordination-action={'post:hide:' + p.id}
+                          onClick={(e) =>
+                            begin(e.currentTarget, {
+                              kind: 'post',
+                              post: p,
+                              hide: true,
+                            })
                           }
                         >
                           Hide post
@@ -792,7 +845,10 @@ export default function CoordinationPanel(props: Props) {
                       <Button
                         variant="outline"
                         disabled={busy}
-                        onClick={() => begin({ kind: 'poll', poll: p })}
+                        data-coordination-action={'poll:replace:' + p.id}
+                        onClick={(e) =>
+                          begin(e.currentTarget, { kind: 'poll', poll: p })
+                        }
                       >
                         Replace poll
                       </Button>
@@ -846,7 +902,10 @@ export default function CoordinationPanel(props: Props) {
                     <Button
                       variant="outline"
                       disabled={busy}
-                      onClick={() => begin({ kind: 'ledger', payment: p })}
+                      data-coordination-action={'ledger:' + p.id}
+                      onClick={(e) =>
+                        begin(e.currentTarget, { kind: 'ledger', payment: p })
+                      }
                     >
                       {organizer
                         ? 'Record adjustment'

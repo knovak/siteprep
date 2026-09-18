@@ -717,3 +717,15 @@ actual HTTP layer and local D1. Six desktop/phone journeys across three engines
 cover rejected stale votes, unchanged poll records, reload, closed profile edits,
 reopening, revoked credentials and a different membership cookie. Credentials
 remain in memory and are excluded from the recorded receipt.
+
+## Coordination editor keyboard focus
+
+Opening a discussion, poll or payment form focuses its first enabled field.
+Cancel and a successful save return focus to the action that opened it. If the
+action has disappeared, as after hiding a post, focus moves to Discussions,
+polls & payments. Changing fields does not repeatedly move focus.
+
+The existing `node test/coordination-browser.mjs` journeys verify organizer and
+member focus together with coordination behavior. Set `FLINGS_EVIDENCE` to a
+new receipt path when preserving earlier evidence. The implementation and
+coverage are described in `../../COORDINATION_TECHDOC.md`.

@@ -273,3 +273,12 @@ acceptance receipt. The full hosted item remains open.
   in `notes/hosted-reflow-20260918.md`. No overflow or missing label candidates
   were found; no business records, source, audience or deployment changed.
   `verify-hosted-test` remains actionable for the rest of Phase 6.
+
+- 2026-09-18 (UTC): Hosted sequential keyboard acceptance found that opening
+  and cancelling a coordination form left focus on the page body. Added entry
+  and return focus for post, poll, payment and ledger forms, including heading
+  fallback when an action disappears. All 176 application tests and six
+  expanded desktop/phone coordination journeys pass. See
+  `notes/coordination-focus-20260918.md`. The live test Site reported public
+  access before any deployment; this run preserves that existing audience.
+  Full hosted acceptance remains open.

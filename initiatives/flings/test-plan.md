@@ -425,3 +425,13 @@ found by the documented structural probe. Targeted keyboard activation and
 read-only preview boundaries also passed. This is one hosted owner session in
 the in-app browser; text zoom, axe, screen-reader and full hosted browser-matrix
 acceptance remain open. No business records or deployment changed.
+
+## September 18 coordination keyboard-focus receipt (UTC)
+
+`notes/coordination-focus-20260918.md` records a hosted T12 focus gap when
+opening and cancelling coordination forms, and its correction. Six expanded
+local organizer/member journeys verify first-field focus, save/cancel return
+and heading fallback after hiding a post, alongside existing T6/T7 behavior.
+All 176 application tests pass. The receipt separately records hosted
+verification, the observed test-audience mismatch and remaining acceptance;
+full Phase 6 remains open.

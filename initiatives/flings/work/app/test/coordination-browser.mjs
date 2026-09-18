@@ -10,6 +10,8 @@ const base = process.env.FLINGS_TEST_URL || 'http://localhost:5187';
 const expect = baseExpect.configure({ timeout: 15000 });
 const receipts = [];
 for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
+  if (process.env.FLINGS_BROWSER && engine !== process.env.FLINGS_BROWSER)
+    continue;
   const browser = await type.launch();
   try {
     for (const viewport of [
@@ -115,8 +117,36 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         panel.getByRole('button', { name: 'Write a post' }),
       ).toBeVisible();
+      const openForm = async (targetPage, trigger, label) => {
+        await expect(trigger).toBeEnabled();
+        await trigger.press('Enter');
+        await expect(
+          targetPage.getByLabel(label, { exact: true }),
+        ).toBeFocused();
+      };
+      const cancelForm = async (targetPage, trigger) => {
+        await targetPage
+          .getByRole('button', { name: 'Cancel', exact: true })
+          .press('Enter');
+        await expect(trigger).toBeFocused();
+      };
+      for (const [name, label] of [
+        ['Write a post', 'Discussion audience'],
+        ['Create a poll', 'Event'],
+        ['Request a payment', 'Event'],
+      ]) {
+        const trigger = panel.getByRole('button', { name, exact: true });
+        await openForm(page, trigger, label);
+        await cancelForm(page, trigger);
+      }
       // Organizer creates a fling post through the form, using literal HTML-like text.
-      await panel.getByRole('button', { name: 'Write a post' }).click();
+      await openForm(
+        page,
+        panel.getByRole('button', { name: 'Write a post' }),
+        'Discussion audience',
+      );
+      await page.keyboard.press('Tab');
+      await expect(page.getByLabel('Post text', { exact: true })).toBeFocused();
       await page
         .getByLabel('Post text', { exact: true })
         .fill(
@@ -126,6 +156,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
         .getByRole('button', { name: 'Save coordination', exact: true })
         .click();
       await expect(panel.getByText(/Welcome <img/)).toBeVisible();
+      await expect(
+        panel.getByRole('button', { name: 'Write a post' }),
+      ).toBeFocused();
       assert.equal(await panel.locator('img').count(), 0);
       assert.equal(
         await panel
@@ -136,9 +169,11 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
           .getAttribute('rel'),
         'noopener noreferrer',
       );
-      await panel
-        .getByRole('button', { name: 'Create a poll', exact: true })
-        .click();
+      await openForm(
+        page,
+        panel.getByRole('button', { name: 'Create a poll', exact: true }),
+        'Event',
+      );
       await page.getByLabel('Poll question').fill('What shall we eat?');
       await page.getByLabel('Choices, one per line').fill('Soup\nSalad');
       await page.getByRole('checkbox', { name: 'Alex', exact: true }).check();
@@ -148,9 +183,20 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         panel.getByRole('heading', { name: 'What shall we eat?' }),
       ).toBeVisible();
-      await panel
-        .getByRole('button', { name: 'Request a payment', exact: true })
-        .click();
+      await expect(
+        panel.getByRole('button', { name: 'Create a poll', exact: true }),
+      ).toBeFocused();
+      const replacePoll = panel.getByRole('button', {
+        name: 'Replace poll',
+        exact: true,
+      });
+      await openForm(page, replacePoll, 'Event');
+      await cancelForm(page, replacePoll);
+      await openForm(
+        page,
+        panel.getByRole('button', { name: 'Request a payment', exact: true }),
+        'Event',
+      );
       await page.getByLabel('Payment description').fill('Dinner share');
       await page
         .getByLabel('Allocate to an accepted member')
@@ -169,6 +215,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         panel.getByText('1000 USD minor units outstanding'),
       ).toBeVisible();
+      await expect(
+        panel.getByRole('button', { name: 'Request a payment', exact: true }),
+      ).toBeFocused();
       // Member coordinates by keyboard; other memberships cannot retrieve the content.
       await mp.bringToFront();
       await mp.reload();
@@ -187,7 +236,11 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
         mPanel.getByRole('radio', { name: 'Soup', exact: true }),
       ).toBeChecked();
       assert.equal(await mPanel.getByText(/Results:/).count(), 0);
-      await mPanel.getByRole('button', { name: 'Write a post' }).click();
+      await openForm(
+        mp,
+        mPanel.getByRole('button', { name: 'Write a post' }),
+        'Discussion audience',
+      );
       await mp
         .getByLabel('Discussion audience')
         .selectOption({ label: 'At the table · event' });
@@ -203,9 +256,14 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
           console.log(await mp.locator('body').innerText());
           throw e;
         });
-      await mPanel
-        .getByRole('button', { name: 'Edit post', exact: true })
-        .click();
+      await expect(
+        mPanel.getByRole('button', { name: 'Write a post' }),
+      ).toBeFocused();
+      await openForm(
+        mp,
+        mPanel.getByRole('button', { name: 'Edit post', exact: true }),
+        'Post text',
+      );
       await mp
         .getByLabel('Post text', { exact: true })
         .fill('PRIVATE DINNER POST EDITED');
@@ -215,9 +273,16 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         mPanel.getByText('PRIVATE DINNER POST EDITED', { exact: true }),
       ).toBeVisible();
-      await mPanel
-        .getByRole('button', { name: 'Report outside payment', exact: true })
-        .click();
+      await expect(
+        mPanel.getByRole('button', { name: 'Edit post', exact: true }),
+      ).toBeFocused();
+      const reportPayment = mPanel.getByRole('button', {
+        name: 'Report outside payment',
+        exact: true,
+      });
+      await openForm(mp, reportPayment, 'Amount in minor units');
+      await cancelForm(mp, reportPayment);
+      await openForm(mp, reportPayment, 'Amount in minor units');
       await mp.getByLabel('Amount in minor units', { exact: true }).fill('600');
       await mp
         .getByLabel('Outside payment reference (optional)')
@@ -226,6 +291,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         mPanel.getByText('Reported, unconfirmed', { exact: true }),
       ).toBeVisible();
+      await expect(reportPayment).toBeFocused();
       await expect(
         mPanel.getByText('1000 USD minor units outstanding'),
       ).toBeVisible();
@@ -257,7 +323,12 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       // Partial confirmation reduces the balance; close and reopen retain the ledger and poll.
       await page.bringToFront();
       await page.reload();
-      await panel.getByRole('button', { name: 'Record adjustment' }).click();
+      const adjustment = panel.getByRole('button', {
+        name: 'Record adjustment',
+      });
+      await openForm(page, adjustment, 'Ledger action');
+      await cancelForm(page, adjustment);
+      await openForm(page, adjustment, 'Ledger action');
       await page
         .getByLabel('Reported payment to confirm')
         .selectOption({ index: 1 });
@@ -273,6 +344,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         panel.getByText('600 USD minor units outstanding'),
       ).toBeVisible();
+      await expect(adjustment).toBeFocused();
       await panel
         .getByRole('button', { name: 'Close poll', exact: true })
         .click();
@@ -280,9 +352,13 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       const postCard = panel
         .locator('article')
         .filter({ hasText: 'PRIVATE DINNER POST EDITED' });
-      await postCard
-        .getByRole('button', { name: 'Hide post', exact: true })
-        .click();
+      const hidePost = postCard.getByRole('button', {
+        name: 'Hide post',
+        exact: true,
+      });
+      await openForm(page, hidePost, 'Reason for hiding');
+      await cancelForm(page, hidePost);
+      await openForm(page, hidePost, 'Reason for hiding');
       await page
         .getByLabel('Reason for hiding')
         .fill('Fictional moderation review');
@@ -293,6 +369,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await expect(
         postCard.getByText('Post hidden by an organizer.'),
       ).toBeVisible();
+      await expect(
+        panel.getByRole('heading', { name: 'Discussions, polls & payments' }),
+      ).toBeFocused();
       const pre = await api(fling + '/organizer/coordination');
       const { csrf: memberCsrf } = await (
         await mc.request.get(base + '/api/flings/' + fling + '/session')
@@ -384,6 +463,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
           'closed-poll-survives-reopen',
           'history-survives-reopen',
           'keyboard-submit',
+          'coordination-editor-entry-focus',
+          'coordination-save-cancel-focus-return',
+          'removed-trigger-heading-fallback',
           'no-overflow',
           'no-browser-errors',
         ],
@@ -398,7 +480,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
 }
 await mkdir('test/evidence', { recursive: true });
 await writeFile(
-  'test/evidence/coordination-20260912.json',
+  process.env.FLINGS_EVIDENCE || 'test/evidence/coordination-20260912.json',
   JSON.stringify(
     { recorded_at: new Date().toISOString(), base, receipts },
     null,
