@@ -289,3 +289,12 @@ acceptance receipt. The full hosted item remains open.
   present before deployment; no access-setting call was made. Hosted business
   records and production remain unchanged. See the same coordination-focus
   receipt for source, build and deployment evidence.
+
+- 2026-09-20 (UTC): Continued hosted T12 acceptance with twenty text-contrast
+  observations across organizer history, six coordination editors and both
+  member-preview states at desktop/phone widths. The read-only computed-color
+  probe found no failures; its minimum ratio was 4.703:1. Recorded the method,
+  counts and remaining accessibility limits in
+  `notes/hosted-text-contrast-20260920.md`. All forms were cancelled; no app
+  source, business records, Site audience or deployment changed. The full
+  hosted acceptance item remains actionable.

@@ -435,3 +435,14 @@ and heading fallback after hiding a post, alongside existing T6/T7 behavior.
 All 176 application tests pass. The receipt separately records hosted
 verification, the observed test-audience mismatch and remaining acceptance;
 full Phase 6 remains open.
+
+## September 20 hosted text-contrast receipt (UTC)
+
+`notes/hosted-text-contrast-20260920.md` records twenty computed-color
+observations on test version 13: organizer history collapsed/expanded, six
+coordination editors, and accepted/invited member previews, each at desktop
+and phone widths. Every measured text pair passed its size-dependent contrast
+threshold; the lowest ratio was 4.703:1. The receipt includes the read-only
+probe, element counts, exclusions and limits. This adds targeted T12 contrast
+evidence, not an axe audit, zoom, screen-reader or full hosted acceptance.
+All editor changes were cancelled; `verify-hosted-test` remains actionable.
