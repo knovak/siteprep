@@ -18,9 +18,10 @@ after saving, alongside its existing stale-profile and role-isolation checks.
 Use the pinned application dependencies and local fictional server:
 
 ```sh
-FLINGS_EVIDENCE=test/evidence/member-profile-focus-20260920.json node test/independent-gatherings-browser.mjs
+FLINGS_EVIDENCE=../../notes/member-profile-focus-20260920.json node test/independent-gatherings-browser.mjs
 ```
 
-The evidence override preserves earlier receipts. The hosted reproduction and
+The evidence override preserves earlier receipts; `FLINGS_BROWSER` can select
+one engine and each engine can use its own receipt filename. The hosted reproduction and
 separate deployment recheck are recorded in
 `notes/member-profile-focus-20260920.md`.

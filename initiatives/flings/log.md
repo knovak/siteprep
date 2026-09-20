@@ -289,3 +289,11 @@ acceptance receipt. The full hosted item remains open.
   present before deployment; no access-setting call was made. Hosted business
   records and production remain unchanged. See the same coordination-focus
   receipt for source, build and deployment evidence.
+
+- 2026-09-20 (UTC): Hosted acceptance found lost keyboard focus after
+  cancelling an organizer's member-profile edit. Added entry and save/cancel
+  return focus, including renamed members. All 176 application tests and 18
+  expanded browser journeys pass; four hosted entry/Tab/cancel checks passed
+  on test version 14. See `notes/member-profile-focus-20260920.md` for the
+  initial preview-test timeout, rerun evidence and remaining limits. Existing
+  public test access was preserved. Full hosted acceptance remains open.
