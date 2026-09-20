@@ -1,6 +1,12 @@
 /* oxlint-disable next/no-html-link-for-pages -- Navigation discards the current authority context. */
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Button } from '@/components/ui/button';
 import AudiencePanel from './audience-panel';
 import CoordinationPanel from './coordination-panel';
@@ -86,6 +92,28 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
   const [profileName, setProfileName] = useState('');
   const [newOrganizer, setNewOrganizer] = useState('');
   const [memberDraft, setMemberDraft] = useState<Member | null>(null);
+  const memberEditor = useRef<HTMLFormElement | null>(null);
+  const memberSection = useRef<HTMLElement | null>(null);
+  const membersHeading = useRef<HTMLHeadingElement | null>(null);
+  const reloadButton = useRef<HTMLButtonElement | null>(null);
+  const returnMember = useRef<string | null>(null);
+  const editingMember = memberDraft?.id;
+  useLayoutEffect(() => {
+    if (editingMember)
+      memberEditor.current?.querySelector<HTMLInputElement>('input')?.focus();
+  }, [editingMember]);
+  useLayoutEffect(() => {
+    if (editingMember || busy || initializing || !returnMember.current) return;
+    const trigger = Array.from(
+      memberSection.current?.querySelectorAll<HTMLButtonElement>(
+        '[data-edit-member]',
+      ) ?? [],
+    ).find((button) => button.dataset.editMember === returnMember.current);
+    returnMember.current = null;
+    if (trigger && !trigger.disabled) trigger.focus();
+    else if (data) membersHeading.current?.focus();
+    else reloadButton.current?.focus();
+  }, [editingMember, busy, initializing, data]);
   const [addOrganizer, setAddOrganizer] = useState<string | null>(null);
   const [removeOrganizer, setRemoveOrganizer] = useState<Organizer | null>(
     null,
@@ -253,6 +281,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         <div className="notice error" role="alert">
           {error}{' '}
           <Button
+            ref={reloadButton}
             variant="outline"
             disabled={busy || initializing}
             onClick={() => void act(refresh)}
@@ -505,8 +534,10 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
             }}
           />
           <div className="member-grid">
-            <section aria-labelledby="members-title">
-              <h2 id="members-title">Members & invitations</h2>
+            <section ref={memberSection} aria-labelledby="members-title">
+              <h2 ref={membersHeading} id="members-title" tabIndex={-1}>
+                Members & invitations
+              </h2>
               {data.members.map((m) => (
                 <article className="activity" key={m.id}>
                   <h2>{m.name}</h2>
@@ -533,12 +564,17 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
                   <Button
                     variant="outline"
                     disabled={busy || initializing}
-                    onClick={() => setMemberDraft({ ...m })}
+                    data-edit-member={m.id}
+                    onClick={() => {
+                      returnMember.current = m.id;
+                      setMemberDraft({ ...m });
+                    }}
                   >
                     Edit profile for {m.name}
                   </Button>
                   {memberDraft?.id === m.id && (
                     <form
+                      ref={memberEditor}
                       className="profile-editor"
                       aria-label={'Edit profile for ' + m.name}
                       onSubmit={(e) => {
