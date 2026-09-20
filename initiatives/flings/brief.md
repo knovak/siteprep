@@ -18,6 +18,8 @@
   and missing-identity requests are denied. Twelve hosted layout checks across
   320, 390 and 1280 pixels found no horizontal overflow or missing label
   candidates; targeted preview, refresh and history keyboard checks passed.
+  Twenty desktop/phone text-contrast observations passed a targeted
+  computed-color probe, with a minimum measured ratio of 4.703:1.
 
 ## Remaining work
 
