@@ -13,8 +13,9 @@
   fictional checks cover populated recovery, invitation visibility, event-time
   validation, stale edits, closure/reopening and preserved vote history.
 - Native ChatGPT organizer identity pins approved accounts. Interrupted reads
-  and denied member writes offer recovery. Gathering and coordination editors
-  manage opening/return focus; twelve hosted coordination-form checks passed,
+  and denied member writes offer recovery. Gathering, coordination and
+  member-profile editors manage opening/return focus; twelve hosted
+  coordination-form and four member-profile checks passed,
   and missing-identity requests are denied. Twelve hosted layout checks across
   320, 390 and 1280 pixels found no horizontal overflow or missing label
   candidates; targeted preview, refresh and history keyboard checks passed.

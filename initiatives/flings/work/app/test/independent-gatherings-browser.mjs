@@ -140,7 +140,10 @@ async function projection(f, context) {
 }
 async function parity(f, memberContext, previewContext) {
   await ready(f);
-  await button(f.page, 'Preview ' + f.member.name).click();
+  await f.page.bringToFront();
+  const previewButton = button(f.page, 'Preview ' + f.member.name);
+  await expect(previewButton).toBeEnabled();
+  await previewButton.press('Enter');
   await expect(
     f.page.getByText(`Preview — ${f.member.name} · read-only`),
   ).toBeVisible();
@@ -330,14 +333,23 @@ for (const [engine, launcher] of Object.entries({
             2,
           );
           f.member = await addMember(f, 'Shared Guest');
-          await button(f.page, 'Edit profile for Shared Guest').click();
+          await button(f.page, 'Edit profile for Shared Guest').press('Enter');
+          await expect(label(f.page, 'Edit member name')).toBeFocused();
           await label(f.page, 'Edit member name').fill('Cancelled edit');
-          await button(f.page, 'Cancel profile edit').click();
+          await label(f.page, 'Edit member email').press('Tab');
+          await expect(label(f.page, 'Edit member phone')).toBeFocused();
+          await button(f.page, 'Cancel profile edit').press('Enter');
+          await expect(
+            button(f.page, 'Edit profile for Shared Guest'),
+          ).toBeFocused();
           assert.equal(
             (await read(f.context, f.id + '/organizer')).members[0].name,
             'Shared Guest',
           );
-          await button(f.page, 'Edit profile for Shared Guest').click();
+          await button(f.page, 'Edit profile for Shared Guest').press('Enter');
+          await expect(label(f.page, 'Edit member name')).toBeFocused();
+          // A changed name must still return to the same membership's trigger.
+          await label(f.page, 'Edit member name').fill('Reviewed Guest');
           await label(f.page, 'Edit member phone').fill('+12025550123');
           await label(f.page, 'Edit member message preference').selectOption(
             'both',
@@ -354,6 +366,10 @@ for (const [engine, launcher] of Object.entries({
               'Member profile saved for this fling. No message was sent.',
             ),
           ).toBeVisible();
+          f.member.name = 'Reviewed Guest';
+          await expect(
+            button(f.page, 'Edit profile for Reviewed Guest'),
+          ).toBeFocused();
           for (const activity of f.activities)
             await invite(f, f.member.name, activity.title);
           f.mp = await enterMember(f, members, f.member);
@@ -670,6 +686,7 @@ for (const [engine, launcher] of Object.entries({
               'distinct-event-times-and-places',
               'confirmed-organizer-assignment',
               'organizer-member-profile-edit-and-cancel',
+              'member-profile-entry-cancel-and-renamed-save-focus',
               'closed-organizer-profile-correction',
               'stale-organizer-profile-edit-rejected',
               'invited-accepted-declined-withdrawn-preview-parity',
@@ -697,7 +714,8 @@ for (const [engine, launcher] of Object.entries({
   }
 }
 await writeFile(
-  'test/evidence/independent-gatherings-20260912.json',
+  process.env.FLINGS_EVIDENCE ||
+    'test/evidence/independent-gatherings-20260912.json',
   JSON.stringify(
     {
       recorded_at: new Date().toISOString(),

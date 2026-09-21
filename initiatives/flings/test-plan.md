@@ -5,6 +5,14 @@ maps to the [implementation plan](plan.html), [specification](spec.html) and
 numbered [objectives](objectives.html). Passing simulated sending does not
 complete the live receipt objective.
 
+## September 20 organizer member-profile focus receipt (UTC)
+
+`notes/member-profile-focus-20260920.md` records a hosted T12 cancellation
+focus defect and the correction for profile entry and save/cancel return.
+The independent-gathering browser matrix now checks the renamed-member return
+target alongside existing profile-conflict and independent-role checks. Local
+and hosted evidence are recorded separately; full T12 remains open.
+
 ## Fixtures and evidence
 
 Use three fictional flings: a movie followed by a meal in one activity, a
