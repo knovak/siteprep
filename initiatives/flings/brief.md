@@ -19,6 +19,10 @@
   and missing-identity requests are denied. Twelve hosted layout checks across
   320, 390 and 1280 pixels found no horizontal overflow or missing label
   candidates; targeted preview, refresh and history keyboard checks passed.
+- Six hosted keyboard passes across the organizer page and both read-only
+  member previews recorded 114 focus stops at desktop/phone widths. Each stop
+  intersected the viewport and matched `:focus-visible`; deletion-dialog
+  containment/cancellation and notification-history navigation also passed.
 
 ## Remaining work
 
