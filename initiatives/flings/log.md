@@ -297,3 +297,11 @@ acceptance receipt. The full hosted item remains open.
   on test version 14. See `notes/member-profile-focus-20260920.md` for the
   initial preview-test timeout, rerun evidence and remaining limits. Existing
   public test access was preserved. Full hosted acceptance remains open.
+
+- 2026-09-22 (UTC): Recorded six hosted sequential-keyboard passes on the
+  organizer page and both read-only member previews at desktop/phone widths.
+  All 114 content stops intersected the viewport and matched `:focus-visible`;
+  deletion-dialog cancellation and notification-history navigation passed.
+  `notes/hosted-keyboard-20260922.md` records scope, observation limits and an
+  excluded resize/focus-refresh attempt. No business records, application
+  source, deployment or access settings changed. Phase 6 remains open.

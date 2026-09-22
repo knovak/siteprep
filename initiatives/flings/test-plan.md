@@ -443,3 +443,14 @@ and heading fallback after hiding a post, alongside existing T6/T7 behavior.
 All 176 application tests pass. The receipt separately records hosted
 verification, the observed test-audience mismatch and remaining acceptance;
 full Phase 6 remains open.
+
+## September 22 hosted sequential-keyboard receipt (UTC)
+
+`notes/hosted-keyboard-20260922.md` records six completed T12 Tab passes on the
+organizer page and accepted/invited read-only previews at 1280 and 390 pixels.
+All 114 recorded content stops intersected the viewport and matched
+`:focus-visible`; order matched between widths. Targeted deletion-dialog
+containment/cancellation and notification-history navigation also passed.
+The receipt records the excluded resize/focus-refresh attempt and the limits
+of the geometry/style probes. Full hosted browser, screen-reader, text-zoom
+and accessibility acceptance remain open; no business records changed.
