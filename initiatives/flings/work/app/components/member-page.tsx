@@ -1,5 +1,6 @@
 /* oxlint-disable next/no-html-link-for-pages -- Full navigation clears member credentials held in memory. */
 'use client';
+import { revealInvalidField } from '../lib/validation-focus';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
@@ -298,7 +299,10 @@ export default function MemberPage({
   }
   const fields = ['name', 'email', 'phone'] as const;
   return (
-    <main className="workspace member-workspace">
+    <main
+      className="workspace member-workspace"
+      onInvalidCapture={revealInvalidField}
+    >
       <header>
         <a className="wordmark" href="/">
           flings<span>✳</span>

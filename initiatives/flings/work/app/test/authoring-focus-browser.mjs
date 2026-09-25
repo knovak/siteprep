@@ -7,6 +7,7 @@ import {
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import os from 'node:os';
+import { expectVisibleValidation } from './native-validation.mjs';
 const base = process.env.FLINGS_TEST_URL || 'http://localhost:5187';
 const expect = baseExpect.configure({ timeout: 15000 });
 const receipts = [];
@@ -21,7 +22,7 @@ for (const [engine, browserType] of Object.entries({
   try {
     for (const width of [1280, 390]) {
       const context = await browser.newContext({
-        viewport: { width, height: 900 },
+        viewport: { width, height: width === 390 ? 844 : 900 },
       });
       const page = await context.newPage();
       const errors = [];
@@ -62,6 +63,7 @@ for (const [engine, browserType] of Object.entries({
       await expect(page.getByLabel('Invitation summary')).toBeFocused();
       await close('Save activity', 'Add activity');
       await open('Add event to Focus activity', 'Event title');
+      await expectVisibleValidation(page, 'Save event', 'Event title');
       await page.keyboard.type('Discarded event');
       await close('Cancel editing', 'Add event to Focus activity');
       await expect(
@@ -100,7 +102,7 @@ for (const [engine, browserType] of Object.entries({
   }
 }
 await writeFile(
-  'test/evidence/authoring-focus-20260917.json',
+  process.env.FLINGS_EVIDENCE || 'test/evidence/authoring-focus-20260917.json',
   JSON.stringify(
     {
       recorded_at: new Date().toISOString(),

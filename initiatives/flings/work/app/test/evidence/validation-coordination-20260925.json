@@ -1,0 +1,198 @@
+{
+  "recorded_at": "2026-09-25T16:46:27.880Z",
+  "base": "http://localhost:5187",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "passed": true,
+      "checks": [
+        "literal-text-safe-link",
+        "scope-aware-discussion",
+        "own-post-edit",
+        "reviewed-poll-subset",
+        "member-vote",
+        "member-result-privacy",
+        "explicit-allocation",
+        "report-versus-confirmation",
+        "partial-confirmation",
+        "preview-isolation",
+        "attributed-hide",
+        "stale-closure-rejection",
+        "closed-poll-survives-reopen",
+        "history-survives-reopen",
+        "keyboard-submit",
+        "coordination-editor-entry-focus",
+        "coordination-save-cancel-focus-return",
+        "native-validation-label-and-focus-visible",
+        "removed-trigger-heading-fallback",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "literal-text-safe-link",
+        "scope-aware-discussion",
+        "own-post-edit",
+        "reviewed-poll-subset",
+        "member-vote",
+        "member-result-privacy",
+        "explicit-allocation",
+        "report-versus-confirmation",
+        "partial-confirmation",
+        "preview-isolation",
+        "attributed-hide",
+        "stale-closure-rejection",
+        "closed-poll-survives-reopen",
+        "history-survives-reopen",
+        "keyboard-submit",
+        "coordination-editor-entry-focus",
+        "coordination-save-cancel-focus-return",
+        "native-validation-label-and-focus-visible",
+        "removed-trigger-heading-fallback",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "passed": true,
+      "checks": [
+        "literal-text-safe-link",
+        "scope-aware-discussion",
+        "own-post-edit",
+        "reviewed-poll-subset",
+        "member-vote",
+        "member-result-privacy",
+        "explicit-allocation",
+        "report-versus-confirmation",
+        "partial-confirmation",
+        "preview-isolation",
+        "attributed-hide",
+        "stale-closure-rejection",
+        "closed-poll-survives-reopen",
+        "history-survives-reopen",
+        "keyboard-submit",
+        "coordination-editor-entry-focus",
+        "coordination-save-cancel-focus-return",
+        "native-validation-label-and-focus-visible",
+        "removed-trigger-heading-fallback",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "144.0.2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "literal-text-safe-link",
+        "scope-aware-discussion",
+        "own-post-edit",
+        "reviewed-poll-subset",
+        "member-vote",
+        "member-result-privacy",
+        "explicit-allocation",
+        "report-versus-confirmation",
+        "partial-confirmation",
+        "preview-isolation",
+        "attributed-hide",
+        "stale-closure-rejection",
+        "closed-poll-survives-reopen",
+        "history-survives-reopen",
+        "keyboard-submit",
+        "coordination-editor-entry-focus",
+        "coordination-save-cancel-focus-return",
+        "native-validation-label-and-focus-visible",
+        "removed-trigger-heading-fallback",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "passed": true,
+      "checks": [
+        "literal-text-safe-link",
+        "scope-aware-discussion",
+        "own-post-edit",
+        "reviewed-poll-subset",
+        "member-vote",
+        "member-result-privacy",
+        "explicit-allocation",
+        "report-versus-confirmation",
+        "partial-confirmation",
+        "preview-isolation",
+        "attributed-hide",
+        "stale-closure-rejection",
+        "closed-poll-survives-reopen",
+        "history-survives-reopen",
+        "keyboard-submit",
+        "coordination-editor-entry-focus",
+        "coordination-save-cancel-focus-return",
+        "native-validation-label-and-focus-visible",
+        "removed-trigger-heading-fallback",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "passed": true,
+      "checks": [
+        "literal-text-safe-link",
+        "scope-aware-discussion",
+        "own-post-edit",
+        "reviewed-poll-subset",
+        "member-vote",
+        "member-result-privacy",
+        "explicit-allocation",
+        "report-versus-confirmation",
+        "partial-confirmation",
+        "preview-isolation",
+        "attributed-hide",
+        "stale-closure-rejection",
+        "closed-poll-survives-reopen",
+        "history-survives-reopen",
+        "keyboard-submit",
+        "coordination-editor-entry-focus",
+        "coordination-save-cancel-focus-return",
+        "native-validation-label-and-focus-visible",
+        "removed-trigger-heading-fallback",
+        "no-overflow",
+        "no-browser-errors"
+      ]
+    }
+  ]
+}

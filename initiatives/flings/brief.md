@@ -23,6 +23,9 @@
   member previews recorded 114 focus stops at desktop/phone widths. Each stop
   intersected the viewport and matched `:focus-visible`; deletion-dialog
   containment/cancellation and notification-history navigation also passed.
+- Native validation keeps the first invalid field and its label together on
+  screen. Twelve local three-engine journeys and four hosted payment/event
+  checks cover the correction for clipped phone labels and focus outlines.
 
 ## Remaining work
 

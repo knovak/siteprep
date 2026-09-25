@@ -1,5 +1,6 @@
 /* oxlint-disable next/no-html-link-for-pages -- Navigation discards the current authority context. */
 'use client';
+import { revealInvalidField } from '../lib/validation-focus';
 import {
   useCallback,
   useEffect,
@@ -264,7 +265,10 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     );
   }
   return (
-    <main className="workspace organizer-workspace">
+    <main
+      className="workspace organizer-workspace"
+      onInvalidCapture={revealInvalidField}
+    >
       <header>
         <a className="wordmark" href="/">
           flings<span>✳</span>

@@ -6,6 +6,7 @@ import {
 } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile, chmod } from 'node:fs/promises';
+import { expectVisibleValidation } from './native-validation.mjs';
 const base = process.env.FLINGS_TEST_URL || 'http://localhost:5187';
 const expect = baseExpect.configure({ timeout: 15000 });
 const receipts = [];
@@ -197,6 +198,11 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
         panel.getByRole('button', { name: 'Request a payment', exact: true }),
         'Event',
       );
+      await expectVisibleValidation(
+        page,
+        'Save coordination',
+        'Payment description',
+      );
       await page.getByLabel('Payment description').fill('Dinner share');
       await page
         .getByLabel('Allocate to an accepted member')
@@ -244,6 +250,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       await mp
         .getByLabel('Discussion audience')
         .selectOption({ label: 'At the table · event' });
+      await expectVisibleValidation(mp, 'Save coordination', 'Post text');
       await mp
         .getByLabel('Post text', { exact: true })
         .fill('PRIVATE DINNER POST');
@@ -465,6 +472,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
           'keyboard-submit',
           'coordination-editor-entry-focus',
           'coordination-save-cancel-focus-return',
+          'native-validation-label-and-focus-visible',
           'removed-trigger-heading-fallback',
           'no-overflow',
           'no-browser-errors',
