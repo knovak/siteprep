@@ -1,0 +1,31 @@
+{
+  "schema": "tide-here/standalone-build/v1",
+  "htmlBytes": 41336104,
+  "htmlSha256": "894bdace450e6b6e021a072e60cc5f0fa40a063c4e166bc4e6fd69611de3a6f3",
+  "runtime": "QuickJS compiled to WebAssembly via quickjs-emscripten 0.32.0",
+  "predictor": "@neaps/tide-predictor 0.11.0",
+  "coastalPoints": 65203,
+  "places": 170946,
+  "dataFiles": {
+    "coastal-harmonics.bin.gz": {
+      "bytes": 17415896,
+      "sha256": "89ff6553f302993e82ea97047bded09821080a1430fdb73f9c73e15f5e38689a"
+    },
+    "places.json.gz": {
+      "bytes": 11378119,
+      "sha256": "fe459eef44ccec61b2093753d9ecc46f75f0a9c048766adbefd405b165a4fa76"
+    },
+    "australia-bom-2026.json.gz": {
+      "bytes": 1341291,
+      "sha256": "892fd7b24f5b386c66be1ab600089f92e0d7c249c91d5c12de2c3d5e3c5d96d9"
+    }
+  },
+  "australia": {
+    "version": "2026-bom-v2",
+    "year": 2026,
+    "stations": 76,
+    "events": 103597,
+    "sourceSha256": "0a903b68efbf92ef420bb92e26e244500f86a42e8b7193e5219340960fae3cfe",
+    "embeddedSha256": "892fd7b24f5b386c66be1ab600089f92e0d7c249c91d5c12de2c3d5e3c5d96d9"
+  }
+}

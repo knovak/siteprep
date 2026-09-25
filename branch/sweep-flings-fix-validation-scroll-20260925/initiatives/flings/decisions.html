@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Flings</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Flings</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Flings</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<h3>2026-09-10 — First delivery path and recovery format, under review</h3>
+<p>In <a href="https://github.com/knovak/siteprep/pull/498#discussion_r3976712643">PR #498&#39;s messaging review</a>, the user proposed an organizer-supplied core message and a copyable prompt for an LLM with computer control to send through Gmail and Messages. The system would resolve all fling members, activity invitees or accepted members, their contacts/preferences and each personal URL. The user asked for advantages, disadvantages and improvements, including an optional discussion post.</p>
+<p>The <a href="https://github.com/knovak/siteprep/pull/498#discussion_r3976757289">backup review</a> proposed unencrypted, potentially editable exports first, with encryption considered after useful production experience. Editability could support data migrations after substantial code changes.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td>Computer-control handoff</td><td>Uses existing sender accounts; makes each destination and message reviewable; avoids the initial delivery-API integration.</td><td>Desktop and LLM dependence; usage costs; no reliable app-observed receipts, recall or duplicate prevention; selected contacts and links reach the external tool.</td></tr><tr><td>Manual sending</td><td>Uses the same reviewed manifest without a computer-control dependency.</td><td>Slow and prone to transcription errors; results still need reporting.</td></tr><tr><td>Email/text APIs</td><td>Structured results and server-controlled jobs support larger or unattended batches.</td><td>Provider setup, credentials, operational work and possible charges.</td></tr><tr><td>Editable plain JSON recovery</td><td>Inspectable, portable and adaptable for migrations.</td><td>Anyone holding it can read included personal data; edits need validation.</td></tr><tr><td>Encrypted export format</td><td>Protects a misplaced file.</td><td>Key recovery and editing complexity before recovery usefulness is established.</td></tr></tbody></table></div>
+<h4>Recommendation and what remains open</h4>
+<p><strong>Recommendation:</strong> use the reviewed computer-control handoff as the initial delivery path and unencrypted versioned JSON for recovery, following the requested direction. Section 7 of the specification distinguishes copying, reported sending and evidence of receipt; section 9 defines validated staging, fresh access credentials and a restore that cannot send messages.</p>
+<p>This records a revised specification proposal, not final approval or an implemented integration. Poor pilot reliability, unacceptable contact/link exposure, high volume or a need for unattended delivery would favor an API adapter. Production experience may justify an encrypted export format. The specific LLM, computer, host, sender accounts, retention and activation permissions remain open for the plan and authorized pilot. Naming another delivery or recovery option in review is enough to redirect this proposal.</p>
+<h3>2026-09-15 — Organizer sign-in, initial accounts and retention</h3>
+<p>The user supplied these answers and asked to record them and run a sweep:</p>
+<ol><li><strong>Organizer sign-in:</strong> &quot;use chatgpt logon, native to chatgpt sites&quot;.</li><li><strong>Initial organizer accounts:</strong> Ken Novak, <code>krnovak@gmail.com</code>, and Lucas Novak, <code>lucas.d.novak@gmail.com</code>.</li><li><strong>Organizer action history:</strong> keep it &quot;until deleted&quot;.</li><li><strong>Backup requirements:</strong> &quot;no preference at this time - keep it simple&quot;.</li></ol>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Choice</th><th>Selected approach</th><th>Consequence</th></tr></thead><tbody><tr><td>Organizer identity</td><td>Native ChatGPT Sites sign-in</td><td>Replaces the separately registered OpenID Connect provider proposed in the initial plan; no external issuer/client or callback setup is needed from the user for that proposal. The native identity path still needs implementation and verification.</td></tr><tr><td>Action-history retention</td><td>Until the gathering is explicitly deleted</td><td>No fixed-period automatic deletion of non-secret organizer action history. Existing access-code, session and raw-message expiry rules still apply.</td></tr><tr><td>Backups</td><td>Keep the existing recovery approach simple</td><td>No additional backup service or custom retention policy is selected. The host&#39;s actual backup and recovery/deletion behavior remains to be documented.</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>These are the user&#39;s decisions. They supersede the earlier open organizer provider and audit-retention choices in the specification and plan.</li><li>The two named accounts are the initial authorized organizers. Sign-in must identify each organizer independently, and access to an existing gathering still requires its organizer assignment. Recording these addresses does not prove that either account has signed in or that hosted access works.</li><li><code>verify-hosted-test</code> is actionable: implement and verify native ChatGPT sign-in for the named accounts, repeat hosted acceptance, and investigate provider backup retention and recovery/deletion. These checks are work for the implementation; the user need not invent provider configuration or a backup policy before that work can begin.</li><li>&quot;Until deleted&quot; applies to the gathering&#39;s action history in active application storage. It does not extend credential or raw-handoff lifetimes or promise deletion from downloaded exports, external messages or provider backups. The provider&#39;s behavior must be recorded before real member data.</li><li>The existing login-free member-link requirement remains. Native organizer sign-in does not decide the separate host-audience setting for outside members. Hosted acceptance, pilot setup, actual message batches and a production release retain their existing prerequisites.</li></ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/flings/fix-validation-scroll-20260925" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
