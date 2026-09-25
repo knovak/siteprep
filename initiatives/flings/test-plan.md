@@ -454,3 +454,15 @@ containment/cancellation and notification-history navigation also passed.
 The receipt records the excluded resize/focus-refresh attempt and the limits
 of the geometry/style probes. Full hosted browser, screen-reader, text-zoom
 and accessibility acceptance remain open; no business records changed.
+
+## September 25 hosted semantic receipt (UTC)
+
+`notes/hosted-semantics-20260925.md` records thirteen T12 DOM snapshots across
+the organizer index, populated gathering, eight editor/dialog states, expanded
+message history and accepted/invited previews. Each had an English language
+declaration, a main element and one rendered H1. The targeted probe found no
+unnamed selected controls, duplicate IDs, broken ARIA references or skipped
+heading levels. The receipt records the name and visibility heuristic limits,
+the dialog's absent `aria-modal`, and browser-control interruptions. This is
+not axe or screen-reader acceptance; full T12 remains open. No forms were
+submitted and no business records changed.
