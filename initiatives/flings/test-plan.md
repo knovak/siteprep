@@ -454,3 +454,14 @@ containment/cancellation and notification-history navigation also passed.
 The receipt records the excluded resize/focus-refresh attempt and the limits
 of the geometry/style probes. Full hosted browser, screen-reader, text-zoom
 and accessibility acceptance remain open; no business records changed.
+
+## September 25 hosted native-validation receipt (UTC)
+
+`notes/hosted-validation-focus-20260925.md` records twenty T12 native browser
+validation checks across five organizer forms at 1280 and 390 pixels. Missing
+required fields and a malformed optional payment URL focused the invalid field,
+exposed a native validation message and retained visible focus within the
+viewport. Ten cancellation checks returned to the opening buttons. No valid
+draft was submitted. The receipt records excluded browser-control attempts and
+separates this evidence from server errors, full Tab order, screen-reader
+announcements, text zoom and the remaining hosted acceptance matrix.
