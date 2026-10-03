@@ -305,3 +305,12 @@ acceptance receipt. The full hosted item remains open.
   `notes/hosted-keyboard-20260922.md` records scope, observation limits and an
   excluded resize/focus-refresh attempt. No business records, application
   source, deployment or access settings changed. Phase 6 remains open.
+
+- 2026-09-25 (UTC): Added thirteen hosted T12 semantic snapshots covering the
+  organizer index, populated gathering, editors, deletion cancellation, expanded
+  history and both read-only member previews. The targeted DOM probe found no
+  unnamed selected controls, duplicate IDs, broken ARIA references or skipped
+  heading levels. `notes/hosted-semantics-20260925.md` records the exact probe,
+  counts, dialog observation and limits. No business records, application
+  source, deployment or access changed; full accessibility and Phase 6 remain
+  open.
