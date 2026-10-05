@@ -15,9 +15,9 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-09-25T16:52:26Z",
-    "commit": "7d014e59d62855a3349df519ced735be10097240",
-    "digest": "210ff19732b16f2184731e6d419daa2e23e0a974"
+    "generated_at": "2026-10-05T19:43:41Z",
+    "commit": "9873c8c49f8452baa23f924a4310b4c104dba055",
+    "digest": "55d90499c459907645ae8b7852853fa0e9ad6478"
   },
   "deployments": [
     {
