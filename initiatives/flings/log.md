@@ -306,6 +306,14 @@ acceptance receipt. The full hosted item remains open.
   excluded resize/focus-refresh attempt. No business records, application
   source, deployment or access settings changed. Phase 6 remains open.
 
+- 2026-09-25 (UTC): Recorded twenty hosted native-validation focus checks on
+  five organizer forms at desktop/phone widths. Missing required fields and a
+  malformed optional URL focused their invalid control; ten cancellations
+  returned to the opening buttons. See
+  `notes/hosted-validation-focus-20260925.md` for the completed cases and
+  excluded browser-control attempts. No valid draft, message, deployment or
+  access change was submitted. `verify-hosted-test` and Phase 6 remain open.
+
 - 2026-09-25 (UTC): Added thirteen hosted T12 semantic snapshots covering the
   organizer index, populated gathering, editors, deletion cancellation, expanded
   history and both read-only member previews. The targeted DOM probe found no
