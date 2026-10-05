@@ -466,3 +466,15 @@ heading levels. The receipt records the name and visibility heuristic limits,
 the dialog's absent `aria-modal`, and browser-control interruptions. This is
 not axe or screen-reader acceptance; full T12 remains open. No forms were
 submitted and no business records changed.
+
+## September 25 native validation scrolling correction (UTC)
+
+`notes/validation-scroll-20260925.md` records phone-width native validation
+that focused the right control but clipped its label and focus outline. The
+organizer/member workspaces now center the first invalid field container after
+the browser applies native focus. A regression that failed before correction
+passes in twelve local authoring/coordination journeys across all three engines
+and desktop/phone widths. It checks the label and whole control, beyond simple
+viewport intersection. Four deployed checks on test version 15 confirm both
+labels and controls remain visible at 390/1280 pixels. Full hosted T12 and
+Phase 6 remain open.

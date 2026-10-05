@@ -314,3 +314,14 @@ acceptance receipt. The full hosted item remains open.
   counts, dialog observation and limits. No business records, application
   source, deployment or access changed; full accessibility and Phase 6 remain
   open.
+
+- 2026-09-25 (UTC): Hosted native-validation checks found phone fields focused
+  at the viewport edge with labels and focus outlines clipped. Added a shared
+  first-invalid-field scroll handler to organizer/member workspaces. The
+  failing regression now passes in twelve three-engine desktop/phone journeys;
+  all 176 application tests pass. See `notes/validation-scroll-20260925.md`.
+  The parent hosted-acceptance item and Phase 6 remain open.
+- 2026-09-25 (UTC): Refreshed test version 15 with the validation-scroll fix,
+  preserving its existing public audience. Four hosted payment/event checks
+  passed at phone/desktop widths; labels and full inputs now fit and Cancel
+  returns focus. No production release or access change.

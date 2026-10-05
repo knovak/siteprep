@@ -26,6 +26,9 @@
 - Thirteen hosted semantic snapshots found no unnamed selected controls,
   duplicate IDs, broken ARIA references or skipped heading levels under the
   documented DOM probe. Full automated and screen-reader acceptance remain open.
+- Native validation keeps the first invalid field and its label together on
+  screen. Twelve local three-engine journeys and four hosted payment/event
+  checks cover the correction for clipped phone labels and focus outlines.
 
 ## Remaining work
 
