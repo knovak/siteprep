@@ -27,6 +27,9 @@
   the invalid field and exposed its validation message at desktop/phone
   widths. Ten cancellation checks returned focus to the opening buttons;
   all recorded focus positions intersected the viewport.
+- Native validation keeps the first invalid field and its label together on
+  screen. Twelve local three-engine journeys and four hosted payment/event
+  checks cover the correction for clipped phone labels and focus outlines.
 
 ## Remaining work
 

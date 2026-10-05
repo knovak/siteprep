@@ -729,3 +729,22 @@ The existing `node test/coordination-browser.mjs` journeys verify organizer and
 member focus together with coordination behavior. Set `FLINGS_EVIDENCE` to a
 new receipt path when preserving earlier evidence. The implementation and
 coverage are described in `../../COORDINATION_TECHDOC.md`.
+
+## Native validation scroll spacing
+
+Organizer and member workspaces capture native invalid-field events through
+`lib/validation-focus.ts`. After the browser focuses the first invalid control,
+the helper centers its field container, keeping the preceding label and focus
+outline inside the viewport. Later invalid controls cannot steal the scroll;
+removed or no-longer-focused controls are ignored. Native validation messages,
+focus and server validation remain in place. CSS scroll margins alone were
+insufficient when the control already intersected the viewport but its label
+was clipped.
+
+`test/native-validation.mjs` submits an empty form through its real Save button
+and checks the invalid field's focus, native validation message, label position
+and control bounds. The authoring-focus and coordination browser suites use it
+for Event title and Payment description at desktop/phone widths in all three
+engines. Both suites accept `FLINGS_EVIDENCE` for a new dated receipt. These
+geometry checks are separate from a screen-reader walkthrough and full T12
+acceptance.
