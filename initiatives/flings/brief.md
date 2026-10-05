@@ -27,6 +27,9 @@
   the invalid field and exposed its validation message at desktop/phone
   widths. Ten cancellation checks returned focus to the opening buttons;
   all recorded focus positions intersected the viewport.
+- Thirteen hosted semantic snapshots found no unnamed selected controls,
+  duplicate IDs, broken ARIA references or skipped heading levels under the
+  documented DOM probe. Full automated and screen-reader acceptance remain open.
 - Native validation keeps the first invalid field and its label together on
   screen. Twelve local three-engine journeys and four hosted payment/event
   checks cover the correction for clipped phone labels and focus outlines.
