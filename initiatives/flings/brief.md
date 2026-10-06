@@ -8,39 +8,24 @@
 
 - Gatherings support invitations, events, discussions, polls, attributed
   payments, reviewed message prompts, reported outcomes and selected retries.
-- Editable JSON backups restore into separate gatherings with fresh identities
-  and no credentials; confirmed deletion removes active records. Hosted
-  fictional checks cover populated recovery, invitation visibility, event-time
-  validation, stale edits, closure/reopening and preserved vote history.
-- Native ChatGPT organizer identity pins approved accounts. Interrupted reads
-  and denied member writes offer recovery. Gathering, coordination and
-  member-profile editors manage opening/return focus; twelve hosted
-  coordination-form and four member-profile checks passed,
-  and missing-identity requests are denied. Twelve hosted layout checks across
-  320, 390 and 1280 pixels found no horizontal overflow or missing label
-  candidates; targeted preview, refresh and history keyboard checks passed.
-- Six hosted keyboard passes across the organizer page and both read-only
-  member previews recorded 114 focus stops at desktop/phone widths. Each stop
-  intersected the viewport and matched `:focus-visible`; deletion-dialog
-  containment/cancellation and notification-history navigation also passed.
-- Twenty hosted native-validation checks across five organizer forms focused
-  the invalid field and exposed its validation message at desktop/phone
-  widths. Ten cancellation checks returned focus to the opening buttons;
-  all recorded focus positions intersected the viewport.
-- Thirteen hosted semantic snapshots found no unnamed selected controls,
-  duplicate IDs, broken ARIA references or skipped heading levels under the
-  documented DOM probe. Full automated and screen-reader acceptance remain open.
-- Native validation keeps the first invalid field and its label together on
-  screen. Twelve local three-engine journeys and four hosted payment/event
-  checks cover the correction for clipped phone labels and focus outlines.
+  Editable JSON backups restore separate gatherings with fresh identities and
+  no credentials; confirmed deletion removes active records.
+- Native ChatGPT organizer identity, interrupted-read recovery and editor focus
+  handling are implemented. Hosted fictional checks cover populated recovery,
+  invitation visibility, stale edits, closure/reopening and preserved history.
+- Hosted keyboard, layout, semantic and native-validation receipts document
+  their coverage and limits. Ten additional desktop/phone end-time checks
+  reject invalid ordering and daylight-saving inputs, including a later wall
+  time whose chosen UTC instant precedes the start.
 
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, the full hosted
-acceptance matrix, accessibility and interruption/restart checks. Managed-host
-backup retention and database recovery/deletion remain unverified; the current
-JSON recovery approach adds no new backup service. Development-toolchain
-remediation and the authorized pilot follow.
+acceptance matrix, accessibility and interruption/restart checks. Successful
+end-time round trips and managed-host backup retention and database
+recovery/deletion remain unverified. Development-toolchain remediation and the
+authorized pilot follow; the current JSON recovery approach adds no new backup
+service.
 
 ## Optional later
 
