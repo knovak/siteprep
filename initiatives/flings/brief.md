@@ -17,13 +17,17 @@
   their coverage and limits. Ten additional desktop/phone end-time checks
   reject invalid ordering and daylight-saving inputs, including a later wall
   time whose chosen UTC instant precedes the start.
+- A separate fictional event now has hosted create/edit/clear/restore evidence
+  for optional end times and both repeated-hour occurrences. Reloads and
+  read-only database checks preserve the selected instants, reject an invalid
+  edit and leave all nine earlier event rows unchanged.
 
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, the full hosted
-acceptance matrix, accessibility and interruption/restart checks. Successful
-end-time round trips and managed-host backup retention and database
-recovery/deletion remain unverified. Development-toolchain remediation and the
+acceptance matrix, accessibility and interruption/restart checks. Read-only
+event summaries still need DST display clarity review; managed-host backup
+retention and database recovery/deletion remain unverified. Development-toolchain remediation and the
 authorized pilot follow; the current JSON recovery approach adds no new backup
 service.
 
