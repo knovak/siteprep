@@ -341,3 +341,11 @@ acceptance receipt. The full hosted item remains open.
   platform sign-in interruption and the client-validation evidence limits.
   No application source, deployment, access or messages changed. The parent
   hosted-acceptance item and Phase 6 remain open.
+
+- 2026-10-06 (UTC): Added hosted end-time persistence evidence in a separate
+  fictional draft gathering: four successful create/edit/clear/restore states
+  and one rejected edit, with reloads and read-only D1 comparisons. Both DST
+  occurrences round-trip correctly; all nine earlier event rows are unchanged.
+  See `notes/hosted-end-roundtrip-20261006.md` and its structured receipt.
+  The wall-time-only summary still needs DST display clarity review. No app
+  source, deployment, audience or messages changed; Phase 6 remains open.

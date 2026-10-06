@@ -1,0 +1,153 @@
+{
+  "collected_at": "2026-10-06T10:21:38Z",
+  "source": "Sites read_database_table_rows, DB/events; UI actions via Codex in-app browser",
+  "repository_baseline": "e9ad182aa56667aeb72489e6b34427a6e28ac163",
+  "site_version": 15,
+  "site_access": "public",
+  "site_access_revision": 2,
+  "fixture_fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+  "preexisting_event_count": 9,
+  "rejected_edit_all_event_rows_unchanged": true,
+  "cases": [
+    {
+      "name": "create-desktop",
+      "eventsTableRows": 10,
+      "projection": {
+        "truncated": false,
+        "truncated_values": 0,
+        "omitted_columns": 0,
+        "omitted_rows": 0,
+        "next_offset": null
+      },
+      "event": {
+        "id": "724d082c-dc01-4df1-8a1d-acbfe4912fd8",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "title": "Fictional repeated-hour screening",
+        "starts": "2026-11-01T08:30:00.000Z",
+        "zone": "America/Los_Angeles",
+        "summary": "",
+        "details": "",
+        "ends": "2026-11-01T09:15:00.000Z",
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": 1791281935559
+      },
+      "preexistingEventRowsUnchanged": true
+    },
+    {
+      "name": "rejected-edit",
+      "eventsTableRows": 10,
+      "projection": {
+        "truncated": false,
+        "truncated_values": 0,
+        "omitted_columns": 0,
+        "omitted_rows": 0,
+        "next_offset": null
+      },
+      "event": {
+        "id": "724d082c-dc01-4df1-8a1d-acbfe4912fd8",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "title": "Fictional repeated-hour screening",
+        "starts": "2026-11-01T08:30:00.000Z",
+        "zone": "America/Los_Angeles",
+        "summary": "",
+        "details": "",
+        "ends": "2026-11-01T09:15:00.000Z",
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": 1791281935559
+      },
+      "preexistingEventRowsUnchanged": true
+    },
+    {
+      "name": "edit-phone",
+      "eventsTableRows": 10,
+      "projection": {
+        "truncated": false,
+        "truncated_values": 0,
+        "omitted_columns": 0,
+        "omitted_rows": 0,
+        "next_offset": null
+      },
+      "event": {
+        "id": "724d082c-dc01-4df1-8a1d-acbfe4912fd8",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "title": "Fictional repeated-hour screening",
+        "starts": "2026-11-01T08:30:00.000Z",
+        "zone": "America/Los_Angeles",
+        "summary": "",
+        "details": "",
+        "ends": "2026-11-01T08:45:00.000Z",
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": 1791282000078
+      },
+      "preexistingEventRowsUnchanged": true
+    },
+    {
+      "name": "clear-end-phone",
+      "eventsTableRows": 10,
+      "projection": {
+        "truncated": false,
+        "truncated_values": 0,
+        "omitted_columns": 0,
+        "omitted_rows": 0,
+        "next_offset": null
+      },
+      "event": {
+        "id": "724d082c-dc01-4df1-8a1d-acbfe4912fd8",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "title": "Fictional repeated-hour screening",
+        "starts": "2026-11-01T08:30:00.000Z",
+        "zone": "America/Los_Angeles",
+        "summary": "",
+        "details": "",
+        "ends": null,
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": 1791282018318
+      },
+      "preexistingEventRowsUnchanged": true
+    },
+    {
+      "name": "restore-end-phone",
+      "eventsTableRows": 10,
+      "projection": {
+        "truncated": false,
+        "truncated_values": 0,
+        "omitted_columns": 0,
+        "omitted_rows": 0,
+        "next_offset": null
+      },
+      "event": {
+        "id": "724d082c-dc01-4df1-8a1d-acbfe4912fd8",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "title": "Fictional repeated-hour screening",
+        "starts": "2026-11-01T08:30:00.000Z",
+        "zone": "America/Los_Angeles",
+        "summary": "",
+        "details": "",
+        "ends": "2026-11-01T09:15:00.000Z",
+        "invitation_location": "",
+        "location_name": "",
+        "location_address": "",
+        "location_url": "",
+        "changed_at": 1791282069481
+      },
+      "preexistingEventRowsUnchanged": true
+    }
+  ]
+}
