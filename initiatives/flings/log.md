@@ -333,3 +333,11 @@ acceptance receipt. The full hosted item remains open.
   preserving its existing public audience. Four hosted payment/event checks
   passed at phone/desktop widths; labels and full inputs now fit and Cancel
   returns focus. No production release or access change.
+
+- 2026-10-06 (UTC): Recorded ten hosted event end-time rejection checks at
+  desktop/phone widths, including independent repeated-hour offsets and instant
+  ordering. Both drafts were cancelled; a reload retained only the original
+  fictional event. See `notes/hosted-end-times-20261006.md` for the recovered
+  platform sign-in interruption and the client-validation evidence limits.
+  No application source, deployment, access or messages changed. The parent
+  hosted-acceptance item and Phase 6 remain open.

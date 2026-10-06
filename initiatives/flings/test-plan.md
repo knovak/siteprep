@@ -489,3 +489,13 @@ and desktop/phone widths. It checks the label and whole control, beyond simple
 viewport intersection. Four deployed checks on test version 15 confirm both
 labels and controls remain visible at 390/1280 pixels. Full hosted T12 and
 Phase 6 remain open.
+
+## October 6 hosted event end-time receipt (UTC)
+
+`notes/hosted-end-times-20261006.md` records ten T4/T12 interface checks at
+desktop and phone widths. End-before-start, equal-end, nonexistent end and
+unselected repeated-end cases were rejected; an end with a later wall time but
+an earlier selected UTC instant was also rejected. Cancelling returned focus
+to the opening button, and a reload showed only the original event. These are
+client/native validation observations, not Worker or database-rollback proof.
+Successful end-time round trips and full Phase 6 acceptance remain open.
