@@ -445,6 +445,9 @@ void test('a retry retains one linked discussion and changes privacy-filtered co
     assert.ok(!history.includes(d.suffix.split('#code=')[1]));
 });
 void test('HTTP retry endpoints enforce origin, CSRF, actor and no-store', async () => {
+  // HTTP constructs its own store with the real clock. Keep this fixture's
+  // sending window current instead of letting the fixed domain-test date expire.
+  now = Date.now();
   const r = await exported(),
     base = 'http://localhost:5187',
     env = {

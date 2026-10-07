@@ -5,7 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { NativeSelect } from '@/components/ui/native-select';
-import { localTime, timeChoices, resolveTime } from '@/lib/event-time';
+import {
+  localTime,
+  timeChoices,
+  resolveTime,
+  utcOffset,
+} from '@/lib/event-time';
 
 type Activity = {
   id: string;
@@ -395,14 +400,16 @@ export default function GatheringEditor({
                   <h4>{event.title}</h4>
                   <p>
                     {localTime(event.starts, event.zone).replace('T', ' ')}
+                    {' ('}
+                    {utcOffset(event.starts, event.zone)}
+                    {')'}
                     {event.ends && (
                       <>
                         {' '}
-                        –{' '}
-                        {localTime(event.ends, event.zone).replace(
-                          'T',
-                          ' ',
-                        )}{' '}
+                        – {localTime(event.ends, event.zone).replace('T', ' ')}
+                        {' ('}
+                        {utcOffset(event.ends, event.zone)}
+                        {')'}{' '}
                       </>
                     )}
                     {' · '}

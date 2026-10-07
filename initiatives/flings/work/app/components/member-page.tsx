@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import CoordinationPanel from './coordination-panel';
 import { profile as validateProfile } from '@/lib/access';
+import { utcOffset } from '@/lib/event-time';
 
 type Profile = {
   id: string;
@@ -378,6 +379,9 @@ export default function MemberPage({
                               dateStyle: 'medium',
                               timeStyle: 'short',
                             }).format(new Date(e.starts))}
+                            {' ('}
+                            {utcOffset(e.starts, e.zone)}
+                            {')'}
                           </time>{' '}
                           {e.ends && (
                             <>
@@ -389,6 +393,9 @@ export default function MemberPage({
                                   dateStyle: 'medium',
                                   timeStyle: 'short',
                                 }).format(new Date(e.ends))}
+                                {' ('}
+                                {utcOffset(e.ends, e.zone)}
+                                {')'}
                               </time>{' '}
                             </>
                           )}
