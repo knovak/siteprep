@@ -499,3 +499,15 @@ an earlier selected UTC instant was also rejected. Cancelling returned focus
 to the opening button, and a reload showed only the original event. These are
 client/native validation observations, not Worker or database-rollback proof.
 Successful end-time round trips and full Phase 6 acceptance remain open.
+
+## October 7 event summary offsets (UTC)
+
+`notes/hosted-dst-display-20261007.md` closes the summary-display gap identified
+by the October 6 persistence receipt. Organizer, member and preview event times
+now include independently calculated numeric UTC offsets. Six local
+desktop/phone journeys across three engines and all 177 application tests
+passed. Test version 16 shows the existing repeated-hour fixture's two offsets
+at desktop/phone widths without horizontal overflow. Hosted member-view,
+text-zoom, screen-reader and full Phase 6 acceptance remain open. The receipt
+also records a corrected clock mismatch in the HTTP retry test and a recovered
+post-deployment loading observation.

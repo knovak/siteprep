@@ -13,6 +13,19 @@ export function localTime(instant: string, zone: string) {
   return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}`;
 }
 
+/** Identify the offset at this instant, including either side of a DST change. */
+export function utcOffset(instant: string, zone: string) {
+  const offset = new Intl.DateTimeFormat('en-US', {
+    timeZone: zone,
+    timeZoneName: 'longOffset',
+  })
+    .formatToParts(new Date(instant))
+    .find((part) => part.type === 'timeZoneName')!.value;
+  return offset === 'GMT'
+    ? 'UTC+00:00'
+    : offset.replace('GMT', 'UTC').replace('-', '−');
+}
+
 export function timeChoices(local: string, zone: string) {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(local))
     throw new Error('Enter a complete local date and time.');

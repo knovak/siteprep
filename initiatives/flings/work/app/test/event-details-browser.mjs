@@ -85,10 +85,10 @@ for (const [engine, launcher] of Object.entries({
         .fill('Evening screening');
       await page
         .getByLabel('Local date and time', { exact: true })
-        .fill('2026-11-01T00:30');
+        .fill('2026-11-01T01:30');
       await page
         .getByLabel('Local end date and time (optional)', { exact: true })
-        .fill('2026-11-01T01:30');
+        .fill('2026-11-01T01:15');
       await page
         .getByLabel('Event time zone', { exact: true })
         .fill('America/Los_Angeles');
@@ -112,16 +112,27 @@ for (const [engine, launcher] of Object.entries({
         }),
       ).toBeVisible();
       await page
+        .getByLabel('This time occurs twice: choose UTC offset', {
+          exact: true,
+        })
+        .selectOption('2026-11-01T08:30:00.000Z');
+      await page
         .getByRole('button', { name: 'Save event', exact: true })
         .click();
       assert.equal((await overview()).events.length, 0);
       await page
         .getByLabel('End time occurs twice: choose UTC offset', { exact: true })
-        .selectOption('2026-11-01T09:30:00.000Z');
+        .selectOption('2026-11-01T09:15:00.000Z');
       await save('event');
       const first = (await overview()).events[0];
-      assert.equal(first.starts, '2026-11-01T07:30:00.000Z');
-      assert.equal(first.ends, '2026-11-01T09:30:00.000Z');
+      assert.equal(first.starts, '2026-11-01T08:30:00.000Z');
+      assert.equal(first.ends, '2026-11-01T09:15:00.000Z');
+      await expect(page.locator('.event')).toContainText(
+        '2026-11-01 01:30 (UTC−07:00)',
+      );
+      await expect(page.locator('.event')).toContainText(
+        '2026-11-01 01:15 (UTC−08:00)',
+      );
       assert.ok(Number.isSafeInteger(first.changed_at));
       await page
         .getByRole('button', { name: 'Edit fling details', exact: true })
@@ -247,13 +258,20 @@ for (const [engine, launcher] of Object.entries({
       await expect(
         pp.getByRole('button', { name: 'Accept invitation', exact: true }),
       ).toHaveCount(0);
-      for (const view of [mp, pp])
+      for (const view of [mp, pp]) {
+        await expect(view.locator('time').nth(0)).toContainText(
+          '1:30 AM (UTC−07:00)',
+        );
+        await expect(view.locator('time').nth(1)).toContainText(
+          '2:30 AM (UTC−08:00)',
+        );
         assert.equal(
           await view.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth,
           ),
           true,
         );
+      }
       await pp.close();
       await mp.bringToFront();
       await mp
@@ -275,6 +293,7 @@ for (const [engine, launcher] of Object.entries({
           'default-zone-prefill',
           'existing-event-zone-preserved',
           'end-repeat-choice',
+          'organizer-member-preview-utc-offsets',
           'end-range-rejection',
           'end-gap-rejection',
           'round-trip-end-and-location',
@@ -296,7 +315,7 @@ for (const [engine, launcher] of Object.entries({
   }
 }
 await writeFile(
-  'test/evidence/event-details-20260911.json',
+  process.env.FLINGS_EVIDENCE || 'test/evidence/event-details-20260911.json',
   JSON.stringify(
     {
       recorded_at: new Date().toISOString(),

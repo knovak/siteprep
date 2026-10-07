@@ -349,3 +349,11 @@ acceptance receipt. The full hosted item remains open.
   See `notes/hosted-end-roundtrip-20261006.md` and its structured receipt.
   The wall-time-only summary still needs DST display clarity review. No app
   source, deployment, audience or messages changed; Phase 6 remains open.
+
+- 2026-10-07 (UTC): Corrected event summaries to show each endpoint's UTC offset,
+  including repeated-hour intervals whose end wall time looks earlier. Six
+  three-engine desktop/phone journeys and all 177 application tests pass;
+  corrected a real-clock versus fixed-fixture mismatch in the HTTP retry test.
+  Test version 16 preserves public access, with hosted organizer checks at
+  desktop/phone widths. See `notes/hosted-dst-display-20261007.md`. The parent
+  hosted-acceptance item remains actionable; no messages or production release.
