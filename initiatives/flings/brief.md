@@ -21,13 +21,16 @@
   for optional end times and both repeated-hour occurrences. Reloads and
   read-only database checks preserve the selected instants, reject an invalid
   edit and leave all nine earlier event rows unchanged.
+- Event summaries show each endpoint's UTC offset. Six local desktop/phone
+  journeys verify organizer, member and preview displays across three engines;
+  hosted organizer checks confirm the repeated-hour summary wraps at phone width.
 
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, the full hosted
 acceptance matrix, accessibility and interruption/restart checks. Read-only
-event summaries still need DST display clarity review; managed-host backup
-retention and database recovery/deletion remain unverified. Development-toolchain remediation and the
+member summaries still need hosted verification; managed-host backup retention
+and database recovery/deletion remain unverified. Development-toolchain remediation and the
 authorized pilot follow; the current JSON recovery approach adds no new backup
 service.
 
