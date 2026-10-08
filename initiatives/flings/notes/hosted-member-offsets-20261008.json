@@ -1,0 +1,204 @@
+{
+  "recordedDate": "2026-10-08",
+  "timeZone": "UTC",
+  "repositoryBase": "6f30524308dd8a57b68c85c0c3d336ee917bc46b",
+  "site": "https://flings-test.ken-novak.chatgpt.site",
+  "recordedDeploymentVersion": 16,
+  "deploymentMetadataQueried": false,
+  "browser": "Codex in-app browser; engine version not exposed",
+  "os": "macOS 26.6.2 (25G83)",
+  "method": "Transcribed completed DOM/accessibility and geometry observations; excludes measurements whose actual viewport did not match the requested width.",
+  "observations": [
+    {
+      "mode": "invited-preview",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "document": {
+        "clientWidth": 1265,
+        "scrollWidth": 1265
+      },
+      "eventContainer": {
+        "left": 133.5,
+        "right": 755.5
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "invited",
+      "profileControlsDisabled": true,
+      "invitationActions": []
+    },
+    {
+      "mode": "invited-preview",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "document": {
+        "clientWidth": 375,
+        "scrollWidth": 375
+      },
+      "eventContainer": {
+        "left": 45,
+        "right": 330
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "invited",
+      "profileControlsDisabled": true,
+      "invitationActions": []
+    },
+    {
+      "mode": "invited-member",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "document": {
+        "clientWidth": 1265,
+        "scrollWidth": 1265
+      },
+      "eventContainer": {
+        "left": 133.5,
+        "right": 755.5
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "invited",
+      "profileControlsDisabled": false,
+      "invitationActions": [
+        "Accept invitation",
+        "Decline invitation"
+      ]
+    },
+    {
+      "mode": "invited-member",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "document": {
+        "clientWidth": 375,
+        "scrollWidth": 375
+      },
+      "eventContainer": {
+        "left": 45,
+        "right": 330
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "invited",
+      "profileControlsDisabled": false,
+      "invitationActions": [
+        "Accept invitation",
+        "Decline invitation"
+      ]
+    },
+    {
+      "mode": "accepted-member",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "document": {
+        "clientWidth": 375,
+        "scrollWidth": 375
+      },
+      "eventContainer": {
+        "left": 45,
+        "right": 330
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "accepted",
+      "profileControlsDisabled": false,
+      "invitationActions": [
+        "Decline invitation"
+      ]
+    },
+    {
+      "mode": "accepted-member-reload",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "document": {
+        "clientWidth": 1265,
+        "scrollWidth": 1265
+      },
+      "eventContainer": {
+        "left": 133.5,
+        "right": 755.5
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "accepted",
+      "profileControlsDisabled": false,
+      "invitationActions": [
+        "Decline invitation"
+      ]
+    },
+    {
+      "mode": "accepted-preview",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "document": {
+        "clientWidth": 1265,
+        "scrollWidth": 1265
+      },
+      "eventContainer": {
+        "left": 133.5,
+        "right": 755.5
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "accepted",
+      "profileControlsDisabled": true,
+      "invitationActions": []
+    },
+    {
+      "mode": "accepted-preview",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "document": {
+        "clientWidth": 375,
+        "scrollWidth": 375
+      },
+      "eventContainer": {
+        "left": 45,
+        "right": 330
+      },
+      "summary": "Nov 1, 2026, 1:30 AM (UTC−07:00) – Nov 1, 2026, 1:15 AM (UTC−08:00) · America/Los_Angeles",
+      "invitationState": "accepted",
+      "profileControlsDisabled": true,
+      "invitationActions": []
+    }
+  ],
+  "finalPreviewTimeElements": [
+    {
+      "datetime": "2026-11-01T08:30:00.000Z",
+      "text": "Nov 1, 2026, 1:30 AM (UTC−07:00)"
+    },
+    {
+      "datetime": "2026-11-01T09:15:00.000Z",
+      "text": "Nov 1, 2026, 1:15 AM (UTC−08:00)"
+    }
+  ],
+  "memberFragmentRemovedAfterExchange": true,
+  "memberAcceptanceSurvivedReload": true,
+  "screenshots": {
+    "captured": false,
+    "reason": "Full-page capture failed; two viewport captures timed out."
+  },
+  "fixtureChanges": [
+    "Published the existing fictional activity",
+    "Created one fictional member with an example.invalid address",
+    "Invited and accepted that member",
+    "Prepared one unapproved message review to obtain the fictional member link"
+  ],
+  "messageApproved": false,
+  "messageExported": false,
+  "messagesSent": 0,
+  "applicationSourceChanged": false,
+  "redeployed": false,
+  "accessChanged": false,
+  "phase6Complete": false
+}

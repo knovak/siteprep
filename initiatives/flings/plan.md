@@ -571,3 +571,14 @@ The next interruption probe found and fixed initial blank-state and disabled-ret
 behavior when the sign-in status request fails. Six local real-UI/D1 browser
 journeys now cover recovery and stale-state clearing. This is an incremental
 T12 correction; managed Worker restart/migration/backup recovery remains open.
+
+## October 8 hosted member offset receipt (UTC)
+
+The hosted member/preview gap from the October 7 display correction now has
+[an eight-observation receipt](notes/hosted-member-offsets-20261008.md): invited
+and accepted states at desktop and phone widths retain independent endpoint
+UTC offsets, and member acceptance survives reload. Read-only previews match
+those states with disabled profile controls. The receipt records fictional
+fixture changes, unavailable screenshots and measurement limits. Independent
+accounts, broader hosted acceptance and managed recovery remain open;
+`verify-hosted-test` stays actionable.
