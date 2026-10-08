@@ -511,3 +511,14 @@ at desktop/phone widths without horizontal overflow. Hosted member-view,
 text-zoom, screen-reader and full Phase 6 acceptance remain open. The receipt
 also records a corrected clock mismatch in the HTTP retry test and a recovered
 post-deployment loading observation.
+
+## October 8 hosted member offset receipt (UTC)
+
+`notes/hosted-member-offsets-20261008.md` and its structured receipt add eight
+T4/T12 DOM/layout observations: invited and accepted member pages and read-only
+previews at 1280 and 390 pixels. Both endpoint offsets remain visible in the
+rendered text; member acceptance survives reload and preview profile controls
+remain disabled. Browser captures were unavailable, so these are not screenshot
+or comprehensive accessibility passes. The one fictional member was invited
+and accepted; its message review remains unapproved and nothing was sent.
+The remaining Phase 6 matrix is still open.

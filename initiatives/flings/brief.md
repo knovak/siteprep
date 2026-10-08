@@ -10,29 +10,25 @@
   payments, reviewed message prompts, reported outcomes and selected retries.
   Editable JSON backups restore separate gatherings with fresh identities and
   no credentials; confirmed deletion removes active records.
-- Native ChatGPT organizer identity, interrupted-read recovery and editor focus
-  handling are implemented. Hosted fictional checks cover populated recovery,
-  invitation visibility, stale edits, closure/reopening and preserved history.
-- Hosted keyboard, layout, semantic and native-validation receipts document
-  their coverage and limits. Ten additional desktop/phone end-time checks
-  reject invalid ordering and daylight-saving inputs, including a later wall
-  time whose chosen UTC instant precedes the start.
-- A separate fictional event now has hosted create/edit/clear/restore evidence
-  for optional end times and both repeated-hour occurrences. Reloads and
-  read-only database checks preserve the selected instants, reject an invalid
-  edit and leave all nine earlier event rows unchanged.
-- Event summaries show each endpoint's UTC offset. Six local desktop/phone
-  journeys verify organizer, member and preview displays across three engines;
-  hosted organizer checks confirm the repeated-hour summary wraps at phone width.
+- Native ChatGPT organizer identity and interrupted-read recovery are
+  implemented. Hosted fictional checks cover populated recovery, invitation
+  visibility, stale edits, closure/reopening and preserved history.
+- Keyboard, layout, semantic and native-validation receipts record targeted
+  coverage and limits. Hosted event end-time checks cover invalid ordering,
+  daylight-saving gaps and repeated-hour save/edit/clear/restore behavior.
+- Event summaries show each endpoint's UTC offset. Six local three-engine
+  journeys and hosted organizer checks cover the display correction. Eight
+  additional hosted member/preview observations cover invited and accepted
+  states at desktop/phone widths, with acceptance surviving reload; these are
+  DOM/layout observations because screenshot capture was unavailable.
 
 ## Remaining work
 
-Phase 6 continues with independent second-organizer access, the full hosted
-acceptance matrix, accessibility and interruption/restart checks. Read-only
-member summaries still need hosted verification; managed-host backup retention
-and database recovery/deletion remain unverified. Development-toolchain remediation and the
-authorized pilot follow; the current JSON recovery approach adds no new backup
-service.
+Phase 6 continues with independent second-organizer access, the remaining
+hosted acceptance matrix, accessibility and interruption/restart checks.
+Managed-host backup retention and database recovery/deletion remain
+unverified. Development-toolchain remediation and the authorized pilot follow;
+the current JSON recovery approach adds no new backup service.
 
 ## Optional later
 

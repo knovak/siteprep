@@ -357,3 +357,12 @@ acceptance receipt. The full hosted item remains open.
   Test version 16 preserves public access, with hosted organizer checks at
   desktop/phone widths. See `notes/hosted-dst-display-20261007.md`. The parent
   hosted-acceptance item remains actionable; no messages or production release.
+
+- 2026-10-08 (UTC): Added eight hosted member/preview DST-offset observations
+  at desktop/phone widths, covering invited and accepted states and member
+  reload. Published the existing fictional rehearsal activity, added and
+  invited one fictional member, and accepted through its member session; one
+  message review remains unapproved, with no sends. The receipt records DOM
+  measurements, excluded resize attempts and unavailable screenshots. See
+  `notes/hosted-member-offsets-20261008.md`. No app source, deployment, audience
+  or production setting changed; `verify-hosted-test` and Phase 6 remain open.
