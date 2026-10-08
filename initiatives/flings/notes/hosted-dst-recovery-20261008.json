@@ -1,0 +1,174 @@
+{
+  "observed_at": "2026-10-08T10:22:34.364172+00:00",
+  "baseline": "6336365cfbeb1e9938fc2c23c8abb8f1cc06f2d8",
+  "test_url": "https://flings-test.ken-novak.chatgpt.site",
+  "verified_version": 16,
+  "verified_access": "public",
+  "source_fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+  "restored_fling": "71a5d09b-6854-4e9e-9053-98a4c15dd2e5",
+  "snapshots": [
+    {
+      "role": "source_before",
+      "exported_at": "2026-10-08T10:17:30.217Z",
+      "bytes": 9080,
+      "sha256": "5d56a43049b1417ffaadba49058b6536e36491a5273b4010f7e42d50588986ca",
+      "counts": {
+        "activities": 1,
+        "assignments": 1,
+        "audit": 12,
+        "events": 1,
+        "flings": 1,
+        "invitations": 1,
+        "members": 1,
+        "message_batches": 1,
+        "message_deliveries": 1,
+        "message_discussions": 0,
+        "message_reports": 0,
+        "message_results": 0,
+        "message_retries": 0,
+        "message_retry_deliveries": 0,
+        "organizers": 1,
+        "payment_ledger": 0,
+        "payment_requests": 0,
+        "poll_audience": 0,
+        "polls": 0,
+        "post_history": 0,
+        "posts": 0,
+        "votes": 0
+      }
+    },
+    {
+      "role": "source_after",
+      "exported_at": "2026-10-08T10:19:38.034Z",
+      "bytes": 9080,
+      "sha256": "20dd76d19de58e1de6d826c54dfa751a1c2fc6af05bb71e9d513e4f72dd1df3c",
+      "counts": {
+        "activities": 1,
+        "assignments": 1,
+        "audit": 12,
+        "events": 1,
+        "flings": 1,
+        "invitations": 1,
+        "members": 1,
+        "message_batches": 1,
+        "message_deliveries": 1,
+        "message_discussions": 0,
+        "message_reports": 0,
+        "message_results": 0,
+        "message_retries": 0,
+        "message_retry_deliveries": 0,
+        "organizers": 1,
+        "payment_ledger": 0,
+        "payment_requests": 0,
+        "poll_audience": 0,
+        "polls": 0,
+        "post_history": 0,
+        "posts": 0,
+        "votes": 0
+      }
+    },
+    {
+      "role": "restored",
+      "exported_at": "2026-10-08T10:20:08.926Z",
+      "bytes": 9374,
+      "sha256": "9367f561c62d729c8c35044ba1c2d6d002c3f6181440dec99d280f13be5b4bd0",
+      "counts": {
+        "activities": 1,
+        "assignments": 1,
+        "audit": 13,
+        "events": 1,
+        "flings": 1,
+        "invitations": 1,
+        "members": 1,
+        "message_batches": 1,
+        "message_deliveries": 1,
+        "message_discussions": 0,
+        "message_reports": 0,
+        "message_results": 0,
+        "message_retries": 0,
+        "message_retry_deliveries": 0,
+        "organizers": 2,
+        "payment_ledger": 0,
+        "payment_requests": 0,
+        "poll_audience": 0,
+        "polls": 0,
+        "post_history": 0,
+        "posts": 0,
+        "votes": 0
+      }
+    }
+  ],
+  "edits": [
+    "gathering title",
+    "event title",
+    "member name"
+  ],
+  "invalid_copy": {
+    "end": "2026-11-01T08:15:00.000Z",
+    "issue_path": "/records/events/0/ends",
+    "message": "End must be a real UTC timestamp after the start.",
+    "issue_count": 1
+  },
+  "interval": {
+    "starts": "2026-11-01T08:30:00.000Z",
+    "ends": "2026-11-01T09:15:00.000Z",
+    "zone": "America/Los_Angeles",
+    "minutes": 45
+  },
+  "assertions": {
+    "source_records_identical": true,
+    "source_counts_identical": true,
+    "business_ids_fresh": true,
+    "event_activity_reference_valid": true,
+    "accepted_invitation_references_valid": true,
+    "all_fling_scopes_valid": true,
+    "edited_titles_and_name_preserved": true,
+    "importer_assignment_preserved": true,
+    "export_collections_and_columns_match_allowlist": true,
+    "no_live_member_link_patterns_in_exports": true
+  },
+  "hosted_ui": {
+    "valid_file_records": 21,
+    "valid_file_collections": 22,
+    "historical_mapping": "history only",
+    "active_organizers": 1,
+    "confirm_disabled_until_acknowledged": true,
+    "unfinished_handoffs_cancelled": 1,
+    "restored_preview_accepted": true,
+    "restored_preview_read_only": true,
+    "both_endpoint_offsets_visible": true,
+    "message_totals": {
+      "sent": 0,
+      "failed": 0,
+      "suppressed": 0,
+      "unknown": 1
+    }
+  },
+  "database": {
+    "binding": "DB",
+    "complete_pages": true,
+    "codes": {
+      "total_rows": 4,
+      "restored_matches": 0
+    },
+    "sessions": {
+      "total_rows": 5,
+      "restored_matches": 0
+    },
+    "recovery_imports": {
+      "total_rows": 3,
+      "restored_matches": 1
+    }
+  },
+  "screenshots": [
+    "screenshots/flings-dst-recovery-20261008.jpg",
+    "screenshots/flings-dst-recovery-event-20261008.jpg"
+  ],
+  "limits": [
+    "one native owner and in-app browser",
+    "no fresh member link issued",
+    "no failure injection, concurrent mutation or duplicate-confirmation test",
+    "no managed-provider database recovery",
+    "full Phase 6 remains open"
+  ]
+}
