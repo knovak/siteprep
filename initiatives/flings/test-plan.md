@@ -522,3 +522,15 @@ remain disabled. Browser captures were unavailable, so these are not screenshot
 or comprehensive accessibility passes. The one fictional member was invited
 and accepted; its message review remains unapproved and nothing was sent.
 The remaining Phase 6 matrix is still open.
+
+
+## October 8 hosted DST backup recovery receipt (UTC)
+
+`notes/hosted-dst-recovery-20261008.md` and its structured receipt add targeted
+T4/T11/T12 evidence: one invalid end-time rejection, a 21-record edited backup
+restored as 23 records, exact repeated-hour UTC preservation, accepted invitation
+references, fresh business IDs, unchanged source records and canceled imported
+message history. Complete hosted database pages contain no restored-gathering
+codes or sessions. Organizer and read-only member preview offsets were observed,
+with native screenshots. Concurrent mutation, failure injection, broader browser
+and accessibility checks, and managed-provider recovery remain unverified.

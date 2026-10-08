@@ -366,3 +366,11 @@ acceptance receipt. The full hosted item remains open.
   measurements, excluded resize attempts and unavailable screenshots. See
   `notes/hosted-member-offsets-20261008.md`. No app source, deployment, audience
   or production setting changed; `verify-hosted-test` and Phase 6 remain open.
+
+- 2026-10-08 (UTC): Restored an edited copy of the fictional DST gathering after
+  a hosted invalid-end rejection. Verified exact 45-minute UTC preservation,
+  fresh business IDs, accepted invitation references, canceled imported message
+  history, identical source business records and no restored codes/sessions.
+  Retained the separate fictional fixture and native preview screenshots. See
+  `notes/hosted-dst-recovery-20261008.md`. No app source, deployment, access or
+  sending change; Phase 6 and `verify-hosted-test` remain open.

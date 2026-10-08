@@ -582,3 +582,14 @@ those states with disabled profile controls. The receipt records fictional
 fixture changes, unavailable screenshots and measurement limits. Independent
 accounts, broader hosted acceptance and managed recovery remain open;
 `verify-hosted-test` stays actionable.
+
+
+## October 8 hosted DST backup recovery receipt (UTC)
+
+`notes/hosted-dst-recovery-20261008.md` adds an edited JSON restore of the
+fictional repeated-hour event and accepted member. Hosted validation rejects a
+reversed UTC interval; the valid copy preserves both instants and their offsets,
+uses fresh business IDs and cancels the unfinished message handoff. Fresh source
+exports have identical business records, and complete read-only database pages
+show no codes or sessions for the restored gathering. The separate fixture is
+retained; no app source or deployment changed. Phase 6 and its todo remain open.

@@ -21,6 +21,10 @@
   additional hosted member/preview observations cover invited and accepted
   states at desktop/phone widths, with acceptance surviving reload; these are
   DOM/layout observations because screenshot capture was unavailable.
+- An edited hosted backup preserves the repeated-hour event and accepted
+  invitation in a separate gathering, with fresh business IDs and canceled
+  message history. Source records remain unchanged; the restored gathering
+  has no member codes or sessions. Native preview screenshots were captured.
 
 ## Remaining work
 
