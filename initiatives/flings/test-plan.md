@@ -534,3 +534,17 @@ message history. Complete hosted database pages contain no restored-gathering
 codes or sessions. Organizer and read-only member preview offsets were observed,
 with native screenshots. Concurrent mutation, failure injection, broader browser
 and accessibility checks, and managed-provider recovery remain unverified.
+
+
+## October 9 hosted public access receipt (UTC)
+
+`notes/hosted-public-access-20261009.md` and its structured receipt record 26
+T1/T2/T12 public HTTPS checks: three public document reads, missing-identity
+and local-rehearsal denials, native/exchange origin and marker enforcement,
+generic invalid-member responses, client-supplied native headers, and forged
+member/preview credentials. Every request matched its status/body expectation;
+none redirected or issued an application cookie. All 23 API responses retained
+private/no-store, no-referrer and nosniff headers. The three exchange attempts
+may change rate-limit counters. No valid member exchange, independent account,
+expiry/revocation, concurrency, rollback, rate-limit-threshold or browser
+acceptance is claimed; full Phase 6 remains open.
