@@ -374,3 +374,11 @@ acceptance receipt. The full hosted item remains open.
   Retained the separate fictional fixture and native preview screenshots. See
   `notes/hosted-dst-recovery-20261008.md`. No app source, deployment, access or
   sending change; Phase 6 and `verify-hosted-test` remain open.
+
+- 2026-10-09 (UTC): Recorded 26 hosted public HTTP access-boundary checks with
+  no gateway credential or account session. Public documents loaded; protected
+  routes denied access, fabricated identity/session/preview credentials granted
+  no access, and targeted origin/marker checks passed. No application cookie
+  was issued; rejected exchanges may update rate-limit counters. See
+  `notes/hosted-public-access-20261009.md`. No app source, deployment, access or
+  sending change; Phase 6 and `verify-hosted-test` remain open.

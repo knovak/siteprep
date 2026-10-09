@@ -1,0 +1,463 @@
+{
+  "recordedAt": "2026-10-09T02:04:58.097031+00:00",
+  "repositoryBase": "dcc48f9e8a9619f344427a485dd31e9549a85a86",
+  "site": "https://flings-test.ken-novak.chatgpt.site",
+  "method": "Python urllib HTTPS client; independent requests, no cookie processor or browser/native identity; no redirects followed",
+  "metadata": {
+    "accessMode": "public",
+    "latestVersionNumber": 16,
+    "queried": true
+  },
+  "rows": [
+    {
+      "case": "public landing document",
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "expectedStatus": 200,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "text/html; charset=utf-8",
+      "passed": true,
+      "flingsDocument": true,
+      "fixtureTitleExposed": false
+    },
+    {
+      "case": "public organizer document",
+      "method": "GET",
+      "path": "/organizer",
+      "status": 200,
+      "expectedStatus": 200,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "text/html; charset=utf-8",
+      "passed": true,
+      "flingsDocument": true,
+      "fixtureTitleExposed": false
+    },
+    {
+      "case": "public member document",
+      "method": "GET",
+      "path": "/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "status": 200,
+      "expectedStatus": 200,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "text/html; charset=utf-8",
+      "passed": true,
+      "flingsDocument": true,
+      "fixtureTitleExposed": false
+    },
+    {
+      "case": "anonymous native status",
+      "method": "GET",
+      "path": "/api/flings/native/status",
+      "status": 200,
+      "expectedStatus": 200,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "native": true,
+        "rehearsal": false,
+        "signedIn": false,
+        "email": ""
+      }
+    },
+    {
+      "case": "organizer index denied",
+      "method": "GET",
+      "path": "/api/flings/workspace/organizer",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Sign in with ChatGPT to open your organizer workspace."
+      }
+    },
+    {
+      "case": "organizer gathering denied",
+      "method": "GET",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Sign in with ChatGPT to open your organizer workspace."
+      }
+    },
+    {
+      "case": "organizer coordination denied",
+      "method": "GET",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer/coordination",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Sign in with ChatGPT to open your organizer workspace."
+      }
+    },
+    {
+      "case": "known member session denied",
+      "method": "GET",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "This member link is unavailable. Ask an organizer for a recent link."
+      }
+    },
+    {
+      "case": "unknown gathering session denied",
+      "method": "GET",
+      "path": "/api/flings/00000000-0000-4000-8000-000000000000/session",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "This member link is unavailable. Ask an organizer for a recent link."
+      }
+    },
+    {
+      "case": "local organizer GET disabled",
+      "method": "GET",
+      "path": "/api/flings/local/organizer",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Local rehearsal is unavailable here."
+      }
+    },
+    {
+      "case": "local organizer POST disabled",
+      "method": "POST",
+      "path": "/api/flings/local/organizer",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Local rehearsal is unavailable here."
+      }
+    },
+    {
+      "case": "native open missing identity",
+      "method": "POST",
+      "path": "/api/flings/native/open",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Sign in with ChatGPT to open your organizer workspace."
+      }
+    },
+    {
+      "case": "native open missing origin",
+      "method": "POST",
+      "path": "/api/flings/native/open",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Open this action from the Flings page."
+      }
+    },
+    {
+      "case": "native open foreign origin",
+      "method": "POST",
+      "path": "/api/flings/native/open",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Open this action from the Flings page."
+      }
+    },
+    {
+      "case": "native open missing marker",
+      "method": "POST",
+      "path": "/api/flings/native/open",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Open your organizer workspace."
+      }
+    },
+    {
+      "case": "exchange missing origin",
+      "method": "POST",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Open this action from the Flings page."
+      }
+    },
+    {
+      "case": "exchange foreign origin",
+      "method": "POST",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Open this action from the Flings page."
+      }
+    },
+    {
+      "case": "exchange missing marker",
+      "method": "POST",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 403,
+      "expectedStatus": 403,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Open your member link."
+      }
+    },
+    {
+      "case": "exchange malformed code",
+      "method": "POST",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "This member link is unavailable. Ask an organizer for a recent link."
+      }
+    },
+    {
+      "case": "exchange unknown well formed code",
+      "method": "POST",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "This member link is unavailable. Ask an organizer for a recent link."
+      }
+    },
+    {
+      "case": "exchange unknown gathering",
+      "method": "POST",
+      "path": "/api/flings/00000000-0000-4000-8000-000000000000/exchange",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "This member link is unavailable. Ask an organizer for a recent link."
+      }
+    },
+    {
+      "case": "client identity ignored by status",
+      "method": "GET",
+      "path": "/api/flings/native/status",
+      "status": 200,
+      "expectedStatus": 200,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "native": true,
+        "rehearsal": false,
+        "signedIn": false,
+        "email": ""
+      }
+    },
+    {
+      "case": "client identity cannot read organizer",
+      "method": "GET",
+      "path": "/api/flings/workspace/organizer",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Sign in with ChatGPT to open your organizer workspace."
+      }
+    },
+    {
+      "case": "client identity cannot open organizer",
+      "method": "POST",
+      "path": "/api/flings/native/open",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Sign in with ChatGPT to open your organizer workspace."
+      }
+    },
+    {
+      "case": "forged member cookie denied",
+      "method": "GET",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "This member link is unavailable. Ask an organizer for a recent link."
+      }
+    },
+    {
+      "case": "forged preview ticket denied",
+      "method": "GET",
+      "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 401,
+      "expectedStatus": 401,
+      "redirect": false,
+      "applicationCookieIssued": false,
+      "responseContentType": "application/json",
+      "passed": true,
+      "cacheControl": "no-store, private",
+      "referrerPolicy": "no-referrer",
+      "nosniff": true,
+      "response": {
+        "error": "Organizer access is unavailable."
+      }
+    }
+  ],
+  "passed": 26,
+  "total": 26,
+  "client": {
+    "python": "3.9.6",
+    "library": "urllib.request (standard library)",
+    "os": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "limitations": [
+    "HTTP checks only; no signed-out member browser journey",
+    "No valid member code exchanged and no independent organizer sign-in",
+    "No revocation, expiry, concurrency, rollback, rate-limit threshold or managed recovery proof",
+    "Three member exchange attempts may update rate-limit counters; no database before/after comparison",
+    "No application source, deployment, audience, production setting or message sending changed"
+  ]
+}

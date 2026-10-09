@@ -593,3 +593,16 @@ uses fresh business IDs and cancels the unfinished message handoff. Fresh source
 exports have identical business records, and complete read-only database pages
 show no codes or sessions for the restored gathering. The separate fixture is
 retained; no app source or deployment changed. Phase 6 and its todo remain open.
+
+
+## October 9 hosted public access receipt (UTC)
+
+`notes/hosted-public-access-20261009.md` adds 26 public HTTPS checks without a
+platform gateway credential or account session. Public HTML documents loaded;
+protected reads, native enrollment, local rehearsal, malformed/unknown member
+codes and fabricated sessions/previews were denied. A client-supplied native
+identity header pair did not authenticate, and origin/route-marker checks
+rejected their targeted invalid requests. This is HTTP evidence, not a valid
+signed-out member browser journey or independent organizer acceptance.
+The existing Phase 6 item remains actionable; managed recovery and the rest
+of the hosted matrix remain open.

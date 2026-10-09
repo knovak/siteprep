@@ -25,6 +25,9 @@
   invitation in a separate gathering, with fresh business IDs and canceled
   message history. Source records remain unchanged; the restored gathering
   has no member codes or sessions. Native preview screenshots were captured.
+- Twenty-six hosted public HTTP checks cover missing identity, origin/marker
+  enforcement and fabricated credentials. Client-supplied identity headers
+  granted no access; all API responses retained private/no-store headers.
 
 ## Remaining work
 
