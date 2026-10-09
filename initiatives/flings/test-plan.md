@@ -548,3 +548,15 @@ private/no-store, no-referrer and nosniff headers. The three exchange attempts
 may change rate-limit counters. No valid member exchange, independent account,
 expiry/revocation, concurrency, rollback, rate-limit-threshold or browser
 acceptance is claimed; full Phase 6 remains open.
+
+
+## October 9 hosted browser zoom receipt (UTC)
+
+`notes/hosted-zoom-20261009.md` and its structured receipt add six targeted
+T4/T12 layout observations at native Chrome 200% and 400% page zoom.
+Organizer, event editor and accepted preview have no horizontal document
+overflow; only two intentionally clipped checkbox backing inputs extend to
+x=-1. Editor entry and cancel return focus at both zoom levels, and the
+preview retains exact UTC endpoints and a disabled profile fieldset. A partial
+Tab walk stopped at a native date-time input and is not counted as a pass.
+This is page zoom, not text-only or complete accessibility acceptance.

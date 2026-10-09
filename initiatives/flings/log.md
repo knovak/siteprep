@@ -382,3 +382,10 @@ acceptance receipt. The full hosted item remains open.
   was issued; rejected exchanges may update rate-limit counters. See
   `notes/hosted-public-access-20261009.md`. No app source, deployment, access or
   sending change; Phase 6 and `verify-hosted-test` remain open.
+
+- 2026-10-09 (UTC): Recorded six hosted Chrome page-zoom checks at 200% and
+  400%, including repeated-hour offsets, event-editor entry/cancel focus and
+  accepted read-only preview. Documents fit horizontally; a partial native
+  date-time Tab walk is explicitly excluded. Restored normal zoom and closed
+  temporary tabs; no business forms, sending, app source, deployment or access
+  changed. See `notes/hosted-zoom-20261009.md`. Phase 6 remains open.

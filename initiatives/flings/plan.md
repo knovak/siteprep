@@ -606,3 +606,14 @@ rejected their targeted invalid requests. This is HTTP evidence, not a valid
 signed-out member browser journey or independent organizer acceptance.
 The existing Phase 6 item remains actionable; managed recovery and the rest
 of the hosted matrix remain open.
+
+
+## October 9 hosted browser zoom receipt (UTC)
+
+`notes/hosted-zoom-20261009.md` adds six Chrome page-zoom observations at
+200% and 400% across organizer, event editor and accepted-member preview.
+Documents fit horizontally, endpoint offsets remain visible, and targeted
+keyboard open/cancel actions return focus correctly. No business forms were
+submitted; zoom was restored. Text-only zoom, full keyboard/screen-reader
+acceptance, independent accounts and managed recovery remain open. Phase 6
+and `verify-hosted-test` remain actionable.
