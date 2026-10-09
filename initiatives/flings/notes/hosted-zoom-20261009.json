@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-09",
+  "sourceCommit": "acbdc79fefd532b673a48802f0d860fd5b92eeab",
+  "site": "https://flings-test.ken-novak.chatgpt.site",
+  "deployment": {
+    "recordedVersion": 16,
+    "metadataQueriedThisRun": false,
+    "redeployed": false
+  },
+  "environment": {
+    "browser": "Google Chrome",
+    "version": "154.0.8037.98",
+    "os": "macOS 26.6.2",
+    "osBuild": "25G83",
+    "identity": "Existing native owner session"
+  },
+  "fixture": {
+    "gatheringId": "7149a04f-4100-4d26-8db4-de35042a7e85",
+    "membershipId": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+    "invitationState": "accepted"
+  },
+  "method": "Native Chrome View/Zoom controls; percentages verified in native AX tree and by devicePixelRatio. Read-only DOM geometry plus viewport screenshot inspection.",
+  "observations": [
+    {
+      "surface": "organizer",
+      "zoomPercent": 200,
+      "devicePixelRatio": 2,
+      "innerWidth": 600,
+      "innerHeight": 594,
+      "clientWidth": 592,
+      "scrollWidth": 592,
+      "measuredControls": 42,
+      "hiddenCheckboxInputsOutsideViewport": 2,
+      "otherControlsOutsideViewport": 0,
+      "bothOffsetsPresent": true
+    },
+    {
+      "surface": "event-editor",
+      "zoomPercent": 200,
+      "devicePixelRatio": 2,
+      "innerWidth": 600,
+      "innerHeight": 594,
+      "clientWidth": 592,
+      "scrollWidth": 592,
+      "measuredControls": 56,
+      "hiddenCheckboxInputsOutsideViewport": 2,
+      "otherControlsOutsideViewport": 0,
+      "bothOffsetsPresent": true,
+      "focusOnOpen": "author-title",
+      "focusOnCancel": "Edit Fictional repeated-hour screening"
+    },
+    {
+      "surface": "accepted-preview",
+      "zoomPercent": 200,
+      "devicePixelRatio": 2,
+      "innerWidth": 600,
+      "innerHeight": 594,
+      "clientWidth": 592,
+      "scrollWidth": 592,
+      "measuredControls": 6,
+      "hiddenCheckboxInputsOutsideViewport": 0,
+      "otherControlsOutsideViewport": 0,
+      "bothOffsetsPresent": true,
+      "profileDisabledByFieldset": true,
+      "timeValues": [
+        "2026-11-01T08:30:00.000Z",
+        "2026-11-01T09:15:00.000Z"
+      ]
+    },
+    {
+      "surface": "organizer",
+      "zoomPercent": 400,
+      "devicePixelRatio": 4,
+      "innerWidth": 300,
+      "innerHeight": 297,
+      "clientWidth": 296,
+      "scrollWidth": 296,
+      "measuredControls": 42,
+      "hiddenCheckboxInputsOutsideViewport": 2,
+      "otherControlsOutsideViewport": 0,
+      "bothOffsetsPresent": true
+    },
+    {
+      "surface": "event-editor",
+      "zoomPercent": 400,
+      "devicePixelRatio": 4,
+      "innerWidth": 300,
+      "innerHeight": 297,
+      "clientWidth": 296,
+      "scrollWidth": 296,
+      "measuredControls": 56,
+      "hiddenCheckboxInputsOutsideViewport": 2,
+      "otherControlsOutsideViewport": 0,
+      "bothOffsetsPresent": true,
+      "focusOnOpen": "author-title",
+      "focusOnCancel": "Edit Fictional repeated-hour screening"
+    },
+    {
+      "surface": "accepted-preview",
+      "zoomPercent": 400,
+      "devicePixelRatio": 4,
+      "innerWidth": 300,
+      "innerHeight": 297,
+      "clientWidth": 296,
+      "scrollWidth": 296,
+      "measuredControls": 6,
+      "hiddenCheckboxInputsOutsideViewport": 0,
+      "otherControlsOutsideViewport": 0,
+      "bothOffsetsPresent": true,
+      "profileDisabledByFieldset": true,
+      "timeValues": [
+        "2026-11-01T08:30:00.000Z",
+        "2026-11-01T09:15:00.000Z"
+      ]
+    }
+  ],
+  "hiddenInputExplanation": {
+    "count": 2,
+    "type": "checkbox",
+    "ariaHidden": "true",
+    "tabIndex": "-1",
+    "size": [
+      1,
+      1
+    ],
+    "left": -1,
+    "right": 0,
+    "style": "clip-path: inset(50%); position: fixed; margin: -1px"
+  },
+  "cleanup": {
+    "zoomPercent": 100,
+    "devicePixelRatio": 1,
+    "innerWidth": 1200,
+    "innerHeight": 1189,
+    "clientWidth": 1185,
+    "scrollWidth": 1185,
+    "temporaryTabsClosed": true
+  },
+  "limits": [
+    "Page zoom, not text-only enlargement.",
+    "Partial Tab walk stopped at native date-time input; no full sequential keyboard pass claimed.",
+    "Single browser, owner identity and accepted preview; no signed-out member or independent-organizer proof.",
+    "Controls fit horizontally; long single-line input values still scroll within their inputs.",
+    "Host edit toolbar overlays part of the viewport; it was excluded from application-control measurements.",
+    "Screenshots inspected in the session but not saved as repository artifacts.",
+    "No business form submitted, message prepared/sent, membership changed or deployment/access altered; no database before/after comparison."
+  ]
+}

@@ -28,11 +28,15 @@
 - Twenty-six hosted public HTTP checks cover missing identity, origin/marker
   enforcement and fabricated credentials. Client-supplied identity headers
   granted no access; all API responses retained private/no-store headers.
+- Six hosted Chrome observations at 200% and 400% page zoom cover organizer,
+  event editor and accepted preview. Documents fit horizontally, event offsets
+  remain visible, and editor entry/cancel focus works at both levels.
 
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, the remaining
-hosted acceptance matrix, accessibility and interruption/restart checks.
+hosted acceptance matrix, text-only zoom, full keyboard/screen-reader and
+interruption/restart checks.
 Managed-host backup retention and database recovery/deletion remain
 unverified. Development-toolchain remediation and the authorized pilot follow;
 the current JSON recovery approach adds no new backup service.
