@@ -12,13 +12,14 @@
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script defer src="../../../../shared/standard_map/standard_map.js"></script>
   <script defer src="../../assets/package-map.js"></script>
+  <script defer src="../../assets/package-table.js"></script>
 </head>
 <body>
 <header class="card">
   <div class="card-header"><a href="../../index.html" class="tag">Eclipse 2027</a><h1>Package options</h1><p class="meta">Total solar eclipse · Monday 2 August 2027</p></div>
   <div class="card-content"><p>Land tours, hotel stays and boats with published available space. Availability and reviews checked <time datetime="2026-10-10">10 October 2026 (UTC)</time>.</p>
   <div class="highlight"><strong>35 available offers across five countries.</strong> These are public availability statements and booking selections, not reservations. Exact cabin, room, party size and final viewing arrangements still need confirmation when booking.</div>
-  <div class="country-links"><a href="#spain">Spain · 3</a><a href="#morocco">Morocco · 3</a><a href="#algeria">Algeria · 2</a><a href="#tunisia">Tunisia · 3</a><a href="#egypt">Egypt · 24</a></div></div>
+  <div class="country-links"><a href="#spain">Spain · 3</a><a href="#morocco">Morocco · 3</a><a href="#algeria">Algeria · 2</a><a href="#tunisia">Tunisia · 3</a><a href="#egypt">Egypt · 24</a><a class="comparison-jump" href="#package-comparison">Compare all packages <span aria-hidden="true">↓</span></a></div></div>
 </header>
 <main class="card"><div class="card-content"><h2 id="basic-info">Basic Info</h2>
 <p>The eclipse is on <strong>Monday 2 August 2027</strong>. Totality crosses parts of southern Spain and northern Africa; the exact viewing coordinates matter. A hotel elsewhere in the same country can be outside totality. Use the <a href="https://www.timeanddate.com/eclipse/solar/2027-august-2">astronomical path and local predictions</a>, rather than a tour’s generic country label.</p>
@@ -324,6 +325,26 @@
 <h3 id="dabuka-reviews">Dabuka review assessment</h3>
 <p>This assessment applies to every Dabuka package above. The matching <a href="https://www.tripadvisor.com/Attraction_Review-g294201-d16693538-Reviews-Dabuka_Travel_Visions-Cairo_Cairo_Governorate.html">Dabuka Travel Visions Tripadvisor profile</a> shows 4.9/5 from 22 reviews. Detailed accounts praise personalized planning, guides/drivers, desert logistics, camp meals and the crew/food on Dabuka Blue. The sample is small and covers other routes. A 2025 account reports that permissions prevented an intended desert camping experience, so advertised camp/site access should be confirmed. These reviews support the operator’s general experience, not each 2027 hotel, camp or boat allocation.</p>
 <p>Dabuka’s newer offers commonly require a <strong>50% non-refundable deposit</strong> and the balance by <strong>2 January 2027</strong>, with a 96% cancellation charge from January. Some older product pages still show 20% deposits or different earlier cancellation scales; obtain the applicable written terms for the chosen departure. Published camp durations and some itinerary dates/locations are inconsistent. The map shows regions rather than invented camp coordinates.</p>
+<h2 id="package-comparison" tabindex="-1">Package comparison</h2>
+<div class="package-comparison">
+  <div class="comparison-intro"><span class="comparison-count" id="comparison-count"></span><p>Click a column heading to sort; click a package name for its full assessment.</p></div>
+  <p class="comparison-key" id="comparison-key">Rank summarizes the existing review evidence: <strong>High</strong> — larger review sample; <strong>Medium</strong> — limited or mixed supporting evidence; <strong>Low</strong> — missing, outdated or weak matching evidence. Prices sort within their original currency by the first listed full fare.</p>
+  <div class="comparison-scroll" role="region" aria-label="Sortable package comparison" tabindex="0">
+    <table class="comparison-table" aria-describedby="comparison-key">
+      <caption class="comparison-sr-only">All packages on this page, summarized from the existing descriptions and review assessments.</caption>
+      <thead><tr>
+        <th scope="col" aria-sort="none"><button type="button" data-sort="name">Package <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+        <th scope="col" aria-sort="none"><button type="button" data-sort="country">Country <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+        <th scope="col" aria-sort="none"><button type="button" data-sort="price">Price <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+        <th scope="col" aria-sort="none"><button type="button" data-sort="reviews">Reviews <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+        <th scope="col" aria-sort="none"><button type="button" data-sort="rank">Rank <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+      </tr></thead>
+      <tbody id="package-comparison-rows"></tbody>
+    </table>
+  </div>
+  <p class="comparison-sr-only" id="comparison-sort-status" role="status" aria-live="polite"></p>
+  <noscript><p>Enable JavaScript to view and sort the comparison table. All package information remains in the descriptions above.</p></noscript>
+</div>
 <h2 id="maps">Package location maps</h2>
 <p>Markers cover the viewing regions and named itinerary/stay locations mentioned here. Regional/city pins are approximate orientation points; they are not promised viewing coordinates or a drawn eclipse path. In particular, the offshore Tunisia marker is approximate and every unspecified desert camp still needs operator coordinates.</p>
 <h3>OpenStreetMap</h3><div id="eclipse-map-osm" class="map-container"></div><div id="eclipse-legend-osm" class="map-legend"></div>
