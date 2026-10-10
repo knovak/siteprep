@@ -107,6 +107,23 @@ its operator's exact advertised duration has not been recalculated here.
 
 ## Future user-requested refresh
 
+The sortable comparison above the package maps is rendered by
+`assets/package-table.js` directly from the main page's package entries. Keep
+the `.package-list`, persistent `package-###` IDs, country headings,
+`.package-meta` / `Price:` labels, `Reviews:` paragraphs and shared review
+assessment anchors when updating the prose. Adding, removing, promoting or
+editing a package then updates the table automatically on page load; do not
+maintain a separate table dataset or manually authored table rows.
+
+The table's review phrases are excerpts of those same assessments, including
+the shared RJ/Dabuka assessments. High/Medium/Low ranks describe review evidence,
+not a new tour rating: explicitly missing, outdated or weak matching evidence
+is Low; a stated sample of at least 50 reviews/ratings is High; other supporting
+evidence is Medium. Missing/weak evidence takes precedence over sample size.
+Check that the extraction and classification still fit any changed assessment.
+Price sorting groups original currencies and uses the first listed full fare,
+preserving room/party qualifications and all other prices in the displayed text.
+
 1. Read both `sections/package-options/overview.html` and
    `sections/package-options/overview-reject.html` before assigning IDs or
    restoring a lead. Three-digit item IDs persist through changes and restoration.
@@ -121,8 +138,10 @@ its operator's exact advertised duration has not been recalculated here.
    If the user later personally rejects an item, mark that separately and do not
    restore it without their request. When moving an unchanged holding record,
    preserve its markup and ID; update outdated evidence explicitly.
-5. Update the count, checked date and affected map locations. Follow AGENTS.md
-   for the build, screenshot and ready-for-review PR.
+5. Update the count, checked date and affected map locations. Verify that the
+   generated comparison has one row for every current package, with matching
+   price, country and review evidence; check all five sort controls. Follow
+   AGENTS.md for the build, screenshot and ready-for-review PR.
 
 No ongoing research automation was requested or created. The user will choose
 that schedule later. PR check-ins follow the separate two-check-in maximum in
