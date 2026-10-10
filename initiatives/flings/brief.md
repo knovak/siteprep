@@ -31,6 +31,11 @@
 - Six hosted Chrome observations at 200% and 400% page zoom cover organizer,
   event editor and accepted preview. Documents fit horizontally, event offsets
   remain visible, and editor entry/cancel focus works at both levels.
+- Twenty-three public HTTP checks with a valid fictional member link cover
+  exchange without ChatGPT identity, protected 35-day session cookies,
+  accepted event data and organizer/cross-gathering/CSRF denials. Complete D1
+  comparisons preserve six tables and prior sessions; three new sessions
+  include one documented harness preflight. The new review remains unapproved.
 
 ## Remaining work
 
