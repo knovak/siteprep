@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>US West | US West</title>
+  <meta name="siteprep-version-root" content="../../">
+<link rel="stylesheet" href="./assets/styles.css"><link rel="manifest" href="../../manifest.webmanifest"><script src="./assets/scripts.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""><link rel="stylesheet" href="../../shared/standard_map/standard_map.css"></head>
+<body><article class="card"><div class="card-header"><a href="./index.html" class="tag">US West</a><h1>US West</h1><p class="meta">Option deck</p></div><div class="card-content">
+<h2>Table of Contents</h2><ul class="toc-grid"><li class="toc-item"><a class="toc-link" href="./sections/jackson-hole/overview.html"><h3>Jackson Hole</h3><p>Undated town and valley essentials, parks, and activities.</p></a></li></ul>
+<h2>Map</h2><p>Approximate location pins for the places above. Select a legend entry to zoom in.</p><h3>OpenStreetMap</h3><div id="us-west-map-osm" class="map-container"></div><div id="us-west-legend-osm" class="map-legend"></div><h3>OpenTopoMap</h3><div id="us-west-map-topo" class="map-container"></div><div id="us-west-legend-topo" class="map-legend"></div></div></article>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script><script src="../../shared/standard_map/standard_map.js"></script><script>
+const locations=[{"name": "Jackson Hole", "lat": 43.4799, "lng": -110.7624, "icon": "📍", "color": "#2471a3"}];
+const maps=StandardMap.render({locations,osmMapId:'us-west-map-osm',osmLegendId:'us-west-legend-osm',topoMapId:'us-west-map-topo',topoLegendId:'us-west-legend-topo'});
+</script>
+  <footer class="site-footer" data-version="main" data-root="../../" data-deck="index.html">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body></html>
