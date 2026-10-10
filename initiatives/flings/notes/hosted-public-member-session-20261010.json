@@ -1,0 +1,576 @@
+{
+  "started_at": "2026-10-10T02:06:15.333333+00:00",
+  "origin": "https://flings-test.ken-novak.chatgpt.site",
+  "baseline": "3d007afbd9029f9f84fffdc1d5630201d9c07356",
+  "python": "3.9.6",
+  "fixture_fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+  "site_version": 16,
+  "site_access": "public",
+  "checks": [
+    {
+      "name": "anonymous native status",
+      "method": "GET",
+      "route": "/api/flings/native/status",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "session before code exchange",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 401,
+      "expected_status": 401,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "This member link is unavailable. Ask an organizer for a recent link.",
+      "pass": true
+    },
+    {
+      "name": "valid member exchange without ChatGPT identity",
+      "method": "POST",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": true,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true,
+      "cookie_attributes": {
+        "name": "flings_7149a04f-4100-4d26-8db4-de35042a7e85",
+        "path": "/",
+        "httponly": true,
+        "secure": true,
+        "samesite": "Strict",
+        "max_age_seconds": 3024000,
+        "host_only": true
+      }
+    },
+    {
+      "name": "member session lookup",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "accepted member projection",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "member coordination read",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72/coordination",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "organizer workspace denied",
+      "method": "GET",
+      "route": "/api/flings/workspace/organizer",
+      "status": 401,
+      "expected_status": 401,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Sign in with ChatGPT to open your organizer workspace.",
+      "pass": true
+    },
+    {
+      "name": "organizer gathering denied",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer",
+      "status": 401,
+      "expected_status": 401,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Sign in with ChatGPT to open your organizer workspace.",
+      "pass": true
+    },
+    {
+      "name": "other member projection denied",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b8dec1e3-0abe-4964-a1ab-b813d9e143c6",
+      "status": 409,
+      "expected_status": 409,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Access or the record changed. Reload and try again.",
+      "pass": true
+    },
+    {
+      "name": "other gathering session denied",
+      "method": "GET",
+      "route": "/api/flings/71a5d09b-6854-4e9e-9053-98a4c15dd2e5/session",
+      "status": 401,
+      "expected_status": 401,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "This member link is unavailable. Ask an organizer for a recent link.",
+      "pass": true
+    },
+    {
+      "name": "renamed cookie cannot cross gathering",
+      "method": "GET",
+      "route": "/api/flings/71a5d09b-6854-4e9e-9053-98a4c15dd2e5/session",
+      "status": 401,
+      "expected_status": 401,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "This member link is unavailable. Ask an organizer for a recent link.",
+      "pass": true
+    },
+    {
+      "name": "other gathering projection denied",
+      "method": "GET",
+      "route": "/api/flings/71a5d09b-6854-4e9e-9053-98a4c15dd2e5/member/b8dec1e3-0abe-4964-a1ab-b813d9e143c6",
+      "status": 409,
+      "expected_status": 409,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Access or the record changed. Reload and try again.",
+      "pass": true
+    },
+    {
+      "name": "valid code cannot exchange for other gathering",
+      "method": "POST",
+      "route": "/api/flings/71a5d09b-6854-4e9e-9053-98a4c15dd2e5/exchange",
+      "status": 401,
+      "expected_status": 401,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "This member link is unavailable. Ask an organizer for a recent link.",
+      "pass": true
+    },
+    {
+      "name": "profile write without CSRF denied",
+      "method": "PUT",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 403,
+      "expected_status": 403,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Reload this page before saving.",
+      "pass": true
+    },
+    {
+      "name": "profile write with forged CSRF denied",
+      "method": "PUT",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 403,
+      "expected_status": 403,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Reload this page before saving.",
+      "pass": true
+    },
+    {
+      "name": "profile write without Origin denied",
+      "method": "PUT",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 403,
+      "expected_status": 403,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Open this action from the Flings page.",
+      "pass": true
+    },
+    {
+      "name": "profile write with foreign Origin denied",
+      "method": "PUT",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 403,
+      "expected_status": 403,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Open this action from the Flings page.",
+      "pass": true
+    },
+    {
+      "name": "reopen valid link creates another session",
+      "method": "POST",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/exchange",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": true,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true,
+      "cookie_attributes": {
+        "name": "flings_7149a04f-4100-4d26-8db4-de35042a7e85",
+        "path": "/",
+        "httponly": true,
+        "secure": true,
+        "samesite": "Strict",
+        "max_age_seconds": 3024000,
+        "host_only": true
+      }
+    },
+    {
+      "name": "second-session CSRF cannot write through first session",
+      "method": "PUT",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 403,
+      "expected_status": 403,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "error": "Reload this page before saving.",
+      "pass": true
+    },
+    {
+      "name": "first session remains usable",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "second session is usable",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "member cookie grants no native identity",
+      "method": "GET",
+      "route": "/api/flings/native/status",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    },
+    {
+      "name": "profile unchanged after rejected writes",
+      "method": "GET",
+      "route": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/member/b9eaf437-9a6d-475b-b29e-9697012e5e72",
+      "status": 200,
+      "expected_status": 200,
+      "cache_control": "no-store, private",
+      "referrer_policy": "no-referrer",
+      "content_type_options": "nosniff",
+      "application_cookie_issued": false,
+      "other_cookie_names": [
+        "__cf_bm"
+      ],
+      "redirect": false,
+      "pass": true
+    }
+  ],
+  "fixture_member": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+  "projection_assertions": {
+    "accepted_activities": 1,
+    "events": 1,
+    "preview": false,
+    "starts": "2026-11-01T08:30:00.000Z",
+    "ends": "2026-11-01T09:15:00.000Z",
+    "zone": "America/Los_Angeles"
+  },
+  "all_passed": true,
+  "finished_at": "2026-10-10T02:06:19.885177+00:00",
+  "count": 23,
+  "database": {
+    "tables": [
+      {
+        "table": "assignments",
+        "before_count": 13,
+        "after_count": 13,
+        "all_rows_unchanged": true,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      },
+      {
+        "table": "codes",
+        "before_count": 4,
+        "after_count": 4,
+        "all_rows_unchanged": true,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      },
+      {
+        "table": "events",
+        "before_count": 11,
+        "after_count": 11,
+        "all_rows_unchanged": true,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      },
+      {
+        "table": "flings",
+        "before_count": 12,
+        "after_count": 12,
+        "all_rows_unchanged": true,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      },
+      {
+        "table": "invitations",
+        "before_count": 16,
+        "after_count": 16,
+        "all_rows_unchanged": true,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      },
+      {
+        "table": "members",
+        "before_count": 12,
+        "after_count": 12,
+        "all_rows_unchanged": true,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      },
+      {
+        "table": "sessions",
+        "before_count": 5,
+        "after_count": 8,
+        "all_rows_unchanged": false,
+        "complete_pages": [
+          {
+            "truncated": false,
+            "truncated_values": 0,
+            "omitted_columns": 0,
+            "omitted_rows": 0,
+            "next_offset": null
+          }
+        ]
+      }
+    ],
+    "new_sessions": [
+      {
+        "member_matches_fixture": true,
+        "fling_matches_fixture": true,
+        "created_at": "2026-10-10T02:05:48.985Z",
+        "expires_at": "2026-11-14T02:05:48.985Z",
+        "duration_ms": 3024000000
+      },
+      {
+        "member_matches_fixture": true,
+        "fling_matches_fixture": true,
+        "created_at": "2026-10-10T02:06:19.011Z",
+        "expires_at": "2026-11-14T02:06:19.011Z",
+        "duration_ms": 3024000000
+      },
+      {
+        "member_matches_fixture": true,
+        "fling_matches_fixture": true,
+        "created_at": "2026-10-10T02:06:16.064Z",
+        "expires_at": "2026-11-14T02:06:16.064Z",
+        "duration_ms": 3024000000
+      }
+    ],
+    "old_sessions_unchanged": true,
+    "checked_at": "2026-10-10T02:06:44.043Z"
+  },
+  "excluded_attempt": {
+    "requests_completed": 7,
+    "extra_session_created": 1,
+    "reason": "Harness expected \"the organizer workspace\" instead of the actual \"your organizer workspace\"; status was the expected 401. Corrected expected copy and reran. Platform __cf_bm cookies are recorded separately from application cookies."
+  },
+  "browser_preparation": {
+    "unapproved_message_reviews_created": 1,
+    "approved": false,
+    "exported_for_sending": false,
+    "sent": false,
+    "review_history_count_after": 2,
+    "screenshot": "screenshots/flings-public-member-session-20261010.jpg"
+  },
+  "limits": [
+    "HTTP client, not signed-out browser acceptance",
+    "No expiry-boundary or revocation acceptance",
+    "No successful write or concurrency/rollback checks",
+    "No independent second organizer or screen reader acceptance",
+    "No provider backup/recovery/deletion acceptance"
+  ]
+}

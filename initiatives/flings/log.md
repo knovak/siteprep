@@ -389,3 +389,7 @@ acceptance receipt. The full hosted item remains open.
   date-time Tab walk is explicitly excluded. Restored normal zoom and closed
   temporary tabs; no business forms, sending, app source, deployment or access
   changed. See `notes/hosted-zoom-20261009.md`. Phase 6 remains open.
+
+## 2026-10-10 — Verify hosted public member exchange, session scope and CSRF boundaries
+
+Recorded 23 passing public HTTP checks without ChatGPT identity: valid member exchange, protected fixed-lifetime cookies, repeated-link sessions, cross-gathering/organizer denial and rejected CSRF writes. Complete before/after D1 pages preserve profiles, events, invitations, gatherings, assignments and codes; three sessions added including one documented harness preflight. One fictional message review remains unapproved; nothing sent. Phase 6 and verify-hosted-test remain open.

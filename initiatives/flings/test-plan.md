@@ -560,3 +560,16 @@ x=-1. Editor entry and cancel return focus at both zoom levels, and the
 preview retains exact UTC endpoints and a disabled profile fieldset. A partial
 Tab walk stopped at a native date-time input and is not counted as a pass.
 This is page zoom, not text-only or complete accessibility acceptance.
+
+## October 10 hosted public member-session receipt (UTC)
+
+`notes/hosted-public-member-session-20261010.md` and its structured receipt
+add 23 T1/T2/T4 public HTTP checks with a valid fictional member credential and
+no ChatGPT identity. Successful exchanges and reads cover protected cookies,
+distinct repeated-link sessions, accepted state and exact event instants.
+Organizer and cross-scope requests fail, as do five writes with invalid CSRF
+or Origin. Complete D1 pages preserve all rows in six tables plus existing
+sessions; three new sessions include the excluded harness preflight and each
+has a fixed 35-day interval. The preparation created one unapproved fictional
+message review. This is HTTP evidence, not browser cookie enforcement,
+expiry/revocation, concurrency/rollback or full Phase 6 acceptance.
