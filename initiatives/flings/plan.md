@@ -617,3 +617,16 @@ keyboard open/cancel actions return focus correctly. No business forms were
 submitted; zoom was restored. Text-only zoom, full keyboard/screen-reader
 acceptance, independent accounts and managed recovery remain open. Phase 6
 and `verify-hosted-test` remain actionable.
+
+## October 10 hosted public member-session receipt (UTC)
+
+`notes/hosted-public-member-session-20261010.md` adds 23 public HTTP checks
+using a valid fictional member link without ChatGPT identity. Two exchanges
+issue separate protected 35-day sessions; accepted event data remains scoped,
+organizer/cross-gathering access is denied and five invalid-CSRF/origin writes
+are rejected. Complete D1 comparisons preserve six tables and existing sessions;
+three new sessions include one documented harness preflight. One additional
+fictional message review remains unapproved. Browser entry, expiry/revocation,
+independent accounts and the remaining hosted matrix still need acceptance;
+Phase 6 and `verify-hosted-test` stay actionable. No app source or deployment
+changed.
