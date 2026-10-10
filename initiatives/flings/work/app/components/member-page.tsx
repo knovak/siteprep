@@ -130,6 +130,20 @@ export default function MemberPage({
     setError('');
   }, [call, apply]);
   useEffect(() => {
+    const reopenLink = () => {
+      const fragment = new URLSearchParams(window.location.hash.slice(1));
+      if (!fragment.has('code') && !fragment.has('preview')) return;
+      // A fragment-only navigation does not remount this page. Start a new
+      // document so the normal entry path exchanges/scrubs the link and no
+      // previous member credentials, drafts or pending reads can carry over.
+      credentials.current = null;
+      apply(null);
+      window.location.reload();
+    };
+    window.addEventListener('hashchange', reopenLink);
+    return () => window.removeEventListener('hashchange', reopenLink);
+  }, [apply]);
+  useEffect(() => {
     if (started.current) return;
     started.current = true;
     // Capture in memory and remove immediately, before making any request.

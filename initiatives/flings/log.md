@@ -393,3 +393,13 @@ acceptance receipt. The full hosted item remains open.
 ## 2026-10-10 — Verify hosted public member exchange, session scope and CSRF boundaries
 
 Recorded 23 passing public HTTP checks without ChatGPT identity: valid member exchange, protected fixed-lifetime cookies, repeated-link sessions, cross-gathering/organizer denial and rejected CSRF writes. Complete before/after D1 pages preserve profiles, events, invitations, gatherings, assignments and codes; three sessions added including one documented harness preflight. One fictional message review remains unapproved; nothing sent. Phase 6 and verify-hosted-test remain open.
+
+
+- 2026-10-10 (UTC): Fixed member links reopened as fragment-only navigations:
+  the previous profile and code could remain until manual reload. A failing
+  regression now passes in six desktop/phone journeys across three engines;
+  all 177 application tests and typecheck pass. Refreshed existing public test
+  version 17 and verified valid reentry, invalid replacement and recovery.
+  See `notes/hosted-member-reentry-20261010.md` for the owner-session limitation
+  and one unapproved fictional review. No sends or production release; Phase 6
+  and `verify-hosted-test` remain open.

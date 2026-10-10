@@ -630,3 +630,16 @@ fictional message review remains unapproved. Browser entry, expiry/revocation,
 independent accounts and the remaining hosted matrix still need acceptance;
 Phase 6 and `verify-hosted-test` stay actionable. No app source or deployment
 changed.
+
+
+## October 10 member-link reentry correction (UTC)
+
+`notes/hosted-member-reentry-20261010.md` records a hosted fragment-navigation
+failure and its correction: a new code on an already open member page now
+reloads through the normal exchange/cleanup path. Six local three-engine
+journeys cover deliberate member switching, fresh sessions and invalid-link
+state clearing; all 177 application tests pass. Three hosted version 17 checks
+cover valid reentry, invalid replacement and recovery. The Mac was locked, so
+hosted observations retain native owner identity and do not establish signed-out
+browser acceptance. One fictional review remains unapproved; nothing was sent.
+The existing Phase 6 item remains actionable.
