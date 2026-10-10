@@ -6,45 +6,27 @@
 
 ## Done
 
-- Gatherings support invitations, events, discussions, polls, attributed
-  payments, reviewed message prompts, reported outcomes and selected retries.
-  Editable JSON backups restore separate gatherings with fresh identities and
-  no credentials; confirmed deletion removes active records.
-- Native ChatGPT organizer identity and interrupted-read recovery are
-  implemented. Hosted fictional checks cover populated recovery, invitation
-  visibility, stale edits, closure/reopening and preserved history.
-- Keyboard, layout, semantic and native-validation receipts record targeted
-  coverage and limits. Hosted event end-time checks cover invalid ordering,
-  daylight-saving gaps and repeated-hour save/edit/clear/restore behavior.
-- Event summaries show each endpoint's UTC offset. Six local three-engine
-  journeys and hosted organizer checks cover the display correction. Eight
-  additional hosted member/preview observations cover invited and accepted
-  states at desktop/phone widths, with acceptance surviving reload; these are
-  DOM/layout observations because screenshot capture was unavailable.
-- An edited hosted backup preserves the repeated-hour event and accepted
-  invitation in a separate gathering, with fresh business IDs and canceled
-  message history. Source records remain unchanged; the restored gathering
-  has no member codes or sessions. Native preview screenshots were captured.
-- Twenty-six hosted public HTTP checks cover missing identity, origin/marker
-  enforcement and fabricated credentials. Client-supplied identity headers
-  granted no access; all API responses retained private/no-store headers.
-- Six hosted Chrome observations at 200% and 400% page zoom cover organizer,
-  event editor and accepted preview. Documents fit horizontally, event offsets
-  remain visible, and editor entry/cancel focus works at both levels.
-- Twenty-three public HTTP checks with a valid fictional member link cover
-  exchange without ChatGPT identity, protected 35-day session cookies,
-  accepted event data and organizer/cross-gathering/CSRF denials. Complete D1
-  comparisons preserve six tables and prior sessions; three new sessions
-  include one documented harness preflight. The new review remains unapproved.
+- Gatherings support invitations, events, discussions, polls, payment records,
+  reviewed message prompts and reported outcomes. Editable JSON backups restore
+  separate gatherings with fresh identities and no credentials; confirmed
+  deletion removes active records.
+- Native organizer identity, interrupted-read recovery and targeted hosted
+  fictional workflows are implemented. Dated receipts cover recovery, scoped
+  public HTTP sessions, DST event persistence and offsets, keyboard focus,
+  native validation, semantic structure, layout and browser page zoom.
+- Reopening a member link in the same tab now clears the previous page and
+  exchanges the new link. Six local browser journeys cover member switching,
+  fresh sessions and invalid-link clearing; all 177 application tests pass.
+  Three hosted checks verify reentry, denial and recovery with owner identity
+  present. The fictional message review remains unapproved.
 
 ## Remaining work
 
-Phase 6 continues with independent second-organizer access, the remaining
-hosted acceptance matrix, text-only zoom, full keyboard/screen-reader and
-interruption/restart checks.
-Managed-host backup retention and database recovery/deletion remain
-unverified. Development-toolchain remediation and the authorized pilot follow;
-the current JSON recovery approach adds no new backup service.
+Phase 6 continues with independent second-organizer access, signed-out browser
+coverage, the remaining hosted acceptance matrix, full keyboard/screen-reader,
+text-only zoom and interruption/restart checks. Managed-host backup retention
+and database recovery/deletion remain unverified. Development-toolchain
+remediation and the authorized pilot follow.
 
 ## Optional later
 
