@@ -11,6 +11,8 @@ const base = process.env.FLINGS_TEST_URL || 'http://localhost:5187';
 const expect = baseExpect.configure({ timeout: 15000 });
 const receipts = [];
 for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
+  if (process.env.FLINGS_BROWSER && engine !== process.env.FLINGS_BROWSER)
+    continue;
   const browser = await type.launch();
   try {
     for (const viewport of [
@@ -114,6 +116,24 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
       );
       const rawCode = (await replace.json()).code;
       assert.ok(rawCode);
+      // Adding a new code to this same pathname is a fragment navigation,
+      // so React does not remount the member page by itself.
+      const revisit = await context.newPage();
+      await revisit.goto(base + '/f/outing/member');
+      await expect(revisit.getByLabel('Name', { exact: true })).toHaveValue(changed);
+      await revisit.goto(base + '/f/outing/member#code=' + rawCode);
+      await expect(revisit.getByLabel('Name', { exact: true })).toHaveValue('Robin Reed');
+      await expect.poll(() => new URL(revisit.url()).hash).toBe('');
+      const firstSession = (await context.cookies()).find((c) => c.name === 'flings_outing').value;
+      await revisit.goto(base + '/f/outing/member#code=' + rawCode);
+      await expect.poll(async () => (await context.cookies()).find((c) => c.name === 'flings_outing').value).not.toBe(firstSession);
+      await expect.poll(() => new URL(revisit.url()).hash).toBe('');
+      await expect(revisit.getByLabel('Name', { exact: true })).toHaveValue('Robin Reed');
+      await revisit.goto(base + '/f/outing/member#code=invalid-reopened-link');
+      await expect(revisit.getByRole('alert')).toContainText('This member link is unavailable');
+      await expect(revisit.getByLabel('Name', { exact: true })).toHaveCount(0);
+      await expect.poll(() => new URL(revisit.url()).hash).toBe('');
+      await revisit.close();
       const other = await context.newPage();
       await other.goto(base + '/f/outing/member#code=' + rawCode);
       await expect(other.getByLabel('Name', { exact: true })).toHaveValue(
@@ -164,6 +184,9 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
         passed: true,
         checks: [
           'fragment-cleanup',
+          'same-document-member-switch',
+          'reopened-link-creates-new-session',
+          'invalid-reopened-link-clears-profile',
           'two-fling-sessions',
           'profile-save-by-keyboard',
           'profile-isolation',
@@ -186,7 +209,7 @@ for (const [engine, type] of Object.entries({ chromium, firefox, webkit })) {
 }
 await mkdir('test/evidence', { recursive: true });
 await writeFile(
-  'test/evidence/browser.json',
+  process.env.FLINGS_EVIDENCE || 'test/evidence/browser.json',
   JSON.stringify(
     {
       recorded_at: new Date().toISOString(),

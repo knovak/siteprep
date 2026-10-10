@@ -748,3 +748,16 @@ for Event title and Payment description at desktop/phone widths in all three
 engines. Both suites accept `FLINGS_EVIDENCE` for a new dated receipt. These
 geometry checks are separate from a screen-reader walkthrough and full T12
 acceptance.
+
+
+## Reopening a member link in the same tab
+
+A new code or preview fragment on an already open member page triggers a full
+reload, so the normal entry path removes the fragment and exchanges/checks it.
+Previous profile drafts and child-panel state are discarded. Ordinary anchors
+are unchanged. This fixes fragment-only navigation retaining the previous member
+and displaying the new code in the URL. See `../../MEMBER_PROFILE_TECHDOC.md`.
+The local browser matrix now covers deliberate member switching, a fresh session
+when reopening the same link, and an invalid replacement hiding the prior profile.
+Use `FLINGS_EVIDENCE` to preserve a dated receipt and `FLINGS_BROWSER` to select
+one engine; the default still runs all three engines at desktop and phone widths.

@@ -25,3 +25,31 @@ The evidence override preserves earlier receipts; `FLINGS_BROWSER` can select
 one engine and each engine can use its own receipt filename. The hosted reproduction and
 separate deployment recheck are recorded in
 `notes/member-profile-focus-20260920.md`.
+
+
+## Member-link reentry
+
+`work/app/components/member-page.tsx` listens for `hashchange`. A new `code`
+or `preview` fragment on an already open member page clears the current
+credentials and profile, then reloads the document. The existing entry effect
+captures the fragment in memory, removes it with `history.replaceState`, and
+exchanges the code or checks the preview. A full document reload discards old
+profile drafts, child-panel state and outstanding reads. Ordinary anchors do
+not reload. No code or session lifetime changes.
+
+This handles a browser's same-document navigation: changing only the fragment
+does not remount React. Without the listener, the previous member could remain
+visible and the new capability stayed in the address bar until a manual reload.
+
+The local `work/app/test/browser.mjs` matrix checks another member's link in
+the same tab, a second exchange of that same link producing a distinct session,
+and an invalid replacement hiding the prior profile. It retains the existing
+two-fling, stale-tab, cookie, history and request/console checks. Run with the
+local fictional server and pinned dependencies:
+
+```sh
+FLINGS_EVIDENCE=test/evidence/member-link-reentry-20261010.json npm run test:browser
+```
+
+`FLINGS_BROWSER` optionally selects one engine. The evidence override preserves
+the original receipt. Neither option changes the test's assertions.

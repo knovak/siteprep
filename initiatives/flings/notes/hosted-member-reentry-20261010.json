@@ -1,0 +1,200 @@
+{
+  "recorded_at": "2026-10-10T10:24:17Z",
+  "baseline": "1430aa8de36cc46351c2764c7a00c0b19f2ca484",
+  "origin": "https://flings-test.ken-novak.chatgpt.site",
+  "fixture_fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+  "browser": "Codex in-app browser; existing native owner identity",
+  "before_version": 16,
+  "after_version": 17,
+  "before": [
+    {
+      "label": "valid-link-entry",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "reload-clean-url",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "second-tab-clean-url",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "back-to-member",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "back-after-forward",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "reopen-valid-link",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member#code=[redacted]",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "reload-after-same-document-link",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    }
+  ],
+  "after": [
+    {
+      "label": "fixed-reopen-valid-link",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    },
+    {
+      "label": "fixed-invalid-reopened-link",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "alert": "This member link is unavailable. Ask an organizer for a recent link.\n\nReturn to the rehearsals",
+      "profileCount": 0
+    },
+    {
+      "label": "fixed-valid-link-after-denial",
+      "url": "https://flings-test.ken-novak.chatgpt.site/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+      "accepted": true,
+      "clientWidth": 1265,
+      "heading": "Hosted end-time round trip \u2014 fictional \u2014 2026-10-06",
+      "scrollWidth": 1265,
+      "timeElements": [
+        {
+          "datetime": "2026-11-01T08:30:00.000Z",
+          "text": "Nov 1, 2026, 1:30 AM (UTC\u221207:00)"
+        },
+        {
+          "datetime": "2026-11-01T09:15:00.000Z",
+          "text": "Nov 1, 2026, 1:15 AM (UTC\u221208:00)"
+        }
+      ],
+      "viewportWidth": 1280
+    }
+  ],
+  "limits": [
+    "Not a signed-out hosted browser test: native browser unavailable while Mac locked.",
+    "No hosted cookie/session/database comparison or successful business form write.",
+    "Local six-browser-journey receipt separately verifies distinct sessions and deliberate member switching."
+  ],
+  "fixture_effects": [
+    "One unapproved fictional message review added, no approval or export or sending.",
+    "Valid link exchanges create member sessions; invalid attempt can update rate limiting.",
+    "No profile, invitation, event or access setting edited through hosted forms."
+  ]
+}
