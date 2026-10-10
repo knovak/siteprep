@@ -13,6 +13,7 @@ This repository holds experimental deck content and a simple static build pipeli
 - **australia-october-2026** – Minjerribah (North Stradbroke Island) planning for October 26–31, 2026.
 - **british-columbia** – Option deck for Vancouver, October 1–15, 2026, with VIFF film and music planning.
 - **egypt** – Option deck for Luxor, July 28–August 7, 2027, centered on the August 2 total solar eclipse.
+- **eclipse-2027** – Available land and boat eclipse packages for Spain, Morocco, Algeria, Tunisia and Egypt, with reviews and availability evidence.
 - **rockies** – Option deck for Jackson Hole stays in October and December 2026.
 - **ecuador** – Future planning for Ecuador, beginning with boat-based exploration of the Galápagos Islands.
 - **peru** – Future planning for Machu Picchu, the Sacred Valley, and Cusco alongside a Galápagos cruise.
