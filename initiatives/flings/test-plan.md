@@ -586,3 +586,16 @@ cover valid reentry, invalid replacement and recovery. The Mac was locked, so
 hosted observations retain native owner identity and do not establish signed-out
 browser acceptance. One fictional review remains unapproved; nothing was sent.
 The existing Phase 6 item remains actionable.
+
+## October 11 signed-out Chrome receipt (UTC)
+
+`notes/hosted-incognito-member-20261011.md` and its structured receipt record
+ten passing T1/T2/T4 checks in native Chrome Incognito on public test version 17.
+Before entry, organizer access requires sign-in and the clean member URL denies
+access. A valid fictional link opens the accepted member without login, cleans
+the fragment, survives reload and a second tab, and supports same-tab reentry.
+An invalid replacement clears private content; a valid link recovers it.
+Organizer routes remain denied afterward. Four transitional observations and
+one supplementary recovery observation are excluded from the ten-check count.
+No successful business write, cookie-attribute enforcement, expiry/revocation,
+history/cache, different-member/two-fling or complete Phase 6 claim is made.

@@ -403,3 +403,7 @@ Recorded 23 passing public HTTP checks without ChatGPT identity: valid member ex
   See `notes/hosted-member-reentry-20261010.md` for the owner-session limitation
   and one unapproved fictional review. No sends or production release; Phase 6
   and `verify-hosted-test` remain open.
+
+## 2026-10-11 — Verify signed-out Chrome member entry, reentry and organizer isolation
+
+Recorded ten passing native Chrome Incognito checks on public test version 17: signed-out entry, reload and second-tab session reuse, valid reentry, invalid-link clearing/recovery, and organizer-route denial. One fictional review remains unapproved; no business forms, sends, app source, deployment or audience changes. Four transitional observations are excluded. Phase 6 and verify-hosted-test remain actionable.
