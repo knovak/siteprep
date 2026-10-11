@@ -643,3 +643,14 @@ cover valid reentry, invalid replacement and recovery. The Mac was locked, so
 hosted observations retain native owner identity and do not establish signed-out
 browser acceptance. One fictional review remains unapproved; nothing was sent.
 The existing Phase 6 item remains actionable.
+
+## October 11 signed-out browser receipt (UTC)
+
+`notes/hosted-incognito-member-20261011.md` adds ten targeted native Chrome
+Incognito checks on test version 17. A fictional member enters without ChatGPT
+login, retains the accepted event through reload and a second tab, and recovers
+after an invalid replacement clears the page. Organizer workspace and direct
+gathering routes still require sign-in. One additional fictional review remains
+unapproved. This covers the basic signed-out Chrome entry gap; successful
+signed-out writes, multiple memberships, expiry/revocation, broader browser
+coverage, independent organizers and the rest of Phase 6 remain open.

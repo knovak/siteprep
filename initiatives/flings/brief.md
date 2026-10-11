@@ -16,17 +16,18 @@
   native validation, semantic structure, layout and browser page zoom.
 - Reopening a member link in the same tab now clears the previous page and
   exchanges the new link. Six local browser journeys cover member switching,
-  fresh sessions and invalid-link clearing; all 177 application tests pass.
-  Three hosted checks verify reentry, denial and recovery with owner identity
-  present. The fictional message review remains unapproved.
+  fresh sessions and invalid-link clearing. Ten hosted Chrome Incognito checks
+  now cover entry without ChatGPT login, reload and second-tab session reuse,
+  reentry, invalid-link clearing/recovery and continued organizer-route denial.
+  The additional fictional message review remains unapproved.
 
 ## Remaining work
 
-Phase 6 continues with independent second-organizer access, signed-out browser
-coverage, the remaining hosted acceptance matrix, full keyboard/screen-reader,
-text-only zoom and interruption/restart checks. Managed-host backup retention
-and database recovery/deletion remain unverified. Development-toolchain
-remediation and the authorized pilot follow.
+Phase 6 continues with independent second-organizer access, signed-out writes
+and multiple-membership/browser coverage, expiry/revocation, the remaining hosted
+matrix, full keyboard/screen-reader, text-only zoom and interruption/restart
+checks. Managed-host backup retention and database recovery/deletion remain
+unverified. Development-toolchain remediation and the authorized pilot follow.
 
 ## Optional later
 

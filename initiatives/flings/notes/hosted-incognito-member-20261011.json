@@ -1,0 +1,328 @@
+{
+  "recorded_at": "2026-10-11T02:05:30.725Z",
+  "baseline": "b3e24d6fbe57ee07c249a5dcd8c73e8354e43b98",
+  "origin": "https://flings-test.ken-novak.chatgpt.site",
+  "site_version": 17,
+  "audience": "public",
+  "method": "Native macOS Chrome Incognito accessibility observations and screenshots; owner uses a separate in-app browser for fixture preparation.",
+  "environment": {
+    "browser": "Google Chrome 154.0.8037.98",
+    "os": "macOS 26.6.2 (25G83)",
+    "viewport": "Native desktop window; no explicit viewport override"
+  },
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "excluded_transitional_observations": 4,
+    "supplementary_recovery_observations": 1
+  },
+  "checks": [
+    {
+      "check": "Organizer before entry",
+      "pass": true,
+      "evidence": "Incognito shows Sign in with ChatGPT; no gathering list."
+    },
+    {
+      "check": "Clean member URL before exchange",
+      "pass": true,
+      "evidence": "Generic unavailable-link page; no private member content."
+    },
+    {
+      "check": "Valid link entry",
+      "at": "2026-10-11T02:04:03.079Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "pass": true
+    },
+    {
+      "check": "Reload without fragment",
+      "at": "2026-10-11T02:04:03.809Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "pass": true
+    },
+    {
+      "check": "Second Incognito tab without fragment",
+      "at": "2026-10-11T02:04:07.946Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "pass": true
+    },
+    {
+      "check": "Reopen valid link in same tab settled",
+      "at": "2026-10-11T02:04:19.295Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "pass": true
+    },
+    {
+      "check": "Invalid replacement confirmed",
+      "at": "2026-10-11T02:04:49.026Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": true,
+      "organizerSignIn": false,
+      "pass": true
+    },
+    {
+      "check": "Recovery after confirmed invalid link",
+      "at": "2026-10-11T02:05:03.774Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "pass": true
+    },
+    {
+      "check": "Organizer workspace after member exchange",
+      "at": "2026-10-11T02:05:24.776Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": true,
+      "pass": true
+    },
+    {
+      "check": "Direct organizer gathering after member exchange",
+      "at": "2026-10-11T02:05:30.725Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": true,
+      "pass": true
+    }
+  ],
+  "observations": [
+    {
+      "check": "Organizer before entry",
+      "pass": true,
+      "evidence": "Incognito shows Sign in with ChatGPT; no gathering list."
+    },
+    {
+      "check": "Clean member URL before exchange",
+      "pass": true,
+      "evidence": "Generic unavailable-link page; no private member content."
+    },
+    {
+      "check": "Valid link entry",
+      "at": "2026-10-11T02:04:03.079Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Reload without fragment",
+      "at": "2026-10-11T02:04:03.809Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Second Incognito tab without fragment",
+      "at": "2026-10-11T02:04:07.946Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Reopen valid link in same tab",
+      "at": "2026-10-11T02:04:14.145Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "transitional": true
+    },
+    {
+      "check": "Reopen valid link in same tab settled",
+      "at": "2026-10-11T02:04:19.295Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Invalid replacement link",
+      "at": "2026-10-11T02:04:21.597Z",
+      "incognito": true,
+      "fragmentAbsent": false,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "transitional": true
+    },
+    {
+      "check": "Invalid replacement link settled",
+      "at": "2026-10-11T02:04:25.493Z",
+      "incognito": true,
+      "fragmentAbsent": false,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "transitional": true
+    },
+    {
+      "check": "Valid link recovery",
+      "at": "2026-10-11T02:04:26.920Z",
+      "incognito": true,
+      "fragmentAbsent": false,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": false,
+      "transitional": true
+    },
+    {
+      "check": "Valid link recovery settled",
+      "at": "2026-10-11T02:04:44.264Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Invalid replacement confirmed",
+      "at": "2026-10-11T02:04:49.026Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": true,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Recovery after confirmed invalid link",
+      "at": "2026-10-11T02:05:03.774Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": true,
+      "accepted": true,
+      "offsets": true,
+      "saveProfile": true,
+      "unavailable": false,
+      "organizerSignIn": false
+    },
+    {
+      "check": "Organizer workspace after member exchange",
+      "at": "2026-10-11T02:05:24.776Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": true
+    },
+    {
+      "check": "Direct organizer gathering after member exchange",
+      "at": "2026-10-11T02:05:30.725Z",
+      "incognito": true,
+      "fragmentAbsent": true,
+      "memberVisible": false,
+      "accepted": false,
+      "offsets": false,
+      "saveProfile": false,
+      "unavailable": false,
+      "organizerSignIn": true
+    }
+  ],
+  "fixture_effects": {
+    "unapproved_reviews_added": 1,
+    "review_history_count_after_reload": 4,
+    "approval_or_send_attempted": false,
+    "business_forms_submitted": false,
+    "session_count_measured": false,
+    "database_comparison_performed": false,
+    "notes": "Link exchanges can create sessions; invalid requests can change rate-limit state. Review stayed awaiting review."
+  },
+  "cleanup": {
+    "incognito_window_closed": true,
+    "temporary_browser_tabs_closed": true,
+    "raw_link_saved_to_file": false
+  },
+  "limits": [
+    "No cookie attribute or SameSite/HttpOnly enforcement inspection",
+    "No expiry, revocation, multiple-member or two-fling acceptance",
+    "No successful signed-out business write",
+    "No history/cache, mobile, other-browser or full accessibility acceptance",
+    "No independent second-organizer, concurrency/rollback or managed-provider recovery acceptance"
+  ]
+}
