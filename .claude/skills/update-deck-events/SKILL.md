@@ -110,7 +110,11 @@ on the page as their own items stay where they are; removing them is the user's
 
 The venue's map marker uses the `lat` and `lng` from `venues.json` and the venue's
 name, and is added once per page however many items point at the venue. If the
-map already has a marker at that venue, do not add another.
+map already has a marker at that venue, do not add another. When `lat` and `lng`
+are `null`, look the position up and write it back to `venues.json`. A venue
+whose `address` is `null` has no fixed site - a caterer that cooks at partner
+venues - so each of its events takes the address and marker of the place where
+it is held.
 
 ### Keeping `venues.json` current
 
@@ -125,8 +129,8 @@ Riverstage"). A request like that is handled on its own, without a full run.
 | `name` | The venue's own name |
 | `aliases` | The user's shorthand for it, such as `qpac`, so later requests can name it the same way |
 | `summary` | One line on what the venue is and what it hosts |
-| `address` | Street address, in both scripts where the country uses a non-Roman one |
-| `lat`, `lng` | Map marker position, from OpenStreetMap (Nominatim) or an existing marker - never estimated |
+| `address` | Street address, in both scripts where the country uses a non-Roman one; `null` for a venue with no fixed site |
+| `lat`, `lng` | Map marker position, from OpenStreetMap (Nominatim) or an existing marker - never estimated; `null` until looked up |
 | `website` | The venue's home page |
 | `calendar` | The page that lists dated upcoming events |
 | `notes` | How to read that calendar: a date filter, a ticketing site, a season, a JavaScript-only page |
@@ -138,8 +142,9 @@ source. If a venue name is ambiguous, ask the user which one they mean.
 
 During a run, when a `calendar` URL has moved or no longer lists events, find
 the venue's current calendar, update `calendar` (and `notes` if how to read it
-changed), and name the change in the report. Make no other change to the file
-during a run, and none at all under `--dry-run`.
+changed), and name the change in the report. Apart from that and filling in
+`null` coordinates, make no change to the file during a run, and none at all
+under `--dry-run`.
 
 ## 4. Search
 
@@ -282,8 +287,8 @@ back, and they are invisible on the page itself.
 - Never touch a `Past` deck, a deck outside the resolved scope, or anything under
   `initiatives/`.
 - Never add, remove, or rename a venue in `venues.json` unless the user asked
-  for it. A run may only replace a `calendar` URL that has moved, and its
-  `notes`.
+  for it. A run may only replace a `calendar` URL that has moved, with its
+  `notes`, and fill in `null` coordinates.
 - Never edit a topic other than Events, except to add a map marker for an event
   being added.
 - A second run straight after the first should change nothing. If it does, the
