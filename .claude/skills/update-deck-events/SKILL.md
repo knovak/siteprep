@@ -78,11 +78,11 @@ search and whatever that search turns up. The user asked for these venues by
 name, so their events are included even when the page is already full:
 
 1. **Read the calendar.** Open the venue's `calendar` URL and collect every
-   event whose dates fall in or overlap the window, using the date filter or
-   ticketing site that `notes` describes. When the calendar does not load or
-   shows no dates (a script-only page, a 403), search
-   `<venue> <city> <month> 2026` and the venue's ticketing pages instead, and
-   say in the report that the calendar was not read directly.
+   event whose dates fall in or overlap the window. Follow its `notes`: they say
+   when a date filter, a ticketing site, or a data feed reads better than the
+   page itself. When none of those works (a script-only page, a 403), search
+   `<venue> <city> <month> <year>` instead, and say in the report that the
+   calendar was not read directly.
 2. **Count distinct events, not performances.** A production with twenty
    performances in the window is one event, and so is an exhibition that is
    open throughout it.
@@ -98,7 +98,7 @@ the same sentence, and links the calendar - filtered to the window when the
 calendar supports it - with the address and a Google Maps link:
 
 ```html
-<li><strong>QPAC calendar, October 16–November 21 <span class="item-id">{574}</span>:</strong> More than five events at the Queensland Performing Arts Centre fall within these dates, including <em>The Lion King</em> and Opera Queensland's <em>Into the Woods</em>. <a href="https://www.qpac.com.au/whats-on" target="_blank" rel="noopener">QPAC calendar</a>. <strong>Address:</strong> Cnr Grey and Melbourne Streets, South Brisbane QLD 4101, Australia. <a href="https://www.google.com/maps/search/?api=1&amp;query=..." target="_blank" rel="noopener">Google Maps</a>.</li>
+<li><strong>QPAC calendar, October 16–November 21 <span class="item-id">{574}</span>:</strong> More than five events at the Queensland Performing Arts Centre fall within these dates, including <em>The Lion King</em> and Opera Queensland's <em>Into the Woods</em>. <a href="https://www.qpac.com.au/whats-on/this-season" target="_blank" rel="noopener">QPAC calendar</a>. <strong>Address:</strong> Cnr Grey and Melbourne Streets, South Brisbane QLD 4101, Australia. <a href="https://www.google.com/maps/search/?api=1&amp;query=..." target="_blank" rel="noopener">Google Maps</a>.</li>
 ```
 
 It is a numbered item like any other: promote and reject work on it, and its
@@ -132,8 +132,8 @@ Riverstage"). A request like that is handled on its own, without a full run.
 | `address` | Street address, in both scripts where the country uses a non-Roman one; `null` for a venue with no fixed site |
 | `lat`, `lng` | Map marker position, from OpenStreetMap (Nominatim) or an existing marker - never estimated; `null` until looked up |
 | `website` | The venue's home page |
-| `calendar` | The page that lists dated upcoming events |
-| `notes` | How to read that calendar: a date filter, a ticketing site, a season, a JavaScript-only page |
+| `calendar` | The page that lists dated upcoming events, and the one a calendar item links |
+| `notes` | How to read that calendar: a date filter, a ticketing site or data feed that can be fetched when the page cannot, a season, a JavaScript-only page |
 
 To add a venue, find its official calendar - the venue's own site first, its
 ticketing platform when that is where it lists events - and fetch it to confirm
