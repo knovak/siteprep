@@ -19,15 +19,19 @@
   fresh sessions and invalid-link clearing. Ten hosted Chrome Incognito checks
   now cover entry without ChatGPT login, reload and second-tab session reuse,
   reentry, invalid-link clearing/recovery and continued organizer-route denial.
-  The additional fictional message review remains unapproved.
+- Signed-out profile and invitation changes persist through reload and appear
+  to the organizer. Complete member/invitation table reads confirm restored
+  fixture values with advanced revisions and no changes to other rows. The
+  additional fictional message review remains unapproved.
 
 ## Remaining work
 
-Phase 6 continues with independent second-organizer access, signed-out writes
-and multiple-membership/browser coverage, expiry/revocation, the remaining hosted
-matrix, full keyboard/screen-reader, text-only zoom and interruption/restart
-checks. Managed-host backup retention and database recovery/deletion remain
-unverified. Development-toolchain remediation and the authorized pilot follow.
+Phase 6 continues with independent second-organizer access, signed-out
+discussion/poll/payment writes, multiple-membership/browser coverage,
+expiry/revocation, the remaining hosted matrix, full keyboard/screen-reader,
+text-only zoom and interruption/restart checks. Managed-host backup retention
+and database recovery/deletion remain unverified. Development-toolchain
+remediation and the authorized pilot follow.
 
 ## Optional later
 
