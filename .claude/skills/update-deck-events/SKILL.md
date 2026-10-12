@@ -1,6 +1,6 @@
 ---
 name: update-deck-events
-description: Refresh the Events topic of every current or future deck page that has a date range, by searching for festivals, fairs, religious celebrations, concerts, and theater happening in that place during that window and reconciling them against the events already on the page and on its reject page. Use when the user asks to update, refresh, or check deck events ("update the deck events", "find new events for the Rockies deck", "any new festivals for our October dates"), and for a scheduled sweep of upcoming decks.
+description: Refresh the Events topic of every current or future deck page that has a date range, by searching for festivals, fairs, religious celebrations, concerts, and theater happening in that place during that window and reconciling them against the events already on the page and on its reject page. Also checks the calendar of every entertainment venue listed for that place in venues.json, and maintains that list when the user adds, removes, or corrects a venue ("add the Tivoli to the Brisbane venues"). Use when the user asks to update, refresh, or check deck events ("update the deck events", "find new events for the Rockies deck", "any new festivals for our October dates"), and for a scheduled sweep of upcoming decks.
 ---
 
 # Refreshing deck events
@@ -9,6 +9,11 @@ Event listings go stale between the day a deck page is written and the day the
 trip happens: programs are published late, dates move, and things get added. This
 walks the decks that still lie ahead, finds what is newly known, and folds it
 into the page without disturbing the choices the user has already made there.
+
+Some places have venues the user follows closely - a performing arts centre, a
+concert hall, a pub with live music. Those are listed in
+[`venues.json`](venues.json), with the URL of each venue's events calendar, and
+every listed venue is checked for every window in its place (step 3).
 
 The two rules that matter most are subtractive. **Never reorder what is on the
 page** - a list that is out of date order is out of date order because the user
@@ -34,7 +39,7 @@ grep -l '"group": "\(Current\|Future\)"' decks/*/deck.json
 | `rockies` | That deck only, whatever its group |
 | `rockies/santa-fe` | That section page only |
 | `--include-option` | Adds `Option` decks to the default scope |
-| `--dry-run` | Search and report, change nothing |
+| `--dry-run` | Search and report, change nothing - `venues.json` included |
 
 `Option` decks are excluded by default because an option is not yet a trip. They
 are one word away when the user wants them, and naming a deck explicitly always
@@ -61,7 +66,87 @@ passing over it.
 The place is the section's own subject: its `<h1>`, the Basic Info topic, and the
 map's marker names. A section covering two towns is searched for both.
 
-## 3. Search
+## 3. Check the listed venues
+
+[`venues.json`](venues.json) groups venues into areas. A page is in an area when
+its `<h1>` names one of the area's `places`: `Boulder, Colorado` is in the
+`Colorado` area, and `Sunshine Coast, Queensland` is in the `Sunshine Coast`
+area. A page in no area skips this step.
+
+Every venue in the page's area is checked for every window, before the general
+search and whatever that search turns up. The user asked for these venues by
+name, so their events are included even when the page is already full:
+
+1. **Read the calendar.** Open the venue's `calendar` URL and collect every
+   event whose dates fall in or overlap the window. Follow its `notes`: they say
+   when a date filter, a ticketing site, or a data feed reads better than the
+   page itself. When none of those works (a script-only page, a 403), search
+   `<venue> <city> <month> <year>` instead, and say in the report that the
+   calendar was not read directly.
+2. **Count distinct events, not performances.** A production with twenty
+   performances in the window is one event, and so is an exhibition that is
+   open throughout it.
+3. **Five or fewer:** each event is a found event, and goes through step 5 like
+   one from the general search.
+4. **More than five:** the venue gets **one** calendar item for that window, and
+   none of its events is added on its own - by this step or by the general
+   search.
+
+A calendar item names the venue and the window in its label, says that more
+than five events fall within the dates, may name up to three of the largest in
+the same sentence, and links the calendar - filtered to the window when the
+calendar supports it - with the address and a Google Maps link:
+
+```html
+<li><strong>QPAC calendar, October 16–November 21 <span class="item-id">{574}</span>:</strong> More than five events at the Queensland Performing Arts Centre fall within these dates, including <em>The Lion King</em> and Opera Queensland's <em>Into the Woods</em>. <a href="https://www.qpac.com.au/whats-on/this-season" target="_blank" rel="noopener">QPAC calendar</a>. <strong>Address:</strong> Cnr Grey and Melbourne Streets, South Brisbane QLD 4101, Australia. <a href="https://www.google.com/maps/search/?api=1&amp;query=..." target="_blank" rel="noopener">Google Maps</a>.</li>
+```
+
+It is a numbered item like any other: promote and reject work on it, and its
+number is permanent. Once a page has a calendar item for a venue and window,
+it stands for all of that venue's events in that window on later runs, even if
+the count later falls to five or fewer. Events at the venue that were already
+on the page as their own items stay where they are; removing them is the user's
+`reject`.
+
+The venue's map marker uses the `lat` and `lng` from `venues.json` and the venue's
+name, and is added once per page however many items point at the venue. If the
+map already has a marker at that venue, do not add another. When `lat` and `lng`
+are `null`, look the position up and write it back to `venues.json`. A venue
+whose `address` is `null` has no fixed site - a caterer that cooks at partner
+venues - so each of its events takes the address and marker of the place where
+it is held.
+
+### Keeping `venues.json` current
+
+The venue list belongs to the user. Add, remove, or rename a venue or an area
+only when the user asks ("add the Tivoli to the Brisbane venues", "drop the
+Riverstage"). A request like that is handled on its own, without a full run.
+
+| Field | Holds |
+|---|---|
+| `area` | The user's name for the area |
+| `places` | Names matched against a page's `<h1>` |
+| `name` | The venue's own name |
+| `aliases` | The user's shorthand for it, such as `qpac`, so later requests can name it the same way |
+| `summary` | One line on what the venue is and what it hosts |
+| `address` | Street address, in both scripts where the country uses a non-Roman one; `null` for a venue with no fixed site |
+| `lat`, `lng` | Map marker position, from OpenStreetMap (Nominatim) or an existing marker - never estimated; `null` until looked up |
+| `website` | The venue's home page |
+| `calendar` | The page that lists dated upcoming events, and the one a calendar item links |
+| `notes` | How to read that calendar: a date filter, a ticketing site or data feed that can be fetched when the page cannot, a season, a JavaScript-only page |
+
+To add a venue, find its official calendar - the venue's own site first, its
+ticketing platform when that is where it lists events - and fetch it to confirm
+it shows dated events before writing the URL down. Fill in every field from a
+source. If a venue name is ambiguous, ask the user which one they mean.
+
+During a run, when a `calendar` URL has moved or no longer lists events, find
+the venue's current calendar, update `calendar` (and `notes` if how to read it
+changed), and name the change in the report. Apart from that and filling in
+`null` coordinates, make no change to the file during a run, and none at all
+under `--dry-run`.
+
+## 4. Search
 
 For each page and window, look for festivals, fairs, religious and civic
 celebrations, markets, concerts, theater, dance, film programs, and sporting
@@ -88,7 +173,7 @@ Rules for what may leave the search and reach the page:
   a source is left out.
 - Recurring weekly things (a Saturday market) count when they fall in the window.
 
-## 4. Reconcile against the page and its reject page
+## 5. Reconcile against the page and its reject page
 
 Read both files before deciding anything: `overview.html` and, if it exists,
 `overview-reject.html`.
@@ -108,6 +193,15 @@ slightly over-full one, and `AGENTS.md` asks for merged list items anyway.
 | On the reject page, adds significant detail | Update the item **on the reject page**, leave the page alone, and report it so the user can promote it back |
 | Nowhere | Add to the Events topic with a new number |
 
+A venue calendar item from step 3 matches an existing item for the same venue
+and window:
+
+| Calendar item | Action |
+|---|---|
+| On the page | Ignore, unless `venues.json` now has a different `calendar` URL - then update the link, keeping the number |
+| On the reject page | Add nothing for that venue in that window, neither a calendar item nor its events, and say so in the report |
+| Nowhere | Add it with a new number |
+
 **Significant detail** is a confirmed date or time where the page said "to be
 announced", a venue or address, a program or lineup, a ticket link, a booking
 deadline or price, a cancellation, or a date change. Rewording, marketing copy,
@@ -118,7 +212,7 @@ A rejected event never returns to the page on this skill's initiative, however
 good the new detail is. Rejection is a standing instruction; promotion is how
 the user reverses it.
 
-## 5. Write the changes
+## 6. Write the changes
 
 Keep each complete `<li>...</li>` on its own line in the HTML source, including
 existing items in a list being updated. Keep list wrapper tags off the item
@@ -144,12 +238,19 @@ Placement, which is where this skill can most easily do damage:
   date order** - the tail. Never above an item that is out of date order,
   because that item is there by promotion.
 - If the whole list is out of date order, append new items at the end.
+- A venue calendar item has no single date. Append it at the end of the list,
+  after the last dated item, in the order the venues appear in `venues.json`.
+  When deciding where a new dated item goes, ignore the calendar items at the
+  end of the list: the item goes above them.
 
-Keep a run proportionate: roughly eight new items per page is a full pass. When
-the search turns up more, add the largest, the free, and the ones unique to that
-place, and list the remainder in the report for the user to ask for.
+Keep a run proportionate: roughly eight new items per page from the general
+search is a full pass. When the search turns up more, add the largest, the free,
+and the ones unique to that place, and list the remainder in the report for the
+user to ask for. Events from the listed venues in step 3 do not count toward
+the eight and are never trimmed; the five-event rule there keeps each venue to
+a few lines.
 
-## 6. Report
+## 7. Report
 
 Per page, in one table:
 
@@ -157,12 +258,21 @@ Per page, in one table:
 |---|---|---|---|---|---|
 | `rockies/santa-fe` | 3 (`{712}`, `{188}`, `{406}`) | 1 (`{104}` - dates confirmed) | 1 (`{592}` - new venue) | 6 | - |
 
+For a page in a venue area, a second table with one row per listed venue:
+
+| Page | Venue | Events in window | Result |
+|---|---|---|---|
+| `australia-october-2026/brisbane` | QPAC | 9 | Calendar item `{574}` added |
+| | Brisbane Jazz Club | 4 | 2 added (`{233}`, `{870}`), 2 already on the page |
+| | The Tivoli | - | Calendar did not load; searched instead, 1 added (`{419}`) |
+
 Then, in prose: anything found whose dates are not yet published, anything that
-contradicts what was on the page, and anything trimmed for length. Name the
+contradicts what was on the page, anything trimmed for length, and any change
+made to `venues.json`. Name the
 reject-page updates explicitly - they are the items the user may want to promote
 back, and they are invisible on the page itself.
 
-## 7. Finish the run
+## 8. Finish the run
 
 - Run `npm run build` once, after the last edit.
 - Screenshot each changed page with `npm run screenshot`, per the build and
@@ -176,8 +286,11 @@ back, and they are invisible on the page itself.
 - Never renumber an item, and never reuse a retired number.
 - Never touch a `Past` deck, a deck outside the resolved scope, or anything under
   `initiatives/`.
+- Never add, remove, or rename a venue in `venues.json` unless the user asked
+  for it. A run may only replace a `calendar` URL that has moved, with its
+  `notes`, and fill in `null` coordinates.
 - Never edit a topic other than Events, except to add a map marker for an event
   being added.
 - A second run straight after the first should change nothing. If it does, the
-  matching in step 4 was too strict - most often a renamed annual edition that
+  matching in step 5 was too strict - most often a renamed annual edition that
   got added twice.

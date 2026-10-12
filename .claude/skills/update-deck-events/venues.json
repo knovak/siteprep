@@ -1,0 +1,349 @@
+{
+  "areas": [
+    {
+      "area": "Brisbane",
+      "places": [
+        "Brisbane"
+      ],
+      "venues": [
+        {
+          "name": "Queensland Performing Arts Centre (QPAC)",
+          "aliases": [
+            "qpac"
+          ],
+          "summary": "Queensland's main performing arts centre - Concert Hall, Lyric and Glasshouse Theatres, Playhouse, Cremorne Theatre - for opera, ballet, orchestras, musicals, theatre, and comedy.",
+          "address": "Cnr Grey and Melbourne Streets, South Brisbane QLD 4101, Australia",
+          "lat": -27.47464,
+          "lng": 153.01949,
+          "website": "https://www.qpac.com.au/",
+          "calendar": "https://www.qpac.com.au/whats-on/this-season",
+          "notes": "This Season is a dated list with the theatre for each event. The main https://www.qpac.com.au/whats-on/ page shows only featured items, and its date filter works only in a browser. Event pages are /whats-on/<year>/<slug>."
+        },
+        {
+          "name": "Riverstage",
+          "aliases": [
+            "riverstage"
+          ],
+          "summary": "Brisbane City Council's outdoor amphitheatre in the City Botanic Gardens, up to about 9,500 capacity, for major touring concerts and Carols in the City in December.",
+          "address": "59 Gardens Point Road, Brisbane City QLD 4000, Australia",
+          "lat": -27.47905,
+          "lng": 153.03005,
+          "website": "https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/venue-and-places/riverstage",
+          "calendar": "https://www.brisbane.qld.gov.au/events-arts-and-culture/what-s-on-in-brisbane/event-search?search=&when=&free=false&type=&series=&ages=&suburbs=&venues=Riverstage%2C%20Brisbane%20City&status=&subtypes=&dateFrom=&dateTo=&searchResults=true",
+          "notes": "The council event search loads by JavaScript; set dateFrom and dateTo for the window. For a fetchable dated list, read the council open-data API, refreshed daily: https://data.brisbane.qld.gov.au/api/explore/v2.1/catalog/datasets/riverstage-events/records?limit=50&order_by=start_datetime (dataset page https://data.brisbane.qld.gov.au/explore/dataset/riverstage-events/table/). Tickets are sold through Ticketmaster."
+        },
+        {
+          "name": "Brisbane Powerhouse",
+          "aliases": [
+            "powerhouse"
+          ],
+          "summary": "Converted power station arts centre on the river at New Farm, with theatre, comedy, cabaret, music, and festivals.",
+          "address": "119 Lamington Street, New Farm QLD 4005, Australia",
+          "lat": -27.46908,
+          "lng": 153.05439,
+          "website": "https://brisbanepowerhouse.org/",
+          "calendar": "https://brisbanepowerhouse.org/whats-on/",
+          "notes": "Dates are shown without the year. Festival and genre filters and Load more, but no date URL parameter."
+        },
+        {
+          "name": "Brisbane Showgrounds",
+          "aliases": [
+            "showgrounds"
+          ],
+          "summary": "RNA showgrounds and event precinct: the Ekka (Royal Queensland Show) each August, plus expos, trade shows, and festivals.",
+          "address": "600 Gregory Terrace, Bowen Hills QLD 4006, Australia",
+          "lat": -27.44997,
+          "lng": 153.03295,
+          "website": "https://www.brisbaneshowgrounds.com.au/",
+          "calendar": "https://www.brisbaneshowgrounds.com.au/whats-on",
+          "notes": "A short list with no filters and no years; it does not say which hall an event is in."
+        },
+        {
+          "name": "Gallery of Modern Art (GOMA)",
+          "aliases": [
+            "goma",
+            "QAGOMA"
+          ],
+          "summary": "Queensland's modern and contemporary art gallery, run with the Queensland Art Gallery next door as QAGOMA: long-running exhibitions, talks, family events, and the Australian Cinémathèque film program. Open daily 10-5.",
+          "address": "Stanley Place, South Brisbane QLD 4101, Australia",
+          "lat": -27.47054,
+          "lng": 153.01711,
+          "website": "https://www.qagoma.qld.gov.au/",
+          "calendar": "https://www.qagoma.qld.gov.au/whats-on/",
+          "notes": "Every qagoma.qld.gov.au page returns 403 to WebFetch and curl, so read dates from search results: \"GOMA\" or site:qagoma.qld.gov.au with the month. The calendar covers both QAG and GOMA; exhibitions are at https://www.qagoma.qld.gov.au/whats-on/exhibitions/ and films at https://www.qagoma.qld.gov.au/cinema/. Each exhibition open during the window counts as one event."
+        },
+        {
+          "name": "South Bank Piazza",
+          "aliases": [
+            "south bank piazza"
+          ],
+          "summary": "Covered open-air amphitheatre of about 2,000 seats in South Bank Parklands, used for Brisbane Festival shows, the Squash Australian Open, Regional Flavours, and Christmas events.",
+          "address": "Little Stanley Street, South Brisbane QLD 4101, Australia",
+          "lat": -27.47707,
+          "lng": 153.02145,
+          "website": "https://www.visitsouthbank.com.au/places/piazza",
+          "calendar": "https://www.visitsouthbank.com.au/whats-on",
+          "notes": "South Bank's calendar covers the whole parklands and has no location filter, and the Piazza's own page lists nothing, so search the calendar and the web for \"South Bank Piazza\" with the month. Narrower views: https://www.visitsouthbank.com.au/whats-on-this-week and https://www.visitsouthbank.com.au/whats-on-this-month."
+        },
+        {
+          "name": "Festival Village, South Bank (Brisbane Festival)",
+          "aliases": [
+            "south bank festival village",
+            "south bank town hall",
+            "South Bank Town Hall - Festival Village"
+          ],
+          "summary": "Brisbane Festival's free hub on the South Bank Cultural Forecourt, open only during the festival in September: the Village Green, the South Bank Town Hall talks and gig space, and the Magic Mirrors Spiegeltent.",
+          "address": "Cultural Forecourt, Stanley Street, South Brisbane QLD 4101, Australia",
+          "lat": -27.47427,
+          "lng": 153.02022,
+          "website": "https://www.brisbanefestival.com.au/festival-village-south-bank",
+          "calendar": "https://www.brisbanefestival.com.au/festival-info/venues/festival-village",
+          "notes": "Seasonal: the 2026 village ran September 4-26, so a window outside September will be empty. South Bank Town Hall is a space inside the village, listed at https://www.brisbanefestival.com.au/festival-info/venues/south-bank-town-hall-festival-village; count its events with the village's, not twice. All festival venues: https://www.brisbanefestival.com.au/festival-info/venues."
+        },
+        {
+          "name": "The Tivoli",
+          "aliases": [
+            "tivoli"
+          ],
+          "summary": "Historic live music theatre of about 1,200 capacity in Fortitude Valley: concerts, with some comedy and stage shows.",
+          "address": "52 Costin Street, Fortitude Valley QLD 4006, Australia",
+          "lat": -27.45229,
+          "lng": 153.03146,
+          "website": "https://thetivoli.com.au/",
+          "calendar": "https://thetivoli.com.au/events",
+          "notes": "A full dated list running months ahead; the This Week and This Month tabs may not filter. Each show has a page at /events/<slug>."
+        },
+        {
+          "name": "The West End Electric",
+          "aliases": [
+            "The West End Electric"
+          ],
+          "summary": "Strut & Fret's theatre and cabaret venue of 400-plus seats on the former Hi-Fi site, opened in 2024: cabaret, circus, comedy, and music. Open Wednesday to Sunday on show nights.",
+          "address": "125 Boundary Street, West End QLD 4101, Australia",
+          "lat": null,
+          "lng": null,
+          "website": "https://strutnfret.com/west-end-electric",
+          "calendar": "https://strutnfret.com/venues/the-west-end-electric",
+          "notes": "The venue page lists running shows without full dates; the Fever venue page gives each season's date range: https://feverup.com/m/736506. Shows run for long seasons, each counting as one event. Entrance on the Wilson Street side. Coordinates not yet looked up: OpenStreetMap had no entry for the venue."
+        },
+        {
+          "name": "Brisbane Entertainment Centre",
+          "aliases": [
+            "Brisbane Entertainment Centre",
+            "BEC"
+          ],
+          "summary": "Arena of about 13,500 in Boondall for major concerts, Brisbane Bullets NBL games, darts, WWE, and family shows. Tickets through Ticketek.",
+          "address": "1 Melaleuca Drive, Boondall QLD 4034, Australia",
+          "lat": -27.3427,
+          "lng": 153.06921,
+          "website": "https://www.brisent.com.au/",
+          "calendar": "https://www.brisent.com.au/events/",
+          "notes": "Name search and Load more only; the featured carousel at the top lists dates further ahead than the main list."
+        },
+        {
+          "name": "Brisbane Jazz Club",
+          "aliases": [
+            "Brisbane jazz club"
+          ],
+          "summary": "Long-running riverside jazz club in the Annie Street boathouse at Kangaroo Point, with gigs Thursday to Sunday and annual festivals. Reopened at Annie Street in May 2026 after building works.",
+          "address": "1 Annie Street, Kangaroo Point QLD 4169, Australia",
+          "lat": -27.46624,
+          "lng": 153.03405,
+          "website": "https://brisbanejazzclub.com.au/",
+          "calendar": "https://brisbanejazzclub.sales.ticketsearch.com/sales/events",
+          "notes": "Gigs are listed only on TicketSearch, which sits behind a Queue-Fair waiting room and renders by JavaScript, so a plain fetch shows nothing; search \"Brisbane Jazz Club\" with the month, and check the home page and https://brisbanejazzclub.com.au/festivals for festival dates. Individual gigs have TicketSearch salesevent pages."
+        },
+        {
+          "name": "The Brightside",
+          "aliases": [
+            "Brightside"
+          ],
+          "summary": "Live music venue of about 400 in a converted church in Fortitude Valley, plus the container-built Brightside Outdoors: indie, rock, electronic, and DJ nights.",
+          "address": "27 Warner Street, Fortitude Valley QLD 4006, Australia",
+          "lat": -27.45707,
+          "lng": 153.03506,
+          "website": "https://www.thebrightsidebrisbane.com.au/",
+          "calendar": "https://www.thebrightsidebrisbane.com.au/events",
+          "notes": "The list is loaded by JavaScript from Oztix, so a plain fetch shows no dates; use Songkick for a dated list, https://www.songkick.com/venues/2602538-brightside, and search musick.com.au. Each listing says whether it is indoors or at Brightside Outdoors. thebrightside.com.au is an unrelated business."
+        }
+      ]
+    },
+    {
+      "area": "Sydney",
+      "places": [
+        "Sydney"
+      ],
+      "venues": [
+        {
+          "name": "Afterpay Arena",
+          "aliases": [
+            "o2 arena",
+            "Qudos Bank Arena",
+            "Sydney SuperDome"
+          ],
+          "summary": "Sydney's largest indoor arena, about 21,000 for concerts: major concerts, Sydney Kings basketball, netball, and family shows. Named Qudos Bank Arena until July 2026.",
+          "address": "19 Edwin Flack Avenue, Sydney Olympic Park NSW 2127, Australia",
+          "lat": -33.84429,
+          "lng": 151.06224,
+          "website": "https://afterpayarena.com.au/",
+          "calendar": "https://afterpayarena.com.au/event-calendar",
+          "notes": "One list in date order with no date filter or paging; scan it for the window. Cancelled shows stay listed, marked CANCELLED. The old qudosbankarena.com.au domain redirects here."
+        },
+        {
+          "name": "Sydney Opera House",
+          "aliases": [
+            "opera house"
+          ],
+          "summary": "Performing arts centre with the Concert Hall, Joan Sutherland Theatre, Drama Theatre, Studio, and Utzon Room: opera, the Sydney Symphony, theatre, ballet, contemporary music, comedy, and talks.",
+          "address": "Bennelong Point, Sydney NSW 2000, Australia",
+          "lat": -33.8572,
+          "lng": 151.21512,
+          "website": "https://www.sydneyoperahouse.com/",
+          "calendar": "https://www.sydneyoperahouse.com/whats-on",
+          "notes": "Paged with ?page=0, ?page=1, and so on, about 13 pages. The From/To date fields do not set a usable URL parameter, and ?nextDays=7 does not narrow the list. Long runs are shown as date ranges, so check for overlap with the window."
+        },
+        {
+          "name": "Sydney Town Hall",
+          "aliases": [
+            "town hall"
+          ],
+          "summary": "Nineteenth-century civic landmark whose Centennial Hall seats up to 2,000: concerts, free organ recitals, choirs, expos, and talks.",
+          "address": "483 George Street, Sydney NSW 2000, Australia",
+          "lat": -33.8732,
+          "lng": 151.20618,
+          "website": "https://www.cityofsydney.nsw.gov.au/landmarks/sydney-town-hall",
+          "calendar": "https://whatson.cityofsydney.nsw.gov.au/venues/sydney-town-hall",
+          "notes": "City of Sydney What's On lists only events that organizers submit, so it is incomplete: always also search \"Sydney Town Hall\" with the month. Talks in Town Hall House, 456 Kent Street, are listed separately at https://whatson.cityofsydney.nsw.gov.au/venues/town-hall. No date URL parameter."
+        }
+      ]
+    },
+    {
+      "area": "Sunshine Coast",
+      "places": [
+        "Sunshine Coast",
+        "Maroochydore",
+        "Caloundra",
+        "Maleny",
+        "Peregian Beach",
+        "Sandstone Point",
+        "Bribie Island"
+      ],
+      "venues": [
+        {
+          "name": "Kings Beach Tavern",
+          "aliases": [
+            "kings beach tavern"
+          ],
+          "summary": "Beachside pub at Kings Beach, Caloundra, with a band room for national and international touring acts, local bands and DJs in the Beach Bar on weekends, and weekly trivia, karaoke, drag bingo, and a monthly blues jam.",
+          "address": "43 Burgess Street, Kings Beach QLD 4551, Australia",
+          "lat": -26.80055,
+          "lng": 153.14279,
+          "website": "https://kingsbeachtavern.com.au/",
+          "calendar": "https://kingsbeachtavern.com.au/entertainment/",
+          "notes": "The gig list on /entertainment/ is filled in by JavaScript, so a plain fetch shows it empty; read it in a browser, or search \"Kings Beach Tavern\" with the month. Tickets are sold through AVC Live (tickets.avclive.com.au). In-house events - Melbourne Cup, Christmas, kids' shows - are on https://kingsbeachtavern.com.au/whats-on/."
+        },
+        {
+          "name": "Sandstone Point Hotel",
+          "aliases": [
+            "sandstone point"
+          ],
+          "summary": "Large waterfront hotel on Pumicestone Passage opposite Bribie Island, with major outdoor concerts and festivals on its lawn, the Oyster Shed beach club, and free weekend live music.",
+          "address": "1800 Bribie Island Road, Sandstone Point QLD 4511, Australia",
+          "lat": -27.0767,
+          "lng": 153.14032,
+          "website": "https://sandstonepointhotel.com.au/",
+          "calendar": "https://sandstonepointhotel.com.au/entertainment-and-events/",
+          "notes": "Plain HTML, but WebFetch returns it empty; fetch it with curl. Listings give day and month without the year. Concerts are ticketed on Ticketmaster, the hotel's own events on universe.com. Concert transport and parking: https://sandstonepointhotel.com.au/major-concert-information/. Weekly: Trivia Tuesdays 7pm, Country Fridays 7pm, Sunset Sessions Sa 4-8pm, lawn music Sa-Su from midday."
+        },
+        {
+          "name": "Kawana Sports Precinct (Sunshine Coast Stadium)",
+          "aliases": [
+            "Kawana Sports Precinct",
+            "Sunshine Coast Stadium"
+          ],
+          "summary": "Council sports and entertainment precinct around Sunshine Coast Stadium: rugby league, football, touch football, festivals, and outdoor concerts of up to about 20,000.",
+          "address": "31 Sportsmans Parade, Bokarina QLD 4575, Australia",
+          "lat": -26.73389,
+          "lng": 153.12606,
+          "website": "https://www.sunshinecoaststadium.com.au/",
+          "calendar": "https://www.sunshinecoaststadium.com.au/events",
+          "notes": "Covers the whole precinct, including Lake Kawana; filterable by Entertainment, Sport, and Community. Dates are filled in by JavaScript; in the page source they are UTC timestamps at 14:00Z, which read one day early - add a day, and confirm on the event's own page. Some events give 320 Nicklin Way, Bokarina as the precinct address."
+        },
+        {
+          "name": "Roads Store",
+          "aliases": [
+            "Roads Store",
+            "ROADS"
+          ],
+          "summary": "Small Peregian Beach shop selling coffee, clothes, and wine, with occasional intimate gigs (about 50 people).",
+          "address": "6 Kingfisher Drive, Peregian Beach QLD 4573, Australia",
+          "lat": null,
+          "lng": null,
+          "website": "https://www.instagram.com/roads_store_au/",
+          "calendar": "https://www.songkick.com/venues/4594707-roads-store",
+          "notes": "No website; gigs are announced on Instagram first and Songkick may lag. The address is from Songkick only and has not been confirmed against the shop's own listing; confirm it before using it on a page. Coordinates not yet looked up."
+        },
+        {
+          "name": "Maleny Community Centre",
+          "aliases": [
+            "Maleny Community Centre"
+          ],
+          "summary": "Community-run licensed hall in Maleny hosting touring concerts, writers' talks (Outspoken Maleny), film screenings, markets, and workshops.",
+          "address": "23 Maple Street, Maleny QLD 4552, Australia",
+          "lat": -26.75869,
+          "lng": 152.85146,
+          "website": "https://malenycc.org/",
+          "calendar": "https://malenycc.org/events/",
+          "notes": "Shows about the next twelve events, roughly three weeks ahead, with no paging, so a later window may not be listed yet; say so in the report rather than concluding there is nothing. Regular hirers are on https://malenycc.org/regular-bookings/."
+        },
+        {
+          "name": "Maleny Showgrounds",
+          "aliases": [
+            "Maleny Showground"
+          ],
+          "summary": "Showground run by the Maleny Show Society, with a pavilion, fields, and camping: the Maleny Agricultural Show (May), Maleny Music Festival (November), Maleny Farm Fest, garden fairs, and trade shows.",
+          "address": "13 Maleny Stanley River Road, Maleny QLD 4552, Australia",
+          "lat": -26.7631,
+          "lng": 152.84845,
+          "website": "https://www.malenyshowsociety.org.au/",
+          "calendar": "https://www.songkick.com/venues/4524124-maleny-showground",
+          "notes": "The Show Society site has no list of upcoming events; dates are on each event's page, such as https://www.malenyshowsociety.org.au/events/maleny-farm-fest and https://www.malenyshowsociety.org.au/events/maleny-agricultural-show/the-show, and one-off events are on https://www.malenyshowsociety.org.au/about-us/latest-news. Songkick covers the music events. Maleny Music Festival: https://www.malenymusicfestival.com/."
+        },
+        {
+          "name": "Terra Firma Dining",
+          "aliases": [
+            "Terra Firma Dining"
+          ],
+          "summary": "Sunshine Coast open-fire caterer that runs ticketed fire-cooking master classes and pop-up long lunches and dinners at partner venues.",
+          "address": null,
+          "lat": null,
+          "lng": null,
+          "website": "https://www.terrafirmadining.com/",
+          "calendar": "https://www.terrafirmadining.com/events",
+          "notes": "No fixed venue: each event is held at a partner venue (the July 2026 classes were at Bahche Farm, 151 Commissioners Flat Road, Peachester), so take the address and marker from the event. The events page has no dates; its SEE DATES link goes to https://linktr.ee/terrafirmadining, which links to Humanitix bookings. New dates also appear on https://www.instagram.com/terra.firma.dining."
+        }
+      ]
+    },
+    {
+      "area": "Colorado",
+      "places": [
+        "Colorado"
+      ],
+      "venues": [
+        {
+          "name": "Red Rocks Amphitheatre",
+          "aliases": [
+            "red rocks"
+          ],
+          "summary": "Open-air amphitheatre of about 9,500 seats set in red sandstone, run by the City and County of Denver: concerts, Film on the Rocks, fitness series, and community events.",
+          "address": "18300 West Alameda Parkway, Morrison, CO 80465, USA",
+          "lat": 39.66539,
+          "lng": -105.20572,
+          "website": "https://www.redrocksonline.com/",
+          "calendar": "https://www.redrocksonline.com/events/",
+          "notes": "Concert season runs from about late March to mid-November; a December to February window is usually empty. The Month and Select Dates filters work only in the browser. Each event appears three times on the page and the first block omits the year. Film on the Rocks has its own page, https://www.redrocksonline.com/film/."
+        }
+      ]
+    }
+  ]
+}
