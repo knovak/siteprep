@@ -1,0 +1,172 @@
+{
+  "date_utc": "2026-10-12",
+  "baseline_commit": "6d883645e4abeb971ae5461d5d7f7f0ff759d7d6",
+  "site": {
+    "url": "https://flings-test.ken-novak.chatgpt.site",
+    "version": 17,
+    "access": "public",
+    "metadata_verified": true
+  },
+  "method": {
+    "browser": "Google Chrome 154.0.8037.98",
+    "os": "macOS 26.6.2 (25G83)",
+    "member": "Fresh native Incognito window; organizer denied before entry; no ChatGPT sign-in performed",
+    "organizer": "Separate signed-in in-app browser tab",
+    "observations": "Native accessibility snapshots and screenshots; read-only Sites D1 complete table pages"
+  },
+  "fixture": {
+    "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+    "member": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+    "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+    "temporary_name": "Fictional signed-out writer — Oct 12",
+    "restored_name": "Fictional DST Member — Oct 8"
+  },
+  "checks": [
+    {
+      "id": "organizer-before-entry",
+      "result": "pass",
+      "evidence": "Sign-in required; no organizer workspace"
+    },
+    {
+      "id": "member-entry",
+      "result": "pass",
+      "evidence": "Existing fictional member link opens member page without sign-in; fragment removed"
+    },
+    {
+      "id": "profile-write",
+      "result": "pass",
+      "evidence": "Name saved; success message, reload, organizer view and D1 revision 1 agree"
+    },
+    {
+      "id": "invitation-decline",
+      "result": "pass",
+      "evidence": "Declined saved; success message, reload, organizer view and D1 generation 2 agree"
+    },
+    {
+      "id": "invitation-restore",
+      "result": "pass",
+      "evidence": "Accepted saved and survives reload; organizer view and D1 generation 3 agree"
+    },
+    {
+      "id": "profile-restore",
+      "result": "pass",
+      "evidence": "Original name saved and survives reload; organizer view and D1 revision 2 agree"
+    },
+    {
+      "id": "other-member-rows",
+      "result": "pass",
+      "evidence": "All 11 non-target member rows unchanged at changed and restored snapshots"
+    },
+    {
+      "id": "other-invitation-rows",
+      "result": "pass",
+      "evidence": "All 15 non-target invitation rows unchanged at declined and restored snapshots"
+    },
+    {
+      "id": "organizer-after-writes",
+      "result": "pass",
+      "evidence": "Direct organizer gathering route still requires ChatGPT sign-in"
+    },
+    {
+      "id": "review-history",
+      "result": "pass",
+      "evidence": "Five reviews remain awaiting review; newest fictional review has 0 reported sent/failed/suppressed and 1 unknown"
+    }
+  ],
+  "database_comparison": [
+    {
+      "table": "members",
+      "count": 12,
+      "completePages": true,
+      "before": {
+        "id": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "name": "Fictional DST Member — Oct 8",
+        "preference": "email",
+        "state": "active",
+        "generation": 0,
+        "revision": 0
+      },
+      "changed": {
+        "id": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "name": "Fictional signed-out writer — Oct 12",
+        "preference": "email",
+        "state": "active",
+        "generation": 0,
+        "revision": 1
+      },
+      "restored": {
+        "id": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "name": "Fictional DST Member — Oct 8",
+        "preference": "email",
+        "state": "active",
+        "generation": 0,
+        "revision": 2
+      },
+      "otherRowsUnchangedAtChange": true,
+      "otherRowsUnchangedAfterRestore": true,
+      "contactFieldsUnchanged": true
+    },
+    {
+      "table": "invitations",
+      "count": 16,
+      "completePages": true,
+      "before": {
+        "member": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "state": "accepted",
+        "generation": 1
+      },
+      "changed": {
+        "member": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "state": "declined",
+        "generation": 2
+      },
+      "restored": {
+        "member": "b9eaf437-9a6d-475b-b29e-9697012e5e72",
+        "activity": "fc960301-73fb-4a20-9265-164a2430b97a",
+        "fling": "7149a04f-4100-4d26-8db4-de35042a7e85",
+        "state": "accepted",
+        "generation": 3
+      },
+      "otherRowsUnchangedAtChange": true,
+      "otherRowsUnchangedAfterRestore": true
+    }
+  ],
+  "fixture_effects": {
+    "successful_business_writes": 4,
+    "new_message_reviews": 1,
+    "new_review_subject": "Fictional signed-out writes — do not send — October 12",
+    "new_review_approved": false,
+    "profile_fields_restored": true,
+    "invitation_state_restored": true,
+    "contact_fields_changed": false,
+    "revision_counters_reset": false,
+    "sessions_and_audit_counts": "Not measured",
+    "review_history_changed": "New unapproved review; history now marks reviews as requiring a new review before sending",
+    "external_sends": false
+  },
+  "limitations": [
+    "One member and gathering in desktop Chrome Incognito only",
+    "No signed-out discussion, poll or payment write tested",
+    "No multi-membership session isolation, expiry/revocation, concurrency or failure rollback tested",
+    "No cookie attribute enforcement, HTTP response capture or exact UTC assertion",
+    "Only members and invitations tables compared; no claim that all database state is unchanged",
+    "Independent organizers, broader accessibility, managed-host recovery and authorized pilot remain open"
+  ],
+  "cleanup": {
+    "incognito_window_closed": true,
+    "owner_tab_closed": true,
+    "capability_not_saved": true
+  },
+  "local_screenshots": [
+    "screenshots/flings-incognito-write-20261012.png",
+    "screenshots/flings-incognito-restored-20261012.png",
+    "screenshots/flings-incognito-organizer-denied-20261012.png"
+  ]
+}

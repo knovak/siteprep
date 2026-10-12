@@ -654,3 +654,15 @@ gathering routes still require sign-in. One additional fictional review remains
 unapproved. This covers the basic signed-out Chrome entry gap; successful
 signed-out writes, multiple memberships, expiry/revocation, broader browser
 coverage, independent organizers and the rest of Phase 6 remain open.
+
+## October 12 signed-out profile and invitation writes (UTC)
+
+`notes/hosted-incognito-writes-20261012.md` records ten targeted checks in
+native Chrome Incognito on test version 17. A signed-out member saved a fictional
+profile name and declined an invitation; reload, organizer views and complete
+D1 table reads confirmed both writes. The original name and accepted response
+were restored through the member UI, retaining advanced revisions. All other
+member/invitation rows were unchanged. One additional fictional review remains
+unapproved; no message was sent. Signed-out discussion/poll/payment writes,
+multiple memberships, expiry/revocation and the broader Phase 6 matrix remain
+open; this receipt does not complete `verify-hosted-test`.

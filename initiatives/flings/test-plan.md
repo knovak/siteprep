@@ -599,3 +599,17 @@ Organizer routes remain denied afterward. Four transitional observations and
 one supplementary recovery observation are excluded from the ten-check count.
 No successful business write, cookie-attribute enforcement, expiry/revocation,
 history/cache, different-member/two-fling or complete Phase 6 claim is made.
+
+## October 12 signed-out write receipt (UTC)
+
+`notes/hosted-incognito-writes-20261012.md` and its structured receipt record
+ten passing T1/T3/T4/T12 checks on test version 17 in native Chrome Incognito.
+Profile-name and invitation-response writes succeeded without ChatGPT login,
+survived reload and appeared to the organizer. Complete D1 reads confirmed
+profile revisions 0→1→2 and invitation generations 1→2→3 while restoring the
+original name and accepted response; 11 other member rows and 15 other
+invitation rows stayed unchanged. Organizer access remained denied after the
+writes. One additional fictional review remains unapproved; no sending occurred.
+This is one member/gathering and two write types, with no all-table preservation,
+cookie enforcement, other coordination writes, expiry/revocation, multi-member,
+concurrency/rollback, other-browser or full Phase 6 claim.
