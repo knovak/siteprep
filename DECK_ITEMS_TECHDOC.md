@@ -148,6 +148,12 @@ current and future deck pages that have a date range. It reads both files:
 New events it adds get numbers under the rules above, and existing items keep
 theirs when it merges new detail into them.
 
+A venue listed in the skill's `venues.json` that has more than five events in a
+page's date window gets one **venue calendar item** instead of an item per
+event: a numbered item that names the venue and the window and links its
+calendar. It is promoted and rejected like any other item. Rejecting it tells
+the skill to add nothing more for that venue in that window.
+
 ## Checking a page
 
 Duplicate numbers are the one failure mode worth checking mechanically:
