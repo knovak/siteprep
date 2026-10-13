@@ -42,8 +42,8 @@
           "lat": -27.46908,
           "lng": 153.05439,
           "website": "https://brisbanepowerhouse.org/",
-          "calendar": "https://brisbanepowerhouse.org/whats-on/",
-          "notes": "Dates are shown without the year. Festival and genre filters and Load more, but no date URL parameter."
+          "calendar": "https://brisbanepowerhouse.org/?section=whats-on",
+          "notes": "The former /whats-on/ URL redirects to the home-page calendar section. Dates are shown without the year; follow event pages and Load more for the full program."
         },
         {
           "name": "Brisbane Showgrounds",
@@ -120,11 +120,11 @@
           ],
           "summary": "Strut & Fret's theatre and cabaret venue of 400-plus seats on the former Hi-Fi site, opened in 2024: cabaret, circus, comedy, and music. Open Wednesday to Sunday on show nights.",
           "address": "125 Boundary Street, West End QLD 4101, Australia",
-          "lat": null,
-          "lng": null,
+          "lat": -27.4787522,
+          "lng": 153.0121618,
           "website": "https://strutnfret.com/west-end-electric",
           "calendar": "https://strutnfret.com/venues/the-west-end-electric",
-          "notes": "The venue page lists running shows without full dates; the Fever venue page gives each season's date range: https://feverup.com/m/736506. Shows run for long seasons, each counting as one event. Entrance on the Wilson Street side. Coordinates not yet looked up: OpenStreetMap had no entry for the venue."
+          "notes": "The venue page lists running shows without full dates; the Fever venue page gives each season's date range: https://feverup.com/m/736506. Shows run for long seasons, each counting as one event. Entrance on the Wilson Street side. Coordinates come from the existing map on Fever’s venue page, https://feverup.com/en/brisbane/venue/the-west-end-electric; OpenStreetMap address search returned only street segments."
         },
         {
           "name": "Brisbane Entertainment Centre",
@@ -319,8 +319,8 @@
           "lat": null,
           "lng": null,
           "website": "https://www.terrafirmadining.com/",
-          "calendar": "https://www.terrafirmadining.com/events",
-          "notes": "No fixed venue: each event is held at a partner venue (the July 2026 classes were at Bahche Farm, 151 Commissioners Flat Road, Peachester), so take the address and marker from the event. The events page has no dates; its SEE DATES link goes to https://linktr.ee/terrafirmadining, which links to Humanitix bookings. New dates also appear on https://www.instagram.com/terra.firma.dining."
+          "calendar": "https://www.terrafirmadining.com/cookingclass",
+          "notes": "No fixed venue: each event is held at a partner venue (the July 2026 classes were at Bahche Farm, 151 Commissioners Flat Road, Peachester), so take the address and marker from the event. The former /events URL redirects to /cookingclass. This page has no dates; its SEE DATES link goes to https://linktr.ee/terrafirmadining, which links to Humanitix bookings. New dates also appear on https://www.instagram.com/terra.firma.dining."
         }
       ]
     },
