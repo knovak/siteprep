@@ -131,6 +131,11 @@ Setting the initial state does not fire the toggle event.
 
 - Clicking the caret **or** the heading text toggles the topic; clicks on links
   or other buttons inside a heading behave normally.
+- An optional heading widget can mark its container `data-topic-control`.
+  Its clicks do not toggle the topic and its text is excluded from the caret's
+  accessible label, regardless of which library initializes first. The shared
+  [event date filter](../event_date_filter/event_date_filter.md) uses this for
+  the selector alongside Events.
 - The caret is a real `<button>`: keyboard focusable, Enter/Space toggle it,
   `aria-expanded` and `aria-label` ("Expand …"/"Collapse …") track the state, and
   `aria-controls` points at the body.
