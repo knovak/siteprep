@@ -200,11 +200,18 @@
     "description": "Approximate mooring-neighbourhood orientation"
   },
   {
-    "name": "Luxor West Bank / Al Wadi / Villa Kamose",
+    "name": "Luxor West Bank / Al Wadi / Villa Kamose / Villa Nile House",
     "country": "Egypt",
     "lat": 25.73,
     "lng": 32.61,
     "description": "Broad stay region; not exact property/rooftop coordinates"
+  },
+  {
+    "name": "Pyramisa Luxor hotel area",
+    "country": "Egypt",
+    "lat": 25.68678,
+    "lng": 32.63081,
+    "description": "Approximate hotel grounds; Majestic Egypt viewing is planned in the pool garden, exact position to confirm"
   },
   {
     "name": "Cairo",
