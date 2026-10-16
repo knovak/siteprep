@@ -1,8 +1,15 @@
 # EventDateFilter
 
-An optional shared date selector beside an Events heading. Sydney in the
-Australia October 2026 deck is the first page to enable it. Other pages retain
-their existing behavior, even within the same deck.
+A shared date selector beside event-list headings. Event pages in the Current,
+Future, and Option decks use it; Past decks and reject pages retain their
+unfiltered lists. Adoption is explicit in each page's markup, including
+Vancouver's separate VIFF Live music schedule.
+
+The enabled pages are Sydney, Brisbane, Cairns, Sunshine Coast, Stradbroke
+Island, Boulder, Aspen, Carbondale, Snowmass, Vancouver, and Luxor. Pages without
+event lists do not load the component. When adding a new event page in a
+non-Past deck, use the markup below; when moving a deck to Past, remove its
+selector asset tags and heading opt-ins so archived events stay visible.
 
 ## Behavior
 
@@ -60,6 +67,14 @@ booking deadline mentioned in its description. Sydney's KOOZA item says "from
 October 17" during an October 14–17 stay, so its filter date is October 17; it
 is not treated as an event that continues forever.
 
+For weekly markets, enumerate the relevant weekdays within the page's visit
+window. For exhibitions, exclude stated closed days. Separate festival
+weekends remain separate ranges. A venue-calendar item uses its advertised
+planning window, as on Sydney, rather than claiming individual performance
+dates. Leave dates unset for unscheduled experiences or incomplete selected-date
+programs; the item then remains visible in all three modes. Do not infer an
+exhibition's year or start date from an ambiguous "through April 18" label.
+
 When adding, refreshing or changing event dates on an opted-in page, update
 `data-event-dates` together with the visible text. Preserve the attribute when
 promoting or rejecting an item so it can be restored with its schedule intact.
@@ -87,9 +102,10 @@ selection. Empty messages sit beside the list inside the topic body.
 - `EventDateFilter.refresh()` reapplies all existing filters using the current
   browser date and schedules the next local-midnight refresh.
 
-`tests/e2e/event-date-filter.spec.js` checks real Sydney modes, local dates,
+`tests/e2e/event-date-filter.spec.js` checks adoption across non-Past event pages,
+unfiltered Past and reject pages, real Sydney modes, local dates,
 inclusive boundaries and gaps, invalid metadata, midnight and tab wake-up,
-collapse/keyboard interactions, mobile layout and pages that have not opted in.
+collapse/keyboard interactions, and mobile layout.
 Run it and `tests/e2e/collapsible-topics.spec.js` after the final build:
 
 ```sh

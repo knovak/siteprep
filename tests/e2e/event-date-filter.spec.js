@@ -4,6 +4,19 @@ const SYDNEY = '/decks/australia-october-2026/sections/sydney/overview.html';
 const FILTER = '/shared/event_date_filter/event_date_filter';
 const COLLAPSIBLE = '/shared/collapsible_topics/collapsible_topics';
 const OCTOBER_16 = new Date('2026-10-16T01:00:00Z'); // Noon in Sydney; October 15 in Los Angeles.
+const EVENT_PAGES = [
+  ['/decks/australia-october-2026/sections/brisbane/overview.html', 1],
+  ['/decks/australia-october-2026/sections/cairns/overview.html', 1],
+  ['/decks/australia-october-2026/sections/stradbroke-island/overview.html', 1],
+  ['/decks/australia-october-2026/sections/sunshine-coast/overview.html', 1],
+  [SYDNEY, 1],
+  ['/decks/rockies/sections/aspen/overview.html', 1],
+  ['/decks/rockies/sections/boulder/overview.html', 1],
+  ['/decks/rockies/sections/carbondale/overview.html', 1],
+  ['/decks/rockies/sections/snowmass/overview.html', 1],
+  ['/decks/eclipse-2027/sections/luxor-eclipse/overview.html', 1],
+  ['/decks/british-columbia/sections/vancouver/overview.html', 2],
+];
 
 test.use({ timezoneId: 'Australia/Sydney' });
 
@@ -29,7 +42,7 @@ async function visibleIds(page) {
   return page.locator('#events > li:visible').evaluateAll((items) => items.map((item) => item.id));
 }
 
-test.describe('Sydney adopts the optional event date filter', () => {
+test.describe('Sydney keeps event choices when filtering dates', () => {
   test.beforeEach(async ({ page }) => {
     await page.clock.setFixedTime(OCTOBER_16);
     // Event filtering is local; third-party maps must not delay these checks.
@@ -43,24 +56,27 @@ test.describe('Sydney adopts the optional event date filter', () => {
     const items = page.locator(`#${listId} > li`);
     const originalOrder = await items.locator('.item-id').allTextContents();
     expect(originalOrder.length).toBeGreaterThan(0);
+    expect(originalOrder.slice(0, 9)).toEqual([
+      '{112}', '{584}', '{329}', '{697}', '{363}', '{513}', '{265}', '{135}', '{136}',
+    ]);
+    for (const rejectedId of [335, 552, 714, 571, 268, 877]) {
+      expect(originalOrder).not.toContain(`{${rejectedId}}`);
+    }
     await expect(items.locator(':scope > strong .item-id')).toHaveCount(originalOrder.length);
     await expect(page.locator(`#${listId} > li:not([data-event-dates])`)).toHaveCount(0);
     await expect(heading.getByRole('group', { name: 'Event dates' })).toBeVisible();
     await expect(mode(page, 'Today and future')).toHaveAttribute('aria-pressed', 'true');
 
     const past = items.filter({ hasText: '{476}' });
-    const endingToday = items.filter({ hasText: '{335}' });
-    const today = items.filter({ hasText: '{552}' });
+    const startingToday = items.filter({ hasText: '{584}' });
     const future = items.filter({ hasText: '{697}' });
     await expect(past).toBeHidden();
-    await expect(endingToday).toBeVisible();
-    await expect(today).toBeVisible();
+    await expect(startingToday).toBeVisible();
     await expect(future).toBeVisible();
 
     await mode(page, 'Today only').click();
     await expect(past).toBeHidden();
-    await expect(endingToday).toBeVisible();
-    await expect(today).toBeVisible();
+    await expect(startingToday).toBeVisible();
     await expect(future).toBeHidden();
     await expect(mode(page, 'Today only')).toHaveAttribute('aria-pressed', 'true');
     await expect(mode(page, 'Today and future')).toHaveAttribute('aria-pressed', 'false');
@@ -234,11 +250,102 @@ test('empty states explain the active filter and collapse with the event list', 
   await expect(page.locator('#past')).toBeVisible();
 });
 
+for (const [path, listCount] of EVENT_PAGES) {
+  test(`all event lists have working date controls: ${path}`, async ({ page }) => {
+    await page.clock.setFixedTime(OCTOBER_16);
+    await page.route(/^https:\/\//, (route) => route.abort());
+    await page.goto(path);
+    const headings = page.locator('[data-event-filter]');
+    await expect(headings).toHaveCount(listCount);
+    await expect(page.getByRole('group', { name: 'Event dates' })).toHaveCount(listCount);
+    for (const heading of await headings.all()) {
+      const listId = await heading.getAttribute('data-event-filter');
+      const items = page.locator(`#${listId} > li`);
+      const originalOrder = await items.allTextContents();
+      expect(originalOrder.length).toBeGreaterThan(0);
+      const group = heading.getByRole('group', { name: 'Event dates' });
+      await expect(group).toBeVisible();
+      await expect(group.getByRole('button', { name: 'Today and future', exact: true }))
+        .toHaveAttribute('aria-pressed', 'true');
+      await group.getByRole('button', { name: 'Today only', exact: true }).click();
+      await expect(page.locator(`#${listId} > li:not([data-event-dates])[hidden]`)).toHaveCount(0);
+      await group.getByRole('button', { name: 'All dates', exact: true }).click();
+      await expect(page.locator(`#${listId} > li:visible`)).toHaveText(originalOrder);
+      await expect(group.getByRole('button', { name: 'All dates', exact: true }))
+        .toHaveAttribute('aria-pressed', 'true');
+    }
+  });
+}
+
+test('Current Rockies events use their December dates and inclusive range endings', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-12-23T01:00:00Z'));
+  await page.route(/^https:\/\//, (route) => route.abort());
+  await page.goto('/decks/rockies/sections/snowmass/overview.html');
+  const items = page.locator('#snowmass-events > li');
+  await expect(items.filter({ hasText: '{313}' })).toBeHidden();
+  await expect(items.filter({ hasText: '{770}' })).toBeVisible();
+  await expect(items.filter({ hasText: '{435}' })).toBeVisible();
+  await mode(page, 'Today only').click();
+  await expect(items.filter({ hasText: '{313}' })).toBeHidden();
+  await expect(items.filter({ hasText: '{770}' })).toBeVisible();
+  await expect(items.filter({ hasText: '{435}' })).toBeVisible();
+  await page.clock.setFixedTime(new Date('2026-12-24T01:00:00Z'));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await expect(page.locator('#snowmass-events > li:visible')).toHaveCount(0);
+  await expect(page.locator('.event-date-filter-empty')).toHaveText('No events today.');
+  await mode(page, 'All dates').click();
+  await expect(page.locator('#snowmass-events > li:visible')).toHaveCount(3);
+});
+
+test('Future Luxor filters its dated eclipse while keeping variable schedules visible', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2027-08-03T01:00:00Z'));
+  await page.route(/^https:\/\//, (route) => route.abort());
+  await page.goto('/decks/eclipse-2027/sections/luxor-eclipse/overview.html');
+  const items = page.locator('#luxor-events > li');
+  const eclipse = items.filter({ hasText: '{536}' });
+  const variableEvents = [items.filter({ hasText: '{279}' }), items.filter({ hasText: '{803}' })];
+  await expect(eclipse).toBeHidden();
+  for (const event of variableEvents) await expect(event).toBeVisible();
+  await mode(page, 'Today only').click();
+  await expect(eclipse).toBeHidden();
+  for (const event of variableEvents) await expect(event).toBeVisible();
+  await expect(page.locator('.event-date-filter-empty')).toBeHidden();
+  await mode(page, 'All dates').click();
+  await expect(eclipse).toBeVisible();
+});
+
+test('Option Vancouver filters its music schedule and Events lists independently', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-10-06T01:00:00Z'));
+  await page.route(/^https:\/\//, (route) => route.abort());
+  await page.goto('/decks/british-columbia/sections/vancouver/overview.html');
+  const liveGroup = page.locator('[data-event-filter="vancouver-viff-live-events"]')
+    .getByRole('group', { name: 'Event dates' });
+  const eventsGroup = page.locator('[data-event-filter="vancouver-events"]')
+    .getByRole('group', { name: 'Event dates' });
+  const liveItems = page.locator('#vancouver-viff-live-events > li');
+  const events = page.locator('#vancouver-events > li');
+  await expect(page.locator('#vancouver-viff-live-events > li:visible')).toHaveCount(3);
+  await expect(page.locator('#vancouver-events > li:visible')).toHaveCount(2);
+  await liveGroup.getByRole('button', { name: 'Today only', exact: true }).click();
+  await expect(page.locator('#vancouver-viff-live-events > li:visible')).toHaveCount(1);
+  await expect(liveItems.filter({ hasText: 'ERASERHEAD XIU XIU' })).toBeVisible();
+  await expect(eventsGroup.getByRole('button', { name: 'Today and future', exact: true }))
+    .toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#vancouver-events > li:visible')).toHaveCount(2);
+  await eventsGroup.getByRole('button', { name: 'Today only', exact: true }).click();
+  await expect(events.filter({ hasText: 'VIFF:' })).toBeVisible();
+  await expect(events.filter({ hasText: 'Thanksgiving:' })).toBeHidden();
+  await liveGroup.getByRole('button', { name: 'All dates', exact: true }).click();
+  await expect(page.locator('#vancouver-viff-live-events > li:visible')).toHaveCount(7);
+  await expect(events.filter({ hasText: 'Thanksgiving:' })).toBeHidden();
+});
+
 for (const path of [
-  '/decks/australia-october-2026/sections/brisbane/overview.html',
   '/decks/aus2503/sections/sydney/overview.html',
+  '/decks/australia-october-2026/sections/sydney/overview-reject.html',
+  '/decks/australia-october-2026/sections/sunshine-coast/overview-reject.html',
 ]) {
-  test(`pages without adoption keep their existing behavior: ${path}`, async ({ page }) => {
+  test(`Past and rejected pages keep their existing behavior: ${path}`, async ({ page }) => {
     await page.clock.setFixedTime(OCTOBER_16);
     await page.route(/^https:\/\//, (route) => route.abort());
     await page.goto(path);
