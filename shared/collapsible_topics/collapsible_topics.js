@@ -116,7 +116,9 @@
 
     heading.classList.add('topic-heading');
     const button = buildToggle(heading, body.id);
-    const title = heading.textContent.trim();
+    const titleContent = heading.cloneNode(true);
+    titleContent.querySelectorAll('[data-topic-control]').forEach((control) => control.remove());
+    const title = titleContent.textContent.trim();
 
     const topic = {
       heading,
@@ -149,7 +151,7 @@
     heading.addEventListener('click', (event) => {
       // Let links and any other controls inside the heading behave normally.
       const clickedButton = event.target.closest('button');
-      if (event.target.closest('a') || (clickedButton && clickedButton !== button)) return;
+      if (event.target.closest('a, [data-topic-control]') || (clickedButton && clickedButton !== button)) return;
       topic.toggle();
     });
 
