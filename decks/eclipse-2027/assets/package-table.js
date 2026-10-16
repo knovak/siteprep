@@ -64,10 +64,14 @@
     label?.querySelector('.item-id')?.remove();
     const name = normalize(label?.textContent || '').replace(/:\s*$/, '').trim();
     const price = normalize(element.querySelector('.package-meta')?.textContent || '').split('Price:')[1]?.trim() || '';
+    const availability = normalize(element.querySelector('.package-availability')?.textContent || '')
+      .replace(/^Availability:\s*/, '') || 'Not reconfirmed';
+    const party = normalize(element.querySelector('.party-availability')?.textContent || '')
+      .replace(/^Four people, two rooms:\s*/, '') || 'Two rooms not confirmed';
     const assessment = reviewText(element);
     const rank = evidenceRank(assessment);
     const summary = reviewSummary(assessment, rank);
-    packages.push({ id: element.id, itemId, name, country, price, rank, summary,
+    packages.push({ id: element.id, itemId, name, country, price, availability, party, rank, summary,
       reviews: `${summary.main} ${summary.caution}`, fare: firstFare(price) });
   });
 
@@ -87,7 +91,7 @@
       link.appendChild(id);
       nameCell.appendChild(link);
       row.appendChild(nameCell);
-      ['country', 'price'].forEach((field) => {
+      ['country', 'price', 'availability', 'party'].forEach((field) => {
         const cell = document.createElement('td');
         cell.className = `comparison-${field}`;
         cell.textContent = item[field];
