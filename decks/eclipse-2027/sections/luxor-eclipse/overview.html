@@ -9,6 +9,7 @@
   <script src="../../assets/scripts.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <link rel="stylesheet" href="../../../../shared/standard_map/standard_map.css">
+  <link rel="stylesheet" href="../../../../shared/event_date_filter/event_date_filter.css"><script defer src="../../../../shared/event_date_filter/event_date_filter.js"></script>
 </head>
 <body>
 <article class="card">
@@ -53,9 +54,9 @@
       <li><strong>Al Bairat:</strong> The dispersed West Bank base closest to Medinet Habu, the Colossi of Memnon, and roads to the royal tombs.</li>
     </ul>
 
-    <h2>Events and recurring experiences</h2>
-    <ul>
-      <li><strong>Total Solar Eclipse, August 2 <span class="item-id">{536}</span>:</strong> Luxor receives more than six minutes of totality shortly after 1pm local time. The exact managed viewing venues and access plans may be announced closer to 2027; Karnak is used here only as a central map reference, not as a confirmed viewing site. <strong>Location:</strong> Karnak area, Luxor, Egypt; منطقة الكرنك، الأقصر، مصر. <strong>Hours:</strong> Plan to be on site several hours early; verify official contact times and access. <a href="https://eclipse.gsfc.nasa.gov/SEgoogle/SEgoogle2001/SE2027Aug02Tgoogle.html" target="_blank" rel="noopener">NASA interactive eclipse map</a> | <a href="https://www.google.com/maps/search/?api=1&amp;query=Karnak+Temple+Luxor+Egypt" target="_blank" rel="noopener">Google Maps</a>.</li>
+    <h2 data-event-filter="luxor-events">Events and recurring experiences</h2>
+    <ul id="luxor-events">
+      <li data-event-dates="2027-08-02"><strong>Total Solar Eclipse, August 2 <span class="item-id">{536}</span>:</strong> Luxor receives more than six minutes of totality shortly after 1pm local time. The exact managed viewing venues and access plans may be announced closer to 2027; Karnak is used here only as a central map reference, not as a confirmed viewing site. <strong>Location:</strong> Karnak area, Luxor, Egypt; منطقة الكرنك، الأقصر، مصر. <strong>Hours:</strong> Plan to be on site several hours early; verify official contact times and access. <a href="https://eclipse.gsfc.nasa.gov/SEgoogle/SEgoogle2001/SE2027Aug02Tgoogle.html" target="_blank" rel="noopener">NASA interactive eclipse map</a> | <a href="https://www.google.com/maps/search/?api=1&amp;query=Karnak+Temple+Luxor+Egypt" target="_blank" rel="noopener">Google Maps</a>.</li>
       <li><strong>Karnak Sound and Light Show <span class="item-id">{279}</span>:</strong> An evening walk and seated presentation uses projection, light, and narration to interpret the temple complex; languages and start times rotate. <strong>Address:</strong> Karnak Temple, Karnak, Luxor, Egypt; معبد الكرنك، الكرنك، الأقصر، مصر. <strong>Hours:</strong> Nightly schedule varies; reserve and reconfirm. <a href="https://soundandlight.show/en/show/karnak-show" target="_blank" rel="noopener">Official schedule</a> | <a href="https://www.google.com/maps/search/?api=1&amp;query=Karnak+Temple+Luxor+Egypt" target="_blank" rel="noopener">Google Maps</a>.</li>
       <li><strong>Nile sunrise balloon flights <span class="item-id">{803}</span>:</strong> Licensed operators launch from the West Bank near the monuments when weather and aviation authorities permit. <strong>Location:</strong> Typical launch area, Al Bairat, West Bank, Luxor, Egypt; البعيرات، البر الغربي، الأقصر، مصر. <strong>Hours:</strong> Hotel pickup before dawn; flight times and launch sites vary. <a href="https://www.google.com/maps/search/?api=1&amp;query=Hot+Air+Balloon+Luxor+West+Bank+Egypt" target="_blank" rel="noopener">Google Maps</a>.</li>
     </ul>
