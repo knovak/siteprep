@@ -282,19 +282,33 @@ test('Current Rockies events use their December dates and inclusive range ending
   await page.route(/^https:\/\//, (route) => route.abort());
   await page.goto('/decks/rockies/sections/snowmass/overview.html');
   const items = page.locator('#snowmass-events > li');
+  const originalOrder = await items.allTextContents();
+  const counterpoints = items.filter({ hasText: '{535}' });
   await expect(items.filter({ hasText: '{313}' })).toBeHidden();
   await expect(items.filter({ hasText: '{770}' })).toBeVisible();
   await expect(items.filter({ hasText: '{435}' })).toBeVisible();
+  await expect(counterpoints).toBeVisible();
   await mode(page, 'Today only').click();
   await expect(items.filter({ hasText: '{313}' })).toBeHidden();
   await expect(items.filter({ hasText: '{770}' })).toBeVisible();
   await expect(items.filter({ hasText: '{435}' })).toBeVisible();
+  await expect(counterpoints).toBeVisible();
   await page.clock.setFixedTime(new Date('2026-12-24T01:00:00Z'));
   await page.evaluate(() => window.dispatchEvent(new Event('focus')));
-  await expect(page.locator('#snowmass-events > li:visible')).toHaveCount(0);
-  await expect(page.locator('.event-date-filter-empty')).toHaveText('No events today.');
+  await expect(items.filter({ hasText: '{770}' })).toBeHidden();
+  await expect(items.filter({ hasText: '{435}' })).toBeHidden();
+  await expect(counterpoints).toBeVisible();
+  for (const [date, visible] of [
+    ['2026-12-25', false], ['2026-12-26', false], ['2026-12-27', false],
+    ['2026-12-28', true], ['2026-12-29', true], ['2026-12-30', false],
+  ]) {
+    await page.clock.setFixedTime(new Date(`${date}T01:00:00Z`));
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    if (visible) await expect(counterpoints).toBeVisible();
+    else await expect(counterpoints).toBeHidden();
+  }
   await mode(page, 'All dates').click();
-  await expect(page.locator('#snowmass-events > li:visible')).toHaveCount(3);
+  await expect(page.locator('#snowmass-events > li:visible')).toHaveText(originalOrder);
 });
 
 test('Future Luxor filters its dated eclipse while keeping variable schedules visible', async ({ page }) => {
