@@ -1,4 +1,5 @@
-import { eventDisplayState } from '../../phase-4/src/astronomy.mjs';
+import { localDateForInstant } from '../../phase-1/src/day-model.mjs';
+import { calculateMoonPhase, eventDisplayState } from '../../phase-4/src/astronomy.mjs';
 import { FAILURE_MESSAGES } from '../../phase-5/src/resolve-forecast.mjs';
 
 const STATE_ACTIONS = Object.freeze({
@@ -72,11 +73,49 @@ function astronomyEvent(day, name, timeZone) {
   });
 }
 
-export function dayViewModel(day, timeZone, currentInstant = new Date()) {
+// This is progress between predicted extrema, not a measured water height.
+export function tideProgress(events, currentInstant = new Date()) {
   const currentTime = new Date(currentInstant).getTime();
   if (!Number.isFinite(currentTime)) throw new RangeError(`Invalid current instant: ${currentInstant}`);
+  const ordered = events.filter((event) => event && ['high', 'low'].includes(event.type) && Number.isFinite(Date.parse(event.at)))
+    .sort((left, right) => Date.parse(left.at) - Date.parse(right.at));
+  const next = ordered.find((event) => Date.parse(event.at) > currentTime);
+  if (!next) return null;
+  const previous = ordered.findLast((event) => Date.parse(event.at) <= currentTime);
+  const bounded = previous && previous.type !== next.type && Date.parse(previous.at) < Date.parse(next.at);
+  const elapsed = bounded ? (currentTime - Date.parse(previous.at)) / (Date.parse(next.at) - Date.parse(previous.at)) : null;
+  return Object.freeze({
+    direction: next.type === 'high' ? 'up' : 'down',
+    label: next.type === 'high' ? 'Rising' : 'Falling',
+    nextType: next.type,
+    nextAt: next.at,
+    fill: elapsed === null ? null : next.type === 'high' ? elapsed : 1 - elapsed,
+    description: elapsed === null
+      ? 'Previous tide unavailable; fill cannot be estimated.'
+      : 'Fill shows time-based progress between predicted high and low tides, not measured water height.'
+  });
+}
+
+export function moonPhaseIcon(phase, southernHemisphere = false) {
+  if (!Number.isFinite(phase?.phase)) return null;
+  return Object.freeze({
+    // The lit half faces the opposite way in the southern hemisphere.
+    phase: ((phase.phase % 1) + 1) % 1,
+    southernHemisphere,
+    label: phase.name
+  });
+}
+
+export function dayViewModel(day, timeZone, currentInstant = new Date(), { latitude = 0, progress = null } = {}) {
+  const currentTime = new Date(currentInstant).getTime();
+  if (!Number.isFinite(currentTime)) throw new RangeError(`Invalid current instant: ${currentInstant}`);
+  const isToday = day.date === localDateForInstant(currentInstant, timeZone);
+  const phase = isToday && day.moonPhase && day.astronomyState !== 'unavailable'
+    ? calculateMoonPhase(currentInstant) : day.moonPhase;
   return Object.freeze({
     date: day.date,
+    isToday,
+    tideProgress: isToday ? progress : null,
     label: coastDateLabel(day.date),
     tides: Object.freeze(day.tides.map((event) => Object.freeze({
       type: event.type === 'high' ? 'High tide' : 'Low tide',
@@ -88,7 +127,8 @@ export function dayViewModel(day, timeZone, currentInstant = new Date()) {
     sunset: astronomyEvent(day, 'sunset', timeZone),
     moonrise: astronomyEvent(day, 'moonrise', timeZone),
     moonset: astronomyEvent(day, 'moonset', timeZone),
-    moonPhase: day.moonPhase?.name || 'Unavailable'
+    moonPhase: phase?.name || 'Unavailable',
+    moonIcon: moonPhaseIcon(phase, latitude < 0)
   });
 }
 
@@ -96,6 +136,7 @@ export function forecastViewModel(forecast, currentInstant = new Date()) {
   if (!forecast?.input?.display || !forecast?.place?.name || !forecast?.coast?.name || !forecast?.station?.name || !forecast?.timeZone) {
     throw new TypeError('A complete normalized forecast is required');
   }
+  const progress = tideProgress([forecast.previousTide, ...forecast.days.flatMap((day) => day.tides)], currentInstant);
   const predictionSource = forecast.sources?.find((source) => source.provider === forecast.station.provider) ?? null;
   return Object.freeze({
     entered: forecast.input.display,
@@ -109,6 +150,6 @@ export function forecastViewModel(forecast, currentInstant = new Date()) {
     source: predictionSource ? Object.freeze({...predictionSource}) : null,
     timeZone: forecast.timeZone,
     warnings: Object.freeze(forecast.warnings.map((warning) => statePresentation(warning.code))),
-    days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone, currentInstant)))
+    days: Object.freeze(forecast.days.map((day) => dayViewModel(day, forecast.timeZone, currentInstant, { latitude: forecast.place.lat, progress })))
   });
 }

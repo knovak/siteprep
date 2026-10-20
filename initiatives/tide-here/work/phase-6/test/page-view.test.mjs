@@ -3,7 +3,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 
 import {loadAustraliaPreparedOfficial} from '../../phase-11/fixtures/australia-prepared-official.mjs';
-import { dayViewModel, forecastViewModel, formatCoastTime, providerLabel, statePresentation } from '../src/page-view.mjs';
+import { dayViewModel, forecastViewModel, formatCoastTime, providerLabel, statePresentation, tideProgress, moonPhaseIcon } from '../src/page-view.mjs';
 
 const australiaPreparedOfficial = await loadAustraliaPreparedOfficial();
 
@@ -80,4 +80,61 @@ test('the forecast view keeps all three names, station, zone, and five equal-sha
   ]);
   assert.equal(model.days.length, 5);
   assert.equal(model.timeZone, 'America/Los_Angeles');
+});
+
+const turningTides = [
+  { type: 'low', at: '2026-08-20T21:00:00Z' },
+  { type: 'high', at: '2026-08-21T03:00:00Z' },
+  { type: 'low', at: '2026-08-21T09:00:00Z' }
+];
+
+test('tide direction and fill follow the surrounding extrema across midnight', () => {
+  const rising = tideProgress(turningTides, '2026-08-21T00:00:00Z');
+  assert.equal(rising.direction, 'up');
+  assert.equal(rising.fill, .5);
+  const nearHigh = tideProgress(turningTides, '2026-08-21T02:00:00Z');
+  assert.equal(nearHigh.fill, 5 / 6);
+  const falling = tideProgress(turningTides, '2026-08-21T06:00:00Z');
+  assert.equal(falling.direction, 'down');
+  assert.equal(falling.fill, .5);
+});
+
+test('the arrow changes direction at an extremum and is full at high or empty at low', () => {
+  assert.deepEqual([tideProgress(turningTides, turningTides[0].at).direction, tideProgress(turningTides, turningTides[0].at).fill], ['up', 0]);
+  assert.deepEqual([tideProgress(turningTides, turningTides[1].at).direction, tideProgress(turningTides, turningTides[1].at).fill], ['down', 1]);
+});
+
+test('tide fill stays unknown without a preceding opposite extremum and no arrow is invented past the window', () => {
+  const unknown = tideProgress(turningTides.slice(1), '2026-08-21T00:00:00Z');
+  assert.equal(unknown.direction, 'up');
+  assert.equal(unknown.fill, null);
+  assert.match(unknown.description, /cannot be estimated/);
+  assert.equal(tideProgress([{ type: 'high', at: '2026-08-20T21:00:00Z' }, turningTides[1]], '2026-08-21T00:00:00Z').fill, null);
+  assert.equal(tideProgress(turningTides, '2026-08-22T00:00:00Z'), null);
+});
+
+test('the current day moon is computed at the current instant and future days keep their daily phase', () => {
+  const stalePhase = { phase: .01, fraction: .001, name: 'New Moon' };
+  const today = dayViewModel({ ...day, moonPhase: stalePhase }, 'America/Los_Angeles', '2026-08-20T13:00:00Z', { latitude: -27 });
+  assert.equal(today.isToday, true);
+  assert.notEqual(today.moonIcon.phase, stalePhase.phase);
+  assert.equal(today.moonIcon.southernHemisphere, true);
+  const tomorrow = dayViewModel({ ...day, date: '2026-08-21', moonPhase: stalePhase }, 'America/Los_Angeles', '2026-08-20T13:00:00Z');
+  assert.equal(tomorrow.isToday, false);
+  assert.equal(tomorrow.moonPhase, 'New Moon');
+  assert.ok(Math.abs(tomorrow.moonIcon.phase - .01) < 1e-12);
+  assert.equal(moonPhaseIcon(null), null);
+  assert.equal(dayViewModel({ ...day, moonPhase: null, astronomyState: 'unavailable' }, 'UTC', '2026-08-20T13:00:00Z').moonIcon, null);
+});
+
+test('forecast progress includes the previous-day context and only attaches to the coast current day', () => {
+  const forecast = {
+    input: { display: 'Seattle' }, place: { name: 'Seattle', lat: 47 }, coast: { name: 'Seattle' },
+    station: { provider: 'noaa', name: 'Seattle', kind: 'reference', datum: 'MLLW' },
+    timeZone: 'UTC', warnings: [], previousTide: turningTides[0],
+    days: [{ ...day, date: '2026-08-21', tides: turningTides.slice(1).map((event) => ({ ...event, height: 1, unit: 'm' })) }]
+  };
+  const current = forecastViewModel(forecast, '2026-08-21T00:00:00Z');
+  assert.equal(current.days[0].tideProgress.fill, .5);
+  assert.equal(forecastViewModel(forecast, '2026-08-22T00:00:00Z').days[0].tideProgress, null);
 });

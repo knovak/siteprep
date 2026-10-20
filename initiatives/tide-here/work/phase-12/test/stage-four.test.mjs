@@ -110,10 +110,15 @@ test('the FES fallback returns normalized approximate five-day tides', async () 
   const response = await postForecast(app, fesRequest());
   assert.equal(response.status, 200);
   const forecast = await response.json();
-  assert.deepEqual(Object.keys(forecast), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'sources', 'warnings']);
+  assert.deepEqual(Object.keys(forecast), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'previousTide', 'sources', 'warnings']);
   assert.equal(forecast.days.length, 5);
   assert.ok(forecast.days.flatMap(day => day.tides).length >= 18);
   assert.ok(forecast.days.flatMap(day => day.tides).every(event => event.unit === 'm'));
+  const start = Date.parse(fesRequest().rows[0].startUtc);
+  assert.ok(Date.parse(forecast.previousTide.at) < start);
+  assert.ok(Date.parse(forecast.previousTide.at) >= start - 24 * 60 * 60 * 1000);
+  assert.equal(forecast.previousTide.unit, 'm');
+  assert.ok(forecast.days.flatMap(day => day.tides).every(event => Date.parse(event.at) >= start));
   assert.equal(forecast.sources[0].approximate, true);
   assert.equal(forecast.sources[0].official, false);
   assert.equal(forecast.sources[0].dataClass, 'licensed-source');

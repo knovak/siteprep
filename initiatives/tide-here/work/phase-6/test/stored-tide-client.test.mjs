@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
-import {FES_PROVIDER_ID, loadAvailableStations, StoredTideClient} from '../src/stored-tide-client.mjs';
+import {FES_PROVIDER_ID, loadAvailableStations, StoredTideClient, usesAustralianCatalogue} from '../src/stored-tide-client.mjs';
 
 const station = {
   provider: 'australia-standard-ports',
@@ -69,6 +70,57 @@ test('direct and stored station catalogues fail independently', async () => {
     }),
     /No tide station catalogue/
   );
+});
+
+test('Australian locations never wait for or request unrelated direct catalogues', async () => {
+  let directCalls = 0;
+  let storedCalls = 0;
+  const result = await loadAvailableStations({
+    place: {lat: -26.683, lon: 153.12},
+    direct: () => { directCalls += 1; return new Promise(() => {}); },
+    stored: async () => { storedCalls += 1; return [station]; },
+  });
+  assert.deepEqual(result, [station]);
+  assert.equal(directCalls, 0);
+  assert.equal(storedCalls, 1);
+});
+
+test('regional routing includes every configured Australian port and excludes North American territories', async () => {
+  const catalogue = JSON.parse(await readFile(new URL('../data/australia-stations.json', import.meta.url), 'utf8'));
+  for (const port of catalogue.stations) {
+    assert.equal(usesAustralianCatalogue({lat: port.latitude, lon: port.longitude}), true, port.name);
+  }
+  for (const place of [
+    {name: 'Seattle', lat: 47.6062, lon: -122.3321},
+    {name: 'Halifax', lat: 44.6486, lon: -63.5859},
+    {name: 'Guam', lat: 13.44, lon: 144.65},
+    {name: 'American Samoa', lat: -14.28, lon: -170.69},
+    {name: 'Hawaii', lat: 19.73, lon: -155.06},
+    {name: 'Missing location'},
+  ]) assert.equal(usesAustralianCatalogue(place), false, place.name);
+});
+
+test('an Australian catalogue outage leaves model fallback possible without direct requests', async () => {
+  const stations = await loadAvailableStations({
+    place: {lat: -33.86, lon: 151.21},
+    direct: async () => { assert.fail('An unrelated direct catalogue must not be requested'); },
+    stored: async () => { throw new Error('stored unavailable'); },
+  });
+  assert.deepEqual(stations, []);
+});
+
+test('locations outside the Australian region retain both catalogues and alternatives', async () => {
+  const direct = [{provider: 'noaa', id: '9447130'}];
+  let directCalls = 0;
+  let storedCalls = 0;
+  const result = await loadAvailableStations({
+    place: {lat: -14.28, lon: -170.69},
+    direct: async () => { directCalls += 1; return direct; },
+    stored: async () => { storedCalls += 1; return [station]; },
+  });
+  assert.deepEqual(result, [...direct, station]);
+  assert.equal(directCalls, 1);
+  assert.equal(storedCalls, 1);
 });
 
 test('an Australian forecast sends only the selected stored-provider request', async () => {

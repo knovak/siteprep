@@ -31,7 +31,7 @@ and user-visible; it is not a saved-place feature or remote analytics.
 
 ### 1.1 Current deployed extension
 
-Test version 15 and production version 7 retain the browser-direct NOAA and CHS
+Test version 16 and production version 7 retain the browser-direct NOAA and CHS
 adapters and add two server-stored sources behind one registry: licensed 2026
 Bureau of Meteorology predictions for all 76 Australian Standard Ports, and a
 licensed global coastal FES2022b fallback. Official configured sources always
@@ -54,6 +54,11 @@ and absolute heights from unlike sources must not be compared without a datum
 conversion. FES excludes weather, storm surge, river flow, waves, and local
 harbour effects. Tide Here therefore labels it **FES2022 near _place_**, marks
 it approximate, and retains the not-for-navigation-or-safety warning.
+
+Test version 16 adds the 2026-10-20 startup-location, loading, tide-state,
+moon-icon and Australian performance refinements described in §9 and the
+Phase 6/13 techdocs. These changes are pending PR review and are not yet in
+production version 7.
 
 ## 2. Alternatives considered: tide coverage and source
 
@@ -314,15 +319,27 @@ an initializer secret, and private R2 storage for stored-provider data. It
 still has no database, account, or custom domain, and the browser-facing code
 contains no hard-coded deployment URL.
 
-The eventual `tidehere.info`-style domain remains a later routing change. The
-delivered **Show here** button calls
-`navigator.geolocation.getCurrentPosition` only after that explicit user
-gesture and explains the browser permission before prompting. Success feeds the
-returned coordinates into exactly the same coordinate-input, reverse-geocoding,
-coastal-match, provider, history, and display path as typed coordinates.
-Denial or timeout leaves the manual form untouched. The page never requests
-location on load, watches position, or runs in the background. The deployed
-feature uses a secure context and the same forecast contract (O7–O8).
+The eventual `tidehere.info`-style domain remains a later routing change. Per
+the user's 2026-10-20 request, normal page load and **Show here** each call
+`navigator.geolocation.getCurrentPosition` for one fix, subject to browser
+permission. Success feeds the returned coordinates into the same
+coordinate-input, reverse-geocoding, coastal-match, provider, history, and
+display path as typed coordinates. Denial or timeout leaves the manual form
+available. A newer manual search wins over a pending location request.
+Deterministic fixture pages and a carried manual search do not trigger an
+additional startup location request. The page never watches position.
+The feature uses a secure context and the same forecast contract (O7–O8).
+
+Animated progress covers startup, location, search, and alternative forecasts,
+with readable status text and reduced-motion handling. Today's outlined tide
+arrow points toward the next extremum (up for high, down for low). Its fill is
+linear elapsed-time progress between the surrounding opposite extrema, full
+at high and empty at low; it does not claim to measure water height. Providers
+include the last available extremum before the five-day window as
+`previousTide`, without adding a sixth displayed day. Missing or invalid
+surrounding events leave the fill unavailable rather than assuming a cycle.
+Current tide styling, direction, fill, and today's moon icon update while the
+page is visible. Later moon icons use each day's local-noon phase.
 
 ## 10. Validation contract
 

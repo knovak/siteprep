@@ -30,6 +30,7 @@ function forecast(marker = 'Seattle') {
     station: { provider: 'noaa', id: '9447130', name: 'SEATTLE' },
     timeZone: 'America/Los_Angeles',
     days: [],
+    previousTide: null,
     sources: [],
     warnings: []
   };
@@ -104,6 +105,34 @@ test('forecast cache never stores tide-service failures and removes old failed e
   assert.equal(await cache.read(context), null);
   assert.equal(storage.getItem(key), null);
   assert.deepEqual(JSON.parse(storage.getItem(FORECAST_CACHE_INDEX_KEY)), []);
+});
+
+test('an older forecast without previous-tide context is refreshed without changing history', async () => {
+  const storage = memoryStorage();
+  const now = new Date('2026-10-20T00:30:00.000Z');
+  const cache = new ForecastCache({storage, now: () => now});
+  const history = new LocalHistory({storage, now: () => now});
+  const context = {
+    input: 'Sydney', station: {provider: 'australia-standard-ports', id: 'au-sydney'},
+    timeZone: 'Australia/Sydney',
+  };
+  const legacy = forecast('Sydney');
+  delete legacy.previousTide;
+  history.append(legacy);
+  const savedHistory = storage.getItem(HISTORY_KEY);
+  const key = await cache.key(context);
+  storage.setItem(key, JSON.stringify({hour: cache.contextHour(context), result: legacy}));
+  storage.setItem(FORECAST_CACHE_INDEX_KEY, JSON.stringify([key]));
+
+  assert.equal(await cache.read(context), null);
+  assert.equal(storage.getItem(key), null);
+  assert.deepEqual(JSON.parse(storage.getItem(FORECAST_CACHE_INDEX_KEY)), []);
+  assert.equal(storage.getItem(HISTORY_KEY), savedHistory);
+
+  const current = {...legacy, previousTide: null};
+  await cache.write(context, current);
+  assert.deepEqual(await cache.read(context), current, 'Explicitly unavailable previous context is a current response');
+  assert.equal(storage.getItem(HISTORY_KEY), savedHistory);
 });
 
 test('coast-hour keys follow the selected coast rather than the device zone', () => {

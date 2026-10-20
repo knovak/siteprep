@@ -2,11 +2,13 @@
 
 This increment adds the host-neutral Tide Here page over the Phase 5 service.
 The form accepts a general place name or decimal coordinates and preserves the entry.
-Its two equal mobile-width actions show the typed selection or, only after the
-person chooses **Show here**, request one browser geolocation fix and feed those
-coordinates through the same reverse-geocoding and forecast path. The page
-never asks for location on load, watches the device, or changes the manual entry
-when permission is denied or location times out.
+Its two equal mobile-width actions show the typed selection or request one
+browser geolocation fix through **Show here**. Normal page load requests the
+same single fix, subject to browser permission, and feeds its coordinates
+through the same reverse-geocoding and forecast path. Fixture pages and a
+carried manual search keep their own input. The page never watches the device;
+denial and timeout leave manual entry available, and a newer manual search
+takes precedence over any older location or forecast request.
 A result labels a collapsed identity disclosure with the coast name; opening it
 shows **You entered**, **Resolved place**, the prediction station, and the
 station's IANA time zone. Five equal cards keep high and low tides visible and
@@ -64,10 +66,14 @@ neither source supplies any station. This keeps a temporary direct-provider
 failure from masking healthy Australian forecasts, and likewise keeps a stored
 gateway failure from disabling U.S. and Canadian matching.
 
-The page loads the complete NOAA and CHS prediction-station catalogues on the
-first uncached search, then loads metadata only for the selected station so
-matching and civil-time formatting are not limited to the recorded validation
-places. The prepared Australian catalogue contains all 76 Standard Ports in the
+For resolved places between 45°S and 8°S, 90°E and 175°E, the page loads only
+the Australian catalogue. This region includes all 76 configured Standard Ports,
+including Cocos, Christmas and Norfolk islands, and excludes NOAA/CHS coasts.
+It avoids waiting for unrelated North American catalogue requests (up to their
+10-second timeout) without changing coastal-match distances or official-source
+priority. If the Australian catalogue is unavailable, the existing FES fallback
+can still resolve a model point. Other regions retain combined independent
+catalogue loading. Selected-station metadata is loaded only when needed. The prepared Australian catalogue contains all 76 Standard Ports in the
 Bureau's 2026 state and territory indexes across 10 IANA zones. The deterministic
 browser fixture remains a bounded 23-port synthetic catalogue so its disclosure
 and failure tests stay independent of the licensed artifact.
@@ -90,6 +96,30 @@ silently resolving to Seattle.
 Phase 7 extends this page with its device-local history,
 disposable cache tiers, download and clear controls, and privacy statement; its
 implementation and additional checks are documented in `../phase-7/README.md`.
+
+## Current-state indicators and request ownership
+
+The initial HTML contains a visible animated status before module startup.
+Preparation, location, coast resolution, forecasts, and alternative selection
+share the status; readable labels remain when reduced motion disables spinning.
+A monotonically increasing request identifier prevents obsolete asynchronous
+results from changing the current result or ending a newer operation's status.
+
+`tideProgress` combines the five displayed days with nullable
+`forecast.previousTide`. It sorts absolute instants, points toward the next
+high/low, and interpolates elapsed time between surrounding opposite extrema.
+The bottom-up fill is full at high and empty at low in either arrow direction.
+It is explicitly timing-based, not a measured height. Missing prior context,
+non-alternating events, or missing next events do not fabricate a fill.
+NOAA/CHS request the preceding 24 hours in the same fetch; Australian annual
+data supplies the preceding stored event; harmonic adapters calculate preceding
+context without changing the five displayed rows.
+
+Moon icons use SunCalc's current phase for today and the existing local-noon
+phase for later dates. Southern Hemisphere icons reverse the lit side.
+Visible-page minute/focus updates refresh the indicators without provider calls
+or new history entries. A coast-local date change reloads the five-day forecast;
+the page never takes another location fix automatically while open.
 
 ## Verification
 

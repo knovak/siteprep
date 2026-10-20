@@ -1,5 +1,6 @@
 import {R2ObjectStore} from '../../phase-9/src/object-store.mjs';
 import {loadActiveProviderRegistry, providerById} from './provider-registry.mjs';
+import {requestObjectStore} from './request-store.mjs';
 
 function json(value, status = 200, headers = {}) {
   return Response.json(value, {status, headers: {'cache-control': 'no-store', ...headers}});
@@ -52,7 +53,7 @@ export function createProviderGatewayApp({
       const url = new URL(request.url);
       let store;
       try {
-        store = storeFactory(env);
+        store = requestObjectStore(storeFactory(env));
       } catch (error) {
         return json({error: error.message, code: 'storage-unavailable'}, 503);
       }

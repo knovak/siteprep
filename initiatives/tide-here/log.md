@@ -307,3 +307,30 @@ Proposed device-local pinned places as the smallest ordinary-use refinement afte
 ## 2026-09-02 — Add device-local pinned places without provider requests until a pin is opened
 
 Review redirected the proposal: retained the refinement menu in notes.md and set Tide Here dormant.
+
+
+## 2026-10-20 — Show current conditions immediately and speed up Australian results
+
+Implemented the requested single location attempt on normal startup, animated
+waiting status, today's rising/falling tide arrow with time-based fill, and
+current/daily moon-phase icons. Manual input wins over pending automatic
+location; indicators update while visible without another location fix.
+Providers supply the preceding extremum for early-day fill, and older forecast
+caches refresh without altering saved history.
+
+Australian searches avoid unrelated NOAA/CHS catalogue calls. Request-local
+object reuse reduces the annual prediction body from three reads to one while
+retaining checksum validation and fresh reads on subsequent requests.
+
+Validation: 143 unit tests and 47 browser checks passed (one intentional
+duplicate phone viewport-matrix skip), including accessibility, 430×932 layout,
+midnight/DST, source priority, cache upgrades, and stale-request protection.
+The Sites app build and independent correctness review passed.
+
+
+## 2026-10-20 — Deploy current-condition refinement to Test
+
+Published version 16 to the existing public Test Site at 14:57 AEST
+(04:57 UTC), preserving access and active provider datasets. The deployment
+archive contains 78 files, 2,467,840 bytes, from Site source `56e2962a688c1a82b147a5cd6e9428a07863e92b`.
+Production remains version 7; this request does not release or merge.

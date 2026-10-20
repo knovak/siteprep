@@ -80,7 +80,7 @@ export class TideHereService {
   async resolve(input) {
     const geocoded = await this.geocoder.resolve(input);
     if (!geocoded.ok) return freezeResolution({ ...geocoded, ok: false, candidates: [] });
-    const stations = await this.getStations();
+    const stations = await this.getStations(geocoded.place);
     const match = matchCoast(placeForMatch(geocoded.place), stations, this.matchConfig);
     const common = {
       input: geocoded.input,

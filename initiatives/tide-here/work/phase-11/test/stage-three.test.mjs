@@ -100,10 +100,17 @@ test('all 76 licensed Australian ports return five source-matching local days in
     const response = await forecast(app, station);
     assert.equal(response.status, 200, station.id);
     const result = await response.json();
-    assert.deepEqual(Object.keys(result), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'sources', 'warnings']);
+    assert.deepEqual(Object.keys(result), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'previousTide', 'sources', 'warnings']);
     assert.equal(result.station.id, station.id);
     assert.equal(result.timeZone, station.timeZone);
     assert.equal(result.days.length, 5);
+    const start = Date.parse(fiveLocalDays('2026-08-27T12:00:00Z', station.timeZone)[0].startUtc);
+    const sourcePrevious = australiaPreparedOfficial.events.filter(event => (
+      event.stationId === station.id && Date.parse(event.at) < start
+    )).sort((left, right) => Date.parse(right.at) - Date.parse(left.at))[0];
+    assert.deepEqual(result.previousTide, {
+      type: sourcePrevious.type, at: sourcePrevious.at, height: sourcePrevious.height, unit: sourcePrevious.unit,
+    });
     const expectedEvents = australiaPreparedOfficial.events.filter(event => (
       event.stationId === station.id
       && event.localDate >= result.days[0].date
@@ -124,6 +131,19 @@ test('all 76 licensed Australian ports return five source-matching local days in
       [sourceFirst.type, sourceFirst.at, sourceFirst.sourceLocalTime, sourceFirst.height],
     );
   }
+});
+
+test('the first loaded Australian day leaves prior-year tide context unknown', async () => {
+  const {app} = harness();
+  await initialize(app);
+  const station = australiaPreparedOfficial.stations.find(item => item.id === 'au-qld-mooloolaba');
+  const rows = fiveLocalDays('2026-01-01T00:00:00Z', station.timeZone);
+  const response = await forecast(app, station, rows);
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.previousTide, null);
+  assert.equal(result.days.length, 5);
+  assert.ok(result.days[0].tides.length > 0);
 });
 
 test('major coastal-city searches resolve around the Australian mainland and Tasmania', () => {

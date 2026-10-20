@@ -6,11 +6,12 @@ It names the resolved place, the chosen coast and the official prediction
 station. When several nearby coasts are plausible, it shows the closest
 station first and keeps the other candidates available for review.
 
-The two current Sites are public, separate deployments of the same merged
-FES2022-capable source:
+The two current Sites are public, separate FES2022-capable deployments. Test
+includes the 2026-10-20 current-condition and Australian performance refinement;
+production retains the earlier release:
 
 - **Test:** [tide-here-test.ken-novak.chatgpt.site](https://tide-here-test.ken-novak.chatgpt.site)
-  version 15.
+  version 16.
 - **Production:** [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site)
   version 7.
 
@@ -74,16 +75,22 @@ timing and tidal shape for exactly this reason.
 
 ## Use the Site
 
-1. Enter a place such as `Half Moon Bay` or `Vancouver`, or decimal coordinates
-   such as `47.61, -122.33`, then choose **Show selection**. Or choose **Show
-   here** and approve the browser's one-time location request to use the
-   device's current coordinates.
+1. On opening the page, approve the browser's location request to see tides
+   near you immediately. You can instead enter a place such as `Half Moon Bay`
+   or `Vancouver`, or decimal coordinates such as `47.61, -122.33`, then choose
+   **Show selection**. **Show here** retries the device's current location.
+   An animated progress indicator stays visible while the page is preparing,
+   finding the location, or loading a forecast.
 2. If several nearby coasts are plausible, Tide Here immediately shows the
    closest result. Open **Alternative coasts** below the forecast to choose a
    different named prediction station.
 3. Read each day's high and low tides. Past tide labels are lighter than the
-   upcoming tides. Open the day's **Sun and moon** row for sunrise, sunset,
-   moonrise, moonset and phase.
+   upcoming tides. Today's arrow points up when the next tide is high and down
+   when the next tide is low. Its bottom-up fill estimates progress between
+   adjacent predicted tides: full at high tide and empty at low tide. It is a
+   timing indicator, not a measured water level. A small moon icon precedes
+   **Sun and moon**, showing the current phase today and the daily phase on
+   later cards. Open that row for sunrise, sunset, moonrise, moonset and phase.
 4. Open the coast name for the original entry, resolved place, station and time
    zone.
 5. Below the safety notice, open **Prediction source details** for the provider,
@@ -98,10 +105,12 @@ Predictions are informational and are not for navigation or safety decisions.
 
 ## Local history and privacy
 
-Tide Here requests browser location only after **Show here** is chosen. The
-browser and operating system handle that permission and return coordinates to
-the page; a denied or unavailable location leaves the manual entry available.
-Coordinates from **Show here**, or a place or coordinates submitted manually,
+Tide Here requests one browser location fix on normal page load and when
+**Show here** is chosen. The browser and operating system control permission;
+a denied or unavailable location leaves manual entry available. It never
+watches your location, and a manual search takes precedence over a pending
+location request. Coordinates from startup or **Show here**, or a place or
+coordinates submitted manually,
 go directly from the browser to the configured Nominatim geocoder. The browser
 requests NOAA and CHS station data and forecasts directly from those providers.
 

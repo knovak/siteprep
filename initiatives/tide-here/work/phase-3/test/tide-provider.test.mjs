@@ -36,7 +36,7 @@ const chsStation = {
 const fixtureResponse = (payload) => async () => ({ ok: true, status: 200, json: async () => structuredClone(payload) });
 
 function assertStableShape(result, provider) {
-  assert.deepEqual(Object.keys(result), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'sources', 'warnings']);
+  assert.deepEqual(Object.keys(result), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'previousTide', 'sources', 'warnings']);
   assert.equal(result.station.provider, provider);
   assert.equal(result.days.length, 5);
   assert.equal(result.sources.length, 1);
@@ -106,15 +106,55 @@ test('mixed semidiurnal highs remain separate', () => {
   assert.deepEqual(secondDayHighs, [2.741, 2.862]);
 });
 
-test('requests cover all five local days, including a DST transition', () => {
+test('requests cover a preceding day and all five local days, including a DST transition', () => {
   const rows = fiveLocalDays('2026-10-31T16:00:00Z', 'America/Los_Angeles');
   assert.equal(rows.some((row) => row.durationHours === 25), true);
   const noaaUrl = new URL(buildNoaaRequest({ station: noaaStation, rows, config: config.providers.noaa }));
   const chsUrl = new URL(buildChsRequest({ station: chsStation, rows, config: config.providers.chs }));
-  assert.equal(noaaUrl.searchParams.get('begin_date'), rows[0].startUtc.slice(0, 10).replaceAll('-', ''));
+  assert.equal(noaaUrl.searchParams.get('begin_date'), '20261030');
   assert.equal(noaaUrl.searchParams.get('end_date'), rows.at(-1).endUtc.slice(0, 10).replaceAll('-', ''));
-  assert.equal(chsUrl.searchParams.get('from'), rows[0].startUtc);
+  assert.equal(chsUrl.searchParams.get('from'), '2026-10-30T07:00:00.000Z');
   assert.equal(chsUrl.searchParams.get('to'), rows.at(-1).endUtc);
+});
+
+test('NOAA and CHS retain the last prior tide without adding it to the five displayed days', async () => {
+  const rows = fiveLocalDays('2026-10-31T16:00:00Z', 'America/Los_Angeles');
+  const source = [
+    {at: '2026-10-31T00:59:00.000Z', type: 'high', height: 1.8},
+    {at: '2026-10-31T06:59:00.000Z', type: 'low', height: 0.3},
+    {at: rows[0].startUtc, type: 'high', height: 2.1},
+    {at: '2026-10-31T13:00:00.000Z', type: 'low', height: 0.4},
+    {at: rows.at(-1).endUtc, type: 'high', height: 1.9},
+  ];
+  for (const station of [noaaStation, chsStation]) {
+    const payload = station.provider === 'noaa'
+      ? {predictions: source.map(event => ({t: event.at, type: event.type === 'high' ? 'H' : 'L', v: event.height}))}
+      : source.map(event => ({eventDate: event.at, value: event.height}));
+    let calls = 0;
+    const result = await new TideProvider({config, fetchImpl: async () => {
+      calls += 1;
+      return {ok: true, json: async () => payload};
+    }}).forecast({context, station, timeZone: 'America/Los_Angeles', rows});
+    assert.equal(calls, 1);
+    assert.equal(result.days.length, 5);
+    assert.equal(result.previousTide.at, source[1].at);
+    assert.equal(result.previousTide.type, 'low');
+    assert.equal(result.previousTide.height, 0.3);
+    assert.equal(result.previousTide.localTime, '23:59:00');
+    assert.deepEqual(result.days.flatMap(day => day.tides).map(event => event.at), source.slice(2, 4).map(event => event.at));
+    assert.equal(result.days[0].tides[0].localTime, '00:00:00');
+  }
+});
+
+test('missing prior tide stays unknown and prior-only responses do not masquerade as a forecast', async () => {
+  const rows = fiveLocalDays('2026-08-19T19:00:00Z', 'America/Los_Angeles');
+  for (const at of [rows[0].startUtc, '2026-08-19T06:59:00Z']) {
+    const provider = new TideProvider({config, fetchImpl: fixtureResponse({predictions: [{t: at, type: 'H', v: '1.2'}]})});
+    const result = await provider.forecast({context, station: noaaStation, timeZone: 'America/Los_Angeles', rows});
+    assert.equal(result.previousTide, null);
+    assert.equal(result.days.flatMap(day => day.tides).length, at === rows[0].startUtc ? 1 : 0);
+    assert.deepEqual(result.warnings.map(warning => warning.code), at === rows[0].startUtc ? [] : ['tides-unavailable']);
+  }
 });
 
 for (const [label, fetchImpl] of [

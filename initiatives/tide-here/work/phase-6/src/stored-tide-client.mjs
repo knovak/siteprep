@@ -1,9 +1,30 @@
 export const AUSTRALIAN_PROVIDER_ID = 'australia-standard-ports';
 export const FES_PROVIDER_ID = 'fes2022';
 
-export async function loadAvailableStations({direct, stored}) {
+// This deliberately conservative region includes all configured Australian
+// ports, including Cocos, Christmas and Norfolk islands, and is well separated
+// from NOAA/CHS coasts (including Guam and American Samoa). Outside it, retain
+// the combined catalogue and the existing worldwide matching behavior.
+export function usesAustralianCatalogue(place) {
+  return Number.isFinite(place?.lat) && Number.isFinite(place?.lon)
+    && place.lat >= -45 && place.lat <= -8
+    && place.lon >= 90 && place.lon <= 175;
+}
+
+export async function loadAvailableStations({direct, stored, place = null}) {
   if (typeof direct !== 'function' || typeof stored !== 'function') {
     throw new TypeError('Station loading requires direct and stored provider functions');
+  }
+  if (usesAustralianCatalogue(place)) {
+    try {
+      const stations = await stored();
+      return Object.freeze(Array.isArray(stations) ? [...stations] : []);
+    } catch {
+      // With no official catalogue available, let the existing service attempt
+      // its configured model fallback; unrelated North American stations cannot
+      // provide an alternative in this region.
+      return Object.freeze([]);
+    }
   }
   const [directResult, storedResult] = await Promise.allSettled([direct(), stored()]);
   const directStations = directResult.status === 'fulfilled' && Array.isArray(directResult.value)

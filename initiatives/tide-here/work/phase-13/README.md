@@ -2,8 +2,9 @@
 
 Stage 5 packages the Tide Here browser page together with the Stage 4 server
 gateway as a ChatGPT Sites app. The public test and production Sites run the
-same merged application source but remain separate environments, source
-repositories, secrets, deployments, and R2 object stores.
+same provider datasets but remain separate environments, source repositories,
+secrets, deployments, and R2 object stores. Test version 16 carries the
+2026-10-20 refinement; production remains on version 7.
 
 ## Runtime shape
 
@@ -34,6 +35,21 @@ repositories, secrets, deployments, and R2 object stores.
   time. They exclude URLs, request bodies, submitted names, coordinates, coast
   names, and station ids.
 
+## 2026-10-20 runtime refinement
+
+The browser selects the Australian catalogue directly for the conservative
+Australian region described in the Phase 6 techdoc, avoiding unrelated NOAA/CHS
+catalogue waits. Official station matching and FES fallback rules are unchanged.
+
+The gateway wraps each request's object store in `phase-10/src/request-store.mjs`.
+Repeated reads of a key share the same body promise within that request only.
+Writes invalidate that key before and after writing. Every new request starts
+fresh, and all existing checksum verification remains in place. This reduces
+the roughly 19.2 MB Australian annual prediction object from three reads
+(roughly 57.7 MB) to one in a station or forecast request; total object reads
+drop from nine to six. Tests also verify that a corrupted object is detected
+on the following request, rather than concealed by a persistent cache.
+
 ## Deployment and initialization
 
 Each environment workflow builds and publishes its existing Sites project
@@ -60,7 +76,7 @@ and production Sites. Direct NOAA/CHS station catalogues, the stored Australian 
 the FES tile inventory are separate availability boundaries in the browser:
 one can fail without masking healthy coverage from the others.
 
-## Current deployment parity
+## Recorded 2026-09-01 deployment parity
 
 - **Test:** public Site version 15 at
   <https://tide-here-test.ken-novak.chatgpt.site>.
@@ -79,6 +95,19 @@ zero-write repeat initialization, NOAA, CHS, 76-port/1,470-event Australian,
 Galway, Cooktown, Gibraltar, Nice, Amsterdam, and hosted-page sweep.
 Maroochydore/Mooloolaba and Bundaberg continued to resolve to official Bureau
 data before FES.
+
+## 2026-10-20 Test deployment
+
+Deployed public Test version 16 at
+<https://tide-here-test.ken-novak.chatgpt.site> on 2026-10-20 at 14:57 AEST
+(04:57 UTC), from Site source commit `56e2962a688c1a82b147a5cd6e9428a07863e92b`.
+The saved archive contains 78 files and 2,467,840 bytes (about 2.35 MiB).
+The application source is the Siteprep refinement commit `19411a04d`; the Sites
+source repository has its own commit history. Existing public access and the
+active Bureau/FES object-store datasets were preserved.
+
+Production remains version 7 at
+<https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>.
 
 ## Recorded global FES2022 test deployment
 

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 import AxeBuilder from '@axe-core/playwright';
 
 const pagePath = '/initiatives/tide-here/work/phase-6/index.html?fixture=1';
@@ -242,7 +243,7 @@ test('recorded validation caches stay out of normal local storage', async ({page
   expect(storage.session).toContain('tide-here.forecast-index.v1');
 });
 
-test('Show here requests browser location only after a click and uses the coordinate path', async ({ page }) => {
+test('recorded validation stays deterministic and Show here still uses the coordinate path', async ({ page }) => {
   await page.addInitScript(() => {
     let calls = 0;
     Object.defineProperty(navigator, 'geolocation', {
@@ -258,7 +259,7 @@ test('Show here requests browser location only after a click and uses the coordi
   });
   await page.goto(pagePath);
   await expect(page.locator('#fixture-note')).toBeVisible();
-  await expect(page.getByText(/asks your browser for location permission/i)).toBeVisible();
+  await expect(page.getByText(/asks for your location on load/i)).toBeVisible();
   expect(await page.evaluate(() => window.locationRequestCount)).toBe(0);
   await page.getByRole('button', { name: 'Show here' }).click();
   await expect(page.locator('#place')).toHaveValue('47.60620, -122.33210');
@@ -580,4 +581,150 @@ test('retrying a transient Cooktown failure makes a fresh FES2022 request', asyn
   await expect(page.locator('#state-panel')).toBeHidden();
   await expect(page.locator('#coast-name')).toContainText('FES2022 near Cooktown');
   expect(forecastRequests).toBe(2);
+});
+
+
+async function normalSeattle(page) {
+  await page.clock.install({ time: new Date('2026-08-20T13:00:00Z') });
+  await page.addInitScript(() => {
+    localStorage.setItem('tide-here.station-catalogue.v2', JSON.stringify({ savedAt: Date.now(), stations: [{
+      provider: 'noaa', country: 'US', id: '9447130', name: 'Seattle', latitude: 47.6062, longitude: -122.3321,
+      timeZone: 'America/Los_Angeles', datum: 'MLLW', kind: 'reference', active: true
+    }] }));
+    window.locationRequests = [];
+    Object.defineProperty(navigator, 'geolocation', { configurable: true, value: {
+      getCurrentPosition(success, error) { window.locationRequests.push({ success, error }); }
+    } });
+  });
+  await page.route('**/stations?provider=*', route => route.fulfill({ json: { stations: [] } }));
+  await page.route('https://nominatim.openstreetmap.org/**', route => {
+    const place = { display_name: 'Seattle, Washington', lat: '47.6062', lon: '-122.3321' };
+    return route.fulfill({ json: route.request().url().includes('/search') ? [place] : place });
+  });
+  const predictions = JSON.parse(await readFile(new URL('../../phase-0/fixtures/noaa-seattle-hilo.json', import.meta.url), 'utf8'));
+  await page.route('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter**', route => route.fulfill({ json: predictions }));
+}
+
+test('normal page asks for location on load and shows animated progress through forecast loading', async ({ page }) => {
+  await normalSeattle(page);
+  let releaseForecast;
+  const waitingForecast = new Promise(resolve => { releaseForecast = resolve; });
+  await page.route('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter**', async route => {
+    await waitingForecast;
+    await route.fallback();
+  });
+  await page.goto(pagePath.split('?')[0]);
+  await expect.poll(() => page.evaluate(() => window.locationRequests.length)).toBe(1);
+  await expect(page.locator('#loading-status')).toBeVisible();
+  await expect(page.locator('#loading-text')).toHaveText('Finding your location…');
+  await expect(page.locator('.loading-spinner')).toHaveCSS('animation-name', 'loading-spin');
+  await page.evaluate(() => window.locationRequests[0].success({ coords: { latitude: 47.6062, longitude: -122.3321 } }));
+  await expect(page.locator('#loading-text')).toHaveText('Loading tide predictions…');
+  await expect(page.locator('#loading-status')).toBeVisible();
+  releaseForecast();
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#loading-status')).toBeHidden();
+  await expect(page.locator('#entered-name')).toHaveText('47.60620, -122.33210');
+  await expect(page.locator('.tide-indicator')).toHaveAttribute('data-direction', 'up');
+  await expect(page.locator('.moon-phase-icon')).toHaveCount(5);
+});
+
+test('a late automatic location cannot overwrite a manual search', async ({ page }) => {
+  await normalSeattle(page);
+  await page.goto(pagePath.split('?')[0]);
+  await expect(page.locator('#loading-text')).toHaveText('Finding your location…');
+  await page.locator('#place').fill('Seattle');
+  await page.getByRole('button', { name: 'Show selection' }).click();
+  await expect(page.locator('#entered-name')).toHaveText('Seattle');
+  await page.evaluate(() => window.locationRequests[0].success({ coords: { latitude: -27.4698, longitude: 153.0251 } }));
+  await expect(page.locator('#place')).toHaveValue('Seattle');
+  await expect(page.locator('#entered-name')).toHaveText('Seattle');
+  await expect(page.locator('#loading-status')).toBeHidden();
+});
+
+test('automatic location denial stops progress and leaves manual search usable', async ({ page }) => {
+  await normalSeattle(page);
+  await page.goto(pagePath.split('?')[0]);
+  await expect.poll(() => page.evaluate(() => window.locationRequests.length)).toBe(1);
+  await page.evaluate(() => window.locationRequests[0].error({ code: 1 }));
+  await expect(page.locator('#state-panel')).toHaveAttribute('data-code', 'location-permission-denied');
+  await expect(page.locator('#loading-status')).toBeHidden();
+  await page.locator('#place').fill('Seattle');
+  await page.getByRole('button', { name: 'Show selection' }).click();
+  await expect(page.locator('#result')).toBeVisible();
+});
+
+test('the tide indicator and past times refresh while open without collapsing astronomy', async ({ page }) => {
+  await normalSeattle(page);
+  await page.goto(pagePath.split('?')[0]);
+  await expect.poll(() => page.evaluate(() => window.locationRequests.length)).toBe(1);
+  await page.evaluate(() => window.locationRequests[0].success({ coords: { latitude: 47.6062, longitude: -122.3321 } }));
+  await expect(page.locator('#result')).toBeVisible();
+  const initialFill = Number(await page.locator('.tide-indicator').getAttribute('data-fill'));
+  const details = page.locator('.astronomy-details').first();
+  await details.locator('summary').click();
+  await page.clock.fastForward(60_000);
+  await expect.poll(async () => Number(await page.locator('.tide-indicator').getAttribute('data-fill'))).toBeGreaterThan(initialFill);
+  await expect(details).toHaveAttribute('open', '');
+  await expect(details.locator('summary')).toBeFocused();
+  const pastCount = await page.locator('.day-card').first().locator('.past').count();
+  await page.clock.fastForward(8 * 60 * 60 * 1000);
+  await expect.poll(() => page.locator('.day-card').first().locator('.past').count()).toBeGreaterThan(pastCount);
+});
+
+
+test('a pending normal search runs without an automatic location request', async ({ page }) => {
+  await normalSeattle(page);
+  await page.addInitScript(() => sessionStorage.setItem('tide-here.pending-normal-place.v1', 'Seattle'));
+  await page.goto(pagePath.split('?')[0]);
+  await expect(page.locator('#entered-name')).toHaveText('Seattle');
+  expect(await page.evaluate(() => window.locationRequests.length)).toBe(0);
+  await expect(page.locator('#loading-status')).toBeHidden();
+});
+
+test('coast midnight refreshes all five dates without moving the selected coast', async ({ page }) => {
+  await normalSeattle(page);
+  await page.goto(pagePath.split('?')[0]);
+  await expect.poll(() => page.evaluate(() => window.locationRequests.length)).toBe(1);
+  await page.evaluate(() => window.locationRequests[0].success({ coords: { latitude: 47.6062, longitude: -122.3321 } }));
+  await expect(page.locator('.day-card').first()).toHaveAttribute('data-date', '2026-08-20');
+  await page.clock.fastForward(19 * 60 * 60 * 1000);
+  await expect(page.locator('.day-card').first()).toHaveAttribute('data-date', '2026-08-21');
+  await expect(page.locator('.day-card').last()).toHaveAttribute('data-date', '2026-08-25');
+  await expect(page.locator('#coast-name')).toHaveText('Seattle');
+  expect(await page.evaluate(() => window.locationRequests.length)).toBe(1);
+});
+
+
+test('manual selection during startup is queued and never submits a native navigation', async ({ page }) => {
+  let releaseConfiguration;
+  const waiting = new Promise(resolve => { releaseConfiguration = resolve; });
+  await page.route('**/phase-2/data/provider-config.json', async route => {
+    await waiting;
+    await route.continue();
+  });
+  await page.goto(pagePath);
+  await expect(page.locator('#loading-status')).toBeVisible();
+  await page.locator('#place').fill('Halifax');
+  await page.getByRole('button', { name: 'Show selection' }).click();
+  await expect(page.locator('#loading-text')).toHaveText('Starting your search…');
+  await expect(page).toHaveURL(/fixture=1$/);
+  releaseConfiguration();
+  await expect(page.locator('#entered-name')).toHaveText('Halifax');
+  await expect(page.locator('#fixture-note')).toBeVisible();
+  await expect(page.locator('#loading-status')).toBeHidden();
+});
+
+
+test('typing a manual place cancels pending location before submission', async ({ page }) => {
+  await normalSeattle(page);
+  await page.goto(pagePath.split('?')[0]);
+  await expect.poll(() => page.evaluate(() => window.locationRequests.length)).toBe(1);
+  await page.locator('#place').fill('Halifax');
+  await expect(page.locator('#loading-status')).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Show here' })).toBeEnabled();
+  await page.evaluate(() => window.locationRequests[0].success({ coords: { latitude: 47.6062, longitude: -122.3321 } }));
+  await expect(page.locator('#place')).toHaveValue('Halifax');
+  await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#state-panel')).toBeHidden();
 });

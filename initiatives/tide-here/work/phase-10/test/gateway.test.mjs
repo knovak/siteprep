@@ -71,10 +71,13 @@ test('the stored harmonic adapter returns the existing normalized response shape
   });
   assert.equal(response.status, 200);
   const forecast = await response.json();
-  assert.deepEqual(Object.keys(forecast), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'sources', 'warnings']);
+  assert.deepEqual(Object.keys(forecast), ['input', 'place', 'coast', 'station', 'timeZone', 'days', 'previousTide', 'sources', 'warnings']);
   assert.equal(forecast.station.provider, 'fes2022');
   assert.equal(forecast.days.length, 5);
   assert.ok(forecast.days.flatMap(day => day.tides).length >= 18);
+  assert.ok(Date.parse(forecast.previousTide.at) < Date.parse(rows[0].startUtc));
+  assert.ok(Date.parse(forecast.previousTide.at) >= Date.parse(rows[0].startUtc) - 24 * 60 * 60 * 1000);
+  assert.ok(forecast.days.flatMap(day => day.tides).every(event => Date.parse(event.at) >= Date.parse(rows[0].startUtc)));
   assert.equal(forecast.sources[0].dataClass, 'test-fixture');
   assert.equal(forecast.sources[0].approximate, true);
   assert.equal(forecast.warnings[0].code, 'approximate-fallback');
