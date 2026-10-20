@@ -105,7 +105,10 @@ selection. Empty messages sit beside the list inside the topic body.
 `tests/e2e/event-date-filter.spec.js` checks adoption across non-Past event pages,
 unfiltered Past and reject pages, real Sydney modes, local dates,
 inclusive boundaries and gaps, invalid metadata, midnight and tab wake-up,
-collapse/keyboard interactions, and mobile layout.
+collapse/keyboard interactions, and mobile layout. The Snowmass case checks the
+Counterpoints exhibition across its December 24 closing boundary, Christmas and
+weekend gap, and December 28–29 reopening, then verifies that All dates restores
+the complete original item order without a fixed event count.
 Run it and `tests/e2e/collapsible-topics.spec.js` after the final build:
 
 ```sh
