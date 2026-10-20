@@ -433,3 +433,14 @@ between date-change popup closure and Escape dismissal. Reload retained the
 original saved summary. See `notes/hosted-native-pickers-20261021.md` for evidence
 and limits. No business submission, sends, app-source/deployment or access change;
 Phase 6 and `verify-hosted-test` remain open.
+
+## 2026-10-21 — Refresh managed-host backup and recovery evidence
+
+Rechecked official Sites and Cloudflare D1 documentation and read-only metadata
+for the existing test Site. The DB schema listing contains 28 tables without
+omissions; no rows were requested. Recorded plan-specific D1 limits separately
+from unverified managed-host retention, recovery and erasure, with the provider
+evidence needed for the existing T11/T12 rehearsal. See the October 21 addendum
+in `notes/host-backup-review-20260915.md`. No restore, deletion, business write,
+message, app-source change, deployment or access change; Phase 6 and
+`verify-hosted-test` remain open.

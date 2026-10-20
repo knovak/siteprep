@@ -678,3 +678,12 @@ Cancel returns focus to the event's Edit button, and the original event summary
 survives reload. No business form was submitted. This closes the October 9
 sequential event-editor gap, while the broader T12 keyboard/screen-reader and
 hosted matrix remain open. Phase 6 and `verify-hosted-test` stay actionable.
+
+## October 21 managed-host recovery review (Australia/Brisbane)
+
+The dated refresh in `notes/host-backup-review-20260915.md` rechecks current
+provider documentation and read-only Site/database metadata. It separates
+Cloudflare's plan-specific Time Travel windows from unverified Sites
+entitlements, and records the provider facts needed for the existing T11/T12
+recovery rehearsal. No managed restore or deletion was exercised; Phase 6 and
+`verify-hosted-test` remain open.
