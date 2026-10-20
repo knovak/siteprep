@@ -286,3 +286,8 @@ a.tag:focus {
 .comparison-table thead button:focus-visible { outline:3px solid #bae6fd; outline-offset:-4px; }
 .comparison-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 @media(max-width:600px) { .comparison-scroll { border-radius:9px; } }
+
+/* User-supplied eclipse reference scales to the card on phones and desktop. */
+.eclipse-reference { margin: 1rem 0 1.5rem; }
+.eclipse-reference img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.eclipse-reference figcaption { margin-top: .5rem; font-size: .9rem; color: var(--muted); }
