@@ -1,0 +1,17 @@
+{
+  "title": "Photo markers",
+  "summary": "Create square JPEG photo markers with EXIF timestamps, interactive shapes and colors, and single or batch downloads using WASM in the browser.",
+  "stage": "wish",
+  "value": "medium",
+  "outputs": [],
+  "todo": [
+    {
+      "id": "draft-objectives",
+      "title": "Draft objectives.md - what \"done\" would mean",
+      "state": "actionable",
+      "value": "high",
+      "effort": "small",
+      "advances_stage": true
+    }
+  ]
+}
