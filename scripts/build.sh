@@ -128,6 +128,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Copy source assets and decks
 cp -r "$ROOT_DIR/decks" "$OUTPUT_DIR/decks"
+node "$ROOT_DIR/scripts/render_eclipse_research.mjs"
 if [ -d "$ROOT_DIR/demos" ]; then
   cp -r "$ROOT_DIR/demos" "$OUTPUT_DIR/demos"
 fi

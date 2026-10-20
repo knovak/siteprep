@@ -32,6 +32,13 @@ date, provider caveats and holding-page policy. Keep a source check date on
 each package; do not refresh old holding entries merely by changing the page
 header. Preserve IDs when offers move between the main and holding pages.
 
+The build runs `scripts/render_eclipse_research.mjs` to publish those notes as
+`decks/eclipse-2027/research-notes.html`, using the existing Markdown renderer
+and the Eclipse deck's styles, navigation and collapsible topics. The main and
+rejected package pages link to this HTML view, which links back to both pages.
+Edit only `research-notes.md`; the HTML is generated in `gh-pages/` on every
+build and receives the normal shared footer.
+
 Validate with the final `npm run build`, then
 `npm test -- tests/e2e/eclipse-package-table.spec.js`. The browser checks compare
 table values with their source paragraphs, exercise sorting and source updates,
