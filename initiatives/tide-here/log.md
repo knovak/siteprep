@@ -334,3 +334,7 @@ Published version 16 to the existing public Test Site at 14:57 AEST
 (04:57 UTC), preserving access and active provider datasets. The deployment
 archive contains 78 files, 2,467,840 bytes, from Site source `56e2962a688c1a82b147a5cd6e9428a07863e92b`.
 Production remains version 7; this request does not release or merge.
+
+## 2026-10-20 — Release
+
+Released to production — ChatGPT Site, version 8, `7bc4ee8`. 3 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
