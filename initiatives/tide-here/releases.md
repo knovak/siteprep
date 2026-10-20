@@ -3,6 +3,18 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-10-20 — ChatGPT Site — version 8
+
+<https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>
+
+Released `7bc4ee8` · 3 commit(s) since the previous release · test last deployed 2026-10-20 at `19411a0`.
+
+Changes since the previous release, in `initiatives/tide-here/work`:
+
+- Show live tide status on load and speed up Australian forecasts (#602)
+- Review Tide Here FES2022 release evidence (#382)
+- Document Tide Here global FES2022 release (#384)
+
 ## 2026-09-01 — ChatGPT Site — version 7
 
 <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>
