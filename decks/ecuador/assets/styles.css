@@ -259,3 +259,89 @@ a.tag:focus {
 .table-scroll tbody tr:nth-child(even) {
   background: #f8fafc;
 }
+
+/* The package table derives its cells from the detailed evidence below it. */
+.comparison-scroll {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid #dbe3ee;
+}
+
+.comparison-scroll:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.comparison-scroll .comparison-table {
+  width: 1400px;
+  min-width: 1400px;
+  table-layout: fixed;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.comparison-table caption {
+  text-align: left;
+  padding: 0.7rem;
+  color: var(--muted);
+}
+
+.comparison-table thead th {
+  padding: 0;
+}
+
+.comparison-table thead button {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  padding: 0.65rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comparison-table thead button:hover,
+.comparison-table thead button:focus-visible {
+  background: #244ca1;
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+.comparison-table tbody th {
+  background: #eef2ff;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.comparison-table th,
+.comparison-table td {
+  overflow-wrap: anywhere;
+}
+
+.comparison-status {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.package-list > li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #dbe3ee;
+  scroll-margin-top: 1.5rem;
+}
+
+.package-list > li > strong {
+  color: var(--primary);
+}
+
+.package-list > li p {
+  margin: 0.55rem 0;
+}
+
+.card-content a,
+.card-content code {
+  overflow-wrap: anywhere;
+}
