@@ -411,3 +411,15 @@ Recorded ten passing native Chrome Incognito checks on public test version 17: s
 ## 2026-10-12 — Verify signed-out profile and invitation writes with fixture restoration
 
 Recorded ten targeted native Chrome Incognito and D1 checks on test version 17. Signed-out profile and invitation writes persisted and appeared to the organizer; original values restored with advanced revisions. All other member/invitation rows unchanged. One additional fictional review remains unapproved; no sends, source, deployment or audience changes. Phase 6 and verify-hosted-test stay open.
+
+
+## 2026-10-21 — Verify hosted event-editor keyboard traversal
+
+After explicit sign-in approval and user-completed authentication, recorded
+forward/reverse event-editor traversal, native datetime focus, repeated-hour
+selector operation and cancellation focus at desktop/phone widths. All 171
+observations intersect the viewport with no horizontal document scrolling.
+Unsaved selector changes were restored and cancelled; the original event
+summary remained after reload. See `notes/hosted-event-keyboard-20261021.md`
+for evidence and limits. No business submission, sends, app-source change,
+deployment or access change. Phase 6 and `verify-hosted-test` stay open.
