@@ -133,9 +133,10 @@ test('research notes and holding records are linked and receive one shared foote
     await expect(page.locator('h1')).toContainText(/Galápagos|Galapagos/);
     await expect(page.locator('main h2').first()).toBeVisible();
     await expect(page.locator('footer.site-footer')).toHaveCount(1);
-    await expect(page.locator('a[href="./sections/galapagos-packages/overview.html"]')).toHaveText('Back to Galápagos packages');
-    await expect(page.locator('a[href="./sections/galapagos-packages/overview-reject.html"]'))
-      .toHaveText('Rejected options and research holding');
+    await expect(page.getByRole('link', { name: 'Back to Galápagos packages', exact: true }))
+      .toHaveAttribute('href', './sections/galapagos-packages/overview.html');
+    await expect(page.getByRole('link', { name: 'Rejected options and research holding', exact: true }))
+      .toHaveAttribute('href', './sections/galapagos-packages/overview-reject.html');
   }
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
