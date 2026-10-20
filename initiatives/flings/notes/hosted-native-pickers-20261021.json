@@ -1,0 +1,315 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Australia/Brisbane",
+  "captured_at_utc": "2026-10-20T15:34:14.602Z",
+  "baseline_commit": "90ff6c45d6134701cbacb3d42af87a1591daf5a8",
+  "site": {
+    "url": "https://flings-test.ken-novak.chatgpt.site",
+    "version": 17,
+    "access": "public",
+    "access_policy_revision": 2,
+    "metadata_source": "Sites get_site during this run"
+  },
+  "environment": {
+    "browser": "Codex in-app browser on macOS",
+    "browser_version": null,
+    "browser_version_note": "Not obtained; navigator is not exposed by the read-only DOM bridge. No browser-version compatibility claim.",
+    "viewports": [
+      {
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "width": 430,
+        "height": 932
+      }
+    ],
+    "physical_phone": false
+  },
+  "fixture": {
+    "gathering_id": "7149a04f-4100-4d26-8db4-de35042a7e85",
+    "event_title": "Fictional repeated-hour screening",
+    "zone": "America/Los_Angeles",
+    "original": {
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "2026-11-01T08:30:00.000Z",
+      "endOccurrence": "2026-11-01T09:15:00.000Z"
+    }
+  },
+  "observations": [
+    {
+      "step": "desktop-start-picker-right",
+      "width": 1280,
+      "height": 720,
+      "clientWidth": 1265,
+      "scrollWidth": 1265,
+      "start": "2026-11-02T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": null,
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local"
+    },
+    {
+      "step": "desktop-start-picker-left",
+      "width": 1280,
+      "height": 720,
+      "clientWidth": 1265,
+      "scrollWidth": 1265,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local"
+    },
+    {
+      "step": "desktop-end-picker-right",
+      "width": 1280,
+      "height": 720,
+      "clientWidth": 1265,
+      "scrollWidth": 1265,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-02T01:15",
+      "startOccurrence": "",
+      "endOccurrence": null,
+      "focus": "author-end_local"
+    },
+    {
+      "step": "desktop-end-picker-left",
+      "width": 1280,
+      "height": 720,
+      "clientWidth": 1265,
+      "scrollWidth": 1265,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "author-end_local"
+    },
+    {
+      "step": "desktop-end-picker-dismissed",
+      "width": 1280,
+      "height": 720,
+      "clientWidth": 1265,
+      "scrollWidth": 1265,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "author-end_local"
+    },
+    {
+      "step": "phone-start-picker-focus",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "2026-11-01T08:30:00.000Z",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local",
+      "nativeFocus": "195 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-start-picker-open",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "2026-11-01T08:30:00.000Z",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local",
+      "nativeFocus": "240 table"
+    },
+    {
+      "step": "phone-start-picker-right",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-02T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": null,
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local",
+      "nativeFocus": "240 table"
+    },
+    {
+      "step": "phone-start-picker-left",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local",
+      "nativeFocus": "195 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-start-picker-dismissed",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-local",
+      "nativeFocus": "195 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-end-picker-focus",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-end_local",
+      "nativeFocus": "205 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-end-picker-open",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "2026-11-01T09:15:00.000Z",
+      "focus": "author-end_local",
+      "nativeFocus": "252 table"
+    },
+    {
+      "step": "phone-end-picker-right",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-02T01:15",
+      "startOccurrence": "",
+      "endOccurrence": null,
+      "focus": "author-end_local",
+      "nativeFocus": "252 table"
+    },
+    {
+      "step": "phone-end-picker-left",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "author-end_local",
+      "nativeFocus": "205 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-end-picker-dismissed",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "author-end_local",
+      "nativeFocus": "205 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-end-picker-reopened",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "author-end_local",
+      "nativeFocus": "264 table"
+    },
+    {
+      "step": "phone-end-picker-escape",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "author-end_local",
+      "nativeFocus": "205 pop up button Show local date and time picker Show local date and time picker"
+    },
+    {
+      "step": "phone-cancel-focus",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": "2026-11-01T01:30",
+      "end": "2026-11-01T01:15",
+      "startOccurrence": "",
+      "endOccurrence": "",
+      "focus": "BUTTON",
+      "nativeFocus": "232 button Cancel editing"
+    },
+    {
+      "step": "phone-cancelled",
+      "width": 430,
+      "height": 932,
+      "clientWidth": 415,
+      "scrollWidth": 415,
+      "start": null,
+      "end": null,
+      "startOccurrence": null,
+      "endOccurrence": null,
+      "focus": "BUTTON",
+      "nativeFocus": "129 button Edit Fictional repeated-hour screening"
+    }
+  ],
+  "additional_native_observations": [
+    "Desktop start and end pickers opened by pointer; the native table received focus.",
+    "Desktop end picker reopened by Return from its focused picker button, then Escape returned focus to that button.",
+    "Desktop Cancel editing was clicked; focus returned to Edit Fictional repeated-hour screening.",
+    "Phone: nine Tab presses from Event title reached the start picker; seven more from that picker reached the end picker.",
+    "Phone: Return opened both calendars; Right moved November 1 to November 2, and Left returned to November 1.",
+    "On phone, returning to the repeated local date closed each popup before Escape; the affected occurrence selector was reset to Choose an occurrence.",
+    "Phone: reopening the unchanged end picker and pressing Escape closed it and returned focus to its picker button.",
+    "Phone: nine Tab presses from the end picker reached Cancel editing; Return cancelled and restored Edit-button focus."
+  ],
+  "after_reload": {
+    "editorPresent": false,
+    "summary": "2026-11-01 01:30 (UTC−07:00) – 2026-11-01 01:15 (UTC−08:00) · America/Los_Angeles",
+    "width": 430,
+    "height": 932,
+    "clientWidth": 415,
+    "scrollWidth": 415
+  },
+  "limits": [
+    "19 DOM observations are not 19 independent acceptance tests.",
+    "No Save event activation, business form submission, sending, account/access change, restore, deletion, or deployment.",
+    "No database before/after comparison; preservation evidence is the event summary after cancellation/reload.",
+    "Native AX exposes calendar/table selection without readable day labels; DOM values corroborate date movement.",
+    "A desktop screenshot did not include the native popup, so no popup visual/layout claim is made.",
+    "No time-segment edits, month/year navigation, error/saved-mutation checks, physical-device, cross-engine, screen-reader or full accessibility acceptance.",
+    "Independent organizers, signed-out coordination writes, membership isolation, expiry/revocation, concurrency/rollback, managed-host recovery and retention remain open."
+  ],
+  "cleanup": {
+    "viewport_override_reset": true,
+    "temporary_tab_closed": true
+  }
+}

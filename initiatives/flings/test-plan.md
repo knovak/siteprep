@@ -627,3 +627,16 @@ by accessibility snapshots and screenshots rather than the parent input's
 `:focus-visible` value. No saved mutation, physical-phone, other-engine,
 calendar-popup, full accessibility or independent-organizer acceptance is
 claimed. T12 and Phase 6 remain incomplete.
+
+## October 21 hosted native date-picker receipt (Australia/Brisbane)
+
+`notes/hosted-native-pickers-20261021.md` and its structured receipt extend the
+prior event-editor check with native calendar entry and unsaved one-day date
+movement at desktop/phone widths. Phone entry and cancellation use sequential
+keyboard input; both widths support keyboard reopen/Escape on the end picker.
+Returning to the repeated date resets the affected occurrence selection; the
+phone popup closes at that transition. Cancellation/reload preserves the saved
+summary. Nineteen DOM observations cover horizontal document width, not popup
+visuals. This is one desktop in-app browser with no captured version or physical
+phone; no business form was submitted or database comparison performed. Time
+editing, saved/error states, other engines and full hosted acceptance remain open.
