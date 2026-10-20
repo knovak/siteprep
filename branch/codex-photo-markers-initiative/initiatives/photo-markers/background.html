@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Background — Photo markers</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Background — Photo markers</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Photo markers</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Background</h2>
+    </div>
+    <div class="card-content">
+<h2>Supplied background</h2>
+<p>Received 2026-10-20 with the wish. This records the user&#39;s supplied references and observations from reading them; no external prior-art research was requested or performed.</p>
+<h3>Reference files</h3>
+<p>The three attachments are retained unchanged under <code>notes/reference/divider-image/</code>. The Python file is in <code>scripts/</code> to match the layout documented by the attachments.</p>
+<div class="table-scroll"><table><thead><tr><th>Attachment</th><th>Preserved source</th><th>Role</th></tr></thead><tbody><tr><td>README.md</td><td><a href="https://github.com/knovak/siteprep/blob/main/initiatives/photo-markers/notes/reference/divider-image/README.md">Reference README</a></td><td>Design, parameters, examples, batch-driver sketch, and possible extensions.</td></tr><tr><td>generate_divider.py</td><td><a href="https://github.com/knovak/siteprep/blob/main/initiatives/photo-markers/notes/reference/divider-image/scripts/generate_divider.py">Python generator</a></td><td>Initial implementation using Pillow and piexif.</td></tr><tr><td>SKILL.md</td><td><a href="https://github.com/knovak/siteprep/blob/main/initiatives/photo-markers/notes/reference/divider-image/SKILL.md">Reference skill document</a></td><td>Original usage instructions; retained as background, not installed as a repo skill.</td></tr></tbody></table></div>
+<p>These links target the repository source on main and become available when this initiative&#39;s creation PR merges. Nested reference files are retained as source material rather than copied into the published initiative pages.</p>
+<h3>What the starting point implements</h3>
+<p>The <a href="https://github.com/knovak/siteprep/blob/main/initiatives/photo-markers/notes/reference/divider-image/scripts/generate_divider.py">generator</a> draws a square RGB image with a circular outer ring touching the four side midpoints, a smaller center circle, and a centered, automatically sized title. It exposes corner, ring, center, text, and outline colors, date and time, image size, and font selection. Defaults include a 2000-pixel square and JPEG quality 95.</p>
+<p>With piexif available, it writes <code>DateTimeOriginal</code>, <code>DateTimeDigitized</code>, and <code>DateTime</code>, plus a <code>Software</code> tag. If piexif is absent, it silently saves a JPEG without EXIF. The supplied code has no timezone-offset handling or metadata read-back verification. Its type annotations use Python 3.10 union syntax despite the README&#39;s Python 3.9+ requirement. These are observations about the reference, not validated behavior of the future application.</p>
+<p>The <a href="https://github.com/knovak/siteprep/blob/main/initiatives/photo-markers/notes/reference/divider-image/README.md">README</a> supplies a CSV driver example and sketches rounded rectangles, hexagons, diamonds, and multiline text. Those examples are not integrated batch or shape-selection features in the supplied generator. Its Flask example is background only: the user&#39;s wish explicitly requires WASM processing in the browser without a server.</p>
+<h3>Questions for objectives and specification</h3>
+<ul><li>Which shapes and controls make the first interactive editor useful, and how should previews match exported images?</li><li>How should a user set each marker&#39;s date, time, and timezone so that importing it preserves the intended position among photos? Which photo-library import and sort behaviors need explicit verification?</li><li>What should batch entry, per-image overrides, preview, file naming, and delivery look like? How should duplicate names and invalid rows be handled?</li><li>Which browser WASM approach can support rendering, JPEG encoding, and required metadata with acceptable download size and batch memory use? What can be reused from the Python reference?</li></ul>
+<p>The initiative remains at <code>wish</code>. Its first actionable item is to draft objectives from the wish and these references. The intended output is a static demo; the implementation and its dependencies will need to live within the eventual demo or graduated shared libraries, without runtime references into <code>initiatives/</code>.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="codex/photo-markers-initiative" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
