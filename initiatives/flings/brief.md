@@ -13,7 +13,10 @@
 - Native organizer identity, interrupted-read recovery and targeted hosted
   fictional workflows are implemented. Dated receipts cover recovery, scoped
   public HTTP sessions, DST event persistence and offsets, keyboard focus,
-  native validation, semantic structure, layout and browser page zoom.
+  native validation, semantic structure, layout and browser page zoom. At
+  desktop and phone widths, the event editor now has forward/reverse keyboard
+  evidence through native date/time segments, offset selection and cancellation
+  focus; unsaved changes leave the event summary unchanged after reload.
 - Reopening a member link in the same tab now clears the previous page and
   exchanges the new link. Six local browser journeys cover member switching,
   fresh sessions and invalid-link clearing. Ten hosted Chrome Incognito checks
