@@ -6,11 +6,12 @@ It names the resolved place, the chosen coast and the official prediction
 station. When several nearby coasts are plausible, it shows the closest
 station first and keeps the other candidates available for review.
 
-The two current Sites are public, separate deployments of the same merged
-FES2022-capable source:
+The two current Sites are public, separate FES2022-capable deployments. Test
+includes the 2026-10-20 current-condition and Australian performance refinement;
+production retains the earlier release:
 
 - **Test:** [tide-here-test.ken-novak.chatgpt.site](https://tide-here-test.ken-novak.chatgpt.site)
-  version 15.
+  version 16.
 - **Production:** [tide-here-five-coast-local-days.ken-novak.chatgpt.site](https://tide-here-five-coast-local-days.ken-novak.chatgpt.site)
   version 7.
 

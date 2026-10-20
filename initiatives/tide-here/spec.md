@@ -31,7 +31,7 @@ and user-visible; it is not a saved-place feature or remote analytics.
 
 ### 1.1 Current deployed extension
 
-Test version 15 and production version 7 retain the browser-direct NOAA and CHS
+Test version 16 and production version 7 retain the browser-direct NOAA and CHS
 adapters and add two server-stored sources behind one registry: licensed 2026
 Bureau of Meteorology predictions for all 76 Australian Standard Ports, and a
 licensed global coastal FES2022b fallback. Official configured sources always
@@ -54,6 +54,11 @@ and absolute heights from unlike sources must not be compared without a datum
 conversion. FES excludes weather, storm surge, river flow, waves, and local
 harbour effects. Tide Here therefore labels it **FES2022 near _place_**, marks
 it approximate, and retains the not-for-navigation-or-safety warning.
+
+Test version 16 adds the 2026-10-20 startup-location, loading, tide-state,
+moon-icon and Australian performance refinements described in §9 and the
+Phase 6/13 techdocs. These changes are pending PR review and are not yet in
+production version 7.
 
 ## 2. Alternatives considered: tide coverage and source
 

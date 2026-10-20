@@ -326,3 +326,11 @@ Validation: 143 unit tests and 47 browser checks passed (one intentional
 duplicate phone viewport-matrix skip), including accessibility, 430×932 layout,
 midnight/DST, source priority, cache upgrades, and stale-request protection.
 The Sites app build and independent correctness review passed.
+
+
+## 2026-10-20 — Deploy current-condition refinement to Test
+
+Published version 16 to the existing public Test Site at 14:57 AEST
+(04:57 UTC), preserving access and active provider datasets. The deployment
+archive contains 78 files, 2,467,840 bytes, from Site source `56e2962a688c1a82b147a5cd6e9428a07863e92b`.
+Production remains version 7; this request does not release or merge.
