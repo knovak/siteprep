@@ -423,3 +423,13 @@ Unsaved selector changes were restored and cancelled; the original event
 summary remained after reload. See `notes/hosted-event-keyboard-20261021.md`
 for evidence and limits. No business submission, sends, app-source change,
 deployment or access change. Phase 6 and `verify-hosted-test` stay open.
+
+## 2026-10-21 — Verify hosted native date-picker operation
+
+Extended event-editor acceptance with native calendar entry, one-day start/end
+date movement, repeated-hour selection reset and cancellation at desktop/phone
+widths. Nineteen DOM observations and native focus checks preserve the distinction
+between date-change popup closure and Escape dismissal. Reload retained the
+original saved summary. See `notes/hosted-native-pickers-20261021.md` for evidence
+and limits. No business submission, sends, app-source/deployment or access change;
+Phase 6 and `verify-hosted-test` remain open.
