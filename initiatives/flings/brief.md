@@ -16,7 +16,10 @@
   native validation, semantic structure, layout and browser page zoom. At
   desktop and phone widths, the event editor now has forward/reverse keyboard
   evidence through native date/time segments, offset selection and cancellation
-  focus; unsaved changes leave the event summary unchanged after reload.
+  focus. Native calendar checks add unsaved one-day start/end edits and explicit
+  occurrence reselection after returning to the repeated date; cancellation and
+  reload retain the original saved summary. Popup visuals and physical-device
+  behavior remain outside that evidence.
 - Reopening a member link in the same tab now clears the previous page and
   exchanges the new link. Six local browser journeys cover member switching,
   fresh sessions and invalid-link clearing. Ten hosted Chrome Incognito checks
