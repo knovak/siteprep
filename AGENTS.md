@@ -176,6 +176,17 @@ If a promoted number is on the reject page, restore that item to the page verbat
 ### Refreshing events
 `update-deck-events` (`.claude/skills/update-deck-events/SKILL.md`) refreshes the Events topic of every current or future deck page that has a date range: it searches for festivals, fairs, religious celebrations, concerts, and theater in that place during that window, checks the calendar of every venue listed for that place in the skill's `venues.json`, then reconciles what it finds against the events already on the page and on its reject page. Use it rather than sweeping the decks by hand, and follow it as the pattern when refreshing a single page.
 
+### Researching package options
+
+Use [research-package-options](.claude/skills/research-package-options/SKILL.md)
+when the user says **"research package options"** or asks to create or refresh
+a travel package comparison. It generalizes the Eclipse 2027 process: broad
+discovery, exact dates and full costs, provider and accommodation reviews,
+separate general and requested-party availability checks, a Package options
+page with a comparison table, rejected/research-holding records, and research
+notes with a readable HTML page. Preserve IDs, user choices and dated evidence
+so later updates can continue the same research.
+
 ### Page footer
 Do not write a `<footer class="site-footer">` into a deck or section page. `scripts/build.sh` injects one into every published page, filled by the shared `SiteFooter` library (`shared/site_footer/site_footer.md`) with the version, deck, section, Google Drive, GitHub, and version-browser links. A hand-written copy renders as a second footer row and freezes at whatever the row said the day it was copied.
 

@@ -118,6 +118,7 @@ conventions they follow.
 - [`merge-prs`](.claude/skills/merge-prs/SKILL.md) — Merge one or more pull requests after checking CI, mergeability, and review threads.
 - [`new-initiative`](.claude/skills/new-initiative/SKILL.md) — Create a new initiative under initiatives/ - a durable unit of intent with a wish, a lifecycle stage, and a todo list.
 - [`release-initiative`](.claude/skills/release-initiative/SKILL.md) — Release an initiative's committed source to its production deployment - a ChatGPT Site or a demo under demos/ - and report both the test and the production URL.
+- [`research-package-options`](.claude/skills/research-package-options/SKILL.md) — Research and maintain travel package options with a comparison table, provider and accommodation reviews, exact dates and costs, party-specific availability checks, rejected options, and research notes.
 - [`respond-to-review`](.claude/skills/respond-to-review/SKILL.md) — Answer review comments on a pull request - revising the branch, replying, or escalating a decision.
 - [`tag-bookmarks`](.claude/skills/tag-bookmarks/SKILL.md) — Read a Bookmark Sorter export and write an importable file that adds vocabulary tags to those bookmarks, judging each item from its title, URL, note, and existing tags.
 - [`tag-newsletter-stories`](.claude/skills/tag-newsletter-stories/SKILL.md) — Add theme tags, event clusters, and cluster paraphrases to a Newsletter Story Harvester JSON store.

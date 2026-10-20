@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Package Options"
+  short_description: "Compare travel packages with reviews and availability"
+  default_prompt: "Use $research-package-options to create or refresh a travel package comparison with reviews, exact dates, availability checks, rejected options, and research notes."
