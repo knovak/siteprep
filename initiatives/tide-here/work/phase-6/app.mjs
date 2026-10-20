@@ -1,4 +1,4 @@
-import { resolveTimeZone } from '../phase-1/src/day-model.mjs';
+import { localDateForInstant, resolveTimeZone } from '../phase-1/src/day-model.mjs';
 import { fetchStationCatalogues, normalizeStationCatalogues, readThroughStationCatalogue } from '../phase-2/src/station-catalogue.mjs';
 import { fetchStationDetails, readThroughStationDetails } from '../phase-2/src/station-details.mjs';
 import { TIDES_UNAVAILABLE, TideProvider } from '../phase-3/src/tide-provider.mjs';
@@ -19,6 +19,30 @@ const now = () => fixtureMode ? fixedNow : new Date();
 const LOCATION_PERMISSION_DENIED = 'location-permission-denied';
 const LOCATION_UNAVAILABLE = 'location-unavailable';
 const PENDING_NORMAL_PLACE_KEY = 'tide-here.pending-normal-place.v1';
+const pendingNormalPlace = fixtureMode ? null : sessionStorage.getItem(PENDING_NORMAL_PLACE_KEY);
+let startupReady = false;
+let queuedStartupAction = null;
+let cancelPendingLocation = null;
+$('#place').addEventListener('input', () => {
+  if (!startupReady) queuedStartupAction = { type: 'editing' };
+  cancelPendingLocation?.();
+});
+// Keep manual input usable even while configuration is still downloading.
+$('#place-form').addEventListener('submit', (event) => {
+  if (startupReady) return;
+  event.preventDefault();
+  queuedStartupAction = { type: 'selection', value: $('#place').value };
+  $('#loading-text').textContent = 'Starting your search…';
+});
+$('#show-here').addEventListener('click', () => {
+  if (startupReady) return;
+  queuedStartupAction = { type: 'location' };
+  $('#loading-text').textContent = 'Finding your location…';
+});
+// Start the permission request before the configuration downloads finish.
+const startupPosition = !fixtureMode && pendingNormalPlace === null
+  ? browserPosition().then((position) => ({ position }), (error) => ({ error })) : null;
+if (startupPosition) $('#loading-text').textContent = 'Finding your location…';
 const LEGACY_FIXTURE_CACHE_KEYS = Object.freeze([
   'tide-here.station-catalogue.v2',
   'tide-here.forecast-index.v1'
@@ -39,7 +63,16 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
   json('../phase-0/fixtures/noaa-seattle-hilo.json'),
   json('../phase-0/fixtures/chs-halifax-hilo.json'),
   json('./data/australia-stations.json')
-]);
+]).catch((error) => {
+  $('#loading-status').hidden = true;
+  $('#result').setAttribute('aria-busy', 'false');
+  $('#state-panel').hidden = false;
+  $('#state-code').textContent = 'Unable to start';
+  $('#state-message').textContent = 'Tide Here could not finish loading. Check your connection and reload the page.';
+  $('#state-action').textContent = 'Reload Tide Here';
+  $('#state-action').addEventListener('click', () => location.reload());
+  throw error;
+});
 
 const fixtureStations = normalizeStationCatalogues(catalogueFixture, providerConfig);
 if (fixtureMode) {
@@ -178,7 +211,8 @@ const tideProvider = {
 };
 const service = new TideHereService({
   geocoder,
-  getStations: () => loadAvailableStations({
+  getStations: (place) => loadAvailableStations({
+    place,
     direct: async () => (await readThroughStationCatalogue({
       storage: runtimeStorage,
       now: now().getTime(),
@@ -200,6 +234,39 @@ const service = new TideHereService({
   astronomy,
   now
 });
+
+let requestSequence = 0;
+let busy = false;
+let displayedForecast = null;
+let displayedSelection = null;
+
+function setLoading(message) {
+  $('#loading-text').textContent = message;
+  $('#loading-status').hidden = false;
+  $('#result').setAttribute('aria-busy', 'true');
+}
+
+function beginRequest(message) {
+  cancelPendingLocation = null;
+  requestSequence += 1;
+  busy = true;
+  displayedForecast = null;
+  hideOutput();
+  $('#show-here').disabled = false;
+  $('#show-here').textContent = 'Show here';
+  setLoading(message);
+  return requestSequence;
+}
+
+function finishRequest(request) {
+  if (request !== requestSequence) return;
+  cancelPendingLocation = null;
+  busy = false;
+  $('#loading-status').hidden = true;
+  $('#result').setAttribute('aria-busy', 'false');
+  $('#show-here').disabled = false;
+  $('#show-here').textContent = 'Show here';
+}
 
 function hideOutput() {
   $('#state-panel').hidden = true;
@@ -271,7 +338,7 @@ function showAlternativeCoasts(resolution, selectedStation) {
     distance.textContent = `${candidate.distanceKm.toFixed(1)} km · ${providerLabel(candidate.provider)}`;
     button.append(name, distance);
     button.addEventListener('click', () => {
-      void loadForecast(resolution, candidate).catch(() => showState(TIDES_UNAVAILABLE));
+      void selectCoast(resolution, candidate);
     });
     return button;
   }));
@@ -340,7 +407,66 @@ function downloadHistory() {
   $('#history-status').textContent = 'History downloaded. It was not sent anywhere.';
 }
 
-function eventGroup(entries) {
+let svgSequence = 0;
+
+function tideIndicator(progress) {
+  const indicator = document.createElement('div');
+  indicator.className = 'tide-indicator';
+  indicator.dataset.direction = progress.direction;
+  indicator.dataset.fill = progress.fill === null ? 'unknown' : String(progress.fill);
+  const nextTime = formatIndicatorTime(progress.nextAt);
+  const description = `${progress.label}. Next ${progress.nextType} tide ${nextTime}. ${progress.description}`;
+  indicator.setAttribute('role', 'img');
+  indicator.setAttribute('aria-label', description);
+  indicator.title = description;
+  const svg = svgElement('svg', { viewBox: '0 0 44 70', 'aria-hidden': 'true', focusable: 'false' });
+  const path = 'M22 3 L41 29 H30 V67 H14 V29 H3 Z';
+  const attributes = { d: path, ...(progress.direction === 'down' ? { transform: 'rotate(180 22 35)' } : {}) };
+  const clipId = `tide-arrow-${++svgSequence}`;
+  const clip = svgElement('clipPath', { id: clipId });
+  clip.append(svgElement('path', attributes));
+  const defs = svgElement('defs');
+  defs.append(clip);
+  svg.append(defs, svgElement('path', { ...attributes, class: 'tide-arrow-base' }));
+  if (progress.fill !== null) svg.append(svgElement('rect', {
+    x: 0, y: 3 + 64 * (1 - progress.fill), width: 44, height: 64 * progress.fill,
+    'clip-path': `url(#${clipId})`, class: 'tide-arrow-fill'
+  }));
+  svg.append(svgElement('path', { ...attributes, class: 'tide-arrow-outline' }));
+  if (progress.fill === null) {
+    const unknown = svgElement('text', { x: 22, y: 48, 'text-anchor': 'middle', class: 'tide-fill-unknown' });
+    unknown.textContent = '?';
+    svg.append(unknown);
+  }
+  indicator.append(svg, textNode('span', progress.label));
+  return indicator;
+}
+
+function formatIndicatorTime(instant) {
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: displayedForecast.timeZone, hour: 'numeric', minute: '2-digit', hourCycle: 'h12'
+  }).format(new Date(instant));
+}
+
+function moonIcon(icon) {
+  const svg = svgElement('svg', {
+    viewBox: '0 0 24 24', class: 'moon-phase-icon', role: 'img', 'aria-label': `Moon phase: ${icon.label}`
+  });
+  const group = svgElement('g', icon.southernHemisphere ? { transform: 'rotate(180 12 12)' } : {});
+  group.append(svgElement('circle', { cx: 12, cy: 12, r: 10, class: 'moon-dark' }));
+  const waxing = icon.phase < .5;
+  const curve = Math.cos(2 * Math.PI * icon.phase);
+  const terminator = Math.abs(curve) * 10;
+  const sweep = waxing ? 1 : 0;
+  const returningSweep = curve >= 0 ? 1 - sweep : sweep;
+  const illuminated = `M12 2 A10 10 0 0 ${sweep} 12 22 A${terminator} 10 0 0 ${returningSweep} 12 2 Z`;
+  group.append(svgElement('path', { d: illuminated, class: 'moon-lit' }));
+  group.append(svgElement('circle', { cx: 12, cy: 12, r: 10, class: 'moon-outline' }));
+  svg.append(group);
+  return svg;
+}
+
+function eventGroup(entries, progress) {
   const section = document.createElement('section');
   section.className = 'event-group';
   const list = document.createElement('ul');
@@ -352,13 +478,17 @@ function eventGroup(entries) {
     list.append(item);
   }
   section.append(list);
+  if (progress) section.append(tideIndicator(progress));
   return section;
 }
 
 function astronomyGroup(day) {
   const details = document.createElement('details');
   details.className = 'astronomy-details';
-  details.append(textNode('summary', `Sun and moon · Moonrise ${day.moonrise.label}`));
+  const summary = document.createElement('summary');
+  if (day.moonIcon) summary.append(moonIcon(day.moonIcon));
+  summary.append(document.createTextNode(`Sun and moon · Moonrise ${day.moonrise.label}`));
+  details.append(summary);
   const pairs = document.createElement('div');
   pairs.className = 'event-pair astronomy-content';
   for (const [label, event] of [
@@ -376,10 +506,10 @@ function astronomyGroup(day) {
 
 function dayCard(day, index) {
   const article = document.createElement('article');
-  article.className = `day-card${index === 0 ? ' current' : ''}`;
+  article.className = `day-card${day.isToday ? ' current' : ''}`;
   article.dataset.date = day.date;
-  article.append(textNode('h2', `${index === 0 ? 'Today · ' : ''}${day.label}`));
-  article.append(eventGroup(day.tides), astronomyGroup(day));
+  article.append(textNode('h2', `${day.isToday ? 'Today · ' : ''}${day.label}`));
+  article.append(eventGroup(day.tides, day.tideProgress), astronomyGroup(day));
   return article;
 }
 
@@ -391,7 +521,10 @@ function forceNoEvent(forecast) {
   return Object.freeze({ ...forecast, days: Object.freeze(days) });
 }
 
-function showForecast(forecast) {
+function showForecast(forecast, { scroll = true } = {}) {
+  displayedForecast = forecast;
+  const focusedDate = document.activeElement?.closest('.day-card')?.dataset.date;
+  const expandedDates = new Set([...document.querySelectorAll('.day-card:has(.astronomy-details[open])')].map((card) => card.dataset.date));
   const model = forecastViewModel(forceNoEvent(forecast), now());
   $('#entered-name').textContent = model.entered;
   $('#resolved-name').textContent = model.resolved;
@@ -426,6 +559,10 @@ function showForecast(forecast) {
     return box;
   }));
   $('#day-cards').replaceChildren(...model.days.map(dayCard));
+  for (const card of document.querySelectorAll('.day-card')) {
+    if (expandedDates.has(card.dataset.date)) card.querySelector('.astronomy-details').open = true;
+    if (!scroll && focusedDate === card.dataset.date) card.querySelector('.astronomy-details summary').focus({ preventScroll: true });
+  }
   $('#result').hidden = false;
   if (externalWarnings.length) showState(externalWarnings[0].code, {
     focus: false,
@@ -433,12 +570,15 @@ function showForecast(forecast) {
   });
   else if (forcedState === 'no-event') showState('no-event', { focus: false, actionable: false });
   else $('#state-panel').hidden = true;
-  $('#result').scrollIntoView({ block: 'start', behavior: 'instant' });
+  if (scroll) $('#result').scrollIntoView({ block: 'start', behavior: 'instant' });
 }
 
-async function loadForecast(resolution, station = null) {
+async function loadForecast(resolution, station, request) {
+  if (request !== requestSequence) return;
+  setLoading('Loading tide predictions…');
   const selection = service.chosenStation(resolution, station);
   const detailedStation = await stationDetails(selection.station);
+  if (request !== requestSequence) return;
   const preparedResolution = resolutionWithStationDetails(resolution, selection.station, detailedStation);
   const timeZone = detailedStation.timeZone;
   const cacheContext = {
@@ -448,23 +588,42 @@ async function loadForecast(resolution, station = null) {
     now: now()
   };
   const cached = forcedState ? null : await forecastCache.read(cacheContext);
+  if (request !== requestSequence) return;
   const result = cached || await service.forecast(preparedResolution, station ? detailedStation : null);
+  if (request !== requestSequence) return;
   if (!cached && !forcedState) await forecastCache.write(cacheContext, result);
+  if (request !== requestSequence) return;
+  displayedSelection = { resolution, station };
   history.append(result);
   updateHistoryCount();
   showForecast(result);
   if (resolution.candidates.length) showAlternativeCoasts(resolution, detailedStation);
 }
 
-async function submit() {
-  hideOutput();
+async function selectCoast(resolution, station = null) {
+  const request = beginRequest('Loading tide predictions…');
   try {
-    const resolution = await service.resolve($('#place').value);
-    if (resolution.code === COAST_CHOICE_REQUIRED) return await loadForecast(resolution, resolution.candidates[0]);
-    if (!resolution.ok) return showState(resolution.code);
-    return await loadForecast(resolution);
+    await loadForecast(resolution, station, request);
   } catch {
-    return showState(TIDES_UNAVAILABLE);
+    if (request === requestSequence) showState(TIDES_UNAVAILABLE);
+  } finally {
+    finishRequest(request);
+  }
+}
+
+async function submit(request = beginRequest('Finding the coast…')) {
+  const input = $('#place').value;
+  try {
+    setLoading('Finding the coast…');
+    const resolution = await service.resolve(input);
+    if (request !== requestSequence) return;
+    if (resolution.code === COAST_CHOICE_REQUIRED) return await loadForecast(resolution, resolution.candidates[0], request);
+    if (!resolution.ok) return showState(resolution.code);
+    return await loadForecast(resolution, null, request);
+  } catch {
+    if (request === requestSequence) showState(TIDES_UNAVAILABLE);
+  } finally {
+    finishRequest(request);
   }
 }
 
@@ -487,23 +646,44 @@ function browserPosition() {
   });
 }
 
-async function showHere() {
+async function showHere(positionPromise = null) {
+  const request = beginRequest('Finding your location…');
   const button = $('#show-here');
   button.disabled = true;
   button.textContent = 'Finding you…';
+  cancelPendingLocation = () => {
+    if (request !== requestSequence) return;
+    finishRequest(request);
+    requestSequence += 1;
+  };
   try {
-    const position = await browserPosition();
-    const { latitude, longitude } = position.coords || {};
+    const result = positionPromise ? await positionPromise : { position: await browserPosition() };
+    if (request !== requestSequence) return;
+    if (result.error) throw result.error;
+    cancelPendingLocation = null;
+    const { latitude, longitude } = result.position.coords || {};
     if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw Object.freeze({ code: 0 });
     $('#place').value = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-    await submit();
+    await submit(request);
   } catch (error) {
-    showState(error?.code === 1 ? LOCATION_PERMISSION_DENIED : LOCATION_UNAVAILABLE);
+    if (request === requestSequence) showState(error?.code === 1 ? LOCATION_PERMISSION_DENIED : LOCATION_UNAVAILABLE);
   } finally {
-    button.disabled = false;
-    button.textContent = 'Show here';
+    finishRequest(request);
   }
 }
+
+function refreshCurrentDisplay() {
+  if (document.hidden || busy || !displayedForecast) return;
+  if (localDateForInstant(now(), displayedForecast.timeZone) !== displayedForecast.days[0].date) {
+    if (displayedSelection) void selectCoast(displayedSelection.resolution, displayedSelection.station);
+    return;
+  }
+  showForecast(displayedForecast, { scroll: false });
+}
+
+setInterval(refreshCurrentDisplay, 60_000);
+window.addEventListener('focus', refreshCurrentDisplay);
+document.addEventListener('visibilitychange', refreshCurrentDisplay);
 
 $('#place-form').addEventListener('submit', (event) => {
   event.preventDefault();
@@ -532,9 +712,19 @@ $('#clear-history').addEventListener('click', () => {
 });
 
 updateHistoryCount();
+startupReady = true;
+if (pendingNormalPlace !== null) sessionStorage.removeItem(PENDING_NORMAL_PLACE_KEY);
+if (fixtureMode) $('#fixture-note').hidden = false;
 
-if (fixtureMode) {
-  $('#fixture-note').hidden = false;
+if (queuedStartupAction?.type === 'editing') {
+  finishRequest(requestSequence);
+} else if (queuedStartupAction?.type === 'selection') {
+  $('#place').value = queuedStartupAction.value;
+  if (fixtureMode && fixturePlaceParam !== null) continueOnNormalPage(queuedStartupAction.value);
+  else void submit();
+} else if (queuedStartupAction?.type === 'location') {
+  void showHere(startupPosition);
+} else if (fixtureMode) {
   const inputs = {
     'invalid-input': '',
     'place-not-found': 'Missing',
@@ -548,10 +738,12 @@ if (fixtureMode) {
   $('#place').value = fixturePlaceParam ?? inputs[forcedState] ?? 'Seattle';
   void submit();
 } else {
-  const pendingPlace = sessionStorage.getItem(PENDING_NORMAL_PLACE_KEY);
+  const pendingPlace = pendingNormalPlace;
   if (pendingPlace !== null) {
     sessionStorage.removeItem(PENDING_NORMAL_PLACE_KEY);
     $('#place').value = pendingPlace;
     void submit();
+  } else {
+    void showHere(startupPosition);
   }
 }

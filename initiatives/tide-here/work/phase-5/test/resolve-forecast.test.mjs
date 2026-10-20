@@ -213,7 +213,11 @@ test('choosing an ambiguous coast repeats neither geocoding nor catalogue work',
   const wrappedGeocoder = { async resolve(input) { geocodes += 1; return geocoder.resolve(input); } };
   const tideHere = service({
     geocoder: wrappedGeocoder,
-    getStations: async () => { catalogues += 1; return stations; },
+    getStations: async (place) => {
+      assert.equal(place.name, 'Bainbridge Island');
+      catalogues += 1;
+      return stations;
+    },
     tideFetch: response(noaaPayload)
   });
   const resolution = await tideHere.resolve('Bainbridge');

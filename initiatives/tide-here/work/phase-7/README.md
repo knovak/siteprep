@@ -16,6 +16,11 @@ read-through cache keeps its seven-day lifetime.
 Transient `tides-unavailable` responses are deliberately never cached. Reading
 an entry left by an older page version removes it and performs a fresh provider
 request, so the retry action cannot replay a stale service failure.
+Cached forecasts must also contain their own `previousTide` field, with `null`
+allowed when the provider has no preceding extremum. Entries from before this
+response contract are removed and fetched again, so an upgrade can fill the
+current-tide arrow before today's first tide. This invalidates only the
+disposable forecast entry and its index; saved history is preserved verbatim.
 
 The page says exactly what leaves the browser: a typed place goes directly to
 the configured geocoder; prediction-station lists, chosen-station details, and
@@ -25,8 +30,9 @@ model points use body-only requests to the Tide Here gateway. Its operational
 logs exclude submitted place names, coordinates, coasts, and station/model
 identifiers. History remains on the device until the user clears it. The
 disclosure and history button are below the data display. There is no
-application analytics, service-worker refresh, periodic request, or history
-upload.
+application analytics, service-worker refresh, or history upload. Visible
+current-time styling is refreshed locally; crossing the selected coast's
+midnight refreshes the five-day forecast without taking another location fix.
 
 ## Verification
 

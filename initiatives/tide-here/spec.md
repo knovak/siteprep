@@ -314,15 +314,27 @@ an initializer secret, and private R2 storage for stored-provider data. It
 still has no database, account, or custom domain, and the browser-facing code
 contains no hard-coded deployment URL.
 
-The eventual `tidehere.info`-style domain remains a later routing change. The
-delivered **Show here** button calls
-`navigator.geolocation.getCurrentPosition` only after that explicit user
-gesture and explains the browser permission before prompting. Success feeds the
-returned coordinates into exactly the same coordinate-input, reverse-geocoding,
-coastal-match, provider, history, and display path as typed coordinates.
-Denial or timeout leaves the manual form untouched. The page never requests
-location on load, watches position, or runs in the background. The deployed
-feature uses a secure context and the same forecast contract (O7–O8).
+The eventual `tidehere.info`-style domain remains a later routing change. Per
+the user's 2026-10-20 request, normal page load and **Show here** each call
+`navigator.geolocation.getCurrentPosition` for one fix, subject to browser
+permission. Success feeds the returned coordinates into the same
+coordinate-input, reverse-geocoding, coastal-match, provider, history, and
+display path as typed coordinates. Denial or timeout leaves the manual form
+available. A newer manual search wins over a pending location request.
+Deterministic fixture pages and a carried manual search do not trigger an
+additional startup location request. The page never watches position.
+The feature uses a secure context and the same forecast contract (O7–O8).
+
+Animated progress covers startup, location, search, and alternative forecasts,
+with readable status text and reduced-motion handling. Today's outlined tide
+arrow points toward the next extremum (up for high, down for low). Its fill is
+linear elapsed-time progress between the surrounding opposite extrema, full
+at high and empty at low; it does not claim to measure water height. Providers
+include the last available extremum before the five-day window as
+`previousTide`, without adding a sixth displayed day. Missing or invalid
+surrounding events leave the fill unavailable rather than assuming a cycle.
+Current tide styling, direction, fill, and today's moon icon update while the
+page is visible. Later moon icons use each day's local-noon phase.
 
 ## 10. Validation contract
 

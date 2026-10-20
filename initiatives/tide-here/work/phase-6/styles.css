@@ -139,3 +139,22 @@ dd { margin: .32rem 0 0; font-size: 1.08rem; font-weight: 780; overflow-wrap: an
   .site-header p { max-width: none; text-align: left; }
   .event-group ul, .event-pair { grid-template-columns: 1fr; }
 }
+
+.loading-status { position: sticky; top: .75rem; z-index: 10; display: flex; align-items: center; gap: .65rem; width: fit-content; max-width: 100%; margin: 1rem 0; padding: .75rem 1rem; border: 1px solid var(--line); border-radius: 1rem; background: #fff; color: var(--ink); box-shadow: 0 6px 24px rgba(36, 90, 91, .12); font-size: .88rem; font-weight: 700; }
+.loading-spinner { flex: 0 0 auto; width: 1.15rem; height: 1.15rem; border: 3px solid var(--line); border-top-color: var(--aqua-dark); border-radius: 50%; animation: loading-spin .8s linear infinite; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+.event-group { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .45rem; align-items: center; }
+.tide-indicator { width: 2.7rem; text-align: center; color: var(--aqua-dark); }
+.tide-indicator svg { display: block; width: 2.2rem; height: 3.5rem; margin: 0 auto .25rem; }
+.tide-indicator > span { font-size: .62rem; font-weight: 800; }
+.tide-arrow-base { fill: #edf7fa; }
+.tide-arrow-fill { fill: #3b9cc2; }
+.tide-fill-unknown { fill: var(--ink); font-size: 16px; font-weight: 800; }
+.tide-arrow-outline { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.moon-phase-icon { display: inline-block; width: 1.2rem; height: 1.2rem; margin-right: .3rem; vertical-align: -.3rem; }
+.moon-dark { fill: #24394b; }
+.moon-lit { fill: #ffe4a1; }
+.moon-outline { fill: none; stroke: #617687; stroke-width: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner { animation: none; }
+}

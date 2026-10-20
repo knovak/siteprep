@@ -261,3 +261,20 @@ new proposal round.
   `notes.md`; none is selected.
 - It does not deploy either Site, change public access, or authorize a
   production release.
+
+
+## 2026-10-20 — Should the page use location immediately on load?
+
+**Yes.** The user requested: “I would like the page upon load to immediately try
+to use the user location to display output. This would be equivalent to what
+happens now when the user presses the tide here button.”
+
+This supersedes the earlier click-only location behavior. Browser permission
+still controls access; denial or unavailable coordinates retain the manual
+form. The request covers one fix on load, not continuous location tracking.
+
+The same request asks for visible moving progress while waiting, a partly
+filled rising/falling arrow beside today's tide times, a moon-phase icon before
+“Sun and moon”, investigation of slow Australian output, a Test deployment,
+and a ready-for-review PR. Production release and merging remain outside this
+request. There is no blocked todo to complete for this decision.

@@ -36,6 +36,7 @@ function completeForecast(response) {
 
 function cacheableForecast(response) {
   return completeForecast(response)
+    && Object.hasOwn(response, 'previousTide')
     && !response.warnings.some((warning) => warning?.code === 'tides-unavailable');
 }
 

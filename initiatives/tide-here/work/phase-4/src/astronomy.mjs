@@ -65,6 +65,17 @@ function moonPhaseName(phase) {
   return PHASE_NAMES[Math.round(phase * PHASE_NAMES.length) % PHASE_NAMES.length];
 }
 
+export function calculateMoonPhase(instant, calculator = SunCalc) {
+  const at = new Date(instantMilliseconds(instant, 'moon phase instant')).toISOString();
+  const illumination = calculator.getMoonIllumination(new Date(at));
+  return Object.freeze({
+    fraction: illumination.fraction,
+    phase: illumination.phase,
+    name: moonPhaseName(illumination.phase),
+    at
+  });
+}
+
 function eventState(events, positionAtNoon) {
   if (events.some((values) => values.length > 0)) return 'ordinary';
   return positionAtNoon.altitude >= 0 ? 'always-up' : 'always-down';

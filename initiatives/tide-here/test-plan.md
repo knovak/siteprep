@@ -184,7 +184,10 @@ committed.
 | Five equal cards | Five day cards, each separating tides, sun, and moon, with one time format throughout | O3, §7 |
 | Time zone is visible | The coast's zone is shown, and no displayed time is formatted in the device zone | O5 |
 | Past tide emphasis | Tide events before the current absolute instant render at normal weight; later events remain bold, regardless of the browser zone | O3, O5 |
-| Browser location is explicit | **Show here** requests one location only after a click, feeds coordinates through the manual coordinate path, and never watches or requests on load | O7, O8, §9 |
+| Browser location on load | Normal startup requests one fix subject to browser permission, feeds coordinates through the manual path, and never watches position; fixtures and carried manual searches retain their own input | O7, O8, §9 |
+| Pending requests | Animated status covers preparation, location, search, and alternatives; a newer manual search cannot be overwritten by stale location or forecast results | O6, O7 |
+| Current tide | Today's arrow follows the next high/low; fill rises to high and falls to low across midnight, uses prior-window context, and is unavailable when surrounding data is missing | O3, O5 |
+| Moon phase icons | The icon precedes Sun and moon, matches today's current phase or the later day's phase, and retains a readable accessible phase label | O4, O7 |
 | Location fallback | Permission denial, timeout, unavailable coordinates, or a missing geolocation API leaves the manual selection untouched and gives a readable retry path | O7, O8, §9 |
 | **Narrow screens stack** | At a phone width, days stack; nothing is horizontally clipped and the page does not scroll sideways | O7, §7 |
 | Alternative coasts | The ambiguous fixture immediately renders five days for its nearest candidate; a closed **Alternative coasts** disclosure appears below the result and reveals the other candidates, distances, and map | O2, §3.2 |
@@ -407,3 +410,18 @@ Site version 7. Production's separate R2 store received and verified the global
 package before activation. The full sweep matched test: 76 Australian ports,
 1,470 official events, 19–20 events for each representative FES location, NOAA,
 CHS, and the page all passed; repeat initialization wrote zero objects.
+
+
+## 2026-10-20 refinement checks
+
+- Australian regional routing never starts a North American catalogue request,
+  includes remote Australian islands, and preserves official-first matching.
+- One gateway request reads each immutable object once; a subsequent request
+  still detects changed or corrupt data. Australian annual-body reads fall
+  from three to one without bypassing checksums.
+- `previousTide` stays strictly before the first local-day boundary; five-day
+  output remains end-exclusive across midnight and DST. The beginning of an
+  annual dataset returns no invented prior event.
+- Startup permission success/denial, missing location, manual override of a
+  delayed fix, stale forecast completion, loading animation, current tide fill,
+  moon icons, and visible-time refresh pass on desktop and phone.

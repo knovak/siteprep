@@ -34,6 +34,21 @@ repositories, secrets, deployments, and R2 object stores.
   time. They exclude URLs, request bodies, submitted names, coordinates, coast
   names, and station ids.
 
+## 2026-10-20 runtime refinement
+
+The browser selects the Australian catalogue directly for the conservative
+Australian region described in the Phase 6 techdoc, avoiding unrelated NOAA/CHS
+catalogue waits. Official station matching and FES fallback rules are unchanged.
+
+The gateway wraps each request's object store in `phase-10/src/request-store.mjs`.
+Repeated reads of a key share the same body promise within that request only.
+Writes invalidate that key before and after writing. Every new request starts
+fresh, and all existing checksum verification remains in place. This reduces
+the roughly 19.2 MB Australian annual prediction object from three reads
+(roughly 57.7 MB) to one in a station or forecast request; total object reads
+drop from nine to six. Tests also verify that a corrupted object is detected
+on the following request, rather than concealed by a persistent cache.
+
 ## Deployment and initialization
 
 Each environment workflow builds and publishes its existing Sites project

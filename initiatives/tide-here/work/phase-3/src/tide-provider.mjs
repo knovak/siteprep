@@ -1,4 +1,4 @@
-import { placeInstantInRow } from '../../phase-1/src/day-model.mjs';
+import { DAY_MILLISECONDS, describeInstant, placeInstantInRow } from '../../phase-1/src/day-model.mjs';
 
 export const TIDES_UNAVAILABLE = 'tides-unavailable';
 
@@ -9,7 +9,7 @@ function requestBounds(rows) {
   if (!Number.isFinite(Date.parse(from)) || !Number.isFinite(Date.parse(to)) || Date.parse(from) >= Date.parse(to)) {
     throw new RangeError('Tide request rows have invalid UTC bounds');
   }
-  return { from, to };
+  return { from: new Date(Date.parse(from) - DAY_MILLISECONDS).toISOString(), to };
 }
 
 function isoCompactDate(instant) {
@@ -69,9 +69,12 @@ function alternatingTypes(values) {
   return values.map((_, index) => ((index % 2 === 0) === firstHigh ? 'high' : 'low'));
 }
 
-function tideInRow({ type, instant, height }, rows, timeZone) {
+function tideInRow({ type, instant, height }, rows, timeZone, includePrevious) {
   if (!['high', 'low'].includes(type) || !Number.isFinite(height)) return null;
-  const placement = placeInstantInRow(instant, rows, timeZone);
+  const beforeStart = Date.parse(instant) < Date.parse(rows[0].startUtc);
+  const placement = beforeStart && includePrevious
+    ? { rowIndex: -1, ...describeInstant(instant, timeZone) }
+    : placeInstantInRow(instant, rows, timeZone);
   if (!placement) return null;
   return {
     rowIndex: placement.rowIndex,
@@ -87,7 +90,7 @@ function tideInRow({ type, instant, height }, rows, timeZone) {
   };
 }
 
-export function normalizeNoaaPredictions(payload, { rows, timeZone }) {
+export function normalizeNoaaPredictions(payload, { rows, timeZone, includePrevious = false }) {
   if (!Array.isArray(payload?.predictions)) throw new TypeError('NOAA prediction payload is malformed');
   const events = payload.predictions.map((prediction) => {
     const instant = parseNoaaInstant(prediction?.t);
@@ -95,13 +98,13 @@ export function normalizeNoaaPredictions(payload, { rows, timeZone }) {
       type: prediction.type === 'H' ? 'high' : prediction.type === 'L' ? 'low' : null,
       instant,
       height: Number(prediction.v)
-    }, rows, timeZone) : null;
+    }, rows, timeZone, includePrevious) : null;
   }).filter(Boolean);
-  if (events.length === 0) throw new RangeError('NOAA returned no valid predictions in range');
+  if (!events.some(event => event.rowIndex >= 0)) throw new RangeError('NOAA returned no valid predictions in range');
   return events;
 }
 
-export function normalizeChsPredictions(payload, { rows, timeZone }) {
+export function normalizeChsPredictions(payload, { rows, timeZone, includePrevious = false }) {
   if (!Array.isArray(payload)) throw new TypeError('CHS prediction payload is malformed');
   const parsed = payload.map((prediction) => ({
     instant: parseChsInstant(prediction?.eventDate),
@@ -109,8 +112,8 @@ export function normalizeChsPredictions(payload, { rows, timeZone }) {
   })).filter((prediction) => prediction.instant && Number.isFinite(prediction.height));
   if (parsed.length === 0) throw new RangeError('CHS returned no valid predictions in range');
   const types = alternatingTypes(parsed.map((prediction) => prediction.height));
-  const events = parsed.map((prediction, index) => tideInRow({ ...prediction, type: types[index] }, rows, timeZone)).filter(Boolean);
-  if (events.length === 0) throw new RangeError('CHS returned no valid predictions in range');
+  const events = parsed.map((prediction, index) => tideInRow({ ...prediction, type: types[index] }, rows, timeZone, includePrevious)).filter(Boolean);
+  if (!events.some(event => event.rowIndex >= 0)) throw new RangeError('CHS returned no valid predictions in range');
   return events;
 }
 
@@ -156,7 +159,11 @@ function emptyDays(rows) {
 
 function normalizedForecast({ context, station, timeZone, rows, config, source, events, warning }) {
   const days = emptyDays(rows);
-  for (const event of events) days[event.rowIndex].tides.push(event.tide);
+  let previousTide = null;
+  for (const event of events) {
+    if (event.rowIndex >= 0) days[event.rowIndex].tides.push(event.tide);
+    else if (!previousTide || Date.parse(event.tide.at) > Date.parse(previousTide.at)) previousTide = event.tide;
+  }
   return Object.freeze({
     input: Object.freeze({ display: context.input.display }),
     place: Object.freeze({ ...context.place }),
@@ -164,6 +171,7 @@ function normalizedForecast({ context, station, timeZone, rows, config, source, 
     station: stationDetails(station, config),
     timeZone,
     days,
+    previousTide,
     sources: [source],
     warnings: warning ? [Object.freeze({ code: TIDES_UNAVAILABLE, message: warning })] : []
   });
@@ -206,7 +214,7 @@ export class TideProvider {
     const source = sourceDetails({ station, config: providerConfig, requestUrl, retrievedAt });
     try {
       const payload = await fetchJson(this.fetchImpl, requestUrl, this.timeoutMs);
-      const events = adapter.normalize(payload, { rows, timeZone });
+      const events = adapter.normalize(payload, { rows, timeZone, includePrevious: true });
       return normalizedForecast({ context, station, timeZone, rows, config: providerConfig, source, events });
     } catch (error) {
       const message = error?.name === 'AbortError'

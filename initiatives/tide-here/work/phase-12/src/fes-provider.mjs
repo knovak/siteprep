@@ -1,4 +1,4 @@
-import {placeInstantInRow} from '../../phase-1/src/day-model.mjs';
+import {DAY_MILLISECONDS, placeInstantInRow} from '../../phase-1/src/day-model.mjs';
 import {closestPoint, forecastFromTile} from '../../phase-9/src/forecast.mjs';
 import {
   loadVerifiedDatasetObject,
@@ -145,11 +145,16 @@ export async function forecastFesFallback({store, request, descriptor}) {
   const raw = forecastFromTile(tileDocument, {
     latitude: request.station.latitude,
     longitude: request.station.longitude,
-    start,
+    start: new Date(Date.parse(start) - DAY_MILLISECONDS).toISOString(),
     end,
   });
   const days = emptyDays(request.rows);
+  let previousTide = null;
   for (const event of raw.tides) {
+    if (Date.parse(event.at) < Date.parse(start)
+        && (!previousTide || Date.parse(event.at) > Date.parse(previousTide.at))) {
+      previousTide = {...event, height: metres(event), unit: 'm'};
+    }
     const placement = placeInstantInRow(event.at, request.rows, request.timeZone);
     if (!placement) continue;
     days[placement.rowIndex].tides.push({
@@ -185,6 +190,7 @@ export async function forecastFesFallback({store, request, descriptor}) {
     },
     timeZone: request.timeZone,
     days,
+    previousTide,
     sources: [{
       provider: descriptor.id,
       country: request.station.country ?? null,

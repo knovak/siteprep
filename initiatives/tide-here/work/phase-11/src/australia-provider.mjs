@@ -68,7 +68,13 @@ export async function forecastAustralianStandardPort({store, request, descriptor
 
   const days = emptyDays(request.rows);
   const events = dataset.events.filter(event => event.stationId === station.id);
+  const start = Date.parse(request.rows[0].startUtc);
+  let previousTide = null;
   for (const event of events) {
+    if (Date.parse(event.at) < start
+        && (!previousTide || Date.parse(event.at) > Date.parse(previousTide.at))) {
+      previousTide = {type: event.type, at: event.at, height: event.height, unit: event.unit};
+    }
     const placement = placeInstantInRow(event.at, request.rows, station.timeZone);
     if (!placement) continue;
     days[placement.rowIndex].tides.push({
@@ -107,6 +113,7 @@ export async function forecastAustralianStandardPort({store, request, descriptor
     },
     timeZone: station.timeZone,
     days,
+    previousTide,
     sources: [{
       provider: descriptor.id,
       country: station.country,
