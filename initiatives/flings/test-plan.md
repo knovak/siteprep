@@ -613,3 +613,17 @@ writes. One additional fictional review remains unapproved; no sending occurred.
 This is one member/gathering and two write types, with no all-table preservation,
 cookie enforcement, other coordination writes, expiry/revocation, multi-member,
 concurrency/rollback, other-browser or full Phase 6 claim.
+
+
+## October 21 hosted event-editor keyboard receipt (Australia/Brisbane)
+
+`notes/hosted-event-keyboard-20261021.md` and its structured JSON record 171
+observations in the Codex in-app browser at 1280 × 800 and 430 × 932. Forward
+and reverse traversal cover all 26 event-editor stops, including both native
+date/time inputs; both repeated-hour selectors change and restore by keyboard.
+Cancel returns focus correctly, with no horizontal document overflow and
+original event times/offsets after reload. Native picker focus is corroborated
+by accessibility snapshots and screenshots rather than the parent input's
+`:focus-visible` value. No saved mutation, physical-phone, other-engine,
+calendar-popup, full accessibility or independent-organizer acceptance is
+claimed. T12 and Phase 6 remain incomplete.

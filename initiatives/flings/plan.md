@@ -666,3 +666,15 @@ member/invitation rows were unchanged. One additional fictional review remains
 unapproved; no message was sent. Signed-out discussion/poll/payment writes,
 multiple memberships, expiry/revocation and the broader Phase 6 matrix remain
 open; this receipt does not complete `verify-hosted-test`.
+
+
+## October 21 event-editor keyboard receipt (Australia/Brisbane)
+
+`notes/hosted-event-keyboard-20261021.md` records native organizer sign-in
+followed by event-editor checks at desktop and phone widths. Both directions
+traverse all 26 stops, including native date/time segments and picker buttons;
+both repeated-hour selectors accept keyboard changes in the unsaved draft.
+Cancel returns focus to the event's Edit button, and the original event summary
+survives reload. No business form was submitted. This closes the October 9
+sequential event-editor gap, while the broader T12 keyboard/screen-reader and
+hosted matrix remain open. Phase 6 and `verify-hosted-test` stay actionable.
