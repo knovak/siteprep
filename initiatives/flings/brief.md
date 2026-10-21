@@ -35,8 +35,10 @@
 Phase 6 continues with independent second-organizer access, signed-out
 discussion/poll/payment writes, multiple-membership/browser coverage,
 expiry/revocation, the remaining hosted matrix, full keyboard/screen-reader,
-text-only zoom and interruption/restart checks. Managed-host backup retention
-and database recovery/deletion remain unverified. Development-toolchain
+text-only zoom and interruption/restart checks. The provider-documentation and
+read-only metadata refresh still leaves managed-host backup retention,
+recovery access and erasure timing unverified; the recovery note identifies
+the evidence needed for an isolated rehearsal. Development-toolchain
 remediation and the authorized pilot follow.
 
 ## Optional later

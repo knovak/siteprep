@@ -640,3 +640,14 @@ summary. Nineteen DOM observations cover horizontal document width, not popup
 visuals. This is one desktop in-app browser with no captured version or physical
 phone; no business form was submitted or database comparison performed. Time
 editing, saved/error states, other engines and full hosted acceptance remain open.
+
+## October 21 managed-host recovery evidence review (Australia/Brisbane)
+
+The October 21 addendum in `notes/host-backup-review-20260915.md` is a T11/T12
+prerequisite review, not a passed recovery test. Current official documents and
+available connector operations do not establish this managed Site's recovery
+window, supported restore procedure or backup-erasure timing. Live metadata
+confirms the existing Site and a complete 28-table schema listing; no business
+rows were read or written. The note identifies the missing provider evidence
+for an isolated rehearsal. No database rewind, deletion or restore acceptance
+is claimed, and the existing Phase 6 item remains actionable.
