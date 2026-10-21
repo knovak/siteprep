@@ -1,0 +1,109 @@
+# Test plan
+
+Drafted October 21, 2026 (Australia/Brisbane). These are required checks for the [plan](plan.html) and [specification](spec.html), not passed results. Fixtures and executable tests will be added with their implementation phases. No photo-library application testing is required.
+
+## Evidence and coverage
+
+Every receipt records the source commit, dependency/asset versions, commands, browser/OS/device, fixture IDs, actual outcome and limits. Preserve representative JPEGs, independent decode/tag output, ZIP manifests/hashes, timing samples and relevant screenshots without importing personal photos. Use a fixed clock for reproducible assertions, plus a separate real-clock user journey.
+
+| Objective | Checks |
+| --- | --- |
+| 1. Square JPEGs and three designs | T1, T2, T4 |
+| 2. Interactive appearance | T2, T5, T9 |
+| 3. Intentional timing and mandatory metadata | T3, T4, T6-T8 |
+| 4. One-image delivery | T5, T9-T12 |
+| 5. Understandable complete CSV batches | T6-T9, T11 |
+| 6. Local substantive WASM processing | T1, T8, T10-T11 |
+| 7. Portable static demo | T9-T12 |
+
+An implementation may not certify itself with the same serialization helper it uses to write EXIF. The browser's independent parser gates each downloadable result. Outside the application, decode the final JPEG and inspect IFD0 `DateTime`, Exif `DateTimeOriginal` and `DateTimeDigitized`, and the three matching offset tags. Check `Software` separately. Verify their values against fixture constants, not just agreement with one another. Writer and reader failures must fail the export visibly.
+
+## T1 — Measured WASM comparison
+
+Run the two viable candidates from the plan with the same font and frozen settings: a titled default donut, a blank solid marker and ten timed 2000-pixel markers. Include a star and a glyph-coverage case before selection. Confirm a WASM module participates in the actual successful export path; disable/break that module and require a visible export failure rather than a silent canvas-only substitute.
+
+For each candidate record pinned build inputs/licenses and asset hashes; cold/warm transfer bytes; three cold initialization times; five warm single-export times; three ten-row-plus-packaging times; memory observations with their limitations; independent image/tag results; offline reruns; and browser/device results. Separate network cache from runtime reuse. Keep raw samples and median/range. No result is invented for an unavailable physical device. A provisional desktop choice leaves physical acceptance open.
+
+## T2 — Rendering, fonts and image bounds
+
+Decode each design at 256, 2000 and 4096 pixels, or the explicitly revised tested maximum. Assert actual JPEG format, equal width/height and expected dimensions. Check default colors away from anti-aliased/JPEG edges using a documented tolerance; check geometric bounds on pre-encode raster output separately. Donut's outer radius is half the side and inner radius 0.78 of that. Star has five outer points with inner radius 0.45 of the outer and first vertex up. Solid has no inner shape. All three permit blank titles.
+
+Exercise short/long titles, descenders, accents, supported non-Latin glyphs, an unsupported character, line breaks, and a title that cannot fit at the minimum font size. Verify centering from glyph bounds, the shape-specific text box and inclusion of the outline in the fit. Check auto outline and 0/64 overrides. Invalid text, corrupt/local unsupported fonts, failed font loads and missing glyphs produce an error with no success download. A system fallback font must not hide missing coverage.
+
+Switch Donut → Star → Solid → Donut: hidden color values survive but do not affect other designs. Reject fractional/NaN sizes, 255/4097 sides, invalid hex/name colors and invalid outline widths before allocation. Exercise a valid local TTF and OTF without network upload. Inspect the exported authoritative preview, not only a draft canvas; it must use the actual verified JPEG's layout.
+
+## T3 — Date/time resolution with explicit expected instants
+
+Use a fixed clock of `2026-10-20T14:05:06Z` and run the same fixtures with the browser in a different zone. Assert all three local timestamp tags, all three offsets, and the manifest instant/IANA zone/occurrence. Numeric offsets do not stand in for IANA names.
+
+| Fixture | Input / effective zone | Expected result |
+| --- | --- | --- |
+| NOW-BNE | Date/time blank; Australia/Brisbane | `2026:10:21 00:05:06`, `+10:00`, fixed clock instant. |
+| DATE-BNE | 2026-10-21, blank time; Australia/Brisbane | `2026:10:21 00:00:00`, `+10:00`, `2026-10-20T14:00:00Z`. |
+| UTC-SECONDS | 2026-10-21, 12:34:56; UTC | `2026:10:21 12:34:56`, `+00:00`, `2026-10-21T12:34:56Z`; `12:34` yields second 00. |
+| HALF-HOUR | 2026-10-21, 00:00; Asia/Kolkata | `+05:30`, `2026-10-20T18:30:00Z`. |
+| QUARTER-HOUR | 2026-10-21, 00:00; Asia/Kathmandu | `+05:45`, `2026-10-20T18:15:00Z`. |
+| FALL-EARLIER | 2026-11-01, 01:30; America/Los_Angeles, earlier | `2026:11:01 01:30:00`, `-07:00`, `2026-11-01T08:30:00Z`. |
+| FALL-LATER | Same wall time, later | Same local tags, `-08:00`, `2026-11-01T09:30:00Z`; blank occurrence requires a choice. |
+| SPRING-GAP | 2026-03-08, 02:30; America/Los_Angeles | Reject nonexistent time; do not shift it to 03:30. |
+| SKIPPED-DATE | 2011-12-30, date only; Pacific/Apia | Reject nonexistent midnight; do not normalize to the next day. |
+
+Also cover valid leap day 2000-02-29, invalid 1900-02-29 and 2026-02-30, invalid time/zone, time without date, accepted year endpoints 1900/2099 and rejected 1899/2100. For historical offsets that cannot be represented exactly as EXIF `HH:MM`, fail with a specific explanation rather than silently round the instant; record the discovered case and reconcile the supported range with the specification before claiming that range. Pin the timezone-data/library version where available and distinguish that from browser-provided timezone data.
+
+Both missing date/time fields use now; date-only uses midnight. Test browser-zone detection failure with a visible UTC fallback. A batch captures now once even when rows cross midnight or retry after worker restart. A second Generate changes now; downloading the original result again does not. Repeated-time selection shows both offsets/instants and is invalidated when edited date/time/zone makes it inapplicable.
+
+## T4 — Metadata integrity and independent failure checks
+
+Read the final JPEG's six required fields and `Software` outside the producer. Decode both single and batch files. Corrupt or omit each timestamp/offset in turn, mismatch one field, supply a truncated JPEG, and simulate writer/parser exceptions. Each must identify the affected item and prevent it from entering the verified/downloadable set. Check date-only, current-time and both repeated-time occurrences from T3; equality of tags alone does not establish correct time.
+
+An unavailable metadata writer must never reproduce the reference's successful-JPEG-without-EXIF fallback. Preview generation cannot bypass verification to expose a result labeled successful. Duplicate or conflicting EXIF blocks are rejected or normalized before independent verification under a documented policy. Keep the ordinary browser reader separate from the toolchain oracle.
+
+## T5 — Single editor and preview lifecycle
+
+Keyboard-complete the workflow: select a shape, change its colors/title/font, set a different timezone, inspect resolved time, Generate, and deliberately download. Independently inspect the retrieved file and its visible filename. Change controls while generation is running; the result remains tied to its frozen settings, stale responses never replace the current preview, and previous verified bytes are clearly labeled and obtainable until discarded or successfully replaced.
+
+Delay font loading, fail initialization, Retry, and simulate a validation error. Focus reaches the first actionable error and returns sensibly. A draft is labeled; authoritative preview comes from the verified file. Reload honestly loses session-only state as documented. Batch settings export/reimport explains missing local font files rather than fetching font keys.
+
+## T6 — CSV parsing, defaults and ten-row fixture
+
+Create a ten-record valid fixture spanning all three shapes, blank title, repeated titles/stems, quoted comma/escaped quote, explicit seconds, date-only midnight, now, different zone, both fall-back occurrences and per-row style overrides. Retain a record of all blank optional cells as a real marker. Store exact expected record IDs, resolved settings, filenames and times alongside it. A separate invalid variant inserts a nonblank invalid color/date and must stop generation until corrected or explicitly excluded.
+
+Test BOM/no BOM, CRLF/LF, trailing empty cells and empty physical lines; count ignored lines without losing blank-cell records. Check malformed quotes, duplicate/unknown headers, header-only/empty input and exact lower-case header policy. Quoted newline parsing must work, while a newline in a title is rejected by title validation. Each failure reports source record/column correctly, even with quoted multiline fields.
+
+Assert precedence: explicit row edit > nonblank CSV cell > displayed batch default. Clearing an override restores inheritance. Title/date/time blanks do not inherit unrelated single-editor values. Revalidate after shared-style changes. Validate supplied unused colors and mark unused occurrence/color values accurately. Treat HTML/script-looking titles as text and font URLs/paths as invalid keys; no request is made for them. All valid retained rows remain in original order with distinct filenames.
+
+## T7 — Filenames, ZIP parts and retrievable output
+
+Exercise duplicate titles/timestamps/stems, slash/backslash, control characters, reserved names and stems over 80 characters. Confirm stable four-digit record suffixes and names shown before generation. Extract every ZIP and compare each JPEG's SHA-256 with its pre-packaging verified bytes; recheck metadata independently. Manifest rows, filenames, statuses, settings, time/zone/occurrence and errors must reconcile with the run, including exclusions and cancelled/failed entries.
+
+Reach the 25 MiB JPEG-payload part target, a single file above it, and the 50 MiB retained-output budget. Instrument retained JPEG and ZIP copies plus packaging allocations: no ignored duplicate Blob bypasses the budget. Pause/split before exceeding it, require deliberate downloads and explicit save acknowledgment/discard to release output, then resume without losing row state. A download click is not proof of a saved file. Force packaging failure and verify individual completed JPEGs remain obtainable. Verify no automatic download burst and that later packaging does not revoke earlier retained URLs.
+
+## T8 — Failure, cancellation, retry and resource bounds
+
+Inject failure during runtime initialization, drawing, encoding, EXIF writing, independent parsing and ZIP construction. Terminate the active worker and deliver an intentionally late reply from an old generation. Preserve the UI snapshot, completed files and errors; no failed/cancelled/stale result becomes successful. Cancel stops pending rows and releases active work safely. Retry selected failed rows with the original timestamp/settings while successful rows stay unchanged.
+
+Exercise 1 and 100 rows, reject 101, and accept/reject CSV byte sizes at and above 1 MiB. Test maximum supported image size separately from the default batch. Verify preflight precedes large buffer allocation. Repeat batches after explicit discard to detect retained references; do not depend solely on JS heap readings to claim total memory safety. Fail visibly on allocation loss, unsupported WASM/worker behavior or missing assets. No fallback sends data to a server.
+
+## T9 — Browser and accessibility matrix
+
+Run current stable Chrome and Safari on desktop, plus Safari and Chrome on a physical iOS device. Record exact OS/browser/device and engine where known. Playwright Chromium/WebKit supplement this matrix but do not establish branded Safari, physical touch, iOS memory or Files/download behavior. Any missing cell remains unrun.
+
+At desktop and narrow portrait/landscape widths, traverse all controls and errors using the keyboard where available; inspect labels, visible focus, contrast, status announcements and 200%/400% zoom without losing required controls. Run an automated accessibility audit and a real screen-reader journey separately through generation, row errors, progress, cancellation and download. On iOS actually retrieve a JPEG, ZIP and a later ZIP part, open/extract them in Files and bring their bytes to the independent verifier. Do not import into a photo-library application.
+
+## T10 — Local processing, offline operation and deployment paths
+
+Record browser network activity during initial load and then while editing, importing, previewing, generating and packaging. Only the initial required static assets may be fetched. No entered text/CSV/images leave the page. Disable network after the ready state and repeat single, ten-row and local-font workflows. Block a missing startup asset separately and require visible loading failure/Retry; do not claim a first offline visit or service-worker install works.
+
+Serve the built output under its intended nested path with ordinary static headers and no SharedArrayBuffer/cross-origin-isolation dependency. Verify relative worker, WASM, font, timezone and parser URLs. Inspect runtime requests and output files for references into `initiatives/`, development paths or external package/font fetches. Break the WASM module and show that export cannot silently succeed through a non-WASM substitute.
+
+## T11 — Responsiveness and measured limits
+
+At 2000 pixels measure the plan's cold/warm runs and draft-preview latency. Targets: draft update ≤500 ms after initialization; verified warm single ≤2 seconds desktop / ≤5 seconds physical iOS; ten markers plus packaging ≤30 seconds desktop / ≤60 seconds physical iOS. Include independent verification and packaging in timings. Report median/range and every failure; no hidden warmup may substitute for cold startup.
+
+During the worst supported batch, interact with progress/Cancel and record input response. Measure max-size exports and output-budget pauses separately. Distinguish time waiting for user download acknowledgment from active generation. Resource caps and performance targets are provisional until measured; publish lower tested limits or a documented follow-up when evidence requires it, preserving the reviewed functional requirements.
+
+## T12 — Acceptance and graduation record
+
+From a clean locked install, run implementation tests, the repository build once after final changes, scope and whitespace checks, and relevant browser checks. For visible UI changes take and display a screenshot after that final build under `screenshots/`. Retain a receipt mapping T1-T12 to pass/fail/unrun and the exact tested source; development tests do not establish production deployment.
+
+Check instructions for one marker, CSV schema/defaults, timezone/occurrence meaning, local fonts, session-only state, limits, deliberate ZIP-part retrieval and failure recovery. Verify build reproduction and font/runtime license notices. Confirm standalone output has no backend/account requirement and no runtime dependency into the initiative. Complete physical iOS and independent exported-file checks before claiming release readiness. Leave graduation/release for explicit user authorization; do not mark the initiative dormant.
