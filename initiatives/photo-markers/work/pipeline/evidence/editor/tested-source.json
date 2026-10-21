@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-21T17:32:35.242128+00:00",
+  "base": "3cd8a95bce925d24bbea40a8333e68fe99450e0c",
+  "files": {
+    "build.mjs": "e23c74145cbbc447ecbf4b79cf01cdba32c2cd30452b5dd710c7f16157d88809",
+    "client.mjs": "3a3fb17f8b2e5416ac1caf2ed418db747fdfb6338f966c6afd7f6c5aeffb6883",
+    "editor.css": "2e4a3eca820fec732ef09416366f0c1929e712e66483f7114b0ef4a77bb04877",
+    "editor.mjs": "9cf70d80347e756781b33c05fb78245f483c914ec4ad3d74be3a8c6174521009",
+    "errors.mjs": "89b6f10daf93b88c0c5a4467f33796be32759a19f20b3d956ef7f741387bcf54",
+    "filenames.mjs": "28ee22d676c5e6acdbb0f56483d7b64b22ff165d80044dcbf91faa051eb53533",
+    "index.html": "80d1c8374c2b5f9d0ca98f7ce121d154e3cfbc481a00e1c331f783cecb9b0bc5",
+    "metadata.mjs": "30a8e3f709015f6c68a27a4b007fd7875106f12b77eaac9f78155524d3f8470a",
+    "package-lock.json": "90a3be701947190702e29224dce5c289b87d356094e6a6c020fcc1422795f2a9",
+    "package.json": "29a70f985c0861b37b5359ab0961fdbd7a7b1e08be65efc5e0c39c2f5fad6523",
+    "render.mjs": "38b18bfc37c58c9732356ed0c55071ffced20dba0e0747b0657a84b9143bdc4b",
+    "settings.mjs": "fcad8329a4e778e329e2eb9465bc8a48e158c1618f140df586adb6b76ce0e015",
+    "test/editor-browser.mjs": "1d78d3cec01020eee08b537185b8aacda4a1f3266d3ff83b858278c0c44fb70c",
+    "test/verify-editor.py": "14e0eee79496f708ca1a1ccb1b8f9212faa15b37071f1143652af9b153d4b59d",
+    "verify.mjs": "cf95968486b97074b4e6314cc6e0b7913ac76c30656d013cb86db7602019c1df",
+    "worker.mjs": "ec2ac86d86cda17668bd08ba6d9cb9a4a96366a02b9e037fa08a89a8c9a88466"
+  }
+}

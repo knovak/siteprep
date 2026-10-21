@@ -38,6 +38,14 @@ async function handle(m) {
       self.postMessage({ id: m.id, epoch: m.epoch, type: "result", result });
       return;
     }
+    if (m.kind === "preview") {
+      const full = validateSnapshot(m.settings);
+      const draft = { ...full, size: 320,
+        outline_width: full.outline_width === "auto" ? "auto" : full.outline_width * 320 / full.size };
+      const { image } = rasterize(draft);
+      self.postMessage({ id: m.id, epoch: m.epoch, type: "result", result: { image } }, [image.data.buffer]);
+      return;
+    }
     if (m.kind !== "export") throw new ExportError("worker", "Unknown worker operation.");
     progress("validation");
     const s = await atStage("validation", () => validateSnapshot(m.settings));
@@ -62,7 +70,7 @@ async function handle(m) {
     progress("metadata");
     const bytes = await atStage("metadata", () => writeMetadata(jpeg, s.timestamp));
     progress("verification");
-    const verification = await verifyFinal(bytes, s);
+    const { preview, ...verification } = await verifyFinal(bytes, s, { preview: true });
     const sha256 = [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))]
       .map((x) => x.toString(16).padStart(2, "0"))
       .join("");
@@ -76,12 +84,13 @@ async function handle(m) {
           sha256,
           settings: s,
           verification,
+          preview,
           geometry: raster.geometry,
           layout: raster.layout,
           font: raster.font,
         },
       },
-      [bytes.buffer],
+      [bytes.buffer, preview.data.buffer],
     );
   } catch (error) {
     self.postMessage({

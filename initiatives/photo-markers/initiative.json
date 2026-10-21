@@ -15,8 +15,8 @@
       "blocked_by": "data:physical Safari and Chrome on iOS findings for JPEG and ZIP retrieval in Files, disconnected exports, memory limits and timing; desktop engine comparison is provisional"
     },
     {
-      "id": "build-marker-editor",
-      "title": "Build the single-image editor with effective time, verified preview and deliberate JPEG download",
+      "id": "build-csv-batches",
+      "title": "Add CSV review, frozen batch jobs, ZIP parts and manifests",
       "state": "actionable",
       "value": "high",
       "effort": "large",

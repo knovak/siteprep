@@ -59,7 +59,7 @@ function inspect(bytes) {
     fail("JPEG dimensions are outside supported bounds.");
   return frame;
 }
-export async function verifyFinal(bytes, settings) {
+export async function verifyFinal(bytes, settings, { preview = false } = {}) {
   return atStage("verification", async () => {
     const dimensions = inspect(bytes);
     if (dimensions.width !== settings.size)
@@ -91,6 +91,17 @@ export async function verifyFinal(bytes, settings) {
       image.data.length !== settings.size * settings.size * 4
     )
       throw new Error("JPEG did not decode to the expected pixels.");
-    return { width: image.width, height: image.height, tags };
+    const result = { width: image.width, height: image.height, tags };
+    if (preview) {
+      // A bounded preview sampled from the decoded final JPEG, never re-rendered
+      // settings. This also avoids offline Blob-image loading in WebKit.
+      const side = Math.min(420, image.width), pixels = new Uint8ClampedArray(side * side * 4);
+      for (let y = 0; y < side; y++) for (let x = 0; x < side; x++) {
+        const source = (Math.floor((y + .5) * image.height / side) * image.width + Math.floor((x + .5) * image.width / side)) * 4;
+        pixels.set(image.data.subarray(source, source + 4), (y * side + x) * 4);
+      }
+      result.preview = new ImageData(pixels, side, side);
+    }
+    return result;
   });
 }
