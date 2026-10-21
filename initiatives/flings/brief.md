@@ -7,39 +7,26 @@
 ## Done
 
 - Gatherings support invitations, events, discussions, polls, payment records,
-  reviewed message prompts and reported outcomes. Editable JSON backups restore
+  reviewed message prompts and reported outcomes. Editable backups restore
   separate gatherings with fresh identities and no credentials; confirmed
   deletion removes active records.
-- Native organizer identity, interrupted-read recovery and targeted hosted
-  fictional workflows are implemented. Dated receipts cover recovery, scoped
-  public HTTP sessions, DST event persistence and offsets, keyboard focus,
-  native validation, semantic structure, layout and browser page zoom. At
-  desktop and phone widths, the event editor now has forward/reverse keyboard
-  evidence through native date/time segments, offset selection and cancellation
-  focus. Native calendar checks add unsaved one-day start/end edits and explicit
-  occurrence reselection after returning to the repeated date; cancellation and
-  reload retain the original saved summary. Popup visuals and physical-device
-  behavior remain outside that evidence.
-- Reopening a member link in the same tab now clears the previous page and
-  exchanges the new link. Six local browser journeys cover member switching,
-  fresh sessions and invalid-link clearing. Ten hosted Chrome Incognito checks
-  now cover entry without ChatGPT login, reload and second-tab session reuse,
-  reentry, invalid-link clearing/recovery and continued organizer-route denial.
-- Signed-out profile and invitation changes persist through reload and appear
-  to the organizer. Complete member/invitation table reads confirm restored
-  fixture values with advanced revisions and no changes to other rows. The
+- Dated hosted receipts cover native organizer entry, scoped member sessions,
+  profile/invitation writes, DST persistence, keyboard focus, native calendar
+  controls, layout and page zoom. Public entry/denial audits now cover four
+  screens at two widths; a missing member-error heading was fixed, with zero
+  detected violations afterward and one incomplete desktop landing-link rule.
+- Reopened member links clear prior identity; signed-out profile/invitation
+  writes survive reload and restored fixture values are documented. The
   additional fictional message review remains unapproved.
 
 ## Remaining work
 
 Phase 6 continues with independent second-organizer access, signed-out
-discussion/poll/payment writes, multiple-membership/browser coverage,
-expiry/revocation, the remaining hosted matrix, full keyboard/screen-reader,
-text-only zoom and interruption/restart checks. The provider-documentation and
-read-only metadata refresh still leaves managed-host backup retention,
-recovery access and erasure timing unverified; the recovery note identifies
-the evidence needed for an isolated rehearsal. Development-toolchain
-remediation and the authorized pilot follow.
+discussion/poll/payment writes, multiple memberships, expiry/revocation and
+the remaining hosted matrix. Authenticated accessibility, the landing-link
+manual review, screen-reader/text-only zoom and interruption/restart checks
+remain; managed-host retention, recovery access and erasure are unverified.
+Development-toolchain remediation and the authorized pilot follow.
 
 ## Optional later
 
