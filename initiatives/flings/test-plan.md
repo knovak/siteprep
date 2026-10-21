@@ -662,3 +662,13 @@ rule remains incomplete and needs manual review. Local typecheck, 177 tests
 and six three-engine member journeys pass after correcting expired HTTP test
 fixture clocks. The test Site was refreshed with access preserved. This is not
 full accessibility or screen-reader acceptance; Phase 6 remains open.
+
+## Landing-link follow-up — October 21, 2026
+
+The [focused landing-link receipt](notes/hosted-landing-link-20261021.html)
+closes the earlier desktop link-distinction manual-review item. A persistent
+underline preserves the existing focus outline. Visual/Tab checks and targeted
+link/contrast rules pass at 1280 × 800 and 430 × 932 on Test version 19, with
+no incomplete result. No sign-in, business mutation or message was attempted.
+This does not complete authenticated accessibility, screen-reader or the wider
+hosted matrix; Phase 6 and `verify-hosted-test` remain open.
