@@ -651,3 +651,14 @@ confirms the existing Site and a complete 28-table schema listing; no business
 rows were read or written. The note identifies the missing provider evidence
 for an isolated rehearsal. No database rewind, deletion or restore acceptance
 is claimed, and the existing Phase 6 item remains actionable.
+
+
+## October 21 public accessibility receipt (Australia/Brisbane)
+
+`notes/hosted-public-accessibility-20261021.md` records eight fresh anonymous
+entry/denial scans before and after a member-error h1 correction. All eight
+post-deployment scans have no detected violations; one desktop landing-link
+rule remains incomplete and needs manual review. Local typecheck, 177 tests
+and six three-engine member journeys pass after correcting expired HTTP test
+fixture clocks. The test Site was refreshed with access preserved. This is not
+full accessibility or screen-reader acceptance; Phase 6 remains open.

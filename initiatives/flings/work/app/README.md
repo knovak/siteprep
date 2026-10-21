@@ -761,3 +761,16 @@ The local browser matrix now covers deliberate member switching, a fresh session
 when reopening the same link, and an invalid replacement hiding the prior profile.
 Use `FLINGS_EVIDENCE` to preserve a dated receipt and `FLINGS_BROWSER` to select
 one engine; the default still runs all three engines at desktop and phone widths.
+
+## Member page error heading
+
+When an error clears the member projection, the error screen includes an h1
+named **Unable to open member page** before its existing alert text and recovery
+links. Errors alongside a loaded projection retain the gathering heading instead
+of adding another h1. The signed-out public entry/denial accessibility receipt is
+`../../notes/hosted-public-accessibility-20261021.md`; it is limited to those
+screens and does not establish authenticated or screen-reader acceptance.
+
+HTTP access and coordination tests issue codes/sessions using the current time,
+matching the HTTP store's clock; fixed historical domain-test clocks remain for
+expiry-boundary tests. This prevents old fixtures expiring as calendar time moves.
