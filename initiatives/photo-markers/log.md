@@ -15,3 +15,7 @@ Drafted the specification from reviewed objectives: three legacy-based designs, 
 ## 2026-10-21 — Draft plan.md and test-plan.md - compare WASM approaches, then plan the browser implementation and acceptance
 
 Drafted plan.md and test-plan.md with a measured two-route WASM comparison first, verified JPEG/EXIF export, editor and CSV milestones, recovery/resource bounds, independent timestamp fixtures, physical iOS acceptance and explicit graduation authority. No runtime selected or implementation acceptance claimed.
+
+## 2026-10-21 — Critique plan.md and test-plan.md before comparing WASM export paths
+
+Critiqued the merged plan; clarified prototype scope, frozen timestamps and row IDs, packaging admission, output availability and per-part manifests. Added boundary checks; historical offset/range and physical iOS evidence remain gates. Seeded compare-wasm-exports; stage remains planned.
