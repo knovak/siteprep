@@ -17,7 +17,7 @@ export default function Home() {
         <p className="eyebrow">Organizer</p>
         <h1>Your gatherings</h1>
         <p>Open your organizer workspace with your ChatGPT account.</p>
-        <a href="/organizer">Open organizer workspace →</a>
+        <a className="organizer-entry-link" href="/organizer">Open organizer workspace →</a>
       </section>
       <p className="footnote">
         Use fictional gathering details during this test. No messages are sent.

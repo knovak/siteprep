@@ -456,3 +456,11 @@ three-engine member journeys pass; expired HTTP fixtures now match the real
 HTTP clock. See `notes/hosted-public-accessibility-20261021.md`. No business
 mutation requests, messages, access changes or production release; Phase 6 stays
 open.
+
+## 2026-10-21 — Landing-link accessibility follow-up
+
+Reviewed the outstanding public landing-link finding, added a persistent
+underline and retained keyboard focus. Test version 19 has passing targeted
+link/contrast checks and visible cues at both widths. Recorded sanitized
+before/after evidence; typecheck, 177 tests and Sites build passed. Broader
+Phase 6 remains actionable; no production release or business mutation.

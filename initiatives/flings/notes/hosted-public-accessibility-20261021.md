@@ -94,3 +94,9 @@ independent organizer access, signed-out discussion/poll/payment writes,
 multiple memberships, expiry/revocation, concurrency/rollback, other hosted
 engines and managed-host recovery remain outside this receipt. Phase 6 and
 `verify-hosted-test` remain actionable. Production has not been released.
+
+## Later follow-up
+
+The [landing-link review and version 19 correction](hosted-landing-link-20261021.html)
+closes the desktop link-distinction finding above. This version 18 receipt
+remains the original record; its broader limitations are unchanged.

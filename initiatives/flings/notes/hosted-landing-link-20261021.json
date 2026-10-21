@@ -1,0 +1,877 @@
+{
+  "scope": "Public anonymous landing-link visual, keyboard and targeted axe review; no link activation, sign-in or business mutation request",
+  "testUrl": "https://flings-test.ken-novak.chatgpt.site/",
+  "beforeVersion": 18,
+  "afterVersion": 19,
+  "sourceCommit": "92623a9c7",
+  "sitesCommit": "3049c913ce7be82984fc3b4826e4c42c193d7b82",
+  "deployedAt": "2026-10-21T06:54:54.428635Z",
+  "before": {
+    "capturedAt": "2026-10-21T06:50:09.883Z",
+    "browser": "143.0.7499.4",
+    "url": "https://flings-test.ken-novak.chatgpt.site/",
+    "scope": "fresh anonymous Chromium contexts; landing page only; no sign-in or link activation",
+    "checks": [
+      {
+        "width": 1280,
+        "baseline": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 116,
+            "y": 289.453125,
+            "width": 211.65625,
+            "height": 17,
+            "top": 289.453125,
+            "right": 327.65625,
+            "bottom": 306.453125,
+            "left": 116
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 116,
+            "y": 260.859375,
+            "width": 1048,
+            "height": 25.59375,
+            "top": 260.859375,
+            "right": 1164,
+            "bottom": 286.453125,
+            "left": 116
+          },
+          "hitAtCenter": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "hover": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 116,
+            "y": 289.453125,
+            "width": 211.65625,
+            "height": 17,
+            "top": 289.453125,
+            "right": 327.65625,
+            "bottom": 306.453125,
+            "left": 116
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 116,
+            "y": 260.859375,
+            "width": 1048,
+            "height": 25.59375,
+            "top": 260.859375,
+            "right": 1164,
+            "bottom": 286.453125,
+            "left": 116
+          },
+          "hitAtCenter": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "focused": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": true,
+          "focusVisible": true,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "rgb(178, 90, 55) solid 3px",
+          "outlineOffset": "4px",
+          "display": "inline",
+          "rect": {
+            "x": 116,
+            "y": 289.453125,
+            "width": 211.65625,
+            "height": 17,
+            "top": 289.453125,
+            "right": 327.65625,
+            "bottom": 306.453125,
+            "left": 116
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 116,
+            "y": 260.859375,
+            "width": 1048,
+            "height": 25.59375,
+            "top": 260.859375,
+            "right": 1164,
+            "bottom": 286.453125,
+            "left": 116
+          },
+          "hitAtCenter": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "tabs": [
+          {
+            "tag": "A",
+            "text": "flings\u2733",
+            "href": "/"
+          },
+          {
+            "tag": "A",
+            "text": "Open organizer workspace \u2192",
+            "href": "/organizer"
+          }
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/css/index.CLPnv3Cr.css"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/index-D_tTc5Mn.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/rolldown-runtime-QTnfLwEv.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/vinext-B9aULbhu.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/framework-JGc2HF7T.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/layout-segment-context-DMytZGBf.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "POST",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          }
+        ],
+        "audit": {
+          "passes": [
+            "color-contrast"
+          ],
+          "violations": [],
+          "incomplete": [
+            {
+              "id": "link-in-text-block",
+              "impact": "serious",
+              "tags": [
+                "cat.color",
+                "wcag2a",
+                "wcag141",
+                "TTv5",
+                "TT13.a",
+                "EN-301-549",
+                "EN-9.1.4.1",
+                "RGAAv4",
+                "RGAA-10.6.1"
+              ],
+              "description": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+              "help": "Links must be distinguishable without relying on color",
+              "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/link-in-text-block?application=playwright",
+              "nodes": [
+                {
+                  "any": [
+                    {
+                      "id": "link-in-text-block",
+                      "data": {
+                        "messageKey": "bgOverlap"
+                      },
+                      "relatedNodes": [
+                        {
+                          "html": "<section class=\"intro\"><p class=\"eyebrow\">Organizer</p><h1>Your gatherings</h1><p>Open your organizer workspace with your ChatGPT account.</p><a href=\"/organizer\">Open organizer workspace \u2192</a></section>",
+                          "target": [
+                            "section"
+                          ]
+                        }
+                      ],
+                      "impact": "serious",
+                      "message": "Element's contrast ratio could not be determined because of element overlap"
+                    }
+                  ],
+                  "all": [],
+                  "none": [],
+                  "impact": "serious",
+                  "html": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+                  "target": [
+                    "a[href$=\"organizer\"]"
+                  ],
+                  "failureSummary": "Fix any of the following:\n  Element's contrast ratio could not be determined because of element overlap"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "width": 430,
+        "baseline": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 20,
+            "y": 276.09375,
+            "width": 211.65625,
+            "height": 17,
+            "top": 276.09375,
+            "right": 231.65625,
+            "bottom": 293.09375,
+            "left": 20
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 20,
+            "y": 221.90625,
+            "width": 390,
+            "height": 51.1875,
+            "top": 221.90625,
+            "right": 410,
+            "bottom": 273.09375,
+            "left": 20
+          },
+          "hitAtCenter": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "hover": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 20,
+            "y": 276.09375,
+            "width": 211.65625,
+            "height": 17,
+            "top": 276.09375,
+            "right": 231.65625,
+            "bottom": 293.09375,
+            "left": 20
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 20,
+            "y": 221.90625,
+            "width": 390,
+            "height": 51.1875,
+            "top": 221.90625,
+            "right": 410,
+            "bottom": 273.09375,
+            "left": 20
+          },
+          "hitAtCenter": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "focused": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": true,
+          "focusVisible": true,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "none",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "rgb(178, 90, 55) solid 3px",
+          "outlineOffset": "4px",
+          "display": "inline",
+          "rect": {
+            "x": 20,
+            "y": 276.09375,
+            "width": 211.65625,
+            "height": 17,
+            "top": 276.09375,
+            "right": 231.65625,
+            "bottom": 293.09375,
+            "left": 20
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 20,
+            "y": 221.90625,
+            "width": 390,
+            "height": 51.1875,
+            "top": 221.90625,
+            "right": 410,
+            "bottom": 273.09375,
+            "left": 20
+          },
+          "hitAtCenter": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "tabs": [
+          {
+            "tag": "A",
+            "text": "flings\u2733",
+            "href": "/"
+          },
+          {
+            "tag": "A",
+            "text": "Open organizer workspace \u2192",
+            "href": "/organizer"
+          }
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/css/index.CLPnv3Cr.css"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/index-D_tTc5Mn.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/rolldown-runtime-QTnfLwEv.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/vinext-B9aULbhu.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/framework-JGc2HF7T.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/layout-segment-context-DMytZGBf.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "POST",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          }
+        ],
+        "audit": {
+          "passes": [
+            "color-contrast",
+            "link-in-text-block"
+          ],
+          "violations": [],
+          "incomplete": []
+        }
+      }
+    ]
+  },
+  "after": {
+    "capturedAt": "2026-10-21T06:55:08.678Z",
+    "browser": "143.0.7499.4",
+    "url": "https://flings-test.ken-novak.chatgpt.site/",
+    "scope": "fresh anonymous Chromium contexts; landing page only; no sign-in or link activation",
+    "checks": [
+      {
+        "width": 1280,
+        "baseline": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "underline",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 116,
+            "y": 289.453125,
+            "width": 211.65625,
+            "height": 17,
+            "top": 289.453125,
+            "right": 327.65625,
+            "bottom": 306.453125,
+            "left": 116
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 116,
+            "y": 260.859375,
+            "width": 1048,
+            "height": 25.59375,
+            "top": 260.859375,
+            "right": 1164,
+            "bottom": 286.453125,
+            "left": 116
+          },
+          "hitAtCenter": "<a class=\"organizer-entry-link\" href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "hover": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "underline",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 116,
+            "y": 289.453125,
+            "width": 211.65625,
+            "height": 17,
+            "top": 289.453125,
+            "right": 327.65625,
+            "bottom": 306.453125,
+            "left": 116
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 116,
+            "y": 260.859375,
+            "width": 1048,
+            "height": 25.59375,
+            "top": 260.859375,
+            "right": 1164,
+            "bottom": 286.453125,
+            "left": 116
+          },
+          "hitAtCenter": "<a class=\"organizer-entry-link\" href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "focused": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": true,
+          "focusVisible": true,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "underline",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "rgb(178, 90, 55) solid 3px",
+          "outlineOffset": "4px",
+          "display": "inline",
+          "rect": {
+            "x": 116,
+            "y": 289.453125,
+            "width": 211.65625,
+            "height": 17,
+            "top": 289.453125,
+            "right": 327.65625,
+            "bottom": 306.453125,
+            "left": 116
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 116,
+            "y": 260.859375,
+            "width": 1048,
+            "height": 25.59375,
+            "top": 260.859375,
+            "right": 1164,
+            "bottom": 286.453125,
+            "left": 116
+          },
+          "hitAtCenter": "<a class=\"organizer-entry-link\" href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "tabs": [
+          {
+            "tag": "A",
+            "text": "flings\u2733",
+            "href": "/"
+          },
+          {
+            "tag": "A",
+            "text": "Open organizer workspace \u2192",
+            "href": "/organizer"
+          }
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/css/index.qDalXld9.css"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/index-CkLZoOVf.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/rolldown-runtime-QTnfLwEv.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/vinext-CJtaFxFI.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/framework-JGc2HF7T.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/layout-segment-context-08fTc31m.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "POST",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          }
+        ],
+        "audit": {
+          "passes": [
+            "color-contrast",
+            "link-in-text-block"
+          ],
+          "violations": [],
+          "incomplete": []
+        }
+      },
+      {
+        "width": 430,
+        "baseline": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "underline",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 20,
+            "y": 276.09375,
+            "width": 211.65625,
+            "height": 17,
+            "top": 276.09375,
+            "right": 231.65625,
+            "bottom": 293.09375,
+            "left": 20
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 20,
+            "y": 221.90625,
+            "width": 390,
+            "height": 51.1875,
+            "top": 221.90625,
+            "right": 410,
+            "bottom": 273.09375,
+            "left": 20
+          },
+          "hitAtCenter": "<a class=\"organizer-entry-link\" href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "hover": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": false,
+          "focusVisible": false,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "underline",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "oklab(0.53764 0.0956945 0.0757801 / 0.5) none 0px",
+          "outlineOffset": "0px",
+          "display": "inline",
+          "rect": {
+            "x": 20,
+            "y": 276.09375,
+            "width": 211.65625,
+            "height": 17,
+            "top": 276.09375,
+            "right": 231.65625,
+            "bottom": 293.09375,
+            "left": 20
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 20,
+            "y": 221.90625,
+            "width": 390,
+            "height": 51.1875,
+            "top": 221.90625,
+            "right": 410,
+            "bottom": 273.09375,
+            "left": 20
+          },
+          "hitAtCenter": "<a class=\"organizer-entry-link\" href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "focused": {
+          "text": "Open organizer workspace \u2192",
+          "href": "/organizer",
+          "role": null,
+          "tag": "A",
+          "tabIndex": 0,
+          "focused": true,
+          "focusVisible": true,
+          "color": "rgb(32, 56, 49)",
+          "background": "rgba(0, 0, 0, 0)",
+          "decoration": "underline",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "outline": "rgb(178, 90, 55) solid 3px",
+          "outlineOffset": "4px",
+          "display": "inline",
+          "rect": {
+            "x": 20,
+            "y": 276.09375,
+            "width": 211.65625,
+            "height": 17,
+            "top": 276.09375,
+            "right": 231.65625,
+            "bottom": 293.09375,
+            "left": 20
+          },
+          "parentBackground": "rgba(0, 0, 0, 0)",
+          "parentBackgroundImage": "none",
+          "precedingTextRect": {
+            "x": 20,
+            "y": 221.90625,
+            "width": 390,
+            "height": 51.1875,
+            "top": 221.90625,
+            "right": 410,
+            "bottom": 273.09375,
+            "left": 20
+          },
+          "hitAtCenter": "<a class=\"organizer-entry-link\" href=\"/organizer\">Open organizer workspace \u2192</a>",
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "tabs": [
+          {
+            "tag": "A",
+            "text": "flings\u2733",
+            "href": "/"
+          },
+          {
+            "tag": "A",
+            "text": "Open organizer workspace \u2192",
+            "href": "/organizer"
+          }
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/css/index.qDalXld9.css"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/index-CkLZoOVf.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/rolldown-runtime-QTnfLwEv.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/vinext-CJtaFxFI.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/framework-JGc2HF7T.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/_next/static/chunks/layout-segment-context-08fTc31m.js"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "GET",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          },
+          {
+            "method": "POST",
+            "origin": "https://flings-test.ken-novak.chatgpt.site",
+            "path": "/cdn-cgi/challenge-platform/[provider path omitted]"
+          }
+        ],
+        "audit": {
+          "passes": [
+            "color-contrast",
+            "link-in-text-block"
+          ],
+          "violations": [],
+          "incomplete": []
+        }
+      }
+    ]
+  }
+}

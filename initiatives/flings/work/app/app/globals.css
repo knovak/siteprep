@@ -184,6 +184,10 @@ header {
 .intro {
   padding: 52px 0 34px;
 }
+.organizer-entry-link {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 2px;
