@@ -1,0 +1,1044 @@
+{
+  "oracle": "native Pillow",
+  "version": "12.3.0",
+  "results": [
+    {
+      "file": "chromium-donut-256.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "1e501c005f1ef80b612848c5a554ba02fea85dc7505563c56e7bad723220be95",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            128,
+            12
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            128,
+            128
+          ],
+          "pixel": [
+            182,
+            215,
+            168
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-donut-2000.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "3f2bd3cbad27a05ce16aa04508ed0bbe2a21d97d8ba55f3f62935cae48bdf0f2",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            1000,
+            100
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            1000,
+            1000
+          ],
+          "pixel": [
+            182,
+            215,
+            168
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-donut-4096.jpg",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "919a6a567083a2ab0a9736e09c03537719a4da285c09a977e8d1ef597fa72ddc",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            2048,
+            204
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            2048,
+            2048
+          ],
+          "pixel": [
+            182,
+            215,
+            168
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-star-256.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "17249aa1aa9c6460cde5e9d69f3d2c7e5b2611b6c8c9fd03c5d7f86e76ffc0db",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            128,
+            128
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-star-2000.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "bb3981ff385d31e899584039b131a495b0b6875e09885a6dadb7b3d945040bb3",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            1000,
+            1000
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-star-4096.jpg",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "b39cd516b1191ea4291e666915dff27c26c97406972de3f9ca89291c3d5c93b3",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            2048,
+            2048
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-solid-256.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "a0c703033197995049d381ef80437e9507804bbc1ded610563177fafc307254b",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-solid-2000.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "b4dd74942a453a1cdbe8da7132ab10fd26f4e37785b7322524313751b87f2e08",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-solid-4096.jpg",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "64dc329fd3ed4c80164695982d14df4971df1b74c1a5e0965725f9cb60053e5e",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "chromium-title.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "d4676e269f22f20b91c3dfeafc9a1640605bc43e01c5e8167c40c229b6af02be",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-descenders.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "035ed4c300a1fdc51fa8903bc288ab6db294310d5c3e7c02986517416fe39e7f",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-glyphs.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "ace8bfcc851c1cd3c9cce30d5a63d4bfce0c00ead1c72cae85c4272d5e47b584",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-outline-zero.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "d6e93ae4511255895172ab455e4e8b852bfad06b634ae907b7b79401c0ecd336",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-outline-64.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "f0e558273eb6aeb1639c050a1b4ccd3ab4dc8a5a13f3a8b8e92de5bce2cce99f",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-date.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "3f5a615bed49dc6597c2cf7e7ac9b81e8604e4553b7691c9ca81577d6c5b1fa1",
+      "local": "2026:10:21 00:00:00",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-now.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "1e501c005f1ef80b612848c5a554ba02fea85dc7505563c56e7bad723220be95",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-seconds.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "4c93b049796ba8f9b7e563920e3cbff9d0260d151d55a4f44d3eb51bd58f0bde",
+      "local": "2026:10:21 12:34:56",
+      "offset": "+00:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-half.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "48e413594796a2b6e7e6b492057ac2a4c550acb50001e27fe7234cf649d98f49",
+      "local": "2026:10:21 00:00:00",
+      "offset": "+05:30",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-quarter.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "3a5e0ee162a354279a38d1671b1c92d075a8bd761ab18403b1fb6c1c22ad2653",
+      "local": "2026:10:21 00:00:00",
+      "offset": "+05:45",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-earlier.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "fb5a91148d520bf24cdd6668c12424ec1741f4619355e5a9572a4ed46fc9b35b",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-07:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-later.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "c47a5cd7d6e319a476c45eacabc18b5c7e2fe9f4a97993e81cffa426a692cb38",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-08:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-lower.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "06bdb12ae8113d0f228221b991ac32375fbf85853969da2f3e4e18c557f74ebd",
+      "local": "1900:01:01 00:00:00",
+      "offset": "+00:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-upper.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "45690f95db45ed4845681cbd7ed729c4ce3c1bbab67a797a2358f2949abe0e31",
+      "local": "2099:12:31 00:00:00",
+      "offset": "+00:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-local-ttf.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "b69f5472fe1767cf5b930730d24d1d0ace1ff02d94289e33a7205f098698e412",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-local-otf.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "62b478d1c71df6d0e1ee26395bc5141e3d176e4d8bf3aeb3f37973ff74aa41f6",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "chromium-metadata.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "19bc6c525ee7d1901a2c6b103b873f4f57b66b37db3bbcb4b5df8e37b3531262",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-donut-256.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "faf212782e0b205f1ce1f4898b3093fd409cc2f73e0b4c23b8390286ce3719fd",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            128,
+            12
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            128,
+            128
+          ],
+          "pixel": [
+            182,
+            215,
+            168
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-donut-2000.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "8425816cd5357f034eb0537d628d5386c9e41f47320f936233e2db97d6dbf164",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            1000,
+            100
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            1000,
+            1000
+          ],
+          "pixel": [
+            182,
+            215,
+            168
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-donut-4096.jpg",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "8e51710b2dc0938a1953c305a4382348fac2e364df9148cb1e42b2d32acec3d3",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            2048,
+            204
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            2048,
+            2048
+          ],
+          "pixel": [
+            182,
+            215,
+            168
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-star-256.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "d878566d21344054ea2776fbc51d9a12880a3a22cd4484f334a05026cb8dcd30",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            128,
+            128
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-star-2000.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "a132201706677045fa559fd6799e16b57a8f6a11948b89b36f3b26e650981ebf",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            1000,
+            1000
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-star-4096.jpg",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "fd78cd2070cc7e95d3d77d0c437d0ae78909a14bcb2c0535bcddcfdfa4120cac",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "point": [
+            2048,
+            2048
+          ],
+          "pixel": [
+            254,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-solid-256.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "a0c703033197995049d381ef80437e9507804bbc1ded610563177fafc307254b",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-solid-2000.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "b4dd74942a453a1cdbe8da7132ab10fd26f4e37785b7322524313751b87f2e08",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-solid-4096.jpg",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "64dc329fd3ed4c80164695982d14df4971df1b74c1a5e0965725f9cb60053e5e",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "webkit-title.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "64c5c10cc5fd72b8e5fd655e0a4e95667bd9271a7deae0eaee952ea92bfad7ec",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-descenders.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "dbd6681903d33bc322a184cad4e42bcbc015bb7e323ca0d997d405e1d9762a94",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-glyphs.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "3472357a505af71ea4c6c1b3e3e3e62e9c49eadc0c42682e666264d55da677a0",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-outline-zero.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "9298961e898c74913963769667028271b42704d3c0c1fe04c0fe887fd49f1cdf",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-outline-64.jpg",
+      "size": [
+        2000,
+        2000
+      ],
+      "sha256": "4c9a60456e4528dab5f208cbc9a270801c1da1fe184a82a09b4d13c5fbdb0f13",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-date.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "698bf26e837e4887de59acaf856e7674bc813f27d3ecbccc0091315334a6e9d2",
+      "local": "2026:10:21 00:00:00",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-now.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "faf212782e0b205f1ce1f4898b3093fd409cc2f73e0b4c23b8390286ce3719fd",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-seconds.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "f983b9b36b6c5dfea2c1aa269e0541d5f4541213f5f89f8c9e962b8f568d99e7",
+      "local": "2026:10:21 12:34:56",
+      "offset": "+00:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-half.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "7c7b16352f4b3ea30ca88360eabf9f84bd6d505130e65122b54d7edfe4d15012",
+      "local": "2026:10:21 00:00:00",
+      "offset": "+05:30",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-quarter.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "9470563e207c8624fd87353963bc238a4e6aea67b9e7ae8969f89555e6618001",
+      "local": "2026:10:21 00:00:00",
+      "offset": "+05:45",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-earlier.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "15c9374fb6fdd5aef0f49fa19741aad480621d67f6dd5c101407336f820f726a",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-07:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-later.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "224e547b6cffbf10df3f1218ba1a8d7338236cf28eb033ad04d5754009d12440",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-08:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-lower.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "21cafe8a3b01d73322e9c0915ba32c4c7a5a7030021f0a8cc41f933d178a6845",
+      "local": "1900:01:01 00:00:00",
+      "offset": "+00:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-upper.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "b3be103051350f5fc5bfb47b650b37e71e1a06627c662ffabd4de00f5e3b96bc",
+      "local": "2099:12:31 00:00:00",
+      "offset": "+00:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-local-ttf.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "9ed67bfc24ff8a9f754c4da0ce6498887b14ed27a8da44a0d4dddd4a0e62e9a2",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-local-otf.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "eabd542afa79f11dc20204ea9cdc306c475c11d28e5ae581f3bd337eafbd5261",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    },
+    {
+      "file": "webkit-metadata.jpg",
+      "size": [
+        256,
+        256
+      ],
+      "sha256": "2aec88b7771b80eb064b3e7e4cd3f408303ea46fad11db56c24178af7c11e0a8",
+      "local": "2026:10:21 00:05:06",
+      "offset": "+10:00",
+      "samples": [],
+      "pass": true
+    }
+  ]
+}

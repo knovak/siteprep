@@ -121,3 +121,19 @@ During the worst supported batch, interact with progress/Cancel and record input
 From a clean locked install, run implementation tests, the repository build once after final changes, scope and whitespace checks, and relevant browser checks. For visible UI changes take and display a screenshot after that final build under `screenshots/`. Retain a receipt mapping T1-T12 to pass/fail/unrun and the exact tested source; development tests do not establish production deployment.
 
 Check instructions for one marker, CSV schema/defaults, timezone/occurrence meaning, local fonts, session-only state, limits, deliberate ZIP-part retrieval and failure recovery. Verify build reproduction and font/runtime license notices. Confirm standalone output has no backend/account requirement and no runtime dependency into the initiative. Complete physical iOS and independent exported-file checks before claiming release readiness. Leave graduation/release for explicit user authorization; do not mark the initiative dormant.
+
+## October 21 verified pipeline receipt
+
+[The Phase 2 receipt](notes/verified-export-20261021.html) adds 45 settings/time
+tests, a Chromium/WebKit pipeline suite and 52 exported JPEGs independently
+decoded with exact metadata, dimensions, sampling and representative pixels.
+Local T2–T4 cases include valid TTF/OTF, glyph/fit/outline errors, six-tag and
+Software corruption/omission, invalid TIFF, truncated/duplicate-EXIF JPEGs,
+worker cancellation, stale messages, timeout and missing WASM. Both engines
+also pass default-size offline restart and local-font generation with no HTTP.
+
+The raw receipts retain the failed 256 MiB decoder ceiling and WebKit Blob
+worker cases separately from the final success. Browser/OS timezone-data and
+memory limits remain explicit. UI previews/downloads, CSV/parts/budgets,
+branded browser/device and full accessibility acceptance belong to later phases;
+these local checks do not close the physical-iOS `data:` item or T5–T12.

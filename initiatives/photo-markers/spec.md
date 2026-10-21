@@ -118,3 +118,20 @@ Initial performance targets at 2000 pixels are an updated draft preview within 5
 Test current stable Chrome and Safari on desktop, and Safari plus Chrome on a physical iOS device, recording OS/browser/device and browser engine where known. Emulation supplements rather than substitutes for the physical iOS download/memory check. Check keyboard access, visible labels/focus, row-error navigation, responsive layout and useful progress announcements. No physical-device success is presumed from desktop browser automation.
 
 The next item is **draft-plan**: write `plan.md` and `test-plan.md` with the comparison first, implementation milestones, test fixtures and graduation gates. Keep this specification reviewable before building the application. More shapes, local place-to-zone assistance, multiline/layout tools, persistent projects, offline installation and photo-library integrations are optional later work.
+
+## Implementation clarification — October 21, 2026
+
+The [verified export receipt](notes/verified-export-20261021.html) records the
+selected pipeline and local T2–T4 evidence. The 1900–2099 range is conditional
+on exact EXIF representation: a historical zone/date offset containing seconds
+is rejected with an explanation rather than rounded to `HH:MM`. Paris at
+1900-01-01 is a verified example. Users retain explicit control of date and
+timezone; the implementation never silently changes either to make it fit.
+
+The pipeline bundles Temporal support and uses the browser's Intl timezone
+rules without a remote service. Native byte decoding and retained-source
+module workers remove the earlier WebKit offline Blob dependencies in the
+tested desktop engines. Local TTF/OTF inputs have a 16 MiB preflight limit;
+font keys are immutable within the session. The 4096-pixel desktop checks and
+512 MiB decoder accounting ceiling do not establish physical-iOS memory safety
+or final supported device limits. The browser/device acceptance phase remains.

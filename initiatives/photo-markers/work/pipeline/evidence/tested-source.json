@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-21T09:04:26.936Z",
+  "base": "3f830b7fc1b6ecd9e1543b9d668e2532f25aa2dd",
+  "files": {
+    "build-inputs.json": {
+      "bytes": 839,
+      "sha256": "932a9999445bb55a01c9139f7c1f2386553860a46ba77d2468b20f16771ec2a5"
+    },
+    "build.mjs": {
+      "bytes": 2872,
+      "sha256": "f351c281048f0bb215a8ea8f51e267904e3b778158d0fcef6b793b4051c1b12f"
+    },
+    "client.mjs": {
+      "bytes": 7221,
+      "sha256": "9c93d51ea4069ad044054cb97c772b66aaff458213c0ad69e356e2e23840c847"
+    },
+    "errors.mjs": {
+      "bytes": 422,
+      "sha256": "89b6f10daf93b88c0c5a4467f33796be32759a19f20b3d956ef7f741387bcf54"
+    },
+    "metadata.mjs": {
+      "bytes": 2674,
+      "sha256": "30a8e3f709015f6c68a27a4b007fd7875106f12b77eaac9f78155524d3f8470a"
+    },
+    "package-lock.json": {
+      "bytes": 16543,
+      "sha256": "90a3be701947190702e29224dce5c289b87d356094e6a6c020fcc1422795f2a9"
+    },
+    "package.json": {
+      "bytes": 400,
+      "sha256": "692491ad105bce9e1780155e1def5bbfaaff94ff0c7c8c70a3ae7de19e4e66b0"
+    },
+    "render.mjs": {
+      "bytes": 5279,
+      "sha256": "38b18bfc37c58c9732356ed0c55071ffced20dba0e0747b0657a84b9143bdc4b"
+    },
+    "settings.mjs": {
+      "bytes": 8565,
+      "sha256": "fcad8329a4e778e329e2eb9465bc8a48e158c1618f140df586adb6b76ce0e015"
+    },
+    "test/browser.mjs": {
+      "bytes": 4868,
+      "sha256": "37bb460ac7e55ed2200b57e61c5e2d0e1ff06a053f05e4ebc638cf75fd90d0d4"
+    },
+    "test/probe.mjs": {
+      "bytes": 11448,
+      "sha256": "c775f03dae47b5971dc126a2231bdea7a36d02c3e9f6847e01eee6179cde93ee"
+    },
+    "test/settings.test.mjs": {
+      "bytes": 5679,
+      "sha256": "ef7bbd14b64dc4527e7c53900bd1a82907e3d8febcfab2a89049c31b17e126c4"
+    },
+    "test/verify-files.py": {
+      "bytes": 3066,
+      "sha256": "147f36dc542a4d31e67899f4fb756c8fc7ccb842935582179f2d32d077f67834"
+    },
+    "verify.mjs": {
+      "bytes": 3352,
+      "sha256": "72c5826df0f77e5f384b064d51e11d919532fc2c79b14f2acf05ea6a42bc2b3e"
+    },
+    "worker.mjs": {
+      "bytes": 3347,
+      "sha256": "63911587c818e7eefea087e3ee548afa378dc14fa6688e7c6bf9ddbf27cc7bde"
+    }
+  }
+}
