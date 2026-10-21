@@ -176,9 +176,11 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         cache: 'no-store',
       });
       if (!response.ok) throw new Error('Sign-in status is unavailable.');
-      const currentIdentity = (await response.json()) as NonNullable<
-        typeof identity
-      >;
+      const currentIdentity = (await response.json().catch(() => {
+        // JSON parsing can reject with a DOMException rather than SyntaxError
+        // in WebKit. Report the failed status stage consistently across engines.
+        throw new Error('Sign-in status is unavailable.');
+      })) as NonNullable<typeof identity>;
       if (
         !currentIdentity ||
         typeof currentIdentity.native !== 'boolean' ||

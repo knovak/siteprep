@@ -464,3 +464,14 @@ underline and retained keyboard focus. Test version 19 has passing targeted
 link/contrast checks and visible cues at both widths. Recorded sanitized
 before/after evidence; typecheck, 177 tests and Sites build passed. Broader
 Phase 6 remains actionable; no production release or business mutation.
+## 2026-10-21 — Anonymous startup interruption follow-up
+
+Probed four native-status failure modes at desktop/phone widths in anonymous
+Chromium and WebKit contexts on Test version 19: 14/16 passes, with two WebKit
+malformed-JSON messages exposing engine text. Normalized that parser failure;
+typecheck, 177 tests and six local three-engine resilience journeys pass. The
+supported Sites workflow built and saved version 20; automatic approval review
+rejected publication twice, including after Test-target evidence. Kept the
+deployment stamp at version 19 and retained the failed hosted receipt; explicit
+publication approval and hosted recheck remain. No sign-in, business write,
+message, restore, deletion or access change occurred in the hosted probe.

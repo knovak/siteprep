@@ -99,3 +99,13 @@ is open, four status failure modes while listing gatherings, recovery without a
 document reload and the existing identity-switch isolation checks. These are
 injected local failures; they do not establish an outage or Worker restart on
 the managed Site. The dated evidence JSON names the layer explicitly.
+
+The status JSON parser now normalizes a parse rejection to **Sign-in status is
+unavailable.** before the outer refresh handler. WebKit may reject malformed
+JSON with a DOMException, so checking only `instanceof SyntaxError` previously
+showed an engine-specific technical message. This changes the explanation;
+identity clearing, generation checks and retry behavior stay in the existing
+refresh path. The resilience matrix asserts the actionable text across all
+three engines. `FLINGS_EVIDENCE` selects a new receipt path without overwriting
+historical browser evidence. The anonymous hosted probe and its exact limits
+are documented in `notes/hosted-public-retry-20261021.md`.

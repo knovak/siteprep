@@ -19,6 +19,10 @@
 - Reopened member links clear prior identity; signed-out profile/invitation
   writes survive reload and restored fixture values are documented. The
   additional fictional message review remains unapproved.
+- Malformed native-status JSON now receives the same actionable explanation
+  across the local three-engine recovery matrix. The initial anonymous hosted
+  probe records 14/16 passes and the two WebKit message failures; hosted
+  confirmation of the correction remains open.
 
 ## Remaining work
 

@@ -672,3 +672,15 @@ link/contrast rules pass at 1280 × 800 and 430 × 932 on Test version 19, with
 no incomplete result. No sign-in, business mutation or message was attempted.
 This does not complete authenticated accessibility, screen-reader or the wider
 hosted matrix; Phase 6 and `verify-hosted-test` remain open.
+
+## Anonymous interruption and retry — October 21, 2026
+
+The [dated receipt](notes/hosted-public-retry-20261021.html) adds four injected
+status failures across two widths and two hosted browser engines. Initial
+version-19 outcomes are 14 passes and two failed WebKit error-text checks;
+all hosted mutations and background challenge POSTs were blocked. A focused
+parser correction passes 177 application tests, typecheck and six strengthened
+local Chromium/Firefox/WebKit journeys. Saved version 20 has not been deployed
+because automatic approval review rejected publication. No after-deployment
+pass, authenticated hosted recovery, real outage, restart or full T12
+acceptance is claimed.
