@@ -708,3 +708,14 @@ link/contrast rules pass at 1280 × 800 and 430 × 932 on Test version 19, with
 no incomplete result. No sign-in, business mutation or message was attempted.
 This does not complete authenticated accessibility, screen-reader or the wider
 hosted matrix; Phase 6 and `verify-hosted-test` remain open.
+
+## Anonymous startup retry — October 21, 2026
+
+[The public interruption receipt](notes/hosted-public-retry-20261021.html)
+records 14/16 passes on Test version 19 and two WebKit malformed-JSON error
+messages requiring correction. The parser now reports unavailable sign-in
+status consistently; all 177 application tests and six local three-engine
+recovery journeys pass. Site version 20 is built and saved, but automatic
+approval review rejected its publication operation even after rechecking the
+Test target. Test remains version 19; a post-publication hosted retry receipt
+is still required after explicit approval. Phase 6 remains open.
