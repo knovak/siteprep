@@ -1,0 +1,2841 @@
+{
+  "at": "2026-10-21T09:03:37.191Z",
+  "base": "3f830b7fc1b6ecd9e1543b9d668e2532f25aa2dd",
+  "engines": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/nested/export/test.html"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/probe.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/worker.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/mozjpeg_enc.wasm"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/fixture.otf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/worker.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/mozjpeg_enc.wasm"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        }
+      ],
+      "errors": [],
+      "suite": {
+        "records": [
+          {
+            "id": "donut-256",
+            "ms": 36.5,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "1e501c005f1ef80b612848c5a554ba02fea85dc7505563c56e7bad723220be95",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "donut-2000",
+            "ms": 443.2000002861023,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "3f2bd3cbad27a05ce16aa04508ed0bbe2a21d97d8ba55f3f62935cae48bdf0f2",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": null
+          },
+          {
+            "id": "donut-4096",
+            "ms": 1765.0999999046326,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 4096,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "919a6a567083a2ab0a9736e09c03537719a4da285c09a977e8d1ef597fa72ddc",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                2048,
+                2048
+              ],
+              "outerRadius": 2048,
+              "innerRadius": 1597.44
+            },
+            "layout": null
+          },
+          {
+            "id": "star-256",
+            "ms": 21.90000009536743,
+            "settings": {
+              "title": "",
+              "shape": "star",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "17249aa1aa9c6460cde5e9d69f3d2c7e5b2611b6c8c9fd03c5d7f86e76ffc0db",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "star",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": null,
+              "vertices": [
+                [
+                  128,
+                  0
+                ],
+                [
+                  161.85643053204646,
+                  81.40062112400302
+                ],
+                [
+                  249.73523408577967,
+                  88.44582472000673
+                ],
+                [
+                  182.78085533860084,
+                  145.79937887599698
+                ],
+                [
+                  203.23651229343656,
+                  231.55417527999327
+                ],
+                [
+                  128,
+                  185.6
+                ],
+                [
+                  52.76348770656345,
+                  231.55417527999327
+                ],
+                [
+                  73.21914466139916,
+                  145.79937887599698
+                ],
+                [
+                  6.264765914220334,
+                  88.44582472000675
+                ],
+                [
+                  94.14356946795354,
+                  81.40062112400304
+                ]
+              ]
+            },
+            "layout": null
+          },
+          {
+            "id": "star-2000",
+            "ms": 421.2999997138977,
+            "settings": {
+              "title": "",
+              "shape": "star",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "bb3981ff385d31e899584039b131a495b0b6875e09885a6dadb7b3d945040bb3",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "star",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": null,
+              "vertices": [
+                [
+                  1000.0000000000001,
+                  0
+                ],
+                [
+                  1264.5033635316129,
+                  635.9423525312736
+                ],
+                [
+                  1951.0565162951534,
+                  690.9830056250526
+                ],
+                [
+                  1427.975432332819,
+                  1139.0576474687264
+                ],
+                [
+                  1587.7852522924732,
+                  1809.0169943749474
+                ],
+                [
+                  1000,
+                  1450
+                ],
+                [
+                  412.21474770752695,
+                  1809.0169943749474
+                ],
+                [
+                  572.0245676671809,
+                  1139.0576474687264
+                ],
+                [
+                  48.94348370484636,
+                  690.9830056250528
+                ],
+                [
+                  735.4966364683871,
+                  635.9423525312736
+                ]
+              ]
+            },
+            "layout": null
+          },
+          {
+            "id": "star-4096",
+            "ms": 1519.5999999046326,
+            "settings": {
+              "title": "",
+              "shape": "star",
+              "size": 4096,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "b39cd516b1191ea4291e666915dff27c26c97406972de3f9ca89291c3d5c93b3",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "star",
+              "center": [
+                2048,
+                2048
+              ],
+              "outerRadius": 2048,
+              "innerRadius": null,
+              "vertices": [
+                [
+                  2048,
+                  0
+                ],
+                [
+                  2589.7028885127434,
+                  1302.4099379840484
+                ],
+                [
+                  3995.7637453724747,
+                  1415.1331955201076
+                ],
+                [
+                  2924.4936854176135,
+                  2332.7900620159517
+                ],
+                [
+                  3251.784196694985,
+                  3704.8668044798924
+                ],
+                [
+                  2048,
+                  2969.6
+                ],
+                [
+                  844.2158033050152,
+                  3704.8668044798924
+                ],
+                [
+                  1171.5063145823865,
+                  2332.7900620159517
+                ],
+                [
+                  100.23625462752534,
+                  1415.133195520108
+                ],
+                [
+                  1506.2971114872566,
+                  1302.4099379840486
+                ]
+              ]
+            },
+            "layout": null
+          },
+          {
+            "id": "solid-256",
+            "ms": 15.400000095367432,
+            "settings": {
+              "title": "",
+              "shape": "solid",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "a0c703033197995049d381ef80437e9507804bbc1ded610563177fafc307254b",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "solid",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": null
+            },
+            "layout": null
+          },
+          {
+            "id": "solid-2000",
+            "ms": 395.40000009536743,
+            "settings": {
+              "title": "",
+              "shape": "solid",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "b4dd74942a453a1cdbe8da7132ab10fd26f4e37785b7322524313751b87f2e08",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "solid",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": null
+            },
+            "layout": null
+          },
+          {
+            "id": "solid-4096",
+            "ms": 1559.4000000953674,
+            "settings": {
+              "title": "",
+              "shape": "solid",
+              "size": 4096,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "64dc329fd3ed4c80164695982d14df4971df1b74c1a5e0965725f9cb60053e5e",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "solid",
+              "center": [
+                2048,
+                2048
+              ],
+              "outerRadius": 2048,
+              "innerRadius": null
+            },
+            "layout": null
+          },
+          {
+            "id": "title",
+            "ms": 426.5,
+            "settings": {
+              "title": "Photo markers",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "d4676e269f22f20b91c3dfeafc9a1640605bc43e01c5e8167c40c229b6af02be",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 164,
+              "outline": 7,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                395.1380567550659,
+                929.8599967956543,
+                1604.861943244934,
+                1070.1400032043457
+              ]
+            }
+          },
+          {
+            "id": "descenders",
+            "ms": 420,
+            "settings": {
+              "title": "gyp",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "035ed4c300a1fdc51fa8903bc288ab6db294310d5c3e7c02986517416fe39e7f",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 664,
+              "outline": 29,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                391.6599712371826,
+                706.7279663085938,
+                1608.3400287628174,
+                1293.2720336914062
+              ]
+            }
+          },
+          {
+            "id": "glyphs",
+            "ms": 420.09999990463257,
+            "settings": {
+              "title": "Café Å Ω",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "ace8bfcc851c1cd3c9cce30d5a63d4bfce0c00ead1c72cae85c4272d5e47b584",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 290,
+              "outline": 13,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                392.93496322631836,
+                857.9499969482422,
+                1607.0650367736816,
+                1142.0500030517578
+              ]
+            }
+          },
+          {
+            "id": "outline-zero",
+            "ms": 419,
+            "settings": {
+              "title": "A",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": 0,
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "d6e93ae4511255895172ab455e4e8b852bfad06b634ae907b7b79401c0ecd336",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 848,
+              "outline": 0,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                707.4400024414062,
+                695.9920043945312,
+                1292.5599975585938,
+                1304.0079956054688
+              ]
+            }
+          },
+          {
+            "id": "outline-64",
+            "ms": 405,
+            "settings": {
+              "title": "A",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": 64,
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "f0e558273eb6aeb1639c050a1b4ccd3ab4dc8a5a13f3a8b8e92de5bce2cce99f",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 670,
+              "outline": 64,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                704.8500061035156,
+                695.8049926757812,
+                1295.1499938964844,
+                1304.1950073242188
+              ]
+            }
+          },
+          {
+            "id": "date",
+            "ms": 24,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "3f5a615bed49dc6597c2cf7e7ac9b81e8604e4553b7691c9ca81577d6c5b1fa1",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "now",
+            "ms": 13.900000095367432,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "1e501c005f1ef80b612848c5a554ba02fea85dc7505563c56e7bad723220be95",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "seconds",
+            "ms": 12,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 12:34:56",
+                "offset": "+00:00",
+                "instant": "2026-10-21T12:34:56Z",
+                "timezone": "UTC",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "4c93b049796ba8f9b7e563920e3cbff9d0260d151d55a4f44d3eb51bd58f0bde",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "half",
+            "ms": 12,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "timezone": "Asia/Kolkata",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "48e413594796a2b6e7e6b492057ac2a4c550acb50001e27fe7234cf649d98f49",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "quarter",
+            "ms": 12.599999904632568,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "timezone": "Asia/Kathmandu",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "3a5e0ee162a354279a38d1671b1c92d075a8bd761ab18403b1fb6c1c22ad2653",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "earlier",
+            "ms": 11.700000286102295,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "timezone": "America/Los_Angeles",
+                "occurrence": "earlier",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "fb5a91148d520bf24cdd6668c12424ec1741f4619355e5a9572a4ed46fc9b35b",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "later",
+            "ms": 11.699999809265137,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "timezone": "America/Los_Angeles",
+                "occurrence": "later",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "c47a5cd7d6e319a476c45eacabc18b5c7e2fe9f4a97993e81cffa426a692cb38",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "lower",
+            "ms": 11.800000190734863,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "1900:01:01 00:00:00",
+                "offset": "+00:00",
+                "instant": "1900-01-01T00:00:00Z",
+                "timezone": "UTC",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "06bdb12ae8113d0f228221b991ac32375fbf85853969da2f3e4e18c557f74ebd",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "upper",
+            "ms": 11.699999809265137,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2099:12:31 00:00:00",
+                "offset": "+00:00",
+                "instant": "2099-12-31T00:00:00Z",
+                "timezone": "UTC",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "45690f95db45ed4845681cbd7ed729c4ce3c1bbab67a797a2358f2949abe0e31",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "local-ttf",
+            "ms": 13.699999809265137,
+            "settings": {
+              "title": "Local TTF",
+              "shape": "donut",
+              "size": 256,
+              "font": "local-ttf",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "b69f5472fe1767cf5b930730d24d1d0ace1ff02d94289e33a7205f098698e412",
+            "font": {
+              "key": "local-ttf",
+              "name": "local-ttf",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": {
+              "fontSize": 34,
+              "outline": 1,
+              "box": [
+                155.7504,
+                77.8752
+              ],
+              "bounds": [
+                51.28202950954437,
+                113.9099988937378,
+                204.71797049045563,
+                142.0900011062622
+              ]
+            }
+          },
+          {
+            "id": "local-otf",
+            "ms": 13,
+            "settings": {
+              "title": "A",
+              "shape": "donut",
+              "size": 256,
+              "font": "local-otf",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "62b478d1c71df6d0e1ee26395bc5141e3d176e4d8bf3aeb3f37973ff74aa41f6",
+            "font": {
+              "key": "local-otf",
+              "name": "local-otf",
+              "sha256": "fb45266603cc6bb1e7ccbcb9133dcd7864131bd5e41597279d1f19b1876a1a03"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": {
+              "fontSize": 99,
+              "outline": 4,
+              "box": [
+                155.7504,
+                77.8752
+              ],
+              "bounds": [
+                94.29999923706055,
+                89.35000228881836,
+                161.70000076293945,
+                166.64999771118164
+              ]
+            }
+          },
+          {
+            "id": "metadata",
+            "ms": 14,
+            "settings": {
+              "title": "Metadata",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "19bc6c525ee7d1901a2c6b103b873f4f57b66b37db3bbcb4b5df8e37b3531262",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": {
+              "fontSize": 32,
+              "outline": 1,
+              "box": [
+                155.7504,
+                77.8752
+              ],
+              "bounds": [
+                52.088040828704834,
+                114.67999935150146,
+                203.91195917129517,
+                141.32000064849854
+              ]
+            }
+          }
+        ],
+        "failures": [
+          "The selected font has no glyph for 🦄.",
+          "Title and outline cannot fit at the minimum font size. Shorten the title or reduce the outline.",
+          "Title and outline cannot fit at the minimum font size. Shorten the title or reduce the outline.",
+          "Load the selected local font before generating.",
+          "Choose a supported TTF or OTF font.",
+          "Use a new session-local font key.",
+          "Use a new session-local font key.",
+          "Missing or mismatched Software.",
+          "Missing or mismatched Software.",
+          "Missing or mismatched ModifyDate.",
+          "Missing or mismatched ModifyDate.",
+          "Missing or mismatched DateTimeOriginal.",
+          "Missing or mismatched DateTimeOriginal.",
+          "Missing or mismatched CreateDate.",
+          "Missing or mismatched CreateDate.",
+          "Missing or mismatched OffsetTime.",
+          "Missing or mismatched OffsetTime.",
+          "Missing or mismatched OffsetTimeOriginal.",
+          "Missing or mismatched OffsetTimeOriginal.",
+          "Missing or mismatched OffsetTimeDigitized.",
+          "Missing or mismatched OffsetTimeDigitized.",
+          "JPEG needs a complete image and exactly one EXIF block.",
+          "Missing or mismatched ModifyDate.",
+          "JPEG needs a complete image and exactly one EXIF block.",
+          "Encoded JPEG already has EXIF; duplicate blocks are forbidden.",
+          "Encoder did not return a JPEG.",
+          "Frozen timestamp no longer matches its date, timezone and occurrence."
+        ],
+        "cancelled": 2,
+        "frozenHash": "067db90df0bdf31b0a108e3552dcf29450decdb5b8d9b9efcc3a9340ecf83056"
+      },
+      "offline": {
+        "single": true,
+        "restart": true,
+        "localFont": true
+      },
+      "offlineHttpAttempts": 0,
+      "missingWasm": "Missing local runtime asset: mozjpeg_enc.wasm",
+      "workerTimeout": "The export worker timed out. Retry the frozen job.",
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/nested/export/test.html"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/probe.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/worker.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/mozjpeg_enc.wasm"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/fixture.otf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/worker.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/mozjpeg_enc.wasm"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        }
+      ],
+      "errors": [],
+      "suite": {
+        "records": [
+          {
+            "id": "donut-256",
+            "ms": 49,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "faf212782e0b205f1ce1f4898b3093fd409cc2f73e0b4c23b8390286ce3719fd",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "donut-2000",
+            "ms": 439,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "8425816cd5357f034eb0537d628d5386c9e41f47320f936233e2db97d6dbf164",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": null
+          },
+          {
+            "id": "donut-4096",
+            "ms": 1436,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 4096,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "8e51710b2dc0938a1953c305a4382348fac2e364df9148cb1e42b2d32acec3d3",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                2048,
+                2048
+              ],
+              "outerRadius": 2048,
+              "innerRadius": 1597.44
+            },
+            "layout": null
+          },
+          {
+            "id": "star-256",
+            "ms": 10,
+            "settings": {
+              "title": "",
+              "shape": "star",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "d878566d21344054ea2776fbc51d9a12880a3a22cd4484f334a05026cb8dcd30",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "star",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": null,
+              "vertices": [
+                [
+                  128,
+                  0
+                ],
+                [
+                  161.85643053204646,
+                  81.40062112400302
+                ],
+                [
+                  249.73523408577967,
+                  88.44582472000673
+                ],
+                [
+                  182.78085533860084,
+                  145.79937887599698
+                ],
+                [
+                  203.23651229343656,
+                  231.55417527999327
+                ],
+                [
+                  128,
+                  185.6
+                ],
+                [
+                  52.76348770656345,
+                  231.55417527999327
+                ],
+                [
+                  73.21914466139916,
+                  145.79937887599698
+                ],
+                [
+                  6.264765914220334,
+                  88.44582472000675
+                ],
+                [
+                  94.14356946795354,
+                  81.40062112400304
+                ]
+              ]
+            },
+            "layout": null
+          },
+          {
+            "id": "star-2000",
+            "ms": 316.00000000000045,
+            "settings": {
+              "title": "",
+              "shape": "star",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "a132201706677045fa559fd6799e16b57a8f6a11948b89b36f3b26e650981ebf",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "star",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": null,
+              "vertices": [
+                [
+                  1000.0000000000001,
+                  0
+                ],
+                [
+                  1264.5033635316129,
+                  635.9423525312736
+                ],
+                [
+                  1951.0565162951534,
+                  690.9830056250526
+                ],
+                [
+                  1427.975432332819,
+                  1139.0576474687264
+                ],
+                [
+                  1587.7852522924732,
+                  1809.0169943749474
+                ],
+                [
+                  1000,
+                  1450
+                ],
+                [
+                  412.21474770752695,
+                  1809.0169943749474
+                ],
+                [
+                  572.0245676671809,
+                  1139.0576474687264
+                ],
+                [
+                  48.94348370484636,
+                  690.9830056250528
+                ],
+                [
+                  735.4966364683871,
+                  635.9423525312736
+                ]
+              ]
+            },
+            "layout": null
+          },
+          {
+            "id": "star-4096",
+            "ms": 1302.9999999999995,
+            "settings": {
+              "title": "",
+              "shape": "star",
+              "size": 4096,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "fd78cd2070cc7e95d3d77d0c437d0ae78909a14bcb2c0535bcddcfdfa4120cac",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "star",
+              "center": [
+                2048,
+                2048
+              ],
+              "outerRadius": 2048,
+              "innerRadius": null,
+              "vertices": [
+                [
+                  2048,
+                  0
+                ],
+                [
+                  2589.7028885127434,
+                  1302.4099379840484
+                ],
+                [
+                  3995.7637453724747,
+                  1415.1331955201076
+                ],
+                [
+                  2924.4936854176135,
+                  2332.7900620159517
+                ],
+                [
+                  3251.784196694985,
+                  3704.8668044798924
+                ],
+                [
+                  2048,
+                  2969.6
+                ],
+                [
+                  844.2158033050152,
+                  3704.8668044798924
+                ],
+                [
+                  1171.5063145823865,
+                  2332.7900620159517
+                ],
+                [
+                  100.23625462752534,
+                  1415.133195520108
+                ],
+                [
+                  1506.2971114872566,
+                  1302.4099379840486
+                ]
+              ]
+            },
+            "layout": null
+          },
+          {
+            "id": "solid-256",
+            "ms": 7,
+            "settings": {
+              "title": "",
+              "shape": "solid",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "a0c703033197995049d381ef80437e9507804bbc1ded610563177fafc307254b",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "solid",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": null
+            },
+            "layout": null
+          },
+          {
+            "id": "solid-2000",
+            "ms": 324,
+            "settings": {
+              "title": "",
+              "shape": "solid",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "b4dd74942a453a1cdbe8da7132ab10fd26f4e37785b7322524313751b87f2e08",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "solid",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": null
+            },
+            "layout": null
+          },
+          {
+            "id": "solid-4096",
+            "ms": 1236,
+            "settings": {
+              "title": "",
+              "shape": "solid",
+              "size": 4096,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "64dc329fd3ed4c80164695982d14df4971df1b74c1a5e0965725f9cb60053e5e",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "solid",
+              "center": [
+                2048,
+                2048
+              ],
+              "outerRadius": 2048,
+              "innerRadius": null
+            },
+            "layout": null
+          },
+          {
+            "id": "title",
+            "ms": 348.9999999999991,
+            "settings": {
+              "title": "Photo markers",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "64c5c10cc5fd72b8e5fd655e0a4e95667bd9271a7deae0eaee952ea92bfad7ec",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 162,
+              "outline": 7,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                392.06103515625,
+                930.640625,
+                1607.93896484375,
+                1069.359375
+              ]
+            }
+          },
+          {
+            "id": "descenders",
+            "ms": 352,
+            "settings": {
+              "title": "gyp",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "dbd6681903d33bc322a184cad4e42bcbc015bb7e323ca0d997d405e1d9762a94",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 632,
+              "outline": 28,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                392.1400146484375,
+                720.46875,
+                1607.8599853515625,
+                1279.53125
+              ]
+            }
+          },
+          {
+            "id": "glyphs",
+            "ms": 557.0000000000009,
+            "settings": {
+              "title": "Café Å Ω",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "3472357a505af71ea4c6c1b3e3e3e62e9c49eadc0c42682e666264d55da677a0",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 284,
+              "outline": 12,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                393.1619873046875,
+                861.6328125,
+                1606.8380126953125,
+                1138.3671875
+              ]
+            }
+          },
+          {
+            "id": "outline-zero",
+            "ms": 341,
+            "settings": {
+              "title": "A",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": 0,
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "9298961e898c74913963769667028271b42704d3c0c1fe04c0fe887fd49f1cdf",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 848,
+              "outline": 0,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                707.4400024414062,
+                695.9921875,
+                1292.5599975585938,
+                1304.0078125
+              ]
+            }
+          },
+          {
+            "id": "outline-64",
+            "ms": 332,
+            "settings": {
+              "title": "A",
+              "shape": "donut",
+              "size": 2000,
+              "font": "noto-bold",
+              "outline_width": 64,
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "4c9a60456e4528dab5f208cbc9a270801c1da1fe184a82a09b4d13c5fbdb0f13",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                1000,
+                1000
+              ],
+              "outerRadius": 1000,
+              "innerRadius": 780
+            },
+            "layout": {
+              "fontSize": 670,
+              "outline": 64,
+              "box": [
+                1216.8000000000002,
+                608.4000000000001
+              ],
+              "bounds": [
+                704.8500061035156,
+                695.8125,
+                1295.1499938964844,
+                1304.1875
+              ]
+            }
+          },
+          {
+            "id": "date",
+            "ms": 12.00000000000091,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "698bf26e837e4887de59acaf856e7674bc813f27d3ecbccc0091315334a6e9d2",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "now",
+            "ms": 11,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "faf212782e0b205f1ce1f4898b3093fd409cc2f73e0b4c23b8390286ce3719fd",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "seconds",
+            "ms": 12,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 12:34:56",
+                "offset": "+00:00",
+                "instant": "2026-10-21T12:34:56Z",
+                "timezone": "UTC",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "f983b9b36b6c5dfea2c1aa269e0541d5f4541213f5f89f8c9e962b8f568d99e7",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "half",
+            "ms": 12,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "timezone": "Asia/Kolkata",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "7c7b16352f4b3ea30ca88360eabf9f84bd6d505130e65122b54d7edfe4d15012",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "quarter",
+            "ms": 11,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "timezone": "Asia/Kathmandu",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "9470563e207c8624fd87353963bc238a4e6aea67b9e7ae8969f89555e6618001",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "earlier",
+            "ms": 11.00000000000091,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "timezone": "America/Los_Angeles",
+                "occurrence": "earlier",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "15c9374fb6fdd5aef0f49fa19741aad480621d67f6dd5c101407336f820f726a",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "later",
+            "ms": 11,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "timezone": "America/Los_Angeles",
+                "occurrence": "later",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "224e547b6cffbf10df3f1218ba1a8d7338236cf28eb033ad04d5754009d12440",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "lower",
+            "ms": 11,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "1900:01:01 00:00:00",
+                "offset": "+00:00",
+                "instant": "1900-01-01T00:00:00Z",
+                "timezone": "UTC",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "21cafe8a3b01d73322e9c0915ba32c4c7a5a7030021f0a8cc41f933d178a6845",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "upper",
+            "ms": 11,
+            "settings": {
+              "title": "",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2099:12:31 00:00:00",
+                "offset": "+00:00",
+                "instant": "2099-12-31T00:00:00Z",
+                "timezone": "UTC",
+                "occurrence": "",
+                "source": "explicit"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "b3be103051350f5fc5bfb47b650b37e71e1a06627c662ffabd4de00f5e3b96bc",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": null
+          },
+          {
+            "id": "local-ttf",
+            "ms": 14,
+            "settings": {
+              "title": "Local TTF",
+              "shape": "donut",
+              "size": 256,
+              "font": "local-ttf",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "9ed67bfc24ff8a9f754c4da0ce6498887b14ed27a8da44a0d4dddd4a0e62e9a2",
+            "font": {
+              "key": "local-ttf",
+              "name": "local-ttf",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": {
+              "fontSize": 33,
+              "outline": 1,
+              "box": [
+                155.7504,
+                77.8752
+              ],
+              "bounds": [
+                51.198997497558594,
+                114.296875,
+                204.8010025024414,
+                141.703125
+              ]
+            }
+          },
+          {
+            "id": "local-otf",
+            "ms": 12,
+            "settings": {
+              "title": "A",
+              "shape": "donut",
+              "size": 256,
+              "font": "local-otf",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "eabd542afa79f11dc20204ea9cdc306c475c11d28e5ae581f3bd337eafbd5261",
+            "font": {
+              "key": "local-otf",
+              "name": "local-otf",
+              "sha256": "fb45266603cc6bb1e7ccbcb9133dcd7864131bd5e41597279d1f19b1876a1a03"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": {
+              "fontSize": 99,
+              "outline": 4,
+              "box": [
+                155.7504,
+                77.8752
+              ],
+              "bounds": [
+                94.29999923706055,
+                89.3515625,
+                161.70000076293945,
+                166.6484375
+              ]
+            }
+          },
+          {
+            "id": "metadata",
+            "ms": 13,
+            "settings": {
+              "title": "Metadata",
+              "shape": "donut",
+              "size": 256,
+              "font": "noto-bold",
+              "outline_width": "auto",
+              "background_color": "#000000",
+              "shape_color": "#ff0000",
+              "center_color": "#b6d7a8",
+              "text_color": "#000000",
+              "outline_color": "#ffffff",
+              "timestamp": {
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "timezone": "Australia/Brisbane",
+                "occurrence": "",
+                "source": "now"
+              },
+              "capturedNow": "2026-10-20T14:05:06Z",
+              "timezoneFallback": false
+            },
+            "sha256": "2aec88b7771b80eb064b3e7e4cd3f408303ea46fad11db56c24178af7c11e0a8",
+            "font": {
+              "key": "noto-bold",
+              "name": "noto-bold",
+              "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+            },
+            "geometry": {
+              "shape": "donut",
+              "center": [
+                128,
+                128
+              ],
+              "outerRadius": 128,
+              "innerRadius": 99.84
+            },
+            "layout": {
+              "fontSize": 31,
+              "outline": 1,
+              "box": [
+                155.7504,
+                77.8752
+              ],
+              "bounds": [
+                51.871498107910156,
+                115.078125,
+                204.12850189208984,
+                140.921875
+              ]
+            }
+          }
+        ],
+        "failures": [
+          "The selected font has no glyph for 🦄.",
+          "Title and outline cannot fit at the minimum font size. Shorten the title or reduce the outline.",
+          "Title and outline cannot fit at the minimum font size. Shorten the title or reduce the outline.",
+          "Load the selected local font before generating.",
+          "Choose a supported TTF or OTF font.",
+          "Use a new session-local font key.",
+          "Use a new session-local font key.",
+          "Missing or mismatched Software.",
+          "Missing or mismatched Software.",
+          "Missing or mismatched ModifyDate.",
+          "Missing or mismatched ModifyDate.",
+          "Missing or mismatched DateTimeOriginal.",
+          "Missing or mismatched DateTimeOriginal.",
+          "Missing or mismatched CreateDate.",
+          "Missing or mismatched CreateDate.",
+          "Missing or mismatched OffsetTime.",
+          "Missing or mismatched OffsetTime.",
+          "Missing or mismatched OffsetTimeOriginal.",
+          "Missing or mismatched OffsetTimeOriginal.",
+          "Missing or mismatched OffsetTimeDigitized.",
+          "Missing or mismatched OffsetTimeDigitized.",
+          "JPEG needs a complete image and exactly one EXIF block.",
+          "Missing or mismatched ModifyDate.",
+          "JPEG needs a complete image and exactly one EXIF block.",
+          "Encoded JPEG already has EXIF; duplicate blocks are forbidden.",
+          "Encoder did not return a JPEG.",
+          "Frozen timestamp no longer matches its date, timezone and occurrence."
+        ],
+        "cancelled": 2,
+        "frozenHash": "02f74a424e85e7ebc80fdf4509b848bbc35bf5504122bfbe3a8ae56027dd1bb1"
+      },
+      "offline": {
+        "single": true,
+        "restart": true,
+        "localFont": true
+      },
+      "offlineHttpAttempts": 0,
+      "missingWasm": "Missing local runtime asset: mozjpeg_enc.wasm",
+      "workerTimeout": "The export worker timed out. Retry the frozen job.",
+      "pass": true
+    }
+  ],
+  "limits": "Desktop Playwright engines; branded Safari/Chrome and physical iOS are unrun."
+}

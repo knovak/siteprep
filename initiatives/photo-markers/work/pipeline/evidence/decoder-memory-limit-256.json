@@ -1,0 +1,73 @@
+{
+  "at": "2026-10-21T08:43:20.399Z",
+  "base": "3f830b7fc1b6ecd9e1543b9d668e2532f25aa2dd",
+  "engines": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/nested/export/test.html"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/probe.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/worker.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/mozjpeg_enc.wasm"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "http://127.0.0.1:65250/8a9cf294-ffb0-4a30-b10b-4410be6096f0"
+        }
+      ],
+      "errors": [],
+      "pass": false,
+      "error": "page.evaluate: ExportError: maxMemoryUsageInMB limit exceeded by at least 49MB\n    at promise.worker.onmessage (http://127.0.0.1:65250/nested/export/probe.js:6403:46)\n    at /Users/ken/.codex/worktrees/photo-markers-verified-export/siteprep/initiatives/photo-markers/work/pipeline/test/browser.mjs:27:31"
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/nested/export/test.html"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/probe.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/worker.js"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/mozjpeg_enc.wasm"
+        },
+        {
+          "method": "GET",
+          "path": "/nested/export/NotoSans-Bold.ttf"
+        },
+        {
+          "method": "GET",
+          "path": "http://127.0.0.1:65250/9d8fe697-c7e6-4e32-b512-f3edbaa0fc43"
+        }
+      ],
+      "errors": [],
+      "pass": false,
+      "error": "page.evaluate: ExportError: maxMemoryUsageInMB limit exceeded by at least 49MB\n    at /Users/ken/.codex/worktrees/photo-markers-verified-export/siteprep/initiatives/photo-markers/work/pipeline/test/browser.mjs:27:31"
+    }
+  ],
+  "limits": "Desktop Playwright engines; branded Safari/Chrome and physical iOS are unrun."
+}

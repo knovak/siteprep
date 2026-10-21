@@ -1,0 +1,11 @@
+{
+  "engine": "Playwright WebKit 26.0",
+  "scope": "Minimal localhost worker startup after context.setOffline(true)",
+  "results": [
+    {"kind":"data","type":"classic","secure":true,"subtle":true},
+    {"kind":"data","type":"module","secure":true,"subtle":true},
+    {"kind":"blob","type":"classic","error":"worker error"},
+    {"kind":"blob","type":"module","error":"worker error"}
+  ],
+  "limit": "A loader diagnosis, not branded Safari or physical iOS acceptance. The complete pipeline is tested separately."
+}

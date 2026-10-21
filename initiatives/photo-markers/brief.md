@@ -6,18 +6,17 @@
 
 ## Done
 
-Two WASM export prototypes have measured Chromium/WebKit comparisons with
-frozen fixtures; a separate native reader verifies all 40 archived JPEGs and
-their timestamp metadata. Browser drawing plus the smaller MozJPEG WASM path
-is the documented provisional implementation choice. The comparison retains
-its failures, reproduction commands and explicit offline-test limits.
+The selected serial WASM export core resolves frozen settings/time, validates
+fonts, draws all three designs and independently verifies final JPEG bytes.
+Forty-five settings tests and both desktop engine suites pass; a native reader
+verifies all 52 retained JPEGs, and offline worker restart passes in both engines.
 
 ## Remaining work
 
-Build the selected serial export pipeline, strict settings/time resolution,
-font validation and independent verification; then add the single editor and
-CSV batch/download management. Complete the browser, offline, accessibility
-and resource-limit acceptance matrix before proposing static graduation.
+Build the single-image editor with effective time, a verified preview and
+deliberate download; then add CSV batch/download management. Complete the
+browser, offline, accessibility and resource-limit acceptance matrix before
+proposing static graduation.
 
 ## Optional later
 

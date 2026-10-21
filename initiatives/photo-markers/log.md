@@ -23,3 +23,7 @@ Critiqued the merged plan; clarified prototype scope, frozen timestamps and row 
 ## 2026-10-21 — Compare measured WASM export prototypes and select a verified implementation path
 
 Compared two pinned WASM export prototypes in Chromium and WebKit; independently verified 40 JPEGs and selected browser drawing/MozJPEG provisionally. Retained WebKit offline-emulation failure and physical-iOS acceptance gap; next serial pipeline seeded from Phase 2.
+
+## 2026-10-21 — Build the selected serial WASM export pipeline with strict settings, time resolution and independent verification
+
+Built the selected serial WASM export core with strict frozen time/settings, local fonts and independent read-back. 45 settings tests, both desktop engine suites and 52 native JPEG oracles pass, including offline restart. Seeded the single-image editor from Phase 3; physical-device evidence remains open.

@@ -1,0 +1,26 @@
+{
+  "fontCommit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "lockSha256": "90a3be701947190702e29224dce5c289b87d356094e6a6c020fcc1422795f2a9",
+  "files": {
+    "client.js": {
+      "bytes": 251321,
+      "sha256": "a787d549201accf3124257062cd050331d5374271aa08ee9d3ff8649d72d83c0"
+    },
+    "worker.js": {
+      "bytes": 1044707,
+      "sha256": "61b8b3024f655a3b0d61b0ecbdb49c539e1e818605c6fc5dc5d38aa5bac7e19e"
+    },
+    "probe.js": {
+      "bytes": 403397,
+      "sha256": "065f35a5774082da3862d15e4dd517a0053f862e79c154138659930c858e4168"
+    },
+    "mozjpeg_enc.wasm": {
+      "bytes": 251524,
+      "sha256": "24d4177f1c4963e2058b107189249651c61fdef125570e79b1dfb63c8bb49326"
+    },
+    "NotoSans-Bold.ttf": {
+      "bytes": 575740,
+      "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a"
+    }
+  }
+}

@@ -97,3 +97,18 @@ At 2000 pixels the initial targets remain: draft preview within 500 ms after ini
 Before graduation, build from a clean lockfile install, serve the output from its intended nested URL, disconnect after all required static assets load, and complete one marker plus CSV/ZIP retrieval. Check that runtime paths resolve within the output or graduated shared libraries, with no dependency on `initiatives/`, a development server, remote fonts or a CDN at generation time. Include font/dependency notices, CSV/defaults and time-meaning instructions, supported/tested limits and recovery/download instructions.
 
 Prepare production graduation only when the required evidence is complete and a person asks for it. Do not create a demo deployment or change `outputs[]` as part of this planning item. Photo-library import/order validation, extra designs, location-to-zone lookup, persistent projects, offline installation and integrations remain deferred as specified.
+
+## Phase 2 receipt — October 21, 2026
+
+[The verified export core](notes/verified-export-20261021.html) completes the
+local pipeline increment: strict frozen settings/time, all three designs,
+font/glyph/fit validation, serial WASM encoding, explicit metadata and two
+independent final-file verification layers. Forty-five settings tests, two
+desktop browser-engine suites and 52 independently decoded JPEGs pass.
+Default-size offline export, termination/retry and local fonts pass in both
+engines using retained-source module workers and byte decoding.
+
+Build the Phase 3 single-image editor next. Its preview must consume verified
+JPEG bytes and keep previous results labeled/obtainable; the pipeline does not
+implement those UI or download controls yet. Physical-device, full browser,
+resource/batch/CSV and graduation acceptance remain as listed above.

@@ -6,14 +6,6 @@
   "outputs": [],
   "todo": [
     {
-      "id": "build-verified-export",
-      "title": "Build the selected serial WASM export pipeline with strict settings, time resolution and independent verification",
-      "state": "actionable",
-      "value": "high",
-      "effort": "large",
-      "advances_stage": false
-    },
-    {
       "id": "verify-physical-ios",
       "title": "Record physical iOS export, offline and Files retrieval acceptance",
       "state": "blocked",
@@ -21,11 +13,19 @@
       "effort": "large",
       "advances_stage": false,
       "blocked_by": "data:physical Safari and Chrome on iOS findings for JPEG and ZIP retrieval in Files, disconnected exports, memory limits and timing; desktop engine comparison is provisional"
+    },
+    {
+      "id": "build-marker-editor",
+      "title": "Build the single-image editor with effective time, verified preview and deliberate JPEG download",
+      "state": "actionable",
+      "value": "high",
+      "effort": "large",
+      "advances_stage": false
     }
   ],
   "brief": {
-    "generated_at": "2026-10-21T07:38:48Z",
-    "commit": "c8e11e905dbcd55ed8e0e42d33b903c2510d44e8",
-    "digest": "f4791fec50ce61e256d95ae0b2e479e781d2626d"
+    "generated_at": "2026-10-21T09:04:53Z",
+    "commit": "3384c60213c447200dbdf1a1dbc33e25252d55c8",
+    "digest": "2db097694b9f5b3157356684bc5b267c4b6cd7bd"
   }
 }
