@@ -6,15 +6,15 @@
 
 ## Done
 
-The selected serial WASM export core resolves frozen settings/time, validates
-fonts, draws all three designs and independently verifies final JPEG bytes.
-Forty-five settings tests and both desktop engine suites pass; a native reader
-verifies all 52 retained JPEGs, and offline worker restart passes in both engines.
+The single-image editor provides all three designs, colors/local fonts,
+effective time, repeated-hour choices, labeled drafts and verified JPEG
+previews/downloads. Both desktop engine journeys pass, including offline work,
+cancellation and frozen retry; native checks verify 16 downloaded editor files
+alongside the 52 core JPEGs and 45 settings tests.
 
 ## Remaining work
 
-Build the single-image editor with effective time, a verified preview and
-deliberate download; then add CSV batch/download management. Complete the
+Add CSV review, frozen batch jobs, ZIP parts and manifests. Complete the
 browser, offline, accessibility and resource-limit acceptance matrix before
 proposing static graduation.
 
