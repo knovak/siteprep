@@ -684,3 +684,12 @@ local Chromium/Firefox/WebKit journeys. Saved version 20 has not been deployed
 because automatic approval review rejected publication. No after-deployment
 pass, authenticated hosted recovery, real outage, restart or full T12
 acceptance is claimed.
+
+## Approved version-20 hosted recheck — October 21, 2026
+
+After explicit user approval, saved version 20 was published to the existing
+public Test site. `notes/hosted-public-retry-after-20261021.json` passes all
+16 anonymous interruption/retry cases at desktop and phone widths in Chromium
+and WebKit, including the corrected malformed-JSON message and keyboard retry.
+No Flings mutation or sign-in occurred. This closes the narrow public-startup
+finding, without changing the wider T12/Phase 6 limits above.

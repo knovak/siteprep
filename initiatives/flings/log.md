@@ -475,3 +475,13 @@ rejected publication twice, including after Test-target evidence. Kept the
 deployment stamp at version 19 and retained the failed hosted receipt; explicit
 publication approval and hosted recheck remain. No sign-in, business write,
 message, restore, deletion or access change occurred in the hosted probe.
+
+## 2026-10-21 — Approved saved-version publication and anonymous retry acceptance
+
+The user explicitly approved the hosting publish operation for saved version 20
+on the existing public Flings Test site. Publication succeeded at
+2026-10-21T08:26:53.929422Z; access revision 2 was preserved. All 16 fresh
+anonymous Chromium/WebKit status-failure and keyboard-retry checks passed,
+closing the two WebKit malformed-JSON findings. Recorded the actual deployment
+and retained the original failed receipt. No hosted business write, sign-in,
+message, restore, deletion or audience change occurred; Phase 6 remains open.

@@ -81,3 +81,27 @@ user approval for that operation, then a fresh hosted receipt.
 
 The parent `verify-hosted-test` item remains actionable. No real message,
 restore, deletion or audience change occurred; the wider Phase 6 matrix is open.
+
+## Approved publication and hosted recheck — October 21, 2026
+
+The user explicitly approved publishing saved version 20 to the existing public
+Flings Test site using the hosting publish operation. The exact saved source
+and archive above were published without rebuilding. Deployment
+`appgdep_6ad8773d79108191954eee78a0ad24c3` succeeded at
+`2026-10-21T08:26:53.929422Z` (18:26:53 Australia/Brisbane), with environment
+revision 2. Public access and access revision 2 were preserved. The deployment
+record now identifies version 20; the earlier hold remains historical context.
+
+`hosted-public-retry-after-20261021.json` records **16/16 passes** on the
+published version: network denial, HTTP 503, malformed JSON and invalid status
+shape at both widths in Chromium and WebKit. Each failure hides unverified
+identity and leaves an enabled retry; keyboard Enter restores the actual
+signed-out denial/sign-in link, and documents fit horizontally. The two
+previously failing WebKit malformed-JSON cases now report **Sign-in status is
+unavailable.** No non-read Flings request was attempted; background platform
+challenge POSTs remained blocked and their paths redacted.
+
+This closes the targeted public startup/retry finding. It does not complete
+authenticated recovery, independent accounts, screen-reader acceptance,
+provider outage/restart or managed recovery. The existing Phase 6 todo stays
+actionable. Production remains unreleased.
