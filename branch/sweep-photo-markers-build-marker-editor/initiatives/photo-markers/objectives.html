@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objectives — Photo markers</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Objectives — Photo markers</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Photo markers</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Objectives</h2>
+    </div>
+    <div class="card-content">
+<h2>Objectives</h2>
+<p>Drafted 2026-10-20 from the <a href="wish.html">wish</a> and <a href="background.html">supplied background</a>. Revised after the user&#39;s <a href="https://github.com/knovak/siteprep/pull/609#pullrequestreview-5583172159">review of PR #609</a>; the choices and remaining questions are recorded in <a href="decisions.html">decisions</a>.</p>
+<h3>Purpose</h3>
+<p>Let someone create square photo markers, choose when each marker belongs in a photo timeline, and download the finished JPEGs from a browser. A marker can serve as a divider, section marker, title card, or chapter image between groups of photos.</p>
+<p>The first useful release combines an interactive editor with individual and batch delivery. The supplied Python generator establishes the initial image parameters. The web application adds the selected shapes, interactive controls, and CSV workflow while keeping image processing in the user&#39;s browser.</p>
+<h3>What done means</h3>
+<div class="table-scroll"><table><thead><tr><th>Objective</th><th>Observable acceptance evidence</th></tr></thead><tbody><tr><td><strong>1. Create square JPEG markers.</strong> Generate JPEG files that open and display correctly, with the chosen appearance and readable title text when supplied. Offer the existing donut, a star, and a solid-color square with no inner shape.</td><td>Export all three designs with several color combinations, including a plain solid-color marker without a title. An independent image reader opens each file and confirms JPEG format and equal width and height. Short and long titles fit without unintended clipping; unsupported text or an unfit title produces a correction request.</td></tr><tr><td><strong>2. Make design interactive.</strong> Let the user choose among the three shapes and change their applicable colors, including the background and text, without code or command-line steps. Show a preview that represents the eventual image.</td><td>Changes appear in the preview, and the exported image matches its layout, shapes, colors, and text within normal JPEG compression differences. Controls are labeled, keyboard accessible, and usable in Chrome and Safari on desktop and iOS.</td></tr><tr><td><strong>3. Preserve intentional photo timing.</strong> Allow date/time to be entered or omitted using the defaults below. Show the effective timezone and write the resulting date/time consistently into the JPEG. A successful export must contain the required metadata.</td><td>Independent metadata read-back verifies <code>DateTimeOriginal</code>, <code>DateTimeDigitized</code>, and <code>DateTime</code> for individual and batch exports. Cover both fields blank, a date with no time, explicit date/time, a date boundary, and a selected timezone different from the browser&#39;s. Nonblank invalid values and failed metadata writing are visible errors; a file without required timestamps is never presented as a successful marker.</td></tr><tr><td><strong>4. Make one image easy to obtain.</strong> A user can enter a title, choose appearance and time or accept their defaults, inspect the preview, and save a JPEG in one workflow.</td><td>Complete this workflow in a supported browser without Python, a local command-line tool, an account, credentials, or a processing service. The saved file contains the intended image and metadata.</td></tr><tr><td><strong>5. Make CSV batches complete and understandable.</strong> A user can import and review a CSV, generate multiple markers, reuse a style, and adjust individual entries. Optional columns and blank optional values use sensible, visible defaults.</td><td>A batch with at least ten entries covers repeated titles, explicit dates/times, date-only rows, omitted date/time, omitted style columns, and an invalid nonblank value. Every successfully generated marker is identifiable and obtainable, filenames are distinct, and no item is silently dropped or overwritten. Invalid entries are identified before generation; runtime failures identify the affected entry and allow recovery without losing the user&#39;s batch.</td></tr><tr><td><strong>6. Process locally using WASM.</strong> Use WASM for a substantive part of generating the actual exported images or their required metadata, with all image processing performed in the user&#39;s browser. The implementation will discover and evaluate the WASM approach.</td><td>Inspection and a repeatable browser test show that the export path uses WASM and makes no processing requests or uploads of entered text, batch data, or images. After the application&#39;s required static assets have loaded, editing and generation work with the network disconnected. Loading static assets initially is allowed; offline installation and caching are separate choices.</td></tr><tr><td><strong>7. Ship as a portable static demo.</strong> The finished application can graduate into <code>demos/</code> and work under the repo&#39;s static hosting arrangement.</td><td>Serve the final output from its intended subdirectory, load its WASM and other assets successfully, and complete single and batch exports. All runtime dependencies are in the published demo or graduated shared libraries. No runtime URL points into <code>initiatives/</code>, and no application backend, API key, or server-side image generator is required.</td></tr></tbody></table></div>
+<h3>Date, time, and timezone defaults</h3>
+<div class="table-scroll"><table><thead><tr><th>User input</th><th>Effective date/time</th></tr></thead><tbody><tr><td>Date and time both blank</td><td>The current date and time when generating the marker, shown in the effective timezone.</td></tr><tr><td>Date supplied, time blank</td><td>Midnight, <code>00:00:00</code>, on that date in the effective timezone.</td></tr><tr><td>Date and time supplied</td><td>The supplied local date and time in the effective timezone.</td></tr></tbody></table></div>
+<p>Show the effective timezone to the user. Default to the browser&#39;s timezone, with a visible UTC fallback if it cannot be determined, and allow the user to choose another timezone for photos from elsewhere. Display the interpreted date/time so the default is not hidden.</p>
+<p>The user suggested optional location entry to work out the timezone. Assess it as a convenience during specification, including how it can work locally; it is not a requirement to provide a location or a first-release acceptance gate. Handling a time without a date, daylight-saving ambiguities, and the precise EXIF timezone representation remain details for specification and implementation.</p>
+<h3>Initial designs and inherited parameters</h3>
+<p>The first release offers exactly the three requested designs: donut, star, and solid color. Further shapes belong to future versions. A solid-color marker can have no title; when a title is supplied, the ordinary text controls apply.</p>
+<p>Use the legacy Python image parameters wherever applicable:</p>
+<div class="table-scroll"><table><thead><tr><th>Parameter</th><th>Legacy behavior to preserve</th></tr></thead><tbody><tr><td>Image dimensions</td><td>Square; default 2000 × 2000 pixels, with the reference&#39;s size parameter retained.</td></tr><tr><td>JPEG quality</td><td>95.</td></tr><tr><td>Donut geometry</td><td>Outer circle touches the midpoints of all four sides; inner radius is 78% of the outer radius.</td></tr><tr><td>Default colors</td><td>Black background/corners, red ring, light-green center (<code>#b6d7a8</code>), black title, white outline.</td></tr><tr><td>Text</td><td>Bold, centered, automatically sized to fit, with outline thickness scaled to the font size.</td></tr><tr><td>Other applicable controls</td><td>Preserve the reference&#39;s color, font, text-color, outline-color, and size options using browser-appropriate controls. Date/time defaults follow the reviewed rules above.</td></tr></tbody></table></div>
+<p>Star geometry and the mapping of inherited color controls to star and solid-color designs will be specified without adding new shape families.</p>
+<h3>Verification and delivery</h3>
+<p>Verify exported images and their metadata directly. Photo-library application validation, import/order tests, and selecting a primary photo-library compatibility target are not required now. No application-specific sorting guarantee is claimed.</p>
+<p>The browser target is Chrome and Safari on desktop and iOS. Record the versions and devices used when testing. Maximum tested batch size and acceptable generation times will be named in the specification and test plan; the ten-entry example is a minimum workflow check, not an assumed maximum batch size.</p>
+<p>During longer work, show progress and keep the interface responsive enough to communicate status and recover from failure. Oversized or otherwise unsupported requests must be explained before they exhaust the browser. Packaging must preserve each JPEG&#39;s bytes and metadata and allow the user to retrieve the complete set despite browser download restrictions.</p>
+<p>A first release needs brief user instructions covering the single-image workflow, CSV columns and defaults, date/time meaning, and downloads, plus reproducible build/deployment instructions and evidence for the acceptance checks above.</p>
+<h3>Boundaries and next step</h3>
+<p>The initial goal is creating marker images. It does not require uploading or reorganizing an existing photo library, editing original photos, cloud accounts or synchronization, direct integrations with photo services, or a general-purpose drawing application.</p>
+<p>The next lifecycle step is a specification applying the recorded decisions: define the editor, star geometry, CSV columns/default precedence, download packaging, and timezone behavior. It can evaluate the optional location input and set performance targets. WASM library/runtime selection is implementation discovery, not a question the user must answer before the specification can proceed.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/photo-markers/build-marker-editor" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
