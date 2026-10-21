@@ -14,7 +14,8 @@
   profile/invitation writes, DST persistence, keyboard focus, native calendar
   controls, layout and page zoom. Public entry/denial audits now cover four
   screens at two widths; a missing member-error heading was fixed, with zero
-  detected violations afterward and one incomplete desktop landing-link rule.
+  detected violations afterward. A focused follow-up added a persistent landing-
+  link underline; visual/Tab and link/contrast checks pass at both widths.
 - Reopened member links clear prior identity; signed-out profile/invitation
   writes survive reload and restored fixture values are documented. The
   additional fictional message review remains unapproved.
@@ -23,8 +24,8 @@
 
 Phase 6 continues with independent second-organizer access, signed-out
 discussion/poll/payment writes, multiple memberships, expiry/revocation and
-the remaining hosted matrix. Authenticated accessibility, the landing-link
-manual review, screen-reader/text-only zoom and interruption/restart checks
+the remaining hosted matrix. Authenticated accessibility,
+screen-reader/text-only zoom and interruption/restart checks
 remain; managed-host retention, recovery access and erasure are unverified.
 Development-toolchain remediation and the authorized pilot follow.
 
