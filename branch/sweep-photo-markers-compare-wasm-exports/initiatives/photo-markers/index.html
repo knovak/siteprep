@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo markers</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative</p>
+      <h1>Photo markers</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="../index.html">All initiatives</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="initiative-purpose">
+    <div class="card-header">
+      <h2 id="initiative-purpose">Purpose</h2>
+    </div>
+    <div class="card-content">
+<h3>2026-10-20</h3>
+<p>make a new initiative, &#39;Photo markers&#39;.  The purpose is to Generate a square divider image saved as a JPEG with EXIF date/time metadata so it sorts correctly inside a photo collection.  It makes a divider, section marker, title card, or chapter image to insert between groups of photos.</p>
+<p>Here are documents that provide background, and an initial implementation in python, to use as a reference.  This initiative should go further, to allow the user to specify shapes and colors interactively, and to support one-at-a-time or batch delivery of images.  Use the attached files as a starting point, but do not be limited by them.</p>
+<p>The resulting web page should use WASM to do the work in the user&#39;s browser without needing a server.  (That means it can deploy into the demos/ folder of this repo)</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-status">
+    <div class="card-header">
+      <h2 id="initiative-status">Status</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li>Stage: <span class="tag">building</span></li>
+        <li>Value: medium</li>
+        <li>Last activity: today</li>
+      </ul>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-stands">
+    <div class="card-header">
+      <h2 id="initiative-stands">Where this stands</h2>
+    </div>
+    <div class="card-content">
+      <dl class="stands">
+        <dt>Needs from you</dt>
+        <dd><ul>
+          <li>physical Safari and Chrome on iOS findings for JPEG and ZIP retrieval in Files, disconnected exports, memory limits and timing; desktop engine comparison is provisional <em>(Record physical iOS export, offline and Files retrieval acceptance — <code>data:</code>)</em></li>
+        </ul></dd>
+        <dt>Scheduled</dt>
+        <dd><ul>
+          <li>Build the selected serial WASM export pipeline with strict settings, time resolution and independent verification</li>
+        </ul></dd>
+        <dt>Done</dt>
+        <dd><p>Two WASM export prototypes have measured Chromium/WebKit comparisons with frozen fixtures; a separate native reader verifies all 40 archived JPEGs and their timestamp metadata. Browser drawing plus the smaller MozJPEG WASM path is the documented provisional implementation choice. The comparison retains its failures, reproduction commands and explicit offline-test limits.</p></dd>
+        <dt>Remaining work</dt>
+        <dd><p>Build the selected serial export pipeline, strict settings/time resolution, font validation and independent verification; then add the single editor and CSV batch/download management. Complete the browser, offline, accessibility and resource-limit acceptance matrix before proposing static graduation.</p></dd>
+        <dt>Optional later</dt>
+        <dd><p>Photo-library application validation, additional shapes, location-to-timezone assistance, persistent projects, offline installation and integrations remain outside the first release.</p></dd>
+      </dl>
+      <p class="meta">The last four rows are a written summary of this initiative's own documents, current as of the latest change (2026-10-21). Correct the document it summarises rather than the summary.</p>
+    </div>
+  </main>
+  <main class="card" aria-labelledby="initiative-documents">
+    <div class="card-header">
+      <h2 id="initiative-documents">Documents</h2>
+    </div>
+    <div class="card-content">
+      <ul>
+        <li><a href="./wish.html">Wish</a></li>
+        <li><a href="./background.html">Background</a></li>
+        <li><a href="./objectives.html">Objectives</a></li>
+        <li><a href="./decisions.html">Decisions</a></li>
+        <li><a href="./spec.html">Specification</a></li>
+        <li><a href="./plan.html">Implementation plan</a></li>
+        <li><a href="./test-plan.html">Test plan</a></li>
+        <li><a href="./log.html">Log</a></li>
+      </ul>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/photo-markers/compare-wasm-exports" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
