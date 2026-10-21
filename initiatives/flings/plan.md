@@ -687,3 +687,14 @@ Cloudflare's plan-specific Time Travel windows from unverified Sites
 entitlements, and records the provider facts needed for the existing T11/T12
 recovery rehearsal. No managed restore or deletion was exercised; Phase 6 and
 `verify-hosted-test` remain open.
+
+
+## October 21 public accessibility receipt (Australia/Brisbane)
+
+`notes/hosted-public-accessibility-20261021.md` records eight fresh anonymous
+entry/denial scans before and after a member-error h1 correction. All eight
+post-deployment scans have no detected violations; one desktop landing-link
+rule remains incomplete and needs manual review. Local typecheck, 177 tests
+and six three-engine member journeys pass after correcting expired HTTP test
+fixture clocks. The test Site was refreshed with access preserved. This is not
+full accessibility or screen-reader acceptance; Phase 6 remains open.

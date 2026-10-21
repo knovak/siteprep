@@ -1,0 +1,1012 @@
+{
+  "scope": "Public anonymous entry and denial screens only; no account or member credentials",
+  "testSite": "https://flings-test.ken-novak.chatgpt.site",
+  "beforeVersion": 17,
+  "afterVersion": 18,
+  "before": {
+    "capturedAt": "2026-10-21T02:13:26.327Z",
+    "browser": "143.0.7499.4",
+    "playwright": "1.57.0",
+    "axePlaywright": "4.11.0",
+    "mode": "fresh anonymous contexts; no storage state, credentials, or bypass headers",
+    "checks": [
+      {
+        "path": "/",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\n\nOpen your organizer workspace with your ChatGPT account.\n\nOpen organizer workspace \u2192\n\nUse fictional gathering details during this test. No messages are sent.",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-hidden-body",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "page-has-heading-one",
+          "region"
+        ],
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "link-in-text-block",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2a",
+              "wcag141",
+              "TTv5",
+              "TT13.a",
+              "EN-301-549",
+              "EN-9.1.4.1",
+              "RGAAv4",
+              "RGAA-10.6.1"
+            ],
+            "description": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+            "help": "Links must be distinguishable without relying on color",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/link-in-text-block?application=playwright",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "link-in-text-block",
+                    "data": {
+                      "messageKey": "bgOverlap"
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<section class=\"intro\"><p class=\"eyebrow\">Organizer</p><h1>Your gatherings</h1><p>Open your organizer workspace with your ChatGPT account.</p><a href=\"/organizer\">Open organizer workspace \u2192</a></section>",
+                        "target": [
+                          "section"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "Element's contrast ratio could not be determined because of element overlap"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+                "target": [
+                  "a[href$=\"organizer\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element's contrast ratio could not be determined because of element overlap"
+              }
+            ]
+          }
+        ],
+        "inapplicableCount": 70
+      },
+      {
+        "path": "/organizer",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/workspace/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/organizer/7149a04f-4100-4d26-8db4-de35042a7e85",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\n\nThis member link is unavailable. Ask an organizer for a recent link.\n\nReturn to the rehearsals",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-role",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-required-attr",
+          "aria-roles",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "region"
+        ],
+        "violations": [
+          {
+            "id": "page-has-heading-one",
+            "impact": "moderate",
+            "tags": [
+              "cat.semantics",
+              "best-practice"
+            ],
+            "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+            "help": "Page should contain a level-one heading",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one?application=playwright",
+            "nodes": [
+              {
+                "any": [],
+                "all": [
+                  {
+                    "id": "page-has-heading-one",
+                    "data": null,
+                    "relatedNodes": [],
+                    "impact": "moderate",
+                    "message": "Page must have a level-one heading"
+                  }
+                ],
+                "none": [],
+                "impact": "moderate",
+                "html": "<html lang=\"en\">",
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+              }
+            ]
+          }
+        ],
+        "incomplete": [],
+        "inapplicableCount": 69
+      },
+      {
+        "path": "/",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\n\nOpen your organizer workspace with your ChatGPT account.\n\nOpen organizer workspace \u2192\n\nUse fictional gathering details during this test. No messages are sent.",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-hidden-body",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-in-text-block",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "page-has-heading-one",
+          "region"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 70
+      },
+      {
+        "path": "/organizer",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/workspace/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/organizer/7149a04f-4100-4d26-8db4-de35042a7e85",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\n\nThis member link is unavailable. Ask an organizer for a recent link.\n\nReturn to the rehearsals",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-role",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-required-attr",
+          "aria-roles",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "region"
+        ],
+        "violations": [
+          {
+            "id": "page-has-heading-one",
+            "impact": "moderate",
+            "tags": [
+              "cat.semantics",
+              "best-practice"
+            ],
+            "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
+            "help": "Page should contain a level-one heading",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one?application=playwright",
+            "nodes": [
+              {
+                "any": [],
+                "all": [
+                  {
+                    "id": "page-has-heading-one",
+                    "data": null,
+                    "relatedNodes": [],
+                    "impact": "moderate",
+                    "message": "Page must have a level-one heading"
+                  }
+                ],
+                "none": [],
+                "impact": "moderate",
+                "html": "<html lang=\"en\">",
+                "target": [
+                  "html"
+                ],
+                "failureSummary": "Fix all of the following:\n  Page must have a level-one heading"
+              }
+            ]
+          }
+        ],
+        "incomplete": [],
+        "inapplicableCount": 69
+      }
+    ]
+  },
+  "after": {
+    "capturedAt": "2026-10-21T02:20:34.259Z",
+    "browser": "143.0.7499.4",
+    "playwright": "1.57.0",
+    "axePlaywright": "4.11.0",
+    "mode": "fresh anonymous contexts; no storage state, credentials, or bypass headers",
+    "checks": [
+      {
+        "path": "/",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\n\nOpen your organizer workspace with your ChatGPT account.\n\nOpen organizer workspace \u2192\n\nUse fictional gathering details during this test. No messages are sent.",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-hidden-body",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "page-has-heading-one",
+          "region"
+        ],
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "link-in-text-block",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2a",
+              "wcag141",
+              "TTv5",
+              "TT13.a",
+              "EN-301-549",
+              "EN-9.1.4.1",
+              "RGAAv4",
+              "RGAA-10.6.1"
+            ],
+            "description": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+            "help": "Links must be distinguishable without relying on color",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/link-in-text-block?application=playwright",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "link-in-text-block",
+                    "data": {
+                      "messageKey": "bgOverlap"
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<section class=\"intro\"><p class=\"eyebrow\">Organizer</p><h1>Your gatherings</h1><p>Open your organizer workspace with your ChatGPT account.</p><a href=\"/organizer\">Open organizer workspace \u2192</a></section>",
+                        "target": [
+                          "section"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "Element's contrast ratio could not be determined because of element overlap"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a href=\"/organizer\">Open organizer workspace \u2192</a>",
+                "target": [
+                  "a[href$=\"organizer\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element's contrast ratio could not be determined because of element overlap"
+              }
+            ]
+          }
+        ],
+        "inapplicableCount": 70
+      },
+      {
+        "path": "/organizer",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/workspace/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/organizer/7149a04f-4100-4d26-8db4-de35042a7e85",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\nUnable to open member page\n\nThis member link is unavailable. Ask an organizer for a recent link.\n\nReturn to the rehearsals",
+        "dimensions": {
+          "clientWidth": 1280,
+          "scrollWidth": 1280
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-role",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-required-attr",
+          "aria-roles",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "page-has-heading-one",
+          "region"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 67
+      },
+      {
+        "path": "/",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\n\nOpen your organizer workspace with your ChatGPT account.\n\nOpen organizer workspace \u2192\n\nUse fictional gathering details during this test. No messages are sent.",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-hidden-body",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-in-text-block",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "page-has-heading-one",
+          "region"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 70
+      },
+      {
+        "path": "/organizer",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/workspace/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/organizer/7149a04f-4100-4d26-8db4-de35042a7e85",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nOrganizer workspace\nTest rehearsal \u00b7 fictional people\n\nORGANIZER\n\nYour gatherings\nSign in with ChatGPT to open your organizer workspace. Reload workspace\nYour ChatGPT account\nSign in with ChatGPT",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/native/status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/organizer"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-attr",
+          "aria-allowed-role",
+          "aria-conditional-attr",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-required-attr",
+          "aria-roles",
+          "aria-valid-attr-value",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "nested-interactive",
+          "page-has-heading-one",
+          "region",
+          "tabindex"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 59
+      },
+      {
+        "path": "/f/7149a04f-4100-4d26-8db4-de35042a7e85/member",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "status": 200,
+        "title": "Flings",
+        "visibleText": "flings\u2733\nTest rehearsal \u00b7 fictional people\nUnable to open member page\n\nThis member link is unavailable. Ask an organizer for a recent link.\n\nReturn to the rehearsals",
+        "dimensions": {
+          "clientWidth": 430,
+          "scrollWidth": 430
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/flings/7149a04f-4100-4d26-8db4-de35042a7e85/session"
+          }
+        ],
+        "axeVersion": "4.11.1",
+        "passes": [
+          "aria-allowed-role",
+          "aria-deprecated-role",
+          "aria-hidden-body",
+          "aria-required-attr",
+          "aria-roles",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "empty-heading",
+          "heading-order",
+          "html-has-lang",
+          "html-lang-valid",
+          "landmark-main-is-top-level",
+          "landmark-no-duplicate-banner",
+          "landmark-no-duplicate-main",
+          "landmark-one-main",
+          "landmark-unique",
+          "link-name",
+          "meta-viewport-large",
+          "meta-viewport",
+          "page-has-heading-one",
+          "region"
+        ],
+        "violations": [],
+        "incomplete": [],
+        "inapplicableCount": 67
+      }
+    ]
+  }
+}

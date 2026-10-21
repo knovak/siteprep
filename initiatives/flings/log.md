@@ -444,3 +444,15 @@ evidence needed for the existing T11/T12 rehearsal. See the October 21 addendum
 in `notes/host-backup-review-20260915.md`. No restore, deletion, business write,
 message, app-source change, deployment or access change; Phase 6 and
 `verify-hosted-test` remain open.
+
+
+## 2026-10-21 — Fix the public member error heading and audit entry screens
+
+Eight anonymous hosted axe scans found a missing h1 on the unavailable-member
+page at both widths. Added the heading and refreshed public test version 18;
+eight post-deploy scans have zero detected violations, with one landing-link
+manual-review result retained. Typecheck, 177 application tests and six
+three-engine member journeys pass; expired HTTP fixtures now match the real
+HTTP clock. See `notes/hosted-public-accessibility-20261021.md`. No business
+mutation requests, messages, access changes or production release; Phase 6 stays
+open.
