@@ -19,3 +19,7 @@ Drafted plan.md and test-plan.md with a measured two-route WASM comparison first
 ## 2026-10-21 — Critique plan.md and test-plan.md before comparing WASM export paths
 
 Critiqued the merged plan; clarified prototype scope, frozen timestamps and row IDs, packaging admission, output availability and per-part manifests. Added boundary checks; historical offset/range and physical iOS evidence remain gates. Seeded compare-wasm-exports; stage remains planned.
+
+## 2026-10-21 — Compare measured WASM export prototypes and select a verified implementation path
+
+Compared two pinned WASM export prototypes in Chromium and WebKit; independently verified 40 JPEGs and selected browser drawing/MozJPEG provisionally. Retained WebKit offline-emulation failure and physical-iOS acceptance gap; next serial pipeline seeded from Phase 2.

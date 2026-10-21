@@ -1,5 +1,15 @@
 # Test plan
 
+## October 21 measured prototype receipt
+
+[The Phase 1 receipt](notes/wasm-comparison-20261021.html) maps the prototype
+evidence to T1–T12 without claiming later acceptance. The independent native
+reader passes 40 archived JPEGs; both desktop engines pass the precisely
+recorded final comparison. Chromium context-offline exports pass. WebKit
+HTTP-denial exports pass, while its separate context-offline Blob decoding
+fails for both routes and remains an explicit follow-up. Physical iOS and
+branded-browser results are unrun.
+
 Drafted October 21, 2026 (Australia/Brisbane). These are required checks for the [plan](plan.html) and [specification](spec.html), not passed results. Fixtures and executable tests will be added with their implementation phases. No photo-library application testing is required.
 
 ## Evidence and coverage

@@ -66,3 +66,35 @@ The specification will define column names, which columns are required, preceden
 In response to the WASM-approach question, the user said, “that will be for the implementation to discover” ([comment](https://github.com/knovak/siteprep/pull/609#discussion_r4323508279)).
 
 The user does not need to select a library or runtime now. The browser-only WASM requirement remains; the specification can set the behavior and evaluation criteria while implementation establishes the approach through working evidence.
+
+## 2026-10-21 — Provisional implementation path after measured comparison
+
+This records an implementation choice under the user's instruction that the
+approach is “for the implementation to discover,” not a new preference
+attributed to the user. Evidence is in
+[the measured receipt](notes/wasm-comparison-20261021.html).
+
+### Alternatives considered
+
+| Option | Strengths | Weaknesses |
+| --- | --- | --- |
+| A: Pyodide/Pillow | Working reuse path, mandatory EXIF, fastest warm samples: medians 84/181 ms; ten-row batches below 1.1 seconds. | 15.82 MB static footprint and 1.4–1.6 second cold initialization in these desktop engines; a Python runtime and package distribution to maintain. |
+| B: browser drawing + MozJPEG WASM | Working tags/recovery, 1.55 MB footprint, 44/52 ms median cold initialization; local FontFace drawing and a small encoder module. | Warm median 270/263 ms and batches about 2.5 seconds are slower than A; custom metadata insertion and browser font/decoder behavior need the planned hardening. |
+| C: purpose-built renderer | Could centralize the work. | Adds an unmeasured build/font/metadata implementation despite two viable prototypes; not built. |
+
+**Selected provisionally for the next increment: B.** Both routes meet the
+desktop timing targets; B's smaller transfer and runtime surface outweigh A's
+warm-speed advantage for these markers. Use only B in the application output.
+The two-route development harness remains reproducible evidence.
+
+### What this settles, and what it does not
+
+The next serial export pipeline uses browser drawing and the pinned WASM JPEG
+codec, mandatory EXIF writing and independent read-back. Physical-iOS,
+branded-browser, actual-disconnection and complete acceptance remain open.
+WebKit's context-offline Blob decoding failed for both candidates; HTTP-denial
+export passes but does not erase that failure. Reconsider the choice if the
+selected pipeline cannot meet font, offline-decoding, physical-device memory
+or export targets, or if the pinned codec's build/license maintenance becomes
+unsuitable. No reviewed functional requirement or supported-browser family
+has been removed.

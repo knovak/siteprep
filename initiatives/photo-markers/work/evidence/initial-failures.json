@@ -1,0 +1,3503 @@
+{
+  "generatedAt": "2026-10-21T07:22:50.517Z",
+  "base": "d4d03b0c2c0cfef9994a411b25fa32c8ecd1df46",
+  "host": {
+    "platform": "darwin",
+    "release": "25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M1"
+  },
+  "note": "Playwright engines; branded Safari and physical iOS unrun. HTTP no-store, no compression.",
+  "runs": [
+    {
+      "engine": "chromium",
+      "browserVersion": "143.0.7499.4",
+      "route": "A",
+      "cold": [
+        {
+          "ms": 1452.1000003814697,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ],
+          "pillow": "12.2.0"
+        },
+        {
+          "ms": 1531.7999997138977,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ],
+          "pillow": "12.2.0"
+        },
+        {
+          "ms": 1459.3000001907349,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ],
+          "pillow": "12.2.0"
+        }
+      ],
+      "warm": [
+        {
+          "ms": 245.80000019073486,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ]
+        },
+        {
+          "ms": 90,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ]
+        },
+        {
+          "ms": 91.40000009536743,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ]
+        },
+        {
+          "ms": 87.89999961853027,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ]
+        },
+        {
+          "ms": 89.5,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 17931,
+              "decoded": 17931,
+              "transfer": 18231
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 119077,
+              "decoded": 119077,
+              "transfer": 119377
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 2545637,
+              "decoded": 2545637,
+              "transfer": 2545937
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 9598218,
+              "decoded": 9598218,
+              "transfer": 9598518
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 1250344,
+              "decoded": 1250344,
+              "transfer": 1250644
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 1037806,
+              "decoded": 1037806,
+              "transfer": 1038106
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 2076,
+              "decoded": 2076,
+              "transfer": 2376
+            }
+          ]
+        }
+      ],
+      "batch": [
+        {
+          "ms": 1007.7000002861023,
+          "bytes": 2798898,
+          "manifest": [
+            {
+              "filename": "marker-0001.jpg",
+              "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0001"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0002.jpg",
+              "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0002"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0003.jpg",
+              "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Star",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0003"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0004.jpg",
+              "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Café Å Ω",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0004"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0005.jpg",
+              "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0005",
+                "occurrence": "earlier"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0006.jpg",
+              "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0006",
+                "occurrence": "later"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0007.jpg",
+              "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Quarter hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "zone": "Asia/Kathmandu",
+                "id": "0007"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0008.jpg",
+              "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Half hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "zone": "Asia/Kolkata",
+                "id": "0008"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0009.jpg",
+              "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "UTC",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+00:00",
+                "instant": "2026-10-21T00:00:00Z",
+                "zone": "UTC",
+                "id": "0009"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0010.jpg",
+              "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Now frozen",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "zone": "Australia/Brisbane",
+                "id": "0010"
+              },
+              "status": "verified"
+            }
+          ]
+        },
+        {
+          "ms": 945.5999999046326,
+          "bytes": 2798898,
+          "manifest": [
+            {
+              "filename": "marker-0001.jpg",
+              "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0001"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0002.jpg",
+              "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0002"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0003.jpg",
+              "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Star",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0003"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0004.jpg",
+              "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Café Å Ω",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0004"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0005.jpg",
+              "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0005",
+                "occurrence": "earlier"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0006.jpg",
+              "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0006",
+                "occurrence": "later"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0007.jpg",
+              "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Quarter hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "zone": "Asia/Kathmandu",
+                "id": "0007"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0008.jpg",
+              "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Half hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "zone": "Asia/Kolkata",
+                "id": "0008"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0009.jpg",
+              "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "UTC",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+00:00",
+                "instant": "2026-10-21T00:00:00Z",
+                "zone": "UTC",
+                "id": "0009"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0010.jpg",
+              "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Now frozen",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "zone": "Australia/Brisbane",
+                "id": "0010"
+              },
+              "status": "verified"
+            }
+          ]
+        },
+        {
+          "ms": 876.5999999046326,
+          "bytes": 2798898,
+          "manifest": [
+            {
+              "filename": "marker-0001.jpg",
+              "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0001"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0002.jpg",
+              "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0002"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0003.jpg",
+              "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Star",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0003"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0004.jpg",
+              "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Café Å Ω",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0004"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0005.jpg",
+              "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0005",
+                "occurrence": "earlier"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0006.jpg",
+              "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0006",
+                "occurrence": "later"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0007.jpg",
+              "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Quarter hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "zone": "Asia/Kathmandu",
+                "id": "0007"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0008.jpg",
+              "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Half hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "zone": "Asia/Kolkata",
+                "id": "0008"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0009.jpg",
+              "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "UTC",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+00:00",
+                "instant": "2026-10-21T00:00:00Z",
+                "zone": "UTC",
+                "id": "0009"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0010.jpg",
+              "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Now frozen",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "zone": "Australia/Brisbane",
+                "id": "0010"
+              },
+              "status": "verified"
+            }
+          ]
+        }
+      ],
+      "requests": [
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        }
+      ],
+      "failures": {
+        "cancelled": true,
+        "retrySha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+        "timestamp": "2026:10:21 00:05:06",
+        "missingGlyphRejected": true,
+        "corruptedRejected": true
+      },
+      "missingWasmRejected": true,
+      "offlineSingle": {
+        "ms": 130.59999990463257,
+        "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef"
+      },
+      "offlineBatch": {
+        "ms": 849.3000001907349,
+        "count": 10
+      },
+      "offlineNetworkAttempts": 0,
+      "jsHeap": {
+        "used": 12700000,
+        "total": 13400000
+      },
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "143.0.7499.4",
+      "route": "B",
+      "cold": [
+        {
+          "ms": 44.19999980926514,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/encode.js",
+              "encoded": 1623,
+              "decoded": 1623,
+              "transfer": 1923
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+              "encoded": 38422,
+              "decoded": 38422,
+              "transfer": 38722
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/utils.js",
+              "encoded": 1272,
+              "decoded": 1272,
+              "transfer": 1572
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/meta.js",
+              "encoded": 683,
+              "decoded": 683,
+              "transfer": 983
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+              "encoded": 251524,
+              "decoded": 251524,
+              "transfer": 251824
+            }
+          ],
+          "pillow": null
+        },
+        {
+          "ms": 40.30000019073486,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/encode.js",
+              "encoded": 1623,
+              "decoded": 1623,
+              "transfer": 1923
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+              "encoded": 38422,
+              "decoded": 38422,
+              "transfer": 38722
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/utils.js",
+              "encoded": 1272,
+              "decoded": 1272,
+              "transfer": 1572
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/meta.js",
+              "encoded": 683,
+              "decoded": 683,
+              "transfer": 983
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+              "encoded": 251524,
+              "decoded": 251524,
+              "transfer": 251824
+            }
+          ],
+          "pillow": null
+        },
+        {
+          "ms": 45.40000009536743,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 575740,
+              "decoded": 575740,
+              "transfer": 576040
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/encode.js",
+              "encoded": 1623,
+              "decoded": 1623,
+              "transfer": 1923
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+              "encoded": 38422,
+              "decoded": 38422,
+              "transfer": 38722
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/meta.js",
+              "encoded": 683,
+              "decoded": 683,
+              "transfer": 983
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/utils.js",
+              "encoded": 1272,
+              "decoded": 1272,
+              "transfer": 1572
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+              "encoded": 251524,
+              "decoded": 251524,
+              "transfer": 251824
+            }
+          ],
+          "pillow": null
+        }
+      ],
+      "warm": [],
+      "batch": [],
+      "requests": [
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/encode.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/meta.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/utils.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/encode.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/meta.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/utils.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/encode.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/meta.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/utils.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "method": "GET"
+        }
+      ],
+      "pass": false,
+      "error": "page.evaluate: Error: Error: substitutionType : 62 lookupType: 6 - substFormat: 2 is not yet supported\n    at FeatureQuery.getLookupMethod (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14507:13)\n    at FeatureQuery.lookupFeature (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14536:23)\n    at Bidi.ccmpReplacementLigatures (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14876:36)\n    at Bidi.applyCcmpReplacement (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15187:38)\n    at Bidi.applyFeaturesToContexts (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15230:26)\n    at Bidi.processText (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15256:10)\n    at Bidi.getTextGlyphs (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15264:8)\n    at Font.stringToGlyphIndexes (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15414:15)\n    at Font.stringToGlyphs (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15417:24)\n    at Font.forEachGlyph (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15474:23)\n    at FeatureQuery.getLookupMethod (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14507:13)\n    at FeatureQuery.lookupFeature (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14536:23)\n    at Bidi.ccmpReplacementLigatures (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14876:36)\n    at Bidi.applyCcmpReplacement (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15187:38)\n    at Bidi.applyFeaturesToContexts (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15230:26)\n    at Bidi.processText (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15256:10)\n    at Bidi.getTextGlyphs (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15264:8)\n    at Font.stringToGlyphIndexes (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15414:15)\n    at Font.stringToGlyphs (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15417:24)\n    at Font.forEachGlyph (http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15474:23)\n    at worker.onmessage (http://127.0.0.1:53091/nested/photo-markers/harness.mjs:23:55)\n    at /Users/ken/.codex/worktrees/sweep-oct21-current/siteprep/initiatives/photo-markers/work/test/compare.mjs:39:37"
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.0",
+      "route": "A",
+      "cold": [
+        {
+          "ms": 1658,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ],
+          "pillow": "12.2.0"
+        },
+        {
+          "ms": 1873.0000000000002,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ],
+          "pillow": "12.2.0"
+        },
+        {
+          "ms": 1618.0000000000002,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ],
+          "pillow": "12.2.0"
+        }
+      ],
+      "warm": [
+        {
+          "ms": 232,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ]
+        },
+        {
+          "ms": 99,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ]
+        },
+        {
+          "ms": 99,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ]
+        },
+        {
+          "ms": 97.99999999999909,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ]
+        },
+        {
+          "ms": 96.00000000000091,
+          "tags": {
+            "Software": "Photo markers comparison",
+            "ModifyDate": "2026:10:21 00:00:00",
+            "ExifIFD": 96,
+            "DateTimeOriginal": "2026:10:21 00:00:00",
+            "CreateDate": "2026:10:21 00:00:00",
+            "OffsetTime": "+10:00",
+            "OffsetTimeOriginal": "+10:00",
+            "OffsetTimeDigitized": "+10:00"
+          },
+          "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+          "bytes": 321431,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/render.py",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ]
+        }
+      ],
+      "batch": [
+        {
+          "ms": 966,
+          "bytes": 2798898,
+          "manifest": [
+            {
+              "filename": "marker-0001.jpg",
+              "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0001"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0002.jpg",
+              "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0002"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0003.jpg",
+              "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Star",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0003"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0004.jpg",
+              "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Café Å Ω",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0004"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0005.jpg",
+              "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0005",
+                "occurrence": "earlier"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0006.jpg",
+              "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0006",
+                "occurrence": "later"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0007.jpg",
+              "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Quarter hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "zone": "Asia/Kathmandu",
+                "id": "0007"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0008.jpg",
+              "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Half hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "zone": "Asia/Kolkata",
+                "id": "0008"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0009.jpg",
+              "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "UTC",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+00:00",
+                "instant": "2026-10-21T00:00:00Z",
+                "zone": "UTC",
+                "id": "0009"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0010.jpg",
+              "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Now frozen",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "zone": "Australia/Brisbane",
+                "id": "0010"
+              },
+              "status": "verified"
+            }
+          ]
+        },
+        {
+          "ms": 974.0000000000018,
+          "bytes": 2798898,
+          "manifest": [
+            {
+              "filename": "marker-0001.jpg",
+              "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0001"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0002.jpg",
+              "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0002"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0003.jpg",
+              "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Star",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0003"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0004.jpg",
+              "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Café Å Ω",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0004"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0005.jpg",
+              "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0005",
+                "occurrence": "earlier"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0006.jpg",
+              "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0006",
+                "occurrence": "later"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0007.jpg",
+              "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Quarter hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "zone": "Asia/Kathmandu",
+                "id": "0007"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0008.jpg",
+              "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Half hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "zone": "Asia/Kolkata",
+                "id": "0008"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0009.jpg",
+              "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "UTC",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+00:00",
+                "instant": "2026-10-21T00:00:00Z",
+                "zone": "UTC",
+                "id": "0009"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0010.jpg",
+              "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Now frozen",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "zone": "Australia/Brisbane",
+                "id": "0010"
+              },
+              "status": "verified"
+            }
+          ]
+        },
+        {
+          "ms": 1043,
+          "bytes": 2798898,
+          "manifest": [
+            {
+              "filename": "marker-0001.jpg",
+              "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0001"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0002.jpg",
+              "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0002"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0003.jpg",
+              "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Star",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0003"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0004.jpg",
+              "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Café Å Ω",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:00:00Z",
+                "zone": "Australia/Brisbane",
+                "id": "0004"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0005.jpg",
+              "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-07:00",
+                "instant": "2026-11-01T08:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0005",
+                "occurrence": "earlier"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0006.jpg",
+              "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Photo markers",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:11:01 01:30:00",
+                "offset": "-08:00",
+                "instant": "2026-11-01T09:30:00Z",
+                "zone": "America/Los_Angeles",
+                "id": "0006",
+                "occurrence": "later"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0007.jpg",
+              "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Quarter hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:45",
+                "instant": "2026-10-20T18:15:00Z",
+                "zone": "Asia/Kathmandu",
+                "id": "0007"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0008.jpg",
+              "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+              "settings": {
+                "size": 2000,
+                "shape": "donut",
+                "title": "Half hour",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+05:30",
+                "instant": "2026-10-20T18:30:00Z",
+                "zone": "Asia/Kolkata",
+                "id": "0008"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0009.jpg",
+              "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+              "settings": {
+                "size": 2000,
+                "shape": "solid",
+                "title": "UTC",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:00:00",
+                "offset": "+00:00",
+                "instant": "2026-10-21T00:00:00Z",
+                "zone": "UTC",
+                "id": "0009"
+              },
+              "status": "verified"
+            },
+            {
+              "filename": "marker-0010.jpg",
+              "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+              "settings": {
+                "size": 2000,
+                "shape": "star",
+                "title": "Now frozen",
+                "background": "#000000",
+                "shapeColor": "#ff0000",
+                "center": "#b6d7a8",
+                "text": "#000000",
+                "outline": "#ffffff",
+                "local": "2026:10:21 00:05:06",
+                "offset": "+10:00",
+                "instant": "2026-10-20T14:05:06Z",
+                "zone": "Australia/Brisbane",
+                "id": "0010"
+              },
+              "status": "verified"
+            }
+          ]
+        }
+      ],
+      "requests": [
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide-lock.json",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/python_stdlib.zip",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pyodide.asm.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/render.py",
+          "method": "GET"
+        }
+      ],
+      "pass": false,
+      "error": "page.evaluate: Error: Failure probe did not fail closed\n    at /Users/ken/.codex/worktrees/sweep-oct21-current/siteprep/initiatives/photo-markers/work/test/compare.mjs:48:35"
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.0",
+      "route": "B",
+      "cold": [
+        {
+          "ms": 56,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/encode.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/meta.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/utils.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ],
+          "pillow": null
+        },
+        {
+          "ms": 57,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/encode.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/utils.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/meta.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ],
+          "pillow": null
+        },
+        {
+          "ms": 52,
+          "resources": [
+            {
+              "name": "/nested/photo-markers/exif-writer.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/opentype.mjs",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/encode.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/meta.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/utils.js",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            },
+            {
+              "name": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+              "encoded": 0,
+              "decoded": 0,
+              "transfer": 0
+            }
+          ],
+          "pillow": null
+        }
+      ],
+      "warm": [],
+      "batch": [],
+      "requests": [
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/encode.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/meta.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/utils.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/encode.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/meta.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/utils.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/harness.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/exifr.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/fflate.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/fixtures.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/worker.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/opentype.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/exif-writer.mjs",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/NotoSans-Bold.ttf",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/encode.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/meta.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/utils.js",
+          "method": "GET"
+        },
+        {
+          "url": "/nested/photo-markers/assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+          "method": "GET"
+        }
+      ],
+      "pass": false,
+      "error": "page.evaluate: Error: @http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14507:22\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14536:38\nccmpReplacementLigatures@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:14876:49\napplyCcmpReplacement@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15187:42\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15230:30\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15256:33\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15264:19\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15417:44\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15474:37\n@http://127.0.0.1:53091/nested/photo-markers/assets/opentype.mjs:15507:20\nrender@http://127.0.0.1:53091/nested/photo-markers/worker.mjs:56:26\nrender@http://127.0.0.1:53091/nested/photo-markers/worker.mjs:30:23\n@http://127.0.0.1:53091/nested/photo-markers/worker.mjs:74:139\n@http://127.0.0.1:53091/nested/photo-markers/worker.mjs:72:25\n    at /Users/ken/.codex/worktrees/sweep-oct21-current/siteprep/initiatives/photo-markers/work/test/compare.mjs:39:37"
+    }
+  ]
+}
