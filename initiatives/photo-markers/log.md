@@ -11,3 +11,7 @@ Addressed the user's nine review comments: simplified image wording; allowed cur
 ## 2026-10-20 — Draft spec.md - define the browser experience and compare implementation options
 
 Drafted the specification from reviewed objectives: three legacy-based designs, single/CSV workflows, explicit timezone and EXIF offset rules, verified downloads, resource/performance targets and alternative WASM approaches. Seeded draft-plan for plan.md and test-plan.md. Dated October 21, 2026 Australia/Brisbane; lifecycle log timestamp is UTC.
+
+## 2026-10-21 — Draft plan.md and test-plan.md - compare WASM approaches, then plan the browser implementation and acceptance
+
+Drafted plan.md and test-plan.md with a measured two-route WASM comparison first, verified JPEG/EXIF export, editor and CSV milestones, recovery/resource bounds, independent timestamp fixtures, physical iOS acceptance and explicit graduation authority. No runtime selected or implementation acceptance claimed.
