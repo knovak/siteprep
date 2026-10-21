@@ -22,5 +22,10 @@
       "advances_stage": false,
       "blocked_by": "data:physical Safari and Chrome on iOS findings for JPEG and ZIP retrieval in Files, disconnected exports, memory limits and timing; desktop engine comparison is provisional"
     }
-  ]
+  ],
+  "brief": {
+    "generated_at": "2026-10-21T07:38:48Z",
+    "commit": "c8e11e905dbcd55ed8e0e42d33b903c2510d44e8",
+    "digest": "f4791fec50ce61e256d95ae0b2e479e781d2626d"
+  }
 }
