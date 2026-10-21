@@ -783,3 +783,16 @@ or focus; the existing keyboard focus outline and full navigation stay intact.
 This is scoped to the landing link, with no identity or authorization change.
 The dated hosted receipt in the initiative notes records the two-width visual
 and keyboard checks separately from the automated link/contrast rules.
+
+## Interrupted sign-in status — October 21, 2026
+
+A malformed JSON response from the native status endpoint now reports
+**Sign-in status is unavailable.** across browser engines. WebKit can reject
+JSON parsing with a DOMException; the parser stage now converts that failure
+explicitly instead of displaying the engine's technical message. Existing
+identity/data clearing and Reload workspace behavior remain in effect.
+
+The native resilience browser matrix asserts the error text alongside stale
+state clearing and recovery. Set `FLINGS_EVIDENCE` to a dated receipt path to
+preserve the historical default record. The anonymous hosted probe and its
+read-only limitations are described in `../../notes/hosted-public-retry-20261021.md`.

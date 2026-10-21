@@ -155,6 +155,13 @@ try {
           failure = injected;
           await page.evaluate(() => window.dispatchEvent(new Event('focus')));
           await page.getByRole('alert').waitFor();
+          assert.match(
+            await page.getByRole('alert').innerText(),
+            injected === 'network'
+              ? /Unable to refresh sign-in and gathering details/
+              : /Sign-in status is unavailable/,
+            injected + ' actionable error across engines',
+          );
           assert.equal(await retry.isEnabled(), true, injected + ' retry');
           assert.equal(
             await page
@@ -254,7 +261,8 @@ try {
   }
   await writeFile(
     new URL(
-      './evidence/native-resilience-browser-20260915.json',
+      process.env.FLINGS_EVIDENCE ||
+        './evidence/native-resilience-browser-20260915.json',
       import.meta.url,
     ),
     JSON.stringify(
