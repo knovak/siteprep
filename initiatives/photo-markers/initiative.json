@@ -1,13 +1,13 @@
 {
   "title": "Photo markers",
   "summary": "Create square JPEG photo markers with EXIF timestamps, interactive shapes and colors, and single or batch downloads using WASM in the browser.",
-  "stage": "shaped",
+  "stage": "specified",
   "value": "medium",
   "outputs": [],
   "todo": [
     {
-      "id": "draft-spec",
-      "title": "Draft spec.md - define the browser experience and compare implementation options",
+      "id": "draft-plan",
+      "title": "Draft plan.md and test-plan.md - compare WASM approaches, then plan the browser implementation and acceptance",
       "state": "actionable",
       "value": "high",
       "effort": "medium",
