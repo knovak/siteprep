@@ -521,6 +521,7 @@ void test('database rejects cross-fling event relationships directly, without AP
   assert.equal(await count('payment_requests'), 0);
 });
 void test('HTTP coordination routes enforce cookies, expected member, origin, CSRF, preview and hosted denial', async () => {
+  now = Date.now(); // Match the HTTP store's real clock before issuing a session.
   const { session } = await member();
   const env = {
     DB: store.db,

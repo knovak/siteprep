@@ -497,6 +497,8 @@ async function api(req: Request, extra: Record<string, string> = {}) {
   });
 }
 async function httpMember(fling = 'outing', id = 'alex-outing') {
+  // HTTP uses the real clock; do not issue already-expired fixed-date codes.
+  now = Date.now();
   const link = await store.issue(org, fling, id);
   const res = await api(
     request(
@@ -646,6 +648,7 @@ void test('HTTP requires origin and session CSRF; rejects preview mutations even
   );
 });
 void test('HTTPS session flags are secure; hosted organizer mode fails closed; malformed links generic and limited', async () => {
+  now = Date.now(); // Match the HTTP store's real clock before issuing a code.
   const link = await store.issue(org, 'outing', 'alex-outing');
   const host = 'https://flings.example.invalid';
   const res = await api(

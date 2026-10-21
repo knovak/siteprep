@@ -326,6 +326,7 @@ export default function MemberPage({
       </header>
       {error && (
         <div className="notice error" role="alert">
+          {!data && <h1>Unable to open member page</h1>}
           <p>{error}</p>
           {!data && (
             <div className="actions">
