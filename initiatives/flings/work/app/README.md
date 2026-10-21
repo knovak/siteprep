@@ -774,3 +774,12 @@ screens and does not establish authenticated or screen-reader acceptance.
 HTTP access and coordination tests issue codes/sessions using the current time,
 matching the HTTP store's clock; fixed historical domain-test clocks remain for
 expiry-boundary tests. This prevents old fixtures expiring as calendar time moves.
+
+## Hosted landing link — October 21, 2026
+
+The native ChatGPT-mode landing page gives its organizer entry link a persistent
+underline through `.organizer-entry-link`. The cue remains visible before hover
+or focus; the existing keyboard focus outline and full navigation stay intact.
+This is scoped to the landing link, with no identity or authorization change.
+The dated hosted receipt in the initiative notes records the two-width visual
+and keyboard checks separately from the automated link/contrast rules.
