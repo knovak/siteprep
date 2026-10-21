@@ -1,0 +1,1006 @@
+{
+  "oracle": "native Pillow",
+  "version": "12.3.0",
+  "results": [
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0001.jpg",
+      "bytes": 321431,
+      "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0002.jpg",
+      "bytes": 110238,
+      "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0003.jpg",
+      "bytes": 295147,
+      "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0004.jpg",
+      "bytes": 330116,
+      "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0005.jpg",
+      "bytes": 321431,
+      "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-07:00",
+        "36881": "-07:00",
+        "36882": "-07:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0006.jpg",
+      "bytes": 321431,
+      "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-08:00",
+        "36881": "-08:00",
+        "36882": "-08:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0007.jpg",
+      "bytes": 319638,
+      "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:45",
+        "36881": "+05:45",
+        "36882": "+05:45"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0008.jpg",
+      "bytes": 316655,
+      "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:30",
+        "36881": "+05:30",
+        "36882": "+05:30"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0009.jpg",
+      "bytes": 170307,
+      "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+00:00",
+        "36881": "+00:00",
+        "36882": "+00:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-A-batch.zip",
+      "filename": "marker-0010.jpg",
+      "bytes": 285785,
+      "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:05:06",
+        "36867": "2026:10:21 00:05:06",
+        "36868": "2026:10:21 00:05:06",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0001.jpg",
+      "bytes": 227675,
+      "sha256": "804cb200c2c5c5b99ab6145b96b049f88402c4f3ca9d7446432e62a3bb72a9d6",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0002.jpg",
+      "bytes": 47375,
+      "sha256": "40f632ba5ff95f4dec575e1d50dd56b5b47dd3ef394e279f917d7f0ba3433b5e",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0003.jpg",
+      "bytes": 207508,
+      "sha256": "36c7acef3387c90e4f221341db3d0f807c60a3fe5d5ad1eaf18b470a272f7298",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0004.jpg",
+      "bytes": 238219,
+      "sha256": "866eaef1ef32d4cb592f26e28e39f7b10311281ff359db8700fba3e28936634a",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0005.jpg",
+      "bytes": 227675,
+      "sha256": "819c50f209e872cd6fe20ad36b0dc97a61b1da31d0e8283a2226f1fb0a8bc619",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-07:00",
+        "36881": "-07:00",
+        "36882": "-07:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0006.jpg",
+      "bytes": 227675,
+      "sha256": "9800c8bfa74039e5d1e8168ad2776c91da143c760073113cae8cf57c57fab83b",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-08:00",
+        "36881": "-08:00",
+        "36882": "-08:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0007.jpg",
+      "bytes": 226115,
+      "sha256": "050ed3705c4aae5fb5bd40e51421d6a045b475d8dc63e5d2893c68b0ff2b7f47",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:45",
+        "36881": "+05:45",
+        "36882": "+05:45"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0008.jpg",
+      "bytes": 224350,
+      "sha256": "c4e9fd6d368a70b2db15c0b3d7bb96732aa972b6174a4d4ff299b8f2c35b7d57",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:30",
+        "36881": "+05:30",
+        "36882": "+05:30"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0009.jpg",
+      "bytes": 91681,
+      "sha256": "44fff44fea35b3264c694a2849fa3083c583aeb401ef094e417c7c4aa221a0ea",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+00:00",
+        "36881": "+00:00",
+        "36882": "+00:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "chromium-B-batch.zip",
+      "filename": "marker-0010.jpg",
+      "bytes": 193826,
+      "sha256": "5234e675d651a8fea11cc220d4020bb7d432804042b7861dbb230d1dbff5e113",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:05:06",
+        "36867": "2026:10:21 00:05:06",
+        "36868": "2026:10:21 00:05:06",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0001.jpg",
+      "bytes": 321431,
+      "sha256": "00c030afc3b098895573c62be03924053f51d5be5d32b6a1021692c1bed901ef",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0002.jpg",
+      "bytes": 110238,
+      "sha256": "7b2b42ddf3107ed09786f0f9c2381b7855fd99133d2247038efb6549d1cb7fd0",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0003.jpg",
+      "bytes": 295147,
+      "sha256": "76fc613d54a71ac623cdcf04846fc74d76af06e445daaba362fa068494e105fa",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0004.jpg",
+      "bytes": 330116,
+      "sha256": "e7526e8b78637f03b753189a74cdaa439632e80dff4a63463e4cc6934aa28bfd",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0005.jpg",
+      "bytes": 321431,
+      "sha256": "86995b2a57c63096a7f4cae7329c0f07bca998b7c613a994be1bd5688774469c",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-07:00",
+        "36881": "-07:00",
+        "36882": "-07:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0006.jpg",
+      "bytes": 321431,
+      "sha256": "dea0a6d9e7959925906b661f6abdfdeef6f44699fdead0543ceaa99012feba52",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-08:00",
+        "36881": "-08:00",
+        "36882": "-08:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0007.jpg",
+      "bytes": 319638,
+      "sha256": "8b0121412402d9e4ad1d08ad8489106f5c4967c5c898c12217dc0dc5586588de",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:45",
+        "36881": "+05:45",
+        "36882": "+05:45"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0008.jpg",
+      "bytes": 316655,
+      "sha256": "b4c811d37be52aacb9442ee878f1dcb8d37ab1399482d8bbeb001ebe76ec3ec3",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:30",
+        "36881": "+05:30",
+        "36882": "+05:30"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0009.jpg",
+      "bytes": 170307,
+      "sha256": "75d8409d91ae16163f60a817a9ba2ad04fc67a03e5f847d39345a98c374bf42a",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+00:00",
+        "36881": "+00:00",
+        "36882": "+00:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-A-batch.zip",
+      "filename": "marker-0010.jpg",
+      "bytes": 285785,
+      "sha256": "e46690c12b2dc8f3ac54d27d3dd8a377070d673783928e67abcbe51ca073d25d",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:05:06",
+        "36867": "2026:10:21 00:05:06",
+        "36868": "2026:10:21 00:05:06",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0001.jpg",
+      "bytes": 221736,
+      "sha256": "308b6b5d616f8dce572a0a5d8212de5928ad683cdea41f2ed605ce25c5f1e28a",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0002.jpg",
+      "bytes": 47375,
+      "sha256": "40f632ba5ff95f4dec575e1d50dd56b5b47dd3ef394e279f917d7f0ba3433b5e",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0003.jpg",
+      "bytes": 204596,
+      "sha256": "a4c95159a87ebb88371130e746f8156b66f5701f461e83b478521e4b2cd3d6f1",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0004.jpg",
+      "bytes": 229729,
+      "sha256": "ff34500137a3d48d84cf1efe1d2f27eaf9ceef2628b3f1066bcf4b5180937031",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0005.jpg",
+      "bytes": 221736,
+      "sha256": "7663e5fb3bbff955aa2b5efa5c511d4343170728da0c4d0b05633793861ca41a",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-07:00",
+        "36881": "-07:00",
+        "36882": "-07:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0006.jpg",
+      "bytes": 221736,
+      "sha256": "a88c3a1a1cd8074d7fb24912236a113ffb36fdb0738054e6cc6fa601d57db55f",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:11:01 01:30:00",
+        "36867": "2026:11:01 01:30:00",
+        "36868": "2026:11:01 01:30:00",
+        "36880": "-08:00",
+        "36881": "-08:00",
+        "36882": "-08:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0007.jpg",
+      "bytes": 219464,
+      "sha256": "04b314982b51c61294e7470844c9f3ff82d7733118d86bb80c2ecd8be53af025",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:45",
+        "36881": "+05:45",
+        "36882": "+05:45"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0008.jpg",
+      "bytes": 215563,
+      "sha256": "08fdcf2f486fe9abace65cf385934d1d9f30cb1cc1946de1c8b9303cfaa31d68",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+05:30",
+        "36881": "+05:30",
+        "36882": "+05:30"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0009.jpg",
+      "bytes": 91598,
+      "sha256": "5b44f9775dd12ca32af1b54f38a9e0193ffc4ab516737de8b2050bf73a9a5b9d",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:00:00",
+        "36867": "2026:10:21 00:00:00",
+        "36868": "2026:10:21 00:00:00",
+        "36880": "+00:00",
+        "36881": "+00:00",
+        "36882": "+00:00"
+      },
+      "interiorPixel": [
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "archive": "webkit-B-batch.zip",
+      "filename": "marker-0010.jpg",
+      "bytes": 195446,
+      "sha256": "d8830e2cef5fbb3c48a367eda7aafb5858fe26d293f0a6325b0bbd3bbe247738",
+      "size": [
+        2000,
+        2000
+      ],
+      "tags": {
+        "305": "Photo markers comparison",
+        "306": "2026:10:21 00:05:06",
+        "36867": "2026:10:21 00:05:06",
+        "36868": "2026:10:21 00:05:06",
+        "36880": "+10:00",
+        "36881": "+10:00",
+        "36882": "+10:00"
+      },
+      "interiorPixel": [
+        254,
+        0,
+        0
+      ],
+      "pass": true
+    }
+  ]
+}

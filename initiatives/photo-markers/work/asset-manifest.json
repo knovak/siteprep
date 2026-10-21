@@ -1,0 +1,180 @@
+{
+  "fontCommit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "pyodide": "314.0.7",
+  "pillow": "12.2.0",
+  "files": [
+    {
+      "path": "assets/Noto-LICENSE",
+      "bytes": 4377,
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "source": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/LICENSE"
+    },
+    {
+      "path": "assets/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "sha256": "c976e4b1b99edc88775377fcc21692ca4bfa46b6d6ca6522bfda505b28ff9d6a",
+      "source": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSans/NotoSans-Bold.ttf"
+    },
+    {
+      "path": "assets/exifr.mjs",
+      "bytes": 75505,
+      "sha256": "71e59a46f2d09263485da3d77cd7d9bf5c6a61f69e5e7e39a22a7b8e9066001c"
+    },
+    {
+      "path": "assets/fflate.mjs",
+      "bytes": 90922,
+      "sha256": "b7ca4450b19559a1d50eb381adcee94b82449674be4cd17789d9beba7e6122a1"
+    },
+    {
+      "path": "assets/jpeg/CHANGELOG.md",
+      "bytes": 1489,
+      "sha256": "c88d643718550c60b3cf68eb7a4ad7a6e0178204684470ea780caf7e37dc54b6"
+    },
+    {
+      "path": "assets/jpeg/LICENSE",
+      "bytes": 11343,
+      "sha256": "8c3690b09c168f196446cf5904332023bbc15eb92b6a7cee470ac829e6a65d20"
+    },
+    {
+      "path": "assets/jpeg/README.md",
+      "bytes": 3705,
+      "sha256": "fabfec0ca740c2b7535014cad31b6b7801ff17dcdd31ef1a7120903da7733627"
+    },
+    {
+      "path": "assets/jpeg/codec/LICENSE.codec.md",
+      "bytes": 5208,
+      "sha256": "8213556ea36ce3a0f2883db06238463e2452fdad68e3d2e2e4ace2189477a37e"
+    },
+    {
+      "path": "assets/jpeg/codec/dec/mozjpeg_dec.d.ts",
+      "bytes": 247,
+      "sha256": "11c64b138c5974db9ddaa3003e9d7758972277d3f7c35d98be48c796e3c64f57"
+    },
+    {
+      "path": "assets/jpeg/codec/dec/mozjpeg_dec.js",
+      "bytes": 36057,
+      "sha256": "a6836b2d03d4fdda64b4aef380e6298d7421c070e7e1e4cf13ec129df7aa0b5e"
+    },
+    {
+      "path": "assets/jpeg/codec/dec/mozjpeg_dec.wasm",
+      "bytes": 166470,
+      "sha256": "a7c4b12169817e779ff4af137981393ae924944e167ad1bd95747c9199162d3e"
+    },
+    {
+      "path": "assets/jpeg/codec/enc/mozjpeg_enc.d.ts",
+      "bytes": 821,
+      "sha256": "d87b1d5872f90669bf97f8b83a47cb77b3501efdd0ddc1d3bf6c20ab724cebeb"
+    },
+    {
+      "path": "assets/jpeg/codec/enc/mozjpeg_enc.js",
+      "bytes": 38422,
+      "sha256": "93d3b28a4c9d3278acbbe0e23ff244ec3a6bfb13e51647b87eea311a8d747694"
+    },
+    {
+      "path": "assets/jpeg/codec/enc/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "sha256": "24d4177f1c4963e2058b107189249651c61fdef125570e79b1dfb63c8bb49326"
+    },
+    {
+      "path": "assets/jpeg/codec/pre.js",
+      "bytes": 847,
+      "sha256": "b4d7da800804a2390eefa7805bb5f4e20cf349681334eb9a1715d2c58a1822b2"
+    },
+    {
+      "path": "assets/jpeg/decode.d.ts",
+      "bytes": 899,
+      "sha256": "7ab8480725d27454361813ec3cccffb7eac188df92a712fc8e7db826787d48ca"
+    },
+    {
+      "path": "assets/jpeg/decode.js",
+      "bytes": 1597,
+      "sha256": "399ae5ee673223c43d68727192eac9545796a031710608c950381b33c1df6429"
+    },
+    {
+      "path": "assets/jpeg/emscripten-types.d.ts",
+      "bytes": 4086,
+      "sha256": "acc5de7ea6c944da8709c50a8ea0d7bb0a2c2a62db61c6f1dc1f248e876b1b40"
+    },
+    {
+      "path": "assets/jpeg/encode.d.ts",
+      "bytes": 1114,
+      "sha256": "30afa216ca7fc03e4e38a2edf4457e6e01d791ac003c4da48cd93973706959c6"
+    },
+    {
+      "path": "assets/jpeg/encode.js",
+      "bytes": 1623,
+      "sha256": "14dd2fd61c1ce1f1552d217b3bb353faa1c593ff9ad73f4a8ff3830c03ebc4fa"
+    },
+    {
+      "path": "assets/jpeg/index.d.ts",
+      "bytes": 133,
+      "sha256": "3878cfb0f7c5dcfd6e6bce4d37719ed11318a359d362acfd4305d0082250f98b"
+    },
+    {
+      "path": "assets/jpeg/index.js",
+      "bytes": 98,
+      "sha256": "281f1d048db337aaa2412503423b2ca99eeb8ec104b471618ee3845930a27688"
+    },
+    {
+      "path": "assets/jpeg/meta.d.ts",
+      "bytes": 1127,
+      "sha256": "532fc1c4fa69d08f0453abc2632633ce9f5d9ae19152fe198a91d7fb639ed9c2"
+    },
+    {
+      "path": "assets/jpeg/meta.js",
+      "bytes": 683,
+      "sha256": "f1c1f3cd95d3a03de8e87b59e12aaf4f2d9a16a0b20531373d9164c26ca84fce"
+    },
+    {
+      "path": "assets/jpeg/package.json",
+      "bytes": 916,
+      "sha256": "7b1e0578e6c3361393a8dc3873454e6b93fdc309911bad33bd911a70092ec783"
+    },
+    {
+      "path": "assets/jpeg/utils.d.ts",
+      "bytes": 987,
+      "sha256": "8babb431007e8a980ad7719adaf6ae76979cae50ca1014c925f87e7bcb16012e"
+    },
+    {
+      "path": "assets/jpeg/utils.js",
+      "bytes": 1272,
+      "sha256": "e71535eeee820d68b68ece7c8af761c39f3ddec93d3d957d2f83b19191339e0d"
+    },
+    {
+      "path": "assets/opentype.mjs",
+      "bytes": 494695,
+      "sha256": "e139522ac432bb38fb4878d772012f0ad351993c36d7815d65a9890fb3fe68fb"
+    },
+    {
+      "path": "assets/pyodide/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "bytes": 1037806,
+      "sha256": "e29838b7a756e4ee0f27a9cfa9a387ee0dfa2e9dd44be2dd595130b9f9d93ac3",
+      "source": "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pillow-12.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
+    },
+    {
+      "path": "assets/pyodide/pyodide-lock.json",
+      "bytes": 119077,
+      "sha256": "5dc2fc119108bc148c7457dc86e7675b5c87e1cafd420b9c34c1eaef7b36c010"
+    },
+    {
+      "path": "assets/pyodide/pyodide.asm.mjs",
+      "bytes": 1250344,
+      "sha256": "f7cdc8ece80678ceb712f8e65ebe6d3a83203a180c399865f49612a051693635"
+    },
+    {
+      "path": "assets/pyodide/pyodide.asm.wasm",
+      "bytes": 9598218,
+      "sha256": "cc36e3cab04fdfc9a63ff13eb52eae2b911bf46c025cc7b281f394bd3de1d5e6"
+    },
+    {
+      "path": "assets/pyodide/pyodide.mjs",
+      "bytes": 17931,
+      "sha256": "6f1d60f7bf529beb300f0f47983c921d3982363640ba20af0e38efdddbc66109"
+    },
+    {
+      "path": "assets/pyodide/python_stdlib.zip",
+      "bytes": 2545637,
+      "sha256": "fa1957e5777068fc4f7437f96d860ae2fbe9c19732ba06c84e004ec16dd7dd7a"
+    }
+  ]
+}

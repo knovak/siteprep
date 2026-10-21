@@ -46,6 +46,20 @@ Record the evidence-backed implementation choice in a dated `decisions.md` entry
 
 ## Implementation boundaries
 
+### Phase 1 receipt — October 21, 2026
+
+The [measured comparison](notes/wasm-comparison-20261021.html) establishes B,
+browser drawing plus MozJPEG WASM, as the provisional desktop path. Both
+prototypes pass the final engine comparison with the receipt's explicit
+network-mode limitation; native Pillow independently verifies all 40 archived
+JPEGs. Build the selected serial pipeline next, retaining the two-route harness
+only as development evidence and shipping a single runtime. Resolve the
+WebKit offline-emulation Blob-decoder failure in the pipeline's verification
+strategy and test real disconnected Safari/iOS before claiming support.
+
+Physical iOS findings remain unavailable and are a separate `data:` acceptance
+item. All later editor, timezone, CSV, budgets and graduation phases remain.
+
 Create directories only when their phase produces real content. The intended structure is `work/` for application source, runtime assets and package locks; `work/test/` for fixtures and tests; and `notes/` for dated comparison and acceptance receipts. Document the actual build/test commands alongside the first executable increment. Use locked dependencies and locally provisioned tools. Do not edit protected repository scripts or shared libraries during the sweep.
 
 Separate these responsibilities so failures can be exercised independently:
