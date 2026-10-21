@@ -5,7 +5,7 @@ process.chdir(import.meta.dirname);
 const hash = (b) => createHash("sha256").update(b).digest("hex");
 await mkdir("dist/notices", { recursive: true });
 await build({
-  entryPoints: { client: "client.mjs", worker: "worker.mjs", probe: "test/probe.mjs" },
+  entryPoints: { client: "client.mjs", worker: "worker.mjs", probe: "test/probe.mjs", editor: "editor.mjs" },
   outdir: "dist",
   bundle: true,
   format: "esm",
@@ -14,6 +14,7 @@ await build({
   legalComments: "eof",
 });
 await copyFile("node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm", "dist/mozjpeg_enc.wasm");
+for (const file of ["index.html", "editor.css"]) await copyFile(file, "dist/" + file);
 const commit = "ffebf8c1ee449e544955a7e813c54f9b73848eac";
 for (const [name, source, expected] of [
   [
@@ -67,6 +68,9 @@ for (const file of [
   "client.js",
   "worker.js",
   "probe.js",
+  "editor.js",
+  "index.html",
+  "editor.css",
   "mozjpeg_enc.wasm",
   "NotoSans-Bold.ttf",
 ]) {

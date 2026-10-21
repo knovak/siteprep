@@ -112,3 +112,14 @@ Build the Phase 3 single-image editor next. Its preview must consume verified
 JPEG bytes and keep previous results labeled/obtainable; the pipeline does not
 implement those UI or download controls yet. Physical-device, full browser,
 resource/batch/CSV and graduation acceptance remain as listed above.
+
+## Phase 3 receipt — October 22, 2026
+
+[The single-image editor](notes/marker-editor-20261022.html) adds the three
+designs, colors/fonts, effective time and repeated-hour choices, labeled drafts,
+frozen generation, decoded-JPEG previews and deliberate downloads. Both desktop
+engine journeys and all 16 native downloaded-file checks pass, including offline
+recovery and cancellation/retry. Earlier results remain labeled and obtainable
+after edits. The receipt distinguishes semantic select tests from native keyboard
+acceptance and leaves the full T9 matrix open. Build Phase 4 CSV/batch and ZIP
+delivery next; physical-iOS and graduation prerequisites remain unchanged.

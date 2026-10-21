@@ -174,6 +174,13 @@ export class ExportPipeline {
       return result;
     });
   }
+  preview(settings) {
+    const snapshot = structuredClone(settings);
+    return this.enqueue(async () => {
+      await this.ready();
+      return this.send({ kind: "preview", settings: snapshot });
+    });
+  }
   export(job, { signal } = {}) {
     if (job?.owner !== this.owner)
       return Promise.reject(

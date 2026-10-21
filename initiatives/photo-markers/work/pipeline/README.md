@@ -1,8 +1,8 @@
 # Verified export pipeline
 
-Phase 2's browser export core. It provides frozen settings/time resolution,
-serial WASM JPEG exports and independent final-byte verification. It has no
-editor, CSV interface, download/ZIP manager or production deployment yet.
+The browser export core and single-image editor provide frozen settings/time,
+serial WASM JPEG exports, independent final-byte verification and deliberate
+downloads. CSV/ZIP management and production deployment remain later phases.
 
 ## Reproduce
 
@@ -15,6 +15,8 @@ npm run build
 npm test
 npm run test:browser
 python3 test/verify-files.py
+npm run test:editor
+python3 test/verify-editor.py
 ```
 
 The last command needs an independent native Pillow installation. The receipt
@@ -25,7 +27,9 @@ dependency of this pipeline.
 
 `dist/` is generated and ignored. Runtime consumers need `client.js`,
 `worker.js`, `mozjpeg_enc.wasm`, `NotoSans-Bold.ttf` and `notices/`. The build also
-produces an internal test runner/probe; those are not the future release UI.
+produces the editor (`index.html`, `editor.js`, `editor.css`) and an internal
+test runner/probe. Serve `dist/` over localhost and open its `index.html` for
+the editor. Test-only files are not a future production bundle.
 `build-inputs.json` records exact bundle/asset hashes and the lockfile hash.
 All runtime dependencies are bundled locally, and the font comes from a pinned
 commit with a checked SHA-256. Only build preparation may download assets.
@@ -44,7 +48,7 @@ const run = pipeline.createRun([
 ]);
 const result = await pipeline.export(run.jobs[0]);
 // result.bytes is obtainable only after final JPEG verification succeeds.
-// The later editor may offer it through a deliberate download action.
+// The editor offers these bytes through a deliberate download action.
 pipeline.close();
 ```
 
@@ -61,8 +65,15 @@ returned bytes are owned by the caller and remain available. New exports
 restart the worker from retained local code/WASM/font bytes. An AbortSignal
 passed as the second export argument cancels the active generation; queued
 jobs from that worker epoch are also cancelled. `close()` additionally releases
-the pipeline's runtime/font references. UI result ownership and compressed
-output budgets belong to the later delivery layer.
+the pipeline's runtime/font references. The editor owns one retained JPEG URL
+and checks its compressed-output budget before replacement.
+
+`preview(settings)` queues a 320-pixel draft using the same renderer and loaded
+font. It does not encode, verify or expose downloadable bytes. Full exports
+add a bounded `preview` ImageData sampled from the independently decoded final
+JPEG. The editor draws it into a canvas, avoiding WebKit's offline Blob-image
+failure. See [the editor techdoc](../../EDITOR_TECHDOC.md) for UI ownership,
+failure/retry, filenames and verification details.
 
 `loadFont(key, arrayBuffer)` registers a local TTF/OTF under a new key, without
 uploading or fetching a font URL. Keys cannot replace earlier fonts, so retries
@@ -136,7 +147,8 @@ measurement or cap of total browser/process memory. One full-resolution render
 runs at a time and its source raster is released before decoding. The 4096
 desktop functional result does not establish physical-iOS capacity; keep that
 acceptance item open. Branded desktop browsers, physical iOS/Files, screen
-readers, editor/CSV/ZIP behavior and final performance/memory acceptance remain.
+readers, CSV/ZIP behavior and final performance/memory acceptance remain. The
+Phase 3 editor receipt adds the local UI, offline and downloaded-file checks.
 
 Pinned runtime inputs/licenses: Temporal 0.5.1 (ISC), JSBI (Apache-2.0), jSquash
 JPEG 1.6.0 (Apache-2.0 wrapper plus codec notices), exifr 7.1.3 (MIT), OpenType.js

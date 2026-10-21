@@ -27,3 +27,7 @@ Compared two pinned WASM export prototypes in Chromium and WebKit; independently
 ## 2026-10-21 — Build the selected serial WASM export pipeline with strict settings, time resolution and independent verification
 
 Built the selected serial WASM export core with strict frozen time/settings, local fonts and independent read-back. 45 settings tests, both desktop engine suites and 52 native JPEG oracles pass, including offline restart. Seeded the single-image editor from Phase 3; physical-device evidence remains open.
+
+## 2026-10-21 — Build the single-image editor with effective time, verified preview and deliberate JPEG download
+
+Built the single-image editor with strict effective time, labeled drafts and verified JPEG previews/downloads. Two desktop engine UI suites, 16 native downloaded-file checks and the existing core regressions pass. Seeded Phase 4 CSV/batch delivery; physical-iOS and full accessibility remain open.

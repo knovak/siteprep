@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photo markers · Make a marker</title>
+  <link rel="stylesheet" href="./editor.css">
+  <script type="module" src="./editor.js"></script>
+</head>
+<body>
+  <header><p class="eyebrow">PHOTO MARKERS / SINGLE IMAGE</p><h1>Make a marker for your photos.</h1>
+    <p class="intro">Make a square JPEG with a photo timestamp. Add it between groups of photos as a title card or chapter marker.</p></header>
+  <main>
+    <section class="notice" aria-label="Local processing">
+      <p>Everything is made in this browser. After preparation, you can work offline. Nothing you enter is uploaded.</p>
+      <p>Settings, local fonts and results last only in this tab. Download your JPEG before closing or reloading. Physical iOS download and memory checks are still pending.</p>
+      <p id="runtime" role="status">Preparing the local image tools…</p>
+      <button id="prepare" type="button" hidden>Retry preparation</button>
+    </section>
+    <div class="workspace">
+      <form id="editor" novalidate>
+        <section class="card"><h2>01 <span>Design your marker</span></h2>
+          <label for="title">Title <span class="hint">optional · one line</span></label>
+          <input id="title" name="title" type="text" placeholder="A new chapter" autocomplete="off">
+          <label for="shape">Shape</label><select id="shape" name="shape"><option value="donut">Donut</option><option value="star">Star</option><option value="solid">Solid color</option></select>
+          <div id="colors" class="colors"></div>
+          <details id="advanced"><summary>Size, font & outline</summary>
+            <label for="size">Image side, in pixels</label><input id="size" name="size" type="number" min="256" max="4096" step="1" value="2000" aria-describedby="size-help">
+            <p id="size-help" class="hint">256–4096 square pixels. Default 2000. JPEG quality 95.</p>
+            <label for="font">Font</label><select id="font" name="font"><option value="noto-bold">Noto Sans Bold · bundled</option></select>
+            <label for="local-font">Load a local TTF or OTF</label><input id="local-font" type="file" accept=".ttf,.otf" aria-describedby="font-help">
+            <p id="font-help" class="hint">Up to 16 MiB. Kept in this tab only; reload the file in a new session.</p>
+            <label for="outline_width">Outline width</label><input id="outline_width" name="outline_width" value="auto" aria-describedby="outline-help">
+            <p id="outline-help" class="hint">Use auto, or 0–64 export pixels.</p>
+          </details>
+        </section>
+        <section class="card"><h2>02 <span>Place it in time</span></h2>
+          <p class="hint">Leave both date and time blank to capture now when you Generate. A date alone means midnight in the selected zone.</p>
+          <div class="two"><div><label for="date">Date</label><input id="date" name="date" type="text" placeholder="YYYY-MM-DD" inputmode="numeric" autocomplete="off"></div>
+            <div><label for="time">Time <span class="hint">24-hour</span></label><input id="time" name="time" type="text" placeholder="HH:MM:SS" inputmode="numeric" autocomplete="off"></div></div>
+          <label for="timezone">Timezone <span class="hint">search by region or city</span></label><input id="timezone" name="timezone" list="zones" autocomplete="off" aria-describedby="zone-help"><datalist id="zones"></datalist>
+          <p id="zone-help" class="hint"></p>
+          <div id="repeated" hidden><label for="occurrence">This local time happens twice</label><select id="occurrence" name="occurrence"><option value="">Choose Earlier or Later</option></select></div>
+          <div id="effective" class="inset" role="status"></div>
+        </section>
+        <div id="error" class="error" role="alert" tabindex="-1" hidden></div>
+        <div class="actions"><button id="generate" type="submit" disabled>Generate JPEG</button><button id="cancel" type="button" hidden>Cancel</button><button id="retry" type="button" hidden>Retry frozen generation</button></div>
+        <p id="progress" role="status"></p><p id="frozen" class="hint"></p>
+      </form>
+      <aside>
+        <section class="card preview"><h2>Draft preview</h2><p id="draft-status" class="hint" role="status">Preparing preview…</p><canvas id="draft" width="320" height="320" role="img" aria-label="Draft marker preview" hidden></canvas><p class="hint">Draft only. The verified preview below shows the JPEG you can download.</p></section>
+        <section class="card" id="result" hidden><h2>Verified JPEG</h2><p id="result-state" class="badge"></p>
+          <canvas id="result-image" width="420" height="420" role="img" aria-label="Verified marker JPEG"></canvas>
+          <p id="result-summary"></p><p id="result-name" class="filename"></p>
+          <a id="download" class="button">Download JPEG</a><button id="discard" type="button" class="secondary">Discard result</button>
+          <details><summary>Verified file details</summary><p id="result-details" class="hint"></p></details>
+          <p class="hint">Download is a separate action. Check your Downloads or Files app; this page cannot confirm that you saved the file.</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <datalist id="friendly-colors"></datalist>
+  <footer><p>Single-image editor · Batch import is still to come.</p></footer>
+</body>
+</html>

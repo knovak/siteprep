@@ -76,6 +76,11 @@ Keyboard-complete the workflow: select a shape, change its colors/title/font, se
 
 Delay font loading, fail initialization, Retry, and simulate a validation error. Focus reaches the first actionable error and returns sensibly. A draft is labeled; authoritative preview comes from the verified file. Reload honestly loses session-only state as documented. Batch settings export/reimport explains missing local font files rather than fetching font keys.
 
+Phase 3 evidence is in [the October 22 editor receipt](notes/marker-editor-20261022.html).
+It records local T5 journeys, two-engine automated T9 checks and independently
+decoded downloads, including the WebKit offline-preview correction. Full native
+keyboard, screen-reader, zoom and physical-device coverage remain unrun.
+
 ## T6 — CSV parsing, defaults and ten-row fixture
 
 Create a ten-record valid fixture spanning all three shapes, blank title, repeated titles/stems, quoted comma/escaped quote, explicit seconds, date-only midnight, now, different zone, both fall-back occurrences and per-row style overrides. Retain a record of all blank optional cells as a real marker. Store exact expected record IDs, resolved settings, filenames and times alongside it. A separate invalid variant inserts a nonblank invalid color/date and must stop generation until corrected or explicitly excluded.
