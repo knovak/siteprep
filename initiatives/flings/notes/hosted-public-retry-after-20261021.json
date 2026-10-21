@@ -1,0 +1,569 @@
+{
+  "observedAt": "2026-10-21T08:27:34.951Z",
+  "origin": "https://flings-test.ken-novak.chatgpt.site",
+  "siteVersion": 20,
+  "accessRevision": 2,
+  "scope": "Anonymous organizer startup only; injected status responses are browser-local. No sign-in or business mutation.",
+  "results": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 1280,
+      "failure": "network",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Unable to refresh sign-in and gathering details. Try reloading the workspace. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 1280,
+      "failure": "503",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 1280,
+      "failure": "invalid-json",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 1280,
+      "failure": "invalid-shape",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 390,
+      "failure": "network",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Unable to refresh sign-in and gathering details. Try reloading the workspace. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 390,
+      "failure": "503",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 390,
+      "failure": "invalid-json",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "width": 390,
+      "failure": "invalid-shape",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 1280,
+      "failure": "network",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Unable to refresh sign-in and gathering details. Try reloading the workspace. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 1280,
+      "failure": "503",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 1280,
+      "failure": "invalid-json",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 1280,
+      "failure": "invalid-shape",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 390,
+      "failure": "network",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Unable to refresh sign-in and gathering details. Try reloading the workspace. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 390,
+      "failure": "503",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 390,
+      "failure": "invalid-json",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "width": 390,
+      "failure": "invalid-shape",
+      "methods": [
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET",
+        "GET"
+      ],
+      "blockedNonReads": [
+        {
+          "method": "POST",
+          "path": "/cdn-cgi/challenge-platform/(redacted)"
+        }
+      ],
+      "injected": 1,
+      "failureAlert": "Sign-in status is unavailable. Reload workspace",
+      "hiddenIdentity": true,
+      "recoveredAlert": "Sign in with ChatGPT to open your organizer workspace. Reload workspace",
+      "noCreateControls": true,
+      "fits": true,
+      "pass": true
+    }
+  ]
+}

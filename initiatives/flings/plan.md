@@ -719,3 +719,8 @@ recovery journeys pass. Site version 20 is built and saved, but automatic
 approval review rejected its publication operation even after rechecking the
 Test target. Test remains version 19; a post-publication hosted retry receipt
 is still required after explicit approval. Phase 6 remains open.
+
+The user subsequently approved the exact saved-version publication. Version
+20 is now live on the unchanged public Test site; the new hosted receipt passes
+all 16 anonymous failure/retry cases, including both WebKit malformed-JSON
+failures above. This targeted gap is closed; broader Phase 6 acceptance remains.
