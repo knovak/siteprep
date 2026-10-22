@@ -158,3 +158,13 @@ JPEG 1.6.0 (Apache-2.0 wrapper plus codec notices), exifr 7.1.3 (MIT), OpenType.
 `1f62015f53e28bd18b2d7c8a3ca3326577efc445`; Noto is pinned to
 `ffebf8c1ee449e544955a7e813c54f9b73848eac`. The synthetic OTF fixture is generated
 from authored triangle geometry, without modifying or copying the Noto font.
+
+## CSV batches
+
+Open `batch.html` for import/review, inherited defaults and row edits, frozen
+generation/retry, deliberate ZIP parts, individual downloads and final reports.
+See [BATCH_TECHDOC](../../BATCH_TECHDOC.html) for schema, ownership, accounting
+and the reproduction/evidence contract. `npm test` includes CSV/batch faults;
+`npm run test:batch` exercises real exports and retrieval. The independent
+`test/verify-batch.py` requires native Pillow. Physical iOS acceptance remains
+open; save output/settings before navigating between the two editor pages.

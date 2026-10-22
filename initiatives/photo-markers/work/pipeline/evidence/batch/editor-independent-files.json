@@ -1,0 +1,118 @@
+{
+  "oracle": "native Pillow",
+  "version": "12.3.0",
+  "results": [
+    {
+      "file": "chromium-date.jpg",
+      "sha256": "0cff969c896254e652e9819df6e9f6fcbaeef2c4cd682ffdd1fefde2a694d7e3",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-previous.jpg",
+      "sha256": "0cff969c896254e652e9819df6e9f6fcbaeef2c4cd682ffdd1fefde2a694d7e3",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-later.jpg",
+      "sha256": "fd1499eb67df87277d4a8a4d9996b6563d0165b516d2de90319e4f5678f480d7",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-08:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-now.jpg",
+      "sha256": "e3d3017363cfb99ae07694e587b8a3d3578647ce954ba41ac6a1fc7ae46d324a",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-repeat-download.jpg",
+      "sha256": "e3d3017363cfb99ae07694e587b8a3d3578647ce954ba41ac6a1fc7ae46d324a",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-retry.jpg",
+      "sha256": "d832c898327ff5536509973527f6ad6b878a7c20cf75221fe0f7ce58728183a3",
+      "local": "2026:10:23 00:00:01",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-local-font.jpg",
+      "sha256": "6911fdcd66f71dd927f86d99e1d01b81e7976e038abd4d3bda1fc4017dc65d01",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "chromium-offline.jpg",
+      "sha256": "c260bdecf3bc34e5f04a2a7c692b6817b0eb68da93058b9ad5e708253a43a288",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-date.jpg",
+      "sha256": "3bf553a506db123427751f78e8e3526ab7df11e4e7f5ec35f4c5ac9cc0990d6b",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-previous.jpg",
+      "sha256": "3bf553a506db123427751f78e8e3526ab7df11e4e7f5ec35f4c5ac9cc0990d6b",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-later.jpg",
+      "sha256": "f3c93463a5be67c9e20894830774af237c230c93903370c9bc79a696c37d36c0",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-08:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-now.jpg",
+      "sha256": "2a27f1315a24d610510854c3af48ab75761a26847fcc6f28fc050f70ddd6c482",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-repeat-download.jpg",
+      "sha256": "2a27f1315a24d610510854c3af48ab75761a26847fcc6f28fc050f70ddd6c482",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-retry.jpg",
+      "sha256": "50e828332e9a249690f5ba50e21e77ce583aa82badf17df1d359d4671d955c39",
+      "local": "2026:10:23 00:00:01",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-local-font.jpg",
+      "sha256": "5bd91072228064525d9fad030353088a1554a3f9e947f0a5b3cec1c208b96b5d",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    },
+    {
+      "file": "webkit-offline.jpg",
+      "sha256": "c260bdecf3bc34e5f04a2a7c692b6817b0eb68da93058b9ad5e708253a43a288",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "previewMatches": true
+    }
+  ]
+}

@@ -142,3 +142,14 @@ worker cases separately from the final success. Browser/OS timezone-data and
 memory limits remain explicit. UI previews/downloads, CSV/parts/budgets,
 branded browser/device and full accessibility acceptance belong to later phases;
 these local checks do not close the physical-iOS `data:` item or T5–T12.
+
+## October 22 CSV batch receipt
+
+[The Phase 4 receipt](notes/csv-batches-20261022.html) links 64 pure tests, nine
+scenario groups per desktop engine, 220 independently decoded JPEGs and the
+exact tested source. Local T6–T8 checks include parser bounds, stable identity,
+inheritance, frozen retry/cancellation, multi-part byte preservation, injected
+packaging/resource faults and explicit release. T9 has supplementary automated
+layout/axe results at three widths; the branded-browser, physical-iOS/Files,
+screen-reader/keyboard/zoom and complete T11 performance/memory matrix remain
+unrun. No deployment or graduation is claimed.

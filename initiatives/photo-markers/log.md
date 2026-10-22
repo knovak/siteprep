@@ -31,3 +31,7 @@ Built the selected serial WASM export core with strict frozen time/settings, loc
 ## 2026-10-21 — Build the single-image editor with effective time, verified preview and deliberate JPEG download
 
 Built the single-image editor with strict effective time, labeled drafts and verified JPEG previews/downloads. Two desktop engine UI suites, 16 native downloaded-file checks and the existing core regressions pass. Seeded Phase 4 CSV/batch delivery; physical-iOS and full accessibility remain open.
+
+## 2026-10-22 — Add CSV review, frozen batch jobs, ZIP parts and manifests
+
+Added CSV review and inheritance, immutable record IDs, frozen batch/retry, deliberate bounded JPEG/ZIP delivery and manifests/reports; 64 pure tests, both engine batch journeys and 220 independent JPEG checks pass. Phase 5 acceptance remains.

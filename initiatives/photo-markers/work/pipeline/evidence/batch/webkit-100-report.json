@@ -1,0 +1,4035 @@
+{
+  "schema": "photo-markers-run-v1",
+  "runId": "c6fe4230-ff38-40d3-8657-717b33535b91",
+  "createdAt": "2026-10-21T14:00:01.000Z",
+  "reportedAt": "2026-10-25T14:00:01.000Z",
+  "captured": {
+    "now": "2026-10-21T14:00:01Z",
+    "timezone": "Australia/Brisbane",
+    "fallback": false
+  },
+  "retainedBytes": 8984400,
+  "peakAccountedBytes": 9398516,
+  "budgetBytes": 52428800,
+  "message": "Finished. Download each part deliberately, then check your saved files.",
+  "rows": [
+    {
+      "id": "0001",
+      "line": 2,
+      "filename": "record-0-20261021-140001-0001.jpg",
+      "source": {
+        "values": {
+          "title": "Record 0"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 0",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 21860,
+      "sha256": "42bdcc76850e37f8b87ee028153766d1dd49cf3282942a0955411e2a573aff3e"
+    },
+    {
+      "id": "0002",
+      "line": 3,
+      "filename": "record-1-20261021-140001-0002.jpg",
+      "source": {
+        "values": {
+          "title": "Record 1"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 1",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 21523,
+      "sha256": "d9eb794cc9ff98adc05e94ff7f9a719127959b8bebb7300a5d5f4b64288f4bfa"
+    },
+    {
+      "id": "0003",
+      "line": 4,
+      "filename": "record-2-20261021-140001-0003.jpg",
+      "source": {
+        "values": {
+          "title": "Record 2"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 2",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 21917,
+      "sha256": "c0f8f85a2acc0570d9d785a9ce021a3ab354e6ca4d11b6039b342c27380d07d3"
+    },
+    {
+      "id": "0004",
+      "line": 5,
+      "filename": "record-3-20261021-140001-0004.jpg",
+      "source": {
+        "values": {
+          "title": "Record 3"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 3",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 21952,
+      "sha256": "772dbaadbeb3725d1a3e9ee10d87479b36770966d443f7e02af50ce45726da77"
+    },
+    {
+      "id": "0005",
+      "line": 6,
+      "filename": "record-4-20261021-140001-0005.jpg",
+      "source": {
+        "values": {
+          "title": "Record 4"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 4",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21849,
+      "sha256": "df4f25d9d3b47b35d74ff182c5b79eefdc6e198682ae0660387321c0f4368d61"
+    },
+    {
+      "id": "0006",
+      "line": 7,
+      "filename": "record-5-20261021-140001-0006.jpg",
+      "source": {
+        "values": {
+          "title": "Record 5"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 5",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21826,
+      "sha256": "9a49bf5e7c35b91c02d302e3e6021cb3352cca706b589f1c44ade7ccf1e3edcd"
+    },
+    {
+      "id": "0007",
+      "line": 8,
+      "filename": "record-6-20261021-140001-0007.jpg",
+      "source": {
+        "values": {
+          "title": "Record 6"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 6",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21943,
+      "sha256": "26923cee55fd7e8427a3b08368c98888daf28b3dc223b9149497ddb8a8021a2c"
+    },
+    {
+      "id": "0008",
+      "line": 9,
+      "filename": "record-7-20261021-140001-0008.jpg",
+      "source": {
+        "values": {
+          "title": "Record 7"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 7",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21690,
+      "sha256": "66a8c3f0b86caceced40393bb70d377c571a155397119ceeb32bfc9b07825110"
+    },
+    {
+      "id": "0009",
+      "line": 10,
+      "filename": "record-8-20261021-140001-0009.jpg",
+      "source": {
+        "values": {
+          "title": "Record 8"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 8",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21962,
+      "sha256": "dd51b998e0b46f3bc0a5806dedf0b089fdf9f638ad06f97ab815eeae5d100d9e"
+    },
+    {
+      "id": "0010",
+      "line": 11,
+      "filename": "record-9-20261021-140001-0010.jpg",
+      "source": {
+        "values": {
+          "title": "Record 9"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 9",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21906,
+      "sha256": "49c14231233c1a942e9fe3838c7d879c7596e8baa6575acaf205aa1a9a4a6c74"
+    },
+    {
+      "id": "0011",
+      "line": 12,
+      "filename": "record-10-20261021-140001-0011.jpg",
+      "source": {
+        "values": {
+          "title": "Record 10"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 10",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21873,
+      "sha256": "94d81e532d9c3fc49ed3b194304fee575fc1783c0cb9b20d9474cb4dcef6d0a7"
+    },
+    {
+      "id": "0012",
+      "line": 13,
+      "filename": "record-11-20261021-140001-0012.jpg",
+      "source": {
+        "values": {
+          "title": "Record 11"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 11",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21479,
+      "sha256": "00ec17f691ed5e695487276200baa15367e4a776dd99833775f777af01c9b2bb"
+    },
+    {
+      "id": "0013",
+      "line": 14,
+      "filename": "record-12-20261021-140001-0013.jpg",
+      "source": {
+        "values": {
+          "title": "Record 12"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 12",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21862,
+      "sha256": "a748697ef15e8530b9be357469028e016a7e79b746000255a3b5d498452bc6ba"
+    },
+    {
+      "id": "0014",
+      "line": 15,
+      "filename": "record-13-20261021-140001-0014.jpg",
+      "source": {
+        "values": {
+          "title": "Record 13"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 13",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21937,
+      "sha256": "c831015c128d7bd3940733fbffe1577a1e1cccc898c65a9f6f007cccdca76018"
+    },
+    {
+      "id": "0015",
+      "line": 16,
+      "filename": "record-14-20261021-140001-0015.jpg",
+      "source": {
+        "values": {
+          "title": "Record 14"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 14",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21721,
+      "sha256": "630ae28123b1f6a68b053956e2c3b91ac955dc6dcf2488149ca645c968166f06"
+    },
+    {
+      "id": "0016",
+      "line": 17,
+      "filename": "record-15-20261021-140001-0016.jpg",
+      "source": {
+        "values": {
+          "title": "Record 15"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 15",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21858,
+      "sha256": "c2751bc2146e4b36c237eb03e6fa9eb1c56062d594ffdcc181d578c896e9279d"
+    },
+    {
+      "id": "0017",
+      "line": 18,
+      "filename": "record-16-20261021-140001-0017.jpg",
+      "source": {
+        "values": {
+          "title": "Record 16"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 16",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21891,
+      "sha256": "661160cc992b856e05441987a455798c2e422f3e093a42aac946c683257417ba"
+    },
+    {
+      "id": "0018",
+      "line": 19,
+      "filename": "record-17-20261021-140001-0018.jpg",
+      "source": {
+        "values": {
+          "title": "Record 17"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 17",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21756,
+      "sha256": "f8db31bb461f5ef4e8d5b0657b920546acd67db6f183fbea7176edc51c8048dd"
+    },
+    {
+      "id": "0019",
+      "line": 20,
+      "filename": "record-18-20261021-140001-0019.jpg",
+      "source": {
+        "values": {
+          "title": "Record 18"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 18",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21950,
+      "sha256": "4b8282a1da7fe5a9437180f41916d71c25dc8290c3d2ae94472952ac89fae097"
+    },
+    {
+      "id": "0020",
+      "line": 21,
+      "filename": "record-19-20261021-140001-0020.jpg",
+      "source": {
+        "values": {
+          "title": "Record 19"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 19",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21894,
+      "sha256": "fb575f0b8e148ccf4136e19a1be425cffb49c797deb1346bb75035bd97d90e60"
+    },
+    {
+      "id": "0021",
+      "line": 22,
+      "filename": "record-20-20261021-140001-0021.jpg",
+      "source": {
+        "values": {
+          "title": "Record 20"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 20",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21963,
+      "sha256": "3b215dddca4df83501d0e03f654972a72ad0d95c845bb45d5d5a44d674c988ef"
+    },
+    {
+      "id": "0022",
+      "line": 23,
+      "filename": "record-21-20261021-140001-0022.jpg",
+      "source": {
+        "values": {
+          "title": "Record 21"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 21",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21639,
+      "sha256": "adcfa97f381a074484e180689da060f8309c2d8a6d7fecec75c1a6dc0f0a7a82"
+    },
+    {
+      "id": "0023",
+      "line": 24,
+      "filename": "record-22-20261021-140001-0023.jpg",
+      "source": {
+        "values": {
+          "title": "Record 22"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 22",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21923,
+      "sha256": "5cfa165c684db22d5f02a24a5abfa4625c9caa0f638dafe8dec499f33929a6b4"
+    },
+    {
+      "id": "0024",
+      "line": 25,
+      "filename": "record-23-20261021-140001-0024.jpg",
+      "source": {
+        "values": {
+          "title": "Record 23"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 23",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22020,
+      "sha256": "a2b54866b5c5dc6ec62a67d8b75bfecd945dce2826898a9a23b450d8069d72d8"
+    },
+    {
+      "id": "0025",
+      "line": 26,
+      "filename": "record-24-20261021-140001-0025.jpg",
+      "source": {
+        "values": {
+          "title": "Record 24"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 24",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21857,
+      "sha256": "18f7c13bdc13c25cf06cbabd07c100bdf158c4ac9709af3585ef55d471734a22"
+    },
+    {
+      "id": "0026",
+      "line": 27,
+      "filename": "record-25-20261021-140001-0026.jpg",
+      "source": {
+        "values": {
+          "title": "Record 25"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 25",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21921,
+      "sha256": "92c6490503a487f45bee5cfe2d474059392724cb0fae55f8cca61b444a0ab0d6"
+    },
+    {
+      "id": "0027",
+      "line": 28,
+      "filename": "record-26-20261021-140001-0027.jpg",
+      "source": {
+        "values": {
+          "title": "Record 26"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 26",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21982,
+      "sha256": "fa4270586f74cdf1dea020eade96ca739e31c300fea7cfa808f13771da0e83e4"
+    },
+    {
+      "id": "0028",
+      "line": 29,
+      "filename": "record-27-20261021-140001-0028.jpg",
+      "source": {
+        "values": {
+          "title": "Record 27"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 27",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21828,
+      "sha256": "f760ca0ce17210639586b5bde947d45eb22821e49347de00d95a77af3c9e2e89"
+    },
+    {
+      "id": "0029",
+      "line": 30,
+      "filename": "record-28-20261021-140001-0029.jpg",
+      "source": {
+        "values": {
+          "title": "Record 28"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 28",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22023,
+      "sha256": "6fc954040278bbfcbad2decca94d90df1d0d2184cb005b642170f2d906b6696c"
+    },
+    {
+      "id": "0030",
+      "line": 31,
+      "filename": "record-29-20261021-140001-0030.jpg",
+      "source": {
+        "values": {
+          "title": "Record 29"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 29",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21989,
+      "sha256": "a27974faf79ad1e167c5f8b78db3ea423602471fd2d5f42bf52f9d34912b195c"
+    },
+    {
+      "id": "0031",
+      "line": 32,
+      "filename": "record-30-20261021-140001-0031.jpg",
+      "source": {
+        "values": {
+          "title": "Record 30"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 30",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22026,
+      "sha256": "4631b9765dc4895f1e4d64297d38bd69b59d910f1585e29590fc2c440cf2d557"
+    },
+    {
+      "id": "0032",
+      "line": 33,
+      "filename": "record-31-20261021-140001-0032.jpg",
+      "source": {
+        "values": {
+          "title": "Record 31"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 31",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21691,
+      "sha256": "cfc7fead2972dd28f75e072e0ccf8e9c604063e89d58239128b99dba132f7d54"
+    },
+    {
+      "id": "0033",
+      "line": 34,
+      "filename": "record-32-20261021-140001-0033.jpg",
+      "source": {
+        "values": {
+          "title": "Record 32"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 32",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22017,
+      "sha256": "6eed98554a8d2b7efd62ddc7451dc47368e7520449b2f569e7e64c9b711957f2"
+    },
+    {
+      "id": "0034",
+      "line": 35,
+      "filename": "record-33-20261021-140001-0034.jpg",
+      "source": {
+        "values": {
+          "title": "Record 33"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 33",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22101,
+      "sha256": "80d64551a80b2b4404921a01dba60f9878bc353ab0a677077a13465ae1862f51"
+    },
+    {
+      "id": "0035",
+      "line": 36,
+      "filename": "record-34-20261021-140001-0035.jpg",
+      "source": {
+        "values": {
+          "title": "Record 34"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 34",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21898,
+      "sha256": "67d1738b7244626fef952d8cefaca24cae18af117ff9812180ee9e4fe089c25d"
+    },
+    {
+      "id": "0036",
+      "line": 37,
+      "filename": "record-35-20261021-140001-0036.jpg",
+      "source": {
+        "values": {
+          "title": "Record 35"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 35",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22016,
+      "sha256": "6725fb9b17163eed3ca1746d91cc965c1d2b6cabdf699e0b9c8966a003a29eef"
+    },
+    {
+      "id": "0037",
+      "line": 38,
+      "filename": "record-36-20261021-140001-0037.jpg",
+      "source": {
+        "values": {
+          "title": "Record 36"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 36",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22050,
+      "sha256": "9f8f282c2fb7700ef366ca6db76234c367960e3b26b01290adc998942d1da8a9"
+    },
+    {
+      "id": "0038",
+      "line": 39,
+      "filename": "record-37-20261021-140001-0038.jpg",
+      "source": {
+        "values": {
+          "title": "Record 37"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 37",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21913,
+      "sha256": "55260079b76c36580d754ee7fccdee48aa98dc794baddddc3f11bf365a7d9456"
+    },
+    {
+      "id": "0039",
+      "line": 40,
+      "filename": "record-38-20261021-140001-0039.jpg",
+      "source": {
+        "values": {
+          "title": "Record 38"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 38",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22096,
+      "sha256": "6bf2fdcad8007847e5709326ae7efd237388e812975de8abbb85b3626b204b0b"
+    },
+    {
+      "id": "0040",
+      "line": 41,
+      "filename": "record-39-20261021-140001-0040.jpg",
+      "source": {
+        "values": {
+          "title": "Record 39"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 39",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22061,
+      "sha256": "ab0e0be52b810bf9e43b044995d3af10e15a3ecf5459e5ce343c2b88cf1ac255"
+    },
+    {
+      "id": "0041",
+      "line": 42,
+      "filename": "record-40-20261021-140001-0041.jpg",
+      "source": {
+        "values": {
+          "title": "Record 40"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 40",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21916,
+      "sha256": "d3614615e27506c13f60a7cabaa76e66704ad5d4a2df432778f48b58d20883ad"
+    },
+    {
+      "id": "0042",
+      "line": 43,
+      "filename": "record-41-20261021-140001-0042.jpg",
+      "source": {
+        "values": {
+          "title": "Record 41"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 41",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21594,
+      "sha256": "8bc707c04b9603c3532545138f6a00a46b88f9f8e6e672e177d8588084917b9a"
+    },
+    {
+      "id": "0043",
+      "line": 44,
+      "filename": "record-42-20261021-140001-0043.jpg",
+      "source": {
+        "values": {
+          "title": "Record 42"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 42",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21922,
+      "sha256": "b443011e192eb9b5a08b9848c7d7f80e0c4374040b970df92c7ae94e72d8f112"
+    },
+    {
+      "id": "0044",
+      "line": 45,
+      "filename": "record-43-20261021-140001-0044.jpg",
+      "source": {
+        "values": {
+          "title": "Record 43"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 43",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21977,
+      "sha256": "9e9330b1faa81edf8cd6498c9c39789336d907548fa4b11182fa05069167ec71"
+    },
+    {
+      "id": "0045",
+      "line": 46,
+      "filename": "record-44-20261021-140001-0045.jpg",
+      "source": {
+        "values": {
+          "title": "Record 44"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 44",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21779,
+      "sha256": "a38e304be130258a986ebf071e4d76abcb9af585f3988d5bedf6894c3db09d17"
+    },
+    {
+      "id": "0046",
+      "line": 47,
+      "filename": "record-45-20261021-140001-0046.jpg",
+      "source": {
+        "values": {
+          "title": "Record 45"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 45",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21896,
+      "sha256": "dfa2176e59e598adcd676f175cc3c14fbac8bd77b7aca5338b858c757d6408f1"
+    },
+    {
+      "id": "0047",
+      "line": 48,
+      "filename": "record-46-20261021-140001-0047.jpg",
+      "source": {
+        "values": {
+          "title": "Record 46"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 46",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21944,
+      "sha256": "7711359eca5e4e2c01c1ee0409eef9de0025405a3a4dc7f72f36b2c53f147d32"
+    },
+    {
+      "id": "0048",
+      "line": 49,
+      "filename": "record-47-20261021-140001-0048.jpg",
+      "source": {
+        "values": {
+          "title": "Record 47"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 47",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21800,
+      "sha256": "2d323331e0e1959cab7f088d3a43dd8272dc0f5f9cf00d048875a43920c43faa"
+    },
+    {
+      "id": "0049",
+      "line": 50,
+      "filename": "record-48-20261021-140001-0049.jpg",
+      "source": {
+        "values": {
+          "title": "Record 48"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 48",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21967,
+      "sha256": "897b93717960e3a321df5749189b7ec328822c41845eeadc1f24abe8d0e40a6e"
+    },
+    {
+      "id": "0050",
+      "line": 51,
+      "filename": "record-49-20261021-140001-0050.jpg",
+      "source": {
+        "values": {
+          "title": "Record 49"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 49",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21954,
+      "sha256": "434a357f74aae6d57aac6f6e2013106e2f8d2e62af84f71683f7fa35c82ba068"
+    },
+    {
+      "id": "0051",
+      "line": 52,
+      "filename": "record-50-20261021-140001-0051.jpg",
+      "source": {
+        "values": {
+          "title": "Record 50"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 50",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22012,
+      "sha256": "1bbb041c2687dace542a1a74780fff0895609b23a273d5819fa8e577c44abbe0"
+    },
+    {
+      "id": "0052",
+      "line": 53,
+      "filename": "record-51-20261021-140001-0052.jpg",
+      "source": {
+        "values": {
+          "title": "Record 51"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 51",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21651,
+      "sha256": "8de864a81ea43270de80ffd67e00c1df379a291e05172e3bd4caca1d16251dc5"
+    },
+    {
+      "id": "0053",
+      "line": 54,
+      "filename": "record-52-20261021-140001-0053.jpg",
+      "source": {
+        "values": {
+          "title": "Record 52"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 52",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22011,
+      "sha256": "4eaca8e6384bc78e0bd41665a3f2346e307b7bfe34238336e1a39cd71872c7c7"
+    },
+    {
+      "id": "0054",
+      "line": 55,
+      "filename": "record-53-20261021-140001-0054.jpg",
+      "source": {
+        "values": {
+          "title": "Record 53"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 53",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22081,
+      "sha256": "a0c2c7fb9e7db1b9098b96942fa8f976fa505cd0420deb5093be400a1fda4163"
+    },
+    {
+      "id": "0055",
+      "line": 56,
+      "filename": "record-54-20261021-140001-0055.jpg",
+      "source": {
+        "values": {
+          "title": "Record 54"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 54",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21874,
+      "sha256": "ce07be8337e002ad2e0a5cefd442450244fca4079bdc698f3be3d5d3cfbe555c"
+    },
+    {
+      "id": "0056",
+      "line": 57,
+      "filename": "record-55-20261021-140001-0056.jpg",
+      "source": {
+        "values": {
+          "title": "Record 55"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 55",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21982,
+      "sha256": "4ee40b9e65541769cca3305fd7bdf785fe0e4b8a786bf5d42e1eef5be7f5d8d3"
+    },
+    {
+      "id": "0057",
+      "line": 58,
+      "filename": "record-56-20261021-140001-0057.jpg",
+      "source": {
+        "values": {
+          "title": "Record 56"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 56",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22011,
+      "sha256": "c7c8cef8d0ac3cd1958d21fb2ae9a7077ed96e29c6e9d3a0907f3332849fffaa"
+    },
+    {
+      "id": "0058",
+      "line": 59,
+      "filename": "record-57-20261021-140001-0058.jpg",
+      "source": {
+        "values": {
+          "title": "Record 57"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 57",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21920,
+      "sha256": "97e714d98d7f87677242622baf174e8509978c1cd51858380bde7a08aa38ea17"
+    },
+    {
+      "id": "0059",
+      "line": 60,
+      "filename": "record-58-20261021-140001-0059.jpg",
+      "source": {
+        "values": {
+          "title": "Record 58"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 58",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22089,
+      "sha256": "7e78dddad550363db83e5f1bba5c2f99a6b09f95d7a9eff174cbc82473be4d22"
+    },
+    {
+      "id": "0060",
+      "line": 61,
+      "filename": "record-59-20261021-140001-0060.jpg",
+      "source": {
+        "values": {
+          "title": "Record 59"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 59",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22042,
+      "sha256": "de3c404a2ecb984f741350b3675a2aad545343744787cc7cd4821f1f0b5a7d98"
+    },
+    {
+      "id": "0061",
+      "line": 62,
+      "filename": "record-60-20261021-140001-0061.jpg",
+      "source": {
+        "values": {
+          "title": "Record 60"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 60",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22001,
+      "sha256": "996e183c9940a4cf8fe876b42679ee5f7b74ff7c7acd77d5d0d3544f2e2da3a8"
+    },
+    {
+      "id": "0062",
+      "line": 63,
+      "filename": "record-61-20261021-140001-0062.jpg",
+      "source": {
+        "values": {
+          "title": "Record 61"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 61",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21698,
+      "sha256": "ff9324a1d12c9fd2a3e20c872b6fe2da53756562af1e61bf9ac0aec796b71c85"
+    },
+    {
+      "id": "0063",
+      "line": 64,
+      "filename": "record-62-20261021-140001-0063.jpg",
+      "source": {
+        "values": {
+          "title": "Record 62"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 62",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22036,
+      "sha256": "d2646aea95b4042b3be5b120e191ce9e2a2be005dbde9a4f9e60d5300605c18a"
+    },
+    {
+      "id": "0064",
+      "line": 65,
+      "filename": "record-63-20261021-140001-0064.jpg",
+      "source": {
+        "values": {
+          "title": "Record 63"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 63",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22107,
+      "sha256": "e48736061ae52b2d4db647e66f125335d909cd81ded21d8e49695096360d2f80"
+    },
+    {
+      "id": "0065",
+      "line": 66,
+      "filename": "record-64-20261021-140001-0065.jpg",
+      "source": {
+        "values": {
+          "title": "Record 64"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 64",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21918,
+      "sha256": "df5406e3c76ba80c0104a37eeeccba3dc38edf1543eb6dd482a35b0f8658a825"
+    },
+    {
+      "id": "0066",
+      "line": 67,
+      "filename": "record-65-20261021-140001-0066.jpg",
+      "source": {
+        "values": {
+          "title": "Record 65"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 65",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22006,
+      "sha256": "94fa1e1fac8d21ef521436559eff6942db59cb602672cd13ececbf2b1621d94e"
+    },
+    {
+      "id": "0067",
+      "line": 68,
+      "filename": "record-66-20261021-140001-0067.jpg",
+      "source": {
+        "values": {
+          "title": "Record 66"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 66",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22047,
+      "sha256": "a9806563ad99b9d332a302212d1c60eb97e1caf3a3de1280f5fc519722b3b976"
+    },
+    {
+      "id": "0068",
+      "line": 69,
+      "filename": "record-67-20261021-140001-0068.jpg",
+      "source": {
+        "values": {
+          "title": "Record 67"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 67",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21937,
+      "sha256": "42d5ab9ddf1773057e6e17f8ea39209774c427288a4b256fbd07d4cda0d3bd68"
+    },
+    {
+      "id": "0069",
+      "line": 70,
+      "filename": "record-68-20261021-140001-0069.jpg",
+      "source": {
+        "values": {
+          "title": "Record 68"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 68",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22099,
+      "sha256": "4f6746fea6e5709565d74630d835214163ac4d2f282b2cfbc32a597374ea1c26"
+    },
+    {
+      "id": "0070",
+      "line": 71,
+      "filename": "record-69-20261021-140001-0070.jpg",
+      "source": {
+        "values": {
+          "title": "Record 69"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 69",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22055,
+      "sha256": "f3da3c635008b5176087a26341f0ebd40d2dc59beb5197f834e2feb7e56d48d6"
+    },
+    {
+      "id": "0071",
+      "line": 72,
+      "filename": "record-70-20261021-140001-0071.jpg",
+      "source": {
+        "values": {
+          "title": "Record 70"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 70",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21939,
+      "sha256": "fc38d752950c387191324a614305fba8451e98ccfe9457976059809ec12d9687"
+    },
+    {
+      "id": "0072",
+      "line": 73,
+      "filename": "record-71-20261021-140001-0072.jpg",
+      "source": {
+        "values": {
+          "title": "Record 71"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 71",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21566,
+      "sha256": "1713cfd947bee92bc84aac96ee9261c517e40397d1ef7752157c49deb69c86ae"
+    },
+    {
+      "id": "0073",
+      "line": 74,
+      "filename": "record-72-20261021-140001-0073.jpg",
+      "source": {
+        "values": {
+          "title": "Record 72"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 72",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21962,
+      "sha256": "88462b70c400a0fe782720f8c1e9c54299787a7fae08e0ca22ff6d8dc97d9bc4"
+    },
+    {
+      "id": "0074",
+      "line": 75,
+      "filename": "record-73-20261021-140001-0074.jpg",
+      "source": {
+        "values": {
+          "title": "Record 73"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 73",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22015,
+      "sha256": "d366d1c2b2a40c0dc308dd3c248fe3c98605838f5656ef857ff48682135de3f9"
+    },
+    {
+      "id": "0075",
+      "line": 76,
+      "filename": "record-74-20261021-140001-0075.jpg",
+      "source": {
+        "values": {
+          "title": "Record 74"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 74",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21848,
+      "sha256": "f0f2388129d7814412c59f6eda104a7fda4a9ef1fe7b015aa37517baf5d43e84"
+    },
+    {
+      "id": "0076",
+      "line": 77,
+      "filename": "record-75-20261021-140001-0076.jpg",
+      "source": {
+        "values": {
+          "title": "Record 75"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 75",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21948,
+      "sha256": "0bc010d8df00f95cc8b313b9ab2285f5104d78458d52fa2eb453da24c9e1ef20"
+    },
+    {
+      "id": "0077",
+      "line": 78,
+      "filename": "record-76-20261021-140001-0077.jpg",
+      "source": {
+        "values": {
+          "title": "Record 76"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 76",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21987,
+      "sha256": "3064a36f0f4222893bf7e0d87c40596eea0c2d72eac95d4673f4f1732ad2f6c2"
+    },
+    {
+      "id": "0078",
+      "line": 79,
+      "filename": "record-77-20261021-140001-0078.jpg",
+      "source": {
+        "values": {
+          "title": "Record 77"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 77",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21796,
+      "sha256": "993d0ad4e71cbf4820a080a34843684a4ecb42fdc6efe0642688092dbd01f1ba"
+    },
+    {
+      "id": "0079",
+      "line": 80,
+      "filename": "record-78-20261021-140001-0079.jpg",
+      "source": {
+        "values": {
+          "title": "Record 78"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 78",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22032,
+      "sha256": "14d354ec113ca25b75cc7893aacc466fa82dfdb4f10f3614f7689bed4dd6d740"
+    },
+    {
+      "id": "0080",
+      "line": 81,
+      "filename": "record-79-20261021-140001-0080.jpg",
+      "source": {
+        "values": {
+          "title": "Record 79"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 79",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21956,
+      "sha256": "4227eca30de40eba9785bce5185fb0dc74e2c5b5d3195dcc6cbb501e11502ee7"
+    },
+    {
+      "id": "0081",
+      "line": 82,
+      "filename": "record-80-20261021-140001-0081.jpg",
+      "source": {
+        "values": {
+          "title": "Record 80"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 80",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22044,
+      "sha256": "fbe9cdd561fa6d12c25f10ee9c0e9e23208b89b8871a8a501648e85e2ecd55fc"
+    },
+    {
+      "id": "0082",
+      "line": 83,
+      "filename": "record-81-20261021-140001-0082.jpg",
+      "source": {
+        "values": {
+          "title": "Record 81"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 81",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21728,
+      "sha256": "abdd6814afc026517650bd2f64716466ecd92004c5b437d7e371fc1279133663"
+    },
+    {
+      "id": "0083",
+      "line": 84,
+      "filename": "record-82-20261021-140001-0083.jpg",
+      "source": {
+        "values": {
+          "title": "Record 82"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 82",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22069,
+      "sha256": "a33a5e741cc184f41cb191bfb3a993ef25be1c7809bc5abe418838368739b19d"
+    },
+    {
+      "id": "0084",
+      "line": 85,
+      "filename": "record-83-20261021-140001-0084.jpg",
+      "source": {
+        "values": {
+          "title": "Record 83"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 83",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22103,
+      "sha256": "b72bb8937f87241c61e845eb58548344deebd9cc2837943aea897ecca63c859f"
+    },
+    {
+      "id": "0085",
+      "line": 86,
+      "filename": "record-84-20261021-140001-0085.jpg",
+      "source": {
+        "values": {
+          "title": "Record 84"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 84",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21922,
+      "sha256": "6916f087f0547e997549c06ca544a455e3abee9d362a99cd70227b448d628b4e"
+    },
+    {
+      "id": "0086",
+      "line": 87,
+      "filename": "record-85-20261021-140001-0086.jpg",
+      "source": {
+        "values": {
+          "title": "Record 85"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 85",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22001,
+      "sha256": "3c88bc2c984e56ca63cbc38a03f8a1f8baf3d6c576cc968a7633287a7f681cac"
+    },
+    {
+      "id": "0087",
+      "line": 88,
+      "filename": "record-86-20261021-140001-0087.jpg",
+      "source": {
+        "values": {
+          "title": "Record 86"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 86",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22050,
+      "sha256": "209bc46f92392494d806e98d2370cbb3ef21f667e1c27f651f5ffa65542b2567"
+    },
+    {
+      "id": "0088",
+      "line": 89,
+      "filename": "record-87-20261021-140001-0088.jpg",
+      "source": {
+        "values": {
+          "title": "Record 87"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 87",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21940,
+      "sha256": "5710c40c95fe6acc880fedf60250aee56cc33e1cc3dddc7a25f4b2538c87e525"
+    },
+    {
+      "id": "0089",
+      "line": 90,
+      "filename": "record-88-20261021-140001-0089.jpg",
+      "source": {
+        "values": {
+          "title": "Record 88"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 88",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22121,
+      "sha256": "98c836647ded2b970c9b872576c759633cdb1561cd877f5b050e90b51db38175"
+    },
+    {
+      "id": "0090",
+      "line": 91,
+      "filename": "record-89-20261021-140001-0090.jpg",
+      "source": {
+        "values": {
+          "title": "Record 89"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 89",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22067,
+      "sha256": "6a57add186597eddfb6e96309765460a578fc91543c69a2fd4f49da1d60418d6"
+    },
+    {
+      "id": "0091",
+      "line": 92,
+      "filename": "record-90-20261021-140001-0091.jpg",
+      "source": {
+        "values": {
+          "title": "Record 90"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 90",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22052,
+      "sha256": "0a54b7b9d960dd3919951f85aafac93c7e0c53e6f711c58bef656b4002e07642"
+    },
+    {
+      "id": "0092",
+      "line": 93,
+      "filename": "record-91-20261021-140001-0092.jpg",
+      "source": {
+        "values": {
+          "title": "Record 91"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 91",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21713,
+      "sha256": "9c8df30075c1aaae84bde78ee20262f914bfd1316385dc5d7bb9417b90ea2aa9"
+    },
+    {
+      "id": "0093",
+      "line": 94,
+      "filename": "record-92-20261021-140001-0093.jpg",
+      "source": {
+        "values": {
+          "title": "Record 92"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 92",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22076,
+      "sha256": "9da9c6a2c432f5cc797ca7860420e9aea3558fd676c88640679967dabaae95ff"
+    },
+    {
+      "id": "0094",
+      "line": 95,
+      "filename": "record-93-20261021-140001-0094.jpg",
+      "source": {
+        "values": {
+          "title": "Record 93"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 93",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22136,
+      "sha256": "567f75da9e4a5ceb437147fbe1cdbe7d734dacdcf1953998ab694cd48ab65efd"
+    },
+    {
+      "id": "0095",
+      "line": 96,
+      "filename": "record-94-20261021-140001-0095.jpg",
+      "source": {
+        "values": {
+          "title": "Record 94"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 94",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21899,
+      "sha256": "578d41366169b71007b55f334ae5368969c1b72a55262cde4800cf55892268bf"
+    },
+    {
+      "id": "0096",
+      "line": 97,
+      "filename": "record-95-20261021-140001-0096.jpg",
+      "source": {
+        "values": {
+          "title": "Record 95"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 95",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22064,
+      "sha256": "2224754da84b8970557be95087196fc7a98c367f21aaaad392776f59df262692"
+    },
+    {
+      "id": "0097",
+      "line": 98,
+      "filename": "record-96-20261021-140001-0097.jpg",
+      "source": {
+        "values": {
+          "title": "Record 96"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 96",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22067,
+      "sha256": "3aac7d3ad510788036c54ba764609a37cbd1f0a62113b9ae8f3a6499e0c83dc9"
+    },
+    {
+      "id": "0098",
+      "line": 99,
+      "filename": "record-97-20261021-140001-0098.jpg",
+      "source": {
+        "values": {
+          "title": "Record 97"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 97",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 21966,
+      "sha256": "1102b638b0121a1f83f0121ed02ac3d1143e27f41202019ee437bb27c52a9b23"
+    },
+    {
+      "id": "0099",
+      "line": 100,
+      "filename": "record-98-20261021-140001-0099.jpg",
+      "source": {
+        "values": {
+          "title": "Record 98"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 98",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22123,
+      "sha256": "a991637a0dc710ebce4c9dad9588c1ed90f5b72adc208b57e9ba935729c0e4c2"
+    },
+    {
+      "id": "0100",
+      "line": 101,
+      "filename": "record-99-20261021-140001-0100.jpg",
+      "source": {
+        "values": {
+          "title": "Record 99"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Record 99",
+        "shape": "donut",
+        "size": 256,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:21 14:00:01",
+          "offset": "+00:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 2,
+      "size": 22091,
+      "sha256": "30451a04fdb6a67ce788cdae3afd1fde2c0e13fe3b77856a9867edc6a9f1187b"
+    }
+  ],
+  "parts": [
+    {
+      "number": 1,
+      "filename": "markers-c6fe4230-ff38-40d3-8657-717b33535b91-part-001.zip",
+      "size": 91831,
+      "rows": [
+        "0001",
+        "0002",
+        "0003",
+        "0004"
+      ],
+      "availability": "available"
+    },
+    {
+      "number": 2,
+      "filename": "markers-c6fe4230-ff38-40d3-8657-717b33535b91-part-002.zip",
+      "size": 2207099,
+      "rows": [
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011",
+        "0012",
+        "0013",
+        "0014",
+        "0015",
+        "0016",
+        "0017",
+        "0018",
+        "0019",
+        "0020",
+        "0021",
+        "0022",
+        "0023",
+        "0024",
+        "0025",
+        "0026",
+        "0027",
+        "0028",
+        "0029",
+        "0030",
+        "0031",
+        "0032",
+        "0033",
+        "0034",
+        "0035",
+        "0036",
+        "0037",
+        "0038",
+        "0039",
+        "0040",
+        "0041",
+        "0042",
+        "0043",
+        "0044",
+        "0045",
+        "0046",
+        "0047",
+        "0048",
+        "0049",
+        "0050",
+        "0051",
+        "0052",
+        "0053",
+        "0054",
+        "0055",
+        "0056",
+        "0057",
+        "0058",
+        "0059",
+        "0060",
+        "0061",
+        "0062",
+        "0063",
+        "0064",
+        "0065",
+        "0066",
+        "0067",
+        "0068",
+        "0069",
+        "0070",
+        "0071",
+        "0072",
+        "0073",
+        "0074",
+        "0075",
+        "0076",
+        "0077",
+        "0078",
+        "0079",
+        "0080",
+        "0081",
+        "0082",
+        "0083",
+        "0084",
+        "0085",
+        "0086",
+        "0087",
+        "0088",
+        "0089",
+        "0090",
+        "0091",
+        "0092",
+        "0093",
+        "0094",
+        "0095",
+        "0096",
+        "0097",
+        "0098",
+        "0099",
+        "0100"
+      ],
+      "availability": "available"
+    }
+  ]
+}

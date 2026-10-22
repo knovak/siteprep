@@ -1,6 +1,6 @@
 {
   "fontCommit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
-  "lockSha256": "90a3be701947190702e29224dce5c289b87d356094e6a6c020fcc1422795f2a9",
+  "lockSha256": "ae3b53b5d859120a85b562a774688201dc8fe62fe3aebbbfc6cca43e9566e239",
   "files": {
     "client.js": {
       "bytes": 251532,
@@ -18,13 +18,21 @@
       "bytes": 263913,
       "sha256": "9d88e079db49f7d8ef7e31becba7c6cc6f9680b64c747f61bd32463311400ed6"
     },
+    "batch-ui.js": {
+      "bytes": 300632,
+      "sha256": "dc7a8a07f87d319b554a8f769e2dd3750b71c900434d4c05917b2745ac92d630"
+    },
+    "batch.html": {
+      "bytes": 5316,
+      "sha256": "ba86bbefeec50ecd57a0e79ce4a486d158390bb0f01cdbde77f69cc0016f6154"
+    },
     "index.html": {
-      "bytes": 5484,
-      "sha256": "80d1c8374c2b5f9d0ca98f7ce121d154e3cfbc481a00e1c331f783cecb9b0bc5"
+      "bytes": 5619,
+      "sha256": "6f9917aaeb2b2a02526ad33be59c2b1a2a9e14b38f6913950d122c218f2b8b97"
     },
     "editor.css": {
-      "bytes": 3214,
-      "sha256": "2e4a3eca820fec732ef09416366f0c1929e712e66483f7114b0ef4a77bb04877"
+      "bytes": 4166,
+      "sha256": "49de2d48cd43d6012a146bba3ab5aab1e5946f395a7b1086f9392491ae090623"
     },
     "mozjpeg_enc.wasm": {
       "bytes": 251524,

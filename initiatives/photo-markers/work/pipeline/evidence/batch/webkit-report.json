@@ -1,0 +1,497 @@
+{
+  "schema": "photo-markers-run-v1",
+  "runId": "e816c547-e878-41c7-817b-0f2151c57cfc",
+  "createdAt": "2026-10-21T14:00:01.000Z",
+  "reportedAt": "2026-10-21T14:00:01.000Z",
+  "captured": {
+    "now": "2026-10-21T14:00:01Z",
+    "timezone": "Australia/Brisbane",
+    "fallback": false
+  },
+  "retainedBytes": 0,
+  "peakAccountedBytes": 27229822,
+  "budgetBytes": 52428800,
+  "message": "Finished. Download each part deliberately, then check your saved files.",
+  "rows": [
+    {
+      "id": "0001",
+      "line": 2,
+      "filename": "same-20261022-000000-0001.jpg",
+      "source": {
+        "values": {
+          "title": "Comma, title",
+          "date": "2026-10-22",
+          "time": "",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "shape": "donut",
+          "shape_color": "red",
+          "filename": "same"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Comma, title",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 227681,
+      "sha256": "e82b7528fbac3766605888c346a427a7b1e2b7a3488dc8db8153327c85bd5bf0"
+    },
+    {
+      "id": "0002",
+      "line": 3,
+      "filename": "same-20261022-123456-0002.jpg",
+      "source": {
+        "values": {
+          "title": "A \"quote\"",
+          "date": "2026-10-22",
+          "time": "12:34:56",
+          "timezone": "UTC",
+          "occurrence": "",
+          "shape": "star",
+          "shape_color": "blue",
+          "filename": "same"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "A \"quote\"",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#0000ff",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 12:34:56",
+          "offset": "+00:00",
+          "instant": "2026-10-22T12:34:56Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 179979,
+      "sha256": "897f29fc6c7427d3e049e396c232dea6c2ed23b92600590c62ec51bb512f9378"
+    },
+    {
+      "id": "0003",
+      "line": 4,
+      "filename": "marker-20261022-000001-0003.jpg",
+      "source": {
+        "values": {
+          "title": "",
+          "date": "",
+          "time": "",
+          "timezone": "",
+          "occurrence": "",
+          "shape": "solid",
+          "shape_color": "",
+          "filename": ""
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:01",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 47364,
+      "sha256": "a0030da12ff072eddf513fa004e7896f172caff69f21da61d627f28272d31aea"
+    },
+    {
+      "id": "0004",
+      "line": 5,
+      "filename": "marker-con-20261101-013000-0004.jpg",
+      "source": {
+        "values": {
+          "title": "Repeat",
+          "date": "2026-11-01",
+          "time": "01:30",
+          "timezone": "America/Los_Angeles",
+          "occurrence": "earlier",
+          "shape": "donut",
+          "shape_color": "",
+          "filename": "con"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Repeat",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:11:01 01:30:00",
+          "offset": "-07:00",
+          "instant": "2026-11-01T08:30:00Z",
+          "timezone": "America/Los_Angeles",
+          "occurrence": "earlier",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 235877,
+      "sha256": "333320e78e18e537c108d8a33fe5352367f0b4ce54b270a122be444a4ca1224c"
+    },
+    {
+      "id": "0005",
+      "line": 6,
+      "filename": "marker-con-20261101-013000-0005.jpg",
+      "source": {
+        "values": {
+          "title": "Repeat",
+          "date": "2026-11-01",
+          "time": "01:30",
+          "timezone": "America/Los_Angeles",
+          "occurrence": "later",
+          "shape": "star",
+          "shape_color": "",
+          "filename": "con"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Repeat",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:11:01 01:30:00",
+          "offset": "-08:00",
+          "instant": "2026-11-01T09:30:00Z",
+          "timezone": "America/Los_Angeles",
+          "occurrence": "later",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 208093,
+      "sha256": "905a063cd39d5582b6808c7681065e0527572d6dc49952d3aa17a4151e327860"
+    },
+    {
+      "id": "0006",
+      "line": 7,
+      "filename": "path-20261022-000000-0006.jpg",
+      "source": {
+        "values": {
+          "title": "Date",
+          "date": "2026-10-22",
+          "time": "",
+          "timezone": "Asia/Kathmandu",
+          "occurrence": "",
+          "shape": "solid",
+          "shape_color": "",
+          "filename": "../path"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Date",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+05:45",
+          "instant": "2026-10-21T18:15:00Z",
+          "timezone": "Asia/Kathmandu",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 108082,
+      "sha256": "73fc2de0bc068b9b803009fae5c14f7fa5042b6df67bf146e06f22e8d0c3056a"
+    },
+    {
+      "id": "0007",
+      "line": 8,
+      "filename": "seconds-20261022-010203-0007.jpg",
+      "source": {
+        "values": {
+          "title": "Seconds",
+          "date": "2026-10-22",
+          "time": "01:02:03",
+          "timezone": "UTC",
+          "occurrence": "",
+          "shape": "donut",
+          "shape_color": "",
+          "filename": ""
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Seconds",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 01:02:03",
+          "offset": "+00:00",
+          "instant": "2026-10-22T01:02:03Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 240035,
+      "sha256": "8943c72c3fc64ed7c3a7c86783da05ef0f7cab7acd7e99d3e8747e3eaf4171ef"
+    },
+    {
+      "id": "0008",
+      "line": 9,
+      "filename": "blank-20261022-000000-0008.jpg",
+      "source": {
+        "values": {
+          "title": "Blank",
+          "date": "2026-10-22",
+          "time": "",
+          "timezone": "UTC",
+          "occurrence": "earlier",
+          "shape": "star",
+          "shape_color": "",
+          "filename": ""
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Blank",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+00:00",
+          "instant": "2026-10-22T00:00:00Z",
+          "timezone": "UTC",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 193986,
+      "sha256": "d5dd6b1bddd4bf27dcc29abd0c19a9d8bdf70e168e7b49eac7afa4576eb60e78"
+    },
+    {
+      "id": "0009",
+      "line": 10,
+      "filename": "now-20261022-000001-0009.jpg",
+      "source": {
+        "values": {
+          "title": "Now",
+          "date": "",
+          "time": "",
+          "timezone": "",
+          "occurrence": "",
+          "shape": "solid",
+          "shape_color": "",
+          "filename": ""
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Now",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:01",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:01Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "now"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 108278,
+      "sha256": "6d4ebac892f1b4b723e7a52b63f5faeedd621c9df2a9409631c90090212af1f5"
+    },
+    {
+      "id": "0010",
+      "line": 11,
+      "filename": "last-20261022-000000-0010.jpg",
+      "source": {
+        "values": {
+          "title": "Last",
+          "date": "2026-10-22",
+          "time": "",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "shape": "donut",
+          "shape_color": "",
+          "filename": ""
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Last",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-21T14:00:01Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 229791,
+      "sha256": "7f68dcfbc7c31c84b8ee8bb4682d66b536af74f691d7d19a8afa6ad2dca2337b"
+    }
+  ],
+  "parts": [
+    {
+      "number": 1,
+      "filename": "markers-e816c547-e878-41c7-817b-0f2151c57cfc-part-001.zip",
+      "size": 1790091,
+      "rows": [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010"
+      ],
+      "availability": "user reported saving"
+    }
+  ]
+}

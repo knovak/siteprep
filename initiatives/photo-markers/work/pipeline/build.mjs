@@ -5,7 +5,7 @@ process.chdir(import.meta.dirname);
 const hash = (b) => createHash("sha256").update(b).digest("hex");
 await mkdir("dist/notices", { recursive: true });
 await build({
-  entryPoints: { client: "client.mjs", worker: "worker.mjs", probe: "test/probe.mjs", editor: "editor.mjs" },
+  entryPoints: { client: "client.mjs", worker: "worker.mjs", probe: "test/probe.mjs", editor: "editor.mjs", "batch-ui": "batch-ui.mjs" },
   outdir: "dist",
   bundle: true,
   format: "esm",
@@ -14,7 +14,7 @@ await build({
   legalComments: "eof",
 });
 await copyFile("node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm", "dist/mozjpeg_enc.wasm");
-for (const file of ["index.html", "editor.css"]) await copyFile(file, "dist/" + file);
+for (const file of ["index.html", "batch.html", "editor.css"]) await copyFile(file, "dist/" + file);
 const commit = "ffebf8c1ee449e544955a7e813c54f9b73848eac";
 for (const [name, source, expected] of [
   [
@@ -49,6 +49,7 @@ for (const name of [
   "jpeg-js",
   "opentype.js",
   "jsbi",
+  "fflate",
 ]) {
   const dest = "dist/notices/" + name.replaceAll("/", "-");
   await mkdir(dest, { recursive: true });
@@ -69,6 +70,8 @@ for (const file of [
   "worker.js",
   "probe.js",
   "editor.js",
+  "batch-ui.js",
+  "batch.html",
   "index.html",
   "editor.css",
   "mozjpeg_enc.wasm",

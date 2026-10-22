@@ -123,3 +123,12 @@ recovery and cancellation/retry. Earlier results remain labeled and obtainable
 after edits. The receipt distinguishes semantic select tests from native keyboard
 acceptance and leaves the full T9 matrix open. Build Phase 4 CSV/batch and ZIP
 delivery next; physical-iOS and graduation prerequisites remain unchanged.
+
+## Phase 4 receipt — October 22, 2026
+
+[The CSV batch receipt](notes/csv-batches-20261022.html) records local T6–T8
+coverage: stable import IDs, review/overrides, frozen retries, bounded deliberate
+ZIP/JPEG retrieval and immutable manifests/reports. Both desktop engines pass
+the ten-marker and 100-record journeys; native Pillow checks 220 retrieved
+JPEGs independently. Continue Phase 5 browser/delivery acceptance; synthetic
+allocation faults and desktop engines do not close physical-iOS evidence.
