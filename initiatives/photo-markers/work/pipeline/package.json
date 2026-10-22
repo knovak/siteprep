@@ -7,7 +7,8 @@
     "test": "node --test test/settings.test.mjs test/batch.test.mjs",
     "test:browser": "node test/browser.mjs",
     "test:editor": "node test/editor-browser.mjs",
-    "test:batch": "node test/batch-browser.mjs"
+    "test:batch": "node test/batch-browser.mjs",
+    "test:delivery": "node test/delivery-browser.mjs"
   },
   "dependencies": {
     "@js-temporal/polyfill": "0.5.1",

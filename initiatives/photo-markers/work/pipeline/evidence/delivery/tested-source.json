@@ -1,0 +1,29 @@
+{
+  "applicationSourceCommit": "4d5bdb1d99db1db4dfdefe2678b2bac402241fe3",
+  "qualification": "Application runtime source is unchanged from this merged commit; new harnesses and documents have the hashes below.",
+  "sourceSha256": {
+    "batch-ui.mjs": "ecb21ad8d0a2d933743a7db2253797e8946ad95d18f0cd80a38cc563c0c8bd63",
+    "batch.html": "ba86bbefeec50ecd57a0e79ce4a486d158390bb0f01cdbde77f69cc0016f6154",
+    "batch.mjs": "be4fda03cd36e2c4d7bebcc4ee668f3b61d8e531d9fb8c763bb373543bab6bae",
+    "build-inputs.json": "60e0fd42e4a6cbeaf12866390acec08573d92814014fcfb1da07cf7e16d97a2e",
+    "build.mjs": "5b22f2b8f26806f335d8cbc799170a789a4d0b3f3110539201653b12876a488d",
+    "client.mjs": "3a3fb17f8b2e5416ac1caf2ed418db747fdfb6338f966c6afd7f6c5aeffb6883",
+    "csv.mjs": "96d63af0a092add2432d5775c2c53ce031524de558279d0315f49bda8c683589",
+    "editor.css": "49de2d48cd43d6012a146bba3ab5aab1e5946f395a7b1086f9392491ae090623",
+    "editor.mjs": "9cf70d80347e756781b33c05fb78245f483c914ec4ad3d74be3a8c6174521009",
+    "errors.mjs": "89b6f10daf93b88c0c5a4467f33796be32759a19f20b3d956ef7f741387bcf54",
+    "filenames.mjs": "28ee22d676c5e6acdbb0f56483d7b64b22ff165d80044dcbf91faa051eb53533",
+    "index.html": "6f9917aaeb2b2a02526ad33be59c2b1a2a9e14b38f6913950d122c218f2b8b97",
+    "metadata.mjs": "30a8e3f709015f6c68a27a4b007fd7875106f12b77eaac9f78155524d3f8470a",
+    "package-lock.json": "ae3b53b5d859120a85b562a774688201dc8fe62fe3aebbbfc6cca43e9566e239",
+    "package.json": "601cec5a237859d8aa3afcc14edc55428782eccca81f9f06af9ce28b655e37e2",
+    "render.mjs": "38b18bfc37c58c9732356ed0c55071ffced20dba0e0747b0657a84b9143bdc4b",
+    "settings.mjs": "fcad8329a4e778e329e2eb9465bc8a48e158c1618f140df586adb6b76ce0e015",
+    "verify.mjs": "cf95968486b97074b4e6314cc6e0b7913ac76c30656d013cb86db7602019c1df",
+    "worker.mjs": "ec2ac86d86cda17668bd08ba6d9cb9a4a96366a02b9e037fa08a89a8c9a88466",
+    "test/delivery-browser.mjs": "e5a90e0ba55f769a35836444256c21730cd38b52c41cfea6f5c30e37ebea1b0f",
+    "test/verify-delivery.py": "e09cb62e8a142bc0d95fe092e3b282f5d3a1ed2ea16c5f025534a89d782890bb"
+  },
+  "oracle": "native Pillow 12.3.0",
+  "oracleInterpreter": "/Users/ken/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+}

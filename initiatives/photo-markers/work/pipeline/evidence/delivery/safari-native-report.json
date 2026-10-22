@@ -1,0 +1,469 @@
+{
+  "schema": "photo-markers-run-v1",
+  "runId": "2306364b-4365-4b14-8f2d-4e0858d962a6",
+  "createdAt": "2026-10-22T01:36:17.474Z",
+  "reportedAt": "2026-10-22T01:37:53.845Z",
+  "captured": {
+    "now": "2026-10-22T01:36:17Z",
+    "timezone": "Australia/Brisbane",
+    "fallback": false
+  },
+  "retainedBytes": 7326624,
+  "peakAccountedBytes": 27329308,
+  "budgetBytes": 52428800,
+  "message": "Finished. Download each part deliberately, then check your saved files.",
+  "rows": [
+    {
+      "id": "0001",
+      "line": 2,
+      "filename": "safari-chapter-1-20261022-000000-0001.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 1",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 1",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 226741,
+      "sha256": "9a6c451c2a5ed77d84a02ab33de0faefbbf43aaea18f5658c648db9cdb66efaa"
+    },
+    {
+      "id": "0002",
+      "line": 3,
+      "filename": "safari-chapter-2-20261022-000000-0002.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 2",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 2",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 199162,
+      "sha256": "8b436f0e1ededbddc405d37c4f09877f4cd4771b0961b6ef84bc8fa62f30ca5e"
+    },
+    {
+      "id": "0003",
+      "line": 4,
+      "filename": "safari-chapter-3-20261022-000000-0003.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 3",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 3",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 106454,
+      "sha256": "d4905ee0f0359298dd762bf93723bfc9aa26437607199ecc867aeb8662e6c3d3"
+    },
+    {
+      "id": "0004",
+      "line": 5,
+      "filename": "safari-chapter-4-20261022-000000-0004.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 4",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 4",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 227700,
+      "sha256": "b1bb1a6ee38d8f1815ed9e44f4ba69f993941326a9c3941d55e82151d59cd114"
+    },
+    {
+      "id": "0005",
+      "line": 6,
+      "filename": "safari-chapter-5-20261022-000000-0005.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 5",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star",
+          "shape_color": "invalid"
+        },
+        "edits": {
+          "shape_color": "red"
+        }
+      },
+      "settings": {
+        "title": "Safari chapter 5",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 198100,
+      "sha256": "41495f7eaa4c1108151a7d5e0ebc961c8ef27ae661d18c08821b8f28a9e2c33e"
+    },
+    {
+      "id": "0006",
+      "line": 7,
+      "filename": "safari-chapter-6-20261022-000000-0006.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 6",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 6",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 106517,
+      "sha256": "0033ac3282d1c731cefc515bec79990ea5dc3238284cf27dce4d375d4a5cacce"
+    },
+    {
+      "id": "0007",
+      "line": 8,
+      "filename": "safari-chapter-7-20261022-000000-0007.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 7",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 7",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 227786,
+      "sha256": "1818eca5ed569a1414fdd1ed52ded4345568ce7e46e032b85a1a6e7a6da1e90d"
+    },
+    {
+      "id": "0008",
+      "line": 9,
+      "filename": "safari-chapter-8-20261022-000000-0008.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 8",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 8",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 200078,
+      "sha256": "aa2d502c8d89d882d31a8b2d5946fc9e250800a3ea0acd6a905a5f665986f95a"
+    },
+    {
+      "id": "0009",
+      "line": 10,
+      "filename": "safari-chapter-9-20261022-000000-0009.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 9",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 9",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 106580,
+      "sha256": "80b10cb6ea2bd3315ec189b026b92b6bc25bc56502b5fc00dde3a4a1864196f7"
+    },
+    {
+      "id": "0010",
+      "line": 11,
+      "filename": "safari-chapter-10-20261022-000000-0010.jpg",
+      "source": {
+        "values": {
+          "title": "Safari chapter 10",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut",
+          "shape_color": "red"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Safari chapter 10",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:36:17Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "available",
+      "part": 1,
+      "size": 226845,
+      "sha256": "c82c86c9f0c26d8c75341eed2aa99f749a451527f0dd2e75ad75e6adb751d558"
+    }
+  ],
+  "parts": [
+    {
+      "number": 1,
+      "filename": "markers-2306364b-4365-4b14-8f2d-4e0858d962a6-part-001.zip",
+      "size": 1837349,
+      "rows": [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010"
+      ],
+      "availability": "available"
+    }
+  ]
+}

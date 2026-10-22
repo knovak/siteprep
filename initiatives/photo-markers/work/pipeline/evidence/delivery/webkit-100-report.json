@@ -1,0 +1,4359 @@
+{
+  "schema": "photo-markers-run-v1",
+  "runId": "1e700d34-b9e6-4667-8397-c5ea8353dad6",
+  "createdAt": "2026-10-22T01:46:49.784Z",
+  "reportedAt": "2026-10-22T01:47:34.078Z",
+  "captured": {
+    "now": "2026-10-22T01:46:49Z",
+    "timezone": "Australia/Brisbane",
+    "fallback": false
+  },
+  "retainedBytes": 0,
+  "peakAccountedBytes": 52011080,
+  "budgetBytes": 52428800,
+  "message": "Finished. Download each part deliberately, then check your saved files.",
+  "rows": [
+    {
+      "id": "0001",
+      "line": 2,
+      "filename": "chapter-1-20261022-000000-0001.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 1",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 1",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 228175,
+      "sha256": "de90be1452262320b659a3c45831d4430a6b32f2bfbf2437fb166e5b13d53c14"
+    },
+    {
+      "id": "0002",
+      "line": 3,
+      "filename": "chapter-2-20261022-000000-0002.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 2",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 2",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 201541,
+      "sha256": "510725acf2f83df14fdce9cfa19c90a80dfc47afd162ab86f6ab52387285e71a"
+    },
+    {
+      "id": "0003",
+      "line": 4,
+      "filename": "chapter-3-20261022-000000-0003.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 3",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 3",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 109661,
+      "sha256": "7c0296abfe78e391b42056041d993ecaac3e76c5ad8868615b1b95a925bd9cc2"
+    },
+    {
+      "id": "0004",
+      "line": 5,
+      "filename": "chapter-4-20261022-000000-0004.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 4",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 4",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 229588,
+      "sha256": "3e6e7f0ee0ac0457f78516b3045fa7bd2e0417c517519f5371ba0c898ef714dc"
+    },
+    {
+      "id": "0005",
+      "line": 6,
+      "filename": "chapter-5-20261022-000000-0005.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 5",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 5",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 200039,
+      "sha256": "681666addc398b2c21e97c6456b809668d10e585430cf859d35ece86b5accba0"
+    },
+    {
+      "id": "0006",
+      "line": 7,
+      "filename": "chapter-6-20261022-000000-0006.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 6",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 6",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 109608,
+      "sha256": "391f800491da25bbaa3a229704d4c08468c40d241204f7ced162d2f29cb1e238"
+    },
+    {
+      "id": "0007",
+      "line": 8,
+      "filename": "chapter-7-20261022-000000-0007.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 7",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 7",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 229895,
+      "sha256": "171b56f4ed9bcc5d300b9b0078f9d06efd4abd3a346fd6ff38276c35a727c05e"
+    },
+    {
+      "id": "0008",
+      "line": 9,
+      "filename": "chapter-8-20261022-000000-0008.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 8",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 8",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 203615,
+      "sha256": "ca91f668e6fcd038daddae7e73036617e04823b22e7d9aaf944bec1807d60c96"
+    },
+    {
+      "id": "0009",
+      "line": 10,
+      "filename": "chapter-9-20261022-000000-0009.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 9",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 9",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 109761,
+      "sha256": "e827f5dc9176cda2ed4ce2106ddfb8521d627447353807419ac01a98100c02d1"
+    },
+    {
+      "id": "0010",
+      "line": 11,
+      "filename": "chapter-10-20261022-000000-0010.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 10",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 10",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 230227,
+      "sha256": "c3b7c57ad8d439a3274672e5e3b0b0c7208f3a03103680f7fbc0a520cb76837c"
+    },
+    {
+      "id": "0011",
+      "line": 12,
+      "filename": "chapter-11-20261022-000000-0011.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 11",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 11",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 194271,
+      "sha256": "ac41959053bd708505028a8c0a44a212e0f867b774d7599b27eaabc5b5887062"
+    },
+    {
+      "id": "0012",
+      "line": 13,
+      "filename": "chapter-12-20261022-000000-0012.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 12",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 12",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 106834,
+      "sha256": "69898032fc5618a9cc86b117af1f448c828eeafb5ebb51008c7ac5c017e36944"
+    },
+    {
+      "id": "0013",
+      "line": 14,
+      "filename": "chapter-13-20261022-000000-0013.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 13",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 13",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 231003,
+      "sha256": "f5e9c574f16819605312e213a175052941eda15dd3a667b624e61b52092168de"
+    },
+    {
+      "id": "0014",
+      "line": 15,
+      "filename": "chapter-14-20261022-000000-0014.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 14",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 14",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 195448,
+      "sha256": "d515f0565682f3c34b0eb2e52c4ef28460e3aa43c1182729ebdfa423649fc3e2"
+    },
+    {
+      "id": "0015",
+      "line": 16,
+      "filename": "chapter-15-20261022-000000-0015.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 15",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 15",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 105581,
+      "sha256": "ccc6d8b0b51ad164267ddef9ebffbb420157067e9cc8ea97a2ea2b1132b950d6"
+    },
+    {
+      "id": "0016",
+      "line": 17,
+      "filename": "chapter-16-20261022-000000-0016.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 16",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 16",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 230836,
+      "sha256": "331d87abdcb162e1d4586404ea610f9ebfe36e0cfab64df0de185c56ea87205c"
+    },
+    {
+      "id": "0017",
+      "line": 18,
+      "filename": "chapter-17-20261022-000000-0017.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 17",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 17",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 197097,
+      "sha256": "f5f4d2da62fbcc498b37802ed0b2617cc0b366c252e6c69384d09ac914cc2c37"
+    },
+    {
+      "id": "0018",
+      "line": 19,
+      "filename": "chapter-18-20261022-000000-0018.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 18",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 18",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 108470,
+      "sha256": "3714229ddd0bf8345a5b5185ce4916a83fb138f977bb439fe02f4ce4801fe707"
+    },
+    {
+      "id": "0019",
+      "line": 20,
+      "filename": "chapter-19-20261022-000000-0019.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 19",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 19",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 230967,
+      "sha256": "06a5c2b7405fc4b3f7691ee092b06f90fae287d029ff2ef53166984049e70373"
+    },
+    {
+      "id": "0020",
+      "line": 21,
+      "filename": "chapter-20-20261022-000000-0020.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 20",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 20",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 203600,
+      "sha256": "7f6b7e90516863f84e324b4eba5825586b396e6199604900357b052d5d55d595"
+    },
+    {
+      "id": "0021",
+      "line": 22,
+      "filename": "chapter-21-20261022-000000-0021.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 21",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 21",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 105921,
+      "sha256": "28850a2b1a669051f1fd305a2367285f43fe79edb26da3d8f257e88e4929c12c"
+    },
+    {
+      "id": "0022",
+      "line": 23,
+      "filename": "chapter-22-20261022-000000-0022.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 22",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 22",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 233403,
+      "sha256": "a161b666f2d0471d461c07adad2107a6835281eef660ebeb7776b6c6a0a3195d"
+    },
+    {
+      "id": "0023",
+      "line": 24,
+      "filename": "chapter-23-20261022-000000-0023.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 23",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 23",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 204416,
+      "sha256": "4b584bd65dcf36f99231047667303c3545f1666949fb37dda1def93c8924dbe0"
+    },
+    {
+      "id": "0024",
+      "line": 25,
+      "filename": "chapter-24-20261022-000000-0024.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 24",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 24",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 107403,
+      "sha256": "31070054f004bca4a5fcb46f9bb0cb94f5dfdaf86c72d8bba38b575196af7534"
+    },
+    {
+      "id": "0025",
+      "line": 26,
+      "filename": "chapter-25-20261022-000000-0025.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 25",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 25",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 232989,
+      "sha256": "08bd46ec909afe41e5e0e6e4ace0c420803c4d219e4d1874d323143ac09df6ac"
+    },
+    {
+      "id": "0026",
+      "line": 27,
+      "filename": "chapter-26-20261022-000000-0026.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 26",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 26",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 204568,
+      "sha256": "5401f3b7af9a7c49cb56c29dbff4bcf4afa46b0a4c769e34397ece9add6819f4"
+    },
+    {
+      "id": "0027",
+      "line": 28,
+      "filename": "chapter-27-20261022-000000-0027.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 27",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 27",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 108218,
+      "sha256": "869107d38636a00da0b232ca7e5f754ef21e88492bca82a72af014ada450e8cb"
+    },
+    {
+      "id": "0028",
+      "line": 29,
+      "filename": "chapter-28-20261022-000000-0028.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 28",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 28",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 234900,
+      "sha256": "7461aacdead44a494202c9cccb82b2031535d9693d70831cbbfb134b8cc35986"
+    },
+    {
+      "id": "0029",
+      "line": 30,
+      "filename": "chapter-29-20261022-000000-0029.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 29",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 29",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 204544,
+      "sha256": "d39b43ca7896663e6972d3670d1bae65b4ff3ef3f5bbeefb1404d578dbc24a22"
+    },
+    {
+      "id": "0030",
+      "line": 31,
+      "filename": "chapter-30-20261022-000000-0030.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 30",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 30",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 111888,
+      "sha256": "7777366684c60ad70e4fe95323f8ca8af335cd0687567d77e24e2d207c19a85a"
+    },
+    {
+      "id": "0031",
+      "line": 32,
+      "filename": "chapter-31-20261022-000000-0031.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 31",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 31",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 231049,
+      "sha256": "ed59008d946e88de4c1827f22b4f92093f0fa5c76cea68e0646d338510e889bd"
+    },
+    {
+      "id": "0032",
+      "line": 33,
+      "filename": "chapter-32-20261022-000000-0032.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 32",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 32",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 206041,
+      "sha256": "e6b595225b4daf8d5a70d1174cc1d7a8bb2d1380ddde9a5c27042fe7305201ed"
+    },
+    {
+      "id": "0033",
+      "line": 34,
+      "filename": "chapter-33-20261022-000000-0033.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 33",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 33",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 112799,
+      "sha256": "88b1199126a7f1230f1e3f58f24f0108d650534e194ffceb91a7684839cc7abc"
+    },
+    {
+      "id": "0034",
+      "line": 35,
+      "filename": "chapter-34-20261022-000000-0034.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 34",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 34",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 232061,
+      "sha256": "debc76c0ead439854abfe05b9375b2db0890d9ed8e5abbfb8d0f8cbd697741f9"
+    },
+    {
+      "id": "0035",
+      "line": 36,
+      "filename": "chapter-35-20261022-000000-0035.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 35",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 35",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 204486,
+      "sha256": "c8f1d3c23f551135fe89b93886c009169835d992d80d07fa5933918b3904acb5"
+    },
+    {
+      "id": "0036",
+      "line": 37,
+      "filename": "chapter-36-20261022-000000-0036.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 36",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 36",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 112675,
+      "sha256": "8ca38efae36e2327a2ca20500ba198162ab4bbc466d4075ee0d84ccd2231bab6"
+    },
+    {
+      "id": "0037",
+      "line": 38,
+      "filename": "chapter-37-20261022-000000-0037.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 37",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 37",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 232572,
+      "sha256": "d6dd31fcea33fb52eac1339164b46fdf8a6723d001918c2b5d34e9468b8c8796"
+    },
+    {
+      "id": "0038",
+      "line": 39,
+      "filename": "chapter-38-20261022-000000-0038.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 38",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 38",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 1,
+      "size": 206917,
+      "sha256": "b11ddbc48b88a96b41ec17dd3433a309a7ff1119cf91ae7d2be42d10c155032b"
+    },
+    {
+      "id": "0039",
+      "line": 40,
+      "filename": "chapter-39-20261022-000000-0039.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 39",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 39",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 2,
+      "size": 112776,
+      "sha256": "68b5055cffecb363e17f98fc2e3152560f010e6c6b1eacc582d5234ee03d860c"
+    },
+    {
+      "id": "0040",
+      "line": 41,
+      "filename": "chapter-40-20261022-000000-0040.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 40",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 40",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 231411,
+      "sha256": "461b5a1f246311472c2473b7ae58bd3b5c2c38421e6f5ac5ee807b71989f60fe"
+    },
+    {
+      "id": "0041",
+      "line": 42,
+      "filename": "chapter-41-20261022-000000-0041.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 41",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 41",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 196550,
+      "sha256": "4daec65428558e3b8985ed00c2b8211f6c3c137fa6f1858109c4d6bb3b5bd421"
+    },
+    {
+      "id": "0042",
+      "line": 43,
+      "filename": "chapter-42-20261022-000000-0042.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 42",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 42",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 108223,
+      "sha256": "189c4c3dc51bf07d3ea93850d39dabc498237b9ef42ae50fe58f8dff177b0f7a"
+    },
+    {
+      "id": "0043",
+      "line": 44,
+      "filename": "chapter-43-20261022-000000-0043.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 43",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 43",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 232266,
+      "sha256": "7050f7740b21d28b615895059e86a2ce596899cbdc9a73f48dcef5963767529c"
+    },
+    {
+      "id": "0044",
+      "line": 45,
+      "filename": "chapter-44-20261022-000000-0044.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 44",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 44",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 196835,
+      "sha256": "2cb7fcc99995e59a266a3827ef484503d1ea540490a092881e758e8aa24419e0"
+    },
+    {
+      "id": "0045",
+      "line": 46,
+      "filename": "chapter-45-20261022-000000-0045.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 45",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 45",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 106968,
+      "sha256": "0b0c5d8965008a592cae81085c907ade073abe4ad1591af9d543d346aa472c5e"
+    },
+    {
+      "id": "0046",
+      "line": 47,
+      "filename": "chapter-46-20261022-000000-0046.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 46",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 46",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 231930,
+      "sha256": "016e118d3d5b5d67385b7b04e13c155160240b66fd636bec9a556d09aa123280"
+    },
+    {
+      "id": "0047",
+      "line": 48,
+      "filename": "chapter-47-20261022-000000-0047.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 47",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 47",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 199407,
+      "sha256": "42705b4d9da8f6aad5858936125eeb5b72e320e1dc4efdcd695f9fa37380c869"
+    },
+    {
+      "id": "0048",
+      "line": 49,
+      "filename": "chapter-48-20261022-000000-0048.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 48",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 48",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 109671,
+      "sha256": "cc25988b9c4f062fd163f6ffefe4674d2983c03e980d82435b5a33cc6cf31d11"
+    },
+    {
+      "id": "0049",
+      "line": 50,
+      "filename": "chapter-49-20261022-000000-0049.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 49",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 49",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 232443,
+      "sha256": "afbe7ae0b156339d8433f69b981b67cdd619d7b7f589c06e45fb2017bffc601a"
+    },
+    {
+      "id": "0050",
+      "line": 51,
+      "filename": "chapter-50-20261022-000000-0050.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 50",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 50",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 202581,
+      "sha256": "dc3866964d4fd0c49ef22da9478f38e49d339fbd27aafa487ad04235a91f0a32"
+    },
+    {
+      "id": "0051",
+      "line": 52,
+      "filename": "chapter-51-20261022-000000-0051.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 51",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 51",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 105654,
+      "sha256": "b00cd057be828ef31ce7b7617f24317c8f1ba0b8fed26fa25e6b4af158ecefce"
+    },
+    {
+      "id": "0052",
+      "line": 53,
+      "filename": "chapter-52-20261022-000000-0052.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 52",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 52",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 233385,
+      "sha256": "2648a15042b051d9d164598d6bc597a9f4bd84bfe448eeab6ca7354f53ba4f6f"
+    },
+    {
+      "id": "0053",
+      "line": 54,
+      "filename": "chapter-53-20261022-000000-0053.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 53",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 53",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 203947,
+      "sha256": "06447b040989d737023e255af92a944140cc8f29b6ed95281a3dd2b65dddac89"
+    },
+    {
+      "id": "0054",
+      "line": 55,
+      "filename": "chapter-54-20261022-000000-0054.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 54",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 54",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 106849,
+      "sha256": "5d4e04a5a6d88513d16a7e7732bac87819d0557b6625a91542beff2fcfbc5e26"
+    },
+    {
+      "id": "0055",
+      "line": 56,
+      "filename": "chapter-55-20261022-000000-0055.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 55",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 55",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 232755,
+      "sha256": "be3bd10b4edec29d11d09df8639155d9154b4cf334a9bb63cd34cf25c9d1ef9d"
+    },
+    {
+      "id": "0056",
+      "line": 57,
+      "filename": "chapter-56-20261022-000000-0056.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 56",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 56",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 203557,
+      "sha256": "4d7f13cf6d7b9e6799dca833fd89e5a89355faf7e3b9b3602122aff13d50efbe"
+    },
+    {
+      "id": "0057",
+      "line": 58,
+      "filename": "chapter-57-20261022-000000-0057.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 57",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 57",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 107902,
+      "sha256": "ce2b28464bcf8a8cc763776cce4867cb62072be2ff56116961821c03c88f5a32"
+    },
+    {
+      "id": "0058",
+      "line": 59,
+      "filename": "chapter-58-20261022-000000-0058.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 58",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 58",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 234674,
+      "sha256": "44408a88bd0ee96ed2934d18fe750e4269db231e3214cde4c5914f2f63a9b5de"
+    },
+    {
+      "id": "0059",
+      "line": 60,
+      "filename": "chapter-59-20261022-000000-0059.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 59",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 59",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 203784,
+      "sha256": "488780419d9d02258bd6f7c0cee2ab8e5c19a22c28e64b55cd42ea85d4cedce5"
+    },
+    {
+      "id": "0060",
+      "line": 61,
+      "filename": "chapter-60-20261022-000000-0060.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 60",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 60",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 111736,
+      "sha256": "ed6ec36a28427f475376f7314c97087ecb1875d9d6dd342060968f34ddd9d8c7"
+    },
+    {
+      "id": "0061",
+      "line": 62,
+      "filename": "chapter-61-20261022-000000-0061.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 61",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 61",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 230948,
+      "sha256": "86f249648ceef09c5c1e126240171d6273dbf038e75d2f06fe2af9ce8a048c57"
+    },
+    {
+      "id": "0062",
+      "line": 63,
+      "filename": "chapter-62-20261022-000000-0062.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 62",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 62",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 205618,
+      "sha256": "0e1ca9aee1ee42ab1d7591eef64021034e448325ab78ba16df497582dcff5037"
+    },
+    {
+      "id": "0063",
+      "line": 64,
+      "filename": "chapter-63-20261022-000000-0063.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 63",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 63",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 112784,
+      "sha256": "feec5ce6454aaf0baa54f0ac79694daa57fb0ddd4062fffdb98fe0200b9ee575"
+    },
+    {
+      "id": "0064",
+      "line": 65,
+      "filename": "chapter-64-20261022-000000-0064.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 64",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 64",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 231774,
+      "sha256": "5115b3caaadc184b5e0a44f18185bc798e8c3c898f186c6a18cf773a0c29fadf"
+    },
+    {
+      "id": "0065",
+      "line": 66,
+      "filename": "chapter-65-20261022-000000-0065.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 65",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 65",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 203922,
+      "sha256": "a9d328d7cd8bb5471ae533e840462ebd0568737640a5ecbcdb1b2e0f4be207c3"
+    },
+    {
+      "id": "0066",
+      "line": 67,
+      "filename": "chapter-66-20261022-000000-0066.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 66",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 66",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 112523,
+      "sha256": "86c8e35da7016fe588313b1ea5e835c7fff216f21b17523cbc44bd64c7ddc1a4"
+    },
+    {
+      "id": "0067",
+      "line": 68,
+      "filename": "chapter-67-20261022-000000-0067.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 67",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 67",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 232526,
+      "sha256": "7fd9ef17cf7f3a143e451b4d6ac361d297988edb569424227824b30803e1910a"
+    },
+    {
+      "id": "0068",
+      "line": 69,
+      "filename": "chapter-68-20261022-000000-0068.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 68",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 68",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 206210,
+      "sha256": "237e28ab4d5a527f8e35903330c6196e8a6bf6b24037f3575be19210ad25a0ab"
+    },
+    {
+      "id": "0069",
+      "line": 70,
+      "filename": "chapter-69-20261022-000000-0069.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 69",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 69",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 112728,
+      "sha256": "c082d416d5fa6e0b5639f796968f020ebbf75ea57819154d6823e211f90afd96"
+    },
+    {
+      "id": "0070",
+      "line": 71,
+      "filename": "chapter-70-20261022-000000-0070.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 70",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 70",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 231860,
+      "sha256": "22ba42826675038fcea25412d3a5a2cac0d79355393a8d2b6baf7a8098ba6633"
+    },
+    {
+      "id": "0071",
+      "line": 72,
+      "filename": "chapter-71-20261022-000000-0071.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 71",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 71",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 197062,
+      "sha256": "fefc32c92285c5800057fd21252380f7f95ed589286fc0741c09c76982cd15ce"
+    },
+    {
+      "id": "0072",
+      "line": 73,
+      "filename": "chapter-72-20261022-000000-0072.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 72",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 72",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 108808,
+      "sha256": "416e9ae1570f2ad99bbc03758b0b61689af2cd1df83e1f1a5771fd7ee1e37478"
+    },
+    {
+      "id": "0073",
+      "line": 74,
+      "filename": "chapter-73-20261022-000000-0073.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 73",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 73",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 232448,
+      "sha256": "0bc987546b3aa84645e6baf0e1e58f2f8ba43229a5e482f77806f14795c5a244"
+    },
+    {
+      "id": "0074",
+      "line": 75,
+      "filename": "chapter-74-20261022-000000-0074.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 74",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 74",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 198242,
+      "sha256": "15ae44176209f39c791b075ca17bbd8f5df82a961ccf8ec60fafeb368ce49af2"
+    },
+    {
+      "id": "0075",
+      "line": 76,
+      "filename": "chapter-75-20261022-000000-0075.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 75",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 75",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 107762,
+      "sha256": "944caa7a2e28f324e00862f9dc32b78e8e86b484b17235ede8367140df856171"
+    },
+    {
+      "id": "0076",
+      "line": 77,
+      "filename": "chapter-76-20261022-000000-0076.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 76",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 76",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 232520,
+      "sha256": "54e1cf92ec76d7c50ab673c74725c069b520eab6b08569830d9ae11f0f7f2640"
+    },
+    {
+      "id": "0077",
+      "line": 78,
+      "filename": "chapter-77-20261022-000000-0077.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 77",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 77",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 3,
+      "size": 199119,
+      "sha256": "d500c910ced48bd46f9983b906aca3cf7b56deb23471220db1f942f2344339ad"
+    },
+    {
+      "id": "0078",
+      "line": 79,
+      "filename": "chapter-78-20261022-000000-0078.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 78",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 78",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 4,
+      "size": 110626,
+      "sha256": "c96edfd5fbdd3f684986fe82a9063a28c060589f03e77755a8f82fa027d122c9"
+    },
+    {
+      "id": "0079",
+      "line": 80,
+      "filename": "chapter-79-20261022-000000-0079.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 79",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 79",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 232523,
+      "sha256": "eb6878e7b2c3b910e1767aa6448eb4d0c2cfafcb8845437169ba23254435ee3a"
+    },
+    {
+      "id": "0080",
+      "line": 81,
+      "filename": "chapter-80-20261022-000000-0080.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 80",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 80",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 205215,
+      "sha256": "92096b67faa411a3fc36ffa290881ca63aa9080c439c45f0c1b45b22a8df1d08"
+    },
+    {
+      "id": "0081",
+      "line": 82,
+      "filename": "chapter-81-20261022-000000-0081.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 81",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 81",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 108642,
+      "sha256": "fabd725f8f11b7ea4bd08d4bd3a2c0e3fcfd56d4721e6b44767cedf84daddf5c"
+    },
+    {
+      "id": "0082",
+      "line": 83,
+      "filename": "chapter-82-20261022-000000-0082.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 82",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 82",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 235346,
+      "sha256": "f7e5b51f66053c01d973d7cd21d0fa539f755d6ebe3ffdb4b69a2e00e6061904"
+    },
+    {
+      "id": "0083",
+      "line": 84,
+      "filename": "chapter-83-20261022-000000-0083.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 83",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 83",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 206407,
+      "sha256": "d8e57008b25db584e8fc7f47cd5804d57b53e39b55b38436e27fed8c9a5c66e0"
+    },
+    {
+      "id": "0084",
+      "line": 85,
+      "filename": "chapter-84-20261022-000000-0084.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 84",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 84",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 109815,
+      "sha256": "d9d3f8f11a661de18a2e90368423a181e19776887503b83223a50c49b1fbc626"
+    },
+    {
+      "id": "0085",
+      "line": 86,
+      "filename": "chapter-85-20261022-000000-0085.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 85",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 85",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 234758,
+      "sha256": "3392ea16b3b35093b133c3e3c4c3b5b610ca5f798f70326da860317b989fe7ee"
+    },
+    {
+      "id": "0086",
+      "line": 87,
+      "filename": "chapter-86-20261022-000000-0086.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 86",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 86",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 206140,
+      "sha256": "87ffc7b56e286c88294a0076f40b87b36bbac70dbcbac43791e1bc52805bc509"
+    },
+    {
+      "id": "0087",
+      "line": 88,
+      "filename": "chapter-87-20261022-000000-0087.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 87",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 87",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 110845,
+      "sha256": "d3043feb236d089809ffcc472ba0aa27cf7417d514616637341ad8485f1201c9"
+    },
+    {
+      "id": "0088",
+      "line": 89,
+      "filename": "chapter-88-20261022-000000-0088.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 88",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 88",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 236514,
+      "sha256": "0cf83759a2bc247de55c70f89fa2b820277e597b5a63c5475d8e069fede053dc"
+    },
+    {
+      "id": "0089",
+      "line": 90,
+      "filename": "chapter-89-20261022-000000-0089.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 89",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 89",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 206429,
+      "sha256": "468d202bc6274a8215960eea955002617a7474dd560793dd06e237beaeaf343f"
+    },
+    {
+      "id": "0090",
+      "line": 91,
+      "filename": "chapter-90-20261022-000000-0090.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 90",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 90",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 111529,
+      "sha256": "d6f90bd8585eaa51608581428d2c28666f36a6d48cb3261c79fa97621630dab0"
+    },
+    {
+      "id": "0091",
+      "line": 92,
+      "filename": "chapter-91-20261022-000000-0091.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 91",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 91",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 230866,
+      "sha256": "6502c5998f528ec8e43ec76a6a83bbaddbeb1df603f42fff0cd2bfa3152656fb"
+    },
+    {
+      "id": "0092",
+      "line": 93,
+      "filename": "chapter-92-20261022-000000-0092.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 92",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 92",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 205787,
+      "sha256": "73036c9c5917f3d528f2741afc07bfff4dc94af058ae386a67c5e4f202f48e8b"
+    },
+    {
+      "id": "0093",
+      "line": 94,
+      "filename": "chapter-93-20261022-000000-0093.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 93",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 93",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 112835,
+      "sha256": "d678c1620769dd9fc472f3da5ad59c57f18b1fffc771d2bfc9178ead71a3b8ac"
+    },
+    {
+      "id": "0094",
+      "line": 95,
+      "filename": "chapter-94-20261022-000000-0094.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 94",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 94",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 231908,
+      "sha256": "782606d6d616e0a9cd462914a74cd7b43578ed381809f7891474a3430475cc27"
+    },
+    {
+      "id": "0095",
+      "line": 96,
+      "filename": "chapter-95-20261022-000000-0095.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 95",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 95",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 204001,
+      "sha256": "22d5291f0a1b83bb3992dbafd5f602898609c54c536cc1af4b60f1d403484d74"
+    },
+    {
+      "id": "0096",
+      "line": 97,
+      "filename": "chapter-96-20261022-000000-0096.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 96",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 96",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 112431,
+      "sha256": "19739114a8aedd27daa8e55e9e698bf5c3740ff265322853178c60e205fcc355"
+    },
+    {
+      "id": "0097",
+      "line": 98,
+      "filename": "chapter-97-20261022-000000-0097.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 97",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 97",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 232434,
+      "sha256": "86bf827a11e215b9a403f15e25a3301c47e185e423697e33ab9e647495f24165"
+    },
+    {
+      "id": "0098",
+      "line": 99,
+      "filename": "chapter-98-20261022-000000-0098.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 98",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "star"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 98",
+        "shape": "star",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 206605,
+      "sha256": "90624595adcefa28178e9a34d203cb9691eab2702cde72a294c0142514f82fa9"
+    },
+    {
+      "id": "0099",
+      "line": 100,
+      "filename": "chapter-99-20261022-000000-0099.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 99",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "solid"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 99",
+        "shape": "solid",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 112385,
+      "sha256": "9e70ed8317b477fdc93c33b2f7f2a99f896a14f0455f96de1000d5f889750793"
+    },
+    {
+      "id": "0100",
+      "line": 101,
+      "filename": "chapter-100-20261022-000000-0100.jpg",
+      "source": {
+        "values": {
+          "title": "Chapter 100",
+          "date": "2026-10-22",
+          "timezone": "Australia/Brisbane",
+          "shape": "donut"
+        },
+        "edits": {}
+      },
+      "settings": {
+        "title": "Chapter 100",
+        "shape": "donut",
+        "size": 2000,
+        "font": "noto-bold",
+        "outline_width": "auto",
+        "background_color": "#000000",
+        "shape_color": "#ff0000",
+        "center_color": "#b6d7a8",
+        "text_color": "#000000",
+        "outline_color": "#ffffff",
+        "timestamp": {
+          "local": "2026:10:22 00:00:00",
+          "offset": "+10:00",
+          "instant": "2026-10-21T14:00:00Z",
+          "timezone": "Australia/Brisbane",
+          "occurrence": "",
+          "source": "explicit"
+        },
+        "capturedNow": "2026-10-22T01:46:49Z",
+        "timezoneFallback": false
+      },
+      "status": "verified",
+      "error": null,
+      "availability": "user reported saving",
+      "part": 5,
+      "size": 231774,
+      "sha256": "e5cb090daeacdcc127e26625efd9e4deea2011562fae8ab440db95137f0121f5"
+    }
+  ],
+  "parts": [
+    {
+      "number": 1,
+      "filename": "markers-1e700d34-b9e6-4667-8397-c5ea8353dad6-part-001.zip",
+      "size": 6984263,
+      "rows": [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005",
+        "0006",
+        "0007",
+        "0008",
+        "0009",
+        "0010",
+        "0011",
+        "0012",
+        "0013",
+        "0014",
+        "0015",
+        "0016",
+        "0017",
+        "0018",
+        "0019",
+        "0020",
+        "0021",
+        "0022",
+        "0023",
+        "0024",
+        "0025",
+        "0026",
+        "0027",
+        "0028",
+        "0029",
+        "0030",
+        "0031",
+        "0032",
+        "0033",
+        "0034",
+        "0035",
+        "0036",
+        "0037",
+        "0038"
+      ],
+      "availability": "user reported saving"
+    },
+    {
+      "number": 2,
+      "filename": "markers-1e700d34-b9e6-4667-8397-c5ea8353dad6-part-002.zip",
+      "size": 114254,
+      "rows": [
+        "0039"
+      ],
+      "availability": "user reported saving"
+    },
+    {
+      "number": 3,
+      "filename": "markers-1e700d34-b9e6-4667-8397-c5ea8353dad6-part-003.zip",
+      "size": 6990622,
+      "rows": [
+        "0040",
+        "0041",
+        "0042",
+        "0043",
+        "0044",
+        "0045",
+        "0046",
+        "0047",
+        "0048",
+        "0049",
+        "0050",
+        "0051",
+        "0052",
+        "0053",
+        "0054",
+        "0055",
+        "0056",
+        "0057",
+        "0058",
+        "0059",
+        "0060",
+        "0061",
+        "0062",
+        "0063",
+        "0064",
+        "0065",
+        "0066",
+        "0067",
+        "0068",
+        "0069",
+        "0070",
+        "0071",
+        "0072",
+        "0073",
+        "0074",
+        "0075",
+        "0076",
+        "0077"
+      ],
+      "availability": "user reported saving"
+    },
+    {
+      "number": 4,
+      "filename": "markers-1e700d34-b9e6-4667-8397-c5ea8353dad6-part-004.zip",
+      "size": 112104,
+      "rows": [
+        "0078"
+      ],
+      "availability": "user reported saving"
+    },
+    {
+      "number": 5,
+      "filename": "markers-1e700d34-b9e6-4667-8397-c5ea8353dad6-part-005.zip",
+      "size": 4109241,
+      "rows": [
+        "0079",
+        "0080",
+        "0081",
+        "0082",
+        "0083",
+        "0084",
+        "0085",
+        "0086",
+        "0087",
+        "0088",
+        "0089",
+        "0090",
+        "0091",
+        "0092",
+        "0093",
+        "0094",
+        "0095",
+        "0096",
+        "0097",
+        "0098",
+        "0099",
+        "0100"
+      ],
+      "availability": "user reported saving"
+    }
+  ]
+}

@@ -168,3 +168,11 @@ and the reproduction/evidence contract. `npm test` includes CSV/batch faults;
 `npm run test:batch` exercises real exports and retrieval. The independent
 `test/verify-batch.py` requires native Pillow. Physical iOS acceptance remains
 open; save output/settings before navigating between the two editor pages.
+
+## Desktop delivery checks
+
+`npm run test:delivery` records repeated installed-Chrome and WebKit exports,
+real default-size 100-row parts, responsiveness and qualified network denial.
+`python3 test/verify-delivery.py` uses native Pillow and reads actual ZIP
+members directly. [DELIVERY_TECHDOC](../../DELIVERY_TECHDOC.html) and the dated
+receipt describe native Safari evidence and remaining acceptance gaps.

@@ -1,0 +1,22 @@
+{
+  "method": "Clean WebKit contexts, actual file input before/after setOffline(true), two input mechanisms",
+  "results": [
+    {
+      "input": "path",
+      "offline": true,
+      "font": "noto-bold",
+      "error": "The I/O read operation failed.",
+      "runtime": "Local font was not loaded. Previous font is still selected.",
+      "generateDisabled": false
+    },
+    {
+      "input": "in-memory payload passed through file input",
+      "offline": true,
+      "font": "noto-bold",
+      "error": "The I/O read operation failed.",
+      "runtime": "Local font was not loaded. Previous font is still selected.",
+      "generateDisabled": false
+    }
+  ],
+  "qualification": "Neither case reaches successful file read. Native Safari local-file selection succeeds with its origin server stopped. HTTP-denial replay is reported separately from context-offline emulation; no physical-disconnection claim."
+}

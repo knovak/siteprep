@@ -35,3 +35,14 @@ Built the single-image editor with strict effective time, labeled drafts and ver
 ## 2026-10-22 — Add CSV review, frozen batch jobs, ZIP parts and manifests
 
 Added CSV review and inheritance, immutable record IDs, frozen batch/retry, deliberate bounded JPEG/ZIP delivery and manifests/reports; 64 pure tests, both engine batch journeys and 220 independent JPEG checks pass. Phase 5 acceptance remains.
+
+## 2026-10-22 — Desktop delivery acceptance evidence
+
+Recorded repeated Chrome/WebKit desktop performance, actual default-size
+100-row ZIP retrieval with space pauses and keyboard cancellation, native
+Safari single/batch/local-font downloads, and 306 independently decoded JPEGs.
+Preserved WebKit context-offline file-I/O failures separately from passing
+HTTP-denial/native stopped-origin checks. Added a T1–T12 acceptance map and
+reproduction techdoc. Phase 5 stays actionable; physical-iOS data and other
+explicit acceptance gaps remain open. No application runtime, deployment,
+graduation, stage or production release changed.

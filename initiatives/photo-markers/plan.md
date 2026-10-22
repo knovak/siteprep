@@ -132,3 +132,13 @@ ZIP/JPEG retrieval and immutable manifests/reports. Both desktop engines pass
 the ten-marker and 100-record journeys; native Pillow checks 220 retrieved
 JPEGs independently. Continue Phase 5 browser/delivery acceptance; synthetic
 allocation faults and desktop engines do not close physical-iOS evidence.
+
+## Phase 5 desktop evidence — October 22, 2026
+
+[The desktop delivery receipt](notes/desktop-delivery-20261022.html) records
+repeated installed-Chrome/WebKit timing, actual default-size 100-row parts and
+space pauses, native Safari single/batch/local-font retrieval, and 306 native-
+decoded files. It keeps WebKit offline-emulated file I/O distinct from HTTP
+denial and native stopped-origin results. Phase 5 remains open: physical iOS,
+real screen reader, the complete native keyboard/zoom matrix and total process
+memory remain unrun. Do not advance to Phase 6 from this partial receipt.

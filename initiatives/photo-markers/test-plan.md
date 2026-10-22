@@ -153,3 +153,13 @@ packaging/resource faults and explicit release. T9 has supplementary automated
 layout/axe results at three widths; the branded-browser, physical-iOS/Files,
 screen-reader/keyboard/zoom and complete T11 performance/memory matrix remain
 unrun. No deployment or graduation is claimed.
+
+## October 22 desktop delivery receipt
+
+[The Phase 5 receipt](notes/desktop-delivery-20261022.html) maps T1–T12 to
+current evidence, including exact timing samples, native Safari retrieval and
+306 independent JPEG checks. Desktop targets pass; automated axe/reflow covers
+1280×900, 430×932, 932×430 and 320×900. Failed focus/offline-emulation probes
+remain visible and qualified. Physical-iOS/Files, real screen-reader, full
+native keyboard/text/400% zoom and total process-memory acceptance remain
+unrun. This partial receipt does not close the parent milestone.
