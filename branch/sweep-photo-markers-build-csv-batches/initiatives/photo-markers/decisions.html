@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="siteprep-version-root" content="../../">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decisions — Photo markers</title>
+  <link rel="stylesheet" href="../../shared/site_base/site_base.css">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="icon" href="../../shared_assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../../shared_assets/icon-192.png">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SitePrep">
+  <script defer src="../../shared/site_base/site_base.js" data-nav-current="initiatives"></script>
+</head>
+<body>
+  <header class="card">
+    <div class="card-header">
+      <p class="tag">Initiative Document</p>
+      <h1>Decisions — Photo markers</h1>
+    </div>
+    <div class="card-content">
+      <p><a href="./index.html">Back to Photo markers</a></p>
+    </div>
+  </header>
+  <main class="card" aria-labelledby="doc-body">
+    <div class="card-header">
+      <h2 id="doc-body">Decisions</h2>
+    </div>
+    <div class="card-content">
+<h2>Decisions</h2>
+<h3>2026-10-20 — What should the first release validate?</h3>
+<p><strong>Verify JPEG images and EXIF metadata directly; do not validate a photo-library application now.</strong></p>
+<p>The user wrote, “don&#39;t do any validation of a photo library application - not needed now,” both on the proposed import/order check and on the compatibility-target question (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323456078">acceptance comment</a>, <a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323466256">target question</a>).</p>
+<p>This removes the photo-library import/sorting acceptance gate and the question of selecting Apple Photos, Google Photos, or Lightroom. It retains image-opening and independent EXIF read-back checks. Application-specific ordering is not claimed as verified; any future library testing is separate work.</p>
+<h3>2026-10-20 — Which browsers are supported first?</h3>
+<p><strong>Chrome and Safari, on desktop and iOS.</strong></p>
+<p>The user&#39;s answer was “chrome and safari, desktop and ios” (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323469327">comment</a>).</p>
+<p>This settles the browser/platform families for the editor and single/batch exports. Exact versions and test devices will be recorded in the test plan and results; no additional browser family is implied.</p>
+<h3>2026-10-20 — What do blank date/time fields mean, and which timezone applies?</h3>
+<p><strong>Both fields blank means current date/time. An explicit date with no time means midnight in the effective timezone.</strong></p>
+<p>The user asked to “leave the date/time blank, to indicate the current date/time” (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323436011">blank-field comment</a>). They also explained: “Usually a user just wants the date, assuming midnight - but local time, which could be anywhere” (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323483321">timezone comment</a>).</p>
+<p>These are distinct cases: leaving both fields empty requests now; entering a date with no time requests 00:00:00 on that date. The same distinction applies to omitted or blank optional CSV values.</p>
+<p>The user delegated the visible default timezone to the agent, offering browser timezone or UTC. <strong>Selected default: the browser&#39;s timezone, with a visibly identified UTC fallback if detection fails.</strong> This makes the ordinary local-time workflow convenient while allowing a different timezone for photos from another place. The effective timezone and interpreted date/time must be visible and adjustable.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Default</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td>Browser timezone — selected</td><td>Matches the current local-time workflow without another input; suitable for the default “now” case.</td><td>It may differ from the location of an older or travel photo, so the displayed default must be changeable.</td></tr><tr><td>UTC</td><td>Uniform across devices and locations.</td><td>Usually requires an extra choice for a marker meant to represent midnight at a particular place.</td></tr></tbody></table></div>
+<h4>What this settles, and what it does not</h4>
+<ul><li>Blank date/time is valid input and must not be rejected by validation.</li><li>An explicit date with blank time preserves the intended local midnight rather than becoming “now.”</li><li>Optional location entry to infer a timezone was suggested with “maybe”; retain it for assessment as a convenience, not as a required location field or a promised first-release feature.</li><li>Location inference, if adopted, must preserve browser-local processing and make an ambiguous or unknown location visible.</li><li>Time-only input, daylight-saving ambiguity handling, and EXIF offset representation remain specification/implementation details. The default timezone choice does not settle those details.</li></ul>
+<h3>2026-10-20 — Which designs and image parameters belong in the first release?</h3>
+<p><strong>Donut, star, and solid-color square; inherit the legacy Python image parameters.</strong></p>
+<p>The user requested the current donut inside the square, a star inside the square, and “nothing inside the square image - a solid block of one color.” They added: “more to be defined in future versions” and “image sizes an other parameters should be set as in the legacy python implementation” (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323500055">comment</a>).</p>
+<p>The applicable reference defaults are a 2000 × 2000 square, JPEG quality 95, black background, red ring, light-green center (<code>#b6d7a8</code>), black bold centered auto-sized text, and a white scaled outline. The donut touches the side midpoints and its inner radius is 78% of its outer radius. Retain applicable reference options through browser controls; the reviewed date/time behavior above supersedes the old CLI defaults.</p>
+<p>This settles the initial three shape choices and the source of the image parameters. Star geometry, browser font selection, and mapping existing color controls to each design remain specification details. A plain solid-color marker can omit its title. No additional shape family is required for the first release.</p>
+<h3>2026-10-20 — How are batches supplied?</h3>
+<p><strong>CSV, with optional columns wherever defaults are sensible.</strong></p>
+<p>The user wrote, “CSV is fine. allow for optional columns where defaults are sensible” (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323504907">comment</a>).</p>
+<p>The specification will define column names, which columns are required, precedence between row values and shared settings, and how omitted/blank optional values use the displayed defaults. It must include the date/time rules above and inherited image parameters. This does not settle download packaging.</p>
+<h3>2026-10-20 — Who chooses the WASM approach?</h3>
+<p><strong>Discover and evaluate it during implementation.</strong></p>
+<p>In response to the WASM-approach question, the user said, “that will be for the implementation to discover” (<a href="https://github.com/knovak/siteprep/pull/609#discussion_r4323508279">comment</a>).</p>
+<p>The user does not need to select a library or runtime now. The browser-only WASM requirement remains; the specification can set the behavior and evaluation criteria while implementation establishes the approach through working evidence.</p>
+<h3>2026-10-21 — Provisional implementation path after measured comparison</h3>
+<p>This records an implementation choice under the user&#39;s instruction that the approach is “for the implementation to discover,” not a new preference attributed to the user. Evidence is in <a href="notes/wasm-comparison-20261021.html">the measured receipt</a>.</p>
+<h4>Alternatives considered</h4>
+<div class="table-scroll"><table><thead><tr><th>Option</th><th>Strengths</th><th>Weaknesses</th></tr></thead><tbody><tr><td>A: Pyodide/Pillow</td><td>Working reuse path, mandatory EXIF, fastest warm samples: medians 84/181 ms; ten-row batches below 1.1 seconds.</td><td>15.82 MB static footprint and 1.4–1.6 second cold initialization in these desktop engines; a Python runtime and package distribution to maintain.</td></tr><tr><td>B: browser drawing + MozJPEG WASM</td><td>Working tags/recovery, 1.55 MB footprint, 44/52 ms median cold initialization; local FontFace drawing and a small encoder module.</td><td>Warm median 270/263 ms and batches about 2.5 seconds are slower than A; custom metadata insertion and browser font/decoder behavior need the planned hardening.</td></tr><tr><td>C: purpose-built renderer</td><td>Could centralize the work.</td><td>Adds an unmeasured build/font/metadata implementation despite two viable prototypes; not built.</td></tr></tbody></table></div>
+<p><strong>Selected provisionally for the next increment: B.</strong> Both routes meet the desktop timing targets; B&#39;s smaller transfer and runtime surface outweigh A&#39;s warm-speed advantage for these markers. Use only B in the application output. The two-route development harness remains reproducible evidence.</p>
+<h4>What this settles, and what it does not</h4>
+<p>The next serial export pipeline uses browser drawing and the pinned WASM JPEG codec, mandatory EXIF writing and independent read-back. Physical-iOS, branded-browser, actual-disconnection and complete acceptance remain open. WebKit&#39;s context-offline Blob decoding failed for both candidates; HTTP-denial export passes but does not erase that failure. Reconsider the choice if the selected pipeline cannot meet font, offline-decoding, physical-device memory or export targets, or if the pinned codec&#39;s build/license maintenance becomes unsuitable. No reviewed functional requirement or supported-browser family has been removed.</p>
+    </div>
+  </main>
+  <footer class="site-footer" data-version="sweep/photo-markers/build-csv-batches" data-root="../../">
+    <script src="../../shared/site_footer/site_footer.js"></script>
+  </footer>
+</body>
+</html>
