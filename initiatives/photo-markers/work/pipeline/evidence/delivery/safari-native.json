@@ -1,0 +1,117 @@
+{
+  "browser": "Safari 26.6.2 (21624.5.1.11.3)",
+  "OS": "macOS 26.6.2 arm64",
+  "method": "Native Safari window through accessibility controls and real Downloads files; no automation WebKit substitution",
+  "cases": [
+    "Dated star selected with native Down/Return, generated and downloaded",
+    "Ten mixed-design default-size CSV records; invalid fifth color blocks generation, row edit restores validity and ID 0005",
+    "Asset server stopped after both pages prepared; ten-row generation, ZIP and report download succeed",
+    "Explicit saved-part acknowledgement changes retained output 6.99 MiB to 0.00 and disables JPEG/ZIP links while keeping outcomes",
+    "Visual samples at native 200 and 300 percent page zoom; 400 percent not established; normal zoom restored and test tabs closed",
+    "After a fresh ready state and asset-server shutdown, native file chooser loads bundled Noto font as local-1; local-font JPEG generation and actual Downloads retrieval succeed"
+  ],
+  "files": [
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-1-20261022-000000-0001.jpg",
+      "sha256": "9a6c451c2a5ed77d84a02ab33de0faefbbf43aaea18f5658c648db9cdb66efaa",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-2-20261022-000000-0002.jpg",
+      "sha256": "8b436f0e1ededbddc405d37c4f09877f4cd4771b0961b6ef84bc8fa62f30ca5e",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-3-20261022-000000-0003.jpg",
+      "sha256": "d4905ee0f0359298dd762bf93723bfc9aa26437607199ecc867aeb8662e6c3d3",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-4-20261022-000000-0004.jpg",
+      "sha256": "b1bb1a6ee38d8f1815ed9e44f4ba69f993941326a9c3941d55e82151d59cd114",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-5-20261022-000000-0005.jpg",
+      "sha256": "41495f7eaa4c1108151a7d5e0ebc961c8ef27ae661d18c08821b8f28a9e2c33e",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-6-20261022-000000-0006.jpg",
+      "sha256": "0033ac3282d1c731cefc515bec79990ea5dc3238284cf27dce4d375d4a5cacce",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-7-20261022-000000-0007.jpg",
+      "sha256": "1818eca5ed569a1414fdd1ed52ded4345568ce7e46e032b85a1a6e7a6da1e90d",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-8-20261022-000000-0008.jpg",
+      "sha256": "aa2d502c8d89d882d31a8b2d5946fc9e250800a3ea0acd6a905a5f665986f95a",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-9-20261022-000000-0009.jpg",
+      "sha256": "80b10cb6ea2bd3315ec189b026b92b6bc25bc56502b5fc00dde3a4a1864196f7",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "archive": "safari-native-ten.zip",
+      "member": "safari-chapter-10-20261022-000000-0010.jpg",
+      "sha256": "c82c86c9f0c26d8c75341eed2aa99f749a451527f0dd2e75ad75e6adb751d558",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "safari-native-star.jpg",
+      "sha256": "f030f1c17d085d2ec491986f5854da61437615cf45736c126242bba46e5ffe50",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "safari-native-local-font.jpg",
+      "sha256": "dd4c55703be0591449b7d658a0222208c1358a690e10be7b6f2fb8c3f3f0e53e",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    }
+  ],
+  "unrun": [
+    "Physical iOS and Files app",
+    "Full screen-reader journey",
+    "Complete native keyboard/zoom matrix",
+    "Physically disconnected networking",
+    "Total process peak memory"
+  ],
+  "networkQualification": "Native Safari origin-unavailable test: local asset server stopped; OS networking was not disabled."
+}

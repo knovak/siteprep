@@ -1,0 +1,625 @@
+{
+  "at": "2026-10-22T01:16:12.766Z",
+  "host": {
+    "platform": "darwin",
+    "release": "25.6.0",
+    "arch": "arm64",
+    "cpus": "Apple M1"
+  },
+  "sourceCommit": null,
+  "engines": [
+    {
+      "engine": "chrome",
+      "cases": [
+        "Three context-cold starts; initial static requests confined to the nested output, no posted data",
+        "Five actual warm UI exports and draft updates with deliberate retrieved JPEGs"
+      ],
+      "errors": [],
+      "version": "155.0.8059.85",
+      "coldReadyMs": {
+        "samples": [
+          1287.7922500000004,
+          474.6883340000004,
+          1205.7821249999997
+        ],
+        "median": 1205.7821249999997,
+        "min": 474.6883340000004,
+        "max": 1287.7922500000004
+      },
+      "initialRequests": [
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.css",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/worker.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/mozjpeg_enc.wasm",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/NotoSans-Bold.ttf",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.css",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/worker.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/mozjpeg_enc.wasm",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/NotoSans-Bold.ttf",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.css",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/worker.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/mozjpeg_enc.wasm",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/NotoSans-Bold.ttf",
+          "method": "GET",
+          "bytes": 0
+        }
+      ],
+      "draftMs": {
+        "samples": [
+          120.69258300000001,
+          114.99124999999913,
+          129.73574999999983,
+          136.96799999999894,
+          123.11291699999856
+        ],
+        "median": 123.11291699999856,
+        "min": 114.99124999999913,
+        "max": 136.96799999999894
+      },
+      "warmSingleMs": {
+        "samples": [
+          620.6359580000008,
+          561.0702920000003,
+          749.3999170000006,
+          600.7127079999991,
+          583.0350419999995
+        ],
+        "median": 600.7127079999991,
+        "min": 561.0702920000003,
+        "max": 749.3999170000006
+      },
+      "targets": {
+        "draft500ms": true,
+        "warmSingle2000ms": true
+      },
+      "max4096Ms": 2326.8336249999993,
+      "pass": false,
+      "error": "locator.evaluate: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator(':focus')\u001b[22m\n\n    at /Users/ken/.codex/worktrees/sweep-october-22-acceptance/siteprep/initiatives/photo-markers/work/pipeline/test/delivery-browser.mjs:87:71"
+    },
+    {
+      "engine": "webkit",
+      "cases": [
+        "Three context-cold starts; initial static requests confined to the nested output, no posted data",
+        "Five actual warm UI exports and draft updates with deliberate retrieved JPEGs"
+      ],
+      "errors": [],
+      "version": "26.0",
+      "coldReadyMs": {
+        "samples": [
+          551.9592089999933,
+          392.09325000000536,
+          343.32083299999795
+        ],
+        "median": 392.09325000000536,
+        "min": 343.32083299999795,
+        "max": 551.9592089999933
+      },
+      "initialRequests": [
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.css",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/worker.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/mozjpeg_enc.wasm",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/NotoSans-Bold.ttf",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.css",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/worker.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/mozjpeg_enc.wasm",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/NotoSans-Bold.ttf",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.css",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/editor.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/worker.js",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/mozjpeg_enc.wasm",
+          "method": "GET",
+          "bytes": 0
+        },
+        {
+          "url": "http://127.0.0.1:65093/nested/photo-markers/NotoSans-Bold.ttf",
+          "method": "GET",
+          "bytes": 0
+        }
+      ],
+      "draftMs": {
+        "samples": [
+          134.37970900000073,
+          123.76362499999959,
+          123.39624999999796,
+          126.84308299999975,
+          123.55445900000632
+        ],
+        "median": 123.76362499999959,
+        "min": 123.39624999999796,
+        "max": 134.37970900000073
+      },
+      "warmSingleMs": {
+        "samples": [
+          589.2042080000028,
+          466.5169999999998,
+          450.3990829999966,
+          448.4257080000025,
+          500.6022499999963
+        ],
+        "median": 466.5169999999998,
+        "min": 448.4257080000025,
+        "max": 589.2042080000028
+      },
+      "targets": {
+        "draft500ms": true,
+        "warmSingle2000ms": true
+      },
+      "max4096Ms": 1715.7217909999963,
+      "pass": false,
+      "error": "locator.evaluate: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator(':focus')\u001b[22m\n\n    at /Users/ken/.codex/worktrees/sweep-october-22-acceptance/siteprep/initiatives/photo-markers/work/pipeline/test/delivery-browser.mjs:87:71"
+    }
+  ],
+  "files": [
+    {
+      "file": "chrome-warm-1.jpg",
+      "sha256": "f93830ede0028236817d4cee66c73742924b84ca91ef2737dacde799d04a2025",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "chrome-warm-2.jpg",
+      "sha256": "d3aaf3e0071eee56a0de517dc859f0c2c954cc942d01f67469079bf5f11723b8",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "chrome-warm-3.jpg",
+      "sha256": "fe1dccf337d2fc5c967a4c8120123e3d44bf2e770e6f4ea5e9b4067599121285",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "chrome-warm-4.jpg",
+      "sha256": "a5e2462e06c57ad04816c76573600922d7d92adc8c0efeeb7670159e0e7048d7",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "chrome-warm-5.jpg",
+      "sha256": "02289feb31b914dbb5221b6a8adc4640b8b22d7d2eb52ec9c501bab73fe828e5",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "chrome-4096.jpg",
+      "sha256": "20a799f109bad033ca4b4badc7be8184102159e328e29afac26798e1ef1b269f",
+      "size": 4096,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "webkit-warm-1.jpg",
+      "sha256": "9aab068fb64d1fe3e96195b9bb0f0349151ca9696c15ef43e63e86ec870e3783",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "webkit-warm-2.jpg",
+      "sha256": "037e5ec4c7ce3df16db91447931dc21f7b59b31bb8b36862c371e7565720045c",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "webkit-warm-3.jpg",
+      "sha256": "a4ac58676fb3493c2dafc7706ca0edc5a0d328109ce1bb593ca4498b8e1c539a",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "webkit-warm-4.jpg",
+      "sha256": "894da0a9e5dab7ea3ff23d51d6a358c8ee53fb6291b16d523c0e917347c5551a",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "webkit-warm-5.jpg",
+      "sha256": "a9e719a14d185d51e45190055bcf32edccb59c5f84ff844e03480dd49659c7bb",
+      "size": 2000,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    },
+    {
+      "file": "webkit-4096.jpg",
+      "sha256": "20d5bed2ba00efe3d3f0342920747b7dfe6b3b28e04ab1f9262512f6a4d586b2",
+      "size": 4096,
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00"
+    }
+  ],
+  "caveats": "Installed Google Chrome runs headless with an isolated automation profile. Playwright WebKit is supplementary engine evidence, not branded Safari. Context-cold means a new context/no-store responses; OS/WASM caches are not reset. UI timings include driver latency. Physical iOS/Files, real screen reader and total process peak memory remain unrun.",
+  "served": [
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/",
+      "bytes": 5619,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.css",
+      "bytes": 4166,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/editor.js",
+      "bytes": 263913,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/worker.js",
+      "bytes": 1045741,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/mozjpeg_enc.wasm",
+      "bytes": 251524,
+      "method": "GET"
+    },
+    {
+      "path": "/nested/photo-markers/NotoSans-Bold.ttf",
+      "bytes": 575740,
+      "method": "GET"
+    }
+  ]
+}
