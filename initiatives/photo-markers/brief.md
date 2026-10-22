@@ -6,21 +6,21 @@
 
 ## Done
 
-The one-marker editor and CSV batch view share three designs, local fonts,
-strict timestamps and verified WASM JPEG exports. CSV review retains record
-IDs, inherited defaults and row edits; frozen retries, deliberate ZIP parts,
-individual downloads and reports preserve results through cancellation.
+The single-marker editor and CSV batches share three designs, local fonts,
+strict times and verified WASM JPEGs. Stable record IDs, inherited defaults,
+frozen retry, bounded ZIP parts and deliberate save/release preserve output.
 
-All 64 pure tests and both desktop engine batch journeys pass, including
-100-record runs and offline retrieval. Native Pillow independently checks
-220 retrieved batch JPEGs; the single-editor regression and its 16 downloaded
-files also pass. Automated layout and accessibility scans pass at three widths.
+Repeated Chrome/WebKit observations meet the desktop speed targets and cover
+100 default-size records through space pauses and keyboard cancellation.
+Native Safari supplies real single, batch and local-font downloads with the
+asset server stopped; 306 new JPEGs pass independent checks. The receipt keeps
+failed offline-emulation probes separate from qualified network-denial results.
 
 ## Remaining work
 
-Complete Phase 5's browser/delivery, keyboard/zoom, screen-reader, offline,
-performance and resource-limit acceptance matrix. Then prepare standalone
-usage/build instructions and graduation readiness from the existing plan.
+Complete the remaining browser/accessibility matrix, native keyboard and text
+zoom, real screen-reader paths and measured resource-limit acceptance. Keep
+Phase 5 open before preparing standalone graduation readiness from the plan.
 
 ## Optional later
 
