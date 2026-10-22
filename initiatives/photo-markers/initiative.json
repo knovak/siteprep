@@ -15,8 +15,8 @@
       "blocked_by": "data:physical Safari and Chrome on iOS findings for JPEG and ZIP retrieval in Files, disconnected exports, memory limits and timing; desktop engine comparison is provisional"
     },
     {
-      "id": "build-csv-batches",
-      "title": "Add CSV review, frozen batch jobs, ZIP parts and manifests",
+      "id": "verify-browser-delivery",
+      "title": "Verify browser delivery, offline operation, performance and accessibility",
       "state": "actionable",
       "value": "high",
       "effort": "large",
@@ -24,8 +24,8 @@
     }
   ],
   "brief": {
-    "generated_at": "2026-10-21T17:33:19Z",
-    "commit": "3d9f9c4f61fcca4fa2dac5d58fec6cd88f1a2e3a",
-    "digest": "40aa1f7384c3ec2e81da8af4e988868ad12eb1e7"
+    "generated_at": "2026-10-22T00:08:37Z",
+    "commit": "ab41809aa1c754fab3513a1f8b184ccd26fe35c5",
+    "digest": "868cfe83054ddfad87ed579b8c6c700fa77e02ff"
   }
 }

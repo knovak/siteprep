@@ -1,0 +1,784 @@
+{
+  "at": "2026-10-22T00:07:06.427Z",
+  "engines": [
+    {
+      "engine": "chromium",
+      "version": "143.0.7499.4",
+      "cases": [
+        "Keyboard controls and deliberate verified download; decoded preview samples retained for native comparison",
+        "Edits retain labeled old bytes; hidden colors survive shape switch; errors focus and preserve result",
+        "Repeated-hour offsets and instants; choice invalidation; nonexistent time rejected",
+        "Now freezes at Generate across midnight; repeated download preserves bytes and filename",
+        "Cancellation/retry retains frozen timestamp; changed controls cannot relabel a late result",
+        "Invalid font preserves prior font/result; real local font loads and exports",
+        "Offline editing, local-font rendering, verification and retrieved JPEG with no HTTP attempts",
+        "No horizontal overflow or detected axe violation at 1280px",
+        "No horizontal overflow or detected axe violation at 430px",
+        "No horizontal overflow or detected axe violation at 320px",
+        "Explicit discard removes the result and download URL",
+        "Missing startup asset disables Generate; explicit Retry recovers"
+      ],
+      "pageErrors": [],
+      "pass": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.0",
+      "cases": [
+        "Keyboard controls and deliberate verified download; decoded preview samples retained for native comparison",
+        "Edits retain labeled old bytes; hidden colors survive shape switch; errors focus and preserve result",
+        "Repeated-hour offsets and instants; choice invalidation; nonexistent time rejected",
+        "Now freezes at Generate across midnight; repeated download preserves bytes and filename",
+        "Cancellation/retry retains frozen timestamp; changed controls cannot relabel a late result",
+        "Invalid font preserves prior font/result; real local font loads and exports",
+        "Offline editing, local-font rendering, verification and retrieved JPEG with no HTTP attempts",
+        "No horizontal overflow or detected axe violation at 1280px",
+        "No horizontal overflow or detected axe violation at 430px",
+        "No horizontal overflow or detected axe violation at 320px",
+        "Explicit discard removes the result and download URL",
+        "Missing startup asset disables Generate; explicit Retry recovers"
+      ],
+      "pageErrors": [],
+      "pass": true
+    }
+  ],
+  "files": [
+    {
+      "file": "chromium-date.jpg",
+      "sha256": "0cff969c896254e652e9819df6e9f6fcbaeef2c4cd682ffdd1fefde2a694d7e3",
+      "filename": "a-new-chapter-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-previous.jpg",
+      "sha256": "0cff969c896254e652e9819df6e9f6fcbaeef2c4cd682ffdd1fefde2a694d7e3",
+      "filename": "a-new-chapter-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-later.jpg",
+      "sha256": "fd1499eb67df87277d4a8a4d9996b6563d0165b516d2de90319e4f5678f480d7",
+      "filename": "changed-20261101-013000-0001.jpg",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-08:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-now.jpg",
+      "sha256": "e3d3017363cfb99ae07694e587b8a3d3578647ce954ba41ac6a1fc7ae46d324a",
+      "filename": "changed-20261022-000001-0001.jpg",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-repeat-download.jpg",
+      "sha256": "e3d3017363cfb99ae07694e587b8a3d3578647ce954ba41ac6a1fc7ae46d324a",
+      "filename": "changed-20261022-000001-0001.jpg",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-retry.jpg",
+      "sha256": "d832c898327ff5536509973527f6ad6b878a7c20cf75221fe0f7ce58728183a3",
+      "filename": "changed-20261023-000001-0001.jpg",
+      "local": "2026:10:23 00:00:01",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-local-font.jpg",
+      "sha256": "6911fdcd66f71dd927f86d99e1d01b81e7976e038abd4d3bda1fc4017dc65d01",
+      "filename": "local-font-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "chromium-offline.jpg",
+      "sha256": "c260bdecf3bc34e5f04a2a7c692b6817b0eb68da93058b9ad5e708253a43a288",
+      "filename": "marker-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-date.jpg",
+      "sha256": "3bf553a506db123427751f78e8e3526ab7df11e4e7f5ec35f4c5ac9cc0990d6b",
+      "filename": "a-new-chapter-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-previous.jpg",
+      "sha256": "3bf553a506db123427751f78e8e3526ab7df11e4e7f5ec35f4c5ac9cc0990d6b",
+      "filename": "a-new-chapter-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-later.jpg",
+      "sha256": "f3c93463a5be67c9e20894830774af237c230c93903370c9bc79a696c37d36c0",
+      "filename": "changed-20261101-013000-0001.jpg",
+      "local": "2026:11:01 01:30:00",
+      "offset": "-08:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-now.jpg",
+      "sha256": "2a27f1315a24d610510854c3af48ab75761a26847fcc6f28fc050f70ddd6c482",
+      "filename": "changed-20261022-000001-0001.jpg",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-repeat-download.jpg",
+      "sha256": "2a27f1315a24d610510854c3af48ab75761a26847fcc6f28fc050f70ddd6c482",
+      "filename": "changed-20261022-000001-0001.jpg",
+      "local": "2026:10:22 00:00:01",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-retry.jpg",
+      "sha256": "50e828332e9a249690f5ba50e21e77ce583aa82badf17df1d359d4671d955c39",
+      "filename": "changed-20261023-000001-0001.jpg",
+      "local": "2026:10:23 00:00:01",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-local-font.jpg",
+      "sha256": "5bd91072228064525d9fad030353088a1554a3f9e947f0a5b3cec1c208b96b5d",
+      "filename": "local-font-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            167,
+            200,
+            231,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "file": "webkit-offline.jpg",
+      "sha256": "c260bdecf3bc34e5f04a2a7c692b6817b0eb68da93058b9ad5e708253a43a288",
+      "filename": "marker-20261022-000000-0001.jpg",
+      "local": "2026:10:22 00:00:00",
+      "offset": "+10:00",
+      "size": 2000,
+      "preview": [
+        {
+          "point": [
+            0,
+            0
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            20
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "point": [
+            210,
+            210
+          ],
+          "pixel": [
+            0,
+            0,
+            0,
+            255
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": "Playwright desktop engines; physical iOS, branded Safari/Chrome, real screen reader and full zoom matrix remain unrun."
+}

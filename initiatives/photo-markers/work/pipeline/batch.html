@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo markers · CSV batch</title><link rel="stylesheet" href="./editor.css"><script type="module" src="./batch-ui.js"></script></head>
+<body><header><p class="eyebrow">PHOTO MARKERS / CSV BATCH</p><h1>Give every chapter a marker.</h1>
+<p class="intro">Review a list, settle the dates, then make a batch of verified JPEGs.</p>
+<nav aria-label="Marker modes"><a href="./index.html">One marker</a> <a href="./batch.html" aria-current="page">CSV batch</a></nav></header>
+<main><section class="notice" aria-label="Local processing"><p>Everything stays in this browser. Once preparation finishes, you can work offline.</p>
+<p>Save files and export settings before switching pages, closing or reloading. Local fonts need reloading in a new session. Physical iOS and Files acceptance is still pending.</p>
+<p id="batch-runtime" role="status">Preparing local image tools…</p><button id="batch-prepare" hidden>Retry preparation</button></section>
+<section class="card"><h2>01 <span>Import your list</span></h2><p>UTF-8 CSV · up to 100 records / 1 MiB. Headers use exact lower-case names. Blank titles stay blank; blank date and time request now.</p>
+<button id="template" class="secondary">Download CSV template</button>
+<label for="csv-file">Choose a CSV file</label><input id="csv-file" type="file" accept=".csv,text/csv">
+<details><summary>Paste CSV instead</summary><label for="csv-text">CSV text</label><textarea id="csv-text" rows="5" spellcheck="false"></textarea><button id="import-text">Review pasted CSV</button></details>
+<p id="import-summary" role="status">No list imported.</p><details><summary>Column names & inheritance</summary><p class="hint">title, date, time, timezone, occurrence, shape, background_color, shape_color, center_color, text_color, outline_color, size, font, outline_width, filename.</p><p class="hint">A row edit overrides its CSV value; nonblank CSV values override the batch defaults. Restoring an inherited value removes the row edit. Date and time never inherit the one-marker editor. Use earlier or later for a repeated local time. Font values are loaded keys, never links.</p></details></section>
+<div class="workspace"><div><section class="card"><h2>02 <span>Set shared defaults</span></h2><form id="batch-defaults" novalidate><div id="default-fields" class="two"></div></form>
+<label for="batch-local-font">Load a local TTF or OTF · up to 16 MiB</label><input id="batch-local-font" type="file" accept=".ttf,.otf"><p id="font-keys" class="hint">Loaded keys: noto-bold</p></section>
+<section class="card" id="row-detail" hidden><h2>Review record <span id="detail-id"></span></h2><p id="detail-summary" class="inset"></p>
+<canvas id="row-preview" width="320" height="320" role="img" aria-label="Draft selected record" hidden></canvas><p id="row-preview-status" class="hint" role="status"></p>
+<label for="edit-field">Field to change</label><select id="edit-field"></select><label for="edit-value">Row value</label><input id="edit-value" aria-describedby="edit-help"><p id="edit-help" class="hint">Apply an empty title, date or time to use a blank value. Restore inheritance to remove this edit.</p>
+<div class="actions"><button id="apply-edit">Apply row edit</button><button id="inherit" class="secondary">Restore inheritance</button><button id="exclude" class="secondary">Exclude record</button></div><details><summary>Effective settings & sources</summary><pre id="row-settings"></pre></details></section></div>
+<section class="card"><h2>03 <span>Review every record</span></h2><p id="review-summary" role="status">Import a CSV to begin.</p><div id="review-list" class="row-list"></div><p class="hint">Select a record for its preview and edits. Now and filenames are provisional until Generate freezes this run.</p><button id="export-settings" class="secondary" disabled>Export batch settings</button></section></div>
+<section class="card"><h2>04 <span>Generate & retrieve</span></h2><div id="batch-error" class="error" role="alert" tabindex="-1" hidden></div>
+<div class="actions"><button id="batch-generate" disabled>Generate batch</button><button id="batch-cancel" hidden>Cancel</button><button id="batch-resume" disabled>Resume frozen run / retry selected</button><button id="batch-package" class="secondary" disabled>Package available JPEGs</button></div>
+<p id="batch-progress" role="status">Nothing generated yet.</p><p id="run-summary" class="hint"></p><p id="budget-summary" class="hint"></p>
+<p class="hint">ZIP parts contain original verified JPEGs and a manifest. Download each part yourself. A click cannot confirm a save: check Downloads / Files, then acknowledge saving to release the page’s copies. Retained compressed output is limited to 50 MiB; parts split before that limit. A JPEG over the 25 MiB part target is offered individually.</p>
+<div id="part-list"></div><div id="output-list" class="row-list"></div><div class="actions"><button id="run-report" class="secondary" disabled>Download final run report</button><button id="discard-all" class="secondary" disabled>Discard all retained output</button></div></section>
+</main><footer><p>CSV batch · Save your files before leaving this page.</p></footer></body></html>

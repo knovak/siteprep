@@ -6,20 +6,24 @@
 
 ## Done
 
-The single-image editor provides all three designs, colors/local fonts,
-effective time, repeated-hour choices, labeled drafts and verified JPEG
-previews/downloads. Both desktop engine journeys pass, including offline work,
-cancellation and frozen retry; native checks verify 16 downloaded editor files
-alongside the 52 core JPEGs and 45 settings tests.
+The one-marker editor and CSV batch view share three designs, local fonts,
+strict timestamps and verified WASM JPEG exports. CSV review retains record
+IDs, inherited defaults and row edits; frozen retries, deliberate ZIP parts,
+individual downloads and reports preserve results through cancellation.
+
+All 64 pure tests and both desktop engine batch journeys pass, including
+100-record runs and offline retrieval. Native Pillow independently checks
+220 retrieved batch JPEGs; the single-editor regression and its 16 downloaded
+files also pass. Automated layout and accessibility scans pass at three widths.
 
 ## Remaining work
 
-Add CSV review, frozen batch jobs, ZIP parts and manifests. Complete the
-browser, offline, accessibility and resource-limit acceptance matrix before
-proposing static graduation.
+Complete Phase 5's browser/delivery, keyboard/zoom, screen-reader, offline,
+performance and resource-limit acceptance matrix. Then prepare standalone
+usage/build instructions and graduation readiness from the existing plan.
 
 ## Optional later
 
-Photo-library application validation, additional shapes, location-to-timezone
-assistance, persistent projects, offline installation and integrations remain
-outside the first release.
+Additional shapes, location-to-timezone assistance, persistent projects,
+offline installation and photo-library integrations remain outside this
+release. Photo-library application validation is outside this work.
