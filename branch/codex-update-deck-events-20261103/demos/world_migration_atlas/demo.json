@@ -1,0 +1,15 @@
+{
+  "title": "World Migration Atlas",
+  "description": "Open the World Migration Atlas demo.",
+  "root": "index.html",
+  "links": [
+    {
+      "label": "Tutorial Slideshow",
+      "href": "https://docs.google.com/presentation/d/1vz00gVdnHLOoDSidRLFgxo-UEWw4NLPZ/edit?usp=drivesdk&ouid=111064312747417346604&rtpof=true&sd=true"
+    },
+    {
+      "label": "Tutorial as PDF",
+      "href": "https://drive.google.com/file/d/1PYjSLdRR1BZqGvhX4xSr-tbhfGU4liV6/view?usp=drivesdk"
+    }
+  ]
+}
