@@ -360,3 +360,21 @@ Provider fixtures are recorded responses with retrieval dates and attribution.
 Live tests confirm adapters still speak to their services; deterministic tests
 run only against fixtures. Thresholds in §3.2 and provider policies are reviewed
 after those tests rather than silently tuned in code.
+
+## 2026-11-09 response-time refinement
+
+The annual Bureau predictions are additionally prepared as a versioned catalogue
+and one immutable annual object per port. Activation verifies the complete
+Australian inventory; runtime checks the activated manifest and the selected
+objects. The original predictions, licence, datum and displayed source version
+are retained. The reader continues to support the previous annual-object
+layout. Initialization preserves a separately imported global FES dataset.
+
+The deployed browser entry point is bundled. Normal startup excludes fixture
+JSON files and overlaps the public Australian catalogue with location lookup.
+Public station metadata has a five-minute origin-local, provider-specific cache;
+expired data is never served during a failed refresh. This does not add cloud
+user history or cache caller-specific forecast responses at the edge.
+
+See `work/phase-14/README.md` for the measured alternatives, reproducible
+comparisons, limitations, activation and rollback instructions.

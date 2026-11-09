@@ -1,5 +1,5 @@
 import {placeInstantInRow} from '../../phase-1/src/day-model.mjs';
-import {loadDatasetObject} from '../../phase-10/src/json-dataset.mjs';
+import {loadVerifiedDatasetObject, verifyDatasetVersion} from '../../phase-10/src/json-dataset.mjs';
 
 function emptyDays(rows) {
   return rows.map(row => ({
@@ -13,19 +13,46 @@ function emptyDays(rows) {
   }));
 }
 
-async function loadAustralianDataset(store, descriptor) {
-  const loaded = await loadDatasetObject(store, descriptor.dataRef, 'predictions');
-  if (!loaded.ready) {
-    const error = new Error(`Australian dataset is unavailable: ${loaded.reason}`);
-    error.code = 'stored-dataset-unavailable';
-    throw error;
+function datasetError(message, code = 'stored-dataset-unavailable') {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
+async function loadAustralianDataset(store, descriptor, stationId = null) {
+  const verified = await verifyDatasetVersion(store, descriptor.dataRef);
+  if (!verified.ready) throw datasetError(`Australian dataset is unavailable: ${verified.reason}`);
+  const schema = verified.manifest.dataset.schema;
+  const embeddedPort = schema === 'tide-here/australia-standard-ports/v3' && stationId;
+  const objectName = embeddedPort ? `predictions-${stationId}`
+    : ['tide-here/australia-standard-ports/v2', 'tide-here/australia-standard-ports/v3'].includes(schema)
+      ? 'catalogue' : 'predictions';
+  if (embeddedPort && !verified.manifest.objects.some(object => object.name === objectName)) {
+    throw datasetError('Australian standard port is not in the active dataset', 'coverage-unavailable');
   }
-  if (loaded.value.schema !== 'tide-here/australia-standard-ports/v1') {
-    const error = new Error('Australian dataset schema does not match the provider');
-    error.code = 'stored-dataset-version-mismatch';
-    throw error;
+  const loaded = await loadVerifiedDatasetObject(store, verified, objectName);
+  if (!loaded.ready) throw datasetError(`Australian dataset is unavailable: ${loaded.reason}`);
+  if (embeddedPort) {
+    const port = loaded.value;
+    if (port.schema !== 'tide-here/australia-port-predictions/v2'
+        || port.dataset?.id !== verified.manifest.dataset.id
+        || port.dataset?.version !== verified.manifest.dataset.version
+        || port.dataset?.schema !== schema
+        || port.station?.id !== stationId || port.stationId !== stationId
+        || !Array.isArray(port.events)
+        || port.events.some(event => event.stationId !== stationId)) {
+      throw datasetError('Australian port predictions are unavailable or invalid');
+    }
+    return {...loaded, value: {schema, dataset: port.dataset, stations: [port.station], events: port.events}};
   }
-  return loaded.value;
+  if (![
+    'tide-here/australia-standard-ports/v1',
+    'tide-here/australia-standard-ports/v2',
+    'tide-here/australia-standard-ports/v3',
+  ].includes(loaded.value.schema)) {
+    throw datasetError('Australian dataset schema does not match the provider', 'stored-dataset-version-mismatch');
+  }
+  return loaded;
 }
 
 function validateRequest(request) {
@@ -41,13 +68,14 @@ function validateRequest(request) {
 }
 
 export async function australianStationCatalogue({store, descriptor}) {
-  const dataset = await loadAustralianDataset(store, descriptor);
+  const {value: dataset} = await loadAustralianDataset(store, descriptor);
   return dataset.stations.map(station => ({...station}));
 }
 
 export async function forecastAustralianStandardPort({store, request, descriptor}) {
   validateRequest(request);
-  const dataset = await loadAustralianDataset(store, descriptor);
+  const loaded = await loadAustralianDataset(store, descriptor, request.station.id);
+  const dataset = loaded.value;
   if (request.rows.some(row => Number(row.date.slice(0, 4)) !== dataset.dataset.year)) {
     const error = new Error(`Australian predictions are loaded only for ${dataset.dataset.year}`);
     error.code = 'dataset-year-unavailable';
@@ -67,7 +95,24 @@ export async function forecastAustralianStandardPort({store, request, descriptor
   if (request.timeZone !== station.timeZone) throw new Error('Forecast time zone does not match the Australian port');
 
   const days = emptyDays(request.rows);
-  const events = dataset.events.filter(event => event.stationId === station.id);
+  let events;
+  if (dataset.schema === 'tide-here/australia-standard-ports/v2') {
+    const port = await loadVerifiedDatasetObject(store, loaded, `predictions-${station.id}`);
+    if (!port.ready
+        || port.value.schema !== 'tide-here/australia-port-predictions/v1'
+        || port.value.dataset?.id !== dataset.dataset.id
+        || port.value.dataset?.version !== dataset.dataset.version
+        || port.value.stationId !== station.id
+        || !Array.isArray(port.value.events)
+        || port.value.events.some(event => event.stationId !== station.id)) {
+      const error = new Error('Australian port predictions are unavailable or invalid');
+      error.code = 'stored-dataset-unavailable';
+      throw error;
+    }
+    events = port.value.events;
+  } else {
+    events = dataset.events.filter(event => event.stationId === station.id);
+  }
   const start = Date.parse(request.rows[0].startUtc);
   let previousTide = null;
   for (const event of events) {
@@ -128,7 +173,7 @@ export async function forecastAustralianStandardPort({store, request, descriptor
       attribution: dataset.dataset.attribution,
       disclaimer: dataset.dataset.disclaimer ?? null,
       retrievedAt: dataset.dataset.preparedAt,
-      datasetVersion: dataset.dataset.version,
+      datasetVersion: dataset.dataset.sourceVersion ?? dataset.dataset.version,
       dataClass: dataset.dataset.dataClass,
       approximate: !dataset.dataset.isOfficial,
       official: dataset.dataset.isOfficial,

@@ -58,11 +58,11 @@ async function json(path) {
 const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFixture, chsFixture, australiaCatalogueFixture] = await Promise.all([
   json('../phase-2/data/provider-config.json'),
   json('../phase-5/data/geocoder-config.json'),
-  json('../phase-2/data/catalogue-slices.fixture.json'),
-  json('../phase-1/data/time-zones.fixture.geojson'),
-  json('../phase-0/fixtures/noaa-seattle-hilo.json'),
-  json('../phase-0/fixtures/chs-halifax-hilo.json'),
-  json('./data/australia-stations.json')
+  fixtureMode ? json('../phase-2/data/catalogue-slices.fixture.json') : null,
+  fixtureMode ? json('../phase-1/data/time-zones.fixture.geojson') : null,
+  fixtureMode ? json('../phase-0/fixtures/noaa-seattle-hilo.json') : null,
+  fixtureMode ? json('../phase-0/fixtures/chs-halifax-hilo.json') : null,
+  fixtureMode ? json('./data/australia-stations.json') : null
 ]).catch((error) => {
   $('#loading-status').hidden = true;
   $('#result').setAttribute('aria-busy', 'false');
@@ -74,7 +74,7 @@ const [providerConfig, geocoderConfig, catalogueFixture, timeZoneDataset, noaaFi
   throw error;
 });
 
-const fixtureStations = normalizeStationCatalogues(catalogueFixture, providerConfig);
+const fixtureStations = fixtureMode ? normalizeStationCatalogues(catalogueFixture, providerConfig) : null;
 if (fixtureMode) {
   for (const key of LEGACY_FIXTURE_CACHE_KEYS) localStorage.removeItem(key);
   for (let index = localStorage.length - 1; index >= 0; index -= 1) {
@@ -197,7 +197,11 @@ const directTideProvider = new TideProvider({
 const storedTideClient = new StoredTideClient({
   fetchImpl: fetch.bind(globalThis),
   stationFixtures: fixtureMode ? australiaCatalogueFixture.stations : null,
+  storage: fixtureMode ? null : runtimeStorage,
 });
+// Public provider data can load while the independent place lookup is running.
+// A failed preload remains retryable when the resolved place needs the catalogue.
+if (!fixtureMode) void storedTideClient.stations().catch(() => {});
 const fesTideClient = new StoredTideClient({
   provider: FES_PROVIDER_ID,
   fetchImpl: fetch.bind(globalThis),

@@ -6,10 +6,12 @@ import {stageTwoProviderRegistry} from '../fixtures/provider-registry.mjs';
 import {
   ACTIVE_REGISTRY_KEY,
   initializeProviderRegistry,
+  loadActiveProviderRegistry,
   selectProvider,
   validateProviderRegistry,
 } from '../src/provider-registry.mjs';
 import {initializeStageTwo} from '../src/stage-two.mjs';
+import {datasetManifestKey, initializeJsonDataset} from '../src/json-dataset.mjs';
 
 test('national providers win by configuration and fixtures require an explicit opt-in', () => {
   assert.equal(selectProvider(stageTwoProviderRegistry, {countryCode: 'US'}).id, 'noaa');
@@ -76,4 +78,42 @@ test('duplicate provider ids and stored active providers without data are reject
   const australia = missing.providers.find(provider => provider.id === 'australia-standard-ports');
   australia.status = 'active';
   assert.throws(() => validateProviderRegistry(missing), /requires a dataset reference/);
+});
+
+
+test('independent provider manifests load concurrently while activation order stays stable', {timeout: 2000}, async () => {
+  const store = new MemoryObjectStore();
+  const providers = [];
+  for (const id of ['national-test', 'fallback-test']) {
+    const dataset = {id, version: 'v1', schema: 'test/v1', preparedAt: '2026-11-09T00:00:00Z'};
+    await initializeJsonDataset(store, {schema: 'tide-here/json-dataset-bundle/v1', dataset, objects: {data: {id}}});
+    providers.push({
+      id, status: 'active', execution: 'server-stored', countryCodes: ['*'],
+      priority: 10, fallback: true,
+      dataRef: {id, version: 'v1', verification: 'manifest-and-selected-objects'},
+    });
+  }
+  const registry = {...stageTwoProviderRegistry, version: 'parallel-manifests-v1', providers};
+  await initializeProviderRegistry(store, registry);
+  const manifestKeys = providers.map(provider => datasetManifestKey(provider.dataRef));
+  const pending = [];
+  const tracked = {
+    get(key) {
+      if (!manifestKeys.includes(key)) return store.get(key);
+      return new Promise(resolve => {
+        pending.push({key, resolve});
+        if (pending.length === 2) {
+          // Return the later provider first; Promise.all must keep the registry's order.
+          for (const read of [...pending].reverse()) read.resolve(store.get(read.key));
+        }
+      });
+    },
+  };
+  const active = await loadActiveProviderRegistry(tracked);
+  assert.equal(active.ready, true);
+  assert.deepEqual(active.active.verifiedDatasets.map(reference => reference.provider), providers.map(provider => provider.id));
+  assert.equal(pending.length, 2);
+  const writes = store.writeLog.length;
+  await initializeProviderRegistry(store, registry);
+  assert.equal(store.writeLog.length, writes);
 });

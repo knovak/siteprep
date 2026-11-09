@@ -52,3 +52,14 @@ node --test initiatives/tide-here/work/phase-10/test/*.test.mjs
 
 There is still no `.openai/hosting.json`. Storage binding and deployment remain
 Stage 5 work.
+
+`initializeProviderRegistry(..., {verifyObjectsFor: [providerId]})` can require
+full object verification for a newly activated indexed national dataset while
+preserving another provider's selective runtime policy. Stage 4 uses this for
+the Australian catalogue and all 76 port shards. The activated registry records
+and pins each complete manifest digest; runtime selected-object verification
+continues to hash actual object bytes on every request.
+
+Independent provider-manifest reads run concurrently in registry order. This
+overlaps object-store round trips without caching data between requests or
+changing the serialized activation references and checksum checks.

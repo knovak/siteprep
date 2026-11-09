@@ -335,6 +335,15 @@ was the reason it had no home under the first version of this schema.
 A production Site is a **separate Site** from the test one: its own database,
 its own storage, starting empty. Test data does not travel with a release.
 
+Tide Here's Australian performance refinement is documented in
+`initiatives/tide-here/work/phase-14/README.md`. Its build bundles the browser
+entry point; its protected initializer prepares a new immutable catalogue and
+76 port prediction objects in that environment's R2 store, then verifies them
+before activating the registry. Deploying code alone retains compatibility with
+the older annual object; `/init` activates the smaller objects. Existing global
+FES data is preserved. The benchmark scripts distinguish local processing,
+controlled browser delay, and live HTTPS timings.
+
 **Access belongs to the user, and defaults to private.** Either environment may
 be private or public. `plan` reports `access` - the recorded level, or `private`
 as the default - and `confirm_access`, true when that environment has never been
