@@ -361,3 +361,7 @@ review found no remaining actionable correctness issues.
 The implementation, reproducible comparisons, limitations and deployment
 evidence are in `work/phase-14/README.md`. Production remains version 8; this
 work prepares a ready-for-review pull request and does not release or merge.
+
+## 2026-11-09 — Release
+
+Released to production — ChatGPT Site, version 9, `77ed306`. 1 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.

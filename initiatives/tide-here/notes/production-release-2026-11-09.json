@@ -1,0 +1,193 @@
+{
+  "schema": "tide-here/production-release/v1",
+  "production": {
+    "url": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
+    "access": "public",
+    "version": 9,
+    "deployedAt": "2026-11-09T07:03:38.395932Z",
+    "previousVersion": 8
+  },
+  "test": {
+    "url": "https://tide-here-test.ken-novak.chatgpt.site",
+    "version": 18
+  },
+  "source": {
+    "repositoryCommit": "77ed3063e9a2a40c78094fa5d5a515d4d4537deb",
+    "siteCommit": "073106c9fa85bc7cf9ea790434bbceb2c4f745d2",
+    "pullRequest": 638
+  },
+  "archive": {
+    "files": 78,
+    "bytes": 2529280
+  },
+  "checks": {
+    "unitTests": 152,
+    "unitFailures": 0,
+    "sitesBuild": "passed",
+    "runtimeDependencyAuditVulnerabilities": 0,
+    "bundleSha256": "45740d372c9d0f3b9d7955df5477a26af34f96128984a9c6330eb95ba749f6de",
+    "deployedFixtureBrowser": "five cards; 430px phone has no horizontal overflow; no console, page, network or HTTP errors"
+  },
+  "migration": {
+    "productionInitializerSecretRotated": true,
+    "globalFesPreserved": true,
+    "activeRegistry": {
+      "registry": {
+        "id": "tide-here-providers",
+        "version": "stage-4-global-2026-08-29-global-coast-r1-au-ports-r2"
+      },
+      "providers": [
+        {
+          "id": "noaa",
+          "status": "active",
+          "execution": "browser-direct",
+          "dataset": null
+        },
+        {
+          "id": "chs",
+          "status": "active",
+          "execution": "browser-direct",
+          "dataset": null
+        },
+        {
+          "id": "australia-standard-ports",
+          "status": "active",
+          "execution": "server-stored",
+          "dataset": {
+            "id": "australia-bom-annual-tides",
+            "version": "2026-bom-v2-ports-r2",
+            "verification": "manifest-and-selected-objects"
+          }
+        },
+        {
+          "id": "fes2022",
+          "status": "active",
+          "execution": "server-stored",
+          "dataset": {
+            "id": "fes2022b-global-coast",
+            "version": "2026-08-29-global-coast-r1",
+            "verification": "manifest-and-selected-objects"
+          }
+        }
+      ]
+    }
+  },
+  "smoke": {
+    "initializedStage": 4,
+    "repeatInitializationWrites": 0,
+    "registry": {
+      "id": "tide-here-providers",
+      "version": "stage-4-global-2026-08-29-global-coast-r1-au-ports-r2"
+    },
+    "providers": [
+      "noaa:active",
+      "chs:active",
+      "australia-standard-ports:active",
+      "fes2022:active"
+    ],
+    "australianStations": 76,
+    "australianEvents": 1470,
+    "fallbackPoint": "fes2022-coast-n532744-w0090323",
+    "fallbackDataset": {
+      "id": "fes2022b-global-coast",
+      "version": "2026-08-29-global-coast-r1",
+      "verification": "manifest-and-selected-objects"
+    },
+    "fallbackEvents": 19,
+    "fallbackWarnings": [
+      "approximate-fallback"
+    ],
+    "reportedGaps": [
+      {
+        "name": "Cooktown",
+        "station": "fes2022-coast-s154558-e1452712",
+        "events": 20
+      },
+      {
+        "name": "Gibraltar",
+        "station": "fes2022-coast-n361749-w0053354",
+        "events": 20
+      },
+      {
+        "name": "Nice",
+        "station": "fes2022-coast-n436989-e0073383",
+        "events": 20
+      },
+      {
+        "name": "Amsterdam",
+        "station": "fes2022-coast-n524407-e0045661",
+        "events": 20
+      }
+    ],
+    "page": "ok"
+  },
+  "timing": {
+    "scope": "Read-only endpoint timings from the execution host. CF-Ray identifies the responding edge, not the physical client location. Excludes page startup, geolocation and geocoding.",
+    "startedAt": "2026-11-09T07:08:27.511Z",
+    "finishedAt": "2026-11-09T07:08:41.575Z",
+    "forecastAt": "2026-11-09T07:03:38.395Z",
+    "sampleCount": 3,
+    "summaries": [
+      {
+        "key": "/stations",
+        "n": 3,
+        "statuses": [
+          200,
+          200,
+          200
+        ],
+        "medianMs": 858.7440419999994,
+        "minMs": 856.1640000000002,
+        "maxMs": 928.749667
+      },
+      {
+        "key": "/forecast:au-qld-brisbane-bar",
+        "n": 3,
+        "statuses": [
+          200,
+          200,
+          200
+        ],
+        "medianMs": 999.3713749999997,
+        "minMs": 898.1379999999999,
+        "maxMs": 1006.0800829999989
+      },
+      {
+        "key": "/forecast:au-nsw-sydney",
+        "n": 3,
+        "statuses": [
+          200,
+          200,
+          200
+        ],
+        "medianMs": 1019.4239579999994,
+        "minMs": 893.5213750000003,
+        "maxMs": 1045.957375
+      },
+      {
+        "key": "/forecast:au-wa-fremantle",
+        "n": 3,
+        "statuses": [
+          200,
+          200,
+          200
+        ],
+        "medianMs": 892.5814580000006,
+        "minMs": 865.940208,
+        "maxMs": 914.0142080000005
+      },
+      {
+        "key": "/phase-2/data/provider-config.json",
+        "n": 3,
+        "statuses": [
+          200,
+          200,
+          200
+        ],
+        "medianMs": 75.16462500000125,
+        "minMs": 56.883458000000246,
+        "maxMs": 93.22745799999939
+      }
+    ]
+  }
+}

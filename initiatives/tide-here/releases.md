@@ -3,6 +3,16 @@
 Written by `initiatives.mjs deployments … record --env prod`.
 Newest first.
 
+## 2026-11-09 — ChatGPT Site — version 9
+
+<https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>
+
+Released `77ed306` · 1 commit(s) since the previous release · test last deployed 2026-11-09 at `98b8b30`.
+
+Changes since the previous release, in `initiatives/tide-here/work`:
+
+- Speed up Tide Here with preprocessed port data and browser caching (#638)
+
 ## 2026-10-20 — ChatGPT Site — version 8
 
 <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site>
