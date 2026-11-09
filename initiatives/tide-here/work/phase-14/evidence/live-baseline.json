@@ -1,0 +1,399 @@
+{
+  "measuredAt": "2026-11-09T05:54:14.488Z",
+  "scope": "Read-only endpoint timings from the execution host; physical client location unverified. Static control CF-Ray identifies the Sydney (SYD) responding edge. Excludes page startup, geolocation and geocoding.",
+  "samples": [
+    {
+      "environment": "production",
+      "route": "/stations",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 2104.514959,
+      "totalMs": 2107.2028339999997,
+      "bytes": 31544
+    },
+    {
+      "environment": "production",
+      "route": "/stations",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 2023.4537080000005,
+      "totalMs": 2024.9687079999999,
+      "bytes": 31544
+    },
+    {
+      "environment": "production",
+      "route": "/stations",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 2104.4218330000003,
+      "totalMs": 2106.4583329999996,
+      "bytes": 31544
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-qld-brisbane-bar",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 1835.6940000000004,
+      "totalMs": 1837.3926250000004,
+      "bytes": 5231,
+      "events": 20,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-qld-brisbane-bar",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 1704.7147079999995,
+      "totalMs": 1706.2607910000006,
+      "bytes": 5231,
+      "events": 20,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-qld-brisbane-bar",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 1771.8384999999998,
+      "totalMs": 1773.6407089999993,
+      "bytes": 5231,
+      "events": 20,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-nsw-sydney",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 1755.180624999999,
+      "totalMs": 1756.0697920000002,
+      "bytes": 5127,
+      "events": 19,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-nsw-sydney",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 1770.2231250000004,
+      "totalMs": 1771.2907080000004,
+      "bytes": 5127,
+      "events": 19,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-nsw-sydney",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 1840.5845829999998,
+      "totalMs": 1841.3147910000007,
+      "bytes": 5127,
+      "events": 19,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-wa-fremantle",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 2086.868708000002,
+      "totalMs": 2087.3406250000007,
+      "bytes": 3831,
+      "events": 10,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-wa-fremantle",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 3385.9264999999978,
+      "totalMs": 3386.408124999998,
+      "bytes": 3831,
+      "events": 10,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "production",
+      "route": "/forecast",
+      "station": "au-wa-fremantle",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 2111.2988330000007,
+      "totalMs": 2111.639166000001,
+      "bytes": 3831,
+      "events": 10,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/stations",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 5872.088625,
+      "totalMs": 5872.576624999998,
+      "bytes": 31544
+    },
+    {
+      "environment": "test",
+      "route": "/stations",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 1783.0506659999992,
+      "totalMs": 1783.5820409999978,
+      "bytes": 31544
+    },
+    {
+      "environment": "test",
+      "route": "/stations",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 1514.101208,
+      "totalMs": 1514.8759169999976,
+      "bytes": 31544
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-qld-brisbane-bar",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 1609.307375000004,
+      "totalMs": 1609.8756250000006,
+      "bytes": 5231,
+      "events": 20,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-qld-brisbane-bar",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 2515.760958000006,
+      "totalMs": 2517.060541000006,
+      "bytes": 5231,
+      "events": 20,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-qld-brisbane-bar",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 1559.0003750000033,
+      "totalMs": 1559.866915999999,
+      "bytes": 5231,
+      "events": 20,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-nsw-sydney",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 1555.591916999998,
+      "totalMs": 1556.2986669999955,
+      "bytes": 5127,
+      "events": 19,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-nsw-sydney",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 1497.4796659999993,
+      "totalMs": 1497.7927909999999,
+      "bytes": 5127,
+      "events": 19,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-nsw-sydney",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 1656.0762499999983,
+      "totalMs": 1658.072583000001,
+      "bytes": 5127,
+      "events": 19,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-wa-fremantle",
+      "iteration": 1,
+      "status": 200,
+      "headersMs": 1762.5315829999963,
+      "totalMs": 1766.390416999995,
+      "bytes": 3831,
+      "events": 10,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-wa-fremantle",
+      "iteration": 2,
+      "status": 200,
+      "headersMs": 1559.9114589999954,
+      "totalMs": 1561.1097089999967,
+      "bytes": 3831,
+      "events": 10,
+      "datasetVersion": "2026-bom-v2"
+    },
+    {
+      "environment": "test",
+      "route": "/forecast",
+      "station": "au-wa-fremantle",
+      "iteration": 3,
+      "status": 200,
+      "headersMs": 1480.2289999999994,
+      "totalMs": 1480.6261249999952,
+      "bytes": 3831,
+      "events": 10,
+      "datasetVersion": "2026-bom-v2"
+    }
+  ],
+  "schema": "tide-here/live-response-baseline/v1",
+  "forecastAt": "2026-11-09T05:50:00.000Z",
+  "sampleCountPerStationAndRoute": 3,
+  "sites": {
+    "production": "https://tide-here-five-coast-local-days.ken-novak.chatgpt.site",
+    "test": "https://tide-here-test.ken-novak.chatgpt.site"
+  },
+  "staticControl": {
+    "measuredAt": "2026-11-09T05:54:40.960Z",
+    "results": [
+      {
+        "route": "/phase-2/data/provider-config.json",
+        "iteration": 1,
+        "status": 200,
+        "headersMs": 434.394833,
+        "totalMs": 439.529,
+        "bytes": 1177,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a9067ec285673-SYD"
+      },
+      {
+        "route": "/phase-2/data/provider-config.json",
+        "iteration": 2,
+        "status": 200,
+        "headersMs": 97.56766599999997,
+        "totalMs": 99.06562500000001,
+        "bytes": 1177,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a90695fb95673-SYD"
+      },
+      {
+        "route": "/phase-2/data/provider-config.json",
+        "iteration": 3,
+        "status": 200,
+        "headersMs": 67.49899999999991,
+        "totalMs": 68.00487499999997,
+        "bytes": 1177,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a9069f9325673-SYD"
+      },
+      {
+        "route": "/phase-6/data/australia-stations.json",
+        "iteration": 1,
+        "status": 200,
+        "headersMs": 73.74683300000004,
+        "totalMs": 75.25233300000002,
+        "bytes": 40829,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a906a5a2f5673-SYD"
+      },
+      {
+        "route": "/phase-6/data/australia-stations.json",
+        "iteration": 2,
+        "status": 200,
+        "headersMs": 62.655958000000055,
+        "totalMs": 63.87245800000005,
+        "bytes": 40829,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a906adb585673-SYD"
+      },
+      {
+        "route": "/phase-6/data/australia-stations.json",
+        "iteration": 3,
+        "status": 200,
+        "headersMs": 61.03308399999992,
+        "totalMs": 61.714833999999996,
+        "bytes": 40829,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a906b3c255673-SYD"
+      },
+      {
+        "route": "/",
+        "iteration": 1,
+        "status": 200,
+        "headersMs": 246.12620800000002,
+        "totalMs": 246.94795800000009,
+        "bytes": 1488,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "MISS",
+        "cfRay": "a57a906b9d145673-SYD"
+      },
+      {
+        "route": "/",
+        "iteration": 2,
+        "status": 200,
+        "headersMs": 55.90266699999984,
+        "totalMs": 56.682832999999846,
+        "bytes": 1488,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a906d28fa5673-SYD"
+      },
+      {
+        "route": "/",
+        "iteration": 3,
+        "status": 200,
+        "headersMs": 92.9090000000001,
+        "totalMs": 94.48424999999997,
+        "bytes": 1488,
+        "cacheControl": "public, max-age=0, must-revalidate",
+        "cacheStatus": "HIT",
+        "cfRay": "a57a906d89ed5673-SYD"
+      }
+    ]
+  },
+  "preparedDataSizes": {
+    "stations": 76,
+    "events": 103597,
+    "annualJsonBytes": 19218452,
+    "annualGzipBytes": 1465511,
+    "catalogueWithProvenanceJsonBytes": 49155,
+    "catalogueWithProvenanceGzipBytes": 8292,
+    "stationAnnualJsonMinBytes": 160721,
+    "stationAnnualJsonMedianBytes": 278242,
+    "stationAnnualJsonMaxBytes": 293808,
+    "stationAnnualGzipMedianBytes": 26765
+  }
+}

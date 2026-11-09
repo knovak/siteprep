@@ -1,5 +1,7 @@
 export const AUSTRALIAN_PROVIDER_ID = 'australia-standard-ports';
 export const FES_PROVIDER_ID = 'fes2022';
+export const STATION_CACHE_TTL_MS = 5 * 60 * 1000;
+export const STATION_CACHE_PREFIX = 'tide-here.stored-stations.v1.';
 
 // This deliberately conservative region includes all configured Australian
 // ports, including Cocos, Christmas and Norfolk islands, and is well separated
@@ -109,14 +111,23 @@ export class StoredTideClient {
     fetchImpl = globalThis.fetch,
     stationFixtures = null,
     timeoutMs = 10000,
+    storage = null,
+    now = () => Date.now(),
+    stationCacheTtlMs = STATION_CACHE_TTL_MS,
   } = {}) {
     if (!provider || typeof fetchImpl !== 'function') throw new TypeError('Stored tide client requires provider and fetch');
     if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new RangeError('Stored tide client timeout must be positive');
+    if (typeof now !== 'function') throw new TypeError('Stored tide client requires a clock');
+    if (!Number.isFinite(stationCacheTtlMs) || stationCacheTtlMs <= 0) throw new RangeError('Station cache TTL must be positive');
     this.provider = provider;
     this.fetchImpl = fetchImpl;
     this.stationFixtures = stationFixtures;
     this.timeoutMs = timeoutMs;
+    this.storage = storage;
+    this.now = now;
+    this.stationCacheTtlMs = stationCacheTtlMs;
     this.stationPromise = null;
+    this.stationExpiresAt = 0;
   }
 
   async fetchJson(path, options = {}) {
@@ -132,16 +143,47 @@ export class StoredTideClient {
   }
 
   async stations() {
+    if (this.stationPromise && this.now() >= this.stationExpiresAt) this.stationPromise = null;
     if (!this.stationPromise) {
+      this.stationExpiresAt = Infinity;
       this.stationPromise = (async () => {
+        const cacheKey = `${STATION_CACHE_PREFIX}${this.provider}`;
+        if (!this.stationFixtures && this.storage) {
+          try {
+            const cached = JSON.parse(await this.storage.getItem(cacheKey));
+            const age = this.now() - cached?.savedAt;
+            if (Number.isFinite(cached?.savedAt) && age >= 0 && age < this.stationCacheTtlMs
+                && cached?.provider === this.provider && Array.isArray(cached.stations) && cached.stations.length) {
+              const stations = Object.freeze(cached.stations.map((station) => normalizedStation(station, this.provider)));
+              this.stationExpiresAt = cached.savedAt + this.stationCacheTtlMs;
+              return stations;
+            }
+          } catch {
+            // Corrupt or inaccessible disposable data is a network cache miss.
+          }
+        }
         const payload = this.stationFixtures
           ? {provider: this.provider, stations: this.stationFixtures}
           : await this.fetchJson(`/stations?provider=${encodeURIComponent(this.provider)}`);
         if (payload?.provider !== this.provider || !Array.isArray(payload.stations)) {
           throw new Error('Stored station catalogue does not match its provider');
         }
-        return Object.freeze(payload.stations.map((station) => normalizedStation(station, this.provider)));
-      })();
+        const stations = Object.freeze(payload.stations.map((station) => normalizedStation(station, this.provider)));
+        const savedAt = this.now();
+        this.stationExpiresAt = savedAt + this.stationCacheTtlMs;
+        if (!this.stationFixtures && this.storage && stations.length) {
+          try {
+            await this.storage.setItem(cacheKey, JSON.stringify({provider: this.provider, savedAt, stations}));
+          } catch {
+            // Storage quota or privacy settings must not disable tide requests.
+          }
+        }
+        return stations;
+      })().catch((error) => {
+        this.stationPromise = null;
+        this.stationExpiresAt = 0;
+        throw error;
+      });
     }
     return this.stationPromise;
   }

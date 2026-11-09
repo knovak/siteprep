@@ -1,0 +1,361 @@
+{
+  "schema": "tide-here/server-performance/v1",
+  "measuredAt": "2026-11-09T06:14:44.527Z",
+  "environment": {
+    "node": "v23.11.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "method": "Local Node gateway with MemoryObjectStore; each un-cached request rereads provider object bodies. No network delay, Australian execution location or deployed Worker latency is implied. Raw-body cache is an experiment only and bypasses cross-request freshness.",
+  "equality": "Deep equality of complete normalized forecasts, previousTide, source metadata, local dates/times, heights and warnings across all five options; catalogue equals all 76 original stations.",
+  "annual": {
+    "stations": 76,
+    "events": 103597,
+    "bytes": 19218452
+  },
+  "sharded": {
+    "objects": 77,
+    "catalogueBytes": 49194
+  },
+  "portRecords": {
+    "objects": 77,
+    "catalogueBytes": 49194
+  },
+  "measurements": [
+    {
+      "option": "legacy-full-validation",
+      "endpoint": "forecast",
+      "station": "au-qld-mooloolaba",
+      "timeZone": "Australia/Brisbane",
+      "localDates": [
+        "2026-11-09",
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
+      ],
+      "iterations": 15,
+      "medianMs": 267.7834579999999,
+      "p95Ms": 325.03491600000007,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237573,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-full-validation",
+      "endpoint": "forecast",
+      "station": "au-nsw-sydney",
+      "timeZone": "Australia/Sydney",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 225.12224999999944,
+      "p95Ms": 298.0567910000009,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237573,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-full-validation",
+      "endpoint": "forecast",
+      "station": "au-sa-port-adelaide",
+      "timeZone": "Australia/Adelaide",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 235.21108300000014,
+      "p95Ms": 394.03050000000076,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237573,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-full-validation",
+      "endpoint": "catalogue",
+      "iterations": 15,
+      "medianMs": 229.57983400000012,
+      "p95Ms": 280.64829100000134,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237573,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-qld-mooloolaba",
+      "timeZone": "Australia/Brisbane",
+      "localDates": [
+        "2026-11-09",
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
+      ],
+      "iterations": 15,
+      "medianMs": 134.96287499999744,
+      "p95Ms": 205.75879200000054,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237667,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-nsw-sydney",
+      "timeZone": "Australia/Sydney",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 125.15554200000042,
+      "p95Ms": 196.91087499999776,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237667,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-sa-port-adelaide",
+      "timeZone": "Australia/Adelaide",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 124.13337500000125,
+      "p95Ms": 193.8873330000024,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237667,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-manifest-selected",
+      "endpoint": "catalogue",
+      "iterations": 15,
+      "medianMs": 118.86904199999844,
+      "p95Ms": 135.50041700000293,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 19237667,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-raw-body-cache",
+      "endpoint": "forecast",
+      "station": "au-qld-mooloolaba",
+      "timeZone": "Australia/Brisbane",
+      "localDates": [
+        "2026-11-09",
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
+      ],
+      "iterations": 15,
+      "medianMs": 217.2251670000005,
+      "p95Ms": 292.0154589999984,
+      "objectReadsPerRequest": 0.26666666666666666,
+      "objectBytesPerRequest": 1282504.8666666667,
+      "largestObjectBytes": 19218452
+    },
+    {
+      "option": "legacy-raw-body-cache",
+      "endpoint": "forecast",
+      "station": "au-nsw-sydney",
+      "timeZone": "Australia/Sydney",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 212.14183299999786,
+      "p95Ms": 337.8814999999995,
+      "objectReadsPerRequest": 0,
+      "objectBytesPerRequest": 0,
+      "largestObjectBytes": 0
+    },
+    {
+      "option": "legacy-raw-body-cache",
+      "endpoint": "forecast",
+      "station": "au-sa-port-adelaide",
+      "timeZone": "Australia/Adelaide",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 200.77991699999984,
+      "p95Ms": 221.95950000000448,
+      "objectReadsPerRequest": 0,
+      "objectBytesPerRequest": 0,
+      "largestObjectBytes": 0
+    },
+    {
+      "option": "legacy-raw-body-cache",
+      "endpoint": "catalogue",
+      "iterations": 15,
+      "medianMs": 228.80262499999662,
+      "p95Ms": 409.7427500000049,
+      "objectReadsPerRequest": 0,
+      "objectBytesPerRequest": 0,
+      "largestObjectBytes": 0
+    },
+    {
+      "option": "sharded-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-qld-mooloolaba",
+      "timeZone": "Australia/Brisbane",
+      "localDates": [
+        "2026-11-09",
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
+      ],
+      "iterations": 15,
+      "medianMs": 11.364208999999391,
+      "p95Ms": 15.130833000002895,
+      "objectReadsPerRequest": 5,
+      "objectBytesPerRequest": 347263,
+      "largestObjectBytes": 261595
+    },
+    {
+      "option": "sharded-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-nsw-sydney",
+      "timeZone": "Australia/Sydney",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 10.757583999999042,
+      "p95Ms": 19.771625000001222,
+      "objectReadsPerRequest": 5,
+      "objectBytesPerRequest": 341784,
+      "largestObjectBytes": 256116
+    },
+    {
+      "option": "sharded-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-sa-port-adelaide",
+      "timeZone": "Australia/Adelaide",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 11.13945799999783,
+      "p95Ms": 28.771082999999635,
+      "objectReadsPerRequest": 5,
+      "objectBytesPerRequest": 352861,
+      "largestObjectBytes": 267193
+    },
+    {
+      "option": "sharded-manifest-selected",
+      "endpoint": "catalogue",
+      "iterations": 15,
+      "medianMs": 2.0372500000012224,
+      "p95Ms": 2.608542000001762,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 85668,
+      "largestObjectBytes": 49194
+    },
+    {
+      "option": "port-records-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-qld-mooloolaba",
+      "timeZone": "Australia/Brisbane",
+      "localDates": [
+        "2026-11-09",
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
+      ],
+      "iterations": 15,
+      "medianMs": 9.681292000001122,
+      "p95Ms": 258.9315409999981,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 316062,
+      "largestObjectBytes": 279588
+    },
+    {
+      "option": "port-records-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-nsw-sydney",
+      "timeZone": "Australia/Sydney",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 29.474874999999884,
+      "p95Ms": 74.88837500000227,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 310571,
+      "largestObjectBytes": 274097
+    },
+    {
+      "option": "port-records-manifest-selected",
+      "endpoint": "forecast",
+      "station": "au-sa-port-adelaide",
+      "timeZone": "Australia/Adelaide",
+      "localDates": [
+        "2026-10-04",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08"
+      ],
+      "iterations": 15,
+      "medianMs": 14.34862499999872,
+      "p95Ms": 94.91529200000514,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 321680,
+      "largestObjectBytes": 285206
+    },
+    {
+      "option": "port-records-manifest-selected",
+      "endpoint": "catalogue",
+      "iterations": 15,
+      "medianMs": 2.781750000001921,
+      "p95Ms": 28.261375000001863,
+      "objectReadsPerRequest": 4,
+      "objectBytesPerRequest": 85668,
+      "largestObjectBytes": 49194
+    }
+  ]
+}

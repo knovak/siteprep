@@ -38,7 +38,7 @@ function importedRegistry(dataset) {
   const safeVersion = dataset.version.toLowerCase().replace(/[^a-z0-9.-]+/g, '-');
   return {
     ...stageFourProviderRegistry,
-    version: `stage-4-global-${safeVersion}`,
+    version: `stage-4-global-${safeVersion}-au-ports-r2`,
     preparedAt: dataset.preparedAt,
     providers: stageFourProviderRegistry.providers.map(provider => (
       provider.id === 'fes2022'
@@ -102,7 +102,7 @@ export async function importFesDataset({request, url, store, now = () => new Dat
     if (!Array.isArray(payload?.objects)) throw new Error('The imported FES object inventory is required');
     await validateInventory(store, dataset, payload.objects);
     const imported = await activateImportedJsonDataset(store, payload, {now});
-    const registry = await initializeProviderRegistry(store, importedRegistry(dataset), {now});
+    const registry = await initializeProviderRegistry(store, importedRegistry(dataset), {now, verifyObjectsFor: ['australia-standard-ports']});
     return {dataset: imported, registry};
   }
   throw new Error('Unknown dataset import route');

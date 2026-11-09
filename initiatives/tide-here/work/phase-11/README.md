@@ -116,3 +116,25 @@ rounded-height type inference, idempotent activation, all 76 five-day forecasts,
 the before/after coverage matrix, and held-out 2026-08-27 table values in every
 coastal jurisdiction. The hosted R2 binding and deployment checks are
 documented in `../phase-13/README.md`.
+
+## Indexed runtime storage
+
+The current Stage 4 initializer derives immutable storage version
+`2026-bom-v2-ports-r2` from the same validated source. Its v3 catalogue contains
+all 76 stations and source metadata; 76 separate `predictions-<station-id>`
+objects contain each port's annual events plus its station and full source
+metadata. Forecasts therefore read only one selected record after checking
+the manifest; they do not read the catalogue first. No additional publisher
+requests are needed. The original `2026-bom-v2` remains the public source
+version. Its monolithic v1 object and the earlier `ports-r1` v2 catalogue/port
+format remain readable for compatibility, with exact forecast equality across
+all three formats.
+
+Registry activation verifies all Australian shards before switching the active
+registry. Ordinary requests pin that manifest's checksum to the activated
+registry, then checksum only the selected port for a forecast, or the catalogue for a
+catalogue request. A catalogue request reads no prediction events. Nothing persists across requests, so a
+changed manifest or damaged selected object is detected on the next request.
+`australia-shards.test.mjs` compares every port's complete normalized forecast
+with the v1 reader, including the October daylight-saving transition, and
+checks exact preservation of every annual event.

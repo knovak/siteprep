@@ -186,3 +186,22 @@ material, and carries the source disclaimer into every forecast response.
 ```sh
 node --test initiatives/tide-here/work/phase-12/test/*.test.mjs
 ```
+
+## Australian storage migration
+
+Stage 4 now initializes the indexed Australian storage described in
+`../phase-11/README.md`. An existing global FES registry is retained while only
+its Australian descriptor changes. The deterministic `-au-ports-r2` registry
+version suffix prevents a collision with the previous immutable global
+registry, whether `/init` or global import activation runs first. Existing
+`-au-ports-r1` registries migrate to the same canonical r2 suffix, without
+appending a suffix chain. Repeated
+initialization and reimport perform no writes.
+
+The registry initializer's `verifyObjectsFor` option explicitly checks the
+complete new Australian inventory at activation. It does not reread every
+global FES tile into the Worker's limited memory; global import activation has
+already verified that inventory, and ordinary requests retain manifest and
+selected-object checks. See the reproducible comparison in
+`../phase-14/scripts/benchmark-server.mjs` for local CPU and object-byte
+measurements, separately from deployed network response times.

@@ -1,0 +1,1214 @@
+{
+  "schema": "tide-here/browser-performance/v1",
+  "baselineCommit": "195cf6435",
+  "measuredAt": "2026-11-09T06:00:00.886Z",
+  "repetitions": 5,
+  "latenciesMs": [
+    150,
+    250
+  ],
+  "description": "Chromium 430x932, recorded Mooloolaba official-port forecast, fixed per-response delay on local HTTP and mocked geocoding. No real Australian probe or external provider request. HTTP asset caching disabled in every variant to isolate browser data caches. Warm means same browser storage after one successful cold load.",
+  "metric": "Navigation start to five visible forecast cards and loading indicator hidden, measured by browser MutationObserver.",
+  "summary": [
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 1680,
+      "minReadyMs": 1616,
+      "maxReadyMs": 1886,
+      "medianRequestCount": 25,
+      "medianBytes": 226457
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 1290,
+      "minReadyMs": 1260,
+      "maxReadyMs": 1371,
+      "medianRequestCount": 23,
+      "medianBytes": 223664
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 1504,
+      "minReadyMs": 1452,
+      "maxReadyMs": 1528,
+      "medianRequestCount": 20,
+      "medianBytes": 178926
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 1131,
+      "minReadyMs": 1105,
+      "maxReadyMs": 1144,
+      "medianRequestCount": 18,
+      "medianBytes": 176133
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 1000,
+      "minReadyMs": 986,
+      "maxReadyMs": 1068,
+      "medianRequestCount": 8,
+      "medianBytes": 136406
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 645,
+      "minReadyMs": 632,
+      "maxReadyMs": 657,
+      "medianRequestCount": 6,
+      "medianBytes": 133613
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 857,
+      "minReadyMs": 825,
+      "maxReadyMs": 917,
+      "medianRequestCount": 8,
+      "medianBytes": 137863
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 491,
+      "minReadyMs": 487,
+      "maxReadyMs": 516,
+      "medianRequestCount": 5,
+      "medianBytes": 103526
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 2645,
+      "minReadyMs": 2622,
+      "maxReadyMs": 2728,
+      "medianRequestCount": 25,
+      "medianBytes": 226457
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 2103,
+      "minReadyMs": 2079,
+      "maxReadyMs": 2333,
+      "medianRequestCount": 23,
+      "medianBytes": 223664
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 2414,
+      "minReadyMs": 2379,
+      "maxReadyMs": 2587,
+      "medianRequestCount": 20,
+      "medianBytes": 178926
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 1831,
+      "minReadyMs": 1826,
+      "maxReadyMs": 1903,
+      "medianRequestCount": 18,
+      "medianBytes": 176133
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 1616,
+      "minReadyMs": 1596,
+      "maxReadyMs": 1724,
+      "medianRequestCount": 8,
+      "medianBytes": 136406
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 1075,
+      "minReadyMs": 1044,
+      "maxReadyMs": 1639,
+      "medianRequestCount": 6,
+      "medianBytes": 133613
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "state": "cold",
+      "runs": 5,
+      "medianReadyMs": 1389,
+      "minReadyMs": 1367,
+      "maxReadyMs": 1448,
+      "medianRequestCount": 8,
+      "medianBytes": 137863
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "state": "warm",
+      "runs": 5,
+      "medianReadyMs": 818,
+      "minReadyMs": 795,
+      "maxReadyMs": 1126,
+      "medianRequestCount": 5,
+      "medianBytes": 103526
+    }
+  ],
+  "samples": [
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 1886,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 1371,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 1528,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 1143,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 1068,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 657,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 872,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 508,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 1504,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 1144,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 1000,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 645,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 857,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 490,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 1616,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 1360,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 1001,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 653,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 825,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 491,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 1636,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 1285,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 1527,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 1131,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 917,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 516,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 1705,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 1290,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 1462,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 1105,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 989,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 640,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 1680,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 1260,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 1452,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 1109,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 986,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 632,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 826,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 150,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 487,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 2622,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 2106,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 2414,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 1903,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 1673,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 1075,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "cold",
+      "readyMs": 1433,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 1,
+      "state": "warm",
+      "readyMs": 795,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 2384,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 1826,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 1596,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 1044,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 1389,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "/stations",
+        "mock-nominatim",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 802,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "cold",
+      "readyMs": 2660,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 2,
+      "state": "warm",
+      "readyMs": 2103,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 1724,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 1639,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 1448,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 818,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 2645,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 2333,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "cold",
+      "readyMs": 2452,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 3,
+      "state": "warm",
+      "readyMs": 1878,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 1382,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 834,
+      "requestCount": 5,
+      "bytes": 103526,
+      "dataRequests": []
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 2728,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 2084,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 2379,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 1828,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "cold",
+      "readyMs": 1602,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 4,
+      "state": "warm",
+      "readyMs": 1048,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 2634,
+      "requestCount": 25,
+      "bytes": 226457,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "baseline",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 2079,
+      "requestCount": 23,
+      "bytes": 223664,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 2587,
+      "requestCount": 20,
+      "bytes": 178926,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "runtime-data-only",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 1831,
+      "requestCount": 18,
+      "bytes": 176133,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 1616,
+      "requestCount": 8,
+      "bytes": 136406,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "bundled-runtime-data",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 1085,
+      "requestCount": 6,
+      "bytes": 133613,
+      "dataRequests": [
+        "/stations"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "cold",
+      "readyMs": 1367,
+      "requestCount": 8,
+      "bytes": 137863,
+      "dataRequests": [
+        "mock-nominatim",
+        "/stations",
+        "/forecast"
+      ]
+    },
+    {
+      "variant": "final-prefetch-cache",
+      "latencyMs": 250,
+      "repetition": 5,
+      "state": "warm",
+      "readyMs": 1126,
+      "requestCount": 6,
+      "bytes": 106319,
+      "dataRequests": [
+        "/forecast"
+      ]
+    }
+  ]
+}

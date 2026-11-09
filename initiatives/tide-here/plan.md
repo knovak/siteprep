@@ -511,3 +511,19 @@ a repeat initialization wrote zero objects, and the full NOAA, CHS, 76-port
 Australian, global FES, and page sweep passed. The prior active manifests remain
 versioned for rollback, and `releases.md` records the exact released source
 commit.
+
+## 2026-11-09 response-time investigation
+
+Compare annual-file validation, selected verification, raw-body caching and
+per-port preparation against the same official data. Compare browser fixture
+downloads, module bundling, overlapping catalogue loading and short-lived local
+caching under controlled delays. Retain the fastest correct combination and
+record reproducible evidence in `work/phase-14`.
+
+The selected implementation uses per-port Australian objects plus the bundled
+browser and five-minute public catalogue cache. Complete forecast equality for
+all 76 ports, daylight-saving bounds, selected-object corruption, repeat
+activation and preservation of global FES coverage are required checks. Publish
+to the existing Test environment and measure live endpoints separately from
+local processing and simulated browser delays. Production remains a separate
+release after review.

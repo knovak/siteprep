@@ -97,6 +97,19 @@ Phase 7 extends this page with its device-local history,
 disposable cache tiers, download and clear controls, and privacy statement; its
 implementation and additional checks are documented in `../phase-7/README.md`.
 
+Normal startup downloads only the two runtime configuration files; the five
+recorded catalogue, time-zone and tide JSON fixtures load only in fixture mode.
+The public Australian station catalogue begins loading independently of the
+geocoder and location permission request. Its provider-specific
+`tide-here.stored-stations.v1.*` entries use this origin's browser storage for
+at most five minutes, including across reloads. There is no stale-on-error
+fallback: expired, future-dated or malformed data goes back to `/stations`, and
+a failed in-memory request can retry. A live registry change can therefore
+leave a cached station list visible for at most five minutes; forecasts still
+use the server's current dataset and station validation. These entries contain
+public port metadata only, never a user's place or location. Fixture clients
+bypass them. Missing or full storage does not prevent station requests.
+
 ## Current-state indicators and request ownership
 
 The initial HTML contains a visible animated status before module startup.
@@ -131,7 +144,11 @@ node --test initiatives/tide-here/work/phase-{1,2,3,4,5,6}/test/*.test.mjs
 ```
 
 The browser suite runs desktop and iPhone 15 Pro Max-sized Chromium against
-recorded fixtures. It checks the folded coast identity, always-visible tides,
+recorded fixtures. Its local Python HTTP server accepts a queue of 128
+connections so parallel source-module requests do not hit Python's default
+five-connection queue and reset connections before application startup. This
+affects only the test server; the deployed Site uses its bundled browser entry.
+The suite checks the folded coast identity, always-visible tides,
 past/future emphasis in coast time, the two search actions and their permission
 fallback, moonrise-labelled astronomy disclosures, five equal desktop cards,
 content-sized phone cards, explicit zone, closest-first alternatives and map,

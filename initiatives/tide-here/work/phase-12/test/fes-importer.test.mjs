@@ -3,6 +3,11 @@ import {test} from 'node:test';
 
 import {sha256} from '../../phase-9/src/dataset.mjs';
 import {MemoryObjectStore} from '../../phase-9/src/object-store.mjs';
+import {initializeJsonDataset} from '../../phase-10/src/json-dataset.mjs';
+import {initializeProviderRegistry, loadActiveProviderRegistry} from '../../phase-10/src/provider-registry.mjs';
+import {loadAustraliaPreparedOfficial} from '../../phase-11/fixtures/australia-prepared-official.mjs';
+import {australiaDatasetBundle, australiaShardedDatasetBundle} from '../../phase-11/src/australia-importer.mjs';
+import {stageThreeProviderRegistry} from '../../phase-11/fixtures/provider-registry.mjs';
 import {fesSourceOfficial} from '../fixtures/fes-source-official.mjs';
 import {prepareFesDataset} from '../src/fes-preparer.mjs';
 import {createStageFourApp} from '../src/worker.mjs';
@@ -77,25 +82,71 @@ test('a protected resumable import activates broad FES coverage and later initia
     assert.equal(response.status, 200, await response.text());
   }
 
-  const activation = await post(app, '/import/activate', 'correct-token', JSON.stringify({
+  const activationBody = JSON.stringify({
     dataset,
     objects: [
       {name: 'tile-index', sha256: indexSha256},
       {name, sha256: tileSha256},
     ],
-  }));
+  });
+  const activation = await post(app, '/import/activate', 'correct-token', activationBody);
   assert.equal(activation.status, 200, await activation.text());
   const health = await (await app.fetch(new Request('https://tide.example/health'))).json();
-  assert.equal(health.registry.version, 'stage-4-global-test-r1');
+  assert.equal(health.registry.version, 'stage-4-global-test-r1-au-ports-r2');
   assert.deepEqual(health.providers.find(provider => provider.id === 'fes2022').dataset, {
     id: dataset.id,
     version: dataset.version,
     verification: 'manifest-and-selected-objects',
   });
 
+  // Model an already deployed global registry that still references the old
+  // annual Australian object. The new initializer migrates only Australia.
+  const beforeMigration = await loadActiveProviderRegistry(store);
+  const legacyAustralia = stageThreeProviderRegistry.providers.find(provider => provider.id === 'australia-standard-ports');
+  await initializeJsonDataset(store, australiaDatasetBundle(await loadAustraliaPreparedOfficial()));
+  await initializeProviderRegistry(store, {
+    ...beforeMigration.registry,
+    version: 'stage-4-global-test-r1',
+    providers: beforeMigration.registry.providers.map(provider => (
+      provider.id === legacyAustralia.id ? legacyAustralia : provider
+    )),
+  });
+  const migrated = await post(app, '/init', 'correct-token');
+  assert.equal(migrated.status, 200);
+  const afterMigration = await loadActiveProviderRegistry(store);
+  assert.equal(afterMigration.registry.version, 'stage-4-global-test-r1-au-ports-r2');
+  assert.deepEqual(
+    afterMigration.registry.providers.find(provider => provider.id === 'fes2022'),
+    beforeMigration.registry.providers.find(provider => provider.id === 'fes2022'),
+  );
+  assert.equal(afterMigration.registry.providers.find(provider => provider.id === legacyAustralia.id).dataRef.version, '2026-bom-v2-ports-r2');
+  // The first performance candidate was deployed with r1 shards. Migrating
+  // that registry must reuse the same deterministic r2 identity as direct
+  // legacy migration and import activation, without a suffix chain.
+  const r1Bundle = australiaShardedDatasetBundle(await loadAustraliaPreparedOfficial(), {revision: 1});
+  await initializeJsonDataset(store, r1Bundle);
+  await initializeProviderRegistry(store, {
+    ...beforeMigration.registry,
+    version: 'stage-4-global-test-r1-au-ports-r1',
+    providers: beforeMigration.registry.providers.map(provider => (
+      provider.id === legacyAustralia.id ? {
+        ...provider,
+        requiredDatasetSchema: r1Bundle.dataset.schema,
+        dataRef: {id: r1Bundle.dataset.id, version: r1Bundle.dataset.version, verification: 'manifest-and-selected-objects'},
+      } : provider
+    )),
+  });
+  const migratedR1 = await post(app, '/init', 'correct-token');
+  assert.equal(migratedR1.status, 200, await migratedR1.clone().text());
+  assert.equal((await loadActiveProviderRegistry(store)).registry.version, 'stage-4-global-test-r1-au-ports-r2');
+  const writesBeforeRepeat = store.writeLog.length;
   const repeated = await post(app, '/init', 'correct-token');
   assert.equal(repeated.status, 200);
   assert.equal((await repeated.json()).registry.preserved, true);
+  assert.equal(store.writeLog.length, writesBeforeRepeat);
+  const reimported = await post(app, '/import/activate', 'correct-token', activationBody);
+  assert.equal(reimported.status, 200, await reimported.clone().text());
+  assert.equal(store.writeLog.length, writesBeforeRepeat);
   const resolution = await app.fetch(new Request('https://tide.example/resolve', {
     method: 'POST',
     headers: {'content-type': 'application/json'},

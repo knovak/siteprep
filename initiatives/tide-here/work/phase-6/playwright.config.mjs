@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Chromium can request more modules at once than Python's default five queued
+// connections. Keep source-module tests independent of that local server limit.
+const serverCode = [
+  'from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer',
+  'ThreadingHTTPServer.request_queue_size = 128',
+  'ThreadingHTTPServer(("127.0.0.1", 4179), SimpleHTTPRequestHandler).serve_forever()'
+].join('; ');
+
 export default defineConfig({
   testDir: './test',
   testMatch: 'page.spec.mjs',
@@ -10,7 +18,7 @@ export default defineConfig({
     trace: 'retain-on-failure'
   },
   webServer: {
-    command: 'python3 -m http.server 4179 --bind 127.0.0.1',
+    command: `python3 -c '${serverCode}'`,
     cwd: '../../../..',
     url: 'http://127.0.0.1:4179/initiatives/tide-here/work/phase-6/index.html?fixture=1',
     reuseExistingServer: false

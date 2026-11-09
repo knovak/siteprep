@@ -605,6 +605,24 @@ async function normalSeattle(page) {
   await page.route('https://api.tidesandcurrents.noaa.gov/api/prod/datagetter**', route => route.fulfill({ json: predictions }));
 }
 
+test('normal startup skips fixture downloads and overlaps station loading with location permission', async ({ page }) => {
+  await normalSeattle(page);
+  const fixtureRequests = [];
+  let stationRequests = 0;
+  page.on('request', request => {
+    if (/\.fixture\.(?:json|geojson)|phase-0\/fixtures\/|phase-6\/data\/australia-stations\.json/.test(request.url())) {
+      fixtureRequests.push(request.url());
+    }
+    if (request.url().includes('/stations?provider=')) stationRequests += 1;
+  });
+  await page.goto(pagePath.split('?')[0]);
+  await expect.poll(() => page.evaluate(() => window.locationRequests.length)).toBe(1);
+  await expect.poll(() => stationRequests).toBe(1);
+  expect(fixtureRequests).toEqual([]);
+  await expect(page.locator('#loading-text')).toHaveText('Finding your location…');
+  await expect(page.locator('#result')).toBeHidden();
+});
+
 test('normal page asks for location on load and shows animated progress through forecast loading', async ({ page }) => {
   await normalSeattle(page);
   let releaseForecast;

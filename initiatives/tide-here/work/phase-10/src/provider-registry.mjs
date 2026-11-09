@@ -59,19 +59,23 @@ function registryKey(registry) {
   return `tide-data/provider-registries/${registry.id}/${registry.version}/registry.json`;
 }
 
-async function verifiedReferences(store, registry) {
-  const references = [];
-  for (const provider of registry.providers.filter(item => item.dataRef)) {
-    const verified = await verifyDatasetVersion(store, provider.dataRef);
+async function verifiedReferences(store, registry, {verifyObjectsFor = []} = {}) {
+  // Provider manifests are independent; preserve registry order while overlapping
+  // their object-store round trips. Selected-object checks remain per provider.
+  return Promise.all(registry.providers.filter(provider => provider.dataRef).map(async provider => {
+    const verified = await verifyDatasetVersion(
+      store,
+      provider.dataRef,
+      verifyObjectsFor.includes(provider.id) ? {verifyObjects: true} : undefined,
+    );
     if (!verified.ready) throw new Error(`Dataset for ${provider.id} is not ready: ${verified.reason}`);
-    references.push({
+    return {
       provider: provider.id,
       dataset: provider.dataRef,
       manifestKey: verified.manifestKey,
       manifestSha256: verified.manifestSha256,
-    });
-  }
-  return references;
+    };
+  }));
 }
 
 async function writeImmutable(store, key, body, checksum, result) {
@@ -95,9 +99,9 @@ async function writePointer(store, key, body, checksum, result) {
   result[existing ? 'updated' : 'created'].push(key);
 }
 
-export async function initializeProviderRegistry(store, registry, {now = () => new Date()} = {}) {
+export async function initializeProviderRegistry(store, registry, {now = () => new Date(), verifyObjectsFor = []} = {}) {
   validateProviderRegistry(registry);
-  const references = await verifiedReferences(store, registry);
+  const references = await verifiedReferences(store, registry, {verifyObjectsFor});
   const result = {created: [], updated: [], unchanged: []};
   const key = registryKey(registry);
   const body = JSON.stringify(registry);

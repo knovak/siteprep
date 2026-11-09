@@ -338,3 +338,26 @@ Production remains version 7; this request does not release or merge.
 ## 2026-10-20 — Release
 
 Released to production — ChatGPT Site, version 8, `7bc4ee8`. 3 commit(s) since the previous release. <https://tide-here-five-coast-local-days.ken-novak.chatgpt.site> See releases.md.
+
+## 2026-11-09 — Compare and improve response time
+
+Compared annual-object verification, raw-body caching, two per-port layouts,
+browser fixture downloads, bundling, overlapping requests and a five-minute
+public station cache. The first live split showed storage round trips still
+dominating, so the selected layout embeds each port's station/source metadata
+and overlaps independent provider manifest reads. Predicted values and displayed
+source versions remain unchanged; all 76 legacy/split/embedded-port forecasts
+match, including daylight-saving and previous-tide context.
+
+Published public Test versions 17 and 18, with version 18 carrying the selected
+layout. Protected initialization activated `2026-bom-v2-ports-r2`, preserved
+global FES coverage, and repeated with zero writes. Live checks passed NOAA/CHS,
+all 76 Bureau ports / 1,470 events, five FES locations and the page. Local checks
+passed 152 unit tests, 49 browser checks with one intentional skip, the
+repository build and Sites app build. Corrected the local browser test server's
+connection queue after identifying connection-reset failures. Independent
+review found no remaining actionable correctness issues.
+
+The implementation, reproducible comparisons, limitations and deployment
+evidence are in `work/phase-14/README.md`. Production remains version 8; this
+work prepares a ready-for-review pull request and does not release or merge.

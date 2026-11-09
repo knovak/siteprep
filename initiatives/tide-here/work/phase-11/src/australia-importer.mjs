@@ -208,3 +208,36 @@ export function validatePreparedAustralianDataset(prepared) {
   }
   return prepared;
 }
+
+// A new immutable storage version leaves the licensed source version intact.
+// Runtime forecasts need only the selected port record, while the
+// initializer still verifies the complete inventory before activation.
+export function australiaShardedDatasetBundle(prepared, {revision = 2} = {}) {
+  if (![1, 2].includes(revision)) throw new Error('Unsupported Australian storage revision');
+  validatePreparedAustralianDataset(prepared);
+  const dataset = {
+    ...prepared.dataset,
+    version: `${prepared.dataset.version}-ports-r${revision}`,
+    schema: revision === 1 ? 'tide-here/australia-standard-ports/v2' : 'tide-here/australia-standard-ports/v3',
+    sourceVersion: prepared.dataset.version,
+  };
+  const eventsByStation = new Map(prepared.stations.map(station => [station.id, []]));
+  for (const event of prepared.events) eventsByStation.get(event.stationId).push(event);
+  const objects = {
+    catalogue: {
+      schema: dataset.schema,
+      dataset,
+      stations: prepared.stations,
+    },
+  };
+  for (const station of prepared.stations) {
+    objects[`predictions-${station.id}`] = {
+      schema: revision === 1 ? 'tide-here/australia-port-predictions/v1' : 'tide-here/australia-port-predictions/v2',
+      dataset: revision === 1 ? {id: dataset.id, version: dataset.version} : dataset,
+      ...(revision === 2 ? {station} : {}),
+      stationId: station.id,
+      events: eventsByStation.get(station.id),
+    };
+  }
+  return {schema: 'tide-here/json-dataset-bundle/v1', dataset, objects};
+}

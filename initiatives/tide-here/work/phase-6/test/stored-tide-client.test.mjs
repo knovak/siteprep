@@ -3,7 +3,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 
 import {fiveLocalDays} from '../../phase-1/src/day-model.mjs';
-import {FES_PROVIDER_ID, loadAvailableStations, StoredTideClient, usesAustralianCatalogue} from '../src/stored-tide-client.mjs';
+import {AUSTRALIAN_PROVIDER_ID, FES_PROVIDER_ID, loadAvailableStations, STATION_CACHE_PREFIX, STATION_CACHE_TTL_MS, StoredTideClient, usesAustralianCatalogue} from '../src/stored-tide-client.mjs';
 
 const station = {
   provider: 'australia-standard-ports',
@@ -31,6 +31,97 @@ function response(value, status = 200) {
     json: async () => structuredClone(value),
   });
 }
+
+function memoryStorage() {
+  const data = new Map();
+  return {
+    getItem: key => data.get(key) ?? null,
+    setItem: (key, value) => data.set(key, value),
+  };
+}
+
+test('public station data survives reload within five minutes and then refreshes', async () => {
+  const storage = memoryStorage();
+  let instant = 1000;
+  let calls = 0;
+  const options = {
+    storage, now: () => instant,
+    fetchImpl: async () => {
+      calls += 1;
+      return response({provider: AUSTRALIAN_PROVIDER_ID, stations: [{...station, name: `Port revision ${calls}`} ]});
+    },
+  };
+  const firstClient = new StoredTideClient(options);
+  assert.equal((await firstClient.stations())[0].name, 'Port revision 1');
+  instant += STATION_CACHE_TTL_MS - 1;
+  const reloadedClient = new StoredTideClient(options);
+  assert.equal((await reloadedClient.stations())[0].name, 'Port revision 1');
+  assert.equal(calls, 1);
+  instant += 1;
+  assert.equal((await reloadedClient.stations())[0].name, 'Port revision 2');
+  assert.equal(calls, 2);
+});
+
+test('station caches stay separate by provider and origin storage and exclude fixtures', async () => {
+  const storage = memoryStorage();
+  let calls = 0;
+  const fetchImpl = async url => {
+    calls += 1;
+    const provider = new URL(url, 'https://tide.example').searchParams.get('provider');
+    return response({provider, stations: [{...station, id: `${provider}-port`} ]});
+  };
+  await new StoredTideClient({storage, fetchImpl}).stations();
+  assert.equal((await new StoredTideClient({storage, fetchImpl, provider: FES_PROVIDER_ID}).stations())[0].id, `${FES_PROVIDER_ID}-port`);
+  await new StoredTideClient({storage: memoryStorage(), fetchImpl}).stations();
+  assert.equal(calls, 3);
+  assert.equal((await new StoredTideClient({storage, stationFixtures: [{...station, id: 'fixture-port'}], fetchImpl}).stations())[0].id, 'fixture-port');
+  assert.equal((await new StoredTideClient({storage, fetchImpl}).stations())[0].id, `${AUSTRALIAN_PROVIDER_ID}-port`);
+  assert.equal(calls, 3);
+});
+
+test('corrupt, future-dated, mismatched, and invalid station caches are misses', async () => {
+  for (const cached of [
+    '{broken',
+    JSON.stringify({provider: AUSTRALIAN_PROVIDER_ID, savedAt: 2000, stations: [station]}),
+    JSON.stringify({provider: 'another-provider', savedAt: 500, stations: [station]}),
+    JSON.stringify({provider: AUSTRALIAN_PROVIDER_ID, savedAt: 500, stations: [{...station, timeZone: null}]}),
+    JSON.stringify({provider: AUSTRALIAN_PROVIDER_ID, savedAt: 500, stations: []}),
+  ]) {
+    const storage = memoryStorage();
+    storage.setItem(`${STATION_CACHE_PREFIX}${AUSTRALIAN_PROVIDER_ID}`, cached);
+    let calls = 0;
+    const client = new StoredTideClient({storage, now: () => 1000, fetchImpl: async () => {
+      calls += 1;
+      return response({provider: AUSTRALIAN_PROVIDER_ID, stations: [station]});
+    }});
+    assert.equal((await client.stations())[0].id, station.id);
+    assert.equal(calls, 1);
+  }
+});
+
+test('expired catalogue data is never used during an outage and a failed request can retry', async () => {
+  const storage = memoryStorage();
+  storage.setItem(`${STATION_CACHE_PREFIX}${AUSTRALIAN_PROVIDER_ID}`, JSON.stringify({
+    provider: AUSTRALIAN_PROVIDER_ID, savedAt: 0, stations: [station],
+  }));
+  let calls = 0;
+  const client = new StoredTideClient({storage, now: () => STATION_CACHE_TTL_MS, fetchImpl: async () => {
+    calls += 1;
+    return calls === 1 ? response({}, 503) : response({provider: AUSTRALIAN_PROVIDER_ID, stations: [station]});
+  }});
+  await assert.rejects(client.stations(), /HTTP 503/);
+  assert.equal((await client.stations())[0].id, station.id);
+  assert.equal(calls, 2);
+});
+
+test('disabled browser storage does not prevent station loading', async () => {
+  const storage = {
+    getItem() { throw new Error('storage unavailable'); },
+    setItem() { throw new Error('quota exceeded'); },
+  };
+  const client = new StoredTideClient({storage, fetchImpl: () => response({provider: AUSTRALIAN_PROVIDER_ID, stations: [station]})});
+  assert.equal((await client.stations())[0].id, station.id);
+});
 
 test('the Australian catalogue is normalized once and keeps its IANA zone', async () => {
   let calls = 0;

@@ -1,0 +1,20 @@
+{
+  "schema": "tide-here/hosted-smoke-summary/v1",
+  "date": "2026-11-09",
+  "siteVersion": 17,
+  "siteSourceCommit": "13c91fea03d3961e7b13fe1d3e8a6f48b15cf205",
+  "url": "https://tide-here-test.ken-novak.chatgpt.site",
+  "method": "Protected phase-13/scripts/smoke-test.mjs against the real test Site; this summary records its successful output.",
+  "initializedStage": 4,
+  "repeatInitializationWrites": 0,
+  "registryVersion": "stage-4-global-2026-08-29-global-coast-r1-au-ports-r1",
+  "australianDatasetVersion": "2026-bom-v2-ports-r1",
+  "displayedSourceVersion": "2026-bom-v2",
+  "australianStations": 76,
+  "australianEvents": 1470,
+  "fallbackDatasetVersion": "2026-08-29-global-coast-r1",
+  "fallbackEvents": {"Galway": 19, "Cooktown": 20, "Gibraltar": 20, "Nice": 20, "Amsterdam": 20},
+  "noaaAndChsDirectProviderBoundaries": "passed",
+  "attributionAndWarnings": "passed",
+  "page": "passed"
+}

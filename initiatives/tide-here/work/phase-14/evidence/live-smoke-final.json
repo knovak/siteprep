@@ -1,0 +1,49 @@
+{
+  "initializedStage": 4,
+  "repeatInitializationWrites": 0,
+  "registry": {
+    "id": "tide-here-providers",
+    "version": "stage-4-global-2026-08-29-global-coast-r1-au-ports-r2"
+  },
+  "providers": [
+    "noaa:active",
+    "chs:active",
+    "australia-standard-ports:active",
+    "fes2022:active"
+  ],
+  "australianStations": 76,
+  "australianEvents": 1470,
+  "fallbackPoint": "fes2022-coast-n532744-w0090323",
+  "fallbackDataset": {
+    "id": "fes2022b-global-coast",
+    "version": "2026-08-29-global-coast-r1",
+    "verification": "manifest-and-selected-objects"
+  },
+  "fallbackEvents": 19,
+  "fallbackWarnings": [
+    "approximate-fallback"
+  ],
+  "reportedGaps": [
+    {
+      "name": "Cooktown",
+      "station": "fes2022-coast-s154558-e1452712",
+      "events": 20
+    },
+    {
+      "name": "Gibraltar",
+      "station": "fes2022-coast-n361749-w0053354",
+      "events": 20
+    },
+    {
+      "name": "Nice",
+      "station": "fes2022-coast-n436989-e0073383",
+      "events": 20
+    },
+    {
+      "name": "Amsterdam",
+      "station": "fes2022-coast-n524407-e0045661",
+      "events": 20
+    }
+  ],
+  "page": "ok"
+}

@@ -1,4 +1,6 @@
 import {copyFile, cp, mkdir, rm} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {build} from 'vite';
 
 const workRoot = new URL('../../', import.meta.url);
 const destination = new URL('site-public/', workRoot);
@@ -8,7 +10,6 @@ await mkdir(destination, {recursive: true});
 await copyFile(new URL('index.html', workRoot), new URL('index.html', destination));
 
 const files = [
-  'phase-6/app.mjs',
   'phase-6/index.html',
   'phase-6/styles.css',
 ];
@@ -36,3 +37,23 @@ for (const relative of files) {
 for (const relative of directories) {
   await cp(new URL(`${relative}/`, workRoot), new URL(`${relative}/`, destination), {recursive: true});
 }
+
+// Serve the browser's module graph in one request. Keep the original modules
+// above for fixture/debug imports, but the page uses this same-path bundle so
+// relative configuration URLs and the server API boundary stay unchanged.
+await build({
+  configFile: false,
+  publicDir: false,
+  logLevel: 'warn',
+  build: {
+    target: 'es2022',
+    outDir: fileURLToPath(new URL('phase-6/', destination)),
+    emptyOutDir: false,
+    lib: {
+      entry: fileURLToPath(new URL('phase-6/app.mjs', workRoot)),
+      formats: ['es'],
+      fileName: () => 'app.mjs',
+    },
+    minify: true,
+  },
+});
