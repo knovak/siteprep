@@ -90,6 +90,10 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     email: string;
   } | null>(null);
   const [initializing, setInitializing] = useState(true);
+  // The records are hidden while sign-in is re-checked. Holding their height
+  // for that moment keeps the document, and so the scroll position, in place.
+  const flingBody = useRef<HTMLDivElement | null>(null);
+  const [heldHeight, setHeldHeight] = useState(0);
   const [error, setError] = useState(''),
     [notice, setNotice] = useState(''),
     [busy, setBusy] = useState(false);
@@ -102,6 +106,12 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
   const memberSection = useRef<HTMLElement | null>(null);
   const membersHeading = useRef<HTMLHeadingElement | null>(null);
   const reloadButton = useRef<HTMLButtonElement | null>(null);
+  const errorAlert = useRef<HTMLDivElement | null>(null);
+  // An action far down the page reports its failure at the top; bring that
+  // report into view instead of leaving the page looking unchanged.
+  useEffect(() => {
+    if (error) errorAlert.current?.scrollIntoView({ block: 'nearest' });
+  }, [error]);
   const returnMember = useRef<string | null>(null);
   const editingMember = memberDraft?.id;
   useLayoutEffect(() => {
@@ -172,70 +182,90 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     [],
   );
   const refreshRun = useRef(0);
-  const refresh = useCallback(async () => {
-    const run = ++refreshRun.current;
-    setInitializing(true);
-    let statusConfirmed = false;
-    try {
-      const response = await fetch('/api/flings/native/status', {
-        cache: 'no-store',
-      });
-      if (!response.ok) throw new Error('Sign-in status is unavailable.');
-      const currentIdentity = (await response.json().catch(() => {
-        // JSON parsing can reject with a DOMException rather than SyntaxError
-        // in WebKit. Report the failed status stage consistently across engines.
-        throw new Error('Sign-in status is unavailable.');
-      })) as NonNullable<typeof identity>;
-      if (
-        !currentIdentity ||
-        typeof currentIdentity.native !== 'boolean' ||
-        typeof currentIdentity.rehearsal !== 'boolean' ||
-        typeof currentIdentity.signedIn !== 'boolean' ||
-        typeof currentIdentity.email !== 'string'
-      )
-        throw new Error('Sign-in status is unavailable.');
-      if (run !== refreshRun.current) return;
-      statusConfirmed = true;
-      setIdentity(currentIdentity);
-      const value = await request(
-        (fling || 'workspace') + '/organizer',
-        'GET',
-        undefined,
-        () => run === refreshRun.current,
-      );
-      if (run !== refreshRun.current) return;
-      auth.current = { id: value.organizer, csrf: value.csrf };
-      if (fling) setData(value);
-      else {
-        setList(value.flings);
-        setProfileName(value.name);
+  const refreshing = useRef(0);
+  // `quiet` is for the timed poll. It re-checks sign-in and reloads the records
+  // like any other refresh, and a failure still clears them, but it leaves them
+  // on screen meanwhile: hiding them every few seconds takes keyboard focus out
+  // of whatever field is being typed in.
+  const refresh = useCallback(
+    async (quiet = false) => {
+      const run = ++refreshRun.current;
+      refreshing.current++;
+      if (!quiet) {
+        setHeldHeight(flingBody.current?.offsetHeight ?? 0);
+        setInitializing(true);
       }
-      setError('');
-    } catch (e) {
-      if (run !== refreshRun.current) return;
-      // A failed refresh cannot vouch for the identity or records on screen.
-      auth.current = null;
-      if (!statusConfirmed) setIdentity(null);
-      setData(null);
-      setList(null);
-      setMemberDraft(null);
-      setProfileName('');
-      setError(
-        e instanceof TypeError || e instanceof SyntaxError
-          ? 'Unable to refresh sign-in and gathering details. Try reloading the workspace.'
-          : (e as Error).message,
-      );
-    } finally {
-      if (run === refreshRun.current) setInitializing(false);
-    }
-  }, [fling, request]);
+      let statusConfirmed = false;
+      try {
+        const response = await fetch('/api/flings/native/status', {
+          cache: 'no-store',
+        });
+        if (!response.ok) throw new Error('Sign-in status is unavailable.');
+        const currentIdentity = (await response.json().catch(() => {
+          // JSON parsing can reject with a DOMException rather than SyntaxError
+          // in WebKit. Report the failed status stage consistently across engines.
+          throw new Error('Sign-in status is unavailable.');
+        })) as NonNullable<typeof identity>;
+        if (
+          !currentIdentity ||
+          typeof currentIdentity.native !== 'boolean' ||
+          typeof currentIdentity.rehearsal !== 'boolean' ||
+          typeof currentIdentity.signedIn !== 'boolean' ||
+          typeof currentIdentity.email !== 'string'
+        )
+          throw new Error('Sign-in status is unavailable.');
+        if (run !== refreshRun.current) return;
+        statusConfirmed = true;
+        setIdentity(currentIdentity);
+        const value = await request(
+          (fling || 'workspace') + '/organizer',
+          'GET',
+          undefined,
+          () => run === refreshRun.current,
+        );
+        if (run !== refreshRun.current) return;
+        auth.current = { id: value.organizer, csrf: value.csrf };
+        if (fling) setData(value);
+        else {
+          setList(value.flings);
+          setProfileName(value.name);
+        }
+        setError('');
+      } catch (e) {
+        if (run !== refreshRun.current) return;
+        // A failed refresh cannot vouch for the identity or records on screen.
+        auth.current = null;
+        if (!statusConfirmed) setIdentity(null);
+        setData(null);
+        setList(null);
+        setMemberDraft(null);
+        setProfileName('');
+        setError(
+          e instanceof TypeError || e instanceof SyntaxError
+            ? 'Unable to refresh sign-in and gathering details. Try reloading the workspace.'
+            : (e as Error).message,
+        );
+      } finally {
+        refreshing.current--;
+        if (run === refreshRun.current) setInitializing(false);
+      }
+    },
+    [fling, request],
+  );
 
   useEffect(() => {
-    void Promise.resolve().then(refresh);
+    void Promise.resolve().then(() => refresh());
     const recheck = () => void refresh();
     window.addEventListener('focus', recheck);
     const timer = window.setInterval(() => {
-      if (fling && document.visibilityState === 'visible') void refresh();
+      // Skip a tick while another refresh is running, so the poll never
+      // replaces a refresh that a save or a focus re-check is waiting on.
+      if (
+        fling &&
+        document.visibilityState === 'visible' &&
+        !refreshing.current
+      )
+        void refresh(true);
     }, 15000);
     return () => {
       window.clearInterval(timer);
@@ -295,7 +325,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         {data?.fling.description && <p>{data.fling.description}</p>}
       </section>
       {error && (
-        <div className="notice error" role="alert">
+        <div ref={errorAlert} className="notice error" role="alert">
           {error}{' '}
           <Button
             ref={reloadButton}
@@ -307,7 +337,9 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
           </Button>
         </div>
       )}
-      <output aria-live="polite">{notice}</output>
+      <output className="page-notice" aria-live="polite">
+        {notice}
+      </output>
       {identity?.native && (
         <section className="identity">
           <h2>Your ChatGPT account</h2>
@@ -369,7 +401,7 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
         <div className="gatherings">
           {list.map((f) => (
             <article key={f.id}>
-              <span className="badge">{f.state}</span>
+              <span className={'badge state-' + f.state}>{f.state}</span>
               <h2>
                 <a href={'/organizer/' + f.id}>{f.title}</a>
               </h2>
@@ -442,476 +474,528 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
       )}
       {fling && !data && !error && <output>Opening your gathering…</output>}
       {data && (
-        <div hidden={initializing}>
-          <CoordinationPanel
-            endpoint={fling + '/organizer/coordination'}
-            parentRevision={data.fling.revision}
-            request={request}
-            refresh={refresh}
-            organizer
-            members={data.members}
-            invitations={data.invitations}
-          />
-          <AudiencePanel
-            key={
-              data.fling.revision +
-              ':' +
-              data.members.map((m) => m.id + ':' + m.revision).join(',')
-            }
-            fling={fling!}
-            revision={data.fling.revision}
-            state={data.fling.state}
-            request={request}
-          />
-          <RecoveryExportPanel
-            key={fling + ':' + data.organizer}
-            fling={fling!}
-            request={request}
-          />
-          <RecoveryCheckPanel
-            key={'check:' + fling + ':' + data.organizer}
-            fling={fling!}
-            request={request}
-          />
-          <RecoveryDeletePanel
-            key={'delete:' + fling + ':' + data.organizer}
-            fling={fling!}
-            title={data.fling.title}
-            revision={data.fling.revision}
-            request={request}
-          />
-          <div className="gathering-state">
-            <span className="badge">{data.fling.state}</span>
-            <Button
-              variant="outline"
-              disabled={busy || initializing}
-              onClick={() => setConfirmation(true)}
-            >
-              {data.fling.state === 'open' ? 'Close fling' : 'Reopen fling'}
-            </Button>
-          </div>
-          {data.fling.state === 'closed' && (
-            <p className="notice">
-              This fling is closed. Invitation responses are preserved and
-              contact corrections remain available.
-            </p>
-          )}
-          <AlertDialog open={confirmation} onOpenChange={setConfirmation}>
-            <AlertDialogContent>
-              <AlertDialogTitle>
-                {data.fling.state === 'open'
-                  ? 'Close this fling?'
-                  : 'Reopen this fling?'}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {data.fling.state === 'open'
-                  ? 'Invitations and responses stop. Members can still read permitted history and correct their contact details.'
-                  : 'Invitations and responses become available again. Existing responses are preserved and nothing is sent.'}
-              </AlertDialogDescription>
-              <AlertDialogCancel>Keep current state</AlertDialogCancel>
+        <div
+          ref={flingBody}
+          className="fling-body"
+          style={initializing ? { minHeight: heldHeight } : undefined}
+          aria-busy={initializing}
+        >
+          <div hidden={initializing}>
+            <div className="gathering-state">
+              <span className={'badge state-' + data.fling.state}>
+                {data.fling.state}
+              </span>
               <Button
+                variant="outline"
                 disabled={busy || initializing}
-                onClick={() =>
-                  void act(async () => {
-                    await request(fling + '/organizer/state', 'POST', {
-                      state: data.fling.state === 'open' ? 'closed' : 'open',
-                      revision: data.fling.revision,
-                      confirm: true,
-                    });
-                    setConfirmation(false);
-                    await refresh();
-                    setNotice('Gathering state saved.');
-                  })
-                }
+                onClick={() => setConfirmation(true)}
               >
-                Confirm {data.fling.state === 'open' ? 'closure' : 'reopening'}
+                {data.fling.state === 'open' ? 'Close fling' : 'Reopen fling'}
               </Button>
-            </AlertDialogContent>
-          </AlertDialog>
-          <GatheringEditor
-            data={data}
-            busy={busy || initializing}
-            save={async (kind, input) => {
-              setBusy(true);
-              setError('');
-              setNotice('');
-              try {
-                await request(fling + '/organizer/' + kind, 'POST', {
-                  ...input,
-                  revision: input.revision ?? data.fling.revision,
-                });
-                await refresh();
-                setNotice('Gathering plan saved. No message was sent.');
-              } catch (e) {
-                setError((e as Error).message);
-                throw e;
-              } finally {
-                setBusy(false);
-              }
-            }}
-          />
-          <div className="member-grid">
-            <section ref={memberSection} aria-labelledby="members-title">
-              <h2 ref={membersHeading} id="members-title" tabIndex={-1}>
-                Members & invitations
-              </h2>
-              {data.members.map((m) => (
-                <article className="activity" key={m.id}>
-                  <h2>{m.name}</h2>
-                  <p className="muted">
-                    {m.preference === 'both' ? 'Email and text' : m.preference}{' '}
-                    · {m.email || 'No email'} · {m.phone || 'No phone'}
-                  </p>
-                  <Button
-                    variant="outline"
-                    disabled={busy || initializing}
-                    onClick={() =>
-                      void act(async () => {
-                        const result = await request(
-                          fling + '/organizer/' + m.id + '/preview',
-                          'POST',
-                          {},
-                        );
-                        window.location.assign(result.url);
-                      })
-                    }
-                  >
-                    Preview {m.name}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    disabled={busy || initializing}
-                    data-edit-member={m.id}
-                    onClick={() => {
-                      returnMember.current = m.id;
-                      setMemberDraft({ ...m });
-                    }}
-                  >
-                    Edit profile for {m.name}
-                  </Button>
-                  {memberDraft?.id === m.id && (
-                    <form
-                      ref={memberEditor}
-                      className="profile-editor"
-                      aria-label={'Edit profile for ' + m.name}
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        void act(async () => {
-                          await request(
-                            fling + '/organizer/' + memberDraft.id,
-                            'PUT',
-                            {
-                              name: memberDraft.name,
-                              email: memberDraft.email,
-                              phone: memberDraft.phone,
-                              preference: memberDraft.preference,
-                              revision: memberDraft.revision,
-                            },
-                          );
-                          setMemberDraft(null);
-                          await refresh();
-                          setNotice(
-                            'Member profile saved for this fling. No message was sent.',
-                          );
-                        });
-                      }}
-                    >
-                      <p>
-                        Changes apply only to this membership. Missing contact
-                        details can be added later.
-                      </p>
-                      <fieldset disabled={busy}>
-                        {(['name', 'email', 'phone'] as const).map((field) => (
-                          <div className="field" key={field}>
-                            <Label htmlFor={'edit-member-' + field}>
-                              Edit member {field}
+            </div>
+            {data.fling.state === 'closed' && (
+              <p className="notice">
+                This fling is closed. Invitation responses are preserved and
+                contact corrections remain available.
+              </p>
+            )}
+            <AlertDialog open={confirmation} onOpenChange={setConfirmation}>
+              <AlertDialogContent>
+                <AlertDialogTitle>
+                  {data.fling.state === 'open'
+                    ? 'Close this fling?'
+                    : 'Reopen this fling?'}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {data.fling.state === 'open'
+                    ? 'Invitations and responses stop. Members can still read permitted history and correct their contact details.'
+                    : 'Invitations and responses become available again. Existing responses are preserved and nothing is sent.'}
+                </AlertDialogDescription>
+                <AlertDialogCancel>Keep current state</AlertDialogCancel>
+                <Button
+                  disabled={busy || initializing}
+                  onClick={() =>
+                    void act(async () => {
+                      await request(fling + '/organizer/state', 'POST', {
+                        state: data.fling.state === 'open' ? 'closed' : 'open',
+                        revision: data.fling.revision,
+                        confirm: true,
+                      });
+                      setConfirmation(false);
+                      await refresh();
+                      setNotice('Gathering state saved.');
+                    })
+                  }
+                >
+                  Confirm{' '}
+                  {data.fling.state === 'open' ? 'closure' : 'reopening'}
+                </Button>
+              </AlertDialogContent>
+            </AlertDialog>
+            <nav
+              className="section-nav"
+              aria-label="Sections of this gathering"
+            >
+              <a href="#plan">Activities & events</a>
+              <a href="#members">Members</a>
+              <a href="#coordination">Discussions, polls & payments</a>
+              <a href="#messages">Messages</a>
+              <a href="#backup">Backup & deletion</a>
+            </nav>
+            <GatheringEditor
+              data={data}
+              busy={busy || initializing}
+              save={async (kind, input) => {
+                setBusy(true);
+                setError('');
+                setNotice('');
+                try {
+                  await request(fling + '/organizer/' + kind, 'POST', {
+                    ...input,
+                    revision: input.revision ?? data.fling.revision,
+                  });
+                  await refresh();
+                  setNotice('Gathering plan saved. No message was sent.');
+                } catch (e) {
+                  setError((e as Error).message);
+                  throw e;
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            />
+            <div id="members" className="member-grid">
+              <section ref={memberSection} aria-labelledby="members-title">
+                <h2 ref={membersHeading} id="members-title" tabIndex={-1}>
+                  Members & invitations
+                </h2>
+                {data.members.map((m) => (
+                  <article className="activity" key={m.id}>
+                    <h3>{m.name}</h3>
+                    <p className="muted">
+                      {m.preference === 'both'
+                        ? 'Email and text'
+                        : m.preference}{' '}
+                      · {m.email || 'No email'} · {m.phone || 'No phone'}
+                    </p>
+                    <div className="actions">
+                      <Button
+                        variant="outline"
+                        disabled={busy || initializing}
+                        onClick={() =>
+                          void act(async () => {
+                            const result = await request(
+                              fling + '/organizer/' + m.id + '/preview',
+                              'POST',
+                              {},
+                            );
+                            window.location.assign(result.url);
+                          })
+                        }
+                      >
+                        Preview {m.name}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        disabled={busy || initializing}
+                        data-edit-member={m.id}
+                        onClick={() => {
+                          returnMember.current = m.id;
+                          setMemberDraft({ ...m });
+                        }}
+                      >
+                        Edit profile for {m.name}
+                      </Button>
+                    </div>
+                    {memberDraft?.id === m.id && (
+                      <form
+                        ref={memberEditor}
+                        className="profile-editor"
+                        aria-label={'Edit profile for ' + m.name}
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          void act(async () => {
+                            await request(
+                              fling + '/organizer/' + memberDraft.id,
+                              'PUT',
+                              {
+                                name: memberDraft.name,
+                                email: memberDraft.email,
+                                phone: memberDraft.phone,
+                                preference: memberDraft.preference,
+                                revision: memberDraft.revision,
+                              },
+                            );
+                            setMemberDraft(null);
+                            await refresh();
+                            setNotice(
+                              'Member profile saved for this fling. No message was sent.',
+                            );
+                          });
+                        }}
+                      >
+                        <p>
+                          Changes apply only to this membership. Missing contact
+                          details can be added later.
+                        </p>
+                        <fieldset disabled={busy}>
+                          {(['name', 'email', 'phone'] as const).map(
+                            (field) => (
+                              <div className="field" key={field}>
+                                <Label htmlFor={'edit-member-' + field}>
+                                  Edit member {field}
+                                </Label>
+                                <Input
+                                  id={'edit-member-' + field}
+                                  required={field === 'name'}
+                                  type={
+                                    field === 'email'
+                                      ? 'email'
+                                      : field === 'phone'
+                                        ? 'tel'
+                                        : 'text'
+                                  }
+                                  value={memberDraft[field]}
+                                  onChange={(e) =>
+                                    setMemberDraft({
+                                      ...memberDraft,
+                                      [field]: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                            ),
+                          )}
+                          <div className="field">
+                            <Label htmlFor="edit-member-preference">
+                              Edit member message preference
                             </Label>
-                            <Input
-                              id={'edit-member-' + field}
-                              required={field === 'name'}
-                              type={
-                                field === 'email'
-                                  ? 'email'
-                                  : field === 'phone'
-                                    ? 'tel'
-                                    : 'text'
-                              }
-                              value={memberDraft[field]}
+                            <select
+                              id="edit-member-preference"
+                              value={memberDraft.preference}
                               onChange={(e) =>
                                 setMemberDraft({
                                   ...memberDraft,
-                                  [field]: e.target.value,
+                                  preference: e.target.value,
                                 })
                               }
-                            />
-                          </div>
-                        ))}
-                        <div className="field">
-                          <Label htmlFor="edit-member-preference">
-                            Edit member message preference
-                          </Label>
-                          <select
-                            id="edit-member-preference"
-                            value={memberDraft.preference}
-                            onChange={(e) =>
-                              setMemberDraft({
-                                ...memberDraft,
-                                preference: e.target.value,
-                              })
-                            }
-                          >
-                            <option value="email">Email</option>
-                            <option value="text">Text</option>
-                            <option value="both">Email and text</option>
-                          </select>
-                        </div>
-                        <Button type="submit">Save member profile</Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setMemberDraft(null)}
-                        >
-                          Cancel profile edit
-                        </Button>
-                      </fieldset>
-                    </form>
-                  )}
-                  <div className="invitation-list">
-                    {data.activities
-                      .filter((a) => a.state === 'published')
-                      .map((a) => {
-                        const state = data.invitations.find(
-                          (i) => i.member === m.id && i.activity === a.id,
-                        )?.state;
-                        const active = !!state && state !== 'withdrawn';
-                        return (
-                          <div className="invitation-row" key={a.id}>
-                            <div>
-                              <strong>{a.title}</strong>
-                              <p className="muted">{state || 'Not invited'}</p>
-                            </div>
-                            <Button
-                              variant="outline"
-                              disabled={
-                                busy ||
-                                data.fling.state === 'closed' ||
-                                (!active && a.cascading === 1)
-                              }
-                              aria-label={
-                                (active ? 'Withdraw ' : 'Invite ') +
-                                m.name +
-                                ' · ' +
-                                a.title
-                              }
-                              onClick={() =>
-                                void act(() =>
-                                  changeInvitation(
-                                    m.id,
-                                    a.id,
-                                    active ? 'withdrawn' : 'invited',
-                                  ),
-                                )
-                              }
                             >
-                              {active ? 'Withdraw' : 'Invite'}
-                            </Button>
+                              <option value="email">Email</option>
+                              <option value="text">Text</option>
+                              <option value="both">Email and text</option>
+                            </select>
                           </div>
-                        );
-                      })}
-                  </div>
-                </article>
-              ))}
-            </section>
-            <aside>
-              <section className="profile-panel">
-                <h2>Organizers</h2>
-                <ul className="organizer-list">
-                  {data.organizers.map((o) => (
-                    <li key={o.id}>
-                      <span>
-                        {o.name}
-                        {o.id === data.organizer ? ' (you)' : ''}
-                      </span>
-                      <Button
-                        variant="outline"
-                        disabled={busy || data.organizers.length <= 1}
-                        onClick={() => setRemoveOrganizer(o)}
-                      >
-                        Remove
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-                {data.organizers.length <= 1 && (
-                  <p className="muted">
-                    A fling always needs at least one organizer, so the last one
-                    cannot be removed here.
-                  </p>
-                )}
-                <AlertDialog
-                  open={!!removeOrganizer}
-                  onOpenChange={(open) => !open && setRemoveOrganizer(null)}
-                >
-                  <AlertDialogContent>
-                    <AlertDialogTitle>
-                      Remove {removeOrganizer?.name} as an organizer?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      They lose organizer access to this fling immediately. This
-                      does not affect their access to any other fling, and
-                      nothing is sent to them.
-                    </AlertDialogDescription>
-                    <AlertDialogCancel>Keep organizer</AlertDialogCancel>
-                    <Button
-                      disabled={busy}
-                      onClick={() =>
-                        void act(async () => {
-                          await request(
-                            fling + '/organizer/assignments/remove',
-                            'POST',
-                            { organizer: removeOrganizer!.id, confirm: true },
+                          <Button type="submit">Save member profile</Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setMemberDraft(null)}
+                          >
+                            Cancel profile edit
+                          </Button>
+                        </fieldset>
+                      </form>
+                    )}
+                    <div className="invitation-list">
+                      {data.activities
+                        .filter((a) => a.state === 'published')
+                        .map((a) => {
+                          const state = data.invitations.find(
+                            (i) => i.member === m.id && i.activity === a.id,
+                          )?.state;
+                          const active = !!state && state !== 'withdrawn';
+                          return (
+                            <div className="invitation-row" key={a.id}>
+                              <div>
+                                <strong>{a.title}</strong>
+                                <p>
+                                  <span
+                                    className={
+                                      'badge state-' + (state || 'none')
+                                    }
+                                  >
+                                    {state || 'Not invited'}
+                                  </span>
+                                </p>
+                              </div>
+                              <Button
+                                variant="outline"
+                                disabled={
+                                  busy ||
+                                  data.fling.state === 'closed' ||
+                                  (!active && a.cascading === 1)
+                                }
+                                aria-label={
+                                  (active ? 'Withdraw ' : 'Invite ') +
+                                  m.name +
+                                  ' · ' +
+                                  a.title
+                                }
+                                onClick={() =>
+                                  void act(() =>
+                                    changeInvitation(
+                                      m.id,
+                                      a.id,
+                                      active ? 'withdrawn' : 'invited',
+                                    ),
+                                  )
+                                }
+                              >
+                                {active ? 'Withdraw' : 'Invite'}
+                              </Button>
+                            </div>
                           );
-                          setRemoveOrganizer(null);
-                          await refresh();
-                          setNotice('Organizer removed.');
-                        })
-                      }
-                    >
-                      Confirm removal
-                    </Button>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (newOrganizer.trim())
-                      setAddOrganizer(newOrganizer.trim());
-                  }}
-                >
-                  <fieldset disabled={busy}>
-                    <div className="field">
-                      <Label htmlFor="new-organizer">
-                        Existing organizer ID
-                      </Label>
-                      <Input
-                        id="new-organizer"
-                        required
-                        value={newOrganizer}
-                        onChange={(e) => setNewOrganizer(e.target.value)}
-                      />
+                        })}
                     </div>
-                    <Button type="submit">Add organizer</Button>
-                  </fieldset>
-                </form>
-                <AlertDialog
-                  open={addOrganizer !== null}
-                  onOpenChange={(open) => !open && setAddOrganizer(null)}
-                >
-                  <AlertDialogContent>
-                    <AlertDialogTitle>
-                      Add organizer {addOrganizer} to this fling?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      They will have full organizer access, including member
-                      contact details and the ability to change other
-                      organizers. This applies only to this fling. Nothing is
-                      sent to them.
-                    </AlertDialogDescription>
-                    <AlertDialogCancel>
-                      Keep current organizers
-                    </AlertDialogCancel>
-                    <Button
-                      disabled={busy}
-                      onClick={() =>
-                        void act(async () => {
-                          const organizer = addOrganizer;
-                          setAddOrganizer(null);
-                          await request(
-                            fling + '/organizer/assignments',
-                            'POST',
-                            {
-                              organizer,
-                              confirm: true,
-                            },
-                          );
-                          setNewOrganizer('');
-                          await refresh();
-                          setNotice(
-                            'Organizer added. They see this fling next time they open their workspace.',
-                          );
-                        })
-                      }
-                    >
-                      Confirm addition
-                    </Button>
-                  </AlertDialogContent>
-                </AlertDialog>
+                  </article>
+                ))}
               </section>
-              <section className="profile-panel">
-                <h2>Add a member</h2>
-                <p className="muted">
-                  This creates a profile for this fling. Invitations and sending
-                  remain separate actions.
-                </p>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    void act(async () => {
-                      await request(fling + '/organizer/members', 'POST', form);
-                      setForm(blank);
-                      await refresh();
-                      setNotice('Member profile created. No message was sent.');
-                    });
-                  }}
-                >
-                  <fieldset disabled={busy || data.fling.state === 'closed'}>
-                    {(['name', 'email', 'phone'] as const).map((f) => (
-                      <div className="field" key={f}>
-                        <Label htmlFor={'new-' + f}>
-                          {f === 'name'
-                            ? 'Member name'
-                            : f === 'email'
-                              ? 'Member email'
-                              : 'Member phone'}
-                        </Label>
-                        <Input
-                          id={'new-' + f}
-                          value={form[f]}
-                          required={f === 'name'}
-                          type={
-                            f === 'email'
-                              ? 'email'
-                              : f === 'phone'
-                                ? 'tel'
-                                : 'text'
-                          }
-                          onChange={(e) =>
-                            setForm({ ...form, [f]: e.target.value })
-                          }
-                        />
-                      </div>
+              <aside>
+                <section className="profile-panel">
+                  <h2>Organizers</h2>
+                  <ul className="organizer-list">
+                    {data.organizers.map((o) => (
+                      <li key={o.id}>
+                        <span>
+                          {o.name}
+                          {o.id === data.organizer ? ' (you)' : ''}
+                        </span>
+                        <Button
+                          variant="destructive"
+                          disabled={busy || data.organizers.length <= 1}
+                          onClick={() => setRemoveOrganizer(o)}
+                        >
+                          Remove
+                        </Button>
+                      </li>
                     ))}
-                    <div className="field">
-                      <Label htmlFor="new-preference">
-                        Receive messages by
-                      </Label>
-                      <select
-                        id="new-preference"
-                        value={form.preference}
-                        onChange={(e) =>
-                          setForm({ ...form, preference: e.target.value })
+                  </ul>
+                  {data.organizers.length <= 1 && (
+                    <p className="muted">
+                      A fling always needs at least one organizer, so the last
+                      one cannot be removed here.
+                    </p>
+                  )}
+                  <AlertDialog
+                    open={!!removeOrganizer}
+                    onOpenChange={(open) => !open && setRemoveOrganizer(null)}
+                  >
+                    <AlertDialogContent>
+                      <AlertDialogTitle>
+                        Remove {removeOrganizer?.name} as an organizer?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        They lose organizer access to this fling immediately.
+                        This does not affect their access to any other fling,
+                        and nothing is sent to them.
+                      </AlertDialogDescription>
+                      <AlertDialogCancel>Keep organizer</AlertDialogCancel>
+                      <Button
+                        variant="destructive"
+                        disabled={busy}
+                        onClick={() =>
+                          void act(async () => {
+                            await request(
+                              fling + '/organizer/assignments/remove',
+                              'POST',
+                              { organizer: removeOrganizer!.id, confirm: true },
+                            );
+                            setRemoveOrganizer(null);
+                            await refresh();
+                            setNotice('Organizer removed.');
+                          })
                         }
                       >
-                        <option value="email">Email</option>
-                        <option value="text">Text</option>
-                        <option value="both">Email and text</option>
-                      </select>
-                    </div>
-                    <Button type="submit">Create member</Button>
-                  </fieldset>
-                </form>
-              </section>
-            </aside>
+                        Confirm removal
+                      </Button>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (newOrganizer.trim())
+                        setAddOrganizer(newOrganizer.trim());
+                    }}
+                  >
+                    <fieldset disabled={busy}>
+                      <div className="field">
+                        <Label htmlFor="new-organizer">
+                          Existing organizer ID
+                        </Label>
+                        <Input
+                          id="new-organizer"
+                          required
+                          value={newOrganizer}
+                          onChange={(e) => setNewOrganizer(e.target.value)}
+                        />
+                      </div>
+                      <Button type="submit">Add organizer</Button>
+                    </fieldset>
+                  </form>
+                  <AlertDialog
+                    open={addOrganizer !== null}
+                    onOpenChange={(open) => !open && setAddOrganizer(null)}
+                  >
+                    <AlertDialogContent>
+                      <AlertDialogTitle>
+                        Add organizer {addOrganizer} to this fling?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        They will have full organizer access, including member
+                        contact details and the ability to change other
+                        organizers. This applies only to this fling. Nothing is
+                        sent to them.
+                      </AlertDialogDescription>
+                      <AlertDialogCancel>
+                        Keep current organizers
+                      </AlertDialogCancel>
+                      <Button
+                        disabled={busy}
+                        onClick={() =>
+                          void act(async () => {
+                            const organizer = addOrganizer;
+                            setAddOrganizer(null);
+                            await request(
+                              fling + '/organizer/assignments',
+                              'POST',
+                              {
+                                organizer,
+                                confirm: true,
+                              },
+                            );
+                            setNewOrganizer('');
+                            await refresh();
+                            setNotice(
+                              'Organizer added. They see this fling next time they open their workspace.',
+                            );
+                          })
+                        }
+                      >
+                        Confirm addition
+                      </Button>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </section>
+                <section className="profile-panel">
+                  <h2>Add a member</h2>
+                  <p className="muted">
+                    This creates a profile for this fling. Invitations and
+                    sending remain separate actions.
+                  </p>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      void act(async () => {
+                        await request(
+                          fling + '/organizer/members',
+                          'POST',
+                          form,
+                        );
+                        setForm(blank);
+                        await refresh();
+                        setNotice(
+                          'Member profile created. No message was sent.',
+                        );
+                      });
+                    }}
+                  >
+                    <fieldset disabled={busy || data.fling.state === 'closed'}>
+                      {(['name', 'email', 'phone'] as const).map((f) => (
+                        <div className="field" key={f}>
+                          <Label htmlFor={'new-' + f}>
+                            {f === 'name'
+                              ? 'Member name'
+                              : f === 'email'
+                                ? 'Member email'
+                                : 'Member phone'}
+                          </Label>
+                          <Input
+                            id={'new-' + f}
+                            value={form[f]}
+                            required={f === 'name'}
+                            type={
+                              f === 'email'
+                                ? 'email'
+                                : f === 'phone'
+                                  ? 'tel'
+                                  : 'text'
+                            }
+                            onChange={(e) =>
+                              setForm({ ...form, [f]: e.target.value })
+                            }
+                          />
+                        </div>
+                      ))}
+                      <div className="field">
+                        <Label htmlFor="new-preference">
+                          Receive messages by
+                        </Label>
+                        <select
+                          id="new-preference"
+                          value={form.preference}
+                          onChange={(e) =>
+                            setForm({ ...form, preference: e.target.value })
+                          }
+                        >
+                          <option value="email">Email</option>
+                          <option value="text">Text</option>
+                          <option value="both">Email and text</option>
+                        </select>
+                      </div>
+                      <Button type="submit">Create member</Button>
+                    </fieldset>
+                  </form>
+                </section>
+              </aside>
+            </div>
+            <CoordinationPanel
+              endpoint={fling + '/organizer/coordination'}
+              parentRevision={data.fling.revision}
+              request={request}
+              refresh={refresh}
+              organizer
+              members={data.members}
+              invitations={data.invitations}
+            />
+            <AudiencePanel
+              key={
+                data.fling.revision +
+                ':' +
+                data.members.map((m) => m.id + ':' + m.revision).join(',')
+              }
+              fling={fling!}
+              revision={data.fling.revision}
+              state={data.fling.state}
+              request={request}
+            />
+            <section
+              id="backup"
+              className="backup"
+              aria-labelledby="backup-title"
+            >
+              <h2 id="backup-title">Backup & deletion</h2>
+              <p className="muted">
+                Rarely needed. Saving a copy and checking a file change nothing;
+                deletion asks for its own confirmation.
+              </p>
+              <RecoveryExportPanel
+                key={fling + ':' + data.organizer}
+                fling={fling!}
+                request={request}
+              />
+              <RecoveryCheckPanel
+                key={'check:' + fling + ':' + data.organizer}
+                fling={fling!}
+                request={request}
+              />
+              <RecoveryDeletePanel
+                key={'delete:' + fling + ':' + data.organizer}
+                fling={fling!}
+                title={data.fling.title}
+                revision={data.fling.revision}
+                request={request}
+              />
+            </section>
           </div>
         </div>
       )}

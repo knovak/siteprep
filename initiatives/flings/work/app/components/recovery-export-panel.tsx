@@ -37,7 +37,7 @@ export default function RecoveryExportPanel({
   );
   return (
     <section className="profile-panel" aria-label="Export gathering records">
-      <h2>Save a copy of this gathering</h2>
+      <h3>Save a copy of this gathering</h3>
       <p>
         Download a JSON file containing member contacts, activities,
         discussions, polls, payment history and reported message history. Access

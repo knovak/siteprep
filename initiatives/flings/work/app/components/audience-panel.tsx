@@ -93,7 +93,11 @@ export default function AudiencePanel({
     setResult(null);
   }
   return (
-    <section className="audience-panel" aria-label="Message audience">
+    <section
+      id="messages"
+      className="audience-panel"
+      aria-label="Message audience"
+    >
       <h2>Message audience</h2>
       <p>
         Review the individual recipients, delivery preferences and any contact

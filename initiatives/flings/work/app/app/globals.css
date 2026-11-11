@@ -143,6 +143,9 @@ body {
   --muted: #eeeae2;
   --muted-foreground: #5e6a64;
   --border: #d6dcd4;
+  /* Control outlines need 3:1 against the page, panel and card backgrounds. */
+  --input: #74817a;
+  --destructive: #8f2a1b;
   --ring: #a85135;
   --font-geist-sans: Arial, sans-serif;
   --font-geist-mono: monospace;
@@ -234,19 +237,42 @@ hr {
   border-top: 1px solid var(--border);
   margin: 28px 0 16px;
 }
-button,
-.button {
-  background: #245545;
-  color: white;
-  border: 0;
+/* Size and wrapping for every button. This rule is outside a cascade layer, so
+   it overrides Tailwind utilities: it must not set background, color or border
+   colour, which belong to the variant classes in components/ui/button.tsx. */
+button {
+  min-height: 40px;
+  height: auto;
+  max-width: 100%;
+  padding: 8px 16px;
   border-radius: 6px;
-  padding: 11px 18px;
-  font: inherit;
+  font-size: 15px;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 button:disabled {
   opacity: 0.55;
-  cursor: wait;
+  cursor: not-allowed;
+}
+/* Checkboxes and radio buttons: large enough to see, on a card background.
+   The background sits in the base layer so the checked state still wins. */
+[data-slot='checkbox'],
+[data-slot='radio-group-item'] {
+  width: 20px;
+  height: 20px;
+}
+@layer base {
+  [data-slot='checkbox'],
+  [data-slot='radio-group-item'] {
+    background-color: var(--card);
+  }
+}
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: var(--muted);
 }
 .footnote {
   font-size: 12px;
@@ -313,9 +339,32 @@ input:focus-visible {
   border-radius: 20px;
   padding: 5px 9px;
 }
-.badge.accepted {
+.badge.accepted,
+.badge.state-accepted,
+.badge.state-published,
+.badge.state-open {
   background: #e3eee4;
   color: #28533b;
+}
+.badge.state-draft,
+.badge.state-invited {
+  background: #f3ecc8;
+  color: #5e5a2a;
+}
+.badge.state-cancelled,
+.badge.state-declined {
+  background: #f6e3dc;
+  color: #8f2a1b;
+}
+.badge.state-closed {
+  background: #e6eaf0;
+  color: #4d5a6b;
+}
+.badge[class*='state-'] {
+  display: inline-block;
+}
+.badge[class*='state-']::first-letter {
+  text-transform: uppercase;
 }
 .details {
   border-left: 2px solid #bd684b;
@@ -339,8 +388,16 @@ input:focus-visible {
   background: #eeeae2;
   border-radius: 6px;
 }
-.profile-panel h2 {
+.profile-panel h2,
+.profile-panel > h3 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 25px;
   margin: 8px 0 12px;
+}
+.profile-panel + .profile-panel,
+.gatherings + .profile-panel {
+  margin-top: 24px;
 }
 .muted {
   color: #5e6a64;
@@ -364,7 +421,7 @@ input:focus-visible {
   min-height: 40px;
   background: #fffefb;
   color: #203831;
-  border: 1px solid #b5bdb5;
+  border: 1px solid var(--input);
   border-radius: 5px;
   padding: 8px 10px;
   font-size: 14px;
@@ -501,12 +558,6 @@ output {
 .organizer-workspace .member-grid > * {
   min-width: 0;
 }
-.organizer-workspace .activity button {
-  max-width: 100%;
-  height: auto;
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
 
 .gathering-editor {
   margin: 28px 0 40px;
@@ -526,11 +577,6 @@ output {
 }
 .gathering-editor h4 {
   font-size: 18px;
-}
-.gathering-editor button {
-  max-width: 100%;
-  height: auto;
-  white-space: normal;
 }
 .gathering-editor input,
 .gathering-editor textarea {
@@ -562,7 +608,6 @@ output {
 .coordination input,.coordination textarea,.coordination select { font-size:16px; max-width:100%; }
 .coordination [data-slot='native-select-wrapper'] { width:100%; }
 .coordination fieldset { min-width:0; }
-.coordination button { height:auto; white-space:normal; max-width:100%; }
 .coordination .balance { font-weight:650; }
 .ledger { padding-left:20px; }
 .ledger li { margin:12px 0; }
@@ -581,7 +626,6 @@ output {
 
 .message-panel { border-top:1px solid var(--border); margin:24px 0; padding-top:8px; }
 .message-panel input,.message-panel textarea { font-size:16px; max-width:100%; }
-.message-panel button { max-width:100%; white-space:normal; height:auto; min-height:40px; }
 .message-delivery { padding:18px; border:1px solid var(--border); border-radius:10px; margin:16px 0; overflow-wrap:anywhere; }
 .message-delivery h4 { font-weight:650; }
 .message-delivery pre,.message-discussion-review pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; line-height:1.6; margin:12px 0; }
@@ -592,6 +636,90 @@ output {
 .participation-panel { margin:20px 0; padding:16px 0; border-block:1px solid var(--border); }
 .participation-panel .choice { display:flex; align-items:center; gap:10px; margin:14px 0; }
 .participation-panel input[type=checkbox] { width:20px; height:20px; flex-shrink:0; }
-.participation-panel input[type=number] { padding:10px; border:1px solid var(--border); border-radius:8px; }
+.participation-panel input[type=number] { padding:10px; border:1px solid var(--input); border-radius:8px; }
 .participation-panel li { margin:16px 0; }
 .participation-panel ol { padding-left:24px; }
+
+/* Page order and orientation. The organizer page is long, so its sections are
+   reachable from a bar that stays in view, and anything scrolled to or focused
+   stays clear of that bar and of the confirmation message. */
+html {
+  scroll-padding-top: 76px;
+  scroll-padding-bottom: 88px;
+}
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 28px;
+  padding: 10px 0;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.section-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--input);
+  border-radius: 20px;
+  background: var(--card);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: var(--muted);
+}
+@media (max-width: 650px) {
+  .section-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 10px 4px;
+  }
+}
+.page-notice:not(:empty) {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  z-index: 40;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(92vw, 560px);
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: var(--foreground);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.22);
+}
+.backup {
+  margin: 32px 0 48px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
+}
+.backup > h2 {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+.backup > .muted {
+  margin: 0 0 20px;
+}
+.member-grid > * {
+  min-width: 0;
+}
+.member-main > .coordination {
+  margin-bottom: 0;
+}
+.activity > h3 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 23px;
+  margin: 14px 0 8px;
+}
+.activity > .actions {
+  margin: 12px 0;
+}

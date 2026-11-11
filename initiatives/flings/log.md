@@ -504,3 +504,19 @@ The archive contains 109 deployed files. All 191 application tests, typecheck,
 application build and repository build pass. Four Chromium/WebKit desktop/phone
 journeys pass; Firefox startup is unavailable on this machine. Production has
 not been released.
+## 2026-11-11 — Critique, visible button variants and organizer page order
+
+Reviewed the application for interaction, completeness, appearance and code
+structure and recorded 54 suggestions in `notes/critique-20261111.md`.
+Implemented two areas from it. Buttons now show their declared variants,
+checkboxes and field borders are visible, panels are spaced and states are
+labelled in colour. The organizer page puts activities and members first, has
+a section bar, keeps its scroll position across the focus re-check and shows
+confirmations at the bottom of the window; the member page puts invitations
+first. After merging the participation change, the organizer page's 15-second
+refresh no longer hides the records, which had been taking keyboard focus out
+of a field being typed in. Typecheck, 191 unit tests and the Sites build pass;
+the local browser scripts pass on Chromium only. This change is not on the
+Test site: the Sites hosting workflow was not available where it was made, so
+Test stays at version 21. No schema, access rule, stored data or production
+release changed. The other suggestions remain open.

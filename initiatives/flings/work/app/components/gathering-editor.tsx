@@ -164,7 +164,7 @@ export default function GatheringEditor({
     setEditor(null);
   }
   return (
-    <section className="gathering-editor" aria-label="Gathering plan">
+    <section id="plan" className="gathering-editor" aria-label="Gathering plan">
       <div className="actions">
         <h2 ref={heading} tabIndex={-1}>
           Activities & events
@@ -356,7 +356,9 @@ export default function GatheringEditor({
       <div className="activity-plan">
         {data.activities.map((activity, index) => (
           <article className="activity" key={activity.id}>
-            <span className="badge">{activity.state}</span>
+            <span className={'badge state-' + activity.state}>
+              {activity.state}
+            </span>
             <h3>{activity.title}</h3>
             <p>{activity.summary}</p>
             <div className="actions">
