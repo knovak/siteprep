@@ -267,6 +267,7 @@ Use these names, mirroring the Demos vocabulary above:
 - **Initiative deployment**: one publishing target declared in `deployments[]`, with a test environment and a production environment.
 - **Deployment kind**: what a deployment publishes to - a ChatGPT Site, or a demo under `demos/`. The kind decides which environments exist and which engine deploys it.
 - **Test environment**: the disposable copy any agent may overwrite. **Production environment**: the copy only a release writes.
+- **Beta**: a second copy of a demo, with its own code in its own folder, that the build publishes beside the release at `demos/<destination>/beta/`. It is neither environment.
 
 Do not call an initiative a "deck" or a "demo", and do not apply deck or section conventions to content under an initiative's `work/` directory until it graduates.
 
@@ -382,6 +383,21 @@ Rules that hold whatever the kind:
   `deploy-record/<slug>` and opens nothing; the next pull request touching that
   initiative folds that branch in first. See "Where a record lands" in
   `INITIATIVES_TECHDOC.md`.
+- **A demo may have a beta, and the build publishes it.** A demo deployment's
+  `beta` block names a build script in a folder of its own. `scripts/build.sh`
+  runs it on every build and publishes the result at
+  `demos/<destination>/beta/`, so merging to `main` is what updates a beta.
+  `deploy-test` and `release-initiative` do not write it, and nothing is
+  committed under `demos/` for it.
+- **Beta work stays in the beta's folder.** A request to change a beta never
+  touches the deployment's `source`, the code that produced it, or
+  `demos/<destination>/`. Those are the released line, and they change only in
+  a release the user asked for - which is also how a beta is promoted. See
+  "Beta: a second published line" in `INITIATIVES_TECHDOC.md`.
+- **The build labels the copies; the code does not.** The entry pages of a demo
+  that has a beta read "Released" or "Beta" with the date each last changed.
+  The build adds that at publish time from the path and from git. Do not write
+  channel wording or a date into a demo's own code.
 - **A demo has no test deployment for a skill to write.** `scripts/build.sh`
   publishes it, copying the deployment's `source` to
   `preview/initiatives/<slug>/` on every build, so pushing the branch is the

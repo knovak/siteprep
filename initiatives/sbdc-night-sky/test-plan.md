@@ -30,6 +30,23 @@
    checks, and GitHub Pages deployment to finish. Verify the hosted preview
    returns the same application bytes and its initiative documents are usable.
 
+## Beta checks
+
+These apply to `beta/`, added on 2026-11-11. The site build runs the first two
+on every build.
+
+1. Every `beta/test/*.test.js` suite passes. `beta/publish.mjs` runs them
+   before it builds, and a failure fails the site build.
+2. The published beta page carries exactly one "Beta" label, the published
+   released page carries exactly one "Released" label, and removing the label
+   from the released page gives back `demos/SBDC Night Sky/index.html` byte
+   for byte (`BUILD-13` and `BUILD-22` in `scripts/build_tests.sh`).
+3. While the beta is meant to equal the release, `node beta/build.js <dir>`
+   produces a page identical to `work/index.html`. This held on 2026-11-11 and
+   stops applying at the first beta change.
+4. After a beta change, open the beta in the pull request's branch preview and
+   repeat the browser checks in step 5 above that the change could affect.
+
 ## What the inherited suite covers
 
 The 59 tests cover solar geometry, seeded constellation generation, Earth

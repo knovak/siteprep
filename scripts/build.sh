@@ -140,6 +140,59 @@ if [ -d "$ROOT_DIR/shared_assets" ]; then
 fi
 cp "$ROOT_DIR/manifest.webmanifest" "$OUTPUT_DIR/manifest.webmanifest"
 
+# Publish the beta of each demo that has one, and label both copies.
+#
+# A demo deployment may declare a beta: a second line of the same demo, with its
+# own code in its own folder. demos/<destination>/ in the repository holds the
+# release and changes only when someone releases; the beta is built here, on
+# every build, into demos/<destination>/beta/ - so merging to main publishes it
+# and nothing done to it reaches the released files.
+#
+# Both entry pages then get a channel stamp ("Released · changed <date>",
+# "Beta · changed <date>"). The label comes from the path being written and the
+# date from git, so neither is typed by hand or stored in the demo's source.
+# See "Beta" in INITIATIVES_TECHDOC.md and scripts/channel_stamp.mjs.
+declare -A DEMO_BETA_HREF
+declare -A DEMO_BETA_CHANGED
+declare -A DEMO_RELEASED_CHANGED
+if [ -d "$ROOT_DIR/initiatives" ] && [ -d "$ROOT_DIR/demos" ]; then
+  while IFS=$'\t' read -r channel_slug channel_name channel_destination channel_path channel_root channel_build channel_anchor channel_changed; do
+    [ -n "$channel_slug" ] || continue
+    channel_page="$OUTPUT_DIR/$channel_path/$channel_root"
+
+    if [ "$channel_name" = "beta" ]; then
+      if [ -e "$OUTPUT_DIR/$channel_path" ]; then
+        echo "BUILD FAIL: $channel_path is where the beta of $channel_slug is published, but the released demo already has that path" >&2
+        exit 1
+      fi
+      mkdir -p "$OUTPUT_DIR/$channel_path"
+      if ! node "$ROOT_DIR/$channel_build" "$OUTPUT_DIR/$channel_path"; then
+        echo "BUILD FAIL: the beta of $channel_slug did not build ($channel_build)" >&2
+        exit 1
+      fi
+      if [ ! -f "$channel_page" ]; then
+        echo "BUILD FAIL: the beta of $channel_slug built no $channel_root" >&2
+        exit 1
+      fi
+      beta_href="./$(url_path_segment "$channel_destination")/beta/"
+      [ "$channel_root" = "index.html" ] || beta_href="${beta_href}$(url_path_segment "$channel_root")"
+      DEMO_BETA_HREF[$channel_destination]="$beta_href"
+      DEMO_BETA_CHANGED[$channel_destination]="$channel_changed"
+    else
+      DEMO_RELEASED_CHANGED[$channel_destination]="$channel_changed"
+    fi
+
+    stamp_args=("$channel_name")
+    [ "$channel_changed" = "-" ] || stamp_args+=(--changed "$channel_changed")
+    [ "$channel_anchor" = "-" ] || stamp_args+=(--anchor "$channel_anchor")
+    if ! node "$ROOT_DIR/scripts/channel_stamp.mjs" apply "$channel_page" "${stamp_args[@]}"; then
+      echo "BUILD FAIL: could not label the $channel_name copy of $channel_slug" >&2
+      exit 1
+    fi
+    echo "Published the $channel_name copy of $channel_slug at $channel_path/$channel_root"
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" channels)
+fi
+
 # Generate cache version and inject into service worker
 CACHE_VERSION="v$(date +%s)"
 sed "s/__CACHE_VERSION__/$CACHE_VERSION/g" "$ROOT_DIR/sw.js" > "$OUTPUT_DIR/sw.js"
@@ -370,6 +423,19 @@ EOF_DEMOS
       fi
     fi
 
+    # A demo with a beta says so here, with a link: the title opens the
+    # release, and this line is how a reader reaches the other copy.
+    beta_link=""
+    if [ -n "${DEMO_BETA_HREF[$demo]:-}" ]; then
+      beta_changed="${DEMO_BETA_CHANGED[$demo]:--}"
+      released_changed="${DEMO_RELEASED_CHANGED[$demo]:--}"
+      beta_note=""
+      [ "$beta_changed" = "-" ] || beta_note=", changed ${beta_changed}"
+      released_note=""
+      [ "$released_changed" = "-" ] || released_note=", changed ${released_changed}"
+      beta_link="          <p class=\"meta\"><a href=\"${DEMO_BETA_HREF[$demo]}\">Beta version</a>${beta_note} · the title opens the released version${released_note}</p>"
+    fi
+
     cat >> "$OUTPUT_DIR/demos/index.html" <<EOF_DEMO_ITEM
         <li class="toc-item">
           <a href="${href}" class="toc-link">
@@ -377,6 +443,7 @@ EOF_DEMOS
           </a>
           <p>${description}</p>
 ${additional_links}
+${beta_link}
 ${prompts_link}
         </li>
 EOF_DEMO_ITEM

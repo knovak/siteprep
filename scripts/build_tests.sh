@@ -84,6 +84,19 @@ if [ -d "$ROOT_DIR/pwa" ]; then
 fi
 
 
+# The released entry page of a demo that has a beta is published with a channel
+# stamp (BUILD-22). It is the one demo file the build adds anything to, so
+# BUILD-13 compares it with the stamp removed rather than exempting it.
+declare -A LABELED_DEMO_PAGES
+if [ -d "$ROOT_DIR/initiatives" ]; then
+  while IFS=$'\t' read -r channel_slug channel_name channel_destination channel_path channel_root channel_build channel_anchor channel_changed; do
+    [ -n "$channel_slug" ] || continue
+    if [ "$channel_name" = "released" ]; then
+      LABELED_DEMO_PAGES["$channel_path/$channel_root"]=1
+    fi
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" channels)
+fi
+
 if [ -d "$ROOT_DIR/demos" ]; then
   if [ ! -d "$OUTPUT_DIR/demos" ]; then
     fail "BUILD-13 demos output directory missing"
@@ -108,7 +121,11 @@ if [ -d "$ROOT_DIR/demos" ]; then
       if [ ! -f "$output_file" ]; then
         fail "BUILD-13 demo file missing: ${rel_file}"
       fi
-      if ! cmp -s "$source_file" "$output_file"; then
+      if [ -n "${LABELED_DEMO_PAGES[demos/$rel_file]:-}" ]; then
+        if ! node "$ROOT_DIR/scripts/channel_stamp.mjs" strip "$output_file" | cmp -s "$source_file" -; then
+          fail "BUILD-13 demo page differs from its source by more than the channel stamp: ${rel_file}"
+        fi
+      elif ! cmp -s "$source_file" "$output_file"; then
         fail "BUILD-13 demo file was modified instead of copied: ${rel_file}"
       fi
     done < <(find "$ROOT_DIR/demos/${demo}" -type f -print0)
@@ -307,6 +324,63 @@ if [ -d "$ROOT_DIR/initiatives" ]; then
 
     pass "BUILD-21 test preview published unmodified for ${preview_slug}"
   done < <(node "$ROOT_DIR/scripts/initiatives.mjs" previews)
+
+  # BUILD-22: A demo's beta is published beside its release, each copy says
+  # which one it is, and both pages that list the demo link the beta.
+  #
+  # The label is derived from the path a page is published at, so the check is
+  # that the released path reads "released" and the beta path reads "beta" - a
+  # beta labeled as the release, or the reverse, is the mistake this prevents.
+  if ! node --test "$ROOT_DIR/tests/channel-stamp.test.mjs" > /dev/null 2>&1; then
+    node --test "$ROOT_DIR/tests/channel-stamp.test.mjs" || true
+    fail "BUILD-22 channel stamp tests failed"
+  fi
+  pass "BUILD-22 channel stamp tests passed"
+
+  while IFS=$'\t' read -r channel_slug channel_name channel_destination channel_path channel_root channel_build channel_anchor channel_changed; do
+    [ -n "$channel_slug" ] || continue
+    channel_page="$OUTPUT_DIR/$channel_path/$channel_root"
+
+    if [ ! -f "$channel_page" ]; then
+      fail "BUILD-22 the ${channel_name} copy of ${channel_slug} was not published: ${channel_path}/${channel_root}"
+    fi
+
+    if [ "$(grep -c 'siteprep-channel-stamp:start' "$channel_page")" -ne 1 ]; then
+      fail "BUILD-22 ${channel_path}/${channel_root} does not carry exactly one channel stamp"
+    fi
+    expected_changed=""
+    [ "$channel_changed" = "-" ] || expected_changed="$channel_changed"
+    expected_stamp="${channel_name}"$'\t'"${expected_changed}"
+    actual_stamp=$(node "$ROOT_DIR/scripts/channel_stamp.mjs" read "$channel_page")
+    if [ "$actual_stamp" != "$expected_stamp" ]; then
+      fail "BUILD-22 ${channel_path}/${channel_root} is labeled '${actual_stamp}', expected '${expected_stamp}'"
+    fi
+
+    if [ "$channel_name" = "beta" ]; then
+      # demos/ in the repository holds releases. A beta committed there would
+      # be replaced by the next release, and would make the release's folder
+      # change with every beta edit.
+      if [ -e "$ROOT_DIR/$channel_path" ]; then
+        fail "BUILD-22 ${channel_path} exists in the repository; a beta is built from its own folder, never committed under demos/"
+      fi
+
+      encoded_destination="${channel_destination//%/%25}"
+      encoded_destination="${encoded_destination// /%20}"
+      if ! grep -Fq "href=\"./${encoded_destination}/beta/" "$OUTPUT_DIR/demos/index.html"; then
+        fail "BUILD-22 demos index does not link the beta of ${channel_slug}"
+      fi
+      if ! grep -q 'Beta — <a href="' "$OUTPUT_DIR/initiatives/${channel_slug}/index.html"; then
+        fail "BUILD-22 initiative page does not link the beta of ${channel_slug}"
+      fi
+    else
+      # The release is published as committed, plus the stamp and nothing else.
+      if ! node "$ROOT_DIR/scripts/channel_stamp.mjs" strip "$channel_page" | cmp -s "$ROOT_DIR/$channel_path/$channel_root" -; then
+        fail "BUILD-22 released page differs from its source by more than the channel stamp: ${channel_path}/${channel_root}"
+      fi
+    fi
+
+    pass "BUILD-22 ${channel_name} copy of ${channel_slug} published and labeled"
+  done < <(node "$ROOT_DIR/scripts/initiatives.mjs" channels)
 fi
 
 # BUILD-09: Valid HTML - basic structure check

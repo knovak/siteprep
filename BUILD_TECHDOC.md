@@ -66,7 +66,7 @@ the cumulative travel time.
 
 ## What the build publishes beyond `decks/` and `demos/`
 
-Two directories in `gh-pages/` have no counterpart in the repository:
+Three directories in `gh-pages/` have no counterpart in the repository:
 
 - `initiatives/` - the Initiative TOC, one overview page per initiative, and a
   rendered page per initiative document, all from `scripts/initiatives.mjs`.
@@ -76,10 +76,23 @@ Two directories in `gh-pages/` have no counterpart in the repository:
   the build fails if a deployment's entry page is missing from the copy.
   `INITIATIVES_TECHDOC.md` has the reasoning, and `BUILD-21` checks it.
 
+- `demos/<destination>/beta/` - the beta of a demo deployment that declares
+  one, built by running the deployment's `beta.build` script with that
+  directory as its argument. The list comes from `initiatives.mjs channels`.
+  A script that exits non-zero, or builds no entry page, fails the build.
+  `INITIATIVES_TECHDOC.md` has the reasoning, and `BUILD-22` checks it.
+
 Preview pages are exempt from the footer injection and from `BUILD-17`'s
 version-root check, for the same reason demo pages are: they are the bytes a
 release will ship, and a preview that differs from its source is previewing
-something else.
+something else. A beta page is under `demos/` and is exempt the same way.
+
+The one thing the build adds to a demo page is the channel stamp: for a demo
+that has a beta, `scripts/channel_stamp.mjs` inserts a marked block before the
+last `</body>` of the released entry page and of the beta entry page, reading
+"Released" or "Beta" and the date that copy last changed. `channel_stamp.mjs
+strip` removes it exactly, and `BUILD-13` compares the stripped released page
+with its source, so the stamp is known to be the only difference.
 
 ## Browser provisioning
 

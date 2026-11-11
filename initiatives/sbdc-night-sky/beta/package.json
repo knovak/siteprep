@@ -1,0 +1,11 @@
+{
+  "name": "sbdc-sky-simulator",
+  "version": "0.1.0-phase1",
+  "description": "SBDC night-sky impact simulator — physics core (Phase 1). Zero runtime dependencies; Node used only for tests and the build step.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/model.test.js test/scenarios.test.js test/golden.test.js",
+    "golden": "node tools/make-golden.mjs",
+    "validate": "node tools/validate.mjs"
+  }
+}

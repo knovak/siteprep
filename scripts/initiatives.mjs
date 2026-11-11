@@ -30,6 +30,7 @@
  *   brief <slug> [--json]              one initiative's brief state
  *   brief <slug> record                stamp a freshly written brief
  *   previews [--json]                  demo sources the build publishes as test previews
+ *   channels [--json]                  the released and beta copies of each demo that has a beta
  *   deployments <slug> [--json]        every deployment, both environment URLs each
  *   deployments <slug> plan --env test|prod [--kind <kind>] [--since <ref>]
  *                       what a deployment would do; exits 1 if the release gate blocks it
@@ -52,6 +53,7 @@ import { join, resolve, dirname, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { STAMP_ANCHOR } from './channel_stamp.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // Overridable so the tests can point at a fixture directory rather than having
@@ -710,7 +712,7 @@ const KINDS = {
   },
   demo: {
     label: 'Demo',
-    keys: ['kind', 'source', 'destination', 'root_html', 'prod'],
+    keys: ['kind', 'source', 'destination', 'root_html', 'beta', 'prod'],
     envKeys: ['deployed_at', 'commit', 'tree'],
     // A demo has no test Site to write: its test environment is the branch
     // preview, which exists because the branch was pushed.
@@ -819,6 +821,48 @@ function pagesBase() {
   return `https://${match[1]}.github.io/${match[2]}/`;
 }
 
+/**
+ * The Pages base, and the base of the build this checkout publishes: the same
+ * on `main`, and `branch/<branch-with-slashes-as-dashes>/` under it elsewhere.
+ */
+function pagesBases() {
+  const base = pagesBase();
+  if (!base) return { base: null, here: null };
+  const branch = currentBranch();
+  const here = (!branch || branch === 'main')
+    ? base
+    : `${base}branch/${branch.replace(/\//g, '-')}/`;
+  return { base, here };
+}
+
+/**
+ * The date a path last changed, as git records it: YYYY-MM-DD in UTC, or null
+ * when git cannot say.
+ *
+ * In a shallow clone the oldest commit fetched appears to have added every
+ * file, so a path whose latest commit is that boundary commit has a date that
+ * means nothing. Null is the answer there: a label with no date is accurate,
+ * and one with the wrong date is not.
+ */
+function lastChanged(relPath) {
+  if (!relPath) return null;
+  try {
+    const out = execFileSync('git', [
+      'log', '-1', '--format=%H %cd', '--date=format-local:%Y-%m-%d', '--', relPath
+    ], {
+      cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+      env: { ...process.env, TZ: 'UTC' }
+    }).trim();
+    if (!out) return null;
+    const [hash, date] = out.split(' ');
+    const shallow = join(ROOT, git(['rev-parse', '--git-path', 'shallow']));
+    if (existsSync(shallow) && readFileSync(shallow, 'utf8').split('\n').includes(hash)) return null;
+    return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null;
+  } catch {
+    return null;
+  }
+}
+
 // ------------------------------------------------------------ reading them
 
 function deploymentList(data) {
@@ -866,12 +910,8 @@ export function deploymentUrls(entry, slug) {
   if (!entry || typeof entry !== 'object') return urls;
 
   if (entry.kind === 'demo') {
-    const base = pagesBase();
+    const { base, here } = pagesBases();
     if (!base) return urls;
-    const branch = currentBranch();
-    const here = (!branch || branch === 'main')
-      ? base
-      : `${base}branch/${branch.replace(/\//g, '-')}/`;
     if (entry.destination) {
       urls.prod = `${base}demos/${encodeURIComponent(entry.destination)}/`;
     }
@@ -919,6 +959,166 @@ export function deploymentPreviews() {
         source: entry.source,
         root_html: demoRootHtml(entry),
         path: `${PREVIEW_ROOT}/${record.slug}`
+      });
+    }
+  }
+  return rows;
+}
+
+// --------------------------------------------------------------------- beta
+
+/*
+ * A demo may publish a second line beside its release: a beta.
+ *
+ * The release is `source`, copied into `demos/<destination>/` by a person
+ * running the release skill, and it stays exactly as released until the next
+ * one. The beta is a separate folder with its own code, built and published by
+ * the site build into `demos/<destination>/beta/` on every build - so merging
+ * to `main` is what moves it, and nothing done to it can change the release.
+ *
+ * `beta.build` names a script. `node <build> <directory>` writes the beta into
+ * that directory, entry page included; the folder holding the script is the
+ * beta's source. Building at publish time means there is no committed copy of
+ * the output to fall behind its source.
+ *
+ * A demo with a beta has each copy's entry page labeled by the build - see
+ * scripts/channel_stamp.mjs. `beta.stamp` optionally names the element the
+ * label joins.
+ */
+
+const BETA_KEYS = ['build', 'stamp'];
+
+/** The one folder of a released demo the beta is published into. */
+const BETA_SLOT = 'beta';
+
+function betaEntry(entry) {
+  const value = entry && entry.kind === 'demo' ? entry.beta : null;
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
+}
+
+/** The directory a beta is built from: the folder holding its build script. */
+function betaSource(entry) {
+  const build = betaEntry(entry)?.build;
+  return typeof build === 'string' && build.includes('/')
+    ? build.slice(0, build.lastIndexOf('/'))
+    : null;
+}
+
+/** Where a beta is published, under this branch's build. Null when there is none. */
+export function betaUrl(entry) {
+  if (!betaEntry(entry) || !entry.destination) return null;
+  const { here } = pagesBases();
+  if (!here) return null;
+  const root = demoRootHtml(entry);
+  return `${here}demos/${encodeURIComponent(entry.destination)}/${BETA_SLOT}/`
+    + (root === 'index.html' ? '' : root);
+}
+
+/** What the pages and the skills say about a beta, or null when there is none. */
+function betaSummary(entry) {
+  if (!betaEntry(entry)) return null;
+  const source = betaSource(entry);
+  return { url: betaUrl(entry), build: betaEntry(entry).build || null, source, changed: lastChanged(source) };
+}
+
+const pathsOverlap = (a, b) => a === b || a.startsWith(`${b}/`) || b.startsWith(`${a}/`);
+
+/**
+ * Validate a demo's beta.
+ *
+ * The rules that are safety properties: the beta and the release may not share
+ * files, so work on one cannot change the other; and nothing else may occupy
+ * the folder the beta is published into.
+ */
+function checkDemoBeta(slug, at, entry) {
+  const errors = [];
+  if (entry.beta === undefined) return errors;
+
+  const beta = betaEntry(entry);
+  if (!beta) {
+    errors.push(`${slug}: ${at}.beta must be an object`);
+    return errors;
+  }
+  for (const key of Object.keys(beta)) {
+    if (!BETA_KEYS.includes(key)) errors.push(`${slug}: ${at}.beta has unknown key "${key}"`);
+  }
+
+  const build = beta.build;
+  if (!build || typeof build !== 'string') {
+    errors.push(`${slug}: ${at}.beta needs a "build" script that writes the beta into the directory it is given`);
+  } else if (build.includes('..') || build.startsWith('/')) {
+    errors.push(`${slug}: ${at}.beta build escapes the repo: ${build}`);
+  } else if (!/\.m?js$/.test(build)) {
+    errors.push(`${slug}: ${at}.beta build must be a .js or .mjs script: ${build}`);
+  } else if (!build.includes('/')) {
+    errors.push(`${slug}: ${at}.beta build must sit in the beta's own folder, not at the repository root: ${build}`);
+  } else if (!statSync(join(ROOT, build), { throwIfNoEntry: false })?.isFile()) {
+    errors.push(`${slug}: ${at}.beta build script does not exist: ${build}`);
+  } else {
+    const source = betaSource(entry);
+    const releaseLine = [
+      entry.source,
+      entry.destination ? `demos/${entry.destination}` : null
+    ].filter((path) => typeof path === 'string' && path);
+    for (const path of releaseLine) {
+      if (pathsOverlap(source, path)) {
+        errors.push(
+          `${slug}: ${at}.beta is built from ${source}, which overlaps ${path} - `
+          + 'the beta and the release may not share files'
+        );
+      }
+    }
+  }
+
+  if (beta.stamp !== undefined && (typeof beta.stamp !== 'string' || !STAMP_ANCHOR.test(beta.stamp))) {
+    errors.push(`${slug}: ${at}.beta stamp must be one #id or .class selector: ${beta.stamp}`);
+  }
+
+  // The beta is published into one folder of the released demo, so neither
+  // the released copy nor the source of the next release may hold that name.
+  for (const holder of [entry.source, entry.destination ? `demos/${entry.destination}` : null]) {
+    if (typeof holder !== 'string' || !holder || holder.includes('..')) continue;
+    if (existsSync(join(ROOT, holder, BETA_SLOT))) {
+      errors.push(`${slug}: ${at} ${holder}/${BETA_SLOT} exists, and that path is where the beta is published`);
+    }
+  }
+  return errors;
+}
+
+/**
+ * The released and beta copies of every demo that has a beta, for the build:
+ * the beta row is built and published, and both rows are labeled.
+ *
+ * `build.sh` reads this rather than parsing initiative.json, as it does for
+ * `previews`. A beta that fails validation is omitted; `validate` reports it,
+ * and that is what fails the build.
+ */
+export function deploymentChannels() {
+  const rows = [];
+  for (const record of loadAll()) {
+    if (record.error) continue;
+    for (const entry of deploymentList(record.data)) {
+      const beta = betaEntry(entry);
+      if (!beta) continue;
+      const destination = entry.destination;
+      if (!destination || destination.includes('/') || destination.includes('..')) continue;
+      if (checkDemoBeta(record.slug, 'beta', entry).length) continue;
+
+      const root = demoRootHtml(entry);
+      const released = `demos/${destination}`;
+      const shared = { slug: record.slug, destination, root_html: root, stamp: beta.stamp || null };
+      // A demo that has a beta before its first release has only the beta row.
+      if (existsSync(join(ROOT, released, root))) {
+        rows.push({
+          ...shared, channel: 'released', path: released, build: null, changed: lastChanged(released)
+        });
+      }
+      rows.push({
+        ...shared,
+        channel: 'beta',
+        path: `${released}/${BETA_SLOT}`,
+        build: beta.build,
+        changed: lastChanged(betaSource(entry))
       });
     }
   }
@@ -1007,6 +1207,7 @@ function checkDeployments(slug, data, targetOwners) {
       warnings.push(...checked.warnings);
     } else {
       errors.push(...checkDemoTarget(slug, at, entry, targetOwners));
+      errors.push(...checkDemoBeta(slug, at, entry));
     }
 
     // An environment the kind does not record cannot be written down.
@@ -1255,6 +1456,11 @@ export function deploymentPlan(slug, env, { kind, since } = {}) {
     plan.root_html = demoRootHtml(entry);
     plan.branch = currentBranch();
     plan.preview_path = `${PREVIEW_ROOT}/${slug}`;
+    // A beta is neither environment: the build publishes it, and nothing a
+    // deploy or a release does writes it. It is reported so a receipt can say
+    // where it is.
+    const beta = betaSummary(entry);
+    if (beta) plan.beta = beta;
   }
   plan.last_deployed_at = existing?.deployed_at || null;
   plan.last_commit = existing?.commit || null;
@@ -1812,6 +2018,11 @@ export function formatDeployments(slug, data) {
         ? `${urls[env]}${detail ? `  (${detail})` : ''}`
         : (env === 'test' ? 'not deployed yet' : 'not released yet');
       lines.push(`    ${env.padEnd(5)} ${where}`);
+    }
+    const beta = betaSummary(entry);
+    if (beta) {
+      lines.push(`    beta  ${beta.url || 'no Pages URL'}  (built from ${beta.source} on every build`
+        + `${beta.changed ? `, changed ${beta.changed}` : ''})`);
     }
     const state = releaseState(entry);
     lines.push(`    status ${state.summary}${state.test_ahead ? ' (test is ahead)' : ''}`);
@@ -3008,6 +3219,18 @@ function renderToc() {
   return parts.join('\n');
 }
 
+/** The Deployments card's row for a beta, or nothing when the deployment has none. */
+function betaRow(entry) {
+  const beta = betaSummary(entry);
+  if (!beta || !beta.url) return '';
+  const detail = [
+    `built from ${beta.source} on every build`,
+    beta.changed ? `changed ${beta.changed}` : null
+  ].filter(Boolean).join(', ');
+  return `\n        <li>Beta — <a href="${escapeHtml(beta.url)}">${escapeHtml(beta.url)}</a>`
+    + ` <em>(${escapeHtml(detail)})</em></li>`;
+}
+
 /** One initiative's overview page. Everything here is derived, so it cannot drift. */
 function renderPage(slug) {
   const record = loadInitiative(slug);
@@ -3116,7 +3339,7 @@ function renderPage(slug) {
           ].filter(Boolean).join(', ');
           return `        <li>${label} — <a href="${escapeHtml(urls[env])}">${escapeHtml(urls[env])}</a>`
             + `${detail ? ` <em>(${escapeHtml(detail)})</em>` : ''}</li>`;
-        }).join('\n');
+        }).join('\n') + betaRow(entry);
         const heading = escapeHtml(DEPLOYMENT_LABELS[entry.kind] || entry.kind || 'Deployment');
         // Where each environment stands against main, which is the question a
         // reader has: is the thing I am about to open the current work, or
@@ -3361,6 +3584,7 @@ if (RUN_AS_CLI) switch (command) {
           ...(plan.note ? [`  note:   ${plan.note}`] : []),
           `  test:   ${plan.urls.test || 'not deployed yet'}`,
           `  prod:   ${plan.urls.prod || 'not released yet'}`,
+          ...(plan.beta ? [`  beta:   ${plan.beta.url || 'no Pages URL'}`] : []),
           `  status: ${plan.release.summary}${plan.release.test_ahead ? ' (test is ahead of production)' : ''}`,
           ...(plan.since ? [`  since ${plan.since.ref}: ${plan.since.known
             ? `${plan.since.commits.length} commit(s) touched ${plan.source}`
@@ -3401,7 +3625,8 @@ if (RUN_AS_CLI) switch (command) {
           deployments: (record.data.deployments || []).map((entry) => ({
             kind: entry.kind,
             source: entry.source || null,
-            urls: deploymentUrls(entry, slug)
+            urls: deploymentUrls(entry, slug),
+            ...(betaSummary(entry) ? { beta: betaSummary(entry) } : {})
           }))
         }, null, 2)
         : formatDeployments(slug, record.data));
@@ -3459,6 +3684,19 @@ if (RUN_AS_CLI) switch (command) {
       : rows.map((row) => [row.slug, row.source, row.path, row.root_html].join('\t')).join('\n'));
     break;
   }
+  case 'channels': {
+    // Tab-separated for build.sh, like `previews`. A tab is whitespace to
+    // `read`, which folds consecutive ones together, so an absent value is
+    // written as "-" rather than left empty.
+    const rows = deploymentChannels();
+    console.log(args.includes('--json')
+      ? JSON.stringify(rows, null, 2)
+      : rows.map((row) => [
+        row.slug, row.channel, row.destination, row.path, row.root_html,
+        row.build || '-', row.stamp || '-', row.changed || '-'
+      ].join('\t')).join('\n'));
+    break;
+  }
   case 'list':
     console.log(listSlugs().join('\n'));
     break;
@@ -3486,6 +3724,6 @@ if (RUN_AS_CLI) switch (command) {
     break;
   }
   default:
-    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|deployments|list|toc|page|docs|doc|title');
+    console.error('usage: initiatives.mjs validate|digest|propose|select|add|complete|check-scope|deployments|previews|channels|list|toc|page|docs|doc|title');
     process.exit(2);
 }

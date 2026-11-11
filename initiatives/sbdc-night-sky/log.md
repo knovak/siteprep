@@ -68,3 +68,17 @@ Converted `mobile-sky-follow-up` to an optional later todo and recorded it in
 Recorded the user's direction in `decisions.md`: keep the initiative dormant
 and make no additional releases. The release item remains permission-blocked;
 no application, preserved source, or production demo files were changed.
+
+## 2026-11-11 — Added the beta line
+
+Created `beta/` from the code in `lib/` (`src/`, `data/`, `test/`, `tools/`,
+`build.js`, `package.json`), with two additions: `build.js` accepts an output
+directory, and `publish.mjs` runs the tests and then builds. Declared it as the
+demo deployment's `beta` in `initiative.json`. The site build now publishes it
+at `demos/SBDC Night Sky/beta/` and labels the released and beta pages.
+
+Checked that the beta builds a page byte-identical to
+`demos/SBDC Night Sky/index.html`, that the 59 tests pass in `beta/`, and that
+removing the build's label from the published released page gives back the
+committed file byte for byte. `lib/`, `work/` and `demos/SBDC Night Sky/` are
+unchanged. The reasoning is in `decisions.md`.

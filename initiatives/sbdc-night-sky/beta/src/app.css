@@ -1,0 +1,166 @@
+/* SBDC Night-Sky Simulator — Developed by Ken Novak and David Sandalow, draft for review 2026-07-20 */
+:root {
+  --ink: #0d0f16;
+  --panel: #131722;
+  --raised: #1b2130;
+  --line: #262d3f;
+  --text: #e8e4d8;
+  --muted: #8b8fa3;
+  --gold: #d9a05b;
+  --blue: #7fa3d4;
+  --serif: Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--ink); color: var(--text);
+  font: 14px/1.45 var(--sans);
+  display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+}
+
+/* ---------------- top bar ---------------- */
+header {
+  display: flex; align-items: baseline; gap: 14px;
+  padding: 10px 18px; border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+header h1 { font: 600 19px/1 var(--serif); letter-spacing: 0.2px; }
+header h1 em { color: var(--gold); font-style: normal; }
+header .sub { color: var(--muted); font-size: 12.5px; }
+header .spacer { flex: 1; }
+button, select, input[type="number"] {
+  background: var(--raised); color: var(--text);
+  border: 1px solid var(--line); border-radius: 4px;
+  padding: 5px 11px; font: 13px var(--sans); cursor: pointer;
+}
+button:hover { border-color: var(--gold); }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--gold); outline-offset: 1px;
+}
+button.primary { border-color: var(--gold); color: var(--gold); }
+
+/* ---------------- layout ---------------- */
+main { display: grid; grid-template-columns: 302px 1fr; min-height: 0; }
+@media (max-width: 900px) {
+  body { overflow: auto; height: auto; min-height: 100%; }
+  main { display: flex; flex-direction: column; }
+  #canvas-wrap {
+    order: -1; position: sticky; top: 0; z-index: 5;
+    height: 46vh; min-height: 260px; flex: none;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55);
+  }
+  aside { border-right: none; border-top: 1px solid var(--line); overflow: visible; }
+  header { padding: 7px 12px; gap: 10px; }
+  header .sub { display: none; }
+  /* larger touch targets */
+  input[type="range"] { height: 28px; }
+  aside summary { padding-top: 3px; padding-bottom: 7px; }
+}
+
+/* ---------------- sidebar ---------------- */
+aside {
+  background: var(--panel); border-right: 1px solid var(--line);
+  overflow-y: auto; padding: 14px 16px 26px;
+}
+aside details.grp { margin-bottom: 16px; }
+aside summary {
+  font: 700 10.5px var(--mono); letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); border-bottom: 1px solid var(--line);
+  padding-bottom: 5px; margin-bottom: 11px;
+  cursor: pointer; list-style: none; user-select: none;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+aside summary::-webkit-details-marker { display: none; }
+aside summary::after { content: "\2212"; color: var(--muted); font-size: 13px; }
+aside details.grp:not([open]) summary::after { content: "+"; }
+aside summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.ctl { margin-bottom: 11px; }
+.ctl label { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); margin-bottom: 3px; }
+.ctl label output { color: var(--text); font-family: var(--mono); font-size: 12px; }
+input[type="range"] {
+  width: 100%; accent-color: var(--gold); height: 22px; cursor: pointer; background: transparent;
+}
+.hint { font-size: 11.5px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.row button { padding: 4px 8px; font-size: 12px; }
+.check { display: flex; align-items: center; gap: 7px; font-size: 13px; margin-bottom: 7px; }
+.check input { accent-color: var(--gold); }
+.seedrow { display: flex; gap: 6px; }
+.seedrow input { width: 120px; font-family: var(--mono); }
+
+/* ---------------- canvas area ---------------- */
+#canvas-wrap { position: relative; min-height: 0; background: #05060a; }
+#sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+#sky:active { cursor: grabbing; }
+
+#readout-strip {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 12, 20, 0.82); border-top: 1px solid var(--line);
+  padding: 8px 14px 9px; pointer-events: none; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+#readout { font: 12.5px var(--mono); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#readout-sub { font: 11px var(--mono); color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+#compass {
+  position: absolute; top: 10px; right: 14px;
+  font: 11.5px var(--mono); color: var(--muted);
+  background: rgba(10,12,20,0.7); padding: 3px 9px; border-radius: 3px;
+}
+#busy {
+  position: absolute; top: 10px; left: 14px; visibility: hidden;
+  font: 11.5px var(--mono); color: var(--gold);
+  background: rgba(10,12,20,0.7); padding: 3px 9px; border-radius: 3px;
+}
+#tooltip {
+  position: absolute; display: none; max-width: 220px; pointer-events: none;
+  background: rgba(13, 15, 22, 0.94); border: 1px solid var(--line);
+  border-left: 2px solid var(--gold);
+  padding: 7px 10px; font: 12px/1.5 var(--mono); border-radius: 3px; z-index: 5;
+}
+#tooltip b { color: var(--gold); font-weight: 600; }
+
+/* ---------------- assumptions panel ---------------- */
+#assump {
+  position: fixed; inset: 0; background: rgba(5,6,10,0.55);
+  display: none; z-index: 20;
+}
+#assump.open { display: block; }
+#assump .sheet {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(760px, 94vw);
+  background: var(--panel); border-left: 1px solid var(--line);
+  overflow-y: auto; padding: 18px 22px 40px;
+}
+#assump h2 { font: 600 18px var(--serif); margin-bottom: 4px; }
+#assump .lede { color: var(--muted); font-size: 12.5px; margin-bottom: 14px; }
+#assump h3 { font: 700 11px var(--mono); letter-spacing: 1.6px; text-transform: uppercase; color: var(--gold); margin: 18px 0 6px; }
+.assump-note { font-size: 12px; color: var(--muted); margin-bottom: 7px; }
+#assump table { width: 100%; border-collapse: collapse; font-size: 12px; }
+#assump th { text-align: left; color: var(--muted); font-weight: 500; padding: 3px 8px 3px 0; border-bottom: 1px solid var(--line); }
+#assump td { padding: 4px 8px 4px 0; border-bottom: 1px solid rgba(38,45,63,0.5); vertical-align: top; }
+#assump td.mono { font-family: var(--mono); font-size: 11.5px; color: var(--blue); max-width: 200px; word-break: break-all; }
+.chip { font: 10px var(--mono); padding: 1.5px 7px; border-radius: 8px; white-space: nowrap; }
+.chip-measured { background: #1d3326; color: #7fce9a; }
+.chip-published { background: #1b2a40; color: #8fb4e8; }
+.chip-modeled { background: #3a2f18; color: #e0b970; }
+.chip-assumed { background: #40231b; color: #e8967f; }
+#assump .closer { position: sticky; top: 0; float: right; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------------- error banner ---------------- */
+#errbar {
+  position: fixed; left: 10px; right: 10px; bottom: 10px; z-index: 50;
+  display: flex; gap: 10px; align-items: center;
+  background: #3a1420; border: 1px solid #7c2d3e; border-radius: 6px;
+  color: #ffd9de; padding: 9px 12px; font: 12.5px var(--mono);
+}
+#errbar span { flex: 1; overflow-wrap: anywhere; }
+#errbar button { background: none; border: none; color: #ffd9de; font-size: 16px; }
+
+#attribution {
+  position: absolute; right: 10px; bottom: 54px; z-index: 4;
+  font: 10px var(--mono); color: rgba(199, 205, 224, 0.55);
+  pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+}
