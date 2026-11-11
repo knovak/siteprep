@@ -494,3 +494,13 @@ late acceptance, server-enforced closure at capacity, and recovery-file support.
 Unlimited defaults and existing answers remain intact. Added real-D1 regression
 coverage and a desktop/phone browser journey. Test deployment and PR are recorded
 with this change; the existing Phase 6 acceptance todo remains open.
+
+Test version 21 was deployed successfully on November 12, 2026
+(Australia/Brisbane), replacing the existing public `flings-test` Site without
+changing its audience. Source: `1891edb856628bd9a46c3ea7e06c58576667c33c`;
+Sites source: `2ce2e228128621d87e12ad382f9a20a88eab5de8`;
+deployment: `appgdep_6af4870e22148191a6f99bb0f69ac230`.
+The archive contains 109 deployed files. All 191 application tests, typecheck,
+application build and repository build pass. Four Chromium/WebKit desktop/phone
+journeys pass; Firefox startup is unavailable on this machine. Production has
+not been released.
