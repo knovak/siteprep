@@ -48,6 +48,9 @@
 <p>The user reports that user-test-preview had a satisfactory outcome and is complete. No device-by-device findings were supplied. The initiative remains dormant; no additional releases are requested.</p>
 <h3>2026-09-11 — Deferred mobile follow-up; retained dormancy</h3>
 <p>Converted <code>mobile-sky-follow-up</code> to an optional later todo and recorded it in <code>notes.md</code>. It remains blocked on explicit user permission to resume the work. Recorded the user&#39;s direction in <code>decisions.md</code>: keep the initiative dormant and make no additional releases. The release item remains permission-blocked; no application, preserved source, or production demo files were changed.</p>
+<h3>2026-11-11 — Added the beta line</h3>
+<p>Created <code>beta/</code> from the code in <code>lib/</code> (<code>src/</code>, <code>data/</code>, <code>test/</code>, <code>tools/</code>, <code>build.js</code>, <code>package.json</code>), with two additions: <code>build.js</code> accepts an output directory, and <code>publish.mjs</code> runs the tests and then builds. Declared it as the demo deployment&#39;s <code>beta</code> in <code>initiative.json</code>. The site build now publishes it at <code>demos/SBDC Night Sky/beta/</code> and labels the released and beta pages.</p>
+<p>Checked that the beta builds a page byte-identical to <code>demos/SBDC Night Sky/index.html</code>, that the 59 tests pass in <code>beta/</code>, and that removing the build&#39;s label from the published released page gives back the committed file byte for byte. <code>lib/</code>, <code>work/</code> and <code>demos/SBDC Night Sky/</code> are unchanged. The reasoning is in <code>decisions.md</code>.</p>
     </div>
   </main>
   <footer class="site-footer" data-version="main" data-root="../../">
