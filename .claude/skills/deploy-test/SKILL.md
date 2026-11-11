@@ -86,6 +86,13 @@ is. On `main` the preview is built too, from main's copy of the source.
 
 Do not run `$deploy-demo`: copying into `demos/` is a production release.
 
+**A demo may also have a beta**, reported as `beta` in the plan. It is a third
+published copy, built from its own folder by the same build, and it is not the
+test environment. Pushing the branch updates the branch preview's copy of it
+(`beta.url`); merging to `main` updates the live one. When the user asks to see
+beta work, push and report `beta.url`. When they ask to test the next release,
+report the test URL. Report both when the request does not say which.
+
 ## Record and report
 
 Record only a deployment you actually made:

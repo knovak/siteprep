@@ -1,0 +1,179 @@
+<!doctype html>
+<!-- SBDC Night-Sky Simulator — Developed by Ken Novak and David Sandalow, draft for review 2026-07-20 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SBDC Night-Sky Simulator</title>
+<meta name="description" content="Interactive, physics-based simulation of how a large constellation of space-based data centers would appear in the night sky. Standalone — runs entirely offline.">
+<style>
+/*INJECT:CSS*/
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SBDC <em>Night-Sky</em> Simulator</h1>
+  <span class="sub">what a constellation of space-based data centers does to the sky — physics-based, every assumption inspectable</span>
+  <span class="spacer"></span>
+  <button id="lang-toggle" aria-label="Langue / Language">FR</button>
+  <button id="open-assumptions">Assumptions &amp; data</button>
+  <button id="snapshot" class="primary">Save PNG</button>
+</header>
+
+<main>
+  <aside aria-label="Simulation controls">
+    <details class="grp" open>
+      <summary>Observer</summary>
+      <div class="ctl">
+        <label for="lat">Latitude <output id="lat-label">40°N</output></label>
+        <input id="lat" type="range" min="-90" max="90" step="1" value="40">
+      </div>
+      <div class="ctl">
+        <label for="date">Date <output id="date-label">Jun 21</output></label>
+        <input id="date" type="range" min="1" max="365" step="1" value="172">
+        <div class="hint" id="sun-events">sunset —</div>
+      </div>
+      <div class="ctl">
+        <label for="time">Local time <output id="time-label">20:11</output></label>
+        <input id="time" type="range" min="0" max="1439" step="1" value="1211">
+      </div>
+      <div class="row">
+        <button id="jump-sunset">Sunset</button>
+        <button id="jump-dusk30">+30 min</button>
+        <button id="jump-dusk60">+60 min</button>
+        <button id="jump-midnight">Midnight</button>
+        <button id="jump-dawn60">Dawn −60</button>
+        <button id="jump-dawn30">Dawn −30</button>
+      </div>
+      <div class="check"><input id="timelock" type="checkbox"><label for="timelock">Hold time relative to sunset/dawn as latitude changes</label></div>
+      <div class="row">
+        <button id="play-rt">▶ Real time</button>
+        <button id="play-ff">▶▶ Fast forward</button>
+      </div>
+    </details>
+
+    <details class="grp" open>
+      <summary>Constellation</summary>
+      <div class="ctl">
+        <label for="nsats">Satellites <output id="nsats-label">300,000</output></label>
+        <input id="nsats" type="range" min="0" max="100" step="1" value="74">
+        <div class="hint" id="hint-fcc">FCC filing envelope: up to 1,000,000</div>
+      </div>
+      <div class="ctl">
+        <label for="sso">Orbit families <output id="sso-label">70% SSO / 30% 30°</output></label>
+        <input id="sso" type="range" min="0" max="100" step="5" value="70">
+      </div>
+      <div class="ctl">
+        <label for="shells">Shell altitudes</label>
+        <select id="shells">
+          <option value="low">Low (550–650 km)</option>
+          <option value="mid">Mid (750–1,150 km)</option>
+          <option value="spread" selected>Spread (550–1,800 km)</option>
+          <option value="custom">Custom…</option>
+        </select>
+        <div id="shells-custom" style="display:none; margin-top:6px">
+          <input id="shells-custom-input" type="text" inputmode="text" spellcheck="false"
+                 placeholder="550:0.5, 1200:0.5" aria-label="Custom shells: altitude:share pairs">
+          <div class="hint" id="shells-custom-hint">format: altitude:share, e.g. 550:0.5, 1200:0.5</div>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="brightness">SBDC brightness <output id="bright-label">+0.5 — unmitigated</output></label>
+        <input id="brightness" type="range" min="-70" max="70" step="5" value="5">
+        <div class="hint" id="hint-bright">median mag at 1,000 km reference · +0.5 ≈ unmitigated · +5.5 ≈ strong mitigation (Starlink record) · +7 = IAU target</div>
+      </div>
+      <div class="ctl">
+        <label for="trains">Recent launch trains <output id="trains-label">1</output></label>
+        <input id="trains" type="range" min="0" max="10" step="1" value="1">
+      </div>
+      <div class="check"><input id="clusteron" type="checkbox"><label for="clusteron">Cluster into data-center groups</label></div>
+      <div id="cluster-ctls" style="display:none">
+        <div class="ctl">
+          <label for="cpc">Satellites per cluster <output id="cpc-label">100</output></label>
+          <input id="cpc" type="range" min="0" max="100" step="1" value="50">
+        </div>
+        <div class="ctl">
+          <label for="cdia">Cluster diameter <output id="cdia-label">1.0 km</output></label>
+          <input id="cdia" type="range" min="0" max="100" step="1" value="41">
+        </div>
+        <div class="hint" id="cluster-derived">≈ 3,000 clusters</div>
+      </div>
+    </details>
+
+    <details class="grp" open>
+      <summary>Sky &amp; display</summary>
+      <div class="ctl">
+        <label for="viewmode">View</label>
+        <select id="viewmode">
+          <option value="horizon" selected>Horizon (drag to look around)</option>
+          <option value="fisheye">All-sky fisheye (zenith at center)</option>
+        </select>
+      </div>
+      <div class="ctl">
+        <label for="starlim">Eye / sky quality limit <output id="starlim-label">mag 6.0</output></label>
+        <input id="starlim" type="range" min="40" max="65" step="1" value="60">
+        <div class="hint" id="hint-starlim">lower = light-polluted site</div>
+      </div>
+      <div class="check"><input id="show-stars" type="checkbox" checked><label for="show-stars">Show stars (Yale Bright Star Catalog)</label></div>
+      <div class="check"><input id="longexp" type="checkbox"><label for="longexp">Long-exposure camera (30 s) — the astronomy view</label></div>
+      <div class="hint" id="hint-longexp">every sunlit satellite becomes a 12–27° streak; stars to the catalog limit</div>
+      <div class="hint" id="hint-drag">Drag to pan · scroll to zoom · arrows/±/space on keyboard · hover a bright point for details</div>
+    </details>
+
+    <details class="grp">
+      <summary>Advanced</summary>
+      <div class="ctl">
+        <label for="seed">Seed (reproducibility)</label>
+        <div class="seedrow">
+          <input id="seed" type="number" value="12345">
+          <button id="reseed">Randomize</button>
+        </div>
+      </div>
+      <div class="check"><input id="tint" type="checkbox"><label for="tint">Tint by orbit family (analysis aid)</label></div>
+      <div class="check"><input id="markpole" type="checkbox" checked><label for="markpole">Mark celestial pole (sky’s rotation center)</label></div>
+      <div class="check"><input id="shimmer" type="checkbox" checked><label for="shimmer">Satellites move in fast forward (shimmer)</label></div>
+      <div class="ctl">
+        <label for="cvar">Cluster membership variation <output id="cvar-label">0.35</output></label>
+        <input id="cvar" type="range" min="0" max="100" step="5" value="35">
+      </div>
+      <div class="ctl">
+        <label for="cdvar">Cluster diameter variation <output id="cdvar-label">0.35</output></label>
+        <input id="cdvar" type="range" min="0" max="100" step="5" value="35">
+      </div>
+    </details>
+  </aside>
+
+  <div id="canvas-wrap">
+    <canvas id="sky" aria-label="Simulated sky view"></canvas>
+    <div id="compass">facing 180°</div>
+    <div id="busy">computing…</div>
+    <div id="tooltip" role="status"></div>
+    <div id="attribution">Developed by Ken Novak and David Sandalow, draft for review 2026-07-20</div>
+    <div id="readout-strip" aria-live="polite">
+      <div id="readout">—</div>
+      <div id="readout-sub">—</div>
+    </div>
+  </div>
+</main>
+
+<div id="assump" role="dialog" aria-label="Assumptions and data">
+  <div class="sheet">
+    <button class="closer" id="close-assumptions">Close</button>
+    <h2>Assumptions &amp; data</h2>
+    <p class="lede">Everything the simulation believes, in one auditable table. Rendered live from the embedded <span style="font-family:var(--mono)">sbdc-data.json</span> block — replace that block to change the physics without touching code. Confidence: <span class="chip chip-measured">measured</span> <span class="chip chip-published">published</span> <span class="chip chip-modeled">modeled</span> <span class="chip chip-assumed">assumed</span>. The photometry section is the least certain — the FCC filing gives no satellite sizes or albedos; the renders are illustrative, not photometric predictions.</p>
+    <div id="assump-body"></div>
+  </div>
+</div>
+
+<script type="application/json" id="sbdc-data">
+/*INJECT:DATA*/
+</script>
+<script type="application/json" id="bsc-catalog">
+/*INJECT:CATALOG*/
+</script>
+<script type="module">
+/*INJECT:JS*/
+</script>
+</body>
+</html>

@@ -8,6 +8,13 @@ upgrade plans, phase reports, full source, tests, and assumptions.
 The adoption preserves the working demo and all supplied material. Start with
 the [README and tutorial](README.html), then use the
 [test simulator](../../preview/initiatives/sbdc-night-sky/index.html).
+
+Since 2026-11-11 there is also a
+[beta simulator](../../demos/SBDC%20Night%20Sky/beta/), published from its own
+copy of the code in `beta/` on every merge. The released simulator and its
+source do not change when the beta does. Each copy shows "Released" or "Beta"
+and the date it last changed at the end of its credit line. The
+[README](README.html) describes the arrangement.
 The [notes and reports](notes.html) retain the development history; the
 [test plan](test-plan.html) separates adoption checks from real-device testing.
 

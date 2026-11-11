@@ -38,6 +38,10 @@
       "source": "initiatives/sbdc-night-sky/work",
       "destination": "SBDC Night Sky",
       "root_html": "index.html",
+      "beta": {
+        "build": "initiatives/sbdc-night-sky/beta/publish.mjs",
+        "stamp": "#attribution"
+      },
       "prod": {}
     }
   ],

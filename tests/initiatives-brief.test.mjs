@@ -215,15 +215,17 @@ test('the digest ignores the brief itself', async () => {
 /**
  * The digest reads `HEAD`, so the only way to ask what a *commit* does to it is
  * to make one. A detached worktree gives somewhere to commit that the real
- * checkout never sees, and the script is copied in from the working tree so the
- * version under test is the one being edited rather than the one at HEAD.
+ * checkout never sees, and `scripts/` is copied in from the working tree so the
+ * version under test is the one being edited rather than the one at HEAD. The
+ * whole directory, because initiatives.mjs imports from its siblings and a
+ * sibling added in the same change is not at HEAD yet.
  */
 function committedDigest(edit) {
   const dir = mkdtempSync(join(tmpdir(), 'initiative-digest-'));
   const tree = join(dir, 'tree');
   execFileSync('git', ['worktree', 'add', '--detach', '-q', tree, 'HEAD'], { cwd: ROOT });
   try {
-    cpSync(SCRIPT, join(tree, 'scripts', 'initiatives.mjs'));
+    cpSync(dirname(SCRIPT), join(tree, 'scripts'), { recursive: true });
     const record = join(tree, 'initiatives', 'repo-guide', 'initiative.json');
     const data = JSON.parse(readFileSync(record, 'utf8'));
     edit(data);

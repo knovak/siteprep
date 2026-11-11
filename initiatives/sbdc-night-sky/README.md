@@ -9,6 +9,7 @@ and lifecycle records into the initiative system.
 
 - [Test simulator](../../preview/initiatives/sbdc-night-sky/index.html)
 - [Existing production demo](https://knovak.github.io/siteprep/demos/SBDC%20Night%20Sky/)
+- [Beta simulator](../../demos/SBDC%20Night%20Sky/beta/), described under "Beta" below
 - [Wish](wish.html), [objectives](objectives.html), and [adoption decisions](decisions.html)
 - [Supplied specification](spec.html) and [supplied implementation plan](plan.html)
 - [Adoption checks and user test plan](test-plan.html)
@@ -21,6 +22,32 @@ provides the same standalone simulator. All nine original markdown documents
 also remain under `lib/` with their original filenames and bytes. The source
 archive has been fully extracted into `lib/`; its checksum and file inventory
 are retained in the adoption manifest, without keeping a duplicate binary ZIP.
+
+## Beta
+
+Since 2026-11-11 the simulator has two published copies.
+
+| | Released | Beta |
+| --- | --- | --- |
+| Code | `lib/` and `work/` | `beta/` |
+| Published at | `demos/SBDC Night Sky/` | `demos/SBDC Night Sky/beta/` |
+| Changes when | someone asks for a release | a change to `beta/` merges to `main` |
+| Label on the page | Released · changed *date* | Beta · changed *date* |
+
+The released copy, its source in `lib/` and `work/`, and their URLs stay as
+they are while the beta changes. `beta/` holds its own copy of the source,
+tests, data and builder. The site build runs `beta/publish.mjs` on every build:
+it runs the beta's tests, builds the page, and publishes it. No built beta page
+is committed.
+
+The build also adds the label to the end of the credit line in the sky view of
+each copy, with the date that copy last changed. The label is not part of
+either copy's code.
+
+On 2026-11-11 the beta built a page byte-identical to the released one. To
+change the beta, to see how the label works, or to promote the beta to the
+released version, read `beta/README.md`
+([on GitHub](https://github.com/knovak/siteprep/blob/main/initiatives/sbdc-night-sky/beta/README.md)).
 
 ## Original file map
 

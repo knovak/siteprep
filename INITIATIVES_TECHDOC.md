@@ -51,6 +51,7 @@ dependency. That is fine for flat string fields and does not survive nested
 | `deployments <slug> plan --env test\|prod` | What a deployment would do; exit 1 if the release gate blocks it |
 | `deployments <slug> record --env test\|prod` | Record a completed deployment |
 | `previews` | Demo sources `build.sh` publishes as test previews |
+| `channels` | The released and beta copies of each demo that has a beta, for `build.sh` to publish and label |
 | `brief [candidates]` | Initiatives whose brief is missing or stale |
 | `brief <slug> [record]` | One initiative's brief state, or stamp a freshly written one |
 
@@ -113,8 +114,17 @@ documents. `work/` holds the independent demo preview snapshot; the repository
 build copies it without invoking the inherited builder. The SHA-256 adoption
 manifest retains the original archive metadata and extracted-file inventory;
 the redundant source ZIP is omitted. The unchanged specification and
-implementation plan and the initiative README document reproduction. No new
-repository runtime dependency or executable behavior is introduced.
+implementation plan and the initiative README document reproduction. The
+adoption introduced no repository runtime dependency or executable behavior.
+
+Since 2026-11-11 the initiative also has a beta line in
+`initiatives/sbdc-night-sky/beta/`, a copy of the code under `lib/`. It is the
+first use of the `beta` block described under "Beta: a second published line"
+below, and the one place the site build runs this initiative's code:
+`beta/publish.mjs` runs the beta's tests and builder, using only Node
+built-ins. `lib/`, `work/` and `demos/SBDC Night Sky/` are not read by that
+step and are unchanged by it. `beta/README.md` covers working on the beta and
+promoting it.
 
 The original README and tutorial are included verbatim in the initiative
 README; the phase reports, final report, and upgrade plan are included verbatim
@@ -486,10 +496,125 @@ The build fails if a deployment's `root_html` is missing from the copy. The
 Pages base comes from the `origin` remote, so a fork or a rename needs no edit
 here.
 
+### Beta: a second published line
+
+A demo deployment may declare a **beta**: a second copy of the same demo,
+developed in its own folder and published beside the release.
+
+```json
+{
+  "kind": "demo",
+  "source": "initiatives/sbdc-night-sky/work",
+  "destination": "SBDC Night Sky",
+  "root_html": "index.html",
+  "beta": {
+    "build": "initiatives/sbdc-night-sky/beta/publish.mjs",
+    "stamp": "#attribution"
+  },
+  "prod": {}
+}
+```
+
+| | Release | Beta |
+|---|---|---|
+| Code | `source`, and whatever produced it | the folder holding `beta.build` |
+| Published at | `demos/<destination>/` | `demos/<destination>/beta/` |
+| Changes when | someone runs `release-initiative` | any build of the branch; on `main`, every merge |
+| Committed under `demos/` | yes | never |
+
+The purpose is that the release stays exactly as released - its files, its
+source paths and its URLs - while the beta changes as much as it needs to.
+Nothing done to the beta's folder can alter the release, because the build
+reads the two from different directories and writes them to different paths.
+
+**`beta.build` is a script with one contract:** `node <build> <directory>`
+writes the beta into that directory, including the deployment's `root_html`,
+and exits non-zero if it cannot. `build.sh` runs it on every build with
+`gh-pages/demos/<destination>/beta/` as the directory. The script decides what
+"cannot" means: SBDC's runs the beta's test suites first, so a beta that fails
+its own tests fails the site build and is not published.
+
+**The beta is built at publish time, and no built copy is committed.** A
+committed copy can fall behind its source, and the only way to check that it
+has not is to rebuild it - at which point the build may as well publish what it
+just built. It also keeps a beta pull request to source changes; SBDC's page is
+a 245 KB single file that would otherwise be rewritten in every one.
+
+**A beta is not an environment.** `test` and `prod` keep their meanings: `prod`
+is `demos/<destination>/`, and `test` is the preview of `source`, which is where
+the next release is checked before it is made. `deploy-test` and
+`release-initiative` do not write a beta, and `record` has nothing to record for
+one. `plan`, `deployments <slug>` and the overview page report its URL so that
+a receipt can say where it is.
+
+A branch preview builds the whole site, so a pull request that changes a beta
+has its own copy at `branch/<branch>/demos/<destination>/beta/` before it
+merges.
+
+Validation errors, each for a reason:
+
+- `beta.build` must be a `.js` or `.mjs` file that exists, inside the
+  repository, in a folder of its own. That folder is the beta's source.
+- The beta's folder may not be, contain, or sit inside `source` or
+  `demos/<destination>/`. Two lines that share files are one line.
+- Neither `source` nor `demos/<destination>/` may contain an entry named
+  `beta`. That name is where the beta is published, and `build.sh` also refuses
+  to build over a path the released copy already has.
+- `beta` is accepted only on a `demo` deployment, and an unknown key inside it
+  is an error.
+
+`channels` is what `build.sh` reads, tab-separated, as
+`slug, channel, destination, path, root_html, build, stamp, changed`: one
+`released` row when `demos/<destination>/<root_html>` exists, and one `beta`
+row. An absent value is written `-`, because `read` treats consecutive tabs as
+one separator. A beta that fails validation is omitted; `validate` reports it,
+and that is what fails the build.
+
+#### The channel stamp
+
+When a demo has a beta, the build labels the entry page of each copy -
+"Released · changed 2026-07-20", "Beta · changed 2026-11-11" - using
+`scripts/channel_stamp.mjs`:
+
+- **The label comes from the path being written.** The page published at
+  `demos/<destination>/` reads "Released" and the one at
+  `demos/<destination>/beta/` reads "Beta". Neither copy's code contains the
+  word, so the two cannot disagree with where they are served, and promoting a
+  beta is a plain copy with no wording to change first.
+- **The date comes from git**: the last commit that changed
+  `demos/<destination>/`, or the beta's folder, in UTC. `main` is squash-merged,
+  so on `main` that is the day the change merged. When git cannot say - the
+  path is uncommitted, or its latest commit is the boundary of a shallow clone,
+  which appears to have added every file - the label carries no date.
+- **The stamp is one marked block before the page's last `</body>`.** It loads
+  nothing, so a page that runs offline from one file still does. `beta.stamp`
+  names one `#id` or `.class`; the label is appended to that element and takes
+  its type and color. Without it, or when the element is not on the page, the
+  label is a small fixed line in the bottom-right corner that takes no pointer
+  events.
+- **Removing the block gives back the source bytes.** `channel_stamp.mjs strip`
+  is the exact inverse of `apply`, which is how `BUILD-13` and `BUILD-22` show
+  that the stamp is the only thing the build changed in a released page. The
+  file under `demos/` is never edited.
+
+The demos index adds a "Beta version" link, with both dates, to the entry of a
+demo that has a beta; the title link still opens the release. The overview
+page's Deployments card adds a Beta row.
+
+#### Promoting a beta
+
+Promotion is a production release, so only a person asks for it. Copy the
+beta's code over the release line's code, rebuild `source` from it, look at the
+test preview, and run `release-initiative`. The beta's folder stays and carries
+on from there; the two copies are identical until its next change. The exact
+commands depend on the initiative and belong in the beta's own README -
+`initiatives/sbdc-night-sky/beta/README.md` has SBDC's.
+
 ### The subcommands
 
 ```text
 previews [--json]                       demo sources the build publishes as test previews
+channels [--json]                       released and beta copies of each demo that has a beta
 deployments SLUG                        every deployment, both environment URLs each
 deployments SLUG plan --env test|prod [--kind KIND] [--since REF]
                                         what a deployment would do; exits 1 if blocked
@@ -849,6 +974,13 @@ shallow clone would report every initiative as touched today.
 - the initiatives index is generated
 - every initiative has an overview page, and is linked from the index
 - no raw `.md` is published under `initiatives/` - documents are rendered
+
+`BUILD-22` checks a demo's beta: each copy is published, carries exactly one
+channel stamp naming the channel its path implies, the demos index and the
+overview page link the beta, and no beta is committed under `demos/`.
+`tests/channel-stamp.test.mjs` covers the stamp itself, and the beta cases in
+`tests/initiatives-deployments.test.mjs` cover the declaration and its
+validation against `tests/fixtures/demo-beta/`.
 
 `tests/initiatives-rendering.test.mjs` covers wrapped and nested lists, code
 blocks, and URL autolinks. `tests/initiatives-digest.test.mjs` covers the survey, and

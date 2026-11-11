@@ -18,6 +18,17 @@ gh-pages/demos/world_migration_atlas/index.html
 
 and is available on GitHub Pages under `/siteprep/demos/world_migration_atlas/`.
 
+There are two additions the build makes for a demo whose initiative declares a
+beta (see "Beta: a second published line" in `INITIATIVES_TECHDOC.md`):
+
+- `gh-pages/demos/<demo>/beta/` is built from the beta's own folder under
+  `initiatives/`. It has no counterpart under `demos/` in the repository, and
+  a demo directory may not contain an entry named `beta`.
+- The entry page of each copy gets a channel stamp, a short label reading
+  "Released" or "Beta" with the date that copy last changed. The file under
+  `demos/` is not edited; the label is added to the published copy, and
+  removing it gives back the source bytes.
+
 Use `.claude/skills/deploy-demo/` to create or replace a demo from a complete
 folder elsewhere in the repository. Its helper copies the source tree and adds
 `demo.json` to the destination:
@@ -66,6 +77,8 @@ cut its link to the initiative that produced it. Set either field by editing
 - optional local or web links from `demo.json` when metadata is present
 - featured entries first, then reverse-chronological activity (using the
   associated initiative when `initiative` is present)
+- a "Beta version" link, with the date each copy last changed, for a demo that
+  has a beta; the entry's title still opens the released copy
 - curated descriptions for special demos that need stable tutorial and documentation links (`world_migration_atlas` and `SBDC Night Sky`); SBDC shows "Slideshow tutorial" and "Documentation and code folder", with its main title linking to the current demo
 - an additional "Prompt history" link when the demo directory contains a top-level `prompts.txt` file; when a formatted `prompts.html` is also present, the main link opens that page and a parenthetical "text" link opens the original text file
 
@@ -78,7 +91,11 @@ cut its link to the initiative that produced it. Set either field by editing
 - `gh-pages/demos/index.html` is generated
 - every immediate source demo directory is copied
 - every source demo directory is linked from the demos index
-- copied demo source files are byte-for-byte unchanged in the output
+- copied demo source files are byte-for-byte unchanged in the output; the
+  released entry page of a demo that has a beta is compared with its channel
+  stamp removed
+- a demo's beta is published, each copy is labeled with the channel its path
+  implies, and the demos index links the beta (`BUILD-22`)
 
 These run as part of `npm run build`; see BUILD_TECHDOC.md for the build,
 browser setup, and screenshot workflow.

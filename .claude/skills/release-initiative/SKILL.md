@@ -97,6 +97,15 @@ hear both:
 - run `npm run build` once afterwards and confirm the demo appears in
   `gh-pages/demos/index.html`, as `$deploy-demo` requires.
 
+**A release never reads a beta.** If the deployment declares a `beta`, the
+plan reports it, and `$deploy-demo` still copies `source` - the beta's folder
+is not part of a release. "Promote the beta" is therefore two steps: first the
+beta's code is copied over the release line's code and `source` is rebuilt from
+it, following the beta's own README, and committed; then this skill releases
+`source` as usual. Do the first step only when the user asked for the beta to
+be promoted. The published `demos/<destination>/beta/` is unaffected by a
+release, because the build writes it from the beta's folder on every build.
+
 ## Record and report
 
 On success, record the release with the exact commit that was released:

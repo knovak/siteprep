@@ -26,6 +26,11 @@ const FIXTURES = join(ROOT, 'tests', 'fixtures', 'initiatives');
 const SITE = 'tests/fixtures/site';
 const APP = 'tests/fixtures/site-app';
 const DEMO_SOURCE = 'tests/fixtures/demo-source';
+// A beta is named by its build script; the folder holding it is the beta's
+// source. `demo-source-nested-beta` is the mistake: a beta inside the release
+// source it is supposed to be separate from.
+const BETA_BUILD = 'tests/fixtures/demo-beta/build.mjs';
+const NESTED_SOURCE = 'tests/fixtures/demo-source-nested-beta';
 // Release history is read from git, so the tests that exercise it need a source
 // with more than one commit behind it. The fixture directories were added in a
 // single commit; this one has real history and is not going away.
@@ -350,6 +355,120 @@ test('previews skips a deployment the build could not publish', () => {
   assert.match(runFailing(['validate'], dir).stderr, /source does not exist/);
   assert.deepEqual(JSON.parse(run(['previews', '--json'], dir))
     .filter((row) => row.slug === 'healthy'), []);
+});
+
+// --------------------------------------------------------------------- beta
+
+const betaDemo = (beta = { build: BETA_BUILD }, extra = {}) => ({
+  kind: 'demo', source: DEMO_SOURCE, destination: 'Fixture Demo', root_html: 'main.html', beta, ...extra
+});
+
+test('a demo may declare a beta, published inside the released demo path', () => {
+  const dir = scratch([betaDemo({ build: BETA_BUILD, stamp: '#credit' })]);
+  assert.match(run(['validate'], dir), /INITIATIVE PASS/);
+
+  const listing = JSON.parse(run(['deployments', 'healthy', '--json'], dir)).deployments[0];
+  assert.match(listing.beta.url, /\/demos\/Fixture%20Demo\/beta\/main\.html$/);
+  assert.equal(listing.beta.build, BETA_BUILD);
+  assert.equal(listing.beta.source, 'tests/fixtures/demo-beta');
+
+  // Neither environment's URL is the beta, and the beta is neither of them.
+  assert.notEqual(listing.beta.url, listing.urls.test);
+  assert.notEqual(listing.beta.url, listing.urls.prod);
+  assert.match(run(['deployments', 'healthy'], dir), /beta {2}https:.*\/demos\/Fixture%20Demo\/beta\//);
+});
+
+test('a deployment without a beta reports none', () => {
+  const dir = scratch([{ kind: 'demo', source: DEMO_SOURCE, destination: 'Fixture Demo', root_html: 'main.html' }]);
+  const listing = JSON.parse(run(['deployments', 'healthy', '--json'], dir)).deployments[0];
+  assert.equal(listing.beta, undefined);
+  assert.deepEqual(JSON.parse(run(['channels', '--json'], dir)).filter((row) => row.slug === 'healthy'), []);
+  assert.doesNotMatch(run(['page', 'healthy'], dir), /Beta —/);
+});
+
+test('channels lists the beta for the build, and the release once there is one', () => {
+  // Never released: only the beta exists to publish and label.
+  const unreleased = JSON.parse(run(['channels', '--json'], scratch([betaDemo()])))
+    .filter((row) => row.slug === 'healthy');
+  assert.deepEqual(unreleased.map((row) => row.channel), ['beta']);
+  assert.equal(unreleased[0].path, 'demos/Fixture Demo/beta');
+  assert.equal(unreleased[0].build, BETA_BUILD);
+  assert.equal(unreleased[0].root_html, 'main.html');
+
+  // Released: both copies are listed, so both get labeled.
+  const released = JSON.parse(run(['channels', '--json'], scratch([{
+    kind: 'demo', source: SITE, destination: 'world_migration_atlas',
+    beta: { build: BETA_BUILD, stamp: '#credit' }, prod: {}
+  }]))).filter((row) => row.slug === 'healthy');
+  assert.deepEqual(released.map((row) => row.channel), ['released', 'beta']);
+  assert.equal(released[0].path, 'demos/world_migration_atlas');
+  assert.equal(released[0].build, null);
+  assert.equal(released[1].path, 'demos/world_migration_atlas/beta');
+  assert.equal(released[0].stamp, '#credit');
+  // The date is git's, never typed: the released copy has history to read.
+  assert.match(released[0].changed, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('the tab-separated channels output never has an empty field', () => {
+  // `read` folds consecutive tabs together, so an absent value has to be "-".
+  const line = run(['channels'], scratch([betaDemo()])).split('\n')
+    .find((row) => row.startsWith('healthy\t'));
+  const fields = line.split('\t');
+  assert.equal(fields.length, 8);
+  assert.ok(fields.every((field) => field !== ''), line);
+  assert.equal(fields[6], '-', 'no stamp anchor declared');
+});
+
+test('the fixture beta honors the build contract the site build relies on', () => {
+  const out = mkdtempSync(join(tmpdir(), 'beta-build-'));
+  execFileSync('node', [join(ROOT, BETA_BUILD), out]);
+  assert.ok(existsSync(join(out, 'main.html')), 'the entry page is written into the directory given');
+});
+
+test('a beta and its release may not share files', () => {
+  const dir = scratch([{
+    kind: 'demo', source: NESTED_SOURCE, destination: 'Fixture Demo', root_html: 'main.html',
+    beta: { build: `${NESTED_SOURCE}/beta/build.mjs` }
+  }]);
+  const { stderr } = runFailing(['validate'], dir);
+  assert.match(stderr, /the beta and the release may not share files/);
+  // Nor may the release source hold the folder name the beta is published under.
+  assert.match(stderr, /demo-source-nested-beta\/beta exists, and that path is where the beta is published/);
+  // A beta that fails validation is not handed to the build.
+  assert.deepEqual(JSON.parse(run(['channels', '--json'], dir)).filter((row) => row.slug === 'healthy'), []);
+});
+
+test('a beta needs a build script that exists, inside the repository', () => {
+  const failing = (beta) => runFailing(['validate'], scratch([betaDemo(beta)])).stderr;
+  assert.match(failing({}), /needs a "build" script/);
+  assert.match(failing({ build: 'tests/fixtures/demo-beta/missing.mjs' }), /build script does not exist/);
+  assert.match(failing({ build: '../outside/build.mjs' }), /escapes the repo/);
+  assert.match(failing({ build: 'tests/fixtures/demo-beta' }), /must be a \.js or \.mjs script/);
+  assert.match(failing({ build: 'build.mjs' }), /not at the repository root/);
+  assert.match(failing('yes'), /beta must be an object/);
+});
+
+test('a misspelled beta key or an unsafe stamp anchor is an error', () => {
+  const failing = (beta) => runFailing(['validate'], scratch([betaDemo(beta)])).stderr;
+  assert.match(failing({ build: BETA_BUILD, source: DEMO_SOURCE }), /beta has unknown key "source"/);
+  assert.match(failing({ build: BETA_BUILD, stamp: 'div > span' }), /stamp must be one #id or \.class selector/);
+});
+
+test('only a demo has a beta', () => {
+  const { stderr } = runFailing(['validate'], scratch([staticSite({ beta: { build: BETA_BUILD } })]));
+  assert.match(stderr, /unknown key "beta" for a chatgpt-site deployment/);
+});
+
+test('a plan and the overview page both say where the beta is', () => {
+  const dir = scratch([betaDemo()]);
+  const plan = JSON.parse(run(['deployments', 'healthy', 'plan', '--env', 'test', '--json'], dir));
+  assert.match(plan.beta.url, /\/demos\/Fixture%20Demo\/beta\/main\.html$/);
+  // The beta is not an environment: a release still writes demos/<destination>/.
+  assert.match(plan.urls.prod, /\/demos\/Fixture%20Demo\/$/);
+
+  const page = run(['page', 'healthy'], dir);
+  assert.match(page, /Beta — <a href="[^"]*\/demos\/Fixture%20Demo\/beta\/main\.html"/);
+  assert.match(page, /built from tests\/fixtures\/demo-beta on every build/);
 });
 
 test('--since reports what a branch changed under the source', () => {
