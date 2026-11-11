@@ -6,35 +6,27 @@
 
 ## Done
 
-- Gatherings support invitations, events, discussions, polls, payment records,
-  reviewed message prompts and reported outcomes. Editable backups restore
-  separate gatherings with fresh identities and no credentials; confirmed
-  deletion removes active records.
-- Dated hosted receipts cover native organizer entry, scoped member sessions,
-  profile/invitation writes, DST persistence, keyboard focus, native calendar
-  controls, layout and page zoom. Public entry/denial audits now cover four
-  screens at two widths; a missing member-error heading was fixed, with zero
-  detected violations afterward. A focused follow-up added a persistent landing-
-  link underline; visual/Tab and link/contrast checks pass at both widths.
-- Reopened member links clear prior identity; signed-out profile/invitation
-  writes survive reload and restored fixture values are documented. The
-  additional fictional message review remains unapproved.
-- Malformed native-status JSON now receives the same actionable explanation
-  across the local three-engine recovery matrix. After the initial two WebKit
-  message failures were corrected, all 16 anonymous hosted interruption/retry
-  checks passed, including keyboard recovery and hidden unverified identity.
+- Organizers can run gatherings with personal member links, events, discussions,
+  polls, payment records and reviewed message prompts. An editable backup
+  restores a separate gathering with fresh member identities.
+- Activities are unlimited by default. Organizers can cap attendance, invite
+  members in order, set a response deadline and allow late acceptance while a
+  place is free. Backups preserve the invitation order.
+- All 191 application tests passed, including 14 participation tests. Chromium
+  and WebKit passed the invitation flow at desktop and phone widths. Earlier
+  hosted checks confirmed organizer sign-in, signed-out profile and invitation
+  changes, and all 16 anonymous startup retry cases.
 
 ## Remaining work
 
-Phase 6 continues with independent second-organizer access, signed-out
-discussion/poll/payment writes, multiple memberships, expiry/revocation and
-the remaining hosted matrix. Authenticated accessibility,
-screen-reader/text-only zoom and interruption/restart checks
-remain; managed-host retention, recovery access and erasure are unverified.
-Development-toolchain remediation and the authorized pilot follow.
+Firefox could not start for the new invitation tests. Hosted testing still
+needs to verify a second organizer’s access, multiple memberships, link expiry
+and revocation, and signed-out discussion, poll and payment changes. Remaining
+checks before the pilot include signed-in accessibility, screen readers,
+text-only zoom, restart and managed-backup recovery.
 
 ## Optional later
 
-Direct delivery APIs, an in-app drafting model and encrypted export files remain
-deferred. The planned first sending path is a reviewed prompt for the organizer's
-external tool, with manual sending fallback.
+Direct email and SMS integrations, in-app drafting and encrypted exports remain
+deferred. Organizers can use the reviewed prompt in their own tool or send the
+messages manually.
