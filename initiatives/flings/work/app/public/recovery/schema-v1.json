@@ -381,6 +381,44 @@
         "position": {
           "type": "integer",
           "description": "Activity ordering index; lower values appear first."
+        },
+        "capacity": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "cascading": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "timeout_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 525600
+        },
+        "allow_late": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "invitation_order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "maxItems": 500
         }
       },
       "description": "Source activities. Relationships refer to IDs in this file; this data does not activate access or sending."
@@ -605,6 +643,19 @@
         "generation": {
           "type": "integer",
           "description": "Invitation lifecycle counter, retained to interpret invitation/vote history; never a member access generation."
+        },
+        "invited_at": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "timed_out": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ]
         }
       },
       "description": "Source invitations. Relationships refer to IDs in this file; this data does not activate access or sending."

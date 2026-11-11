@@ -87,6 +87,13 @@ input[type="range"] {
 .row button { padding: 4px 8px; font-size: 12px; }
 .check { display: flex; align-items: center; gap: 7px; font-size: 13px; margin-bottom: 7px; }
 .check input { accent-color: var(--gold); }
+.ctl select { max-width: 100%; }
+#preset { width: 100%; }
+#hint-settings { margin-top: 7px; font-family: var(--sans); }
+#settings-status { margin-top: 6px; overflow-wrap: anywhere; white-space: pre-line; }
+#settings-status:empty { display: none; }
+#settings-status.ok { color: var(--text); }
+#settings-status.err { color: #e8967f; }
 .seedrow { display: flex; gap: 6px; }
 .seedrow input { width: 120px; font-family: var(--mono); }
 

@@ -633,6 +633,13 @@ output {
 .message-history summary { cursor:pointer; margin:20px 0; }
 #sending-prompt { max-height:360px; overflow:auto; field-sizing:fixed; height:300px; }
 
+.participation-panel { margin:20px 0; padding:16px 0; border-block:1px solid var(--border); }
+.participation-panel .choice { display:flex; align-items:center; gap:10px; margin:14px 0; }
+.participation-panel input[type=checkbox] { width:20px; height:20px; flex-shrink:0; }
+.participation-panel input[type=number] { padding:10px; border:1px solid var(--input); border-radius:8px; }
+.participation-panel li { margin:16px 0; }
+.participation-panel ol { padding-left:24px; }
+
 /* Page order and orientation. The organizer page is long, so its sections are
    reachable from a bar that stays in view, and anything scrolled to or focused
    stays clear of that bar and of the confirmation message. */

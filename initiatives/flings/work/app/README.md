@@ -797,6 +797,20 @@ state clearing and recovery. Set `FLINGS_EVIDENCE` to a dated receipt path to
 preserve the historical default record. The anonymous hosted probe and its
 read-only limitations are described in `../../notes/hosted-public-retry-20261021.md`.
 
+## Participation limits and cascading invitations — November 12, 2026
+
+Use **Manage participation** on any activity to keep it unlimited or set a
+member limit, select invitees, order a cascading invitation queue and configure
+an optional response timeout and late acceptance. Full activities show a closed
+notice to unconfirmed invitees; the server prevents overbooking. Declines,
+withdrawals and elapsed timeouts advance the ordered queue. Timeouts settle on
+requests, with visible pages refreshing every 15 seconds; new invitations are
+available on the next visit even after everyone has closed the app. External
+messages still use the existing reviewed messaging workflow.
+
+[Participation techdoc](PARTICIPATION_TECHDOC.md) explains storage, transaction
+boundaries, preserved existing invitations and recovery-file compatibility.
+Run `node test/participation-browser.mjs` for the new desktop/phone journeys.
 ## Page order, section bar and button variants — November 11, 2026
 
 `../../notes/critique-20261111.md` lists the review this change came from.

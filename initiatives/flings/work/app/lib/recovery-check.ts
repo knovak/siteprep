@@ -19,6 +19,8 @@ type Shape = {
   enum?: unknown[];
   pattern?: string;
   minimum?: number;
+  maximum?: number;
+  uniqueItems?: boolean;
   minItems?: number;
   maxItems?: number;
 };
@@ -196,7 +198,14 @@ export function checkRecoveryFile(input: unknown): RecoveryCheck {
     }
     if (typeof v === 'number' && s.minimum !== undefined && v < s.minimum)
       issue(path, 'Value is below the allowed minimum.');
+    if (typeof v === 'number' && s.maximum !== undefined && v > s.maximum)
+      issue(path, 'Value is above the allowed maximum.');
     if (Array.isArray(v)) {
+      if (
+        s.uniqueItems &&
+        new Set(v.map((item) => JSON.stringify(item))).size !== v.length
+      )
+        issue(path, 'Array entries must be unique.');
       if (
         (s.minItems !== undefined && v.length < s.minItems) ||
         (s.maxItems !== undefined && v.length > s.maxItems)
@@ -468,6 +477,55 @@ export function checkRecoveryFile(input: unknown): RecoveryCheck {
       if (name === 'message_reports' && Number(r.sequence) < 1)
         issue(p + '/sequence', 'Report sequence must start at 1.');
     });
+  }
+  for (const [index, activity] of records.activities.entries()) {
+    const path = '/records/activities/' + index;
+    const order = (activity.invitation_order ?? []) as string[];
+    if (
+      new Set(order).size !== order.length ||
+      order.length > 500 ||
+      order.some((id) => !get('members', id))
+    )
+      issue(
+        path + '/invitation_order',
+        'Invitation order must name members of this gathering.',
+      );
+    if (
+      activity.capacity == null &&
+      (activity.cascading === 1 || activity.timeout_minutes != null)
+    )
+      issue(
+        path,
+        'Cascading invitations and timeouts require a participation limit.',
+      );
+    if (
+      activity.capacity != null &&
+      (!Number.isSafeInteger(activity.capacity) ||
+        Number(activity.capacity) < 1 ||
+        Number(activity.capacity) > 10000)
+    )
+      issue(path + '/capacity', 'Choose a limit from 1 to 10,000.');
+    if (
+      activity.timeout_minutes != null &&
+      (!Number.isSafeInteger(activity.timeout_minutes) ||
+        Number(activity.timeout_minutes) < 1 ||
+        Number(activity.timeout_minutes) > 525600)
+    )
+      issue(
+        path + '/timeout_minutes',
+        'Choose a timeout from 1 to 525,600 minutes.',
+      );
+    const accepted = records.invitations.filter(
+      (i) =>
+        i.activity === activity.id &&
+        i.state === 'accepted' &&
+        get('members', i.member)?.state === 'active',
+    ).length;
+    if (activity.capacity != null && accepted > Number(activity.capacity))
+      issue(
+        path + '/capacity',
+        'Capacity is below the confirmed member count.',
+      );
   }
   const invitations = new Map(
     records.invitations.map((r) => [JSON.stringify([r.member, r.activity]), r]),

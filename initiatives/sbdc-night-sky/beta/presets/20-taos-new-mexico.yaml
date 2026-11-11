@@ -1,0 +1,9 @@
+# A preset for the SBDC Night-Sky Simulator. See "Presets" in ../README.md.
+# Keys that are left out take the simulator's defaults.
+
+name: Taos, New Mexico, 30 minutes before sunrise, March 15
+
+observer:
+  latitude: 36       # Taos is at 36.4 N; the latitude slider moves in whole degrees
+  date: Mar 15
+  time: sunrise -30

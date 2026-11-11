@@ -23,6 +23,24 @@
 
 <main>
   <aside aria-label="Simulation controls">
+    <details class="grp" id="settings-grp" open>
+      <summary>Presets &amp; settings</summary>
+      <div class="ctl">
+        <label for="preset">Preset</label>
+        <select id="preset">
+          <option value="" selected>Choose a preset…</option>
+        </select>
+      </div>
+      <div class="row">
+        <button id="settings-export">Export settings</button>
+        <button id="settings-import">Import settings…</button>
+        <input id="settings-file" type="file" hidden
+               accept=".yaml,.yml,.txt,text/yaml,application/yaml,application/x-yaml,text/plain">
+      </div>
+      <div class="hint" id="hint-settings">Export saves every setting as a text file that can be edited and imported again</div>
+      <div class="hint" id="settings-status" role="status" aria-live="polite"></div>
+    </details>
+
     <details class="grp" open>
       <summary>Observer</summary>
       <div class="ctl">
@@ -171,6 +189,9 @@
 </script>
 <script type="application/json" id="bsc-catalog">
 /*INJECT:CATALOG*/
+</script>
+<script type="application/json" id="sbdc-presets">
+/*INJECT:PRESETS*/
 </script>
 <script type="module">
 /*INJECT:JS*/

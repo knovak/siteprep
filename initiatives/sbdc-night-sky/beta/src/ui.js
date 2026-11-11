@@ -8,7 +8,7 @@
  *   pan/zoom       -> redraw only (cached evaluation)
  */
 
-/* global MODEL, RENDER — injected by the build (same module scope) */
+/* global MODEL, RENDER, SETTINGS — injected by the build (same module scope) */
 
 const App = {
   data: null, catalog: null,
@@ -125,6 +125,20 @@ const TR = {
   ttRange: ["range", "distance"], ttShell: ["shell", "coquille"],
   ttSunlit: ["sunlit", "éclairé"], ttShadow: ["in Earth's shadow", "dans l'ombre de la Terre"],
   ttStar: ["star", "étoile"],
+  // settings panel (beta). Messages about the contents of a settings file stay
+  // in English, like the file itself.
+  grpSettings: ["Presets & settings", "Préréglages et réglages"],
+  presetLbl: ["Preset", "Préréglage"],
+  presetNone: ["Choose a preset…", "Choisir un préréglage…"],
+  exportBtn: ["Export settings", "Exporter les réglages"],
+  importBtn: ["Import settings…", "Importer des réglages…"],
+  hintSettings: ["Export saves every setting as a text file that can be edited and imported again",
+                 "L\u2019export enregistre tous les réglages dans un fichier texte, modifiable puis réimportable"],
+  stSaved: ["Saved", "Enregistré :"],
+  stLoaded: ["Loaded", "Chargé :"],
+  stNotLoaded: ["Not loaded:", "Non chargé :"],
+  stUnreadable: ["the file could not be read as text", "le fichier n\u2019a pas pu être lu comme du texte"],
+  stAdjusted: ["Set to the nearest value the controls allow:", "Ajusté à la valeur la plus proche permise par les commandes :"],
 };
 const T = (k) => TR[k][LANG.cur === "fr" ? 1 : 0];
 const MONTHS = {
@@ -144,7 +158,7 @@ function applyLang(lang) {
   txt("header .sub", "tagline");
   txt("#open-assumptions", "assumBtn"); txt("#snapshot", "saveBtn");
   const sums = document.querySelectorAll("aside details.grp > summary");
-  ["grpObserver", "grpConstellation", "grpSky", "grpAdvanced"].forEach((k, i) => {
+  ["grpSettings", "grpObserver", "grpConstellation", "grpSky", "grpAdvanced"].forEach((k, i) => {
     if (sums[i]) sums[i].textContent = T(k);
   });
   lbl('label[for="lat"]', "lat"); lbl('label[for="date"]', "date");
@@ -177,6 +191,9 @@ function applyLang(lang) {
   txt("#hint-fcc", "hintFcc");
   txt("#hint-starlim", "hintStarlim"); txt("#hint-drag", "hintDrag");
   txt("#hint-longexp", "hintLongexp"); txt("#busy", "busy");
+  txt('label[for="preset"]', "presetLbl"); txt('#preset option[value=""]', "presetNone");
+  txt("#settings-export", "exportBtn"); txt("#settings-import", "importBtn");
+  txt("#hint-settings", "hintSettings");
   if (App.summary) { updateReadout(); updateDateLabels(); }
 }
 const fmtTime = (h) => {
@@ -195,6 +212,7 @@ function fmtDoy(doy) {
 /* ------------------------- recompute pipeline ------------------------- */
 
 function rebuildConstellation() {
+  if (Settings.applying) return;   // applySettings rebuilds once, when it is done
   setBusy(true);
   setTimeout(() => {
     const d = App.data;
@@ -546,6 +564,21 @@ function hover(e) {
 
 /* ------------------------- controls binding ------------------------- */
 
+/* The three sliders whose position is not the value itself. The handlers
+   below read a value through these, and applySettings uses the same functions
+   to find the position for a value from a settings file. */
+const SLIDER_SCALES = {
+  // log slider 0..100 -> 10k..1M (per review; lower bound was 50k)
+  nsats: (pos) => {
+    const f = pos / 100;
+    let n = Math.round(10000 * Math.pow(100, f) / 1000) * 1000;
+    if (Math.abs(n - 300000) <= 5000) n = 300000;  // snap to the report default
+    return n;
+  },
+  cpc: (pos) => Math.round(10 * Math.pow(100, pos / 100)),
+  cdia: (pos) => Math.round(0.2 * Math.pow(50, pos / 100) * 10) / 10,
+};
+
 function bindControls() {
   const on = (id, evt, fn) => $(id).addEventListener(evt, fn);
 
@@ -568,11 +601,7 @@ function bindControls() {
   on("shimmer", "change", (e) => { App.shimmer = e.target.checked; });
 
   on("nsats", "input", (e) => {
-    // log slider 0..100 -> 10k..1M (per review; lower bound was 50k)
-    const f = +e.target.value / 100;
-    let n = Math.round(10000 * Math.pow(100, f) / 1000) * 1000;
-    if (Math.abs(n - 300000) <= 5000) n = 300000;  // snap to the report default
-    App.cfg.totalSats = n;
+    App.cfg.totalSats = SLIDER_SCALES.nsats(+e.target.value);
     $("nsats-label").textContent = App.cfg.totalSats.toLocaleString();
   });
   on("nsats", "change", rebuildConstellation);
@@ -626,14 +655,13 @@ function bindControls() {
     rebuildConstellation();
   });
   on("cpc", "input", (e) => {
-    App.cfg.clustering.satsPerCluster = Math.round(10 * Math.pow(100, +e.target.value / 100));
+    App.cfg.clustering.satsPerCluster = SLIDER_SCALES.cpc(+e.target.value);
     $("cpc-label").textContent = App.cfg.clustering.satsPerCluster.toLocaleString();
     clusterDerived();
   });
   on("cpc", "change", () => { if (App.cfg.clustering.enabled) rebuildConstellation(); });
   on("cdia", "input", (e) => {
-    App.cfg.clustering.clusterDiameterKm =
-      Math.round(0.2 * Math.pow(50, +e.target.value / 100) * 10) / 10;
+    App.cfg.clustering.clusterDiameterKm = SLIDER_SCALES.cdia(+e.target.value);
     $("cdia-label").textContent = App.cfg.clustering.clusterDiameterKm.toFixed(1) + " km";
   });
   on("cdia", "change", () => { if (App.cfg.clustering.enabled) rebuildConstellation(); });
@@ -687,6 +715,253 @@ function bindControls() {
   });
 }
 
+/* ------------------------- settings: export, import, presets (beta) ------------------------- */
+
+/* Every user setting travels as one settings object (see settings.js for its
+   shape and its YAML file). Nothing here computes anything about the sky:
+   readSettings() copies the current state out, and applySettings() puts a
+   settings object in by setting each control and firing that control's own
+   events, so the handlers above do the work exactly as they do for a person. */
+
+const Settings = {
+  presets: [],        // [{ name, settings }] from the embedded presets/*.yaml
+  applying: false,    // true while applySettings is driving the controls
+};
+
+/** The time as a settings value: twilight-relative when the current time is a
+ *  whole number of minutes from sunset or sunrise (a jump button, a preset, or
+ *  the opening view), otherwise the clock time. */
+function currentTimeSetting() {
+  const t = App.state.solarTimeHours, refs = twilightRefs();
+  const order = App.timeAnchor && App.timeAnchor.ref === "dawn" ? ["dawn", "sunset"] : ["sunset", "dawn"];
+  for (const ref of order) {
+    if (refs[ref] == null) continue;
+    const offset = (((t - refs[ref] + 36) % 24) - 12) * 60;
+    const whole = Math.round(offset);
+    if (Math.abs(offset - whole) < 1e-6 && Math.abs(whole) <= 180) return { ref, offsetMin: whole };
+  }
+  return { clock: Math.round(t * 60) % 1440 };
+}
+
+function readSettings() {
+  const s = SETTINGS.defaultSettings();
+  const view = App.renderer.view, cl = App.cfg.clustering;
+  Object.assign(s.observer, {
+    latitude: App.state.latDeg,
+    date: App.state.doy,
+    time: currentTimeSetting(),
+    hold_time_to_twilight: App.timeLock,
+  });
+  Object.assign(s.constellation, {
+    satellites: App.cfg.totalSats,
+    sso_percent: Math.round(App.cfg.ssoFraction * 100),
+    shells: App.cfg.shellPreset,
+    custom_shells: $("shells-custom-input").value.trim(),
+    brightness_mag: App.state.brightnessRefMag,
+    launch_trains: App.cfg.trains,
+    clustering: cl.enabled,
+    satellites_per_cluster: cl.satsPerCluster,
+    cluster_diameter_km: cl.clusterDiameterKm,
+  });
+  Object.assign(s.display, {
+    view: view.mode,
+    facing: view.centerAz,
+    look_altitude: view.centerAlt,
+    field_of_view: view.fovDeg,
+    sky_limit_mag: App.state.userLimitingMag,
+    show_stars: App.renderer.showStars,
+    long_exposure: App.renderer.longExposure,
+  });
+  Object.assign(s.advanced, {
+    seed: App.cfg.seed,
+    tint_by_orbit_family: App.renderer.tintFamilies,
+    mark_celestial_pole: App.renderer.markPole,
+    satellites_move_in_fast_forward: App.shimmer,
+    cluster_membership_variation: cl.memberSigma,
+    cluster_diameter_variation: cl.diameterSigma,
+  });
+  return s;
+}
+
+/** Set a control and fire the events a person's change would fire. */
+function setControl(id, value, ...events) {
+  const el = $(id);
+  if (el.type === "checkbox") el.checked = !!value;
+  else el.value = String(value);
+  for (const evt of events) el.dispatchEvent(new Event(evt, { bubbles: true }));
+}
+
+/** The slider position whose value is nearest the one asked for. */
+function sliderFor(id, target) {
+  const el = $(id), scale = SLIDER_SCALES[id];
+  let best = +el.min, miss = Infinity;
+  for (let pos = +el.min; pos <= +el.max; pos += +el.step || 1) {
+    const d = Math.abs(scale(pos) - target);
+    if (d < miss) { miss = d; best = pos; }
+  }
+  return best;
+}
+
+/**
+ * Put a complete settings object into the simulator. Returns the settings
+ * that ended up different from what was asked - a value between two slider
+ * steps, or a sunset time on a date with no sunset - as "section.key value".
+ */
+function applySettings(s) {
+  const o = s.observer, c = s.constellation, d = s.display, a = s.advanced;
+  setPlaying(null);
+  Settings.applying = true;
+  try {
+    setControl("timelock", false, "change");          // no lock while latitude and date move
+    setControl("lat", o.latitude, "input");
+    setControl("date", o.date, "input");
+    if (o.time.ref) {
+      const base = twilightRefs()[o.time.ref];
+      if (base != null) {                              // polar day/night: the time stays as it was
+        App.state.solarTimeHours = ((base + o.time.offsetMin / 60) % 24 + 24) % 24;
+        $("time").value = Math.round(App.state.solarTimeHours * 60);
+        App.timeAnchor = { ref: o.time.ref, offsetMin: o.time.offsetMin };
+      }
+    } else {
+      setControl("time", o.time.clock, "input");
+      App.timeAnchor = null;
+    }
+    setControl("timelock", o.hold_time_to_twilight, "change");
+
+    setControl("nsats", sliderFor("nsats", c.satellites), "input");
+    setControl("sso", c.sso_percent, "input");
+    setControl("shells-custom-input", c.custom_shells, "change");
+    setControl("shells", c.shells, "change");
+    setControl("brightness", Math.round(c.brightness_mag * 10), "input");
+    setControl("trains", c.launch_trains, "input", "change");
+    setControl("cpc", sliderFor("cpc", c.satellites_per_cluster), "input");
+    setControl("cdia", sliderFor("cdia", c.cluster_diameter_km), "input");
+    setControl("cvar", Math.round(a.cluster_membership_variation * 100), "input");
+    setControl("cdvar", Math.round(a.cluster_diameter_variation * 100), "input");
+    setControl("clusteron", c.clustering, "change");
+    setControl("seed", a.seed, "change");
+
+    setControl("viewmode", d.view, "change");
+    const view = App.renderer.view;
+    view.centerAz = ((d.facing % 360) + 360) % 360;
+    view.centerAlt = d.look_altitude;
+    view.fovDeg = d.field_of_view;
+    $("compass").textContent = `${T("facing")} ${Math.round(view.centerAz)}°`;
+    setControl("starlim", Math.round(d.sky_limit_mag * 10), "input");
+    setControl("show-stars", d.show_stars, "change");
+    setControl("longexp", d.long_exposure, "change");
+    setControl("tint", a.tint_by_orbit_family, "change");
+    setControl("markpole", a.mark_celestial_pole, "change");
+    setControl("shimmer", a.satellites_move_in_fast_forward, "change");
+  } finally {
+    Settings.applying = false;
+  }
+  rebuildConstellation();
+
+  const now = readSettings(), changed = [];
+  for (const f of SETTINGS.SETTINGS_FIELDS) {
+    const got = SETTINGS.settingsFormatValue(f, now[f.section][f.key]);
+    if (got !== SETTINGS.settingsFormatValue(f, s[f.section][f.key])) changed.push(`${f.section}.${f.key} ${got}`);
+  }
+  return changed;
+}
+
+function setSettingsStatus(kind, text) {
+  const el = $("settings-status");
+  el.className = "hint" + (kind ? " " + kind : "");
+  el.textContent = text;
+}
+
+/** The settings no longer match the preset shown, so stop showing it. */
+function settingsTouched() {
+  if (Settings.applying) return;
+  $("preset").value = "";
+  setSettingsStatus("", "");
+}
+
+function exportSettings() {
+  const s = readSettings();
+  const preset = Settings.presets[$("preset").value === "" ? -1 : +$("preset").value];
+  const d = new Date(), two = (n) => String(n).padStart(2, "0");
+  const text = SETTINGS.settingsToYaml(s, {
+    name: preset ? preset.name : null,
+    date: `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`,
+  });
+  const file = `sbdc-settings_lat${s.observer.latitude}_` +
+    `${SETTINGS.settingsFormatDate(s.observer.date).replace(" ", "")}_` +
+    `${fmtTime(App.state.solarTimeHours).replace(":", "")}.yaml`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/yaml;charset=utf-8" }));
+  a.download = file;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  setSettingsStatus("ok", `${T("stSaved")} ${file}`);
+}
+
+function importSettings(file) {
+  const fail = (lines) => setSettingsStatus("err", `${T("stNotLoaded")} ${file.name}\n${lines.join("\n")}`);
+  const reader = new FileReader();
+  reader.onerror = () => fail([T("stUnreadable")]);
+  reader.onload = () => {
+    const got = SETTINGS.settingsFromYaml(String(reader.result));
+    if (got.errors.length) {
+      const shown = got.errors.slice(0, 5);
+      if (got.errors.length > shown.length) shown.push(`… +${got.errors.length - shown.length}`);
+      fail(shown);
+      return;                                          // nothing is changed by a file with an error
+    }
+    const changed = applySettings(got.settings);
+    $("preset").value = "";
+    const lines = [`${T("stLoaded")} ${got.name ? `${got.name} (${file.name})` : file.name}`, ...got.notes];
+    if (changed.length) lines.push(`${T("stAdjusted")} ${changed.join(", ")}`);
+    setSettingsStatus("ok", lines.join("\n"));
+  };
+  reader.readAsText(file);
+}
+
+function bindSettings() {
+  // presets: the build embeds each presets/*.yaml file as text
+  const select = $("preset");
+  for (const { file, text } of JSON.parse($("sbdc-presets").textContent)) {
+    const got = SETTINGS.settingsFromYaml(text);
+    if (got.errors.length || !got.name) continue;      // the build refuses these; never show a broken one
+    const opt = document.createElement("option");
+    opt.value = String(Settings.presets.length);
+    opt.textContent = got.name;
+    opt.dataset.file = file;
+    select.appendChild(opt);
+    Settings.presets.push({ name: got.name, settings: got.settings });
+  }
+  select.addEventListener("change", () => {
+    const preset = Settings.presets[select.value === "" ? -1 : +select.value];
+    if (!preset) return;
+    const changed = applySettings(preset.settings);
+    setSettingsStatus(changed.length ? "ok" : "", changed.length ? `${T("stAdjusted")} ${changed.join(", ")}` : "");
+  });
+
+  $("settings-export").addEventListener("click", exportSettings);
+  $("settings-import").addEventListener("click", () => $("settings-file").click());
+  $("settings-file").addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";                               // so the same file can be chosen again
+    if (file) importSettings(file);
+  });
+
+  // Any change a person makes outside this panel means the preset shown no
+  // longer describes the settings.
+  const aside = document.querySelector("aside");
+  const outside = (e) => { if (!e.target.closest("#settings-grp")) settingsTouched(); };
+  aside.addEventListener("input", outside);
+  aside.addEventListener("change", outside);
+  aside.addEventListener("click", (e) => { if (e.target.tagName === "BUTTON") outside(e); });
+  App.renderer.canvas.addEventListener("pointerdown", settingsTouched);
+  App.renderer.canvas.addEventListener("wheel", settingsTouched, { passive: true });
+  document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", " "].includes(e.key)) settingsTouched();
+  });
+}
+
 /* ------------------------- boot ------------------------- */
 
 // Surface any runtime failure on the page itself — webview consoles often
@@ -737,15 +1012,17 @@ function boot() {
   buildAssumptions();
   bindControls();
   bindCanvas();
+  bindSettings();
   $("lang-toggle").addEventListener("click", () =>
     applyLang(LANG.cur === "en" ? "fr" : "en"));
-  // On phones, keep the sky pinned and start with only Observer expanded —
-  // the other groups stay one tap away without pushing the sky off screen.
+  // On phones, keep the sky pinned and start with only the settings panel and
+  // Observer expanded — the other groups stay one tap away without pushing
+  // the sky off screen.
   const narrow = typeof window.matchMedia === "function" &&
     window.matchMedia("(max-width: 900px)").matches;
   if (narrow) {
     document.querySelectorAll("aside details.grp").forEach((d, i) => {
-      if (i > 0) d.open = false;
+      if (i > 1) d.open = false;
     });
   }
   window.addEventListener("resize", resizeCanvas);
