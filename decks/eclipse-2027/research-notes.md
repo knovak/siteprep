@@ -1,8 +1,9 @@
 # Eclipse 2027 package research and upkeep
 
-Availability refresh: 16 October 2026 (Australia/Sydney). Prior review assessments
-remain dated 10 October 2026 (UTC); they were not comprehensively re-audited.
-Added packages state their own review-evidence limits.
+Availability refresh: 12 November 2026 (Australia/Brisbane; research performed
+on 11 November UTC). All 38 previously included offers were revisited. Existing
+review assessments retain their October dates; the new Hotel Valentin and Dar
+Habu records and restored Virgin sailing have separate 12 November review checks.
 
 The deck compares packages that include viewing the 2 August 2027 total solar
 eclipse. The five topics are classified by the eclipse viewing country/region,
@@ -46,6 +47,149 @@ Every main-page description has `.package-availability` and
 The first records general stock; the second records the strongest evidence for
 the requested party. Unknown room stock is not sold out. See
 `../../ECLIPSE_PACKAGES_TECHDOC.md` for the extraction and validation contract.
+
+## 12 November 2026 refresh
+
+The comparison now contains **34 offers**: Spain 5, Morocco 2, Algeria 2,
+Tunisia 1 and Egypt 24. The 38 previous entries were checked on exact operator
+pages and, where needed, rendered public booking flows. Seven closures moved to
+research holding, two distinct offers were added and one holding offer returned.
+Existing IDs and the relative order of retained offers are unchanged. Original
+currencies, older review assessments and movement history remain visible.
+
+New and restored offers:
+
+- **New Scientist / Intrepid Hotel Valentin {519}:** Sat 31 July–Thu 5 August
+  2027, five nights, from £4,499 per person. The sold-out [original Spain tour](https://www.newscientist.com/tours/spain-solar-eclipse-2027/) links a distinct
+  [Hotel Valentin departure](https://www.newscientist.com/tours/total-solar-eclipse-2027-hotel-valentin-southern-spain/)
+  and that page explicitly offers four room categories. Book 2027 opens a
+  contact form, so four adults in two rooms remain unconfirmed. £17,996 is only
+  four Standard fares. Deposit/cancellation conditions are not published there.
+  Viewing is at an unnamed rural site about 40 minutes away, with about 450
+  guests across three groups. Do not infer remaining tour stock from the hotel's
+  549 rooms or the 86 reserved for the group. Confirm exact site and rooming.
+- **InLuxor Dar Habu {603}:** new accommodation variant, same four-night
+  30 July–3 August period, two-room arithmetic US$24,000. Named room quantities
+  establish published capacity; final simultaneous allocation remains by request.
+  No dependable independent review sample for the exact new property was found.
+- **Virgin Resilient Lady {815}, restored:** the [repaired exact departure flow](https://www.virginvoyages.com/book/voyage-planner/pre-checkout?currencyCode=USD&fromDate=2027-07-28&packageCode=11NBSE&priceType=perCabin&sailors=2&selectedPackages=11NBSE&toDate=2027-08-08&voyageId=RS27072811NBSE)
+  now loads dated cabins, rather than the earlier error. Sea View US$8,490 and
+  Sea Terrace US$9,432 are per cabin for two, including taxes/fees. Insider is
+  unavailable. Multiple cabins require a separate group request, so four people
+  in two cabins are not confirmed. Prior holding evidence stays in the entry.
+
+New closures, each with full October evidence retained on the holding page:
+
+| ID | Departure | Current authoritative observation |
+|---|---|---|
+| {653} | RJ Morocco | Product redirects; operator index says no longer available |
+| {595} | RJ Tunisia | Exact departure row says Not Available / Sold Out |
+| {829} | Eclipse Travel Tunisia | Exact itinerary says SOLD OUT; general index is stale |
+| {909} | META MS Q | Exact departure sold out, closed for new bookings; waitlist |
+| {574} | META ten-day El Hanem | Exact ten-day departure sold out; waitlist |
+| {388} | Dabuka Assiut–Cairo | Rendered departure has zero dates/places; waitlist |
+| {197} | Dabuka 15 Days / 7 Nights Desert | Rendered departure has zero dates/places; waitlist |
+
+Rendered evidence overrides cached search text. In particular, the two Dabuka
+closures still appeared with twelve/sixteen places in the web text extraction;
+Chrome showed No Places Available, and the full live catalogue agreed.
+
+Party checks and changing stock:
+
+- **Dragoman {462}:** selecting the actual 26 July–15 August departure reveals
+  Only 3 left and a quantity menu of 0–3. It cannot take four now. The previous
+  £15,180 quote remains historical; camping is an additional room-fit issue.
+- **Al Wadi {240}:** four two-person rooms remain listed. The two Doubles have
+  advertised special eclipse rates €6,200 + €6,300 (four-person total €12,500),
+  alongside regular €7,200 + €7,300 (€14,500). Confirm special-rate eligibility,
+  inclusions and simultaneous allocation. Full prepayment is non-refundable.
+- **Villa Kamose {973}:** two Pool View Suites are now explicitly counted,
+  improving the previous room-category-only evidence. The request is still
+  subject to operator reconfirmation; US$20,000 is the two-suite total.
+- **Adonis {403}:** selected quantity four in Classic Double Main Deck;
+  US$63,996 total. The menu steps by two. No traveler data or payment submitted.
+- **Encounters C {366}:** live departure row now says **6 rooms left**, unlike
+  indexed **7 spots left**. Four base Twin/Double travelers price at £23,980.
+  Published room capacity supports two couples, but exact hotel/cruise assignments
+  remain to be confirmed. The former entries/tipping estimate remains additional.
+- **Spice {691}:** current own-flight and room allocations are unchanged. The
+  public quote accepts four own-flight places at £11,596; four twin-share places
+  can be selected, but two private rooms are not allocated. The own-flight
+  deposit is £975 per person, balance due 1 May 2027. No booking was submitted.
+- **Insight {972}, {891}, {880}:** public two-person calculations still total
+  US$12,008 E, US$9,200 Superior and US$8,850 Classic respectively. Each form says
+  to use separate forms for multiple cabins. This does not establish two cabins.
+  For st33 the current terms now price interior L, F and several verandahs/suites
+  in addition to E/DD/D/C; old categorical sold-out wording was corrected.
+  Hamees headline/calculator and Nile Plaza fee/date conflicts remain unresolved.
+- **Royal Morocco {234}:** rendered departure still says 20/20 places but
+  three gîte nights have shared rooms. **Joe {592}:** exact itinerary still
+  says five places; the prior six-place widget discrepancy is retained as older
+  evidence. Neither proves two private rooms. **Zero {323}** remains in stock;
+  **Balmoral {559}**, **Astro Trails {301}** and **Mara {284}** retain explicit
+  general-stock evidence, without simultaneous two-room confirmation.
+
+The full Dabuka catalogue was expanded to **23/23** items: 21 eclipse tours
+and two meteor trips outside eclipse day. All seventeen previously included
+eclipse departures were opened in Chrome. Current place counts and four-adult
+calculator totals are below; no calculator exposes room/cabin inventory.
+Compared with 16 October, Aqua Magic {546} fell from 20 to 14 places, Sun
+Reborn {161} from 16 to 10, and Nubian Journey {127} from 10 to 9. The two
+new closures previously listed 12 ({388}) and 16 ({197}) places.
+
+| ID | Current places | Four-adult calculator total | Room limitation |
+|---|---|---|---|
+| {683} | 15 | €6,280 | Two rooms unconfirmed; narrative €1,590 vs calculator €1,570 |
+| {388} | 0 / waitlist | Not available | Moved to holding |
+| {546} | 14 | €8,240 | Two rooms unconfirmed |
+| {197} | 0 / waitlist | Not available | Moved to holding |
+| {798} | 18 | €13,400 | Two rooms unconfirmed |
+| {974} | 14 | €11,580 | Hotel/tent allocation unconfirmed |
+| {938} | 14 | €13,720 | Hotel/glamping allocation unconfirmed |
+| {161} | 10 | €17,880 | Two rooms unconfirmed |
+| {920} | 7 | €15,024 | Two private cabins unconfirmed; charter scope needs agreement |
+| {936} | 8 | €7,440 | Hotel/tent allocation unconfirmed |
+| {789} | 9 | €14,260 | Two rooms unconfirmed |
+| {708} | 9 | €10,440 | Hotel/tent allocation unconfirmed |
+| {369} | 7 | €9,380 | Hotel/tent allocation unconfirmed |
+| {575} | 2 | Four people unavailable | Insufficient places |
+| {413} | 10 | €19,620 | Two rooms/cabins unconfirmed |
+| {778} | 6 | €17,700 | Two rooms/cabins unconfirmed |
+| {127} | 9 | €18,440 | Two rooms/cabins unconfirmed |
+
+Search coverage included National Eclipse's all-country directory, specialist
+land tours, hotel packages, ocean cruises and the expanded Dabuka catalogue.
+Queries included `2027 eclipse tours Spain Morocco Algeria Tunisia available`,
+`2027 eclipse cruise Egypt hotel rooms available` and `2027 eclipse packages
+new departure`. The alternate solareclipsetours.com directory still labels some
+explicitly closed operator departures available; it is discovery evidence only.
+This is not exhaustive screening of every reseller or every holding-page lead.
+
+Selected holding checks: New Scientist {901} remains sold out and now points to
+the distinct {519}; MTAG {808} has no verified dated allocation; Eclipse Travel
+Egypt {396} still links two 404 itineraries despite the availability index.
+Dabuka {291}/{775}/{376} remain Fully booked in the live catalogue, and {922}
+still has 24 places without resolution of the earlier viewing-plan conflict.
+Duplicate InLuxor lead {918} points to {973}/{603}. Newly recorded RJ Egypt
+{504} is sold out on its exact product. New Dragoman longer variant {329} has
+dates/fare but unverified inventory. Unvisited holding records retain old dates.
+
+Review sources newly checked: [Intrepid Trustpilot](https://www.trustpilot.com/review/www.intrepidtravel.com), [Hotel Valentin Booking.com](https://www.booking.com/hotel/es/valentinsanctipetri.en-gb.html),
+[Virgin Voyages Trustpilot](https://www.trustpilot.com/review/virginvoyages.com)
+and [Resilient Lady Cruise Critic passenger reviews](https://www.cruisecritic.com/cruise/virgin/resilient-lady/reviews). Ratings,
+sample sizes, review-date limitations and separate operator/property evidence
+are in their entries. Existing October review assessments were not re-dated.
+
+Map changes: removed locations unique to newly held tours, retained a five-country
+overview using the offshore Tunisia marker, and added Hotel Valentin, Jerez and
+Barcelona orientation points. Sources: [hotel address](https://www.valentinsanctipetri.com/en/location/), [hotel OSM reference](https://mapcarta.com/25333220), [Jerez coordinates](https://en.wikipedia.org/wiki/Jerez_de_la_Frontera), [Barcelona coordinates](https://en.wikipedia.org/wiki/Barcelona). Dar Habu is covered by the labelled
+broad Luxor West Bank marker; it is not a promised rooftop coordinate.
+
+Next checks: request simultaneous two-room allocations only if separately
+authorized; resolve special Al Wadi rates, New Scientist sharing/deposit/terms
+and exact rural viewing site, Insight price/date conflicts and Dabuka observing
+plans. No provider contact, traveler details, booking confirmation, payment or
+deliberate hold was submitted during this research.
 
 ## 16 October findings
 
@@ -215,6 +359,6 @@ preserving room/party qualifications and all other prices in the displayed text.
    sort controls. Follow
    AGENTS.md for the build, screenshot and ready-for-review PR.
 
-No ongoing research automation was requested or created. The user will choose
-that schedule later. PR check-ins follow the separate two-check-in maximum in
+This refresh ran under the user-requested Update Eclipse 2027 packages automation.
+The earlier October statement that no research automation existed is superseded. PR check-ins follow the separate two-check-in maximum in
 the repository AGENTS.md.
