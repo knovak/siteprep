@@ -1,0 +1,9 @@
+# A preset for the SBDC Night-Sky Simulator. See "Presets" in ../README.md.
+# Keys that are left out take the simulator's defaults.
+
+name: New York City, 30 minutes after sunset, October 20
+
+observer:
+  latitude: 41       # New York City is at 40.7 N; the latitude slider moves in whole degrees
+  date: Oct 20
+  time: sunset +30

@@ -1,0 +1,9 @@
+# A preset for the SBDC Night-Sky Simulator. See "Presets" in ../README.md.
+# Keys that are left out take the simulator's defaults.
+
+name: Alice Springs Australia, 60 minutes after sunset, June 20
+
+observer:
+  latitude: -24      # Alice Springs is at 23.7 S; the latitude slider moves in whole degrees
+  date: Jun 20
+  time: sunset +60
