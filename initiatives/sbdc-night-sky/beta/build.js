@@ -5,8 +5,12 @@
 // Beta line: `node build.js <directory>` writes the same page to
 // <directory>/index.html instead, which is how publish.mjs hands the beta to
 // the site build. See README.md in this folder.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+//
+// Beta line: every presets/*.yaml file is embedded as a preset, in file-name
+// order. A preset that does not read cleanly fails the build.
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
+import { settingsFromYaml } from "./src/settings.js";
 
 const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
 
@@ -30,15 +34,49 @@ const html = read("src/index.html");
 const css = read("src/app.css");
 const data = JSON.stringify(JSON.parse(read("data/sbdc-data.json")));
 const catalog = JSON.stringify(JSON.parse(read("data/bsc-reduced.json")));
-const js =
-  "// ==== model.js (tested core) ====\n" + inlineModule(read("src/model.js"), "MODEL") +
-  "\n// ==== render.js ====\n" + inlineModule(read("src/render.js"), "RENDER") +
-  "\n// ==== ui.js ====\n" + inlineModule(read("src/ui.js"), null);
+
+// ---- presets: one YAML settings file each, carried as text ----
+const presetFiles = readdirSync(new URL("presets/", import.meta.url))
+  .filter((name) => /\.ya?ml$/.test(name))
+  .sort();
+const presetNames = new Set();
+const presetList = presetFiles.map((file) => {
+  const text = read(`presets/${file}`);
+  const got = settingsFromYaml(text);
+  const problems = [...got.errors, ...got.notes];
+  if (!got.name) problems.push("it needs a name: line, which is its title in the Preset list");
+  else if (presetNames.has(got.name)) problems.push(`another preset is already named "${got.name}"`);
+  if (problems.length) throw new Error(`presets/${file}: ${problems.join("; ")}`);
+  presetNames.add(got.name);
+  return { file, text };
+});
+// "<" is escaped so no preset text can end the script block it sits in
+const presets = JSON.stringify(presetList).replace(/</g, "\\u003c");
+
+const sources = [
+  ["model.js (tested core)", "src/model.js", "MODEL"],
+  ["render.js", "src/render.js", "RENDER"],
+  ["settings.js", "src/settings.js", "SETTINGS"],
+  ["ui.js", "src/ui.js", null],
+];
+// The files share one scope in the page, so a name declared at the top level
+// of two of them would stop the whole script from loading.
+const declared = new Map();
+for (const [, path] of sources) {
+  for (const m of read(path).matchAll(/^(?:export )?(?:async )?(?:function\*?|const|let|class) ([A-Za-z0-9_$]+)/gm)) {
+    if (declared.has(m[1])) throw new Error(`"${m[1]}" is declared in both ${declared.get(m[1])} and ${path}`);
+    declared.set(m[1], path);
+  }
+}
+const js = sources
+  .map(([title, path, exportsAs]) => `// ==== ${title} ====\n` + inlineModule(read(path), exportsAs))
+  .join("\n");
 
 const out = html
   .replace("/*INJECT:CSS*/", () => css)
   .replace("/*INJECT:DATA*/", () => data)
   .replace("/*INJECT:CATALOG*/", () => catalog)
+  .replace("/*INJECT:PRESETS*/", () => presets)
   .replace("/*INJECT:JS*/", () => js);
 
 // ---- assertions ----
@@ -61,5 +99,5 @@ if (process.argv[2]) {
   mkdirSync(new URL("dist/", import.meta.url), { recursive: true });
   writeFileSync(new URL(target, import.meta.url), out);
 }
-console.log(`built ${target} — ${(bytes / 1024).toFixed(0)} KB, ` +
+console.log(`built ${target} — ${(bytes / 1024).toFixed(0)} KB, ${presetList.length} presets, ` +
   `${external.length} inert URL mentions (sources), 0 active network refs`);

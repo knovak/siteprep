@@ -82,3 +82,27 @@ Checked that the beta builds a page byte-identical to
 removing the build's label from the published released page gives back the
 committed file byte for byte. `lib/`, `work/` and `demos/SBDC Night Sky/` are
 unchanged. The reasoning is in `decisions.md`.
+
+## 2026-11-11 — Beta: settings export, import and presets
+
+At the user's request, added a "Presets & settings" panel to the beta only. It
+exports every setting as a YAML text file, imports such a file, and offers
+three presets: New York City 30 minutes after sunset on October 20, Taos 30
+minutes before sunrise on March 15, and Alice Springs 60 minutes after sunset
+on June 20. Each preset is one file in `beta/presets/`; adding or deleting a
+file adds or removes a preset.
+
+`beta/src/settings.js` is new and `beta/src/ui.js` gained the panel's code.
+`beta/src/model.js` and `beta/src/render.js` are unchanged, and so are `lib/`,
+`work/` and `demos/SBDC Night Sky/`. `beta/README.md` describes the file format
+and how to add a preset.
+
+Checked in Chromium: an export, a page reload and an import of that file give
+the same readouts and the same canvas pixels; importing an export of the
+opening view gives the opening view back; a file with mistakes changes
+nothing. 75 tests pass in `beta/`, 16 of them new.
+
+Found while testing, in the released simulator as well as the beta, and left
+as it is: choosing "Custom…" for shell altitudes and then typing the shells
+has no effect until another shell option is chosen and "Custom…" is chosen
+again.
