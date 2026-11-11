@@ -222,6 +222,8 @@ void test('schema walker covers every validation keyword in the committed format
     'minItems',
     'maxItems',
     'minimum',
+    'maximum',
+    'uniqueItems',
     'enum',
   ]);
   function visit(s: Record<string, unknown>) {

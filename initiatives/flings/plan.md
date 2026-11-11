@@ -724,3 +724,12 @@ The user subsequently approved the exact saved-version publication. Version
 20 is now live on the unchanged public Test site; the new hosted receipt passes
 all 16 anonymous failure/retry cases, including both WebKit malformed-JSON
 failures above. This targeted gap is closed; broader Phase 6 acceptance remains.
+
+## Activity participation controls — November 12, 2026
+
+Add unlimited/limited participation settings, selected invitees, ordered
+cascading invitations, response timeouts and optional late acceptance. Preserve
+existing unlimited activities and answers; enforce capacity in protected D1
+transactions, carry the policy through recovery files, verify desktop/phone
+journeys, and refresh only the existing test deployment in a reviewable PR.
+The separate Phase 6 acceptance item remains actionable.

@@ -41,7 +41,7 @@ type Member = {
   preference: string;
   revision: number;
 };
-type Activity = {
+type Activity = import('./participation-panel').ParticipationActivity & {
   id: string;
   title: string;
   summary: string;
@@ -71,7 +71,12 @@ type Snapshot = {
     summary: string;
     details: string;
   }[];
-  invitations: { member: string; activity: string; state: string }[];
+  invitations: {
+    member: string;
+    activity: string;
+    state: string;
+    timed_out: number;
+  }[];
 };
 const blank = { name: '', email: '', phone: '', preference: 'email' };
 export default function OrganizerPage({ fling }: { fling?: string }) {
@@ -229,7 +234,13 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
     void Promise.resolve().then(refresh);
     const recheck = () => void refresh();
     window.addEventListener('focus', recheck);
-    return () => window.removeEventListener('focus', recheck);
+    const timer = window.setInterval(() => {
+      if (fling && document.visibilityState === 'visible') void refresh();
+    }, 15000);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', recheck);
+    };
   }, [refresh]);
   async function act(action: () => Promise<void>) {
     setBusy(true);
@@ -681,7 +692,11 @@ export default function OrganizerPage({ fling }: { fling?: string }) {
                             </div>
                             <Button
                               variant="outline"
-                              disabled={busy || data.fling.state === 'closed'}
+                              disabled={
+                                busy ||
+                                data.fling.state === 'closed' ||
+                                (!active && a.cascading === 1)
+                              }
                               aria-label={
                                 (active ? 'Withdraw ' : 'Invite ') +
                                 m.name +

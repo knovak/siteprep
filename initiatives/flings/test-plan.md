@@ -693,3 +693,16 @@ public Test site. `notes/hosted-public-retry-after-20261021.json` passes all
 and WebKit, including the corrected malformed-JSON message and keyboard retry.
 No Flings mutation or sign-in occurred. This closes the narrow public-startup
 finding, without changing the wider T12/Phase 6 limits above.
+
+## Limited participation acceptance — November 12, 2026
+
+Verify unlimited defaults and selected audiences; atomic final-place claims;
+full-state notices and private-detail redaction; ordered replacement on decline,
+withdrawal, removal and exact timeout boundaries; strict expiry that cannot be
+bypassed by a decline; both late-acceptance outcomes; stale and unauthorized
+policy saves; confirmed-member protection; draft/published and closed/reopened
+behavior; and exports/restores with ordered IDs remapped and legacy defaults.
+Use actual local D1, then Chromium/Firefox/WebKit at desktop and phone widths.
+See `work/app/test/participation.test.ts` and
+`work/app/test/participation-browser.mjs` and its dated receipt. Hosted deployment
+is an additional test surface and does not settle the remaining Phase 6 work.

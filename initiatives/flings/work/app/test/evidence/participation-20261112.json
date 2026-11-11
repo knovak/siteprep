@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-12",
+  "scope": "local fictional browser and D1 journeys",
+  "receipts": [
+    {
+      "engine": "chromium",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "subset",
+        "limit",
+        "cascade order",
+        "timeout configuration",
+        "late policy",
+        "decline advances",
+        "confirmation closes",
+        "private details",
+        "reload",
+        "no horizontal overflow",
+        "poll preserves profile draft"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "subset",
+        "limit",
+        "cascade order",
+        "timeout configuration",
+        "late policy",
+        "decline advances",
+        "confirmation closes",
+        "private details",
+        "reload",
+        "no horizontal overflow",
+        "poll preserves profile draft"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "unavailable": "browserType.launch: Timeout 30000ms exceeded."
+    },
+    {
+      "engine": "webkit",
+      "width": 1280,
+      "passed": true,
+      "checks": [
+        "subset",
+        "limit",
+        "cascade order",
+        "timeout configuration",
+        "late policy",
+        "decline advances",
+        "confirmation closes",
+        "private details",
+        "reload",
+        "no horizontal overflow",
+        "poll preserves profile draft"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "passed": true,
+      "checks": [
+        "subset",
+        "limit",
+        "cascade order",
+        "timeout configuration",
+        "late policy",
+        "decline advances",
+        "confirmation closes",
+        "private details",
+        "reload",
+        "no horizontal overflow",
+        "poll preserves profile draft"
+      ]
+    }
+  ]
+}

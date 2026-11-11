@@ -485,3 +485,12 @@ anonymous Chromium/WebKit status-failure and keyboard-retry checks passed,
 closing the two WebKit malformed-JSON findings. Recorded the actual deployment
 and retained the original failed receipt. No hosted business write, sign-in,
 message, restore, deletion or audience change occurred; Phase 6 remains open.
+
+## 2026-11-12 — Participation controls
+
+Implemented the user's activity-capacity and cascading-invitation request:
+selected audiences, ordered replacement, configurable response timeout, optional
+late acceptance, server-enforced closure at capacity, and recovery-file support.
+Unlimited defaults and existing answers remain intact. Added real-D1 regression
+coverage and a desktop/phone browser journey. Test deployment and PR are recorded
+with this change; the existing Phase 6 acceptance todo remains open.

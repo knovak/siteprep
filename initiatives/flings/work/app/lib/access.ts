@@ -1,3 +1,5 @@
+import { participationSteps } from './participation.ts';
+
 export const DAY = 86400000;
 export class AccessError extends Error {
   status: number;
@@ -166,6 +168,13 @@ export class AccessStore {
     const id = crypto.randomUUID(),
       [sql, args] = this.authority(actor, fling, write);
     try {
+      // Settle elapsed deadlines before checking a submitted revision. A stale
+      // response must reload, while the clock-driven transition remains committed.
+      await this.db.batch([
+        this.guard(id, sql, args),
+        ...participationSteps(this.db, fling, this.clock()),
+        this.q('DELETE FROM guards WHERE id=?', id),
+      ]);
       return (
         await this.db.batch([
           this.guard(id, sql, args),
@@ -175,6 +184,7 @@ export class AccessStore {
             this.clock(),
           ),
           ...stmts,
+          ...participationSteps(this.db, fling, this.clock()),
           this.q(
             `UPDATE message_batches SET ciphertext=NULL WHERE fling=? AND
             (send_until<=? OR EXISTS(SELECT 1 FROM message_deliveries d JOIN codes c ON c.id=d.code
@@ -185,7 +195,7 @@ export class AccessStore {
           ),
           this.q('DELETE FROM guards WHERE id=?', id),
         ])
-      ).slice(2, -2);
+      ).slice(2, 2 + stmts.length);
     } catch {
       throw new AccessError(
         409,
@@ -368,7 +378,10 @@ export class AccessStore {
         fling,
       ),
       this.q(
-        `SELECT a.id,a.title,a.summary,a.state,i.state invitation,CASE WHEN i.state='accepted' AND a.state='published' THEN a.details ELSE NULL END details FROM activities a JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND a.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY a.position,a.id`,
+        `SELECT a.id,a.title,a.summary,a.state,i.state invitation,a.capacity,i.timed_out,
+          CASE WHEN a.capacity IS NOT NULL AND (SELECT COUNT(*) FROM invitations ci JOIN members cm ON cm.id=ci.member WHERE ci.activity=a.id AND ci.state='accepted' AND cm.state='active')>=a.capacity THEN 1 ELSE 0 END is_full,
+          CASE WHEN i.state='invited' AND a.capacity IS NOT NULL THEN i.invited_at+a.timeout_minutes*60000 ELSE NULL END deadline,
+          a.allow_late,CASE WHEN i.state='accepted' AND a.state='published' THEN a.details ELSE NULL END details FROM activities a JOIN invitations i ON i.activity=a.id AND i.fling=a.fling WHERE i.member=? AND a.fling=? AND i.state!='withdrawn' AND a.state!='draft' ORDER BY a.position,a.id`,
         member,
         fling,
       ),
