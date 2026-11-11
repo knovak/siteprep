@@ -36,6 +36,11 @@ type Projection = {
     details: string | null;
     state: string;
     invitation: string;
+    capacity: number | null;
+    is_full: number;
+    timed_out: number;
+    deadline: number | null;
+    allow_late: number;
   }[];
   events: {
     id: string;
@@ -193,13 +198,29 @@ export default function MemberPage({
     const pageShow = (e: PageTransitionEvent) => {
       if (e.persisted) recheck();
     };
+    const timer = window.setInterval(() => {
+      const c = credentials.current,
+        before = current.current;
+      if (c && before && document.visibilityState === 'visible')
+        void call<Projection>('member/' + encodeURIComponent(c.member))
+          .then((result) => {
+            if (current.current !== before) return;
+            // Keep the editable profile and its captured revision while refreshing
+            // availability. A background poll must not erase or rebase a draft.
+            const next = { ...result, profile: before.profile };
+            current.current = next;
+            setData(next);
+          })
+          .catch((e) => setError(e.message));
+    }, 15000);
     window.addEventListener('focus', recheck);
     window.addEventListener('pageshow', pageShow);
     return () => {
+      window.clearInterval(timer);
       window.removeEventListener('focus', recheck);
       window.removeEventListener('pageshow', pageShow);
     };
-  }, [refresh, apply]);
+  }, [refresh, apply, call]);
   const save = useCallback(
     async (input: unknown) => {
       if (previewMember || !current.current || !credentials.current)
@@ -294,6 +315,7 @@ export default function MemberPage({
       );
       setNotice('Your invitation response is saved.');
     } catch (e) {
+      await refresh().catch(() => {});
       setError((e as Error).message);
     } finally {
       setSaving(false);
@@ -331,7 +353,10 @@ export default function MemberPage({
           {!data && (
             <div className="actions">
               {credentials.current && (
-                <Button disabled={reloading} onClick={() => void reloadMember()}>
+                <Button
+                  disabled={reloading}
+                  onClick={() => void reloadMember()}
+                >
                   Reload member page
                 </Button>
               )}
@@ -361,7 +386,15 @@ export default function MemberPage({
               This fling is closed. You can still correct your contact details.
             </div>
           )}
-          <CoordinationPanel endpoint={'member/' + encodeURIComponent(data.profile.id) + '/coordination'} parentRevision={data.fling.revision} request={call} refresh={refresh} preview={!!previewMember}/>
+          <CoordinationPanel
+            endpoint={
+              'member/' + encodeURIComponent(data.profile.id) + '/coordination'
+            }
+            parentRevision={data.fling.revision}
+            request={call}
+            refresh={refresh}
+            preview={!!previewMember}
+          />
           <div className="member-grid">
             <section aria-labelledby="activities-title">
               <h2 id="activities-title" className="section-title">
@@ -381,6 +414,29 @@ export default function MemberPage({
                   </span>
                   <h2>{a.title}</h2>
                   <p>{a.summary}</p>
+                  {a.capacity !== null && (
+                    <p className="muted">
+                      Up to {a.capacity} confirmed members.
+                    </p>
+                  )}
+                  {a.is_full === 1 && a.invitation !== 'accepted' && (
+                    <p role="status">
+                      <strong>Closed — all places have been filled.</strong>
+                    </p>
+                  )}
+                  {a.timed_out === 1 && a.invitation !== 'accepted' && (
+                    <p>
+                      Your invitation timed out.{' '}
+                      {a.allow_late
+                        ? 'You can still accept if a place remains.'
+                        : 'This invitation can no longer be accepted.'}
+                    </p>
+                  )}
+                  {a.deadline !== null && (
+                    <p className="muted">
+                      Respond by {new Date(a.deadline).toLocaleString()}.
+                    </p>
+                  )}
                   {a.details && <p className="details">{a.details}</p>}
                   {data.events
                     .filter((e) => e.activity === a.id)
@@ -452,7 +508,11 @@ export default function MemberPage({
                       <div className="actions">
                         {a.invitation !== 'accepted' && (
                           <Button
-                            disabled={saving}
+                            disabled={
+                              saving ||
+                              a.is_full === 1 ||
+                              (a.timed_out === 1 && !a.allow_late)
+                            }
                             onClick={() => void respond(a.id, 'accepted')}
                           >
                             Accept invitation

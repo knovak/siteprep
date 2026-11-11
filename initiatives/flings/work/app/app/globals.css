@@ -588,3 +588,10 @@ output {
 .message-exposure { margin:20px 0; line-height:1.6; }
 .message-history summary { cursor:pointer; margin:20px 0; }
 #sending-prompt { max-height:360px; overflow:auto; field-sizing:fixed; height:300px; }
+
+.participation-panel { margin:20px 0; padding:16px 0; border-block:1px solid var(--border); }
+.participation-panel .choice { display:flex; align-items:center; gap:10px; margin:14px 0; }
+.participation-panel input[type=checkbox] { width:20px; height:20px; flex-shrink:0; }
+.participation-panel input[type=number] { padding:10px; border:1px solid var(--border); border-radius:8px; }
+.participation-panel li { margin:16px 0; }
+.participation-panel ol { padding-left:24px; }

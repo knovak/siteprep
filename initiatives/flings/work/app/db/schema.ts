@@ -115,6 +115,11 @@ export const activities = sqliteTable(
     details: text().notNull(),
     state: text().notNull().default('published'),
     position: integer().notNull().default(0),
+    capacity: integer(),
+    cascading: integer().notNull().default(0),
+    timeoutMinutes: integer('timeout_minutes'),
+    allowLate: integer('allow_late').notNull().default(0),
+    invitationOrder: text('invitation_order').notNull().default('[]'),
   },
   (t) => [
     unique().on(t.id, t.fling),
@@ -160,6 +165,8 @@ export const invitations = sqliteTable(
     fling: text().notNull(),
     state: text().notNull(),
     generation: integer().notNull().default(0),
+    invitedAt: integer('invited_at'),
+    timedOut: integer('timed_out').notNull().default(0),
   },
   (t) => [
     primaryKey({ columns: [t.member, t.activity] }),

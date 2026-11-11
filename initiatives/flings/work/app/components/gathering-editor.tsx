@@ -1,5 +1,8 @@
 'use client';
 import { useLayoutEffect, useRef, useState } from 'react';
+import ParticipationPanel, {
+  type ParticipationActivity,
+} from './participation-panel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +15,7 @@ import {
   utcOffset,
 } from '@/lib/event-time';
 
-type Activity = {
+type Activity = ParticipationActivity & {
   id: string;
   title: string;
   summary: string;
@@ -49,6 +52,13 @@ export default function GatheringEditor({
       revision: number;
     };
     activities: Activity[];
+    members: { id: string; name: string }[];
+    invitations: {
+      member: string;
+      activity: string;
+      state: string;
+      timed_out: number;
+    }[];
     events: Event[];
   };
   busy: boolean;
@@ -354,7 +364,13 @@ export default function GatheringEditor({
                 variant="outline"
                 disabled={disabled}
                 onClick={(e) =>
-                  open(e.currentTarget, 'activity', { ...activity })
+                  open(e.currentTarget, 'activity', {
+                    id: activity.id,
+                    title: activity.title,
+                    summary: activity.summary,
+                    details: activity.details,
+                    state: activity.state,
+                  })
                 }
               >
                 Edit {activity.title}
@@ -393,6 +409,14 @@ export default function GatheringEditor({
                 Add event to {activity.title}
               </Button>
             </div>
+            <ParticipationPanel
+              activity={activity}
+              members={data.members}
+              invitations={data.invitations}
+              revision={data.fling.revision}
+              disabled={disabled}
+              save={save}
+            />
             {data.events
               .filter((event) => event.activity === activity.id)
               .map((event) => (

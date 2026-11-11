@@ -71,7 +71,18 @@ void test('populated D1 migration preserves live deliveries and referenced repor
       );
     for (const name of names.filter((n) => n < '0009')) await migrate(name);
     await seed(s);
-    const link = await s.issue(org, 'outing', 'alex-outing');
+    // Populate the old schema directly: current application code requires the
+    // complete migration set and cannot issue credentials before an upgrade.
+    const link = { id: 'upgrade-code' };
+    await s
+      .q(
+        "INSERT INTO codes(id,member,fling,digest,generation,issued,send_until,expires) VALUES(?,'alex-outing','outing','upgrade-digest',0,?,?,?)",
+        link.id,
+        now,
+        now + 1000,
+        now + 2000,
+      )
+      .run();
     await s.db.batch([
       s.q(
         "INSERT INTO message_batches(id,fling,owner,selection,context,audience_hash,manifest,payload_hash,send_until,created) VALUES('upgrade-batch','outing','a','{}','','','{}','',?,?)",

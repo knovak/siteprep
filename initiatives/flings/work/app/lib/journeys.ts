@@ -118,6 +118,112 @@ export class JourneyStore extends AccessStore {
           ),
         );
       }
+    } else if (kind === 'participation') {
+      const id = this.text(input, 'id', true);
+      const capacity = input.capacity;
+      const timeout = input.timeout_minutes;
+      if (
+        capacity !== null &&
+        (!Number.isSafeInteger(capacity) ||
+          Number(capacity) < 1 ||
+          Number(capacity) > 10000)
+      )
+        throw new AccessError(
+          400,
+          'Choose a limit from 1 to 10,000, or unlimited.',
+        );
+      if (
+        typeof input.cascading !== 'boolean' ||
+        typeof input.allow_late !== 'boolean' ||
+        (timeout !== null &&
+          (!Number.isSafeInteger(timeout) ||
+            Number(timeout) < 1 ||
+            Number(timeout) > 525600)) ||
+        (capacity === null && (input.cascading || timeout !== null))
+      )
+        throw new AccessError(
+          400,
+          'Choose valid invitation and timeout settings.',
+        );
+      const ids = input.member_ids;
+      if (
+        !Array.isArray(ids) ||
+        ids.length > 500 ||
+        ids.some((v) => typeof v !== 'string') ||
+        new Set(ids).size !== ids.length
+      )
+        throw new AccessError(400, 'Select each member once (up to 500).');
+      const selected = JSON.stringify(ids);
+      object = id;
+      steps.push(
+        this.guard(
+          child,
+          `
+        EXISTS(SELECT 1 FROM activities WHERE id=? AND fling=?)
+        AND (SELECT COUNT(*) FROM members WHERE fling=? AND state='active' AND id IN (SELECT value FROM json_each(?)))=?
+        AND NOT EXISTS(SELECT 1 FROM invitations i JOIN members m ON m.id=i.member
+          WHERE i.activity=? AND i.state='accepted' AND m.state='active' AND i.member NOT IN (SELECT value FROM json_each(?)))
+        AND (? IS NULL OR (SELECT COUNT(*) FROM invitations i JOIN members m ON m.id=i.member
+          WHERE i.activity=? AND i.state='accepted' AND m.state='active')<=?)`,
+          [
+            id,
+            fling,
+            fling,
+            selected,
+            ids.length,
+            id,
+            selected,
+            capacity,
+            id,
+            capacity,
+          ],
+        ),
+      );
+      steps.push(
+        this.q(
+          `UPDATE activities SET capacity=?,cascading=?,timeout_minutes=?,allow_late=?,invitation_order=? WHERE id=? AND fling=?`,
+          capacity,
+          input.cascading ? 1 : 0,
+          timeout,
+          input.allow_late ? 1 : 0,
+          selected,
+          id,
+          fling,
+        ),
+      );
+      steps.push(
+        this.q(
+          `UPDATE invitations SET state='withdrawn',generation=generation+1,timed_out=0
+        WHERE activity=? AND state!='withdrawn' AND member NOT IN (SELECT value FROM json_each(?))`,
+          id,
+          selected,
+        ),
+      );
+      // A new timeout begins when an existing unanswered invitation is configured.
+      steps.push(
+        this.q(
+          `UPDATE invitations SET invited_at=COALESCE(invited_at,?) WHERE activity=? AND state='invited'`,
+          this.clock(),
+          id,
+        ),
+      );
+      if (!input.cascading)
+        steps.push(
+          this.q(
+            `INSERT INTO invitations(member,activity,fling,state,invited_at)
+          SELECT value,?,?,'invited',? FROM json_each(?) WHERE EXISTS(SELECT 1 FROM activities WHERE id=? AND state='published')
+          ON CONFLICT(member,activity) DO UPDATE SET
+            invited_at=CASE WHEN invitations.state='withdrawn' THEN excluded.invited_at ELSE invitations.invited_at END,
+            timed_out=CASE WHEN invitations.state='withdrawn' THEN 0 ELSE invitations.timed_out END,
+            generation=invitations.generation+CASE WHEN invitations.state='withdrawn' THEN 1 ELSE 0 END,
+            state=CASE WHEN invitations.state='withdrawn' THEN 'invited' ELSE invitations.state END`,
+            id,
+            fling,
+            this.clock(),
+            selected,
+            id,
+          ),
+        );
     } else if (kind === 'order') {
       if (
         !Array.isArray(input.ids) ||
@@ -303,11 +409,11 @@ export class JourneyStore extends AccessStore {
         fling,
       ),
       this.q(
-        'SELECT id,title,summary,details,state,position FROM activities WHERE fling=? ORDER BY position,id',
+        'SELECT id,title,summary,details,state,position,capacity,cascading,timeout_minutes,allow_late,invitation_order FROM activities WHERE fling=? ORDER BY position,id',
         fling,
       ),
       this.q(
-        'SELECT member,activity,state FROM invitations WHERE fling=?',
+        'SELECT member,activity,state,invited_at,timed_out FROM invitations WHERE fling=?',
         fling,
       ),
       this.q(
@@ -392,15 +498,29 @@ export class JourneyStore extends AccessStore {
         g.statement,
         this.guard(
           child,
-          "EXISTS(SELECT 1 FROM members WHERE id=? AND fling=? AND state='active') AND EXISTS(SELECT 1 FROM activities WHERE id=? AND fling=? AND state='published')",
-          [input.member, fling, input.activity, fling],
+          "EXISTS(SELECT 1 FROM members WHERE id=? AND fling=? AND state='active') AND EXISTS(SELECT 1 FROM activities WHERE id=? AND fling=? AND state='published') AND (?='withdrawn' OR NOT EXISTS(SELECT 1 FROM activities WHERE id=? AND cascading=1))",
+          [
+            input.member,
+            fling,
+            input.activity,
+            fling,
+            input.state,
+            input.activity,
+          ],
         ),
         // Reinviting an accepted/declined member does not overwrite their response.
         this.q(
-          "INSERT INTO invitations(member,activity,fling,state) VALUES(?,?,?,?) ON CONFLICT(member,activity) DO UPDATE SET generation=invitations.generation+CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN 1 ELSE 0 END,state=CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN excluded.state ELSE invitations.state END",
+          "INSERT INTO invitations(member,activity,fling,state,invited_at) VALUES(?,?,?,?,?) ON CONFLICT(member,activity) DO UPDATE SET invited_at=CASE WHEN invitations.state='withdrawn' THEN excluded.invited_at ELSE invitations.invited_at END,timed_out=CASE WHEN invitations.state='withdrawn' THEN 0 ELSE invitations.timed_out END,generation=invitations.generation+CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN 1 ELSE 0 END,state=CASE WHEN excluded.state='withdrawn' OR invitations.state='withdrawn' THEN excluded.state ELSE invitations.state END",
           input.member,
           input.activity,
           fling,
+          input.state,
+          this.clock(),
+        ),
+        this.q(
+          `UPDATE activities SET invitation_order=(SELECT json_group_array(value) FROM json_each(activities.invitation_order) WHERE value!=?) WHERE id=? AND ?='withdrawn'`,
+          input.member,
+          input.activity,
           input.state,
         ),
         this.q('UPDATE flings SET revision=revision+1 WHERE id=?', fling),
@@ -432,8 +552,10 @@ export class JourneyStore extends AccessStore {
         g.statement,
         this.guard(
           child,
-          "EXISTS(SELECT 1 FROM invitations i JOIN activities a ON a.id=i.activity AND a.fling=i.fling WHERE i.member=? AND i.fling=? AND i.activity=? AND i.state!='withdrawn' AND a.state='published')",
-          [member, fling, input.activity],
+          `EXISTS(SELECT 1 FROM invitations i JOIN activities a ON a.id=i.activity AND a.fling=i.fling WHERE i.member=? AND i.fling=? AND i.activity=? AND i.state!='withdrawn' AND a.state='published'
+            AND (?='declined' OR ((i.timed_out=0 OR a.allow_late=1) AND
+              (a.capacity IS NULL OR i.state='accepted' OR (SELECT COUNT(*) FROM invitations ci JOIN members cm ON cm.id=ci.member WHERE ci.activity=a.id AND ci.state='accepted' AND cm.state='active')<a.capacity))))`,
+          [member, fling, input.activity, input.state],
         ),
         this.q(
           'UPDATE invitations SET generation=generation+CASE WHEN state!=? THEN 1 ELSE 0 END,state=? WHERE member=? AND activity=? AND fling=?',

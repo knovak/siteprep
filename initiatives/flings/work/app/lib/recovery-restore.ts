@@ -226,6 +226,19 @@ export class RecoveryRestoreStore extends RecoveryPreviewStore {
                     : 'organizer'
                   : undefined,
           );
+        if (table === 'activities') {
+          r.capacity ??= null;
+          r.cascading ??= 0;
+          r.timeout_minutes ??= null;
+          r.allow_late ??= 0;
+          r.invitation_order = (
+            (original.invitation_order ?? []) as string[]
+          ).map((member) => mapped('members', member));
+        }
+        if (table === 'invitations') {
+          r.invited_at ??= null;
+          r.timed_out ??= 0;
+        }
         if (table === 'audit') r.object = targetId(original.object);
         if (table === 'organizers') r.subject = 'recovery:' + id + ':' + r.id;
         if (table === 'message_deliveries') r.code = null;

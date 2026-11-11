@@ -41,6 +41,7 @@ const collections = Object.keys(definitions);
 const from = (name: string) =>
   `FROM ${name} t WHERE ${filters[name] ?? `t.fling=${chosen}`}`;
 const jsonFields = new Set([
+  'activities.invitation_order',
   'message_batches.manifest',
   'message_batches.selection',
   'message_batches.discussion',

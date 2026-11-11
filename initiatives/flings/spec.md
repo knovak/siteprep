@@ -464,3 +464,19 @@ export validation, identity remapping, credential exclusion and no-send restore.
 The real authorized pilot must include test-recipient receipt of email and text
 and record observed reliability. None of these journeys is implemented by this
 specification.
+
+## Limited participation — November 12, 2026
+
+The user requested an option to limit how many members can join an activity,
+invite a subset, close the activity when confirmations fill it, invite members
+in a chosen order as others decline ("cascading invitation"), and configure an
+acceptance timeout with an explicit choice to permit late acceptance.
+
+Unlimited remains the default. Limits count confirmed active member profiles;
+a first confirmation claims a remaining place. The organizer selects and
+orders the eligible members. Cascading opens invitations to match the remaining
+places, retaining already open invitations and existing answers. Declines,
+withdrawals, removals and timeouts advance the queue. Late acceptance, if enabled,
+uses the same remaining-capacity check. Backup files preserve the policy and
+order. The implementation and request-driven clock behavior are documented in
+`work/app/PARTICIPATION_TECHDOC.md`.
