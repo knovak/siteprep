@@ -14,7 +14,7 @@ test('both package pages open the rendered research notes and provide return nav
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Eclipse 2027 package research and upkeep');
     await expect(page.locator('main h2')).toHaveText(headings);
     await expect(page.locator('main ol > li')).toHaveCount(5);
-    await expect(page.locator('main')).toContainText('No ongoing research automation was requested or created.');
+    await expect(page.locator('main')).toContainText('This refresh ran under the user-requested Update Eclipse 2027 packages automation.');
     await expect(page.getByRole('link', { name: 'NASA geographic path table' })).toHaveAttribute(
       'href', 'https://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2027Aug02Tpath.html');
     await expect(page.locator('footer.site-footer')).toHaveCount(1);

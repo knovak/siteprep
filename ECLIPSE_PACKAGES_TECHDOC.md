@@ -43,3 +43,18 @@ Validate with the final `npm run build`, then
 `npm test -- tests/e2e/eclipse-package-table.spec.js`. The browser checks compare
 table values with their source paragraphs, exercise sorting and source updates,
 check collapsed-topic links and verify mobile containment.
+
+## Availability refresh records
+
+Research-held offers that lose current stock retain their original IDs, all
+source links and previous evidence inside dated details on the holding page.
+Restorations use the same ID, retain their earlier evidence with the restored
+description, and leave a plain history link on the holding page. Table fields
+still come solely from the current description paragraphs. Review dates are
+independent of availability dates.
+
+The package map removes points unique to held offers. The country overview
+may use an offshore viewing-region marker (Tunisia) when the included offer
+is a sea departure. Hotel and city additions are orientation points, with
+coordinate sources in research-notes.md; unpublished observing sites stay
+explicitly unknown.

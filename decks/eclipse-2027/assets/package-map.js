@@ -17,6 +17,27 @@
     "description": "Approximate town / hotel orientation"
   },
   {
+    "name": "Chiclana / Hotel Valentin Sancti Petri",
+    "country": "Spain",
+    "lat": 36.35771,
+    "lng": -6.17082,
+    "description": "Hotel orientation from OpenStreetMap; the rural eclipse site is elsewhere and unpublished"
+  },
+  {
+    "name": "Jerez de la Frontera",
+    "country": "Spain",
+    "lat": 36.68167,
+    "lng": -6.13778,
+    "description": "Excursion city; not the eclipse site"
+  },
+  {
+    "name": "Barcelona",
+    "country": "Spain",
+    "lat": 41.38278,
+    "lng": 2.17694,
+    "description": "Virgin embarkation city; not the eclipse site"
+  },
+  {
     "name": "Málaga",
     "country": "Spain",
     "lat": 36.72,
@@ -89,13 +110,6 @@
     "description": "Itinerary city"
   },
   {
-    "name": "Casablanca",
-    "country": "Morocco",
-    "lat": 33.57,
-    "lng": -7.59,
-    "description": "Airport and route hub"
-  },
-  {
     "name": "Fes",
     "country": "Morocco",
     "lat": 34.03,
@@ -133,40 +147,11 @@
     "zoom": 5
   },
   {
-    "name": "Sfax viewing region",
-    "country": "Tunisia",
-    "lat": 34.74,
-    "lng": 10.76,
-    "description": "Approximate city / regional viewing hub",
-    "countryMarker": true
-  },
-  {
-    "name": "Chaffar Beach",
-    "country": "Tunisia",
-    "lat": 34.5347,
-    "lng": 10.5822,
-    "description": "Beach orientation from Wikidata; exact tour site unpublished"
-  },
-  {
     "name": "Tunis",
     "country": "Tunisia",
     "lat": 36.81,
     "lng": 10.18,
     "description": "Airport and route hub"
-  },
-  {
-    "name": "Tozeur",
-    "country": "Tunisia",
-    "lat": 33.92,
-    "lng": 8.13,
-    "description": "Itinerary town"
-  },
-  {
-    "name": "Douz",
-    "country": "Tunisia",
-    "lat": 33.46,
-    "lng": 9.02,
-    "description": "Desert excursion town"
   },
   {
     "name": "Offshore Tunisia",
@@ -175,7 +160,8 @@
     "lng": 11.3,
     "description": "Broad marine viewing region; not a promised ship position",
     "zoom": 6,
-    "icon": "🚢"
+    "icon": "🚢",
+    "countryMarker": true
   },
   {
     "name": "Luxor viewing region",
@@ -200,7 +186,7 @@
     "description": "Approximate mooring-neighbourhood orientation"
   },
   {
-    "name": "Luxor West Bank / Al Wadi / Villa Kamose / Villa Nile House",
+    "name": "Luxor West Bank / Al Wadi / Villa Kamose / Villa Nile House / Dar Habu",
     "country": "Egypt",
     "lat": 25.73,
     "lng": 32.61,
@@ -219,20 +205,6 @@
     "lat": 30.04,
     "lng": 31.24,
     "description": "Airport and route hub"
-  },
-  {
-    "name": "6th of October City / proposed Novotel",
-    "country": "Egypt",
-    "lat": 30.01,
-    "lng": 30.97,
-    "description": "Approximate city / proposed-hotel orientation"
-  },
-  {
-    "name": "Maadi / proposed Hilton Cairo Nile",
-    "country": "Egypt",
-    "lat": 29.97,
-    "lng": 31.25,
-    "description": "Approximate neighbourhood / proposed-hotel orientation"
   },
   {
     "name": "Alexandria",

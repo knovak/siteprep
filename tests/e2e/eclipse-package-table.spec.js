@@ -32,7 +32,7 @@ test('eclipse comparison preserves every package price, country and availability
   expect(contents.source.every((item) => item.availability && item.party)).toBe(true);
   await expect(page.locator(`${rows}[data-package-id="package-683"] .comparison-reviews`)).toContainText('personalized planning');
   await expect(page.locator(`${rows}[data-package-id="package-880"] .review-rank`)).toHaveText('Low');
-  await expect(page.locator(`${rows}[data-package-id="package-829"] .review-rank`)).toHaveText('High');
+  await expect(page.locator(`${rows}[data-package-id="package-519"] .review-rank`)).toHaveText('High');
   expect(await page.locator('#package-comparison').evaluate((heading) =>
     Boolean(heading.compareDocumentPosition(document.getElementById('maps')) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
 });
