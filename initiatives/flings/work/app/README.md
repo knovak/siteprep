@@ -845,8 +845,25 @@ backgrounds, and destructive text at least 5.9:1 against its tint. State
 badges take a `state-<value>` class; the stylesheet capitalises and colours
 them, and the stored lower-case text stays in the document.
 
-Verified locally on Chromium at 1280 px and 390 px with the existing browser
-scripts, plus `npm run typecheck`, `npm test` and `npm run build`. Firefox and
-WebKit were not available for this change, so the three-engine matrix was not
-repeated. `npm run lint` reports the `member-page.tsx` ref-during-render error
-that was already present.
+The organizer page also refreshes itself every 15 seconds, added with the
+participation controls. That timed refresh calls `refresh(true)`: it re-checks
+sign-in and reloads the records without hiding them, and it skips a tick while
+another refresh is running. Hiding the records on a timer took keyboard focus
+out of the field being typed in and dropped keystrokes. A failed check still
+clears the page. Use the plain `refresh()` for anything a person triggers.
+
+`test/organizer-place-browser.mjs` covers this section: the order of the
+sections, the section bar, three distinct button backgrounds, the scroll
+position across a focus re-check, a confirmation shown inside the window, and
+typing across a timed refresh. Like `browser.mjs` it accepts `FLINGS_BROWSER`
+to run one engine, and it writes a receipt only when `FLINGS_EVIDENCE` names a
+file.
+
+Verified locally on Chromium at 1280 px and 390 px after merging the
+participation change: `npm run typecheck`, `npm test` (191 pass),
+`npm run build`, and twenty browser scripts run in order on a new local
+database, with a pause before `browser.mjs` for the member-link rate limit.
+Firefox and WebKit were not available for this change, so the three-engine
+matrix was not repeated and no receipt under `test/evidence/` was replaced.
+`npm run lint` reports four errors that are on `main` already; item C8 of the
+critique lists them.
